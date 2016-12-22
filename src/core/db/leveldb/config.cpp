@@ -55,7 +55,7 @@ Config parseOptions(int argc, char** argv) {
     } else if (!strcmp(argv[i], "-f") && !lastarg) {
       cfg.dbname = argv[++i];
     } else if (!strcmp(argv[i], "-c")) {
-      cfg.options.create_if_missing = true;
+      cfg.create_if_missing = true;
     } else {
       if (argv[i][0] == '-') {
         std::string buff = common::MemSPrintf(
@@ -75,9 +75,8 @@ Config parseOptions(int argc, char** argv) {
 
 }  // namespace
 
-Config::Config() : LocalConfig(common::file_system::prepare_path("~/test.leveldb")), options() {
-  options.create_if_missing = false;
-}
+Config::Config()
+    : LocalConfig(common::file_system::prepare_path("~/test.leveldb")), create_if_missing(false) {}
 
 }  // namespace leveldb
 }  // namespace core
@@ -88,7 +87,7 @@ namespace common {
 std::string ConvertToString(const fastonosql::core::leveldb::Config& conf) {
   std::vector<std::string> argv = conf.Args();
 
-  if (conf.options.create_if_missing) {
+  if (conf.create_if_missing) {
     argv.push_back("-c");
   }
 

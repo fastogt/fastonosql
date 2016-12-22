@@ -356,6 +356,10 @@ SET(SOURCES_GUI_WIDGETS
 )
 
 SET(HEADERS_GUI_TO_MOC
+  ${HEADERS_GUI_DIALOGS_TO_MOC}
+  ${HEADERS_GUI_EDITOR_TO_MOC}
+  ${HEADERS_GUI_WIDGETS_TO_MOC}
+  ${HEADERS_GUI_EXPLORER_TO_MOC}
   gui/main_window.h
   gui/statistic_sender.h
   gui/update_checker.h
@@ -374,6 +378,8 @@ SET(HEADERS_GUI_TO_MOC
   gui/action_cell_delegate.h
 )
 SET(HEADERS_GUI
+  ${HEADERS_GUI_EXPLORER}
+  ${HEADERS_GUI_DIALOGS}
   gui/gui_factory.h
   gui/fasto_common_item.h
   gui/property_table_item.h
@@ -382,6 +388,10 @@ SET(HEADERS_GUI
   gui/key_value_table_item.h
 )
 SET(SOURCES_GUI
+  ${SOURCES_GUI_DIALOGS}
+  ${SOURCES_GUI_EDITOR}
+  ${SOURCES_GUI_WIDGETS}
+  ${SOURCES_GUI_EXPLORER}
   gui/main_window.cpp
   gui/statistic_sender.cpp
   gui/update_checker.cpp
@@ -425,7 +435,6 @@ ELSEIF(OS_FREEBSD)
   SET(PLATFORM_LIBRARIES util pthread)
 ENDIF(OS_WINDOWS)
 
-#ADD_SUBDIRECTORY(common)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_LIST_DIR})
 
 #redis
@@ -435,17 +444,8 @@ IF(BUILD_WITH_REDIS)
   ADD_SUBDIRECTORY(third-party/redis)
   SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/redis/src third-party/redis/deps)
 
-  SET(HEADERS_REDIS_GUI_TO_MOC gui/db/redis/connection_widget.h gui/db/redis/lexer.h)
-  SET(HEADERS_REDIS_GUI)
-  SET(SOURCES_REDIS_GUI gui/db/redis/connection_widget.cpp gui/db/redis/lexer.cpp)
-
-  SET(HEADERS_REDIS_TO_MOC
-    proxy/db/redis/sentinel.h
-    proxy/db/redis/cluster.h
-    proxy/db/redis/server.h
-    proxy/db/redis/driver.h
-  )
-  SET(HEADERS_REDIS
+  #core redis
+  SET(HEADERS_CORE_DB_REDIS
     core/db/redis/config.h
     core/db/redis/command.h
     core/db/redis/command_translator.h
@@ -455,13 +455,8 @@ IF(BUILD_WITH_REDIS)
     core/db/redis/database_info.h
     core/db/redis/sentinel_info.h
     core/db/redis/cluster_infos.h
-
-    proxy/db/redis/connection_settings.h
-    proxy/db/redis/sentinel_settings.h
-    proxy/db/redis/cluster_settings.h
-    proxy/db/redis/database.h
   )
-  SET(SOURCES_REDIS
+  SET(SOURCES_CORE_DB_REDIS
     core/db/redis/config.cpp
     core/db/redis/command.cpp
     core/db/redis/command_translator.cpp
@@ -471,7 +466,22 @@ IF(BUILD_WITH_REDIS)
     core/db/redis/sentinel_info.cpp
     core/db/redis/cluster_infos.cpp
     core/db/redis/database_info.cpp
+  )
 
+  # proxy redis
+  SET(HEADERS_REDIS_PROXY_TO_MOC
+    proxy/db/redis/sentinel.h
+    proxy/db/redis/cluster.h
+    proxy/db/redis/server.h
+    proxy/db/redis/driver.h
+  )
+  SET(HEADERS_PROXY_DB_REDIS
+    proxy/db/redis/connection_settings.h
+    proxy/db/redis/sentinel_settings.h
+    proxy/db/redis/cluster_settings.h
+    proxy/db/redis/database.h
+  )
+  SET(SOURCES_PROXY_DB_REDIS
     proxy/db/redis/connection_settings.cpp
     proxy/db/redis/sentinel_settings.cpp
     proxy/db/redis/cluster_settings.cpp
@@ -481,6 +491,24 @@ IF(BUILD_WITH_REDIS)
     proxy/db/redis/cluster.cpp
     proxy/db/redis/database.cpp
   )
+
+  #gui redis
+  SET(HEADERS_REDIS_GUI_TO_MOC gui/db/redis/connection_widget.h gui/db/redis/lexer.h)
+  SET(HEADERS_REDIS_GUI)
+  SET(SOURCES_REDIS_GUI gui/db/redis/connection_widget.cpp gui/db/redis/lexer.cpp)
+
+  #update common variables
+  SET(HEADERS_CORE ${HEADERS_CORE} ${HEADERS_CORE_DB_REDIS})
+  SET(SOURCES_CORE ${SOURCES_CORE} ${SOURCES_CORE_DB_REDIS})
+
+  SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_REDIS_PROXY_TO_MOC})
+  SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_REDIS})
+  SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_REDIS})
+
+  SET(HEADERS_GUI_TO_MOC ${HEADERS_GUI_TO_MOC} ${HEADERS_REDIS_GUI_TO_MOC})
+  SET(HEADERS_GUI ${HEADERS_GUI} ${HEADERS_REDIS_GUI})
+  SET(SOURCES_GUI ${SOURCES_GUI} ${SOURCES_REDIS_GUI})
+
   SET(DB_LIBS ${DB_LIBS} hiredis Libssh2::libssh2 ${OPENSSL_LIBRARIES})
 ENDIF(BUILD_WITH_REDIS)
 
@@ -491,15 +519,8 @@ IF(BUILD_WITH_MEMCACHED)
   ADD_SUBDIRECTORY(third-party/memcached)
   SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/memcached/src)
 
-  SET(HEADERS_MEMCACHED_GUI_TO_MOC gui/db/memcached/connection_widget.h gui/db/memcached/lexer.h)
-  SET(HEADERS_MEMCACHED_GUI)
-  SET(SOURCES_MEMCACHED_GUI gui/db/memcached/connection_widget.cpp gui/db/memcached/lexer.cpp)
-
-  SET(HEADERS_MEMCACHED_TO_MOC
-    proxy/db/memcached/server.h
-    proxy/db/memcached/driver.h
-  )
-  SET(HEADERS_MEMCACHED
+  #core
+  SET(HEADERS_CORE_DB_MEMCACHED
     core/db/memcached/config.h
     core/db/memcached/command.h
     core/db/memcached/command_translator.h
@@ -507,11 +528,8 @@ IF(BUILD_WITH_MEMCACHED)
     core/db/memcached/db_connection.h
     core/db/memcached/internal/commands_api.h
     core/db/memcached/database_info.h
-
-    proxy/db/memcached/connection_settings.h
-    proxy/db/memcached/database.h
   )
-  SET(SOURCES_MEMCACHED
+  SET(SOURCES_CORE_DB_MEMCACHED
     core/db/memcached/config.cpp    
     core/db/memcached/command.cpp
     core/db/memcached/command_translator.cpp
@@ -519,12 +537,40 @@ IF(BUILD_WITH_MEMCACHED)
     core/db/memcached/db_connection.cpp
     core/db/memcached/internal/commands_api.cpp
     core/db/memcached/database_info.cpp
+  )
 
+  #proxy
+  SET(HEADERS_MEMCACHED_PROXY_TO_MOC
+    proxy/db/memcached/server.h
+    proxy/db/memcached/driver.h
+  )
+  SET(HEADERS_PROXY_DB_MEMCACHED
+    proxy/db/memcached/connection_settings.h
+    proxy/db/memcached/database.h
+  )
+  SET(SOURCES_PROXY_DB_MEMCACHED
     proxy/db/memcached/connection_settings.cpp
     proxy/db/memcached/database.cpp
     proxy/db/memcached/server.cpp
     proxy/db/memcached/driver.cpp
   )
+
+  #gui
+  SET(HEADERS_MEMCACHED_GUI_TO_MOC gui/db/memcached/connection_widget.h gui/db/memcached/lexer.h)
+  SET(HEADERS_MEMCACHED_GUI)
+  SET(SOURCES_MEMCACHED_GUI gui/db/memcached/connection_widget.cpp gui/db/memcached/lexer.cpp)
+
+  #update common variables
+  SET(HEADERS_CORE ${HEADERS_CORE} ${HEADERS_CORE_DB_MEMCACHED})
+  SET(SOURCES_CORE ${SOURCES_CORE} ${SOURCES_CORE_DB_MEMCACHED})
+
+  SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_MEMCACHED_PROXY_TO_MOC})
+  SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_MEMCACHED})
+  SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_MEMCACHED})
+
+  SET(HEADERS_GUI_TO_MOC ${HEADERS_GUI_TO_MOC} ${HEADERS_MEMCACHED_GUI_TO_MOC})
+  SET(HEADERS_GUI ${HEADERS_GUI} ${HEADERS_MEMCACHED_GUI})
+  SET(SOURCES_GUI ${SOURCES_GUI} ${SOURCES_MEMCACHED_GUI})
   SET(DB_LIBS ${DB_LIBS} memcached)
 ENDIF(BUILD_WITH_MEMCACHED)
 
@@ -533,15 +579,8 @@ IF(BUILD_WITH_SSDB)
   ADD_SUBDIRECTORY(third-party/ssdb)
   SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/ssdb/src)
 
-  SET(HEADERS_SSDB_GUI_TO_MOC gui/db/ssdb/connection_widget.h gui/db/ssdb/lexer.h)
-  SET(HEADERS_SSDB_GUI)
-  SET(SOURCES_SSDB_GUI gui/db/ssdb/connection_widget.cpp gui/db/ssdb/lexer.cpp)
-
-  SET(HEADERS_SSDB_TO_MOC
-    proxy/db/ssdb/server.h
-    proxy/db/ssdb/driver.h
-  )
-  SET(HEADERS_SSDB
+  #core
+  SET(HEADERS_CORE_DB_SSDB
     core/db/ssdb/config.h
     core/db/ssdb/command.h
     core/db/ssdb/command_translator.h
@@ -549,25 +588,49 @@ IF(BUILD_WITH_SSDB)
     core/db/ssdb/db_connection.h
     core/db/ssdb/internal/commands_api.h
     core/db/ssdb/database_info.h
-
-    proxy/db/ssdb/connection_settings.h
-    proxy/db/ssdb/database.h
   )
-  SET(SOURCES_SSDB
+  SET(SOURCES_CORE_DB_SSDB
     core/db/ssdb/config.cpp
-
     core/db/ssdb/command.cpp
     core/db/ssdb/command_translator.cpp
     core/db/ssdb/server_info.cpp
     core/db/ssdb/db_connection.cpp
     core/db/ssdb/internal/commands_api.cpp
     core/db/ssdb/database_info.cpp
+  )
 
+  #proxy
+  SET(HEADERS_SSDB_PROXY_TO_MOC
+    proxy/db/ssdb/server.h
+    proxy/db/ssdb/driver.h
+  )
+  SET(HEADERS_PROXY_DB_SSDB
+    proxy/db/ssdb/connection_settings.h
+    proxy/db/ssdb/database.h
+  )
+  SET(SOURCES_PROXY_DB_SSDB
     proxy/db/ssdb/connection_settings.cpp
     proxy/db/ssdb/database.cpp
     proxy/db/ssdb/server.cpp
     proxy/db/ssdb/driver.cpp
   )
+
+  #gui
+  SET(HEADERS_SSDB_GUI_TO_MOC gui/db/ssdb/connection_widget.h gui/db/ssdb/lexer.h)
+  SET(HEADERS_SSDB_GUI)
+  SET(SOURCES_SSDB_GUI gui/db/ssdb/connection_widget.cpp gui/db/ssdb/lexer.cpp)
+
+  #update common variables
+  SET(HEADERS_CORE ${HEADERS_CORE} ${HEADERS_CORE_DB_SSDB})
+  SET(SOURCES_CORE ${SOURCES_CORE} ${SOURCES_CORE_DB_SSDB})
+
+  SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_SSDB_PROXY_TO_MOC})
+  SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_SSDB})
+  SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_SSDB})
+
+  SET(HEADERS_GUI_TO_MOC ${HEADERS_GUI_TO_MOC} ${HEADERS_SSDB_GUI_TO_MOC})
+  SET(HEADERS_GUI ${HEADERS_GUI} ${HEADERS_SSDB_GUI})
+  SET(SOURCES_GUI ${SOURCES_GUI} ${SOURCES_SSDB_GUI})
   SET(DB_LIBS ${DB_LIBS} ssdb)
 ENDIF(BUILD_WITH_SSDB)
 
@@ -576,15 +639,8 @@ IF(BUILD_WITH_LEVELDB)
   ADD_SUBDIRECTORY(third-party/leveldb)
   SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/leveldb/src/include)
 
-  SET(HEADERS_LEVELDB_GUI_TO_MOC gui/db/leveldb/connection_widget.h gui/db/leveldb/lexer.h)
-  SET(HEADERS_LEVELDB_GUI)
-  SET(SOURCES_LEVELDB_GUI gui/db/leveldb/connection_widget.cpp gui/db/leveldb/lexer.cpp)
-
-  SET(HEADERS_LEVELDB_TO_MOC
-    proxy/db/leveldb/server.h
-    proxy/db/leveldb/driver.h
-  )
-  SET(HEADERS_LEVELDB
+  #core
+  SET(HEADERS_CORE_DB_LEVELDB
     core/db/leveldb/config.h
     core/db/leveldb/command.h
     core/db/leveldb/command_translator.h
@@ -592,11 +648,8 @@ IF(BUILD_WITH_LEVELDB)
     core/db/leveldb/db_connection.h
     core/db/leveldb/internal/commands_api.h
     core/db/leveldb/database_info.h
-
-    proxy/db/leveldb/connection_settings.h
-    proxy/db/leveldb/database.h
   )
-  SET(SOURCES_LEVELDB
+  SET(SOURCES_CORE_DB_LEVELDB
     core/db/leveldb/config.cpp
     core/db/leveldb/command.cpp
     core/db/leveldb/command_translator.cpp
@@ -604,30 +657,51 @@ IF(BUILD_WITH_LEVELDB)
     core/db/leveldb/db_connection.cpp
     core/db/leveldb/internal/commands_api.cpp
     core/db/leveldb/database_info.cpp
+  )
 
+  #proxy
+  SET(HEADERS_LEVELDB_PROXY_TO_MOC
+    proxy/db/leveldb/server.h
+    proxy/db/leveldb/driver.h
+  )
+  SET(HEADERS_PROXY_DB_LEVELDB
+    proxy/db/leveldb/connection_settings.h
+    proxy/db/leveldb/database.h
+  )
+  SET(SOURCES_PROXY_DB_LEVELDB
     proxy/db/leveldb/connection_settings.cpp
     proxy/db/leveldb/database.cpp
     proxy/db/leveldb/server.cpp
     proxy/db/leveldb/driver.cpp
   )
+
+  #gui
+  SET(HEADERS_LEVELDB_GUI_TO_MOC gui/db/leveldb/connection_widget.h gui/db/leveldb/lexer.h)
+  SET(HEADERS_LEVELDB_GUI)
+  SET(SOURCES_LEVELDB_GUI gui/db/leveldb/connection_widget.cpp gui/db/leveldb/lexer.cpp)
+
+  #update common variables
+  SET(HEADERS_CORE ${HEADERS_CORE} ${HEADERS_CORE_DB_LEVELDB})
+  SET(SOURCES_CORE ${SOURCES_CORE} ${SOURCES_CORE_DB_LEVELDB})
+
+  SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_LEVELDB_PROXY_TO_MOC})
+  SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_LEVELDB})
+  SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_LEVELDB})
+
+  SET(HEADERS_GUI_TO_MOC ${HEADERS_GUI_TO_MOC} ${HEADERS_LEVELDB_GUI_TO_MOC})
+  SET(HEADERS_GUI ${HEADERS_GUI} ${HEADERS_LEVELDB_GUI})
+  SET(SOURCES_GUI ${SOURCES_GUI} ${SOURCES_LEVELDB_GUI})
   SET(DB_LIBS ${DB_LIBS} leveldb)
 ENDIF(BUILD_WITH_LEVELDB)
 
 #rocksdb
 IF(BUILD_WITH_ROCKSDB)
   FIND_LIBRARY(ROCKSDB_LIBRARY rocksdb)
-  #ADD_SUBDIRECTORY(third-party/rocksdb)
-  #SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/rocksdb/src/include)
+  FIND_PATH(ROCKSDB_INCLUDE_DIR NAMES rocksdb/db.h PATH_SUFFIXES include)
+  SET(INCLUDE_DIRS ${INCLUDE_DIRS} ${ROCKSDB_INCLUDE_DIR})
 
-  SET(HEADERS_ROCKSDB_GUI_TO_MOC gui/db/rocksdb/connection_widget.h gui/db/rocksdb/lexer.h)
-  SET(HEADERS_ROCKSDB_GUI)
-  SET(SOURCES_ROCKSDB_GUI gui/db/rocksdb/connection_widget.cpp gui/db/rocksdb/lexer.cpp)
-
-  SET(HEADERS_ROCKSDB_TO_MOC
-    proxy/db/rocksdb/server.h
-    proxy/db/rocksdb/driver.h
-  )
-  SET(HEADERS_ROCKSDB
+  #core
+  SET(HEADERS_CORE_DB_ROCKSDB
     core/db/rocksdb/config.h
     core/db/rocksdb/command.h
     core/db/rocksdb/command_translator.h
@@ -635,26 +709,49 @@ IF(BUILD_WITH_ROCKSDB)
     core/db/rocksdb/db_connection.h
     core/db/rocksdb/internal/commands_api.h
     core/db/rocksdb/database_info.h
-
-    proxy/db/rocksdb/connection_settings.h
-    proxy/db/rocksdb/database.h
   )
-  SET(SOURCES_ROCKSDB
+  SET(SOURCES_CORE_DB_ROCKSDB
     core/db/rocksdb/config.cpp
     core/db/rocksdb/command.cpp
     core/db/rocksdb/command_translator.cpp
     core/db/rocksdb/server_info.cpp
-
     core/db/rocksdb/db_connection.cpp
     core/db/rocksdb/internal/commands_api.cpp
     core/db/rocksdb/database_info.cpp
+  )
 
+  #proxy
+  SET(HEADERS_ROCKSDB_PROXY_TO_MOC
+    proxy/db/rocksdb/server.h
+    proxy/db/rocksdb/driver.h
+  )
+  SET(HEADERS_PROXY_DB_ROCKSDB
+    proxy/db/rocksdb/connection_settings.h
+    proxy/db/rocksdb/database.h
+  )
+  SET(SOURCES_PROXY_DB_ROCKSDB
     proxy/db/rocksdb/connection_settings.cpp
     proxy/db/rocksdb/database.cpp
     proxy/db/rocksdb/server.cpp
     proxy/db/rocksdb/driver.cpp
   )
 
+  #gui
+  SET(HEADERS_ROCKSDB_GUI_TO_MOC gui/db/rocksdb/connection_widget.h gui/db/rocksdb/lexer.h)
+  SET(HEADERS_ROCKSDB_GUI)
+  SET(SOURCES_ROCKSDB_GUI gui/db/rocksdb/connection_widget.cpp gui/db/rocksdb/lexer.cpp)
+
+  #update common variables
+  SET(HEADERS_CORE ${HEADERS_CORE} ${HEADERS_CORE_DB_ROCKSDB})
+  SET(SOURCES_CORE ${SOURCES_CORE} ${SOURCES_CORE_DB_ROCKSDB})
+
+  SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_ROCKSDB_PROXY_TO_MOC})
+  SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_ROCKSDB})
+  SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_ROCKSDB})
+
+  SET(HEADERS_GUI_TO_MOC ${HEADERS_GUI_TO_MOC} ${HEADERS_ROCKSDB_GUI_TO_MOC})
+  SET(HEADERS_GUI ${HEADERS_GUI} ${HEADERS_ROCKSDB_GUI})
+  SET(SOURCES_GUI ${SOURCES_GUI} ${SOURCES_ROCKSDB_GUI})
   SET(DB_LIBS ${DB_LIBS} ${ROCKSDB_LIBRARY} ${BZIP2_LIBRARIES})
 ENDIF(BUILD_WITH_ROCKSDB)
 
@@ -663,15 +760,8 @@ IF(BUILD_WITH_UNQLITE)
   ADD_SUBDIRECTORY(third-party/unqlite)
   SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/unqlite/src)
 
-  SET(HEADERS_UNQLITE_GUI_TO_MOC gui/db/unqlite/connection_widget.h gui/db/unqlite/lexer.h)
-  SET(HEADERS_UNQLITE_GUI)
-  SET(SOURCES_UNQLITE_GUI gui/db/unqlite/connection_widget.cpp gui/db/unqlite/lexer.cpp)
-
-  SET(HEADERS_UNQLITE_TO_MOC
-    proxy/db/unqlite/server.h
-    proxy/db/unqlite/driver.h
-  )
-  SET(HEADERS_UNQLITE
+  #core
+  SET(HEADERS_CORE_DB_UNQLITE
     core/db/unqlite/config.h
     core/db/unqlite/command.h
     core/db/unqlite/command_translator.h
@@ -679,25 +769,49 @@ IF(BUILD_WITH_UNQLITE)
     core/db/unqlite/db_connection.h
     core/db/unqlite/internal/commands_api.h
     core/db/unqlite/database_info.h
-
-    proxy/db/unqlite/connection_settings.h
-    proxy/db/unqlite/database.h
   )
-  SET(SOURCES_UNQLITE
+  SET(SOURCES_CORE_DB_UNQLITE
     core/db/unqlite/config.cpp
     core/db/unqlite/command.cpp
     core/db/unqlite/command_translator.cpp
     core/db/unqlite/server_info.cpp
-
     core/db/unqlite/db_connection.cpp
     core/db/unqlite/internal/commands_api.cpp
     core/db/unqlite/database_info.cpp
+  )
 
+  #proxy
+  SET(HEADERS_UNQLITE_PROXY_TO_MOC
+    proxy/db/unqlite/server.h
+    proxy/db/unqlite/driver.h
+  )
+  SET(HEADERS_PROXY_DB_UNQLITE
+    proxy/db/unqlite/connection_settings.h
+    proxy/db/unqlite/database.h
+  )
+  SET(SOURCES_PROXY_DB_UNQLITE
     proxy/db/unqlite/connection_settings.cpp
     proxy/db/unqlite/database.cpp
     proxy/db/unqlite/server.cpp
     proxy/db/unqlite/driver.cpp
   )
+
+  #gui
+  SET(HEADERS_UNQLITE_GUI_TO_MOC gui/db/unqlite/connection_widget.h gui/db/unqlite/lexer.h)
+  SET(HEADERS_UNQLITE_GUI)
+  SET(SOURCES_UNQLITE_GUI gui/db/unqlite/connection_widget.cpp gui/db/unqlite/lexer.cpp)
+
+  #update common variables
+  SET(HEADERS_CORE ${HEADERS_CORE} ${HEADERS_CORE_DB_UNQLITE})
+  SET(SOURCES_CORE ${SOURCES_CORE} ${SOURCES_CORE_DB_UNQLITE})
+
+  SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_UNQLITE_PROXY_TO_MOC})
+  SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_UNQLITE})
+  SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_UNQLITE})
+
+  SET(HEADERS_GUI_TO_MOC ${HEADERS_GUI_TO_MOC} ${HEADERS_UNQLITE_GUI_TO_MOC})
+  SET(HEADERS_GUI ${HEADERS_GUI} ${HEADERS_UNQLITE_GUI})
+  SET(SOURCES_GUI ${SOURCES_GUI} ${SOURCES_UNQLITE_GUI})
   SET(DB_LIBS ${DB_LIBS} unqlite)
 ENDIF(BUILD_WITH_UNQLITE)
 
@@ -706,27 +820,16 @@ IF(BUILD_WITH_LMDB)
   ADD_SUBDIRECTORY(third-party/lmdb)
   SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/lmdb/src/libraries/liblmdb)
 
-  SET(HEADERS_LMDB_GUI_TO_MOC gui/db/lmdb/connection_widget.h gui/db/lmdb/lexer.h)
-  SET(HEADERS_LMDB_GUI)
-  SET(SOURCES_LMDB_GUI gui/db/lmdb/connection_widget.cpp gui/db/lmdb/lexer.cpp)
-
-  SET(HEADERS_LMDB_TO_MOC
-    proxy/db/lmdb/server.h
-    proxy/db/lmdb/driver.h
-  )
-  SET(HEADERS_LMDB
+  #core
+  SET(HEADERS_CORE_DB_LMDB
     core/db/lmdb/config.h
     core/db/lmdb/command.h
     core/db/lmdb/command_translator.h
     core/db/lmdb/server_info.h
     core/db/lmdb/db_connection.h
     core/db/lmdb/internal/commands_api.h
-    core/db/lmdb/database_info.h
-
-    proxy/db/lmdb/connection_settings.h
-    proxy/db/lmdb/database.h
-  )
-  SET(SOURCES_LMDB
+    core/db/lmdb/database_info.h)
+  SET(SOURCES_CORE_DB_LMDB
     core/db/lmdb/config.cpp
     core/db/lmdb/command.cpp
     core/db/lmdb/command_translator.cpp
@@ -734,12 +837,40 @@ IF(BUILD_WITH_LMDB)
     core/db/lmdb/db_connection.cpp
     core/db/lmdb/internal/commands_api.cpp
     core/db/lmdb/database_info.cpp
+  )
 
+  #proxy
+  SET(HEADERS_LMDB_PROXY_TO_MOC
+    proxy/db/lmdb/server.h
+    proxy/db/lmdb/driver.h
+  )
+  SET(HEADERS_PROXY_DB_LMDB
+    proxy/db/lmdb/connection_settings.h
+    proxy/db/lmdb/database.h
+  )
+  SET(SOURCES_PROXY_DB_LMDB
     proxy/db/lmdb/connection_settings.cpp
     proxy/db/lmdb/database.cpp
     proxy/db/lmdb/server.cpp
     proxy/db/lmdb/driver.cpp
   )
+
+  #gui
+  SET(HEADERS_LMDB_GUI_TO_MOC gui/db/lmdb/connection_widget.h gui/db/lmdb/lexer.h)
+  SET(HEADERS_LMDB_GUI)
+  SET(SOURCES_LMDB_GUI gui/db/lmdb/connection_widget.cpp gui/db/lmdb/lexer.cpp)
+
+  #update common variables
+  SET(HEADERS_CORE ${HEADERS_CORE} ${HEADERS_CORE_DB_LMDB})
+  SET(SOURCES_CORE ${SOURCES_CORE} ${SOURCES_CORE_DB_LMDB})
+
+  SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_LMDB_PROXY_TO_MOC})
+  SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_LMDB})
+  SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_LMDB})
+
+  SET(HEADERS_GUI_TO_MOC ${HEADERS_GUI_TO_MOC} ${HEADERS_LMDB_GUI_TO_MOC})
+  SET(HEADERS_GUI ${HEADERS_GUI} ${HEADERS_LMDB_GUI})
+  SET(SOURCES_GUI ${SOURCES_GUI} ${SOURCES_LMDB_GUI})
   SET(DB_LIBS ${DB_LIBS} lmdb)
 ENDIF(BUILD_WITH_LMDB)
 
@@ -749,18 +880,11 @@ IF(BUILD_WITH_UPSCALEDB)
   SET(Boost_USE_STATIC_LIBS ON)
   FIND_PACKAGE(Boost COMPONENTS thread system REQUIRED)
   FIND_LIBRARY(UPSCALEDB_LIBRARY upscaledb)
-  #ADD_SUBDIRECTORY(third-party/upscaledb)
-  #SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/upscaledb/src/include)
+  FIND_PATH(UPSCALEDB_INCLUDE_DIR NAMES ups/upscaledb.h PATH_SUFFIXES include)
+  SET(INCLUDE_DIRS ${INCLUDE_DIRS} ${UPSCALEDB_INCLUDE_DIR})
 
-  SET(HEADERS_UPSCALEDB_GUI_TO_MOC gui/db/upscaledb/connection_widget.h gui/db/upscaledb/lexer.h)
-  SET(HEADERS_UPSCALEDB_GUI)
-  SET(SOURCES_UPSCALEDB_GUI gui/db/upscaledb/connection_widget.cpp gui/db/upscaledb/lexer.cpp)
-
-  SET(HEADERS_UPSCALEDB_TO_MOC
-    proxy/db/upscaledb/server.h
-    proxy/db/upscaledb/driver.h
-  )
-  SET(HEADERS_UPSCALEDB
+  #core
+  SET(HEADERS_CORE_DB_UPSCALEDB
     core/db/upscaledb/config.h
     core/db/upscaledb/command.h
     core/db/upscaledb/command_translator.h
@@ -768,11 +892,8 @@ IF(BUILD_WITH_UPSCALEDB)
     core/db/upscaledb/db_connection.h
     core/db/upscaledb/internal/commands_api.h
     core/db/upscaledb/database_info.h
-
-    proxy/db/upscaledb/connection_settings.h
-    proxy/db/upscaledb/database.h
   )
-  SET(SOURCES_UPSCALEDB
+  SET(SOURCES_CORE_DB_UPSCALEDB
     core/db/upscaledb/config.cpp
     core/db/upscaledb/command.cpp
     core/db/upscaledb/command_translator.cpp
@@ -780,12 +901,40 @@ IF(BUILD_WITH_UPSCALEDB)
     core/db/upscaledb/db_connection.cpp
     core/db/upscaledb/internal/commands_api.cpp
     core/db/upscaledb/database_info.cpp
+  )
 
+  #proxy
+  SET(HEADERS_UPSCALEDB_PROXY_TO_MOC
+    proxy/db/upscaledb/server.h
+    proxy/db/upscaledb/driver.h
+  )
+  SET(HEADERS_PROXY_DB_UPSCALEDB
+    proxy/db/upscaledb/connection_settings.h
+    proxy/db/upscaledb/database.h
+  )
+  SET(SOURCES_PROXY_DB_UPSCALEDB
     proxy/db/upscaledb/connection_settings.cpp
     proxy/db/upscaledb/database.cpp
     proxy/db/upscaledb/server.cpp
     proxy/db/upscaledb/driver.cpp
   )
+
+  #gui
+  SET(HEADERS_UPSCALEDB_GUI_TO_MOC gui/db/upscaledb/connection_widget.h gui/db/upscaledb/lexer.h)
+  SET(HEADERS_UPSCALEDB_GUI)
+  SET(SOURCES_UPSCALEDB_GUI gui/db/upscaledb/connection_widget.cpp gui/db/upscaledb/lexer.cpp)
+
+  #update common variables
+  SET(HEADERS_CORE ${HEADERS_CORE} ${HEADERS_CORE_DB_UPSCALEDB})
+  SET(SOURCES_CORE ${SOURCES_CORE} ${SOURCES_CORE_DB_UPSCALEDB})
+
+  SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_UPSCALEDB_PROXY_TO_MOC})
+  SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_UPSCALEDB})
+  SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_UPSCALEDB})
+
+  SET(HEADERS_GUI_TO_MOC ${HEADERS_GUI_TO_MOC} ${HEADERS_UPSCALEDB_GUI_TO_MOC})
+  SET(HEADERS_GUI ${HEADERS_GUI} ${HEADERS_UPSCALEDB_GUI})
+  SET(SOURCES_GUI ${SOURCES_GUI} ${SOURCES_UPSCALEDB_GUI})
   SET(DB_LIBS ${DB_LIBS} ${UPSCALEDB_LIBRARY} ${Boost_LIBRARIES})
 ENDIF(BUILD_WITH_UPSCALEDB)
 
@@ -793,7 +942,6 @@ SET(SOURCES_SDS
   third-party/sds/sds.c
 )
 
-#ADD_SUBDIRECTORY(third-party/qscintilla/Qt4Qt5)
 ADD_SUBDIRECTORY(third-party/json-c)
 
 IF (IS_PUBLIC_BUILD)
@@ -810,52 +958,21 @@ ELSE()
   )
 ENDIF(IS_PUBLIC_BUILD)
 
-SET(HEADERS ${HEADERS} ${HEADERS_GLOBAL}
-  ${HEADERS_GUI} ${HEADERS_GUI_EXPLORER} ${HEADERS_GUI_DIALOGS}
-  ${HEADERS_PROXY} ${HEADERS_CORE} ${HEADERS_SHELL}
-
-  ${HEADERS_REDIS} ${HEADERS_MEMCACHED}
-  ${HEADERS_SSDB} ${HEADERS_LEVELDB}
-  ${HEADERS_ROCKSDB} ${HEADERS_UNQLITE}
-  ${HEADERS_LMDB} ${HEADERS_UPSCALEDB}
-
-  ${HEADERS_REDIS_GUI} ${HEADERS_MEMCACHED_GUI}
-  ${HEADERS_SSDB_GUI} ${HEADERS_LEVELDB_GUI}
-  ${HEADERS_ROCKSDB_GUI} ${HEADERS_UNQLITE_GUI}
-  ${HEADERS_LMDB_GUI} ${HEADERS_UPSCALEDB_GUI}
-
+SET(HEADERS_TOMOC
+  ${HEADERS_GUI_TO_MOC}
+  ${HEADERS_PROXY_TO_MOC}
+)
+SET(HEADERS
+  ${HEADERS_GLOBAL}
+  ${HEADERS_GUI}
+  ${HEADERS_PROXY}
   ${HEADERS_TRANSLATIONS}
 )
-SET(SOURCES ${SOURCES} ${SOURCES_GLOBAL}
-  ${SOURCES_GUI} ${SOURCES_GUI_DIALOGS} ${SOURCES_GUI_EDITOR}
-  ${SOURCES_GUI_WIDGETS} ${SOURCES_GUI_EXPLORER}
-  ${SOURCES_PROXY} ${SOURCES_CORE} ${SOURCES_SHELL}
-
-  ${SOURCES_REDIS} ${SOURCES_MEMCACHED}
-  ${SOURCES_SSDB} ${SOURCES_LEVELDB}
-  ${SOURCES_ROCKSDB} ${SOURCES_UNQLITE}
-  ${SOURCES_LMDB} ${SOURCES_UPSCALEDB}
-
-  ${SOURCES_REDIS_GUI} ${SOURCES_MEMCACHED_GUI}
-  ${SOURCES_SSDB_GUI} ${SOURCES_LEVELDB_GUI}
-  ${SOURCES_ROCKSDB_GUI} ${SOURCES_UNQLITE_GUI}
-  ${SOURCES_LMDB_GUI} ${SOURCES_UPSCALEDB_GUI}
-
+SET(SOURCES
+  ${SOURCES_GLOBAL}
+  ${SOURCES_GUI}
+  ${SOURCES_PROXY}
   ${SOURCES_TRANSLATIONS}
-)
-SET(HEADERS_TOMOC ${HEADERS_GUI_TO_MOC} ${HEADERS_GUI_DIALOGS_TO_MOC} ${HEADERS_GUI_EDITOR_TO_MOC}
-  ${HEADERS_GUI_WIDGETS_TO_MOC} ${HEADERS_GUI_EXPLORER_TO_MOC}
-  ${HEADERS_PROXY_TO_MOC} ${HEADERS_SHELL_TO_MOC}
-
-  ${HEADERS_REDIS_TO_MOC} ${HEADERS_MEMCACHED_TO_MOC}
-  ${HEADERS_SSDB_TO_MOC} ${HEADERS_LEVELDB_TO_MOC}
-  ${HEADERS_ROCKSDB_TO_MOC} ${HEADERS_UNQLITE_TO_MOC}
-  ${HEADERS_LMDB_TO_MOC} ${HEADERS_UPSCALEDB_TO_MOC}
-
-  ${HEADERS_REDIS_GUI_TO_MOC} ${HEADERS_MEMCACHED_GUI_TO_MOC}
-  ${HEADERS_SSDB_GUI_TO_MOC} ${HEADERS_LEVELDB_GUI_TO_MOC}
-  ${HEADERS_ROCKSDB_GUI_TO_MOC} ${HEADERS_UNQLITE_GUI_TO_MOC}
-  ${HEADERS_LMDB_GUI_TO_MOC} ${HEADERS_UPSCALEDB_GUI_TO_MOC}
 )
 
 QT5_WRAP_CPP(MOC_FILES ${HEADERS_TOMOC})
@@ -863,8 +980,6 @@ CONFIGURE_FILE("resources/gui.qrc.in" "${CMAKE_CURRENT_LIST_DIR}/resources/gui.q
 CONFIGURE_FILE("resources/${PROJECT_NAME_LOWERCASE}.qrc.in" "${CMAKE_CURRENT_LIST_DIR}/resources/branding.qrc" @ONLY IMMEDIATE)
 SET(RESOURCES ${CMAKE_CURRENT_LIST_DIR}/resources/gui.qrc ${CMAKE_CURRENT_LIST_DIR}/resources/branding.qrc)
 QT5_ADD_RESOURCES(RES_SRC ${RESOURCES})
-SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/sds)
-INCLUDE_DIRECTORIES(${INCLUDE_DIRS})
 
 SOURCE_GROUP("Header Files" FILES ${HEADERS} ${HEADERS_TOMOC})
 SOURCE_GROUP("Source Files" FILES ${SOURCES})
@@ -877,8 +992,17 @@ SET(TRANSLATIONS
   translations/${PROJECT_NAME_LOWERCASE}/${PROJECT_NAME_LOWERCASE}_fr.ts
 )
 
-SET(ALL_SOURCES ${ALL_SOURCES} ${HEADERS} ${HEADERS_TOMOC} ${SOURCES} ${MOC_FILES} ${PLATFORM_HDRS} ${PLATFORM_SRCS} ${SOURCES_SDS})
-SET(ALL_LIBS ${ALL_LIBS} ${DB_LIBS} common common_qt json-c qscintilla2 ${QT_LIBRARIES} ${ZLIB_LIBRARY} ${PLATFORM_LIBRARIES})
+#modules
+SET(PROJECT_CORE_LIBRARY ${PROJECT_NAME_LOWERCASE}_core)
+SET(PROJECT_CORE_ENGINE_LIBRARY ${PROJECT_NAME_LOWERCASE}_core_engine)
+
+SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/sds)
+ADD_LIBRARY(${PROJECT_CORE_ENGINE_LIBRARY} STATIC ${HEADERS_CORE} ${SOURCES_CORE} ${SOURCES_SDS})
+TARGET_INCLUDE_DIRECTORIES(${PROJECT_CORE_ENGINE_LIBRARY} PRIVATE ${INCLUDE_DIRS})
+TARGET_LINK_LIBRARIES(${PROJECT_CORE_ENGINE_LIBRARY} ${DB_LIBS})
+
+SET(ALL_SOURCES ${ALL_SOURCES} ${HEADERS} ${HEADERS_TOMOC} ${SOURCES} ${MOC_FILES} ${PLATFORM_HDRS} ${PLATFORM_SRCS})
+SET(ALL_LIBS ${ALL_LIBS} ${PROJECT_CORE_ENGINE_LIBRARY} common common_qt json-c qscintilla2 ${QT_LIBRARIES} ${ZLIB_LIBRARY} ${PLATFORM_LIBRARIES})
 
 FIND_PACKAGE(Qt5LinguistTools REQUIRED)
 
@@ -984,6 +1108,7 @@ IF (DEVELOPER_CHECK_STYLE)
   SET(CHECK_SOURCES ${HEADERS} ${HEADERS_TOMOC} ${SOURCES} ${PLATFORM_HDRS} ${PLATFORM_SRCS})
   REGISTER_CHECK_STYLE_TARGET(check_style "${CHECK_SOURCES}")
   REGISTER_CHECK_INCLUDES_TARGET(${PROJECT_CORE_LIBRARY})
+  REGISTER_CHECK_INCLUDES_TARGET(${PROJECT_CORE_ENGINE_LIBRARY})
 ENDIF(DEVELOPER_CHECK_STYLE)
 
 IF(DEVELOPER_ENABLE_TESTS)
@@ -1000,7 +1125,7 @@ IF(DEVELOPER_ENABLE_TESTS)
     ${SOURCES_SDS}
   )
 
-  TARGET_LINK_LIBRARIES(unit_tests gtest gtest_main ${PROJECT_CORE_LIBRARY} common)
+  TARGET_LINK_LIBRARIES(unit_tests gtest gtest_main ${PROJECT_CORE_ENGINE_LIBRARY} common)
 
   ADD_TEST_TARGET(unit_tests)
   SET_PROPERTY(TARGET unit_tests PROPERTY FOLDER "Unit tests")

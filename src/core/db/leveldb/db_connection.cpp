@@ -105,7 +105,9 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
                                     common::ErrorValue::E_ERROR);
   }
 
-  auto st = ::leveldb::DB::Open(config.options, folder, &lcontext);
+  ::leveldb::Options lv;
+  lv.create_if_missing = config.create_if_missing;
+  auto st = ::leveldb::DB::Open(lv, folder, &lcontext);
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("Fail connect to server: %s!", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);

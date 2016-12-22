@@ -20,8 +20,6 @@
 
 #include <string>
 
-#include <leveldb/options.h>
-
 #include "core/config/config.h"
 
 namespace fastonosql {
@@ -31,7 +29,7 @@ namespace leveldb {
 struct Config : public LocalConfig {
   Config();
 
-  ::leveldb::Options options;
+  bool create_if_missing;
 };
 
 }  // namespace leveldb

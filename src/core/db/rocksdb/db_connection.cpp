@@ -121,7 +121,9 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
                                     common::ErrorValue::E_ERROR);
   }
 
-  auto st = ::rocksdb::DB::Open(config.options, folder, &lcontext);
+  ::rocksdb::Options rs;
+  rs.create_if_missing = config.create_if_missing;
+  auto st = ::rocksdb::DB::Open(rs, folder, &lcontext);
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("Fail open database: %s!", st.ToString());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);

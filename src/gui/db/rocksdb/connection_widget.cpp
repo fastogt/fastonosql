@@ -37,7 +37,7 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
       static_cast<proxy::rocksdb::ConnectionSettings*>(connection);
   if (rock) {
     core::rocksdb::Config config = rock->Info();
-    createDBIfMissing_->setChecked(config.options.create_if_missing);
+    createDBIfMissing_->setChecked(config.create_if_missing);
   }
   ConnectionLocalWidget::syncControls(rock);
 }
@@ -51,7 +51,7 @@ proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
     const proxy::connection_path_t& path) const {
   proxy::rocksdb::ConnectionSettings* conn = new proxy::rocksdb::ConnectionSettings(path);
   core::rocksdb::Config config = conn->Info();
-  config.options.create_if_missing = createDBIfMissing_->isChecked();
+  config.create_if_missing = createDBIfMissing_->isChecked();
   conn->SetInfo(config);
   return conn;
 }

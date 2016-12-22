@@ -37,7 +37,7 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
       static_cast<proxy::leveldb::ConnectionSettings*>(connection);
   if (lev) {
     core::leveldb::Config config = lev->Info();
-    createDBIfMissing_->setChecked(config.options.create_if_missing);
+    createDBIfMissing_->setChecked(config.create_if_missing);
   }
   ConnectionLocalWidget::syncControls(lev);
 }
@@ -51,7 +51,7 @@ proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
     const proxy::connection_path_t& path) const {
   proxy::leveldb::ConnectionSettings* conn = new proxy::leveldb::ConnectionSettings(path);
   core::leveldb::Config config = conn->Info();
-  config.options.create_if_missing = createDBIfMissing_->isChecked();
+  config.create_if_missing = createDBIfMissing_->isChecked();
   conn->SetInfo(config);
   return conn;
 }

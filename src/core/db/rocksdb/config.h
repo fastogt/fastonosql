@@ -20,8 +20,6 @@
 
 #include <string>
 
-#include <rocksdb/options.h>
-
 #include "core/config/config.h"
 
 namespace fastonosql {
@@ -31,7 +29,7 @@ namespace rocksdb {
 struct Config : public LocalConfig {
   Config();
 
-  ::rocksdb::Options options;
+  bool create_if_missing;
 };
 
 }  // namespace rocksdb
