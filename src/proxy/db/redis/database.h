@@ -22,7 +22,7 @@
 
 #include <string>  // for string
 
-#include "proxy/proxy_fwd.h"            // for IServerSPtr
+#include "proxy/proxy_fwd.h"           // for IServerSPtr
 #include "proxy/database/idatabase.h"  // for IDatabase
 #include "core/database/idatabase_info.h"
 

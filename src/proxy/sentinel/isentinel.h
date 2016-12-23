@@ -21,7 +21,7 @@
 #include <string>  // for string
 #include <vector>  // for vector
 
-#include "proxy/proxy_fwd.h"              // for IServerSPtr
+#include "proxy/proxy_fwd.h"            // for IServerSPtr
 #include "proxy/server/iserver_base.h"  // for IServerBase
 
 namespace fastonosql {

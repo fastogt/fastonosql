@@ -37,7 +37,7 @@
 #include <common/qt/logger.h>          // for LOG_ERROR
 #include <common/value.h>              // for ErrorValue
 
-#include "core/db_key.h"              // for NDbKValue
+#include "core/db_key.h"               // for NDbKValue
 #include "proxy/events/events_info.h"  // for CommandResponce, etc
 #include "proxy/database/idatabase.h"  // for IDatabase
 #include "proxy/server/iserver.h"      // for IServer

@@ -37,7 +37,7 @@
 #include <common/qt/gui/icon_label.h>      // for IconLabel
 #include <common/qt/convert2string.h>
 
-#include "core/db_key.h"              // for NKey, NDbKValue, NValue
+#include "core/db_key.h"               // for NKey, NDbKValue, NValue
 #include "proxy/events/events_info.h"  // for CommandResponce, etc
 #include "proxy/server/iserver.h"      // for IServer
 #include "proxy/settings_manager.h"    // for SettingsManager

@@ -58,7 +58,7 @@ ConnectionDialog::ConnectionDialog(core::connectionTypes type,
                                    QWidget* parent)
     : QDialog(parent), connection_() {
   proxy::connection_path_t path(common::file_system::stable_dir_path(defaultNameConnectionFolder) +
-                               common::ConvertToString(connectionName));
+                                common::ConvertToString(connectionName));
   proxy::IConnectionSettingsBase* connection =
       proxy::ConnectionSettingsFactory().instance().CreateFromType(type, path);
   init(connection);

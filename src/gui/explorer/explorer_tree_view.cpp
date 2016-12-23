@@ -49,7 +49,7 @@
 #include "proxy/cluster/icluster.h"       // for ICluster
 #include "proxy/sentinel/isentinel.h"     // for Sentinel, etc
 #include "proxy/server/iserver_remote.h"  // for IServer, IServerRemote
-#include "proxy/settings_manager.h"        // for SettingsManager
+#include "proxy/settings_manager.h"       // for SettingsManager
 
 #include "gui/dialogs/change_password_server_dialog.h"
 #include "gui/dialogs/dbkey_dialog.h"           // for DbKeyDialog

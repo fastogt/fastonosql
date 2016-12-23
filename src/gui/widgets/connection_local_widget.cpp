@@ -45,7 +45,8 @@ ConnectionLocalWidget::ConnectionLocalWidget(bool isFolderSelectOnly,
 }
 
 void ConnectionLocalWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
-  proxy::IConnectionSettingsLocal* local = static_cast<proxy::IConnectionSettingsLocal*>(connection);
+  proxy::IConnectionSettingsLocal* local =
+      static_cast<proxy::IConnectionSettingsLocal*>(connection);
   if (local) {
     QString db_path = common::ConvertFromString<QString>(local->DBPath());
     pathWidget_->setPath(db_path);

@@ -145,10 +145,11 @@ void DiscoverySentinelDiagnosticDialog::connectionResultReady(
     for (size_t i = 0; i < infos.size(); ++i) {
       core::ServerDiscoverySentinelInfoSPtr inf = infos[i];
       common::net::HostAndPort host = inf->host();
-      proxy::connection_path_t path(common::file_system::get_separator_string<char>() + inf->name());
+      proxy::connection_path_t path(common::file_system::get_separator_string<char>() +
+                                    inf->name());
       proxy::IConnectionSettingsBaseSPtr con(
           proxy::ConnectionSettingsFactory::instance().CreateFromType(inf->connectionType(), path,
-                                                                     host));
+                                                                      host));
 
       ConnectionListWidgetItemDiscovered* item =
           new ConnectionListWidgetItemDiscovered(inf->info(), nullptr);

@@ -16,7 +16,10 @@ using namespace fastonosql;
 
 core::internal::CommandHandler* ghand = NULL;
 
-common::Error test(core::internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error test(core::internal::CommandHandler* handler,
+                   int argc,
+                   const char** argv,
+                   FastoObject* out) {
   UNUSED(argc);
   UNUSED(argv);
 
@@ -51,8 +54,46 @@ const std::vector<core::CommandHolder> cmds = {core::CommandHolder(SET,
                                                                    0,
                                                                    &test)};
 
+class FakeTranslator : public core::ICommandTranslator {
+ public:
+  explicit FakeTranslator(const std::vector<core::CommandHolder>& commands)
+      : core::ICommandTranslator(commands) {}
+
+ private:
+  virtual common::Error CreateKeyCommandImpl(const core::NDbKValue& key,
+                                             std::string* cmdstring) const override {
+    return common::Error();
+  }
+  virtual common::Error LoadKeyCommandImpl(const core::NKey& key,
+                                           common::Value::Type type,
+                                           std::string* cmdstring) const override {
+    return common::Error();
+  }
+  virtual common::Error DeleteKeyCommandImpl(const core::NKey& key,
+                                             std::string* cmdstring) const override {
+    return common::Error();
+  }
+  virtual common::Error RenameKeyCommandImpl(const core::NKey& key,
+                                             const std::string& new_name,
+                                             std::string* cmdstring) const override {
+    return common::Error();
+  }
+  virtual common::Error ChangeKeyTTLCommandImpl(const core::NKey& key,
+                                                core::ttl_t ttl,
+                                                std::string* cmdstring) const override {
+    return common::Error();
+  }
+  virtual common::Error LoadKeyTTLCommandImpl(const core::NKey& key,
+                                              std::string* cmdstring) const override {
+    return common::Error();
+  }
+
+  virtual bool IsLoadKeyCommandImpl(const core::CommandInfo& cmd) const override { return false; }
+};
+
 TEST(CommandHolder, execute) {
-  core::internal::CommandHandler hand(cmds);
+  FakeTranslator ft(cmds);
+  core::internal::CommandHandler hand(&ft);
   ghand = &hand;
   const char* cmd_valid_set[] = {SET, "alex", "palec"};
   common::Error err = hand.Execute(SIZEOFMASS(cmd_valid_set), cmd_valid_set, NULL);

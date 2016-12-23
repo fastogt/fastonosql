@@ -123,7 +123,7 @@ common::Error Driver::SyncDisconnect() {
   return impl_->Disconnect();
 }
 
-common::Error Driver::ExecuteImpl(const std::string &command, FastoObject* out) {
+common::Error Driver::ExecuteImpl(const std::string& command, FastoObject* out) {
   return impl_->Execute(command, out);
 }
 
@@ -202,7 +202,8 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         std::string key;
         if (ar->getString(i, &key)) {
           core::NKey k(key);
-          core::NValue empty_val(common::Value::createEmptyValueFromType(common::Value::TYPE_STRING));
+          core::NValue empty_val(
+              common::Value::createEmptyValueFromType(common::Value::TYPE_STRING));
           core::NDbKValue ress(k, empty_val);
           res.keys.push_back(ress);
         }

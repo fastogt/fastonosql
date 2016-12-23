@@ -33,7 +33,8 @@ namespace gui {
 class DiscoverySentinelConnection : public QObject {
   Q_OBJECT
  public:
-  explicit DiscoverySentinelConnection(proxy::IConnectionSettingsBaseSPtr conn, QObject* parent = 0);
+  explicit DiscoverySentinelConnection(proxy::IConnectionSettingsBaseSPtr conn,
+                                       QObject* parent = 0);
 
  Q_SIGNALS:
   void connectionResult(bool suc,

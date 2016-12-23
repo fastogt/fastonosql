@@ -27,7 +27,7 @@
 #include <common/qt/gui/base/tree_item.h>  // for TreeItem
 
 #include "proxy/proxy_fwd.h"  // for IServerSPtr, IClusterSPtr, etc
-#include "core/db_key.h"    // for NDbKValue, etc
+#include "core/db_key.h"      // for NDbKValue, etc
 #include "core/database/idatabase_info.h"
 
 namespace fastonosql {

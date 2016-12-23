@@ -37,7 +37,7 @@
 #include "core/internal/connection.h"  // for Connection<>::handle_t, etc
 #include "core/internal/db_connection.h"
 
-#include "core/db/rocksdb/config.h"                // for Config
+#include "core/db/rocksdb/config.h"  // for Config
 #include "core/db/rocksdb/database_info.h"
 #include "core/db/rocksdb/command_translator.h"
 #include "core/db/rocksdb/internal/commands_api.h"

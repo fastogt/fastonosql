@@ -20,7 +20,7 @@
 
 #include <QDialog>
 
-#include "proxy/proxy_fwd.h"              // for IServerSPtr
+#include "proxy/proxy_fwd.h"            // for IServerSPtr
 #include "core/server_property_info.h"  // for property_t
 
 class QEvent;

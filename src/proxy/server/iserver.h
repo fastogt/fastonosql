@@ -25,12 +25,12 @@
 #include <common/value.h>  // for ValueSPtr
 
 #include "core/connection_types.h"     // for core::connectionTypes
-#include "proxy/proxy_fwd.h"             // for IDatabaseSPtr
+#include "proxy/proxy_fwd.h"           // for IDatabaseSPtr
 #include "core/db_key.h"               // for NKey (ptr only), etc
 #include "core/icommand_translator.h"  // for translator_t
 
 #include "core/database/idatabase_info.h"  // for IDataBaseInfoSPtr
-#include "proxy/events/events.h"            // for BackupResponceEvent, etc
+#include "proxy/events/events.h"           // for BackupResponceEvent, etc
 #include "proxy/server/iserver_base.h"     // for IServerBase
 #include "core/server/iserver_info.h"      // for IServerInfoSPtr, etc
 

@@ -21,7 +21,7 @@
 #include <common/net/types.h>  // for HostAndPort
 
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
-#include "proxy/driver/idriver.h"                           // for IDriver
+#include "proxy/driver/idriver.h"                            // for IDriver
 
 namespace fastonosql {
 namespace proxy {

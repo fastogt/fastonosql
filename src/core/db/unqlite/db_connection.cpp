@@ -32,7 +32,7 @@ extern "C" {
 #include <common/convert2string.h>
 #include <common/file_system.h>
 
-#include "core/db/unqlite/config.h"                // for Config
+#include "core/db/unqlite/config.h"  // for Config
 #include "core/db/unqlite/database_info.h"
 #include "core/db/unqlite/command_translator.h"
 #include "core/db/unqlite/internal/commands_api.h"

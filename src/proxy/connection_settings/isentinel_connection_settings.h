@@ -23,7 +23,7 @@
 #include <vector>  // for vector
 
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
-#include "core/connection_types.h"                          // for core::connectionTypes
+#include "core/connection_types.h"                           // for core::connectionTypes
 
 namespace fastonosql {
 namespace proxy {

@@ -29,7 +29,7 @@
 #include <common/convert2string.h>
 #include <common/file_system.h>
 
-#include "core/db/lmdb/config.h"                // for Config
+#include "core/db/lmdb/config.h"  // for Config
 #include "core/db/lmdb/command_translator.h"
 #include "core/db/lmdb/database_info.h"
 #include "core/db/lmdb/internal/commands_api.h"
@@ -189,7 +189,7 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   return common::Error();
 }
 
-common::Error TestConnection(const Config &config) {
+common::Error TestConnection(const Config& config) {
   NativeConnection* ldb = nullptr;
   common::Error er = CreateConnection(config, &ldb);
   if (er && er->isError()) {

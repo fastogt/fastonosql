@@ -49,7 +49,7 @@
 #include <common/qt/gui/shortcuts.h>   // for FastoQKeySequence
 #include <common/qt/utils_qt.h>        // for SaveToFileText, etc
 
-#include "core/command_info.h"        // for UNDEFINED_SINCE, etc
+#include "core/command_info.h"         // for UNDEFINED_SINCE, etc
 #include "proxy/events/events_info.h"  // for DiscoveryInfoResponce, etc
 #include "proxy/server/iserver.h"      // for IServer
 #include "proxy/server/iserver_local.h"
@@ -86,12 +86,14 @@ BaseShell* makeBaseShell(core::connectionTypes type, QWidget* parent) {
   return shell;
 }
 }
-BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server, const QString& filePath, QWidget* parent)
+BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server,
+                                 const QString& filePath,
+                                 QWidget* parent)
     : QWidget(parent), server_(server), input_(nullptr), filePath_(filePath) {
   CHECK(server_);
 
-  VERIFY(
-      connect(server_.get(), &proxy::IServer::ConnectStarted, this, &BaseShellWidget::startConnect));
+  VERIFY(connect(server_.get(), &proxy::IServer::ConnectStarted, this,
+                 &BaseShellWidget::startConnect));
   VERIFY(connect(server_.get(), &proxy::IServer::ConnectFinished, this,
                  &BaseShellWidget::finishConnect));
   VERIFY(connect(server_.get(), &proxy::IServer::DisconnectStarted, this,
@@ -318,7 +320,7 @@ void BaseShellWidget::execute() {
 
 void BaseShellWidget::executeArgs(const QString& text, int repeat, int interval, bool history) {
   proxy::events_info::ExecuteInfoRequest req(this, common::ConvertToString(text), repeat, interval,
-                                            history);
+                                             history);
   server_->Execute(req);
 }
 
@@ -467,7 +469,8 @@ void BaseShellWidget::startLoadDiscoveryInfo(const proxy::events_info::Discovery
   UNUSED(res);
 }
 
-void BaseShellWidget::finishLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponce& res) {
+void BaseShellWidget::finishLoadDiscoveryInfo(
+    const proxy::events_info::DiscoveryInfoResponce& res) {
   common::Error err = res.errorInfo();
   if (err && err->isError()) {
     return;

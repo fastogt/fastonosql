@@ -1825,8 +1825,9 @@ common::Error DBConnection::CliReadReply(FastoObject* out) {
   return er;
 }
 
-common::Error DBConnection::ExecuteAsPipeline(const std::vector<FastoObjectCommandIPtr>& cmds,
-                                              void (*log_command_cb)(FastoObjectCommandIPtr command)) {
+common::Error DBConnection::ExecuteAsPipeline(
+    const std::vector<FastoObjectCommandIPtr>& cmds,
+    void (*log_command_cb)(FastoObjectCommandIPtr command)) {
   if (cmds.empty()) {
     DNOTREACHED();
     return common::make_error_value("Invalid input command", common::ErrorValue::E_ERROR);

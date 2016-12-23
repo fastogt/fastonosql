@@ -34,9 +34,9 @@
 #include <common/qt/gui/base/tree_model.h>  // for TreeModel
 #include <common/qt/logger.h>
 
-#include "core/connection_types.h"       // for ConvertToString
-#include "proxy/events/events_info.h"     // for CommandRequest, etc
-#include "proxy/database/idatabase.h"     // for IDatabase
+#include "core/connection_types.h"     // for ConvertToString
+#include "proxy/events/events_info.h"  // for CommandRequest, etc
+#include "proxy/database/idatabase.h"  // for IDatabase
 
 #include "proxy/server/iserver_local.h"   // for IServer, IServerRemote, etc
 #include "proxy/server/iserver_remote.h"  // for IServer, IServerRemote, etc
@@ -247,7 +247,7 @@ void ExplorerDatabaseItem::watchKey(const core::NDbKValue& key, int interval) {
   }
 
   proxy::events_info::ExecuteInfoRequest req(this, cmd_str, std::numeric_limits<size_t>::max() - 1,
-                                            interval, false);
+                                             interval, false);
   dbs->Execute(req);
 }
 

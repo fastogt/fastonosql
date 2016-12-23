@@ -30,7 +30,8 @@ class SentinelConnectionSettingsFactory
  public:
   friend class common::patterns::LazySingleton<SentinelConnectionSettingsFactory>;
 
-  ISentinelSettingsBase* CreateFromType(core::connectionTypes type, const connection_path_t& conName);
+  ISentinelSettingsBase* CreateFromType(core::connectionTypes type,
+                                        const connection_path_t& conName);
   ISentinelSettingsBase* CreateFromString(const std::string& val);
 };
 

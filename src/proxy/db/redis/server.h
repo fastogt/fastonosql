@@ -23,10 +23,10 @@
 #include "proxy/proxy_fwd.h"  // for IDatabaseSPtr
 
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
-#include "core/connection_types.h"                          // for serverMode, serverTypes, etc
-#include "proxy/events/events.h"                            // for DiscoveryInfoResponceEvent
-#include "proxy/server/iserver_remote.h"                    // for IServerRemote
-#include "core/database/idatabase_info.h"                   // for IDataBaseInfoSPtr
+#include "core/connection_types.h"                           // for serverMode, serverTypes, etc
+#include "proxy/events/events.h"                             // for DiscoveryInfoResponceEvent
+#include "proxy/server/iserver_remote.h"                     // for IServerRemote
+#include "core/database/idatabase_info.h"                    // for IDataBaseInfoSPtr
 
 namespace fastonosql {
 namespace proxy {

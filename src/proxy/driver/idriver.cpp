@@ -590,7 +590,8 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
   NotifyProgress(sender, 100);
 }
 
-common::Error IDriver::ServerDiscoveryInfo(core::IServerInfo** sinfo, core::IDataBaseInfo** dbinfo) {
+common::Error IDriver::ServerDiscoveryInfo(core::IServerInfo** sinfo,
+                                           core::IDataBaseInfo** dbinfo) {
   core::IServerInfo* lsinfo = nullptr;
   common::Error er = CurrentServerInfo(&lsinfo);
   if (er && er->isError()) {

@@ -33,9 +33,9 @@
 #include <common/string_util.h>  // for MatchPattern
 #include <common/types.h>        // for tribool, tribool::SUCCESS
 
-#include "core/command_holder.h"                     // for CommandHolder
-#include "core/internal/connection.h"                // for Connection<>::handle_t, etc
-#include "core/db/upscaledb/config.h"                // for Config
+#include "core/command_holder.h"       // for CommandHolder
+#include "core/internal/connection.h"  // for Connection<>::handle_t, etc
+#include "core/db/upscaledb/config.h"  // for Config
 #include "core/db/upscaledb/command_translator.h"
 #include "core/db/upscaledb/database_info.h"
 #include "core/db/upscaledb/internal/commands_api.h"

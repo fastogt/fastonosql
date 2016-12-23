@@ -34,7 +34,7 @@
 #include <common/qt/gui/base/tree_model.h>  // for TreeModel
 #include <common/qt/logger.h>
 
-#include "core/connection_types.h"       // for ConvertToString
+#include "core/connection_types.h"        // for ConvertToString
 #include "proxy/events/events_info.h"     // for CommandRequest, etc
 #include "proxy/database/idatabase.h"     // for IDatabase
 #include "proxy/server/iserver_local.h"   // for IServer, IServerRemote, etc

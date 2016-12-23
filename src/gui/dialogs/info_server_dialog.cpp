@@ -63,7 +63,7 @@
 #include "core/db/upscaledb/server_info.h"
 #endif
 
-#include "core/connection_types.h"    // for connectionTypes, etc
+#include "core/connection_types.h"     // for connectionTypes, etc
 #include "proxy/events/events_info.h"  // for ServerInfoResponce, etc
 #include "proxy/server/iserver.h"      // for IServer
 

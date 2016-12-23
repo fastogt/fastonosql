@@ -47,7 +47,8 @@ void DiscoveryConnection::routine() {
     return;
   }
 
-  common::Error er = proxy::ServersManager::instance().DiscoveryClusterConnection(connection_, &inf);
+  common::Error er =
+      proxy::ServersManager::instance().DiscoveryClusterConnection(connection_, &inf);
 
   if (er && er->isError()) {
     emit connectionResult(false, common::time::current_mstime() - start_time_,

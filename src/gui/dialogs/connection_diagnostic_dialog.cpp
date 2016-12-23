@@ -42,8 +42,9 @@ const QSize stateIconSize = QSize(64, 64);
 namespace fastonosql {
 namespace gui {
 
-ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(QWidget* parent,
-                                                       proxy::IConnectionSettingsBaseSPtr connection)
+ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(
+    QWidget* parent,
+    proxy::IConnectionSettingsBaseSPtr connection)
     : QDialog(parent) {
   setWindowTitle(translations::trConnectionDiagnostic);
   setWindowIcon(GuiFactory::instance().icon(connection->Type()));
@@ -100,7 +101,8 @@ void ConnectionDiagnosticDialog::showEvent(QShowEvent* e) {
   glassWidget_->start();
 }
 
-void ConnectionDiagnosticDialog::startTestConnection(proxy::IConnectionSettingsBaseSPtr connection) {
+void ConnectionDiagnosticDialog::startTestConnection(
+    proxy::IConnectionSettingsBaseSPtr connection) {
   QThread* th = new QThread;
   TestConnection* cheker = new TestConnection(connection);
   cheker->moveToThread(th);

@@ -25,9 +25,9 @@ class QComboBox;  // lines 23-23
 class QEvent;
 class QFontComboBox;  // lines 24-24
 class QSpinBox;
-class QGroupBox;      // lines 28-28
-class QLabel;         // lines 26-26
-class QLineEdit;      // lines 27-27
+class QGroupBox;  // lines 28-28
+class QLabel;     // lines 26-26
+class QLineEdit;  // lines 27-27
 class QWidget;
 
 namespace fastonosql {
