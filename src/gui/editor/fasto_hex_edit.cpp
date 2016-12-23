@@ -168,7 +168,7 @@ void FastoHexEdit::paintEvent(QPaintEvent* event) {
     for (int lineIdx = firstLineIdx, yPos = yPosStart; lineIdx < lastLineIdx;
          lineIdx += 1, yPos += charH) {
       QByteArray part = data_.begin() + (lineIdx * acharInLine);
-      int part_size = size / acharInLine ? acharInLine : size % acharInLine;
+      int part_size = (size / acharInLine) ? acharInLine : size % acharInLine;
       part.resize(part_size);
       size -= part_size;
       QByteArray hex = part.toHex();

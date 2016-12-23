@@ -32,7 +32,7 @@ namespace ssdb {
 
 class CommandTranslator : public ICommandTranslator {
  public:
-  CommandTranslator(const std::vector<CommandHolder>& commands);
+  explicit CommandTranslator(const std::vector<CommandHolder>& commands);
 
  private:
   virtual common::Error CreateKeyCommandImpl(const NDbKValue& key,

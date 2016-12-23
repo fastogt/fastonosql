@@ -53,7 +53,7 @@ struct lmdb {
 namespace {
 
 unsigned int lmdb_db_flag_from_env_flags(int env_flags) {
-  return env_flags & MDB_RDONLY ? MDB_RDONLY : 0;
+  return (env_flags & MDB_RDONLY) ? MDB_RDONLY : 0;
 }
 
 int lmdb_open(lmdb** context,

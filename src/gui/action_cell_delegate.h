@@ -26,7 +26,7 @@ namespace gui {
 class ActionDelegate : public QStyledItemDelegate {
   Q_OBJECT
  public:
-  ActionDelegate(QObject* parent = Q_NULLPTR);
+  explicit ActionDelegate(QObject* parent = Q_NULLPTR);
 
   virtual QSize sizeHint(const QStyleOptionViewItem& option,
                          const QModelIndex& index) const override;

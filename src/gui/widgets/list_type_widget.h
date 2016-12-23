@@ -30,7 +30,7 @@ class HashTableModel;
 class ListTypeWidget : public QTableView {
   Q_OBJECT
  public:
-  ListTypeWidget(QWidget* parent = Q_NULLPTR);
+  explicit ListTypeWidget(QWidget* parent = Q_NULLPTR);
 
   common::ArrayValue* arrayValue() const;  // alocate memory
   common::SetValue* setValue() const;      // alocate memory

@@ -41,7 +41,7 @@ common::Error ParseCommands(const std::string& cmd, std::vector<std::string>* cm
 
 class ICommandTranslator {
  public:
-  ICommandTranslator(const std::vector<CommandHolder>& commands);
+  explicit ICommandTranslator(const std::vector<CommandHolder>& commands);
   virtual ~ICommandTranslator();
 
   common::Error SelectDBCommand(const std::string& name,

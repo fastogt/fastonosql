@@ -41,7 +41,7 @@ class DBConnection {
 
   DBConnection() : connection_(), interrupted_(false) {}
 
-  connectionTypes ConnectionType() { return connection_t; }
+  static connectionTypes ConnectionType() { return connection_t; }
 
   common::Error Connect(const config_t& config) { return connection_.Connect(config); }
 

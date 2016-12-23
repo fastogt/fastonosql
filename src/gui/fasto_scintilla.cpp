@@ -87,6 +87,7 @@ const QColor marginsForegroundColor = QColor(Qt::white);
 
 namespace fastonosql {
 namespace gui {
+
 FastoScintilla::FastoScintilla(QWidget* parent)
     : QsciScintilla(parent), lineNumberMarginWidth_(0), showAutoCompletion_(false) {
   setAutoIndent(true);
@@ -197,5 +198,6 @@ void FastoScintilla::hideAutocompletion() {
     cancelList();
   }
 }
+
 }  // namespace gui
 }  // namespace fastonosql

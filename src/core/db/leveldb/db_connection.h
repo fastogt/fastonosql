@@ -66,7 +66,7 @@ common::Error TestConnection(const Config& config);
 class DBConnection : public core::internal::CDBConnection<NativeConnection, Config, LEVELDB> {
  public:
   typedef core::internal::CDBConnection<NativeConnection, Config, LEVELDB> base_class;
-  DBConnection(CDBConnectionClient* client);
+  explicit DBConnection(CDBConnectionClient* client);
 
   common::Error Info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
 

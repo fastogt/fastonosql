@@ -33,12 +33,13 @@
 
 namespace fastonosql {
 namespace gui {
+
 class FastoScintilla : public QsciScintilla {
   Q_OBJECT
  public:
   enum { rowNumberWidth = 6, indentationWidth = 4 };
 
-  FastoScintilla(QWidget* parent = 0);
+  explicit FastoScintilla(QWidget* parent = 0);
 
   void setShowAutoCompletion(bool showA);
 
@@ -60,5 +61,6 @@ class FastoScintilla : public QsciScintilla {
 
   bool showAutoCompletion_;
 };
+
 }  // namespace gui
 }  // namespace fastonosql

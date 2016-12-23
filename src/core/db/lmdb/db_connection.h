@@ -70,7 +70,7 @@ common::Error TestConnection(const Config& config);
 class DBConnection : public core::internal::CDBConnection<NativeConnection, Config, LMDB> {
  public:
   typedef core::internal::CDBConnection<NativeConnection, Config, LMDB> base_class;
-  DBConnection(CDBConnectionClient* client);
+  explicit DBConnection(CDBConnectionClient* client);
 
   std::string CurrentDBName() const;
   common::Error Info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;

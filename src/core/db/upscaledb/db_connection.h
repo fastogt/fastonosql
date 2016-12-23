@@ -64,7 +64,7 @@ common::Error TestConnection(const Config& config);
 class DBConnection : public core::internal::CDBConnection<NativeConnection, Config, UPSCALEDB> {
  public:
   typedef core::internal::CDBConnection<NativeConnection, Config, UPSCALEDB> base_class;
-  DBConnection(CDBConnectionClient* client);
+  explicit DBConnection(CDBConnectionClient* client);
 
   common::Error Connect(const config_t& config);
 
