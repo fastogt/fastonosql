@@ -230,13 +230,18 @@ const QIcon& GuiFactory::icon(common::Value::Type type) const {
       static QIcon z(":" PROJECT_NAME_LOWERCASE "/images/64x64/zset.png");
       return z;
     case common::Value::TYPE_INTEGER:
-    case common::Value::TYPE_DOUBLE:
     case common::Value::TYPE_UINTEGER:
+    case common::Value::TYPE_LONG_INTEGER:
+    case common::Value::TYPE_ULONG_INTEGER:
+    case common::Value::TYPE_LONG_LONG_INTEGER:
+    case common::Value::TYPE_ULONG_LONG_INTEGER:
+    case common::Value::TYPE_DOUBLE:
       static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/integer.png");
       return i;
     case common::Value::TYPE_ERROR:
       static QIcon er(":" PROJECT_NAME_LOWERCASE "/images/64x64/error.png");
       return er;
+    case common::Value::TYPE_COMMAND:
     default:
       static QIcon err(":" PROJECT_NAME_LOWERCASE "/images/64x64/error.png");
       DNOTREACHED();
