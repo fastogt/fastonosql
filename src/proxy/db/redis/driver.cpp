@@ -589,7 +589,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
           if (tchildrens.size() == 1) {
             auto vttl = tchildrens[0]->Value();
             core::ttl_t ttl = 0;
-            if (vttl->getAsInteger(&ttl)) {
+            if (vttl->getAsLongLongInteger(&ttl)) {
               core::NKey key = res.keys[i].Key();
               key.SetTTL(ttl);
               res.keys[i].SetKey(key);

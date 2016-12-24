@@ -78,13 +78,13 @@ common::Error CommandsApi::Lpush(internal::CommandHandler* handler,
   }
 
   DBConnection* redis = static_cast<DBConnection*>(handler);
-  int list_len = 0;
+  long long list_len = 0;
   common::Error err = redis->Lpush(key, NValue(arr), &list_len);
   if (err && err->isError()) {
     return err;
   }
 
-  common::FundamentalValue* val = common::Value::createIntegerValue(list_len);
+  common::FundamentalValue* val = common::Value::createLongLongIntegerValue(list_len);
   FastoObject* child = new FastoObject(out, val, redis->Delimiter());
   out->AddChildren(child);
   return common::Error();
@@ -147,13 +147,13 @@ common::Error CommandsApi::SetNX(internal::CommandHandler* handler,
   NDbKValue kv(key, string_val);
 
   DBConnection* redis = static_cast<DBConnection*>(handler);
-  int result = 0;
+  long long result = 0;
   common::Error err = redis->SetNX(kv, &result);
   if (err && err->isError()) {
     return err;
   }
 
-  common::FundamentalValue* val = common::Value::createIntegerValue(result);
+  common::FundamentalValue* val = common::Value::createLongLongIntegerValue(result);
   FastoObject* child = new FastoObject(out, val, redis->Delimiter());
   out->AddChildren(child);
   return common::Error();
@@ -170,13 +170,13 @@ common::Error CommandsApi::Sadd(internal::CommandHandler* handler,
   }
 
   DBConnection* redis = static_cast<DBConnection*>(handler);
-  int added_items = 0;
+  long long added_items = 0;
   common::Error err = redis->Sadd(key, NValue(set), &added_items);
   if (err && err->isError()) {
     return err;
   }
 
-  common::FundamentalValue* val = common::Value::createIntegerValue(added_items);
+  common::FundamentalValue* val = common::Value::createLongLongIntegerValue(added_items);
   FastoObject* child = new FastoObject(out, val, redis->Delimiter());
   out->AddChildren(child);
   return common::Error();
@@ -216,13 +216,13 @@ common::Error CommandsApi::Zadd(internal::CommandHandler* handler,
   }
 
   DBConnection* redis = static_cast<DBConnection*>(handler);
-  int added_items = 0;
+  long long added_items = 0;
   common::Error err = redis->Zadd(key, NValue(zset), &added_items);
   if (err && err->isError()) {
     return err;
   }
 
-  common::FundamentalValue* val = common::Value::createIntegerValue(added_items);
+  common::FundamentalValue* val = common::Value::createLongLongIntegerValue(added_items);
   FastoObject* child = new FastoObject(out, val, redis->Delimiter());
   out->AddChildren(child);
   return common::Error();
@@ -305,13 +305,13 @@ common::Error CommandsApi::Incr(internal::CommandHandler* handler,
 
   NKey key(argv[0]);
   DBConnection* redis = static_cast<DBConnection*>(handler);
-  int result = 0;
+  long long result = 0;
   common::Error err = redis->Incr(key, &result);
   if (err && err->isError()) {
     return err;
   }
 
-  common::FundamentalValue* val = common::Value::createIntegerValue(result);
+  common::FundamentalValue* val = common::Value::createLongLongIntegerValue(result);
   FastoObject* child = new FastoObject(out, val, redis->Delimiter());
   out->AddChildren(child);
   return common::Error();
@@ -326,13 +326,13 @@ common::Error CommandsApi::IncrBy(internal::CommandHandler* handler,
   NKey key(argv[0]);
   int incr = common::ConvertFromString<int>(argv[1]);
   DBConnection* redis = static_cast<DBConnection*>(handler);
-  int result = 0;
+  long long result = 0;
   common::Error err = redis->IncrBy(key, incr, &result);
   if (err && err->isError()) {
     return err;
   }
 
-  common::FundamentalValue* val = common::Value::createIntegerValue(result);
+  common::FundamentalValue* val = common::Value::createLongLongIntegerValue(result);
   FastoObject* child = new FastoObject(out, val, redis->Delimiter());
   out->AddChildren(child);
   return common::Error();

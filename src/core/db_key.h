@@ -32,7 +32,13 @@
 namespace fastonosql {
 namespace core {
 
-typedef int32_t ttl_t;
+typedef long long ttl_t;
+COMPILE_ASSERT(std::numeric_limits<ttl_t>::max() >= NO_TTL &&
+                   NO_TTL >= std::numeric_limits<ttl_t>::min(),
+               "NO_TTL define must be in ttl type range");
+COMPILE_ASSERT(std::numeric_limits<ttl_t>::max() >= EXPIRED_TTL &&
+                   EXPIRED_TTL >= std::numeric_limits<ttl_t>::min(),
+               "EXPIRED_TTL define must be in ttl type range");
 
 class KeyInfo {
  public:

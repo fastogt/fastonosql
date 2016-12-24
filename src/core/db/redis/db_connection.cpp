@@ -191,8 +191,9 @@ char* getInfoField(char* info, const char* field) {
   if (n2 && n2 < n1) {
     n1 = n2;
   }
-  result = reinterpret_cast<char*>(malloc(sizeof(char) * (n1 - p) + 1));
-  memcpy(result, p, (n1 - p));
+  size_t off = n1 - p;
+  result = reinterpret_cast<char*>(malloc(sizeof(char) * off + 1));
+  memcpy(result, p, off);
   result[n1 - p] = '\0';
   return result;
 }
@@ -340,7 +341,7 @@ common::Error valueFromReplay(redisReply* r, common::Value** out) {
       break;
     }
     case REDIS_REPLY_INTEGER: {
-      *out = common::Value::createIntegerValue(r->integer);
+      *out = common::Value::createLongLongIntegerValue(r->integer);
       break;
     }
     case REDIS_REPLY_ARRAY: {
@@ -694,7 +695,7 @@ common::Error DBConnection::LatencyMode(FastoObject* out) {
 
     common::time64_t cur_time = common::time::current_mstime();
 
-    uint64_t latency = cur_time - start;
+    uint64_t latency = static_cast<uint64_t>(cur_time - start);
     freeReplyObject(reply);
     count++;
     if (count == 1) {
@@ -1035,7 +1036,7 @@ common::Error DBConnection::GetKeySizes(redisReply* keys, int* types, unsigned l
       LOG_MSG(buff, common::logging::L_WARNING, true);
       sizes[i] = 0;
     } else {
-      sizes[i] = reply->integer;
+      sizes[i] = static_cast<unsigned long long>(reply->integer);
     }
 
     freeReplyObject(reply);
@@ -1068,7 +1069,7 @@ common::Error DBConnection::FindBigKeys(FastoObject* out) {
   const char* typeName[] = {"string", "list", "set", "hash", "zset"};
   const char* typeunit[] = {"bytes", "items", "members", "fields", "members"};
   redisReply *reply, *keys;
-  unsigned int arrsize = 0;
+  size_t arrsize = 0;
   int type, *types = NULL;
 
   /* Total keys pre scanning */
@@ -1269,7 +1270,7 @@ common::Error DBConnection::StatMode(FastoObject* out) {
 
     char buf[64] = {0};
     /* Keys */
-    int64_t aux = 0;
+    long aux = 0;
     for (int j = 0; j < 20; j++) {
       common::SNPrintf(buf, sizeof(buf), "db%d:keys", j);
       long k = getLongInfoField(reply->str, buf);
@@ -1456,7 +1457,7 @@ common::Error DBConnection::DBkcountImpl(size_t* size) {
   }
 
   /* Grab the number of keys and free our reply */
-  *size = reply->integer;
+  *size = static_cast<size_t>(reply->integer);
   freeReplyObject(reply);
   return common::Error();
 }
@@ -1685,7 +1686,7 @@ common::Error DBConnection::CliFormatReplyRaw(FastoObjectArray* ar, redisReply* 
       break;
     }
     case REDIS_REPLY_INTEGER: {
-      common::FundamentalValue* val = common::Value::createIntegerValue(r->integer);
+      common::FundamentalValue* val = common::Value::createLongLongIntegerValue(r->integer);
       ar->Append(val);
       break;
     }
@@ -1744,7 +1745,7 @@ common::Error DBConnection::CliFormatReplyRaw(FastoObject* out, redisReply* r) {
       break;
     }
     case REDIS_REPLY_INTEGER: {
-      common::FundamentalValue* val = common::Value::createIntegerValue(r->integer);
+      common::FundamentalValue* val = common::Value::createLongLongIntegerValue(r->integer);
       obj = new FastoObject(out, val, Delimiter());
       out->AddChildren(obj);
       break;
@@ -1877,7 +1878,7 @@ common::Error DBConnection::ExecuteAsPipeline(
 }
 
 common::Error DBConnection::CommonExec(int argc, const char** argv, FastoObject* out) {
-  if (!out) {
+  if (!out || argc < 1) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -1886,7 +1887,7 @@ common::Error DBConnection::CommonExec(int argc, const char** argv, FastoObject*
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  size_t* argvlen = reinterpret_cast<size_t*>(malloc(argc * sizeof(size_t)));
+  size_t* argvlen = reinterpret_cast<size_t*>(malloc(static_cast<size_t>(argc) * sizeof(size_t)));
   for (int j = 0; j < argc; j++) {
     char* carg = const_cast<char*>(argv[j]);
     size_t len = sdslen(carg);
@@ -1922,7 +1923,7 @@ common::Error DBConnection::Auth(const std::string& password) {
 }
 
 common::Error DBConnection::Monitor(int argc, const char** argv, FastoObject* out) {
-  if (!out) {
+  if (!out || argc < 1) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -1931,7 +1932,7 @@ common::Error DBConnection::Monitor(int argc, const char** argv, FastoObject* ou
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  size_t* argvlen = reinterpret_cast<size_t*>(malloc(argc * sizeof(size_t)));
+  size_t* argvlen = reinterpret_cast<size_t*>(malloc(static_cast<size_t>(argc) * sizeof(size_t)));
   for (int j = 0; j < argc; j++) {
     char* carg = const_cast<char*>(argv[j]);
     size_t len = sdslen(carg);
@@ -1955,12 +1956,10 @@ common::Error DBConnection::Monitor(int argc, const char** argv, FastoObject* ou
       return common::make_error_value("Interrupted.", common::ErrorValue::E_INTERRUPTED);
     }
   }
-
-  return common::Error();
 }
 
 common::Error DBConnection::Subscribe(int argc, const char** argv, FastoObject* out) {
-  if (!out) {
+  if (!out || argc < 1) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -1969,7 +1968,7 @@ common::Error DBConnection::Subscribe(int argc, const char** argv, FastoObject* 
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  size_t* argvlen = reinterpret_cast<size_t*>(malloc(argc * sizeof(size_t)));
+  size_t* argvlen = reinterpret_cast<size_t*>(malloc(static_cast<size_t>(argc) * sizeof(size_t)));
   for (int j = 0; j < argc; j++) {
     char* carg = const_cast<char*>(argv[j]);
     size_t len = sdslen(carg);
@@ -1993,8 +1992,6 @@ common::Error DBConnection::Subscribe(int argc, const char** argv, FastoObject* 
       return common::make_error_value("Interrupted.", common::ErrorValue::E_INTERRUPTED);
     }
   }
-
-  return common::Error();
 }
 
 common::Error DBConnection::SetEx(const NDbKValue& key, ttl_t ttl) {
@@ -2022,7 +2019,7 @@ common::Error DBConnection::SetEx(const NDbKValue& key, ttl_t ttl) {
   return common::Error();
 }
 
-common::Error DBConnection::SetNX(const NDbKValue& key, int* result) {
+common::Error DBConnection::SetNX(const NDbKValue& key, long long* result) {
   std::string key_str = key.KeyString();
   std::string value_str = key.ValueString();
   redisReply* reply = reinterpret_cast<redisReply*>(
@@ -2050,7 +2047,7 @@ common::Error DBConnection::SetNX(const NDbKValue& key, int* result) {
   return common::Error();
 }
 
-common::Error DBConnection::Lpush(const NKey& key, NValue arr, int* list_len) {
+common::Error DBConnection::Lpush(const NKey& key, NValue arr, long long* list_len) {
   if (!arr || arr->type() != common::Value::TYPE_ARRAY || !list_len) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -2132,7 +2129,7 @@ common::Error DBConnection::Lrange(const NKey& key, int start, int stop, NDbKVal
   return common::Error();
 }
 
-common::Error DBConnection::Sadd(const NKey& key, NValue set, int* added) {
+common::Error DBConnection::Sadd(const NKey& key, NValue set, long long* added) {
   if (!set || set->type() != common::Value::TYPE_SET || !added) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -2234,7 +2231,7 @@ common::Error DBConnection::Smembers(const NKey& key, NDbKValue* loaded_key) {
   return common::Error();
 }
 
-common::Error DBConnection::Zadd(const NKey& key, NValue scores, int* added) {
+common::Error DBConnection::Zadd(const NKey& key, NValue scores, long long* added) {
   if (!scores || scores->type() != common::Value::TYPE_ZSET || !added) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -2458,7 +2455,7 @@ common::Error DBConnection::Hgetall(const NKey& key, NDbKValue* loaded_key) {
   return common::Error();
 }
 
-common::Error DBConnection::Incr(const NKey& key, int* incr) {
+common::Error DBConnection::Incr(const NKey& key, long long* incr) {
   if (!incr) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -2493,7 +2490,7 @@ common::Error DBConnection::Incr(const NKey& key, int* incr) {
   return common::Error();
 }
 
-common::Error DBConnection::IncrBy(const NKey& key, int inc, int* incr) {
+common::Error DBConnection::IncrBy(const NKey& key, int inc, long long* incr) {
   if (!incr) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -2512,7 +2509,7 @@ common::Error DBConnection::IncrBy(const NKey& key, int inc, int* incr) {
 
   if (reply->type == REDIS_REPLY_INTEGER) {
     if (client_) {
-      NValue val(common::Value::createIntegerValue(reply->integer));
+      NValue val(common::Value::createLongLongIntegerValue(reply->integer));
       client_->OnKeyAdded(NDbKValue(key, val));
     }
     *incr = reply->integer;

@@ -56,7 +56,7 @@ Config parseOptions(int argc, char** argv) {
       cfg.hostsocket = argv[++i];
     } else if (!strcmp(argv[i], "-i") && !lastarg) {
       double seconds = atof(argv[++i]);
-      cfg.interval = seconds * 1000000;
+      cfg.interval = static_cast<uint64_t>(seconds * 1000000.0);
     } else if (!strcmp(argv[i], "-n") && !lastarg) {
       cfg.dbnum = common::ConvertFromString<int>(argv[++i]);
     } else if (!strcmp(argv[i], "-a") && !lastarg) {

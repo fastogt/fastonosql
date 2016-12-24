@@ -116,15 +116,15 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
                           FastoObject* out) WARN_UNUSED_RESULT;  // interrupt
 
   common::Error SetEx(const NDbKValue& key, ttl_t ttl);
-  common::Error SetNX(const NDbKValue& key, int* result);
+  common::Error SetNX(const NDbKValue& key, long long* result);
 
-  common::Error Lpush(const NKey& key, NValue arr, int* list_len);
+  common::Error Lpush(const NKey& key, NValue arr, long long* list_len);
   common::Error Lrange(const NKey& key, int start, int stop, NDbKValue* loaded_key);
 
-  common::Error Sadd(const NKey& key, NValue set, int* added);
+  common::Error Sadd(const NKey& key, NValue set, long long* added);
   common::Error Smembers(const NKey& key, NDbKValue* loaded_key);
 
-  common::Error Zadd(const NKey& key, NValue scores, int* added);
+  common::Error Zadd(const NKey& key, NValue scores, long long* added);
   common::Error Zrange(const NKey& key,
                        int start,
                        int stop,
@@ -134,8 +134,8 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
   common::Error Hmset(const NKey& key, NValue hash);
   common::Error Hgetall(const NKey& key, NDbKValue* loaded_key);
 
-  common::Error Incr(const NKey& key, int* incr);
-  common::Error IncrBy(const NKey& key, int inc, int* incr);
+  common::Error Incr(const NKey& key, long long* incr);
+  common::Error IncrBy(const NKey& key, int inc, long long* incr);
   common::Error IncrByFloat(const NKey& key, double inc, std::string* str_incr);
 
  private:

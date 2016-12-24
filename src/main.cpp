@@ -72,7 +72,7 @@ int main(int argc, char* argv[]) {
   }
 
   QPoint center = screenGeometry.center();
-  win.move(center.x() - win.width() * 0.5, center.y() - win.height() * 0.5);
+  win.move(center.x() - win.width() / 2, center.y() - win.height() / 2);
 #endif
 
   win.show();

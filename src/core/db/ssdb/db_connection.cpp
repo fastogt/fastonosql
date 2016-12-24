@@ -187,7 +187,7 @@ common::Error DBConnection::Setx(const std::string& key, const std::string& valu
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  auto st = connection_.handle_->setx(key, value, ttl);
+  auto st = connection_.handle_->setx(key, value, static_cast<int>(ttl));
   if (st.error()) {
     std::string buff = common::MemSPrintf("setx function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -794,7 +794,7 @@ common::Error DBConnection::Expire(const std::string& key, ttl_t ttl) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  auto st = connection_.handle_->expire(key, ttl);
+  auto st = connection_.handle_->expire(key, static_cast<int>(ttl));
   if (st.error()) {
     std::string buff = common::MemSPrintf("EXPIRE function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -807,11 +807,13 @@ common::Error DBConnection::TTL(const std::string& key, ttl_t* ttl) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  auto st = connection_.handle_->ttl(key, ttl);
+  int lttl = 0;
+  auto st = connection_.handle_->ttl(key, &lttl);
   if (st.error()) {
     std::string buff = common::MemSPrintf("TTL function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
+  *ttl = lttl;
   return common::Error();
 }
 
