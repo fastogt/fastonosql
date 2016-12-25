@@ -18,26 +18,12 @@
 
 #include "core/db/upscaledb/command.h"
 
-#include <algorithm>  // for transform
-
-#include "core/connection_types.h"  // for connectionTypes::UPSCALEDB
-
 namespace fastonosql {
 namespace core {
 namespace upscaledb {
 
 Command::Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter)
     : FastoObjectCommand(parent, cmd, delimiter, UPSCALEDB) {}
-
-bool Command::IsReadOnly() const {
-  std::string key = InputCmd();
-  if (key.empty()) {
-    return true;
-  }
-
-  std::transform(key.begin(), key.end(), key.begin(), ::tolower);
-  return key != "get";
-}
 
 }  // namespace upscaledb
 }  // namespace core

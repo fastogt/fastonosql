@@ -18,26 +18,12 @@
 
 #include "core/db/ssdb/command.h"
 
-#include <algorithm>  // for transform
-
-#include "core/connection_types.h"  // for connectionTypes::SSDB
-
 namespace fastonosql {
 namespace core {
 namespace ssdb {
 
 Command::Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter)
     : FastoObjectCommand(parent, cmd, delimiter, SSDB) {}
-
-bool Command::IsReadOnly() const {
-  std::string key = InputCmd();
-  if (key.empty()) {
-    return true;
-  }
-
-  std::transform(key.begin(), key.end(), key.begin(), ::tolower);
-  return key != "get";
-}
 
 }  // namespace ssdb
 }  // namespace core

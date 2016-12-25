@@ -18,24 +18,12 @@
 
 #include "core/db/leveldb/command.h"
 
-#include <algorithm>  // for transform
-
 namespace fastonosql {
 namespace core {
 namespace leveldb {
 
 Command::Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter)
     : FastoObjectCommand(parent, cmd, delimiter, LEVELDB) {}
-
-bool Command::IsReadOnly() const {
-  std::string key = InputCmd();
-  if (key.empty()) {
-    return true;
-  }
-
-  std::transform(key.begin(), key.end(), key.begin(), ::tolower);
-  return key != "get";
-}
 
 }  // namespace leveldb
 }  // namespace core

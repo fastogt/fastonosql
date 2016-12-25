@@ -22,10 +22,6 @@
 
 #include "global/global.h"  // for FastoObject (ptr only), etc
 
-namespace common {
-class CommandValue;
-}
-
 namespace fastonosql {
 namespace core {
 namespace unqlite {
@@ -33,7 +29,6 @@ namespace unqlite {
 class Command : public FastoObjectCommand {
  public:
   Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter);
-  virtual bool IsReadOnly() const override;
 };
 
 }  // namespace unqlite

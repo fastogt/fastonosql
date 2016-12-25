@@ -29,7 +29,6 @@ namespace memcached {
 class Command : public FastoObjectCommand {
  public:
   Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter);
-  virtual bool IsReadOnly() const override;
 };
 
 }  // namespace memcached

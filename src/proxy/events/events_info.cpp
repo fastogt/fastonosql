@@ -196,7 +196,7 @@ ChangeServerPropertyInfoRequest::ChangeServerPropertyInfoRequest(initiator_type 
 ChangeServerPropertyInfoResponce::ChangeServerPropertyInfoResponce(const base_class& request)
     : base_class(request) {}
 
-ProgressInfoResponce::ProgressInfoResponce(uint8_t pr) : progress(pr) {}
+ProgressInfoResponce::ProgressInfoResponce(int pr) : progress(pr) {}
 
 }  // namespace events_info
 }  // namespace proxy

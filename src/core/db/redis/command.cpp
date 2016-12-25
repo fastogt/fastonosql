@@ -18,26 +18,12 @@
 
 #include "core/db/redis/command.h"
 
-#include <algorithm>  // for transform
-
-#include "core/connection_types.h"  // for connectionTypes::REDIS
-
 namespace fastonosql {
 namespace core {
 namespace redis {
 
 Command::Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter)
     : FastoObjectCommand(parent, cmd, delimiter, REDIS) {}
-
-bool Command::IsReadOnly() const {
-  std::string key = InputCmd();
-  if (key.empty()) {
-    return true;
-  }
-
-  std::transform(key.begin(), key.end(), key.begin(), ::tolower);
-  return key != "get";
-}
 
 }  // namespace redis
 }  // namespace core

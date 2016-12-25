@@ -27,16 +27,6 @@ namespace memcached {
 Command::Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter)
     : FastoObjectCommand(parent, cmd, delimiter, MEMCACHED) {}
 
-bool Command::IsReadOnly() const {
-  std::string key = InputCmd();
-  if (key.empty()) {
-    return true;
-  }
-
-  std::transform(key.begin(), key.end(), key.begin(), ::tolower);
-  return key != "get";
-}
-
 }  // namespace memcached
 }  // namespace core
 }  // namespace fastonosql

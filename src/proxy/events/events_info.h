@@ -323,9 +323,9 @@ struct ChangeServerPropertyInfoResponce : ChangeServerPropertyInfoRequest {
 };
 
 struct ProgressInfoResponce {
-  explicit ProgressInfoResponce(uint8_t pr);
+  explicit ProgressInfoResponce(int pr);
 
-  const uint8_t progress;
+  const int progress;
 };
 
 }  // namespace events_info

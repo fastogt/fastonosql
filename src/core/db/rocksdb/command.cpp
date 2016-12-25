@@ -18,26 +18,12 @@
 
 #include "core/db/rocksdb/command.h"
 
-#include <algorithm>  // for transform
-
-#include "core/connection_types.h"  // for connectionTypes::ROCKSDB
-
 namespace fastonosql {
 namespace core {
 namespace rocksdb {
 
 Command::Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter)
     : FastoObjectCommand(parent, cmd, delimiter, ROCKSDB) {}
-
-bool Command::IsReadOnly() const {
-  std::string key = InputCmd();
-  if (key.empty()) {
-    return true;
-  }
-
-  std::transform(key.begin(), key.end(), key.begin(), ::tolower);
-  return key != "get";
-}
 
 }  // namespace rocksdb
 }  // namespace core
