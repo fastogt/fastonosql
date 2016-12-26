@@ -240,9 +240,7 @@ const char* CommandLineHelpText(connectionTypes type) {
 namespace {
 static const std::string connnectionType[] = {"Redis",   "Memcached", "SSDB", "LevelDB",
                                               "RocksDB", "UnQLite",   "LMDB", "UpscaleDB"};
-const std::string connnectionMode[] = {"Latency mode", "Slave mode",         "Get RDB mode",
-                                       "Pipe mode",    "Find big keys mode", "Stat mode",
-                                       "Scan mode",    "Interactive mode"};
+const std::string connnectionMode[] = {"Interactive mode"};
 const std::string serverTypes[] = {"Master", "Slave"};
 const std::string serverState[] = {"Up", "Down"};
 const std::string serverModes[] = {"Standalone", "Sentinel", "Cluster"};

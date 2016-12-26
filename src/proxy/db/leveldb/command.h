@@ -18,23 +18,19 @@
 
 #pragma once
 
-#include <string>  // for string
+#include <string>
 
-#include "global/global.h"  // for FastoObject (ptr only), etc
-
-namespace common {
-class CommandValue;
-}
+#include "global/global.h"
 
 namespace fastonosql {
-namespace core {
-namespace redis {
+namespace proxy {
+namespace leveldb {
 
 class Command : public FastoObjectCommand {
  public:
   Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter);
 };
 
-}  // namespace redis
+}  // namespace leveldb
 }  // namespace core
 }  // namespace fastonosql

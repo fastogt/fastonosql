@@ -16,21 +16,15 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
-#include <string>
-
-#include "global/global.h"
+#include "proxy/db/ssdb/command.h"
 
 namespace fastonosql {
-namespace core {
-namespace leveldb {
+namespace proxy {
+namespace ssdb {
 
-class Command : public FastoObjectCommand {
- public:
-  Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter);
-};
+Command::Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter)
+    : FastoObjectCommand(parent, cmd, delimiter, core::SSDB) {}
 
-}  // namespace leveldb
+}  // namespace ssdb
 }  // namespace core
 }  // namespace fastonosql

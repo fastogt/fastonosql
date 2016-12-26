@@ -32,13 +32,13 @@
 
 #include "core/internal/cdb_connection.h"
 #include "core/internal/db_connection.h"
-#include "core/command/command.h"          // for CreateCommand, etc
+#include "proxy/command/command.h"          // for CreateCommand, etc
 #include "proxy/command/command_logger.h"  // for LOG_COMMAND
 #include "core/connection_types.h"         // for ConvertToString, etc
 #include "core/db_key.h"                   // for NDbKValue, NValue, NKey
 #include "proxy/events/events_info.h"
 
-#include "core/db/upscaledb/command.h"               // for Command
+#include "proxy/db/upscaledb/command.h"               // for Command
 #include "core/db/upscaledb/config.h"                // for Config
 #include "proxy/db/upscaledb/connection_settings.h"  // for ConnectionSettings
 #include "core/db/upscaledb/db_connection.h"         // for DBConnection
@@ -105,12 +105,12 @@ void Driver::ClearImpl() {}
 FastoObjectCommandIPtr Driver::CreateCommand(FastoObject* parent,
                                              const std::string& input,
                                              common::Value::CommandLoggingType ct) {
-  return fastonosql::core::CreateCommand<core::upscaledb::Command>(parent, input, ct);
+  return proxy::CreateCommand<upscaledb::Command>(parent, input, ct);
 }
 
 FastoObjectCommandIPtr Driver::CreateCommandFast(const std::string& input,
                                                  common::Value::CommandLoggingType ct) {
-  return fastonosql::core::CreateCommandFast<core::upscaledb::Command>(input, ct);
+  return proxy::CreateCommandFast<upscaledb::Command>(input, ct);
 }
 
 common::Error Driver::SyncConnect() {

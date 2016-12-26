@@ -16,15 +16,17 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/db/redis/command.h"
+#include "proxy/db/memcached/command.h"
+
+#include <algorithm>  // for transform
 
 namespace fastonosql {
-namespace core {
-namespace redis {
+namespace proxy {
+namespace memcached {
 
 Command::Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter)
-    : FastoObjectCommand(parent, cmd, delimiter, REDIS) {}
+    : FastoObjectCommand(parent, cmd, delimiter, core::MEMCACHED) {}
 
-}  // namespace redis
+}  // namespace memcached
 }  // namespace core
 }  // namespace fastonosql

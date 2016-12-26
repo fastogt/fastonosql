@@ -16,21 +16,15 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
-#include <string>
-
-#include "global/global.h"
+#include "proxy/db/unqlite/command.h"
 
 namespace fastonosql {
-namespace core {
-namespace memcached {
+namespace proxy {
+namespace unqlite {
 
-class Command : public FastoObjectCommand {
- public:
-  Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter);
-};
+Command::Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter)
+    : FastoObjectCommand(parent, cmd, delimiter, core::UNQLITE) {}
 
-}  // namespace memcached
+}  // namespace unqlite
 }  // namespace core
 }  // namespace fastonosql

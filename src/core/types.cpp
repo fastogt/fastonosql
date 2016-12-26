@@ -25,5 +25,17 @@ namespace core {
 
 IStateField::~IStateField() {}
 
+std::string StableCommand(std::string command) {
+  if (command.empty()) {
+    return std::string();
+  }
+
+  if (command[command.size() - 1] == '\r') {
+    command.pop_back();
+  }
+
+  return command;
+}
+
 }  // namespace core
 }  // namespace fastonosql

@@ -16,14 +16,14 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/db/rocksdb/command.h"
+#include "proxy/db/rocksdb/command.h"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace rocksdb {
 
 Command::Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter)
-    : FastoObjectCommand(parent, cmd, delimiter, ROCKSDB) {}
+    : FastoObjectCommand(parent, cmd, delimiter, core::ROCKSDB) {}
 
 }  // namespace rocksdb
 }  // namespace core

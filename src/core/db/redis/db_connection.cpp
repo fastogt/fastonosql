@@ -60,14 +60,12 @@ extern "C" {
 
 #include "core/icommand_translator.h"  // for translator_t, etc
 
-#include "core/command/command.h"  // for CreateCommand
 #include "core/command_holder.h"   // for CommandHolder
 
 #include "core/internal/connection.h"  // for Connection<>::config_t, etc
 #include "core/internal/cdb_connection_client.h"
 
 #include "core/db/redis/cluster_infos.h"  // for makeDiscoveryClusterInfo
-#include "core/db/redis/command.h"        // for Command
 #include "core/db/redis/database_info.h"  // for DataBaseInfo
 #include "core/db/redis/sentinel_info.h"  // for DiscoverySentinelInfo, etc
 #include "core/db/redis/command_translator.h"
@@ -298,31 +296,6 @@ common::Error valueFromReplay(redisReply* r, common::Value** out) {
   }
 
   return common::Error();
-}
-
-common::Error toIntType(char* key, char* type, int* res) {
-  if (!strcmp(type, "string")) {
-    *res = RTYPE_STRING;
-    return common::Error();
-  } else if (!strcmp(type, "list")) {
-    *res = RTYPE_LIST;
-    return common::Error();
-  } else if (!strcmp(type, "set")) {
-    *res = RTYPE_SET;
-    return common::Error();
-  } else if (!strcmp(type, "hash")) {
-    *res = RTYPE_HASH;
-    return common::Error();
-  } else if (!strcmp(type, "zset")) {
-    *res = RTYPE_ZSET;
-    return common::Error();
-  } else if (!strcmp(type, "none")) {
-    *res = RTYPE_NONE;
-    return common::Error();
-  } else {
-    return common::make_error_value(common::MemSPrintf("Unknown type '%s' for key '%s'", type, key),
-                                    common::Value::E_ERROR);
-  }
 }
 
 common::Error cliPrintContextError(redisContext* context) {
@@ -663,12 +636,6 @@ common::Error DBConnection::SlaveMode(FastoObject* out) {
     return err;
   }
 
-  FastoObjectCommandIPtr cmd = CreateCommand<Command>(out, SYNC_REQUEST, common::Value::C_INNER);
-  if (!cmd) {
-    return common::make_error_value("Invalid CreateCommand input argument",
-                                    common::ErrorValue::E_ERROR);
-  }
-
   char buf[1024];
   /* Discard the payload. */
   while (payload) {
@@ -685,7 +652,7 @@ common::Error DBConnection::SlaveMode(FastoObject* out) {
   /* Now we can use hiredis to read the incoming protocol.
    */
   while (!IsInterrupted()) {
-    err = CliReadReply(cmd.get());
+    err = CliReadReply(out);
     if (err && err->isError()) {
       return err;
     }

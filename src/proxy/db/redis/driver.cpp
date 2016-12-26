@@ -31,7 +31,7 @@
 #include <common/sprintf.h>         // for MemSPrintf
 #include <common/value.h>           // for Value, ErrorValue, etc
 
-#include "core/command/command.h"  // for CreateCommand, etc
+#include "proxy/command/command.h"  // for CreateCommand, etc
 #include "core/connection_types.h"
 #include "core/db_key.h"  // for NDbKValue, NValue, ttl_t, etc
 #include "proxy/events/events_info.h"
@@ -44,7 +44,7 @@
 #include "core/internal/db_connection.h"
 
 #include "core/db/redis/db_connection.h"         // for DBConnection, INFO_REQUEST, etc
-#include "core/db/redis/command.h"               // for Command
+#include "proxy/db/redis/command.h"              // for Command
 #include "core/db/redis/config.h"                // for Config
 #include "proxy/db/redis/connection_settings.h"  // for ConnectionSettings
 #include "core/db/redis/database_info.h"         // for DataBaseInfo
@@ -141,12 +141,12 @@ void Driver::ClearImpl() {}
 FastoObjectCommandIPtr Driver::CreateCommand(FastoObject* parent,
                                              const std::string& input,
                                              common::Value::CommandLoggingType ct) {
-  return fastonosql::core::CreateCommand<core::redis::Command>(parent, input, ct);
+  return proxy::CreateCommand<Command>(parent, input, ct);
 }
 
 FastoObjectCommandIPtr Driver::CreateCommandFast(const std::string& input,
                                                  common::Value::CommandLoggingType ct) {
-  return fastonosql::core::CreateCommandFast<core::redis::Command>(input, ct);
+  return proxy::CreateCommandFast<Command>(input, ct);
 }
 
 common::Error Driver::SyncConnect() {

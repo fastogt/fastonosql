@@ -30,12 +30,12 @@
 
 #include "core/db_key.h"                   // for NDbKValue, NValue, NKey
 #include "core/connection_types.h"         // for ConvertToString, etc
-#include "core/command/command.h"          // for CreateCommand, etc
+#include "proxy/command/command.h"          // for CreateCommand, etc
 #include "proxy/command/command_logger.h"  // for LOG_COMMAND
 #include "proxy/events/events_info.h"
 #include "core/internal/db_connection.h"
 
-#include "core/db/ssdb/command.h"               // for Command
+#include "proxy/db/ssdb/command.h"               // for Command
 #include "core/db/ssdb/config.h"                // for Config
 #include "proxy/db/ssdb/connection_settings.h"  // for ConnectionSettings
 #include "core/db/ssdb/db_connection.h"         // for DBConnection
@@ -101,12 +101,12 @@ void Driver::ClearImpl() {}
 FastoObjectCommandIPtr Driver::CreateCommand(FastoObject* parent,
                                              const std::string& input,
                                              common::Value::CommandLoggingType ct) {
-  return fastonosql::core::CreateCommand<core::ssdb::Command>(parent, input, ct);
+  return proxy::CreateCommand<ssdb::Command>(parent, input, ct);
 }
 
 FastoObjectCommandIPtr Driver::CreateCommandFast(const std::string& input,
                                                  common::Value::CommandLoggingType ct) {
-  return fastonosql::core::CreateCommandFast<core::ssdb::Command>(input, ct);
+  return proxy::CreateCommandFast<ssdb::Command>(input, ct);
 }
 
 common::Error Driver::SyncConnect() {

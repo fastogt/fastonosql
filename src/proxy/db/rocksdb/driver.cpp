@@ -28,7 +28,7 @@
 #include <common/value.h>          // for ErrorValue, etc
 #include <common/intrusive_ptr.h>  // for intrusive_ptr
 
-#include "core/command/command.h"          // for CreateCommand, etc
+#include "proxy/command/command.h"          // for CreateCommand, etc
 #include "proxy/command/command_logger.h"  // for LOG_COMMAND
 #include "core/connection_types.h"         // for ConvertToString, etc
 #include "core/db_key.h"                   // for NDbKValue, NValue, NKey
@@ -36,7 +36,7 @@
 #include "core/internal/db_connection.h"
 #include "proxy/events/events_info.h"
 
-#include "core/db/rocksdb/command.h"               // for Command
+#include "proxy/db/rocksdb/command.h"               // for Command
 #include "core/db/rocksdb/config.h"                // for Config
 #include "proxy/db/rocksdb/connection_settings.h"  // for ConnectionSettings
 #include "core/db/rocksdb/db_connection.h"         // for DBConnection
@@ -103,12 +103,12 @@ void Driver::ClearImpl() {}
 FastoObjectCommandIPtr Driver::CreateCommand(FastoObject* parent,
                                              const std::string& input,
                                              common::Value::CommandLoggingType ct) {
-  return fastonosql::core::CreateCommand<core::rocksdb::Command>(parent, input, ct);
+  return proxy::CreateCommand<rocksdb::Command>(parent, input, ct);
 }
 
 FastoObjectCommandIPtr Driver::CreateCommandFast(const std::string& input,
                                                  common::Value::CommandLoggingType ct) {
-  return fastonosql::core::CreateCommandFast<core::rocksdb::Command>(input, ct);
+  return proxy::CreateCommandFast<rocksdb::Command>(input, ct);
 }
 
 common::Error Driver::SyncConnect() {

@@ -16,21 +16,15 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
-#include <string>
-
-#include "global/global.h"
+#include "proxy/db/lmdb/command.h"
 
 namespace fastonosql {
-namespace core {
-namespace upscaledb {
+namespace proxy {
+namespace lmdb {
 
-class Command : public FastoObjectCommand {
- public:
-  Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter);
-};
+Command::Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter)
+    : FastoObjectCommand(parent, cmd, delimiter, core::LMDB) {}
 
-}  // namespace upscaledb
+}  // namespace lmdb
 }  // namespace core
 }  // namespace fastonosql

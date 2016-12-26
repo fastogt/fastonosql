@@ -16,21 +16,15 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
-#include <string>  // for string
-
-#include "global/global.h"  // for FastoObject (ptr only), etc
+#include "proxy/db/redis/command.h"
 
 namespace fastonosql {
-namespace core {
-namespace rocksdb {
+namespace proxy {
+namespace redis {
 
-class Command : public FastoObjectCommand {
- public:
-  Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter);
-};
+Command::Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter)
+    : FastoObjectCommand(parent, cmd, delimiter, core::REDIS) {}
 
-}  // namespace rocksdb
+}  // namespace redis
 }  // namespace core
 }  // namespace fastonosql

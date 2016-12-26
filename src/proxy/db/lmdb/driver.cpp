@@ -29,12 +29,12 @@
 #include <common/sprintf.h>         // for MemSPrintf
 #include <common/value.h>           // for ErrorValue, etc
 
-#include "core/command/command.h"          // for CreateCommand, etc
+#include "proxy/command/command.h"          // for CreateCommand, etc
 #include "proxy/command/command_logger.h"  // for LOG_COMMAND
 #include "core/connection_types.h"         // for ConvertToString, etc
 #include "core/db_key.h"                   // for NDbKValue, NValue, NKey
 #include "proxy/events/events_info.h"
-#include "core/db/lmdb/command.h"               // for Command
+#include "proxy/db/lmdb/command.h"               // for Command
 #include "core/db/lmdb/config.h"                // for Config
 #include "proxy/db/lmdb/connection_settings.h"  // for ConnectionSettings
 #include "proxy/db/lmdb/database.h"             // for DataBaseInfo
@@ -103,12 +103,12 @@ void Driver::ClearImpl() {}
 FastoObjectCommandIPtr Driver::CreateCommand(FastoObject* parent,
                                              const std::string& input,
                                              common::Value::CommandLoggingType ct) {
-  return fastonosql::core::CreateCommand<core::lmdb::Command>(parent, input, ct);
+  return proxy::CreateCommand<lmdb::Command>(parent, input, ct);
 }
 
 FastoObjectCommandIPtr Driver::CreateCommandFast(const std::string& input,
                                                  common::Value::CommandLoggingType ct) {
-  return fastonosql::core::CreateCommandFast<core::lmdb::Command>(input, ct);
+  return proxy::CreateCommandFast<lmdb::Command>(input, ct);
 }
 
 common::Error Driver::SyncConnect() {

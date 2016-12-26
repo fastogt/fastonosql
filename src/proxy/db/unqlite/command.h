@@ -23,7 +23,7 @@
 #include "global/global.h"  // for FastoObject (ptr only), etc
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
 namespace unqlite {
 
 class Command : public FastoObjectCommand {

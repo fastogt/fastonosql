@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <string>
+
 namespace common {
 class Value;
 }
@@ -29,6 +31,8 @@ struct IStateField {
   virtual common::Value* ValueByIndex(unsigned char index) const = 0;
   virtual ~IStateField();
 };
+
+std::string StableCommand(std::string command);
 
 }  // namespace core
 }  // namespace fastonosql

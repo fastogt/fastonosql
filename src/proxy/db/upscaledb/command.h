@@ -16,17 +16,21 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/db/memcached/command.h"
+#pragma once
 
-#include <algorithm>  // for transform
+#include <string>
+
+#include "global/global.h"
 
 namespace fastonosql {
-namespace core {
-namespace memcached {
+namespace proxy {
+namespace upscaledb {
 
-Command::Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter)
-    : FastoObjectCommand(parent, cmd, delimiter, MEMCACHED) {}
+class Command : public FastoObjectCommand {
+ public:
+  Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter);
+};
 
-}  // namespace memcached
+}  // namespace upscaledb
 }  // namespace core
 }  // namespace fastonosql

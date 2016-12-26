@@ -29,13 +29,13 @@
 #include <common/value.h>        // for ErrorValue, etc
 #include <common/convert2string.h>
 
-#include "core/command/command.h"          // for CreateCommand, etc
+#include "proxy/command/command.h"         // for CreateCommand, etc
 #include "proxy/command/command_logger.h"  // for LOG_COMMAND
 #include "core/connection_types.h"         // for ConvertToString, etc
 #include "core/db_key.h"                   // for NDbKValue, NValue, NKey
 #include "proxy/events/events_info.h"
 
-#include "core/db/leveldb/command.h"               // for Command
+#include "proxy/db/leveldb/command.h"              // for Command
 #include "core/db/leveldb/config.h"                // for Config
 #include "proxy/db/leveldb/connection_settings.h"  // for ConnectionSettings
 #include "proxy/db/leveldb/database.h"             // for DataBaseInfo
@@ -102,12 +102,12 @@ void Driver::ClearImpl() {}
 FastoObjectCommandIPtr Driver::CreateCommand(FastoObject* parent,
                                              const std::string& input,
                                              common::Value::CommandLoggingType ct) {
-  return fastonosql::core::CreateCommand<core::leveldb::Command>(parent, input, ct);
+  return proxy::CreateCommand<Command>(parent, input, ct);
 }
 
 FastoObjectCommandIPtr Driver::CreateCommandFast(const std::string& input,
                                                  common::Value::CommandLoggingType ct) {
-  return core::CreateCommandFast<core::leveldb::Command>(input, ct);
+  return proxy::CreateCommandFast<Command>(input, ct);
 }
 
 common::Error Driver::SyncConnect() {

@@ -25,7 +25,7 @@ extern "C" {
 #include <common/sprintf.h>
 #include <common/string_util.h>
 
-#include "core/command/command.h"
+#include "core/types.h"
 
 namespace fastonosql {
 namespace core {

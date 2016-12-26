@@ -16,22 +16,21 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/command/command.h"
+#pragma once
+
+#include <string>
+
+#include "global/global.h"
 
 namespace fastonosql {
-namespace core {
+namespace proxy {
+namespace memcached {
 
-std::string StableCommand(std::string command) {
-  if (command.empty()) {
-    return std::string();
-  }
+class Command : public FastoObjectCommand {
+ public:
+  Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter);
+};
 
-  if (command[command.size() - 1] == '\r') {
-    command.pop_back();
-  }
-
-  return command;
-}
-
+}  // namespace memcached
 }  // namespace core
 }  // namespace fastonosql
