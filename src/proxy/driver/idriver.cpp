@@ -213,10 +213,6 @@ void IDriver::customEvent(QEvent* event) {
   } else if (type == static_cast<QEvent::Type>(events::ShutDownRequestEvent::EventType)) {
     events::ShutDownRequestEvent* ev = static_cast<events::ShutDownRequestEvent*>(event);
     HandleShutdownEvent(ev);  // ni
-  } else if (type == static_cast<QEvent::Type>(events::ProcessConfigArgsRequestEvent::EventType)) {
-    events::ProcessConfigArgsRequestEvent* ev =
-        static_cast<events::ProcessConfigArgsRequestEvent*>(event);
-    HandleProcessCommandLineArgsEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::DisconnectRequestEvent::EventType)) {
     events::DisconnectRequestEvent* ev = static_cast<events::DisconnectRequestEvent*>(event);
     HandleDisconnectEvent(ev);

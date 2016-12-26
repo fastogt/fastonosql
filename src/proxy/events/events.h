@@ -31,11 +31,6 @@ typedef common::qt::Event<events_info::ShutDownInfoRequest, QEvent::User + 3> Sh
 typedef common::qt::Event<events_info::ShutDownInfoResponce, QEvent::User + 4>
     ShutDownResponceEvent;
 
-typedef common::qt::Event<events_info::ProcessConfigArgsInfoRequest, QEvent::User + 5>
-    ProcessConfigArgsRequestEvent;
-typedef common::qt::Event<events_info::ProcessConfigArgsInfoResponce, QEvent::User + 6>
-    ProcessConfigArgsResponceEvent;
-
 typedef common::qt::Event<events_info::CommandRootCreatedInfo, QEvent::User + 7>
     CommandRootCreatedEvent;
 typedef common::qt::Event<events_info::CommandRootCompleatedInfo, QEvent::User + 8>

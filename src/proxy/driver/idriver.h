@@ -109,7 +109,6 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   virtual void HandleConnectEvent(events::ConnectRequestEvent* ev);
   virtual void HandleDisconnectEvent(events::DisconnectRequestEvent* ev);
 
-  virtual void HandleProcessCommandLineArgsEvent(events::ProcessConfigArgsRequestEvent* ev) = 0;
   virtual void HandleExecuteEvent(events::ExecuteRequestEvent* ev);
 
   virtual void HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) = 0;

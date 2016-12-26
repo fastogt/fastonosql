@@ -70,12 +70,6 @@ ChangeMaxConnectionRequest::ChangeMaxConnectionRequest(initiator_type sender,
 ChangeMaxConnectionResponce::ChangeMaxConnectionResponce(const base_class& request)
     : base_class(request) {}
 
-ProcessConfigArgsInfoRequest::ProcessConfigArgsInfoRequest(initiator_type sender, error_type er)
-    : base_class(sender, er) {}
-
-ProcessConfigArgsInfoResponce::ProcessConfigArgsInfoResponce(const base_class& request)
-    : base_class(request) {}
-
 DiscoveryInfoRequest::DiscoveryInfoRequest(initiator_type sender, error_type er)
     : base_class(sender, er) {}
 

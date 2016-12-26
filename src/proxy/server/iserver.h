@@ -243,7 +243,6 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryResponceEvent* ev);
   void HandleClearServerHistoryResponceEvent(events::ClearServerHistoryResponceEvent* ev);
 
-  void ProcessConfigArgs(const events_info::ProcessConfigArgsInfoRequest& req);
   void ProcessDiscoveryInfo(const events_info::DiscoveryInfoRequest& req);
   int timer_check_key_exists_id_;
 };

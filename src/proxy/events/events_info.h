@@ -121,16 +121,6 @@ struct ChangeMaxConnectionResponce : ChangeMaxConnectionRequest {
   explicit ChangeMaxConnectionResponce(const base_class& request);
 };
 
-struct ProcessConfigArgsInfoRequest : public EventInfoBase {
-  typedef EventInfoBase base_class;
-  explicit ProcessConfigArgsInfoRequest(initiator_type sender, error_type er = error_type());
-};
-
-struct ProcessConfigArgsInfoResponce : ProcessConfigArgsInfoRequest {
-  typedef ProcessConfigArgsInfoRequest base_class;
-  explicit ProcessConfigArgsInfoResponce(const base_class& request);
-};
-
 struct DiscoveryInfoRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
   explicit DiscoveryInfoRequest(initiator_type sender, error_type er = error_type());

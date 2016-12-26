@@ -252,9 +252,6 @@ void IServer::customEvent(QEvent* event) {
     if (!er) {
       events_info::DiscoveryInfoRequest dreq(this);
       ProcessDiscoveryInfo(dreq);
-
-      events_info::ProcessConfigArgsInfoRequest preq(this);
-      ProcessConfigArgs(preq);
     }
   } else if (type == static_cast<QEvent::Type>(events::EnterModeEvent::EventType)) {
     events::EnterModeEvent* ev = static_cast<events::EnterModeEvent*>(event);
@@ -699,11 +696,6 @@ void IServer::HandleClearServerHistoryResponceEvent(events::ClearServerHistoryRe
   }
 
   emit ClearServerHistoryFinished(v);
-}
-
-void IServer::ProcessConfigArgs(const events_info::ProcessConfigArgsInfoRequest& req) {
-  QEvent* ev = new events::ProcessConfigArgsRequestEvent(this, req);
-  Notify(ev);
 }
 
 void IServer::ProcessDiscoveryInfo(const events_info::DiscoveryInfoRequest& req) {

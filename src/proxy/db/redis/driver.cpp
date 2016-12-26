@@ -190,10 +190,6 @@ common::Error Driver::CurrentDataBaseInfo(core::IDataBaseInfo** info) {
   return impl_->Select(impl_->CurrentDBName(), info);
 }
 
-void Driver::HandleProcessCommandLineArgsEvent(events::ProcessConfigArgsRequestEvent* ev) {
-  UNUSED(ev);
-}
-
 void Driver::HandleShutdownEvent(events::ShutDownRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);

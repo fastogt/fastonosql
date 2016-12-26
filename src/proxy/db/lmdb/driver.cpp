@@ -217,10 +217,6 @@ done:
   NotifyProgress(sender, 100);
 }
 
-void Driver::HandleProcessCommandLineArgsEvent(events::ProcessConfigArgsRequestEvent* ev) {
-  UNUSED(ev);
-}
-
 core::IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
   core::IServerInfoSPtr res(core::lmdb::MakeLmdbServerInfo(val));
   return res;
