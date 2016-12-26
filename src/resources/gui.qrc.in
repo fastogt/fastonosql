@@ -47,14 +47,8 @@
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/discovery.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/command.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/logging.png</file>
+
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/interactive_mode.png</file>
-    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/latency_mode.png</file>
-    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/pipe_mode.png</file>
-    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/stat_mode.png</file>
-    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/bigkeys_mode.png</file>
-    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/scan_mode.png</file>
-    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/rdb_mode.png</file>
-    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/slave_mode.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/encode_decode.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/preferences.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/fail.png</file>

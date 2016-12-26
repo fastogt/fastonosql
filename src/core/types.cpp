@@ -21,5 +21,9 @@
 #include <string>  // for string
 
 namespace fastonosql {
-namespace core {}  // namespace core
+namespace core {
+
+IStateField::~IStateField() {}
+
+}  // namespace core
 }  // namespace fastonosql

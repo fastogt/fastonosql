@@ -184,7 +184,7 @@ void IDriver::Interrupt() {
 
 void IDriver::Init() {
   if (settings_->IsHistoryEnabled()) {
-    uint32_t interval = settings_->LoggingMsTimeInterval();
+    int interval = settings_->LoggingMsTimeInterval();
     timer_info_id_ = startTimer(interval);
     DCHECK(timer_info_id_ != 0);
   }

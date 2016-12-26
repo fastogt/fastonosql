@@ -111,11 +111,11 @@ bool IConnectionSettings::IsHistoryEnabled() const {
   return msinterval_ != 0;
 }
 
-uint32_t IConnectionSettings::LoggingMsTimeInterval() const {
+int IConnectionSettings::LoggingMsTimeInterval() const {
   return msinterval_;
 }
 
-void IConnectionSettings::SetLoggingMsTimeInterval(uint32_t mstime) {
+void IConnectionSettings::SetLoggingMsTimeInterval(int mstime) {
   msinterval_ = mstime;
 }
 

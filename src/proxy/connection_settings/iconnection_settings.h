@@ -66,8 +66,8 @@ class IConnectionSettings : public common::ClonableBase<IConnectionSettings> {
 
   bool IsHistoryEnabled() const;
 
-  uint32_t LoggingMsTimeInterval() const;
-  void SetLoggingMsTimeInterval(uint32_t mstime);
+  int LoggingMsTimeInterval() const;
+  void SetLoggingMsTimeInterval(int mstime);
 
   virtual std::string ToString() const;
   virtual IConnectionSettings* Clone() const override = 0;
@@ -78,7 +78,7 @@ class IConnectionSettings : public common::ClonableBase<IConnectionSettings> {
   const core::connectionTypes type_;
 
  private:
-  uint32_t msinterval_;
+  int msinterval_;
 };
 
 class IConnectionSettingsBase : public IConnectionSettings {

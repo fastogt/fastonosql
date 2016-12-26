@@ -27,6 +27,7 @@ namespace core {
 
 struct IStateField {
   virtual common::Value* ValueByIndex(unsigned char index) const = 0;
+  virtual ~IStateField();
 };
 
 }  // namespace core

@@ -174,35 +174,14 @@ const QIcon& GuiFactory::icon(core::connectionTypes type) const {
 }
 
 const QIcon& GuiFactory::modeIcon(core::ConnectionMode mode) const {
-  if (mode == core::LatencyMode) {
-    static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/latency_mode.png");
-    return i;
-  } else if (mode == core::SlaveMode) {
-    static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/slave_mode.png");
-    return i;
-  } else if (mode == core::GetRDBMode) {
-    static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/rdb_mode.png");
-    return i;
-  } else if (mode == core::PipeMode) {
-    static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/pipe_mode.png");
-    return i;
-  } else if (mode == core::FindBigKeysMode) {
-    static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/bigkeys_mode.png");
-    return i;
-  } else if (mode == core::StatMode) {
-    static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/stat_mode.png");
-    return i;
-  } else if (mode == core::ScanMode) {
-    static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/scan_mode.png");
-    return i;
-  } else if (mode == core::InteractiveMode) {
+  if (mode == core::InteractiveMode) {
     static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/interactive_mode.png");
     return i;
-  } else {
-    static QIcon err(":" PROJECT_NAME_LOWERCASE "/images/64x64/error.png");
-    DNOTREACHED();
-    return err;
   }
+
+  static QIcon err(":" PROJECT_NAME_LOWERCASE "/images/64x64/error.png");
+  DNOTREACHED();
+  return err;
 }
 
 const QIcon& GuiFactory::icon(common::Value::Type type) const {

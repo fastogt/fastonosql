@@ -104,14 +104,6 @@ class Driver : public IDriverRemote {
   virtual core::IServerInfoSPtr MakeServerInfoFromString(const std::string& val) override;
 
   core::redis::DBConnection* const impl_;
-
-  common::Error InteracteveMode(events::ProcessConfigArgsRequestEvent* ev);
-  common::Error LatencyMode(events::ProcessConfigArgsRequestEvent* ev);
-  common::Error SlaveMode(events::ProcessConfigArgsRequestEvent* ev);
-  common::Error GetRDBMode(events::ProcessConfigArgsRequestEvent* ev);
-  common::Error FindBigKeysMode(events::ProcessConfigArgsRequestEvent* ev);
-  common::Error StatMode(events::ProcessConfigArgsRequestEvent* ev);
-  common::Error ScanMode(events::ProcessConfigArgsRequestEvent* ev);
 };
 
 }  // namespace redis

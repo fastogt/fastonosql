@@ -30,29 +30,10 @@ namespace redis {
 
 struct Config : public RemoteConfig {
   Config();
-  Config(const Config& other);
-  Config& operator=(const Config& other);
 
   std::string hostsocket;
-  uint64_t interval;
   int dbnum;
-  int interactive;
-  int latency_mode;
-  int latency_history;
-  int cluster_mode;
-  int cluster_reissue_command;
-  int slave_mode;
-  int getrdb_mode;
-  int stat_mode;
-  int scan_mode;
-  std::string pattern;
-  std::string rdb_filename;
-  int bigkeys;
   std::string auth;
-
- protected:
-  void copy(const Config& other);
-  void init();
 };
 
 }  // namespace redis

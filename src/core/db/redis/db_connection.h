@@ -95,12 +95,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
 
   std::string CurrentDBName() const;
 
-  common::Error LatencyMode(FastoObject* out) WARN_UNUSED_RESULT;
   common::Error SlaveMode(FastoObject* out) WARN_UNUSED_RESULT;
-  common::Error GetRDB(FastoObject* out) WARN_UNUSED_RESULT;
-  common::Error FindBigKeys(FastoObject* out) WARN_UNUSED_RESULT;
-  common::Error StatMode(FastoObject* out) WARN_UNUSED_RESULT;
-  common::Error ScanMode(FastoObject* out) WARN_UNUSED_RESULT;
 
   common::Error ExecuteAsPipeline(const std::vector<FastoObjectCommandIPtr>& cmds,
                                   void (*log_command_cb)(FastoObjectCommandIPtr))
@@ -160,11 +155,6 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
   virtual common::Error QuitImpl() override;
 
   common::Error SendSync(unsigned long long* payload) WARN_UNUSED_RESULT;
-  common::Error SendScan(unsigned long long* it, redisReply** out) WARN_UNUSED_RESULT;
-  common::Error GetKeyTypes(redisReply* keys, int* types) WARN_UNUSED_RESULT;
-  common::Error GetKeySizes(redisReply* keys,
-                            int* types,
-                            unsigned long long* sizes) WARN_UNUSED_RESULT;
 
   common::Error CliFormatReplyRaw(FastoObjectArray* ar, redisReply* r) WARN_UNUSED_RESULT;
   common::Error CliFormatReplyRaw(FastoObject* out, redisReply* r) WARN_UNUSED_RESULT;
