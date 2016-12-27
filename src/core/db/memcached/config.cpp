@@ -34,7 +34,7 @@ extern "C" {
 #include <common/net/types.h>       // for HostAndPort
 #include <common/sprintf.h>         // for MemSPrintf
 
-#include <common/qt/logger.h>  // for LOG_MSG
+#include "core/logger.h"
 
 #define DEFAULT_MEMCACHED_SERVER_PORT 11211
 
@@ -67,7 +67,7 @@ Config parseOptions(int argc, char** argv) {
             "Unrecognized option or bad number of args "
             "for: '%s'",
             argv[i]);
-        LOG_MSG(buff, common::logging::L_WARNING, true);
+        LOG_CORE_MSG(buff, common::logging::L_WARNING, true);
         break;
       } else {
         /* Likely the command name, stop here. */

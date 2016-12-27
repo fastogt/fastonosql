@@ -51,6 +51,8 @@
 #include <common/text_decoders/iedcoder.h>        // for IEDcoder, EDTypes::Hex
 #include <common/value.h>                         // for ErrorValue
 
+#include "core/logger.h"
+
 #include "proxy/command/command_logger.h"  // for CommandLogger
 #include "proxy/cluster/icluster.h"        // for ICluster
 #include "proxy/sentinel/isentinel.h"      // for ISentinel
@@ -86,6 +88,10 @@ bool isNeededUpdate(const std::string& sversion) {
 
 const QKeySequence logsKeySequence = Qt::CTRL + Qt::Key_L;
 const QKeySequence explorerKeySequence = Qt::CTRL + Qt::Key_T;
+
+void LogWatcherRedirect(common::logging::LEVEL_LOG level, const std::string& message, bool notify) {
+  LOG_MSG(message, level, notify);
+}
 
 }  // namespace
 
@@ -242,6 +248,7 @@ MainWindow::MainWindow() : QMainWindow(), isCheckedInSession_(false) {
                  &LogTabWidget::addLogMessage));
   VERIFY(connect(&proxy::CommandLogger::instance(), &proxy::CommandLogger::Printed, log,
                  &LogTabWidget::addCommand));
+  SET_LOG_WATCHER(&LogWatcherRedirect);
   logDock_ = new QDockWidget(this);
   logsAction_ = logDock_->toggleViewAction();
   logsAction_->setShortcut(logsKeySequence);

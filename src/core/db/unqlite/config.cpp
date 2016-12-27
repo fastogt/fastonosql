@@ -33,7 +33,7 @@ extern "C" {
 #include <common/log_levels.h>   // for LEVEL_LOG::L_WARNING
 #include <common/sprintf.h>      // for MemSPrintf
 
-#include <common/qt/logger.h>  // for LOG_MSG
+#include "core/logger.h"
 
 namespace fastonosql {
 namespace core {
@@ -59,7 +59,7 @@ Config parseOptions(int argc, char** argv) {
             "Unrecognized option or bad number of args "
             "for: '%s'",
             argv[i]);
-        LOG_MSG(buff, common::logging::L_WARNING, true);
+        LOG_CORE_MSG(buff, common::logging::L_WARNING, true);
         break;
       } else {
         /* Likely the command name, stop here. */

@@ -7,9 +7,9 @@
 [submodule "src/third-party/lmdb/src"]
 	path = src/third-party/lmdb/src
 	url = https://github.com/fastogt/lmdb.git
-[submodule "tests/googletest"]
-	path = tests/googletest
-	url = https://github.com/google/googletest.git
 [submodule "src/third-party/json-c"]
 	path = src/third-party/json-c
 	url = https://github.com/fastogt/json-c.git
+[submodule "tests/gtest"]
+	path = tests/gtest
+	url = https://chromium.googlesource.com/external/github.com/google/googletest

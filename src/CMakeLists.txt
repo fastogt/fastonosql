@@ -53,6 +53,7 @@ SET(HEADERS_CORE
   core/command_holder.h
   core/server_property_info.h
   core/ssh_info.h
+  core/logger.h
 )
 
 SET(SOURCES_CORE
@@ -71,6 +72,7 @@ SET(SOURCES_CORE
   core/command_holder.cpp
   core/server_property_info.cpp
   core/ssh_info.cpp
+  core/logger.cpp
 )
 
 # proxy
@@ -1107,7 +1109,8 @@ ENDIF(DEVELOPER_CHECK_STYLE)
 
 IF(DEVELOPER_ENABLE_TESTS)
 ########## PREPARE GTEST LIBRARY ##########
-  ADD_SUBDIRECTORY(${CMAKE_SOURCE_DIR}/tests/googletest/googletest googletest)
+  ADD_DEFINITIONS(-DPROJECT_TEST_SOURCES_DIR="${CMAKE_SOURCE_DIR}/tests")
+  ADD_SUBDIRECTORY(${CMAKE_SOURCE_DIR}/tests/gtest gtest)
   INCLUDE_DIRECTORIES(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 ########## PREPARE GTEST LIBRARY ##########
 
@@ -1120,7 +1123,14 @@ IF(DEVELOPER_ENABLE_TESTS)
   )
 
   TARGET_LINK_LIBRARIES(unit_tests gtest gtest_main ${PROJECT_CORE_ENGINE_LIBRARY} common json-c)
-
   ADD_TEST_TARGET(unit_tests)
   SET_PROPERTY(TARGET unit_tests PROPERTY FOLDER "Unit tests")
+
+  #Mock tests
+  ADD_EXECUTABLE(mock_tests
+    ${CMAKE_SOURCE_DIR}/tests/mock_tests/test_connections.cpp global/global.cpp
+  )
+  TARGET_LINK_LIBRARIES(mock_tests gmock gmock_main ${PROJECT_CORE_ENGINE_LIBRARY} common json-c)
+  ADD_TEST_TARGET(mock_tests)
+  SET_PROPERTY(TARGET mock_tests PROPERTY FOLDER "Mock tests")
 ENDIF(DEVELOPER_ENABLE_TESTS)

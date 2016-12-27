@@ -56,8 +56,6 @@ extern "C" {
 #include <common/utils.h>           // for c_strornull, usleep, etc
 #include <common/value.h>           // for ErrorValue, etc
 
-#include <common/qt/logger.h>  // for LOG_MSG
-
 #include "core/icommand_translator.h"  // for translator_t, etc
 
 #include "core/command_holder.h"   // for CommandHolder
