@@ -25,13 +25,13 @@
 #include <common/macros.h>  // for CHECK
 #include <common/value.h>   // for ErrorValue
 
-#include "proxy/server/iserver.h"  // for IServer
 #include "core/server/iserver_info.h"
-#include "proxy/events/events_info.h"  // for DiscoveryInfoResponce
-
-#include "proxy/db/redis/database.h"    // for Database
-#include "proxy/db/redis/driver.h"      // for Driver
 #include "core/db/redis/server_info.h"  // for ServerInfo, etc
+
+#include "proxy/server/iserver.h"      // for IServer
+#include "proxy/events/events_info.h"  // for DiscoveryInfoResponce
+#include "proxy/db/redis/database.h"   // for Database
+#include "proxy/db/redis/driver.h"     // for Driver
 
 namespace fastonosql {
 namespace proxy {
@@ -68,16 +68,15 @@ IDatabaseSPtr Server::CreateDatabase(core::IDataBaseInfoSPtr info) {
 }
 
 void Server::HandleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev) {
-  auto v = ev->value();
+  const events_info::DiscoveryInfoResponce v = ev->value();
   common::Error err = v.errorInfo();
   if (err && err->isError()) {
     IServer::HandleDiscoveryInfoResponceEvent(ev);
     return;
   }
 
-  struct core::redis::ServerInfo* rinf =
-      dynamic_cast<struct core::redis::ServerInfo*>(v.sinfo.get());  // +
-  CHECK(rinf);
+  core::IServerInfoSPtr serv_info = v.sinfo;
+  core::redis::ServerInfo* rinf = static_cast<core::redis::ServerInfo*>(serv_info.get());
   if (rinf->replication_.role_ == "master") {
     role_ = core::MASTER;
   } else if (rinf->replication_.role_ == "slave") {

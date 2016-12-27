@@ -21,10 +21,9 @@
 #include <string>
 
 #include "core/connection_types.h"  // for core::connectionTypes
-#include "proxy/proxy_fwd.h"
-#include "core/icommand_translator.h"
-
 #include "core/database/idatabase_info.h"
+
+#include "proxy/proxy_fwd.h"
 
 namespace fastonosql {
 namespace proxy {
@@ -50,14 +49,12 @@ class IDatabase {
 
   IServerSPtr Server() const;
   core::IDataBaseInfoSPtr Info() const;
-  core::translator_t Translator() const;
 
   core::connectionTypes Type() const;
   bool IsDefault() const;
   std::string Name() const;
 
   void LoadContent(const events_info::LoadDatabaseContentRequest& req);
-
   void Execute(const events_info::ExecuteInfoRequest& req);
 
  protected:

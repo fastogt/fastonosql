@@ -129,7 +129,7 @@ std::string IServer::NsSeparator() const {
   return drv_->NsSeparator();
 }
 
-proxy::IDatabaseSPtr IServer::CreateDatabaseByInfo(core::IDataBaseInfoSPtr inf) {
+IDatabaseSPtr IServer::CreateDatabaseByInfo(core::IDataBaseInfoSPtr inf) {
   database_t db = FindDatabase(inf);
   return db ? CreateDatabase(inf) : IDatabaseSPtr();
 }

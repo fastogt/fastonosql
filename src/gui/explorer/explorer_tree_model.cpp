@@ -203,6 +203,10 @@ int ExplorerTreeModel::columnCount(const QModelIndex& parent) const {
 }
 
 void ExplorerTreeModel::addCluster(proxy::IClusterSPtr cluster) {
+  if (!cluster) {
+    return;
+  }
+
   ExplorerClusterItem* cl = findClusterItem(cluster);
   if (!cl) {
     common::qt::gui::TreeItem* parent = root_;
@@ -214,6 +218,10 @@ void ExplorerTreeModel::addCluster(proxy::IClusterSPtr cluster) {
 }
 
 void ExplorerTreeModel::removeCluster(proxy::IClusterSPtr cluster) {
+  if (!cluster) {
+    return;
+  }
+
   ExplorerClusterItem* serverItem = findClusterItem(cluster);
   if (serverItem) {
     removeItem(QModelIndex(), serverItem);
@@ -236,6 +244,10 @@ void ExplorerTreeModel::addServer(proxy::IServerSPtr server) {
 }
 
 void ExplorerTreeModel::removeServer(proxy::IServerSPtr server) {
+  if (!server) {
+    return;
+  }
+
   ExplorerServerItem* serverItem = findServerItem(server.get());
   if (serverItem) {
     removeItem(QModelIndex(), serverItem);
@@ -243,6 +255,10 @@ void ExplorerTreeModel::removeServer(proxy::IServerSPtr server) {
 }
 
 void ExplorerTreeModel::addSentinel(proxy::ISentinelSPtr sentinel) {
+  if (!sentinel) {
+    return;
+  }
+
   ExplorerSentinelItem* cl = findSentinelItem(sentinel);
   if (!cl) {
     common::qt::gui::TreeItem* parent = root_;
@@ -254,6 +270,10 @@ void ExplorerTreeModel::addSentinel(proxy::ISentinelSPtr sentinel) {
 }
 
 void ExplorerTreeModel::removeSentinel(proxy::ISentinelSPtr sentinel) {
+  if (!sentinel) {
+    return;
+  }
+
   ExplorerSentinelItem* serverItem = findSentinelItem(sentinel);
   if (serverItem) {
     removeItem(QModelIndex(), serverItem);

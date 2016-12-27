@@ -23,7 +23,6 @@
 
 #include <common/macros.h>  // for DCHECK_EQ, CHECK
 
-#include "proxy/events/events_info.h"  // for ClearDatabaseRequest, etc
 #include "proxy/server/iserver.h"      // for IServer
 
 namespace fastonosql {
@@ -38,12 +37,12 @@ IDatabase::IDatabase(IServerSPtr server, core::IDataBaseInfoSPtr info)
 
 IDatabase::~IDatabase() {}
 
-core::connectionTypes IDatabase::Type() const {
-  return info_->Type();
-}
-
 IServerSPtr IDatabase::Server() const {
   return server_;
+}
+
+core::connectionTypes IDatabase::Type() const {
+  return info_->Type();
 }
 
 bool IDatabase::IsDefault() const {
@@ -62,10 +61,6 @@ void IDatabase::LoadContent(const events_info::LoadDatabaseContentRequest& req) 
 
 core::IDataBaseInfoSPtr IDatabase::Info() const {
   return info_;
-}
-
-core::translator_t IDatabase::Translator() const {
-  return server_->Translator();
 }
 
 void IDatabase::Execute(const events_info::ExecuteInfoRequest& req) {

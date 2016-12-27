@@ -231,9 +231,6 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void KeyTTLLoad(core::NKey key, core::ttl_t ttl);
 
  private:
-  core::IServerInfoSPtr server_info_;
-  database_t current_database_info_;
-
   void HandleCheckDBKeys(core::IDataBaseInfoSPtr db, core::ttl_t expired_time);
 
   void HandleEnterModeEvent(events::EnterModeEvent* ev);
@@ -244,6 +241,9 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void HandleClearServerHistoryResponceEvent(events::ClearServerHistoryResponceEvent* ev);
 
   void ProcessDiscoveryInfo(const events_info::DiscoveryInfoRequest& req);
+
+  core::IServerInfoSPtr server_info_;
+  database_t current_database_info_;
   int timer_check_key_exists_id_;
 };
 

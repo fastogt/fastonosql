@@ -174,7 +174,8 @@ void ExplorerDatabaseItem::setDefault() {
   proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
 
-  core::translator_t tran = dbs->Translator();
+  proxy::IServerSPtr server = dbs->Server();
+  core::translator_t tran = server->Translator();
   std::string cmd_str;
   common::Error err = tran->SelectDBCommand(dbs->Name(), &cmd_str);
   if (err && err->isError()) {
@@ -193,7 +194,8 @@ core::IDataBaseInfoSPtr ExplorerDatabaseItem::info() const {
 void ExplorerDatabaseItem::renameKey(const core::NKey& key, const QString& newName) {
   proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  core::translator_t tran = dbs->Translator();
+  proxy::IServerSPtr server = dbs->Server();
+  core::translator_t tran = server->Translator();
   std::string cmd_str;
   common::Error err = tran->RenameKeyCommand(key, common::ConvertToString(newName), &cmd_str);
   if (err && err->isError()) {
@@ -208,7 +210,8 @@ void ExplorerDatabaseItem::renameKey(const core::NKey& key, const QString& newNa
 void ExplorerDatabaseItem::removeKey(const core::NKey& key) {
   proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  core::translator_t tran = dbs->Translator();
+  proxy::IServerSPtr server = dbs->Server();
+  core::translator_t tran = server->Translator();
   std::string cmd_str;
   common::Error err = tran->DeleteKeyCommand(key, &cmd_str);
   if (err && err->isError()) {
@@ -223,7 +226,8 @@ void ExplorerDatabaseItem::removeKey(const core::NKey& key) {
 void ExplorerDatabaseItem::loadValue(const core::NDbKValue& key) {
   proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  core::translator_t tran = dbs->Translator();
+  proxy::IServerSPtr server = dbs->Server();
+  core::translator_t tran = server->Translator();
   std::string cmd_str;
   common::Error err = tran->LoadKeyCommand(key.Key(), key.Type(), &cmd_str);
   if (err && err->isError()) {
@@ -238,7 +242,8 @@ void ExplorerDatabaseItem::loadValue(const core::NDbKValue& key) {
 void ExplorerDatabaseItem::watchKey(const core::NDbKValue& key, int interval) {
   proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  core::translator_t tran = dbs->Translator();
+  proxy::IServerSPtr server = dbs->Server();
+  core::translator_t tran = server->Translator();
   std::string cmd_str;
   common::Error err = tran->LoadKeyCommand(key.Key(), key.Type(), &cmd_str);
   if (err && err->isError()) {
@@ -254,7 +259,8 @@ void ExplorerDatabaseItem::watchKey(const core::NDbKValue& key, int interval) {
 void ExplorerDatabaseItem::createKey(const core::NDbKValue& key) {
   proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  core::translator_t tran = dbs->Translator();
+  proxy::IServerSPtr server = dbs->Server();
+  core::translator_t tran = server->Translator();
   std::string cmd_str;
   common::Error err = tran->CreateKeyCommand(key, &cmd_str);
   if (err && err->isError()) {
@@ -269,7 +275,8 @@ void ExplorerDatabaseItem::createKey(const core::NDbKValue& key) {
 void ExplorerDatabaseItem::editKey(const core::NDbKValue& key, const core::NValue& value) {
   proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  core::translator_t tran = dbs->Translator();
+  proxy::IServerSPtr server = dbs->Server();
+  core::translator_t tran = server->Translator();
   std::string cmd_str;
   core::NDbKValue copy_key = key;
   copy_key.SetValue(value);
@@ -286,7 +293,8 @@ void ExplorerDatabaseItem::editKey(const core::NDbKValue& key, const core::NValu
 void ExplorerDatabaseItem::setTTL(const core::NKey& key, core::ttl_t ttl) {
   proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  core::translator_t tran = dbs->Translator();
+  proxy::IServerSPtr server = dbs->Server();
+  core::translator_t tran = server->Translator();
   std::string cmd_str;
   common::Error err = tran->ChangeKeyTTLCommand(key, ttl, &cmd_str);
   if (err && err->isError()) {
@@ -301,7 +309,8 @@ void ExplorerDatabaseItem::setTTL(const core::NKey& key, core::ttl_t ttl) {
 void ExplorerDatabaseItem::removeAllKeys() {
   proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  core::translator_t tran = dbs->Translator();
+  proxy::IServerSPtr server = dbs->Server();
+  core::translator_t tran = server->Translator();
   std::string cmd_str;
   common::Error err = tran->FlushDBCommand(&cmd_str);
   if (err && err->isError()) {
