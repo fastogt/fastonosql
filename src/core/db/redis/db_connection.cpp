@@ -1086,9 +1086,7 @@ common::Error DBConnection::ExecuteAsPipeline(
   std::vector<FastoObjectCommandIPtr> valid_cmds;
   for (size_t i = 0; i < cmds.size(); ++i) {
     FastoObjectCommandIPtr cmd = cmds[i];
-    common::CommandValue* cmdc = cmd->Cmd();
-
-    std::string command = cmdc->inputCommand();
+    std::string command = cmd->InputCommand();
     const char* ccommand = common::utils::c_strornull(command);
     if (!ccommand) {
       continue;

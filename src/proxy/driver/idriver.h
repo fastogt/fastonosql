@@ -127,10 +127,10 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   common::Error Execute(core::FastoObjectCommandIPtr cmd) WARN_UNUSED_RESULT;
   virtual core::FastoObjectCommandIPtr CreateCommand(core::FastoObject* parent,
                                                      const std::string& input,
-                                                     common::Value::CommandLoggingType ct) = 0;
+                                                     core::CmdLoggingType ct) = 0;
 
   virtual core::FastoObjectCommandIPtr CreateCommandFast(const std::string& input,
-                                                         common::Value::CommandLoggingType ct) = 0;
+                                                         core::CmdLoggingType ct) = 0;
 
  private:
   virtual common::Error SyncConnect() WARN_UNUSED_RESULT = 0;

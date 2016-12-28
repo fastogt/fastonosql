@@ -74,11 +74,11 @@ class Driver : public IDriverRemote {
 
   virtual core::FastoObjectCommandIPtr CreateCommand(core::FastoObject* parent,
                                                      const std::string& input,
-                                                     common::Value::CommandLoggingType ct) override;
+                                                     core::CmdLoggingType ct) override;
 
   virtual core::FastoObjectCommandIPtr CreateCommandFast(
       const std::string& input,
-      common::Value::CommandLoggingType ct) override;
+      core::CmdLoggingType ct) override;
 
   virtual common::Error SyncConnect() override WARN_UNUSED_RESULT;
   virtual common::Error SyncDisconnect() override WARN_UNUSED_RESULT;

@@ -108,7 +108,7 @@ ExecuteInfoRequest::ExecuteInfoRequest(initiator_type sender,
                                        common::time64_t msec_repeat_interval,
                                        bool history,
                                        bool silence,
-                                       common::Value::CommandLoggingType logtype,
+                                       core::CmdLoggingType logtype,
                                        error_type er)
     : base_class(sender, er),
       text(text),

@@ -22,17 +22,16 @@
 
 #include "core/global.h"  // for FastoObject (ptr only), etc
 
-namespace common {
-class CommandValue;
-}
-
 namespace fastonosql {
 namespace proxy {
 namespace redis {
 
 class Command : public core::FastoObjectCommand {
  public:
-  Command(core::FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter);
+  Command(core::FastoObject* parent,
+          common::StringValue* cmd,
+          core::CmdLoggingType ct,
+          const std::string& delimiter);
 };
 
 }  // namespace redis

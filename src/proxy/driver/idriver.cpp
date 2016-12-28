@@ -150,10 +150,8 @@ common::Error IDriver::Execute(core::FastoObjectCommandIPtr cmd) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
 
-  common::CommandValue* icmd = cmd->Cmd();
-  const std::string command = icmd->inputCommand();
   LOG_COMMAND(cmd);
-  common::Error err = ExecuteImpl(command, cmd.get());
+  common::Error err = ExecuteImpl(cmd->InputCommand(), cmd.get());
   return err;
 }
 
@@ -363,7 +361,7 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
   const size_t repeat = res.repeat;
   const bool history = res.history;
   const common::time64_t msec_repeat_interval = res.msec_repeat_interval;
-  const common::Value::CommandLoggingType log_type = res.logtype;
+  const core::CmdLoggingType log_type = res.logtype;
   RootLocker* lock =
       history ? new RootLocker(this, sender, inputLine, silence)
               : new FirstChildUpdateRootLocker(this, sender, inputLine, silence, commands);

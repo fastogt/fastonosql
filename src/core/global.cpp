@@ -98,25 +98,22 @@ void FastoObject::SetValue(value_t val) {
 }
 
 FastoObjectCommand::FastoObjectCommand(FastoObject* parent,
-                                       common::CommandValue* cmd,
+                                       common::StringValue* cmd,
+                                       CmdLoggingType ct,
                                        const std::string& delimiter,
                                        core::connectionTypes type)
-    : FastoObject(parent, cmd, delimiter), type_(type) {}
+    : FastoObject(parent, cmd, delimiter), type_(type), ct_(ct) {}
 
 FastoObjectCommand::~FastoObjectCommand() {}
-
-common::CommandValue* FastoObjectCommand::Cmd() const {
-  return static_cast<common::CommandValue*>(value_.get());
-}
 
 std::string FastoObjectCommand::ToString() const {
   return std::string();
 }
 
 std::string FastoObjectCommand::InputCmd() const {
-  common::CommandValue* command = Cmd();
-  if (command) {
-    std::pair<std::string, std::string> kv = GetKeyValueFromLine(command->inputCommand());
+  std::string input_cmd;
+  if (value_->getAsString(&input_cmd)) {
+    std::pair<std::string, std::string> kv = GetKeyValueFromLine(input_cmd);
     return kv.first;
   }
 
@@ -124,9 +121,9 @@ std::string FastoObjectCommand::InputCmd() const {
 }
 
 std::string FastoObjectCommand::InputArgs() const {
-  common::CommandValue* command = Cmd();
-  if (command) {
-    std::pair<std::string, std::string> kv = GetKeyValueFromLine(command->inputCommand());
+  std::string input_cmd;
+  if (value_->getAsString(&input_cmd)) {
+    std::pair<std::string, std::string> kv = GetKeyValueFromLine(input_cmd);
     return kv.second;
   }
 
@@ -138,21 +135,16 @@ core::connectionTypes FastoObjectCommand::ConnectionType() const {
 }
 
 std::string FastoObjectCommand::InputCommand() const {
-  common::CommandValue* command = Cmd();
-  if (command) {
-    return command->inputCommand();
+  std::string input_cmd;
+  if (value_->getAsString(&input_cmd)) {
+    return input_cmd;
   }
 
   return std::string();
 }
 
-common::Value::CommandLoggingType FastoObjectCommand::CommandLoggingType() const {
-  common::CommandValue* command = Cmd();
-  if (command) {
-    return command->commandLoggingType();
-  }
-
-  return common::Value::C_UNKNOWN;
+CmdLoggingType FastoObjectCommand::CommandLoggingType() const {
+  return ct_;
 }
 
 std::pair<std::string, std::string> GetKeyValueFromLine(const std::string& input) {

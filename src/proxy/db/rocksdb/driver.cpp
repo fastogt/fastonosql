@@ -102,12 +102,12 @@ void Driver::ClearImpl() {}
 
 core::FastoObjectCommandIPtr Driver::CreateCommand(core::FastoObject* parent,
                                              const std::string& input,
-                                             common::Value::CommandLoggingType ct) {
+                                             core::CmdLoggingType ct) {
   return proxy::CreateCommand<rocksdb::Command>(parent, input, ct);
 }
 
 core::FastoObjectCommandIPtr Driver::CreateCommandFast(const std::string& input,
-                                                 common::Value::CommandLoggingType ct) {
+                                                 core::CmdLoggingType ct) {
   return proxy::CreateCommandFast<rocksdb::Command>(input, ct);
 }
 
@@ -126,7 +126,7 @@ common::Error Driver::ExecuteImpl(const std::string& command, core::FastoObject*
 }
 
 common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
-  core::FastoObjectCommandIPtr cmd = CreateCommandFast(ROCKSDB_INFO_REQUEST, common::Value::C_INNER);
+  core::FastoObjectCommandIPtr cmd = CreateCommandFast(ROCKSDB_INFO_REQUEST, core::C_INNER);
   LOG_COMMAND(cmd);
   core::rocksdb::ServerInfo::Stats cm;
   common::Error err = impl_->Info(nullptr, &cm);
@@ -152,7 +152,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   NotifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
   std::string patternResult = common::MemSPrintf(ROCKSDB_GET_KEYS_PATTERN_1ARGS_I, res.count_keys);
-  core::FastoObjectCommandIPtr cmd = CreateCommandFast(patternResult, common::Value::C_INNER);
+  core::FastoObjectCommandIPtr cmd = CreateCommandFast(patternResult, core::C_INNER);
   NotifyProgress(sender, 50);
   common::Error err = Execute(cmd);
   if (err && err->isError()) {

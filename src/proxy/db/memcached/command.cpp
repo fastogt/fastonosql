@@ -24,8 +24,11 @@ namespace fastonosql {
 namespace proxy {
 namespace memcached {
 
-Command::Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter)
-    : FastoObjectCommand(parent, cmd, delimiter, core::MEMCACHED) {}
+Command::Command(core::FastoObject* parent,
+                 common::StringValue* cmd,
+                 core::CmdLoggingType ct,
+                 const std::string& delimiter)
+    : FastoObjectCommand(parent, cmd, ct, delimiter, core::MEMCACHED) {}
 
 }  // namespace memcached
 }  // namespace core

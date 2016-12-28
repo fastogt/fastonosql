@@ -631,7 +631,7 @@ void IServer::HandleCheckDBKeys(core::IDataBaseInfoSPtr db, core::ttl_t expired_
           return;
         }
         proxy::events_info::ExecuteInfoRequest req(this, load_ttl_cmd, 0, 0, true, true,
-                                                   common::Value::C_INNER);
+                                                   core::C_INNER);
         Execute(req);
       } else {
         if (db->UpdateKeyTTL(nkey, new_ttl)) {

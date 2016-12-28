@@ -55,7 +55,7 @@ CommandsWidget::CommandsWidget(QWidget* parent) : QWidget(parent), logTextEdit_(
 
 void CommandsWidget::addCommand(core::FastoObjectCommandIPtr command) {
   QTime time = QTime::currentTime();
-  logTextEdit_->setTextColor(command->CommandLoggingType() == common::Value::C_INNER
+  logTextEdit_->setTextColor(command->CommandLoggingType() == core::C_INNER
                                  ? QColor(Qt::gray)
                                  : QColor(Qt::black));
   QString mess = common::ConvertFromString<QString>(command->InputCommand());

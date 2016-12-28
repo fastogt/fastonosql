@@ -71,6 +71,8 @@ const QString trCantReadTemplate_2S = QObject::tr(PROJECT_NAME_TITLE " can't rea
 const QString trCantSaveTemplate_2S = QObject::tr(PROJECT_NAME_TITLE " can't save to %1:\n%2.");
 const QString trAdvancedOptions = QObject::tr("Advanced options");
 const QString trCalculating = QObject::tr("Calculate...");
+const QString trIntervalMsec = QObject::tr("Interval msec:");
+const QString trRepeat = QObject::tr("Repeat:");
 }
 
 namespace fastonosql {
@@ -200,20 +202,20 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server,
   QVBoxLayout* advOptLayout = new QVBoxLayout;
 
   QHBoxLayout* repeatLayout = new QHBoxLayout;
-  QLabel* repeatLabel = new QLabel(translations::trRepeat);
+  QLabel* repeatLabel = new QLabel(trRepeat);
   repeatCount_ = new QSpinBox;
   repeatCount_->setRange(0, INT32_MAX);
   repeatCount_->setSingleStep(1);
-  repeatLayout->addWidget(repeatCount_);
   repeatLayout->addWidget(repeatLabel);
+  repeatLayout->addWidget(repeatCount_);
 
   QHBoxLayout* intervalLayout = new QHBoxLayout;
-  QLabel* intervalLabel = new QLabel(translations::trInterval);
+  QLabel* intervalLabel = new QLabel(trIntervalMsec);
   intervalMsec_ = new QSpinBox;
   intervalMsec_->setRange(0, INT32_MAX);
   intervalMsec_->setSingleStep(1000);
-  intervalLayout->addWidget(intervalMsec_);
   intervalLayout->addWidget(intervalLabel);
+  intervalLayout->addWidget(intervalMsec_);  
 
   historyCall_ = new QCheckBox(translations::trHistory);
   historyCall_->setChecked(true);

@@ -28,7 +28,10 @@ namespace lmdb {
 
 class Command : public core::FastoObjectCommand {
  public:
-  Command(core::FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter);
+  Command(FastoObject* parent,
+          common::StringValue* cmd,
+          core::CmdLoggingType ct,
+          const std::string& delimiter);
 };
 
 }  // namespace lmdb

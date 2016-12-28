@@ -32,6 +32,8 @@
 namespace fastonosql {
 namespace core {
 
+enum CmdLoggingType { C_UNKNOWN, C_USER, C_INNER };
+
 class FastoObject;
 class FastoObjectCommand;
 
@@ -53,6 +55,7 @@ class FastoObject : public common::intrusive_ptr_base<FastoObject> {
    public:
     virtual void ChildrenAdded(child_t child) = 0;
     virtual void Updated(FastoObject* item, value_t val) = 0;
+    virtual ~IFastoObjectObserver() {}
   };
 
   FastoObject(FastoObject* parent,
@@ -89,7 +92,6 @@ class FastoObject : public common::intrusive_ptr_base<FastoObject> {
 class FastoObjectCommand : public FastoObject {
  public:
   virtual ~FastoObjectCommand();
-  common::CommandValue* Cmd() const;
   virtual std::string ToString() const override;
 
   virtual std::string InputCmd() const;
@@ -98,11 +100,12 @@ class FastoObjectCommand : public FastoObject {
   core::connectionTypes ConnectionType() const;
 
   std::string InputCommand() const;
-  common::Value::CommandLoggingType CommandLoggingType() const;
+  CmdLoggingType CommandLoggingType() const;
 
  protected:
   FastoObjectCommand(FastoObject* parent,
-                     common::CommandValue* cmd,
+                     common::StringValue* cmd,
+                     CmdLoggingType ct,
                      const std::string& delimiter,
                      core::connectionTypes type);
 
@@ -110,6 +113,7 @@ class FastoObjectCommand : public FastoObject {
   DISALLOW_COPY_AND_ASSIGN(FastoObjectCommand);
 
   const core::connectionTypes type_;
+  const CmdLoggingType ct_;
 };
 
 std::pair<std::string, std::string> GetKeyValueFromLine(const std::string& input);

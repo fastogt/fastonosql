@@ -220,7 +220,6 @@ const QIcon& GuiFactory::icon(common::Value::Type type) const {
     case common::Value::TYPE_ERROR:
       static QIcon er(":" PROJECT_NAME_LOWERCASE "/images/64x64/error.png");
       return er;
-    case common::Value::TYPE_COMMAND:
     default:
       static QIcon err(":" PROJECT_NAME_LOWERCASE "/images/64x64/error.png");
       DNOTREACHED();

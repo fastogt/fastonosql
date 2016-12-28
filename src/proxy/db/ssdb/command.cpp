@@ -22,8 +22,11 @@ namespace fastonosql {
 namespace proxy {
 namespace ssdb {
 
-Command::Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter)
-    : FastoObjectCommand(parent, cmd, delimiter, core::SSDB) {}
+Command::Command(FastoObject* parent,
+                 common::StringValue* cmd,
+                 core::CmdLoggingType ct,
+                 const std::string& delimiter)
+    : FastoObjectCommand(parent, cmd, ct, delimiter, core::SSDB) {}
 
 }  // namespace ssdb
 }  // namespace core
