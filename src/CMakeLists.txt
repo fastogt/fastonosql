@@ -1122,7 +1122,7 @@ IF(DEVELOPER_ENABLE_TESTS)
   ADD_EXECUTABLE(mock_tests
     ${CMAKE_SOURCE_DIR}/tests/mock_tests/test_connections.cpp
   )
-  TARGET_LINK_LIBRARIES(mock_tests gmock gmock_main ${PROJECT_CORE_ENGINE_LIBRARY} common json-c)
+  TARGET_LINK_LIBRARIES(mock_tests gmock gmock_main ${PROJECT_CORE_ENGINE_LIBRARY} common json-c z)
   ADD_TEST_TARGET(mock_tests)
   SET_PROPERTY(TARGET mock_tests PROPERTY FOLDER "Mock tests")
 ENDIF(DEVELOPER_ENABLE_TESTS)

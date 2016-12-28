@@ -19,7 +19,7 @@ core::internal::CommandHandler* ghand = NULL;
 common::Error test(core::internal::CommandHandler* handler,
                    int argc,
                    const char** argv,
-                   FastoObject* out) {
+                   core::FastoObject* out) {
   UNUSED(argc);
   UNUSED(argv);
 

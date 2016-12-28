@@ -30,6 +30,7 @@ class IDataBaseInfo;
 
 namespace fastonosql {
 namespace core {
+
 class CDBConnectionClient {
  public:
   virtual void OnFlushedCurrentDB() = 0;
@@ -42,5 +43,6 @@ class CDBConnectionClient {
   virtual void OnKeyTTLLoaded(const NKey& key, ttl_t ttl) = 0;
   virtual void OnQuited() = 0;
 };
+
 }  // namespace core
 }  // namespace fastonosql

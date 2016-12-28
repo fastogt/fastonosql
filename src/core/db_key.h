@@ -75,6 +75,10 @@ class NKey {
   ttl_t ttl_;
 };
 
+inline bool operator==(const NKey& r, const NKey& l) {
+  return r.Key() == l.Key() && r.TTL() == l.TTL();
+}
+
 typedef std::vector<NKey> NKeys;
 typedef common::ValueSPtr NValue;
 
@@ -99,6 +103,10 @@ class NDbKValue {
   NKey key_;
   NValue value_;
 };
+
+inline bool operator==(const NDbKValue& r, const NDbKValue& l) {
+  return r.Key() == l.Key() && r.Value()->equals(l.Value().get());
+}
 
 typedef std::vector<NDbKValue> NDbKValues;
 

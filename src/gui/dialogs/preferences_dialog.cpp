@@ -122,7 +122,7 @@ PreferencesDialog::PreferencesDialog(QWidget* parent) : QDialog(parent) {
   defaultViewComboBox_ = new QComboBox;
   for (size_t i = 0; i < SIZEOFMASS(proxy::viewsText); ++i) {
     std::string vstr = proxy::viewsText[i];
-    defaultViewComboBox_->addItem(common::ConvertFromString<QString>(vstr), i);
+    defaultViewComboBox_->addItem(common::ConvertFromString<QString>(vstr), static_cast<int>(i));
   }
   generalLayout->addWidget(defaultViewLabel_, 5, 0);
   generalLayout->addWidget(defaultViewComboBox_, 5, 1);
