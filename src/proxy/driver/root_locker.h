@@ -22,7 +22,7 @@
 
 #include <common/types.h>  // for time64_t
 
-#include "global/global.h"  // for FastoObjectIPtr, etc
+#include "core/global.h"  // for FastoObjectIPtr, etc
 
 class QObject;
 namespace fastonosql {
@@ -34,20 +34,20 @@ class IDriver;
 namespace fastonosql {
 namespace proxy {
 
-class RootLocker : FastoObject::IFastoObjectObserver {
+class RootLocker : core::FastoObject::IFastoObjectObserver {
  public:
   RootLocker(IDriver* parent, QObject* receiver, const std::string& text, bool silence);
   virtual ~RootLocker();
 
-  FastoObjectIPtr Root() const;
+  core::FastoObjectIPtr Root() const;
 
  protected:
   // notification of execute events
-  virtual void ChildrenAdded(FastoObjectIPtr child) override;
-  virtual void Updated(FastoObject* item, FastoObject::value_t val) override;
+  virtual void ChildrenAdded(core::FastoObjectIPtr child) override;
+  virtual void Updated(core::FastoObject* item, core::FastoObject::value_t val) override;
 
  private:
-  FastoObjectIPtr root_;
+  core::FastoObjectIPtr root_;
   IDriver* parent_;
   QObject* receiver_;
   const common::time64_t tstart_;

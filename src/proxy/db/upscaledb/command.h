@@ -20,15 +20,15 @@
 
 #include <string>
 
-#include "global/global.h"
+#include "core/global.h"
 
 namespace fastonosql {
 namespace proxy {
 namespace upscaledb {
 
-class Command : public FastoObjectCommand {
+class Command : public core::FastoObjectCommand {
  public:
-  Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter);
+  Command(core::FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter);
 };
 
 }  // namespace upscaledb

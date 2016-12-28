@@ -32,8 +32,7 @@
 #include <common/macros.h>          // for VERIFY
 #include <common/value.h>           // for Value, etc
 
-#include "global/global.h"
-#include "global/types.h"  // for Command
+#include "core/global.h"
 
 #include "translations/global.h"  // for trClearAll
 
@@ -54,7 +53,7 @@ CommandsWidget::CommandsWidget(QWidget* parent) : QWidget(parent), logTextEdit_(
   retranslateUi();
 }
 
-void CommandsWidget::addCommand(FastoObjectCommandIPtr command) {
+void CommandsWidget::addCommand(core::FastoObjectCommandIPtr command) {
   QTime time = QTime::currentTime();
   logTextEdit_->setTextColor(command->CommandLoggingType() == common::Value::C_INNER
                                  ? QColor(Qt::gray)

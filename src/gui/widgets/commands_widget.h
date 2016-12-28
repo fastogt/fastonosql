@@ -20,7 +20,7 @@
 
 #include <QWidget>
 
-#include "global/global.h"
+#include "core/global.h"
 
 class QAction;  // lines 24-24
 class QEvent;
@@ -35,7 +35,7 @@ class CommandsWidget : public QWidget {
   explicit CommandsWidget(QWidget* parent = 0);
 
  public Q_SLOTS:
-  void addCommand(FastoObjectCommandIPtr command);
+  void addCommand(core::FastoObjectCommandIPtr command);
 
  private Q_SLOTS:
   void showContextMenu(const QPoint& pt);

@@ -38,7 +38,7 @@
 #include "core/db/memcached/command_translator.h"
 #include "core/db/memcached/internal/commands_api.h"
 
-#include "global/global.h"  // for FastoObject, etc
+#include "core/global.h"  // for FastoObject, etc
 
 namespace {
 

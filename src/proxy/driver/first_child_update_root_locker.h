@@ -23,7 +23,7 @@
 
 #include "proxy/driver/root_locker.h"  // for RootLocker
 
-#include "global/global.h"  // for FastoObjectIPtr, etc
+#include "core/global.h"  // for FastoObjectIPtr, etc
 
 class QObject;
 namespace fastonosql {
@@ -45,13 +45,13 @@ class FirstChildUpdateRootLocker : public RootLocker {
 
  private:
   // notification of execute events
-  virtual void ChildrenAdded(FastoObjectIPtr child) override;
+  virtual void ChildrenAdded(core::FastoObjectIPtr child) override;
 
-  FastoObjectIPtr FindCmdChildNode(FastoObjectIPtr child) const;
-  FastoObjectIPtr FindWatchedCmd(FastoObjectCommand* cmd) const;
+  core::FastoObjectIPtr FindCmdChildNode(core::FastoObjectIPtr child) const;
+  core::FastoObjectIPtr FindWatchedCmd(core::FastoObjectCommand* cmd) const;
 
   const std::vector<std::string> commands_;
-  std::vector<FastoObjectIPtr> watched_cmds_;
+  std::vector<core::FastoObjectIPtr> watched_cmds_;
 };
 
 }  // namespace proxy

@@ -16,18 +16,33 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "proxy/types.h"
 
-#include <string>
+#include <stddef.h>  // for size_t
+
+#include <common/convert2string.h>
+#include <common/macros.h>  // for SIZEOFMASS
 
 namespace fastonosql {
-
-enum supportedViews { Tree = 0, Table, Text };
-
-static const std::string viewsText[] = {"Tree", "Table", "Text"};
-
+namespace proxy {}  // namespace proxy
 }  // namespace fastonosql
 
 namespace common {
-std::string ConvertToStsring(fastonosql::supportedViews v);
+
+std::string ConvertToString(fastonosql::proxy::supportedViews v) {
+  return fastonosql::proxy::viewsText[v];
+}
+
+template <>
+fastonosql::proxy::supportedViews ConvertFromString(const std::string& from) {
+  for (size_t i = 0; i < SIZEOFMASS(fastonosql::proxy::viewsText); ++i) {
+    if (from == fastonosql::proxy::viewsText[i]) {
+      return static_cast<fastonosql::proxy::supportedViews>(i);
+    }
+  }
+
+  DNOTREACHED();
+  return fastonosql::proxy::Tree;
+}
+
 }  // namespace common

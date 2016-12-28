@@ -20,15 +20,15 @@
 
 #include <string>  // for string
 
-#include "global/global.h"  // for FastoObject (ptr only), etc
+#include "core/global.h"  // for FastoObject (ptr only), etc
 
 namespace fastonosql {
 namespace proxy {
 namespace rocksdb {
 
-class Command : public FastoObjectCommand {
+class Command : public core::FastoObjectCommand {
  public:
-  Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter);
+  Command(core::FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter);
 };
 
 }  // namespace rocksdb

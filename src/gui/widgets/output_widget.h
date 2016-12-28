@@ -23,7 +23,7 @@
 #include "proxy/proxy_fwd.h"  // for IServerSPtr
 #include "core/database/idatabase_info.h"
 
-#include "global/global.h"  // for FastoObject, etc
+#include "core/global.h"  // for FastoObject, etc
 
 class QPushButton;  // lines 27-27
 
@@ -74,8 +74,8 @@ class OutputWidget : public QWidget {
   void addKey(core::IDataBaseInfoSPtr db, core::NDbKValue key);
   void updateKey(core::IDataBaseInfoSPtr db, core::NDbKValue key);
 
-  void addChild(FastoObjectIPtr child);
-  void updateItem(FastoObject* item, common::ValueSPtr newValue);
+  void addChild(core::FastoObjectIPtr child);
+  void updateItem(core::FastoObject* item, common::ValueSPtr newValue);
 
   void setTreeView();
   void setTableView();

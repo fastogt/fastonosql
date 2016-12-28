@@ -34,7 +34,7 @@
 #include "core/database/idatabase_info.h"
 #include "core/server/iserver_info.h"  // for IDataBaseInfoSPtr, IServerInf...
 
-#include "global/global.h"  // for FastoObjectIPtr
+#include "core/global.h"  // for FastoObjectIPtr
 
 namespace fastonosql {
 namespace proxy {
@@ -148,22 +148,22 @@ struct LeaveModeInfo : public EventInfoBase {
 
 struct CommandRootCreatedInfo : public EventInfoBase {
   typedef EventInfoBase base_class;
-  CommandRootCreatedInfo(initiator_type sender, FastoObjectIPtr root, error_type er = error_type());
+  CommandRootCreatedInfo(initiator_type sender, core::FastoObjectIPtr root, error_type er = error_type());
 
-  FastoObjectIPtr root;
+  core::FastoObjectIPtr root;
 };
 
 struct CommandRootCompleatedInfo : public EventInfoBase {
   typedef EventInfoBase base_class;
   CommandRootCompleatedInfo(initiator_type sender,
-                            FastoObjectIPtr root,
+                            core::FastoObjectIPtr root,
                             error_type er = error_type());
   CommandRootCompleatedInfo(initiator_type sender,
                             common::time64_t timest,
-                            FastoObjectIPtr root,
+                            core::FastoObjectIPtr root,
                             error_type er = error_type());
 
-  FastoObjectIPtr root;
+  core::FastoObjectIPtr root;
 };
 
 struct DisConnectInfoRequest : public EventInfoBase {

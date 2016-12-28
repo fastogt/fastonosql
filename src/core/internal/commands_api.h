@@ -30,10 +30,8 @@
 #include <common/convert2string.h>
 
 #include "core/db_key.h"  // for NKey, NDbKValue, NKeys, etc
-
 #include "core/internal/cdb_connection.h"
-
-#include "global/global.h"
+#include "core/global.h"
 
 namespace fastonosql {
 namespace core {

@@ -99,7 +99,7 @@ namespace {
 struct RegisterTypes {
   RegisterTypes() {
     qRegisterMetaType<common::ValueSPtr>("common::ValueSPtr");
-    qRegisterMetaType<FastoObjectIPtr>("FastoObjectIPtr");
+    qRegisterMetaType<core::FastoObjectIPtr>("core::FastoObjectIPtr");
     qRegisterMetaType<core::NKey>("core::NKey");
     qRegisterMetaType<core::NDbKValue>("core::NDbKValue");
     qRegisterMetaType<core::IDataBaseInfoSPtr>("core::IDataBaseInfoSPtr");
@@ -144,7 +144,7 @@ IDriver::~IDriver() {
   destroy(&log_file_);
 }
 
-common::Error IDriver::Execute(FastoObjectCommandIPtr cmd) {
+common::Error IDriver::Execute(core::FastoObjectCommandIPtr cmd) {
   if (!cmd) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -367,7 +367,7 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
   RootLocker* lock =
       history ? new RootLocker(this, sender, inputLine, silence)
               : new FirstChildUpdateRootLocker(this, sender, inputLine, silence, commands);
-  FastoObjectIPtr obj = lock->Root();
+  core::FastoObjectIPtr obj = lock->Root();
   const double step = 99.0 / double(commands.size() * (repeat + 1));
   double cur_progress = 0.0;
   for (size_t r = 0; r < repeat + 1; ++r) {
@@ -383,7 +383,7 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
       NotifyProgress(sender, cur_progress);
 
       std::string command = commands[i];
-      FastoObjectCommandIPtr cmd = silence ? CreateCommandFast(command, log_type)
+      core::FastoObjectCommandIPtr cmd = silence ? CreateCommandFast(command, log_type)
                                            : CreateCommand(obj.get(), command, log_type);  //
       common::Error err = Execute(cmd);
       if (err && err->isError()) {

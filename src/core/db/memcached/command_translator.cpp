@@ -20,7 +20,7 @@
 
 #include <common/sprintf.h>
 
-#include "global/global.h"
+#include "core/global.h"
 
 #define MEMCACHED_COMMONTYPE_GET_KEY_COMMAND COMMONTYPE_GET_KEY_COMMAND
 

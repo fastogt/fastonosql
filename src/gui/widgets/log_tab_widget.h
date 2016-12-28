@@ -22,7 +22,7 @@
 
 #include <common/log_levels.h>  // for LEVEL_LOG
 
-#include "global/global.h"
+#include "core/global.h"
 
 class QEvent;
 class QWidget;
@@ -44,7 +44,7 @@ class LogTabWidget : public QTabWidget {
 
  public Q_SLOTS:
   void addLogMessage(const QString& message, common::logging::LEVEL_LOG level);
-  void addCommand(FastoObjectCommandIPtr command);
+  void addCommand(core::FastoObjectCommandIPtr command);
 
  protected:
   virtual void changeEvent(QEvent* ev) override;

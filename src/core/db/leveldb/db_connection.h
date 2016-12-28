@@ -33,7 +33,9 @@
 #include "core/db/leveldb/server_info.h"
 
 namespace fastonosql {
+namespace core {
 class FastoObject;
+}
 }
 namespace fastonosql {
 namespace core {

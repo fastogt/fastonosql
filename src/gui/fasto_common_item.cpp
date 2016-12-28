@@ -33,7 +33,7 @@
 
 #include "third-party/json-c/json-c/json_tokener.h"
 
-#include "global/global.h"  // for ConvertToString
+#include "core/global.h"  // for ConvertToString
 
 namespace fastonosql {
 namespace gui {

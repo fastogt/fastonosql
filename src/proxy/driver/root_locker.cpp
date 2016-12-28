@@ -30,14 +30,14 @@ namespace fastonosql {
 namespace proxy {
 
 RootLocker::RootLocker(IDriver* parent, QObject* receiver, const std::string& text, bool silence)
-    : FastoObject::IFastoObjectObserver(),
+    : core::FastoObject::IFastoObjectObserver(),
       parent_(parent),
       receiver_(receiver),
       tstart_(common::time::current_mstime()),
       silence_(silence) {
   DCHECK(parent_);
 
-  root_ = FastoObject::CreateRoot(text, this);
+  root_ = core::FastoObject::CreateRoot(text, this);
   if (!silence_) {
     events::CommandRootCreatedEvent::value_type res(parent_, root_);
     IDriver::Reply(receiver_, new events::CommandRootCreatedEvent(parent_, res));
@@ -51,15 +51,15 @@ RootLocker::~RootLocker() {
   }
 }
 
-FastoObjectIPtr RootLocker::Root() const {
+core::FastoObjectIPtr RootLocker::Root() const {
   return root_;
 }
 
-void RootLocker::ChildrenAdded(FastoObjectIPtr child) {
+void RootLocker::ChildrenAdded(core::FastoObjectIPtr child) {
   emit parent_->ChildAdded(child);
 }
 
-void RootLocker::Updated(FastoObject* item, FastoObject::value_t val) {
+void RootLocker::Updated(core::FastoObject* item, core::FastoObject::value_t val) {
   emit parent_->ItemUpdated(item, val);
 }
 

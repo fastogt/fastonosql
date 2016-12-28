@@ -24,10 +24,10 @@ namespace fastonosql {
 namespace proxy {
 
 CommandLogger::CommandLogger() {
-  qRegisterMetaType<FastoObjectCommandIPtr>("FastoObjectCommandIPtr");
+  qRegisterMetaType<core::FastoObjectCommandIPtr>("core::FastoObjectCommandIPtr");
 }
 
-void CommandLogger::Print(FastoObjectCommandIPtr command) {
+void CommandLogger::Print(core::FastoObjectCommandIPtr command) {
   emit Printed(command);
 }
 

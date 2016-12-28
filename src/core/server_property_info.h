@@ -23,7 +23,9 @@
 #include <vector>   // for vector
 
 namespace fastonosql {
+namespace core {
 class FastoObjectArray;
+}
 }
 
 namespace fastonosql {

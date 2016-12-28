@@ -28,7 +28,9 @@
 #include "core/icommand_translator.h"
 
 namespace fastonosql {
+namespace core {
 class FastoObject;
+}
 }  // lines 30-30
 
 namespace fastonosql {

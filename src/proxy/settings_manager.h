@@ -33,7 +33,7 @@
 #include "proxy/connection_settings/icluster_connection_settings.h"
 #include "proxy/connection_settings/isentinel_connection_settings.h"
 
-#include "global/types.h"  // for supportedViews
+#include "proxy/types.h"  // for supportedViews
 
 namespace fastonosql {
 namespace proxy {

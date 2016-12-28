@@ -29,20 +29,19 @@
 #include <common/sprintf.h>         // for MemSPrintf
 #include <common/value.h>           // for ErrorValue, etc
 
-#include "proxy/command/command.h"          // for CreateCommand, etc
+#include "proxy/command/command.h"         // for CreateCommand, etc
 #include "proxy/command/command_logger.h"  // for LOG_COMMAND
 #include "core/connection_types.h"         // for ConvertToString, etc
 #include "core/db_key.h"                   // for NDbKValue, NValue, NKey
 #include "proxy/events/events_info.h"
-#include "proxy/db/lmdb/command.h"               // for Command
+#include "proxy/db/lmdb/command.h"              // for Command
 #include "core/db/lmdb/config.h"                // for Config
 #include "proxy/db/lmdb/connection_settings.h"  // for ConnectionSettings
 #include "proxy/db/lmdb/database.h"             // for DataBaseInfo
 #include "core/db/lmdb/db_connection.h"         // for DBConnection
 #include "core/db/lmdb/server_info.h"           // for ServerInfo, etc
 
-#include "global/global.h"  // for FastoObject::childs_t, etc
-#include "global/types.h"   // for Command
+#include "core/global.h"   // for FastoObject::childs_t, etc
 
 #define LMDB_INFO_REQUEST "INFO"
 
@@ -100,14 +99,14 @@ void Driver::InitImpl() {}
 
 void Driver::ClearImpl() {}
 
-FastoObjectCommandIPtr Driver::CreateCommand(FastoObject* parent,
-                                             const std::string& input,
-                                             common::Value::CommandLoggingType ct) {
+core::FastoObjectCommandIPtr Driver::CreateCommand(core::FastoObject* parent,
+                                                   const std::string& input,
+                                                   common::Value::CommandLoggingType ct) {
   return proxy::CreateCommand<lmdb::Command>(parent, input, ct);
 }
 
-FastoObjectCommandIPtr Driver::CreateCommandFast(const std::string& input,
-                                                 common::Value::CommandLoggingType ct) {
+core::FastoObjectCommandIPtr Driver::CreateCommandFast(const std::string& input,
+                                                       common::Value::CommandLoggingType ct) {
   return proxy::CreateCommandFast<lmdb::Command>(input, ct);
 }
 
@@ -121,12 +120,12 @@ common::Error Driver::SyncDisconnect() {
   return impl_->Disconnect();
 }
 
-common::Error Driver::ExecuteImpl(const std::string& command, FastoObject* out) {
+common::Error Driver::ExecuteImpl(const std::string& command, core::FastoObject* out) {
   return impl_->Execute(command, out);
 }
 
 common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
-  FastoObjectCommandIPtr cmd = CreateCommandFast(LMDB_INFO_REQUEST, common::Value::C_INNER);
+  core::FastoObjectCommandIPtr cmd = CreateCommandFast(LMDB_INFO_REQUEST, common::Value::C_INNER);
   LOG_COMMAND(cmd);
   core::lmdb::ServerInfo::Stats cm;
   common::Error err = impl_->Info(nullptr, &cm);
@@ -153,16 +152,16 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
   std::string patternResult =
       common::MemSPrintf(GET_KEYS_PATTERN_3ARGS_ISI, res.cursor_in, res.pattern, res.count_keys);
-  FastoObjectCommandIPtr cmd = CreateCommandFast(patternResult, common::Value::C_INNER);
+  core::FastoObjectCommandIPtr cmd = CreateCommandFast(patternResult, common::Value::C_INNER);
   NotifyProgress(sender, 50);
   common::Error er = Execute(cmd);
   if (er && er->isError()) {
     res.setErrorInfo(er);
   } else {
-    FastoObject::childs_t rchildrens = cmd->Childrens();
+    core::FastoObject::childs_t rchildrens = cmd->Childrens();
     if (rchildrens.size()) {
       CHECK_EQ(rchildrens.size(), 1);
-      FastoObjectArray* array = dynamic_cast<FastoObjectArray*>(rchildrens[0].get());  // +
+      core::FastoObjectArray* array = dynamic_cast<core::FastoObjectArray*>(rchildrens[0].get());  // +
       if (!array) {
         goto done;
       }
@@ -185,8 +184,8 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         goto done;
       }
 
-      FastoObject* obj = rchildrens[0].get();
-      FastoObjectArray* arr = dynamic_cast<FastoObjectArray*>(obj);  // +
+      core::FastoObject* obj = rchildrens[0].get();
+      core::FastoObjectArray* arr = dynamic_cast<core::FastoObjectArray*>(obj);  // +
       if (!arr) {
         goto done;
       }

@@ -82,18 +82,18 @@ LeaveModeInfo::LeaveModeInfo(initiator_type sender, core::ConnectionMode mode, e
     : base_class(sender, er), mode(mode) {}
 
 CommandRootCreatedInfo::CommandRootCreatedInfo(initiator_type sender,
-                                               FastoObjectIPtr root,
+                                               core::FastoObjectIPtr root,
                                                error_type er)
     : base_class(sender, er), root(root) {}
 
 CommandRootCompleatedInfo::CommandRootCompleatedInfo(initiator_type sender,
-                                                     FastoObjectIPtr root,
+                                                     core::FastoObjectIPtr root,
                                                      error_type er)
     : base_class(sender, er), root(root) {}
 
 CommandRootCompleatedInfo::CommandRootCompleatedInfo(initiator_type sender,
                                                      common::time64_t timest,
-                                                     FastoObjectIPtr root,
+                                                     core::FastoObjectIPtr root,
                                                      error_type er)
     : base_class(sender, timest, er), root(root) {}
 

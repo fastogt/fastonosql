@@ -28,7 +28,7 @@
 
 #include "core/db/redis/db_connection.h"
 
-#include "global/global.h"
+#include "core/global.h"
 
 namespace fastonosql {
 namespace core {

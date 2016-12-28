@@ -36,7 +36,7 @@
 #include "core/database/idatabase_info.h"                    // for IDataBaseInfoSPtr, etc
 #include "core/server/iserver_info.h"                        // for IServerInfoSPtr, etc
 
-#include "global/global.h"  // for FastoObject (ptr only), etc
+#include "core/global.h"  // for FastoObject (ptr only), etc
 
 class QEvent;
 class QThread;  // lines 37-37
@@ -78,8 +78,8 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   virtual std::string NsSeparator() const = 0;
 
  Q_SIGNALS:
-  void ChildAdded(FastoObjectIPtr child);
-  void ItemUpdated(FastoObject* item, common::ValueSPtr val);
+  void ChildAdded(core::FastoObjectIPtr child);
+  void ItemUpdated(core::FastoObject* item, common::ValueSPtr val);
   void ServerInfoSnapShoot(core::ServerInfoSnapShoot shot);
 
   void FlushedDB();
@@ -124,13 +124,13 @@ class IDriver : public QObject, public core::CDBConnectionClient {
 
   const IConnectionSettingsBaseSPtr settings_;
 
-  common::Error Execute(FastoObjectCommandIPtr cmd) WARN_UNUSED_RESULT;
-  virtual FastoObjectCommandIPtr CreateCommand(FastoObject* parent,
-                                               const std::string& input,
-                                               common::Value::CommandLoggingType ct) = 0;
+  common::Error Execute(core::FastoObjectCommandIPtr cmd) WARN_UNUSED_RESULT;
+  virtual core::FastoObjectCommandIPtr CreateCommand(core::FastoObject* parent,
+                                                     const std::string& input,
+                                                     common::Value::CommandLoggingType ct) = 0;
 
-  virtual FastoObjectCommandIPtr CreateCommandFast(const std::string& input,
-                                                   common::Value::CommandLoggingType ct) = 0;
+  virtual core::FastoObjectCommandIPtr CreateCommandFast(const std::string& input,
+                                                         common::Value::CommandLoggingType ct) = 0;
 
  private:
   virtual common::Error SyncConnect() WARN_UNUSED_RESULT = 0;
@@ -140,7 +140,7 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   void HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev);
   void HandleClearServerHistoryEvent(events::ClearServerHistoryRequestEvent* ev);
 
-  virtual common::Error ExecuteImpl(const std::string& command, FastoObject* out) = 0;
+  virtual common::Error ExecuteImpl(const std::string& command, core::FastoObject* out) = 0;
 
   virtual void OnFlushedCurrentDB() override;
   virtual void OnCurrentDataBaseChanged(core::IDataBaseInfo* info) override;

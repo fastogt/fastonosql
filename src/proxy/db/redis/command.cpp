@@ -22,8 +22,8 @@ namespace fastonosql {
 namespace proxy {
 namespace redis {
 
-Command::Command(FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter)
-    : FastoObjectCommand(parent, cmd, delimiter, core::REDIS) {}
+Command::Command(core::FastoObject* parent, common::CommandValue* cmd, const std::string& delimiter)
+    : core::FastoObjectCommand(parent, cmd, delimiter, core::REDIS) {}
 
 }  // namespace redis
 }  // namespace core

@@ -28,7 +28,7 @@
 #include "core/db/rocksdb/db_connection.h"
 #include "core/db/rocksdb/server_info.h"  // for ServerInfo, etc
 
-#include "global/global.h"  // for FastoObject, etc
+#include "core/global.h"  // for FastoObject, etc
 
 namespace fastonosql {
 namespace core {

@@ -30,7 +30,9 @@
 #include "core/command_info.h"  // for CommandInfo
 
 namespace fastonosql {
+namespace core {
 class FastoObject;
+}
 }
 namespace fastonosql {
 namespace core {

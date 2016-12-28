@@ -30,6 +30,7 @@
 #include "core/connection_types.h"
 
 namespace fastonosql {
+namespace core {
 
 class FastoObject;
 class FastoObjectCommand;
@@ -128,11 +129,12 @@ class FastoObjectArray : public FastoObject {
   DISALLOW_COPY_AND_ASSIGN(FastoObjectArray);
 };
 
+}  // namespace core
 }  // namespace fastonosql
 
 namespace common {
 
-std::string ConvertToString(fastonosql::FastoObject* obj);
+std::string ConvertToString(fastonosql::core::FastoObject* obj);
 
 std::string ConvertToString(common::Value* value, const std::string& delimiter);
 std::string ConvertToString(common::ArrayValue* array, const std::string& delimiter);

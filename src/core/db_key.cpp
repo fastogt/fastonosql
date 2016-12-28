@@ -24,7 +24,7 @@
 
 #include <common/string_util.h>  // for JoinString, Tokenize
 
-#include "global/global.h"
+#include "core/global.h"
 
 namespace fastonosql {
 namespace core {

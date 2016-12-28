@@ -42,7 +42,7 @@
 #include "proxy/server/iserver.h"      // for IServer
 #include "proxy/settings_manager.h"    // for SettingsManager
 
-#include "global/types.h"  // for supportedViews, etc
+#include "proxy/types.h"  // for supportedViews, etc
 
 #include "gui/widgets/type_delegate.h"
 
@@ -60,13 +60,13 @@ namespace {
 FastoCommonItem* createItem(common::qt::gui::TreeItem* parent,
                             const std::string& key,
                             bool readOnly,
-                            FastoObject* item) {
+                            core::FastoObject* item) {
   core::NValue value = item->Value();
   core::NDbKValue nkey(core::NKey(key), value);
   return new FastoCommonItem(nkey, item->Delimiter(), readOnly, parent, item);
 }
 
-FastoCommonItem* createRootItem(FastoObject* item) {
+FastoCommonItem* createRootItem(core::FastoObject* item) {
   core::NValue value = item->Value();
   core::NDbKValue nkey(core::NKey(std::string()), value);
   return new FastoCommonItem(nkey, item->Delimiter(), true, nullptr, item);
@@ -150,7 +150,7 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent)
 }
 
 void OutputWidget::rootCreate(const proxy::events_info::CommandRootCreatedInfo& res) {
-  FastoObject* rootObj = res.root.get();
+  core::FastoObject* rootObj = res.root.get();
   fastonosql::gui::FastoCommonItem* root = createRootItem(rootObj);
   commonModel_->setRoot(root);
 }
@@ -177,15 +177,15 @@ void OutputWidget::finishExecuteCommand(const proxy::events_info::ExecuteInfoRes
   UNUSED(res);
 }
 
-void OutputWidget::addChild(FastoObjectIPtr child) {
+void OutputWidget::addChild(core::FastoObjectIPtr child) {
   DCHECK(child->Parent());
 
-  FastoObjectCommand* command = dynamic_cast<FastoObjectCommand*>(child.get());  // +
+  core::FastoObjectCommand* command = dynamic_cast<core::FastoObjectCommand*>(child.get());  // +
   if (command) {
     return;
   }
 
-  command = dynamic_cast<FastoObjectCommand*>(child->Parent());  // +
+  command = dynamic_cast<core::FastoObjectCommand*>(child->Parent());  // +
   if (command) {
     void* parentinner = command->Parent();
 
@@ -218,7 +218,7 @@ void OutputWidget::addChild(FastoObjectIPtr child) {
     }
     commonModel_->insertItem(parent, comChild);
   } else {
-    FastoObjectArray* arr = dynamic_cast<FastoObjectArray*>(child->Parent());  // +
+    core::FastoObjectArray* arr = dynamic_cast<core::FastoObjectArray*>(child->Parent());  // +
     CHECK(arr);
 
     QModelIndex parent;
@@ -244,7 +244,7 @@ void OutputWidget::addChild(FastoObjectIPtr child) {
   }
 }
 
-void OutputWidget::updateItem(FastoObject* item, common::ValueSPtr newValue) {
+void OutputWidget::updateItem(core::FastoObject* item, common::ValueSPtr newValue) {
   QModelIndex index;
   bool isFound = commonModel_->findItem(item, &index);
   if (!isFound) {
@@ -293,10 +293,10 @@ void OutputWidget::setTextView() {
 }
 
 void OutputWidget::syncWithSettings() {
-  supportedViews curV = proxy::SettingsManager::instance().DefaultView();
-  if (curV == Tree) {
+  proxy::supportedViews curV = proxy::SettingsManager::instance().DefaultView();
+  if (curV == proxy::Tree) {
     setTreeView();
-  } else if (curV == Table) {
+  } else if (curV == proxy::Table) {
     setTableView();
   } else {
     setTextView();

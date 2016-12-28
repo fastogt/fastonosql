@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "global/global.h"
+#include "core/global.h"
 
-using namespace fastonosql;
+using namespace fastonosql::core;
 
 TEST(FastoObject, LifeTime) {
   FastoObjectIPtr obj = FastoObject::CreateRoot("root");

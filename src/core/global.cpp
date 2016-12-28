@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "global/global.h"
+#include "core/global.h"
 
 #include <stddef.h>  // for size_t
 
@@ -27,6 +27,7 @@
 #include <common/string_util.h>  // for TrimWhitespaceASCII, etc
 
 namespace fastonosql {
+namespace core {
 
 FastoObject::FastoObject(FastoObject* parent, common::Value* val, const std::string& delimiter)
     : observer_(nullptr), value_(val), parent_(parent), childrens_(), delimiter_(delimiter) {
@@ -204,11 +205,12 @@ common::ArrayValue* FastoObjectArray::Array() const {
   return static_cast<common::ArrayValue*>(value_.get());
 }
 
+}  // namespace core
 }  // namespace fastonosql
 
 namespace common {
 
-std::string ConvertToString(fastonosql::FastoObject* obj) {
+std::string ConvertToString(fastonosql::core::FastoObject* obj) {
   if (!obj) {
     return std::string();
   }

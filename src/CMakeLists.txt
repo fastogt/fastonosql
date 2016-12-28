@@ -54,6 +54,7 @@ SET(HEADERS_CORE
   core/server_property_info.h
   core/ssh_info.h
   core/logger.h
+  core/global.h
 )
 
 SET(SOURCES_CORE
@@ -73,6 +74,7 @@ SET(SOURCES_CORE
   core/server_property_info.cpp
   core/ssh_info.cpp
   core/logger.cpp
+  core/global.cpp
 )
 
 # proxy
@@ -180,6 +182,7 @@ SET(HEADERS_PROXY
   ${HEADERS_PROXY_CONNECTION_SETTINGS}
   ${HEADERS_PROXY_COMMAND}
 
+  proxy/types.h
   proxy/command/command.h
   proxy/servers_manager.h
   proxy/proxy_fwd.h
@@ -199,6 +202,7 @@ SET(SOURCES_PROXY
   ${SOURCES_PROXY_CONNECTION_SETTINGS}
   ${SOURCES_PROXY_COMMAND}
 
+  proxy/types.cpp
   proxy/command/command.cpp
   proxy/servers_manager.cpp
   proxy/settings_manager.cpp
@@ -213,15 +217,6 @@ SET(HEADERS_TRANSLATIONS
 )
 SET(SOURCES_TRANSLATIONS
   translations/global.cpp
-)
-
-SET(HEADERS_GLOBAL
-  global/global.h
-  global/types.h
-)
-SET(SOURCES_GLOBAL
-  global/global.cpp
-  global/types.cpp
 )
 
 SET(HEADERS_GUI_DIALOGS_TO_MOC
@@ -959,13 +954,11 @@ SET(HEADERS_TOMOC
   ${HEADERS_PROXY_TO_MOC}
 )
 SET(HEADERS
-  ${HEADERS_GLOBAL}
   ${HEADERS_GUI}
   ${HEADERS_PROXY}
   ${HEADERS_TRANSLATIONS}
 )
 SET(SOURCES
-  ${SOURCES_GLOBAL}
   ${SOURCES_GUI}
   ${SOURCES_PROXY}
   ${SOURCES_TRANSLATIONS}
@@ -1118,7 +1111,6 @@ IF(DEVELOPER_ENABLE_TESTS)
     ${CMAKE_SOURCE_DIR}/tests/unit_test_fasto_objects.cpp
     ${CMAKE_SOURCE_DIR}/tests/unit_test_parsinng_command_line.cpp
     ${CMAKE_SOURCE_DIR}/tests/unit_test_command_holder.cpp
-    global/global.cpp
     ${SOURCES_SDS}
   )
 
@@ -1128,7 +1120,7 @@ IF(DEVELOPER_ENABLE_TESTS)
 
   #Mock tests
   ADD_EXECUTABLE(mock_tests
-    ${CMAKE_SOURCE_DIR}/tests/mock_tests/test_connections.cpp global/global.cpp
+    ${CMAKE_SOURCE_DIR}/tests/mock_tests/test_connections.cpp
   )
   TARGET_LINK_LIBRARIES(mock_tests gmock gmock_main ${PROJECT_CORE_ENGINE_LIBRARY} common json-c)
   ADD_TEST_TARGET(mock_tests)

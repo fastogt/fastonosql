@@ -43,7 +43,7 @@
 
 #include "proxy/settings_manager.h"  // for SettingsManager
 
-#include "global/types.h"  // for viewsText, ConvertToString, etc
+#include "proxy/types.h"  // for viewsText, ConvertToString, etc
 
 #include "gui/gui_factory.h"  // for GuiFactory
 
@@ -120,10 +120,9 @@ PreferencesDialog::PreferencesDialog(QWidget* parent) : QDialog(parent) {
 
   defaultViewLabel_ = new QLabel;
   defaultViewComboBox_ = new QComboBox;
-  for (size_t i = 0; i < SIZEOFMASS(viewsText); ++i) {
-    std::string vstr = viewsText[i];
-    supportedViews sv = common::ConvertFromString<supportedViews>(vstr);
-    defaultViewComboBox_->addItem(common::ConvertFromString<QString>(vstr), sv);
+  for (size_t i = 0; i < SIZEOFMASS(proxy::viewsText); ++i) {
+    std::string vstr = proxy::viewsText[i];
+    defaultViewComboBox_->addItem(common::ConvertFromString<QString>(vstr), i);
   }
   generalLayout->addWidget(defaultViewLabel_, 5, 0);
   generalLayout->addWidget(defaultViewComboBox_, 5, 1);
@@ -170,7 +169,7 @@ void PreferencesDialog::accept() {
   common::qt::gui::applyFont(gui::GuiFactory::instance().font());
 
   QVariant var = defaultViewComboBox_->currentData();
-  supportedViews v = static_cast<supportedViews>(qvariant_cast<unsigned char>(var));
+  proxy::supportedViews v = static_cast<proxy::supportedViews>(qvariant_cast<unsigned char>(var));
   proxy::SettingsManager::instance().SetDefaultView(v);
 
   proxy::SettingsManager::instance().SetLoggingDirectory(logDirPath_->text());
@@ -188,8 +187,8 @@ void PreferencesDialog::syncWithSettings() {
   QFont cf = proxy::SettingsManager::instance().CurrentFont();
   fontComboBox_->setCurrentFont(cf);
   fontSizeSpinBox_->setValue(cf.pointSize());
-  supportedViews v = proxy::SettingsManager::instance().DefaultView();
-  std::string vstr = viewsText[v];
+  proxy::supportedViews v = proxy::SettingsManager::instance().DefaultView();
+  std::string vstr = proxy::viewsText[v];
   defaultViewComboBox_->setCurrentText(common::ConvertFromString<QString>(vstr));
   logDirPath_->setText(proxy::SettingsManager::instance().LoggingDirectory());
   autoOpenConsole_->setChecked(proxy::SettingsManager::instance().AutoOpenConsole());

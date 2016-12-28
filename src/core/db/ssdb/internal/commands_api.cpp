@@ -32,7 +32,7 @@
 #include "core/db/ssdb/db_connection.h"  // for DBConnection
 #include "core/db/ssdb/server_info.h"    // for ServerInfo, etc
 
-#include "global/global.h"  // for FastoObject, etc
+#include "core/global.h"  // for FastoObject, etc
 
 namespace fastonosql {
 namespace core {

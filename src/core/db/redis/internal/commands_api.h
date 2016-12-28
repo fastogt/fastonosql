@@ -28,7 +28,9 @@
 #include "core/internal/commands_api.h"  // for ApiTraits
 
 namespace fastonosql {
+namespace core {
 class FastoObject;
+}
 }
 namespace fastonosql {
 namespace core {

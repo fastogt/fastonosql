@@ -31,13 +31,10 @@
 #include "core/db_key.h"            // for NDbKValue, NKey, etc
 #include "core/ssh_info.h"          // for SSHInfo
 #include "core/server/iserver_info.h"
-
 #include "core/internal/db_connection.h"   // for DBConnection<>::config_t
 #include "core/internal/cdb_connection.h"  // for CDBConnection
-
-#include "core/db/redis/config.h"  // for Config
-
-#include "global/global.h"  // for FastoObject (ptr only), etc
+#include "core/db/redis/config.h"          // for Config
+#include "core/global.h"                   // for FastoObject (ptr only), etc
 
 namespace fastonosql {
 namespace core {

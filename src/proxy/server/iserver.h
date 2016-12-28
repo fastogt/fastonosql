@@ -34,7 +34,7 @@
 #include "proxy/server/iserver_base.h"     // for IServerBase
 #include "core/server/iserver_info.h"      // for IServerInfoSPtr, etc
 
-#include "global/global.h"  // for FastoObject (ptr only), etc
+#include "core/global.h"  // for FastoObject (ptr only), etc
 
 namespace fastonosql {
 namespace proxy {
@@ -129,8 +129,8 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void LoadDiscoveryInfoFinished(const events_info::DiscoveryInfoResponce& res);
 
  Q_SIGNALS:
-  void ChildAdded(FastoObjectIPtr child);
-  void ItemUpdated(FastoObject* item, common::ValueSPtr val);
+  void ChildAdded(core::FastoObjectIPtr child);
+  void ItemUpdated(core::FastoObject* item, common::ValueSPtr val);
   void ServerInfoSnapShoot(core::ServerInfoSnapShoot shot);
 
   void FlushedDB(core::IDataBaseInfoSPtr db);

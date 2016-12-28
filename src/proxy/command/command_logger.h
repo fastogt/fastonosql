@@ -22,7 +22,7 @@
 
 #include <common/patterns/singleton_pattern.h>  // for LazySingleton
 
-#include "global/global.h"
+#include "core/global.h"
 
 namespace fastonosql {
 namespace proxy {
@@ -31,16 +31,16 @@ class CommandLogger : public QObject, public common::patterns::LazySingleton<Com
   friend class common::patterns::LazySingleton<CommandLogger>;
   Q_OBJECT
  public:
-  void Print(FastoObjectCommandIPtr command);
+  void Print(core::FastoObjectCommandIPtr command);
 
  Q_SIGNALS:
-  void Printed(FastoObjectCommandIPtr mess);
+  void Printed(core::FastoObjectCommandIPtr mess);
 
  private:
   CommandLogger();
 };
 
-inline void LOG_COMMAND(FastoObjectCommandIPtr command) {
+inline void LOG_COMMAND(core::FastoObjectCommandIPtr command) {
   return CommandLogger::instance().Print(command);
 }
 

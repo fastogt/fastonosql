@@ -30,7 +30,7 @@
 #include "core/db/leveldb/database_info.h"
 #include "core/db/leveldb/internal/commands_api.h"
 
-#include "global/global.h"  // for FastoObject, etc
+#include "core/global.h"  // for FastoObject, etc
 
 #define LEVELDB_HEADER_STATS                             \
   "                               Compactions\n"         \

@@ -24,13 +24,13 @@
 #include <common/value.h>   // for Value, CommandValue (ptr only), Value::Co...
 
 #include "core/types.h"
-#include "global/global.h"  // for FastoObjectCommandIPtr, FastoObject (ptr ...
+#include "core/global.h"  // for FastoObjectCommandIPtr, FastoObject (ptr ...
 
 namespace fastonosql {
 namespace proxy {
 
 template <typename Command>
-FastoObjectCommandIPtr CreateCommand(FastoObject* parent,
+core::FastoObjectCommandIPtr CreateCommand(core::FastoObject* parent,
                                      const std::string& input,
                                      common::Value::CommandLoggingType ct) {
   if (!parent) {
@@ -45,13 +45,13 @@ FastoObjectCommandIPtr CreateCommand(FastoObject* parent,
   }
 
   common::CommandValue* cmd = common::Value::createCommand(stable_input, ct);
-  FastoObjectCommandIPtr fs = new Command(parent, cmd, parent->Delimiter());
+  core::FastoObjectCommandIPtr fs = new Command(parent, cmd, parent->Delimiter());
   parent->AddChildren(fs);
   return fs;
 }
 
 template <typename Command>
-FastoObjectCommandIPtr CreateCommandFast(const std::string& input,
+core::FastoObjectCommandIPtr CreateCommandFast(const std::string& input,
                                          common::Value::CommandLoggingType ct) {
   std::string stable_input = core::StableCommand(input);
   if (stable_input.empty()) {

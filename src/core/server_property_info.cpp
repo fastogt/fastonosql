@@ -25,7 +25,7 @@
 #include <common/macros.h>  // for DCHECK, DNOTREACHED
 #include <common/value.h>   // for ArrayValue
 
-#include "global/global.h"  // for FastoObjectArray
+#include "core/global.h"  // for FastoObjectArray
 
 namespace fastonosql {
 namespace core {

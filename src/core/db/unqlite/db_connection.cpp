@@ -37,7 +37,7 @@ extern "C" {
 #include "core/db/unqlite/command_translator.h"
 #include "core/db/unqlite/internal/commands_api.h"
 
-#include "global/global.h"  // for FastoObject, etc
+#include "core/global.h"  // for FastoObject, etc
 
 namespace {
 

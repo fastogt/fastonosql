@@ -33,7 +33,9 @@
 #include "core/db/memcached/config.h"
 
 namespace fastonosql {
+namespace core {
 class FastoObject;
+}
 }
 namespace fastonosql {
 namespace core {

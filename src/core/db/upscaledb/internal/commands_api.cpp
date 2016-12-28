@@ -25,7 +25,7 @@
 #include "core/db/upscaledb/server_info.h"  // for ServerInfo, etc
 #include "core/db/upscaledb/db_connection.h"
 
-#include "global/global.h"  // for FastoObject
+#include "core/global.h"  // for FastoObject
 
 namespace fastonosql {
 namespace core {

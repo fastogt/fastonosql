@@ -34,11 +34,7 @@
 #include "core/db/lmdb/database_info.h"
 #include "core/db/lmdb/internal/commands_api.h"
 
-#include "global/global.h"  // for FastoObject, etc
-
-namespace fastonosql {
-class FastoObjectArray;
-}
+#include "core/global.h"  // for FastoObject, etc
 
 #define LMDB_OK 0
 

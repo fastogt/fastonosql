@@ -30,7 +30,7 @@
 #include "proxy/driver/idriver_local.h"                      // for IDriverLocal
 #include "core/server/iserver_info.h"                        // for IServerInfo (ptr only), etc
 
-#include "global/global.h"  // for FastoObject (ptr only), etc
+#include "core/global.h"  // for FastoObject (ptr only), etc
 
 namespace fastonosql {
 namespace core {
@@ -64,17 +64,18 @@ class Driver : public IDriverLocal {
  private:
   virtual void InitImpl() override;
   virtual void ClearImpl() override;
-  virtual FastoObjectCommandIPtr CreateCommand(FastoObject* parent,
-                                               const std::string& input,
-                                               common::Value::CommandLoggingType ct) override;
+  virtual core::FastoObjectCommandIPtr CreateCommand(core::FastoObject* parent,
+                                                     const std::string& input,
+                                                     common::Value::CommandLoggingType ct) override;
 
-  virtual FastoObjectCommandIPtr CreateCommandFast(const std::string& input,
-                                                   common::Value::CommandLoggingType ct) override;
+  virtual core::FastoObjectCommandIPtr CreateCommandFast(
+      const std::string& input,
+      common::Value::CommandLoggingType ct) override;
 
   virtual common::Error SyncConnect() override WARN_UNUSED_RESULT;
   virtual common::Error SyncDisconnect() override WARN_UNUSED_RESULT;
 
-  virtual common::Error ExecuteImpl(const std::string& command, FastoObject* out) override;
+  virtual common::Error ExecuteImpl(const std::string& command, core::FastoObject* out) override;
   virtual common::Error CurrentServerInfo(core::IServerInfo** info) override;
   virtual common::Error CurrentDataBaseInfo(core::IDataBaseInfo** info) override;
 

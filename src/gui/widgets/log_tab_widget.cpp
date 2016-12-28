@@ -50,7 +50,7 @@ void LogTabWidget::addLogMessage(const QString& message, common::logging::LEVEL_
   log_->addLogMessage(message, level);
 }
 
-void LogTabWidget::addCommand(FastoObjectCommandIPtr command) {
+void LogTabWidget::addCommand(core::FastoObjectCommandIPtr command) {
   commands_->addCommand(command);
 }
 
