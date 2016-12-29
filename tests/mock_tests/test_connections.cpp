@@ -15,15 +15,33 @@ void CheckSetGet(core::internal::CDBConnection<NConnection, Config, ContType>* d
   ASSERT_TRUE(db->IsConnected());
   core::NValue val(common::Value::createStringValue("test"));
   core::NKey key("test");
+  core::NDbKValue res1;
+  common::Error err = db->Get(key, &res1);
+  ASSERT_TRUE(err && err->isError());
+
   core::NDbKValue kv(key, val);
   core::NDbKValue res;
-  common::Error err = db->Set(kv, &res);
+  err = db->Set(kv, &res);
   ASSERT_TRUE(!err);
   ASSERT_TRUE(kv == res);
   core::NDbKValue res2;
   err = db->Get(key, &res2);
   ASSERT_TRUE(!err);
   ASSERT_TRUE(kv == res2);
+  ASSERT_TRUE(db->IsConnected());
+
+  core::NKeys want_delete = {key};
+  core::NKeys deleted;
+  err = db->Delete(want_delete, &deleted);
+  ASSERT_TRUE(!err);
+  ASSERT_TRUE(want_delete == deleted);
+  deleted = core::NKeys();
+  err = db->Delete(want_delete, &deleted);
+  ASSERT_TRUE(deleted.empty());  // must be
+  ASSERT_TRUE(!err);
+  core::NDbKValue res3;
+  err = db->Get(key, &res3);
+  ASSERT_TRUE(err && err->isError());
   ASSERT_TRUE(db->IsConnected());
 }
 

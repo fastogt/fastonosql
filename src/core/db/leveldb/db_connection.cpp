@@ -187,6 +187,12 @@ common::Error DBConnection::DelInner(const std::string& key) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
+  std::string exist_key;
+  common::Error err = GetInner(key, &exist_key);
+  if (err && err->isError()) {
+    return err;
+  }
+
   ::leveldb::WriteOptions wo;
   auto st = connection_.handle_->Delete(wo, key);
   if (!st.ok()) {
