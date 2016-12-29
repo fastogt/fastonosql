@@ -25,7 +25,7 @@
 #include <common/sprintf.h>
 
 namespace {
-size_t count_space(const std::string& data) {
+auto count_space(const std::string& data) -> std::string::difference_type {
   return std::count_if(data.begin(), data.end(), [](char c) { return std::isspace(c); });
 }
 }

@@ -55,7 +55,7 @@ class FastoObject : public common::intrusive_ptr_base<FastoObject> {
    public:
     virtual void ChildrenAdded(child_t child) = 0;
     virtual void Updated(FastoObject* item, value_t val) = 0;
-    virtual ~IFastoObjectObserver() {}
+    virtual ~IFastoObjectObserver();
   };
 
   FastoObject(FastoObject* parent,
@@ -117,7 +117,6 @@ class FastoObjectCommand : public FastoObject {
 };
 
 std::pair<std::string, std::string> GetKeyValueFromLine(const std::string& input);
-std::string GetFirstWordFromLine(const std::string& input);
 
 class FastoObjectArray : public FastoObject {
  public:

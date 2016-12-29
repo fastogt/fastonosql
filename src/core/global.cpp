@@ -29,6 +29,8 @@
 namespace fastonosql {
 namespace core {
 
+FastoObject::IFastoObjectObserver::~IFastoObjectObserver() {}
+
 FastoObject::FastoObject(FastoObject* parent, common::Value* val, const std::string& delimiter)
     : observer_(nullptr), value_(val), parent_(parent), childrens_(), delimiter_(delimiter) {
   DCHECK(value_);
@@ -163,19 +165,6 @@ std::pair<std::string, std::string> GetKeyValueFromLine(const std::string& input
   std::string trimed;
   common::TrimWhitespaceASCII(value, common::TRIM_ALL, &trimed);
   return std::make_pair(key, trimed);
-}
-
-std::string GetFirstWordFromLine(const std::string& input) {
-  if (input.empty()) {
-    return std::string();
-  }
-
-  size_t pos = input.find_first_of(' ');
-  if (pos != std::string::npos) {
-    return input.substr(0, pos);
-  }
-
-  return input;
 }
 
 FastoObjectArray::FastoObjectArray(FastoObject* parent,

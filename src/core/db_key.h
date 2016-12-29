@@ -76,7 +76,7 @@ class NKey {
 };
 
 inline bool operator==(const NKey& r, const NKey& l) {
-  return r.Key() == l.Key() && r.TTL() == l.TTL();
+  return r.Equals(l);
 }
 
 typedef std::vector<NKey> NKeys;
@@ -105,7 +105,7 @@ class NDbKValue {
 };
 
 inline bool operator==(const NDbKValue& r, const NDbKValue& l) {
-  return r.Key() == l.Key() && r.Value()->equals(l.Value().get());
+  return r.Equals(l);
 }
 
 typedef std::vector<NDbKValue> NDbKValues;
