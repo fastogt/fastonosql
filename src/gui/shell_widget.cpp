@@ -215,7 +215,7 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server,
   intervalMsec_->setRange(0, INT32_MAX);
   intervalMsec_->setSingleStep(1000);
   intervalLayout->addWidget(intervalLabel);
-  intervalLayout->addWidget(intervalMsec_);  
+  intervalLayout->addWidget(intervalMsec_);
 
   historyCall_ = new QCheckBox(translations::trHistory);
   historyCall_->setChecked(true);

@@ -345,7 +345,8 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
     core::FastoObject::childs_t rchildrens = cmd->Childrens();
     if (rchildrens.size()) {
       CHECK_EQ(rchildrens.size(), 1);
-      core::FastoObjectArray* array = dynamic_cast<core::FastoObjectArray*>(rchildrens[0].get());  // +
+      core::FastoObjectArray* array =
+          dynamic_cast<core::FastoObjectArray*>(rchildrens[0].get());  // +
       if (!array) {
         goto done;
       }

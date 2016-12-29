@@ -57,9 +57,7 @@ static const connectionTypes compiled_types[] = {
 #endif
 };
 
-enum ConnectionMode {
-  InteractiveMode
-};
+enum ConnectionMode { InteractiveMode };
 
 bool IsRemoteType(connectionTypes type);
 bool IsSupportTTLKeys(connectionTypes type);

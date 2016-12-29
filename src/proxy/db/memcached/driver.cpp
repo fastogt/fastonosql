@@ -41,7 +41,7 @@
 #include "core/db/memcached/db_connection.h"         // for DBConnection
 #include "core/db/memcached/server_info.h"           // for ServerInfo, etc
 
-#include "core/global.h"   // for FastoObject::childs_t, etc
+#include "core/global.h"  // for FastoObject::childs_t, etc
 
 #define MEMCACHED_INFO_REQUEST "STATS"
 #define MEMCACHED_GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
@@ -160,7 +160,8 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
     core::FastoObject::childs_t rchildrens = cmd->Childrens();
     if (rchildrens.size()) {
       CHECK_EQ(rchildrens.size(), 1);
-      core::FastoObjectArray* array = dynamic_cast<core::FastoObjectArray*>(rchildrens[0].get());  // +
+      core::FastoObjectArray* array =
+          dynamic_cast<core::FastoObjectArray*>(rchildrens[0].get());  // +
       if (!array) {
         goto done;
       }

@@ -31,8 +31,8 @@ namespace proxy {
 
 template <typename Command>
 core::FastoObjectCommandIPtr CreateCommand(core::FastoObject* parent,
-                                     const std::string& input,
-                                     core::CmdLoggingType ct) {
+                                           const std::string& input,
+                                           core::CmdLoggingType ct) {
   if (!parent) {
     DNOTREACHED();
     return nullptr;
@@ -51,8 +51,7 @@ core::FastoObjectCommandIPtr CreateCommand(core::FastoObject* parent,
 }
 
 template <typename Command>
-core::FastoObjectCommandIPtr CreateCommandFast(const std::string& input,
-                                         core::CmdLoggingType ct) {
+core::FastoObjectCommandIPtr CreateCommandFast(const std::string& input, core::CmdLoggingType ct) {
   std::string stable_input = core::StableCommand(input);
   if (stable_input.empty()) {
     DNOTREACHED();
@@ -65,4 +64,3 @@ core::FastoObjectCommandIPtr CreateCommandFast(const std::string& input,
 
 }  // namespace core
 }  // namespace fastonosql
-

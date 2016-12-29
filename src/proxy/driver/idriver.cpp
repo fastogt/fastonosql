@@ -382,7 +382,7 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
 
       std::string command = commands[i];
       core::FastoObjectCommandIPtr cmd = silence ? CreateCommandFast(command, log_type)
-                                           : CreateCommand(obj.get(), command, log_type);  //
+                                                 : CreateCommand(obj.get(), command, log_type);  //
       common::Error err = Execute(cmd);
       if (err && err->isError()) {
         res.setErrorInfo(err);

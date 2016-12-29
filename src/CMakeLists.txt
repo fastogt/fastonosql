@@ -1110,13 +1110,12 @@ IF(DEVELOPER_ENABLE_TESTS)
 ########## PREPARE GTEST LIBRARY ##########
 
   ADD_EXECUTABLE(unit_tests
-    ${CMAKE_SOURCE_DIR}/tests/unit_test_fasto_objects.cpp
-    ${CMAKE_SOURCE_DIR}/tests/unit_test_parsinng_command_line.cpp
-    ${CMAKE_SOURCE_DIR}/tests/unit_test_command_holder.cpp
-    ${SOURCES_SDS}
+    ${CMAKE_SOURCE_DIR}/tests/unit_tests/test_fasto_objects.cpp
+    ${CMAKE_SOURCE_DIR}/tests/unit_tests/test_parsinng_command_line.cpp
+    ${CMAKE_SOURCE_DIR}/tests/unit_tests/test_command_holder.cpp
   )
 
-  TARGET_LINK_LIBRARIES(unit_tests gtest gtest_main ${PROJECT_CORE_ENGINE_LIBRARY} common)
+  TARGET_LINK_LIBRARIES(unit_tests gtest gtest_main ${PROJECT_CORE_ENGINE_LIBRARY} common json-c)
   ADD_TEST_TARGET(unit_tests)
   SET_PROPERTY(TARGET unit_tests PROPERTY FOLDER "Unit tests")
 

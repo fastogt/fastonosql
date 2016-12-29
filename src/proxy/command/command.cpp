@@ -19,7 +19,5 @@
 #include "proxy/command/command.h"
 
 namespace fastonosql {
-namespace proxy {
-}  // namespace core
+namespace proxy {}  // namespace core
 }  // namespace fastonosql
-

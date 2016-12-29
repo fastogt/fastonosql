@@ -23,7 +23,7 @@
 
 #include <common/macros.h>  // for DCHECK_EQ, CHECK
 
-#include "proxy/server/iserver.h"      // for IServer
+#include "proxy/server/iserver.h"  // for IServer
 
 namespace fastonosql {
 namespace proxy {

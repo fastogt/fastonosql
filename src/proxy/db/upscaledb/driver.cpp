@@ -32,13 +32,13 @@
 
 #include "core/internal/cdb_connection.h"
 #include "core/internal/db_connection.h"
-#include "proxy/command/command.h"          // for CreateCommand, etc
+#include "proxy/command/command.h"         // for CreateCommand, etc
 #include "proxy/command/command_logger.h"  // for LOG_COMMAND
 #include "core/connection_types.h"         // for ConvertToString, etc
 #include "core/db_key.h"                   // for NDbKValue, NValue, NKey
 #include "proxy/events/events_info.h"
 
-#include "proxy/db/upscaledb/command.h"               // for Command
+#include "proxy/db/upscaledb/command.h"              // for Command
 #include "core/db/upscaledb/config.h"                // for Config
 #include "proxy/db/upscaledb/connection_settings.h"  // for ConnectionSettings
 #include "core/db/upscaledb/db_connection.h"         // for DBConnection
@@ -103,13 +103,13 @@ void Driver::InitImpl() {}
 void Driver::ClearImpl() {}
 
 core::FastoObjectCommandIPtr Driver::CreateCommand(core::FastoObject* parent,
-                                             const std::string& input,
-                                             core::CmdLoggingType ct) {
+                                                   const std::string& input,
+                                                   core::CmdLoggingType ct) {
   return proxy::CreateCommand<upscaledb::Command>(parent, input, ct);
 }
 
 core::FastoObjectCommandIPtr Driver::CreateCommandFast(const std::string& input,
-                                                 core::CmdLoggingType ct) {
+                                                       core::CmdLoggingType ct) {
   return proxy::CreateCommandFast<upscaledb::Command>(input, ct);
 }
 
@@ -164,7 +164,8 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
     core::FastoObject::childs_t rchildrens = cmd->Childrens();
     if (rchildrens.size()) {
       CHECK_EQ(rchildrens.size(), 1);
-      core::FastoObjectArray* array = dynamic_cast<core::FastoObjectArray*>(rchildrens[0].get());  // +
+      core::FastoObjectArray* array =
+          dynamic_cast<core::FastoObjectArray*>(rchildrens[0].get());  // +
       if (!array) {
         goto done;
       }

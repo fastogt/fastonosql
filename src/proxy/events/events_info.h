@@ -148,7 +148,9 @@ struct LeaveModeInfo : public EventInfoBase {
 
 struct CommandRootCreatedInfo : public EventInfoBase {
   typedef EventInfoBase base_class;
-  CommandRootCreatedInfo(initiator_type sender, core::FastoObjectIPtr root, error_type er = error_type());
+  CommandRootCreatedInfo(initiator_type sender,
+                         core::FastoObjectIPtr root,
+                         error_type er = error_type());
 
   core::FastoObjectIPtr root;
 };

@@ -83,8 +83,10 @@ Config parseOptions(int argc, char** argv) {
 }  // namespace
 
 Config::Config()
-    : RemoteConfig(common::net::HostAndPort::createLocalHost(DEFAULT_REDIS_SERVER_PORT)), hostsocket(), dbnum(0), auth() {
-}
+    : RemoteConfig(common::net::HostAndPort::createLocalHost(DEFAULT_REDIS_SERVER_PORT)),
+      hostsocket(),
+      dbnum(0),
+      auth() {}
 
 }  // namespace redis
 }  // namespace core
