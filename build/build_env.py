@@ -10,8 +10,8 @@ def print_usage():
     print("Usage:\n"
         "[optional] argv[1] platform\n"
         "[optional] argv[2] architecture\n"
-        "[optional] argv[3] build system for common/qscintilla (\"ninja\", \"make\", \"gmake\")\n"
-        "[optional] argv[4] build system for rocksdb/upscaledb (\"make\", \"gmake\")\n"
+        "[optional] argv[3] build system for common/qscintilla/libssh2 (\"ninja\", \"make\", \"gmake\")\n"
+        "[optional] argv[4] build system for leveldb/rocksdb/upscaledb (\"make\", \"gmake\")\n"
         "[optional] argv[5] prefix path\n")
 
 def print_message(progress, message):

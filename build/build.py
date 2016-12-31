@@ -13,7 +13,7 @@ def print_usage():
         "[optional] argv[2] branding_file_path\n"
         "[optional] argv[3] platform\n"
         "[optional] argv[4] architecture\n"
-        "[optional] argv[5] build system(\"ninja\", \"make\")\n"
+        "[optional] argv[5] build system(\"ninja\", \"make\", \"gmake\")\n"
         "[optional] argv[6] packages for example(\"DEB RPM\")\n")
 
 class BuildSystem:
