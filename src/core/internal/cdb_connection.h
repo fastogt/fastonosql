@@ -71,7 +71,7 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
   common::Error Help(int argc, const char** argv, std::string* answer) WARN_UNUSED_RESULT;  //
 
   common::Error Scan(uint64_t cursor_in,
-                     std::string pattern,
+                     const std::string& pattern,
                      uint64_t count_keys,
                      std::vector<std::string>* keys_out,
                      uint64_t* cursor_out) WARN_UNUSED_RESULT;  // nvi
@@ -95,7 +95,7 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
 
  private:
   virtual common::Error ScanImpl(uint64_t cursor_in,
-                                 std::string pattern,
+                                 const std::string& pattern,
                                  uint64_t count_keys,
                                  std::vector<std::string>* keys_out,
                                  uint64_t* cursor_out) = 0;
@@ -159,7 +159,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::Help(int argc,
 
 template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::Scan(uint64_t cursor_in,
-                                                                 std::string pattern,
+                                                                 const std::string& pattern,
                                                                  uint64_t count_keys,
                                                                  std::vector<std::string>* keys_out,
                                                                  uint64_t* cursor_out) {

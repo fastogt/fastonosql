@@ -64,7 +64,7 @@ namespace gui {
 
 DbKeyDialog::DbKeyDialog(const QString& title,
                          core::connectionTypes type,
-                         core::NDbKValue key,
+                         const core::NDbKValue& key,
                          QWidget* parent)
     : QDialog(parent), type_(type), key_(key) {
   bool is_edit = !key.Equals(core::NDbKValue());

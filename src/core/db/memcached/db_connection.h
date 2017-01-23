@@ -103,7 +103,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   common::Error ExpireInner(const std::string& key, ttl_t expiration) WARN_UNUSED_RESULT;
 
   virtual common::Error ScanImpl(uint64_t cursor_in,
-                                 std::string pattern,
+                                 const std::string& pattern,
                                  uint64_t count_keys,
                                  std::vector<std::string>* keys_out,
                                  uint64_t* cursor_out) override;
