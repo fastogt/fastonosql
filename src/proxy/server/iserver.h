@@ -114,6 +114,9 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void ChangeServerPropertyStarted(const events_info::ChangeServerPropertyInfoRequest& req);
   void ChangeServerPropertyFinished(const events_info::ChangeServerPropertyInfoResponce& res);
 
+  void LoadServerChannelsStarted(const events_info::LoadServerChannelsRequest& req);
+  void LoadServerChannelsFinished(const events_info::LoadServerChannelsResponce& res);
+
   void ProgressChanged(const events_info::ProgressInfoResponce& res);
 
   void ModeEntered(const events_info::EnterModeInfo& res);
@@ -184,6 +187,10 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
                           req);  // signals: ChangeServerPropertyStarted,
                                  // ChangeServerPropertyFinished
 
+  void LoadChannels(
+      const events_info::LoadServerChannelsRequest& req);  // signals: LoadServerChannelsStarted,
+                                                           // LoadServerChannelsFinished
+
  protected:
   explicit IServer(IDriver* drv);  // take ownerships
 
@@ -202,6 +209,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   virtual void HandleLoadServerInfoEvent(events::ServerInfoResponceEvent* ev);
   virtual void HandleLoadServerPropertyEvent(events::ServerPropertyInfoResponceEvent* ev);
   virtual void HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoResponceEvent* ev);
+  virtual void HandleLoadServerChannelsEvent(events::LoadServerChannelsResponceEvent* ev);
   virtual void HandleShutdownEvent(events::ShutDownResponceEvent* ev);
   virtual void HandleBackupEvent(events::BackupResponceEvent* ev);
   virtual void HandleExportEvent(events::ExportResponceEvent* ev);

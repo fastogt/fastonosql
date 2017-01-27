@@ -30,6 +30,8 @@ namespace proxy {
 namespace events_info {
 struct ExecuteInfoRequest;
 struct ExecuteInfoResponce;
+struct LoadServerChannelsRequest;
+struct LoadServerChannelsResponce;
 }
 }
 }
@@ -46,16 +48,15 @@ namespace gui {
 class PubSubDialog : public QDialog {
   Q_OBJECT
  public:
-  enum {
-    min_width = 320,
-    min_height = 200
-  };
+  enum { min_width = 320, min_height = 200 };
 
   explicit PubSubDialog(const QString& title, proxy::IServerSPtr server, QWidget* parent = 0);
 
  private Q_SLOTS:
   void startExecute(const proxy::events_info::ExecuteInfoRequest& req);
   void finishExecute(const proxy::events_info::ExecuteInfoResponce& res);
+  void startLoadServerChannels(const proxy::events_info::LoadServerChannelsRequest& req);
+  void finishLoadServerChannels(const proxy::events_info::LoadServerChannelsResponce& res);
 
   void searchLineChanged(const QString& text);
   void searchClicked();

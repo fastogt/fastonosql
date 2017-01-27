@@ -28,7 +28,8 @@
 #include <common/types.h>        // for time64_t
 #include <common/value.h>        // for Value, etc
 
-#include "core/db_key.h"                // for NDbKValue
+#include "core/db_key.h"  // for NDbKValue
+#include "core/ps_channel.h"
 #include "core/connection_types.h"      // for ConnectionMode
 #include "core/server_property_info.h"  // for property_t, ServerPropertiesInfo
 #include "core/database/idatabase_info.h"
@@ -225,7 +226,7 @@ struct LoadDatabaseContentRequest : public EventInfoBase {
                              error_type er = error_type());
 
   core::IDataBaseInfoSPtr inf;
-  std::string pattern;
+  const std::string pattern;
   uint32_t count_keys;
   const uint64_t cursor_in;
 };
@@ -238,6 +239,23 @@ struct LoadDatabaseContentResponce : LoadDatabaseContentRequest {
   keys_container_t keys;
   uint64_t cursor_out;
   size_t db_keys_count;
+};
+
+struct LoadServerChannelsRequest : public EventInfoBase {
+  typedef EventInfoBase base_class;
+  LoadServerChannelsRequest(initiator_type sender,
+                            const std::string& pattern,
+                            error_type er = error_type());
+
+  const std::string pattern;
+};
+
+struct LoadServerChannelsResponce : LoadServerChannelsRequest {
+  typedef LoadServerChannelsRequest base_class;
+  typedef std::vector<core::NDbPSChannel> channels_container_t;
+  explicit LoadServerChannelsResponce(const base_class& request);
+
+  channels_container_t channels;
 };
 
 struct ServerInfoRequest : public EventInfoBase {

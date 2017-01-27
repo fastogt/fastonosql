@@ -213,10 +213,6 @@ void ViewKeysDialog::finishLoadDatabaseContent(
     return;
   }
 
-  if (!keysModel_) {
-    return;
-  }
-
   proxy::events_info::LoadDatabaseContentResponce::keys_container_t keys = res.keys;
 
   size_t size = keys.size();

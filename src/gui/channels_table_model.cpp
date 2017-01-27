@@ -63,14 +63,14 @@ QVariant ChannelsTableModel::data(const QModelIndex& index, int role) const {
 
   int col = index.column();
   if (role == Qt::DecorationRole && col == ChannelTableItem::kName) {
-    return GuiFactory::instance().discoveryIcon();
+    return GuiFactory::instance().channelIcon();
   }
 
   QVariant result;
   if (role == Qt::DisplayRole) {
     if (col == ChannelTableItem::kName) {
       result = node->name();
-    } else if (role == ChannelTableItem::kNOS) {
+    } else if (col == ChannelTableItem::kNOS) {
       result = node->numberOfSubscribers();
     }
   }

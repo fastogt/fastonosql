@@ -141,6 +141,14 @@ LoadDatabaseContentRequest::LoadDatabaseContentRequest(initiator_type sender,
 LoadDatabaseContentResponce::LoadDatabaseContentResponce(const base_class& request)
     : base_class(request), keys(), cursor_out(0), db_keys_count(0) {}
 
+LoadServerChannelsRequest::LoadServerChannelsRequest(initiator_type sender,
+                                                     const std::string& pattern,
+                                                     error_type er)
+    : base_class(sender, er), pattern(pattern) {}
+
+LoadServerChannelsResponce::LoadServerChannelsResponce(const base_class& request)
+    : base_class(request), channels() {}
+
 ServerInfoRequest::ServerInfoRequest(initiator_type sender, error_type er)
     : base_class(sender, er) {}
 

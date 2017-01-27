@@ -481,6 +481,81 @@ void Driver::HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoReq
   NotifyProgress(sender, 100);
 }
 
+void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequestEvent* ev) {
+  QObject* sender = ev->sender();
+  NotifyProgress(sender, 0);
+  events::LoadServerChannelsResponceEvent::value_type res(ev->value());
+
+  NotifyProgress(sender, 50);
+  std::string loadChannelsRequest = "PUBSUB CHANNELS " + res.pattern;
+  core::FastoObjectCommandIPtr cmd = CreateCommandFast(loadChannelsRequest, core::C_INNER);
+  common::Error err = Execute(cmd);
+  if (err && err->isError()) {
+    res.setErrorInfo(err);
+    goto done;
+  } else {
+    core::FastoObject::childs_t rchildrens = cmd->Childrens();
+    if (rchildrens.size()) {
+      CHECK_EQ(rchildrens.size(), 1);
+      core::FastoObjectArray* array =
+          dynamic_cast<core::FastoObjectArray*>(rchildrens[0].get());  // +
+      if (!array) {
+        goto done;
+      }
+
+      common::ArrayValue* arm = array->Array();
+      if (!arm->size()) {
+        goto done;
+      }
+
+      std::vector<core::FastoObjectCommandIPtr> cmds;
+      cmds.reserve(arm->size());
+      for (size_t i = 0; i < arm->size(); ++i) {
+        std::string channel;
+        bool isok = arm->getString(i, &channel);
+        if (isok) {
+          core::NDbPSChannel c(channel, 0);
+          cmds.push_back(CreateCommandFast("PUBSUB NUMSUB " + channel, core::C_INNER));
+          res.channels.push_back(c);
+        }
+      }
+
+      err = impl_->ExecuteAsPipeline(cmds, &LOG_COMMAND);
+      if (err && err->isError()) {
+        res.setErrorInfo(err);
+        goto done;
+      }
+
+      for (size_t i = 0; i < res.channels.size(); ++i) {
+        core::FastoObjectIPtr subCount = cmds[i];
+        core::FastoObject::childs_t tchildrens = subCount->Childrens();
+        if (tchildrens.size()) {
+          DCHECK_EQ(tchildrens.size(), 1);
+          if (tchildrens.size() == 1) {
+            core::FastoObjectArray* array_sub =
+                dynamic_cast<core::FastoObjectArray*>(tchildrens[0].get());  // +
+            if (array_sub) {
+              common::ArrayValue* array_sub_inner = array_sub->Array();
+              common::Value* fund_sub = nullptr;
+              if (array_sub_inner->get(1, &fund_sub)) {
+                std::string sub;
+                if (fund_sub->getAsString(&sub)) {
+                  res.channels[i].SetNumberOfSubscribers(common::ConvertFromString<uint32_t>(sub));
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+done:
+  NotifyProgress(sender, 75);
+  Reply(sender, new events::LoadServerChannelsResponceEvent(this, res));
+  NotifyProgress(sender, 100);
+}
+
 core::IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
   core::IServerInfoSPtr res(core::redis::MakeRedisServerInfo(val));
   return res;

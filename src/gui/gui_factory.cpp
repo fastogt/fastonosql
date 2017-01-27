@@ -287,6 +287,11 @@ const QIcon& GuiFactory::discoveryIcon() const {
   return discovery;
 }
 
+const QIcon& GuiFactory::channelIcon() const {
+  static QIcon channel(":" PROJECT_NAME_LOWERCASE "/images/64x64/channel.png");
+  return channel;
+}
+
 const QIcon& GuiFactory::commandIcon() const {
   static QIcon comm(":" PROJECT_NAME_LOWERCASE "/images/64x64/command.png");
   return comm;

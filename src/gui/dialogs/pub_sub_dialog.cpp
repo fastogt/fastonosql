@@ -27,10 +27,12 @@
 #include <QSpinBox>
 #include <QSortFilterProxyModel>
 
+#include <common/qt/convert2string.h>
+
 #include "proxy/server/iserver.h"
 
-#include "gui/fasto_table_view.h"  // for FastoTableView
-#include "gui/gui_factory.h"       // for GuiFactory
+#include "gui/fasto_table_view.h"      // for FastoTableView
+#include "gui/gui_factory.h"           // for GuiFactory
 #include "gui/channels_table_model.h"  // for KeysTableModel, etc
 
 #include "translations/global.h"  // for trKeyCountOnThePage, etc
@@ -44,6 +46,12 @@ PubSubDialog::PubSubDialog(const QString& title, proxy::IServerSPtr server, QWid
   setWindowTitle(title);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
+
+  VERIFY(connect(server.get(), &proxy::IServer::LoadServerChannelsStarted, this,
+                 &PubSubDialog::startLoadServerChannels));
+  VERIFY(connect(server.get(), &proxy::IServer::LoadServerChannelsFinished, this,
+                 &PubSubDialog::finishLoadServerChannels));
+
   // main layout
   QVBoxLayout* mainlayout = new QVBoxLayout;
   QHBoxLayout* searchLayout = new QHBoxLayout;
@@ -55,6 +63,7 @@ PubSubDialog::PubSubDialog(const QString& title, proxy::IServerSPtr server, QWid
   searchButton_ = new QPushButton;
   VERIFY(connect(searchButton_, &QPushButton::clicked, this, &PubSubDialog::searchClicked));
   searchLayout->addWidget(searchButton_);
+  mainlayout->addLayout(searchLayout);
 
   channelsModel_ = new ChannelsTableModel(this);
   QSortFilterProxyModel* proxy_model = new QSortFilterProxyModel(this);
@@ -63,12 +72,12 @@ PubSubDialog::PubSubDialog(const QString& title, proxy::IServerSPtr server, QWid
 
   VERIFY(connect(server_.get(), &proxy::IServer::ExecuteStarted, this, &PubSubDialog::startExecute,
                  Qt::DirectConnection));
-  VERIFY(connect(server_.get(), &proxy::IServer::ExecuteFinished, this, &PubSubDialog::finishExecute,
-                 Qt::DirectConnection));
+  VERIFY(connect(server_.get(), &proxy::IServer::ExecuteFinished, this,
+                 &PubSubDialog::finishExecute, Qt::DirectConnection));
 
   channelsTable_ = new FastoTableView;
   channelsTable_->setSortingEnabled(true);
-  channelsTable_->sortByColumn(1, Qt::AscendingOrder);
+  channelsTable_->sortByColumn(0, Qt::AscendingOrder);
   channelsTable_->setModel(proxy_model);
 
   QDialogButtonBox* buttonBox =
@@ -76,8 +85,8 @@ PubSubDialog::PubSubDialog(const QString& title, proxy::IServerSPtr server, QWid
   buttonBox->setOrientation(Qt::Horizontal);
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &PubSubDialog::accept));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &PubSubDialog::reject));
-  mainlayout->addWidget(buttonBox);
   mainlayout->addWidget(channelsTable_);
+  mainlayout->addWidget(buttonBox);
 
   setMinimumSize(QSize(min_width, min_height));
   setLayout(mainlayout);
@@ -92,11 +101,35 @@ void PubSubDialog::finishExecute(const proxy::events_info::ExecuteInfoResponce& 
   UNUSED(res);
 }
 
+void PubSubDialog::startLoadServerChannels(
+    const proxy::events_info::LoadServerChannelsRequest& req) {
+  UNUSED(req);
+
+  channelsModel_->clear();
+}
+
+void PubSubDialog::finishLoadServerChannels(
+    const proxy::events_info::LoadServerChannelsResponce& res) {
+  common::Error er = res.errorInfo();
+  if (er && er->isError()) {
+    return;
+  }
+
+  proxy::events_info::LoadServerChannelsResponce::channels_container_t channels = res.channels;
+
+  for (core::NDbPSChannel channel : channels) {
+    channelsModel_->insertItem(new ChannelTableItem(channel));
+  }
+}
+
 void PubSubDialog::searchClicked() {
   QString pattern = searchBox_->text();
   if (pattern.isEmpty()) {
     return;
   }
+
+  proxy::events_info::LoadServerChannelsRequest req(this, common::ConvertToString(pattern));
+  server_->LoadChannels(req);
 }
 
 void PubSubDialog::searchLineChanged(const QString& text) {
@@ -110,7 +143,9 @@ void PubSubDialog::changeEvent(QEvent* e) {
   QDialog::changeEvent(e);
 }
 
-void PubSubDialog::retranslateUi() {}
+void PubSubDialog::retranslateUi() {
+  searchButton_->setText(translations::trSearch);
+}
 
 }  // namespace gui
 }  // namespace fastonosql

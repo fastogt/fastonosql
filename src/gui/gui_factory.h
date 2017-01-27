@@ -79,6 +79,7 @@ class GuiFactory : public common::patterns::LazySingleton<GuiFactory> {
   const QIcon& treeIcon() const;
   const QIcon& loggingIcon() const;
   const QIcon& discoveryIcon() const;
+  const QIcon& channelIcon() const;
   const QIcon& commandIcon() const;
   const QIcon& encodeDecodeIcon() const;
   const QIcon& preferencesIcon() const;

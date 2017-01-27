@@ -241,6 +241,11 @@ void IDriver::customEvent(QEvent* event) {
     events::ChangeServerPropertyInfoRequestEvent* ev =
         static_cast<events::ChangeServerPropertyInfoRequestEvent*>(event);
     HandleServerPropertyChangeEvent(ev);  // ni
+  } else if (type ==
+             static_cast<QEvent::Type>(events::LoadServerChannelsRequestEvent::EventType)) {
+    events::LoadServerChannelsRequestEvent* ev =
+        static_cast<events::LoadServerChannelsRequestEvent*>(event);
+    HandleLoadServerChannelsRequestEvent(ev);  // ni
   } else if (type == static_cast<QEvent::Type>(events::BackupRequestEvent::EventType)) {
     events::BackupRequestEvent* ev = static_cast<events::BackupRequestEvent*>(event);
     HandleBackupEvent(ev);  // ni
@@ -413,6 +418,11 @@ void IDriver::HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRe
   replyNotImplementedYet<events::ChangeServerPropertyInfoRequestEvent,
                          events::ChangeServerPropertyInfoResponceEvent>(this, ev,
                                                                         "change server property");
+}
+
+void IDriver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequestEvent* ev) {
+  replyNotImplementedYet<events::LoadServerChannelsRequestEvent,
+                         events::LoadServerChannelsResponceEvent>(this, ev, "load server channels");
 }
 
 void IDriver::HandleShutdownEvent(events::ShutDownRequestEvent* ev) {

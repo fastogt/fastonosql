@@ -45,6 +45,7 @@
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/key.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/key_ttl.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/discovery.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/channel.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/command.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/logging.png</file>
 

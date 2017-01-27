@@ -241,6 +241,12 @@ void IServer::ChangeProperty(const events_info::ChangeServerPropertyInfoRequest&
   Notify(ev);
 }
 
+void IServer::LoadChannels(const events_info::LoadServerChannelsRequest& req) {
+  emit LoadServerChannelsStarted(req);
+  QEvent* ev = new events::LoadServerChannelsRequestEvent(this, req);
+  Notify(ev);
+}
+
 void IServer::customEvent(QEvent* event) {
   QEvent::Type type = event->type();
   if (type == static_cast<QEvent::Type>(events::ConnectResponceEvent::EventType)) {
@@ -297,6 +303,11 @@ void IServer::customEvent(QEvent* event) {
     events::ChangeServerPropertyInfoResponceEvent* ev =
         static_cast<events::ChangeServerPropertyInfoResponceEvent*>(event);
     HandleServerPropertyChangeEvent(ev);
+  } else if (type ==
+             static_cast<QEvent::Type>(events::LoadServerChannelsResponceEvent::EventType)) {
+    events::LoadServerChannelsResponceEvent* ev =
+        static_cast<events::LoadServerChannelsResponceEvent*>(event);
+    HandleLoadServerChannelsEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::BackupResponceEvent::EventType)) {
     events::BackupResponceEvent* ev = static_cast<events::BackupResponceEvent*>(event);
     HandleBackupEvent(ev);
@@ -390,6 +401,15 @@ void IServer::HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRe
     LOG_ERROR(er, true);
   }
   emit ChangeServerPropertyFinished(v);
+}
+
+void IServer::HandleLoadServerChannelsEvent(events::LoadServerChannelsResponceEvent* ev) {
+  auto v = ev->value();
+  common::Error er(v.errorInfo());
+  if (er && er->isError()) {
+    LOG_ERROR(er, true);
+  }
+  emit LoadServerChannelsFinished(v);
 }
 
 void IServer::HandleShutdownEvent(events::ShutDownResponceEvent* ev) {
