@@ -57,7 +57,8 @@
 #include "gui/dialogs/info_server_dialog.h"     // for InfoServerDialog
 #include "gui/dialogs/load_contentdb_dialog.h"  // for LoadContentDbDialog
 #include "gui/dialogs/property_server_dialog.h"
-#include "gui/dialogs/view_keys_dialog.h"      // for ViewKeysDialog
+#include "gui/dialogs/view_keys_dialog.h"  // for ViewKeysDialog
+#include "gui/dialogs/pub_sub_dialog.h"
 #include "gui/explorer/explorer_tree_model.h"  // for ExplorerServerItem, etc
 #include "gui/explorer/explorer_tree_sort_filter_proxy_model.h"
 #include "gui/explorer/explorer_tree_item.h"
@@ -70,6 +71,7 @@ const QString trEditKey_1S = QObject::tr("Edit key %1");
 const QString trRemoveBranch = QObject::tr("Remove branch");
 const QString trRemoveAllKeysTemplate_1S = QObject::tr("Really remove all keys from branch %1?");
 const QString trViewKeyTemplate_1S = QObject::tr("View key in %1 database");
+const QString trViewChannelsTemplate_1S = QObject::tr("View channels in %1 server");
 const QString trConnectDisconnect = QObject::tr("Connect/Disconnect");
 const QString trClearDb = QObject::tr("Clear database");
 const QString trRealyRemoveAllKeysTemplate_1S =
@@ -152,6 +154,9 @@ ExplorerTreeView::ExplorerTreeView(QWidget* parent) : QTreeView(parent) {
   closeSentinelAction_ = new QAction(this);
   VERIFY(connect(closeSentinelAction_, &QAction::triggered, this,
                  &ExplorerTreeView::closeSentinelConnection));
+
+  pubSubAction_ = new QAction(this);
+  VERIFY(connect(pubSubAction_, &QAction::triggered, this, &ExplorerTreeView::viewPubSub));
 
   importAction_ = new QAction(this);
   VERIFY(connect(importAction_, &QAction::triggered, this, &ExplorerTreeView::importServer));
@@ -342,6 +347,9 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       menu.addAction(clearHistoryServerAction_);
       closeServerAction_->setEnabled(!isClusterMember);
       menu.addAction(closeServerAction_);
+
+      pubSubAction_->setEnabled(is_connected && is_redis);
+      menu.addAction(pubSubAction_);
 
       bool is_can_remote = server->IsCanRemote();
       bool is_local = true;
@@ -660,6 +668,22 @@ void ExplorerTreeView::closeSentinelConnection() {
   if (sent) {
     removeSentinel(sent);
   }
+}
+
+void ExplorerTreeView::viewPubSub() {
+  QModelIndex sel = selectedIndex();
+  if (!sel.isValid()) {
+    return;
+  }
+
+  ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
+  if (!node) {
+    return;
+  }
+
+  proxy::IServerSPtr server = node->server();
+  PubSubDialog diag(trViewChannelsTemplate_1S.arg(node->name()), server, this);
+  diag.exec();
 }
 
 void ExplorerTreeView::backupServer() {
@@ -1177,6 +1201,7 @@ void ExplorerTreeView::retranslateUi() {
   createKeyAction_->setText(translations::trCreateKey);
   editKeyAction_->setText(translations::trEdit);
   viewKeysAction_->setText(translations::trViewKeysDialog);
+  pubSubAction_->setText(translations::trPubSubDialog);
   setDefaultDbAction_->setText(translations::trSetDefault);
   getValueAction_->setText(translations::trGetValue);
   renameKeyAction_->setText(trRenameKey);

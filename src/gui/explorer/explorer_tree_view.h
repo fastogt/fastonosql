@@ -88,6 +88,7 @@ class ExplorerTreeView : public QTreeView {
   void createKey();
   void editKey();
   void viewKeys();
+  void viewPubSub();
 
   void loadValue();
   void renKey();
@@ -133,6 +134,7 @@ class ExplorerTreeView : public QTreeView {
   QAction* createKeyAction_;
   QAction* editKeyAction_;
   QAction* viewKeysAction_;
+  QAction* pubSubAction_;
   QAction* getValueAction_;
   QAction* renameKeyAction_;
   QAction* deleteKeyAction_;

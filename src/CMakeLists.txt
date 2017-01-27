@@ -48,6 +48,7 @@ SET(HEADERS_CORE
   core/types.h
   core/db_traits.h
   core/db_key.h
+  core/ps_channel.h
   core/icommand_translator.h
   core/command_info.h
   core/command_holder.h
@@ -68,6 +69,7 @@ SET(SOURCES_CORE
   core/types.cpp
   core/db_traits.cpp
   core/db_key.cpp
+  core/ps_channel.cpp
   core/icommand_translator.cpp
   core/command_info.cpp
   core/command_holder.cpp
@@ -238,6 +240,7 @@ SET(HEADERS_GUI_DIALOGS_TO_MOC
   gui/dialogs/load_contentdb_dialog.h
   gui/dialogs/dbkey_dialog.h
   gui/dialogs/view_keys_dialog.h
+  gui/dialogs/pub_sub_dialog.h
   gui/dialogs/change_password_server_dialog.h
   gui/dialogs/discovery_connection.h
   gui/dialogs/discovery_sentinel_connection.h
@@ -268,6 +271,7 @@ SET(SOURCES_GUI_DIALOGS
   gui/dialogs/load_contentdb_dialog.cpp
   gui/dialogs/dbkey_dialog.cpp
   gui/dialogs/view_keys_dialog.cpp
+  gui/dialogs/pub_sub_dialog.cpp
   gui/dialogs/change_password_server_dialog.cpp
   gui/dialogs/discovery_connection.cpp
   gui/dialogs/discovery_sentinel_connection.cpp
@@ -357,6 +361,7 @@ SET(HEADERS_GUI_TO_MOC
   gui/main_tab_bar.h
   gui/fasto_text_view.h
   gui/keys_table_model.h
+  gui/channels_table_model.h
   gui/fasto_tree_view.h
   gui/fasto_common_model.h
   gui/fasto_table_view.h
@@ -391,6 +396,7 @@ SET(SOURCES_GUI
   gui/main_tab_bar.cpp
   gui/fasto_text_view.cpp
   gui/keys_table_model.cpp
+  gui/channels_table_model.cpp
   gui/fasto_tree_view.cpp
   gui/fasto_common_model.cpp
   gui/fasto_table_view.cpp
