@@ -26,6 +26,7 @@
 #include <common/value.h>   // for Value, Value::Type
 
 #include "core/db_key.h"  // for NKey, NDbKValue, ttl_t
+#include "core/ps_channel.h"
 #include "core/command_holder.h"
 
 #define FLUSHDB_COMMAND "FLUSHDB"
@@ -63,6 +64,10 @@ class ICommandTranslator {
 
   bool IsLoadKeyCommand(const std::string& cmd, std::string* key) const WARN_UNUSED_RESULT;
 
+  common::Error PublishCommand(const NDbPSChannel& channel,
+                               const std::string& message,
+                               std::string* cmdstring) const WARN_UNUSED_RESULT;
+
   common::Error FindCommand(int argc,
                             const char** argv,
                             const CommandHolder** info,
@@ -95,6 +100,9 @@ class ICommandTranslator {
                                                 ttl_t ttl,
                                                 std::string* cmdstring) const = 0;
   virtual common::Error LoadKeyTTLCommandImpl(const NKey& key, std::string* cmdstring) const = 0;
+  virtual common::Error PublishCommandImpl(const NDbPSChannel& channel,
+                                           const std::string& message,
+                                           std::string* cmdstring) const = 0;
 
   virtual bool IsLoadKeyCommandImpl(const CommandInfo& cmd) const = 0;
 

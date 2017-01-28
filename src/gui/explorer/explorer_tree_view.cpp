@@ -297,138 +297,139 @@ void ExplorerTreeView::changeTextFilter(const QString& text) {
 }
 
 void ExplorerTreeView::showContextMenu(const QPoint& point) {
+  QModelIndex sel = selectedIndex();
+  if (!sel.isValid()) {
+    return;
+  }
+
+  IExplorerTreeItem* node = common::qt::item<common::qt::gui::TreeItem*, IExplorerTreeItem*>(sel);
+  if (!node) {
+    DNOTREACHED();
+    return;
+  }
+
   QPoint menuPoint = mapToGlobal(point);
   menuPoint.setY(menuPoint.y() + header()->height());
+  if (node->type() == IExplorerTreeItem::eCluster) {
+    QMenu menu(this);
+    closeClusterAction_->setEnabled(true);
+    menu.addAction(closeClusterAction_);
+    menu.exec(menuPoint);
+  } else if (node->type() == IExplorerTreeItem::eSentinel) {
+    QMenu menu(this);
+    closeSentinelAction_->setEnabled(true);
+    menu.addAction(closeSentinelAction_);
+    menu.exec(menuPoint);
+  } else if (node->type() == IExplorerTreeItem::eServer) {
+    ExplorerServerItem* server_node = static_cast<ExplorerServerItem*>(node);
 
-  QModelIndex sel = selectedIndex();
-  if (sel.isValid()) {
-    IExplorerTreeItem* node = common::qt::item<common::qt::gui::TreeItem*, IExplorerTreeItem*>(sel);
-    if (!node) {
-      DNOTREACHED();
-      return;
+    QMenu menu(this);
+    menu.addAction(connectAction_);
+    menu.addAction(openConsoleAction_);
+    proxy::IServerSPtr server = server_node->server();
+    bool is_connected = server->IsConnected();
+    bool is_redis = server->Type() == core::REDIS;
+
+    bool isClusterMember = dynamic_cast<ExplorerClusterItem*>(node->parent()) != nullptr;  // +
+
+    loadDatabaseAction_->setEnabled(is_connected);
+    menu.addAction(loadDatabaseAction_);
+    infoServerAction_->setEnabled(is_connected);
+    menu.addAction(infoServerAction_);
+    propertyServerAction_->setEnabled(is_connected && is_redis);
+    menu.addAction(propertyServerAction_);
+
+    setServerPassword_->setEnabled(is_connected && is_redis);
+    menu.addAction(setServerPassword_);
+
+    setMaxClientConnection_->setEnabled(is_connected && is_redis);
+    menu.addAction(setMaxClientConnection_);
+
+    menu.addAction(historyServerAction_);
+    menu.addAction(clearHistoryServerAction_);
+    closeServerAction_->setEnabled(!isClusterMember);
+    menu.addAction(closeServerAction_);
+
+    pubSubAction_->setEnabled(is_connected && is_redis);
+    menu.addAction(pubSubAction_);
+
+    bool is_can_remote = server->IsCanRemote();
+    bool is_local = true;
+    if (is_can_remote) {
+      proxy::IServerRemote* rserver = dynamic_cast<proxy::IServerRemote*>(server.get());  // +
+      CHECK(rserver);
+      common::net::HostAndPort host = rserver->Host();
+      is_local = host.isLocalHost();
     }
 
-    if (node->type() == IExplorerTreeItem::eCluster) {
-      QMenu menu(this);
-      closeClusterAction_->setEnabled(true);
-      menu.addAction(closeClusterAction_);
-      menu.exec(menuPoint);
-    } else if (node->type() == IExplorerTreeItem::eSentinel) {
-      QMenu menu(this);
-      closeSentinelAction_->setEnabled(true);
-      menu.addAction(closeSentinelAction_);
-      menu.exec(menuPoint);
-    } else if (node->type() == IExplorerTreeItem::eServer) {
-      ExplorerServerItem* server_node = static_cast<ExplorerServerItem*>(node);
+    importAction_->setEnabled(!is_connected && is_local && is_redis);
+    menu.addAction(importAction_);
+    backupAction_->setEnabled(is_connected && is_local && is_redis);
+    menu.addAction(backupAction_);
+    shutdownAction_->setEnabled(is_connected && is_redis);
+    menu.addAction(shutdownAction_);
 
-      QMenu menu(this);
-      menu.addAction(connectAction_);
-      menu.addAction(openConsoleAction_);
-      proxy::IServerSPtr server = server_node->server();
-      bool is_connected = server->IsConnected();
-      bool is_redis = server->Type() == core::REDIS;
+    menu.exec(menuPoint);
+  } else if (node->type() == IExplorerTreeItem::eDatabase) {
+    ExplorerDatabaseItem* db = static_cast<ExplorerDatabaseItem*>(node);
 
-      bool isClusterMember = dynamic_cast<ExplorerClusterItem*>(node->parent()) != nullptr;  // +
+    QMenu menu(this);
+    menu.addAction(loadContentAction_);
+    bool isDefault = db->isDefault();
+    proxy::IServerSPtr server = db->server();
 
-      loadDatabaseAction_->setEnabled(is_connected);
-      menu.addAction(loadDatabaseAction_);
-      infoServerAction_->setEnabled(is_connected);
-      menu.addAction(infoServerAction_);
-      propertyServerAction_->setEnabled(is_connected && is_redis);
-      menu.addAction(propertyServerAction_);
+    bool is_connected = server->IsConnected();
+    loadContentAction_->setEnabled(isDefault && is_connected);
 
-      setServerPassword_->setEnabled(is_connected && is_redis);
-      menu.addAction(setServerPassword_);
+    menu.addAction(createKeyAction_);
+    createKeyAction_->setEnabled(isDefault && is_connected);
 
-      setMaxClientConnection_->setEnabled(is_connected && is_redis);
-      menu.addAction(setMaxClientConnection_);
+    menu.addAction(viewKeysAction_);
+    viewKeysAction_->setEnabled(isDefault && is_connected);
 
-      menu.addAction(historyServerAction_);
-      menu.addAction(clearHistoryServerAction_);
-      closeServerAction_->setEnabled(!isClusterMember);
-      menu.addAction(closeServerAction_);
+    menu.addAction(removeAllKeysAction_);
+    removeAllKeysAction_->setEnabled(isDefault && is_connected);
 
-      pubSubAction_->setEnabled(is_connected && is_redis);
-      menu.addAction(pubSubAction_);
+    menu.addAction(setDefaultDbAction_);
+    setDefaultDbAction_->setEnabled(!isDefault && is_connected);
+    menu.exec(menuPoint);
+  } else if (node->type() == IExplorerTreeItem::eNamespace) {
+    ExplorerNSItem* ns = static_cast<ExplorerNSItem*>(node);
 
-      bool is_can_remote = server->IsCanRemote();
-      bool is_local = true;
-      if (is_can_remote) {
-        proxy::IServerRemote* rserver = dynamic_cast<proxy::IServerRemote*>(server.get());  // +
-        CHECK(rserver);
-        common::net::HostAndPort host = rserver->Host();
-        is_local = host.isLocalHost();
-      }
+    QMenu menu(this);
+    proxy::IServerSPtr server = ns->server();
+    ExplorerDatabaseItem* db = ns->db();
+    bool isDefault = db && db->isDefault();
+    bool is_connected = server->IsConnected();
 
-      importAction_->setEnabled(!is_connected && is_local && is_redis);
-      menu.addAction(importAction_);
-      backupAction_->setEnabled(is_connected && is_local && is_redis);
-      menu.addAction(backupAction_);
-      shutdownAction_->setEnabled(is_connected && is_redis);
-      menu.addAction(shutdownAction_);
+    menu.addAction(removeBranchAction_);
+    removeBranchAction_->setEnabled(isDefault && is_connected);
+    menu.exec(menuPoint);
+  } else if (node->type() == IExplorerTreeItem::eKey) {
+    ExplorerKeyItem* key = static_cast<ExplorerKeyItem*>(node);
 
-      menu.exec(menuPoint);
-    } else if (node->type() == IExplorerTreeItem::eDatabase) {
-      ExplorerDatabaseItem* db = static_cast<ExplorerDatabaseItem*>(node);
+    QMenu menu(this);
+    proxy::IServerSPtr server = key->server();
 
-      QMenu menu(this);
-      menu.addAction(loadContentAction_);
-      bool isDefault = db->isDefault();
-      proxy::IServerSPtr server = db->server();
-
-      bool is_connected = server->IsConnected();
-      loadContentAction_->setEnabled(isDefault && is_connected);
-
-      menu.addAction(createKeyAction_);
-      createKeyAction_->setEnabled(isDefault && is_connected);
-
-      menu.addAction(viewKeysAction_);
-      viewKeysAction_->setEnabled(isDefault && is_connected);
-
-      menu.addAction(removeAllKeysAction_);
-      removeAllKeysAction_->setEnabled(isDefault && is_connected);
-
-      menu.addAction(setDefaultDbAction_);
-      setDefaultDbAction_->setEnabled(!isDefault && is_connected);
-      menu.exec(menuPoint);
-    } else if (node->type() == IExplorerTreeItem::eNamespace) {
-      ExplorerNSItem* ns = static_cast<ExplorerNSItem*>(node);
-
-      QMenu menu(this);
-      proxy::IServerSPtr server = ns->server();
-      ExplorerDatabaseItem* db = ns->db();
-      bool isDefault = db && db->isDefault();
-      bool is_connected = server->IsConnected();
-
-      menu.addAction(removeBranchAction_);
-      removeBranchAction_->setEnabled(isDefault && is_connected);
-      menu.exec(menuPoint);
-    } else if (node->type() == IExplorerTreeItem::eKey) {
-      ExplorerKeyItem* key = static_cast<ExplorerKeyItem*>(node);
-
-      QMenu menu(this);
-      proxy::IServerSPtr server = key->server();
-
-      bool is_connected = server->IsConnected();
-      menu.addAction(getValueAction_);
-      getValueAction_->setEnabled(is_connected);
-      bool isTTLSupported = server->IsSupportTTLKeys();
-      if (isTTLSupported) {
-        QAction* setTTLKeyAction = new QAction(trSetTTL, this);
-        setTTLKeyAction->setEnabled(is_connected);
-        VERIFY(connect(setTTLKeyAction, &QAction::triggered, this, &ExplorerTreeView::setTTL));
-        menu.addAction(setTTLKeyAction);
-      }
-      menu.addAction(renameKeyAction_);
-      renameKeyAction_->setEnabled(is_connected);
-      menu.addAction(editKeyAction_);
-      editKeyAction_->setEnabled(is_connected);
-      menu.addAction(deleteKeyAction_);
-      deleteKeyAction_->setEnabled(is_connected);
-      menu.addAction(watchKeyAction_);
-      watchKeyAction_->setEnabled(is_connected);
-      menu.exec(menuPoint);
+    bool is_connected = server->IsConnected();
+    menu.addAction(getValueAction_);
+    getValueAction_->setEnabled(is_connected);
+    bool isTTLSupported = server->IsSupportTTLKeys();
+    if (isTTLSupported) {
+      QAction* setTTLKeyAction = new QAction(trSetTTL, this);
+      setTTLKeyAction->setEnabled(is_connected);
+      VERIFY(connect(setTTLKeyAction, &QAction::triggered, this, &ExplorerTreeView::setTTL));
+      menu.addAction(setTTLKeyAction);
     }
+    menu.addAction(renameKeyAction_);
+    renameKeyAction_->setEnabled(is_connected);
+    menu.addAction(editKeyAction_);
+    editKeyAction_->setEnabled(is_connected);
+    menu.addAction(deleteKeyAction_);
+    deleteKeyAction_->setEnabled(is_connected);
+    menu.addAction(watchKeyAction_);
+    watchKeyAction_->setEnabled(is_connected);
+    menu.exec(menuPoint);
   }
 }
 

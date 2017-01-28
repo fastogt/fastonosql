@@ -26,8 +26,13 @@
 #include <QPushButton>
 #include <QSpinBox>
 #include <QSortFilterProxyModel>
+#include <QHeaderView>
+#include <QMenu>
+#include <QAction>
+#include <QInputDialog>
 
 #include <common/qt/convert2string.h>
+#include <common/qt/logger.h>
 
 #include "proxy/server/iserver.h"
 
@@ -37,11 +42,22 @@
 
 #include "translations/global.h"  // for trKeyCountOnThePage, etc
 
+namespace {
+const QString trPublishToChannel_1S = QObject::tr("Publish to channel %1");
+const QString trEnterWhatYoWantToSend = QObject::tr("Enter what you want to send:");
+}
+
 namespace fastonosql {
 namespace gui {
 
 PubSubDialog::PubSubDialog(const QString& title, proxy::IServerSPtr server, QWidget* parent)
-    : QDialog(parent), server_(server) {
+    : QDialog(parent),
+      searchBox_(nullptr),
+      searchButton_(nullptr),
+      channelsTable_(nullptr),
+      channelsModel_(nullptr),
+      proxy_model_(nullptr),
+      server_(server) {
   CHECK(server_);
   setWindowTitle(title);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
@@ -66,9 +82,9 @@ PubSubDialog::PubSubDialog(const QString& title, proxy::IServerSPtr server, QWid
   mainlayout->addLayout(searchLayout);
 
   channelsModel_ = new ChannelsTableModel(this);
-  QSortFilterProxyModel* proxy_model = new QSortFilterProxyModel(this);
-  proxy_model->setSourceModel(channelsModel_);
-  proxy_model->setDynamicSortFilter(true);
+  proxy_model_ = new QSortFilterProxyModel(this);
+  proxy_model_->setSourceModel(channelsModel_);
+  proxy_model_->setDynamicSortFilter(true);
 
   VERIFY(connect(server_.get(), &proxy::IServer::ExecuteStarted, this, &PubSubDialog::startExecute,
                  Qt::DirectConnection));
@@ -77,8 +93,13 @@ PubSubDialog::PubSubDialog(const QString& title, proxy::IServerSPtr server, QWid
 
   channelsTable_ = new FastoTableView;
   channelsTable_->setSortingEnabled(true);
+  channelsTable_->setSelectionBehavior(QAbstractItemView::SelectRows);
+  channelsTable_->setSelectionMode(QAbstractItemView::SingleSelection);
+  channelsTable_->setContextMenuPolicy(Qt::CustomContextMenu);
+  VERIFY(connect(channelsTable_, &FastoTableView::customContextMenuRequested, this,
+                 &PubSubDialog::showContextMenu));
   channelsTable_->sortByColumn(0, Qt::AscendingOrder);
-  channelsTable_->setModel(proxy_model);
+  channelsTable_->setModel(proxy_model_);
 
   QDialogButtonBox* buttonBox =
       new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
@@ -87,6 +108,9 @@ PubSubDialog::PubSubDialog(const QString& title, proxy::IServerSPtr server, QWid
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &PubSubDialog::reject));
   mainlayout->addWidget(channelsTable_);
   mainlayout->addWidget(buttonBox);
+
+  publishAction_ = new QAction(this);
+  VERIFY(connect(publishAction_, &QAction::triggered, this, &PubSubDialog::publish));
 
   setMinimumSize(QSize(min_width, min_height));
   setLayout(mainlayout);
@@ -132,6 +156,60 @@ void PubSubDialog::searchClicked() {
   server_->LoadChannels(req);
 }
 
+void PubSubDialog::showContextMenu(const QPoint& point) {
+  QModelIndex sel = selectedIndex();
+  if (!sel.isValid()) {
+    return;
+  }
+
+  QPoint menuPoint = channelsTable_->calculateMenuPoint(point);
+  QMenu* menu = new QMenu(channelsTable_);
+  menu->addAction(publishAction_);
+  menu->exec(menuPoint);
+  delete menu;
+}
+
+void PubSubDialog::publish() {
+  QModelIndex sel = selectedIndex();
+  if (!sel.isValid()) {
+    return;
+  }
+
+  ChannelTableItem* node = common::qt::item<common::qt::gui::TableItem*, ChannelTableItem*>(sel);
+  if (!node) {
+    DNOTREACHED();
+    return;
+  }
+
+  bool ok;
+  QString publish_text =
+      QInputDialog::getText(this, trPublishToChannel_1S.arg(node->name()), trEnterWhatYoWantToSend,
+                            QLineEdit::Normal, QString(), &ok);
+  if (ok && !publish_text.isEmpty()) {
+    core::translator_t trans = server_->Translator();
+    std::string cmd_str;
+    common::Error err =
+        trans->PublishCommand(node->channel(), common::ConvertToString(publish_text), &cmd_str);
+    if (err && err->isError()) {
+      LOG_ERROR(err, true);
+      return;
+    }
+
+    proxy::events_info::ExecuteInfoRequest req(this, cmd_str);
+    server_->Execute(req);
+  }
+}
+
+QModelIndex PubSubDialog::selectedIndex() const {
+  QModelIndexList indexses = channelsTable_->selectionModel()->selectedRows();
+
+  if (indexses.count() != 1) {
+    return QModelIndex();
+  }
+
+  return proxy_model_->mapToSource(indexses[0]);
+}
+
 void PubSubDialog::searchLineChanged(const QString& text) {
   UNUSED(text);
 }
@@ -145,6 +223,7 @@ void PubSubDialog::changeEvent(QEvent* e) {
 
 void PubSubDialog::retranslateUi() {
   searchButton_->setText(translations::trSearch);
+  publishAction_->setText(translations::trPublish);
 }
 
 }  // namespace gui

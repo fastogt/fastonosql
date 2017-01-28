@@ -31,8 +31,7 @@ class FastoTreeView : public QTreeView {
  public:
   explicit FastoTreeView(QWidget* parent = 0);
 
- private Q_SLOTS:
-  void showContextMenu(const QPoint& point);
+  QPoint calculateMenuPoint(const QPoint& point) const;
 };
 
 }  // namespace gui

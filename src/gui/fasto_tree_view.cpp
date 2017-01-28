@@ -27,21 +27,15 @@ namespace fastonosql {
 namespace gui {
 
 FastoTreeView::FastoTreeView(QWidget* parent) : QTreeView(parent) {
-  header()->setStretchLastSection(false);
-
-  setSelectionMode(QAbstractItemView::ExtendedSelection);
-  setSelectionBehavior(QAbstractItemView::SelectRows);
-
-  setContextMenuPolicy(Qt::CustomContextMenu);
-  VERIFY(connect(this, &FastoTreeView::customContextMenuRequested, this,
-                 &FastoTreeView::showContextMenu));
+  QHeaderView* h = header();
+  h->setDefaultAlignment(Qt::AlignLeft);
+  h->setSectionResizeMode(QHeaderView::Stretch);
 }
 
-void FastoTreeView::showContextMenu(const QPoint& point) {
+QPoint FastoTreeView::calculateMenuPoint(const QPoint& point) const {
   QPoint menuPoint = mapToGlobal(point);
   menuPoint.setY(menuPoint.y() + header()->height());
-  QMenu menu(this);
-  menu.exec(menuPoint);
+  return menuPoint;
 }
 
 }  // namespace gui

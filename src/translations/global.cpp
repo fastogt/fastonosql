@@ -156,6 +156,7 @@ const QString trRemoveBranch = QObject::tr("Remove branch");
 const QString trCreateKey = QObject::tr("Create key");
 const QString trViewKeysDialog = QObject::tr("View keys dialog");
 const QString trPubSubDialog = QObject::tr("Pub/Sub dialog");
+const QString trPublish = QObject::tr("Publish");
 const QString trEncodeDecode = QObject::tr("Encode/Decode");
 const QString trEncode = QObject::tr("Encode");
 const QString trDecode = QObject::tr("Decode");

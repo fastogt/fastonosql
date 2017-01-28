@@ -71,7 +71,6 @@ FastoTextView::FastoTextView(const QString& delimiter, QWidget* parent) : QWidge
   mainL->addWidget(editor_);
   mainL->setContentsMargins(0, 0, 0, 0);
   QHBoxLayout* hlayout = new QHBoxLayout;
-  ;
   hlayout->addWidget(saveChangeButton_, 0, Qt::AlignRight);
 
   mainL->addLayout(hlayout);

@@ -156,6 +156,7 @@ extern const QString trRemoveBranch;
 extern const QString trCreateKey;
 extern const QString trViewKeysDialog;
 extern const QString trPubSubDialog;
+extern const QString trPublish;
 extern const QString trEncodeDecode;
 extern const QString trEncode;
 extern const QString trDecode;

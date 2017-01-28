@@ -163,6 +163,16 @@ bool ICommandTranslator::IsLoadKeyCommand(const std::string& cmd, std::string* k
   return false;
 }
 
+common::Error ICommandTranslator::PublishCommand(const NDbPSChannel& channel,
+                                                 const std::string& message,
+                                                 std::string* cmdstring) const {
+  if (!cmdstring || message.empty()) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  return PublishCommandImpl(channel, message, cmdstring);
+}
+
 common::Error ICommandTranslator::InvalidInputArguments(const std::string& cmd) {
   std::string buff = common::MemSPrintf("Invalid input argument(s) for command: %s.", cmd);
   return common::make_error_value(buff, common::ErrorValue::E_ERROR);

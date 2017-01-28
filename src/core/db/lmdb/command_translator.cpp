@@ -93,6 +93,18 @@ bool CommandTranslator::IsLoadKeyCommandImpl(const CommandInfo& cmd) const {
   return cmd.IsEqualName(LMDB_COMMONTYPE_GET_KEY_COMMAND);
 }
 
+common::Error CommandTranslator::PublishCommandImpl(const NDbPSChannel& channel,
+                                                    const std::string& message,
+                                                    std::string* cmdstring) const {
+  UNUSED(channel);
+  UNUSED(message);
+  UNUSED(cmdstring);
+
+  std::string errorMsg = common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE
+                                            " not supported publish command for LMDB.");
+  return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
+}
+
 }  // namespace lmdb
 }  // namespace core
 }  // namespace fastonosql

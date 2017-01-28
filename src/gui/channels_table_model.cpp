@@ -39,6 +39,10 @@ namespace gui {
 
 ChannelTableItem::ChannelTableItem(const core::NDbPSChannel& chan) : channel_(chan) {}
 
+core::NDbPSChannel ChannelTableItem::channel() const {
+  return channel_;
+}
+
 QString ChannelTableItem::name() const {
   return common::ConvertFromString<QString>(channel_.Name());
 }

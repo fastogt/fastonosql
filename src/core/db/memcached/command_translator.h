@@ -52,6 +52,10 @@ class CommandTranslator : public ICommandTranslator {
                                               std::string* cmdstring) const override;
 
   virtual bool IsLoadKeyCommandImpl(const CommandInfo& cmd) const override;
+
+  virtual common::Error PublishCommandImpl(const NDbPSChannel& channel,
+                                           const std::string& message,
+                                           std::string* cmdstring) const override;
 };
 
 }  // namespace memcached

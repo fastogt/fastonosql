@@ -24,6 +24,8 @@
 
 class QLabel;     // lines 30-30
 class QLineEdit;  // lines 28-28
+class QSortFilterProxyModel;
+class QAction;
 
 namespace fastonosql {
 namespace proxy {
@@ -48,7 +50,7 @@ namespace gui {
 class PubSubDialog : public QDialog {
   Q_OBJECT
  public:
-  enum { min_width = 320, min_height = 200 };
+  enum { min_width = 640, min_height = 480 };
 
   explicit PubSubDialog(const QString& title, proxy::IServerSPtr server, QWidget* parent = 0);
 
@@ -60,18 +62,23 @@ class PubSubDialog : public QDialog {
 
   void searchLineChanged(const QString& text);
   void searchClicked();
+  void showContextMenu(const QPoint& point);
+  void publish();
 
  protected:
   virtual void changeEvent(QEvent* ev) override;
+  QModelIndex selectedIndex() const;
 
  private:
   void retranslateUi();
 
   QLineEdit* searchBox_;
   QPushButton* searchButton_;
+  QAction* publishAction_;
 
   FastoTableView* channelsTable_;
   ChannelsTableModel* channelsModel_;
+  QSortFilterProxyModel* proxy_model_;
   proxy::IServerSPtr server_;
 };
 

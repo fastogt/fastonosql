@@ -30,22 +30,15 @@ FastoTableView::FastoTableView(QWidget* parent) : QTableView(parent) {
   verticalHeader()->setDefaultAlignment(Qt::AlignLeft);
   horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
 
-  horizontalHeader()->setStretchLastSection(false);
-
-  setSelectionMode(QAbstractItemView::ExtendedSelection);
-  setSelectionBehavior(QAbstractItemView::SelectItems);
-
-  setContextMenuPolicy(Qt::CustomContextMenu);
-  VERIFY(connect(this, &FastoTableView::customContextMenuRequested, this,
-                 &FastoTableView::showContextMenu));
+  QHeaderView* header = horizontalHeader();
+  header->setSectionResizeMode(QHeaderView::Stretch);
 }
 
-void FastoTableView::showContextMenu(const QPoint& point) {
+QPoint FastoTableView::calculateMenuPoint(const QPoint& point) const {
   QPoint menuPoint = mapToGlobal(point);
   menuPoint.setY(menuPoint.y() + horizontalHeader()->height());
   menuPoint.setX(menuPoint.x() + verticalHeader()->width());
-  QMenu menu(this);
-  menu.exec(menuPoint);
+  return menuPoint;
 }
 
 }  // namespace gui
