@@ -31,6 +31,7 @@
 #include <QAction>
 #include <QInputDialog>
 
+#include <common/convert2string.h>
 #include <common/qt/convert2string.h>
 #include <common/qt/logger.h>
 
@@ -45,6 +46,7 @@
 namespace {
 const QString trPublishToChannel_1S = QObject::tr("Publish to channel %1");
 const QString trEnterWhatYoWantToSend = QObject::tr("Enter what you want to send:");
+const QString trSubscribeInNewConsole = QObject::tr("Subscribe in new console");
 }
 
 namespace fastonosql {
@@ -112,6 +114,10 @@ PubSubDialog::PubSubDialog(const QString& title, proxy::IServerSPtr server, QWid
   publishAction_ = new QAction(this);
   VERIFY(connect(publishAction_, &QAction::triggered, this, &PubSubDialog::publish));
 
+  subscribeAction_ = new QAction(this);
+  VERIFY(
+      connect(subscribeAction_, &QAction::triggered, this, &PubSubDialog::subscribeInNewConsole));
+
   setMinimumSize(QSize(min_width, min_height));
   setLayout(mainlayout);
   retranslateUi();
@@ -165,6 +171,7 @@ void PubSubDialog::showContextMenu(const QPoint& point) {
   QPoint menuPoint = channelsTable_->calculateMenuPoint(point);
   QMenu* menu = new QMenu(channelsTable_);
   menu->addAction(publishAction_);
+  menu->addAction(subscribeAction_);
   menu->exec(menuPoint);
   delete menu;
 }
@@ -200,6 +207,29 @@ void PubSubDialog::publish() {
   }
 }
 
+void PubSubDialog::subscribeInNewConsole() {
+  QModelIndex sel = selectedIndex();
+  if (!sel.isValid()) {
+    return;
+  }
+
+  ChannelTableItem* node = common::qt::item<common::qt::gui::TableItem*, ChannelTableItem*>(sel);
+  if (!node) {
+    DNOTREACHED();
+    return;
+  }
+
+  core::translator_t trans = server_->Translator();
+  std::string cmd_str;
+  common::Error err = trans->SubscribeCommand(node->channel(), &cmd_str);
+  if (err && err->isError()) {
+    LOG_ERROR(err, true);
+    return;
+  }
+
+  emit consoleOpenedAndExecute(server_, common::ConvertFromString<QString>(cmd_str));
+}
+
 QModelIndex PubSubDialog::selectedIndex() const {
   QModelIndexList indexses = channelsTable_->selectionModel()->selectedRows();
 
@@ -224,6 +254,7 @@ void PubSubDialog::changeEvent(QEvent* e) {
 void PubSubDialog::retranslateUi() {
   searchButton_->setText(translations::trSearch);
   publishAction_->setText(translations::trPublish);
+  subscribeAction_->setText(trSubscribeInNewConsole);
 }
 
 }  // namespace gui

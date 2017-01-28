@@ -106,6 +106,16 @@ common::Error CommandTranslator::PublishCommandImpl(const NDbPSChannel& channel,
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
 }
 
+common::Error CommandTranslator::SubscribeCommandImpl(const NDbPSChannel& channel,
+                                                      std::string* cmdstring) const {
+  UNUSED(channel);
+  UNUSED(cmdstring);
+
+  std::string errorMsg = common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE
+                                            " not supported subscribe command for RocksDB.");
+  return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
+}
+
 }  // namespace rocksdb
 }  // namespace core
 }  // namespace fastonosql

@@ -53,6 +53,8 @@ class PubSubDialog : public QDialog {
   enum { min_width = 640, min_height = 480 };
 
   explicit PubSubDialog(const QString& title, proxy::IServerSPtr server, QWidget* parent = 0);
+ Q_SIGNALS:
+  void consoleOpenedAndExecute(proxy::IServerSPtr server, const QString& text);
 
  private Q_SLOTS:
   void startExecute(const proxy::events_info::ExecuteInfoRequest& req);
@@ -64,6 +66,7 @@ class PubSubDialog : public QDialog {
   void searchClicked();
   void showContextMenu(const QPoint& point);
   void publish();
+  void subscribeInNewConsole();
 
  protected:
   virtual void changeEvent(QEvent* ev) override;
@@ -75,6 +78,7 @@ class PubSubDialog : public QDialog {
   QLineEdit* searchBox_;
   QPushButton* searchButton_;
   QAction* publishAction_;
+  QAction* subscribeAction_;
 
   FastoTableView* channelsTable_;
   ChannelsTableModel* channelsModel_;

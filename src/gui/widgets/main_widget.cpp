@@ -72,6 +72,18 @@ void MainWidget::openConsole(proxy::IServerSPtr server, const QString& text) {
   queryWidget->setInputText(text);
 }
 
+void MainWidget::openConsoleAndExecute(proxy::IServerSPtr server, const QString& text) {
+  if (!server) {
+    DNOTREACHED();
+    return;
+  }
+
+  QueryWidget* queryWidget = new QueryWidget(server);
+  QString name = common::ConvertFromString<QString>(server->Name());
+  addWidgetToTab(queryWidget, name);
+  queryWidget->execute(text);
+}
+
 void MainWidget::createNewTab() {
   int curIndex = currentIndex();
   QueryWidget* shw = widget(curIndex);

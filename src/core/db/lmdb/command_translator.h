@@ -56,6 +56,8 @@ class CommandTranslator : public ICommandTranslator {
   virtual common::Error PublishCommandImpl(const NDbPSChannel& channel,
                                            const std::string& message,
                                            std::string* cmdstring) const override;
+  virtual common::Error SubscribeCommandImpl(const NDbPSChannel& channel,
+                                             std::string* cmdstring) const override;
 };
 
 }  // namespace lmdb

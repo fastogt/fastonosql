@@ -49,6 +49,7 @@
 #define REDIS_GET_TTL_1ARGS_S "TTL %s"
 
 #define REDIS_PUBLISH_2ARGS_SS "PUBLISH %s %s"
+#define REDIS_SUBSCRIBE_1ARGS_S "SUBSCRIBE %s"
 
 namespace fastonosql {
 namespace core {
@@ -145,10 +146,18 @@ bool CommandTranslator::IsLoadKeyCommandImpl(const CommandInfo& cmd) const {
          cmd.IsEqualName(REDIS_HASHTYPE_GET_KEY_COMMAND);
 }
 
-common::Error CommandTranslator::PublishCommandImpl(const NDbPSChannel& channel, const std::string& message,
+common::Error CommandTranslator::PublishCommandImpl(const NDbPSChannel& channel,
+                                                    const std::string& message,
                                                     std::string* cmdstring) const {
   std::string channel_str = channel.Name();
   *cmdstring = common::MemSPrintf(REDIS_PUBLISH_2ARGS_SS, channel_str, message);
+  return common::Error();
+}
+
+common::Error CommandTranslator::SubscribeCommandImpl(const NDbPSChannel& channel,
+                                                      std::string* cmdstring) const {
+  std::string channel_str = channel.Name();
+  *cmdstring = common::MemSPrintf(REDIS_SUBSCRIBE_1ARGS_S, channel_str);
   return common::Error();
 }
 

@@ -684,6 +684,8 @@ void ExplorerTreeView::viewPubSub() {
 
   proxy::IServerSPtr server = node->server();
   PubSubDialog diag(trViewChannelsTemplate_1S.arg(node->name()), server, this);
+  VERIFY(connect(&diag, &PubSubDialog::consoleOpenedAndExecute, this,
+                 &ExplorerTreeView::consoleOpenedAndExecute));
   diag.exec();
 }
 

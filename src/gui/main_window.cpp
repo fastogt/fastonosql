@@ -224,6 +224,7 @@ MainWindow::MainWindow() : QMainWindow(), isCheckedInSession_(false) {
 
   exp_ = new ExplorerTreeWidget(this);
   VERIFY(connect(exp_, &ExplorerTreeWidget::consoleOpened, mainW, &MainWidget::openConsole));
+  VERIFY(connect(exp_, &ExplorerTreeWidget::consoleOpenedAndExecute, mainW, &MainWidget::openConsoleAndExecute));
   VERIFY(connect(exp_, &ExplorerTreeWidget::serverClosed, this, &MainWindow::closeServer,
                  Qt::DirectConnection));
   VERIFY(connect(exp_, &ExplorerTreeWidget::clusterClosed, this, &MainWindow::closeCluster,

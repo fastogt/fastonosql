@@ -45,6 +45,8 @@ ExplorerTreeWidget::ExplorerTreeWidget(QWidget* parent) : QWidget(parent) {
       connect(filter_edit_, &QLineEdit::textChanged, view_, &ExplorerTreeView::changeTextFilter));
   VERIFY(
       connect(view_, &ExplorerTreeView::consoleOpened, this, &ExplorerTreeWidget::consoleOpened));
+  VERIFY(connect(view_, &ExplorerTreeView::consoleOpenedAndExecute, this,
+                 &ExplorerTreeWidget::consoleOpenedAndExecute));
   VERIFY(connect(view_, &ExplorerTreeView::serverClosed, this, &ExplorerTreeWidget::serverClosed,
                  Qt::DirectConnection));
   VERIFY(connect(view_, &ExplorerTreeView::clusterClosed, this, &ExplorerTreeWidget::clusterClosed,

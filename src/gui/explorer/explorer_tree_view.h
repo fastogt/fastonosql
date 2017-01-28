@@ -46,6 +46,7 @@ class ExplorerTreeView : public QTreeView {
 
  Q_SIGNALS:
   void consoleOpened(proxy::IServerSPtr server, const QString& text);
+  void consoleOpenedAndExecute(proxy::IServerSPtr server, const QString& text);
   void serverClosed(proxy::IServerSPtr server);
   void sentinelClosed(proxy::ISentinelSPtr sentinel);
   void clusterClosed(proxy::IClusterSPtr cluster);

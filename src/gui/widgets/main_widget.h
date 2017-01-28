@@ -42,6 +42,7 @@ class MainWidget : public QTabWidget {
 
  public Q_SLOTS:
   void openConsole(proxy::IServerSPtr server, const QString& text);
+  void openConsoleAndExecute(proxy::IServerSPtr server, const QString& text);
 
  private Q_SLOTS:
   void createNewTab();

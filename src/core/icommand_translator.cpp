@@ -173,6 +173,15 @@ common::Error ICommandTranslator::PublishCommand(const NDbPSChannel& channel,
   return PublishCommandImpl(channel, message, cmdstring);
 }
 
+common::Error ICommandTranslator::SubscribeCommand(const NDbPSChannel& channel,
+                                                   std::string* cmdstring) const {
+  if (!cmdstring) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  return SubscribeCommandImpl(channel, cmdstring);
+}
+
 common::Error ICommandTranslator::InvalidInputArguments(const std::string& cmd) {
   std::string buff = common::MemSPrintf("Invalid input argument(s) for command: %s.", cmd);
   return common::make_error_value(buff, common::ErrorValue::E_ERROR);

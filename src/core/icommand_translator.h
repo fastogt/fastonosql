@@ -68,6 +68,9 @@ class ICommandTranslator {
                                const std::string& message,
                                std::string* cmdstring) const WARN_UNUSED_RESULT;
 
+  common::Error SubscribeCommand(const NDbPSChannel& channel,
+                                 std::string* cmdstring) const WARN_UNUSED_RESULT;
+
   common::Error FindCommand(int argc,
                             const char** argv,
                             const CommandHolder** info,
@@ -103,6 +106,8 @@ class ICommandTranslator {
   virtual common::Error PublishCommandImpl(const NDbPSChannel& channel,
                                            const std::string& message,
                                            std::string* cmdstring) const = 0;
+  virtual common::Error SubscribeCommandImpl(const NDbPSChannel& channel,
+                                             std::string* cmdstring) const = 0;
 
   virtual bool IsLoadKeyCommandImpl(const CommandInfo& cmd) const = 0;
 
