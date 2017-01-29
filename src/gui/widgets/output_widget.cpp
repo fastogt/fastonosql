@@ -25,6 +25,8 @@
 #include <QHeaderView>
 #include <QPushButton>
 #include <QSplitter>
+#include <QTableView>
+#include <QTreeView>
 
 #include <common/convert2string.h>  // for ConvertFromString
 #include <common/error.h>           // for Error
@@ -101,14 +103,14 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent)
   VERIFY(connect(server_.get(), &proxy::IServer::ItemUpdated, this, &OutputWidget::updateItem,
                  Qt::DirectConnection));
 
-  treeView_ = new FastoTreeView;
+  treeView_ = new QTreeView;
   treeView_->setModel(commonModel_);
   treeView_->header()->setSectionResizeMode(0, QHeaderView::Stretch);
   treeView_->header()->setSectionResizeMode(1, QHeaderView::Stretch);
   treeView_->header()->setStretchLastSection(false);
   treeView_->setItemDelegateForColumn(FastoCommonItem::eValue, new TypeDelegate(this));
 
-  tableView_ = new FastoTableView;
+  tableView_ = new QTableView;
   tableView_->setModel(commonModel_);
   tableView_->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
   tableView_->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);

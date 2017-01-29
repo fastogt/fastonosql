@@ -26,6 +26,8 @@
 #include "core/global.h"  // for FastoObject, etc
 
 class QPushButton;  // lines 27-27
+class QTreeView;
+class QTableView;
 
 namespace common {
 namespace qt {
@@ -47,9 +49,7 @@ struct CommandRootCreatedInfo;
 }
 namespace fastonosql {
 namespace gui {
-class FastoTableView;
 class FastoTextView;
-class FastoTreeView;
 class FastoCommonModel;
 }
 }
@@ -90,8 +90,8 @@ class OutputWidget : public QWidget {
   QPushButton* textButton_;
 
   FastoCommonModel* commonModel_;
-  FastoTreeView* treeView_;
-  FastoTableView* tableView_;
+  QTreeView* treeView_;
+  QTableView* tableView_;
   FastoTextView* textView_;
   const proxy::IServerSPtr server_;
 };
