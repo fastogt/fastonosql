@@ -89,9 +89,9 @@ class NumericDelegate : public QStyledItemDelegate {
     model->setData(index, value, Qt::EditRole);
   }
 
-  void updateEditorGeometry(QWidget* editor,
-                            const QStyleOptionViewItem& option,
-                            const QModelIndex& index) const override {
+  virtual void updateEditorGeometry(QWidget* editor,
+                                    const QStyleOptionViewItem& option,
+                                    const QModelIndex& index) const override {
     UNUSED(index);
 
     editor->setGeometry(option.rect);

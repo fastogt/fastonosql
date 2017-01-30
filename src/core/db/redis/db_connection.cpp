@@ -1697,6 +1697,76 @@ common::Error DBConnection::Hgetall(const NKey& key, NDbKValue* loaded_key) {
   return common::Error();
 }
 
+common::Error DBConnection::Decr(const NKey& key, long long* decr) {
+  if (!decr) {
+    DNOTREACHED();
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  if (!IsConnected()) {
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
+  std::string key_str = key.Key();
+  redisReply* reply =
+      reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "DECR %s", key_str.c_str()));
+  if (!reply) {
+    return cliPrintContextError(connection_.handle_);
+  }
+
+  if (reply->type == REDIS_REPLY_INTEGER) {
+    if (client_) {
+      NValue val(common::Value::createIntegerValue(reply->integer));
+      client_->OnKeyAdded(NDbKValue(key, val));
+    }
+    *decr = reply->integer;
+    freeReplyObject(reply);
+    return common::Error();
+  } else if (reply->type == REDIS_REPLY_ERROR) {
+    std::string str(reply->str, reply->len);
+    freeReplyObject(reply);
+    return common::make_error_value(str, common::ErrorValue::E_ERROR);
+  }
+
+  NOTREACHED();
+  return common::Error();
+}
+
+common::Error DBConnection::DecrBy(const NKey& key, int dec, long long* decr) {
+  if (!decr) {
+    DNOTREACHED();
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  if (!IsConnected()) {
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
+  }
+
+  std::string key_str = key.Key();
+  redisReply* reply = reinterpret_cast<redisReply*>(
+      redisCommand(connection_.handle_, "DECRBY %s %d", key_str.c_str(), dec));
+  if (!reply) {
+    return cliPrintContextError(connection_.handle_);
+  }
+
+  if (reply->type == REDIS_REPLY_INTEGER) {
+    if (client_) {
+      NValue val(common::Value::createLongLongIntegerValue(reply->integer));
+      client_->OnKeyAdded(NDbKValue(key, val));
+    }
+    *decr = reply->integer;
+    freeReplyObject(reply);
+    return common::Error();
+  } else if (reply->type == REDIS_REPLY_ERROR) {
+    std::string str(reply->str, reply->len);
+    freeReplyObject(reply);
+    return common::make_error_value(str, common::ErrorValue::E_ERROR);
+  }
+
+  NOTREACHED();
+  return common::Error();
+}
+
 common::Error DBConnection::Incr(const NKey& key, long long* incr) {
   if (!incr) {
     DNOTREACHED();

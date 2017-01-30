@@ -28,7 +28,7 @@ namespace core {
 class NDbPSChannel {
  public:
   NDbPSChannel();
-  NDbPSChannel(const std::string name, uint32_t nos);
+  NDbPSChannel(const std::string& name, uint32_t nos);
 
   std::string Name() const;
   void SetName(const std::string& name);

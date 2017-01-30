@@ -221,13 +221,13 @@ struct LoadDatabaseContentRequest : public EventInfoBase {
   LoadDatabaseContentRequest(initiator_type sender,
                              core::IDataBaseInfoSPtr inf,
                              const std::string& pattern,
-                             uint32_t countKeys,
-                             uint32_t cursor = 0,
+                             size_t countKeys,
+                             uint64_t cursor = 0,
                              error_type er = error_type());
 
   core::IDataBaseInfoSPtr inf;
   const std::string pattern;
-  uint32_t count_keys;
+  size_t count_keys;
   const uint64_t cursor_in;
 };
 

@@ -106,6 +106,15 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
                                const char** argv,
                                FastoObject* out);
 
+  static common::Error Decr(internal::CommandHandler* handler,
+                            int argc,
+                            const char** argv,
+                            FastoObject* out);
+  static common::Error DecrBy(internal::CommandHandler* handler,
+                              int argc,
+                              const char** argv,
+                              FastoObject* out);
+
   static common::Error Incr(internal::CommandHandler* handler,
                             int argc,
                             const char** argv,
@@ -546,7 +555,7 @@ static const std::vector<CommandHolder> g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Decr),
     CommandHolder("DECRBY",
                   "<key> <decrement>",
                   "Decrement the integer value of a key by "
@@ -555,7 +564,7 @@ static const std::vector<CommandHolder> g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::DecrBy),
     CommandHolder("DEL",
                   "<key> [key ...]",
                   "Delete a key",

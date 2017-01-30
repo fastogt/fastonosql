@@ -126,6 +126,9 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
   common::Error Hmset(const NKey& key, NValue hash);
   common::Error Hgetall(const NKey& key, NDbKValue* loaded_key);
 
+  common::Error Decr(const NKey& key, long long* decr);
+  common::Error DecrBy(const NKey& key, int inc, long long* decr);
+
   common::Error Incr(const NKey& key, long long* incr);
   common::Error IncrBy(const NKey& key, int inc, long long* incr);
   common::Error IncrByFloat(const NKey& key, double inc, std::string* str_incr);

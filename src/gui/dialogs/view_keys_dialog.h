@@ -92,7 +92,7 @@ class ViewKeysDialog : public QDialog {
   void updateControls();
   size_t keysCount() const;
 
-  std::vector<uint32_t> cursorStack_;
+  std::vector<uint64_t> cursorStack_;
   uint32_t curPos_;
   QLineEdit* searchBox_;
   QLabel* keyCountLabel_;

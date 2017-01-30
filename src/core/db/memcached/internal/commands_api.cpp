@@ -109,8 +109,9 @@ common::Error CommandsApi::Append(internal::CommandHandler* handler,
                                   FastoObject* out) {
   UNUSED(argc);
 
+  NKey key(argv[0]);
   DBConnection* mem = static_cast<DBConnection*>(handler);
-  common::Error err = mem->Append(argv[0], argv[3], common::ConvertFromString<time_t>(argv[2]),
+  common::Error err = mem->Append(key, argv[3], common::ConvertFromString<time_t>(argv[2]),
                                   common::ConvertFromString<uint32_t>(argv[1]));
   if (err && err->isError()) {
     return err;
@@ -128,8 +129,9 @@ common::Error CommandsApi::Prepend(internal::CommandHandler* handler,
                                    FastoObject* out) {
   UNUSED(argc);
 
+  NKey key(argv[0]);
   DBConnection* mem = static_cast<DBConnection*>(handler);
-  common::Error err = mem->Prepend(argv[0], argv[3], common::ConvertFromString<time_t>(argv[2]),
+  common::Error err = mem->Prepend(key, argv[3], common::ConvertFromString<time_t>(argv[2]),
                                    common::ConvertFromString<uint32_t>(argv[1]));
   if (err && err->isError()) {
     return err;
@@ -147,13 +149,15 @@ common::Error CommandsApi::Incr(internal::CommandHandler* handler,
                                 FastoObject* out) {
   UNUSED(argc);
 
+  NKey key(argv[0]);
   DBConnection* mem = static_cast<DBConnection*>(handler);
-  common::Error err = mem->Incr(argv[0], common::ConvertFromString<uint64_t>(argv[1]));
+  uint64_t result = 0;
+  common::Error err = mem->Incr(key, common::ConvertFromString<uint32_t>(argv[1]), &result);
   if (err && err->isError()) {
     return err;
   }
 
-  common::StringValue* val = common::Value::createStringValue("OK");
+  common::FundamentalValue* val = common::Value::createULongLongIntegerValue(result);
   FastoObject* child = new FastoObject(out, val, mem->Delimiter());
   out->AddChildren(child);
   return common::Error();
@@ -165,13 +169,15 @@ common::Error CommandsApi::Decr(internal::CommandHandler* handler,
                                 FastoObject* out) {
   UNUSED(argc);
 
+  NKey key(argv[0]);
   DBConnection* mem = static_cast<DBConnection*>(handler);
-  common::Error err = mem->Decr(argv[0], common::ConvertFromString<uint64_t>(argv[1]));
+  uint64_t result = 0;
+  common::Error err = mem->Decr(key, common::ConvertFromString<uint32_t>(argv[1]), &result);
   if (err && err->isError()) {
     return err;
   }
 
-  common::StringValue* val = common::Value::createStringValue("OK");
+  common::FundamentalValue* val = common::Value::createULongLongIntegerValue(result);
   FastoObject* child = new FastoObject(out, val, mem->Delimiter());
   out->AddChildren(child);
   return common::Error();

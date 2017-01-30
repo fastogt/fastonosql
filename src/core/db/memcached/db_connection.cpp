@@ -381,7 +381,7 @@ common::Error DBConnection::Replace(const std::string& key,
   return common::Error();
 }
 
-common::Error DBConnection::Append(const std::string& key,
+common::Error DBConnection::Append(const NKey& key,
                                    const std::string& value,
                                    time_t expiration,
                                    uint32_t flags) {
@@ -389,18 +389,23 @@ common::Error DBConnection::Append(const std::string& key,
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  memcached_return_t error = memcached_append(connection_.handle_, key.c_str(), key.length(),
-                                              value.c_str(), value.length(), expiration, flags);
+  const std::string key_str = key.Key();
+  memcached_return_t error =
+      memcached_append(connection_.handle_, key_str.c_str(), key_str.length(), value.c_str(),
+                       value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("Append function error: %s",
                                           memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
+  if (client_) {
+    client_->OnKeyAdded(NDbKValue(key, NValue(common::Value::createStringValue(value))));
+  }
   return common::Error();
 }
 
-common::Error DBConnection::Prepend(const std::string& key,
+common::Error DBConnection::Prepend(const NKey& key,
                                     const std::string& value,
                                     time_t expiration,
                                     uint32_t flags) {
@@ -408,46 +413,75 @@ common::Error DBConnection::Prepend(const std::string& key,
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  memcached_return_t error = memcached_prepend(connection_.handle_, key.c_str(), key.length(),
-                                               value.c_str(), value.length(), expiration, flags);
+  const std::string key_str = key.Key();
+  memcached_return_t error =
+      memcached_prepend(connection_.handle_, key_str.c_str(), key_str.length(), value.c_str(),
+                        value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("Prepend function error: %s",
                                           memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
+  if (client_) {
+    client_->OnKeyAdded(NDbKValue(key, NValue(common::Value::createStringValue(value))));
+  }
   return common::Error();
 }
 
-common::Error DBConnection::Incr(const std::string& key, uint64_t value) {
+common::Error DBConnection::Incr(const NKey& key, uint32_t value, uint64_t* result) {
+  if (!result) {
+    DNOTREACHED();
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  memcached_return_t error =
-      memcached_increment(connection_.handle_, key.c_str(), key.length(), 0, &value);
+  const std::string key_str = key.Key();
+  uint64_t local_value = 0;
+  memcached_return_t error = memcached_increment(connection_.handle_, key_str.c_str(),
+                                                 key_str.length(), value, &local_value);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("Incr function error: %s",
                                           memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
+  if (client_) {
+    NValue val(common::Value::createULongLongIntegerValue(local_value));
+    client_->OnKeyAdded(NDbKValue(key, val));
+  }
+  *result = local_value;
   return common::Error();
 }
 
-common::Error DBConnection::Decr(const std::string& key, uint64_t value) {
+common::Error DBConnection::Decr(const NKey& key, uint32_t value, uint64_t* result) {
+  if (!result) {
+    DNOTREACHED();
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  memcached_return_t error =
-      memcached_decrement(connection_.handle_, key.c_str(), key.length(), 0, &value);
+  const std::string key_str = key.Key();
+  uint64_t local_value = 0;
+  memcached_return_t error = memcached_decrement(connection_.handle_, key_str.c_str(),
+                                                 key_str.length(), value, &local_value);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("Decr function error: %s",
                                           memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
+  if (client_) {
+    NValue val(common::Value::createULongLongIntegerValue(local_value));
+    client_->OnKeyAdded(NDbKValue(key, val));
+  }
+  *result = local_value;
   return common::Error();
 }
 

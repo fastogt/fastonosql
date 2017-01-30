@@ -79,16 +79,16 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
                         const std::string& value,
                         time_t expiration,
                         uint32_t flags) WARN_UNUSED_RESULT;
-  common::Error Append(const std::string& key,
+  common::Error Append(const NKey& key,
                        const std::string& value,
                        time_t expiration,
                        uint32_t flags) WARN_UNUSED_RESULT;
-  common::Error Prepend(const std::string& key,
+  common::Error Prepend(const NKey& key,
                         const std::string& value,
                         time_t expiration,
                         uint32_t flags) WARN_UNUSED_RESULT;
-  common::Error Incr(const std::string& key, uint64_t value) WARN_UNUSED_RESULT;
-  common::Error Decr(const std::string& key, uint64_t value) WARN_UNUSED_RESULT;
+  common::Error Incr(const NKey& key, uint32_t value, uint64_t* result) WARN_UNUSED_RESULT;
+  common::Error Decr(const NKey& key, uint32_t value, uint64_t* result) WARN_UNUSED_RESULT;
   common::Error VersionServer() const WARN_UNUSED_RESULT;
 
   common::Error TTL(const std::string& key, ttl_t* expiration) WARN_UNUSED_RESULT;
