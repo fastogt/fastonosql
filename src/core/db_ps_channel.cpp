@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/ps_channel.h"
+#include "core/db_ps_channel.h"
 
 namespace fastonosql {
 namespace core {

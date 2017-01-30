@@ -29,7 +29,7 @@
 #include <common/value.h>        // for Value, etc
 
 #include "core/db_key.h"  // for NDbKValue
-#include "core/ps_channel.h"
+#include "core/db_ps_channel.h"
 #include "core/connection_types.h"      // for ConnectionMode
 #include "core/server_property_info.h"  // for property_t, ServerPropertiesInfo
 #include "core/database/idatabase_info.h"

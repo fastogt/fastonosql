@@ -343,7 +343,7 @@ common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) 
   return common::Error();
 }
 
-common::Error DBConnection::AddIfNotExist(const std::string& key,
+common::Error DBConnection::AddIfNotExist(const NKey& key,
                                           const std::string& value,
                                           time_t expiration,
                                           uint32_t flags) {
@@ -351,7 +351,8 @@ common::Error DBConnection::AddIfNotExist(const std::string& key,
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  memcached_return_t error = memcached_add(connection_.handle_, key.c_str(), key.length(),
+  const std::string key_str = key.Key();
+  memcached_return_t error = memcached_add(connection_.handle_, key_str.c_str(), key_str.length(),
                                            value.c_str(), value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("Add function error: %s",
@@ -359,10 +360,13 @@ common::Error DBConnection::AddIfNotExist(const std::string& key,
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
+  if (client_) {
+    client_->OnKeyAdded(NDbKValue(key, NValue(common::Value::createStringValue(value))));
+  }
   return common::Error();
 }
 
-common::Error DBConnection::Replace(const std::string& key,
+common::Error DBConnection::Replace(const NKey& key,
                                     const std::string& value,
                                     time_t expiration,
                                     uint32_t flags) {
@@ -370,14 +374,19 @@ common::Error DBConnection::Replace(const std::string& key,
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  memcached_return_t error = memcached_replace(connection_.handle_, key.c_str(), key.length(),
-                                               value.c_str(), value.length(), expiration, flags);
+  const std::string key_str = key.Key();
+  memcached_return_t error =
+      memcached_replace(connection_.handle_, key_str.c_str(), key_str.length(), value.c_str(),
+                        value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("Replace function error: %s",
                                           memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
+  if (client_) {
+    client_->OnKeyLoaded(NDbKValue(key, NValue(common::Value::createStringValue(value))));
+  }
   return common::Error();
 }
 

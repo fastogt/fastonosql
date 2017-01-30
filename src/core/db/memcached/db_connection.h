@@ -71,18 +71,16 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
 
   common::Error Info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
 
-  common::Error AddIfNotExist(const std::string& key,
+  common::Error AddIfNotExist(const NKey& key,
                               const std::string& value,
                               time_t expiration,
                               uint32_t flags) WARN_UNUSED_RESULT;
-  common::Error Replace(const std::string& key,
+  common::Error Replace(const NKey& key,
                         const std::string& value,
                         time_t expiration,
                         uint32_t flags) WARN_UNUSED_RESULT;
-  common::Error Append(const NKey& key,
-                       const std::string& value,
-                       time_t expiration,
-                       uint32_t flags) WARN_UNUSED_RESULT;
+  common::Error Append(const NKey& key, const std::string& value, time_t expiration, uint32_t flags)
+      WARN_UNUSED_RESULT;
   common::Error Prepend(const NKey& key,
                         const std::string& value,
                         time_t expiration,

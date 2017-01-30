@@ -7,6 +7,8 @@
 - [Memcached] DECR UI handling
 - [Memcached] Append UI handling
 - [Memcached] Prepend UI handling
+- [Memcached] Replace UI handling
+- [Memcached] Add UI handling
 
 1.4.1 / January 12, 2017
 [Alexandr Topilski]

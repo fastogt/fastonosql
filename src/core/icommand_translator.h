@@ -26,7 +26,7 @@
 #include <common/value.h>   // for Value, Value::Type
 
 #include "core/db_key.h"  // for NKey, NDbKValue, ttl_t
-#include "core/ps_channel.h"
+#include "core/db_ps_channel.h"
 #include "core/command_holder.h"
 
 #define FLUSHDB_COMMAND "FLUSHDB"

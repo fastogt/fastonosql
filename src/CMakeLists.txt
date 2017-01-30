@@ -48,7 +48,7 @@ SET(HEADERS_CORE
   core/types.h
   core/db_traits.h
   core/db_key.h
-  core/ps_channel.h
+  core/db_ps_channel.h
   core/icommand_translator.h
   core/command_info.h
   core/command_holder.h
@@ -69,7 +69,7 @@ SET(SOURCES_CORE
   core/types.cpp
   core/db_traits.cpp
   core/db_key.cpp
-  core/ps_channel.cpp
+  core/db_ps_channel.cpp
   core/icommand_translator.cpp
   core/command_info.cpp
   core/command_holder.cpp

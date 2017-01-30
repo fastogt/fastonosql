@@ -70,10 +70,10 @@ common::Error CommandsApi::Add(internal::CommandHandler* handler,
                                FastoObject* out) {
   UNUSED(argc);
 
+  NKey key(argv[0]);
   DBConnection* mem = static_cast<DBConnection*>(handler);
-  common::Error err =
-      mem->AddIfNotExist(argv[0], argv[3], common::ConvertFromString<time_t>(argv[2]),
-                         common::ConvertFromString<uint32_t>(argv[1]));
+  common::Error err = mem->AddIfNotExist(key, argv[3], common::ConvertFromString<time_t>(argv[2]),
+                                         common::ConvertFromString<uint32_t>(argv[1]));
   if (err && err->isError()) {
     return err;
   }
@@ -90,8 +90,9 @@ common::Error CommandsApi::Replace(internal::CommandHandler* handler,
                                    FastoObject* out) {
   UNUSED(argc);
 
+  NKey key(argv[0]);
   DBConnection* mem = static_cast<DBConnection*>(handler);
-  common::Error err = mem->Replace(argv[0], argv[3], common::ConvertFromString<time_t>(argv[2]),
+  common::Error err = mem->Replace(key, argv[3], common::ConvertFromString<time_t>(argv[2]),
                                    common::ConvertFromString<uint32_t>(argv[1]));
   if (err && err->isError()) {
     return err;
