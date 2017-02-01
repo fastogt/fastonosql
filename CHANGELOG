@@ -9,6 +9,7 @@
 - [Memcached] Prepend UI handling
 - [Memcached] Replace UI handling
 - [Memcached] Add UI handling
+- Fix text editor value change
 
 1.4.1 / January 12, 2017
 [Alexandr Topilski]

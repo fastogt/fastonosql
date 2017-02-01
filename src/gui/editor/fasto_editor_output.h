@@ -43,7 +43,7 @@ class FastoEditorOutput : public QWidget {
   void setModel(QAbstractItemModel* model);
 
   QModelIndex selectedItem(int column) const;
-  bool setData(const QModelIndex& index, const QVariant& value);
+  bool setData(const QModelIndex& index, const QVariant& value, int role);
   int viewMethod() const;
   QString text() const;
   bool isReadOnly() const;

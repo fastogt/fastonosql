@@ -180,7 +180,7 @@ QModelIndex FastoEditorOutput::selectedItem(int column) const {
   return model_->index(0, column);
 }
 
-bool FastoEditorOutput::setData(const QModelIndex& index, const QVariant& value) {
+bool FastoEditorOutput::setData(const QModelIndex& index, const QVariant& value, int role) {
   if (!model_) {
     return false;
   }

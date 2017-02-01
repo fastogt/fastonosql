@@ -24,11 +24,16 @@
 #include <QVBoxLayout>
 
 #include <common/macros.h>  // for VERIFY
+#include <common/qt/convert2string.h>
+
+#include "core/db_key.h"
 
 #include "gui/editor/fasto_editor_output.h"  // for FastoEditorOutput, CSV, etc
 #include "gui/gui_factory.h"                 // for GuiFactory
 
 #include "translations/global.h"  // for trCsv, trGzip, trHex, etc
+
+Q_DECLARE_METATYPE(fastonosql::core::NValue)
 
 namespace fastonosql {
 namespace gui {
@@ -86,7 +91,10 @@ void FastoTextView::setModel(QAbstractItemModel* model) {
 
 void FastoTextView::saveChanges() {
   QModelIndex index = editor_->selectedItem(1);  // eValue
-  editor_->setData(index, editor_->text().simplified());
+  common::StringValue* string =
+      common::Value::createStringValue(common::ConvertToString(editor_->text().simplified()));
+  QVariant var = QVariant::fromValue(core::NValue(string));
+  editor_->setData(index, var, Qt::EditRole);
 }
 
 void FastoTextView::textChange() {
