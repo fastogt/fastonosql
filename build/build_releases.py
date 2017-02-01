@@ -2,8 +2,8 @@
 import sys
 import os
 import build
-from base import system_info
-from base import utils
+from pybuild_utils.base import system_info
+from pybuild_utils.base import utils
 
 def print_usage():
     print("Usage:\n"

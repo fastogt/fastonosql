@@ -3,8 +3,8 @@ import pika
 import json
 import sys
 import shlex
-from base import system_info
-from base import utils
+from pybuild_utils.base import system_info
+from pybuild_utils.base import utils
 import config
 import build
 
