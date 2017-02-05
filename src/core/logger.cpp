@@ -33,7 +33,7 @@ void Logger::print(const char* mess, common::logging::LEVEL_LOG level, bool noti
 }
 
 void Logger::print(const std::string& mess, common::logging::LEVEL_LOG level, bool notify) {
-  DEBUG_MSG(level, mess);
+  RUNTIME_LOG(level) << mess;
   if (g_watcher) {
     g_watcher(level, mess, notify);
   }

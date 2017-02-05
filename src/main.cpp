@@ -43,16 +43,16 @@ int main(int argc, char* argv[]) {
   file.open(QFile::ReadOnly);
   QString styleSheet = QLatin1String(file.readAll());
   app.setStyleSheet(styleSheet);
+#if defined(NDEBUG)
+  common::logging::LEVEL_LOG level = common::logging::L_INFO;
+#else
+  common::logging::LEVEL_LOG level = common::logging::L_DEBUG;
+#endif
 #if defined(LOG_TO_FILE)
   std::string log_path = common::file_system::prepare_path("~/" PROJECT_NAME_LOWERCASE ".log");
-  INIT_LOGGER(PROJECT_NAME_TITLE, log_path);
+  INIT_LOGGER(PROJECT_NAME_TITLE, log_path, level);
 #else
-  INIT_LOGGER(PROJECT_NAME_TITLE);
-#endif
-#if defined(NDEBUG)
-  SET_LOG_LEVEL(common::logging::L_INFO);
-#else
-  SET_LOG_LEVEL(common::logging::L_DEBUG);
+  INIT_LOGGER(PROJECT_NAME_TITLE, level);
 #endif
 
   INIT_TRANSLATION(PROJECT_NAME_LOWERCASE);

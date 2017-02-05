@@ -185,7 +185,7 @@ bool FastoEditorOutput::setData(const QModelIndex& index, const QVariant& value,
     return false;
   }
 
-  return model_->setData(index, value);
+  return model_->setData(index, value, role);
 }
 
 int FastoEditorOutput::viewMethod() const {
