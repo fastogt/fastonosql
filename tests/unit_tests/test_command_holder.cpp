@@ -89,6 +89,16 @@ class FakeTranslator : public core::ICommandTranslator {
   }
 
   virtual bool IsLoadKeyCommandImpl(const core::CommandInfo& cmd) const override { return false; }
+
+  virtual common::Error PublishCommandImpl(const core::NDbPSChannel& channel,
+                                           const std::string& message,
+                                           std::string* cmdstring) const override {
+    return common::Error();
+  }
+  virtual common::Error SubscribeCommandImpl(const core::NDbPSChannel& channel,
+                                             std::string* cmdstring) const override {
+    return common::Error();
+  }
 };
 
 TEST(CommandHolder, execute) {
