@@ -34,7 +34,7 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
                             FastoObject* out);
 };
 
-static const std::vector<CommandHolder> g_commands = {
+static internal::ConstantCommandsArray g_commands = {
     CommandHolder("HELP",
                   "[command]",
                   "Return how to use command",
@@ -44,12 +44,12 @@ static const std::vector<CommandHolder> g_commands = {
                   1,
                   &CommandsApi::Help),
     CommandHolder("INFO",
-                  "<args>",
+                  "[section]",
                   "These command return database information.",
                   UNDEFINED_SINCE,
                   UNDEFINED_EXAMPLE_STR,
-                  1,
                   0,
+                  1,
                   &CommandsApi::Info),
     CommandHolder("SCAN",
                   "<cursor> [MATCH pattern] [COUNT count]",

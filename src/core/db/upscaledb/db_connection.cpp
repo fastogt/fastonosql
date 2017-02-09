@@ -147,7 +147,7 @@ const char* CDBConnection<upscaledb::NativeConnection, upscaledb::Config, UPSCAL
 }
 
 template <>
-std::vector<CommandHolder>
+ConstantCommandsArray
 CDBConnection<upscaledb::NativeConnection, upscaledb::Config, UPSCALEDB>::Commands() {
   return upscaledb::g_commands;
 }

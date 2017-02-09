@@ -54,6 +54,23 @@ namespace fastonosql {
 namespace core {
 namespace internal {
 
+class ConstantCommandsArray : public std::vector<CommandHolder> {
+ public:
+  ConstantCommandsArray(std::initializer_list<CommandHolder> l) {
+    for (auto it = l.begin(); it != l.end(); ++it) {
+      CommandHolder cmd = *it;
+      for (auto jt = begin(); jt != end(); ++jt) {
+        CommandHolder cmd2 = *jt;
+        if (cmd2.IsEqualName(cmd.name)) {
+          NOTREACHED() << "Only unique commands can be in array, but command with name: \""
+                       << cmd.name << "\" already exists!";
+        }
+      }
+      push_back(cmd);
+    }
+  }
+};
+
 template <typename NConnection, typename Config, connectionTypes ContType>
 class CDBConnection : public DBConnection<NConnection, Config, ContType>, public CommandHandler {
  public:
@@ -63,7 +80,7 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
       : db_base_class(), CommandHandler(translator), client_(client) {}
   virtual ~CDBConnection() {}
 
-  static std::vector<CommandHolder> Commands();
+  static ConstantCommandsArray Commands();
   static const char* BasedOn();
   static const char* VersionApi();
 

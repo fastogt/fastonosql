@@ -236,8 +236,7 @@ const char* CDBConnection<redis::NativeConnection, redis::RConfig, REDIS>::Versi
 }
 
 template <>
-std::vector<CommandHolder>
-CDBConnection<redis::NativeConnection, redis::RConfig, REDIS>::Commands() {
+ConstantCommandsArray CDBConnection<redis::NativeConnection, redis::RConfig, REDIS>::Commands() {
   return redis::g_commands;
 }
 }  // namespace internal

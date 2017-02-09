@@ -64,7 +64,7 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
 };
 
 // TODO: cas command implementation
-static const std::vector<CommandHolder> memcachedCommands = {
+static const internal::ConstantCommandsArray memcachedCommands = {
 
     CommandHolder("HELP",
                   "[command]",
@@ -75,12 +75,12 @@ static const std::vector<CommandHolder> memcachedCommands = {
                   1,
                   &CommandsApi::Help),
     CommandHolder("INFO",
-                  "<args>",
+                  "[section]",
                   "These command return database information.",
                   UNDEFINED_SINCE,
                   UNDEFINED_EXAMPLE_STR,
-                  1,
                   0,
+                  1,
                   &CommandsApi::Info),
     CommandHolder("VERSION",
                   "-",

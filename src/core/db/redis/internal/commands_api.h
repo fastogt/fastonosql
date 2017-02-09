@@ -154,7 +154,7 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
                             FastoObject* out);
 };
 
-static const std::vector<CommandHolder> g_commands = {
+static const internal::ConstantCommandsArray g_commands = {
     CommandHolder("HELP",
                   "[command]",
                   "Return how to use command",

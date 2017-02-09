@@ -100,7 +100,7 @@ const char* CDBConnection<rocksdb::NativeConnection, rocksdb::Config, ROCKSDB>::
 }
 
 template <>
-std::vector<CommandHolder>
+ConstantCommandsArray
 CDBConnection<rocksdb::NativeConnection, rocksdb::Config, ROCKSDB>::Commands() {
   return rocksdb::g_commands;
 }

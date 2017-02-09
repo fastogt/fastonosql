@@ -211,7 +211,7 @@ const char* CDBConnection<memcached::NativeConnection, memcached::Config, MEMCAC
 }
 
 template <>
-std::vector<CommandHolder>
+ConstantCommandsArray
 CDBConnection<memcached::NativeConnection, memcached::Config, MEMCACHED>::Commands() {
   return memcached::memcachedCommands;
 }

@@ -155,7 +155,7 @@ const char* CDBConnection<unqlite::NativeConnection, unqlite::Config, UNQLITE>::
 }
 
 template <>
-std::vector<CommandHolder>
+ConstantCommandsArray
 CDBConnection<unqlite::NativeConnection, unqlite::Config, UNQLITE>::Commands() {
   return unqlite::g_commands;
 }

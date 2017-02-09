@@ -222,7 +222,7 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
                               FastoObject* out);
 };
 
-static const std::vector<CommandHolder> g_commands = {
+static const internal::ConstantCommandsArray g_commands = {
     CommandHolder("HELP",
                   "[command]",
                   "Return how to use command",
@@ -232,12 +232,12 @@ static const std::vector<CommandHolder> g_commands = {
                   1,
                   &CommandsApi::Help),
     CommandHolder("INFO",
-                  "<args>",
-                  "These command return database information.",
+                  "[section]",
+                  "Return information about the server.",
                   UNDEFINED_SINCE,
                   UNDEFINED_EXAMPLE_STR,
-                  1,
                   0,
+                  1,
                   &CommandsApi::Info),
     CommandHolder("SCAN",
                   "<key_start> <key_end> <limit>",
@@ -681,14 +681,6 @@ static const std::vector<CommandHolder> g_commands = {
                   2,
                   0,
                   &CommandsApi::MultiZdel),
-    CommandHolder("INFO",
-                  "[opt]",
-                  "Return information about the server.",
-                  UNDEFINED_SINCE,
-                  UNDEFINED_EXAMPLE_STR,
-                  0,
-                  1,
-                  &CommandsApi::Info),
     CommandHolder("QPUSH",
                   "<name> <item>",
                   "Adds an or more than one element to the "

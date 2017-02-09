@@ -84,7 +84,7 @@ const char* CDBConnection<leveldb::NativeConnection, leveldb::Config, LEVELDB>::
 }
 
 template <>
-std::vector<CommandHolder>
+ConstantCommandsArray
 CDBConnection<leveldb::NativeConnection, leveldb::Config, LEVELDB>::Commands() {
   return leveldb::g_commands;
 }
