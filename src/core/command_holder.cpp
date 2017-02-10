@@ -86,7 +86,7 @@ bool CommandHolder::IsCommand(int argc, const char** argv, size_t* offset) const
     return false;
   }
 
-  uint32_t uargc = argc;
+  const size_t uargc = argc;
   if (uargc == white_spaces_count_) {
     return false;
   }

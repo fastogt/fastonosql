@@ -49,12 +49,8 @@ uint8_t CommandInfo::MinArgumentsCount() const {
   return required_arguments_count;
 }
 
-std::string CommandInfo::ConvertToReadableString() const {
-  return std::string();
-}
-
-bool CommandInfo::IsEqualName(const std::string& cmd) const {
-  return common::FullEqualsASCII(cmd, name, false);
+bool CommandInfo::IsEqualName(const std::string& cmd_name) const {
+  return common::FullEqualsASCII(cmd_name, name, false);
 }
 
 std::string ConvertVersionNumberToReadableString(uint32_t version) {

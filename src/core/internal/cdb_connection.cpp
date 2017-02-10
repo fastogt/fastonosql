@@ -18,6 +18,16 @@
 
 #include "core/internal/cdb_connection.h"
 
+#define GET_KEYS_PATTERN_3ARGS_ISI "SCAN %" PRIu64 " MATCH %s COUNT %" PRIu64
+
 namespace fastonosql {
-namespace core {}  // namespace core
+namespace core {
+namespace internal {
+
+std::string GetKeysPattern(uint64_t cursor_in, const std::string& pattern, uint64_t count_keys) {
+  return common::MemSPrintf(GET_KEYS_PATTERN_3ARGS_ISI, cursor_in, pattern, count_keys);
+}
+
+}
+}  // namespace core
 }  // namespace fastonosql

@@ -71,14 +71,15 @@ class ICommandTranslator {
   common::Error SubscribeCommand(const NDbPSChannel& channel,
                                  std::string* cmdstring) const WARN_UNUSED_RESULT;
 
+  std::vector<CommandInfo> Commands() const;
   common::Error FindCommand(int argc,
                             const char** argv,
                             const CommandHolder** info,
                             size_t* off) const WARN_UNUSED_RESULT;
+
   common::Error TestCommandArgs(const CommandHolder* cmd,
                                 int argc_to_call,
                                 const char** argv_to_call) const WARN_UNUSED_RESULT;
-
   common::Error TestCommandLine(const std::string& cmd) const WARN_UNUSED_RESULT;
   common::Error TestCommandLineArgs(int argc,
                                     const char** argv,

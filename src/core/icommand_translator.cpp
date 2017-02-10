@@ -204,6 +204,15 @@ common::Error ICommandTranslator::UnknownSequence(int argc, const char** argv) {
   return common::make_error_value(buff, common::ErrorValue::E_ERROR);
 }
 
+std::vector<CommandInfo> ICommandTranslator::Commands() const {
+  std::vector<CommandInfo> cmds;
+  for (size_t i = 0; i < commands_.size(); ++i) {
+    const CommandHolder* cmd = &commands_[i];
+    cmds.push_back(*cmd);
+  }
+  return cmds;
+}
+
 common::Error ICommandTranslator::FindCommand(int argc,
                                               const char** argv,
                                               const CommandHolder** info,

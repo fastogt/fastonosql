@@ -663,8 +663,9 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
                                      uint64_t count_keys,
                                      std::vector<std::string>* keys_out,
                                      uint64_t* cursor_out) {
-  std::string mem = common::MemSPrintf(GET_KEYS_PATTERN_3ARGS_ISI, cursor_in, pattern, count_keys);
-  redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, mem.c_str()));
+  const std::string pattern_result = core::internal::GetKeysPattern(cursor_in, pattern, count_keys);
+  redisReply* reply =
+      reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, pattern_result.c_str()));
   if (!reply || reply->type != REDIS_REPLY_ARRAY) {
     return common::make_error_value("I/O error", common::ErrorValue::E_ERROR);
   }

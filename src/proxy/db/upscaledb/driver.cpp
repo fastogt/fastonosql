@@ -153,9 +153,9 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
-  std::string patternResult =
-      common::MemSPrintf(GET_KEYS_PATTERN_3ARGS_ISI, res.cursor_in, res.pattern, res.count_keys);
-  core::FastoObjectCommandIPtr cmd = CreateCommandFast(patternResult, core::C_INNER);
+  const std::string pattern_result =
+      core::internal::GetKeysPattern(res.cursor_in, res.pattern, res.count_keys);
+  core::FastoObjectCommandIPtr cmd = CreateCommandFast(pattern_result, core::C_INNER);
   NotifyProgress(sender, 50);
   common::Error er = Execute(cmd);
   if (er && er->isError()) {

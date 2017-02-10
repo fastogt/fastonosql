@@ -39,10 +39,9 @@
 #include "core/internal/cdb_connection_client.h"
 #include "core/internal/db_connection.h"  // for DBConnection
 
+#define ALL_COMMANDS "*"
 #define ALL_KEYS_PATTERNS "*"
 #define NO_KEYS_LIMIT UINT64_MAX
-
-#define GET_KEYS_PATTERN_3ARGS_ISI "SCAN %" PRIu64 " MATCH %s COUNT %" PRIu64
 
 namespace fastonosql {
 namespace core {
@@ -70,6 +69,10 @@ class ConstantCommandsArray : public std::vector<CommandHolder> {
     }
   }
 };
+
+std::string GetKeysPattern(uint64_t cursor_in,
+                           const std::string& pattern,
+                           uint64_t count_keys);  // for SCAN
 
 template <typename NConnection, typename Config, connectionTypes ContType>
 class CDBConnection : public DBConnection<NConnection, Config, ContType>, public CommandHandler {
@@ -149,15 +152,26 @@ common::Error CDBConnection<NConnection, Config, ContType>::Help(int argc,
   if (argc == 0) {
     *answer = common::MemSPrintf(PROJECT_NAME_TITLE
                                  " based on %s %s \r\n"
-                                 "Type: \"help <command>\" for help on <command>\r\n",
+                                 "Type: \"help <command>\" for help on <command>\r\n"
+                                 "\"help " ALL_COMMANDS "\" show all supported commands\r\n",
                                  BasedOn(), VersionApi());
 
     return common::Error();
   }
 
+  translator_t tran = Translator();
+  if (argc == 1 && std::string(argv[0]) == ALL_COMMANDS) {
+    std::vector<CommandInfo> cmds = tran->Commands();
+    for (CommandInfo cmd : cmds) {
+      *answer += cmd.name;
+      *answer += "\n";
+    }
+    *answer += "\r\n";
+    return common::Error();
+  }
+
   const CommandHolder* cmd = nullptr;
   size_t off = 0;
-  translator_t tran = Translator();
   common::Error err = tran->FindCommand(argc, argv, &cmd, &off);
   if (err && err->isError()) {
     return err;

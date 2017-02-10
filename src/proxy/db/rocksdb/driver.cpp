@@ -27,26 +27,24 @@
 #include <common/sprintf.h>        // for MemSPrintf
 #include <common/value.h>          // for ErrorValue, etc
 #include <common/intrusive_ptr.h>  // for intrusive_ptr
+#include <common/convert2string.h>
 
 #include "proxy/command/command.h"         // for CreateCommand, etc
 #include "proxy/command/command_logger.h"  // for LOG_COMMAND
-#include "core/connection_types.h"         // for ConvertToString, etc
-#include "core/db_key.h"                   // for NDbKValue, NValue, NKey
+#include "proxy/events/events_info.h"
+#include "proxy/db/rocksdb/command.h"              // for Command
+#include "proxy/db/rocksdb/connection_settings.h"  // for ConnectionSettings
+
+#include "core/connection_types.h"  // for ConvertToString, etc
+#include "core/db_key.h"            // for NDbKValue, NValue, NKey
+#include "core/global.h"            // for FastoObject::childs_t, etc
 
 #include "core/internal/db_connection.h"
-#include "proxy/events/events_info.h"
-
-#include "proxy/db/rocksdb/command.h"              // for Command
-#include "core/db/rocksdb/config.h"                // for Config
-#include "proxy/db/rocksdb/connection_settings.h"  // for ConnectionSettings
-#include "core/db/rocksdb/db_connection.h"         // for DBConnection
-#include "core/db/rocksdb/server_info.h"           // for ServerInfo, etc
-
-#include "core/global.h"  // for FastoObject::childs_t, etc
+#include "core/db/rocksdb/config.h"         // for Config
+#include "core/db/rocksdb/db_connection.h"  // for DBConnection
+#include "core/db/rocksdb/server_info.h"    // for ServerInfo, etc
 
 #define ROCKSDB_INFO_REQUEST "INFO"
-
-#define ROCKSDB_GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
 
 namespace fastonosql {
 namespace proxy {
@@ -151,12 +149,13 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
-  std::string patternResult = common::MemSPrintf(ROCKSDB_GET_KEYS_PATTERN_1ARGS_I, res.count_keys);
-  core::FastoObjectCommandIPtr cmd = CreateCommandFast(patternResult, core::C_INNER);
+  const std::string pattern_result =
+      core::internal::GetKeysPattern(res.cursor_in, res.pattern, res.count_keys);
+  core::FastoObjectCommandIPtr cmd = CreateCommandFast(pattern_result, core::C_INNER);
   NotifyProgress(sender, 50);
-  common::Error err = Execute(cmd);
-  if (err && err->isError()) {
-    res.setErrorInfo(err);
+  common::Error er = Execute(cmd);
+  if (er && er->isError()) {
+    res.setErrorInfo(er);
   } else {
     core::FastoObject::childs_t rchildrens = cmd->Childrens();
     if (rchildrens.size()) {
@@ -166,8 +165,33 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
       if (!array) {
         goto done;
       }
-      common::ArrayValue* ar = array->Array();
-      if (!ar) {
+
+      common::ArrayValue* arm = array->Array();
+      if (!arm->size()) {
+        goto done;
+      }
+
+      std::string cursor;
+      bool isok = arm->getString(0, &cursor);
+      if (!isok) {
+        goto done;
+      }
+
+      res.cursor_out = common::ConvertFromString<uint64_t>(cursor);
+
+      rchildrens = array->Childrens();
+      if (!rchildrens.size()) {
+        goto done;
+      }
+
+      core::FastoObject* obj = rchildrens[0].get();
+      core::FastoObjectArray* arr = dynamic_cast<core::FastoObjectArray*>(obj);  // +
+      if (!arr) {
+        goto done;
+      }
+
+      common::ArrayValue* ar = arr->Array();
+      if (ar->empty()) {
         goto done;
       }
 
@@ -182,7 +206,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         }
       }
 
-      err = impl_->DBkcount(&res.db_keys_count);
+      common::Error err = impl_->DBkcount(&res.db_keys_count);
       DCHECK(!err);
     }
   }
