@@ -822,12 +822,35 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
                                      uint64_t count_keys,
                                      std::vector<std::string>* keys_out,
                                      uint64_t* cursor_out) {
-  UNUSED(cursor_in);
-  UNUSED(pattern);
-  UNUSED(count_keys);
-  UNUSED(keys_out);
-  UNUSED(cursor_out);
-  return ICommandTranslator::NotSupported("SCAN");
+  std::vector<std::string> ret;
+  auto st = connection_.handle_->keys(std::string(), std::string(), 0, &ret);
+  if (st.error()) {
+    std::string buff = common::MemSPrintf("Flushdb function error: %s", st.code());
+    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  }
+
+  uint64_t offset_pos = cursor_in;
+  uint64_t lcursor_out = 0;
+  std::vector<std::string> lkeys_out;
+  for (size_t i = 0; i < ret.size(); ++i) {
+    std::string key = ret[i];
+    if (lkeys_out.size() < count_keys) {
+      if (common::MatchPattern(key, pattern)) {
+        if (offset_pos == 0) {
+          lkeys_out.push_back(key);
+        } else {
+          offset_pos--;
+        }
+      }
+    } else {
+      lcursor_out = cursor_in + count_keys;
+      break;
+    }
+  }
+
+  *keys_out = lkeys_out;
+  *cursor_out = lcursor_out;
+  return common::Error();
 }
 
 common::Error DBConnection::KeysImpl(const std::string& key_start,
@@ -844,7 +867,7 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
 
 common::Error DBConnection::DBkcountImpl(size_t* size) {
   std::vector<std::string> ret;
-  auto st = connection_.handle_->keys("", "", UINT64_MAX, &ret);
+  auto st = connection_.handle_->keys(std::string(), std::string(), UINT64_MAX, &ret);
   if (st.error()) {
     std::string buff = common::MemSPrintf("Couldn't determine DBKCOUNT error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
