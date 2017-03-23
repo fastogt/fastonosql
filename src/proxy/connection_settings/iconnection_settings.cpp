@@ -68,7 +68,7 @@ ConnectionSettingsPath::ConnectionSettingsPath(const common::file_system::ascii_
     : path_(path) {}
 
 bool ConnectionSettingsPath::Equals(const ConnectionSettingsPath& path) const {
-  return path_.equals(path.path_);
+  return path_.Equals(path.path_);
 }
 
 std::string ConnectionSettingsPath::Name() const {

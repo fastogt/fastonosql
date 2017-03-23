@@ -50,9 +50,9 @@ void DiscoveryConnection::routine() {
   common::Error er =
       proxy::ServersManager::instance().DiscoveryClusterConnection(connection_, &inf);
 
-  if (er && er->isError()) {
+  if (er && er->IsError()) {
     emit connectionResult(false, common::time::current_mstime() - start_time_,
-                          common::ConvertFromString<QString>(er->description()), inf);
+                          common::ConvertFromString<QString>(er->Description()), inf);
   } else {
     emit connectionResult(true, common::time::current_mstime() - start_time_,
                           translations::trSuccess, inf);

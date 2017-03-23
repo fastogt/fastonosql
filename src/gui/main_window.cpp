@@ -423,7 +423,7 @@ void MainWindow::importConnection() {
   if (!openedr) {
     writeFile.close();
     common::Error err = common::file_system::remove_file(wp.path());
-    if (err && err->isError()) {
+    if (err && err->IsError()) {
       DNOTREACHED();
     }
     QMessageBox::critical(this, translations::trError, trImportSettingsFailed);
@@ -434,7 +434,7 @@ void MainWindow::importConnection() {
   if (!hexEnc) {
     writeFile.close();
     common::Error err = common::file_system::remove_file(wp.path());
-    if (err && err->isError()) {
+    if (err && err->IsError()) {
       DNOTREACHED();
     }
     QMessageBox::critical(this, translations::trError, trImportSettingsFailed);
@@ -450,10 +450,10 @@ void MainWindow::importConnection() {
 
     std::string edata;
     common::Error er = hexEnc->decode(data, &edata);
-    if (er && er->isError()) {
+    if (er && er->IsError()) {
       writeFile.close();
       common::Error err = common::file_system::remove_file(wp.path());
-      if (err && err->isError()) {
+      if (err && err->IsError()) {
         DNOTREACHED();
       }
       QMessageBox::critical(this, translations::trError, trImportSettingsFailed);
@@ -466,7 +466,7 @@ void MainWindow::importConnection() {
   writeFile.close();
   proxy::SettingsManager::instance().ReloadFromPath(tmp, false);
   common::Error err = common::file_system::remove_file(tmp);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     DNOTREACHED();
   }
   QMessageBox::information(this, translations::trInfo, trSettingsImportedS);
@@ -495,7 +495,7 @@ void MainWindow::exportConnection() {
   if (!openedr) {
     writeFile.close();
     common::Error err = common::file_system::remove_file(wp.path());
-    if (err && err->isError()) {
+    if (err && err->IsError()) {
       DNOTREACHED();
     }
     QMessageBox::critical(this, translations::trError, trExportSettingsFailed);
@@ -506,7 +506,7 @@ void MainWindow::exportConnection() {
   if (!hexEnc) {
     writeFile.close();
     common::Error err = common::file_system::remove_file(wp.path());
-    if (err && err->isError()) {
+    if (err && err->IsError()) {
       DNOTREACHED();
     }
     QMessageBox::critical(this, translations::trError, trExportSettingsFailed);
@@ -522,10 +522,10 @@ void MainWindow::exportConnection() {
 
     std::string edata;
     common::Error er = hexEnc->encode(data, &edata);
-    if (er && er->isError()) {
+    if (er && er->IsError()) {
       writeFile.close();
       common::Error err = common::file_system::remove_file(wp.path());
-      if (err && err->isError()) {
+      if (err && err->IsError()) {
         DNOTREACHED();
       }
       QMessageBox::critical(this, translations::trError, trExportSettingsFailed);

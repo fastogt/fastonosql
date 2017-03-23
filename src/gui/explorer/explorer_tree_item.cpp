@@ -178,7 +178,7 @@ void ExplorerDatabaseItem::setDefault() {
   core::translator_t tran = server->Translator();
   std::string cmd_str;
   common::Error err = tran->SelectDBCommand(dbs->Name(), &cmd_str);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     LOG_ERROR(err, true);
     return;
   }
@@ -198,7 +198,7 @@ void ExplorerDatabaseItem::renameKey(const core::NKey& key, const QString& newNa
   core::translator_t tran = server->Translator();
   std::string cmd_str;
   common::Error err = tran->RenameKeyCommand(key, common::ConvertToString(newName), &cmd_str);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     LOG_ERROR(err, true);
     return;
   }
@@ -214,7 +214,7 @@ void ExplorerDatabaseItem::removeKey(const core::NKey& key) {
   core::translator_t tran = server->Translator();
   std::string cmd_str;
   common::Error err = tran->DeleteKeyCommand(key, &cmd_str);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     LOG_ERROR(err, true);
     return;
   }
@@ -230,7 +230,7 @@ void ExplorerDatabaseItem::loadValue(const core::NDbKValue& key) {
   core::translator_t tran = server->Translator();
   std::string cmd_str;
   common::Error err = tran->LoadKeyCommand(key.Key(), key.Type(), &cmd_str);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     LOG_ERROR(err, true);
     return;
   }
@@ -246,7 +246,7 @@ void ExplorerDatabaseItem::watchKey(const core::NDbKValue& key, int interval) {
   core::translator_t tran = server->Translator();
   std::string cmd_str;
   common::Error err = tran->LoadKeyCommand(key.Key(), key.Type(), &cmd_str);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     LOG_ERROR(err, true);
     return;
   }
@@ -263,7 +263,7 @@ void ExplorerDatabaseItem::createKey(const core::NDbKValue& key) {
   core::translator_t tran = server->Translator();
   std::string cmd_str;
   common::Error err = tran->CreateKeyCommand(key, &cmd_str);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     LOG_ERROR(err, true);
     return;
   }
@@ -281,7 +281,7 @@ void ExplorerDatabaseItem::editKey(const core::NDbKValue& key, const core::NValu
   core::NDbKValue copy_key = key;
   copy_key.SetValue(value);
   common::Error err = tran->CreateKeyCommand(copy_key, &cmd_str);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     LOG_ERROR(err, true);
     return;
   }
@@ -297,7 +297,7 @@ void ExplorerDatabaseItem::setTTL(const core::NKey& key, core::ttl_t ttl) {
   core::translator_t tran = server->Translator();
   std::string cmd_str;
   common::Error err = tran->ChangeKeyTTLCommand(key, ttl, &cmd_str);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     LOG_ERROR(err, true);
     return;
   }
@@ -313,7 +313,7 @@ void ExplorerDatabaseItem::removeAllKeys() {
   core::translator_t tran = server->Translator();
   std::string cmd_str;
   common::Error err = tran->FlushDBCommand(&cmd_str);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     LOG_ERROR(err, true);
     return;
   }

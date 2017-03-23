@@ -44,7 +44,7 @@ core::FastoObjectCommandIPtr CreateCommand(core::FastoObject* parent,
     return nullptr;
   }
 
-  common::StringValue* cmd = common::Value::createStringValue(stable_input);
+  common::StringValue* cmd = common::Value::CreateStringValue(stable_input);
   core::FastoObjectCommandIPtr fs = new Command(parent, cmd, ct, parent->Delimiter());
   parent->AddChildren(fs);
   return fs;
@@ -58,7 +58,7 @@ core::FastoObjectCommandIPtr CreateCommandFast(const std::string& input, core::C
     return nullptr;
   }
 
-  common::StringValue* cmd = common::Value::createStringValue(stable_input);
+  common::StringValue* cmd = common::Value::CreateStringValue(stable_input);
   return new Command(nullptr, cmd, ct, std::string());
 }
 

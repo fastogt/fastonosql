@@ -80,7 +80,7 @@ QVariant FastoCommonModel::data(const QModelIndex& index, int role) const {
     } else if (col == FastoCommonItem::eValue) {
       result = node->value();
     } else if (col == FastoCommonItem::eType) {
-      std::string type_str = common::Value::toString(node->type());
+      std::string type_str = common::Value::GetTypeName(node->type());
       result = common::ConvertFromString<QString>(type_str);
     }
   }
@@ -102,7 +102,7 @@ bool FastoCommonModel::setData(const QModelIndex& index, const QVariant& value, 
       if (value.canConvert<core::NValue>()) {
         core::NValue nvalue = value.value<core::NValue>();
         core::NValue nv = node->nvalue();
-        if (!nvalue->equals(nv.get())) {
+        if (!nvalue->Equals(nv.get())) {
           core::NDbKValue dbv = node->dbv();
           dbv.SetValue(nvalue);
           emit changedValue(dbv);

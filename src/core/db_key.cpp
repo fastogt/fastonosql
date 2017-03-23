@@ -118,7 +118,7 @@ common::Value::Type NDbKValue::Type() const {
     return common::Value::TYPE_NULL;
   }
 
-  return value_->type();
+  return value_->GetType();
 }
 
 void NDbKValue::SetKey(const NKey& key) {
@@ -146,7 +146,7 @@ bool NDbKValue::Equals(const NDbKValue& other) const {
     return !other.value_;
   }
 
-  return value_->equals(other.value_.get());
+  return value_->Equals(other.value_.get());
 }
 
 }  // namespace core

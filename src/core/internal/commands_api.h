@@ -93,11 +93,11 @@ common::Error ApiTraits<CDBConnection>::Help(internal::CommandHandler* handler,
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
   std::string answer;
   common::Error err = cdb->Help(argc, argv, &answer);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
-  common::StringValue* val = common::Value::createStringValue(answer);
+  common::StringValue* val = common::Value::CreateStringValue(answer);
   FastoObject* child = new FastoObject(out, val, cdb->Delimiter());
   out->AddChildren(child);
   return common::Error();
@@ -116,20 +116,20 @@ common::Error ApiTraits<CDBConnection>::Scan(internal::CommandHandler* handler,
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
 
   common::Error err = cdb->Scan(cursor_in, pattern, count_keys, &keys_out, &cursor_out);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
-  common::ArrayValue* ar = common::Value::createArrayValue();
+  common::ArrayValue* ar = common::Value::CreateArrayValue();
   for (size_t i = 0; i < keys_out.size(); ++i) {
-    common::StringValue* val = common::Value::createStringValue(keys_out[i]);
-    ar->append(val);
+    common::StringValue* val = common::Value::CreateStringValue(keys_out[i]);
+    ar->Append(val);
   }
 
-  common::ArrayValue* mar = common::Value::createArrayValue();
+  common::ArrayValue* mar = common::Value::CreateArrayValue();
   std::string rep_out = common::ConvertToString(cursor_out);  // string representing
-  common::StringValue* val = common::Value::createStringValue(rep_out);
-  mar->append(val);
+  common::StringValue* val = common::Value::CreateStringValue(rep_out);
+  mar->Append(val);
   FastoObjectArray* child = new FastoObjectArray(out, mar, cdb->Delimiter());
   out->AddChildren(child);
   FastoObjectArray* keys_arr = new FastoObjectArray(child, ar, cdb->Delimiter());
@@ -149,14 +149,14 @@ common::Error ApiTraits<CDBConnection>::Keys(internal::CommandHandler* handler,
   std::vector<std::string> keysout;
   common::Error err =
       cdb->Keys(argv[0], argv[1], common::ConvertFromString<uint64_t>(argv[2]), &keysout);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
-  common::ArrayValue* ar = common::Value::createArrayValue();
+  common::ArrayValue* ar = common::Value::CreateArrayValue();
   for (size_t i = 0; i < keysout.size(); ++i) {
-    common::StringValue* val = common::Value::createStringValue(keysout[i]);
-    ar->append(val);
+    common::StringValue* val = common::Value::CreateStringValue(keysout[i]);
+    ar->Append(val);
   }
   FastoObjectArray* child = new FastoObjectArray(out, ar, cdb->Delimiter());
   out->AddChildren(child);
@@ -175,11 +175,11 @@ common::Error ApiTraits<CDBConnection>::DBkcount(internal::CommandHandler* handl
 
   size_t dbkcount = 0;
   common::Error err = cdb->DBkcount(&dbkcount);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
-  common::FundamentalValue* val = common::Value::createUIntegerValue(dbkcount);
+  common::FundamentalValue* val = common::Value::CreateUIntegerValue(dbkcount);
   FastoObject* child = new FastoObject(out, val, cdb->Delimiter());
   out->AddChildren(child);
   return common::Error();
@@ -195,11 +195,11 @@ common::Error ApiTraits<CDBConnection>::FlushDB(internal::CommandHandler* handle
 
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
   common::Error err = cdb->FlushDB();
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
-  common::StringValue* val = common::Value::createStringValue("OK");
+  common::StringValue* val = common::Value::CreateStringValue("OK");
   FastoObject* child = new FastoObject(out, val, cdb->Delimiter());
   out->AddChildren(child);
   return common::Error();
@@ -214,11 +214,11 @@ common::Error ApiTraits<CDBConnection>::Select(CommandHandler* handler,
 
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
   common::Error err = cdb->Select(argv[0], nullptr);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
-  common::StringValue* val = common::Value::createStringValue("OK");
+  common::StringValue* val = common::Value::CreateStringValue("OK");
   FastoObject* child = new FastoObject(out, val, cdb->Delimiter());
   out->AddChildren(child);
   return common::Error();
@@ -232,17 +232,17 @@ common::Error ApiTraits<CDBConnection>::Set(internal::CommandHandler* handler,
   UNUSED(argc);
 
   NKey key(argv[0]);
-  NValue string_val(common::Value::createStringValue(argv[1]));
+  NValue string_val(common::Value::CreateStringValue(argv[1]));
   NDbKValue kv(key, string_val);
 
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
   NDbKValue key_added;
   common::Error err = cdb->Set(kv, &key_added);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
-  common::StringValue* val = common::Value::createStringValue("OK");
+  common::StringValue* val = common::Value::CreateStringValue("OK");
   FastoObject* child = new FastoObject(out, val, cdb->Delimiter());
   out->AddChildren(child);
   return common::Error();
@@ -259,12 +259,12 @@ common::Error ApiTraits<CDBConnection>::Get(internal::CommandHandler* handler,
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
   NDbKValue key_loaded;
   common::Error err = cdb->Get(key, &key_loaded);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
   NValue val = key_loaded.Value();
-  common::Value* copy = val->deepCopy();
+  common::Value* copy = val->DeepCopy();
   FastoObject* child = new FastoObject(out, copy, cdb->Delimiter());
   out->AddChildren(child);
   return common::Error();
@@ -283,11 +283,11 @@ common::Error ApiTraits<CDBConnection>::Delete(internal::CommandHandler* handler
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
   NKeys keys_deleted;
   common::Error err = cdb->Delete(keysdel, &keys_deleted);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
-  common::FundamentalValue* val = common::Value::createUIntegerValue(keys_deleted.size());
+  common::FundamentalValue* val = common::Value::CreateUIntegerValue(keys_deleted.size());
   FastoObject* child = new FastoObject(out, val, cdb->Delimiter());
   out->AddChildren(child);
   return common::Error();
@@ -303,11 +303,11 @@ common::Error ApiTraits<CDBConnection>::Rename(internal::CommandHandler* handler
   NKey key(argv[0]);
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
   common::Error err = cdb->Rename(key, argv[1]);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
-  common::StringValue* val = common::Value::createStringValue("OK");
+  common::StringValue* val = common::Value::CreateStringValue("OK");
   FastoObject* child = new FastoObject(out, val, cdb->Delimiter());
   out->AddChildren(child);
   return common::Error();
@@ -325,11 +325,11 @@ common::Error ApiTraits<CDBConnection>::SetTTL(internal::CommandHandler* handler
   NKey key(argv[0]);
   ttl_t ttl = common::ConvertFromString<ttl_t>(argv[1]);
   common::Error err = cdb->SetTTL(key, ttl);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
-  common::StringValue* val = common::Value::createStringValue("OK");
+  common::StringValue* val = common::Value::CreateStringValue("OK");
   FastoObject* child = new FastoObject(out, val, cdb->Delimiter());
   out->AddChildren(child);
   return common::Error();
@@ -347,11 +347,11 @@ common::Error ApiTraits<CDBConnection>::GetTTL(internal::CommandHandler* handler
   NKey key(argv[0]);
   ttl_t ttl;
   common::Error err = cdb->GetTTL(key, &ttl);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
-  common::FundamentalValue* val = common::Value::createIntegerValue(ttl);
+  common::FundamentalValue* val = common::Value::CreateIntegerValue(ttl);
   FastoObject* child = new FastoObject(out, val, cdb->Delimiter());
   out->AddChildren(child);
   return common::Error();
@@ -367,11 +367,11 @@ common::Error ApiTraits<CDBConnection>::Quit(internal::CommandHandler* handler,
 
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
   common::Error err = cdb->Quit();
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
-  common::StringValue* val = common::Value::createStringValue("OK");
+  common::StringValue* val = common::Value::CreateStringValue("OK");
   FastoObject* child = new FastoObject(out, val, cdb->Delimiter());
   out->AddChildren(child);
   return common::Error();

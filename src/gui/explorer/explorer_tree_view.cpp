@@ -1002,7 +1002,7 @@ void ExplorerTreeView::startLoadDatabases(const proxy::events_info::LoadDatabase
 void ExplorerTreeView::finishLoadDatabases(
     const proxy::events_info::LoadDatabasesInfoResponce& res) {
   common::Error er = res.errorInfo();
-  if (er && er->isError()) {
+  if (er && er->IsError()) {
     return;
   }
 
@@ -1024,7 +1024,7 @@ void ExplorerTreeView::startLoadDatabaseContent(
 void ExplorerTreeView::finishLoadDatabaseContent(
     const proxy::events_info::LoadDatabaseContentResponce& res) {
   common::Error er = res.errorInfo();
-  if (er && er->isError()) {
+  if (er && er->IsError()) {
     return;
   }
 

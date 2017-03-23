@@ -135,11 +135,11 @@ common::ArrayValue* HashTableModel::arrayValue() const {
     return nullptr;
   }
 
-  common::ArrayValue* ar = common::Value::createArrayValue();
+  common::ArrayValue* ar = common::Value::CreateArrayValue();
   for (size_t i = 0; i < data_.size() - 1; ++i) {
     KeyValueTableItem* node = static_cast<KeyValueTableItem*>(data_[i]);
     std::string key = common::ConvertToString(node->key());
-    ar->appendString(key);
+    ar->AppendString(key);
   }
 
   return ar;
@@ -150,11 +150,11 @@ common::SetValue* HashTableModel::setValue() const {
     return nullptr;
   }
 
-  common::SetValue* ar = common::Value::createSetValue();
+  common::SetValue* ar = common::Value::CreateSetValue();
   for (size_t i = 0; i < data_.size() - 1; ++i) {
     KeyValueTableItem* node = static_cast<KeyValueTableItem*>(data_[i]);
     std::string key = common::ConvertToString(node->key());
-    ar->insert(key);
+    ar->Insert(key);
   }
 
   return ar;
@@ -165,12 +165,12 @@ common::ZSetValue* HashTableModel::zsetValue() const {
     return nullptr;
   }
 
-  common::ZSetValue* ar = common::Value::createZSetValue();
+  common::ZSetValue* ar = common::Value::CreateZSetValue();
   for (size_t i = 0; i < data_.size() - 1; ++i) {
     KeyValueTableItem* node = static_cast<KeyValueTableItem*>(data_[i]);
     std::string key = common::ConvertToString(node->key());
     std::string val = common::ConvertToString(node->value());
-    ar->insert(key, val);
+    ar->Insert(key, val);
   }
 
   return ar;
@@ -181,12 +181,12 @@ common::HashValue* HashTableModel::hashValue() const {
     return nullptr;
   }
 
-  common::HashValue* ar = common::Value::createHashValue();
+  common::HashValue* ar = common::Value::CreateHashValue();
   for (size_t i = 0; i < data_.size() - 1; ++i) {
     KeyValueTableItem* node = static_cast<KeyValueTableItem*>(data_[i]);
     std::string key = common::ConvertToString(node->key());
     std::string val = common::ConvertToString(node->value());
-    ar->insert(key, val);
+    ar->Insert(key, val);
   }
 
   return ar;

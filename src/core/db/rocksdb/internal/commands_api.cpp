@@ -41,11 +41,11 @@ common::Error CommandsApi::Info(internal::CommandHandler* handler,
   DBConnection* rocks = static_cast<DBConnection*>(handler);
   ServerInfo::Stats statsout;
   common::Error err = rocks->Info(argc == 1 ? argv[0] : nullptr, &statsout);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
-  common::StringValue* val = common::Value::createStringValue(ServerInfo(statsout).ToString());
+  common::StringValue* val = common::Value::CreateStringValue(ServerInfo(statsout).ToString());
   FastoObject* child = new FastoObject(out, val, rocks->Delimiter());
   out->AddChildren(child);
   return common::Error();
@@ -63,14 +63,14 @@ common::Error CommandsApi::Mget(internal::CommandHandler* handler,
 
   std::vector<std::string> keysout;
   common::Error err = rocks->Mget(keysget, &keysout);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
-  common::ArrayValue* ar = common::Value::createArrayValue();
+  common::ArrayValue* ar = common::Value::CreateArrayValue();
   for (size_t i = 0; i < keysout.size(); ++i) {
-    common::StringValue* val = common::Value::createStringValue(keysout[i]);
-    ar->append(val);
+    common::StringValue* val = common::Value::CreateStringValue(keysout[i]);
+    ar->Append(val);
   }
   FastoObjectArray* child = new FastoObjectArray(out, ar, rocks->Delimiter());
   out->AddChildren(child);
@@ -85,11 +85,11 @@ common::Error CommandsApi::Merge(internal::CommandHandler* handler,
 
   DBConnection* rocks = static_cast<DBConnection*>(handler);
   common::Error err = rocks->Merge(argv[0], argv[1]);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
-  common::StringValue* val = common::Value::createStringValue("OK");
+  common::StringValue* val = common::Value::CreateStringValue("OK");
   FastoObject* child = new FastoObject(out, val, rocks->Delimiter());
   out->AddChildren(child);
   return common::Error();

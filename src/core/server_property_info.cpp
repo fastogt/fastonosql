@@ -43,9 +43,9 @@ ServerPropertiesInfo MakeServerProperty(const FastoObjectArray* array) {
   }
 
   std::vector<property_t> properties;
-  for (size_t i = 0; i < arr->size(); i += 2) {
+  for (size_t i = 0; i < arr->GetSize(); i += 2) {
     std::string key, value;
-    if (arr->getString(i, &key) && arr->getString(i + 1, &value)) {
+    if (arr->GetString(i, &key) && arr->GetString(i + 1, &value)) {
       properties.push_back(std::make_pair(key, value));
     }
   }

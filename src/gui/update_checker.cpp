@@ -43,7 +43,7 @@ void UpdateChecker::routine() {
 #error please specify url and port of version information
 #endif
   common::ErrnoError err = client.connect();
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     emit versionAvailibled(false, QString());
     return;
   }
@@ -56,7 +56,7 @@ void UpdateChecker::routine() {
 #else
 #error please specify request to get version information
 #endif
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     emit versionAvailibled(false, QString());
     DCHECK(!client.close());
     return;
@@ -65,7 +65,7 @@ void UpdateChecker::routine() {
   char version[128] = {0};
   ssize_t nread = 0;
   err = client.read(version, sizeof(version), &nread);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     emit versionAvailibled(false, QString());
     DCHECK(!client.close());
     return;

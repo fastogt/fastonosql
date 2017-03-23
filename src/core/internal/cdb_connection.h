@@ -173,7 +173,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::Help(int argc,
   const CommandHolder* cmd = nullptr;
   size_t off = 0;
   common::Error err = tran->FindCommand(argc, argv, &cmd, &off);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
@@ -204,7 +204,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::Scan(uint64_t cursor
   }
 
   common::Error err = ScanImpl(cursor_in, pattern, count_keys, keys_out, cursor_out);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
@@ -226,7 +226,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::Keys(const std::stri
   }
 
   common::Error err = KeysImpl(key_start, key_end, limit, ret);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
@@ -245,7 +245,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::DBkcount(size_t* siz
   }
 
   common::Error err = DBkcountImpl(size);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
@@ -259,7 +259,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::FlushDB() {
   }
 
   common::Error err = FlushDBImpl();
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
@@ -279,7 +279,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::Select(const std::st
 
   IDataBaseInfo* linfo = nullptr;
   common::Error err = SelectImpl(name, &linfo);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
@@ -309,7 +309,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::Delete(const NKeys& 
   }
 
   common::Error err = DeleteImpl(keys, deleted_keys);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
@@ -333,7 +333,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::Set(const NDbKValue&
   }
 
   common::Error err = SetImpl(key, added_key);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
@@ -357,7 +357,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::Get(const NKey& key,
   }
 
   common::Error err = GetImpl(key, loaded_key);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
@@ -376,7 +376,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::Rename(const NKey& k
   }
 
   common::Error err = RenameImpl(key, new_key);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
@@ -394,7 +394,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::SetTTL(const NKey& k
   }
 
   common::Error err = SetTTLImpl(key, ttl);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
@@ -416,7 +416,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::GetTTL(const NKey& k
   }
 
   common::Error err = GetTTLImpl(key, ttl);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
@@ -434,7 +434,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::Quit() {
   }
 
   common::Error err = QuitImpl();
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 

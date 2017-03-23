@@ -41,7 +41,7 @@ common::Error ConnectionAllocatorTraits<ssdb::NativeConnection, ssdb::Config>::C
     ssdb::NativeConnection** hout) {
   ssdb::NativeConnection* context = nullptr;
   common::Error er = ssdb::CreateConnection(config, &context);
-  if (er && er->isError()) {
+  if (er && er->IsError()) {
     return er;
   }
 
@@ -101,7 +101,7 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
 common::Error TestConnection(const Config& config) {
   ::ssdb::Client* ssdb = nullptr;
   common::Error er = CreateConnection(config, &ssdb);
-  if (er && er->isError()) {
+  if (er && er->IsError()) {
     return er;
   }
 
@@ -888,7 +888,7 @@ common::Error DBConnection::FlushDBImpl() {
   for (size_t i = 0; i < ret.size(); ++i) {
     std::string key = ret[i];
     common::Error err = DelInner(key);
-    if (err && err->isError()) {
+    if (err && err->IsError()) {
       return err;
     }
   }
@@ -913,7 +913,7 @@ common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
     NKey key = keys[i];
     std::string key_str = key.Key();
     common::Error err = DelInner(key_str);
-    if (err && err->isError()) {
+    if (err && err->IsError()) {
       continue;
     }
 
@@ -927,17 +927,17 @@ common::Error DBConnection::RenameImpl(const NKey& key, const std::string& new_k
   std::string key_str = key.Key();
   std::string value_str;
   common::Error err = GetInner(key_str, &value_str);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
   err = DelInner(key_str);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
   err = SetInner(new_key, value_str);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
@@ -948,7 +948,7 @@ common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) 
   std::string key_str = key.KeyString();
   std::string value_str = key.ValueString();
   common::Error err = SetInner(key_str, value_str);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
@@ -960,11 +960,11 @@ common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
   std::string key_str = key.Key();
   std::string value_str;
   common::Error err = GetInner(key_str, &value_str);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
-  NValue val(common::Value::createStringValue(value_str));
+  NValue val(common::Value::CreateStringValue(value_str));
   *loaded_key = NDbKValue(key, val);
   return common::Error();
 }
@@ -972,7 +972,7 @@ common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
 common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
   std::string key_str = key.Key();
   common::Error err = Expire(key_str, ttl);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
@@ -982,7 +982,7 @@ common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
 common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
   std::string key_str = key.Key();
   common::Error err = TTL(key_str, ttl);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
@@ -991,7 +991,7 @@ common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
 
 common::Error DBConnection::QuitImpl() {
   common::Error err = Disconnect();
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 

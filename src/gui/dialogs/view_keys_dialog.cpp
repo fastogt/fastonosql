@@ -209,7 +209,7 @@ void ViewKeysDialog::startLoadDatabaseContent(
 void ViewKeysDialog::finishLoadDatabaseContent(
     const proxy::events_info::LoadDatabaseContentResponce& res) {
   common::Error er = res.errorInfo();
-  if (er && er->isError()) {
+  if (er && er->IsError()) {
     return;
   }
 
@@ -237,7 +237,7 @@ void ViewKeysDialog::changeTTL(const core::NDbKValue& value, core::ttl_t ttl) {
   core::translator_t tran = server->Translator();
   std::string cmd_str;
   common::Error err = tran->ChangeKeyTTLCommand(value.Key(), ttl, &cmd_str);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     LOG_ERROR(err, true);
     return;
   }

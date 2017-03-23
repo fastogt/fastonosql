@@ -95,7 +95,7 @@ void PropertyServerDialog::finishServerProperty(
     const proxy::events_info::ServerPropertyInfoResponce& res) {
   glassWidget_->stop();
   common::Error er = res.errorInfo();
-  if (er && er->isError()) {
+  if (er && er->IsError()) {
     return;
   }
 
@@ -117,7 +117,7 @@ void PropertyServerDialog::startServerChangeProperty(
 void PropertyServerDialog::finishServerChangeProperty(
     const proxy::events_info::ChangeServerPropertyInfoResponce& res) {
   common::Error er = res.errorInfo();
-  if (er && er->isError()) {
+  if (er && er->IsError()) {
     return;
   }
 

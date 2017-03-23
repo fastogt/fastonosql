@@ -59,7 +59,7 @@ common::Error CommandHandler::Execute(int argc, const char** argv, FastoObject* 
   const command_t* cmd = nullptr;
   size_t off = 0;
   common::Error err = translator_->TestCommandLineArgs(argc, argv, &cmd, &off);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 

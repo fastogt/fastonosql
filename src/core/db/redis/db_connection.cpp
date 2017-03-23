@@ -195,7 +195,7 @@ common::Error ConnectionAllocatorTraits<redis::NativeConnection, redis::RConfig>
     redis::NativeConnection** hout) {
   redis::NativeConnection* context = nullptr;
   common::Error er = redis::CreateConnection(config, &context);
-  if (er && er->isError()) {
+  if (er && er->IsError()) {
     return er;
   }
 
@@ -252,7 +252,7 @@ common::Error valueFromReplay(redisReply* r, common::Value** out) {
 
   switch (r->type) {
     case REDIS_REPLY_NIL: {
-      *out = common::Value::createNullValue();
+      *out = common::Value::CreateNullValue();
       break;
     }
     case REDIS_REPLY_ERROR: {
@@ -265,23 +265,23 @@ common::Error valueFromReplay(redisReply* r, common::Value** out) {
     case REDIS_REPLY_STATUS:
     case REDIS_REPLY_STRING: {
       std::string str(r->str, r->len);
-      *out = common::Value::createStringValue(str);
+      *out = common::Value::CreateStringValue(str);
       break;
     }
     case REDIS_REPLY_INTEGER: {
-      *out = common::Value::createLongLongIntegerValue(r->integer);
+      *out = common::Value::CreateLongLongIntegerValue(r->integer);
       break;
     }
     case REDIS_REPLY_ARRAY: {
-      common::ArrayValue* arv = common::Value::createArrayValue();
+      common::ArrayValue* arv = common::Value::CreateArrayValue();
       for (size_t i = 0; i < r->elements; ++i) {
         common::Value* val = NULL;
         common::Error er = valueFromReplay(r->element[i], &val);
-        if (er && er->isError()) {
+        if (er && er->IsError()) {
           delete arv;
           return er;
         }
-        arv->append(val);
+        arv->Append(val);
       }
       *out = arv;
       break;
@@ -391,13 +391,13 @@ common::Error CreateConnection(const RConfig& config, NativeConnection** context
 common::Error TestConnection(const RConfig& rconfig) {
   redisContext* context = NULL;
   common::Error err = CreateConnection(rconfig, &context);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
   const char* auth_str = common::utils::c_strornull(rconfig.auth);
   err = authContext(auth_str, context);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     redisFree(context);
     return err;
   }
@@ -414,13 +414,13 @@ common::Error DiscoveryClusterConnection(const RConfig& rconfig,
 
   redisContext* context = NULL;
   common::Error err = CreateConnection(rconfig, &context);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
   const char* auth_str = common::utils::c_strornull(rconfig.auth);
   err = authContext(auth_str, context);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     redisFree(context);
     return err;
   }
@@ -454,13 +454,13 @@ common::Error DiscoverySentinelConnection(const RConfig& rconfig,
 
   redisContext* context = NULL;
   common::Error err = CreateConnection(rconfig, &context);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
   const char* auth_str = common::utils::c_strornull(rconfig.auth);
   err = authContext(auth_str, context);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     redisFree(context);
     return err;
   }
@@ -477,7 +477,7 @@ common::Error DiscoverySentinelConnection(const RConfig& rconfig,
     redisReply* master_info = masters_reply->element[i];
     ServerCommonInfo sinf;
     common::Error lerr = MakeServerCommonInfo(master_info, &sinf);
-    if (lerr && lerr->isError()) {
+    if (lerr && lerr->IsError()) {
       continue;
     }
 
@@ -498,7 +498,7 @@ common::Error DiscoverySentinelConnection(const RConfig& rconfig,
         redisReply* server_info = reply->element[j];
         ServerCommonInfo slsinf;
         lerr = MakeServerCommonInfo(server_info, &slsinf);
-        if (lerr && lerr->isError()) {
+        if (lerr && lerr->IsError()) {
           continue;
         }
         ServerDiscoverySentinelInfoSPtr lsent(new DiscoverySentinelInfo(slsinf));
@@ -535,18 +535,18 @@ bool DBConnection::IsAuthenticated() const {
 
 common::Error DBConnection::Connect(const config_t& config) {
   common::Error err = base_class::Connect(config);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
   /* Do AUTH and select the right DB. */
   err = Auth(connection_.config_.auth);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
   err = Select(common::ConvertToString(connection_.config_.dbnum), NULL);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
@@ -629,7 +629,7 @@ common::Error DBConnection::SlaveMode(FastoObject* out) {
 
   unsigned long long payload = 0;
   common::Error err = SendSync(&payload);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
@@ -650,7 +650,7 @@ common::Error DBConnection::SlaveMode(FastoObject* out) {
    */
   while (!IsInterrupted()) {
     err = CliReadReply(out);
-    if (err && err->isError()) {
+    if (err && err->IsError()) {
       return err;
     }
   }
@@ -672,31 +672,31 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
 
   common::Value* val = nullptr;
   common::Error err = valueFromReplay(reply, &val);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     delete val;
     freeReplyObject(reply);
     return err;
   }
 
   common::ArrayValue* arr = static_cast<common::ArrayValue*>(val);
-  CHECK_EQ(2, arr->size());
+  CHECK_EQ(2, arr->GetSize());
   std::string cursor_out_str;
-  if (!arr->getString(0, &cursor_out_str)) {
+  if (!arr->GetString(0, &cursor_out_str)) {
     delete val;
     freeReplyObject(reply);
     return common::make_error_value("I/O error", common::ErrorValue::E_ERROR);
   }
 
   common::ArrayValue* arr_keys = nullptr;
-  if (!arr->getList(1, &arr_keys)) {
+  if (!arr->GetList(1, &arr_keys)) {
     delete val;
     freeReplyObject(reply);
     return common::make_error_value("I/O error", common::ErrorValue::E_ERROR);
   }
 
-  for (size_t i = 0; i < arr_keys->size(); ++i) {
+  for (size_t i = 0; i < arr_keys->GetSize(); ++i) {
     std::string key;
-    if (arr_keys->getString(i, &key)) {
+    if (arr_keys->GetString(i, &key)) {
       keys_out->push_back(key);
     }
   }
@@ -772,7 +772,7 @@ common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
     std::string del_cmd;
     translator_t tran = Translator();
     common::Error err = tran->DeleteKeyCommand(key, &del_cmd);
-    if (err && err->isError()) {
+    if (err && err->IsError()) {
       return err;
     }
     redisReply* reply =
@@ -820,9 +820,9 @@ common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
 
   common::Value* val = nullptr;
   if (reply->type == REDIS_REPLY_STRING) {
-    val = common::Value::createStringValue(reply->str);
+    val = common::Value::CreateStringValue(reply->str);
   } else if (reply->type == REDIS_REPLY_NIL) {
-    val = common::Value::createNullValue();
+    val = common::Value::CreateNullValue();
   } else if (reply->type == REDIS_REPLY_ERROR) {
     common::Error err =
         common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
@@ -840,7 +840,7 @@ common::Error DBConnection::RenameImpl(const NKey& key, const std::string& new_k
   translator_t tran = Translator();
   std::string rename_cmd;
   common::Error err = tran->RenameKeyCommand(key, new_key, &rename_cmd);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
   redisReply* reply =
@@ -864,7 +864,7 @@ common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
   translator_t tran = Translator();
   std::string ttl_cmd;
   common::Error err = tran->ChangeKeyTTLCommand(key, ttl, &ttl_cmd);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
   redisReply* reply =
@@ -893,7 +893,7 @@ common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
   translator_t tran = Translator();
   std::string ttl_cmd;
   common::Error err = tran->LoadKeyTTLCommand(key, &ttl_cmd);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
   redisReply* reply =
@@ -937,36 +937,36 @@ common::Error DBConnection::CliFormatReplyRaw(FastoObjectArray* ar, redisReply* 
 
   switch (r->type) {
     case REDIS_REPLY_NIL: {
-      common::Value* val = common::Value::createNullValue();
+      common::Value* val = common::Value::CreateNullValue();
       ar->Append(val);
       break;
     }
     case REDIS_REPLY_ERROR: {
       std::string str(r->str, r->len);
-      common::ErrorValue* val = common::Value::createErrorValue(str, common::ErrorValue::E_NONE,
+      common::ErrorValue* val = common::Value::CreateErrorValue(str, common::ErrorValue::E_NONE,
                                                                 common::logging::L_WARNING);
       ar->Append(val);
       break;
     }
     case REDIS_REPLY_STATUS:
     case REDIS_REPLY_STRING: {
-      common::StringValue* val = common::Value::createStringValue(std::string(r->str, r->len));
+      common::StringValue* val = common::Value::CreateStringValue(std::string(r->str, r->len));
       ar->Append(val);
       break;
     }
     case REDIS_REPLY_INTEGER: {
-      common::FundamentalValue* val = common::Value::createLongLongIntegerValue(r->integer);
+      common::FundamentalValue* val = common::Value::CreateLongLongIntegerValue(r->integer);
       ar->Append(val);
       break;
     }
     case REDIS_REPLY_ARRAY: {
-      common::ArrayValue* arv = common::Value::createArrayValue();
+      common::ArrayValue* arv = common::Value::CreateArrayValue();
       FastoObjectArray* child = new FastoObjectArray(ar, arv, Delimiter());
       ar->AddChildren(child);
 
       for (size_t i = 0; i < r->elements; ++i) {
         common::Error er = CliFormatReplyRaw(child, r->element[i]);
-        if (er && er->isError()) {
+        if (er && er->IsError()) {
           return er;
         }
       }
@@ -974,7 +974,7 @@ common::Error DBConnection::CliFormatReplyRaw(FastoObjectArray* ar, redisReply* 
     }
     default: {
       common::ErrorValue* val =
-          common::Value::createErrorValue(common::MemSPrintf("Unknown reply type: %d", r->type),
+          common::Value::CreateErrorValue(common::MemSPrintf("Unknown reply type: %d", r->type),
                                           common::ErrorValue::E_NONE, common::logging::L_WARNING);
       ar->Append(val);
     }
@@ -992,7 +992,7 @@ common::Error DBConnection::CliFormatReplyRaw(FastoObject* out, redisReply* r) {
   FastoObject* obj = nullptr;
   switch (r->type) {
     case REDIS_REPLY_NIL: {
-      common::Value* val = common::Value::createNullValue();
+      common::Value* val = common::Value::CreateNullValue();
       obj = new FastoObject(out, val, Delimiter());
       out->AddChildren(obj);
       break;
@@ -1008,25 +1008,25 @@ common::Error DBConnection::CliFormatReplyRaw(FastoObject* out, redisReply* r) {
     case REDIS_REPLY_STATUS:
     case REDIS_REPLY_STRING: {
       std::string str(r->str, r->len);
-      common::StringValue* val = common::Value::createStringValue(str);
+      common::StringValue* val = common::Value::CreateStringValue(str);
       obj = new FastoObject(out, val, Delimiter());
       out->AddChildren(obj);
       break;
     }
     case REDIS_REPLY_INTEGER: {
-      common::FundamentalValue* val = common::Value::createLongLongIntegerValue(r->integer);
+      common::FundamentalValue* val = common::Value::CreateLongLongIntegerValue(r->integer);
       obj = new FastoObject(out, val, Delimiter());
       out->AddChildren(obj);
       break;
     }
     case REDIS_REPLY_ARRAY: {
-      common::ArrayValue* arv = common::Value::createArrayValue();
+      common::ArrayValue* arv = common::Value::CreateArrayValue();
       FastoObjectArray* child = new FastoObjectArray(out, arv, Delimiter());
       out->AddChildren(child);
 
       for (size_t i = 0; i < r->elements; ++i) {
         common::Error er = CliFormatReplyRaw(child, r->element[i]);
-        if (er && er->isError()) {
+        if (er && er->IsError()) {
           return er;
         }
       }
@@ -1110,7 +1110,7 @@ common::Error DBConnection::ExecuteAsPipeline(
   for (size_t i = 0; i < valid_cmds.size(); ++i) {
     FastoObjectCommandIPtr cmd = cmds[i];
     common::Error er = CliReadReply(cmd.get());
-    if (er && er->isError()) {
+    if (er && er->IsError()) {
       return er;
     }
   }
@@ -1139,7 +1139,7 @@ common::Error DBConnection::CommonExec(int argc, const char** argv, FastoObject*
   redisAppendCommandArgv(connection_.handle_, argc, const_cast<const char**>(argv), argvlen);
   free(argvlen);
   common::Error err = CliReadReply(out);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
@@ -1154,7 +1154,7 @@ common::Error DBConnection::Auth(const std::string& password) {
 
   const char* auth_str = common::utils::c_strornull(password);
   common::Error err = authContext(auth_str, connection_.handle_);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     isAuth_ = false;
     return err;
   }
@@ -1184,13 +1184,13 @@ common::Error DBConnection::Monitor(int argc, const char** argv, FastoObject* ou
   redisAppendCommandArgv(connection_.handle_, argc, const_cast<const char**>(argv), argvlen);
   free(argvlen);
   common::Error err = CliReadReply(out);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
   while (true) {
     common::Error er = CliReadReply(out);
-    if (er && er->isError()) {
+    if (er && er->IsError()) {
       return er;
     }
 
@@ -1220,13 +1220,13 @@ common::Error DBConnection::Subscribe(int argc, const char** argv, FastoObject* 
   redisAppendCommandArgv(connection_.handle_, argc, const_cast<const char**>(argv), argvlen);
   free(argvlen);
   common::Error err = CliReadReply(out);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
   while (true) {
     common::Error er = CliReadReply(out);
-    if (er && er->isError()) {
+    if (er && er->IsError()) {
       return er;
     }
 
@@ -1290,7 +1290,7 @@ common::Error DBConnection::SetNX(const NDbKValue& key, long long* result) {
 }
 
 common::Error DBConnection::Lpush(const NKey& key, NValue arr, long long* list_len) {
-  if (!arr || arr->type() != common::Value::TYPE_ARRAY || !list_len) {
+  if (!arr || arr->GetType() != common::Value::TYPE_ARRAY || !list_len) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -1304,7 +1304,7 @@ common::Error DBConnection::Lpush(const NKey& key, NValue arr, long long* list_l
   translator_t tran = Translator();
   std::string lpush_cmd;
   common::Error err = tran->CreateKeyCommand(rarr, &lpush_cmd);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
@@ -1348,7 +1348,7 @@ common::Error DBConnection::Lrange(const NKey& key, int start, int stop, NDbKVal
   if (reply->type == REDIS_REPLY_ARRAY) {
     common::Value* val = nullptr;
     common::Error err = valueFromReplay(reply, &val);
-    if (err && err->isError()) {
+    if (err && err->IsError()) {
       delete val;
       freeReplyObject(reply);
       return err;
@@ -1372,7 +1372,7 @@ common::Error DBConnection::Lrange(const NKey& key, int start, int stop, NDbKVal
 }
 
 common::Error DBConnection::Sadd(const NKey& key, NValue set, long long* added) {
-  if (!set || set->type() != common::Value::TYPE_SET || !added) {
+  if (!set || set->GetType() != common::Value::TYPE_SET || !added) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -1386,7 +1386,7 @@ common::Error DBConnection::Sadd(const NKey& key, NValue set, long long* added) 
   translator_t tran = Translator();
   std::string sadd_cmd;
   common::Error err = tran->CreateKeyCommand(rset, &sadd_cmd);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
@@ -1434,24 +1434,24 @@ common::Error DBConnection::Smembers(const NKey& key, NDbKValue* loaded_key) {
   if (reply->type == REDIS_REPLY_ARRAY) {
     common::Value* val = nullptr;
     common::Error err = valueFromReplay(reply, &val);
-    if (err && err->isError()) {
+    if (err && err->IsError()) {
       delete val;
       freeReplyObject(reply);
       return err;
     }
 
     common::ArrayValue* arr = nullptr;
-    if (!val->getAsList(&arr)) {
+    if (!val->GetAsList(&arr)) {
       delete val;
       freeReplyObject(reply);
       return common::make_error_value("Conversion error array to set", common::Value::E_ERROR);
     }
 
-    common::SetValue* set = common::Value::createSetValue();
-    for (size_t i = 0; i < arr->size(); ++i) {
+    common::SetValue* set = common::Value::CreateSetValue();
+    for (size_t i = 0; i < arr->GetSize(); ++i) {
       common::Value* lval = nullptr;
-      if (arr->get(i, &lval)) {
-        set->insert(lval->deepCopy());
+      if (arr->Get(i, &lval)) {
+        set->Insert(lval->DeepCopy());
       }
     }
 
@@ -1474,7 +1474,7 @@ common::Error DBConnection::Smembers(const NKey& key, NDbKValue* loaded_key) {
 }
 
 common::Error DBConnection::Zadd(const NKey& key, NValue scores, long long* added) {
-  if (!scores || scores->type() != common::Value::TYPE_ZSET || !added) {
+  if (!scores || scores->GetType() != common::Value::TYPE_ZSET || !added) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -1488,7 +1488,7 @@ common::Error DBConnection::Zadd(const NKey& key, NValue scores, long long* adde
   translator_t tran = Translator();
   std::string zadd_cmd;
   common::Error err = tran->CreateKeyCommand(rzset, &zadd_cmd);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
@@ -1546,7 +1546,7 @@ common::Error DBConnection::Zrange(const NKey& key,
   if (reply->type == REDIS_REPLY_ARRAY) {
     common::Value* val = nullptr;
     common::Error err = valueFromReplay(reply, &val);
-    if (err && err->isError()) {
+    if (err && err->IsError()) {
       delete val;
       freeReplyObject(reply);
       return err;
@@ -1562,18 +1562,18 @@ common::Error DBConnection::Zrange(const NKey& key,
     }
 
     common::ArrayValue* arr = nullptr;
-    if (!val->getAsList(&arr)) {
+    if (!val->GetAsList(&arr)) {
       delete val;
       freeReplyObject(reply);
       return common::make_error_value("Conversion error array to zset", common::Value::E_ERROR);
     }
 
-    common::ZSetValue* zset = common::Value::createZSetValue();
-    for (size_t i = 0; i < arr->size(); i += 2) {
+    common::ZSetValue* zset = common::Value::CreateZSetValue();
+    for (size_t i = 0; i < arr->GetSize(); i += 2) {
       common::Value* lmember = nullptr;
       common::Value* lscore = nullptr;
-      if (arr->get(i, &lmember) && arr->get(i + 1, &lscore)) {
-        zset->insert(lscore->deepCopy(), lmember->deepCopy());
+      if (arr->Get(i, &lmember) && arr->Get(i + 1, &lscore)) {
+        zset->Insert(lscore->DeepCopy(), lmember->DeepCopy());
       }
     }
 
@@ -1596,7 +1596,7 @@ common::Error DBConnection::Zrange(const NKey& key,
 }
 
 common::Error DBConnection::Hmset(const NKey& key, NValue hash) {
-  if (!hash || hash->type() != common::Value::TYPE_HASH) {
+  if (!hash || hash->GetType() != common::Value::TYPE_HASH) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -1610,7 +1610,7 @@ common::Error DBConnection::Hmset(const NKey& key, NValue hash) {
   translator_t tran = Translator();
   std::string hmset_cmd;
   common::Error err = tran->CreateKeyCommand(rhash, &hmset_cmd);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
@@ -1657,25 +1657,25 @@ common::Error DBConnection::Hgetall(const NKey& key, NDbKValue* loaded_key) {
   if (reply->type == REDIS_REPLY_ARRAY) {
     common::Value* val = nullptr;
     common::Error err = valueFromReplay(reply, &val);
-    if (err && err->isError()) {
+    if (err && err->IsError()) {
       delete val;
       freeReplyObject(reply);
       return err;
     }
 
     common::ArrayValue* arr = nullptr;
-    if (!val->getAsList(&arr)) {
+    if (!val->GetAsList(&arr)) {
       delete val;
       freeReplyObject(reply);
       return common::make_error_value("Conversion error array to hash", common::Value::E_ERROR);
     }
 
-    common::HashValue* hash = common::Value::createHashValue();
-    for (size_t i = 0; i < arr->size(); i += 2) {
+    common::HashValue* hash = common::Value::CreateHashValue();
+    for (size_t i = 0; i < arr->GetSize(); i += 2) {
       common::Value* lkey = nullptr;
       common::Value* lvalue = nullptr;
-      if (arr->get(i, &lkey) && arr->get(i + 1, &lvalue)) {
-        hash->insert(lkey->deepCopy(), lvalue->deepCopy());
+      if (arr->Get(i, &lkey) && arr->Get(i + 1, &lvalue)) {
+        hash->Insert(lkey->DeepCopy(), lvalue->DeepCopy());
       }
     }
 
@@ -1716,7 +1716,7 @@ common::Error DBConnection::Decr(const NKey& key, long long* decr) {
 
   if (reply->type == REDIS_REPLY_INTEGER) {
     if (client_) {
-      NValue val(common::Value::createIntegerValue(reply->integer));
+      NValue val(common::Value::CreateIntegerValue(reply->integer));
       client_->OnKeyAdded(NDbKValue(key, val));
     }
     *decr = reply->integer;
@@ -1751,7 +1751,7 @@ common::Error DBConnection::DecrBy(const NKey& key, int dec, long long* decr) {
 
   if (reply->type == REDIS_REPLY_INTEGER) {
     if (client_) {
-      NValue val(common::Value::createLongLongIntegerValue(reply->integer));
+      NValue val(common::Value::CreateLongLongIntegerValue(reply->integer));
       client_->OnKeyAdded(NDbKValue(key, val));
     }
     *decr = reply->integer;
@@ -1786,7 +1786,7 @@ common::Error DBConnection::Incr(const NKey& key, long long* incr) {
 
   if (reply->type == REDIS_REPLY_INTEGER) {
     if (client_) {
-      NValue val(common::Value::createIntegerValue(reply->integer));
+      NValue val(common::Value::CreateIntegerValue(reply->integer));
       client_->OnKeyAdded(NDbKValue(key, val));
     }
     *incr = reply->integer;
@@ -1821,7 +1821,7 @@ common::Error DBConnection::IncrBy(const NKey& key, int inc, long long* incr) {
 
   if (reply->type == REDIS_REPLY_INTEGER) {
     if (client_) {
-      NValue val(common::Value::createLongLongIntegerValue(reply->integer));
+      NValue val(common::Value::CreateLongLongIntegerValue(reply->integer));
       client_->OnKeyAdded(NDbKValue(key, val));
     }
     *incr = reply->integer;
@@ -1858,7 +1858,7 @@ common::Error DBConnection::IncrByFloat(const NKey& key, double inc, std::string
   if (reply->type == REDIS_REPLY_STRING) {
     std::string str(reply->str, reply->len);
     if (client_) {
-      NValue val(common::Value::createStringValue(str));
+      NValue val(common::Value::CreateStringValue(str));
       client_->OnKeyAdded(NDbKValue(key, val));
     }
     *str_incr = str;

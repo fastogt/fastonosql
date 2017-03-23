@@ -49,7 +49,7 @@ void StatisticSender::routine() {
 #error please specify url and port to send statistic information
 #endif
   common::ErrnoError err = client.connect();
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     emit statisticSended(false);
     return;
   }
@@ -75,7 +75,7 @@ void StatisticSender::routine() {
   ssize_t nwrite = 0;
   err = client.write(stats_json_string, strlen(stats_json_string), &nwrite);
   json_object_put(stats_json);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     emit statisticSended(false);
     DCHECK(!client.close());
     return;

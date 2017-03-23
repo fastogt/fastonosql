@@ -195,7 +195,7 @@ void IDriver::Clear() {
     timer_info_id_ = 0;
   }
   common::Error err = SyncDisconnect();
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     DNOTREACHED();
   }
   ClearImpl();
@@ -280,7 +280,7 @@ void IDriver::timerEvent(QTimerEvent* event) {
       std::string path = settings_->LoggingPath();
       std::string dir = common::file_system::get_dir_path(path);
       common::Error err = common::file_system::create_directory(dir, true);
-      if (err && err->isError()) {
+      if (err && err->IsError()) {
       }
       if (common::file_system::is_directory(dir) == common::SUCCESS) {
         common::file_system::ascii_string_path p(path);
@@ -298,7 +298,7 @@ void IDriver::timerEvent(QTimerEvent* event) {
       std::string stamp = createStamp(time);
       core::IServerInfo* info = nullptr;
       common::Error er = CurrentServerInfo(&info);
-      if (er && er->isError()) {
+      if (er && er->IsError()) {
         QObject::timerEvent(event);
         return;
       }
@@ -324,7 +324,7 @@ void IDriver::HandleConnectEvent(events::ConnectRequestEvent* ev) {
   events::ConnectResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 25);
   common::Error er = SyncConnect();
-  if (er && er->isError()) {
+  if (er && er->IsError()) {
     res.setErrorInfo(er);
   }
   NotifyProgress(sender, 75);
@@ -339,7 +339,7 @@ void IDriver::HandleDisconnectEvent(events::DisconnectRequestEvent* ev) {
   NotifyProgress(sender, 50);
 
   common::Error er = SyncDisconnect();
-  if (er && er->isError()) {
+  if (er && er->IsError()) {
     res.setErrorInfo(er);
   }
 
@@ -355,7 +355,7 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
   const std::string inputLine = res.text;
   std::vector<std::string> commands;
   common::Error err = core::ParseCommands(inputLine, &commands);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     res.setErrorInfo(err);
     Reply(sender, new events::ExecuteResponceEvent(this, res));
     NotifyProgress(sender, 100);
@@ -389,7 +389,7 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
       core::FastoObjectCommandIPtr cmd = silence ? CreateCommandFast(command, log_type)
                                                  : CreateCommand(obj.get(), command, log_type);  //
       common::Error err = Execute(cmd);
-      if (err && err->isError()) {
+      if (err && err->IsError()) {
         res.setErrorInfo(err);
         goto done;
       }
@@ -458,7 +458,7 @@ void IDriver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent
   NotifyProgress(sender, 50);
   core::IDataBaseInfo* info = nullptr;
   common::Error err = CurrentDataBaseInfo(&info);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     res.setErrorInfo(err);
   } else {
     res.databases.push_back(core::IDataBaseInfoSPtr(info));
@@ -474,7 +474,7 @@ void IDriver::HandleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
   NotifyProgress(sender, 50);
   core::IServerInfo* info = nullptr;
   common::Error err = CurrentServerInfo(&info);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     res.setErrorInfo(err);
   } else {
     core::IServerInfoSPtr mem(info);
@@ -545,7 +545,7 @@ void IDriver::HandleClearServerHistoryEvent(events::ClearServerHistoryRequestEve
     std::string path = settings_->LoggingPath();
     if (common::file_system::is_file_exist(path)) {
       common::Error err = common::file_system::remove_file(path);
-      if (err && err->isError()) {
+      if (err && err->IsError()) {
         ret = false;
       } else {
         ret = true;
@@ -572,7 +572,7 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
     core::IServerInfo* info = nullptr;
     core::IDataBaseInfo* db = nullptr;
     common::Error err = ServerDiscoveryInfo(&info, &db);
-    if (err && err->isError()) {
+    if (err && err->IsError()) {
       res.setErrorInfo(err);
     } else {
       DCHECK(info);
@@ -598,13 +598,13 @@ common::Error IDriver::ServerDiscoveryInfo(core::IServerInfo** sinfo,
                                            core::IDataBaseInfo** dbinfo) {
   core::IServerInfo* lsinfo = nullptr;
   common::Error er = CurrentServerInfo(&lsinfo);
-  if (er && er->isError()) {
+  if (er && er->IsError()) {
     return er;
   }
 
   core::IDataBaseInfo* ldbinfo = nullptr;
   er = CurrentDataBaseInfo(&ldbinfo);
-  if (er && er->isError()) {
+  if (er && er->IsError()) {
     delete lsinfo;
     return er;
   }

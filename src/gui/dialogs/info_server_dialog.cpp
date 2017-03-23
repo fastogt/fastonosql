@@ -304,7 +304,7 @@ void InfoServerDialog::startServerInfo(const proxy::events_info::ServerInfoReque
 void InfoServerDialog::finishServerInfo(const proxy::events_info::ServerInfoResponce& res) {
   glassWidget_->stop();
   common::Error er = res.errorInfo();
-  if (er && er->isError()) {
+  if (er && er->IsError()) {
     return;
   }
 

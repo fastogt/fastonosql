@@ -42,6 +42,7 @@
 #include <common/qt/utils_qt.h>
 
 #include "core/db_traits.h"
+#include "core/global.h"
 
 #include "gui/widgets/list_type_widget.h"
 #include "gui/widgets/hash_type_widget.h"
@@ -86,7 +87,7 @@ DbKeyDialog::DbKeyDialog(const QString& title,
     if (kt == t) {
       current_index = i;
     }
-    QString type = common::ConvertFromString<QString>(common::Value::toString(t));
+    QString type = common::ConvertFromString<QString>(common::Value::GetTypeName(t));
     typesCombo_->addItem(GuiFactory::instance().icon(t), type, t);
   }
 
@@ -212,12 +213,12 @@ void DbKeyDialog::syncControls(common::Value* item) {
     return;
   }
 
-  common::Value::Type t = item->type();
+  common::Value::Type t = item->GetType();
   if (t == common::Value::TYPE_ARRAY) {
     common::ArrayValue* arr = nullptr;
-    if (item->getAsList(&arr)) {
+    if (item->GetAsList(&arr)) {
       for (auto it = arr->begin(); it != arr->end(); ++it) {
-        std::string val = (*it)->toString();
+        std::string val = common::ConvertToString(*it, "");
         if (val.empty()) {
           continue;
         }
@@ -227,9 +228,9 @@ void DbKeyDialog::syncControls(common::Value* item) {
     }
   } else if (t == common::Value::TYPE_SET) {
     common::SetValue* set = nullptr;
-    if (item->getAsSet(&set)) {
+    if (item->GetAsSet(&set)) {
       for (auto it = set->begin(); it != set->end(); ++it) {
-        std::string val = (*it)->toString();
+        std::string val = common::ConvertToString(*it, "");
         if (val.empty()) {
           continue;
         }
@@ -239,38 +240,38 @@ void DbKeyDialog::syncControls(common::Value* item) {
     }
   } else if (t == common::Value::TYPE_ZSET) {
     common::ZSetValue* zset = nullptr;
-    if (item->getAsZSet(&zset)) {
+    if (item->GetAsZSet(&zset)) {
       for (auto it = zset->begin(); it != zset->end(); ++it) {
         auto element = (*it);
         common::Value* key = element.first;
         common::Value* value = element.second;
-        QString ftext = common::ConvertFromString<QString>(key->toString());
-        QString stext = common::ConvertFromString<QString>(value->toString());
+        QString ftext = common::ConvertFromString<QString>(common::ConvertToString(key, ""));
+        QString stext = common::ConvertFromString<QString>(common::ConvertToString(value, ""));
 
         valueTableEdit_->insertRow(ftext, stext);
       }
     }
   } else if (t == common::Value::TYPE_HASH) {
     common::HashValue* hash = nullptr;
-    if (item->getAsHash(&hash)) {
+    if (item->GetAsHash(&hash)) {
       for (auto it = hash->begin(); it != hash->end(); ++it) {
         auto element = (*it);
         common::Value* key = element.first;
         common::Value* value = element.second;
-        QString ftext = common::ConvertFromString<QString>(key->toString());
-        QString stext = common::ConvertFromString<QString>(value->toString());
+        QString ftext = common::ConvertFromString<QString>(common::ConvertToString(key, ""));
+        QString stext = common::ConvertFromString<QString>(common::ConvertToString(value, ""));
 
         valueTableEdit_->insertRow(ftext, stext);
       }
     }
   } else if (t == common::Value::TYPE_BOOLEAN) {
     bool val;
-    if (item->getAsBoolean(&val)) {
+    if (item->GetAsBoolean(&val)) {
       boolValueEdit_->setCurrentIndex(val ? 0 : 1);
     }
   } else {
     std::string text;
-    if (item->getAsString(&text)) {
+    if (item->GetAsString(&text)) {
       valueEdit_->setText(common::ConvertFromString<QString>(text));
     }
   }
@@ -313,14 +314,14 @@ common::Value* DbKeyDialog::item() const {
       return nullptr;
     }
 
-    return common::Value::createBooleanValue(index == 0);
+    return common::Value::CreateBooleanValue(index == 0);
   } else {
     QString text = valueEdit_->text();
     if (text.isEmpty()) {
       return nullptr;
     }
 
-    return common::Value::createStringValue(common::ConvertToString(text));
+    return common::Value::CreateStringValue(common::ConvertToString(text));
   }
 }
 

@@ -122,7 +122,7 @@ void ServerHistoryDialog::finishLoadServerHistoryInfo(
     const proxy::events_info::ServerInfoHistoryResponce& res) {
   glassWidget_->stop();
   common::Error er = res.errorInfo();
-  if (er && er->isError()) {
+  if (er && er->IsError()) {
     return;
   }
 
@@ -138,7 +138,7 @@ void ServerHistoryDialog::startClearServerHistory(
 void ServerHistoryDialog::finishClearServerHistory(
     const proxy::events_info::ClearServerHistoryResponce& res) {
   common::Error er = res.errorInfo();
-  if (er && er->isError()) {
+  if (er && er->IsError()) {
     return;
   }
 
@@ -190,7 +190,7 @@ void ServerHistoryDialog::refreshGraph(int index) {
     common::Value* value = val.info->ValueByIndexes(serverIndex, indexIn);  // allocate
     if (value) {
       qreal graphY = 0.0f;
-      if (value->getAsDouble(&graphY)) {
+      if (value->GetAsDouble(&graphY)) {
         nodes.push_back(std::make_pair(val.msec, graphY));
       }
       delete value;

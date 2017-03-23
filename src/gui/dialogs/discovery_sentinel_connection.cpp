@@ -51,9 +51,9 @@ void DiscoverySentinelConnection::routine() {
   common::Error er =
       proxy::ServersManager::instance().DiscoverySentinelConnection(connection_, &inf);
 
-  if (er && er->isError()) {
+  if (er && er->IsError()) {
     emit connectionResult(false, common::time::current_mstime() - startTime_,
-                          common::ConvertFromString<QString>(er->description()), inf);
+                          common::ConvertFromString<QString>(er->Description()), inf);
   } else {
     emit connectionResult(true, common::time::current_mstime() - startTime_,
                           translations::trSuccess, inf);

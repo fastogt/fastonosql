@@ -28,6 +28,8 @@
 #include <common/qt/convert2string.h>
 #include <common/qt/utils_qt.h>
 
+#include "core/global.h"
+
 #include "gui/widgets/list_type_widget.h"
 #include "gui/widgets/hash_type_widget.h"
 
@@ -93,34 +95,34 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
   common::Value::Type t = node->type();
   if (t == common::Value::TYPE_INTEGER) {
     int value = 0;
-    if (val->getAsInteger(&value)) {
+    if (val->GetAsInteger(&value)) {
       QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
       spinBox->setValue(value);
     }
   } else if (t == common::Value::TYPE_UINTEGER) {
     unsigned int value = 0;
-    if (val->getAsUInteger(&value)) {
+    if (val->GetAsUInteger(&value)) {
       QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
       spinBox->setValue(value);
     }
   } else if (t == common::Value::TYPE_BOOLEAN) {
     bool value;
-    if (val->getAsBoolean(&value)) {
+    if (val->GetAsBoolean(&value)) {
       QComboBox* combobox = static_cast<QComboBox*>(editor);
       combobox->setCurrentIndex(value ? 0 : 1);
     }
   } else if (t == common::Value::TYPE_STRING) {
     std::string value;
-    if (val->getAsString(&value)) {
+    if (val->GetAsString(&value)) {
       QLineEdit* lineedit = static_cast<QLineEdit*>(editor);
       lineedit->setText(common::ConvertFromString<QString>(value));
     }
   } else if (t == common::Value::TYPE_ARRAY) {
     common::ArrayValue* arr = nullptr;
-    if (val->getAsList(&arr)) {
+    if (val->GetAsList(&arr)) {
       ListTypeWidget* listwidget = static_cast<ListTypeWidget*>(editor);
       for (auto it = arr->begin(); it != arr->end(); ++it) {
-        std::string val = (*it)->toString();
+        std::string val = common::ConvertToString((*it), "");
         if (val.empty()) {
           continue;
         }
@@ -130,10 +132,10 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
     }
   } else if (t == common::Value::TYPE_SET) {
     common::SetValue* set = nullptr;
-    if (val->getAsSet(&set)) {
+    if (val->GetAsSet(&set)) {
       ListTypeWidget* listwidget = static_cast<ListTypeWidget*>(editor);
       for (auto it = set->begin(); it != set->end(); ++it) {
-        std::string val = (*it)->toString();
+        std::string val = common::ConvertToString((*it), "");
         if (val.empty()) {
           continue;
         }
@@ -143,28 +145,28 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
     }
   } else if (t == common::Value::TYPE_ZSET) {
     common::ZSetValue* zset = nullptr;
-    if (val->getAsZSet(&zset)) {
+    if (val->GetAsZSet(&zset)) {
       HashTypeWidget* hashwidget = static_cast<HashTypeWidget*>(editor);
       for (auto it = zset->begin(); it != zset->end(); ++it) {
         auto element = (*it);
         common::Value* key = element.first;
         common::Value* value = element.second;
-        QString ftext = common::ConvertFromString<QString>(key->toString());
-        QString stext = common::ConvertFromString<QString>(value->toString());
+        QString ftext = common::ConvertFromString<QString>(common::ConvertToString(key, ""));
+        QString stext = common::ConvertFromString<QString>(common::ConvertToString(value, ""));
 
         hashwidget->insertRow(ftext, stext);
       }
     }
   } else if (t == common::Value::TYPE_HASH) {
     common::HashValue* hash = nullptr;
-    if (val->getAsHash(&hash)) {
+    if (val->GetAsHash(&hash)) {
       HashTypeWidget* hashwidget = static_cast<HashTypeWidget*>(editor);
       for (auto it = hash->begin(); it != hash->end(); ++it) {
         auto element = (*it);
         common::Value* key = element.first;
         common::Value* value = element.second;
-        QString ftext = common::ConvertFromString<QString>(key->toString());
-        QString stext = common::ConvertFromString<QString>(value->toString());
+        QString ftext = common::ConvertFromString<QString>(common::ConvertToString(key, ""));
+        QString stext = common::ConvertFromString<QString>(common::ConvertToString(value, ""));
 
         hashwidget->insertRow(ftext, stext);
       }
@@ -186,19 +188,19 @@ void TypeDelegate::setModelData(QWidget* editor,
   if (t == common::Value::TYPE_INTEGER) {
     QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
     int value = spinBox->value();
-    core::NValue val(common::Value::createIntegerValue(value));
+    core::NValue val(common::Value::CreateIntegerValue(value));
     QVariant var = QVariant::fromValue(val);
     model->setData(index, var, Qt::EditRole);
   } else if (t == common::Value::TYPE_UINTEGER) {
     QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
     int value = spinBox->value();
-    core::NValue val(common::Value::createUIntegerValue(value));
+    core::NValue val(common::Value::CreateUIntegerValue(value));
     QVariant var = QVariant::fromValue(val);
     model->setData(index, var, Qt::EditRole);
   } else if (t == common::Value::TYPE_BOOLEAN) {
     QComboBox* combobox = static_cast<QComboBox*>(editor);
     int cindex = combobox->currentIndex();
-    core::NValue val(common::Value::createBooleanValue(cindex == 0));
+    core::NValue val(common::Value::CreateBooleanValue(cindex == 0));
     QVariant var = QVariant::fromValue(val);
     model->setData(index, var, Qt::EditRole);
   } else if (t == common::Value::TYPE_STRING) {
@@ -208,7 +210,7 @@ void TypeDelegate::setModelData(QWidget* editor,
       return;
     }
 
-    common::StringValue* string = common::Value::createStringValue(common::ConvertToString(text));
+    common::StringValue* string = common::Value::CreateStringValue(common::ConvertToString(text));
     QVariant var = QVariant::fromValue(core::NValue(string));
     model->setData(index, var, Qt::EditRole);
   } else if (t == common::Value::TYPE_ARRAY) {

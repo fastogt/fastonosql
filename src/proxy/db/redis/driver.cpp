@@ -167,7 +167,7 @@ common::Error Driver::ExecuteImpl(const std::string& command, core::FastoObject*
 common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(INFO_REQUEST, core::C_INNER);
   common::Error err = Execute(cmd.get());
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
@@ -197,7 +197,7 @@ void Driver::HandleShutdownEvent(events::ShutDownRequestEvent* ev) {
   NotifyProgress(sender, 25);
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(REDIS_SHUTDOWN, core::C_INNER);
   common::Error er = Execute(cmd);
-  if (er && er->isError()) {
+  if (er && er->IsError()) {
     res.setErrorInfo(er);
   }
   NotifyProgress(sender, 75);
@@ -212,11 +212,11 @@ void Driver::HandleBackupEvent(events::BackupRequestEvent* ev) {
   NotifyProgress(sender, 25);
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(REDIS_BACKUP, core::C_INNER);
   common::Error er = Execute(cmd);
-  if (er && er->isError()) {
+  if (er && er->IsError()) {
     res.setErrorInfo(er);
   } else {
     common::Error err = common::file_system::copy_file("/var/lib/redis/dump.rdb", res.path);
-    if (err && err->isError()) {
+    if (err && err->IsError()) {
       res.setErrorInfo(err);
     }
   }
@@ -231,7 +231,7 @@ void Driver::HandleExportEvent(events::ExportRequestEvent* ev) {
   events::ExportResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 25);
   common::Error err = common::file_system::copy_file(res.path, "/var/lib/redis/dump.rdb");
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     res.setErrorInfo(err);
   }
   NotifyProgress(sender, 75);
@@ -247,7 +247,7 @@ void Driver::HandleChangePasswordEvent(events::ChangePasswordRequestEvent* ev) {
   std::string patternResult = common::MemSPrintf(REDIS_SET_PASSWORD_1ARGS_S, res.new_password);
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(patternResult, core::C_INNER);
   common::Error er = Execute(cmd);
-  if (er && er->isError()) {
+  if (er && er->IsError()) {
     res.setErrorInfo(er);
   }
 
@@ -265,7 +265,7 @@ void Driver::HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEv
       common::MemSPrintf(REDIS_SET_MAX_CONNECTIONS_1ARGS_I, res.max_connection);
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(patternResult, core::C_INNER);
   common::Error er = Execute(cmd);
-  if (er && er->isError()) {
+  if (er && er->IsError()) {
     res.setErrorInfo(er);
   }
 
@@ -283,7 +283,7 @@ void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
 
   core::IDataBaseInfo* info = nullptr;
   common::Error err = CurrentDataBaseInfo(&info);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     res.setErrorInfo(err);
     NotifyProgress(sender, 75);
     Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
@@ -292,7 +292,7 @@ void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
   }
 
   err = Execute(cmd.get());
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     res.setErrorInfo(err);
     NotifyProgress(sender, 75);
     Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
@@ -309,7 +309,7 @@ void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
 
   core::IDataBaseInfoSPtr curdb(info);
   std::string scountDb;
-  if (ar->getString(1, &scountDb)) {
+  if (ar->GetString(1, &scountDb)) {
     size_t countDb = common::ConvertFromString<size_t>(scountDb);
     if (countDb > 0) {
       for (size_t i = 0; i < countDb; ++i) {
@@ -339,7 +339,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(pattern_result, core::C_INNER);
   NotifyProgress(sender, 50);
   common::Error err = Execute(cmd);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     res.setErrorInfo(err);
   } else {
     core::FastoObject::childs_t rchildrens = cmd->Childrens();
@@ -352,12 +352,12 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
       }
 
       common::ArrayValue* arm = array->Array();
-      if (!arm->size()) {
+      if (!arm->GetSize()) {
         goto done;
       }
 
       std::string cursor;
-      bool isok = arm->getString(0, &cursor);
+      bool isok = arm->GetString(0, &cursor);
       if (!isok) {
         goto done;
       }
@@ -381,10 +381,10 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
       }
 
       std::vector<core::FastoObjectCommandIPtr> cmds;
-      cmds.reserve(ar->size() * 2);
-      for (size_t i = 0; i < ar->size(); ++i) {
+      cmds.reserve(ar->GetSize() * 2);
+      for (size_t i = 0; i < ar->GetSize(); ++i) {
         std::string key;
-        bool isok = ar->getString(i, &key);
+        bool isok = ar->GetString(i, &key);
         if (isok) {
           core::NKey k(key);
           core::NDbKValue dbv(k, core::NValue());
@@ -395,7 +395,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
       }
 
       err = impl_->ExecuteAsPipeline(cmds, &LOG_COMMAND);
-      if (err && err->isError()) {
+      if (err && err->IsError()) {
         goto done;
       }
 
@@ -407,7 +407,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
           if (tchildrens.size() == 1) {
             std::string typeRedis = tchildrens[0]->ToString();
             common::Value::Type ctype = convertFromStringRType(typeRedis);
-            common::ValueSPtr empty_val(common::Value::createEmptyValueFromType(ctype));
+            common::ValueSPtr empty_val(common::Value::CreateEmptyValueFromType(ctype));
             res.keys[i].SetValue(empty_val);
           }
         }
@@ -419,7 +419,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
           if (tchildrens.size() == 1) {
             auto vttl = tchildrens[0]->Value();
             core::ttl_t ttl = 0;
-            if (vttl->getAsLongLongInteger(&ttl)) {
+            if (vttl->GetAsLongLongInteger(&ttl)) {
               core::NKey key = res.keys[i].Key();
               key.SetTTL(ttl);
               res.keys[i].SetKey(key);
@@ -445,7 +445,7 @@ void Driver::HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEven
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(REDIS_GET_PROPERTY_SERVER, core::C_INNER);
   NotifyProgress(sender, 50);
   common::Error er = Execute(cmd);
-  if (er && er->isError()) {
+  if (er && er->IsError()) {
     res.setErrorInfo(er);
   } else {
     core::FastoObject::childs_t ch = cmd->Childrens();
@@ -471,7 +471,7 @@ void Driver::HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoReq
   std::string changeRequest = "CONFIG SET " + res.new_item.first + " " + res.new_item.second;
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(changeRequest, core::C_INNER);
   common::Error er = Execute(cmd);
-  if (er && er->isError()) {
+  if (er && er->IsError()) {
     res.setErrorInfo(er);
   } else {
     res.is_change = true;
@@ -490,7 +490,7 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
   std::string loadChannelsRequest = "PUBSUB CHANNELS " + res.pattern;
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(loadChannelsRequest, core::C_INNER);
   common::Error err = Execute(cmd);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     res.setErrorInfo(err);
     goto done;
   } else {
@@ -504,15 +504,15 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
       }
 
       common::ArrayValue* arm = array->Array();
-      if (!arm->size()) {
+      if (!arm->GetSize()) {
         goto done;
       }
 
       std::vector<core::FastoObjectCommandIPtr> cmds;
-      cmds.reserve(arm->size());
-      for (size_t i = 0; i < arm->size(); ++i) {
+      cmds.reserve(arm->GetSize());
+      for (size_t i = 0; i < arm->GetSize(); ++i) {
         std::string channel;
-        bool isok = arm->getString(i, &channel);
+        bool isok = arm->GetString(i, &channel);
         if (isok) {
           core::NDbPSChannel c(channel, 0);
           cmds.push_back(CreateCommandFast("PUBSUB NUMSUB " + channel, core::C_INNER));
@@ -521,7 +521,7 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
       }
 
       err = impl_->ExecuteAsPipeline(cmds, &LOG_COMMAND);
-      if (err && err->isError()) {
+      if (err && err->IsError()) {
         res.setErrorInfo(err);
         goto done;
       }
@@ -537,9 +537,9 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
             if (array_sub) {
               common::ArrayValue* array_sub_inner = array_sub->Array();
               common::Value* fund_sub = nullptr;
-              if (array_sub_inner->get(1, &fund_sub)) {
+              if (array_sub_inner->Get(1, &fund_sub)) {
                 std::string sub;
-                if (fund_sub->getAsString(&sub)) {
+                if (fund_sub->GetAsString(&sub)) {
                   res.channels[i].SetNumberOfSubscribers(common::ConvertFromString<uint32_t>(sub));
                 }
               }

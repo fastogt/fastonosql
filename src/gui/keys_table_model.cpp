@@ -44,7 +44,7 @@ QString KeyTableItem::keyString() const {
 }
 
 QString KeyTableItem::typeText() const {
-  return common::ConvertFromString<QString>(common::Value::toString(dbv_.Type()));
+  return common::ConvertFromString<QString>(common::Value::GetTypeName(dbv_.Type()));
 }
 
 core::ttl_t KeyTableItem::ttl() const {

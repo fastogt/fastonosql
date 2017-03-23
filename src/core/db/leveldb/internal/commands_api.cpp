@@ -30,12 +30,12 @@ common::Error CommandsApi::Info(internal::CommandHandler* handler,
 
   ServerInfo::Stats statsout;
   common::Error err = level->Info(argc == 1 ? argv[0] : nullptr, &statsout);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
   ServerInfo linf(statsout);
-  common::StringValue* val = common::Value::createStringValue(linf.ToString());
+  common::StringValue* val = common::Value::CreateStringValue(linf.ToString());
   FastoObject* child = new FastoObject(out, val, level->Delimiter());
   out->AddChildren(child);
   return common::Error();

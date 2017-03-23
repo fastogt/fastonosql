@@ -38,12 +38,12 @@ common::Error CommandsApi::Info(internal::CommandHandler* handler,
   DBConnection* unq = static_cast<DBConnection*>(handler);
   ServerInfo::Stats statsout;
   common::Error err = unq->Info(argc == 1 ? argv[0] : nullptr, &statsout);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
   ServerInfo uinf(statsout);
-  common::StringValue* val = common::Value::createStringValue(uinf.ToString());
+  common::StringValue* val = common::Value::CreateStringValue(uinf.ToString());
   FastoObject* child = new FastoObject(out, val, unq->Delimiter());
   out->AddChildren(child);
   return common::Error();

@@ -44,9 +44,9 @@ void TestConnection::routine() {
 
   common::Error er = proxy::ServersManager::instance().TestConnection(connection_);
 
-  if (er && er->isError()) {
+  if (er && er->IsError()) {
     emit connectionResult(false, common::time::current_mstime() - start_time_,
-                          common::ConvertFromString<QString>(er->description()));
+                          common::ConvertFromString<QString>(er->Description()));
   } else {
     emit connectionResult(true, common::time::current_mstime() - start_time_,
                           translations::trSuccess);

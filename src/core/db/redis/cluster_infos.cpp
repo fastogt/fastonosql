@@ -143,7 +143,7 @@ common::Error makeDiscoveryClusterInfo(const common::net::HostAndPort& parentHos
     ServerCommonInfo inf;
     bool self = false;
     common::Error lerr = MakeServerCommonInfoFromLine(line, &inf, &self);
-    if (lerr && lerr->isError()) {
+    if (lerr && lerr->IsError()) {
       continue;
     }
     if (common::net::isLocalHost(inf.host.host)) {  // for direct connection

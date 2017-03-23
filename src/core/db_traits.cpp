@@ -26,7 +26,7 @@ namespace core {
 Field::Field(const std::string& name, common::Value::Type type) : name(name), type(type) {}
 
 bool Field::IsIntegral() const {
-  return common::Value::isIntegral(type);
+  return common::Value::IsIntegral(type);
 }
 
 std::vector<common::Value::Type> SupportedTypesFromType(connectionTypes type) {

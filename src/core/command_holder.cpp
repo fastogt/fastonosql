@@ -111,7 +111,7 @@ common::Error CommandHolder::TestArgs(int argc, const char** argv) const {
   const CommandInfo inf = *this;
   for (test_function_t func : test_funcs_) {
     common::Error err = func(inf, argc, argv);
-    if (err && err->isError()) {
+    if (err && err->IsError()) {
       return err;
     }
   }

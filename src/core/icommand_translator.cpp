@@ -148,7 +148,7 @@ bool ICommandTranslator::IsLoadKeyCommand(const std::string& cmd, std::string* k
   const CommandHolder* cmdh = nullptr;
   size_t off = 0;
   common::Error err = TestCommandLineArgs(argc, standart_argv, &cmdh, &off);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     sdsfreesplitres(argv, argc);
     return false;
   }
@@ -259,7 +259,7 @@ common::Error ICommandTranslator::TestCommandLine(const std::string& cmd) const 
   const CommandHolder* cmdh = nullptr;
   size_t loff = 0;
   common::Error err = TestCommandLineArgs(argc, standart_argv, &cmdh, &loff);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     sdsfreesplitres(argv, argc);
     return err;
   }
@@ -274,14 +274,14 @@ common::Error ICommandTranslator::TestCommandLineArgs(int argc,
   const CommandHolder* cmd = nullptr;
   size_t loff = 0;
   common::Error err = FindCommand(argc, argv, &cmd, &loff);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
   int argc_to_call = argc - loff;
   const char** argv_to_call = argv + loff;
   err = TestCommandArgs(cmd, argc_to_call, argv_to_call);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 

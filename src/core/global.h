@@ -145,4 +145,8 @@ std::string ConvertToString(common::SetValue* set, const std::string& delimiter)
 std::string ConvertToString(common::ZSetValue* zset, const std::string& delimiter);
 std::string ConvertToString(common::HashValue* hash, const std::string& delimiter);
 
+std::string ConvertToString(FundamentalValue* value, const std::string& delimiter);
+std::string ConvertToString(StringValue* value, const std::string& delimiter);
+std::string ConvertToString(ByteArrayValue* value, const std::string& delimiter);
+
 }  // namespace common

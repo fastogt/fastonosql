@@ -29,11 +29,11 @@ common::Error CommandsApi::Info(internal::CommandHandler* handler,
   DBConnection* mdb = static_cast<DBConnection*>(handler);
   ServerInfo::Stats statsout;
   common::Error err = mdb->Info(argc == 1 ? argv[0] : nullptr, &statsout);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
-  common::StringValue* val = common::Value::createStringValue(ServerInfo(statsout).ToString());
+  common::StringValue* val = common::Value::CreateStringValue(ServerInfo(statsout).ToString());
   FastoObject* child = new FastoObject(out, val, mdb->Delimiter());
   out->AddChildren(child);
   return common::Error();

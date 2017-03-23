@@ -141,7 +141,7 @@ void PubSubDialog::startLoadServerChannels(
 void PubSubDialog::finishLoadServerChannels(
     const proxy::events_info::LoadServerChannelsResponce& res) {
   common::Error er = res.errorInfo();
-  if (er && er->isError()) {
+  if (er && er->IsError()) {
     return;
   }
 
@@ -197,7 +197,7 @@ void PubSubDialog::publish() {
     std::string cmd_str;
     common::Error err =
         trans->PublishCommand(node->channel(), common::ConvertToString(publish_text), &cmd_str);
-    if (err && err->isError()) {
+    if (err && err->IsError()) {
       LOG_ERROR(err, true);
       return;
     }
@@ -222,7 +222,7 @@ void PubSubDialog::subscribeInNewConsole() {
   core::translator_t trans = server_->Translator();
   std::string cmd_str;
   common::Error err = trans->SubscribeCommand(node->channel(), &cmd_str);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     LOG_ERROR(err, true);
     return;
   }

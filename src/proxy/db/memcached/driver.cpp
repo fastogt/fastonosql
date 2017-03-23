@@ -128,7 +128,7 @@ common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
   LOG_COMMAND(cmd);
   core::memcached::ServerInfo::Stats cm;
   common::Error err = impl_->Info(nullptr, &cm);
-  if (err && err->isError()) {
+  if (err && err->IsError()) {
     return err;
   }
 
@@ -154,7 +154,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(pattern_result, core::C_INNER);
   NotifyProgress(sender, 50);
   common::Error er = Execute(cmd);
-  if (er && er->isError()) {
+  if (er && er->IsError()) {
     res.setErrorInfo(er);
   } else {
     core::FastoObject::childs_t rchildrens = cmd->Childrens();
@@ -167,12 +167,12 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
       }
 
       common::ArrayValue* arm = array->Array();
-      if (!arm->size()) {
+      if (!arm->GetSize()) {
         goto done;
       }
 
       std::string cursor;
-      bool isok = arm->getString(0, &cursor);
+      bool isok = arm->GetString(0, &cursor);
       if (!isok) {
         goto done;
       }
@@ -195,22 +195,22 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         goto done;
       }
 
-      for (size_t i = 0; i < ar->size(); ++i) {
+      for (size_t i = 0; i < ar->GetSize(); ++i) {
         std::string key;
-        if (ar->getString(i, &key)) {
+        if (ar->GetString(i, &key)) {
           core::NKey k(key);
           core::FastoObjectCommandIPtr cmd_ttl =
               CreateCommandFast(common::MemSPrintf("TTL %s", key), core::C_INNER);
           LOG_COMMAND(cmd_ttl);
           core::ttl_t ttl = NO_TTL;
           common::Error err = impl_->TTL(key, &ttl);
-          if (err && err->isError()) {
+          if (err && err->IsError()) {
             k.SetTTL(NO_TTL);
           } else {
             k.SetTTL(ttl);
           }
           core::NValue empty_val(
-              common::Value::createEmptyValueFromType(common::Value::TYPE_STRING));
+              common::Value::CreateEmptyValueFromType(common::Value::TYPE_STRING));
           core::NDbKValue ress(k, empty_val);
           res.keys.push_back(ress);
         }
