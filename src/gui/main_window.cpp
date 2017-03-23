@@ -224,7 +224,8 @@ MainWindow::MainWindow() : QMainWindow(), isCheckedInSession_(false) {
 
   exp_ = new ExplorerTreeWidget(this);
   VERIFY(connect(exp_, &ExplorerTreeWidget::consoleOpened, mainW, &MainWidget::openConsole));
-  VERIFY(connect(exp_, &ExplorerTreeWidget::consoleOpenedAndExecute, mainW, &MainWidget::openConsoleAndExecute));
+  VERIFY(connect(exp_, &ExplorerTreeWidget::consoleOpenedAndExecute, mainW,
+                 &MainWidget::openConsoleAndExecute));
   VERIFY(connect(exp_, &ExplorerTreeWidget::serverClosed, this, &MainWindow::closeServer,
                  Qt::DirectConnection));
   VERIFY(connect(exp_, &ExplorerTreeWidget::clusterClosed, this, &MainWindow::closeCluster,
@@ -411,7 +412,7 @@ void MainWindow::importConnection() {
 
   common::file_system::ascii_string_path wp(tmp);
   common::file_system::File writeFile(wp);
-  bool openedw = writeFile.open("wb");
+  bool openedw = writeFile.Open("wb");
   if (!openedw) {
     QMessageBox::critical(this, translations::trError, trImportSettingsFailed);
     return;
@@ -419,10 +420,10 @@ void MainWindow::importConnection() {
 
   common::file_system::ascii_string_path rp(common::ConvertToString(filepathR));
   common::file_system::File readFile(rp);
-  bool openedr = readFile.open("rb");
+  bool openedr = readFile.Open("rb");
   if (!openedr) {
-    writeFile.close();
-    common::Error err = common::file_system::remove_file(wp.path());
+    writeFile.Close();
+    common::Error err = common::file_system::remove_file(wp.Path());
     if (err && err->IsError()) {
       DNOTREACHED();
     }
@@ -432,8 +433,9 @@ void MainWindow::importConnection() {
 
   common::IEDcoder* hexEnc = common::IEDcoder::createEDCoder(common::Hex);
   if (!hexEnc) {
-    writeFile.close();
-    common::Error err = common::file_system::remove_file(wp.path());
+    readFile.Close();
+    writeFile.Close();
+    common::Error err = common::file_system::remove_file(wp.Path());
     if (err && err->IsError()) {
       DNOTREACHED();
     }
@@ -441,9 +443,9 @@ void MainWindow::importConnection() {
     return;
   }
 
-  while (!readFile.isEof()) {
+  while (!readFile.IsEof()) {
     std::string data;
-    bool res = readFile.read(&data, 256);
+    bool res = readFile.Read(&data, 256);
     if (!res) {
       break;
     }
@@ -451,19 +453,21 @@ void MainWindow::importConnection() {
     std::string edata;
     common::Error er = hexEnc->decode(data, &edata);
     if (er && er->IsError()) {
-      writeFile.close();
-      common::Error err = common::file_system::remove_file(wp.path());
+      readFile.Close();
+      writeFile.Close();
+      common::Error err = common::file_system::remove_file(wp.Path());
       if (err && err->IsError()) {
         DNOTREACHED();
       }
       QMessageBox::critical(this, translations::trError, trImportSettingsFailed);
       return;
     } else {
-      writeFile.write(edata);
+      writeFile.Write(edata);
     }
   }
 
-  writeFile.close();
+  readFile.Close();
+  writeFile.Close();
   proxy::SettingsManager::instance().ReloadFromPath(tmp, false);
   common::Error err = common::file_system::remove_file(tmp);
   if (err && err->IsError()) {
@@ -483,7 +487,7 @@ void MainWindow::exportConnection() {
 
   common::file_system::ascii_string_path wp(common::ConvertToString(filepathW));
   common::file_system::File writeFile(wp);
-  bool openedw = writeFile.open("wb");
+  bool openedw = writeFile.Open("wb");
   if (!openedw) {
     QMessageBox::critical(this, translations::trError, trExportSettingsFailed);
     return;
@@ -491,10 +495,10 @@ void MainWindow::exportConnection() {
 
   common::file_system::ascii_string_path rp(proxy::SettingsManager::SettingsFilePath());
   common::file_system::File readFile(rp);
-  bool openedr = readFile.open("rb");
+  bool openedr = readFile.Open("rb");
   if (!openedr) {
-    writeFile.close();
-    common::Error err = common::file_system::remove_file(wp.path());
+    writeFile.Close();
+    common::Error err = common::file_system::remove_file(wp.Path());
     if (err && err->IsError()) {
       DNOTREACHED();
     }
@@ -504,8 +508,9 @@ void MainWindow::exportConnection() {
 
   common::IEDcoder* hexEnc = common::IEDcoder::createEDCoder(common::Hex);
   if (!hexEnc) {
-    writeFile.close();
-    common::Error err = common::file_system::remove_file(wp.path());
+    readFile.Close();
+    writeFile.Close();
+    common::Error err = common::file_system::remove_file(wp.Path());
     if (err && err->IsError()) {
       DNOTREACHED();
     }
@@ -513,28 +518,31 @@ void MainWindow::exportConnection() {
     return;
   }
 
-  while (!readFile.isEof()) {
+  while (!readFile.IsEof()) {
     std::string data;
-    bool res = readFile.readLine(&data);
-    if (!res || readFile.isEof()) {
+    bool res = readFile.ReadLine(&data);
+    if (!res || readFile.IsEof()) {
       break;
     }
 
     std::string edata;
     common::Error er = hexEnc->encode(data, &edata);
     if (er && er->IsError()) {
-      writeFile.close();
-      common::Error err = common::file_system::remove_file(wp.path());
+      readFile.Close();
+      writeFile.Close();
+      common::Error err = common::file_system::remove_file(wp.Path());
       if (err && err->IsError()) {
         DNOTREACHED();
       }
       QMessageBox::critical(this, translations::trError, trExportSettingsFailed);
       return;
     } else {
-      writeFile.write(edata);
+      writeFile.Write(edata);
     }
   }
 
+  readFile.Close();
+  writeFile.Close();
   QMessageBox::information(this, translations::trInfo, trSettingsExportedS);
 }
 

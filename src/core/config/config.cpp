@@ -58,7 +58,7 @@ RemoteConfig::RemoteConfig(const common::net::HostAndPort& host) : BaseConfig(),
 config_args_t RemoteConfig::Args() const {
   config_args_t argv;
 
-  if (host.isValid()) {
+  if (host.IsValid()) {
     argv.push_back("-h");
     argv.push_back(host.host);
     argv.push_back("-p");

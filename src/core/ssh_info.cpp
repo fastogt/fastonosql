@@ -141,9 +141,9 @@ SSHInfo::SSHInfo(const std::string& text)
 
 bool SSHInfo::IsValid() const {
   if (current_method == PASSWORD) {
-    return host.isValid() && !user_name.empty() && !password.empty();
+    return host.IsValid() && !user_name.empty() && !password.empty();
   } else if (current_method == PUBLICKEY) {
-    return host.isValid() && !user_name.empty() && !private_key.empty();
+    return host.IsValid() && !user_name.empty() && !private_key.empty();
   } else {
     return false;
   }

@@ -141,6 +141,7 @@ IDriver::IDriver(IConnectionSettingsBaseSPtr settings)
 }
 
 IDriver::~IDriver() {
+  log_file_->Close();
   destroy(&log_file_);
 }
 
@@ -288,12 +289,12 @@ void IDriver::timerEvent(QTimerEvent* event) {
       }
     }
 
-    if (log_file_ && !log_file_->isOpened()) {
-      bool opened = log_file_->open("ab+");
+    if (log_file_ && !log_file_->IsOpened()) {
+      bool opened = log_file_->Open("ab+");
       DCHECK(opened);
     }
 
-    if (log_file_ && log_file_->isOpened()) {
+    if (log_file_ && log_file_->IsOpened()) {
       common::time64_t time = common::time::current_mstime();
       std::string stamp = createStamp(time);
       core::IServerInfo* info = nullptr;
@@ -306,9 +307,9 @@ void IDriver::timerEvent(QTimerEvent* event) {
       struct core::ServerInfoSnapShoot shot(time, core::IServerInfoSPtr(info));
       emit ServerInfoSnapShoot(shot);
 
-      log_file_->write(stamp);
-      log_file_->write(info->ToString());
-      log_file_->flush();
+      log_file_->Write(stamp);
+      log_file_->Write(info->ToString());
+      log_file_->Flush();
     }
   }
   QObject::timerEvent(event);
@@ -492,16 +493,16 @@ void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
   std::string path = settings_->LoggingPath();
   common::file_system::ascii_string_path p(path);
   common::file_system::File readFile(p);
-  if (readFile.open("rb")) {
+  if (readFile.Open("rb")) {
     events::ServerInfoHistoryResponceEvent::value_type::infos_container_type tmpInfos;
 
     common::time64_t curStamp = 0;
     common::buffer_t dataInfo;
 
-    while (!readFile.isEof()) {
+    while (!readFile.IsEof()) {
       common::buffer_t data;
-      bool res = readFile.readLine(&data);
-      if (!res || readFile.isEof()) {
+      bool res = readFile.ReadLine(&data);
+      if (!res || readFile.IsEof()) {
         if (curStamp) {
           struct core::ServerInfoSnapShoot shoot(
               curStamp, MakeServerInfoFromString(common::ConvertToString(dataInfo)));
@@ -525,6 +526,7 @@ void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
       }
     }
     res.setInfos(tmpInfos);
+    readFile.Close();
   } else {
     res.setErrorInfo(
         common::make_error_value("History file not found", common::ErrorValue::E_ERROR));
@@ -539,8 +541,8 @@ void IDriver::HandleClearServerHistoryEvent(events::ClearServerHistoryRequestEve
 
   bool ret = false;
 
-  if (log_file_ && log_file_->isOpened()) {
-    ret = log_file_->truncate(0);
+  if (log_file_ && log_file_->IsOpened()) {
+    ret = log_file_->Truncate(0);
   } else {
     std::string path = settings_->LoggingPath();
     if (common::file_system::is_file_exist(path)) {

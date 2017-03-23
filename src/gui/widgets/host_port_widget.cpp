@@ -57,7 +57,7 @@ void HostPortWidget::setHost(const common::net::HostAndPort& host) {
 
 bool HostPortWidget::isValidHost() const {
   common::net::HostAndPort hs = host();
-  return hs.isValid();
+  return hs.IsValid();
 }
 
 void HostPortWidget::retranslateUi() {}

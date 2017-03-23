@@ -72,11 +72,11 @@ bool ConnectionSettingsPath::Equals(const ConnectionSettingsPath& path) const {
 }
 
 std::string ConnectionSettingsPath::Name() const {
-  return path_.fileName();
+  return path_.FileName();
 }
 
 std::string ConnectionSettingsPath::Directory() const {
-  return path_.directory();
+  return path_.Directory();
 }
 
 std::string ConnectionSettingsPath::ToString() const {
