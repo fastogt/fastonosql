@@ -559,7 +559,8 @@ void ExplorerTreeView::openMaxClientSetDialog() {
   }
 
   bool ok;
-  QString name = common::ConvertFromString<QString>(server->Name());
+  QString name;
+  common::ConvertFromString(server->Name(), &name);
   int maxcl = QInputDialog::getInt(this, trSetMaxConnectionOnServerTemplate_1S.arg(name),
                                    trMaximumConnectionTemplate, 10000, 1, INT32_MAX, 100, &ok);
   if (ok) {
@@ -743,7 +744,8 @@ void ExplorerTreeView::shutdownServer() {
   proxy::IServerSPtr server = node->server();
   if (server && server->IsConnected()) {
     // Ask user
-    QString name = common::ConvertFromString<QString>(server->Name());
+    QString name;
+    common::ConvertFromString(server->Name(), &name);
     int answer =
         QMessageBox::question(this, translations::trShutdown, trReallyShutdownTemplate_1S.arg(name),
                               QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);

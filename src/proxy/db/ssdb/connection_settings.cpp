@@ -60,7 +60,10 @@ std::string ConnectionSettings::CommandLine() const {
 }
 
 void ConnectionSettings::SetCommandLine(const std::string& line) {
-  info_ = common::ConvertFromString<core::ssdb::Config>(line);
+  core::ssdb::Config linfo;
+  if (common::ConvertFromString(line, &linfo)) {
+    info_ = linfo;
+  }
 }
 
 core::ssdb::Config ConnectionSettings::Info() const {

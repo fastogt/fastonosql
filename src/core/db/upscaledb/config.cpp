@@ -54,8 +54,10 @@ Config parseOptions(int argc, char** argv) {
     } else if (!strcmp(argv[i], "-c")) {
       cfg.create_if_missing = true;
     } else if (!strcmp(argv[i], "-n")) {
-      cfg.dbnum = common::ConvertFromString<uint16_t>(argv[++i]);
-      ;
+      uint16_t dbnum;
+      if (common::ConvertFromString(argv[++i], &dbnum)) {
+        cfg.dbnum = dbnum;
+      }
     } else {
       if (argv[i][0] == '-') {
         const std::string buff = common::MemSPrintf(
@@ -101,17 +103,19 @@ std::string ConvertToString(const fastonosql::core::upscaledb::Config& conf) {
   return fastonosql::core::ConvertToStringConfigArgs(argv);
 }
 
-template <>
-fastonosql::core::upscaledb::Config ConvertFromString(const std::string& line) {
+bool ConvertFromString(const std::string& from, fastonosql::core::upscaledb::Config* out) {
+  if (!out) {
+    return false;
+  }
   int argc = 0;
-  sds* argv = sdssplitargslong(line.c_str(), &argc);
+  sds* argv = sdssplitargslong(from.c_str(), &argc);
   if (argv) {
-    auto cfg = fastonosql::core::upscaledb::parseOptions(argc, argv);
+    *out = fastonosql::core::upscaledb::parseOptions(argc, argv);
     sdsfreesplitres(argv, argc);
-    return cfg;
+    return true;
   }
 
-  return fastonosql::core::upscaledb::Config();
+  return false;
 }
 
 }  // namespace common

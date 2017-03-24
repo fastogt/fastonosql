@@ -125,14 +125,18 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
       hostWidget_->setHost(config.host);
       remote_->setChecked(true);
     } else {
-      pathWidget_->setPath(common::ConvertFromString<QString>(config.hostsocket));
+      QString qhostsocket;
+      common::ConvertFromString(config.hostsocket, &qhostsocket);
+      pathWidget_->setPath(qhostsocket);
       local_->setChecked(true);
     }
 
     std::string auth = config.auth;
     if (!auth.empty()) {
       useAuth_->setChecked(true);
-      passwordBox_->setText(common::ConvertFromString<QString>(auth));
+      QString qauth;
+      common::ConvertFromString(auth, &qauth);
+      passwordBox_->setText(qauth);
     } else {
       useAuth_->setChecked(false);
       passwordBox_->clear();

@@ -46,14 +46,18 @@ FastoCommonItem::FastoCommonItem(const core::NDbKValue& key,
     : TreeItem(parent, internalPointer), key_(key), delimiter_(delimiter), read_only_(isReadOnly) {}
 
 QString FastoCommonItem::key() const {
-  return common::ConvertFromString<QString>(key_.KeyString());
+  QString qkey;
+  common::ConvertFromString(key_.KeyString(), &qkey);
+  return qkey;
 }
 
 QString FastoCommonItem::value() const {
   core::NValue nval = key_.Value();
   common::Value* val = nval.get();
   std::string valstr = common::ConvertToString(val, delimiter_);
-  return common::ConvertFromString<QString>(valstr);
+  QString qvalstr;
+  common::ConvertFromString(valstr, &qvalstr);
+  return qvalstr;
 }
 
 void FastoCommonItem::setValue(core::NValue val) {
@@ -89,7 +93,8 @@ QString toJson(FastoCommonItem* item) {
     }
 
     const char* jstring = json_object_get_string(obj);
-    QString result = common::ConvertFromString<QString>(jstring);
+    QString result;
+    common::ConvertFromString(jstring, &result);
     json_object_put(obj);
     return result;
   }
@@ -135,7 +140,9 @@ QString toHex(FastoCommonItem* item) {
       return QString();
     }
 
-    return common::ConvertFromString<QString>(hexstr);
+    QString res;
+    common::ConvertFromString(hexstr, &res);
+    return res;
   }
 
   QString value;
@@ -181,7 +188,9 @@ QString fromGzip(FastoCommonItem* item) {
       return QString();
     }
 
-    return common::ConvertFromString<QString>(out);
+    QString qout;
+    common::ConvertFromString(out, &qout);
+    return qout;
   }
 
   QString value;
@@ -213,7 +222,10 @@ QString fromHexMsgPack(FastoCommonItem* item) {
     if (err && err->IsError()) {
       return QString();
     }
-    return common::ConvertFromString<QString>(upack);
+
+    QString qupack;
+    common::ConvertFromString(upack, &qupack);
+    return qupack;
   }
 
   QString value;

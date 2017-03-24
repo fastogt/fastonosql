@@ -65,8 +65,13 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
     std::string pass = config.password;
     bool is_valid_cred = !uname.empty() && !pass.empty();
     useSasl_->setChecked(is_valid_cred);
-    userPasswordWidget_->setUserName(common::ConvertFromString<QString>(uname));
-    userPasswordWidget_->setPassword(common::ConvertFromString<QString>(pass));
+    QString quname;
+    common::ConvertFromString(uname, &quname);
+    userPasswordWidget_->setUserName(quname);
+
+    QString qpass;
+    common::ConvertFromString(pass, &qpass);
+    userPasswordWidget_->setPassword(qpass);
   }
   ConnectionRemoteWidget::syncControls(memc);
 }

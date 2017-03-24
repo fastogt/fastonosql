@@ -94,17 +94,20 @@ std::string ConvertToString(const fastonosql::core::leveldb::Config& conf) {
   return fastonosql::core::ConvertToStringConfigArgs(argv);
 }
 
-template <>
-fastonosql::core::leveldb::Config ConvertFromString(const std::string& line) {
-  int argc = 0;
-  sds* argv = sdssplitargslong(line.c_str(), &argc);
-  if (argv) {
-    auto cfg = fastonosql::core::leveldb::parseOptions(argc, argv);
-    sdsfreesplitres(argv, argc);
-    return cfg;
+bool ConvertFromString(const std::string& from, fastonosql::core::leveldb::Config* out) {
+  if (!out) {
+    return false;
   }
 
-  return fastonosql::core::leveldb::Config();
+  int argc = 0;
+  sds* argv = sdssplitargslong(from.c_str(), &argc);
+  if (argv) {
+    *out = fastonosql::core::leveldb::parseOptions(argc, argv);
+    sdsfreesplitres(argv, argc);
+    return true;
+  }
+
+  return false;
 }
 
 }  // namespace common

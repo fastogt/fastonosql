@@ -70,8 +70,14 @@ const char* CommandLineHelpText(connectionTypes type);
 
 namespace common {
 std::string ConvertToString(fastonosql::core::connectionTypes t);
+bool ConvertFromString(const std::string& from, fastonosql::core::connectionTypes* out);
+
 std::string ConvertToString(fastonosql::core::serverTypes st);
+bool ConvertFromString(const std::string& from, fastonosql::core::serverTypes* out);
+
 std::string ConvertToString(fastonosql::core::serverState st);
+bool ConvertFromString(const std::string& from, fastonosql::core::serverState* out);
+
 std::string ConvertToString(fastonosql::core::serverMode md);
 std::string ConvertToString(fastonosql::core::ConnectionMode t);
 }  // namespace common

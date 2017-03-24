@@ -248,44 +248,52 @@ const std::string serverModes[] = {"Standalone", "Sentinel", "Cluster"};
 
 namespace common {
 
-template <>
-fastonosql::core::connectionTypes ConvertFromString(const std::string& text) {
-  for (size_t i = 0; i < SIZEOFMASS(connnectionType); ++i) {
-    if (text == connnectionType[i]) {
-      return static_cast<fastonosql::core::connectionTypes>(i);
-    }
-  }
-
-  NOTREACHED();
-  return fastonosql::core::REDIS;
-}
-
 std::string ConvertToString(fastonosql::core::connectionTypes t) {
   return connnectionType[t];
 }
 
-template <>
-fastonosql::core::serverTypes ConvertFromString(const std::string& text) {
-  for (size_t i = 0; i < SIZEOFMASS(serverTypes); ++i) {
-    if (text == serverTypes[i]) {
-      return static_cast<fastonosql::core::serverTypes>(i);
+bool ConvertFromString(const std::string& from, fastonosql::core::connectionTypes* out) {
+  if (!out) {
+    return false;
+  }
+
+  for (size_t i = 0; i < SIZEOFMASS(connnectionType); ++i) {
+    if (from == connnectionType[i]) {
+      *out = static_cast<fastonosql::core::connectionTypes>(i);
+      return true;
     }
   }
 
   NOTREACHED();
-  return fastonosql::core::MASTER;
+  return false;
 }
 
-template <>
-fastonosql::core::serverState ConvertFromString(const std::string& text) {
-  for (size_t i = 0; i < SIZEOFMASS(serverState); ++i) {
-    if (text == serverState[i]) {
-      return static_cast<fastonosql::core::serverState>(i);
+bool ConvertFromString(const std::string& from, fastonosql::core::serverTypes* out) {
+  if (!out) {
+    return false;
+  }
+
+  for (size_t i = 0; i < SIZEOFMASS(serverTypes); ++i) {
+    if (from == serverTypes[i]) {
+      *out = static_cast<fastonosql::core::serverTypes>(i);
+      return true;
     }
   }
 
   NOTREACHED();
-  return fastonosql::core::SUP;
+  return false;
+}
+
+bool ConvertFromString(const std::string& from, fastonosql::core::serverState* out) {
+  for (size_t i = 0; i < SIZEOFMASS(serverState); ++i) {
+    if (from == serverState[i]) {
+      *out = static_cast<fastonosql::core::serverState>(i);
+      return true;
+    }
+  }
+
+  NOTREACHED();
+  return false;
 }
 
 std::string ConvertToString(fastonosql::core::serverTypes st) {

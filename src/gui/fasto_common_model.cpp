@@ -81,7 +81,9 @@ QVariant FastoCommonModel::data(const QModelIndex& index, int role) const {
       result = node->value();
     } else if (col == FastoCommonItem::eType) {
       std::string type_str = common::Value::GetTypeName(node->type());
-      result = common::ConvertFromString<QString>(type_str);
+      QString qtype;
+      common::ConvertFromString(type_str, &qtype);
+      result = qtype;
     }
   }
 
@@ -169,14 +171,15 @@ void FastoCommonModel::changeValue(const core::NDbKValue& value) {
     return;
   }
 
-  const QString key = common::ConvertFromString<QString>(value.KeyString());
+  QString key;
+  common::ConvertFromString(value.KeyString(), &key);
   for (size_t i = 0; i < root->childrenCount(); ++i) {
     FastoCommonItem* child = dynamic_cast<FastoCommonItem*>(root->child(i));  // +
     if (!child) {
       continue;
     }
 
-    if (child->key() == key) {
+    if (child->key() == key) {  // optimize easy
       child->setValue(value.Value());
       updateItem(index(i, FastoCommonItem::eValue, QModelIndex()),
                  index(i, FastoCommonItem::eType, QModelIndex()));

@@ -115,7 +115,9 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
     std::string value;
     if (val->GetAsString(&value)) {
       QLineEdit* lineedit = static_cast<QLineEdit*>(editor);
-      lineedit->setText(common::ConvertFromString<QString>(value));
+      QString qvalue;
+      common::ConvertFromString(value, &qvalue);
+      lineedit->setText(qvalue);
     }
   } else if (t == common::Value::TYPE_ARRAY) {
     common::ArrayValue* arr = nullptr;
@@ -127,7 +129,9 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
           continue;
         }
 
-        listwidget->insertRow(common::ConvertFromString<QString>(val));
+        QString qvalue;
+        common::ConvertFromString(val, &qvalue);
+        listwidget->insertRow(qvalue);
       }
     }
   } else if (t == common::Value::TYPE_SET) {
@@ -140,7 +144,9 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
           continue;
         }
 
-        listwidget->insertRow(common::ConvertFromString<QString>(val));
+        QString qvalue;
+        common::ConvertFromString(val, &qvalue);
+        listwidget->insertRow(qvalue);
       }
     }
   } else if (t == common::Value::TYPE_ZSET) {
@@ -148,13 +154,25 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
     if (val->GetAsZSet(&zset)) {
       HashTypeWidget* hashwidget = static_cast<HashTypeWidget*>(editor);
       for (auto it = zset->begin(); it != zset->end(); ++it) {
-        auto element = (*it);
+        auto element = (*it);       
         common::Value* key = element.first;
-        common::Value* value = element.second;
-        QString ftext = common::ConvertFromString<QString>(common::ConvertToString(key, ""));
-        QString stext = common::ConvertFromString<QString>(common::ConvertToString(value, ""));
+        std::string key_str = common::ConvertToString(key, "");
+        if (key_str.empty()) {
+          continue;
+        }
 
-        hashwidget->insertRow(ftext, stext);
+        common::Value* value = element.second;
+        std::string value_str = common::ConvertToString(value, "");
+        if (value_str.empty()) {
+          continue;
+        }
+
+        QString ftext;
+        QString stext;
+        if (common::ConvertFromString(key_str, &ftext) &&
+            common::ConvertFromString(value_str, &stext)) {
+          hashwidget->insertRow(ftext, stext);
+        }
       }
     }
   } else if (t == common::Value::TYPE_HASH) {
@@ -164,11 +182,23 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
       for (auto it = hash->begin(); it != hash->end(); ++it) {
         auto element = (*it);
         common::Value* key = element.first;
-        common::Value* value = element.second;
-        QString ftext = common::ConvertFromString<QString>(common::ConvertToString(key, ""));
-        QString stext = common::ConvertFromString<QString>(common::ConvertToString(value, ""));
+        std::string key_str = common::ConvertToString(key, "");
+        if (key_str.empty()) {
+          continue;
+        }
 
-        hashwidget->insertRow(ftext, stext);
+        common::Value* value = element.second;
+        std::string value_str = common::ConvertToString(value, "");
+        if (value_str.empty()) {
+          continue;
+        }
+
+        QString ftext;
+        QString stext;
+        if (common::ConvertFromString(key_str, &ftext) &&
+            common::ConvertFromString(value_str, &stext)) {
+          hashwidget->insertRow(ftext, stext);
+        }
       }
     }
   } else {

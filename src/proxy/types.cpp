@@ -33,16 +33,20 @@ std::string ConvertToString(fastonosql::proxy::supportedViews v) {
   return fastonosql::proxy::viewsText[v];
 }
 
-template <>
-fastonosql::proxy::supportedViews ConvertFromString(const std::string& from) {
+bool ConvertFromString(const std::string& from, fastonosql::proxy::supportedViews* out) {
+  if (!out) {
+    return false;
+  }
+
   for (size_t i = 0; i < SIZEOFMASS(fastonosql::proxy::viewsText); ++i) {
     if (from == fastonosql::proxy::viewsText[i]) {
-      return static_cast<fastonosql::proxy::supportedViews>(i);
+      *out = static_cast<fastonosql::proxy::supportedViews>(i);
+      return true;
     }
   }
 
-  DNOTREACHED();
-  return fastonosql::proxy::Tree;
+  NOTREACHED();
+  return false;
 }
 
 }  // namespace common

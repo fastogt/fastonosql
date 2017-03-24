@@ -41,4 +41,5 @@ struct Config : public LocalConfig {
 
 namespace common {
 std::string ConvertToString(const fastonosql::core::upscaledb::Config& conf);
+bool ConvertFromString(const std::string& from, fastonosql::core::upscaledb::Config* out);
 }  // namespace common

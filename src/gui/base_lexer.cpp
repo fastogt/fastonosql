@@ -18,8 +18,8 @@
 
 #include "gui/base_lexer.h"
 
-#include <common/convert2string.h>  // for ConvertFromString
-#include <common/macros.h>          // for UNUSED, CHECK
+#include <common/qt/convert2string.h>  // for ConvertFromString
+#include <common/macros.h>             // for UNUSED, CHECK
 
 #include "core/command_info.h"  // for CommandInfo, etc
 #include "core/command_holder.h"
@@ -60,7 +60,8 @@ void BaseQsciApiCommandHolder::updateAutoCompletionList(const QStringList& conte
         continue;
       }
 
-      QString jval = common::ConvertFromString<QString>(cmd.name);
+      QString jval;
+      common::ConvertFromString(cmd.name, &jval);
       if (jval.startsWith(val, Qt::CaseInsensitive)) {
         list.append(jval + "?1");
       }
@@ -81,7 +82,8 @@ QStringList BaseQsciApiCommandHolder::callTips(const QStringList& context,
     for (size_t i = 0; i < commands_.size(); ++i) {
       core::CommandInfo cmd = commands_[i];
 
-      QString jval = common::ConvertFromString<QString>(cmd.name);
+      QString jval;
+      common::ConvertFromString(cmd.name, &jval);
       if (QString::compare(jval, val, Qt::CaseInsensitive) == 0) {
         return QStringList() << makeCallTip(cmd);
       }
@@ -173,7 +175,8 @@ void BaseQsciLexerCommandHolder::styleText(int start, int end) {
 void BaseQsciLexerCommandHolder::paintCommands(const QString& source, int start) {
   for (size_t i = 0; i < commands_.size(); ++i) {
     core::CommandInfo cmd = commands_[i];
-    QString word = common::ConvertFromString<QString>(cmd.name);
+    QString word;
+    common::ConvertFromString(cmd.name, &word);
     int index = 0;
     int begin = 0;
     while ((begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1) {
@@ -188,13 +191,14 @@ void BaseQsciLexerCommandHolder::paintCommands(const QString& source, int start)
 
 QString makeCallTip(const core::CommandInfo& info) {
   std::string since_str = core::ConvertVersionNumberToReadableString(info.since);
-  QString qsince_str = common::ConvertFromString<QString>(since_str);
-  return QString(
-             "Arguments: %1\nSummary: %2\nSince: "
-             "%3\nExample: %4")
-      .arg(common::ConvertFromString<QString>(info.params),
-           common::ConvertFromString<QString>(info.summary), qsince_str,
-           common::ConvertFromString<QString>(info.example));
+
+  std::string res = common::MemSPrintf(
+      "Arguments: %s\nSummary: %s\nSince: "
+      "%s\nExample: %s",
+      info.params, info.summary, since_str, info.example);
+  QString qres;
+  common::ConvertFromString(res, &qres);
+  return qres;
 }
 
 }  // namespace gui

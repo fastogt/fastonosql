@@ -25,7 +25,8 @@
 #include <vector>  // for vector
 
 #include <common/convert2string.h>  // for ConvertFromString
-#include <common/macros.h>          // for DNOTREACHED
+#include <common/qt/convert2string.h>
+#include <common/macros.h>  // for DNOTREACHED
 
 #include "core/connection_types.h"  // for ConvertToString, etc
 
@@ -37,9 +38,14 @@ namespace gui {
 DirectoryListWidgetItem::DirectoryListWidgetItem(const proxy::connection_path_t& path)
     : path_(path) {
   std::string dir_name = path.Name();
-  setText(0, common::ConvertFromString<QString>(dir_name));
+  QString qdir_name;
+  if (common::ConvertFromString(dir_name, &qdir_name)) {
+    setText(0, qdir_name);
+  }
   setIcon(0, GuiFactory::instance().directoryIcon());
-  setText(1, common::ConvertFromString<QString>(path_.Directory()));
+  if (common::ConvertFromString(path_.Directory(), &qdir_name)) {
+    setText(1, qdir_name);
+  }
 }
 
 proxy::connection_path_t DirectoryListWidgetItem::path() const {
@@ -67,12 +73,15 @@ void ConnectionListWidgetItem::setConnection(proxy::IConnectionSettingsBaseSPtr 
   }
 
   proxy::connection_path_t path = cons->Path();
-  QString conName = common::ConvertFromString<QString>(path.Name());
-
-  setText(0, conName);
+  QString conName;
+  if (common::ConvertFromString(path.Name(), &conName)) {
+    setText(0, conName);
+  }
   core::connectionTypes conType = cons->Type();
   setIcon(0, GuiFactory::instance().icon(conType));
-  setText(1, common::ConvertFromString<QString>(cons->FullAddress()));
+  if (common::ConvertFromString(cons->FullAddress(), &conName)) {
+    setText(1, conName);
+  }
   IConnectionListWidgetItem::setConnection(cons);
 }
 
@@ -96,9 +105,15 @@ ConnectionListWidgetItemDiscovered::ConnectionListWidgetItemDiscovered(
     QTreeWidgetItem* parent)
     : ConnectionListWidgetItem(parent), info_(info) {
   std::string stype = common::ConvertToString(info_.type);
-  setText(2, common::ConvertFromString<QString>(stype));
-  std::string sstate = common::ConvertToString(info_.state);
-  setText(3, common::ConvertFromString<QString>(sstate));
+  QString qstype;
+  if (common::ConvertFromString(stype, &qstype)) {
+    setText(2, qstype);
+  }
+  std::string sstate = common::ConvertToString(info_.state); 
+  QString qsstate;
+  if (common::ConvertFromString(sstate, &qsstate)) {
+    setText(3, qsstate);
+  }
 }
 
 IConnectionListWidgetItem::itemConnectionType ConnectionListWidgetItemDiscovered::type() const {
@@ -135,7 +150,10 @@ void SentinelConnectionListWidgetItemContainer::setConnection(
 
   connection_ = cons;
   std::string path = connection_->Path().ToString();
-  setText(0, common::ConvertFromString<QString>(path));
+  QString qpath;
+  if (common::ConvertFromString(path, &qpath)) {
+    setText(0, qpath);
+  }
   setIcon(0, GuiFactory::instance().sentinelIcon());
 }
 
@@ -165,7 +183,10 @@ void ClusterConnectionListWidgetItemContainer::setConnection(proxy::IClusterSett
 
   connection_ = cons;
   std::string path = connection_->Path().ToString();
-  setText(0, common::ConvertFromString<QString>(path));
+  QString qpath;
+  if (common::ConvertFromString(path, &qpath)) {
+    setText(0, qpath);
+  }
   setIcon(0, GuiFactory::instance().clusterIcon());
 }
 

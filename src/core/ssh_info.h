@@ -63,5 +63,10 @@ inline bool operator==(const SSHInfo& r, const SSHInfo& l) {
 
 namespace common {
 std::string ConvertToString(const fastonosql::core::SSHInfo& ssh_info);
+bool ConvertFromString(const std::string& from, fastonosql::core::SSHInfo* out);
+
 std::string ConvertToString(fastonosql::core::SSHInfo::SupportedAuthenticationMetods method);
+bool ConvertFromString(const std::string& from,
+                       fastonosql::core::SSHInfo::SupportedAuthenticationMetods* out);
+
 }  // namespace common

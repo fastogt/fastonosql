@@ -164,15 +164,24 @@ void ConnectionBaseWidget::setConnectionName(const QString& name) {
 void ConnectionBaseWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
   if (connection) {
     proxy::connection_path_t path = connection->Path();
-    setConnectionName(common::ConvertFromString<QString>(path.Name()));
+    QString qname;
+    if (common::ConvertFromString(path.Name(), &qname)) {
+      setConnectionName(qname);
+    }
 
     std::string ns_separator = connection->NsSeparator();
     std::string delemitr = connection->Delimiter();
-    namespaceSeparator_->setCurrentText(
-        StableCommandLine(common::ConvertFromString<QString>(ns_separator)));
-    delimiter_->setCurrentText(StableCommandLine(common::ConvertFromString<QString>(delemitr)));
+    QString qns_separator;
+    common::ConvertFromString(ns_separator, &qns_separator);
+    namespaceSeparator_->setCurrentText(StableCommandLine(qns_separator));
+    QString qdelemitr;
+    common::ConvertFromString(delemitr, &qdelemitr);
+    delimiter_->setCurrentText(qdelemitr);
 
-    setUIFolderText(common::ConvertFromString<QString>(path.Directory()));
+    QString qdir;
+    common::ConvertFromString(path.Directory(), &qdir);
+
+    setUIFolderText(qdir);
     setLogging(connection->IsHistoryEnabled());
     setLoggingInterval(connection->LoggingMsTimeInterval());
   }

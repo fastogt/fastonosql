@@ -132,12 +132,12 @@ BaseQsciLexer* BaseShell::lexer() const {
 
 QString BaseShell::version() const {
   BaseQsciLexer* lex = lexer();
-  return common::ConvertFromString<QString>(lex->version());
+  return QString(lex->version());
 }
 
 QString BaseShell::basedOn() const {
   BaseQsciLexer* lex = lexer();
-  return common::ConvertFromString<QString>(lex->basedOn());
+  return QString(lex->basedOn());
 }
 
 std::vector<uint32_t> BaseShell::supportedVersions() const {

@@ -701,7 +701,12 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
     }
   }
 
-  *cursor_out = common::ConvertFromString<uint64_t>(cursor_out_str);
+  uint64_t lcursor_out;
+  if (!common::ConvertFromString(cursor_out_str, &lcursor_out)) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  *cursor_out = lcursor_out;
   delete val;
   freeReplyObject(reply);
   return common::Error();
@@ -742,7 +747,11 @@ common::Error DBConnection::FlushDBImpl() {
 }
 
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
-  int num = common::ConvertFromString<int>(name);
+  int num;
+  if (!common::ConvertFromString(name, &num)) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
   redisReply* reply =
       reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "SELECT %d", num));
   if (!reply) {

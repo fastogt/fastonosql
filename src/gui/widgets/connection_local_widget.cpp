@@ -48,7 +48,8 @@ void ConnectionLocalWidget::syncControls(proxy::IConnectionSettingsBase* connect
   proxy::IConnectionSettingsLocal* local =
       static_cast<proxy::IConnectionSettingsLocal*>(connection);
   if (local) {
-    QString db_path = common::ConvertFromString<QString>(local->DBPath());
+    QString db_path;
+    common::ConvertFromString(local->DBPath(), &db_path);
     pathWidget_->setPath(db_path);
   }
   ConnectionBaseWidget::syncControls(local);

@@ -53,26 +53,34 @@ std::string ConvertToString(const fastonosql::core::SSHInfo& ssh_info) {
          MARKER CURMETHOD_FIELD ":" + common::ConvertToString(ssh_info.current_method) + MARKER;
 }
 
-template <>
-fastonosql::core::SSHInfo ConvertFromString(const std::string& text) {
-  return fastonosql::core::SSHInfo(text);
+bool ConvertFromString(const std::string& from, fastonosql::core::SSHInfo* out) {
+  if (!out) {
+    return false;
+  }
+
+  *out = fastonosql::core::SSHInfo(from);
+  return true;
 }
 
 std::string ConvertToString(fastonosql::core::SSHInfo::SupportedAuthenticationMetods method) {
   return sshMethods[method];
 }
 
-template <>
-fastonosql::core::SSHInfo::SupportedAuthenticationMetods ConvertFromString(
-    const std::string& text) {
+bool ConvertFromString(const std::string& from,
+                       fastonosql::core::SSHInfo::SupportedAuthenticationMetods* out) {
+  if (!out) {
+    return false;
+  }
+
   for (size_t i = 0; i < SIZEOFMASS(sshMethods); ++i) {
-    if (text == sshMethods[i]) {
-      return static_cast<fastonosql::core::SSHInfo::SupportedAuthenticationMetods>(i);
+    if (from == sshMethods[i]) {
+      *out = static_cast<fastonosql::core::SSHInfo::SupportedAuthenticationMetods>(i);
+      return true;
     }
   }
 
   NOTREACHED();
-  return fastonosql::core::SSHInfo::UNKNOWN;
+  return false;
 }
 
 }  // namespace common
@@ -120,7 +128,10 @@ SSHInfo::SSHInfo(const std::string& text)
       std::string field = line.substr(0, delem);
       std::string value = line.substr(delem + 1);
       if (field == HOST_FIELD) {
-        host = common::ConvertFromString<common::net::HostAndPort>(value);
+        common::net::HostAndPort lhost;
+        if (common::ConvertFromString(value, &lhost)) {
+          host = lhost;
+        }
       } else if (field == USER_FIELD) {
         user_name = value;
       } else if (field == PASSWORD_FIELD) {
@@ -132,7 +143,10 @@ SSHInfo::SSHInfo(const std::string& text)
       } else if (field == PASSPHRASE_FIELD) {
         passphrase = value;
       } else if (field == CURMETHOD_FIELD) {
-        current_method = common::ConvertFromString<SupportedAuthenticationMetods>(value);
+        SupportedAuthenticationMetods lcurrent_method;
+        if (common::ConvertFromString(value, &lcurrent_method)) {
+          current_method = lcurrent_method;
+        }
       }
     }
     start = pos + sizeof(MARKER) - 1;

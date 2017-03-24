@@ -42,4 +42,5 @@ struct Config : public RemoteConfig {
 
 namespace common {
 std::string ConvertToString(const fastonosql::core::redis::Config& conf);
+bool ConvertFromString(const std::string& from, fastonosql::core::redis::Config* out);
 }  // namespace common

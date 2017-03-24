@@ -227,7 +227,10 @@ void PubSubDialog::subscribeInNewConsole() {
     return;
   }
 
-  emit consoleOpenedAndExecute(server_, common::ConvertFromString<QString>(cmd_str));
+  QString text;
+  if (common::ConvertFromString(cmd_str, &text)) {
+    emit consoleOpenedAndExecute(server_, text);
+  }
 }
 
 QModelIndex PubSubDialog::selectedIndex() const {

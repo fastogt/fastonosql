@@ -156,21 +156,41 @@ common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) 
     int pos = 0;
     while (p2) {
       switch (pos++) {
-        case 0:
-          lstats.compactions_level = common::ConvertFromString<uint32_t>(p2);
+        case 0: {
+          uint32_t lv;
+          if (common::ConvertFromString(p2, &lv)) {
+            lstats.compactions_level = lv;
+          }
           break;
-        case 1:
-          lstats.file_size_mb = common::ConvertFromString<uint32_t>(p2);
+        }
+        case 1: {
+          uint32_t file_size_mb;
+          if (common::ConvertFromString(p2, &file_size_mb)) {
+            lstats.file_size_mb = file_size_mb;
+          }
           break;
-        case 2:
-          lstats.time_sec = common::ConvertFromString<uint32_t>(p2);
+        }
+        case 2: {
+          uint32_t time_sec;
+          if (common::ConvertFromString(p2, &time_sec)) {
+            lstats.time_sec = time_sec;
+          }
           break;
-        case 3:
-          lstats.read_mb = common::ConvertFromString<uint32_t>(p2);
+        }
+        case 3: {
+          uint32_t read_mb;
+          if (common::ConvertFromString(p2, &read_mb)) {
+            lstats.read_mb = read_mb;
+          }
           break;
-        case 4:
-          lstats.write_mb = common::ConvertFromString<uint32_t>(p2);
+        }
+        case 4: {
+          uint32_t write_mb;
+          if (common::ConvertFromString(p2, &write_mb)) {
+            lstats.read_mb = write_mb;
+          }
           break;
+        }
         default:
           break;
       }

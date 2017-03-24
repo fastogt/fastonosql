@@ -18,8 +18,7 @@
 
 #include "gui/widgets/main_widget.h"
 
-#include <common/convert2string.h>
-
+#include <common/qt/convert2string.h>
 #include <common/convert2string.h>  // for ConvertFromString
 #include <common/macros.h>          // for VERIFY, DNOTREACHED
 
@@ -67,7 +66,8 @@ void MainWidget::openConsole(proxy::IServerSPtr server, const QString& text) {
   }
 
   QueryWidget* queryWidget = new QueryWidget(server);
-  QString name = common::ConvertFromString<QString>(server->Name());
+  QString name;
+  common::ConvertFromString(server->Name(), &name);
   addWidgetToTab(queryWidget, name);
   queryWidget->setInputText(text);
 }
@@ -79,7 +79,8 @@ void MainWidget::openConsoleAndExecute(proxy::IServerSPtr server, const QString&
   }
 
   QueryWidget* queryWidget = new QueryWidget(server);
-  QString name = common::ConvertFromString<QString>(server->Name());
+  QString name;
+  common::ConvertFromString(server->Name(), &name);
   addWidgetToTab(queryWidget, name);
   queryWidget->execute(text);
 }

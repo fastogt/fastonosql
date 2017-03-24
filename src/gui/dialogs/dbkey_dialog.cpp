@@ -87,8 +87,10 @@ DbKeyDialog::DbKeyDialog(const QString& title,
     if (kt == t) {
       current_index = i;
     }
-    QString type = common::ConvertFromString<QString>(common::Value::GetTypeName(t));
-    typesCombo_->addItem(GuiFactory::instance().icon(t), type, t);
+    QString type;
+    if (common::ConvertFromString(common::Value::GetTypeName(t), &type)) {
+      typesCombo_->addItem(GuiFactory::instance().icon(t), type, t);
+    }
   }
 
   typedef void (QComboBox::*ind)(int);
@@ -142,7 +144,10 @@ DbKeyDialog::DbKeyDialog(const QString& title,
   layout->addWidget(buttonBox);
 
   if (is_edit) {
-    keyEdit_->setText(common::ConvertFromString<QString>(key_.KeyString()));
+    QString qkey;
+    if (common::ConvertFromString(key_.KeyString(), &qkey)) {
+      keyEdit_->setText(qkey);
+    }
     keyEdit_->setEnabled(false);
   }
   typesCombo_->setCurrentIndex(current_index);
@@ -223,7 +228,10 @@ void DbKeyDialog::syncControls(common::Value* item) {
           continue;
         }
 
-        valueListEdit_->insertRow(common::ConvertFromString<QString>(val));
+        QString qval;
+        if (common::ConvertFromString(val, &qval)) {
+          valueListEdit_->insertRow(qval);
+        }
       }
     }
   } else if (t == common::Value::TYPE_SET) {
@@ -235,7 +243,10 @@ void DbKeyDialog::syncControls(common::Value* item) {
           continue;
         }
 
-        valueListEdit_->insertRow(common::ConvertFromString<QString>(val));
+        QString qval;
+        if (common::ConvertFromString(val, &qval)) {
+          valueListEdit_->insertRow(qval);
+        }
       }
     }
   } else if (t == common::Value::TYPE_ZSET) {
@@ -244,11 +255,23 @@ void DbKeyDialog::syncControls(common::Value* item) {
       for (auto it = zset->begin(); it != zset->end(); ++it) {
         auto element = (*it);
         common::Value* key = element.first;
-        common::Value* value = element.second;
-        QString ftext = common::ConvertFromString<QString>(common::ConvertToString(key, ""));
-        QString stext = common::ConvertFromString<QString>(common::ConvertToString(value, ""));
+        std::string key_str = common::ConvertToString(key, "");
+        if (key_str.empty()) {
+          continue;
+        }
 
-        valueTableEdit_->insertRow(ftext, stext);
+        common::Value* value = element.second;
+        std::string value_str = common::ConvertToString(value, "");
+        if (value_str.empty()) {
+          continue;
+        }
+
+        QString ftext;
+        QString stext;
+        if (common::ConvertFromString(key_str, &ftext) &&
+            common::ConvertFromString(value_str, &stext)) {
+          valueTableEdit_->insertRow(ftext, stext);
+        }
       }
     }
   } else if (t == common::Value::TYPE_HASH) {
@@ -257,11 +280,23 @@ void DbKeyDialog::syncControls(common::Value* item) {
       for (auto it = hash->begin(); it != hash->end(); ++it) {
         auto element = (*it);
         common::Value* key = element.first;
-        common::Value* value = element.second;
-        QString ftext = common::ConvertFromString<QString>(common::ConvertToString(key, ""));
-        QString stext = common::ConvertFromString<QString>(common::ConvertToString(value, ""));
+        std::string key_str = common::ConvertToString(key, "");
+        if (key_str.empty()) {
+          continue;
+        }
 
-        valueTableEdit_->insertRow(ftext, stext);
+        common::Value* value = element.second;
+        std::string value_str = common::ConvertToString(value, "");
+        if (value_str.empty()) {
+          continue;
+        }
+
+        QString ftext;
+        QString stext;
+        if (common::ConvertFromString(key_str, &ftext) &&
+            common::ConvertFromString(value_str, &stext)) {
+          valueTableEdit_->insertRow(ftext, stext);
+        }
       }
     }
   } else if (t == common::Value::TYPE_BOOLEAN) {
@@ -272,7 +307,10 @@ void DbKeyDialog::syncControls(common::Value* item) {
   } else {
     std::string text;
     if (item->GetAsString(&text)) {
-      valueEdit_->setText(common::ConvertFromString<QString>(text));
+      QString qval;
+      if (common::ConvertFromString(text, &qval)) {
+        valueEdit_->setText(qval);
+      }
     }
   }
 }

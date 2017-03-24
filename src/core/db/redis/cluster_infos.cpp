@@ -65,7 +65,10 @@ common::Error MakeServerCommonInfoFromLine(const std::string& line,
           break;
         }
         case 1: {
-          linfo.host = common::ConvertFromString<common::net::HostAndPortAndSlot>(word);
+          common::net::HostAndPortAndSlot hs;
+          if (common::ConvertFromString(word, &hs)) {
+            linfo.host = hs;
+          }
           break;
         }
         case 2: {

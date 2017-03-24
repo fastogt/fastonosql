@@ -165,9 +165,11 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server,
   savebar->addAction(stopAction_);
 
   core::ConnectionMode mode = core::InteractiveMode;
-  connectionMode_ = new common::qt::gui::IconLabel(
-      gui::GuiFactory::instance().modeIcon(mode),
-      common::ConvertFromString<QString>(common::ConvertToString(mode)), iconSize);
+  std::string mode_str = common::ConvertToString(mode);
+  QString qmode_str;
+  common::ConvertFromString(mode_str, &qmode_str);
+  connectionMode_ = new common::qt::gui::IconLabel(gui::GuiFactory::instance().modeIcon(mode),
+                                                   qmode_str, iconSize);
 
   hlayout->addWidget(savebar);
   hlayout->addWidget(new QSplitter(Qt::Horizontal));
@@ -256,8 +258,9 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server,
   for (size_t i = 0; i < versions.size(); ++i) {
     uint32_t cur = versions[i];
     std::string curVers = core::ConvertVersionNumberToReadableString(cur);
-    commandsVersionApi_->addItem(gui::GuiFactory::instance().unknownIcon(),
-                                 common::ConvertFromString<QString>(curVers), cur);
+    QString qcurVers;
+    common::ConvertFromString(curVers, &qcurVers);
+    commandsVersionApi_->addItem(gui::GuiFactory::instance().unknownIcon(), qcurVers, cur);
     commandsVersionApi_->setCurrentIndex(i);
   }
   apilayout->addWidget(new QLabel(trCommandsVersion));
@@ -351,9 +354,10 @@ bool BaseShellWidget::loadFromFile(const QString& path) {
     QString out;
     common::Error err = common::qt::LoadFromFileText(filepath, &out);
     if (err && err->IsError()) {
+      QString qdesc;
+      common::ConvertFromString(err->Description(), &qdesc);
       QMessageBox::critical(this, translations::trError,
-                            trCantReadTemplate_2S.arg(
-                                filepath, common::ConvertFromString<QString>(err->Description())));
+                            trCantReadTemplate_2S.arg(filepath, qdesc));
       return false;
     }
 
@@ -374,9 +378,9 @@ void BaseShellWidget::saveToFileAs() {
 
   common::Error err = common::qt::SaveToFileText(filepath, text());
   if (err && err->IsError()) {
-    QMessageBox::critical(this, translations::trError,
-                          trCantSaveTemplate_2S.arg(
-                              filepath, common::ConvertFromString<QString>(err->Description())));
+    QString qdesc;
+    common::ConvertFromString(err->Description(), &qdesc);
+    QMessageBox::critical(this, translations::trError, trCantSaveTemplate_2S.arg(filepath, qdesc));
     return;
   }
 
@@ -399,9 +403,10 @@ void BaseShellWidget::saveToFile() {
   } else {
     common::Error err = common::qt::SaveToFileText(filePath_, text());
     if (err && err->IsError()) {
+      QString qdesc;
+      common::ConvertFromString(err->Description(), &qdesc);
       QMessageBox::critical(this, translations::trError,
-                            trCantSaveTemplate_2S.arg(
-                                filePath_, common::ConvertFromString<QString>(err->Description())));
+                            trCantSaveTemplate_2S.arg(filePath_, qdesc));
     }
   }
 }
@@ -460,7 +465,9 @@ void BaseShellWidget::enterMode(const proxy::events_info::EnterModeInfo& res) {
   core::ConnectionMode mode = res.mode;
   connectionMode_->setIcon(gui::GuiFactory::instance().modeIcon(mode), iconSize);
   std::string modeText = common::ConvertToString(mode);
-  connectionMode_->setText(common::ConvertFromString<QString>(modeText));
+  QString qmodeText;
+  common::ConvertFromString(modeText, &qmodeText);
+  connectionMode_->setText(qmodeText);
 }
 
 void BaseShellWidget::leaveMode(const proxy::events_info::LeaveModeInfo& res) {
@@ -528,7 +535,8 @@ void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
     proxy::IServerLocal* lserver = dynamic_cast<proxy::IServerLocal*>(server_.get());  // +
     server_label = lserver->Path();
   }
-  QString qserver_label = common::ConvertFromString<QString>(server_label);
+  QString qserver_label;
+  common::ConvertFromString(server_label, &qserver_label);
   serverName_->setText(qserver_label);
 
   uint32_t serv_vers = inf->Version();
@@ -566,7 +574,9 @@ void BaseShellWidget::updateDefaultDatabase(core::IDataBaseInfoSPtr dbs) {
   }
 
   std::string name = dbs->Name();
-  dbName_->setText(common::ConvertFromString<QString>(name));
+  QString qname;
+  common::ConvertFromString(name, &qname);
+  dbName_->setText(qname);
 }
 
 void BaseShellWidget::syncConnectionActions() {

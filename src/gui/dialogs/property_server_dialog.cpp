@@ -30,6 +30,7 @@
 #include <common/macros.h>          // for VERIFY, UNUSED, CHECK
 #include <common/value.h>           // for ErrorValue
 
+#include <common/qt/convert2string.h>    // for ConvertFromString
 #include <common/qt/gui/glass_widget.h>  // for GlassWidget
 
 #include "core/connection_types.h"  // for connectionTypes::REDIS
@@ -149,8 +150,10 @@ void PropertyServerDialog::showEvent(QShowEvent* e) {
 }
 
 void PropertyServerDialog::retranslateUi() {
-  QString name = common::ConvertFromString<QString>(server_->Name());
-  setWindowTitle(trPropertiesTemplate_1S.arg(name));
+  QString name;
+  if (common::ConvertFromString(server_->Name(), &name)) {
+    setWindowTitle(trPropertiesTemplate_1S.arg(name));
+  }
 }
 
 }  // namespace gui

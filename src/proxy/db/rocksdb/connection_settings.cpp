@@ -68,7 +68,10 @@ std::string ConnectionSettings::CommandLine() const {
 }
 
 void ConnectionSettings::SetCommandLine(const std::string& line) {
-  info_ = common::ConvertFromString<core::rocksdb::Config>(line);
+  core::rocksdb::Config linfo;
+  if (common::ConvertFromString(line, &linfo)) {
+    info_ = linfo;
+  }
 }
 
 ConnectionSettings* ConnectionSettings::Clone() const {

@@ -52,7 +52,10 @@ Config parseOptions(int argc, char** argv) {
     if (!strcmp(argv[i], "-h") && !lastarg) {
       cfg.host.host = argv[++i];
     } else if (!strcmp(argv[i], "-p") && !lastarg) {
-      cfg.host.port = common::ConvertFromString<uint16_t>(argv[++i]);
+      uint16_t lport;
+      if (common::ConvertFromString(argv[++i], &lport)) {
+        cfg.host.port = lport;
+      }
     } else if (!strcmp(argv[i], "-u") && !lastarg) {
       cfg.user = argv[++i];
     } else if (!strcmp(argv[i], "-a") && !lastarg) {
@@ -108,17 +111,20 @@ std::string ConvertToString(const fastonosql::core::memcached::Config& conf) {
   return fastonosql::core::ConvertToStringConfigArgs(argv);
 }
 
-template <>
-fastonosql::core::memcached::Config ConvertFromString(const std::string& line) {
-  int argc = 0;
-  sds* argv = sdssplitargslong(line.c_str(), &argc);
-  if (argv) {
-    auto cfg = fastonosql::core::memcached::parseOptions(argc, argv);
-    sdsfreesplitres(argv, argc);
-    return cfg;
+bool ConvertFromString(const std::string& from, fastonosql::core::memcached::Config* out) {
+  if (!out) {
+    return false;
   }
 
-  return fastonosql::core::memcached::Config();
+  int argc = 0;
+  sds* argv = sdssplitargslong(from.c_str(), &argc);
+  if (argv) {
+    *out= fastonosql::core::memcached::parseOptions(argc, argv);
+    sdsfreesplitres(argv, argc);
+    return true;
+  }
+
+  return false;
 }
 
 }  // namespace common

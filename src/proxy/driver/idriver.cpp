@@ -87,7 +87,10 @@ bool getStamp(common::buffer_t stamp, common::time64_t* time_out) {
     stamp.pop_back();
   }
 
-  common::time64_t ltime_out = common::ConvertFromBytes<common::time64_t>(stamp);
+  common::time64_t ltime_out;
+  if (!common::ConvertFromBytes(stamp, &ltime_out)) {
+    return false;
+  }
   *time_out = ltime_out;
   return ltime_out != 0;
 }
@@ -242,8 +245,7 @@ void IDriver::customEvent(QEvent* event) {
     events::ChangeServerPropertyInfoRequestEvent* ev =
         static_cast<events::ChangeServerPropertyInfoRequestEvent*>(event);
     HandleServerPropertyChangeEvent(ev);  // ni
-  } else if (type ==
-             static_cast<QEvent::Type>(events::LoadServerChannelsRequestEvent::EventType)) {
+  } else if (type == static_cast<QEvent::Type>(events::LoadServerChannelsRequestEvent::EventType)) {
     events::LoadServerChannelsRequestEvent* ev =
         static_cast<events::LoadServerChannelsRequestEvent*>(event);
     HandleLoadServerChannelsRequestEvent(ev);  // ni

@@ -59,7 +59,10 @@ void ConnectionSettings::SetHost(const common::net::HostAndPort& host) {
 }
 
 void ConnectionSettings::SetCommandLine(const std::string& line) {
-  info_ = common::ConvertFromString<core::redis::Config>(line);
+  core::redis::Config lifo;
+  if (common::ConvertFromString(line, &lifo)) {
+    info_ = lifo;
+  }
 }
 
 std::string ConnectionSettings::CommandLine() const {

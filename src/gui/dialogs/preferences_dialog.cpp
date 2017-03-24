@@ -122,7 +122,10 @@ PreferencesDialog::PreferencesDialog(QWidget* parent) : QDialog(parent) {
   defaultViewComboBox_ = new QComboBox;
   for (size_t i = 0; i < SIZEOFMASS(proxy::viewsText); ++i) {
     std::string vstr = proxy::viewsText[i];
-    defaultViewComboBox_->addItem(common::ConvertFromString<QString>(vstr), static_cast<int>(i));
+    QString qstr;
+    if (common::ConvertFromString(vstr, &qstr)) {
+      defaultViewComboBox_->addItem(qstr, static_cast<int>(i));
+    }
   }
   generalLayout->addWidget(defaultViewLabel_, 5, 0);
   generalLayout->addWidget(defaultViewComboBox_, 5, 1);
@@ -189,7 +192,10 @@ void PreferencesDialog::syncWithSettings() {
   fontSizeSpinBox_->setValue(cf.pointSize());
   proxy::supportedViews v = proxy::SettingsManager::instance().DefaultView();
   std::string vstr = proxy::viewsText[v];
-  defaultViewComboBox_->setCurrentText(common::ConvertFromString<QString>(vstr));
+  QString qstr;
+  if (common::ConvertFromString(vstr, &qstr)) {
+    defaultViewComboBox_->setCurrentText(qstr);
+  }
   logDirPath_->setText(proxy::SettingsManager::instance().LoggingDirectory());
   autoOpenConsole_->setChecked(proxy::SettingsManager::instance().AutoOpenConsole());
   fastViewKeys_->setChecked(proxy::SettingsManager::instance().FastViewKeys());

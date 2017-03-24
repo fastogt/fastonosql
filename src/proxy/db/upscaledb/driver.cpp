@@ -181,7 +181,10 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         goto done;
       }
 
-      res.cursor_out = common::ConvertFromString<uint64_t>(cursor);
+      uint64_t lcursor;
+      if (common::ConvertFromString(cursor, &lcursor)) {
+        res.cursor_out = lcursor;
+      }
 
       rchildrens = array->Childrens();
       if (!rchildrens.size()) {

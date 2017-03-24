@@ -51,11 +51,17 @@ Config parseOptions(int argc, char** argv) {
     if (!strcmp(argv[i], "-h") && !lastarg) {
       cfg.host.host = argv[++i];
     } else if (!strcmp(argv[i], "-p") && !lastarg) {
-      cfg.host.port = common::ConvertFromString<uint16_t>(argv[++i]);
+      uint16_t lport;
+      if (common::ConvertFromString(std::string(argv[++i]), &lport)) {
+        cfg.host.port = lport;
+      }
     } else if (!strcmp(argv[i], "-s") && !lastarg) {
       cfg.hostsocket = argv[++i];
     } else if (!strcmp(argv[i], "-n") && !lastarg) {
-      cfg.dbnum = common::ConvertFromString<int>(argv[++i]);
+      int ldbnum;
+      if (common::ConvertFromString(std::string(argv[++i]), &ldbnum)) {
+        cfg.dbnum = ldbnum;
+      }
     } else if (!strcmp(argv[i], "-a") && !lastarg) {
       cfg.auth = argv[++i];
     } else if (!strcmp(argv[i], "-d") && !lastarg) {
@@ -114,17 +120,20 @@ std::string ConvertToString(const fastonosql::core::redis::Config& conf) {
   return fastonosql::core::ConvertToStringConfigArgs(argv);
 }
 
-template <>
-fastonosql::core::redis::Config ConvertFromString(const std::string& line) {
-  int argc = 0;
-  sds* argv = sdssplitargslong(line.c_str(), &argc);
-  if (argv) {
-    auto cfg = fastonosql::core::redis::parseOptions(argc, argv);
-    sdsfreesplitres(argv, argc);
-    return cfg;
+bool ConvertFromString(const std::string& from, fastonosql::core::redis::Config* out) {
+  if (!out) {
+    return false;
   }
 
-  return fastonosql::core::redis::Config();
+  int argc = 0;
+  sds* argv = sdssplitargslong(from.c_str(), &argc);
+  if (argv) {
+    *out = fastonosql::core::redis::parseOptions(argc, argv);
+    sdsfreesplitres(argv, argc);
+    return true;
+  }
+
+  return false;
 }
 
 }  // namespace common

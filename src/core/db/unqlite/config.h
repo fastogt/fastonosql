@@ -49,4 +49,5 @@ struct Config : public LocalConfig {
 
 namespace common {
 std::string ConvertToString(const fastonosql::core::unqlite::Config& conf);
+bool ConvertFromString(const std::string& from, fastonosql::core::unqlite::Config* out);
 }

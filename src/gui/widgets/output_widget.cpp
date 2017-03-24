@@ -117,7 +117,8 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent)
   tableView_->horizontalHeader()->setStretchLastSection(false);
   tableView_->setItemDelegateForColumn(FastoCommonItem::eValue, new TypeDelegate(this));
 
-  QString delimiter = common::ConvertFromString<QString>(server_->Delimiter());
+  QString delimiter;
+  common::ConvertFromString(server_->Delimiter(), &delimiter);
   textView_ = new FastoTextView(delimiter);
   textView_->setModel(commonModel_);
 

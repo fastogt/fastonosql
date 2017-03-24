@@ -86,22 +86,24 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
     if (type == IExplorerTreeItem::eServer) {
       ExplorerServerItem* server_node = static_cast<ExplorerServerItem*>(node);
       proxy::IServerSPtr server = server_node->server();
-      QString sname = common::ConvertFromString<QString>(server->Name());
+      QString sname;
+      common::ConvertFromString(server->Name(), &sname);
       bool is_can_remote = server->IsCanRemote();
       if (is_can_remote) {
         proxy::IServerRemote* rserver = dynamic_cast<proxy::IServerRemote*>(server.get());  // +
         CHECK(rserver);
-        QString stype =
-            common::ConvertFromString<QString>(common::ConvertToString(rserver->Role()));
-        QString mtype =
-            common::ConvertFromString<QString>(common::ConvertToString(rserver->Mode()));
-        QString shost =
-            common::ConvertFromString<QString>(common::ConvertToString(rserver->Host()));
+        QString stype;
+        common::ConvertFromString(common::ConvertToString(rserver->Role()), &stype);
+        QString mtype;
+        common::ConvertFromString(common::ConvertToString(rserver->Mode()), &mtype);
+        QString shost;
+        common::ConvertFromString(common::ConvertToString(rserver->Host()), &shost);
         return trRemoteServerToolTipTemplate_4S.arg(sname, stype, mtype, shost);
       } else {
         proxy::IServerLocal* lserver = dynamic_cast<proxy::IServerLocal*>(server.get());  // +
         CHECK(lserver);
-        QString spath = common::ConvertFromString<QString>(lserver->Path());
+        QString spath;
+        common::ConvertFromString(lserver->Path(), &spath);
         return trLocalServerToolTipTemplate_2S.arg(sname, spath);
       }
     } else if (type == IExplorerTreeItem::eDatabase) {
@@ -554,7 +556,8 @@ ExplorerNSItem* ExplorerTreeModel::findNSItem(IExplorerTreeItem* db_or_ns,
 ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_ns,
                                                       const core::KeyInfo& kinf) {
   std::string nspace = kinf.Nspace();
-  QString qnspace = common::ConvertFromString<QString>(nspace);
+  QString qnspace;
+  common::ConvertFromString(nspace, &qnspace);
   ExplorerNSItem* founded_item = findNSItem(db_or_ns, qnspace);
   if (founded_item) {
     return founded_item;
@@ -565,7 +568,7 @@ ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_n
   for (size_t i = 0; i < sz; ++i) {
     ExplorerNSItem* item = nullptr;
     nspace = kinf.JoinNamespace(i);
-    qnspace = common::ConvertFromString<QString>(nspace);
+    common::ConvertFromString(nspace, &qnspace);
     for (size_t j = 0; j < par->childrenCount(); ++j) {
       ExplorerNSItem* ns_item = dynamic_cast<ExplorerNSItem*>(par->child(j));  // +
       if (!ns_item) {

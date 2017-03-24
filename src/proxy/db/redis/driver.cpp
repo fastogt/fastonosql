@@ -310,8 +310,8 @@ void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
   core::IDataBaseInfoSPtr curdb(info);
   std::string scountDb;
   if (ar->GetString(1, &scountDb)) {
-    size_t countDb = common::ConvertFromString<size_t>(scountDb);
-    if (countDb > 0) {
+    size_t countDb;
+    if (common::ConvertFromString(scountDb, &countDb) && countDb > 0) {
       for (size_t i = 0; i < countDb; ++i) {
         core::IDataBaseInfoSPtr dbInf(
             new core::redis::DataBaseInfo(common::ConvertToString(i), false, 0));
@@ -362,7 +362,10 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         goto done;
       }
 
-      res.cursor_out = common::ConvertFromString<uint32_t>(cursor);
+      uint64_t lcursor;
+      if (common::ConvertFromString(cursor, &lcursor)) {
+        res.cursor_out = lcursor;
+      }
 
       rchildrens = array->Childrens();
       if (!rchildrens.size()) {
@@ -539,8 +542,9 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
               common::Value* fund_sub = nullptr;
               if (array_sub_inner->Get(1, &fund_sub)) {
                 std::string sub;
-                if (fund_sub->GetAsString(&sub)) {
-                  res.channels[i].SetNumberOfSubscribers(common::ConvertFromString<uint32_t>(sub));
+                uint32_t lsub;
+                if (fund_sub->GetAsString(&sub) && common::ConvertFromString(sub, &lsub)) {
+                  res.channels[i].SetNumberOfSubscribers(lsub);
                 }
               }
             }

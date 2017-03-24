@@ -84,8 +84,8 @@ SentinelDialog::SentinelDialog(QWidget* parent, proxy::ISentinelSettingsBase* co
 
   if (sentinel_connection_) {
     proxy::connection_path_t path = sentinel_connection_->Path();
-    conName = common::ConvertFromString<QString>(path.Name());
-    conFolder = common::ConvertFromString<QString>(path.Directory());
+    common::ConvertFromString(path.Name(), &conName);
+    common::ConvertFromString(path.Directory(), &conFolder);
   }
   connectionName_->setText(conName);
   connectionFolder_->setText(conFolder);
@@ -95,8 +95,10 @@ SentinelDialog::SentinelDialog(QWidget* parent, proxy::ISentinelSettingsBase* co
   for (size_t i = 0; i < SIZEOFMASS(core::compiled_types); ++i) {
     core::connectionTypes ct = core::compiled_types[i];
     std::string str = common::ConvertToString(ct);
-    typeConnection_->addItem(GuiFactory::instance().icon(ct),
-                             common::ConvertFromString<QString>(str), ct);
+    QString qstr;
+    if (common::ConvertFromString(str, &conFolder)) {
+      typeConnection_->addItem(GuiFactory::instance().icon(ct), qstr, ct);
+    }
   }
 
   if (sentinel_connection_) {

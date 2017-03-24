@@ -134,9 +134,11 @@ IConnectionSettingsBase::~IConnectionSettingsBase() {}
 void IConnectionSettingsBase::SetConnectionPathAndUpdateHash(const connection_path_t& name) {
   SetPath(name);
   std::string path = connection_path_.ToString();
-  common::buffer_t bcon = common::ConvertFromString<common::buffer_t>(path);
-  uint64_t v = common::utils::hash::crc64(0, bcon);
-  hash_ = common::ConvertToString(v);
+  common::buffer_t bcon;
+  if (common::ConvertFromString(path, &bcon)) {
+    uint64_t v = common::utils::hash::crc64(0, bcon);
+    hash_ = common::ConvertToString(v);
+  }
 }
 
 std::string IConnectionSettingsBase::Hash() const {
@@ -144,7 +146,8 @@ std::string IConnectionSettingsBase::Hash() const {
 }
 
 std::string IConnectionSettingsBase::LoggingPath() const {
-  const std::string logDir = common::ConvertToString(SettingsManager::instance().LoggingDirectory());
+  const std::string logDir =
+      common::ConvertToString(SettingsManager::instance().LoggingDirectory());
   const std::string prefix = logDir + Hash();
 #ifdef BUILD_WITH_REDIS
   if (type_ == core::REDIS) {

@@ -23,9 +23,9 @@
 
 #include <QIcon>
 
-#include <common/convert2string.h>  // for ConvertFromString
-#include <common/macros.h>          // for CHECK, UNUSED
-#include <common/qt/utils_qt.h>     // for item
+#include <common/qt/convert2string.h>  // for ConvertFromString
+#include <common/macros.h>             // for CHECK, UNUSED
+#include <common/qt/utils_qt.h>        // for item
 
 #include <common/qt/gui/base/table_item.h>   // for TableItem
 #include <common/qt/gui/base/table_model.h>  // for TableModel
@@ -40,11 +40,15 @@ namespace gui {
 KeyTableItem::KeyTableItem(const core::NDbKValue& dbv) : dbv_(dbv) {}
 
 QString KeyTableItem::keyString() const {
-  return common::ConvertFromString<QString>(dbv_.KeyString());
+  QString qkey;
+  common::ConvertFromString(dbv_.KeyString(), &qkey);
+  return qkey;
 }
 
 QString KeyTableItem::typeText() const {
-  return common::ConvertFromString<QString>(common::Value::GetTypeName(dbv_.Type()));
+  QString qtype;
+  common::ConvertFromString(common::Value::GetTypeName(dbv_.Type()), &qtype);
+  return qtype;
 }
 
 core::ttl_t KeyTableItem::ttl() const {

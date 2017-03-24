@@ -35,6 +35,7 @@
 #include <common/macros.h>          // for VERIFY, UNUSED, CHECK
 #include <common/value.h>           // for ErrorValue, Value
 
+#include <common/qt/convert2string.h>         // for ConvertFromString
 #include <common/qt/gui/base/graph_widget.h>  // for GraphWidget, etc
 #include <common/qt/gui/glass_widget.h>       // for GlassWidget
 
@@ -76,7 +77,10 @@ ServerHistoryDialog::ServerHistoryDialog(proxy::IServerSPtr server, QWidget* par
   const auto fields = core::InfoFieldsFromType(server_->Type());
   for (size_t i = 0; i < fields.size(); ++i) {
     core::info_field_t field = fields[i];
-    serverInfoGroupsNames_->addItem(common::ConvertFromString<QString>(field.first));
+    QString qitem;
+    if (common::ConvertFromString(field.first, &qitem)) {
+      serverInfoGroupsNames_->addItem(qitem);
+    }
   }
   QVBoxLayout* setingsLayout = new QVBoxLayout;
   setingsLayout->addWidget(clearHistory_);
@@ -167,7 +171,10 @@ void ServerHistoryDialog::refreshInfoFields(int index) {
   for (uint32_t i = 0; i < field.size(); ++i) {
     core::Field fl = field[i];
     if (fl.IsIntegral()) {
-      serverInfoFields_->addItem(common::ConvertFromString<QString>(fl.name), i);
+      QString qitem;
+      if (common::ConvertFromString(fl.name, &qitem)) {
+        serverInfoFields_->addItem(qitem, i);
+      }
     }
   }
 }
@@ -217,8 +224,10 @@ void ServerHistoryDialog::reset() {
 }
 
 void ServerHistoryDialog::retranslateUi() {
-  QString name = common::ConvertFromString<QString>(server_->Name());
-  setWindowTitle(trHistoryTemplate_1S.arg(name));
+  QString name;
+  if (common::ConvertFromString(server_->Name(), &name)) {
+    setWindowTitle(trHistoryTemplate_1S.arg(name));
+  }
   clearHistory_->setText(translations::trClearHistory);
 }
 

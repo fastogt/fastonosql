@@ -27,9 +27,10 @@
 #include <QTextEdit>
 
 #include <common/convert2string.h>  // for ConvertFromString
-#include <common/error.h>           // for Error
-#include <common/macros.h>          // for CHECK, VERIFY, UNUSED
-#include <common/value.h>           // for ErrorValue
+#include <common/qt/convert2string.h>
+#include <common/error.h>   // for Error
+#include <common/macros.h>  // for CHECK, VERIFY, UNUSED
+#include <common/value.h>   // for ErrorValue
 
 #ifdef BUILD_WITH_REDIS
 #include "core/db/redis/server_info.h"
@@ -387,24 +388,49 @@ void InfoServerDialog::changeEvent(QEvent* e) {
 }
 
 void InfoServerDialog::retranslateUi() {
-  QString name = common::ConvertFromString<QString>(server_->Name());
-  setWindowTitle(tr("%1 info").arg(name));
+  QString qname;
+  if (common::ConvertFromString(server_->Name(), &qname)) {
+    setWindowTitle(tr("%1 info").arg(qname));
+  }
 }
 
 #ifdef BUILD_WITH_REDIS
 void InfoServerDialog::updateText(const core::redis::ServerInfo& serv) {
   core::redis::ServerInfo::Server ser = serv.server_;
-  QString textServ = trRedisTextServerTemplate
-                         .arg(common::ConvertFromString<QString>(ser.redis_version_),
-                              common::ConvertFromString<QString>(ser.redis_git_sha1_),
-                              common::ConvertFromString<QString>(ser.redis_git_dirty_),
-                              common::ConvertFromString<QString>(ser.redis_mode_),
-                              common::ConvertFromString<QString>(ser.os_))
+  QString qredis_version;
+  common::ConvertFromString(ser.redis_version_, &qredis_version);
+
+  QString qredis_git_sha1;
+  common::ConvertFromString(ser.redis_git_sha1_, &qredis_git_sha1);
+
+  QString qredis_git_dirty;
+  common::ConvertFromString(ser.redis_git_dirty_, &qredis_git_dirty);
+
+  QString qredis_mode;
+  common::ConvertFromString(ser.redis_mode_, &qredis_mode);
+
+  QString qos;
+  common::ConvertFromString(ser.os_, &qos);
+
+  QString qmultiplexing_api;
+  common::ConvertFromString(ser.multiplexing_api_, &qmultiplexing_api);
+
+  QString qgcc_version;
+  common::ConvertFromString(ser.gcc_version_, &qgcc_version);
+
+  QString qrun_id;
+  common::ConvertFromString(ser.run_id_, &qrun_id);
+
+  QString textServ = trRedisTextServerTemplate.arg(qredis_version)
+                         .arg(qredis_git_sha1)
+                         .arg(qredis_git_dirty)
+                         .arg(qredis_mode)
+                         .arg(qos)
                          .arg(ser.arch_bits_)
-                         .arg(common::ConvertFromString<QString>(ser.multiplexing_api_),
-                              common::ConvertFromString<QString>(ser.gcc_version_))
+                         .arg(qmultiplexing_api)
+                         .arg(qgcc_version)
                          .arg(ser.process_id_)
-                         .arg(common::ConvertFromString<QString>(ser.run_id_))
+                         .arg(qrun_id)
                          .arg(ser.tcp_port_)
                          .arg(ser.uptime_in_seconds_)
                          .arg(ser.uptime_in_days_)
@@ -418,21 +444,39 @@ void InfoServerDialog::updateText(const core::redis::ServerInfo& serv) {
                        .arg(cl.blocked_clients_);
 
   core::redis::ServerInfo::Memory mem = serv.memory_;
+  QString qused_memory_human;
+  common::ConvertFromString(mem.used_memory_human_, &qused_memory_human);
+
+  QString qused_memory_peak_human;
+  common::ConvertFromString(mem.used_memory_peak_human_, &qused_memory_peak_human);
+
+  QString qmem_allocator;
+  common::ConvertFromString(mem.mem_allocator_, &qmem_allocator);
+
   QString textMem = trRedisTextMemoryTemplate.arg(mem.used_memory_)
-                        .arg(common::ConvertFromString<QString>(mem.used_memory_human_))
+                        .arg(qused_memory_human)
                         .arg(mem.used_memory_rss_)
                         .arg(mem.used_memory_peak_)
-                        .arg(common::ConvertFromString<QString>(mem.used_memory_peak_human_))
+                        .arg(qused_memory_peak_human)
                         .arg(mem.used_memory_lua_)
                         .arg(mem.mem_fragmentation_ratio_)
-                        .arg(common::ConvertFromString<QString>(mem.mem_allocator_));
+                        .arg(qmem_allocator);
 
   core::redis::ServerInfo::Persistence per = serv.persistence_;
+  QString qrdb_last_bgsave_status;
+  common::ConvertFromString(per.rdb_last_bgsave_status_, &qrdb_last_bgsave_status);
+
+  QString qaof_last_bgrewrite_status;
+  common::ConvertFromString(per.aof_last_bgrewrite_status_, &qaof_last_bgrewrite_status);
+
+  QString qaof_last_write_status;
+  common::ConvertFromString(per.aof_last_write_status_, &qaof_last_write_status);
+
   QString textPer = trRedisTextPersistenceTemplate.arg(per.loading_)
                         .arg(per.rdb_changes_since_last_save_)
                         .arg(per.rdb_bgsave_in_progress_)
                         .arg(per.rdb_last_save_time_)
-                        .arg(common::ConvertFromString<QString>(per.rdb_last_bgsave_status_))
+                        .arg(qrdb_last_bgsave_status)
                         .arg(per.rdb_last_bgsave_time_sec_)
                         .arg(per.rdb_current_bgsave_time_sec_)
                         .arg(per.aof_enabled_)
@@ -440,8 +484,8 @@ void InfoServerDialog::updateText(const core::redis::ServerInfo& serv) {
                         .arg(per.aof_rewrite_scheduled_)
                         .arg(per.aof_last_rewrite_time_sec_)
                         .arg(per.aof_current_rewrite_time_sec_)
-                        .arg(common::ConvertFromString<QString>(per.aof_last_bgrewrite_status_),
-                             common::ConvertFromString<QString>(per.aof_last_write_status_));
+                        .arg(qaof_last_bgrewrite_status)
+                        .arg(qaof_last_write_status);
 
   core::redis::ServerInfo::Stats stat = serv.stats_;
   QString textStat = trRedisTextStatsTemplate.arg(stat.total_connections_received_)
@@ -460,14 +504,16 @@ void InfoServerDialog::updateText(const core::redis::ServerInfo& serv) {
                          .arg(stat.latest_fork_usec_);
 
   core::redis::ServerInfo::Replication repl = serv.replication_;
-  QString textRepl =
-      trRedisTextReplicationTemplate.arg(common::ConvertFromString<QString>(repl.role_))
-          .arg(repl.connected_slaves_)
-          .arg(repl.master_repl_offset_)
-          .arg(repl.backlog_active_)
-          .arg(repl.backlog_size_)
-          .arg(repl.backlog_first_byte_offset_)
-          .arg(repl.backlog_histen_);
+  QString qrole;
+  common::ConvertFromString(repl.role_, &qrole);
+
+  QString textRepl = trRedisTextReplicationTemplate.arg(qrole)
+                         .arg(repl.connected_slaves_)
+                         .arg(repl.master_repl_offset_)
+                         .arg(repl.backlog_active_)
+                         .arg(repl.backlog_size_)
+                         .arg(repl.backlog_first_byte_offset_)
+                         .arg(repl.backlog_histen_);
 
   core::redis::ServerInfo::Cpu cpu = serv.cpu_;
   QString textCpu = trRedisTextCpuTemplate.arg(cpu.used_cpu_sys_)
@@ -481,11 +527,13 @@ void InfoServerDialog::updateText(const core::redis::ServerInfo& serv) {
 #ifdef BUILD_WITH_MEMCACHED
 void InfoServerDialog::updateText(const core::memcached::ServerInfo& serv) {
   core::memcached::ServerInfo::Stats com = serv.stats_;
+  QString qverson;
+  common::ConvertFromString(com.version, &qverson);
 
   QString textServ = trMemcachedTextServerTemplate.arg(com.pid)
                          .arg(com.uptime)
                          .arg(com.time)
-                         .arg(common::ConvertFromString<QString>(com.version))
+                         .arg(qverson)
                          .arg(com.pointer_size)
                          .arg(com.rusage_user)
                          .arg(com.rusage_system)
@@ -512,11 +560,16 @@ void InfoServerDialog::updateText(const core::memcached::ServerInfo& serv) {
 #ifdef BUILD_WITH_SSDB
 void InfoServerDialog::updateText(const core::ssdb::ServerInfo& serv) {
   core::ssdb::ServerInfo::Stats com = serv.stats_;
-  QString textServ = trSsdbTextServerTemplate.arg(common::ConvertFromString<QString>(com.version))
+  QString qverson;
+  common::ConvertFromString(com.version, &qverson);
+  QString qbinlogs;
+  common::ConvertFromString(com.binlogs, &qbinlogs);
+
+  QString textServ = trSsdbTextServerTemplate.arg(qverson)
                          .arg(com.links)
                          .arg(com.total_calls)
                          .arg(com.dbsize)
-                         .arg(common::ConvertFromString<QString>(com.binlogs));
+                         .arg(qbinlogs);
 
   serverTextInfo_->setText(textServ);
 }
@@ -549,27 +602,30 @@ void InfoServerDialog::updateText(const core::rocksdb::ServerInfo& serv) {
 #ifdef BUILD_WITH_UNQLITE
 void InfoServerDialog::updateText(const core::unqlite::ServerInfo& serv) {
   core::unqlite::ServerInfo::Stats stats = serv.stats_;
-  QString textServ =
-      trUnqliteTextServerTemplate.arg(common::ConvertFromString<QString>(stats.file_name));
+  QString qfile_name;
+  common::ConvertFromString(stats.file_name, &qfile_name);
 
+  QString textServ = trUnqliteTextServerTemplate.arg(qfile_name);
   serverTextInfo_->setText(textServ);
 }
 #endif
 #ifdef BUILD_WITH_LMDB
 void InfoServerDialog::updateText(const core::lmdb::ServerInfo& serv) {
   core::lmdb::ServerInfo::Stats stats = serv.stats_;
-  QString textServ =
-      trLmdbTextServerTemplate.arg(common::ConvertFromString<QString>(stats.db_path));
+  QString qdb_path;
+  common::ConvertFromString(stats.db_path, &qdb_path);
 
+  QString textServ = trLmdbTextServerTemplate.arg(qdb_path);
   serverTextInfo_->setText(textServ);
 }
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
 void InfoServerDialog::updateText(const core::upscaledb::ServerInfo& serv) {
   core::upscaledb::ServerInfo::Stats stats = serv.stats_;
-  QString textServ =
-      trUpscaledbTextServerTemplate.arg(common::ConvertFromString<QString>(stats.db_path));
+  QString qdb_path;
+  common::ConvertFromString(stats.db_path, &qdb_path);
 
+  QString textServ = trUpscaledbTextServerTemplate.arg(qdb_path);
   serverTextInfo_->setText(textServ);
 }
 #endif

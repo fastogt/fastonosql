@@ -83,8 +83,13 @@ ClusterDialog::ClusterDialog(QWidget* parent, proxy::IClusterSettingsBase* conne
 
   if (cluster_connection_) {
     proxy::connection_path_t path = cluster_connection_->Path();
-    conName = common::ConvertFromString<QString>(path.Name());
-    conFolder = common::ConvertFromString<QString>(path.Directory());
+    QString qstr;
+    if (common::ConvertFromString(path.Name(), &qstr)) {
+      conName = qstr;
+    }
+    if (common::ConvertFromString(path.Directory(), &qstr)) {
+      conFolder = qstr;
+    }
   }
   connectionName_->setText(conName);
   connectionFolder_->setText(conFolder);
@@ -94,8 +99,10 @@ ClusterDialog::ClusterDialog(QWidget* parent, proxy::IClusterSettingsBase* conne
   for (size_t i = 0; i < SIZEOFMASS(core::compiled_types); ++i) {
     core::connectionTypes ct = core::compiled_types[i];
     std::string str = common::ConvertToString(ct);
-    typeConnection_->addItem(GuiFactory::instance().icon(ct),
-                             common::ConvertFromString<QString>(str), ct);
+    QString qstr;
+    if (common::ConvertFromString(str, &qstr)) {
+      typeConnection_->addItem(GuiFactory::instance().icon(ct), qstr, ct);
+    }
   }
 
   if (cluster_connection_) {

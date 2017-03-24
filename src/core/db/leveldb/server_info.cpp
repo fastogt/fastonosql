@@ -74,15 +74,30 @@ ServerInfo::Stats::Stats(const std::string& common_text) {
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
     if (field == LEVELDB_CAMPACTIONS_LEVEL_LABEL) {
-      compactions_level = common::ConvertFromString<uint32_t>(value);
+      uint32_t lcompactions_level;
+      if (common::ConvertFromString(value, &lcompactions_level)) {
+        compactions_level = lcompactions_level;
+      }
     } else if (field == LEVELDB_FILE_SIZE_MB_LABEL) {
-      file_size_mb = common::ConvertFromString<uint32_t>(value);
+      uint32_t lfile_size_mb;
+      if (common::ConvertFromString(value, &lfile_size_mb)) {
+        file_size_mb = lfile_size_mb;
+      }
     } else if (field == LEVELDB_TIME_SEC_LABEL) {
-      time_sec = common::ConvertFromString<uint32_t>(value);
+      uint32_t ltime_sec;
+      if (common::ConvertFromString(value, &ltime_sec)) {
+        time_sec = ltime_sec;
+      }
     } else if (field == LEVELDB_READ_MB_LABEL) {
-      read_mb = common::ConvertFromString<uint32_t>(value);
+      uint32_t lread_mb;
+      if (common::ConvertFromString(value, &lread_mb)) {
+        read_mb = lread_mb;
+      }
     } else if (field == LEVELDB_WRITE_MB_LABEL) {
-      write_mb = common::ConvertFromString<uint32_t>(value);
+      uint32_t lwrite_mb;
+      if (common::ConvertFromString(value, &lwrite_mb)) {
+        write_mb = lwrite_mb;
+      }
     }
     start = pos + 2;
   }

@@ -20,7 +20,7 @@
 
 #include <memory>  // for __shared_ptr
 
-#include <common/convert2string.h>  // for ConvertFromString
+#include <common/qt/convert2string.h>  // for ConvertFromString
 #include <common/error.h>           // for Error
 #include <common/time.h>            // for current_mstime
 #include <common/value.h>           // for ErrorValue
@@ -52,8 +52,9 @@ void DiscoverySentinelConnection::routine() {
       proxy::ServersManager::instance().DiscoverySentinelConnection(connection_, &inf);
 
   if (er && er->IsError()) {
-    emit connectionResult(false, common::time::current_mstime() - startTime_,
-                          common::ConvertFromString<QString>(er->Description()), inf);
+    QString qdesc;
+    common::ConvertFromString(er->Description(), &qdesc);
+    emit connectionResult(false, common::time::current_mstime() - startTime_, qdesc, inf);
   } else {
     emit connectionResult(true, common::time::current_mstime() - startTime_,
                           translations::trSuccess, inf);

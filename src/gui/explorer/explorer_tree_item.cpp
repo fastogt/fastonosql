@@ -53,7 +53,9 @@ ExplorerServerItem::ExplorerServerItem(proxy::IServerSPtr server, TreeItem* pare
     : IExplorerTreeItem(parent), server_(server) {}
 
 QString ExplorerServerItem::name() const {
-  return common::ConvertFromString<QString>(server_->Name());
+  QString qname;
+  common::ConvertFromString(server_->Name(), &qname);
+  return qname;
 }
 
 proxy::IServerSPtr ExplorerServerItem::server() const {
@@ -85,7 +87,9 @@ ExplorerSentinelItem::ExplorerSentinelItem(proxy::ISentinelSPtr sentinel, TreeIt
 }
 
 QString ExplorerSentinelItem::name() const {
-  return common::ConvertFromString<QString>(sentinel_->Name());
+  QString qname;
+  common::ConvertFromString(sentinel_->Name(), &qname);
+  return qname;
 }
 
 ExplorerSentinelItem::eType ExplorerSentinelItem::type() const {
@@ -106,7 +110,9 @@ ExplorerClusterItem::ExplorerClusterItem(proxy::IClusterSPtr cluster, TreeItem* 
 }
 
 QString ExplorerClusterItem::name() const {
-  return common::ConvertFromString<QString>(cluster_->Name());
+  QString qname;
+  common::ConvertFromString(cluster_->Name(), &qname);
+  return qname;
 }
 
 ExplorerClusterItem::eType ExplorerClusterItem::type() const {
@@ -123,7 +129,9 @@ ExplorerDatabaseItem::ExplorerDatabaseItem(proxy::IDatabaseSPtr db, ExplorerServ
 }
 
 QString ExplorerDatabaseItem::name() const {
-  return common::ConvertFromString<QString>(db_->Name());
+  QString qname;
+  common::ConvertFromString(db_->Name(), &qname);
+  return qname;
 }
 
 ExplorerDatabaseItem::eType ExplorerDatabaseItem::type() const {
@@ -356,7 +364,9 @@ void ExplorerKeyItem::setKey(const core::NKey& key) {
 }
 
 QString ExplorerKeyItem::name() const {
-  return common::ConvertFromString<QString>(dbv_.KeyString());
+  QString qname;
+  common::ConvertFromString(dbv_.KeyString(), &qname);
+  return qname;
 }
 
 proxy::IServerSPtr ExplorerKeyItem::server() const {

@@ -55,7 +55,10 @@ Config parseOptions(int argc, char** argv) {
     } else if (!strcmp(argv[i], "-f") && !lastarg) {
       cfg.dbname = argv[++i];
     } else if (!strcmp(argv[i], "-e") && !lastarg) {
-      cfg.env_flags = common::ConvertFromString<int>(argv[++i]);
+      int env_flags;
+      if (common::ConvertFromString(argv[++i], &env_flags)) {
+        cfg.env_flags = env_flags;
+      }
     } else {
       if (argv[i][0] == '-') {
         const std::string buff = common::MemSPrintf(
@@ -108,17 +111,20 @@ std::string ConvertToString(const fastonosql::core::lmdb::Config& conf) {
   return fastonosql::core::ConvertToStringConfigArgs(argv);
 }
 
-template <>
-fastonosql::core::lmdb::Config ConvertFromString(const std::string& line) {
-  int argc = 0;
-  sds* argv = sdssplitargslong(line.c_str(), &argc);
-  if (argv) {
-    auto cfg = fastonosql::core::lmdb::parseOptions(argc, argv);
-    sdsfreesplitres(argv, argc);
-    return cfg;
+bool ConvertFromString(const std::string& from, fastonosql::core::lmdb::Config* out) {
+  if (!out) {
+    return false;
   }
 
-  return fastonosql::core::lmdb::Config();
+  int argc = 0;
+  sds* argv = sdssplitargslong(from.c_str(), &argc);
+  if (argv) {
+    *out = fastonosql::core::lmdb::parseOptions(argc, argv);
+    sdsfreesplitres(argv, argc);
+    return true;
+  }
+
+  return false;
 }
 
 }  // namespace common

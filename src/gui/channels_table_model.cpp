@@ -23,7 +23,7 @@
 
 #include <QIcon>
 
-#include <common/convert2string.h>  // for ConvertFromString
+#include <common/qt/convert2string.h>  // for ConvertFromString
 #include <common/macros.h>          // for CHECK, UNUSED
 #include <common/qt/utils_qt.h>     // for item
 
@@ -44,7 +44,9 @@ core::NDbPSChannel ChannelTableItem::channel() const {
 }
 
 QString ChannelTableItem::name() const {
-  return common::ConvertFromString<QString>(channel_.Name());
+  QString qname;
+  common::ConvertFromString(channel_.Name(), &qname);
+  return qname;
 }
 
 uint32_t ChannelTableItem::numberOfSubscribers() const {

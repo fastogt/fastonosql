@@ -50,7 +50,10 @@ Config parseOptions(int argc, char** argv) {
     if (!strcmp(argv[i], "-h") && !lastarg) {
       cfg.host.host = argv[++i];
     } else if (!strcmp(argv[i], "-p") && !lastarg) {
-      cfg.host.port = common::ConvertFromString<uint16_t>(argv[++i]);
+      uint16_t lport;
+      if (common::ConvertFromString(argv[++i], &lport)) {
+        cfg.host.port = lport;
+      }
     } else if (!strcmp(argv[i], "-d") && !lastarg) {
       cfg.delimiter = argv[++i];
     } else if (!strcmp(argv[i], "-ns") && !lastarg) {
@@ -90,17 +93,20 @@ std::string ConvertToString(const fastonosql::core::ssdb::Config& conf) {
   return fastonosql::core::ConvertToStringConfigArgs(argv);
 }
 
-template <>
-fastonosql::core::ssdb::Config ConvertFromString(const std::string& line) {
-  int argc = 0;
-  sds* argv = sdssplitargslong(line.c_str(), &argc);
-  if (argv) {
-    auto cfg = fastonosql::core::ssdb::parseOptions(argc, argv);
-    sdsfreesplitres(argv, argc);
-    return cfg;
+bool ConvertFromString(const std::string& from, fastonosql::core::ssdb::Config* out) {
+  if (!out) {
+    return false;
   }
 
-  return fastonosql::core::ssdb::Config();
+  int argc = 0;
+  sds* argv = sdssplitargslong(from.c_str(), &argc);
+  if (argv) {
+    *out = fastonosql::core::ssdb::parseOptions(argc, argv);
+    sdsfreesplitres(argv, argc);
+    return true;
+  }
+
+  return false;
 }
 
 }  // namespace common

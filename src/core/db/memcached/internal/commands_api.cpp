@@ -72,8 +72,17 @@ common::Error CommandsApi::Add(internal::CommandHandler* handler,
 
   NKey key(argv[0]);
   DBConnection* mem = static_cast<DBConnection*>(handler);
-  common::Error err = mem->AddIfNotExist(key, argv[3], common::ConvertFromString<time_t>(argv[2]),
-                                         common::ConvertFromString<uint32_t>(argv[1]));
+  time_t expiration;
+  if (!common::ConvertFromString(argv[2], &expiration)) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  uint32_t flags;
+  if (!common::ConvertFromString(argv[1], &flags)) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  common::Error err = mem->AddIfNotExist(key, argv[3], expiration, flags);
   if (err && err->IsError()) {
     return err;
   }
@@ -92,8 +101,17 @@ common::Error CommandsApi::Replace(internal::CommandHandler* handler,
 
   NKey key(argv[0]);
   DBConnection* mem = static_cast<DBConnection*>(handler);
-  common::Error err = mem->Replace(key, argv[3], common::ConvertFromString<time_t>(argv[2]),
-                                   common::ConvertFromString<uint32_t>(argv[1]));
+  time_t expiration;
+  if (!common::ConvertFromString(argv[2], &expiration)) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  uint32_t flags;
+  if (!common::ConvertFromString(argv[1], &flags)) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  common::Error err = mem->Replace(key, argv[3], expiration, flags);
   if (err && err->IsError()) {
     return err;
   }
@@ -112,8 +130,16 @@ common::Error CommandsApi::Append(internal::CommandHandler* handler,
 
   NKey key(argv[0]);
   DBConnection* mem = static_cast<DBConnection*>(handler);
-  common::Error err = mem->Append(key, argv[3], common::ConvertFromString<time_t>(argv[2]),
-                                  common::ConvertFromString<uint32_t>(argv[1]));
+  time_t expiration;
+  if (!common::ConvertFromString(argv[2], &expiration)) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  uint32_t flags;
+  if (!common::ConvertFromString(argv[1], &flags)) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+  common::Error err = mem->Append(key, argv[3], expiration, flags);
   if (err && err->IsError()) {
     return err;
   }
@@ -132,8 +158,16 @@ common::Error CommandsApi::Prepend(internal::CommandHandler* handler,
 
   NKey key(argv[0]);
   DBConnection* mem = static_cast<DBConnection*>(handler);
-  common::Error err = mem->Prepend(key, argv[3], common::ConvertFromString<time_t>(argv[2]),
-                                   common::ConvertFromString<uint32_t>(argv[1]));
+  time_t expiration;
+  if (!common::ConvertFromString(argv[2], &expiration)) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+
+  uint32_t flags;
+  if (!common::ConvertFromString(argv[1], &flags)) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
+  common::Error err = mem->Prepend(key, argv[3], expiration, flags);
   if (err && err->IsError()) {
     return err;
   }
@@ -152,8 +186,12 @@ common::Error CommandsApi::Incr(internal::CommandHandler* handler,
 
   NKey key(argv[0]);
   DBConnection* mem = static_cast<DBConnection*>(handler);
+  uint32_t value;
+  if (!common::ConvertFromString(argv[1], &value)) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
   uint64_t result = 0;
-  common::Error err = mem->Incr(key, common::ConvertFromString<uint32_t>(argv[1]), &result);
+  common::Error err = mem->Incr(key, value, &result);
   if (err && err->IsError()) {
     return err;
   }
@@ -172,8 +210,12 @@ common::Error CommandsApi::Decr(internal::CommandHandler* handler,
 
   NKey key(argv[0]);
   DBConnection* mem = static_cast<DBConnection*>(handler);
+  uint32_t value;
+  if (!common::ConvertFromString(argv[1], &value)) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
   uint64_t result = 0;
-  common::Error err = mem->Decr(key, common::ConvertFromString<uint32_t>(argv[1]), &result);
+  common::Error err = mem->Decr(key, value, &result);
   if (err && err->IsError()) {
     return err;
   }

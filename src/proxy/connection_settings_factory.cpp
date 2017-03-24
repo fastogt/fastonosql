@@ -125,8 +125,10 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateFromString(const std::
         connection_path_t path(elText);
         result->SetConnectionPathAndUpdateHash(path);
       } else if (commaCount == 2) {
-        uint32_t msTime = common::ConvertFromString<uint32_t>(elText);
-        result->SetLoggingMsTimeInterval(msTime);
+        int msTime;
+        if (common::ConvertFromString(elText, &msTime)) {
+          result->SetLoggingMsTimeInterval(msTime);
+        }
         if (IsLocalType(result->Type())) {
           result->SetCommandLine(val.substr(i + 1));
           break;

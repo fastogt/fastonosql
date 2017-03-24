@@ -47,8 +47,10 @@ ConnectionSelectTypeDialog::ConnectionSelectTypeDialog(QWidget* parent) : QDialo
   for (size_t i = 0; i < SIZEOFMASS(core::compiled_types); ++i) {
     core::connectionTypes ct = core::compiled_types[i];
     std::string str = common::ConvertToString(ct);
-    typeConnection_->addItem(GuiFactory::instance().icon(ct),
-                             common::ConvertFromString<QString>(str), ct);
+    QString qstr;
+    if (common::ConvertFromString(str, &qstr)) {
+      typeConnection_->addItem(GuiFactory::instance().icon(ct), qstr, ct);
+    }
   }
 
   QVBoxLayout* mainLayout = new QVBoxLayout;

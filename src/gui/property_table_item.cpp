@@ -18,7 +18,7 @@
 
 #include "gui/property_table_item.h"
 
-#include <common/convert2string.h>
+#include <common/qt/convert2string.h>
 
 namespace fastonosql {
 namespace gui {
@@ -26,11 +26,15 @@ namespace gui {
 PropertyTableItem::PropertyTableItem(const core::property_t& prop) : prop_(prop) {}
 
 QString PropertyTableItem::key() const {
-  return common::ConvertFromString<QString>(prop_.first);
+  QString qkey;
+  common::ConvertFromString(prop_.first, &qkey);
+  return qkey;
 }
 
 QString PropertyTableItem::value() const {
-  return common::ConvertFromString<QString>(prop_.second);
+  QString qval;
+  common::ConvertFromString(prop_.second, &qval);
+  return qval;
 }
 
 core::property_t PropertyTableItem::property() const {

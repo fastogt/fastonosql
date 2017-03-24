@@ -79,7 +79,10 @@ common::Error MakeServerCommonInfo(struct redisReply* repl_info, ServerCommonInf
     } else if (strcmp(repl_info->element[j]->str, HOSTNAME_FIELD) == 0) {
       linf.host.host = repl_info->element[j + 1]->str;
     } else if (strcmp(repl_info->element[j]->str, PORT_FIELD) == 0) {
-      linf.host.port = common::ConvertFromString<uint16_t>(repl_info->element[j + 1]->str);
+      uint16_t lport;
+      if (common::ConvertFromString(repl_info->element[j + 1]->str, &lport)) {
+        linf.host.port = lport;
+      }
     }
   }
 

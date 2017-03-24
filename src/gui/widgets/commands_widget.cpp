@@ -28,7 +28,7 @@
 #include <QTextEdit>
 #include <QTime>
 
-#include <common/convert2string.h>  // for ConvertFromString
+#include <common/qt/convert2string.h>  // for ConvertFromString
 #include <common/macros.h>          // for VERIFY
 #include <common/value.h>           // for Value, etc
 
@@ -57,9 +57,11 @@ void CommandsWidget::addCommand(core::FastoObjectCommandIPtr command) {
   QTime time = QTime::currentTime();
   logTextEdit_->setTextColor(command->CommandLoggingType() == core::C_INNER ? QColor(Qt::gray)
                                                                             : QColor(Qt::black));
-  QString mess = common::ConvertFromString<QString>(command->InputCommand());
+  QString mess;
+  common::ConvertFromString(command->InputCommand(), &mess);
   std::string stype = common::ConvertToString(command->ConnectionType());
-  QString qstype = common::ConvertFromString<QString>(stype);
+  QString qstype;
+  common::ConvertFromString(stype, &qstype);
   logTextEdit_->append(time.toString("[%1] hh:mm:ss.zzz: %2").arg(qstype.toUpper(), mess));
   QScrollBar* sb = logTextEdit_->verticalScrollBar();
   sb->setValue(sb->maximum());

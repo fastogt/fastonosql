@@ -62,8 +62,10 @@ ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromString(const
         connection_path_t path(elText);
         result->SetPath(path);
       } else if (commaCount == 2) {
-        uint32_t msTime = common::ConvertFromString<uint32_t>(elText);
-        result->SetLoggingMsTimeInterval(msTime);
+        int msTime;
+        if (common::ConvertFromString(elText, &msTime)) {
+          result->SetLoggingMsTimeInterval(msTime);
+        }
 
         std::string serText;
         for (size_t j = i + 2; j < len; ++j) {

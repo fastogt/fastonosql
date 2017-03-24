@@ -157,16 +157,30 @@ void SSHWidget::setInfo(const core::SSHInfo& info) {
   useSsh_->setChecked(checked);
   common::net::HostAndPort host = info.host;
   sshHostWidget_->setHost(host);
-  userName_->setText(common::ConvertFromString<QString>(info.user_name));
+  QString quser_name;
+  common::ConvertFromString(info.user_name, &quser_name);
+  userName_->setText(quser_name);
   if (info.AuthMethod() == core::SSHInfo::PUBLICKEY) {
     security_->setCurrentText(translations::trPublicPrivateKey);
   } else {
     security_->setCurrentText(translations::trPassword);
   }
-  passwordBox_->setText(common::ConvertFromString<QString>(info.password));
-  privateKeyWidget_->setPath(common::ConvertFromString<QString>(info.private_key));
-  publicKeyWidget_->setPath(common::ConvertFromString<QString>(info.public_key));
-  passphraseBox_->setText(common::ConvertFromString<QString>(info.passphrase));
+
+  QString qpassword;
+  common::ConvertFromString(info.password, &qpassword);
+  passwordBox_->setText(qpassword);
+
+  QString qprivate_key;
+  common::ConvertFromString(info.private_key, &qprivate_key);
+  privateKeyWidget_->setPath(qprivate_key);
+
+  QString qpublic_key;
+  common::ConvertFromString(info.public_key, &qpublic_key);
+  publicKeyWidget_->setPath(qpublic_key);
+
+  QString qpassphrase;
+  common::ConvertFromString(info.passphrase, &qpassphrase);
+  passphraseBox_->setText(qpassphrase);
 }
 
 core::SSHInfo::SupportedAuthenticationMetods SSHWidget::selectedAuthMethod() const {

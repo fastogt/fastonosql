@@ -435,7 +435,10 @@ common::Error DBConnection::FlushDBImpl() {
 }
 
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
-  uint16_t num = common::ConvertFromString<uint16_t>(name);
+  uint16_t num;
+  if (!common::ConvertFromString(name, &num)) {
+    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+  }
   ups_db_t* db = NULL;
   ups_status_t st = ups_env_open_db(connection_.handle_->env, &db, num, 0, NULL);
   if (st != UPS_SUCCESS && st != UPS_DATABASE_ALREADY_OPEN) {

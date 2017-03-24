@@ -87,49 +87,112 @@ ServerInfo::Stats::Stats(const std::string& common_text) {
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
     if (field == MEMCACHED_PID_LABEL) {
-      pid = common::ConvertFromString<uint32_t>(value);
+      uint32_t lpid;
+      if (common::ConvertFromString(value, &lpid)) {
+        pid = lpid;
+      }
     } else if (field == MEMCACHED_UPTIME_LABEL) {
-      uptime = common::ConvertFromString<uint32_t>(value);
+      uint32_t luptime;
+      if (common::ConvertFromString(value, &luptime)) {
+        uptime = luptime;
+      }
     } else if (field == MEMCACHED_TIME_LABEL) {
-      time = common::ConvertFromString<uint32_t>(value);
+      uint32_t ltime;
+      if (common::ConvertFromString(value, &ltime)) {
+        time = ltime;
+      }
     } else if (field == MEMCACHED_VERSION_LABEL) {
       version = value;
     } else if (field == MEMCACHED_POINTER_SIZE_LABEL) {
-      pointer_size = common::ConvertFromString<uint32_t>(value);
+      uint32_t lpointer_size;
+      if (common::ConvertFromString(value, &lpointer_size)) {
+        pointer_size = lpointer_size;
+      }
     } else if (field == MEMCACHED_RUSAGE_USER_LABEL) {
-      rusage_user = common::ConvertFromString<uint32_t>(value);
+      uint32_t lrusage_user;
+      if (common::ConvertFromString(value, &lrusage_user)) {
+        rusage_user = lrusage_user;
+      }
     } else if (field == MEMCACHED_RUSAGE_SYSTEM_LABEL) {
-      rusage_system = common::ConvertFromString<uint32_t>(value);
+      uint32_t lrusage_system;
+      if (common::ConvertFromString(value, &lrusage_system)) {
+        rusage_system = lrusage_system;
+      }
     } else if (field == MEMCACHED_CURR_ITEMS_LABEL) {
-      curr_items = common::ConvertFromString<uint32_t>(value);
+      uint32_t lcurr_items;
+      if (common::ConvertFromString(value, &lcurr_items)) {
+        curr_items = lcurr_items;
+      }
     } else if (field == MEMCACHED_TOTAL_ITEMS_LABEL) {
-      total_items = common::ConvertFromString<uint32_t>(value);
+      uint32_t ltotal_items;
+      if (common::ConvertFromString(value, &ltotal_items)) {
+        total_items = ltotal_items;
+      }
     } else if (field == MEMCACHED_BYTES_LABEL) {
-      bytes = common::ConvertFromString<uint32_t>(value);
+      uint32_t lbytes;
+      if (common::ConvertFromString(value, &lbytes)) {
+        bytes = lbytes;
+      }
     } else if (field == MEMCACHED_CURR_CONNECTIONS_LABEL) {
-      curr_connections = common::ConvertFromString<uint32_t>(value);
+      uint32_t lcurr_connections;
+      if (common::ConvertFromString(value, &lcurr_connections)) {
+        curr_connections = lcurr_connections;
+      }
     } else if (field == MEMCACHED_TOTAL_CONNECTIONS_LABEL) {
-      total_connections = common::ConvertFromString<uint32_t>(value);
+      uint32_t ltotal_connections;
+      if (common::ConvertFromString(value, &ltotal_connections)) {
+        curr_connections = ltotal_connections;
+      }
     } else if (field == MEMCACHED_CONNECTION_STRUCTURES_LABEL) {
-      connection_structures = common::ConvertFromString<uint32_t>(value);
+      uint32_t lconnection_structures;
+      if (common::ConvertFromString(value, &lconnection_structures)) {
+        connection_structures = lconnection_structures;
+      }
     } else if (field == MEMCACHED_CMD_GET_LABEL) {
-      cmd_get = common::ConvertFromString<uint32_t>(value);
+      uint32_t lcmd_get;
+      if (common::ConvertFromString(value, &lcmd_get)) {
+        cmd_get = lcmd_get;
+      }
     } else if (field == MEMCACHED_CMD_SET_LABEL) {
-      cmd_set = common::ConvertFromString<uint32_t>(value);
+      uint32_t lcmd_set;
+      if (common::ConvertFromString(value, &lcmd_set)) {
+        cmd_set = lcmd_set;
+      }
     } else if (field == MEMCACHED_GET_HITS_LABEL) {
-      get_hits = common::ConvertFromString<uint32_t>(value);
+      uint32_t lget_hits;
+      if (common::ConvertFromString(value, &lget_hits)) {
+        get_hits = lget_hits;
+      }
     } else if (field == MEMCACHED_GET_MISSES_LABEL) {
-      get_misses = common::ConvertFromString<uint32_t>(value);
+      uint32_t lget_misses;
+      if (common::ConvertFromString(value, &lget_misses)) {
+        get_misses = lget_misses;
+      }
     } else if (field == MEMCACHED_EVICTIONS_LABEL) {
-      evictions = common::ConvertFromString<uint32_t>(value);
+      uint32_t levictions;
+      if (common::ConvertFromString(value, &levictions)) {
+        evictions = levictions;
+      }
     } else if (field == MEMCACHED_BYTES_READ_LABEL) {
-      bytes_read = common::ConvertFromString<uint32_t>(value);
+      uint32_t lbytes_read;
+      if (common::ConvertFromString(value, &lbytes_read)) {
+        bytes_read = lbytes_read;
+      }
     } else if (field == MEMCACHED_BYTES_WRITTEN_LABEL) {
-      bytes_written = common::ConvertFromString<uint32_t>(value);
+      uint32_t lbytes_written;
+      if (common::ConvertFromString(value, &lbytes_written)) {
+        bytes_written = lbytes_written;
+      }
     } else if (field == MEMCACHED_LIMIT_MAXBYTES_LABEL) {
-      limit_maxbytes = common::ConvertFromString<uint32_t>(value);
+      uint32_t llimit_maxbytes;
+      if (common::ConvertFromString(value, &llimit_maxbytes)) {
+        limit_maxbytes = llimit_maxbytes;
+      }
     } else if (field == MEMCACHED_THREADS_LABEL) {
-      threads = common::ConvertFromString<uint32_t>(value);
+      uint32_t lthreads;
+      if (common::ConvertFromString(value, &lthreads)) {
+        threads = lthreads;
+      }
     }
     start = pos + 2;
   }

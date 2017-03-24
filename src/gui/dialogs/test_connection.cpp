@@ -20,7 +20,7 @@
 
 #include <memory>  // for __shared_ptr
 
-#include <common/convert2string.h>  // for ConvertFromString
+#include <common/qt/convert2string.h>  // for ConvertFromString
 #include <common/error.h>           // for Error
 #include <common/time.h>            // for current_mstime
 #include <common/value.h>           // for ErrorValue
@@ -45,8 +45,9 @@ void TestConnection::routine() {
   common::Error er = proxy::ServersManager::instance().TestConnection(connection_);
 
   if (er && er->IsError()) {
-    emit connectionResult(false, common::time::current_mstime() - start_time_,
-                          common::ConvertFromString<QString>(er->Description()));
+    QString qdesc;
+    common::ConvertFromString(er->Description(), &qdesc);
+    emit connectionResult(false, common::time::current_mstime() - start_time_, qdesc);
   } else {
     emit connectionResult(true, common::time::current_mstime() - start_time_,
                           translations::trSuccess);

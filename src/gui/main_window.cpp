@@ -387,8 +387,8 @@ void MainWindow::openRecentConnection() {
 }
 
 void MainWindow::loadConnection() {
-  QString standardIni =
-      common::ConvertFromString<QString>(proxy::SettingsManager::SettingsFilePath());
+  QString standardIni;
+  common::ConvertFromString(proxy::SettingsManager::SettingsFilePath(), &standardIni);
   QString filepathR = QFileDialog::getOpenFileName(this, tr("Select settings file"), standardIni,
                                                    tr("Settings files (*.ini)"));
   if (filepathR.isNull()) {
@@ -401,9 +401,11 @@ void MainWindow::loadConnection() {
 
 void MainWindow::importConnection() {
   std::string dir_path = proxy::SettingsManager::SettingsDirPath();
-  QString filepathR = QFileDialog::getOpenFileName(this, tr("Select encrypted settings file"),
-                                                   common::ConvertFromString<QString>(dir_path),
-                                                   tr("Encrypted settings files (*.cini)"));
+  QString qdir_path;
+  common::ConvertFromString(dir_path, &qdir_path);
+  QString filepathR =
+      QFileDialog::getOpenFileName(this, tr("Select encrypted settings file"), qdir_path,
+                                   tr("Encrypted settings files (*.cini)"));
   if (filepathR.isNull()) {
     return;
   }
@@ -431,7 +433,7 @@ void MainWindow::importConnection() {
     return;
   }
 
-  common::IEDcoder* hexEnc = common::IEDcoder::createEDCoder(common::Hex);
+  common::IEDcoder* hexEnc = common::IEDcoder::CreateEDCoder(common::Hex);
   if (!hexEnc) {
     readFile.Close();
     writeFile.Close();
@@ -478,8 +480,9 @@ void MainWindow::importConnection() {
 
 void MainWindow::exportConnection() {
   std::string dir_path = proxy::SettingsManager::SettingsDirPath();
-  QString filepathW = QFileDialog::getSaveFileName(this, tr("Select file to save settings"),
-                                                   common::ConvertFromString<QString>(dir_path),
+  QString qdir;
+  common::ConvertFromString(dir_path, &qdir);
+  QString filepathW = QFileDialog::getSaveFileName(this, tr("Select file to save settings"), qdir,
                                                    tr("Settings files (*.cini)"));
   if (filepathW.isEmpty()) {
     return;
@@ -506,7 +509,7 @@ void MainWindow::exportConnection() {
     return;
   }
 
-  common::IEDcoder* hexEnc = common::IEDcoder::createEDCoder(common::Hex);
+  common::IEDcoder* hexEnc = common::IEDcoder::CreateEDCoder(common::Hex);
   if (!hexEnc) {
     readFile.Close();
     writeFile.Close();
@@ -745,7 +748,8 @@ void MainWindow::createServer(proxy::IConnectionSettingsBaseSPtr settings) {
   CHECK(settings);
 
   std::string path = settings->Path().ToString();
-  QString rcon = common::ConvertFromString<QString>(path);
+  QString rcon;
+  common::ConvertFromString(path, &rcon);
   proxy::SettingsManager::instance().RemoveRConnection(rcon);
   proxy::IServerSPtr server = proxy::ServersManager::instance().CreateServer(settings);
   exp_->addServer(server);

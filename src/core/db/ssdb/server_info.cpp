@@ -75,11 +75,20 @@ ServerInfo::Stats::Stats(const std::string& common_text) {
     if (field == SSDB_VERSION_LABEL) {
       version = value;
     } else if (field == SSDB_LINKS_LABEL) {
-      links = common::ConvertFromString<uint32_t>(value);
+      uint32_t llinks;
+      if (common::ConvertFromString(value, &llinks)) {
+        links = llinks;
+      }
     } else if (field == SSDB_TOTAL_CALLS_LABEL) {
-      total_calls = common::ConvertFromString<uint32_t>(value);
+      uint32_t ltotal_calls;
+      if (common::ConvertFromString(value, &ltotal_calls)) {
+        total_calls = ltotal_calls;
+      }
     } else if (field == SSDB_DBSIZE_LABEL) {
-      dbsize = common::ConvertFromString<uint32_t>(value);
+      uint32_t ldbsize;
+      if (common::ConvertFromString(value, &ldbsize)) {
+        dbsize = ldbsize;
+      }
     } else if (field == SSDB_BINLOGS_LABEL) {
       binlogs = value;
     }

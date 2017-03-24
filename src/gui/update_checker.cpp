@@ -21,7 +21,7 @@
 #include <memory>       // for __shared_ptr
 #include <sys/types.h>  // for ssize_t
 
-#include <common/convert2string.h>  // for ConvertFromString
+#include <common/qt/convert2string.h>  // for ConvertFromString
 #include <common/error.h>           // for ErrnoError, ErrnoErrorValue
 #include <common/macros.h>          // for DCHECK
 #include <common/net/socket_tcp.h>  // for ClientSocketTcp
@@ -71,8 +71,9 @@ void UpdateChecker::routine() {
     return;
   }
 
-  QString vers = common::ConvertFromString<QString>(version);
-  emit versionAvailibled(true, vers);
+  QString qvers;
+  common::ConvertFromString(version, &qvers);
+  emit versionAvailibled(true, qvers);
   DCHECK(!client.close());
   return;
 }
