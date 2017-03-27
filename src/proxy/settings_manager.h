@@ -100,6 +100,9 @@ class SettingsManager : public common::patterns::LazySingleton<SettingsManager> 
   bool AutoOpenConsole() const;
   void SetAutoOpenConsole(bool open_console);
 
+  bool AutoConnectDB() const;
+  void SetAutoConnectDB(bool open_db);
+
   bool FastViewKeys() const;
   void SetFastViewKeys(bool fast_view);
 
@@ -126,6 +129,7 @@ class SettingsManager : public common::patterns::LazySingleton<SettingsManager> 
   bool auto_check_update_;
   bool auto_completion_;
   bool auto_open_console_;
+  bool auto_connect_db_;
   bool fast_view_keys_;
 };
 

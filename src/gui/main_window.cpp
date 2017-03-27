@@ -58,6 +58,9 @@
 #include "proxy/sentinel/isentinel.h"      // for ISentinel
 #include "proxy/servers_manager.h"         // for ServersManager
 #include "proxy/settings_manager.h"        // for SettingsManager
+#include "proxy/events/events_info.h"
+
+#include "proxy/server/iserver.h"
 
 #include "gui/dialogs/about_dialog.h"           // for AboutDialog
 #include "gui/dialogs/connections_dialog.h"     // for ConnectionsDialog
@@ -755,6 +758,11 @@ void MainWindow::createServer(proxy::IConnectionSettingsBaseSPtr settings) {
   exp_->addServer(server);
   proxy::SettingsManager::instance().AddRConnection(rcon);
   updateRecentConnectionActions();
+  if (proxy::SettingsManager::instance().AutoConnectDB()) {
+    proxy::events_info::ConnectInfoRequest req(this);
+    server->Connect(req);
+  }
+
   if (!proxy::SettingsManager::instance().AutoOpenConsole()) {
     return;
   }

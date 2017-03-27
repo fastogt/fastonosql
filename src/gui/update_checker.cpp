@@ -48,7 +48,7 @@ void UpdateChecker::routine() {
     return;
   }
 
-  ssize_t nwrite = 0;
+  size_t nwrite = 0;
 #if defined(FASTONOSQL)
   err = client.write(GET_FASTONOSQL_VERSION, sizeof(GET_FASTONOSQL_VERSION) - 1, &nwrite);
 #elif defined(FASTOREDIS)

@@ -53,6 +53,7 @@
 #define AUTOCOMPLETION PREFIX "auto_completion"
 #define RCONNECTIONS PREFIX "rconnections"
 #define AUTOOPENCONSOLE PREFIX "auto_open_console"
+#define AUTOCONNECTDB "auto_connect_db"
 #define FASTVIEWKEYS PREFIX "fast_view_keys"
 #define CONFIG_VERSION PREFIX "version"
 
@@ -277,6 +278,14 @@ void SettingsManager::SetAutoOpenConsole(bool open_console) {
   auto_open_console_ = open_console;
 }
 
+bool SettingsManager::AutoConnectDB() const {
+  return auto_connect_db_;
+}
+
+void SettingsManager::SetAutoConnectDB(bool open_db) {
+  auto_connect_db_ = open_db;
+}
+
 bool SettingsManager::FastViewKeys() const {
   return fast_view_keys_;
 }
@@ -366,6 +375,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
   auto_check_update_ = settings.value(CHECKUPDATES, true).toBool();
   auto_completion_ = settings.value(AUTOCOMPLETION, true).toBool();
   auto_open_console_ = settings.value(AUTOOPENCONSOLE, true).toBool();
+  auto_connect_db_ = settings.value(AUTOCONNECTDB, true).toBool();
   fast_view_keys_ = settings.value(FASTVIEWKEYS, true).toBool();
   config_version_ = settings.value(CONFIG_VERSION, PROJECT_VERSION_NUMBER).toUInt();
 }
@@ -438,6 +448,7 @@ void SettingsManager::Save() {
   settings.setValue(CHECKUPDATES, auto_check_update_);
   settings.setValue(AUTOCOMPLETION, auto_completion_);
   settings.setValue(AUTOOPENCONSOLE, auto_open_console_);
+  settings.setValue(AUTOCONNECTDB, auto_connect_db_);
   settings.setValue(FASTVIEWKEYS, fast_view_keys_);
   settings.setValue(CONFIG_VERSION, config_version_);
 }

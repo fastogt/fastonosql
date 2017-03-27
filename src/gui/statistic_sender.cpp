@@ -72,7 +72,7 @@ void StatisticSender::routine() {
 
   const char* stats_json_string = json_object_get_string(stats_json);
 
-  ssize_t nwrite = 0;
+  size_t nwrite = 0;
   err = client.write(stats_json_string, strlen(stats_json_string), &nwrite);
   json_object_put(stats_json);
   if (err && err->IsError()) {

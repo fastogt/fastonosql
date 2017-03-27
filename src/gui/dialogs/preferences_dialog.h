@@ -71,6 +71,7 @@ class PreferencesDialog : public QDialog {
   QLabel* logDirLabel_;
   QLineEdit* logDirPath_;
   QCheckBox* autoOpenConsole_;
+  QCheckBox* autoConnectDB_;
   QCheckBox* fastViewKeys_;
 };
 }  // namespace gui

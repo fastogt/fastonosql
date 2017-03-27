@@ -55,6 +55,7 @@ const QString trGeneralSettings = QObject::tr("General settings");
 const QString trAutoCheckUpd = QObject::tr("Automatically check for updates");
 const QString trShowAutoCompletion = QObject::tr("Show autocompletion");
 const QString trAutoOpenConsole = QObject::tr("Automatically open console");
+const QString trAutoConnectDb = QObject::tr("Automatically connect to db");
 const QString trFastViewValues = QObject::tr("Fast view values");
 const QString trLanguage = QObject::tr("Language:");
 const QString trSupportedUiStyles = QObject::tr("Supported UI styles:");
@@ -95,17 +96,20 @@ PreferencesDialog::PreferencesDialog(QWidget* parent) : QDialog(parent) {
   autoComletionEnable_ = new QCheckBox;
   generalLayout->addWidget(autoComletionEnable_, 1, 1);
 
+  autoConnectDB_ = new QCheckBox;
+  generalLayout->addWidget(autoConnectDB_, 2, 0);
+
   stylesLabel_ = new QLabel;
   stylesComboBox_ = new QComboBox;
   stylesComboBox_->addItems(common::qt::gui::supportedStyles());
-  generalLayout->addWidget(stylesLabel_, 2, 0);
-  generalLayout->addWidget(stylesComboBox_, 2, 1);
+  generalLayout->addWidget(stylesLabel_, 3, 0);
+  generalLayout->addWidget(stylesComboBox_, 3, 1);
 
   fontLabel_ = new QLabel;
   fontComboBox_ = new QFontComboBox;
   fontComboBox_->setEditable(false);
   fontSizeSpinBox_ = new QSpinBox;
-  generalLayout->addWidget(fontLabel_, 3, 0);
+  generalLayout->addWidget(fontLabel_, 4, 0);
   // fontLayout->addWidget(new QSplitter(Qt::Horizontal));
   QHBoxLayout* l = new QHBoxLayout;
   l->addWidget(fontComboBox_);
@@ -113,10 +117,10 @@ PreferencesDialog::PreferencesDialog(QWidget* parent) : QDialog(parent) {
   generalLayout->addLayout(l, 3, 1);
 
   langLabel_ = new QLabel;
-  generalLayout->addWidget(langLabel_, 4, 0);
+  generalLayout->addWidget(langLabel_, 5, 0);
   languagesComboBox_ = new QComboBox;
   languagesComboBox_->addItems(common::qt::translations::supportedLanguages());
-  generalLayout->addWidget(languagesComboBox_, 4, 1);
+  generalLayout->addWidget(languagesComboBox_, 5, 1);
 
   defaultViewLabel_ = new QLabel;
   defaultViewComboBox_ = new QComboBox;
@@ -127,13 +131,13 @@ PreferencesDialog::PreferencesDialog(QWidget* parent) : QDialog(parent) {
       defaultViewComboBox_->addItem(qstr, static_cast<int>(i));
     }
   }
-  generalLayout->addWidget(defaultViewLabel_, 5, 0);
-  generalLayout->addWidget(defaultViewComboBox_, 5, 1);
+  generalLayout->addWidget(defaultViewLabel_, 6, 0);
+  generalLayout->addWidget(defaultViewComboBox_, 6, 1);
 
   logDirPath_ = new QLineEdit;
   logDirLabel_ = new QLabel;
-  generalLayout->addWidget(logDirLabel_, 6, 0);
-  generalLayout->addWidget(logDirPath_, 6, 1);
+  generalLayout->addWidget(logDirLabel_, 7, 0);
+  generalLayout->addWidget(logDirPath_, 7, 1);
   generalBox_->setLayout(generalLayout);
 
   // main layout
@@ -177,6 +181,7 @@ void PreferencesDialog::accept() {
 
   proxy::SettingsManager::instance().SetLoggingDirectory(logDirPath_->text());
   proxy::SettingsManager::instance().SetAutoOpenConsole(autoOpenConsole_->isChecked());
+  proxy::SettingsManager::instance().SetAutoConnectDB(autoConnectDB_->isChecked());
   proxy::SettingsManager::instance().SetFastViewKeys(fastViewKeys_->isChecked());
 
   return QDialog::accept();
@@ -198,6 +203,7 @@ void PreferencesDialog::syncWithSettings() {
   }
   logDirPath_->setText(proxy::SettingsManager::instance().LoggingDirectory());
   autoOpenConsole_->setChecked(proxy::SettingsManager::instance().AutoOpenConsole());
+  autoConnectDB_->setChecked(proxy::SettingsManager::instance().AutoConnectDB());
   fastViewKeys_->setChecked(proxy::SettingsManager::instance().FastViewKeys());
 }
 
@@ -220,6 +226,7 @@ void PreferencesDialog::retranslateUi() {
   autoCheckUpdates_->setText(trAutoCheckUpd);
   autoComletionEnable_->setText(trShowAutoCompletion);
   autoOpenConsole_->setText(trAutoOpenConsole);
+  autoConnectDB_->setText(trAutoConnectDb);
   fastViewKeys_->setText(trFastViewValues);
   langLabel_->setText(trLanguage);
   stylesLabel_->setText(trSupportedUiStyles);

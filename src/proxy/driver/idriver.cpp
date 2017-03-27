@@ -144,8 +144,10 @@ IDriver::IDriver(IConnectionSettingsBaseSPtr settings)
 }
 
 IDriver::~IDriver() {
-  log_file_->Close();
-  destroy(&log_file_);
+  if (log_file_) {
+    log_file_->Close();
+    destroy(&log_file_);
+  }
 }
 
 common::Error IDriver::Execute(core::FastoObjectCommandIPtr cmd) {
