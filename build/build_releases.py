@@ -1,9 +1,11 @@
 #!/usr/bin/env python
-import sys
 import os
+import sys
+
 import build
 from pybuild_utils.base import system_info
 from pybuild_utils.base import utils
+
 
 def print_usage():
     print("Usage:\n"
@@ -13,9 +15,11 @@ def print_usage():
           "[optional] argv[4] build system(\"ninja\", \"make\")\n"
           "[optional] argv[5] packages for example(\"DEB RPM\")\n")
 
+
 def print_message(progress, message):
-    print '{0:.1f}% {1}'.format(progress, message)
+    print('{0:.1f}% {1}'.format(progress, message))
     sys.stdout.flush()
+
 
 if __name__ == "__main__":
     argc = len(sys.argv)
@@ -34,7 +38,7 @@ if __name__ == "__main__":
     if argc > 3:
         arch_bit_str = sys.argv[3]
     else:
-        arch_bit_str = system_info.get_arch_bit()
+        arch_bit_str = system_info.get_arch_name()
 
     if argc > 4:
         bs_str = sys.argv[4]
@@ -47,7 +51,7 @@ if __name__ == "__main__":
     else:
         packages = []
 
-    request = build.BuildRequest(platform_str, int(arch_bit_str))
+    request = build.BuildRequest(platform_str, arch_bit_str)
     saver = build.ProgressSaver(print_message)
     request.build(cmake_root, [], 'build_fastonosql_' + platform_str, bs, packages, saver)
 

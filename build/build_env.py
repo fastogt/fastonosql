@@ -1,35 +1,39 @@
 #!/usr/bin/env python
-import sys
 import os
 import shutil
-from pybuild_utils.base import system_info
+import sys
+
 from pybuild_utils.base import run_command
+from pybuild_utils.base import system_info
 from pybuild_utils.base import utils
+
 
 def print_usage():
     print("Usage:\n"
-        "[optional] argv[1] platform\n"
-        "[optional] argv[2] architecture\n"
-        "[optional] argv[3] build system for common/qscintilla/libssh2 (\"ninja\", \"make\", \"gmake\")\n"
-        "[optional] argv[4] build system for leveldb/rocksdb/upscaledb (\"make\", \"gmake\")\n"
-        "[optional] argv[5] prefix path\n")
+          "[optional] argv[1] platform\n"
+          "[optional] argv[2] architecture\n"
+          "[optional] argv[3] build system for common/qscintilla/libssh2 (\"ninja\", \"make\", \"gmake\")\n"
+          "[optional] argv[4] build system for leveldb/rocksdb/upscaledb (\"make\", \"gmake\")\n"
+          "[optional] argv[5] prefix path\n")
+
 
 def print_message(progress, message):
-    print message.message()
+    print(message.message())
     sys.stdout.flush()
+
 
 class BuildRequest(object):
     def __init__(self, platform, arch_bit):
         platform_or_none = system_info.get_supported_platform_by_name(platform)
 
-        if platform_or_none == None:
+        if not platform_or_none:
             raise utils.BuildError('invalid platform')
 
-        arch = platform_or_none.architecture_by_bit(arch_bit)
+        arch = platform_or_none.architecture_by_arch_name(arch_bit)
         if arch == None:
             raise utils.BuildError('invalid arch')
 
-        self.platform_ = system_info.Platform(platform_or_none.name(), arch, platform_or_none.package_types())
+        self.platform_ = platform_or_none.make_platform_by_arch(arch, platform_or_none.package_types())
         print("Build request for platform: {0}, arch: {1} created".format(platform, arch.name()))
 
     def build(self, dir_path, bs, bs_external, prefix_path):
@@ -54,7 +58,7 @@ class BuildRequest(object):
 
         generator = bs.cmake_generator_arg()
         build_system_args = bs.cmd_line()
-        #bs_name = bs.name()
+        # bs_name = bs.name()
 
         pwd = os.getcwd()
         os.mkdir(abs_dir_path)
@@ -73,7 +77,7 @@ class BuildRequest(object):
         make_install.append('install')
 
         try:
-            cloned_dir = self.git_clone('https://github.com/fastogt/common.git')
+            cloned_dir = utils.git_clone('https://github.com/fastogt/common.git', pwd)
             os.chdir(cloned_dir)
 
             os.mkdir('build_cmake_release')
@@ -90,7 +94,7 @@ class BuildRequest(object):
             raise ex
 
         try:
-            cloned_dir = self.git_clone('https://github.com/fastogt/qscintilla.git')
+            cloned_dir = utils.git_clone('https://github.com/fastogt/qscintilla.git', pwd)
             qsci_src_path = os.path.join(cloned_dir, 'Qt4Qt5')
             os.chdir(qsci_src_path)
 
@@ -107,7 +111,7 @@ class BuildRequest(object):
             raise ex
 
         try:
-            cloned_dir = self.git_clone('https://github.com/fastogt/libssh2.git')
+            cloned_dir = utils.git_clone('https://github.com/fastogt/libssh2.git', pwd)
             os.chdir(cloned_dir)
 
             os.mkdir('build_cmake_release')
@@ -128,23 +132,23 @@ class BuildRequest(object):
             raise ex
 
         if is_android:
-          return
+            return
 
         build_external_system_args = bs_external.cmd_line()
 
         try:
-            cloned_dir = self.git_clone('https://github.com/fastogt/leveldb.git')
+            cloned_dir = utils.git_clone('https://github.com/fastogt/leveldb.git', pwd)
             os.chdir(cloned_dir)
 
             make_leveldb = list(build_external_system_args)
             make_policy = run_command.CommonPolicy(print_message)
             run_command.run_command_cb(make_leveldb, make_policy)
 
-            copy_leveldb_includes=['cp', '-r', 'include/leveldb', '{0}/include'.format(prefix_path)]
+            copy_leveldb_includes = ['cp', '-r', 'include/leveldb', '{0}/include'.format(prefix_path)]
             copy_policy = run_command.CommonPolicy(print_message)
             run_command.run_command_cb(copy_leveldb_includes, copy_policy)
 
-            copy_leveldb_libs=['cp', 'out-static/libleveldb.a', '{0}/lib'.format(prefix_path)]
+            copy_leveldb_libs = ['cp', 'out-static/libleveldb.a', '{0}/lib'.format(prefix_path)]
             run_command.run_command_cb(copy_leveldb_libs, copy_policy)
             os.chdir(abs_dir_path)
         except Exception as ex:
@@ -152,7 +156,7 @@ class BuildRequest(object):
             raise ex
 
         try:
-            cloned_dir = self.git_clone('https://github.com/fastogt/rocksdb.git')
+            cloned_dir = utils.git_clone('https://github.com/fastogt/rocksdb.git', pwd)
             os.chdir(cloned_dir)
 
             make_install_rocksdb = list(build_external_system_args)
@@ -167,13 +171,15 @@ class BuildRequest(object):
             raise ex
 
         try:
-            cloned_dir = self.git_clone('https://github.com/fastogt/upscaledb.git')
+            cloned_dir = utils.git_clone('https://github.com/fastogt/upscaledb.git', pwd)
             os.chdir(cloned_dir)
             bootstrap_policy = run_command.CommonPolicy(print_message)
             bootstrap_upscaledb = ['sh', 'bootstrap.sh']
             run_command.run_command_cb(bootstrap_upscaledb, bootstrap_policy)
 
-            configure_upscaledb = ['./configure', '--prefix={0}'.format(prefix_path), '--disable-remote', '--enable-static-boost', '--disable-shared', '--disable-java', '--disable-encryption']
+            configure_upscaledb = ['./configure', '--prefix={0}'.format(prefix_path), '--disable-remote',
+                                   '--enable-static-boost', '--disable-shared', '--disable-java',
+                                   '--disable-encryption']
             configure_policy = run_command.CommonPolicy(print_message)
             run_command.run_command_cb(configure_upscaledb, configure_policy)
 
@@ -186,20 +192,6 @@ class BuildRequest(object):
             os.chdir(pwd)
             raise ex
 
-    def git_clone(self, url):
-        git_policy = run_command.CommonPolicy(print_message)
-        pwd = os.getcwd()
-        common_git_clone_line = ['git', 'clone']
-        common_git_clone_line.append(url)
-        cloned_dir = os.path.splitext(url.rsplit('/', 1)[-1])[0]
-        common_git_clone_line.append(cloned_dir)
-        run_command.run_command_cb(common_git_clone_line, git_policy)
-        os.chdir(cloned_dir)
-
-        common_git_clone_init_line = ['git', 'submodule', 'update', '--init', '--recursive']
-        run_command.run_command_cb(common_git_clone_init_line, git_policy)
-        os.chdir(pwd)
-        return os.path.join(pwd, cloned_dir)
 
 if __name__ == "__main__":
     argc = len(sys.argv)
@@ -212,7 +204,7 @@ if __name__ == "__main__":
     if argc > 2:
         arch_bit_str = sys.argv[2]
     else:
-        arch_bit_str = system_info.get_arch_bit()
+        arch_bit_str = system_info.get_arch_name()
 
     if argc > 3:
         bs_str = sys.argv[3]
@@ -231,5 +223,5 @@ if __name__ == "__main__":
     else:
         prefix_path = None
 
-    request = BuildRequest(platform_str, int(arch_bit_str))
+    request = BuildRequest(platform_str, arch_bit_str)
     request.build('build_' + platform_str + '_env', bs, bs_external, prefix_path)

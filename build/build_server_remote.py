@@ -1,17 +1,19 @@
 #!/usr/bin/env python
-import pika
 import json
-import sys
 import shlex
+import sys
+
+import build
+import config
+import pika
 from pybuild_utils.base import system_info
 from pybuild_utils.base import utils
-import config
-import build
+
 
 def print_usage():
     print("Usage:\n"
-        "[optional] argv[1] platform\n"
-        "[optional] argv[2] architecture\n")
+          "[optional] argv[1] platform\n"
+          "[optional] argv[2] architecture\n")
 
 
 class BuildRpcServer(object):
@@ -25,13 +27,13 @@ class BuildRpcServer(object):
         self.consumer_tag_ = None
         self.platform_ = platform
         self.arch_bit_ = arch_bit
-        self.routing_key_ = system_info.gen_routing_key(platform, str(arch_bit))
+        self.routing_key_ = system_info.gen_routing_key(platform, arch_bit)
         print("Build server for %s inited!" % platform)
 
     def connect(self):
         credentials = pika.PlainCredentials(config.USER_NAME, config.PASSWORD)
-        params = pika.ConnectionParameters(host = config.REMOTE_HOST, credentials = credentials)
-        return pika.SelectConnection(params, self.on_connection_open, stop_ioloop_on_close = False)
+        params = pika.ConnectionParameters(host=config.REMOTE_HOST, credentials=credentials)
+        return pika.SelectConnection(params, self.on_connection_open, stop_ioloop_on_close=False)
 
     def reconnect(self):
         self.connection_.ioloop.stop()
@@ -71,7 +73,7 @@ class BuildRpcServer(object):
         self.channel_.queue_bind(self.on_bindok, self.routing_key_, self.EXCHANGE, self.routing_key_)
 
     def on_bindok(self, unused_frame):
-         self.start_consuming()
+        self.start_consuming()
 
     def start_consuming(self):
         self.add_on_cancel_callback()
@@ -136,31 +138,32 @@ class BuildRpcServer(object):
         return result
 
     def send_status(self, routing_key, op_id, progress, status):
-        json_to_send = {'progress': progress, 'status' : status}
-        properties = pika.BasicProperties(content_type = 'application/json', correlation_id = op_id, headers = {'type' : 'status'})
+        json_to_send = {'progress': progress, 'status': status}
+        properties = pika.BasicProperties(content_type='application/json', correlation_id=op_id,
+                                          headers={'type': 'status'})
         if self.channel_:
             self.channel_.basic_publish(exchange='',
-                         routing_key=routing_key,
-                         properties = properties,
-                         body=json.dumps(json_to_send))
+                                        routing_key=routing_key,
+                                        properties=properties,
+                                        body=json.dumps(json_to_send))
 
     def send_responce(self, routing_key, op_id, body):
         properties = pika.BasicProperties(
-                                            content_type = 'application/json',
-                                            correlation_id = op_id,
-                                            headers = {'type' : 'responce'}
-                                         )
+            content_type='application/json',
+            correlation_id=op_id,
+            headers={'type': 'responce'}
+        )
         if self.channel_:
             self.channel_.basic_publish(exchange='',
-                         routing_key=routing_key,
-                         properties = properties,
-                         body=body)
+                                        routing_key=routing_key,
+                                        properties=properties,
+                                        body=body)
 
     def on_request(self, ch, method, props, body):
         platform_and_arch = '{0}_{1}'.format(self.platform_, self.arch_bit_)
         data = json.loads(body)
-        #self.acknowledge_message(method.delivery_tag)
-        #return
+        # self.acknowledge_message(method.delivery_tag)
+        # return
 
         branding_variables = data.get('branding_variables')
         package_type = data.get('package_type')
@@ -172,16 +175,17 @@ class BuildRpcServer(object):
         self.send_status(props.reply_to, op_id, 0.0, 'Prepare to build package')
         print('Build started for: {0}, platform: {1}'.format(op_id, platform_and_arch))
         try:
-            response = self.build_package(self.platform_, self.arch_bit_, op_id, shlex.split(branding_variables), package_types, destination, props.reply_to)
+            response = self.build_package(self.platform_, self.arch_bit_, op_id, shlex.split(branding_variables),
+                                          package_types, destination, props.reply_to)
             print('Build finished for: {0}, platform: {1}, responce: {2}'.format(op_id, platform_and_arch, response))
-            json_to_send = {'body' : response}
+            json_to_send = {'body': response}
         except utils.BuildError as ex:
             print('Build finished for: {0}, platform: {1}, exception: {2}'.format(op_id, platform_and_arch, str(ex)))
             json_to_send = {'error': str(ex)}
         except Exception as ex:
             print('Build finished for: {0}, platform: {1}, exception: {2}'.format(op_id, platform_and_arch, str(ex)))
             json_to_send = {'error': str(ex)}
-        
+
         self.send_status(props.reply_to, op_id, 100.0, 'Completed')
         self.send_responce(props.reply_to, op_id, json.dumps(json_to_send))
         self.acknowledge_message(method.delivery_tag)
@@ -189,6 +193,7 @@ class BuildRpcServer(object):
     def acknowledge_message(self, delivery_tag):
         if self.channel_:
             self.channel_.basic_ack(delivery_tag)
+
 
 if __name__ == "__main__":
     argc = len(sys.argv)
@@ -201,7 +206,7 @@ if __name__ == "__main__":
     if argc > 2:
         arch_str = sys.argv[2]
     else:
-        arch_str = system_info.get_arch_bit()
-        
-    server = BuildRpcServer(platform_str, int(arch_str))
+        arch_str = system_info.get_arch_name()
+
+    server = BuildRpcServer(platform_str, arch_str)
     server.run()

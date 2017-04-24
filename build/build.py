@@ -1,20 +1,23 @@
 #!/usr/bin/env python
-import sys
 import os
-import shutil
 import re
-from pybuild_utils.base import system_info
+import shutil
+import sys
+
 from pybuild_utils.base import run_command
+from pybuild_utils.base import system_info
 from pybuild_utils.base import utils
+
 
 def print_usage():
     print("Usage:\n"
-        "[required] argv[1] cmake_root_path\n"
-        "[optional] argv[2] branding_file_path\n"
-        "[optional] argv[3] platform\n"
-        "[optional] argv[4] architecture\n"
-        "[optional] argv[5] build system(\"ninja\", \"make\", \"gmake\")\n"
-        "[optional] argv[6] packages for example(\"DEB RPM\")\n")
+          "[required] argv[1] cmake_root_path\n"
+          "[optional] argv[2] branding_file_path\n"
+          "[optional] argv[3] platform\n"
+          "[optional] argv[4] architecture\n"
+          "[optional] argv[5] build system(\"ninja\", \"make\", \"gmake\")\n"
+          "[optional] argv[6] packages for example(\"DEB RPM\")\n")
+
 
 class BuildSystem:
     def __init__(self, name, cmd_line, cmake_generator_arg, policy):
@@ -32,16 +35,22 @@ class BuildSystem:
     def policy(self):
         return self.policy_
 
-    def cmd_line(self): # cmd + args
+    def cmd_line(self):  # cmd + args
         return self.cmd_line_
 
-SUPPORTED_BUILD_SYSTEMS = [BuildSystem('ninja', ['ninja'], '-GNinja', run_command.NinjaPolicy), BuildSystem('make', ['make', '-j2'], '-GUnix Makefiles', run_command.MakePolicy)]
+
+SUPPORTED_BUILD_SYSTEMS = [BuildSystem('ninja', ['ninja'], '-GNinja', run_command.NinjaPolicy),
+                           BuildSystem('make', ['make', '-j2'], '-GUnix Makefiles', run_command.MakePolicy)]
+
+
 def get_supported_build_system_by_name(name):
     return next((x for x in SUPPORTED_BUILD_SYSTEMS if x.name() == name), None)
 
+
 def print_message(progress, message):
-    print '{0:.1f}% {1}'.format(progress, message)
+    print('{0:.1f}% {1}'.format(progress, message))
     sys.stdout.flush()
+
 
 class ProgressSaver(object):
     def __init__(self, cb):
@@ -64,18 +73,19 @@ class ProgressSaver(object):
         if self.cb_:
             self.cb_(perc, message.message())
 
+
 class BuildRequest(object):
-    def __init__(self, platform, arch_bit):
+    def __init__(self, platform, arch_name):
         platform_or_none = system_info.get_supported_platform_by_name(platform)
 
-        if platform_or_none == None:
+        if not platform_or_none:
             raise utils.BuildError('invalid platform')
 
-        arch = platform_or_none.architecture_by_bit(arch_bit)
-        if arch == None:
+        arch = platform_or_none.architecture_by_arch_name(arch_name)
+        if not arch:
             raise utils.BuildError('invalid arch')
 
-        self.platform_ = system_info.Platform(platform_or_none.name(), arch, platform_or_none.package_types())
+        self.platform_ = platform_or_none.make_platform_by_arch(arch, platform_or_none.package_types())
         print("Build request for platform: {0}, arch: {1} created".format(platform, arch.name()))
 
     def platform(self):
@@ -102,7 +112,8 @@ class BuildRequest(object):
         build_system_args = bs.cmd_line()
         build_system_policy = bs.policy()
 
-        saver.update_progress_message_range(0.0, 9.0, "Start building project branding_options:\n{0}".format("\n".join(branding_options)))
+        saver.update_progress_message_range(0.0, 9.0, "Start building project branding_options:\n{0}".format(
+            "\n".join(branding_options)))
 
         pwd = os.getcwd()
         os.mkdir(abs_dir_path)
@@ -114,7 +125,8 @@ class BuildRequest(object):
         zlib_args = '-DZLIB_USE_STATIC=ON'
         bzip2_args = '-DBZIP2_USE_STATIC=ON'
 
-        cmake_line = ['cmake', cmake_project_root_abs_path, generator, '-DCMAKE_BUILD_TYPE=RELEASE', log_to_file_args, openssl_args, zlib_args, bzip2_args]
+        cmake_line = ['cmake', cmake_project_root_abs_path, generator, '-DCMAKE_BUILD_TYPE=RELEASE', log_to_file_args,
+                      openssl_args, zlib_args, bzip2_args]
 
         if is_android:
             toolchain_path = os.path.join(cmake_project_root_abs_path, 'cmake/android.toolchain.cmake')
@@ -128,6 +140,7 @@ class BuildRequest(object):
         def store(cb):
             def closure(progress, message):
                 return cb(progress, message)
+
             return closure
 
         store = store(saver.on_update_progress_message)
@@ -153,7 +166,7 @@ class BuildRequest(object):
         in_file = open('CPackConfig.cmake', 'r')
         for line in in_file.readlines():
             res = re.search(r'SET\(CPACK_PACKAGE_FILE_NAME "(.+)"\)', line)
-            if res != None:
+            if res:
                 filename = res.group(1)
                 break
         in_file.close()
@@ -193,15 +206,18 @@ class BuildRequest(object):
                 try:
                     common_policy = run_command.CommonPolicy(store)
                     run_command.run_command_cb(make_cpack, common_policy)
-                    file_names.append(os.path.join(abs_dir_path, filename + '.' + system_info.get_extension_by_package(generator)))
+                    file_names.append(
+                        os.path.join(abs_dir_path, filename + '.' + system_info.get_extension_by_package(generator)))
                 except Exception as ex:
                     os.chdir(pwd)
                     raise ex
 
         os.chdir(pwd)
 
-        saver.update_progress_message_range(100.0, 100.0, "Building finished successfully file_names: {0}".format(file_names))
+        saver.update_progress_message_range(100.0, 100.0,
+                                            "Building finished successfully file_names: {0}".format(file_names))
         return file_names
+
 
 if __name__ == "__main__":
     argc = len(sys.argv)
@@ -223,9 +239,9 @@ if __name__ == "__main__":
         platform_str = system_info.get_os()
 
     if argc > 4:
-        arch_bit_str = sys.argv[4]
+        arch_host_os = sys.argv[4]
     else:
-        arch_bit_str = system_info.get_arch_bit()
+        arch_host_os = system_info.get_arch_name()
 
     if argc > 5:
         bs_str = sys.argv[5]
@@ -238,13 +254,12 @@ if __name__ == "__main__":
     else:
         packages = []
 
-    request = BuildRequest(platform_str, int(arch_bit_str))
+    request = BuildRequest(platform_str, arch_host_os)
     if branding_file_path != '/dev/null':
         abs_branding_file = os.path.abspath(branding_file_path)
         branding_options = utils.read_file_line_by_line(abs_branding_file)
     else:
         branding_options = []
-
 
     saver = ProgressSaver(print_message)
     request.build(cmake_root, branding_options, 'build_' + platform_str, bs, packages, saver)
