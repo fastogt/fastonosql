@@ -15,7 +15,7 @@
 #include <netinet/in.h>
 
 #include "uthash.h"
-#include "../fasto/common/third-party/json-c/json-c/json.h"
+#include "../third-party/json-c/json-c/json.h"
 #include "server_config.h"
 
 #define MAXLINE 1024

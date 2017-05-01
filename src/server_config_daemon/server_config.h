@@ -6,8 +6,8 @@
 #define GET_FASTONOSQL_VERSION "FASTONOSQL_VERSION"
 #define GET_FASTOREDIS_VERSION "FASTOREDIS_VERSION"
 
-#define FASTONOSQL_URL "siteonyourdevice.com"
-#define FASTOREDIS_URL "siteonyourdevice.com"
+#define FASTONOSQL_URL "fastonosql.com"
+#define FASTOREDIS_URL "fastonosql.com"
 
 #define FIELD_OS "os"
 #define FIELD_OS_NAME "name"
