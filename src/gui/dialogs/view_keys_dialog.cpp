@@ -42,9 +42,8 @@
 #include "proxy/database/idatabase.h"  // for IDatabase
 #include "proxy/server/iserver.h"      // for IServer
 
-#include "gui/fasto_table_view.h"  // for FastoTableView
-#include "gui/gui_factory.h"       // for GuiFactory
-#include "gui/keys_table_model.h"  // for KeysTableModel, etc
+#include "gui/keys_table_view.h"
+#include "gui/gui_factory.h"  // for GuiFactory
 
 #include "translations/global.h"  // for trKeyCountOnThePage, etc
 
@@ -57,46 +56,6 @@ QPushButton* createButtonWithIcon(const QIcon& icon) {
   return button;
 }
 
-class NumericDelegate : public QStyledItemDelegate {
- public:
-  explicit NumericDelegate(QObject* parent = 0) : QStyledItemDelegate(parent) {}
-
-  QWidget* createEditor(QWidget* parent,
-                        const QStyleOptionViewItem& option,
-                        const QModelIndex& index) const override {
-    UNUSED(option);
-    UNUSED(index);
-
-    QSpinBox* editor = new QSpinBox(parent);
-    editor->setRange(-1, INT32_MAX);
-    editor->setValue(-1);
-    return editor;
-  }
-
-  void setEditorData(QWidget* editor, const QModelIndex& index) const override {
-    int value = index.model()->data(index, Qt::EditRole).toInt();
-
-    QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
-    spinBox->setValue(value);
-  }
-
-  void setModelData(QWidget* editor,
-                    QAbstractItemModel* model,
-                    const QModelIndex& index) const override {
-    QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
-    int value = spinBox->value();
-
-    model->setData(index, value, Qt::EditRole);
-  }
-
-  virtual void updateEditorGeometry(QWidget* editor,
-                                    const QStyleOptionViewItem& option,
-                                    const QModelIndex& index) const override {
-    UNUSED(index);
-
-    editor->setGeometry(option.rect);
-  }
-};
 }  // namespace
 
 namespace fastonosql {
@@ -138,13 +97,6 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QW
   VERIFY(connect(searchButton_, &QPushButton::clicked, this, &ViewKeysDialog::rightPageClicked));
   searchLayout->addWidget(searchButton_);
 
-  keysModel_ = new KeysTableModel(this);
-  QSortFilterProxyModel* proxy_model = new QSortFilterProxyModel(this);
-  proxy_model->setSourceModel(keysModel_);
-  proxy_model->setDynamicSortFilter(true);
-  VERIFY(connect(keysModel_, &KeysTableModel::changedTTL, this, &ViewKeysDialog::changeTTL,
-                 Qt::DirectConnection));
-
   VERIFY(connect(serv.get(), &proxy::IServer::ExecuteStarted, this, &ViewKeysDialog::startExecute,
                  Qt::DirectConnection));
   VERIFY(connect(serv.get(), &proxy::IServer::ExecuteFinished, this, &ViewKeysDialog::finishExecute,
@@ -152,12 +104,9 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QW
   VERIFY(connect(serv.get(), &proxy::IServer::KeyTTLChanged, this, &ViewKeysDialog::keyTTLChange,
                  Qt::DirectConnection));
 
-  keysTable_ = new FastoTableView;
-  keysTable_->setSortingEnabled(true);
-  keysTable_->sortByColumn(1, Qt::AscendingOrder);
-  keysTable_->setModel(proxy_model);
-  keysTable_->setAlternatingRowColors(true);
-  keysTable_->setItemDelegateForColumn(KeyTableItem::kTTL, new NumericDelegate(this));
+  keysTable_ = new KeysTableView;
+  VERIFY(connect(keysTable_, &KeysTableView::changedTTL, this, &ViewKeysDialog::changeTTL,
+                 Qt::DirectConnection));
 
   QDialogButtonBox* buttonBox =
       new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
@@ -203,7 +152,7 @@ void ViewKeysDialog::startLoadDatabaseContent(
     const proxy::events_info::LoadDatabaseContentRequest& req) {
   UNUSED(req);
 
-  keysModel_->clear();
+  keysTable_->clearItems();
 }
 
 void ViewKeysDialog::finishLoadDatabaseContent(
@@ -218,7 +167,7 @@ void ViewKeysDialog::finishLoadDatabaseContent(
   size_t size = keys.size();
   for (size_t i = 0; i < size; ++i) {
     core::NDbKValue key = keys[i];
-    keysModel_->insertItem(new KeyTableItem(key));
+    keysTable_->insertKey(key);
   }
 
   int curv = currentKey_->value();
@@ -258,7 +207,7 @@ void ViewKeysDialog::keyTTLChange(core::IDataBaseInfoSPtr db, core::NKey key, co
   UNUSED(db);
   core::NKey new_key = key;
   new_key.SetTTL(ttl);
-  keysModel_->updateKey(new_key);
+  keysTable_->updateKey(new_key);
 }
 
 void ViewKeysDialog::search(bool forward) {

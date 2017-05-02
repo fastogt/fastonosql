@@ -47,8 +47,7 @@ struct LoadDatabaseContentResponce;
 }
 namespace fastonosql {
 namespace gui {
-class FastoTableView;
-class KeysTableModel;
+class KeysTableView;
 }
 }
 
@@ -103,8 +102,7 @@ class ViewKeysDialog : public QDialog {
   QSpinBox* currentKey_;
   QSpinBox* countKey_;
   QPushButton* rightButtonList_;
-  FastoTableView* keysTable_;
-  KeysTableModel* keysModel_;
+  KeysTableView* keysTable_;
   proxy::IDatabaseSPtr db_;
 };
 

@@ -365,6 +365,7 @@ SET(HEADERS_GUI_TO_MOC
   gui/fasto_tree_view.h
   gui/fasto_common_model.h
   gui/fasto_table_view.h
+  gui/keys_table_view.h
   gui/fasto_scintilla.h
   gui/shell_widget.h
   gui/base_lexer.h
@@ -400,6 +401,7 @@ SET(SOURCES_GUI
   gui/fasto_tree_view.cpp
   gui/fasto_common_model.cpp
   gui/fasto_table_view.cpp
+  gui/keys_table_view.cpp
   gui/fasto_common_item.cpp
   gui/shortcuts.cpp
   gui/fasto_scintilla.cpp
