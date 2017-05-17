@@ -37,6 +37,8 @@ int main(int argc, char* argv[]) {
   app.setApplicationName(PROJECT_NAME);
   app.setApplicationVersion(PROJECT_VERSION);
   app.setAttribute(Qt::AA_UseHighDpiPixmaps);
+  // Cross Platform High DPI support - Qt 5.7
+  app.setAttribute(Qt::AA_EnableHighDpiScaling);
   app.setWindowIcon(fastonosql::gui::GuiFactory::Instance().logoIcon());  // default icon for app
 
   QFile file(":" PROJECT_NAME_LOWERCASE "/default.qss");
