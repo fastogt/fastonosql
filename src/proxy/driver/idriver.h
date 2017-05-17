@@ -165,7 +165,7 @@ class IDriver : public QObject, public core::CDBConnectionClient {
  private:
   QThread* thread_;
   int timer_info_id_;
-  common::file_system::File* log_file_;
+  common::file_system::ANSIFile* log_file_;
 };
 
 }  // namespace proxy

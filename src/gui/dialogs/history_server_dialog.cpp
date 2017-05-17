@@ -56,7 +56,7 @@ namespace gui {
 ServerHistoryDialog::ServerHistoryDialog(proxy::IServerSPtr server, QWidget* parent)
     : QDialog(parent, Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint), server_(server) {
   CHECK(server_);
-  setWindowIcon(GuiFactory::instance().icon(server_->Type()));
+  setWindowIcon(GuiFactory::Instance().icon(server_->Type()));
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
@@ -100,7 +100,7 @@ ServerHistoryDialog::ServerHistoryDialog(proxy::IServerSPtr server, QWidget* par
   setLayout(mainL);
 
   glassWidget_ =
-      new common::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
+      new common::qt::gui::GlassWidget(GuiFactory::Instance().pathToLoadingGif(),
                                        translations::trLoading, 0.5, QColor(111, 111, 100), this);
   VERIFY(connect(server.get(), &proxy::IServer::LoadServerHistoryInfoStarted, this,
                  &ServerHistoryDialog::startLoadServerHistoryInfo));

@@ -41,7 +41,7 @@ class CommandLogger : public QObject, public common::patterns::LazySingleton<Com
 };
 
 inline void LOG_COMMAND(core::FastoObjectCommandIPtr command) {
-  return CommandLogger::instance().Print(command);
+  return CommandLogger::Instance().Print(command);
 }
 
 }  // namespace proxy

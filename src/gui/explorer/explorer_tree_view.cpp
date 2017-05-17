@@ -1115,7 +1115,7 @@ void ExplorerTreeView::changeEvent(QEvent* e) {
 }
 
 void ExplorerTreeView::mouseDoubleClickEvent(QMouseEvent* e) {
-  if (proxy::SettingsManager::instance().FastViewKeys()) {
+  if (proxy::SettingsManager::Instance().FastViewKeys()) {
     loadValue();
   }
 

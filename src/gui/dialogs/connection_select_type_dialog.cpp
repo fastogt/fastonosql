@@ -49,7 +49,7 @@ ConnectionSelectTypeDialog::ConnectionSelectTypeDialog(QWidget* parent) : QDialo
     std::string str = common::ConvertToString(ct);
     QString qstr;
     if (common::ConvertFromString(str, &qstr)) {
-      typeConnection_->addItem(GuiFactory::instance().icon(ct), qstr, ct);
+      typeConnection_->addItem(GuiFactory::Instance().icon(ct), qstr, ct);
     }
   }
 

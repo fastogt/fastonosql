@@ -46,7 +46,7 @@ LoadContentDbDialog::LoadContentDbDialog(const QString& title,
                                          QWidget* parent)
     : QDialog(parent), type_(type) {
   setWindowTitle(title);
-  setWindowIcon(GuiFactory::instance().icon(type_));
+  setWindowIcon(GuiFactory::Instance().icon(type_));
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 

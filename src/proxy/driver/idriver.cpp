@@ -289,7 +289,7 @@ void IDriver::timerEvent(QTimerEvent* event) {
       }
       if (common::file_system::is_directory(dir) == common::SUCCESS) {
         common::file_system::ascii_string_path p(path);
-        log_file_ = new common::file_system::File(p);
+        log_file_ = new common::file_system::ANSIFile(p);
       }
     }
 
@@ -496,7 +496,7 @@ void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
 
   std::string path = settings_->LoggingPath();
   common::file_system::ascii_string_path p(path);
-  common::file_system::File readFile(p);
+  common::file_system::ANSIFile readFile(p);
   if (readFile.Open("rb")) {
     events::ServerInfoHistoryResponceEvent::value_type::infos_container_type tmpInfos;
 

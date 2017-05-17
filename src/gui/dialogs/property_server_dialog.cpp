@@ -54,7 +54,7 @@ PropertyServerDialog::PropertyServerDialog(proxy::IServerSPtr server, QWidget* p
     : QDialog(parent), server_(server) {
   CHECK(server_);
 
-  setWindowIcon(GuiFactory::instance().icon(server->Type()));
+  setWindowIcon(GuiFactory::Instance().icon(server->Type()));
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
@@ -71,7 +71,7 @@ PropertyServerDialog::PropertyServerDialog(proxy::IServerSPtr server, QWidget* p
   setLayout(mainL);
 
   glassWidget_ =
-      new common::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
+      new common::qt::gui::GlassWidget(GuiFactory::Instance().pathToLoadingGif(),
                                        translations::trLoading, 0.5, QColor(111, 111, 100), this);
 
   VERIFY(connect(server.get(), &proxy::IServer::LoadServerPropertyStarted, this,

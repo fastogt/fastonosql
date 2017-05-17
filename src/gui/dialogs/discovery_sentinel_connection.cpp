@@ -49,7 +49,7 @@ void DiscoverySentinelConnection::routine() {
   }
 
   common::Error er =
-      proxy::ServersManager::instance().DiscoverySentinelConnection(connection_, &inf);
+      proxy::ServersManager::Instance().DiscoverySentinelConnection(connection_, &inf);
 
   if (er && er->IsError()) {
     QString qdesc;

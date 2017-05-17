@@ -52,7 +52,7 @@ FastoEditor::FastoEditor(QWidget* parent) : QWidget(parent), scin_(nullptr) {
   prev_ = new QPushButton;
   caseSensitive_ = new QCheckBox;
 
-  close_->setIcon(GuiFactory::instance().close16Icon());
+  close_->setIcon(GuiFactory::Instance().close16Icon());
   close_->setToolButtonStyle(Qt::ToolButtonIconOnly);
   close_->setIconSize(QSize(16, 16));
   findLine_->setAlignment(Qt::AlignLeft | Qt::AlignAbsolute);

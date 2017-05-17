@@ -91,7 +91,7 @@ QVariant KeysTableModel::data(const QModelIndex& index, int role) const {
 
   int col = index.column();
   if (role == Qt::DecorationRole && col == KeyTableItem::kKey) {
-    return GuiFactory::instance().icon(node->type());
+    return GuiFactory::Instance().icon(node->type());
   }
 
   if (role == Qt::TextColorRole && col == KeyTableItem::kType) {

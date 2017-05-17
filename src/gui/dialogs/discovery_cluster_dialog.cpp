@@ -59,7 +59,7 @@ DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(
     proxy::IClusterSettingsBaseSPtr cluster)
     : QDialog(parent), cluster_(cluster) {
   setWindowTitle(translations::trConnectionDiscovery);
-  setWindowIcon(GuiFactory::instance().serverIcon());
+  setWindowIcon(GuiFactory::Instance().serverIcon());
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
@@ -71,7 +71,7 @@ DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(
 
   statusLabel_ = new QLabel(translations::trTimeTemplate_1S.arg("calculate..."));
   iconLabel_ = new QLabel;
-  QIcon icon = GuiFactory::instance().failIcon();
+  QIcon icon = GuiFactory::Instance().failIcon();
   const QPixmap pm = icon.pixmap(stateIconSize);
   iconLabel_->setPixmap(pm);
 
@@ -106,7 +106,7 @@ DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(
   setFixedSize(QSize(fix_width, fix_height));
   setLayout(mainLayout);
 
-  glassWidget_ = new common::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
+  glassWidget_ = new common::qt::gui::GlassWidget(GuiFactory::Instance().pathToLoadingGif(),
                                                   translations::trTryToConnect, 0.5,
                                                   QColor(111, 111, 100), this);
   testConnection(connection);
@@ -139,7 +139,7 @@ void DiscoveryClusterDiagnosticDialog::connectionResult(
   listWidget_->setEnabled(suc);
   listWidget_->clear();
   if (suc) {
-    QIcon icon = GuiFactory::instance().successIcon();
+    QIcon icon = GuiFactory::Instance().successIcon();
     const QPixmap pm = icon.pixmap(stateIconSize);
     iconLabel_->setPixmap(pm);
 
@@ -149,7 +149,7 @@ void DiscoveryClusterDiagnosticDialog::connectionResult(
       proxy::connection_path_t path(common::file_system::get_separator_string<char>() +
                                     inf->name());
       proxy::IConnectionSettingsBaseSPtr con(
-          proxy::ConnectionSettingsFactory::instance().CreateFromType(inf->connectionType(), path,
+          proxy::ConnectionSettingsFactory::Instance().CreateFromType(inf->connectionType(), path,
                                                                       host));
       ConnectionListWidgetItemDiscovered* item =
           new ConnectionListWidgetItemDiscovered(inf->info(), nullptr);

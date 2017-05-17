@@ -92,7 +92,7 @@ ChangePasswordServerDialog::ChangePasswordServerDialog(const QString& title,
   setMinimumSize(QSize(min_width, min_height));
   setLayout(mainLayout);
 
-  glassWidget_ = new common::qt::gui::GlassWidget(GuiFactory::instance().pathToLoadingGif(),
+  glassWidget_ = new common::qt::gui::GlassWidget(GuiFactory::Instance().pathToLoadingGif(),
                                                   translations::trTryToChangePassword, 0.5,
                                                   QColor(111, 111, 100), this);
 }

@@ -69,7 +69,7 @@ DbKeyDialog::DbKeyDialog(const QString& title,
                          QWidget* parent)
     : QDialog(parent), type_(type), key_(key) {
   bool is_edit = !key.Equals(core::NDbKValue());
-  setWindowIcon(GuiFactory::instance().icon(type));
+  setWindowIcon(GuiFactory::Instance().icon(type));
   setWindowTitle(title);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
@@ -89,7 +89,7 @@ DbKeyDialog::DbKeyDialog(const QString& title,
     }
     QString type;
     if (common::ConvertFromString(common::Value::GetTypeName(t), &type)) {
-      typesCombo_->addItem(GuiFactory::instance().icon(t), type, t);
+      typesCombo_->addItem(GuiFactory::Instance().icon(t), type, t);
     }
   }
 

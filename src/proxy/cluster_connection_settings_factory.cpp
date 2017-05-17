@@ -75,7 +75,7 @@ IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromString(const s
           ch = val[j];
           if (ch == magicNumber || j == len - 1) {
             IConnectionSettingsBaseSPtr ser(
-                ConnectionSettingsFactory::instance().CreateFromString(serText));
+                ConnectionSettingsFactory::Instance().CreateFromString(serText));
             result->AddNode(ser);
             serText.clear();
           } else {

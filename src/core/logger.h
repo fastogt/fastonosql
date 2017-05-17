@@ -44,5 +44,5 @@ void SET_LOG_WATCHER(fastonosql::core::LogWatcher* watcher);
 
 template <typename T>
 inline void LOG_CORE_MSG(T mess, common::logging::LEVEL_LOG level, bool notify) {
-  return fastonosql::core::Logger::instance().print(mess, level, notify);
+  return fastonosql::core::Logger::Instance().print(mess, level, notify);
 }

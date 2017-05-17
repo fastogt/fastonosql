@@ -78,7 +78,7 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
                                                                  QDialogButtonBox::AcceptRole));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &AboutDialog::reject));
 
-  QIcon icon = GuiFactory::instance().mainWindowIcon();
+  QIcon icon = GuiFactory::Instance().mainWindowIcon();
   QPixmap iconPixmap = icon.pixmap(48, 48);
 
   QLabel* logoLabel = new QLabel;

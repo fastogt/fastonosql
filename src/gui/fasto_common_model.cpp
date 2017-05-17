@@ -61,13 +61,13 @@ QVariant FastoCommonModel::data(const QModelIndex& index, int role) const {
   }
 
   if (role == Qt::FontRole) {
-    return gui::GuiFactory::instance().font();
+    return gui::GuiFactory::Instance().font();
   }
 
   int col = index.column();
 
   if (role == Qt::DecorationRole && col == FastoCommonItem::eKey) {
-    return GuiFactory::instance().icon(node->type());
+    return GuiFactory::Instance().icon(node->type());
   }
 
   if (role == Qt::TextColorRole && col == FastoCommonItem::eType) {

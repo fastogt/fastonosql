@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
   app.setApplicationName(PROJECT_NAME);
   app.setApplicationVersion(PROJECT_VERSION);
   app.setAttribute(Qt::AA_UseHighDpiPixmaps);
-  app.setWindowIcon(fastonosql::gui::GuiFactory::instance().logoIcon());  // default icon for app
+  app.setWindowIcon(fastonosql::gui::GuiFactory::Instance().logoIcon());  // default icon for app
 
   QFile file(":" PROJECT_NAME_LOWERCASE "/default.qss");
   file.open(QFile::ReadOnly);

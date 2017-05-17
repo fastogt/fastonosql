@@ -69,7 +69,7 @@ QVariant ChannelsTableModel::data(const QModelIndex& index, int role) const {
 
   int col = index.column();
   if (role == Qt::DecorationRole && col == ChannelTableItem::kName) {
-    return GuiFactory::instance().channelIcon();
+    return GuiFactory::Instance().channelIcon();
   }
 
   QVariant result;

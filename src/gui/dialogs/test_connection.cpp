@@ -42,7 +42,7 @@ void TestConnection::routine() {
     return;
   }
 
-  common::Error er = proxy::ServersManager::instance().TestConnection(connection_);
+  common::Error er = proxy::ServersManager::Instance().TestConnection(connection_);
 
   if (er && er->IsError()) {
     QString qdesc;

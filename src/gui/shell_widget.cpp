@@ -81,7 +81,7 @@ namespace gui {
 namespace {
 BaseShell* makeBaseShell(core::connectionTypes type, QWidget* parent) {
   BaseShell* shell =
-      BaseShell::createFromType(type, proxy::SettingsManager::instance().AutoCompletion());
+      BaseShell::createFromType(type, proxy::SettingsManager::Instance().AutoCompletion());
   parent->setToolTip(
       QObject::tr("Based on <b>%1</b> version: <b>%2</b>").arg(shell->basedOn(), shell->version()));
   shell->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -128,39 +128,39 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server,
 
   QToolBar* savebar = new QToolBar;
 
-  loadAction_ = new QAction(gui::GuiFactory::instance().loadIcon(), translations::trLoad, savebar);
+  loadAction_ = new QAction(gui::GuiFactory::Instance().loadIcon(), translations::trLoad, savebar);
   typedef void (BaseShellWidget::*lf)();
   VERIFY(connect(loadAction_, &QAction::triggered, this,
                  static_cast<lf>(&BaseShellWidget::loadFromFile)));
   savebar->addAction(loadAction_);
 
-  saveAction_ = new QAction(gui::GuiFactory::instance().saveIcon(), translations::trSave, savebar);
+  saveAction_ = new QAction(gui::GuiFactory::Instance().saveIcon(), translations::trSave, savebar);
   VERIFY(connect(saveAction_, &QAction::triggered, this, &BaseShellWidget::saveToFile));
   savebar->addAction(saveAction_);
 
   saveAsAction_ =
-      new QAction(gui::GuiFactory::instance().saveAsIcon(), translations::trSaveAs, savebar);
+      new QAction(gui::GuiFactory::Instance().saveAsIcon(), translations::trSaveAs, savebar);
   VERIFY(connect(saveAsAction_, &QAction::triggered, this, &BaseShellWidget::saveToFileAs));
   savebar->addAction(saveAsAction_);
 
   connectAction_ =
-      new QAction(gui::GuiFactory::instance().connectIcon(), translations::trConnect, savebar);
+      new QAction(gui::GuiFactory::Instance().connectIcon(), translations::trConnect, savebar);
   VERIFY(connect(connectAction_, &QAction::triggered, this, &BaseShellWidget::connectToServer));
   savebar->addAction(connectAction_);
 
-  disConnectAction_ = new QAction(gui::GuiFactory::instance().disConnectIcon(),
+  disConnectAction_ = new QAction(gui::GuiFactory::Instance().disConnectIcon(),
                                   translations::trDisconnect, savebar);
   VERIFY(connect(disConnectAction_, &QAction::triggered, this,
                  &BaseShellWidget::disconnectFromServer));
   savebar->addAction(disConnectAction_);
 
   executeAction_ =
-      new QAction(gui::GuiFactory::instance().executeIcon(), translations::trExecute, savebar);
+      new QAction(gui::GuiFactory::Instance().executeIcon(), translations::trExecute, savebar);
   executeAction_->setShortcut(gui::executeKey);
   VERIFY(connect(executeAction_, &QAction::triggered, this, &BaseShellWidget::execute));
   savebar->addAction(executeAction_);
 
-  stopAction_ = new QAction(gui::GuiFactory::instance().stopIcon(), translations::trStop, savebar);
+  stopAction_ = new QAction(gui::GuiFactory::Instance().stopIcon(), translations::trStop, savebar);
   VERIFY(connect(stopAction_, &QAction::triggered, this, &BaseShellWidget::stop));
   savebar->addAction(stopAction_);
 
@@ -168,7 +168,7 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server,
   std::string mode_str = common::ConvertToString(mode);
   QString qmode_str;
   common::ConvertFromString(mode_str, &qmode_str);
-  connectionMode_ = new common::qt::gui::IconLabel(gui::GuiFactory::instance().modeIcon(mode),
+  connectionMode_ = new common::qt::gui::IconLabel(gui::GuiFactory::Instance().modeIcon(mode),
                                                    qmode_str, iconSize);
 
   hlayout->addWidget(savebar);
@@ -180,12 +180,12 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server,
   hlayout->addWidget(workProgressBar_);
   QToolBar* helpbar = new QToolBar;
   validateAction_ =
-      new QAction(gui::GuiFactory::instance().failIcon(), translations::trValidate, helpbar);
+      new QAction(gui::GuiFactory::Instance().failIcon(), translations::trValidate, helpbar);
   VERIFY(connect(validateAction_, &QAction::triggered, this, &BaseShellWidget::validateClick));
   helpbar->addAction(validateAction_);
 
   QAction* helpAction =
-      new QAction(gui::GuiFactory::instance().helpIcon(), translations::trHelp, helpbar);
+      new QAction(gui::GuiFactory::Instance().helpIcon(), translations::trHelp, helpbar);
   VERIFY(connect(helpAction, &QAction::triggered, this, &BaseShellWidget::helpClick));
   helpbar->addAction(helpAction);
   hlayout->addWidget(helpbar);
@@ -229,10 +229,10 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server,
   QHBoxLayout* hlayout2 = new QHBoxLayout;
   core::connectionTypes ct = server_->Type();
   serverName_ =
-      new common::qt::gui::IconLabel(gui::GuiFactory::instance().icon(ct), trCalculating, iconSize);
+      new common::qt::gui::IconLabel(gui::GuiFactory::Instance().icon(ct), trCalculating, iconSize);
   serverName_->setElideMode(Qt::ElideRight);
   hlayout2->addWidget(serverName_);
-  dbName_ = new common::qt::gui::IconLabel(gui::GuiFactory::instance().databaseIcon(),
+  dbName_ = new common::qt::gui::IconLabel(gui::GuiFactory::Instance().databaseIcon(),
                                            trCalculating, iconSize);
   hlayout2->addWidget(dbName_);
   hlayout2->addWidget(new QSplitter(Qt::Horizontal));
@@ -260,7 +260,7 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server,
     std::string curVers = core::ConvertVersionNumberToReadableString(cur);
     QString qcurVers;
     common::ConvertFromString(curVers, &qcurVers);
-    commandsVersionApi_->addItem(gui::GuiFactory::instance().unknownIcon(), qcurVers, cur);
+    commandsVersionApi_->addItem(gui::GuiFactory::Instance().unknownIcon(), qcurVers, cur);
     commandsVersionApi_->setCurrentIndex(i);
   }
   apilayout->addWidget(new QLabel(trCommandsVersion));
@@ -427,9 +427,9 @@ void BaseShellWidget::inputTextChanged() {
   QString text = input_->text();
   common::Error err = validate(text);
   if (err && err->IsError()) {
-    validateAction_->setIcon(gui::GuiFactory::instance().failIcon());
+    validateAction_->setIcon(gui::GuiFactory::Instance().failIcon());
   } else {
-    validateAction_->setIcon(gui::GuiFactory::instance().successIcon());
+    validateAction_->setIcon(gui::GuiFactory::Instance().successIcon());
   }
 }
 
@@ -463,7 +463,7 @@ void BaseShellWidget::progressChange(const proxy::events_info::ProgressInfoRespo
 
 void BaseShellWidget::enterMode(const proxy::events_info::EnterModeInfo& res) {
   core::ConnectionMode mode = res.mode;
-  connectionMode_->setIcon(gui::GuiFactory::instance().modeIcon(mode), iconSize);
+  connectionMode_->setIcon(gui::GuiFactory::Instance().modeIcon(mode), iconSize);
   std::string modeText = common::ConvertToString(mode);
   QString qmodeText;
   common::ConvertFromString(modeText, &qmodeText);
@@ -522,7 +522,7 @@ void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
   if (!inf) {
     serverName_->setText(trCalculating);
     for (int i = 0; i < commandsVersionApi_->count(); ++i) {
-      commandsVersionApi_->setItemIcon(i, gui::GuiFactory::instance().unknownIcon());
+      commandsVersionApi_->setItemIcon(i, gui::GuiFactory::Instance().unknownIcon());
     }
     return;
   }
@@ -549,7 +549,7 @@ void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
     QVariant var = commandsVersionApi_->itemData(i);
     uint32_t version = qvariant_cast<uint32_t>(var);
     if (version == UNDEFINED_SINCE) {
-      commandsVersionApi_->setItemIcon(i, gui::GuiFactory::instance().unknownIcon());
+      commandsVersionApi_->setItemIcon(i, gui::GuiFactory::Instance().unknownIcon());
       continue;
     }
 
@@ -557,12 +557,12 @@ void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
       if (!updatedComboIndex) {
         updatedComboIndex = true;
         commandsVersionApi_->setCurrentIndex(i);
-        commandsVersionApi_->setItemIcon(i, gui::GuiFactory::instance().successIcon());
+        commandsVersionApi_->setItemIcon(i, gui::GuiFactory::Instance().successIcon());
       } else {
-        commandsVersionApi_->setItemIcon(i, gui::GuiFactory::instance().failIcon());
+        commandsVersionApi_->setItemIcon(i, gui::GuiFactory::Instance().failIcon());
       }
     } else {
-      commandsVersionApi_->setItemIcon(i, gui::GuiFactory::instance().successIcon());
+      commandsVersionApi_->setItemIcon(i, gui::GuiFactory::Instance().successIcon());
     }
   }
 }

@@ -113,7 +113,7 @@ BaseShell::BaseShell(core::connectionTypes type, bool showAutoCompl, QWidget* pa
   }
 #endif
   registerImage(BaseQsciLexer::Command,
-                gui::GuiFactory::instance().commandIcon(type).pixmap(image_size));
+                gui::GuiFactory::Instance().commandIcon(type).pixmap(image_size));
 
   if (!lex) {
     NOTREACHED();
@@ -121,7 +121,7 @@ BaseShell::BaseShell(core::connectionTypes type, bool showAutoCompl, QWidget* pa
   }
 
   setLexer(lex);
-  lex->setFont(gui::GuiFactory::instance().font());
+  lex->setFont(gui::GuiFactory::Instance().font());
 }
 
 BaseQsciLexer* BaseShell::lexer() const {

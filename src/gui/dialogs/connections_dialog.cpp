@@ -49,7 +49,7 @@ namespace fastonosql {
 namespace gui {
 
 ConnectionsDialog::ConnectionsDialog(QWidget* parent) : QDialog(parent) {
-  setWindowIcon(GuiFactory::instance().connectIcon());
+  setWindowIcon(GuiFactory::Instance().connectIcon());
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
@@ -82,7 +82,7 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent) : QDialog(parent) {
   QDialogButtonBox* buttonBox =
       new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
-  buttonBox->button(QDialogButtonBox::Ok)->setIcon(GuiFactory::instance().serverIcon());
+  buttonBox->button(QDialogButtonBox::Ok)->setIcon(GuiFactory::Instance().serverIcon());
   acButton_ = buttonBox->button(QDialogButtonBox::Ok);
 
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &ConnectionsDialog::accept));
@@ -94,27 +94,27 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent) : QDialog(parent) {
   QToolBar* savebar = new QToolBar;
 
   QAction* addB =
-      new QAction(GuiFactory::instance().loadIcon(), translations::trAddConnection, savebar);
+      new QAction(GuiFactory::Instance().loadIcon(), translations::trAddConnection, savebar);
   VERIFY(connect(addB, &QAction::triggered, this, &ConnectionsDialog::add));
   savebar->addAction(addB);
 
-  QAction* addc = new QAction(GuiFactory::instance().clusterIcon(),
+  QAction* addc = new QAction(GuiFactory::Instance().clusterIcon(),
                               translations::trAddClusterConnection, savebar);
   VERIFY(connect(addc, &QAction::triggered, this, &ConnectionsDialog::addCls));
   savebar->addAction(addc);
 
-  QAction* adds = new QAction(GuiFactory::instance().sentinelIcon(),
+  QAction* adds = new QAction(GuiFactory::Instance().sentinelIcon(),
                               translations::trAddSentinelConnection, savebar);
   VERIFY(connect(adds, &QAction::triggered, this, &ConnectionsDialog::addSent));
   savebar->addAction(adds);
 
   QAction* rmB =
-      new QAction(GuiFactory::instance().removeIcon(), translations::trRemoveConnection, savebar);
+      new QAction(GuiFactory::Instance().removeIcon(), translations::trRemoveConnection, savebar);
   VERIFY(connect(rmB, &QAction::triggered, this, &ConnectionsDialog::remove));
   savebar->addAction(rmB);
 
   QAction* editB =
-      new QAction(GuiFactory::instance().editIcon(), translations::trEditConnection, savebar);
+      new QAction(GuiFactory::Instance().editIcon(), translations::trEditConnection, savebar);
   VERIFY(connect(editB, &QAction::triggered, this, &ConnectionsDialog::edit));
   savebar->addAction(editB);
 
@@ -127,19 +127,19 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent) : QDialog(parent) {
   mainLayout->addLayout(firstColumnLayout, 1);
 
   // Populate list with connections
-  auto connections = proxy::SettingsManager::instance().Connections();
+  auto connections = proxy::SettingsManager::Instance().Connections();
   for (auto it = connections.begin(); it != connections.end(); ++it) {
     proxy::IConnectionSettingsBaseSPtr connectionModel = (*it);
     addConnection(connectionModel);
   }
 
-  auto sentinels = proxy::SettingsManager::instance().Sentinels();
+  auto sentinels = proxy::SettingsManager::Instance().Sentinels();
   for (auto it = sentinels.begin(); it != sentinels.end(); ++it) {
     proxy::ISentinelSettingsBaseSPtr connectionModel = (*it);
     addSentinel(connectionModel);
   }
 
-  auto clusters = proxy::SettingsManager::instance().Clusters();
+  auto clusters = proxy::SettingsManager::Instance().Clusters();
   for (auto it = clusters.begin(); it != clusters.end(); ++it) {
     proxy::IClusterSettingsBaseSPtr connectionModel = (*it);
     addCluster(connectionModel);
@@ -196,7 +196,7 @@ void ConnectionsDialog::add() {
   result = dlg.exec();
   proxy::IConnectionSettingsBaseSPtr p = dlg.connection();
   if (result == QDialog::Accepted && p) {
-    proxy::SettingsManager::instance().AddConnection(p);
+    proxy::SettingsManager::Instance().AddConnection(p);
     addConnection(p);
   }
 }
@@ -206,7 +206,7 @@ void ConnectionsDialog::addCls() {
   int result = dlg.exec();
   proxy::IClusterSettingsBaseSPtr p = dlg.connection();
   if (result == QDialog::Accepted && p) {
-    proxy::SettingsManager::instance().AddCluster(p);
+    proxy::SettingsManager::Instance().AddCluster(p);
     addCluster(p);
   }
 }
@@ -216,7 +216,7 @@ void ConnectionsDialog::addSent() {
   int result = dlg.exec();
   proxy::ISentinelSettingsBaseSPtr p = dlg.connection();
   if (result == QDialog::Accepted && p) {
-    proxy::SettingsManager::instance().AddSentinel(p);
+    proxy::SettingsManager::Instance().AddSentinel(p);
     addSentinel(p);
   }
 }
@@ -331,8 +331,8 @@ void ConnectionsDialog::editConnection(ConnectionListWidgetItem* connectionItem)
   int result = dlg.exec();
   proxy::IConnectionSettingsBaseSPtr newConnection = dlg.connection();
   if (result == QDialog::Accepted && newConnection) {
-    proxy::SettingsManager::instance().RemoveConnection(con);
-    proxy::SettingsManager::instance().AddConnection(newConnection);
+    proxy::SettingsManager::Instance().RemoveConnection(con);
+    proxy::SettingsManager::Instance().AddConnection(newConnection);
 
     delete connectionItem;
     addConnection(newConnection);
@@ -347,8 +347,8 @@ void ConnectionsDialog::editCluster(ClusterConnectionListWidgetItemContainer* cl
   int result = dlg.exec();
   proxy::IClusterSettingsBaseSPtr newConnection = dlg.connection();
   if (result == QDialog::Accepted && newConnection) {
-    proxy::SettingsManager::instance().RemoveCluster(con);
-    proxy::SettingsManager::instance().AddCluster(newConnection);
+    proxy::SettingsManager::Instance().RemoveCluster(con);
+    proxy::SettingsManager::Instance().AddCluster(newConnection);
 
     delete clusterItem;
     addCluster(newConnection);
@@ -363,8 +363,8 @@ void ConnectionsDialog::editSentinel(SentinelConnectionListWidgetItemContainer* 
   int result = dlg.exec();
   proxy::ISentinelSettingsBaseSPtr newConnection = dlg.connection();
   if (result == QDialog::Accepted && newConnection) {
-    proxy::SettingsManager::instance().RemoveSentinel(con);
-    proxy::SettingsManager::instance().AddSentinel(newConnection);
+    proxy::SettingsManager::Instance().RemoveSentinel(con);
+    proxy::SettingsManager::Instance().AddSentinel(newConnection);
 
     delete sentinelItem;
     addSentinel(newConnection);
@@ -386,7 +386,7 @@ void ConnectionsDialog::removeConnection(ConnectionListWidgetItem* connectionIte
 
   proxy::IConnectionSettingsBaseSPtr connection = connectionItem->connection();
   delete connectionItem;
-  proxy::SettingsManager::instance().RemoveConnection(connection);
+  proxy::SettingsManager::Instance().RemoveConnection(connection);
 }
 
 void ConnectionsDialog::removeCluster(ClusterConnectionListWidgetItemContainer* clusterItem) {
@@ -404,7 +404,7 @@ void ConnectionsDialog::removeCluster(ClusterConnectionListWidgetItemContainer* 
 
   proxy::IClusterSettingsBaseSPtr connection = clusterItem->connection();
   delete clusterItem;
-  proxy::SettingsManager::instance().RemoveCluster(connection);
+  proxy::SettingsManager::Instance().RemoveCluster(connection);
 }
 
 void ConnectionsDialog::removeSentinel(SentinelConnectionListWidgetItemContainer* sentinelItem) {
@@ -422,7 +422,7 @@ void ConnectionsDialog::removeSentinel(SentinelConnectionListWidgetItemContainer
 
   proxy::ISentinelSettingsBaseSPtr connection = sentinelItem->connection();
   delete sentinelItem;
-  proxy::SettingsManager::instance().RemoveSentinel(connection);
+  proxy::SettingsManager::Instance().RemoveSentinel(connection);
 }
 
 /**

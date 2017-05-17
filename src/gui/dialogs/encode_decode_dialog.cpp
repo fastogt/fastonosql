@@ -45,7 +45,7 @@ namespace fastonosql {
 namespace gui {
 
 EncodeDecodeDialog::EncodeDecodeDialog(QWidget* parent) : QDialog(parent) {
-  setWindowIcon(GuiFactory::instance().encodeDecodeIcon());
+  setWindowIcon(GuiFactory::Instance().encodeDecodeIcon());
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
@@ -57,7 +57,7 @@ EncodeDecodeDialog::EncodeDecodeDialog(QWidget* parent) : QDialog(parent) {
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &EncodeDecodeDialog::reject));
 
   QToolButton* decode = new QToolButton;
-  decode->setIcon(GuiFactory::instance().executeIcon());
+  decode->setIcon(GuiFactory::Instance().executeIcon());
   VERIFY(connect(decode, &QToolButton::clicked, this, &EncodeDecodeDialog::decodeOrEncode));
 
   decoders_ = new QComboBox;

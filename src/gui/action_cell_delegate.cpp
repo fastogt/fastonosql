@@ -63,8 +63,8 @@ void ActionDelegate::paint(QPainter* painter,
   pb_Style.text = QString();
   pb_Style.iconSize = QSize(16, 16);
   pb_Style.icon = node->actionState() == KeyValueTableItem::AddAction
-                      ? GuiFactory::instance().addIcon()
-                      : GuiFactory::instance().removeIcon();
+                      ? GuiFactory::Instance().addIcon()
+                      : GuiFactory::Instance().removeIcon();
   if (current_index_.row() == index.row()) {
     pb_Style.state |= QStyle::State_Sunken;
   } else {
