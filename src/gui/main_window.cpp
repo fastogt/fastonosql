@@ -417,18 +417,18 @@ void MainWindow::importConnection() {
 
   common::file_system::ascii_string_path wp(tmp);
   common::file_system::ANSIFile writeFile(wp);
-  bool openedw = writeFile.Open("wb");
-  if (!openedw) {
+  common::Error err = writeFile.Open("wb");
+  if (err && err->IsError()) {
     QMessageBox::critical(this, translations::trError, trImportSettingsFailed);
     return;
   }
 
   common::file_system::ascii_string_path rp(common::ConvertToString(filepathR));
   common::file_system::ANSIFile readFile(rp);
-  bool openedr = readFile.Open("rb");
-  if (!openedr) {
+  err = readFile.Open("rb");
+  if (err && err->IsError()) {
     writeFile.Close();
-    common::Error err = common::file_system::remove_file(wp.Path());
+    err = common::file_system::remove_file(wp.Path());
     if (err && err->IsError()) {
       DNOTREACHED();
     }
@@ -440,7 +440,7 @@ void MainWindow::importConnection() {
   if (!hexEnc) {
     readFile.Close();
     writeFile.Close();
-    common::Error err = common::file_system::remove_file(wp.Path());
+    err = common::file_system::remove_file(wp.Path());
     if (err && err->IsError()) {
       DNOTREACHED();
     }
@@ -448,7 +448,7 @@ void MainWindow::importConnection() {
     return;
   }
 
-  while (!readFile.IsEof()) {
+  while (!readFile.IsEOF()) {
     std::string data;
     bool res = readFile.Read(&data, 256);
     if (!res) {
@@ -474,7 +474,7 @@ void MainWindow::importConnection() {
   readFile.Close();
   writeFile.Close();
   proxy::SettingsManager::Instance().ReloadFromPath(tmp, false);
-  common::Error err = common::file_system::remove_file(tmp);
+  err = common::file_system::remove_file(tmp);
   if (err && err->IsError()) {
     DNOTREACHED();
   }
@@ -493,16 +493,16 @@ void MainWindow::exportConnection() {
 
   common::file_system::ascii_string_path wp(common::ConvertToString(filepathW));
   common::file_system::ANSIFile writeFile(wp);
-  bool openedw = writeFile.Open("wb");
-  if (!openedw) {
+  common::Error err = writeFile.Open("wb");
+  if (err && err->IsError()) {
     QMessageBox::critical(this, translations::trError, trExportSettingsFailed);
     return;
   }
 
   common::file_system::ascii_string_path rp(proxy::SettingsManager::SettingsFilePath());
   common::file_system::ANSIFile readFile(rp);
-  bool openedr = readFile.Open("rb");
-  if (!openedr) {
+  err = readFile.Open("rb");
+  if (err && err->IsError()) {
     writeFile.Close();
     common::Error err = common::file_system::remove_file(wp.Path());
     if (err && err->IsError()) {
@@ -524,10 +524,10 @@ void MainWindow::exportConnection() {
     return;
   }
 
-  while (!readFile.IsEof()) {
+  while (!readFile.IsEOF()) {
     std::string data;
     bool res = readFile.ReadLine(&data);
-    if (!res || readFile.IsEof()) {
+    if (!res || readFile.IsEOF()) {
       break;
     }
 

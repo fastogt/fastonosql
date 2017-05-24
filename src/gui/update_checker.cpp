@@ -42,7 +42,7 @@ void UpdateChecker::routine() {
 #else
 #error please specify url and port of version information
 #endif
-  common::ErrnoError err = client.connect();
+  common::ErrnoError err = client.Connect();
   if (err && err->IsError()) {
     emit versionAvailibled(false, QString());
     return;
@@ -50,31 +50,31 @@ void UpdateChecker::routine() {
 
   size_t nwrite = 0;
 #if defined(FASTONOSQL)
-  err = client.write(GET_FASTONOSQL_VERSION, sizeof(GET_FASTONOSQL_VERSION) - 1, &nwrite);
+  err = client.Write(GET_FASTONOSQL_VERSION, sizeof(GET_FASTONOSQL_VERSION) - 1, &nwrite);
 #elif defined(FASTOREDIS)
-  err = client.write(GET_FASTOREDIS_VERSION, sizeof(GET_FASTOREDIS_VERSION) - 1, &nwrite);
+  err = client.Write(GET_FASTOREDIS_VERSION, sizeof(GET_FASTOREDIS_VERSION) - 1, &nwrite);
 #else
 #error please specify request to get version information
 #endif
   if (err && err->IsError()) {
     emit versionAvailibled(false, QString());
-    DCHECK(!client.close());
+    DCHECK(!client.Close());
     return;
   }
 
   char version[128] = {0};
   size_t nread = 0;
-  err = client.read(version, sizeof(version), &nread);
+  err = client.Read(version, sizeof(version), &nread);
   if (err && err->IsError()) {
     emit versionAvailibled(false, QString());
-    DCHECK(!client.close());
+    DCHECK(!client.Close());
     return;
   }
 
   QString qvers;
   common::ConvertFromString(version, &qvers);
   emit versionAvailibled(true, qvers);
-  DCHECK(!client.close());
+  DCHECK(!client.Close());
   return;
 }
 

@@ -294,8 +294,10 @@ void IDriver::timerEvent(QTimerEvent* event) {
     }
 
     if (log_file_ && !log_file_->IsOpened()) {
-      bool opened = log_file_->Open("ab+");
-      DCHECK(opened);
+      common::Error err = log_file_->Open("ab+");
+      if (err && err->IsError()) {
+        DNOTREACHED();
+      }
     }
 
     if (log_file_ && log_file_->IsOpened()) {
@@ -503,10 +505,10 @@ void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
     common::time64_t curStamp = 0;
     common::buffer_t dataInfo;
 
-    while (!readFile.IsEof()) {
+    while (!readFile.IsEOF()) {
       common::buffer_t data;
       bool res = readFile.ReadLine(&data);
-      if (!res || readFile.IsEof()) {
+      if (!res || readFile.IsEOF()) {
         if (curStamp) {
           struct core::ServerInfoSnapShoot shoot(
               curStamp, MakeServerInfoFromString(common::ConvertToString(dataInfo)));

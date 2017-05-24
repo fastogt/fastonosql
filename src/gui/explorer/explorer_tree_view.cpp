@@ -359,7 +359,7 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       proxy::IServerRemote* rserver = dynamic_cast<proxy::IServerRemote*>(server.get());  // +
       CHECK(rserver);
       common::net::HostAndPort host = rserver->Host();
-      is_local = host.isLocalHost();
+      is_local = host.IsLocalHost();
     }
 
     importAction_->setEnabled(!is_connected && is_local && is_redis);

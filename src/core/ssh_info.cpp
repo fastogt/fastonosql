@@ -89,7 +89,7 @@ namespace fastonosql {
 namespace core {
 
 SSHInfo::SSHInfo()
-    : host(common::net::HostAndPort::createLocalHost(DEFAULT_SSH_PORT)),
+    : host(common::net::HostAndPort::CreateLocalHost(DEFAULT_SSH_PORT)),
       user_name(),
       password(),
       public_key(common::file_system::prepare_path(DEFAULT_PUB_KEY_PATH)),
@@ -112,7 +112,7 @@ SSHInfo::SSHInfo(const common::net::HostAndPort& host,
       current_method(method) {}
 
 SSHInfo::SSHInfo(const std::string& text)
-    : host(common::net::HostAndPort::createLocalHost(DEFAULT_SSH_PORT)),
+    : host(common::net::HostAndPort::CreateLocalHost(DEFAULT_SSH_PORT)),
       user_name(),
       password(),
       public_key(common::file_system::prepare_path(DEFAULT_PUB_KEY_PATH)),
