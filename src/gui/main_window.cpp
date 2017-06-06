@@ -456,7 +456,7 @@ void MainWindow::importConnection() {
     }
 
     std::string edata;
-    common::Error er = hexEnc->decode(data, &edata);
+    common::Error er = hexEnc->Decode(data, &edata);
     if (er && er->IsError()) {
       readFile.Close();
       writeFile.Close();
@@ -532,7 +532,7 @@ void MainWindow::exportConnection() {
     }
 
     std::string edata;
-    common::Error er = hexEnc->encode(data, &edata);
+    common::Error er = hexEnc->Encode(data, &edata);
     if (er && er->IsError()) {
       readFile.Close();
       writeFile.Close();

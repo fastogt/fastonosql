@@ -135,7 +135,7 @@ QString toHex(FastoCommonItem* item) {
 
     std::string hexstr;
     common::HexEDcoder hex;
-    common::Error err = hex.encode(sval, &hexstr);
+    common::Error err = hex.Encode(sval, &hexstr);
     if (err && err->IsError()) {
       return QString();
     }
@@ -183,7 +183,7 @@ QString fromGzip(FastoCommonItem* item) {
     std::string sval = common::ConvertToString(val);
     std::string out;
     common::CompressEDcoder enc;
-    common::Error err = enc.decode(sval, &out);
+    common::Error err = enc.Decode(sval, &out);
     if (err && err->IsError()) {
       return QString();
     }
@@ -211,14 +211,14 @@ QString fromHexMsgPack(FastoCommonItem* item) {
 
     common::HexEDcoder hex;
     std::string hexstr;
-    common::Error err = hex.decode(sval, &hexstr);
+    common::Error err = hex.Decode(sval, &hexstr);
     if (err && err->IsError()) {
       return QString();
     }
 
     common::MsgPackEDcoder msg;
     std::string upack;
-    err = msg.decode(hexstr, &upack);
+    err = msg.Decode(hexstr, &upack);
     if (err && err->IsError()) {
       return QString();
     }

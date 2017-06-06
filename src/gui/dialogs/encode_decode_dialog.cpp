@@ -118,7 +118,7 @@ void EncodeDecodeDialog::decodeOrEncode() {
 
   std::string sin = common::ConvertToString(in);
   std::string out;
-  common::Error er = encodeButton_->isChecked() ? dec->encode(sin, &out) : dec->decode(sin, &out);
+  common::Error er = encodeButton_->isChecked() ? dec->Encode(sin, &out) : dec->Decode(sin, &out);
   if (er && er->IsError()) {
     delete dec;
     return;
