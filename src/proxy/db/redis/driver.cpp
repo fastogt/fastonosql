@@ -541,9 +541,8 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
               common::ArrayValue* array_sub_inner = array_sub->Array();
               common::Value* fund_sub = nullptr;
               if (array_sub_inner->Get(1, &fund_sub)) {
-                std::string sub;
-                uint32_t lsub;
-                if (fund_sub->GetAsString(&sub) && common::ConvertFromString(sub, &lsub)) {
+                long long lsub;
+                if (fund_sub->GetAsLongLongInteger(&lsub)) {
                   res.channels[i].SetNumberOfSubscribers(lsub);
                 }
               }
