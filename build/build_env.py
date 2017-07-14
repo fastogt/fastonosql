@@ -77,7 +77,7 @@ class BuildRequest(object):
         make_install.append('install')
 
         try:
-            cloned_dir = utils.git_clone('https://github.com/fastogt/common.git', pwd)
+            cloned_dir = utils.git_clone('https://github.com/fastogt/common.git', abs_dir_path)
             os.chdir(cloned_dir)
 
             os.mkdir('build_cmake_release')
@@ -94,7 +94,7 @@ class BuildRequest(object):
             raise ex
 
         try:
-            cloned_dir = utils.git_clone('https://github.com/fastogt/qscintilla.git', pwd)
+            cloned_dir = utils.git_clone('https://github.com/fastogt/qscintilla.git', abs_dir_path)
             qsci_src_path = os.path.join(cloned_dir, 'Qt4Qt5')
             os.chdir(qsci_src_path)
 
@@ -111,7 +111,7 @@ class BuildRequest(object):
             raise ex
 
         try:
-            cloned_dir = utils.git_clone('https://github.com/fastogt/libssh2.git', pwd)
+            cloned_dir = utils.git_clone('https://github.com/fastogt/libssh2.git', abs_dir_path)
             os.chdir(cloned_dir)
 
             os.mkdir('build_cmake_release')
@@ -137,7 +137,7 @@ class BuildRequest(object):
         build_external_system_args = bs_external.cmd_line()
 
         try:
-            cloned_dir = utils.git_clone('https://github.com/fastogt/leveldb.git', pwd)
+            cloned_dir = utils.git_clone('https://github.com/fastogt/leveldb.git', abs_dir_path)
             os.chdir(cloned_dir)
 
             make_leveldb = list(build_external_system_args)
@@ -156,7 +156,7 @@ class BuildRequest(object):
             raise ex
 
         try:
-            cloned_dir = utils.git_clone('https://github.com/fastogt/rocksdb.git', pwd)
+            cloned_dir = utils.git_clone('https://github.com/fastogt/rocksdb.git', abs_dir_path)
             os.chdir(cloned_dir)
 
             make_install_rocksdb = list(build_external_system_args)
@@ -171,7 +171,7 @@ class BuildRequest(object):
             raise ex
 
         try:
-            cloned_dir = utils.git_clone('https://github.com/fastogt/upscaledb.git', pwd)
+            cloned_dir = utils.git_clone('https://github.com/fastogt/upscaledb.git', abs_dir_path)
             os.chdir(cloned_dir)
             bootstrap_policy = run_command.CommonPolicy(print_message)
             bootstrap_upscaledb = ['sh', 'bootstrap.sh']
