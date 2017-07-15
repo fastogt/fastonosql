@@ -3,6 +3,8 @@
 - [Memcached, SSDB] Can't save connection setting for memcached. #31
 - [Redis] Added BITFIELD command
 - [LevelDB] Update sources to version 1.20
+- [LMDB] Update sources to version 0.9.70
+- [RocksDB] Update sources to version 5.7.0
 
 1.5.1 / May 18, 2017
 [Alexandr Topilski]

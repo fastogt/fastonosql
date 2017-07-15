@@ -106,7 +106,6 @@ std::string IServer::Name() const {
 
 core::IServerInfoSPtr IServer::CurrentServerInfo() const {
   if (IsConnected()) {
-    DCHECK(server_info_);
     return server_info_;
   }
 
