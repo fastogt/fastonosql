@@ -122,12 +122,12 @@ class Buffer{
 		char *data_;
 		int size_;
 		int total_;
-		int origin_total;
 	public:
 		Buffer(int total);
 		~Buffer();
 
-		int total() const{ // 缓冲区大小
+		// 缓冲区大小
+		int total() const{
 			return total_;
 		}
 

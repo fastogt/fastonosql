@@ -19,6 +19,7 @@
 #include "core/logger.h"
 
 #include <common/logger.h>
+
 namespace {
 fastonosql::core::LogWatcher* g_watcher = nullptr;
 }

@@ -5,6 +5,8 @@
 - [LevelDB] Update sources to version 1.20
 - [LMDB] Update sources to version 0.9.70
 - [RocksDB] Update sources to version 5.7.0
+- [SSDB] Update sources to version 1.9.4
+- [UpscaleDB] Update sources to version 2.2.1
 
 1.5.1 / May 18, 2017
 [Alexandr Topilski]

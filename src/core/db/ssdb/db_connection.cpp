@@ -73,7 +73,7 @@ const char* CDBConnection<ssdb::NativeConnection, ssdb::Config, SSDB>::BasedOn()
 
 template <>
 const char* CDBConnection<ssdb::NativeConnection, ssdb::Config, SSDB>::VersionApi() {
-  return "1.9.3";
+  return "1.9.4";
 }
 
 template <>
