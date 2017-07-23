@@ -28,6 +28,7 @@
 #include <common/text_decoders/compress_edcoder.h>  // for CompressEDcoder
 #include <common/text_decoders/hex_edcoder.h>       // for HexEDcoder
 #include <common/text_decoders/msgpack_edcoder.h>   // for MsgPackEDcoder
+#include <common/utils.h>
 
 #include <common/qt/gui/base/tree_item.h>  // for TreeItem
 
@@ -92,7 +93,7 @@ QString toJson(FastoCommonItem* item) {
       return QString();
     }
 
-    const char* jstring = json_object_get_string(obj);
+    const char* jstring = json_object_to_json_string_ext(obj, JSON_C_TO_STRING_PRETTY);
     QString result;
     common::ConvertFromString(jstring, &result);
     json_object_put(obj);
