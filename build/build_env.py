@@ -162,7 +162,7 @@ class BuildRequest(object):
             os.mkdir('build_cmake_release')
             os.chdir('build_cmake_release')
             common_cmake_line = list(cmake_line)
-            #common_cmake_line.append('-DROCKSDB_LITE=ON')
+            common_cmake_line.append('-DFAIL_ON_WARNINGS=OFF')
             cmake_policy = run_command.CmakePolicy(print_message)
             make_policy = run_command.CommonPolicy(print_message)
             run_command.run_command_cb(common_cmake_line, cmake_policy)
