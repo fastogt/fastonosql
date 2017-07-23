@@ -7,7 +7,7 @@ About FastoNoSQL
 FastoNoSQL &mdash; is a crossplatform Redis, Memcached, SSDB, LevelDB, RocksDB, UnQLite, LMDB, UpscaleDB management tool, also FastoNoSQL is platform for NoSQL databases, you can add your own implementation for diffrent databases. <br />
 
 <h3>Windows:</h3>
-![](https://github.com/fastogt/fastonosql_site/blob/master/public/images/common/windows/main_window_windows_more.png)
+![](https://user-images.githubusercontent.com/4686379/28496924-e152347c-6f81-11e7-9f4e-72c12c59fe50.png)
 <h3>MacOS X:</h3>
 ![](http://fastonosql.com/images/common/macosx/main_window_mac.png)
 <h3>Linux:</h3>
