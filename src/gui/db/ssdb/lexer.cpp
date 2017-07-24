@@ -33,7 +33,7 @@ Lexer::Lexer(QObject* parent)
 }
 
 const char* Lexer::language() const {
-  return "SSDB";
+  return core::ssdb::DBConnection::GetConnectionTypeName();
 }
 
 const char* Lexer::version() const {

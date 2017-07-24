@@ -33,7 +33,7 @@ Lexer::Lexer(QObject* parent)
 }
 
 const char* Lexer::language() const {
-  return "RocksDB";
+  return core::rocksdb::DBConnection::GetConnectionTypeName();
 }
 
 const char* Lexer::version() const {

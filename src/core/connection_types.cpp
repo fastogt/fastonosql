@@ -24,6 +24,14 @@
 #include <common/macros.h>  // for NOTREACHED, SIZEOFMASS
 #include <common/convert2string.h>
 
+namespace {
+const char* connnectionType[] = {"Redis", "Memcached", "SSDB", "LevelDB", "RocksDB", "UnQLite", "LMDB", "UpscaleDB"};
+const std::string connnectionMode[] = {"Interactive mode"};
+const std::string serverTypes[] = {"Master", "Slave"};
+const std::string serverState[] = {"Up", "Down"};
+const std::string serverModes[] = {"Standalone", "Sentinel", "Cluster"};
+}  // namespace
+
 namespace fastonosql {
 namespace core {
 
@@ -234,22 +242,18 @@ const char* CommandLineHelpText(connectionTypes type) {
   NOTREACHED();
   return nullptr;
 }
+
+const char* ConnectionTypeToString(connectionTypes t) {
+  return connnectionType[t];
+}
+
 }  // namespace core
 }  // namespace fastonosql
-
-namespace {
-static const std::string connnectionType[] = {"Redis",   "Memcached", "SSDB", "LevelDB",
-                                              "RocksDB", "UnQLite",   "LMDB", "UpscaleDB"};
-const std::string connnectionMode[] = {"Interactive mode"};
-const std::string serverTypes[] = {"Master", "Slave"};
-const std::string serverState[] = {"Up", "Down"};
-const std::string serverModes[] = {"Standalone", "Sentinel", "Cluster"};
-}  // namespace
 
 namespace common {
 
 std::string ConvertToString(fastonosql::core::connectionTypes t) {
-  return connnectionType[t];
+  return fastonosql::core::ConnectionTypeToString(t);
 }
 
 bool ConvertFromString(const std::string& from, fastonosql::core::connectionTypes* out) {

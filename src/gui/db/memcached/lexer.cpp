@@ -33,7 +33,7 @@ Lexer::Lexer(QObject* parent)
 }
 
 const char* Lexer::language() const {
-  return "Memcached";
+  return core::memcached::DBConnection::GetConnectionTypeName();
 }
 
 const char* Lexer::version() const {

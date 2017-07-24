@@ -33,7 +33,7 @@ Lexer::Lexer(QObject* parent)
 }
 
 const char* Lexer::language() const {
-  return "LMDB";
+  return core::lmdb::DBConnection::GetConnectionTypeName();
 }
 
 const char* Lexer::version() const {

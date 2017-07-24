@@ -64,6 +64,7 @@ bool IsSupportTTLKeys(connectionTypes type);
 bool IsLocalType(connectionTypes type);
 bool IsCanSSHConnection(connectionTypes type);
 const char* CommandLineHelpText(connectionTypes type);
+const char* ConnectionTypeToString(connectionTypes t);
 
 }  // namespace core
 }  // namespace fastonosql

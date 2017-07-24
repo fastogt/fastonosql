@@ -33,7 +33,7 @@ Lexer::Lexer(QObject* parent)
 }
 
 const char* Lexer::language() const {
-  return "UpscaleDB";
+  return core::upscaledb::DBConnection::GetConnectionTypeName();
 }
 
 const char* Lexer::version() const {
