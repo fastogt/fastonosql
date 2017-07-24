@@ -55,7 +55,7 @@ bool CommandInfo::IsEqualName(const std::string& cmd_name) const {
 
 std::string ConvertVersionNumberToReadableString(uint32_t version) {
   if (version != UNDEFINED_SINCE) {
-    return common::ConvertVersionNumberToString(version);
+    return common::ConvertVersionNumberTo2DotString(version);
   }
 
   return UNDEFINED_SINCE_STR;
