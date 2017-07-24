@@ -1118,11 +1118,8 @@ IF(PROJECT_BUILD_TYPE_VERSION STREQUAL "release")
 ENDIF(PROJECT_BUILD_TYPE_VERSION STREQUAL "release")
 
 IF(DEVELOPER_ENABLE_TESTS)
-########## PREPARE GTEST LIBRARY ##########
+  FIND_PACKAGE(GTest REQUIRED)
   ADD_DEFINITIONS(-DPROJECT_TEST_SOURCES_DIR="${CMAKE_SOURCE_DIR}/tests")
-  ADD_SUBDIRECTORY(${CMAKE_SOURCE_DIR}/tests/gtest gtest)
-  INCLUDE_DIRECTORIES(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
-########## PREPARE GTEST LIBRARY ##########
 
   ADD_EXECUTABLE(unit_tests
     ${CMAKE_SOURCE_DIR}/tests/unit_tests/test_fasto_objects.cpp
@@ -1130,7 +1127,7 @@ IF(DEVELOPER_ENABLE_TESTS)
     ${CMAKE_SOURCE_DIR}/tests/unit_tests/test_command_holder.cpp
   )
 
-  TARGET_LINK_LIBRARIES(unit_tests gtest gtest_main ${PROJECT_CORE_ENGINE_LIBRARY} ${COMMON_LIBRARIES} json-c)
+  TARGET_LINK_LIBRARIES(unit_tests gtest gtest_main ${PROJECT_CORE_ENGINE_LIBRARY} ${COMMON_LIBRARIES} json-c pthread)
   ADD_TEST_TARGET(unit_tests)
   SET_PROPERTY(TARGET unit_tests PROPERTY FOLDER "Unit tests")
 
@@ -1138,7 +1135,7 @@ IF(DEVELOPER_ENABLE_TESTS)
   ADD_EXECUTABLE(mock_tests
     ${CMAKE_SOURCE_DIR}/tests/mock_tests/test_connections.cpp
   )
-  TARGET_LINK_LIBRARIES(mock_tests gmock gmock_main ${PROJECT_CORE_ENGINE_LIBRARY} ${COMMON_LIBRARIES} ${ZLIB_LIBRARY})
+  TARGET_LINK_LIBRARIES(mock_tests gmock gmock_main ${PROJECT_CORE_ENGINE_LIBRARY} ${COMMON_LIBRARIES} ${ZLIB_LIBRARY} pthread)
   ADD_TEST_TARGET(mock_tests)
   SET_PROPERTY(TARGET mock_tests PROPERTY FOLDER "Mock tests")
 ENDIF(DEVELOPER_ENABLE_TESTS)

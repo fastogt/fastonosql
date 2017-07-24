@@ -12,7 +12,7 @@ TEST(FastoObject, LifeTime) {
 }
 
 TEST(FastoObject, LifeTimeScope) {
-  common::StringValue* obj = common::Value::createStringValue("Sasha");
+  common::StringValue* obj = common::Value::CreateStringValue("Sasha");
   {
     FastoObjectIPtr root = FastoObject::CreateRoot("root");
     FastoObject* ptr = new FastoObject(root.get(), obj, "/n");

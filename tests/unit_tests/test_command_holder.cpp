@@ -111,11 +111,11 @@ TEST(CommandHolder, execute) {
 
   const char* cmd_invalid_set[] = {SET, "alex"};
   err = hand.Execute(SIZEOFMASS(cmd_invalid_set), cmd_invalid_set, NULL);
-  ASSERT_TRUE(err && err->isError());
+  ASSERT_TRUE(err && err->IsError());
 
   const char* cmd_not_exists[] = {GET, "alex"};
   err = hand.Execute(SIZEOFMASS(cmd_not_exists), cmd_not_exists, NULL);
-  ASSERT_TRUE(err && err->isError());
+  ASSERT_TRUE(err && err->IsError());
 
   const char* cmd_get_config[] = {GET, CONFIG, "alex"};
   err = hand.Execute(SIZEOFMASS(cmd_get_config), cmd_get_config, NULL);
@@ -123,7 +123,7 @@ TEST(CommandHolder, execute) {
 
   const char* cmd_get_config_invalid[] = {GET_CONFIG_INVALID, "alex"};
   err = hand.Execute(SIZEOFMASS(cmd_get_config_invalid), cmd_get_config_invalid, NULL);
-  ASSERT_TRUE(err && err->isError());
+  ASSERT_TRUE(err && err->IsError());
 
   const char* cmd_get2[] = {GET2, "alex"};
   err = hand.Execute(SIZEOFMASS(cmd_get2), cmd_get2, NULL);
@@ -131,5 +131,5 @@ TEST(CommandHolder, execute) {
 
   const char* cmd_get_config_many_args[] = {GET, CONFIG, "last", "alex"};
   err = hand.Execute(SIZEOFMASS(cmd_get_config_many_args), cmd_get_config_many_args, NULL);
-  ASSERT_TRUE(err && err->isError());
+  ASSERT_TRUE(err && err->IsError());
 }

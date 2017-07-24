@@ -7,9 +7,6 @@
 [submodule "src/third-party/lmdb/src"]
 	path = src/third-party/lmdb/src
 	url = https://github.com/fastogt/lmdb.git
-[submodule "tests/gtest"]
-	path = tests/gtest
-	url = https://chromium.googlesource.com/external/github.com/google/googletest
 [submodule "build/pybuild_utils"]
 	path = build/pybuild_utils
 	url = https://github.com/fastogt/pybuild_utils.git

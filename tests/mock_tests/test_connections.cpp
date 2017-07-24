@@ -13,11 +13,11 @@ using namespace fastonosql;
 template <typename NConnection, typename Config, core::connectionTypes ContType>
 void CheckSetGet(core::internal::CDBConnection<NConnection, Config, ContType>* db) {
   ASSERT_TRUE(db->IsConnected());
-  core::NValue val(common::Value::createStringValue("test"));
+  core::NValue val(common::Value::CreateStringValue("test"));
   core::NKey key("test");
   core::NDbKValue res1;
   common::Error err = db->Get(key, &res1);
-  ASSERT_TRUE(err && err->isError());
+  ASSERT_TRUE(err && err->IsError());
 
   core::NDbKValue kv(key, val);
   core::NDbKValue res;
@@ -41,7 +41,7 @@ void CheckSetGet(core::internal::CDBConnection<NConnection, Config, ContType>* d
   ASSERT_TRUE(!err);
   core::NDbKValue res3;
   err = db->Get(key, &res3);
-  ASSERT_TRUE(err && err->isError());
+  ASSERT_TRUE(err && err->IsError());
   ASSERT_TRUE(db->IsConnected());
 }
 
@@ -49,12 +49,12 @@ TEST(Connection, leveldb) {
   core::leveldb::DBConnection db(nullptr);
   core::leveldb::Config lcfg;
   common::Error err = db.Connect(lcfg);
-  ASSERT_TRUE(err && err->isError());
+  ASSERT_TRUE(err && err->IsError());
   ASSERT_TRUE(!db.IsConnected());
   err = common::file_system::create_directory(lcfg.dbname, false);
   ASSERT_TRUE(!err);
   err = db.Connect(lcfg);
-  ASSERT_TRUE(err && err->isError());
+  ASSERT_TRUE(err && err->IsError());
   ASSERT_TRUE(!db.IsConnected());
 
   lcfg.create_if_missing = true;
@@ -76,12 +76,12 @@ TEST(Connection, rocksdb) {
   core::rocksdb::DBConnection db(nullptr);
   core::rocksdb::Config lcfg;
   common::Error err = db.Connect(lcfg);
-  ASSERT_TRUE(err && err->isError());
+  ASSERT_TRUE(err && err->IsError());
   ASSERT_TRUE(!db.IsConnected());
   err = common::file_system::create_directory(lcfg.dbname, false);
   ASSERT_TRUE(!err);
   err = db.Connect(lcfg);
-  ASSERT_TRUE(err && err->isError());
+  ASSERT_TRUE(err && err->IsError());
   ASSERT_TRUE(!db.IsConnected());
 
   lcfg.create_if_missing = true;
@@ -103,12 +103,12 @@ TEST(Connection, lmdb) {
   core::lmdb::DBConnection db(nullptr);
   core::lmdb::Config lcfg;
   common::Error err = db.Connect(lcfg);
-  ASSERT_TRUE(err && err->isError());
+  ASSERT_TRUE(err && err->IsError());
   ASSERT_TRUE(!db.IsConnected());
   err = common::file_system::create_directory(lcfg.dbname, false);
   ASSERT_TRUE(!err);
   err = db.Connect(lcfg);
-  ASSERT_TRUE(err && err->isError());
+  ASSERT_TRUE(err && err->IsError());
   ASSERT_TRUE(!db.IsConnected());
 
   lcfg.SetReadOnlyDB(false);
