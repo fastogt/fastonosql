@@ -39,4 +39,4 @@ struct Config : public LocalConfig {
 namespace common {
 std::string ConvertToString(const fastonosql::core::rocksdb::Config& conf);
 bool ConvertFromString(const std::string& from, fastonosql::core::rocksdb::Config* out);
-}
+}  // namespace common

@@ -18,9 +18,9 @@
 
 #include "gui/explorer/explorer_tree_view.h"
 
-#include <memory>    // for __shared_ptr
 #include <stddef.h>  // for size_t
 #include <stdint.h>  // for INT32_MAX
+#include <memory>    // for __shared_ptr
 #include <string>    // for string
 #include <vector>    // for vector
 
@@ -45,8 +45,8 @@
 
 #include "core/connection_types.h"        // for connectionTypes::REDIS
 #include "core/db_key.h"                  // for NDbKValue
-#include "proxy/events/events_info.h"     // for CommandResponce, etc
 #include "proxy/cluster/icluster.h"       // for ICluster
+#include "proxy/events/events_info.h"     // for CommandResponce, etc
 #include "proxy/sentinel/isentinel.h"     // for Sentinel, etc
 #include "proxy/server/iserver_remote.h"  // for IServer, IServerRemote
 #include "proxy/settings_manager.h"       // for SettingsManager
@@ -57,11 +57,11 @@
 #include "gui/dialogs/info_server_dialog.h"     // for InfoServerDialog
 #include "gui/dialogs/load_contentdb_dialog.h"  // for LoadContentDbDialog
 #include "gui/dialogs/property_server_dialog.h"
-#include "gui/dialogs/view_keys_dialog.h"  // for ViewKeysDialog
 #include "gui/dialogs/pub_sub_dialog.h"
+#include "gui/dialogs/view_keys_dialog.h"  // for ViewKeysDialog
+#include "gui/explorer/explorer_tree_item.h"
 #include "gui/explorer/explorer_tree_model.h"  // for ExplorerServerItem, etc
 #include "gui/explorer/explorer_tree_sort_filter_proxy_model.h"
-#include "gui/explorer/explorer_tree_item.h"
 
 #include "translations/global.h"  // for trClose, trBackup, trImport, etc
 

@@ -20,8 +20,8 @@
 
 #include <string>  // for string
 
-#include <common/net/types.h>  // for HostAndPort
 #include <common/convert2string.h>
+#include <common/net/types.h>  // for HostAndPort
 
 #include "proxy/connection_settings/iconnection_settings_ssh.h"
 

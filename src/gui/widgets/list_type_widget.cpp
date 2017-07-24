@@ -21,9 +21,9 @@
 #include <common/macros.h>
 #include <common/qt/utils_qt.h>
 
+#include "gui/action_cell_delegate.h"
 #include "gui/hash_table_model.h"
 #include "gui/key_value_table_item.h"
-#include "gui/action_cell_delegate.h"
 
 namespace fastonosql {
 namespace gui {

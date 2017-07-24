@@ -30,21 +30,21 @@ namespace fastonosql {
 namespace core {
 class FastoObject;
 }
-}
+}  // namespace fastonosql
 namespace fastonosql {
 namespace core {
 namespace internal {
 class CommandHandler;
 }
-}
-}
+}  // namespace core
+}  // namespace fastonosql
 namespace fastonosql {
 namespace core {
 namespace unqlite {
 class DBConnection;
 }
-}
-}
+}  // namespace core
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace core {

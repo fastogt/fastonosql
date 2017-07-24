@@ -24,8 +24,8 @@
 
 #include <common/types.h>  // for time64_t
 
-#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "core/server/iserver_info.h"
+#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 
 class QLabel;  // lines 29-29
 class QShowEvent;
@@ -37,13 +37,13 @@ namespace qt {
 namespace gui {
 class GlassWidget;
 }
-}
-}  // lines 35-35
+}  // namespace qt
+}  // namespace common
 namespace fastonosql {
 namespace gui {
 class ConnectionListWidgetItemDiscovered;
 }
-}  // lines 61-61
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace gui {

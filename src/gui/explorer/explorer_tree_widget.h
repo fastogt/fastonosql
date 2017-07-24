@@ -28,7 +28,7 @@ namespace fastonosql {
 namespace gui {
 class ExplorerTreeView;
 }
-}
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace gui {

@@ -21,11 +21,12 @@
 #include <stddef.h>  // for size_t
 #include <string>    // for string, operator==
 
-#include <common/macros.h>  // for NOTREACHED, SIZEOFMASS
 #include <common/convert2string.h>
+#include <common/macros.h>  // for NOTREACHED, SIZEOFMASS
 
 namespace {
-const char* connnectionType[] = {"Redis", "Memcached", "SSDB", "LevelDB", "RocksDB", "UnQLite", "LMDB", "UpscaleDB"};
+const char* connnectionType[] = {"Redis",   "Memcached", "SSDB", "LevelDB",
+                                 "RocksDB", "UnQLite",   "LMDB", "UpscaleDB"};
 const std::string connnectionMode[] = {"Interactive mode"};
 const std::string serverTypes[] = {"Master", "Slave"};
 const std::string serverState[] = {"Up", "Down"};

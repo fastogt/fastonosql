@@ -19,14 +19,14 @@
 #include "gui/dialogs/connection_select_type_dialog.h"
 
 #include <QComboBox>
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
 #include <QDialogButtonBox>
 #include <QEvent>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QVBoxLayout>
 
-#include <common/macros.h>
 #include <common/convert2string.h>
+#include <common/macros.h>
 #include <common/qt/convert2string.h>
 
 #include "gui/gui_factory.h"

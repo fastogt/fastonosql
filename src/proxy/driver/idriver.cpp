@@ -25,8 +25,8 @@
 #endif
 
 #include <memory>  // for __shared_ptr
-#include <vector>  // for vector
 #include <string>  // for allocator, string, etc
+#include <vector>  // for vector
 
 #include <QApplication>
 #include <QThread>

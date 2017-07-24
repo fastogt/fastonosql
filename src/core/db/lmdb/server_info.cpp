@@ -18,8 +18,8 @@
 
 #include "core/db/lmdb/server_info.h"
 
-#include <sstream>   // for operator<<, ostream, etc
 #include <stddef.h>  // for size_t
+#include <sstream>   // for operator<<, ostream, etc
 #include <string>    // for string, operator<<, etc
 #include <utility>   // for make_pair
 #include <vector>    // for vector

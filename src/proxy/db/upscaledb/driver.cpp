@@ -24,25 +24,25 @@
 #include <memory>  // for __shared_ptr
 #include <string>  // for string
 
-#include <common/intrusive_ptr.h>   // for intrusive_ptr
 #include <common/convert2string.h>  // for ConvertToString
+#include <common/intrusive_ptr.h>   // for intrusive_ptr
 #include <common/qt/utils_qt.h>     // for Event<>::value_type
 #include <common/sprintf.h>         // for MemSPrintf
 #include <common/value.h>           // for ErrorValue, etc
 
+#include "core/connection_types.h"  // for ConvertToString, etc
+#include "core/db_key.h"            // for NDbKValue, NValue, NKey
 #include "core/internal/cdb_connection.h"
 #include "core/internal/db_connection.h"
 #include "proxy/command/command.h"         // for CreateCommand, etc
 #include "proxy/command/command_logger.h"  // for LOG_COMMAND
-#include "core/connection_types.h"         // for ConvertToString, etc
-#include "core/db_key.h"                   // for NDbKValue, NValue, NKey
 #include "proxy/events/events_info.h"
 
-#include "proxy/db/upscaledb/command.h"              // for Command
 #include "core/db/upscaledb/config.h"                // for Config
-#include "proxy/db/upscaledb/connection_settings.h"  // for ConnectionSettings
 #include "core/db/upscaledb/db_connection.h"         // for DBConnection
 #include "core/db/upscaledb/server_info.h"           // for ServerInfo, etc
+#include "proxy/db/upscaledb/command.h"              // for Command
+#include "proxy/db/upscaledb/connection_settings.h"  // for ConnectionSettings
 
 #include "core/global.h"  // for FastoObject::childs_t, etc
 

@@ -25,17 +25,17 @@
 #include <QFont>
 #include <QSettings>
 
-#include <common/macros.h>             // for DCHECK
 #include <common/convert2string.h>     // for ConvertFromString
 #include <common/file_system.h>        // for prepare_path, get_dir_path
+#include <common/macros.h>             // for DCHECK
 #include <common/qt/convert2string.h>  // for ConvertToString
 #include <common/utils.h>              // for decode64, encode64
 
 #include <common/qt/gui/app_style.h>              // for defStyle
 #include <common/qt/translations/translations.h>  // for defLanguage
 
-#include "proxy/connection_settings_factory.h"
 #include "proxy/cluster_connection_settings_factory.h"
+#include "proxy/connection_settings_factory.h"
 #include "proxy/sentinel_connection_settings_factory.h"
 
 #define PREFIX "settings/"

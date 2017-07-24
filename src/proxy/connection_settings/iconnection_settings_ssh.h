@@ -22,8 +22,8 @@
 
 #include <common/net/types.h>  // for HostAndPort
 
-#include "core/ssh_info.h"
 #include "core/connection_types.h"  // for core::connectionTypes
+#include "core/ssh_info.h"
 #include "proxy/connection_settings/iconnection_settings_remote.h"
 
 namespace fastonosql {

@@ -20,10 +20,10 @@
 
 #include <QTreeWidgetItem>
 
-#include "proxy/connection_settings/iconnection_settings.h"  // for IClusterSettingsBaseSPtr, etc
-#include "proxy/connection_settings/icluster_connection_settings.h"
-#include "proxy/connection_settings/isentinel_connection_settings.h"
 #include "core/server/iserver_info.h"  // for ServerCommonInfo
+#include "proxy/connection_settings/icluster_connection_settings.h"
+#include "proxy/connection_settings/iconnection_settings.h"  // for IClusterSettingsBaseSPtr, etc
+#include "proxy/connection_settings/isentinel_connection_settings.h"
 
 namespace fastonosql {
 namespace gui {

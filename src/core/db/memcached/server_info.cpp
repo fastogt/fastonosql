@@ -18,8 +18,8 @@
 
 #include "core/db/memcached/server_info.h"
 
-#include <sstream>   // for operator<<, basic_ostream, etc
 #include <stddef.h>  // for size_t
+#include <sstream>   // for operator<<, basic_ostream, etc
 #include <string>    // for operator==, char_traits, etc
 #include <utility>   // for make_pair
 #include <vector>    // for vector

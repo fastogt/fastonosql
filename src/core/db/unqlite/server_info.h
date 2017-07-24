@@ -25,8 +25,8 @@
 
 #include <common/value.h>  // for Value
 
-#include "core/types.h"
 #include "core/server/iserver_info.h"
+#include "core/types.h"
 
 #define UNQLITE_STATS_LABEL "# Stats"
 

@@ -20,9 +20,9 @@
 
 #include <common/convert2string.h>
 
+#include "core/db/memcached/db_connection.h"
 #include "core/db_key.h"
 #include "core/global.h"
-#include "core/db/memcached/db_connection.h"
 
 namespace fastonosql {
 namespace core {

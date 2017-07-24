@@ -27,12 +27,12 @@ namespace fastonosql {
 namespace gui {
 class OutputWidget;
 }
-}  // lines 33-33
+}  // namespace fastonosql
 namespace fastonosql {
 namespace gui {
 class BaseShellWidget;
 }
-}  // lines 28-28
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace gui {

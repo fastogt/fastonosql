@@ -32,8 +32,8 @@ class QTreeWidget;
 class QToolBar;
 class QLabel;
 
-#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
 #include "proxy/connection_settings/icluster_connection_settings.h"
+#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
 
 namespace fastonosql {
 namespace gui {

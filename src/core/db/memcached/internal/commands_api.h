@@ -20,8 +20,8 @@
 
 #include <common/error.h>
 
-#include "core/internal/commands_api.h"
 #include "core/db/memcached/db_connection.h"
+#include "core/internal/commands_api.h"
 
 namespace fastonosql {
 namespace core {

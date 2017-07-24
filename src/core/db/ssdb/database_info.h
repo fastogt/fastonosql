@@ -35,6 +35,6 @@ class DataBaseInfo : public IDataBaseInfo {
                const keys_container_t& keys = keys_container_t());
   virtual DataBaseInfo* Clone() const override;
 };
-}
+}  // namespace ssdb
 }  // namespace core
 }  // namespace fastonosql

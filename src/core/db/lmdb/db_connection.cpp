@@ -24,13 +24,13 @@
 #include <time.h>    // for time_t
 #include <string>    // for string
 
-#include <common/value.h>  // for StringValue (ptr only)
-#include <common/utils.h>  // for c_strornull
 #include <common/convert2string.h>
 #include <common/file_system.h>
+#include <common/utils.h>  // for c_strornull
+#include <common/value.h>  // for StringValue (ptr only)
 
-#include "core/db/lmdb/config.h"  // for Config
 #include "core/db/lmdb/command_translator.h"
+#include "core/db/lmdb/config.h"  // for Config
 #include "core/db/lmdb/database_info.h"
 #include "core/db/lmdb/internal/commands_api.h"
 
@@ -105,7 +105,7 @@ void lmdb_close(lmdb** context) {
 }
 
 }  // namespace
-}
+}  // namespace lmdb
 namespace internal {
 template <>
 common::Error ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::Connect(

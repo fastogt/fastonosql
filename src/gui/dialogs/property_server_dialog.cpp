@@ -18,8 +18,8 @@
 
 #include "gui/dialogs/property_server_dialog.h"
 
-#include <memory>    // for __shared_ptr
 #include <stddef.h>  // for size_t
+#include <memory>    // for __shared_ptr
 #include <vector>    // for vector
 
 #include <QHBoxLayout>

@@ -28,14 +28,14 @@
 #include <hiredis/hiredis.h>  // for redisReply
 
 #include <common/convert2string.h>  // for ConvertFromString
+#include <common/error.h>           // for Error
 #include <common/macros.h>          // for NOTREACHED
 #include <common/net/types.h>       // for HostAndPortAndSlot
 #include <common/string_util.h>     // for Tokenize
 #include <common/value.h>           // for ErrorValue, etc
-#include <common/error.h>           // for Error
 
-#include "core/server/iserver_info.h"  // for ServerCommonInfo (ptr only), etc
 #include "core/connection_types.h"     // for connectionTypes::REDIS, etc
+#include "core/server/iserver_info.h"  // for ServerCommonInfo (ptr only), etc
 
 #define NAME_FIELD "name"
 #define TYPE_FIELD "flags"

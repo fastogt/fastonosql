@@ -27,7 +27,7 @@ namespace fastonosql {
 namespace gui {
 class QueryWidget;
 }
-}  // lines 29-29
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace gui {

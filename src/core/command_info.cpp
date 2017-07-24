@@ -20,8 +20,8 @@
 
 #include <string>
 
-#include <common/string_util.h>  // for FullEqualsASCII
 #include <common/convert2string.h>
+#include <common/string_util.h>  // for FullEqualsASCII
 
 namespace fastonosql {
 namespace core {

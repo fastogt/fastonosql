@@ -29,5 +29,5 @@ Command::Command(core::FastoObject* parent,
     : FastoObjectCommand(parent, cmd, ct, delimiter, core::LEVELDB) {}
 
 }  // namespace leveldb
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

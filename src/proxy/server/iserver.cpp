@@ -25,13 +25,13 @@
 
 #include <common/error.h>        // for Error
 #include <common/macros.h>       // for VERIFY, CHECK, DNOTREACHED
-#include <common/value.h>        // for ErrorValue
-#include <common/qt/utils_qt.h>  // for Event<>::value_type
 #include <common/qt/logger.h>    // for LOG_ERROR
+#include <common/qt/utils_qt.h>  // for Event<>::value_type
+#include <common/value.h>        // for ErrorValue
 
 #include "proxy/connection_settings/iconnection_settings.h"
-#include "proxy/events/events_info.h"  // for LoadDatabaseContentResponce, etc
 #include "proxy/driver/idriver.h"      // for IDriver
+#include "proxy/events/events_info.h"  // for LoadDatabaseContentResponce, etc
 
 namespace fastonosql {
 namespace proxy {

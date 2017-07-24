@@ -20,8 +20,8 @@
 
 #include <QDialog>
 
-#include "proxy/connection_settings/iconnection_settings.h"
 #include "proxy/connection_settings/icluster_connection_settings.h"
+#include "proxy/connection_settings/iconnection_settings.h"
 #include "proxy/connection_settings/isentinel_connection_settings.h"
 
 class QTreeWidget;
@@ -30,22 +30,22 @@ namespace fastonosql {
 namespace gui {
 class ClusterConnectionListWidgetItemContainer;
 }
-}  // lines 31-31
+}  // namespace fastonosql
 namespace fastonosql {
 namespace gui {
 class ConnectionListWidgetItem;
 }
-}  // lines 33-33
+}  // namespace fastonosql
 namespace fastonosql {
 namespace gui {
 class DirectoryListWidgetItem;
 }
-}  // lines 30-30
+}  // namespace fastonosql
 namespace fastonosql {
 namespace gui {
 class SentinelConnectionListWidgetItemContainer;
 }
-}  // lines 32-32
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace gui {

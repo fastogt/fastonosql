@@ -30,11 +30,11 @@
 #include "core/db_key.h"               // for NKey (ptr only), NDbKValue (...
 #include "core/icommand_translator.h"  // for translator_t
 
+#include "core/database/idatabase_info.h"                    // for IDataBaseInfoSPtr, etc
 #include "core/internal/cdb_connection_client.h"             // for CDBConnectionClient
+#include "core/server/iserver_info.h"                        // for IServerInfoSPtr, etc
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "proxy/events/events.h"                             // for BackupRequestEvent, ChangeMa...
-#include "core/database/idatabase_info.h"                    // for IDataBaseInfoSPtr, etc
-#include "core/server/iserver_info.h"                        // for IServerInfoSPtr, etc
 
 #include "core/global.h"  // for FastoObject (ptr only), etc
 
@@ -45,7 +45,7 @@ namespace common {
 namespace file_system {
 class File;
 }
-}  // lines 41-41
+}  // namespace common
 
 namespace fastonosql {
 namespace proxy {

@@ -18,10 +18,10 @@
 
 #include "gui/widgets/connection_remote_widget.h"
 
-#include <QRegExpValidator>
 #include <QHBoxLayout>
-#include <QLineEdit>
 #include <QLabel>
+#include <QLineEdit>
+#include <QRegExpValidator>
 
 #include <common/convert2string.h>
 #include <common/qt/convert2string.h>

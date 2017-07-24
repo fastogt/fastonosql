@@ -29,5 +29,5 @@ Command::Command(FastoObject* parent,
     : FastoObjectCommand(parent, cmd, ct, delimiter, core::UNQLITE) {}
 
 }  // namespace unqlite
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

@@ -26,7 +26,7 @@ namespace fastonosql {
 namespace core {
 class FastoObjectArray;
 }
-}
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace core {

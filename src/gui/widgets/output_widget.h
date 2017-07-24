@@ -20,8 +20,8 @@
 
 #include <QWidget>
 
-#include "proxy/proxy_fwd.h"  // for IServerSPtr
 #include "core/database/idatabase_info.h"
+#include "proxy/proxy_fwd.h"  // for IServerSPtr
 
 #include "core/global.h"  // for FastoObject, etc
 
@@ -34,8 +34,8 @@ namespace qt {
 namespace gui {
 class IconLabel;
 }
-}
-}  // lines 32-32
+}  // namespace qt
+}  // namespace common
 namespace fastonosql {
 namespace proxy {
 namespace events_info {
@@ -44,15 +44,15 @@ struct ExecuteInfoRequest;
 struct ExecuteInfoResponce;
 struct CommandRootCompleatedInfo;
 struct CommandRootCreatedInfo;
-}
-}
-}
+}  // namespace events_info
+}  // namespace proxy
+}  // namespace fastonosql
 namespace fastonosql {
 namespace gui {
 class FastoTextView;
 class FastoCommonModel;
-}
-}
+}  // namespace gui
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace gui {

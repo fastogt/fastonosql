@@ -21,9 +21,9 @@
 #include <stddef.h>  // for size_t
 #include <string>    // for string
 
-#include "proxy/proxy_fwd.h"           // for IServerSPtr
-#include "proxy/database/idatabase.h"  // for IDatabase
 #include "core/database/idatabase_info.h"
+#include "proxy/database/idatabase.h"  // for IDatabase
+#include "proxy/proxy_fwd.h"           // for IServerSPtr
 
 namespace fastonosql {
 namespace proxy {
@@ -33,6 +33,6 @@ class Database : public IDatabase {
  public:
   Database(IServerSPtr server, core::IDataBaseInfoSPtr info);
 };
-}
+}  // namespace ssdb
 }  // namespace proxy
 }  // namespace fastonosql

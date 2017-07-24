@@ -27,9 +27,9 @@ extern "C" {
 #include "sds.h"
 }
 
-#include <common/value.h>    // for ErrorValue, etc
 #include <common/sprintf.h>  // for MemSPrintf
 #include <common/utils.h>
+#include <common/value.h>  // for ErrorValue, etc
 
 namespace fastonosql {
 namespace core {

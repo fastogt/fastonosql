@@ -22,8 +22,8 @@
 
 #include "proxy/proxy_fwd.h"
 
-#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "proxy/connection_settings/icluster_connection_settings.h"
+#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "proxy/connection_settings/isentinel_connection_settings.h"
 
 class QAction;      // lines 27-27
@@ -40,7 +40,7 @@ namespace fastonosql {
 namespace gui {
 class ExplorerTreeWidget;
 }
-}  // lines 37-37
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace gui {
@@ -123,12 +123,12 @@ class MainWindow : public QMainWindow {
   QAction* recentConnections_;
   QAction* clearMenu_;
   QAction* recentConnectionsActs_[max_recent_connections];
-#ifdef BUILD_WITH_SOCIAL_BUTTONS
+
   QAction* homePageAction_;
   QAction* facebookAction_;
   QAction* twitterAction_;
   QAction* githubAction_;
-#endif
+
   ExplorerTreeWidget* exp_;
   QDockWidget* expDock_;
   QDockWidget* logDock_;

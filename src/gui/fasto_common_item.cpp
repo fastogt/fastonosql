@@ -18,8 +18,8 @@
 
 #include "gui/fasto_common_item.h"
 
-#include <memory>    // for __shared_ptr
 #include <stddef.h>  // for size_t
+#include <memory>    // for __shared_ptr
 #include <string>    // for string
 
 #include <common/convert2string.h>                  // for ConvertFromString

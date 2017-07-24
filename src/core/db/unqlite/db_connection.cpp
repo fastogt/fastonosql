@@ -26,15 +26,15 @@ extern "C" {
 #include <unqlite.h>
 }
 
+#include <common/convert2string.h>
+#include <common/file_system.h>
 #include <common/sprintf.h>  // for MemSPrintf
 #include <common/utils.h>    // for c_strornull
 #include <common/value.h>    // for Value::ErrorsType::E_ERROR, etc
-#include <common/convert2string.h>
-#include <common/file_system.h>
 
+#include "core/db/unqlite/command_translator.h"
 #include "core/db/unqlite/config.h"  // for Config
 #include "core/db/unqlite/database_info.h"
-#include "core/db/unqlite/command_translator.h"
 #include "core/db/unqlite/internal/commands_api.h"
 
 #include "core/global.h"  // for FastoObject, etc

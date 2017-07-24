@@ -18,17 +18,17 @@
 
 #include "gui/widgets/path_widget.h"
 
-#include <QHBoxLayout>
 #include <QEvent>
-#include <QLineEdit>
-#include <QLabel>
-#include <QRegExpValidator>
-#include <QPushButton>
 #include <QFileDialog>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QRegExpValidator>
 
 #include <common/convert2string.h>
-#include <common/qt/convert2string.h>
 #include <common/file_system.h>
+#include <common/qt/convert2string.h>
 
 namespace fastonosql {
 namespace gui {

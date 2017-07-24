@@ -26,11 +26,11 @@
 #include <common/macros.h>  // for WARN_UNUSED_RESULT
 #include <common/value.h>   // for Value, etc
 
+#include "core/icommand_translator.h"  // for translator_t
+#include "core/server/iserver_info.h"  // for IServerInfo (ptr only), etc
 #include "proxy/connection_settings/iconnection_settings.h"
 #include "proxy/driver/idriver_local.h"  // for IDriverLocal
 #include "proxy/events/events.h"
-#include "core/icommand_translator.h"  // for translator_t
-#include "core/server/iserver_info.h"  // for IServerInfo (ptr only), etc
 
 #include "core/global.h"  // for FastoObject (ptr only), etc
 
@@ -38,15 +38,15 @@ namespace fastonosql {
 namespace core {
 class IDataBaseInfo;
 }
-}
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace core {
 namespace rocksdb {
 class DBConnection;
 }
-}
-}
+}  // namespace core
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace proxy {

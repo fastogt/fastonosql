@@ -31,8 +31,8 @@ namespace qt {
 namespace gui {
 class GlassWidget;
 }
-}
-}  // lines 33-33
+}  // namespace qt
+}  // namespace common
 
 namespace fastonosql {
 namespace gui {

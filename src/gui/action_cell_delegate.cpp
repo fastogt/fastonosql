@@ -19,8 +19,8 @@
 #include "gui/action_cell_delegate.h"
 
 #include <QApplication>
-#include <QPainter>
 #include <QMouseEvent>
+#include <QPainter>
 
 #include <common/macros.h>
 #include <common/qt/utils_qt.h>

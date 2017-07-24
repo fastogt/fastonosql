@@ -27,10 +27,10 @@
 
 #include "core/icommand_translator.h"  // for translator_t
 
+#include "core/server/iserver_info.h"  // for IServerInfo (ptr only), etc
 #include "proxy/connection_settings/iconnection_settings.h"
 #include "proxy/driver/idriver_remote.h"  // for IDriverRemote
 #include "proxy/events/events.h"
-#include "core/server/iserver_info.h"  // for IServerInfo (ptr only), etc
 
 #include "core/global.h"  // for FastoObject (ptr only), etc
 
@@ -38,14 +38,14 @@ namespace fastonosql {
 namespace core {
 class IDataBaseInfo;
 }
-}
+}  // namespace fastonosql
 namespace fastonosql {
 namespace core {
 namespace redis {
 class DBConnection;
 }
-}
-}
+}  // namespace core
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace proxy {
@@ -91,7 +91,8 @@ class Driver : public IDriverRemote {
   virtual void HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev) override;
   virtual void HandleServerPropertyChangeEvent(
       events::ChangeServerPropertyInfoRequestEvent* ev) override;
-  virtual void HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequestEvent* ev) override;
+  virtual void HandleLoadServerChannelsRequestEvent(
+      events::LoadServerChannelsRequestEvent* ev) override;
   virtual void HandleShutdownEvent(events::ShutDownRequestEvent* ev) override;
   virtual void HandleBackupEvent(events::BackupRequestEvent* ev) override;
   virtual void HandleExportEvent(events::ExportRequestEvent* ev) override;

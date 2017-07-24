@@ -26,15 +26,15 @@
 
 #include <common/qt/gui/base/tree_item.h>  // for TreeItem
 
-#include "proxy/proxy_fwd.h"  // for IServerSPtr, IClusterSPtr, etc
-#include "core/db_key.h"      // for NDbKValue, etc
 #include "core/database/idatabase_info.h"
+#include "core/db_key.h"      // for NDbKValue, etc
+#include "proxy/proxy_fwd.h"  // for IServerSPtr, IClusterSPtr, etc
 
 namespace fastonosql {
 namespace proxy {
 class IServer;
 }
-}
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace gui {

@@ -29,5 +29,5 @@ Command::Command(core::FastoObject* parent,
     : core::FastoObjectCommand(parent, cmd, ct, delimiter, core::REDIS) {}
 
 }  // namespace redis
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

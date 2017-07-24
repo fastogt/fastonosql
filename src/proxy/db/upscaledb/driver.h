@@ -25,10 +25,10 @@
 #include <common/value.h>   // for Value, etc
 
 #include "core/icommand_translator.h"                        // for translator_t
-#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
-#include "proxy/events/events.h"                             // for ClearDatabaseRequestEvent, etc
-#include "proxy/driver/idriver_local.h"                      // for IDriverLocal
 #include "core/server/iserver_info.h"                        // for IServerInfo (ptr only), etc
+#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
+#include "proxy/driver/idriver_local.h"                      // for IDriverLocal
+#include "proxy/events/events.h"                             // for ClearDatabaseRequestEvent, etc
 
 #include "core/global.h"  // for FastoObject (ptr only), etc
 
@@ -37,8 +37,8 @@ namespace core {
 namespace upscaledb {
 class DBConnection;
 }
-}
-}
+}  // namespace core
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace proxy {

@@ -63,6 +63,6 @@ class DBConnection {
   dbconnection_t connection_;
   bool interrupted_;
 };
-}
+}  // namespace internal
 }  // namespace core
 }  // namespace fastonosql

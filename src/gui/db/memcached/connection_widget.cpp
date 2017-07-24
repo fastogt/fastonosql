@@ -18,11 +18,11 @@
 
 #include "gui/db/memcached/connection_widget.h"
 
-#include <QLineEdit>
-#include <QLabel>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
 #include <QCheckBox>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QVBoxLayout>
 
 #include <common/convert2string.h>
 #include <common/qt/convert2string.h>

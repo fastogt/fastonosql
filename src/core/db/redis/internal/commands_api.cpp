@@ -21,8 +21,8 @@
 #include <string.h>  // for strncmp
 #include <memory>    // for __shared_ptr
 
-#include <common/value.h>  // for Value, ErrorValue, etc
 #include <common/convert2string.h>
+#include <common/value.h>  // for Value, ErrorValue, etc
 
 #include "core/db_key.h"
 

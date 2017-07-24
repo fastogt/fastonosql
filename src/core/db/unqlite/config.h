@@ -22,8 +22,9 @@
 
 #include "core/config/config.h"
 
-#define UNQLITE_DEFAULT_ENV_FLAGS 0x00000002  // unqlite Environment Flags
-                                              // UNQLITE_OPEN_READWRITE        0x00000002
+#define UNQLITE_DEFAULT_ENV_FLAGS \
+  0x00000002  // unqlite Environment Flags
+              // UNQLITE_OPEN_READWRITE        0x00000002
 
 namespace fastonosql {
 namespace core {
@@ -50,4 +51,4 @@ struct Config : public LocalConfig {
 namespace common {
 std::string ConvertToString(const fastonosql::core::unqlite::Config& conf);
 bool ConvertFromString(const std::string& from, fastonosql::core::unqlite::Config* out);
-}
+}  // namespace common

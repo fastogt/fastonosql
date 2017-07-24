@@ -25,8 +25,8 @@
 #include <vector>  // for vector
 
 #include <common/convert2string.h>  // for ConvertFromString
+#include <common/macros.h>          // for DNOTREACHED
 #include <common/qt/convert2string.h>
-#include <common/macros.h>  // for DNOTREACHED
 
 #include "core/connection_types.h"  // for ConvertToString, etc
 
@@ -109,7 +109,7 @@ ConnectionListWidgetItemDiscovered::ConnectionListWidgetItemDiscovered(
   if (common::ConvertFromString(stype, &qstype)) {
     setText(2, qstype);
   }
-  std::string sstate = common::ConvertToString(info_.state); 
+  std::string sstate = common::ConvertToString(info_.state);
   QString qsstate;
   if (common::ConvertFromString(sstate, &qsstate)) {
     setText(3, qsstate);

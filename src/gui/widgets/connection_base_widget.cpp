@@ -18,18 +18,18 @@
 
 #include "gui/widgets/connection_base_widget.h"
 
-#include <QLineEdit>
-#include <QComboBox>
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
 #include <QCheckBox>
-#include <QSpinBox>
+#include <QComboBox>
 #include <QEvent>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QSpinBox>
 #include <QSplitter>
+#include <QVBoxLayout>
 
-#include <common/macros.h>
 #include <common/convert2string.h>
+#include <common/macros.h>
 #include <common/qt/convert2string.h>
 
 #include "gui/gui_factory.h"

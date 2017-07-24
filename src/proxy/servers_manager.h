@@ -24,12 +24,12 @@
 #include <common/macros.h>                      // for WARN_UNUSED_RESULT
 #include <common/patterns/singleton_pattern.h>  // for LazySingleton
 
-#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
 #include "proxy/connection_settings/icluster_connection_settings.h"
+#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
 #include "proxy/connection_settings/isentinel_connection_settings.h"
 
-#include "proxy/proxy_fwd.h"  // for IClusterSPtr, ISentinelSPtr, etc
 #include "core/server/iserver_info.h"
+#include "proxy/proxy_fwd.h"  // for IClusterSPtr, ISentinelSPtr, etc
 
 namespace fastonosql {
 namespace proxy {

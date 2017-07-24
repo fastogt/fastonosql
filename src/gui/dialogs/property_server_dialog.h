@@ -20,8 +20,8 @@
 
 #include <QDialog>
 
-#include "proxy/proxy_fwd.h"            // for IServerSPtr
 #include "core/server_property_info.h"  // for property_t
+#include "proxy/proxy_fwd.h"            // for IServerSPtr
 
 class QEvent;
 class QShowEvent;
@@ -33,8 +33,8 @@ namespace qt {
 namespace gui {
 class GlassWidget;
 }
-}
-}  // lines 31-31
+}  // namespace qt
+}  // namespace common
 namespace fastonosql {
 namespace proxy {
 namespace events_info {
@@ -42,9 +42,9 @@ struct ChangeServerPropertyInfoRequest;
 struct ServerPropertyInfoRequest;
 struct ServerPropertyInfoResponce;
 struct ChangeServerPropertyInfoResponce;
-}
-}
-}
+}  // namespace events_info
+}  // namespace proxy
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace gui {

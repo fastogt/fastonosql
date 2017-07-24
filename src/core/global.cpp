@@ -24,8 +24,8 @@
 #include <map>            // for _Rb_tree_const_iterator, etc
 #include <unordered_map>  // for _Node_iterator, operator!=, etc
 
-#include <common/string_util.h>  // for TrimWhitespaceASCII, etc
 #include <common/convert2string.h>
+#include <common/string_util.h>  // for TrimWhitespaceASCII, etc
 
 namespace fastonosql {
 namespace core {

@@ -67,7 +67,7 @@ class NumericDelegate : public QStyledItemDelegate {
     editor->setGeometry(option.rect);
   }
 };
-}
+}  // namespace
 
 namespace fastonosql {
 namespace gui {

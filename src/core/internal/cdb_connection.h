@@ -18,15 +18,15 @@
 
 #pragma once
 
-#include <stddef.h>  // for size_t
 #include <inttypes.h>
+#include <stddef.h>  // for size_t
 #include <stdint.h>  // for uint64_t, UINT64_MAX
 #include <vector>    // for vector
 
 #include <common/error.h>   // for Error, make_error_value
 #include <common/macros.h>  // for DNOTREACHED, etc
-#include <common/value.h>   // for ErrorValue, etc
 #include <common/sprintf.h>
+#include <common/value.h>  // for ErrorValue, etc
 
 #include "core/command_info.h"
 #include "core/connection_types.h"     // for connectionTypes
@@ -35,9 +35,9 @@
 
 #include "core/database/idatabase_info.h"
 
-#include "core/internal/command_handler.h"  // for CommandHandler, etc
 #include "core/internal/cdb_connection_client.h"
-#include "core/internal/db_connection.h"  // for DBConnection
+#include "core/internal/command_handler.h"  // for CommandHandler, etc
+#include "core/internal/db_connection.h"    // for DBConnection
 
 #define ALL_COMMANDS "*"
 #define ALL_KEYS_PATTERNS "*"
@@ -47,7 +47,7 @@ namespace fastonosql {
 namespace core {
 class CommandHolder;
 }
-}
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace core {
@@ -61,8 +61,8 @@ class ConstantCommandsArray : public std::vector<CommandHolder> {
       for (auto jt = begin(); jt != end(); ++jt) {
         CommandHolder cmd2 = *jt;
         if (cmd2.IsEqualName(cmd.name)) {
-          NOTREACHED() << "Only unique commands can be in array, but command with name: \"" << cmd.name
-                       << "\" already exists!";
+          NOTREACHED() << "Only unique commands can be in array, but command with name: \""
+                       << cmd.name << "\" already exists!";
         }
       }
       push_back(cmd);
@@ -70,7 +70,9 @@ class ConstantCommandsArray : public std::vector<CommandHolder> {
   }
 };
 
-std::string GetKeysPattern(uint64_t cursor_in, const std::string& pattern, uint64_t count_keys);  // for SCAN
+std::string GetKeysPattern(uint64_t cursor_in,
+                           const std::string& pattern,
+                           uint64_t count_keys);  // for SCAN
 
 template <typename NConnection, typename Config, connectionTypes ContType>
 class CDBConnection : public DBConnection<NConnection, Config, ContType>, public CommandHandler {
@@ -140,7 +142,9 @@ std::string CDBConnection<NConnection, Config, ContType>::CurrentDBName() const 
 }
 
 template <typename NConnection, typename Config, connectionTypes ContType>
-common::Error CDBConnection<NConnection, Config, ContType>::Help(int argc, const char** argv, std::string* answer) {
+common::Error CDBConnection<NConnection, Config, ContType>::Help(int argc,
+                                                                 const char** argv,
+                                                                 std::string* answer) {
   if (!answer || argc < 0) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -180,7 +184,8 @@ common::Error CDBConnection<NConnection, Config, ContType>::Help(int argc, const
       "params: %s\n"
       "since: %s\n"
       "example: %s\r\n",
-      cmd->name, cmd->summary, cmd->params, ConvertVersionNumberToReadableString(cmd->since), cmd->example);
+      cmd->name, cmd->summary, cmd->params, ConvertVersionNumberToReadableString(cmd->since),
+      cmd->example);
   return common::Error();
 }
 
@@ -267,7 +272,8 @@ common::Error CDBConnection<NConnection, Config, ContType>::FlushDB() {
 }
 
 template <typename NConnection, typename Config, connectionTypes ContType>
-common::Error CDBConnection<NConnection, Config, ContType>::Select(const std::string& name, IDataBaseInfo** info) {
+common::Error CDBConnection<NConnection, Config, ContType>::Select(const std::string& name,
+                                                                   IDataBaseInfo** info) {
   if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
@@ -292,7 +298,8 @@ common::Error CDBConnection<NConnection, Config, ContType>::Select(const std::st
 }
 
 template <typename NConnection, typename Config, connectionTypes ContType>
-common::Error CDBConnection<NConnection, Config, ContType>::Delete(const NKeys& keys, NKeys* deleted_keys) {
+common::Error CDBConnection<NConnection, Config, ContType>::Delete(const NKeys& keys,
+                                                                   NKeys* deleted_keys) {
   if (!deleted_keys) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -315,7 +322,8 @@ common::Error CDBConnection<NConnection, Config, ContType>::Delete(const NKeys& 
 }
 
 template <typename NConnection, typename Config, connectionTypes ContType>
-common::Error CDBConnection<NConnection, Config, ContType>::Set(const NDbKValue& key, NDbKValue* added_key) {
+common::Error CDBConnection<NConnection, Config, ContType>::Set(const NDbKValue& key,
+                                                                NDbKValue* added_key) {
   if (!added_key) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -338,7 +346,8 @@ common::Error CDBConnection<NConnection, Config, ContType>::Set(const NDbKValue&
 }
 
 template <typename NConnection, typename Config, connectionTypes ContType>
-common::Error CDBConnection<NConnection, Config, ContType>::Get(const NKey& key, NDbKValue* loaded_key) {
+common::Error CDBConnection<NConnection, Config, ContType>::Get(const NKey& key,
+                                                                NDbKValue* loaded_key) {
   if (!loaded_key) {
     DNOTREACHED();
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
@@ -361,7 +370,8 @@ common::Error CDBConnection<NConnection, Config, ContType>::Get(const NKey& key,
 }
 
 template <typename NConnection, typename Config, connectionTypes ContType>
-common::Error CDBConnection<NConnection, Config, ContType>::Rename(const NKey& key, const std::string& new_key) {
+common::Error CDBConnection<NConnection, Config, ContType>::Rename(const NKey& key,
+                                                                   const std::string& new_key) {
   if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
@@ -435,6 +445,6 @@ common::Error CDBConnection<NConnection, Config, ContType>::Quit() {
 
   return common::Error();
 }
-}
+}  // namespace internal
 }  // namespace core
 }  // namespace fastonosql

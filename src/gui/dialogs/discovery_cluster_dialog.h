@@ -24,9 +24,9 @@
 
 #include <common/types.h>  // for time64_t
 
-#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
-#include "proxy/connection_settings/icluster_connection_settings.h"
 #include "core/server/iserver_info.h"
+#include "proxy/connection_settings/icluster_connection_settings.h"
+#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
 
 class QMovie;
 class QLabel;
@@ -37,8 +37,8 @@ namespace qt {
 namespace gui {
 class GlassWidget;
 }
-}
-}
+}  // namespace qt
+}  // namespace common
 
 namespace fastonosql {
 namespace gui {

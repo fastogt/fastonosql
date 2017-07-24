@@ -22,8 +22,8 @@
 
 #include <common/value.h>  // for ErrorValue, StringValue, etc
 
-#include "core/db/upscaledb/server_info.h"  // for ServerInfo, etc
 #include "core/db/upscaledb/db_connection.h"
+#include "core/db/upscaledb/server_info.h"  // for ServerInfo, etc
 
 #include "core/global.h"  // for FastoObject
 

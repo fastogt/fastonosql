@@ -58,7 +58,7 @@
 namespace {
 const QString defaultNameConnection = "New Cluster Connection";
 const char* defaultNameConnectionFolder = "/";
-}
+}  // namespace
 
 namespace fastonosql {
 namespace gui {

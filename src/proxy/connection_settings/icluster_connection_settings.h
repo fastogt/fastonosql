@@ -29,7 +29,7 @@ namespace common {
 namespace net {
 struct HostAndPort;
 }
-}
+}  // namespace common
 
 namespace fastonosql {
 namespace proxy {

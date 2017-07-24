@@ -31,52 +31,52 @@
 #include "proxy/sentinel/isentinel.h"  // for Sentinel
 
 #ifdef BUILD_WITH_REDIS
-#include "proxy/db/redis/cluster.h"              // for Cluster
-#include "proxy/db/redis/sentinel.h"             // for Sentinel
-#include "proxy/db/redis/connection_settings.h"  // for ConnectionSettings
 #include "core/db/redis/db_connection.h"         // for DiscoveryClusterConnection, etc
+#include "proxy/db/redis/cluster.h"              // for Cluster
+#include "proxy/db/redis/connection_settings.h"  // for ConnectionSettings
+#include "proxy/db/redis/sentinel.h"             // for Sentinel
 #include "proxy/db/redis/server.h"               // for Server
 #endif
 
 #ifdef BUILD_WITH_MEMCACHED
-#include "proxy/db/memcached/connection_settings.h"  // for ConnectionSettings
 #include "core/db/memcached/db_connection.h"         // for TestConnection
+#include "proxy/db/memcached/connection_settings.h"  // for ConnectionSettings
 #include "proxy/db/memcached/server.h"               // for Server
 #endif
 
 #ifdef BUILD_WITH_SSDB
-#include "proxy/db/ssdb/connection_settings.h"  // for ConnectionSettings
 #include "core/db/ssdb/db_connection.h"         // for TestConnection
+#include "proxy/db/ssdb/connection_settings.h"  // for ConnectionSettings
 #include "proxy/db/ssdb/server.h"               // for Server
 #endif
 
 #ifdef BUILD_WITH_LEVELDB
-#include "proxy/db/leveldb/connection_settings.h"  // for ConnectionSettings
 #include "core/db/leveldb/db_connection.h"         // for TestConnection
+#include "proxy/db/leveldb/connection_settings.h"  // for ConnectionSettings
 #include "proxy/db/leveldb/server.h"               // for Server
 #endif
 
 #ifdef BUILD_WITH_ROCKSDB
-#include "proxy/db/rocksdb/connection_settings.h"  // for ConnectionSettings
 #include "core/db/rocksdb/db_connection.h"         // for TestConnection
+#include "proxy/db/rocksdb/connection_settings.h"  // for ConnectionSettings
 #include "proxy/db/rocksdb/server.h"               // for Server
 #endif
 
 #ifdef BUILD_WITH_UNQLITE
-#include "proxy/db/unqlite/connection_settings.h"  // for ConnectionSettings
 #include "core/db/unqlite/db_connection.h"         // for TestConnection
+#include "proxy/db/unqlite/connection_settings.h"  // for ConnectionSettings
 #include "proxy/db/unqlite/server.h"               // for Server
 #endif
 
 #ifdef BUILD_WITH_LMDB
-#include "proxy/db/lmdb/connection_settings.h"  // for ConnectionSettings
 #include "core/db/lmdb/db_connection.h"         // for TestConnection
+#include "proxy/db/lmdb/connection_settings.h"  // for ConnectionSettings
 #include "proxy/db/lmdb/server.h"               // for Server
 #endif
 
 #ifdef BUILD_WITH_UPSCALEDB
-#include "proxy/db/upscaledb/connection_settings.h"  // for ConnectionSettings
 #include "core/db/upscaledb/db_connection.h"         // for TestConnection
+#include "proxy/db/upscaledb/connection_settings.h"  // for ConnectionSettings
 #include "proxy/db/upscaledb/server.h"               // for Server
 #endif
 

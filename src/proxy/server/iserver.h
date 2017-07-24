@@ -25,14 +25,14 @@
 #include <common/value.h>  // for ValueSPtr
 
 #include "core/connection_types.h"     // for core::connectionTypes
-#include "proxy/proxy_fwd.h"           // for IDatabaseSPtr
 #include "core/db_key.h"               // for NKey (ptr only), etc
 #include "core/icommand_translator.h"  // for translator_t
+#include "proxy/proxy_fwd.h"           // for IDatabaseSPtr
 
 #include "core/database/idatabase_info.h"  // for IDataBaseInfoSPtr
+#include "core/server/iserver_info.h"      // for IServerInfoSPtr, etc
 #include "proxy/events/events.h"           // for BackupResponceEvent, etc
 #include "proxy/server/iserver_base.h"     // for IServerBase
-#include "core/server/iserver_info.h"      // for IServerInfoSPtr, etc
 
 #include "core/global.h"  // for FastoObject (ptr only), etc
 
@@ -40,7 +40,7 @@ namespace fastonosql {
 namespace proxy {
 class IDriver;
 }
-}
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace proxy {

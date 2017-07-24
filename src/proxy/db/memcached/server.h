@@ -20,8 +20,8 @@
 
 #include <common/net/types.h>  // for HostAndPort
 
-#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "core/connection_types.h"                           // for serverMode, serverState, etc
+#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "proxy/proxy_fwd.h"                                 // for IDatabaseSPtr
 #include "proxy/server/iserver_remote.h"                     // for IServerRemote
 

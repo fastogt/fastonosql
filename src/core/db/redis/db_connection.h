@@ -27,25 +27,25 @@
 #include <common/error.h>   // for Error
 #include <common/macros.h>  // for PROJECT_VERSION_GENERATE, etc
 
-#include "core/connection_types.h"  // for connectionTypes::REDIS
-#include "core/db_key.h"            // for NDbKValue, NKey, etc
-#include "core/ssh_info.h"          // for SSHInfo
-#include "core/server/iserver_info.h"
-#include "core/internal/db_connection.h"   // for DBConnection<>::config_t
-#include "core/internal/cdb_connection.h"  // for CDBConnection
+#include "core/connection_types.h"         // for connectionTypes::REDIS
 #include "core/db/redis/config.h"          // for Config
+#include "core/db_key.h"                   // for NDbKValue, NKey, etc
 #include "core/global.h"                   // for FastoObject (ptr only), etc
+#include "core/internal/cdb_connection.h"  // for CDBConnection
+#include "core/internal/db_connection.h"   // for DBConnection<>::config_t
+#include "core/server/iserver_info.h"
+#include "core/ssh_info.h"  // for SSHInfo
 
 namespace fastonosql {
 namespace core {
 class CDBConnectionClient;
 }
-}
+}  // namespace fastonosql
 namespace fastonosql {
 namespace core {
 class IDataBaseInfo;
 }
-}
+}  // namespace fastonosql
 struct redisContext;  // lines 49-49
 struct redisReply;    // lines 50-50
 

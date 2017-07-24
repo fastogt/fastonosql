@@ -31,24 +31,24 @@
 #include <common/sprintf.h>         // for MemSPrintf
 #include <common/value.h>           // for Value, ErrorValue, etc
 
-#include "proxy/command/command.h"  // for CreateCommand, etc
 #include "core/connection_types.h"
-#include "core/db_key.h"  // for NDbKValue, NValue, ttl_t, etc
-#include "proxy/events/events_info.h"
-#include "core/server_property_info.h"     // for MakeServerProperty, etc
 #include "core/database/idatabase_info.h"  // for IDataBaseInfoSPtr, etc
-#include "proxy/driver/root_locker.h"      // for RootLocker
+#include "core/db_key.h"                   // for NDbKValue, NValue, ttl_t, etc
+#include "core/server_property_info.h"     // for MakeServerProperty, etc
+#include "proxy/command/command.h"         // for CreateCommand, etc
 #include "proxy/command/command_logger.h"
+#include "proxy/driver/root_locker.h"  // for RootLocker
+#include "proxy/events/events_info.h"
 
 #include "core/internal/cdb_connection.h"
 #include "core/internal/db_connection.h"
 
-#include "core/db/redis/db_connection.h"         // for DBConnection, INFO_REQUEST, etc
-#include "proxy/db/redis/command.h"              // for Command
 #include "core/db/redis/config.h"                // for Config
-#include "proxy/db/redis/connection_settings.h"  // for ConnectionSettings
 #include "core/db/redis/database_info.h"         // for DataBaseInfo
+#include "core/db/redis/db_connection.h"         // for DBConnection, INFO_REQUEST, etc
 #include "core/db/redis/server_info.h"           // for ServerInfo, etc
+#include "proxy/db/redis/command.h"              // for Command
+#include "proxy/db/redis/connection_settings.h"  // for ConnectionSettings
 
 #include "core/global.h"  // for FastoObjectCommandIPtr, etc
 

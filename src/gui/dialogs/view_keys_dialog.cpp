@@ -25,11 +25,11 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QSortFilterProxyModel>
 #include <QSpinBox>
 #include <QSplitter>
 #include <QStyledItemDelegate>
 #include <QVBoxLayout>
-#include <QSortFilterProxyModel>
 
 #include <common/error.h>              // for Error
 #include <common/macros.h>             // for VERIFY, UNUSED, CHECK, etc
@@ -38,12 +38,12 @@
 #include <common/value.h>              // for ErrorValue
 
 #include "core/db_key.h"               // for NDbKValue
-#include "proxy/events/events_info.h"  // for CommandResponce, etc
 #include "proxy/database/idatabase.h"  // for IDatabase
+#include "proxy/events/events_info.h"  // for CommandResponce, etc
 #include "proxy/server/iserver.h"      // for IServer
 
-#include "gui/keys_table_view.h"
 #include "gui/gui_factory.h"  // for GuiFactory
+#include "gui/keys_table_view.h"
 
 #include "translations/global.h"  // for trKeyCountOnThePage, etc
 

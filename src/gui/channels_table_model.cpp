@@ -23,9 +23,9 @@
 
 #include <QIcon>
 
+#include <common/macros.h>             // for CHECK, UNUSED
 #include <common/qt/convert2string.h>  // for ConvertFromString
-#include <common/macros.h>          // for CHECK, UNUSED
-#include <common/qt/utils_qt.h>     // for item
+#include <common/qt/utils_qt.h>        // for item
 
 #include <common/qt/gui/base/table_item.h>   // for TableItem
 #include <common/qt/gui/base/table_model.h>  // for TableModel

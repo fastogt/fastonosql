@@ -20,25 +20,25 @@
 
 #include <stdlib.h>  // for NULL, free, calloc
 #include <string.h>  // for memset
-#include <string>    // for string
 #include <memory>    // for __shared_ptr
+#include <string>    // for string
 
 #include <ups/upscaledb.h>
 
-#include <common/value.h>  // for StringValue (ptr only)
-#include <common/utils.h>  // for c_strornull
 #include <common/convert2string.h>
 #include <common/file_system.h>  // for get_dir_path, is_directory, etc
 #include <common/sprintf.h>      // for MemSPrintf
 #include <common/string_util.h>  // for MatchPattern
 #include <common/types.h>        // for tribool, tribool::SUCCESS
+#include <common/utils.h>        // for c_strornull
+#include <common/value.h>        // for StringValue (ptr only)
 
-#include "core/command_holder.h"       // for CommandHolder
-#include "core/internal/connection.h"  // for Connection<>::handle_t, etc
-#include "core/db/upscaledb/config.h"  // for Config
+#include "core/command_holder.h"  // for CommandHolder
 #include "core/db/upscaledb/command_translator.h"
+#include "core/db/upscaledb/config.h"  // for Config
 #include "core/db/upscaledb/database_info.h"
 #include "core/db/upscaledb/internal/commands_api.h"
+#include "core/internal/connection.h"  // for Connection<>::handle_t, etc
 
 namespace fastonosql {
 namespace core {
@@ -101,8 +101,8 @@ void upscaledb_close(upscaledb** context) {
   free(lcontext);
   *context = NULL;
 }
-}
-}
+}  // namespace
+}  // namespace upscaledb
 namespace internal {
 template <>
 common::Error ConnectionAllocatorTraits<upscaledb::NativeConnection, upscaledb::Config>::Connect(

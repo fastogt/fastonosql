@@ -53,12 +53,12 @@
 
 #include "core/logger.h"
 
-#include "proxy/command/command_logger.h"  // for CommandLogger
 #include "proxy/cluster/icluster.h"        // for ICluster
-#include "proxy/sentinel/isentinel.h"      // for ISentinel
-#include "proxy/servers_manager.h"         // for ServersManager
-#include "proxy/settings_manager.h"        // for SettingsManager
+#include "proxy/command/command_logger.h"  // for CommandLogger
 #include "proxy/events/events_info.h"
+#include "proxy/sentinel/isentinel.h"  // for ISentinel
+#include "proxy/servers_manager.h"     // for ServersManager
+#include "proxy/settings_manager.h"    // for SettingsManager
 
 #include "proxy/server/iserver.h"
 
@@ -644,7 +644,6 @@ void MainWindow::tapAndHoldTriggered(QTapAndHoldGesture* tapEvent) {
 #endif
 
 void MainWindow::createToolBar() {
-#ifdef BUILD_WITH_SOCIAL_BUTTONS
   QToolBar* toolBar = new QToolBar(tr("Share toolbar"));
 
   facebookAction_ = new QAction(this);
@@ -670,7 +669,6 @@ void MainWindow::createToolBar() {
 
   toolBar->setMovable(false);
   addToolBar(Qt::TopToolBarArea, toolBar);
-#endif
 }
 
 void MainWindow::openHomePageLink() {
@@ -712,12 +710,12 @@ void MainWindow::retranslateUi() {
   logsAction_->setText(translations::trLogs);
   recentConnections_->setText(translations::trRecentConnections);
   clearMenu_->setText(translations::trClearMenu);
-#ifdef BUILD_WITH_SOCIAL_BUTTONS
+
   homePageAction_->setText(tr("%1 home page").arg(PROJECT_NAME_TITLE));
   facebookAction_->setText(tr("Facebook %1 link").arg(PROJECT_NAME_TITLE));
   twitterAction_->setText(tr("Twitter %1 link").arg(PROJECT_NAME_TITLE));
   githubAction_->setText(tr("Github %1 link").arg(PROJECT_NAME_TITLE));
-#endif
+
   expDock_->setWindowTitle(translations::trExpTree);
   logDock_->setWindowTitle(translations::trLogs);
 }

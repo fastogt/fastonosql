@@ -18,14 +18,14 @@
 
 #include "gui/explorer/explorer_tree_widget.h"
 
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QLineEdit>
-#include <QLabel>
 #include <QEvent>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QVBoxLayout>
 
-#include "gui/gui_factory.h"
 #include "gui/explorer/explorer_tree_view.h"
+#include "gui/gui_factory.h"
 
 #include "translations/global.h"
 

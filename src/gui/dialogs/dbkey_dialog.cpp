@@ -38,18 +38,18 @@
 #include <common/convert2string.h>     // for ConvertFromString
 #include <common/macros.h>             // for VERIFY, CHECK, NOTREACHED
 #include <common/qt/convert2string.h>  // for ConvertToString
-#include <common/value.h>              // for Value, Value::Type, etc
 #include <common/qt/utils_qt.h>
+#include <common/value.h>  // for Value, Value::Type, etc
 
 #include "core/db_traits.h"
 #include "core/global.h"
 
-#include "gui/widgets/list_type_widget.h"
 #include "gui/widgets/hash_type_widget.h"
+#include "gui/widgets/list_type_widget.h"
 
-#include "gui/hash_table_model.h"
 #include "gui/dialogs/input_dialog.h"  // for InputDialog, etc
 #include "gui/gui_factory.h"           // for GuiFactory
+#include "gui/hash_table_model.h"
 
 #include "translations/global.h"  // for trAddItem, trRemoveItem, etc
 
@@ -58,7 +58,7 @@ const QString trType = QObject::tr("Type:");
 const QString trKey = QObject::tr("Key:");
 const QString trValue = QObject::tr("Value:");
 const QString trInput = QObject::tr("Key/Value input");
-}
+}  // namespace
 
 namespace fastonosql {
 namespace gui {

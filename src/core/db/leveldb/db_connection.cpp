@@ -22,9 +22,9 @@
 #include <leveldb/db.h>
 #include <leveldb/options.h>  // for ReadOptions, WriteOptions
 
-#include <common/sprintf.h>
 #include <common/convert2string.h>  // for ConvertFromString
 #include <common/file_system.h>
+#include <common/sprintf.h>
 
 #include "core/db/leveldb/command_translator.h"
 #include "core/db/leveldb/database_info.h"

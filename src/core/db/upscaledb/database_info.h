@@ -36,6 +36,6 @@ class DataBaseInfo : public IDataBaseInfo {
   virtual DataBaseInfo* Clone() const override;
 };
 
-}  // namespace lmdb
+}  // namespace upscaledb
 }  // namespace core
 }  // namespace fastonosql

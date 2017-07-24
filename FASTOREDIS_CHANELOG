@@ -1,5 +1,7 @@
 1.6.0 /
 [Alexandr Topilski]
+- Added BITFIELD command
+- #26 Different JsonFormat for better readable json
 
 1.5.1 / May 18, 2017
 [Alexandr Topilski]

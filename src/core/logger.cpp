@@ -40,7 +40,7 @@ void Logger::print(const std::string& mess, common::logging::LEVEL_LOG level, bo
   }
 }
 
-}  // namespace proxy
+}  // namespace core
 }  // namespace fastonosql
 
 void SET_LOG_WATCHER(fastonosql::core::LogWatcher* watcher) {

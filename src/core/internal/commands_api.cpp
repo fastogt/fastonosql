@@ -20,6 +20,6 @@
 
 namespace fastonosql {
 namespace core {
-namespace internal {}  // namespace leveldb
+namespace internal {}  // namespace internal
 }  // namespace core
 }  // namespace fastonosql

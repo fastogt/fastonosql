@@ -30,15 +30,15 @@ namespace proxy {
 namespace events_info {
 struct ExecuteInfoRequest;
 }
-}
-}
+}  // namespace proxy
+}  // namespace fastonosql
 namespace fastonosql {
 namespace proxy {
 namespace events_info {
 struct LoadDatabaseContentRequest;
 }
-}
-}
+}  // namespace proxy
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace proxy {

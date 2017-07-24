@@ -35,5 +35,5 @@ class Command : public core::FastoObjectCommand {
 };
 
 }  // namespace memcached
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

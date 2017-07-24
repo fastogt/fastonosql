@@ -18,11 +18,11 @@
 
 #include "gui/widgets/type_delegate.h"
 
-#include <QSpinBox>
-#include <QLineEdit>
 #include <QComboBox>
-#include <QTableView>
 #include <QHeaderView>
+#include <QLineEdit>
+#include <QSpinBox>
+#include <QTableView>
 
 #include <common/convert2string.h>
 #include <common/qt/convert2string.h>
@@ -30,8 +30,8 @@
 
 #include "core/global.h"
 
-#include "gui/widgets/list_type_widget.h"
 #include "gui/widgets/hash_type_widget.h"
+#include "gui/widgets/list_type_widget.h"
 
 #include "gui/fasto_common_item.h"
 
@@ -154,7 +154,7 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
     if (val->GetAsZSet(&zset)) {
       HashTypeWidget* hashwidget = static_cast<HashTypeWidget*>(editor);
       for (auto it = zset->begin(); it != zset->end(); ++it) {
-        auto element = (*it);       
+        auto element = (*it);
         common::Value* key = element.first;
         std::string key_str = common::ConvertToString(key, "");
         if (key_str.empty()) {

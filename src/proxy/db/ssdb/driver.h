@@ -25,11 +25,11 @@
 #include <common/net/types.h>  // for HostAndPort
 #include <common/value.h>      // for Value, etc
 
-#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
-#include "proxy/events/events.h"                             // for ClearDatabaseRequestEvent, etc
-#include "proxy/driver/idriver_remote.h"                     // for IDriverRemote
 #include "core/icommand_translator.h"                        // for translator_t
 #include "core/server/iserver_info.h"                        // for IServerInfo (ptr only), etc
+#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
+#include "proxy/driver/idriver_remote.h"                     // for IDriverRemote
+#include "proxy/events/events.h"                             // for ClearDatabaseRequestEvent, etc
 
 #include "core/global.h"  // for FastoObject (ptr only), etc
 
@@ -37,7 +37,7 @@ namespace fastonosql {
 namespace proxy {
 class IDataBaseInfo;
 }
-}
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace core {
@@ -45,8 +45,8 @@ namespace ssdb {
 
 class DBConnection;
 }
-}
-}
+}  // namespace core
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace proxy {

@@ -31,58 +31,127 @@ namespace fastonosql {
 namespace core {
 class FastoObject;
 }
-}
+}  // namespace fastonosql
 namespace fastonosql {
 namespace core {
 namespace internal {
 class CommandHandler;
 }
-}
-}
+}  // namespace core
+}  // namespace fastonosql
 namespace fastonosql {
 namespace core {
 namespace redis {
 class DBConnection;
 }
-}
-}
+}  // namespace core
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace core {
 namespace redis {
 
 struct CommandsApi : public internal::ApiTraits<DBConnection> {
-  static common::Error CommonExec(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-  static common::Error CommonExecOff2(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+  static common::Error CommonExec(internal::CommandHandler* handler,
+                                  int argc,
+                                  const char** argv,
+                                  FastoObject* out);
+  static common::Error CommonExecOff2(internal::CommandHandler* handler,
+                                      int argc,
+                                      const char** argv,
+                                      FastoObject* out);
 
-  static common::Error SetEx(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-  static common::Error SetNX(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+  static common::Error SetEx(internal::CommandHandler* handler,
+                             int argc,
+                             const char** argv,
+                             FastoObject* out);
+  static common::Error SetNX(internal::CommandHandler* handler,
+                             int argc,
+                             const char** argv,
+                             FastoObject* out);
 
-  static common::Error Lpush(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-  static common::Error Lrange(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+  static common::Error Lpush(internal::CommandHandler* handler,
+                             int argc,
+                             const char** argv,
+                             FastoObject* out);
+  static common::Error Lrange(internal::CommandHandler* handler,
+                              int argc,
+                              const char** argv,
+                              FastoObject* out);
 
-  static common::Error Sadd(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-  static common::Error Smembers(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+  static common::Error Sadd(internal::CommandHandler* handler,
+                            int argc,
+                            const char** argv,
+                            FastoObject* out);
+  static common::Error Smembers(internal::CommandHandler* handler,
+                                int argc,
+                                const char** argv,
+                                FastoObject* out);
 
-  static common::Error Zadd(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-  static common::Error Zrange(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+  static common::Error Zadd(internal::CommandHandler* handler,
+                            int argc,
+                            const char** argv,
+                            FastoObject* out);
+  static common::Error Zrange(internal::CommandHandler* handler,
+                              int argc,
+                              const char** argv,
+                              FastoObject* out);
 
-  static common::Error Hmset(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-  static common::Error Hgetall(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+  static common::Error Hmset(internal::CommandHandler* handler,
+                             int argc,
+                             const char** argv,
+                             FastoObject* out);
+  static common::Error Hgetall(internal::CommandHandler* handler,
+                               int argc,
+                               const char** argv,
+                               FastoObject* out);
 
-  static common::Error Decr(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-  static common::Error DecrBy(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+  static common::Error Decr(internal::CommandHandler* handler,
+                            int argc,
+                            const char** argv,
+                            FastoObject* out);
+  static common::Error DecrBy(internal::CommandHandler* handler,
+                              int argc,
+                              const char** argv,
+                              FastoObject* out);
 
-  static common::Error Incr(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-  static common::Error IncrBy(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-  static common::Error IncrByFloat(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+  static common::Error Incr(internal::CommandHandler* handler,
+                            int argc,
+                            const char** argv,
+                            FastoObject* out);
+  static common::Error IncrBy(internal::CommandHandler* handler,
+                              int argc,
+                              const char** argv,
+                              FastoObject* out);
+  static common::Error IncrByFloat(internal::CommandHandler* handler,
+                                   int argc,
+                                   const char** argv,
+                                   FastoObject* out);
 
-  static common::Error Persist(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-  static common::Error ExpireRedis(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-  static common::Error Auth(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-  static common::Error Monitor(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-  static common::Error Subscribe(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-  static common::Error Sync(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+  static common::Error Persist(internal::CommandHandler* handler,
+                               int argc,
+                               const char** argv,
+                               FastoObject* out);
+  static common::Error ExpireRedis(internal::CommandHandler* handler,
+                                   int argc,
+                                   const char** argv,
+                                   FastoObject* out);
+  static common::Error Auth(internal::CommandHandler* handler,
+                            int argc,
+                            const char** argv,
+                            FastoObject* out);
+  static common::Error Monitor(internal::CommandHandler* handler,
+                               int argc,
+                               const char** argv,
+                               FastoObject* out);
+  static common::Error Subscribe(internal::CommandHandler* handler,
+                                 int argc,
+                                 const char** argv,
+                                 FastoObject* out);
+  static common::Error Sync(internal::CommandHandler* handler,
+                            int argc,
+                            const char** argv,
+                            FastoObject* out);
 };
 
 static const internal::ConstantCommandsArray g_commands = {
@@ -134,15 +203,15 @@ static const internal::ConstantCommandsArray g_commands = {
                   1,
                   2,
                   &CommandsApi::CommonExec),
-    CommandHolder(
-        "BITFIELD",
-        "key [GET type offset] [SET type offset value] [INCRBY type offset increment] [OVERFLOW WRAP|SAT|FAIL]",
-        "Perform arbitrary bitfield integer operations on strings",
-        PROJECT_VERSION_GENERATE(3, 2, 0),
-        UNDEFINED_EXAMPLE_STR,
-        1,
-        8,
-        &CommandsApi::CommonExec),
+    CommandHolder("BITFIELD",
+                  "key [GET type offset] [SET type offset value] [INCRBY type offset increment] "
+                  "[OVERFLOW WRAP|SAT|FAIL]",
+                  "Perform arbitrary bitfield integer operations on strings",
+                  PROJECT_VERSION_GENERATE(3, 2, 0),
+                  UNDEFINED_EXAMPLE_STR,
+                  1,
+                  8,
+                  &CommandsApi::CommonExec),
     CommandHolder("BITOP",
                   "<operation> <destkey> <key> [key ...]",
                   "Perform bitwise operations between strings",

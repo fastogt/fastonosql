@@ -119,7 +119,7 @@ bool ConvertFromString(const std::string& from, fastonosql::core::memcached::Con
   int argc = 0;
   sds* argv = sdssplitargslong(from.c_str(), &argc);
   if (argv) {
-    *out= fastonosql::core::memcached::parseOptions(argc, argv);
+    *out = fastonosql::core::memcached::parseOptions(argc, argv);
     sdsfreesplitres(argv, argc);
     return true;
   }

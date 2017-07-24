@@ -25,14 +25,14 @@
 #include <string>  // for string
 
 #include <common/net/types.h>  // for HostAndPortAndSlot
-#include <common/types.h>      // for time64_t
 #include <common/smart_ptr.h>
+#include <common/types.h>  // for time64_t
 
 #include "core/connection_types.h"  // for connectionTypes, etc
 
 namespace common {
 class Value;
-}  // lines 34-34
+}  // namespace common
 
 namespace fastonosql {
 namespace core {

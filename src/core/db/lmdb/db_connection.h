@@ -29,8 +29,8 @@
 #include "core/db_key.h"                   // for NDbKValue, NKey, NKeys
 #include "core/internal/cdb_connection.h"  // for CDBConnection
 
-#include "core/db/lmdb/server_info.h"  // for ServerInfo
 #include "core/db/lmdb/config.h"
+#include "core/db/lmdb/server_info.h"  // for ServerInfo
 
 namespace fastonosql {
 class FastoObject;
@@ -39,24 +39,24 @@ namespace fastonosql {
 namespace core {
 class CDBConnectionClient;
 }
-}
+}  // namespace fastonosql
 namespace fastonosql {
 namespace core {
 class CommandHandler;
 }
-}
+}  // namespace fastonosql
 namespace fastonosql {
 namespace core {
 class IDataBaseInfo;
 }
-}
+}  // namespace fastonosql
 namespace fastonosql {
 namespace core {
 namespace lmdb {
 struct lmdb;
 }
-}
-}  // lines 41-41
+}  // namespace core
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace core {

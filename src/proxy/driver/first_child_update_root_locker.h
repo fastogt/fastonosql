@@ -30,7 +30,7 @@ namespace fastonosql {
 namespace proxy {
 class IDriver;
 }
-}
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace proxy {

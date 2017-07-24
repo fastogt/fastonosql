@@ -23,8 +23,8 @@
 #include <common/macros.h>  // for NOTREACHED
 #include <common/value.h>   // for Value, CommandValue (ptr only), Value::Co...
 
-#include "core/types.h"
 #include "core/global.h"  // for FastoObjectCommandIPtr, FastoObject (ptr ...
+#include "core/types.h"
 
 namespace fastonosql {
 namespace proxy {
@@ -62,5 +62,5 @@ core::FastoObjectCommandIPtr CreateCommandFast(const std::string& input, core::C
   return new Command(nullptr, cmd, ct, std::string());
 }
 
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

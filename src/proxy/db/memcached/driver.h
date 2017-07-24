@@ -25,16 +25,16 @@
 #include <common/net/types.h>  // for HostAndPort
 
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
-#include "proxy/events/events.h"                             // for CommandRequestEvent, etc
 #include "proxy/driver/idriver_remote.h"                     // for IDriverRemote
+#include "proxy/events/events.h"                             // for CommandRequestEvent, etc
 
 namespace fastonosql {
 namespace core {
 namespace memcached {
 class DBConnection;
 }
-}
-}
+}  // namespace core
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace proxy {

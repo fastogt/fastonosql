@@ -38,7 +38,7 @@ namespace fastonosql {
 namespace gui {
 class FastoScintilla;
 }
-}  // lines 42-42
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace gui {

@@ -29,11 +29,11 @@ namespace ssdb {
 struct Config : public RemoteConfig {
   Config();
 };
-}
+}  // namespace ssdb
 }  // namespace core
 }  // namespace fastonosql
 
 namespace common {
 std::string ConvertToString(const fastonosql::core::ssdb::Config& conf);
 bool ConvertFromString(const std::string& from, fastonosql::core::ssdb::Config* out);
-}
+}  // namespace common

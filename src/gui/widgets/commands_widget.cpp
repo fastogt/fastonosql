@@ -28,9 +28,9 @@
 #include <QTextEdit>
 #include <QTime>
 
+#include <common/macros.h>             // for VERIFY
 #include <common/qt/convert2string.h>  // for ConvertFromString
-#include <common/macros.h>          // for VERIFY
-#include <common/value.h>           // for Value, etc
+#include <common/value.h>              // for Value, etc
 
 #include "core/global.h"
 

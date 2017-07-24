@@ -18,18 +18,18 @@
 
 #include "gui/dialogs/pub_sub_dialog.h"
 
-#include <QVBoxLayout>
-#include <QEvent>
-#include <QDialogButtonBox>
-#include <QLineEdit>
-#include <QLabel>
-#include <QPushButton>
-#include <QSpinBox>
-#include <QSortFilterProxyModel>
-#include <QHeaderView>
-#include <QMenu>
 #include <QAction>
+#include <QDialogButtonBox>
+#include <QEvent>
+#include <QHeaderView>
 #include <QInputDialog>
+#include <QLabel>
+#include <QLineEdit>
+#include <QMenu>
+#include <QPushButton>
+#include <QSortFilterProxyModel>
+#include <QSpinBox>
+#include <QVBoxLayout>
 
 #include <common/convert2string.h>
 #include <common/qt/convert2string.h>
@@ -37,9 +37,9 @@
 
 #include "proxy/server/iserver.h"
 
+#include "gui/channels_table_model.h"  // for KeysTableModel, etc
 #include "gui/fasto_table_view.h"      // for FastoTableView
 #include "gui/gui_factory.h"           // for GuiFactory
-#include "gui/channels_table_model.h"  // for KeysTableModel, etc
 
 #include "translations/global.h"  // for trKeyCountOnThePage, etc
 
@@ -47,7 +47,7 @@ namespace {
 const QString trPublishToChannel_1S = QObject::tr("Publish to channel %1");
 const QString trEnterWhatYoWantToSend = QObject::tr("Enter what you want to send:");
 const QString trSubscribeInNewConsole = QObject::tr("Subscribe in new console");
-}
+}  // namespace
 
 namespace fastonosql {
 namespace gui {

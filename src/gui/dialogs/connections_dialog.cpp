@@ -36,10 +36,10 @@
 #include "proxy/connection_settings/iconnection_settings.h"  // for IClusterSettingsBaseSPtr, etc
 #include "proxy/settings_manager.h"                          // for SettingsManager
 
-#include "gui/dialogs/connection_select_type_dialog.h"
 #include "gui/dialogs/cluster_dialog.h"     // for ClusterDialog
 #include "gui/dialogs/connection_dialog.h"  // for ConnectionDialog
 #include "gui/dialogs/connection_listwidget_items.h"
+#include "gui/dialogs/connection_select_type_dialog.h"
 #include "gui/dialogs/sentinel_dialog.h"  // for SentinelDialog
 #include "gui/gui_factory.h"              // for GuiFactory
 

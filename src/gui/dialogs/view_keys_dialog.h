@@ -25,8 +25,8 @@
 
 #include <QDialog>
 
-#include "proxy/proxy_fwd.h"  // for IDatabaseSPtr
 #include "core/database/idatabase_info.h"
+#include "proxy/proxy_fwd.h"  // for IDatabaseSPtr
 
 class QEvent;
 class QLabel;     // lines 30-30
@@ -42,14 +42,14 @@ struct ExecuteInfoRequest;
 struct ExecuteInfoResponce;
 struct LoadDatabaseContentRequest;
 struct LoadDatabaseContentResponce;
-}
-}
-}
+}  // namespace events_info
+}  // namespace proxy
+}  // namespace fastonosql
 namespace fastonosql {
 namespace gui {
 class KeysTableView;
 }
-}
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace gui {

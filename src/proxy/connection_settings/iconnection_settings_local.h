@@ -20,8 +20,8 @@
 
 #include <string>  // for string
 
-#include "proxy/connection_settings/iconnection_settings.h"
 #include "core/connection_types.h"  // for core::connectionTypes
+#include "proxy/connection_settings/iconnection_settings.h"
 
 namespace fastonosql {
 namespace proxy {

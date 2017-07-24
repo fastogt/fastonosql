@@ -28,7 +28,7 @@ namespace fastonosql {
 namespace gui {
 class FastoEditorOutput;
 }
-}  // lines 30-30
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace gui {

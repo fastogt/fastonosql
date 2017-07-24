@@ -37,7 +37,7 @@ class Logger : public common::patterns::LazySingleton<Logger> {
   Logger();
 };
 
-}  // namespace proxy
+}  // namespace core
 }  // namespace fastonosql
 
 void SET_LOG_WATCHER(fastonosql::core::LogWatcher* watcher);

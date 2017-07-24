@@ -18,12 +18,12 @@
 
 #include "core/db/leveldb/server_info.h"
 
-#include <ostream>  // for operator<<, basic_ostream, etc
-#include <sstream>
 #include <stddef.h>  // for size_t
-#include <string>    // for string, operator==, etc
-#include <utility>   // for make_pair
-#include <vector>    // for vector
+#include <ostream>   // for operator<<, basic_ostream, etc
+#include <sstream>
+#include <string>   // for string, operator==, etc
+#include <utility>  // for make_pair
+#include <vector>   // for vector
 
 #include <common/convert2string.h>  // for ConvertFromString
 #include <common/macros.h>          // for NOTREACHED, DCHECK_EQ

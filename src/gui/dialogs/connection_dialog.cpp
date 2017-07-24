@@ -26,10 +26,10 @@
 #include <vector>  // for allocator, vector
 
 #include <QDialogButtonBox>
-#include <QPushButton>
+#include <QEvent>
 #include <QHBoxLayout>
 #include <QMessageBox>
-#include <QEvent>
+#include <QPushButton>
 
 #include <common/convert2string.h>     // for ConvertFromString
 #include <common/qt/convert2string.h>  // for ConvertToString

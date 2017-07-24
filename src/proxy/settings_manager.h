@@ -26,11 +26,11 @@
 #include <QFont>
 #include <QStringList>
 
-#include <common/patterns/singleton_pattern.h>  // for LazySingleton
 #include <common/net/types.h>
+#include <common/patterns/singleton_pattern.h>  // for LazySingleton
 
-#include "proxy/connection_settings/iconnection_settings.h"  // for IClusterSettingsBaseSPtr, etc
 #include "proxy/connection_settings/icluster_connection_settings.h"
+#include "proxy/connection_settings/iconnection_settings.h"  // for IClusterSettingsBaseSPtr, etc
 #include "proxy/connection_settings/isentinel_connection_settings.h"
 
 #include "proxy/types.h"  // for supportedViews

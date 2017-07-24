@@ -35,5 +35,5 @@ class Command : public core::FastoObjectCommand {
 };
 
 }  // namespace upscaledb
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

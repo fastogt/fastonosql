@@ -27,7 +27,7 @@ namespace fastonosql {
 namespace core {
 class NDbKValue;
 }
-}
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace gui {

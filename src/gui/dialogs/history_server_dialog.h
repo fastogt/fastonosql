@@ -20,8 +20,8 @@
 
 #include <QDialog>
 
-#include "proxy/proxy_fwd.h"  // for IServerSPtr
 #include "proxy/events/events_info.h"
+#include "proxy/proxy_fwd.h"  // for IServerSPtr
 
 class QComboBox;  // lines 23-23
 class QEvent;
@@ -34,15 +34,15 @@ namespace qt {
 namespace gui {
 class GlassWidget;
 }
-}
-}  // lines 32-32
+}  // namespace qt
+}  // namespace common
 namespace common {
 namespace qt {
 namespace gui {
 class GraphWidget;
 }
-}
-}  // lines 33-33
+}  // namespace qt
+}  // namespace common
 
 namespace fastonosql {
 namespace gui {

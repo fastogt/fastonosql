@@ -29,5 +29,5 @@ Command::Command(FastoObject* parent,
     : FastoObjectCommand(parent, cmd, ct, delimiter, core::SSDB) {}
 
 }  // namespace ssdb
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

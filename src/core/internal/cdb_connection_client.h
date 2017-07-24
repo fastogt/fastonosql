@@ -26,7 +26,7 @@ namespace fastonosql {
 namespace core {
 class IDataBaseInfo;
 }
-}
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace core {

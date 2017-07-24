@@ -25,33 +25,33 @@
 #include <common/error.h>   // for Error
 #include <common/macros.h>  // for WARN_UNUSED_RESULT
 
-#include "core/command_info.h"             // for UNDEFINED_EXAMPLE_STR, UNDEF...
-#include "core/connection_types.h"         // for connectionTypes::MEMCACHED
+#include "core/command_info.h"      // for UNDEFINED_EXAMPLE_STR, UNDEF...
+#include "core/connection_types.h"  // for connectionTypes::MEMCACHED
+#include "core/db/memcached/config.h"
+#include "core/db/memcached/server_info.h"
 #include "core/db_key.h"                   // for NDbKValue, NKey, NKeys
 #include "core/internal/cdb_connection.h"  // for CDBConnection
-#include "core/db/memcached/server_info.h"
-#include "core/db/memcached/config.h"
 
 namespace fastonosql {
 namespace core {
 class FastoObject;
 }
-}
+}  // namespace fastonosql
 namespace fastonosql {
 namespace core {
 class CDBConnectionClient;
 }
-}
+}  // namespace fastonosql
 namespace fastonosql {
 namespace core {
 class CommandHandler;
 }
-}
+}  // namespace fastonosql
 namespace fastonosql {
 namespace core {
 class IDataBaseInfo;
 }
-}
+}  // namespace fastonosql
 
 struct memcached_st;  // lines 37-37
 

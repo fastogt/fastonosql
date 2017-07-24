@@ -18,8 +18,8 @@
 
 #pragma once
 
-#include <stdint.h>  // for uint32_t, uint8_t
 #include <stddef.h>  // for size_t
+#include <stdint.h>  // for uint32_t, uint8_t
 #include <string>    // for string
 #include <vector>    // for vector
 
@@ -28,12 +28,12 @@
 #include <common/types.h>        // for time64_t
 #include <common/value.h>        // for Value, etc
 
+#include "core/connection_types.h"  // for ConnectionMode
+#include "core/database/idatabase_info.h"
 #include "core/db_key.h"  // for NDbKValue
 #include "core/db_ps_channel.h"
-#include "core/connection_types.h"      // for ConnectionMode
+#include "core/server/iserver_info.h"   // for IDataBaseInfoSPtr, IServerInf...
 #include "core/server_property_info.h"  // for property_t, ServerPropertiesInfo
-#include "core/database/idatabase_info.h"
-#include "core/server/iserver_info.h"  // for IDataBaseInfoSPtr, IServerInf...
 
 #include "core/global.h"  // for FastoObjectIPtr
 

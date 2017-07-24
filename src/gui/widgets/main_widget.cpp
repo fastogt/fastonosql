@@ -18,9 +18,9 @@
 
 #include "gui/widgets/main_widget.h"
 
-#include <common/qt/convert2string.h>
 #include <common/convert2string.h>  // for ConvertFromString
 #include <common/macros.h>          // for VERIFY, DNOTREACHED
+#include <common/qt/convert2string.h>
 
 #include "proxy/server/iserver.h"  // for IServer
 

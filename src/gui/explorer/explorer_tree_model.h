@@ -24,8 +24,8 @@
 
 #include <common/qt/gui/base/tree_model.h>  // for TreeModel
 
-#include "proxy/proxy_fwd.h"
 #include "proxy/database/idatabase.h"
+#include "proxy/proxy_fwd.h"
 
 class QModelIndex;
 class QObject;
@@ -34,7 +34,7 @@ namespace fastonosql {
 namespace proxy {
 class IServer;
 }
-}
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace gui {
@@ -45,8 +45,8 @@ class ExplorerDatabaseItem;
 class ExplorerKeyItem;
 class ExplorerNSItem;
 class IExplorerTreeItem;
-}
-}
+}  // namespace gui
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace gui {

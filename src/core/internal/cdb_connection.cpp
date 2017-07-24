@@ -28,6 +28,6 @@ std::string GetKeysPattern(uint64_t cursor_in, const std::string& pattern, uint6
   return common::MemSPrintf(GET_KEYS_PATTERN_3ARGS_ISI, cursor_in, pattern, count_keys);
 }
 
-}
+}  // namespace internal
 }  // namespace core
 }  // namespace fastonosql

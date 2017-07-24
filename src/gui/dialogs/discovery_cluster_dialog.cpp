@@ -18,8 +18,8 @@
 
 #include "gui/dialogs/discovery_cluster_dialog.h"
 
-#include <memory>    // for __shared_ptr
 #include <stddef.h>  // for size_t
+#include <memory>    // for __shared_ptr
 #include <string>    // for operator+, basic_string, etc
 #include <vector>    // for allocator, vector
 
@@ -33,12 +33,12 @@
 #include <common/file_system.h>          // for get_separator_string
 #include <common/macros.h>               // for VERIFY
 #include <common/net/types.h>            // for HostAndPortAndSlot
+#include <common/qt/gui/glass_widget.h>  // for GlassWidget
 #include <common/time.h>                 // for current_mstime
 #include <common/value.h>                // for ErrorValue
-#include <common/qt/gui/glass_widget.h>  // for GlassWidget
 
-#include "proxy/servers_manager.h"  // for ServersManager
 #include "proxy/connection_settings_factory.h"
+#include "proxy/servers_manager.h"  // for ServersManager
 
 #include "gui/dialogs/connection_listwidget_items.h"
 #include "gui/dialogs/discovery_connection.h"

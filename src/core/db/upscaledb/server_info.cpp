@@ -18,8 +18,8 @@
 
 #include "core/db/upscaledb/server_info.h"
 
-#include <sstream>   // for operator<<, ostream, etc
 #include <stddef.h>  // for size_t
+#include <sstream>   // for operator<<, ostream, etc
 #include <string>    // for string, operator<<, etc
 #include <utility>   // for make_pair
 #include <vector>    // for vector
@@ -139,6 +139,6 @@ uint32_t ServerInfo::Version() const {
   return 0;
 }
 
-}  // namespace lmdb
+}  // namespace upscaledb
 }  // namespace core
 }  // namespace fastonosql

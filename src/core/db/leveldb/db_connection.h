@@ -36,25 +36,25 @@ namespace fastonosql {
 namespace core {
 class FastoObject;
 }
-}
+}  // namespace fastonosql
 namespace fastonosql {
 namespace core {
 class CDBConnectionClient;
 }
-}
+}  // namespace fastonosql
 namespace fastonosql {
 namespace core {
 class CommandHandler;
 }
-}
+}  // namespace fastonosql
 namespace fastonosql {
 namespace core {
 class IDataBaseInfo;
 }
-}
+}  // namespace fastonosql
 namespace leveldb {
 class DB;
-}  // lines 30-30
+}  // namespace leveldb
 
 namespace fastonosql {
 namespace core {

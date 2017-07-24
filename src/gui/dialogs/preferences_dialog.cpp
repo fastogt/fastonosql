@@ -30,9 +30,9 @@
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QLineEdit>
 #include <QSpinBox>
 #include <QSplitter>
-#include <QLineEdit>
 
 #include <common/convert2string.h>  // for ConvertFromString
 #include <common/macros.h>          // for VERIFY, SIZEOFMASS

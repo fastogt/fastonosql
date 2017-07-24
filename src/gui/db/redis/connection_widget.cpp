@@ -18,16 +18,16 @@
 
 #include "gui/db/redis/connection_widget.h"
 
-#include <QHBoxLayout>
-#include <QLineEdit>
 #include <QCheckBox>
-#include <QPushButton>
-#include <QRegExpValidator>
-#include <QLabel>
+#include <QEvent>
 #include <QFileDialog>
 #include <QGroupBox>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
 #include <QRadioButton>
-#include <QEvent>
+#include <QRegExpValidator>
 #include <QSpinBox>
 
 #include <common/convert2string.h>

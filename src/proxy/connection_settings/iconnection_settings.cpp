@@ -22,8 +22,8 @@
 #include <sstream>     // for stringstream, basic_ostream, etc
 #include <string>      // for string, allocator, etc
 
-#include <common/macros.h>          // for NOTREACHED, CHECK, etc
 #include <common/convert2string.h>  // for ConvertFromString, etc
+#include <common/macros.h>          // for NOTREACHED, CHECK, etc
 #include <common/sprintf.h>         // for MemSPrintf
 #include <common/types.h>           // for buffer_t
 #include <common/utils.h>           // for decode64, encode64, crc64

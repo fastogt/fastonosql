@@ -31,8 +31,8 @@ namespace fastonosql {
 namespace gui {
 class CommandsWidget;
 class LogWidget;
-}
-}
+}  // namespace gui
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace gui {

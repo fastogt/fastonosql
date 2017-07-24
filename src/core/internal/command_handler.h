@@ -18,8 +18,8 @@
 
 #pragma once
 
-#include <vector>  // for vector
 #include <string>  // for string
+#include <vector>  // for vector
 
 #include <common/error.h>   // for Error
 #include <common/macros.h>  // for WARN_UNUSED_RESULT
@@ -31,7 +31,7 @@ namespace fastonosql {
 namespace core {
 class FastoObject;
 }
-}  // lines 30-30
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace core {

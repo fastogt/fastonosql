@@ -19,14 +19,14 @@
 #include "gui/widgets/ssh_widget.h"
 
 #include <QCheckBox>
-#include <QLineEdit>
-#include <QRegExpValidator>
-#include <QLabel>
 #include <QComboBox>
-#include <QHBoxLayout>
-#include <QPushButton>
-#include <QFileDialog>
 #include <QEvent>
+#include <QFileDialog>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QRegExpValidator>
 
 #include <common/convert2string.h>
 #include <common/qt/convert2string.h>
@@ -43,7 +43,7 @@ const QString trSelectPublicKey = QObject::tr("Select public key file");
 const QString trPublicKeyFiles = QObject::tr("Public key files (*.*)");
 const QString trPrivateKey = QObject::tr("Private key:");
 const QString trPublicKey = QObject::tr("Public key:");
-}
+}  // namespace
 
 namespace fastonosql {
 namespace gui {
@@ -71,8 +71,8 @@ SSHWidget::SSHWidget(QWidget* parent) : QWidget(parent) {
   sshAuthMethodLabel_ = new QLabel;
 
   security_ = new QComboBox;
-  security_->addItems(QStringList() << translations::trPassword
-                                    << translations::trPublicPrivateKey);
+  security_->addItems(QStringList()
+                      << translations::trPassword << translations::trPublicPrivateKey);
 
   typedef void (QComboBox::*ind)(const QString&);
   VERIFY(connect(security_, static_cast<ind>(&QComboBox::currentIndexChanged), this,

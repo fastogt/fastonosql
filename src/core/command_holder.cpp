@@ -21,14 +21,14 @@
 #include <algorithm>  // for count_if
 #include <vector>     // for vector
 
-#include <common/string_util.h>
 #include <common/sprintf.h>
+#include <common/string_util.h>
 
 namespace {
 auto count_space(const std::string& data) -> std::string::difference_type {
   return std::count_if(data.begin(), data.end(), [](char c) { return std::isspace(c); });
 }
-}
+}  // namespace
 
 namespace fastonosql {
 namespace core {

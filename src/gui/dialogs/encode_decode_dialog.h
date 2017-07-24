@@ -28,7 +28,7 @@ namespace fastonosql {
 namespace gui {
 class FastoEditor;
 }
-}  // lines 29-29
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace gui {

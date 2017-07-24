@@ -30,7 +30,7 @@ namespace fastonosql {
 namespace gui {
 class BaseQsciLexer;
 }
-}  // lines 30-30
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace gui {

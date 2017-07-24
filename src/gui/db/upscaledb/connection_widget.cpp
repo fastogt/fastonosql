@@ -19,9 +19,9 @@
 #include "gui/db/upscaledb/connection_widget.h"
 
 #include <QCheckBox>
-#include <QSpinBox>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QSpinBox>
 
 #include "proxy/db/upscaledb/connection_settings.h"
 

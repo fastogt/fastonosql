@@ -20,8 +20,8 @@
 
 #include <QTreeView>
 
-#include "proxy/proxy_fwd.h"  // for IServerSPtr, IClusterSPtr, etc
 #include "proxy/events/events_info.h"
+#include "proxy/proxy_fwd.h"  // for IServerSPtr, IClusterSPtr, etc
 
 class QAction;  // lines 23-23
 class QEvent;
@@ -34,7 +34,7 @@ namespace fastonosql {
 namespace gui {
 class ExplorerTreeModel;
 }
-}
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace gui {

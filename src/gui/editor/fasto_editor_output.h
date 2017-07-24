@@ -31,7 +31,7 @@ namespace fastonosql {
 namespace gui {
 class FastoHexEdit;
 }
-}  // lines 50-50
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace gui {

@@ -32,12 +32,12 @@
 #include <common/error.h>           // for Error
 #include <common/log_levels.h>      // for LEVEL_LOG::L_DEBUG
 #include <common/macros.h>          // for VERIFY, CHECK, DNOTREACHED, etc
-#include <common/value.h>           // for StringValue, Value, etc
-#include <common/qt/utils_qt.h>     // for item
-#include <common/qt/logger.h>
+#include <common/qt/convert2string.h>
 #include <common/qt/gui/base/tree_item.h>  // for TreeItem
 #include <common/qt/gui/icon_label.h>      // for IconLabel
-#include <common/qt/convert2string.h>
+#include <common/qt/logger.h>
+#include <common/qt/utils_qt.h>  // for item
+#include <common/value.h>        // for StringValue, Value, etc
 
 #include "core/db_key.h"               // for NKey, NDbKValue, NValue
 #include "proxy/events/events_info.h"  // for CommandResponce, etc

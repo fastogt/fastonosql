@@ -56,8 +56,9 @@
 namespace fastonosql {
 namespace proxy {
 
-IConnectionSettingsBase* ConnectionSettingsFactory::CreateFromType(core::connectionTypes type,
-                                                                   const connection_path_t& conName) {
+IConnectionSettingsBase* ConnectionSettingsFactory::CreateFromType(
+    core::connectionTypes type,
+    const connection_path_t& conName) {
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
     return new redis::ConnectionSettings(conName);
@@ -134,7 +135,8 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateFromString(const std::
         }
       } else if (commaCount == 3) {
         result->SetCommandLine(elText);
-        if (IConnectionSettingsRemoteSSH* remote = dynamic_cast<IConnectionSettingsRemoteSSH*>(result)) {
+        if (IConnectionSettingsRemoteSSH* remote =
+                dynamic_cast<IConnectionSettingsRemoteSSH*>(result)) {
           core::SSHInfo sinf(val.substr(i + 1));
           remote->SetSSHInfo(sinf);
         }
@@ -149,9 +151,10 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateFromString(const std::
   return result;
 }
 
-IConnectionSettingsRemote* ConnectionSettingsFactory::CreateFromType(core::connectionTypes type,
-                                                                     const connection_path_t& conName,
-                                                                     const common::net::HostAndPort& host) {
+IConnectionSettingsRemote* ConnectionSettingsFactory::CreateFromType(
+    core::connectionTypes type,
+    const connection_path_t& conName,
+    const common::net::HostAndPort& host) {
   IConnectionSettingsRemote* remote = nullptr;
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {

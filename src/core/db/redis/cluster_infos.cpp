@@ -18,8 +18,8 @@
 
 #include "core/db/redis/cluster_infos.h"
 
-#include <memory>    // for __shared_ptr
 #include <stddef.h>  // for size_t
+#include <memory>    // for __shared_ptr
 
 #include <common/convert2string.h>  // for ConvertFromString
 #include <common/macros.h>          // for NOTREACHED

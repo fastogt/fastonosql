@@ -31,5 +31,5 @@ Command::Command(core::FastoObject* parent,
     : FastoObjectCommand(parent, cmd, ct, delimiter, core::MEMCACHED) {}
 
 }  // namespace memcached
-}  // namespace core
+}  // namespace proxy
 }  // namespace fastonosql

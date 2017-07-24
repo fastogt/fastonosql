@@ -36,7 +36,7 @@ const QString trInvalidPattern = QObject::tr("Invalid pattern!");
 const QString trKeysCount = QObject::tr("Keys count:");
 const QString trPattern = QObject::tr("Pattern:");
 const QString defaultPattern = "*";
-}
+}  // namespace
 
 namespace fastonosql {
 namespace gui {

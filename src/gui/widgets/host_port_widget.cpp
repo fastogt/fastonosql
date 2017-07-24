@@ -18,10 +18,10 @@
 
 #include "gui/widgets/host_port_widget.h"
 
-#include <QHBoxLayout>
 #include <QEvent>
-#include <QLineEdit>
+#include <QHBoxLayout>
 #include <QLabel>
+#include <QLineEdit>
 #include <QRegExpValidator>
 
 #include <common/convert2string.h>

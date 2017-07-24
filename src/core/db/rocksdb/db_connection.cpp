@@ -26,20 +26,20 @@
 
 #include <rocksdb/db.h>
 
+#include <common/convert2string.h>  // for ConvertFromString
 #include <common/file_system.h>     // for is_directory
+#include <common/sprintf.h>         // for MemSPrintf
 #include <common/string_util.h>     // for MatchPattern
 #include <common/types.h>           // for tribool, tribool::SUCCESS
-#include <common/convert2string.h>  // for ConvertFromString
-#include <common/sprintf.h>         // for MemSPrintf
 #include <common/value.h>           // for Value::ErrorsType::E_ERROR, etc
 
 #include "core/command_holder.h"       // for CommandHolder
 #include "core/internal/connection.h"  // for Connection<>::handle_t, etc
 #include "core/internal/db_connection.h"
 
+#include "core/db/rocksdb/command_translator.h"
 #include "core/db/rocksdb/config.h"  // for Config
 #include "core/db/rocksdb/database_info.h"
-#include "core/db/rocksdb/command_translator.h"
 #include "core/db/rocksdb/internal/commands_api.h"
 
 #define ROCKSDB_HEADER_STATS                               \

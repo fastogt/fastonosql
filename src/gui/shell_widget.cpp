@@ -26,27 +26,27 @@
 #include <vector>  // for vector
 
 #include <QAction>
+#include <QCheckBox>
 #include <QComboBox>
 #include <QFileDialog>
 #include <QLabel>
 #include <QMessageBox>
 #include <QProgressBar>
+#include <QPushButton>
+#include <QSpinBox>
 #include <QSplitter>
 #include <QToolBar>
 #include <QVBoxLayout>
-#include <QCheckBox>
-#include <QSpinBox>
-#include <QPushButton>
 
 #include <common/convert2string.h>  // for ConvertFromString
 #include <common/error.h>           // for Error
 #include <common/macros.h>          // for VERIFY, UNUSED, CHECK, etc
 #include <common/value.h>           // for ErrorValue
 
-#include <common/qt/logger.h>          // for LOG_ERROR
 #include <common/qt/convert2string.h>  // for ConvertToString
 #include <common/qt/gui/icon_label.h>  // for IconLabel
 #include <common/qt/gui/shortcuts.h>   // for FastoQKeySequence
+#include <common/qt/logger.h>          // for LOG_ERROR
 #include <common/qt/utils_qt.h>        // for SaveToFileText, etc
 
 #include "core/command_info.h"         // for UNDEFINED_SINCE, etc
@@ -73,7 +73,7 @@ const QString trAdvancedOptions = QObject::tr("Advanced options");
 const QString trCalculating = QObject::tr("Calculate...");
 const QString trIntervalMsec = QObject::tr("Interval msec:");
 const QString trRepeat = QObject::tr("Repeat:");
-}
+}  // namespace
 
 namespace fastonosql {
 namespace gui {
@@ -87,7 +87,7 @@ BaseShell* makeBaseShell(core::connectionTypes type, QWidget* parent) {
   shell->setContextMenuPolicy(Qt::CustomContextMenu);
   return shell;
 }
-}
+}  // namespace
 BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server,
                                  const QString& filePath,
                                  QWidget* parent)

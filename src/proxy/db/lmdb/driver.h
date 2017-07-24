@@ -24,16 +24,16 @@
 #include <common/macros.h>  // for WARN_UNUSED_RESULT
 
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
-#include "proxy/events/events.h"                             // for ClearDatabaseRequestEvent, etc
 #include "proxy/driver/idriver_local.h"                      // for IDriverLocal
+#include "proxy/events/events.h"                             // for ClearDatabaseRequestEvent, etc
 
 namespace fastonosql {
 namespace core {
 namespace lmdb {
 class DBConnection;
 }
-}
-}
+}  // namespace core
+}  // namespace fastonosql
 
 namespace fastonosql {
 namespace proxy {

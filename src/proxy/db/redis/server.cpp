@@ -18,20 +18,20 @@
 
 #include "proxy/db/redis/server.h"
 
-#include <string>  // for operator==, basic_string
 #include <memory>  // for __shared_ptr
+#include <string>  // for operator==, basic_string
 
 #include <common/error.h>   // for Error
 #include <common/macros.h>  // for CHECK
 #include <common/value.h>   // for ErrorValue
 
-#include "core/server/iserver_info.h"
 #include "core/db/redis/server_info.h"  // for ServerInfo, etc
+#include "core/server/iserver_info.h"
 
-#include "proxy/server/iserver.h"      // for IServer
-#include "proxy/events/events_info.h"  // for DiscoveryInfoResponce
 #include "proxy/db/redis/database.h"   // for Database
 #include "proxy/db/redis/driver.h"     // for Driver
+#include "proxy/events/events_info.h"  // for DiscoveryInfoResponce
+#include "proxy/server/iserver.h"      // for IServer
 
 namespace fastonosql {
 namespace proxy {
