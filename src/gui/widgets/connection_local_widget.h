@@ -54,8 +54,7 @@ class ConnectionLocalWidget : public ConnectionBaseWidget {
   virtual proxy::IConnectionSettingsBase* createConnectionImpl(
       const proxy::connection_path_t& path) const override final;
 
-  virtual proxy::IConnectionSettingsLocal* createConnectionLocalImpl(
-      const proxy::connection_path_t& path) const = 0;
+  virtual proxy::IConnectionSettingsLocal* createConnectionLocalImpl(const proxy::connection_path_t& path) const = 0;
 
  private:
   PathWidget* pathWidget_;

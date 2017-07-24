@@ -23,8 +23,7 @@
 namespace fastonosql {
 namespace core {
 
-ServerCommonInfo::ServerCommonInfo()
-    : name(), type(MASTER), state(SUP), cstate(SCONNECTED), host() {}
+ServerCommonInfo::ServerCommonInfo() : name(), type(MASTER), state(SUP), cstate(SCONNECTED), host() {}
 
 ServerCommonInfo::ServerCommonInfo(const std::string& name,
                                    serverTypes type,
@@ -32,8 +31,7 @@ ServerCommonInfo::ServerCommonInfo(const std::string& name,
                                    serverConnectState cstate)
     : name(name), type(type), state(state), cstate(cstate) {}
 
-ServerDiscoveryInfoBase::ServerDiscoveryInfoBase(connectionTypes ctype,
-                                                 const ServerCommonInfo& info)
+ServerDiscoveryInfoBase::ServerDiscoveryInfoBase(connectionTypes ctype, const ServerCommonInfo& info)
     : ctype_(ctype), info_(info) {}
 
 connectionTypes ServerDiscoveryInfoBase::connectionType() const {
@@ -62,9 +60,7 @@ void ServerDiscoveryInfoBase::setHost(const common::net::HostAndPortAndSlot& hos
 
 ServerDiscoveryInfoBase::~ServerDiscoveryInfoBase() {}
 
-ServerDiscoveryClusterInfo::ServerDiscoveryClusterInfo(connectionTypes ctype,
-                                                       const ServerCommonInfo& info,
-                                                       bool self)
+ServerDiscoveryClusterInfo::ServerDiscoveryClusterInfo(connectionTypes ctype, const ServerCommonInfo& info, bool self)
     : ServerDiscoveryInfoBase(ctype, info), self_(self) {}
 
 ServerDiscoveryClusterInfo::~ServerDiscoveryClusterInfo() {}
@@ -81,16 +77,14 @@ connectionTypes IServerInfo::Type() const {
 
 IServerInfo::IServerInfo(connectionTypes type) : type_(type) {}
 
-ServerDiscoverySentinelInfo::ServerDiscoverySentinelInfo(connectionTypes ctype,
-                                                         const ServerCommonInfo& info)
+ServerDiscoverySentinelInfo::ServerDiscoverySentinelInfo(connectionTypes ctype, const ServerCommonInfo& info)
     : ServerDiscoveryInfoBase(ctype, info) {}
 
 ServerDiscoverySentinelInfo::~ServerDiscoverySentinelInfo() {}
 
 ServerInfoSnapShoot::ServerInfoSnapShoot() : msec(0), info() {}
 
-ServerInfoSnapShoot::ServerInfoSnapShoot(common::time64_t msec, IServerInfoSPtr info)
-    : msec(msec), info(info) {}
+ServerInfoSnapShoot::ServerInfoSnapShoot(common::time64_t msec, IServerInfoSPtr info) : msec(msec), info(info) {}
 
 bool ServerInfoSnapShoot::isValid() const {
   return msec > 0 && info;

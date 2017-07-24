@@ -259,8 +259,7 @@ void ExplorerDatabaseItem::watchKey(const core::NDbKValue& key, int interval) {
     return;
   }
 
-  proxy::events_info::ExecuteInfoRequest req(this, cmd_str, std::numeric_limits<size_t>::max() - 1,
-                                             interval, false);
+  proxy::events_info::ExecuteInfoRequest req(this, cmd_str, std::numeric_limits<size_t>::max() - 1, interval, false);
   dbs->Execute(req);
 }
 

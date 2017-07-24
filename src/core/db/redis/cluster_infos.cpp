@@ -40,9 +40,7 @@ DiscoveryClusterInfo::DiscoveryClusterInfo(const ServerCommonInfo& info, bool se
 
 namespace {
 
-common::Error MakeServerCommonInfoFromLine(const std::string& line,
-                                           ServerCommonInfo* info,
-                                           bool* self) {
+common::Error MakeServerCommonInfoFromLine(const std::string& line, ServerCommonInfo* info, bool* self) {
   if (line.empty() || !info || !self) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }

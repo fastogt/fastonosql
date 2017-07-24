@@ -169,8 +169,7 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
 
         QString ftext;
         QString stext;
-        if (common::ConvertFromString(key_str, &ftext) &&
-            common::ConvertFromString(value_str, &stext)) {
+        if (common::ConvertFromString(key_str, &ftext) && common::ConvertFromString(value_str, &stext)) {
           hashwidget->insertRow(ftext, stext);
         }
       }
@@ -195,8 +194,7 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
 
         QString ftext;
         QString stext;
-        if (common::ConvertFromString(key_str, &ftext) &&
-            common::ConvertFromString(value_str, &stext)) {
+        if (common::ConvertFromString(key_str, &ftext) && common::ConvertFromString(value_str, &stext)) {
           hashwidget->insertRow(ftext, stext);
         }
       }
@@ -206,9 +204,7 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
   }
 }
 
-void TypeDelegate::setModelData(QWidget* editor,
-                                QAbstractItemModel* model,
-                                const QModelIndex& index) const {
+void TypeDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const {
   FastoCommonItem* node = common::qt::item<common::qt::gui::TreeItem*, FastoCommonItem*>(index);
   if (!node) {
     return;

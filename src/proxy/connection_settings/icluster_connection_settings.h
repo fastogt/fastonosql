@@ -45,8 +45,7 @@ class IClusterSettingsBase : public IConnectionSettings {
   virtual std::string ToString() const override;
   virtual IClusterSettingsBase* Clone() const override = 0;
 
-  virtual IConnectionSettingsBaseSPtr FindSettingsByHost(
-      const common::net::HostAndPort& host) const;
+  virtual IConnectionSettingsBaseSPtr FindSettingsByHost(const common::net::HostAndPort& host) const;
 
  protected:
   IClusterSettingsBase(const connection_path_t& connectionName, core::connectionTypes type);

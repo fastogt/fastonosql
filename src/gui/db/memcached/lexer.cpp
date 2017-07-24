@@ -27,8 +27,7 @@ namespace memcached {
 MemcachedApi::MemcachedApi(QsciLexer* lexer)
     : BaseQsciApiCommandHolder(core::memcached::DBConnection::Commands(), lexer) {}
 
-Lexer::Lexer(QObject* parent)
-    : BaseQsciLexerCommandHolder(core::memcached::DBConnection::Commands(), parent) {
+Lexer::Lexer(QObject* parent) : BaseQsciLexerCommandHolder(core::memcached::DBConnection::Commands(), parent) {
   setAPIs(new MemcachedApi(this));
 }
 

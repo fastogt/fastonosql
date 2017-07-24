@@ -27,8 +27,7 @@ namespace upscaledb {
 UpscaleDBApi::UpscaleDBApi(QsciLexer* lexer)
     : BaseQsciApiCommandHolder(core::upscaledb::DBConnection::Commands(), lexer) {}
 
-Lexer::Lexer(QObject* parent)
-    : BaseQsciLexerCommandHolder(core::upscaledb::DBConnection::Commands(), parent) {
+Lexer::Lexer(QObject* parent) : BaseQsciLexerCommandHolder(core::upscaledb::DBConnection::Commands(), parent) {
   setAPIs(new UpscaleDBApi(this));
 }
 

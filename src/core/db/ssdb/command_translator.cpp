@@ -42,11 +42,9 @@ namespace fastonosql {
 namespace core {
 namespace ssdb {
 
-CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands)
-    : ICommandTranslator(commands) {}
+CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands) : ICommandTranslator(commands) {}
 
-common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key,
-                                                      std::string* cmdstring) const {
+common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, std::string* cmdstring) const {
   std::string patternResult;
   std::string key_str = key.KeyString();
   std::string value_str = key.ValueString();
@@ -88,8 +86,7 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
   return common::Error();
 }
 
-common::Error CommandTranslator::DeleteKeyCommandImpl(const NKey& key,
-                                                      std::string* cmdstring) const {
+common::Error CommandTranslator::DeleteKeyCommandImpl(const NKey& key, std::string* cmdstring) const {
   std::string key_str = key.Key();
   *cmdstring = common::MemSPrintf(SSDB_DELETE_KEY_PATTERN_1ARGS_S, key_str);
   return common::Error();
@@ -103,16 +100,13 @@ common::Error CommandTranslator::RenameKeyCommandImpl(const NKey& key,
   return common::Error();
 }
 
-common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key,
-                                                         ttl_t ttl,
-                                                         std::string* cmdstring) const {
+common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key, ttl_t ttl, std::string* cmdstring) const {
   std::string key_str = key.Key();
   *cmdstring = common::MemSPrintf(SSDB_CHANGE_TTL_2ARGS_SI, key_str, ttl);
   return common::Error();
 }
 
-common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key,
-                                                       std::string* cmdstring) const {
+common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key, std::string* cmdstring) const {
   std::string key_str = key.Key();
   *cmdstring = common::MemSPrintf(SSDB_GET_TTL_1ARGS_S, key_str);
   return common::Error();
@@ -129,18 +123,17 @@ common::Error CommandTranslator::PublishCommandImpl(const NDbPSChannel& channel,
   UNUSED(message);
   UNUSED(cmdstring);
 
-  std::string errorMsg = common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE
-                                            " not supported publish command for SSDB.");
+  std::string errorMsg =
+      common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported publish command for SSDB.");
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
 }
 
-common::Error CommandTranslator::SubscribeCommandImpl(const NDbPSChannel& channel,
-                                                      std::string* cmdstring) const {
+common::Error CommandTranslator::SubscribeCommandImpl(const NDbPSChannel& channel, std::string* cmdstring) const {
   UNUSED(channel);
   UNUSED(cmdstring);
 
-  std::string errorMsg = common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE
-                                            " not supported subscribe command for SSDB.");
+  std::string errorMsg =
+      common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported subscribe command for SSDB.");
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
 }
 

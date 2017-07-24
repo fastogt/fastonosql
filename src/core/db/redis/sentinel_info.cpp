@@ -46,8 +46,7 @@ namespace fastonosql {
 namespace core {
 namespace redis {
 
-DiscoverySentinelInfo::DiscoverySentinelInfo(const ServerCommonInfo& args)
-    : ServerDiscoverySentinelInfo(REDIS, args) {}
+DiscoverySentinelInfo::DiscoverySentinelInfo(const ServerCommonInfo& args) : ServerDiscoverySentinelInfo(REDIS, args) {}
 
 common::Error MakeServerCommonInfo(struct redisReply* repl_info, ServerCommonInfo* info) {
   if (!repl_info || !info) {

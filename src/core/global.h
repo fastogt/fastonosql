@@ -58,8 +58,7 @@ class FastoObject : public common::intrusive_ptr_base<FastoObject> {
     virtual ~IFastoObjectObserver();
   };
 
-  FastoObject(FastoObject* parent,
-              common::Value* val,
+  FastoObject(FastoObject* parent, common::Value* val,
               const std::string& delimiter);  // val take ownerships
   virtual ~FastoObject();
 

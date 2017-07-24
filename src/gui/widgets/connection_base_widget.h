@@ -65,8 +65,7 @@ class ConnectionBaseWidget : public QWidget {
 
   virtual void changeEvent(QEvent* ev) override;
 
-  virtual proxy::IConnectionSettingsBase* createConnectionImpl(
-      const proxy::connection_path_t& path) const = 0;
+  virtual proxy::IConnectionSettingsBase* createConnectionImpl(const proxy::connection_path_t& path) const = 0;
 
   QLabel* connectionNameLabel_;
   QLineEdit* connectionName_;

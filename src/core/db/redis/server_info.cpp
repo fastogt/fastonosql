@@ -36,23 +36,22 @@ namespace fastonosql {
 namespace core {
 namespace {
 
-const std::vector<Field> redisServerFields = {
-    Field(REDIS_VERSION_LABEL, common::Value::TYPE_STRING),
-    Field(REDIS_GIT_SHA1_LABEL, common::Value::TYPE_STRING),
-    Field(REDIS_GIT_DIRTY_LABEL, common::Value::TYPE_STRING),
-    Field(REDIS_BUILD_ID_LABEL, common::Value::TYPE_STRING),
-    Field(REDIS_MODE_LABEL, common::Value::TYPE_STRING),
-    Field(REDIS_OS_LABEL, common::Value::TYPE_STRING),
-    Field(REDIS_ARCH_BITS_LABEL, common::Value::TYPE_UINTEGER),
-    Field(REDIS_MULTIPLEXING_API_LABEL, common::Value::TYPE_STRING),
-    Field(REDIS_GCC_VERSION_LABEL, common::Value::TYPE_STRING),
-    Field(REDIS_PROCESS_ID_LABEL, common::Value::TYPE_UINTEGER),
-    Field(REDIS_RUN_ID_LABEL, common::Value::TYPE_STRING),
-    Field(REDIS_TCP_PORT_LABEL, common::Value::TYPE_UINTEGER),
-    Field(REDIS_UPTIME_IN_SECONDS_LABEL, common::Value::TYPE_UINTEGER),
-    Field(REDIS_UPTIME_IN_DAYS_LABEL, common::Value::TYPE_UINTEGER),
-    Field(REDIS_HZ_LABEL, common::Value::TYPE_UINTEGER),
-    Field(REDIS_LRU_CLOCK_LABEL, common::Value::TYPE_UINTEGER)};
+const std::vector<Field> redisServerFields = {Field(REDIS_VERSION_LABEL, common::Value::TYPE_STRING),
+                                              Field(REDIS_GIT_SHA1_LABEL, common::Value::TYPE_STRING),
+                                              Field(REDIS_GIT_DIRTY_LABEL, common::Value::TYPE_STRING),
+                                              Field(REDIS_BUILD_ID_LABEL, common::Value::TYPE_STRING),
+                                              Field(REDIS_MODE_LABEL, common::Value::TYPE_STRING),
+                                              Field(REDIS_OS_LABEL, common::Value::TYPE_STRING),
+                                              Field(REDIS_ARCH_BITS_LABEL, common::Value::TYPE_UINTEGER),
+                                              Field(REDIS_MULTIPLEXING_API_LABEL, common::Value::TYPE_STRING),
+                                              Field(REDIS_GCC_VERSION_LABEL, common::Value::TYPE_STRING),
+                                              Field(REDIS_PROCESS_ID_LABEL, common::Value::TYPE_UINTEGER),
+                                              Field(REDIS_RUN_ID_LABEL, common::Value::TYPE_STRING),
+                                              Field(REDIS_TCP_PORT_LABEL, common::Value::TYPE_UINTEGER),
+                                              Field(REDIS_UPTIME_IN_SECONDS_LABEL, common::Value::TYPE_UINTEGER),
+                                              Field(REDIS_UPTIME_IN_DAYS_LABEL, common::Value::TYPE_UINTEGER),
+                                              Field(REDIS_HZ_LABEL, common::Value::TYPE_UINTEGER),
+                                              Field(REDIS_LRU_CLOCK_LABEL, common::Value::TYPE_UINTEGER)};
 
 const std::vector<Field> redisClientFields = {
     Field(REDIS_CONNECTED_CLIENTS_LABEL, common::Value::TYPE_UINTEGER),
@@ -60,15 +59,14 @@ const std::vector<Field> redisClientFields = {
     Field(REDIS_CLIENT_BIGGEST_INPUT_BUF_LABEL, common::Value::TYPE_UINTEGER),
     Field(REDIS_BLOCKED_CLIENTS_LABEL, common::Value::TYPE_UINTEGER)};
 
-const std::vector<Field> redisMemoryFields = {
-    Field(REDIS_USED_MEMORY_LABEL, common::Value::TYPE_UINTEGER),
-    Field(REDIS_USED_MEMORY_HUMAN_LABEL, common::Value::TYPE_STRING),
-    Field(REDIS_USED_MEMORY_RSS_LABEL, common::Value::TYPE_UINTEGER),
-    Field(REDIS_USED_MEMORY_PEAK_LABEL, common::Value::TYPE_UINTEGER),
-    Field(REDIS_USED_MEMORY_PEAK_HUMAN_LABEL, common::Value::TYPE_STRING),
-    Field(REDIS_USED_MEMORY_LUA_LABEL, common::Value::TYPE_UINTEGER),
-    Field(REDIS_MEM_FRAGMENTATION_RATIO_LABEL, common::Value::TYPE_DOUBLE),
-    Field(REDIS_MEM_ALLOCATOR_LABEL, common::Value::TYPE_STRING)};
+const std::vector<Field> redisMemoryFields = {Field(REDIS_USED_MEMORY_LABEL, common::Value::TYPE_UINTEGER),
+                                              Field(REDIS_USED_MEMORY_HUMAN_LABEL, common::Value::TYPE_STRING),
+                                              Field(REDIS_USED_MEMORY_RSS_LABEL, common::Value::TYPE_UINTEGER),
+                                              Field(REDIS_USED_MEMORY_PEAK_LABEL, common::Value::TYPE_UINTEGER),
+                                              Field(REDIS_USED_MEMORY_PEAK_HUMAN_LABEL, common::Value::TYPE_STRING),
+                                              Field(REDIS_USED_MEMORY_LUA_LABEL, common::Value::TYPE_UINTEGER),
+                                              Field(REDIS_MEM_FRAGMENTATION_RATIO_LABEL, common::Value::TYPE_DOUBLE),
+                                              Field(REDIS_MEM_ALLOCATOR_LABEL, common::Value::TYPE_STRING)};
 
 const std::vector<Field> redisPersistenceFields = {
     Field(REDIS_LOADING_LABEL, common::Value::TYPE_UINTEGER),
@@ -111,11 +109,10 @@ const std::vector<Field> redisReplicationFields = {
     Field(REDIS_BACKLOG_FIRST_BYTE_OFFSET_LABEL, common::Value::TYPE_UINTEGER),
     Field(REDIS_BACKLOG_HISTEN_LABEL, common::Value::TYPE_UINTEGER)};
 
-const std::vector<Field> redisCpuFields = {
-    Field(REDIS_USED_CPU_SYS_LABEL, common::Value::TYPE_UINTEGER),
-    Field(REDIS_USED_CPU_USER_LABEL, common::Value::TYPE_UINTEGER),
-    Field(REDIS_USED_CPU_SYS_CHILDREN_LABEL, common::Value::TYPE_UINTEGER),
-    Field(REDIS_USED_CPU_USER_CHILDREN_LABEL, common::Value::TYPE_UINTEGER)};
+const std::vector<Field> redisCpuFields = {Field(REDIS_USED_CPU_SYS_LABEL, common::Value::TYPE_UINTEGER),
+                                           Field(REDIS_USED_CPU_USER_LABEL, common::Value::TYPE_UINTEGER),
+                                           Field(REDIS_USED_CPU_SYS_CHILDREN_LABEL, common::Value::TYPE_UINTEGER),
+                                           Field(REDIS_USED_CPU_USER_CHILDREN_LABEL, common::Value::TYPE_UINTEGER)};
 
 const std::vector<Field> redisKeySpaceFields = {};
 
@@ -283,16 +280,10 @@ common::Value* ServerInfo::Server::ValueByIndex(unsigned char index) const {
 }
 
 ServerInfo::Clients::Clients()
-    : connected_clients_(0),
-      client_longest_output_list_(0),
-      client_biggest_input_buf_(0),
-      blocked_clients_(0) {}
+    : connected_clients_(0), client_longest_output_list_(0), client_biggest_input_buf_(0), blocked_clients_(0) {}
 
 ServerInfo::Clients::Clients(const std::string& client_text)
-    : connected_clients_(0),
-      client_longest_output_list_(0),
-      client_biggest_input_buf_(0),
-      blocked_clients_(0) {
+    : connected_clients_(0), client_longest_output_list_(0), client_biggest_input_buf_(0), blocked_clients_(0) {
   size_t pos = 0;
   size_t start = 0;
   while ((pos = client_text.find(("\r\n"), start)) != std::string::npos) {
@@ -810,8 +801,7 @@ common::Value* ServerInfo::Replication::ValueByIndex(unsigned char index) const 
   return nullptr;
 }
 
-ServerInfo::Cpu::Cpu()
-    : used_cpu_sys_(0), used_cpu_user_(0), used_cpu_sys_children_(0), used_cpu_user_children_(0) {}
+ServerInfo::Cpu::Cpu() : used_cpu_sys_(0), used_cpu_user_(0), used_cpu_sys_children_(0), used_cpu_user_children_(0) {}
 
 ServerInfo::Cpu::Cpu(const std::string& cpu_text)
     : used_cpu_sys_(0), used_cpu_user_(0), used_cpu_sys_children_(0), used_cpu_user_children_(0) {
@@ -918,93 +908,80 @@ common::Value* ServerInfo::ValueByIndexes(unsigned char property, unsigned char 
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo::Server& value) {
-  return out << REDIS_VERSION_LABEL ":" << value.redis_version_ << ("\r\n")
-             << REDIS_GIT_SHA1_LABEL ":" << value.redis_git_sha1_ << ("\r\n")
-             << REDIS_GIT_DIRTY_LABEL ":" << value.redis_git_dirty_ << ("\r\n")
-             << REDIS_MODE_LABEL ":" << value.redis_mode_ << ("\r\n") << REDIS_OS_LABEL ":"
-             << value.os_ << ("\r\n") << REDIS_ARCH_BITS_LABEL ":" << value.arch_bits_ << ("\r\n")
-             << REDIS_MULTIPLEXING_API_LABEL ":" << value.multiplexing_api_ << ("\r\n")
-             << REDIS_GCC_VERSION_LABEL ":" << value.gcc_version_ << ("\r\n")
-             << REDIS_PROCESS_ID_LABEL ":" << value.process_id_ << ("\r\n")
-             << REDIS_RUN_ID_LABEL ":" << value.run_id_ << ("\r\n") << REDIS_TCP_PORT_LABEL ":"
-             << value.tcp_port_ << ("\r\n") << REDIS_UPTIME_IN_SECONDS_LABEL ":"
-             << value.uptime_in_seconds_ << ("\r\n") << REDIS_UPTIME_IN_DAYS_LABEL ":"
-             << value.uptime_in_days_ << ("\r\n") << REDIS_HZ_LABEL ":" << value.hz_ << ("\r\n")
-             << REDIS_LRU_CLOCK_LABEL ":" << value.lru_clock_ << ("\r\n");
+  return out << REDIS_VERSION_LABEL ":" << value.redis_version_ << ("\r\n") << REDIS_GIT_SHA1_LABEL ":"
+             << value.redis_git_sha1_ << ("\r\n") << REDIS_GIT_DIRTY_LABEL ":" << value.redis_git_dirty_ << ("\r\n")
+             << REDIS_MODE_LABEL ":" << value.redis_mode_ << ("\r\n") << REDIS_OS_LABEL ":" << value.os_ << ("\r\n")
+             << REDIS_ARCH_BITS_LABEL ":" << value.arch_bits_ << ("\r\n") << REDIS_MULTIPLEXING_API_LABEL ":"
+             << value.multiplexing_api_ << ("\r\n") << REDIS_GCC_VERSION_LABEL ":" << value.gcc_version_ << ("\r\n")
+             << REDIS_PROCESS_ID_LABEL ":" << value.process_id_ << ("\r\n") << REDIS_RUN_ID_LABEL ":" << value.run_id_
+             << ("\r\n") << REDIS_TCP_PORT_LABEL ":" << value.tcp_port_ << ("\r\n") << REDIS_UPTIME_IN_SECONDS_LABEL ":"
+             << value.uptime_in_seconds_ << ("\r\n") << REDIS_UPTIME_IN_DAYS_LABEL ":" << value.uptime_in_days_
+             << ("\r\n") << REDIS_HZ_LABEL ":" << value.hz_ << ("\r\n") << REDIS_LRU_CLOCK_LABEL ":" << value.lru_clock_
+             << ("\r\n");
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo::Clients& value) {
   return out << REDIS_CONNECTED_CLIENTS_LABEL ":" << value.connected_clients_ << ("\r\n")
-             << REDIS_CLIENT_LONGEST_OUTPUT_LIST_LABEL ":" << value.client_longest_output_list_
-             << ("\r\n") << REDIS_CLIENT_BIGGEST_INPUT_BUF_LABEL ":"
-             << value.client_biggest_input_buf_ << ("\r\n") << REDIS_BLOCKED_CLIENTS_LABEL ":"
-             << value.blocked_clients_ << ("\r\n");
+             << REDIS_CLIENT_LONGEST_OUTPUT_LIST_LABEL ":" << value.client_longest_output_list_ << ("\r\n")
+             << REDIS_CLIENT_BIGGEST_INPUT_BUF_LABEL ":" << value.client_biggest_input_buf_ << ("\r\n")
+             << REDIS_BLOCKED_CLIENTS_LABEL ":" << value.blocked_clients_ << ("\r\n");
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo::Memory& value) {
-  return out << REDIS_USED_MEMORY_LABEL ":" << value.used_memory_ << ("\r\n")
-             << REDIS_USED_MEMORY_HUMAN_LABEL ":" << value.used_memory_human_ << ("\r\n")
-             << REDIS_USED_MEMORY_RSS_LABEL ":" << value.used_memory_rss_ << ("\r\n")
-             << REDIS_USED_MEMORY_PEAK_LABEL ":" << value.used_memory_peak_ << ("\r\n")
+  return out << REDIS_USED_MEMORY_LABEL ":" << value.used_memory_ << ("\r\n") << REDIS_USED_MEMORY_HUMAN_LABEL ":"
+             << value.used_memory_human_ << ("\r\n") << REDIS_USED_MEMORY_RSS_LABEL ":" << value.used_memory_rss_
+             << ("\r\n") << REDIS_USED_MEMORY_PEAK_LABEL ":" << value.used_memory_peak_ << ("\r\n")
              << REDIS_USED_MEMORY_PEAK_HUMAN_LABEL ":" << value.used_memory_peak_human_ << ("\r\n")
              << REDIS_USED_MEMORY_LUA_LABEL ":" << value.used_memory_lua_ << ("\r\n")
-             << REDIS_MEM_FRAGMENTATION_RATIO_LABEL ":" << value.mem_fragmentation_ratio_
-             << ("\r\n") << REDIS_MEM_ALLOCATOR_LABEL ":" << value.mem_allocator_ << ("\r\n");
+             << REDIS_MEM_FRAGMENTATION_RATIO_LABEL ":" << value.mem_fragmentation_ratio_ << ("\r\n")
+             << REDIS_MEM_ALLOCATOR_LABEL ":" << value.mem_allocator_ << ("\r\n");
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo::Persistence& value) {
-  return out << REDIS_LOADING_LABEL ":" << value.loading_ << ("\r\n")
-             << REDIS_RDB_CHANGES_SINCE_LAST_SAVE_LABEL ":" << value.rdb_changes_since_last_save_
-             << ("\r\n") << REDIS_RDB_DGSAVE_IN_PROGRESS_LABEL ":" << value.rdb_bgsave_in_progress_
-             << ("\r\n") << REDIS_RDB_LAST_SAVE_TIME_LABEL ":" << value.rdb_last_save_time_
-             << ("\r\n") << REDIS_RDB_LAST_DGSAVE_STATUS_LABEL ":" << value.rdb_last_bgsave_status_
-             << ("\r\n") << REDIS_RDB_LAST_DGSAVE_TIME_SEC_LABEL ":"
-             << value.rdb_last_bgsave_time_sec_ << ("\r\n")
-             << REDIS_RDB_CURRENT_DGSAVE_TIME_SEC_LABEL ":" << value.rdb_current_bgsave_time_sec_
-             << ("\r\n") << REDIS_AOF_ENABLED_LABEL ":" << value.aof_enabled_ << ("\r\n")
-             << REDIS_AOF_REWRITE_IN_PROGRESS_LABEL ":" << value.aof_rewrite_in_progress_
-             << ("\r\n") << REDIS_AOF_REWRITE_SHEDULED_LABEL ":" << value.aof_rewrite_scheduled_
-             << ("\r\n") << REDIS_AOF_LAST_REWRITE_TIME_SEC_LABEL ":"
-             << value.aof_last_rewrite_time_sec_ << ("\r\n")
-             << REDIS_AOF_CURRENT_REWRITE_TIME_SEC_LABEL ":" << value.aof_current_rewrite_time_sec_
-             << ("\r\n") << REDIS_AOF_LAST_DGREWRITE_STATUS_LABEL ":"
-             << value.aof_last_bgrewrite_status_ << ("\r\n")
+  return out << REDIS_LOADING_LABEL ":" << value.loading_ << ("\r\n") << REDIS_RDB_CHANGES_SINCE_LAST_SAVE_LABEL ":"
+             << value.rdb_changes_since_last_save_ << ("\r\n") << REDIS_RDB_DGSAVE_IN_PROGRESS_LABEL ":"
+             << value.rdb_bgsave_in_progress_ << ("\r\n") << REDIS_RDB_LAST_SAVE_TIME_LABEL ":"
+             << value.rdb_last_save_time_ << ("\r\n") << REDIS_RDB_LAST_DGSAVE_STATUS_LABEL ":"
+             << value.rdb_last_bgsave_status_ << ("\r\n") << REDIS_RDB_LAST_DGSAVE_TIME_SEC_LABEL ":"
+             << value.rdb_last_bgsave_time_sec_ << ("\r\n") << REDIS_RDB_CURRENT_DGSAVE_TIME_SEC_LABEL ":"
+             << value.rdb_current_bgsave_time_sec_ << ("\r\n") << REDIS_AOF_ENABLED_LABEL ":" << value.aof_enabled_
+             << ("\r\n") << REDIS_AOF_REWRITE_IN_PROGRESS_LABEL ":" << value.aof_rewrite_in_progress_ << ("\r\n")
+             << REDIS_AOF_REWRITE_SHEDULED_LABEL ":" << value.aof_rewrite_scheduled_ << ("\r\n")
+             << REDIS_AOF_LAST_REWRITE_TIME_SEC_LABEL ":" << value.aof_last_rewrite_time_sec_ << ("\r\n")
+             << REDIS_AOF_CURRENT_REWRITE_TIME_SEC_LABEL ":" << value.aof_current_rewrite_time_sec_ << ("\r\n")
+             << REDIS_AOF_LAST_DGREWRITE_STATUS_LABEL ":" << value.aof_last_bgrewrite_status_ << ("\r\n")
              << REDIS_AOF_LAST_WRITE_STATUS_LABEL ":" << value.aof_last_write_status_ << ("\r\n");
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo::Stats& value) {
-  return out << REDIS_TOTAL_CONNECTIONS_RECEIVED_LABEL ":" << value.total_connections_received_
-             << ("\r\n") << REDIS_TOTAL_COMMANDS_PROCESSED_LABEL ":"
-             << value.total_commands_processed_ << ("\r\n")
-             << REDIS_INSTANTANEOUS_OPS_PER_SEC_LABEL ":" << value.instantaneous_ops_per_sec_
-             << ("\r\n") << REDIS_REJECTED_CONNECTIONS_LABEL ":" << value.rejected_connections_
-             << ("\r\n") << REDIS_SYNC_FULL_LABEL ":" << value.sync_full_ << ("\r\n")
-             << REDIS_SYNC_PARTIAL_OK_LABEL ":" << value.sync_partial_ok_ << ("\r\n")
-             << REDIS_SYNC_PARTIAL_ERR_LABEL ":" << value.sync_partial_err_ << ("\r\n")
-             << REDIS_EXPIRED_KEYS_LABEL ":" << value.expired_keys_ << ("\r\n")
-             << REDIS_EVICTED_KEYS_LABEL ":" << value.evicted_keys_ << ("\r\n")
-             << REDIS_KEYSPACE_HITS_LABEL ":" << value.keyspace_hits_ << ("\r\n")
-             << REDIS_KEYSPACE_MISSES_LABEL ":" << value.keyspace_misses_ << ("\r\n")
-             << REDIS_PUBSUB_CHANNELS_LABEL ":" << value.pubsub_channels_ << ("\r\n")
+  return out << REDIS_TOTAL_CONNECTIONS_RECEIVED_LABEL ":" << value.total_connections_received_ << ("\r\n")
+             << REDIS_TOTAL_COMMANDS_PROCESSED_LABEL ":" << value.total_commands_processed_ << ("\r\n")
+             << REDIS_INSTANTANEOUS_OPS_PER_SEC_LABEL ":" << value.instantaneous_ops_per_sec_ << ("\r\n")
+             << REDIS_REJECTED_CONNECTIONS_LABEL ":" << value.rejected_connections_ << ("\r\n")
+             << REDIS_SYNC_FULL_LABEL ":" << value.sync_full_ << ("\r\n") << REDIS_SYNC_PARTIAL_OK_LABEL ":"
+             << value.sync_partial_ok_ << ("\r\n") << REDIS_SYNC_PARTIAL_ERR_LABEL ":" << value.sync_partial_err_
+             << ("\r\n") << REDIS_EXPIRED_KEYS_LABEL ":" << value.expired_keys_ << ("\r\n")
+             << REDIS_EVICTED_KEYS_LABEL ":" << value.evicted_keys_ << ("\r\n") << REDIS_KEYSPACE_HITS_LABEL ":"
+             << value.keyspace_hits_ << ("\r\n") << REDIS_KEYSPACE_MISSES_LABEL ":" << value.keyspace_misses_
+             << ("\r\n") << REDIS_PUBSUB_CHANNELS_LABEL ":" << value.pubsub_channels_ << ("\r\n")
              << REDIS_PUBSUB_PATTERNS_LABEL ":" << value.pubsub_patterns_ << ("\r\n")
              << REDIS_LATEST_FORK_USEC_LABEL ":" << value.latest_fork_usec_ << ("\r\n");
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo::Replication& value) {
   return out << REDIS_ROLE_LABEL ":" << value.role_ << ("\r\n") << REDIS_CONNECTED_SLAVES_LABEL ":"
-             << value.connected_slaves_ << ("\r\n") << REDIS_MASTER_REPL_OFFSET_LABEL ":"
-             << value.master_repl_offset_ << ("\r\n") << REDIS_BACKLOG_ACTIVE_LABEL ":"
-             << value.backlog_active_ << ("\r\n") << REDIS_BACKLOG_SIZE_LABEL ":"
-             << value.backlog_size_ << ("\r\n") << REDIS_BACKLOG_FIRST_BYTE_OFFSET_LABEL ":"
-             << value.backlog_first_byte_offset_ << ("\r\n") << REDIS_BACKLOG_HISTEN_LABEL ":"
-             << value.backlog_histen_ << ("\r\n");
+             << value.connected_slaves_ << ("\r\n") << REDIS_MASTER_REPL_OFFSET_LABEL ":" << value.master_repl_offset_
+             << ("\r\n") << REDIS_BACKLOG_ACTIVE_LABEL ":" << value.backlog_active_ << ("\r\n")
+             << REDIS_BACKLOG_SIZE_LABEL ":" << value.backlog_size_ << ("\r\n")
+             << REDIS_BACKLOG_FIRST_BYTE_OFFSET_LABEL ":" << value.backlog_first_byte_offset_ << ("\r\n")
+             << REDIS_BACKLOG_HISTEN_LABEL ":" << value.backlog_histen_ << ("\r\n");
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo::Cpu& value) {
-  return out << REDIS_USED_CPU_SYS_LABEL ":" << value.used_cpu_sys_ << ("\r\n")
-             << REDIS_USED_CPU_USER_LABEL ":" << value.used_cpu_user_ << ("\r\n")
-             << REDIS_USED_CPU_SYS_CHILDREN_LABEL ":" << value.used_cpu_sys_children_ << ("\r\n")
-             << REDIS_USED_CPU_USER_CHILDREN_LABEL ":" << value.used_cpu_user_children_ << ("\r\n");
+  return out << REDIS_USED_CPU_SYS_LABEL ":" << value.used_cpu_sys_ << ("\r\n") << REDIS_USED_CPU_USER_LABEL ":"
+             << value.used_cpu_user_ << ("\r\n") << REDIS_USED_CPU_SYS_CHILDREN_LABEL ":"
+             << value.used_cpu_sys_children_ << ("\r\n") << REDIS_USED_CPU_USER_CHILDREN_LABEL ":"
+             << value.used_cpu_user_children_ << ("\r\n");
 }
 
 std::string ServerInfo::ToString() const {

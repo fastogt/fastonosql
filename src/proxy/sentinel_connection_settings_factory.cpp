@@ -27,9 +27,8 @@
 namespace fastonosql {
 namespace proxy {
 
-ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromType(
-    core::connectionTypes type,
-    const connection_path_t& conName) {
+ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromType(core::connectionTypes type,
+                                                                         const connection_path_t& conName) {
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
     return new redis::SentinelSettings(conName);

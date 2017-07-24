@@ -44,8 +44,7 @@ QVariant PropertyTableModel::data(const QModelIndex& index, int role) const {
     return QVariant();
   }
 
-  PropertyTableItem* node =
-      common::qt::item<common::qt::gui::TableItem*, PropertyTableItem*>(index);
+  PropertyTableItem* node = common::qt::item<common::qt::gui::TableItem*, PropertyTableItem*>(index);
   if (!node) {
     return QVariant();
   }
@@ -63,8 +62,7 @@ QVariant PropertyTableModel::data(const QModelIndex& index, int role) const {
 
 bool PropertyTableModel::setData(const QModelIndex& index, const QVariant& value, int role) {
   if (index.isValid() && role == Qt::EditRole) {
-    PropertyTableItem* node =
-        common::qt::item<common::qt::gui::TableItem*, PropertyTableItem*>(index);
+    PropertyTableItem* node = common::qt::item<common::qt::gui::TableItem*, PropertyTableItem*>(index);
     if (!node) {
       return false;
     }
@@ -129,8 +127,7 @@ void PropertyTableModel::changeProperty(const core::property_t& pr) {
     core::property_t prop = it->property();
     if (prop.first == pr.first) {
       it->setProperty(pr);
-      updateItem(index(i, PropertyTableItem::eKey, QModelIndex()),
-                 index(i, PropertyTableItem::eValue, QModelIndex()));
+      updateItem(index(i, PropertyTableItem::eKey, QModelIndex()), index(i, PropertyTableItem::eValue, QModelIndex()));
       return;
     }
   }

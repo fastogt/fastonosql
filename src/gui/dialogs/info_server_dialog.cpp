@@ -227,8 +227,7 @@ const QString trUpscaledbTextServerTemplate = QObject::tr(
 namespace fastonosql {
 namespace gui {
 
-InfoServerDialog::InfoServerDialog(proxy::IServerSPtr server, QWidget* parent)
-    : QDialog(parent), server_(server) {
+InfoServerDialog::InfoServerDialog(proxy::IServerSPtr server, QWidget* parent) : QDialog(parent), server_(server) {
   CHECK(server_);
 
   core::connectionTypes type = server->Type();
@@ -245,9 +244,8 @@ InfoServerDialog::InfoServerDialog(proxy::IServerSPtr server, QWidget* parent)
   setMinimumSize(QSize(min_width, min_height));
   setLayout(mainL);
 
-  glassWidget_ =
-      new common::qt::gui::GlassWidget(GuiFactory::Instance().pathToLoadingGif(),
-                                       translations::trLoading, 0.5, QColor(111, 111, 100), this);
+  glassWidget_ = new common::qt::gui::GlassWidget(GuiFactory::Instance().pathToLoadingGif(), translations::trLoading,
+                                                  0.5, QColor(111, 111, 100), this);
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
     updateText(core::redis::ServerInfo());
@@ -289,10 +287,8 @@ InfoServerDialog::InfoServerDialog(proxy::IServerSPtr server, QWidget* parent)
   }
 #endif
 
-  VERIFY(connect(server.get(), &proxy::IServer::LoadServerInfoStarted, this,
-                 &InfoServerDialog::startServerInfo));
-  VERIFY(connect(server.get(), &proxy::IServer::LoadServerInfoFinished, this,
-                 &InfoServerDialog::finishServerInfo));
+  VERIFY(connect(server.get(), &proxy::IServer::LoadServerInfoStarted, this, &InfoServerDialog::startServerInfo));
+  VERIFY(connect(server.get(), &proxy::IServer::LoadServerInfoFinished, this, &InfoServerDialog::finishServerInfo));
   retranslateUi();
 }
 
@@ -565,11 +561,8 @@ void InfoServerDialog::updateText(const core::ssdb::ServerInfo& serv) {
   QString qbinlogs;
   common::ConvertFromString(com.binlogs, &qbinlogs);
 
-  QString textServ = trSsdbTextServerTemplate.arg(qverson)
-                         .arg(com.links)
-                         .arg(com.total_calls)
-                         .arg(com.dbsize)
-                         .arg(qbinlogs);
+  QString textServ =
+      trSsdbTextServerTemplate.arg(qverson).arg(com.links).arg(com.total_calls).arg(com.dbsize).arg(qbinlogs);
 
   serverTextInfo_->setText(textServ);
 }

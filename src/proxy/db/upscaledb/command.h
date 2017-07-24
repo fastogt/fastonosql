@@ -28,10 +28,7 @@ namespace upscaledb {
 
 class Command : public core::FastoObjectCommand {
  public:
-  Command(FastoObject* parent,
-          common::StringValue* cmd,
-          core::CmdLoggingType ct,
-          const std::string& delimiter);
+  Command(FastoObject* parent, common::StringValue* cmd, core::CmdLoggingType ct, const std::string& delimiter);
 };
 
 }  // namespace upscaledb

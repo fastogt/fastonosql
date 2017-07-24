@@ -63,10 +63,7 @@ const QString trInput = QObject::tr("Key/Value input");
 namespace fastonosql {
 namespace gui {
 
-DbKeyDialog::DbKeyDialog(const QString& title,
-                         core::connectionTypes type,
-                         const core::NDbKValue& key,
-                         QWidget* parent)
+DbKeyDialog::DbKeyDialog(const QString& title, core::connectionTypes type, const core::NDbKValue& key, QWidget* parent)
     : QDialog(parent), type_(type), key_(key) {
   bool is_edit = !key.Equals(core::NDbKValue());
   setWindowIcon(GuiFactory::Instance().icon(type));
@@ -94,8 +91,7 @@ DbKeyDialog::DbKeyDialog(const QString& title,
   }
 
   typedef void (QComboBox::*ind)(int);
-  VERIFY(connect(typesCombo_, static_cast<ind>(&QComboBox::currentIndexChanged), this,
-                 &DbKeyDialog::typeChanged));
+  VERIFY(connect(typesCombo_, static_cast<ind>(&QComboBox::currentIndexChanged), this, &DbKeyDialog::typeChanged));
   kvLayout->addWidget(typesCombo_, 0, 1);
 
   // key layout
@@ -136,8 +132,7 @@ DbKeyDialog::DbKeyDialog(const QString& title,
   QVBoxLayout* layout = new QVBoxLayout;
   layout->addWidget(generalBox_);
 
-  QDialogButtonBox* buttonBox =
-      new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
+  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &DbKeyDialog::accept));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &DbKeyDialog::reject));
@@ -268,8 +263,7 @@ void DbKeyDialog::syncControls(common::Value* item) {
 
         QString ftext;
         QString stext;
-        if (common::ConvertFromString(key_str, &ftext) &&
-            common::ConvertFromString(value_str, &stext)) {
+        if (common::ConvertFromString(key_str, &ftext) && common::ConvertFromString(value_str, &stext)) {
           valueTableEdit_->insertRow(ftext, stext);
         }
       }
@@ -293,8 +287,7 @@ void DbKeyDialog::syncControls(common::Value* item) {
 
         QString ftext;
         QString stext;
-        if (common::ConvertFromString(key_str, &ftext) &&
-            common::ConvertFromString(value_str, &stext)) {
+        if (common::ConvertFromString(key_str, &ftext) && common::ConvertFromString(value_str, &stext)) {
           valueTableEdit_->insertRow(ftext, stext);
         }
       }

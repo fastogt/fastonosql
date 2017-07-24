@@ -76,8 +76,7 @@ class Driver : public IDriverRemote {
                                                      const std::string& input,
                                                      core::CmdLoggingType ct) override;
 
-  virtual core::FastoObjectCommandIPtr CreateCommandFast(const std::string& input,
-                                                         core::CmdLoggingType ct) override;
+  virtual core::FastoObjectCommandIPtr CreateCommandFast(const std::string& input, core::CmdLoggingType ct) override;
 
   virtual common::Error SyncConnect() override WARN_UNUSED_RESULT;
   virtual common::Error SyncDisconnect() override WARN_UNUSED_RESULT;
@@ -89,10 +88,8 @@ class Driver : public IDriverRemote {
 
   virtual void HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) override;
   virtual void HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev) override;
-  virtual void HandleServerPropertyChangeEvent(
-      events::ChangeServerPropertyInfoRequestEvent* ev) override;
-  virtual void HandleLoadServerChannelsRequestEvent(
-      events::LoadServerChannelsRequestEvent* ev) override;
+  virtual void HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev) override;
+  virtual void HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequestEvent* ev) override;
   virtual void HandleShutdownEvent(events::ShutDownRequestEvent* ev) override;
   virtual void HandleBackupEvent(events::BackupRequestEvent* ev) override;
   virtual void HandleExportEvent(events::ExportRequestEvent* ev) override;

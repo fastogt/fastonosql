@@ -42,9 +42,7 @@ const QSize stateIconSize = QSize(64, 64);
 namespace fastonosql {
 namespace gui {
 
-ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(
-    QWidget* parent,
-    proxy::IConnectionSettingsBaseSPtr connection)
+ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(QWidget* parent, proxy::IConnectionSettingsBaseSPtr connection)
     : QDialog(parent) {
   setWindowTitle(translations::trConnectionDiagnostic);
   setWindowIcon(GuiFactory::Instance().icon(connection->Type()));
@@ -69,22 +67,18 @@ ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(
 
   QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
-  VERIFY(
-      connect(buttonBox, &QDialogButtonBox::accepted, this, &ConnectionDiagnosticDialog::accept));
+  VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &ConnectionDiagnosticDialog::accept));
 
   mainLayout->addWidget(buttonBox);
   mainLayout->setSizeConstraint(QLayout::SetFixedSize);
   setLayout(mainLayout);
 
   glassWidget_ = new common::qt::gui::GlassWidget(GuiFactory::Instance().pathToLoadingGif(),
-                                                  translations::trTryToConnect, 0.5,
-                                                  QColor(111, 111, 100), this);
+                                                  translations::trTryToConnect, 0.5, QColor(111, 111, 100), this);
   startTestConnection(connection);
 }
 
-void ConnectionDiagnosticDialog::connectionResult(bool suc,
-                                                  qint64 mstimeExecute,
-                                                  const QString& resultText) {
+void ConnectionDiagnosticDialog::connectionResult(bool suc, qint64 mstimeExecute, const QString& resultText) {
   glassWidget_->stop();
 
   executeTimeLabel_->setText(translations::trTimeTemplate_1S.arg(mstimeExecute));
@@ -101,14 +95,12 @@ void ConnectionDiagnosticDialog::showEvent(QShowEvent* e) {
   glassWidget_->start();
 }
 
-void ConnectionDiagnosticDialog::startTestConnection(
-    proxy::IConnectionSettingsBaseSPtr connection) {
+void ConnectionDiagnosticDialog::startTestConnection(proxy::IConnectionSettingsBaseSPtr connection) {
   QThread* th = new QThread;
   TestConnection* cheker = new TestConnection(connection);
   cheker->moveToThread(th);
   VERIFY(connect(th, &QThread::started, cheker, &TestConnection::routine));
-  VERIFY(connect(cheker, &TestConnection::connectionResult, this,
-                 &ConnectionDiagnosticDialog::connectionResult));
+  VERIFY(connect(cheker, &TestConnection::connectionResult, this, &ConnectionDiagnosticDialog::connectionResult));
   VERIFY(connect(cheker, &TestConnection::connectionResult, th, &QThread::quit));
   VERIFY(connect(th, &QThread::finished, cheker, &TestConnection::deleteLater));
   VERIFY(connect(th, &QThread::finished, th, &QThread::deleteLater));

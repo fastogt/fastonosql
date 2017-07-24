@@ -52,10 +52,7 @@ struct upscaledb {
 
 namespace {
 
-ups_status_t upscaledb_open(upscaledb** context,
-                            const char* dbpath,
-                            uint16_t db,
-                            bool create_if_missing) {
+ups_status_t upscaledb_open(upscaledb** context, const char* dbpath, uint16_t db, bool create_if_missing) {
   upscaledb* lcontext = reinterpret_cast<upscaledb*>(calloc(1, sizeof(upscaledb)));
   bool need_to_create = false;
   if (create_if_missing) {
@@ -65,8 +62,8 @@ ups_status_t upscaledb_open(upscaledb** context,
     }
   }
 
-  ups_status_t st = need_to_create ? ups_env_create(&lcontext->env, dbpath, 0, 0664, 0)
-                                   : ups_env_open(&lcontext->env, dbpath, 0, 0);
+  ups_status_t st =
+      need_to_create ? ups_env_create(&lcontext->env, dbpath, 0, 0664, 0) : ups_env_open(&lcontext->env, dbpath, 0, 0);
   if (st != UPS_SUCCESS) {
     free(lcontext);
     return st;
@@ -147,8 +144,7 @@ const char* CDBConnection<upscaledb::NativeConnection, upscaledb::Config, UPSCAL
 }
 
 template <>
-ConstantCommandsArray
-CDBConnection<upscaledb::NativeConnection, upscaledb::Config, UPSCALEDB>::Commands() {
+ConstantCommandsArray CDBConnection<upscaledb::NativeConnection, upscaledb::Config, UPSCALEDB>::Commands() {
   return upscaledb::g_commands;
 }
 }  // namespace internal
@@ -164,8 +160,7 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   std::string folder = common::file_system::get_dir_path(db_path);
   common::tribool is_dir = common::file_system::is_directory(folder);
   if (is_dir != common::SUCCESS) {
-    return common::make_error_value(common::MemSPrintf("Invalid input path(%s)", db_path),
-                                    common::ErrorValue::E_ERROR);
+    return common::make_error_value(common::MemSPrintf("Invalid input path(%s)", db_path), common::ErrorValue::E_ERROR);
   }
 
   const char* dbname = common::utils::c_strornull(db_path);
@@ -525,16 +520,14 @@ common::Error DBConnection::RenameImpl(const NKey& key, const std::string& new_k
 common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
   UNUSED(key);
   UNUSED(ttl);
-  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE
-                                  " for UPSCALEDB not supported TTL commands.",
+  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE " for UPSCALEDB not supported TTL commands.",
                                   common::ErrorValue::E_ERROR);
 }
 
 common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
   UNUSED(key);
   UNUSED(ttl);
-  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE
-                                  " for UPSCALEDB not supported TTL commands.",
+  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE " for UPSCALEDB not supported TTL commands.",
                                   common::ErrorValue::E_ERROR);
 }
 

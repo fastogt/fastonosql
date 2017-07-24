@@ -75,8 +75,7 @@ Config parseOptions(int argc, char** argv) {
 
 }  // namespace
 
-Config::Config()
-    : LocalConfig(common::file_system::prepare_path("~/test.leveldb")), create_if_missing(false) {}
+Config::Config() : LocalConfig(common::file_system::prepare_path("~/test.leveldb")), create_if_missing(false) {}
 
 }  // namespace leveldb
 }  // namespace core

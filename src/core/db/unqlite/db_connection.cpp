@@ -155,8 +155,7 @@ const char* CDBConnection<unqlite::NativeConnection, unqlite::Config, UNQLITE>::
 }
 
 template <>
-ConstantCommandsArray
-CDBConnection<unqlite::NativeConnection, unqlite::Config, UNQLITE>::Commands() {
+ConstantCommandsArray CDBConnection<unqlite::NativeConnection, unqlite::Config, UNQLITE>::Commands() {
   return unqlite::g_commands;
 }
 }  // namespace internal
@@ -173,8 +172,7 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   std::string folder = common::file_system::get_dir_path(db_path);
   common::tribool is_dir = common::file_system::is_directory(folder);
   if (is_dir != common::SUCCESS) {
-    return common::make_error_value(common::MemSPrintf("Invalid input path(%s)", db_path),
-                                    common::ErrorValue::E_ERROR);
+    return common::make_error_value(common::MemSPrintf("Invalid input path(%s)", db_path), common::ErrorValue::E_ERROR);
   }
 
   const char* dbname = common::utils::c_strornull(db_path);
@@ -226,8 +224,7 @@ common::Error DBConnection::SetInner(const std::string& key, const std::string& 
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  int rc =
-      unqlite_kv_store(connection_.handle_, key.c_str(), key.size(), value.c_str(), value.length());
+  int rc = unqlite_kv_store(connection_.handle_, key.c_str(), key.size(), value.c_str(), value.length());
   if (rc != UNQLITE_OK) {
     std::string buff = common::MemSPrintf("set function error: %s", unqlite_strerror(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -255,8 +252,7 @@ common::Error DBConnection::GetInner(const std::string& key, std::string* ret_va
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  int rc = unqlite_kv_fetch_callback(connection_.handle_, key.c_str(), key.size(),
-                                     unqlite_data_callback, ret_val);
+  int rc = unqlite_kv_fetch_callback(connection_.handle_, key.c_str(), key.size(), unqlite_data_callback, ret_val);
   if (rc != UNQLITE_OK) {
     std::string buff = common::MemSPrintf("get function error: %s", unqlite_strerror(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -310,12 +306,11 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
   return common::Error();
 }
 
-common::Error DBConnection::KeysImpl(
-    const std::string& key_start,
-    const std::string& key_end,
-    uint64_t limit,
-    std::vector<std::string>* ret) { /* Allocate a new cursor instance */
-  unqlite_kv_cursor* pCur;           /* Cursor handle */
+common::Error DBConnection::KeysImpl(const std::string& key_start,
+                                     const std::string& key_end,
+                                     uint64_t limit,
+                                     std::vector<std::string>* ret) { /* Allocate a new cursor instance */
+  unqlite_kv_cursor* pCur;                                            /* Cursor handle */
   int rc = unqlite_kv_cursor_init(connection_.handle_, &pCur);
   if (rc != UNQLITE_OK) {
     std::string buff = common::MemSPrintf("Keys function error: %s", unqlite_strerror(rc));
@@ -454,16 +449,14 @@ common::Error DBConnection::RenameImpl(const NKey& key, const std::string& new_k
 common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
   UNUSED(key);
   UNUSED(ttl);
-  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE
-                                  " for UnqLite not supported TTL commands.",
+  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE " for UnqLite not supported TTL commands.",
                                   common::ErrorValue::E_ERROR);
 }
 
 common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
   UNUSED(key);
   UNUSED(ttl);
-  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE
-                                  " for Unqlite not supported TTL commands.",
+  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE " for Unqlite not supported TTL commands.",
                                   common::ErrorValue::E_ERROR);
 }
 

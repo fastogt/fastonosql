@@ -76,10 +76,8 @@ struct RConfig : public Config {
 common::Error CreateConnection(const RConfig& config, NativeConnection** context);
 common::Error TestConnection(const RConfig& rconfig);
 
-common::Error DiscoveryClusterConnection(const RConfig& rconfig,
-                                         std::vector<ServerDiscoveryClusterInfoSPtr>* infos);
-common::Error DiscoverySentinelConnection(const RConfig& rconfig,
-                                          std::vector<ServerDiscoverySentinelInfoSPtr>* infos);
+common::Error DiscoveryClusterConnection(const RConfig& rconfig, std::vector<ServerDiscoveryClusterInfoSPtr>* infos);
+common::Error DiscoverySentinelConnection(const RConfig& rconfig, std::vector<ServerDiscoverySentinelInfoSPtr>* infos);
 
 class DBConnection : public core::internal::CDBConnection<NativeConnection, RConfig, REDIS> {
  public:
@@ -95,16 +93,13 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
   common::Error SlaveMode(FastoObject* out) WARN_UNUSED_RESULT;
 
   common::Error ExecuteAsPipeline(const std::vector<FastoObjectCommandIPtr>& cmds,
-                                  void (*log_command_cb)(FastoObjectCommandIPtr))
-      WARN_UNUSED_RESULT;
+                                  void (*log_command_cb)(FastoObjectCommandIPtr)) WARN_UNUSED_RESULT;
 
   common::Error CommonExec(int argc, const char** argv, FastoObject* out) WARN_UNUSED_RESULT;
   common::Error Auth(const std::string& password) WARN_UNUSED_RESULT;
-  common::Error Monitor(int argc,
-                        const char** argv,
+  common::Error Monitor(int argc, const char** argv,
                         FastoObject* out) WARN_UNUSED_RESULT;  // interrupt
-  common::Error Subscribe(int argc,
-                          const char** argv,
+  common::Error Subscribe(int argc, const char** argv,
                           FastoObject* out) WARN_UNUSED_RESULT;  // interrupt
 
   common::Error SetEx(const NDbKValue& key, ttl_t ttl);
@@ -117,11 +112,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
   common::Error Smembers(const NKey& key, NDbKValue* loaded_key);
 
   common::Error Zadd(const NKey& key, NValue scores, long long* added);
-  common::Error Zrange(const NKey& key,
-                       int start,
-                       int stop,
-                       bool withscores,
-                       NDbKValue* loaded_key);
+  common::Error Zrange(const NKey& key, int start, int stop, bool withscores, NDbKValue* loaded_key);
 
   common::Error Hmset(const NKey& key, NValue hash);
   common::Error Hgetall(const NKey& key, NDbKValue* loaded_key);

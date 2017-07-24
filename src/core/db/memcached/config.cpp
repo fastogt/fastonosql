@@ -85,9 +85,7 @@ Config parseOptions(int argc, char** argv) {
 }  // namespace
 
 Config::Config()
-    : RemoteConfig(common::net::HostAndPort::CreateLocalHost(DEFAULT_MEMCACHED_SERVER_PORT)),
-      user(),
-      password() {}
+    : RemoteConfig(common::net::HostAndPort::CreateLocalHost(DEFAULT_MEMCACHED_SERVER_PORT)), user(), password() {}
 
 }  // namespace memcached
 }  // namespace core

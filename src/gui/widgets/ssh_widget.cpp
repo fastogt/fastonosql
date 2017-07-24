@@ -71,25 +71,21 @@ SSHWidget::SSHWidget(QWidget* parent) : QWidget(parent) {
   sshAuthMethodLabel_ = new QLabel;
 
   security_ = new QComboBox;
-  security_->addItems(QStringList()
-                      << translations::trPassword << translations::trPublicPrivateKey);
+  security_->addItems(QStringList() << translations::trPassword << translations::trPublicPrivateKey);
 
   typedef void (QComboBox::*ind)(const QString&);
-  VERIFY(connect(security_, static_cast<ind>(&QComboBox::currentIndexChanged), this,
-                 &SSHWidget::securityChange));
+  VERIFY(connect(security_, static_cast<ind>(&QComboBox::currentIndexChanged), this, &SSHWidget::securityChange));
 
   passwordBox_ = new QLineEdit;
   passwordBox_->setEchoMode(QLineEdit::Password);
   passwordEchoModeButton_ = new QPushButton(translations::trShow);
-  VERIFY(connect(passwordEchoModeButton_, &QPushButton::clicked, this,
-                 &SSHWidget::togglePasswordEchoMode));
+  VERIFY(connect(passwordEchoModeButton_, &QPushButton::clicked, this, &SSHWidget::togglePasswordEchoMode));
 
   passphraseBox_ = new QLineEdit;
 
   passphraseBox_->setEchoMode(QLineEdit::Password);
   passphraseEchoModeButton_ = new QPushButton(translations::trShow);
-  VERIFY(connect(passphraseEchoModeButton_, &QPushButton::clicked, this,
-                 &SSHWidget::togglePassphraseEchoMode));
+  VERIFY(connect(passphraseEchoModeButton_, &QPushButton::clicked, this, &SSHWidget::togglePassphraseEchoMode));
 
   useSshWidget_ = new QWidget;
 

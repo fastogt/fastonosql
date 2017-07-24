@@ -27,8 +27,7 @@
 namespace fastonosql {
 namespace gui {
 
-BaseQsciApi::BaseQsciApi(QsciLexer* lexer)
-    : QsciAbstractAPIs(lexer), filtered_version_(UNDEFINED_SINCE) {}
+BaseQsciApi::BaseQsciApi(QsciLexer* lexer) : QsciAbstractAPIs(lexer), filtered_version_(UNDEFINED_SINCE) {}
 
 bool BaseQsciApi::canSkipCommand(const core::CommandInfo& info) const {
   if (filtered_version_ == UNDEFINED_SINCE) {
@@ -46,12 +45,10 @@ void BaseQsciApi::setFilteredVersion(uint32_t version) {
   filtered_version_ = version;
 }
 
-BaseQsciApiCommandHolder::BaseQsciApiCommandHolder(const std::vector<core::CommandHolder>& commands,
-                                                   QsciLexer* lexer)
+BaseQsciApiCommandHolder::BaseQsciApiCommandHolder(const std::vector<core::CommandHolder>& commands, QsciLexer* lexer)
     : BaseQsciApi(lexer), commands_(commands) {}
 
-void BaseQsciApiCommandHolder::updateAutoCompletionList(const QStringList& context,
-                                                        QStringList& list) {
+void BaseQsciApiCommandHolder::updateAutoCompletionList(const QStringList& context, QStringList& list) {
   for (auto it = context.begin(); it != context.end(); ++it) {
     QString val = *it;
     for (size_t i = 0; i < commands_.size(); ++i) {
@@ -123,9 +120,8 @@ BaseQsciApi* BaseQsciLexer::apis() const {
   return api;
 }
 
-BaseQsciLexerCommandHolder::BaseQsciLexerCommandHolder(
-    const std::vector<core::CommandHolder>& commands,
-    QObject* parent)
+BaseQsciLexerCommandHolder::BaseQsciLexerCommandHolder(const std::vector<core::CommandHolder>& commands,
+                                                       QObject* parent)
     : BaseQsciLexer(parent), commands_(commands) {}
 
 std::vector<uint32_t> BaseQsciLexerCommandHolder::supportedVersions() const {

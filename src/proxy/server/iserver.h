@@ -147,49 +147,38 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
 
  public:
   // async methods
-  void Connect(
-      const events_info::ConnectInfoRequest& req);  // signals: ConnectStarted, ConnectFinished
-  void Disconnect(const events_info::DisConnectInfoRequest& req);  // signals: DisconnectStarted,
-                                                                   // DisconnectFinished
-  void LoadDatabases(
-      const events_info::LoadDatabasesInfoRequest& req);  // signals: LoadDatabasesStarted,
-                                                          // LoadDatabasesFinished
-  void LoadDatabaseContent(
-      const events_info::LoadDatabaseContentRequest& req);   // signals: LoadDataBaseContentStarted,
-                                                             // LoadDatabaseContentFinished
-  void Execute(const events_info::ExecuteInfoRequest& req);  // signals: ExecuteStarted
+  void Connect(const events_info::ConnectInfoRequest& req);              // signals: ConnectStarted, ConnectFinished
+  void Disconnect(const events_info::DisConnectInfoRequest& req);        // signals: DisconnectStarted,
+                                                                         // DisconnectFinished
+  void LoadDatabases(const events_info::LoadDatabasesInfoRequest& req);  // signals: LoadDatabasesStarted,
+                                                                         // LoadDatabasesFinished
+  void LoadDatabaseContent(const events_info::LoadDatabaseContentRequest& req);  // signals: LoadDataBaseContentStarted,
+                                                                                 // LoadDatabaseContentFinished
+  void Execute(const events_info::ExecuteInfoRequest& req);                      // signals: ExecuteStarted
 
-  void ShutDown(const events_info::ShutDownInfoRequest& req);  // signals: ShutdownStarted,
-                                                               // ShutdownFinished
-  void BackupToPath(
-      const events_info::BackupInfoRequest& req);  // signals: BackupStarted, BackupFinished
-  void ExportFromPath(
-      const events_info::ExportInfoRequest& req);  // signals: ExportStarted, ExportFinished
-  void ChangePassword(
-      const events_info::ChangePasswordRequest& req);  // signals: ChangePasswordStarted,
-                                                       // ChangePasswordFinished
-  void SetMaxConnection(
-      const events_info::ChangeMaxConnectionRequest& req);  // signals: ChangeMaxConnectionStarted,
-                                                            // ChangeMaxConnectionFinished
-  void LoadServerInfo(const events_info::ServerInfoRequest& req);  // signals:
+  void ShutDown(const events_info::ShutDownInfoRequest& req);                 // signals: ShutdownStarted,
+                                                                              // ShutdownFinished
+  void BackupToPath(const events_info::BackupInfoRequest& req);               // signals: BackupStarted, BackupFinished
+  void ExportFromPath(const events_info::ExportInfoRequest& req);             // signals: ExportStarted, ExportFinished
+  void ChangePassword(const events_info::ChangePasswordRequest& req);         // signals: ChangePasswordStarted,
+                                                                              // ChangePasswordFinished
+  void SetMaxConnection(const events_info::ChangeMaxConnectionRequest& req);  // signals: ChangeMaxConnectionStarted,
+                                                                              // ChangeMaxConnectionFinished
+  void LoadServerInfo(const events_info::ServerInfoRequest& req);             // signals:
   // LoadServerInfoStarted,
   // LoadServerInfoFinished
-  void ServerProperty(
-      const events_info::ServerPropertyInfoRequest& req);  // signals: LoadServerPropertyStarted,
-                                                           // LoadServerPropertyFinished
-  void RequestHistoryInfo(
-      const events_info::ServerInfoHistoryRequest& req);  // signals: LoadServerHistoryInfoStarted,
-                                                          // LoadServerHistoryInfoFinished
-  void ClearHistory(
-      const events_info::ClearServerHistoryRequest& req);  // signals: ClearServerHistoryStarted,
-                                                           // ClearServerHistoryFinished
-  void ChangeProperty(const events_info::ChangeServerPropertyInfoRequest&
-                          req);  // signals: ChangeServerPropertyStarted,
-                                 // ChangeServerPropertyFinished
+  void ServerProperty(const events_info::ServerPropertyInfoRequest& req);     // signals: LoadServerPropertyStarted,
+                                                                              // LoadServerPropertyFinished
+  void RequestHistoryInfo(const events_info::ServerInfoHistoryRequest& req);  // signals: LoadServerHistoryInfoStarted,
+                                                                              // LoadServerHistoryInfoFinished
+  void ClearHistory(const events_info::ClearServerHistoryRequest& req);       // signals: ClearServerHistoryStarted,
+                                                                              // ClearServerHistoryFinished
+  void ChangeProperty(
+      const events_info::ChangeServerPropertyInfoRequest& req);  // signals: ChangeServerPropertyStarted,
+                                                                 // ChangeServerPropertyFinished
 
-  void LoadChannels(
-      const events_info::LoadServerChannelsRequest& req);  // signals: LoadServerChannelsStarted,
-                                                           // LoadServerChannelsFinished
+  void LoadChannels(const events_info::LoadServerChannelsRequest& req);  // signals: LoadServerChannelsStarted,
+                                                                         // LoadServerChannelsFinished
 
  protected:
   explicit IServer(IDriver* drv);  // take ownerships

@@ -23,8 +23,7 @@ namespace core {
 
 NDbPSChannel::NDbPSChannel() {}
 
-NDbPSChannel::NDbPSChannel(const std::string& name, uint32_t nos)
-    : name_(name), number_of_subscribers_(nos) {}
+NDbPSChannel::NDbPSChannel(const std::string& name, uint32_t nos) : name_(name), number_of_subscribers_(nos) {}
 
 std::string NDbPSChannel::Name() const {
   return name_;

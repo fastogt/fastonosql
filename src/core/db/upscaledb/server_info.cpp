@@ -36,8 +36,7 @@ namespace fastonosql {
 namespace core {
 namespace {
 
-const std::vector<Field> lmdbCommonFields = {
-    Field(UPSCALEDB_FILE_NAME_LABEL, common::Value::TYPE_STRING)};
+const std::vector<Field> lmdbCommonFields = {Field(UPSCALEDB_FILE_NAME_LABEL, common::Value::TYPE_STRING)};
 
 }  // namespace
 

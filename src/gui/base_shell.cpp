@@ -112,8 +112,7 @@ BaseShell::BaseShell(core::connectionTypes type, bool showAutoCompl, QWidget* pa
     lex = new upscaledb::Lexer(this);
   }
 #endif
-  registerImage(BaseQsciLexer::Command,
-                gui::GuiFactory::Instance().commandIcon(type).pixmap(image_size));
+  registerImage(BaseQsciLexer::Command, gui::GuiFactory::Instance().commandIcon(type).pixmap(image_size));
 
   if (!lex) {
     NOTREACHED();

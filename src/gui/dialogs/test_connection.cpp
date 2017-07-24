@@ -37,8 +37,7 @@ TestConnection::TestConnection(proxy::IConnectionSettingsBaseSPtr conn, QObject*
 
 void TestConnection::routine() {
   if (!connection_) {
-    emit connectionResult(false, common::time::current_mstime() - start_time_,
-                          "Invalid connection settings");
+    emit connectionResult(false, common::time::current_mstime() - start_time_, "Invalid connection settings");
     return;
   }
 
@@ -49,8 +48,7 @@ void TestConnection::routine() {
     common::ConvertFromString(er->Description(), &qdesc);
     emit connectionResult(false, common::time::current_mstime() - start_time_, qdesc);
   } else {
-    emit connectionResult(true, common::time::current_mstime() - start_time_,
-                          translations::trSuccess);
+    emit connectionResult(true, common::time::current_mstime() - start_time_, translations::trSuccess);
   }
 }
 

@@ -111,9 +111,7 @@ struct ChangePasswordResponce : ChangePasswordRequest {
 
 struct ChangeMaxConnectionRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
-  ChangeMaxConnectionRequest(initiator_type sender,
-                             int maxConnection,
-                             error_type er = error_type());
+  ChangeMaxConnectionRequest(initiator_type sender, int maxConnection, error_type er = error_type());
   int max_connection;
 };
 
@@ -149,18 +147,14 @@ struct LeaveModeInfo : public EventInfoBase {
 
 struct CommandRootCreatedInfo : public EventInfoBase {
   typedef EventInfoBase base_class;
-  CommandRootCreatedInfo(initiator_type sender,
-                         core::FastoObjectIPtr root,
-                         error_type er = error_type());
+  CommandRootCreatedInfo(initiator_type sender, core::FastoObjectIPtr root, error_type er = error_type());
 
   core::FastoObjectIPtr root;
 };
 
 struct CommandRootCompleatedInfo : public EventInfoBase {
   typedef EventInfoBase base_class;
-  CommandRootCompleatedInfo(initiator_type sender,
-                            core::FastoObjectIPtr root,
-                            error_type er = error_type());
+  CommandRootCompleatedInfo(initiator_type sender, core::FastoObjectIPtr root, error_type er = error_type());
   CommandRootCompleatedInfo(initiator_type sender,
                             common::time64_t timest,
                             core::FastoObjectIPtr root,
@@ -243,9 +237,7 @@ struct LoadDatabaseContentResponce : LoadDatabaseContentRequest {
 
 struct LoadServerChannelsRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
-  LoadServerChannelsRequest(initiator_type sender,
-                            const std::string& pattern,
-                            error_type er = error_type());
+  LoadServerChannelsRequest(initiator_type sender, const std::string& pattern, error_type er = error_type());
 
   const std::string pattern;
 };
@@ -318,9 +310,7 @@ struct ServerPropertyInfoResponce : ServerPropertyInfoRequest {
 
 struct ChangeServerPropertyInfoRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
-  ChangeServerPropertyInfoRequest(initiator_type sender,
-                                  const core::property_t& pt,
-                                  error_type er = error_type());
+  ChangeServerPropertyInfoRequest(initiator_type sender, const core::property_t& pt, error_type er = error_type());
 
   core::property_t new_item;
 };

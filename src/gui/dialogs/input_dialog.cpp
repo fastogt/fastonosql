@@ -40,8 +40,7 @@ InputDialog::InputDialog(QWidget* parent,
                                                                      // button (?)
 
   QGridLayout* glayout = new QGridLayout;
-  QDialogButtonBox* buttonBox =
-      new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
+  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &InputDialog::accept));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &InputDialog::reject));

@@ -31,8 +31,7 @@
 namespace fastonosql {
 namespace gui {
 
-ConnectionRemoteWidget::ConnectionRemoteWidget(QWidget* parent)
-    : ConnectionBaseWidget(parent), hostWidget_(nullptr) {
+ConnectionRemoteWidget::ConnectionRemoteWidget(QWidget* parent) : ConnectionBaseWidget(parent), hostWidget_(nullptr) {
   hostWidget_ = new HostPortWidget;
   QLayout* host_layout = hostWidget_->layout();
   host_layout->setContentsMargins(0, 0, 0, 0);
@@ -40,8 +39,7 @@ ConnectionRemoteWidget::ConnectionRemoteWidget(QWidget* parent)
 }
 
 void ConnectionRemoteWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
-  proxy::IConnectionSettingsRemote* remote =
-      static_cast<proxy::IConnectionSettingsRemote*>(connection);
+  proxy::IConnectionSettingsRemote* remote = static_cast<proxy::IConnectionSettingsRemote*>(connection);
 
   if (remote) {
     common::net::HostAndPort host = remote->Host();

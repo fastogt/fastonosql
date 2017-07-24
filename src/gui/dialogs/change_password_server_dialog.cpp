@@ -51,9 +51,7 @@ const QString trPasswordChS = QObject::tr("Password successfully changed!");
 namespace fastonosql {
 namespace gui {
 
-ChangePasswordServerDialog::ChangePasswordServerDialog(const QString& title,
-                                                       proxy::IServerSPtr server,
-                                                       QWidget* parent)
+ChangePasswordServerDialog::ChangePasswordServerDialog(const QString& title, proxy::IServerSPtr server, QWidget* parent)
     : QDialog(parent), server_(server) {
   CHECK(server_);
 
@@ -75,13 +73,10 @@ ChangePasswordServerDialog::ChangePasswordServerDialog(const QString& title,
   cpassLayout->addWidget(confPasswordLineEdit_);
   mainLayout->addLayout(cpassLayout);
 
-  QDialogButtonBox* buttonBox =
-      new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
+  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
-  VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this,
-                 &ChangePasswordServerDialog::tryToCreatePassword));
-  VERIFY(
-      connect(buttonBox, &QDialogButtonBox::rejected, this, &ChangePasswordServerDialog::reject));
+  VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &ChangePasswordServerDialog::tryToCreatePassword));
+  VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &ChangePasswordServerDialog::reject));
 
   VERIFY(connect(server_.get(), &proxy::IServer::ChangePasswordStarted, this,
                  &ChangePasswordServerDialog::startChangePassword));
@@ -92,9 +87,8 @@ ChangePasswordServerDialog::ChangePasswordServerDialog(const QString& title,
   setMinimumSize(QSize(min_width, min_height));
   setLayout(mainLayout);
 
-  glassWidget_ = new common::qt::gui::GlassWidget(GuiFactory::Instance().pathToLoadingGif(),
-                                                  translations::trTryToChangePassword, 0.5,
-                                                  QColor(111, 111, 100), this);
+  glassWidget_ = new common::qt::gui::GlassWidget(
+      GuiFactory::Instance().pathToLoadingGif(), translations::trTryToChangePassword, 0.5, QColor(111, 111, 100), this);
 }
 
 void ChangePasswordServerDialog::tryToCreatePassword() {
@@ -107,15 +101,13 @@ void ChangePasswordServerDialog::tryToCreatePassword() {
   server_->ChangePassword(req);
 }
 
-void ChangePasswordServerDialog::startChangePassword(
-    const proxy::events_info::ChangePasswordRequest& req) {
+void ChangePasswordServerDialog::startChangePassword(const proxy::events_info::ChangePasswordRequest& req) {
   UNUSED(req);
 
   glassWidget_->start();
 }
 
-void ChangePasswordServerDialog::finishChangePassword(
-    const proxy::events_info::ChangePasswordResponce& res) {
+void ChangePasswordServerDialog::finishChangePassword(const proxy::events_info::ChangePasswordResponce& res) {
   glassWidget_->stop();
   common::Error err = res.errorInfo();
   if (err && err->IsError()) {

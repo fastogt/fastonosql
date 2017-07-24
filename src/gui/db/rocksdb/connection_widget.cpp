@@ -33,8 +33,7 @@ ConnectionWidget::ConnectionWidget(QWidget* parent)
 }
 
 void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
-  proxy::rocksdb::ConnectionSettings* rock =
-      static_cast<proxy::rocksdb::ConnectionSettings*>(connection);
+  proxy::rocksdb::ConnectionSettings* rock = static_cast<proxy::rocksdb::ConnectionSettings*>(connection);
   if (rock) {
     core::rocksdb::Config config = rock->Info();
     createDBIfMissing_->setChecked(config.create_if_missing);

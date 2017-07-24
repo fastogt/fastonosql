@@ -35,8 +35,7 @@
 namespace fastonosql {
 namespace gui {
 
-DirectoryListWidgetItem::DirectoryListWidgetItem(const proxy::connection_path_t& path)
-    : path_(path) {
+DirectoryListWidgetItem::DirectoryListWidgetItem(const proxy::connection_path_t& path) : path_(path) {
   std::string dir_name = path.Name();
   QString qdir_name;
   if (common::ConvertFromString(dir_name, &qdir_name)) {
@@ -63,8 +62,7 @@ proxy::IConnectionSettingsBaseSPtr IConnectionListWidgetItem::connection() const
   return connection_;
 }
 
-ConnectionListWidgetItem::ConnectionListWidgetItem(QTreeWidgetItem* parent)
-    : IConnectionListWidgetItem(parent) {}
+ConnectionListWidgetItem::ConnectionListWidgetItem(QTreeWidgetItem* parent) : IConnectionListWidgetItem(parent) {}
 
 void ConnectionListWidgetItem::setConnection(proxy::IConnectionSettingsBaseSPtr cons) {
   if (!cons) {
@@ -89,9 +87,8 @@ IConnectionListWidgetItem::itemConnectionType ConnectionListWidgetItem::type() c
   return Common;
 }
 
-SentinelConnectionWidgetItem::SentinelConnectionWidgetItem(
-    const core::ServerCommonInfo& info,
-    SentinelConnectionListWidgetItemContainer* parent)
+SentinelConnectionWidgetItem::SentinelConnectionWidgetItem(const core::ServerCommonInfo& info,
+                                                           SentinelConnectionListWidgetItemContainer* parent)
     : ConnectionListWidgetItemDiscovered(info,
                                          parent) {  // core::SENTINEL
 }
@@ -100,9 +97,8 @@ IConnectionListWidgetItem::itemConnectionType SentinelConnectionWidgetItem::type
   return Sentinel;
 }
 
-ConnectionListWidgetItemDiscovered::ConnectionListWidgetItemDiscovered(
-    const core::ServerCommonInfo& info,
-    QTreeWidgetItem* parent)
+ConnectionListWidgetItemDiscovered::ConnectionListWidgetItemDiscovered(const core::ServerCommonInfo& info,
+                                                                       QTreeWidgetItem* parent)
     : ConnectionListWidgetItem(parent), info_(info) {
   std::string stype = common::ConvertToString(info_.type);
   QString qstype;
@@ -129,8 +125,7 @@ SentinelConnectionListWidgetItemContainer::SentinelConnectionListWidgetItemConta
   proxy::ISentinelSettingsBase::sentinel_connections_t sentinels = connection_->Sentinels();
   for (size_t i = 0; i < sentinels.size(); ++i) {
     proxy::SentinelSettings sent = sentinels[i];
-    SentinelConnectionWidgetItem* item =
-        new SentinelConnectionWidgetItem(core::ServerCommonInfo(), this);
+    SentinelConnectionWidgetItem* item = new SentinelConnectionWidgetItem(core::ServerCommonInfo(), this);
     item->setConnection(sent.sentinel);
     addChild(item);
     for (size_t j = 0; j < sent.sentinel_nodes.size(); ++j) {
@@ -142,8 +137,7 @@ SentinelConnectionListWidgetItemContainer::SentinelConnectionListWidgetItemConta
   }
 }
 
-void SentinelConnectionListWidgetItemContainer::setConnection(
-    proxy::ISentinelSettingsBaseSPtr cons) {
+void SentinelConnectionListWidgetItemContainer::setConnection(proxy::ISentinelSettingsBaseSPtr cons) {
   if (!cons) {
     return;
   }

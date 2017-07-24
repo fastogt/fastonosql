@@ -60,8 +60,7 @@ MainTabBar::MainTabBar(QWidget* parent) : QTabBar(parent) {
   VERIFY(connect(closeOtherShellsAction_, &QAction::triggered, this, &MainTabBar::closedOtherTabs));
 
   setContextMenuPolicy(Qt::CustomContextMenu);
-  VERIFY(
-      connect(this, &MainTabBar::customContextMenuRequested, this, &MainTabBar::showContextMenu));
+  VERIFY(connect(this, &MainTabBar::customContextMenuRequested, this, &MainTabBar::showContextMenu));
 
   retranslateUi();
 }

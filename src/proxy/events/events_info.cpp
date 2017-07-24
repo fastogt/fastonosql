@@ -34,13 +34,11 @@ common::time64_t EventInfoBase::ElapsedTime() const {
   return common::time::current_mstime() - time_start_;
 }
 
-ConnectInfoRequest::ConnectInfoRequest(initiator_type sender, error_type er)
-    : base_class(sender, er) {}
+ConnectInfoRequest::ConnectInfoRequest(initiator_type sender, error_type er) : base_class(sender, er) {}
 
 ConnectInfoResponce::ConnectInfoResponce(const base_class& request) : base_class(request) {}
 
-ShutDownInfoRequest::ShutDownInfoRequest(initiator_type sender, error_type er)
-    : base_class(sender, er) {}
+ShutDownInfoRequest::ShutDownInfoRequest(initiator_type sender, error_type er) : base_class(sender, er) {}
 
 ShutDownInfoResponce::ShutDownInfoResponce(const base_class& request) : base_class(request) {}
 
@@ -62,16 +60,12 @@ ChangePasswordRequest::ChangePasswordRequest(initiator_type sender,
 
 ChangePasswordResponce::ChangePasswordResponce(const base_class& request) : base_class(request) {}
 
-ChangeMaxConnectionRequest::ChangeMaxConnectionRequest(initiator_type sender,
-                                                       int maxConnection,
-                                                       error_type er)
+ChangeMaxConnectionRequest::ChangeMaxConnectionRequest(initiator_type sender, int maxConnection, error_type er)
     : base_class(sender, er), max_connection(maxConnection) {}
 
-ChangeMaxConnectionResponce::ChangeMaxConnectionResponce(const base_class& request)
-    : base_class(request) {}
+ChangeMaxConnectionResponce::ChangeMaxConnectionResponce(const base_class& request) : base_class(request) {}
 
-DiscoveryInfoRequest::DiscoveryInfoRequest(initiator_type sender, error_type er)
-    : base_class(sender, er) {}
+DiscoveryInfoRequest::DiscoveryInfoRequest(initiator_type sender, error_type er) : base_class(sender, er) {}
 
 DiscoveryInfoResponce::DiscoveryInfoResponce(const base_class& request) : base_class(request) {}
 
@@ -81,14 +75,10 @@ EnterModeInfo::EnterModeInfo(initiator_type sender, core::ConnectionMode mode, e
 LeaveModeInfo::LeaveModeInfo(initiator_type sender, core::ConnectionMode mode, error_type er)
     : base_class(sender, er), mode(mode) {}
 
-CommandRootCreatedInfo::CommandRootCreatedInfo(initiator_type sender,
-                                               core::FastoObjectIPtr root,
-                                               error_type er)
+CommandRootCreatedInfo::CommandRootCreatedInfo(initiator_type sender, core::FastoObjectIPtr root, error_type er)
     : base_class(sender, er), root(root) {}
 
-CommandRootCompleatedInfo::CommandRootCompleatedInfo(initiator_type sender,
-                                                     core::FastoObjectIPtr root,
-                                                     error_type er)
+CommandRootCompleatedInfo::CommandRootCompleatedInfo(initiator_type sender, core::FastoObjectIPtr root, error_type er)
     : base_class(sender, er), root(root) {}
 
 CommandRootCompleatedInfo::CommandRootCompleatedInfo(initiator_type sender,
@@ -97,8 +87,7 @@ CommandRootCompleatedInfo::CommandRootCompleatedInfo(initiator_type sender,
                                                      error_type er)
     : base_class(sender, timest, er), root(root) {}
 
-DisConnectInfoRequest::DisConnectInfoRequest(initiator_type sender, error_type er)
-    : base_class(sender, er) {}
+DisConnectInfoRequest::DisConnectInfoRequest(initiator_type sender, error_type er) : base_class(sender, er) {}
 
 DisConnectInfoResponce::DisConnectInfoResponce(const base_class& request) : base_class(request) {}
 
@@ -120,11 +109,9 @@ ExecuteInfoRequest::ExecuteInfoRequest(initiator_type sender,
 
 ExecuteInfoResponce::ExecuteInfoResponce(const base_class& request) : base_class(request) {}
 
-LoadDatabasesInfoRequest::LoadDatabasesInfoRequest(initiator_type sender, error_type er)
-    : base_class(sender, er) {}
+LoadDatabasesInfoRequest::LoadDatabasesInfoRequest(initiator_type sender, error_type er) : base_class(sender, er) {}
 
-LoadDatabasesInfoResponce::LoadDatabasesInfoResponce(const base_class& request)
-    : base_class(request) {}
+LoadDatabasesInfoResponce::LoadDatabasesInfoResponce(const base_class& request) : base_class(request) {}
 
 LoadDatabaseContentRequest::LoadDatabaseContentRequest(initiator_type sender,
                                                        core::IDataBaseInfoSPtr inf,
@@ -132,25 +119,17 @@ LoadDatabaseContentRequest::LoadDatabaseContentRequest(initiator_type sender,
                                                        size_t countKeys,
                                                        uint64_t cursor,
                                                        error_type er)
-    : base_class(sender, er),
-      inf(inf),
-      pattern(pattern),
-      count_keys(countKeys),
-      cursor_in(cursor) {}
+    : base_class(sender, er), inf(inf), pattern(pattern), count_keys(countKeys), cursor_in(cursor) {}
 
 LoadDatabaseContentResponce::LoadDatabaseContentResponce(const base_class& request)
     : base_class(request), keys(), cursor_out(0), db_keys_count(0) {}
 
-LoadServerChannelsRequest::LoadServerChannelsRequest(initiator_type sender,
-                                                     const std::string& pattern,
-                                                     error_type er)
+LoadServerChannelsRequest::LoadServerChannelsRequest(initiator_type sender, const std::string& pattern, error_type er)
     : base_class(sender, er), pattern(pattern) {}
 
-LoadServerChannelsResponce::LoadServerChannelsResponce(const base_class& request)
-    : base_class(request), channels() {}
+LoadServerChannelsResponce::LoadServerChannelsResponce(const base_class& request) : base_class(request), channels() {}
 
-ServerInfoRequest::ServerInfoRequest(initiator_type sender, error_type er)
-    : base_class(sender, er) {}
+ServerInfoRequest::ServerInfoRequest(initiator_type sender, error_type er) : base_class(sender, er) {}
 
 ServerInfoResponce::ServerInfoResponce(const base_class& request) : base_class(request), info_() {}
 
@@ -164,11 +143,9 @@ void ServerInfoResponce::setInfo(core::IServerInfoSPtr inf) {
 
 ServerInfoResponce::~ServerInfoResponce() {}
 
-ServerInfoHistoryRequest::ServerInfoHistoryRequest(initiator_type sender, error_type er)
-    : base_class(sender, er) {}
+ServerInfoHistoryRequest::ServerInfoHistoryRequest(initiator_type sender, error_type er) : base_class(sender, er) {}
 
-ServerInfoHistoryResponce::ServerInfoHistoryResponce(const base_class& request)
-    : base_class(request) {}
+ServerInfoHistoryResponce::ServerInfoHistoryResponce(const base_class& request) : base_class(request) {}
 
 ServerInfoHistoryResponce::infos_container_type ServerInfoHistoryResponce::infos() const {
   return infos_;
@@ -178,25 +155,20 @@ void ServerInfoHistoryResponce::setInfos(const infos_container_type& inf) {
   infos_ = inf;
 }
 
-ClearServerHistoryRequest::ClearServerHistoryRequest(initiator_type sender, error_type er)
-    : base_class(sender, er) {}
+ClearServerHistoryRequest::ClearServerHistoryRequest(initiator_type sender, error_type er) : base_class(sender, er) {}
 
-ClearServerHistoryResponce::ClearServerHistoryResponce(const base_class& request)
-    : base_class(request) {}
+ClearServerHistoryResponce::ClearServerHistoryResponce(const base_class& request) : base_class(request) {}
 
-ServerPropertyInfoRequest::ServerPropertyInfoRequest(initiator_type sender, error_type er)
-    : base_class(sender, er) {}
+ServerPropertyInfoRequest::ServerPropertyInfoRequest(initiator_type sender, error_type er) : base_class(sender, er) {}
 
-ServerPropertyInfoResponce::ServerPropertyInfoResponce(const base_class& request)
-    : base_class(request) {}
+ServerPropertyInfoResponce::ServerPropertyInfoResponce(const base_class& request) : base_class(request) {}
 
 ChangeServerPropertyInfoRequest::ChangeServerPropertyInfoRequest(initiator_type sender,
                                                                  const core::property_t& pt,
                                                                  error_type er)
     : base_class(sender, er), new_item(pt) {}
 
-ChangeServerPropertyInfoResponce::ChangeServerPropertyInfoResponce(const base_class& request)
-    : base_class(request) {}
+ChangeServerPropertyInfoResponce::ChangeServerPropertyInfoResponce(const base_class& request) : base_class(request) {}
 
 ProgressInfoResponce::ProgressInfoResponce(int pr) : progress(pr) {}
 

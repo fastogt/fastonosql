@@ -52,8 +52,8 @@ EncodeDecodeDialog::EncodeDecodeDialog(QWidget* parent) : QDialog(parent) {
   QVBoxLayout* layout = new QVBoxLayout;
   QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
   QPushButton* closeButton = buttonBox->button(QDialogButtonBox::Close);
-  buttonBox->addButton(closeButton, QDialogButtonBox::ButtonRole(QDialogButtonBox::RejectRole |
-                                                                 QDialogButtonBox::AcceptRole));
+  buttonBox->addButton(closeButton,
+                       QDialogButtonBox::ButtonRole(QDialogButtonBox::RejectRole | QDialogButtonBox::AcceptRole));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &EncodeDecodeDialog::reject));
 
   QToolButton* decode = new QToolButton;

@@ -32,8 +32,7 @@ const QColor selectedColor = QColor(0x6d, 0x9e, 0xff, 0xff);
 namespace fastonosql {
 namespace gui {
 
-FastoHexEdit::FastoHexEdit(QWidget* parent)
-    : base_class(parent), mode_(TEXT_MODE), in_selection_state_(false) {
+FastoHexEdit::FastoHexEdit(QWidget* parent) : base_class(parent), mode_(TEXT_MODE), in_selection_state_(false) {
   setFocusPolicy(Qt::StrongFocus);
 }
 
@@ -165,8 +164,7 @@ void FastoHexEdit::paintEvent(QPaintEvent* event) {
     painter.setPen(Qt::black);
 
     int size = data_.size();
-    for (int lineIdx = firstLineIdx, yPos = yPosStart; lineIdx < lastLineIdx;
-         lineIdx += 1, yPos += charH) {
+    for (int lineIdx = firstLineIdx, yPos = yPosStart; lineIdx < lastLineIdx; lineIdx += 1, yPos += charH) {
       QByteArray part = data_.begin() + (lineIdx * acharInLine);
       int part_size = (size / acharInLine) ? acharInLine : size % acharInLine;
       part.resize(part_size);

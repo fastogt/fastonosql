@@ -99,8 +99,7 @@ ConnectionBaseWidget::ConnectionBaseWidget(QWidget* parent) : QWidget(parent) {
   loggingMsec_->setRange(0, INT32_MAX);
   loggingMsec_->setSingleStep(1000);
 
-  VERIFY(
-      connect(logging_, &QCheckBox::stateChanged, this, &ConnectionBaseWidget::loggingStateChange));
+  VERIFY(connect(logging_, &QCheckBox::stateChanged, this, &ConnectionBaseWidget::loggingStateChange));
   loggingMsec_->setEnabled(false);
 
   loggingLayout->addWidget(logging_);
@@ -147,8 +146,7 @@ proxy::IConnectionSettingsBase* ConnectionBaseWidget::createConnection() const {
 
   proxy::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
   proxy::IConnectionSettingsBase* conn = createConnectionImpl(path);
-  conn->SetNsSeparator(
-      common::ConvertToString(toRawCommandLine(namespaceSeparator_->currentText())));
+  conn->SetNsSeparator(common::ConvertToString(toRawCommandLine(namespaceSeparator_->currentText())));
   conn->SetDelimiter(common::ConvertToString(toRawCommandLine(delimiter_->currentText())));
   if (isLogging()) {
     conn->SetLoggingMsTimeInterval(loggingInterval());

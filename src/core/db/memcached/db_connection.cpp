@@ -43,10 +43,7 @@
 namespace {
 
 struct KeysHolder {
-  KeysHolder(const std::string& key_start,
-             const std::string& key_end,
-             uint64_t limit,
-             std::vector<std::string>* r)
+  KeysHolder(const std::string& key_start, const std::string& key_end, uint64_t limit, std::vector<std::string>* r)
       : key_start(key_start), key_end(key_end), limit(limit), r(r) {}
 
   const std::string key_start;
@@ -83,12 +80,7 @@ memcached_return_t memcached_dump_keys_callback(const memcached_st* ptr,
 
 struct ScanHolder {
   ScanHolder(uint64_t cursor_in, const std::string& pattern, uint64_t limit)
-      : cursor_in(cursor_in),
-        pattern(pattern),
-        limit(limit),
-        r(),
-        cursor_out(0),
-        offset_pos(cursor_in) {}
+      : cursor_in(cursor_in), pattern(pattern), limit(limit), r(), cursor_out(0), offset_pos(cursor_in) {}
 
   const uint64_t cursor_in;
   const std::string pattern;
@@ -211,8 +203,7 @@ const char* CDBConnection<memcached::NativeConnection, memcached::Config, MEMCAC
 }
 
 template <>
-ConstantCommandsArray
-CDBConnection<memcached::NativeConnection, memcached::Config, MEMCACHED>::Commands() {
+ConstantCommandsArray CDBConnection<memcached::NativeConnection, memcached::Config, MEMCACHED>::Commands() {
   return memcached::memcachedCommands;
 }
 }  // namespace internal
@@ -236,9 +227,8 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
     rc = memcached_set_sasl_auth_data(memc, user, passwd);
     if (rc != MEMCACHED_SUCCESS) {
       memcached_free(memc);
-      return common::make_error_value(
-          common::MemSPrintf("Couldn't setup SASL auth: %s", memcached_strerror(memc, rc)),
-          common::ErrorValue::E_ERROR);
+      return common::make_error_value(common::MemSPrintf("Couldn't setup SASL auth: %s", memcached_strerror(memc, rc)),
+                                      common::ErrorValue::E_ERROR);
     }
   }
 
@@ -249,17 +239,15 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
 
   if (rc != MEMCACHED_SUCCESS) {
     memcached_free(memc);
-    return common::make_error_value(
-        common::MemSPrintf("Couldn't add server: %s", memcached_strerror(memc, rc)),
-        common::ErrorValue::E_ERROR);
+    return common::make_error_value(common::MemSPrintf("Couldn't add server: %s", memcached_strerror(memc, rc)),
+                                    common::ErrorValue::E_ERROR);
   }
 
   memcached_return_t error = memcached_version(memc);
   if (error != MEMCACHED_SUCCESS) {
     memcached_free(memc);
-    return common::make_error_value(
-        common::MemSPrintf("Connect to server error: %s", memcached_strerror(memc, error)),
-        common::ErrorValue::E_ERROR);
+    return common::make_error_value(common::MemSPrintf("Connect to server error: %s", memcached_strerror(memc, error)),
+                                    common::ErrorValue::E_ERROR);
   }
 
   *context = memc;
@@ -276,16 +264,14 @@ common::Error TestConnection(const Config& config) {
   if (user && passwd) {
     libmemcached_util_ping2(host, hostport, user, passwd, &rc);
     if (rc != MEMCACHED_SUCCESS) {
-      return common::make_error_value(
-          common::MemSPrintf("Couldn't ping server: %s", memcached_strerror(NULL, rc)),
-          common::ErrorValue::E_ERROR);
+      return common::make_error_value(common::MemSPrintf("Couldn't ping server: %s", memcached_strerror(NULL, rc)),
+                                      common::ErrorValue::E_ERROR);
     }
   } else {
     libmemcached_util_ping(host, hostport, &rc);
     if (rc != MEMCACHED_SUCCESS) {
-      return common::make_error_value(
-          common::MemSPrintf("Couldn't ping server: %s", memcached_strerror(NULL, rc)),
-          common::ErrorValue::E_ERROR);
+      return common::make_error_value(common::MemSPrintf("Couldn't ping server: %s", memcached_strerror(NULL, rc)),
+                                      common::ErrorValue::E_ERROR);
     }
   }
 
@@ -308,8 +294,7 @@ common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) 
   memcached_return_t error;
   memcached_stat_st* st = memcached_stat(connection_.handle_, const_cast<char*>(args), &error);
   if (error != MEMCACHED_SUCCESS) {
-    std::string buff = common::MemSPrintf("Stats function error: %s",
-                                          memcached_strerror(connection_.handle_, error));
+    std::string buff = common::MemSPrintf("Stats function error: %s", memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -352,11 +337,10 @@ common::Error DBConnection::AddIfNotExist(const NKey& key,
   }
 
   const std::string key_str = key.Key();
-  memcached_return_t error = memcached_add(connection_.handle_, key_str.c_str(), key_str.length(),
-                                           value.c_str(), value.length(), expiration, flags);
+  memcached_return_t error = memcached_add(connection_.handle_, key_str.c_str(), key_str.length(), value.c_str(),
+                                           value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
-    std::string buff = common::MemSPrintf("Add function error: %s",
-                                          memcached_strerror(connection_.handle_, error));
+    std::string buff = common::MemSPrintf("Add function error: %s", memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -366,21 +350,16 @@ common::Error DBConnection::AddIfNotExist(const NKey& key,
   return common::Error();
 }
 
-common::Error DBConnection::Replace(const NKey& key,
-                                    const std::string& value,
-                                    time_t expiration,
-                                    uint32_t flags) {
+common::Error DBConnection::Replace(const NKey& key, const std::string& value, time_t expiration, uint32_t flags) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
   const std::string key_str = key.Key();
-  memcached_return_t error =
-      memcached_replace(connection_.handle_, key_str.c_str(), key_str.length(), value.c_str(),
-                        value.length(), expiration, flags);
+  memcached_return_t error = memcached_replace(connection_.handle_, key_str.c_str(), key_str.length(), value.c_str(),
+                                               value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
-    std::string buff = common::MemSPrintf("Replace function error: %s",
-                                          memcached_strerror(connection_.handle_, error));
+    std::string buff = common::MemSPrintf("Replace function error: %s", memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -390,21 +369,16 @@ common::Error DBConnection::Replace(const NKey& key,
   return common::Error();
 }
 
-common::Error DBConnection::Append(const NKey& key,
-                                   const std::string& value,
-                                   time_t expiration,
-                                   uint32_t flags) {
+common::Error DBConnection::Append(const NKey& key, const std::string& value, time_t expiration, uint32_t flags) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
   const std::string key_str = key.Key();
-  memcached_return_t error =
-      memcached_append(connection_.handle_, key_str.c_str(), key_str.length(), value.c_str(),
-                       value.length(), expiration, flags);
+  memcached_return_t error = memcached_append(connection_.handle_, key_str.c_str(), key_str.length(), value.c_str(),
+                                              value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
-    std::string buff = common::MemSPrintf("Append function error: %s",
-                                          memcached_strerror(connection_.handle_, error));
+    std::string buff = common::MemSPrintf("Append function error: %s", memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -414,21 +388,16 @@ common::Error DBConnection::Append(const NKey& key,
   return common::Error();
 }
 
-common::Error DBConnection::Prepend(const NKey& key,
-                                    const std::string& value,
-                                    time_t expiration,
-                                    uint32_t flags) {
+common::Error DBConnection::Prepend(const NKey& key, const std::string& value, time_t expiration, uint32_t flags) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
   const std::string key_str = key.Key();
-  memcached_return_t error =
-      memcached_prepend(connection_.handle_, key_str.c_str(), key_str.length(), value.c_str(),
-                        value.length(), expiration, flags);
+  memcached_return_t error = memcached_prepend(connection_.handle_, key_str.c_str(), key_str.length(), value.c_str(),
+                                               value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
-    std::string buff = common::MemSPrintf("Prepend function error: %s",
-                                          memcached_strerror(connection_.handle_, error));
+    std::string buff = common::MemSPrintf("Prepend function error: %s", memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -450,11 +419,10 @@ common::Error DBConnection::Incr(const NKey& key, uint32_t value, uint64_t* resu
 
   const std::string key_str = key.Key();
   uint64_t local_value = 0;
-  memcached_return_t error = memcached_increment(connection_.handle_, key_str.c_str(),
-                                                 key_str.length(), value, &local_value);
+  memcached_return_t error =
+      memcached_increment(connection_.handle_, key_str.c_str(), key_str.length(), value, &local_value);
   if (error != MEMCACHED_SUCCESS) {
-    std::string buff = common::MemSPrintf("Incr function error: %s",
-                                          memcached_strerror(connection_.handle_, error));
+    std::string buff = common::MemSPrintf("Incr function error: %s", memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -478,11 +446,10 @@ common::Error DBConnection::Decr(const NKey& key, uint32_t value, uint64_t* resu
 
   const std::string key_str = key.Key();
   uint64_t local_value = 0;
-  memcached_return_t error = memcached_decrement(connection_.handle_, key_str.c_str(),
-                                                 key_str.length(), value, &local_value);
+  memcached_return_t error =
+      memcached_decrement(connection_.handle_, key_str.c_str(), key_str.length(), value, &local_value);
   if (error != MEMCACHED_SUCCESS) {
-    std::string buff = common::MemSPrintf("Decr function error: %s",
-                                          memcached_strerror(connection_.handle_, error));
+    std::string buff = common::MemSPrintf("Decr function error: %s", memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -499,11 +466,9 @@ common::Error DBConnection::DelInner(const std::string& key, time_t expiration) 
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  memcached_return_t error =
-      memcached_delete(connection_.handle_, key.c_str(), key.length(), expiration);
+  memcached_return_t error = memcached_delete(connection_.handle_, key.c_str(), key.length(), expiration);
   if (error != MEMCACHED_SUCCESS) {
-    std::string buff = common::MemSPrintf("Delete function error: %s",
-                                          memcached_strerror(connection_.handle_, error));
+    std::string buff = common::MemSPrintf("Delete function error: %s", memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -518,11 +483,10 @@ common::Error DBConnection::SetInner(const std::string& key,
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  memcached_return_t error = memcached_set(connection_.handle_, key.c_str(), key.length(),
-                                           value.c_str(), value.length(), expiration, flags);
+  memcached_return_t error =
+      memcached_set(connection_.handle_, key.c_str(), key.length(), value.c_str(), value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
-    std::string buff = common::MemSPrintf("Set function error: %s",
-                                          memcached_strerror(connection_.handle_, error));
+    std::string buff = common::MemSPrintf("Set function error: %s", memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -543,11 +507,9 @@ common::Error DBConnection::GetInner(const std::string& key, std::string* ret_va
   memcached_return error;
   size_t value_length = 0;
 
-  char* value =
-      memcached_get(connection_.handle_, key.c_str(), key.length(), &value_length, &flags, &error);
+  char* value = memcached_get(connection_.handle_, key.c_str(), key.length(), &value_length, &flags, &error);
   if (error != MEMCACHED_SUCCESS) {
-    std::string buff = common::MemSPrintf("Get function error: %s",
-                                          memcached_strerror(connection_.handle_, error));
+    std::string buff = common::MemSPrintf("Get function error: %s", memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -566,19 +528,15 @@ common::Error DBConnection::ExpireInner(const std::string& key, ttl_t expiration
   memcached_return error;
   size_t value_length = 0;
 
-  char* value =
-      memcached_get(connection_.handle_, key.c_str(), key.length(), &value_length, &flags, &error);
+  char* value = memcached_get(connection_.handle_, key.c_str(), key.length(), &value_length, &flags, &error);
   if (error != MEMCACHED_SUCCESS) {
-    std::string buff = common::MemSPrintf("EXPIRE function error: %s",
-                                          memcached_strerror(connection_.handle_, error));
+    std::string buff = common::MemSPrintf("EXPIRE function error: %s", memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
-  error = memcached_set(connection_.handle_, key.c_str(), key.length(), value, value_length,
-                        expiration, flags);
+  error = memcached_set(connection_.handle_, key.c_str(), key.length(), value, value_length, expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
-    std::string buff = common::MemSPrintf("EXPIRE function error: %s",
-                                          memcached_strerror(connection_.handle_, error));
+    std::string buff = common::MemSPrintf("EXPIRE function error: %s", memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -596,8 +554,7 @@ common::Error DBConnection::TTL(const std::string& key, ttl_t* expiration) {
   func[0] = memcached_dump_ttl_callback;
   memcached_return_t result = memcached_dump(connection_.handle_, func, &hld, SIZEOFMASS(func));
   if (result != MEMCACHED_SUCCESS) {
-    std::string buff = common::MemSPrintf("TTL function error: %s",
-                                          memcached_strerror(connection_.handle_, result));
+    std::string buff = common::MemSPrintf("TTL function error: %s", memcached_strerror(connection_.handle_, result));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -622,8 +579,8 @@ common::Error DBConnection::VersionServer() const {
 
   memcached_return_t error = memcached_version(connection_.handle_);
   if (error != MEMCACHED_SUCCESS) {
-    std::string buff = common::MemSPrintf("Get server version error: %s",
-                                          memcached_strerror(connection_.handle_, error));
+    std::string buff =
+        common::MemSPrintf("Get server version error: %s", memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -640,8 +597,7 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
   func[0] = memcached_dump_scan_callback;
   memcached_return_t result = memcached_dump(connection_.handle_, func, &hld, SIZEOFMASS(func));
   if (result != MEMCACHED_SUCCESS) {
-    std::string buff = common::MemSPrintf("SCAN function error: %s",
-                                          memcached_strerror(connection_.handle_, result));
+    std::string buff = common::MemSPrintf("SCAN function error: %s", memcached_strerror(connection_.handle_, result));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -659,8 +615,7 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
   func[0] = memcached_dump_keys_callback;
   memcached_return_t result = memcached_dump(connection_.handle_, func, &hld, SIZEOFMASS(func));
   if (result != MEMCACHED_SUCCESS) {
-    std::string buff = common::MemSPrintf("KEYS function error: %s",
-                                          memcached_strerror(connection_.handle_, result));
+    std::string buff = common::MemSPrintf("KEYS function error: %s", memcached_strerror(connection_.handle_, result));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -671,8 +626,7 @@ common::Error DBConnection::DBkcountImpl(size_t* size) {
   std::vector<std::string> ret;
   common::Error err = Keys("a", "z", UINT64_MAX, &ret);
   if (err && err->IsError()) {
-    std::string buff =
-        common::MemSPrintf("Couldn't determine DBKCOUNT error: %s", err->Description());
+    std::string buff = common::MemSPrintf("Couldn't determine DBKCOUNT error: %s", err->Description());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -683,8 +637,7 @@ common::Error DBConnection::DBkcountImpl(size_t* size) {
 common::Error DBConnection::FlushDBImpl() {
   memcached_return_t error = memcached_flush(connection_.handle_, 0);
   if (error != MEMCACHED_SUCCESS) {
-    std::string buff = common::MemSPrintf("Flushdb function error: %s",
-                                          memcached_strerror(connection_.handle_, error));
+    std::string buff = common::MemSPrintf("Flushdb function error: %s", memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 

@@ -78,9 +78,7 @@ Config parseOptions(int argc, char** argv) {
 }  // namespace
 
 Config::Config()
-    : LocalConfig(common::file_system::prepare_path("~/test.upscaledb")),
-      create_if_missing(false),
-      dbnum(1) {}
+    : LocalConfig(common::file_system::prepare_path("~/test.upscaledb")), create_if_missing(false), dbnum(1) {}
 
 }  // namespace upscaledb
 }  // namespace core

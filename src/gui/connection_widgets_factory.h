@@ -29,8 +29,7 @@ class ConnectionWidgetsFactory : public common::patterns::LazySingleton<Connecti
  public:
   friend class common::patterns::LazySingleton<ConnectionWidgetsFactory>;
 
-  ConnectionBaseWidget* createWidget(proxy::IConnectionSettingsBase* connection,
-                                     QWidget* parent = 0);
+  ConnectionBaseWidget* createWidget(proxy::IConnectionSettingsBase* connection, QWidget* parent = 0);
 };
 
 }  // namespace gui

@@ -34,9 +34,7 @@
 namespace fastonosql {
 namespace gui {
 
-UserPasswordWidget::UserPasswordWidget(const QString& userTitle,
-                                       const QString& passwordTitle,
-                                       QWidget* parent)
+UserPasswordWidget::UserPasswordWidget(const QString& userTitle, const QString& passwordTitle, QWidget* parent)
     : QWidget(parent), userTitle_(userTitle), passwordTitle_(passwordTitle) {
   QVBoxLayout* userPasswordLayout = new QVBoxLayout;
   QHBoxLayout* userLayout = new QHBoxLayout;
@@ -51,8 +49,7 @@ UserPasswordWidget::UserPasswordWidget(const QString& userTitle,
   passwordBox_ = new QLineEdit;
   passwordBox_->setEchoMode(QLineEdit::Password);
   passwordEchoModeButton_ = new QPushButton(translations::trShow);
-  VERIFY(connect(passwordEchoModeButton_, &QPushButton::clicked, this,
-                 &UserPasswordWidget::togglePasswordEchoMode));
+  VERIFY(connect(passwordEchoModeButton_, &QPushButton::clicked, this, &UserPasswordWidget::togglePasswordEchoMode));
   passwordLayout->addWidget(passwordLabel_);
   passwordLayout->addWidget(passwordBox_);
   passwordLayout->addWidget(passwordEchoModeButton_);

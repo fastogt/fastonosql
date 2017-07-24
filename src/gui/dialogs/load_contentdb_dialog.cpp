@@ -41,17 +41,14 @@ const QString defaultPattern = "*";
 namespace fastonosql {
 namespace gui {
 
-LoadContentDbDialog::LoadContentDbDialog(const QString& title,
-                                         core::connectionTypes type,
-                                         QWidget* parent)
+LoadContentDbDialog::LoadContentDbDialog(const QString& title, core::connectionTypes type, QWidget* parent)
     : QDialog(parent), type_(type) {
   setWindowTitle(title);
   setWindowIcon(GuiFactory::Instance().icon(type_));
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
-  QDialogButtonBox* buttonBox =
-      new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
+  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &LoadContentDbDialog::accept));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &LoadContentDbDialog::reject));

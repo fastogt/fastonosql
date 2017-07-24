@@ -151,10 +151,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
         return node->name();
       } else if (type == IExplorerTreeItem::eDatabase) {
         ExplorerDatabaseItem* db = static_cast<ExplorerDatabaseItem*>(node);
-        return QString("%1 (%2/%3)")
-            .arg(node->name())
-            .arg(db->loadedKeysCount())
-            .arg(db->totalKeysCount());  // db
+        return QString("%1 (%2/%3)").arg(node->name()).arg(db->loadedKeysCount()).arg(db->totalKeysCount());  // db
       } else if (type == IExplorerTreeItem::eNamespace) {
         ExplorerNSItem* ns = static_cast<ExplorerNSItem*>(node);
         return QString("%1 (%2)").arg(node->name()).arg(ns->keyCount());  // db
@@ -323,10 +320,8 @@ void ExplorerTreeModel::setDefaultDb(proxy::IServer* server, core::IDataBaseInfo
     return;
   }
 
-  QModelIndex parent_index =
-      createIndex(root_->indexOf(parent), ExplorerDatabaseItem::eName, parent);
-  QModelIndex dbs_last_index =
-      index(parent->childrenCount(), ExplorerDatabaseItem::eCountColumns, parent_index);
+  QModelIndex parent_index = createIndex(root_->indexOf(parent), ExplorerDatabaseItem::eName, parent);
+  QModelIndex dbs_last_index = index(parent->childrenCount(), ExplorerDatabaseItem::eCountColumns, parent_index);
   updateItem(parent_index, dbs_last_index);
 }
 
@@ -377,9 +372,7 @@ void ExplorerTreeModel::addKey(proxy::IServer* server,
   }
 }
 
-void ExplorerTreeModel::removeKey(proxy::IServer* server,
-                                  core::IDataBaseInfoSPtr db,
-                                  const core::NKey& key) {
+void ExplorerTreeModel::removeKey(proxy::IServer* server, core::IDataBaseInfoSPtr db, const core::NKey& key) {
   ExplorerServerItem* parent = findServerItem(server);
   if (!parent) {
     return;
@@ -423,9 +416,7 @@ void ExplorerTreeModel::updateKey(proxy::IServer* server,
   }
 }
 
-void ExplorerTreeModel::updateValue(proxy::IServer* server,
-                                    core::IDataBaseInfoSPtr db,
-                                    const core::NDbKValue& dbv) {
+void ExplorerTreeModel::updateValue(proxy::IServer* server, core::IDataBaseInfoSPtr db, const core::NDbKValue& dbv) {
   ExplorerServerItem* parent = findServerItem(server);
   if (!parent) {
     return;
@@ -526,8 +517,7 @@ ExplorerDatabaseItem* ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* se
   return nullptr;
 }
 
-ExplorerKeyItem* ExplorerTreeModel::findKeyItem(IExplorerTreeItem* db_or_ns,
-                                                const core::NKey& key) const {
+ExplorerKeyItem* ExplorerTreeModel::findKeyItem(IExplorerTreeItem* db_or_ns, const core::NKey& key) const {
   return static_cast<ExplorerKeyItem*>(
       common::qt::gui::findItemRecursive(db_or_ns, [key](common::qt::gui::TreeItem* item) -> bool {
         ExplorerKeyItem* key_item = dynamic_cast<ExplorerKeyItem*>(item);  // +
@@ -540,8 +530,7 @@ ExplorerKeyItem* ExplorerTreeModel::findKeyItem(IExplorerTreeItem* db_or_ns,
       }));
 }
 
-ExplorerNSItem* ExplorerTreeModel::findNSItem(IExplorerTreeItem* db_or_ns,
-                                              const QString& name) const {
+ExplorerNSItem* ExplorerTreeModel::findNSItem(IExplorerTreeItem* db_or_ns, const QString& name) const {
   return static_cast<ExplorerNSItem*>(
       common::qt::gui::findItemRecursive(db_or_ns, [name](common::qt::gui::TreeItem* item) -> bool {
         ExplorerNSItem* ns_item = dynamic_cast<ExplorerNSItem*>(item);  // +
@@ -553,8 +542,7 @@ ExplorerNSItem* ExplorerTreeModel::findNSItem(IExplorerTreeItem* db_or_ns,
       }));
 }
 
-ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_ns,
-                                                      const core::KeyInfo& kinf) {
+ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_ns, const core::KeyInfo& kinf) {
   std::string nspace = kinf.Nspace();
   QString qnspace;
   common::ConvertFromString(nspace, &qnspace);

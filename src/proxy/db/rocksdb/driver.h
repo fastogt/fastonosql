@@ -79,8 +79,7 @@ class Driver : public IDriverLocal {
                                                      const std::string& input,
                                                      core::CmdLoggingType ct) override;
 
-  virtual core::FastoObjectCommandIPtr CreateCommandFast(const std::string& input,
-                                                         core::CmdLoggingType ct) override;
+  virtual core::FastoObjectCommandIPtr CreateCommandFast(const std::string& input, core::CmdLoggingType ct) override;
 
   virtual common::Error SyncConnect() override WARN_UNUSED_RESULT;
   virtual common::Error SyncDisconnect() override WARN_UNUSED_RESULT;

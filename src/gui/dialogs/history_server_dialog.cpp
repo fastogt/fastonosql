@@ -99,9 +99,8 @@ ServerHistoryDialog::ServerHistoryDialog(proxy::IServerSPtr server, QWidget* par
   mainL->addWidget(splitter);
   setLayout(mainL);
 
-  glassWidget_ =
-      new common::qt::gui::GlassWidget(GuiFactory::Instance().pathToLoadingGif(),
-                                       translations::trLoading, 0.5, QColor(111, 111, 100), this);
+  glassWidget_ = new common::qt::gui::GlassWidget(GuiFactory::Instance().pathToLoadingGif(), translations::trLoading,
+                                                  0.5, QColor(111, 111, 100), this);
   VERIFY(connect(server.get(), &proxy::IServer::LoadServerHistoryInfoStarted, this,
                  &ServerHistoryDialog::startLoadServerHistoryInfo));
   VERIFY(connect(server.get(), &proxy::IServer::LoadServerHistoryInfoFinished, this,
@@ -110,20 +109,17 @@ ServerHistoryDialog::ServerHistoryDialog(proxy::IServerSPtr server, QWidget* par
                  &ServerHistoryDialog::startClearServerHistory));
   VERIFY(connect(server.get(), &proxy::IServer::ClearServerHistoryFinished, this,
                  &ServerHistoryDialog::finishClearServerHistory));
-  VERIFY(connect(server.get(), &proxy::IServer::ServerInfoSnapShoot, this,
-                 &ServerHistoryDialog::snapShotAdd));
+  VERIFY(connect(server.get(), &proxy::IServer::ServerInfoSnapShoot, this, &ServerHistoryDialog::snapShotAdd));
   retranslateUi();
 }
 
-void ServerHistoryDialog::startLoadServerHistoryInfo(
-    const proxy::events_info::ServerInfoHistoryRequest& req) {
+void ServerHistoryDialog::startLoadServerHistoryInfo(const proxy::events_info::ServerInfoHistoryRequest& req) {
   UNUSED(req);
 
   glassWidget_->start();
 }
 
-void ServerHistoryDialog::finishLoadServerHistoryInfo(
-    const proxy::events_info::ServerInfoHistoryResponce& res) {
+void ServerHistoryDialog::finishLoadServerHistoryInfo(const proxy::events_info::ServerInfoHistoryResponce& res) {
   glassWidget_->stop();
   common::Error er = res.errorInfo();
   if (er && er->IsError()) {
@@ -134,13 +130,11 @@ void ServerHistoryDialog::finishLoadServerHistoryInfo(
   reset();
 }
 
-void ServerHistoryDialog::startClearServerHistory(
-    const proxy::events_info::ClearServerHistoryRequest& req) {
+void ServerHistoryDialog::startClearServerHistory(const proxy::events_info::ClearServerHistoryRequest& req) {
   UNUSED(req);
 }
 
-void ServerHistoryDialog::finishClearServerHistory(
-    const proxy::events_info::ClearServerHistoryResponce& res) {
+void ServerHistoryDialog::finishClearServerHistory(const proxy::events_info::ClearServerHistoryResponce& res) {
   common::Error er = res.errorInfo();
   if (er && er->IsError()) {
     return;

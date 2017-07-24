@@ -91,8 +91,7 @@ class BaseQsciLexerCommandHolder : public BaseQsciLexer {
   virtual size_t commandsCount() const override;
 
  protected:
-  explicit BaseQsciLexerCommandHolder(const std::vector<core::CommandHolder>& commands,
-                                      QObject* parent = 0);
+  explicit BaseQsciLexerCommandHolder(const std::vector<core::CommandHolder>& commands, QObject* parent = 0);
 
  private:
   virtual void styleText(int start, int end) override;

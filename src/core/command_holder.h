@@ -53,8 +53,7 @@ class CommandHolder : public CommandInfo {
   friend class internal::CommandHandler;
 
   typedef internal::CommandHandler command_handler_t;
-  typedef std::function<common::Error(command_handler_t*, int, const char**, FastoObject*)>
-      function_t;
+  typedef std::function<common::Error(command_handler_t*, int, const char**, FastoObject*)> function_t;
   typedef std::function<common::Error(const CommandInfo&, int, const char**)> test_function_t;
   typedef std::vector<test_function_t> test_functions_t;
 

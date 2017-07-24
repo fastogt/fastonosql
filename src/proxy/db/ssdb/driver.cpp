@@ -52,8 +52,7 @@ namespace ssdb {
 
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
     : IDriverRemote(settings), impl_(new core::ssdb::DBConnection(this)) {
-  COMPILE_ASSERT(core::ssdb::DBConnection::connection_t == core::SSDB,
-                 "DBConnection must be the same type as Driver!");
+  COMPILE_ASSERT(core::ssdb::DBConnection::connection_t == core::SSDB, "DBConnection must be the same type as Driver!");
   CHECK(Type() == core::SSDB);
 }
 
@@ -104,8 +103,7 @@ core::FastoObjectCommandIPtr Driver::CreateCommand(core::FastoObject* parent,
   return proxy::CreateCommand<ssdb::Command>(parent, input, ct);
 }
 
-core::FastoObjectCommandIPtr Driver::CreateCommandFast(const std::string& input,
-                                                       core::CmdLoggingType ct) {
+core::FastoObjectCommandIPtr Driver::CreateCommandFast(const std::string& input, core::CmdLoggingType ct) {
   return proxy::CreateCommandFast<ssdb::Command>(input, ct);
 }
 
@@ -149,8 +147,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
-  const std::string pattern_result =
-      core::internal::GetKeysPattern(res.cursor_in, res.pattern, res.count_keys);
+  const std::string pattern_result = core::internal::GetKeysPattern(res.cursor_in, res.pattern, res.count_keys);
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(pattern_result, core::C_INNER);
   NotifyProgress(sender, 50);
   common::Error er = Execute(cmd);
@@ -160,8 +157,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
     core::FastoObject::childs_t rchildrens = cmd->Childrens();
     if (rchildrens.size()) {
       CHECK_EQ(rchildrens.size(), 1);
-      core::FastoObjectArray* array =
-          dynamic_cast<core::FastoObjectArray*>(rchildrens[0].get());  // +
+      core::FastoObjectArray* array = dynamic_cast<core::FastoObjectArray*>(rchildrens[0].get());  // +
       if (!array) {
         goto done;
       }
@@ -202,8 +198,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         std::string key;
         if (ar->GetString(i, &key)) {
           core::NKey k(key);
-          core::FastoObjectCommandIPtr cmd_ttl =
-              CreateCommandFast(common::MemSPrintf("TTL %s", key), core::C_INNER);
+          core::FastoObjectCommandIPtr cmd_ttl = CreateCommandFast(common::MemSPrintf("TTL %s", key), core::C_INNER);
           LOG_COMMAND(cmd_ttl);
           core::ttl_t ttl = NO_TTL;
           common::Error err = impl_->TTL(key, &ttl);
@@ -213,8 +208,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
             k.SetTTL(ttl);
           }
 
-          core::NValue empty_val(
-              common::Value::CreateEmptyValueFromType(common::Value::TYPE_STRING));
+          core::NValue empty_val(common::Value::CreateEmptyValueFromType(common::Value::TYPE_STRING));
           core::NDbKValue ress(k, empty_val);
           res.keys.push_back(ress);
         }

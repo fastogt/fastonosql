@@ -52,36 +52,15 @@ struct ApiTraits {
 
   static common::Error Scan(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
   static common::Error Keys(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-  static common::Error DBkcount(CommandHandler* handler,
-                                int argc,
-                                const char** argv,
-                                FastoObject* out);
-  static common::Error FlushDB(CommandHandler* handler,
-                               int argc,
-                               const char** argv,
-                               FastoObject* out);
-  static common::Error Select(CommandHandler* handler,
-                              int argc,
-                              const char** argv,
-                              FastoObject* out);
+  static common::Error DBkcount(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+  static common::Error FlushDB(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+  static common::Error Select(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
   static common::Error Set(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
   static common::Error Get(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-  static common::Error Rename(CommandHandler* handler,
-                              int argc,
-                              const char** argv,
-                              FastoObject* out);
-  static common::Error Delete(CommandHandler* handler,
-                              int argc,
-                              const char** argv,
-                              FastoObject* out);
-  static common::Error SetTTL(CommandHandler* handler,
-                              int argc,
-                              const char** argv,
-                              FastoObject* out);
-  static common::Error GetTTL(CommandHandler* handler,
-                              int argc,
-                              const char** argv,
-                              FastoObject* out);
+  static common::Error Rename(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+  static common::Error Delete(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+  static common::Error SetTTL(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+  static common::Error GetTTL(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
   static common::Error Quit(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 };
 
@@ -218,10 +197,7 @@ common::Error ApiTraits<CDBConnection>::FlushDB(internal::CommandHandler* handle
 }
 
 template <class CDBConnection>
-common::Error ApiTraits<CDBConnection>::Select(CommandHandler* handler,
-                                               int argc,
-                                               const char** argv,
-                                               FastoObject* out) {
+common::Error ApiTraits<CDBConnection>::Select(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);

@@ -52,11 +52,7 @@ unsigned int lmdb_db_flag_from_env_flags(int env_flags) {
   return (env_flags & MDB_RDONLY) ? MDB_RDONLY : 0;
 }
 
-int lmdb_open(lmdb** context,
-              const char* db_path,
-              const char* db_name,
-              int env_flags,
-              unsigned int db_env_flags) {
+int lmdb_open(lmdb** context, const char* db_path, const char* db_name, int env_flags, unsigned int db_env_flags) {
   lmdb* lcontext = reinterpret_cast<lmdb*>(calloc(1, sizeof(lmdb)));
   int rc = mdb_env_create(&lcontext->env);
   if (rc != LMDB_OK) {
@@ -108,9 +104,8 @@ void lmdb_close(lmdb** context) {
 }  // namespace lmdb
 namespace internal {
 template <>
-common::Error ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::Connect(
-    const lmdb::Config& config,
-    lmdb::NativeConnection** hout) {
+common::Error ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::Connect(const lmdb::Config& config,
+                                                                                       lmdb::NativeConnection** hout) {
   lmdb::NativeConnection* context = nullptr;
   common::Error er = lmdb::CreateConnection(config, &context);
   if (er && er->IsError()) {
@@ -130,8 +125,7 @@ common::Error ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::D
 }
 
 template <>
-bool ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::IsConnected(
-    lmdb::NativeConnection* handle) {
+bool ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::IsConnected(lmdb::NativeConnection* handle) {
   if (!handle) {
     return false;
   }
@@ -146,8 +140,7 @@ const char* CDBConnection<lmdb::NativeConnection, lmdb::Config, LMDB>::BasedOn()
 
 template <>
 const char* CDBConnection<lmdb::NativeConnection, lmdb::Config, LMDB>::VersionApi() {
-  return STRINGIZE(MDB_VERSION_MAJOR) "." STRINGIZE(MDB_VERSION_MINOR) "." STRINGIZE(
-      MDB_VERSION_PATCH);
+  return STRINGIZE(MDB_VERSION_MAJOR) "." STRINGIZE(MDB_VERSION_MINOR) "." STRINGIZE(MDB_VERSION_PATCH);
 }
 
 template <>
@@ -169,8 +162,7 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   std::string folder = config.dbname;  // start point must be folder
   common::tribool is_dir = common::file_system::is_directory(folder);
   if (is_dir != common::SUCCESS) {
-    return common::make_error_value(common::MemSPrintf("Invalid input path(%s)", folder),
-                                    common::ErrorValue::E_ERROR);
+    return common::make_error_value(common::MemSPrintf("Invalid input path(%s)", folder), common::ErrorValue::E_ERROR);
   }
 
   const char* db_path = common::utils::c_strornull(folder);
@@ -241,8 +233,7 @@ common::Error DBConnection::SetInner(const std::string& key, const std::string& 
 
   MDB_txn* txn = NULL;
   int env_flags = connection_.config_.env_flags;
-  int rc =
-      mdb_txn_begin(connection_.handle_->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn);
+  int rc = mdb_txn_begin(connection_.handle_->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn);
   if (rc == LMDB_OK) {
     rc = mdb_put(txn, connection_.handle_->dbir, &mkey, &mval, 0);
     if (rc == LMDB_OK) {
@@ -297,8 +288,7 @@ common::Error DBConnection::DelInner(const std::string& key) {
 
   MDB_txn* txn = NULL;
   int env_flags = connection_.config_.env_flags;
-  int rc =
-      mdb_txn_begin(connection_.handle_->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn);
+  int rc = mdb_txn_begin(connection_.handle_->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn);
   if (rc == LMDB_OK) {
     rc = mdb_del(txn, connection_.handle_->dbir, &mkey, NULL);
     if (rc == LMDB_OK) {
@@ -424,8 +414,7 @@ common::Error DBConnection::FlushDBImpl() {
   MDB_cursor* cursor = NULL;
   MDB_txn* txn = NULL;
   int env_flags = connection_.config_.env_flags;
-  int rc =
-      mdb_txn_begin(connection_.handle_->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn);
+  int rc = mdb_txn_begin(connection_.handle_->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn);
   if (rc == LMDB_OK) {
     rc = mdb_cursor_open(txn, connection_.handle_->dbir, &cursor);
   }
@@ -540,16 +529,14 @@ common::Error DBConnection::RenameImpl(const NKey& key, const std::string& new_k
 common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
   UNUSED(key);
   UNUSED(ttl);
-  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE
-                                  " for LMDB not supported TTL commands.",
+  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE " for LMDB not supported TTL commands.",
                                   common::ErrorValue::E_ERROR);
 }
 
 common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
   UNUSED(key);
   UNUSED(ttl);
-  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE
-                                  " for LMDB not supported TTL commands.",
+  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE " for LMDB not supported TTL commands.",
                                   common::ErrorValue::E_ERROR);
 }
 

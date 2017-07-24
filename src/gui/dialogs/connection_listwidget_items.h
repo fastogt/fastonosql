@@ -91,8 +91,7 @@ class SentinelConnectionListWidgetItemContainer  // can hold
 class SentinelConnectionWidgetItem  // sentinel connection
     : public ConnectionListWidgetItemDiscovered {
  public:
-  SentinelConnectionWidgetItem(const core::ServerCommonInfo& info,
-                               SentinelConnectionListWidgetItemContainer* parent);
+  SentinelConnectionWidgetItem(const core::ServerCommonInfo& info, SentinelConnectionListWidgetItemContainer* parent);
   virtual itemConnectionType type() const override;
 };
 

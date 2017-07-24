@@ -119,8 +119,7 @@ FastoScintilla::FastoScintilla(QWidget* parent)
   setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
-  VERIFY(connect(this, &FastoScintilla::linesChanged, this,
-                 &FastoScintilla::updateLineNumbersMarginWidth));
+  VERIFY(connect(this, &FastoScintilla::linesChanged, this, &FastoScintilla::updateLineNumbersMarginWidth));
 
   setAutoCompletionThreshold(1);
   setAutoCompletionCaseSensitivity(false);

@@ -51,8 +51,7 @@ ConnectionWidget::ConnectionWidget(QWidget* parent)
 }
 
 void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
-  proxy::upscaledb::ConnectionSettings* ups =
-      static_cast<proxy::upscaledb::ConnectionSettings*>(connection);
+  proxy::upscaledb::ConnectionSettings* ups = static_cast<proxy::upscaledb::ConnectionSettings*>(connection);
   if (ups) {
     core::upscaledb::Config config = ups->Info();
     createDBIfMissing_->setChecked(config.create_if_missing);

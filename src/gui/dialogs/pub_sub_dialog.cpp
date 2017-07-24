@@ -65,8 +65,8 @@ PubSubDialog::PubSubDialog(const QString& title, proxy::IServerSPtr server, QWid
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
-  VERIFY(connect(server.get(), &proxy::IServer::LoadServerChannelsStarted, this,
-                 &PubSubDialog::startLoadServerChannels));
+  VERIFY(
+      connect(server.get(), &proxy::IServer::LoadServerChannelsStarted, this, &PubSubDialog::startLoadServerChannels));
   VERIFY(connect(server.get(), &proxy::IServer::LoadServerChannelsFinished, this,
                  &PubSubDialog::finishLoadServerChannels));
 
@@ -88,23 +88,21 @@ PubSubDialog::PubSubDialog(const QString& title, proxy::IServerSPtr server, QWid
   proxy_model_->setSourceModel(channelsModel_);
   proxy_model_->setDynamicSortFilter(true);
 
-  VERIFY(connect(server_.get(), &proxy::IServer::ExecuteStarted, this, &PubSubDialog::startExecute,
+  VERIFY(
+      connect(server_.get(), &proxy::IServer::ExecuteStarted, this, &PubSubDialog::startExecute, Qt::DirectConnection));
+  VERIFY(connect(server_.get(), &proxy::IServer::ExecuteFinished, this, &PubSubDialog::finishExecute,
                  Qt::DirectConnection));
-  VERIFY(connect(server_.get(), &proxy::IServer::ExecuteFinished, this,
-                 &PubSubDialog::finishExecute, Qt::DirectConnection));
 
   channelsTable_ = new FastoTableView;
   channelsTable_->setSortingEnabled(true);
   channelsTable_->setSelectionBehavior(QAbstractItemView::SelectRows);
   channelsTable_->setSelectionMode(QAbstractItemView::SingleSelection);
   channelsTable_->setContextMenuPolicy(Qt::CustomContextMenu);
-  VERIFY(connect(channelsTable_, &FastoTableView::customContextMenuRequested, this,
-                 &PubSubDialog::showContextMenu));
+  VERIFY(connect(channelsTable_, &FastoTableView::customContextMenuRequested, this, &PubSubDialog::showContextMenu));
   channelsTable_->sortByColumn(0, Qt::AscendingOrder);
   channelsTable_->setModel(proxy_model_);
 
-  QDialogButtonBox* buttonBox =
-      new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
+  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &PubSubDialog::accept));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &PubSubDialog::reject));
@@ -115,8 +113,7 @@ PubSubDialog::PubSubDialog(const QString& title, proxy::IServerSPtr server, QWid
   VERIFY(connect(publishAction_, &QAction::triggered, this, &PubSubDialog::publish));
 
   subscribeAction_ = new QAction(this);
-  VERIFY(
-      connect(subscribeAction_, &QAction::triggered, this, &PubSubDialog::subscribeInNewConsole));
+  VERIFY(connect(subscribeAction_, &QAction::triggered, this, &PubSubDialog::subscribeInNewConsole));
 
   setMinimumSize(QSize(min_width, min_height));
   setLayout(mainlayout);
@@ -131,15 +128,13 @@ void PubSubDialog::finishExecute(const proxy::events_info::ExecuteInfoResponce& 
   UNUSED(res);
 }
 
-void PubSubDialog::startLoadServerChannels(
-    const proxy::events_info::LoadServerChannelsRequest& req) {
+void PubSubDialog::startLoadServerChannels(const proxy::events_info::LoadServerChannelsRequest& req) {
   UNUSED(req);
 
   channelsModel_->clear();
 }
 
-void PubSubDialog::finishLoadServerChannels(
-    const proxy::events_info::LoadServerChannelsResponce& res) {
+void PubSubDialog::finishLoadServerChannels(const proxy::events_info::LoadServerChannelsResponce& res) {
   common::Error er = res.errorInfo();
   if (er && er->IsError()) {
     return;
@@ -189,14 +184,12 @@ void PubSubDialog::publish() {
   }
 
   bool ok;
-  QString publish_text =
-      QInputDialog::getText(this, trPublishToChannel_1S.arg(node->name()), trEnterWhatYoWantToSend,
-                            QLineEdit::Normal, QString(), &ok);
+  QString publish_text = QInputDialog::getText(this, trPublishToChannel_1S.arg(node->name()), trEnterWhatYoWantToSend,
+                                               QLineEdit::Normal, QString(), &ok);
   if (ok && !publish_text.isEmpty()) {
     core::translator_t trans = server_->Translator();
     std::string cmd_str;
-    common::Error err =
-        trans->PublishCommand(node->channel(), common::ConvertToString(publish_text), &cmd_str);
+    common::Error err = trans->PublishCommand(node->channel(), common::ConvertToString(publish_text), &cmd_str);
     if (err && err->IsError()) {
       LOG_ERROR(err, true);
       return;

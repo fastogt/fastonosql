@@ -45,11 +45,9 @@ class ICommandTranslator {
   explicit ICommandTranslator(const std::vector<CommandHolder>& commands);
   virtual ~ICommandTranslator();
 
-  common::Error SelectDBCommand(const std::string& name,
-                                std::string* cmdstring) const WARN_UNUSED_RESULT;
+  common::Error SelectDBCommand(const std::string& name, std::string* cmdstring) const WARN_UNUSED_RESULT;
   common::Error FlushDBCommand(std::string* cmdstring) const WARN_UNUSED_RESULT;
-  common::Error CreateKeyCommand(const NDbKValue& key,
-                                 std::string* cmdstring) const WARN_UNUSED_RESULT;
+  common::Error CreateKeyCommand(const NDbKValue& key, std::string* cmdstring) const WARN_UNUSED_RESULT;
   common::Error LoadKeyCommand(const NKey& key,
                                common::Value::Type type,
                                std::string* cmdstring) const WARN_UNUSED_RESULT;
@@ -57,9 +55,7 @@ class ICommandTranslator {
   common::Error RenameKeyCommand(const NKey& key,
                                  const std::string& new_name,
                                  std::string* cmdstring) const WARN_UNUSED_RESULT;
-  common::Error ChangeKeyTTLCommand(const NKey& key,
-                                    ttl_t ttl,
-                                    std::string* cmdstring) const WARN_UNUSED_RESULT;
+  common::Error ChangeKeyTTLCommand(const NKey& key, ttl_t ttl, std::string* cmdstring) const WARN_UNUSED_RESULT;
   common::Error LoadKeyTTLCommand(const NKey& key, std::string* cmdstring) const WARN_UNUSED_RESULT;
 
   bool IsLoadKeyCommand(const std::string& cmd, std::string* key) const WARN_UNUSED_RESULT;
@@ -68,8 +64,7 @@ class ICommandTranslator {
                                const std::string& message,
                                std::string* cmdstring) const WARN_UNUSED_RESULT;
 
-  common::Error SubscribeCommand(const NDbPSChannel& channel,
-                                 std::string* cmdstring) const WARN_UNUSED_RESULT;
+  common::Error SubscribeCommand(const NDbPSChannel& channel, std::string* cmdstring) const WARN_UNUSED_RESULT;
 
   std::vector<CommandInfo> Commands() const;
   common::Error FindCommand(int argc,
@@ -91,24 +86,18 @@ class ICommandTranslator {
   static common::Error UnknownSequence(int argc, const char** argv);
 
  private:
-  virtual common::Error CreateKeyCommandImpl(const NDbKValue& key,
-                                             std::string* cmdstring) const = 0;
-  virtual common::Error LoadKeyCommandImpl(const NKey& key,
-                                           common::Value::Type type,
-                                           std::string* cmdstring) const = 0;
+  virtual common::Error CreateKeyCommandImpl(const NDbKValue& key, std::string* cmdstring) const = 0;
+  virtual common::Error LoadKeyCommandImpl(const NKey& key, common::Value::Type type, std::string* cmdstring) const = 0;
   virtual common::Error DeleteKeyCommandImpl(const NKey& key, std::string* cmdstring) const = 0;
   virtual common::Error RenameKeyCommandImpl(const NKey& key,
                                              const std::string& new_name,
                                              std::string* cmdstring) const = 0;
-  virtual common::Error ChangeKeyTTLCommandImpl(const NKey& key,
-                                                ttl_t ttl,
-                                                std::string* cmdstring) const = 0;
+  virtual common::Error ChangeKeyTTLCommandImpl(const NKey& key, ttl_t ttl, std::string* cmdstring) const = 0;
   virtual common::Error LoadKeyTTLCommandImpl(const NKey& key, std::string* cmdstring) const = 0;
   virtual common::Error PublishCommandImpl(const NDbPSChannel& channel,
                                            const std::string& message,
                                            std::string* cmdstring) const = 0;
-  virtual common::Error SubscribeCommandImpl(const NDbPSChannel& channel,
-                                             std::string* cmdstring) const = 0;
+  virtual common::Error SubscribeCommandImpl(const NDbPSChannel& channel, std::string* cmdstring) const = 0;
 
   virtual bool IsLoadKeyCommandImpl(const CommandInfo& cmd) const = 0;
 

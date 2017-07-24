@@ -76,8 +76,7 @@ Config parseOptions(int argc, char** argv) {
 }  // namespace
 
 Config::Config()
-    : LocalConfig(common::file_system::prepare_path("~/test.unqlite")),
-      env_flags(UNQLITE_DEFAULT_ENV_FLAGS) {}
+    : LocalConfig(common::file_system::prepare_path("~/test.unqlite")), env_flags(UNQLITE_DEFAULT_ENV_FLAGS) {}
 
 bool Config::ReadOnlyDB() const {
   return env_flags & UNQLITE_OPEN_READONLY;

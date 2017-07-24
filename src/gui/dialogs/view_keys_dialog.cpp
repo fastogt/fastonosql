@@ -97,19 +97,17 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QW
   VERIFY(connect(searchButton_, &QPushButton::clicked, this, &ViewKeysDialog::rightPageClicked));
   searchLayout->addWidget(searchButton_);
 
-  VERIFY(connect(serv.get(), &proxy::IServer::ExecuteStarted, this, &ViewKeysDialog::startExecute,
-                 Qt::DirectConnection));
+  VERIFY(
+      connect(serv.get(), &proxy::IServer::ExecuteStarted, this, &ViewKeysDialog::startExecute, Qt::DirectConnection));
   VERIFY(connect(serv.get(), &proxy::IServer::ExecuteFinished, this, &ViewKeysDialog::finishExecute,
                  Qt::DirectConnection));
-  VERIFY(connect(serv.get(), &proxy::IServer::KeyTTLChanged, this, &ViewKeysDialog::keyTTLChange,
-                 Qt::DirectConnection));
+  VERIFY(
+      connect(serv.get(), &proxy::IServer::KeyTTLChanged, this, &ViewKeysDialog::keyTTLChange, Qt::DirectConnection));
 
   keysTable_ = new KeysTableView;
-  VERIFY(connect(keysTable_, &KeysTableView::changedTTL, this, &ViewKeysDialog::changeTTL,
-                 Qt::DirectConnection));
+  VERIFY(connect(keysTable_, &KeysTableView::changedTTL, this, &ViewKeysDialog::changeTTL, Qt::DirectConnection));
 
-  QDialogButtonBox* buttonBox =
-      new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
+  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &ViewKeysDialog::accept));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &ViewKeysDialog::reject));
@@ -148,15 +146,13 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QW
   retranslateUi();
 }
 
-void ViewKeysDialog::startLoadDatabaseContent(
-    const proxy::events_info::LoadDatabaseContentRequest& req) {
+void ViewKeysDialog::startLoadDatabaseContent(const proxy::events_info::LoadDatabaseContentRequest& req) {
   UNUSED(req);
 
   keysTable_->clearItems();
 }
 
-void ViewKeysDialog::finishLoadDatabaseContent(
-    const proxy::events_info::LoadDatabaseContentResponce& res) {
+void ViewKeysDialog::finishLoadDatabaseContent(const proxy::events_info::LoadDatabaseContentResponce& res) {
   common::Error er = res.errorInfo();
   if (er && er->IsError()) {
     return;
@@ -222,16 +218,14 @@ void ViewKeysDialog::search(bool forward) {
 
   DCHECK_EQ(cursorStack_[0], 0);
   if (forward) {
-    proxy::events_info::LoadDatabaseContentRequest req(
-        this, db_->Info(), common::ConvertToString(pattern), countSpinEdit_->value(),
-        cursorStack_[curPos_]);
+    proxy::events_info::LoadDatabaseContentRequest req(this, db_->Info(), common::ConvertToString(pattern),
+                                                       countSpinEdit_->value(), cursorStack_[curPos_]);
     db_->LoadContent(req);
     ++curPos_;
   } else {
     if (curPos_ > 0) {
-      proxy::events_info::LoadDatabaseContentRequest req(
-          this, db_->Info(), common::ConvertToString(pattern), countSpinEdit_->value(),
-          cursorStack_[--curPos_]);
+      proxy::events_info::LoadDatabaseContentRequest req(this, db_->Info(), common::ConvertToString(pattern),
+                                                         countSpinEdit_->value(), cursorStack_[--curPos_]);
       db_->LoadContent(req);
     }
   }

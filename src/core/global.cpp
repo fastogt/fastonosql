@@ -54,8 +54,7 @@ std::string FastoObject::ToString() const {
 }
 
 FastoObject* FastoObject::CreateRoot(const std::string& text, IFastoObjectObserver* observer) {
-  FastoObject* root =
-      new FastoObject(nullptr, common::Value::CreateStringValue(text), std::string());
+  FastoObject* root = new FastoObject(nullptr, common::Value::CreateStringValue(text), std::string());
   root->observer_ = observer;
   return root;
 }
@@ -168,9 +167,7 @@ std::pair<std::string, std::string> GetKeyValueFromLine(const std::string& input
   return std::make_pair(key, trimed);
 }
 
-FastoObjectArray::FastoObjectArray(FastoObject* parent,
-                                   common::ArrayValue* ar,
-                                   const std::string& delimiter)
+FastoObjectArray::FastoObjectArray(FastoObject* parent, common::ArrayValue* ar, const std::string& delimiter)
     : FastoObject(parent, ar, delimiter) {}
 
 void FastoObjectArray::Append(common::Value* in_value) {

@@ -71,20 +71,13 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
 
   common::Error Info(const char* args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
 
-  common::Error AddIfNotExist(const NKey& key,
-                              const std::string& value,
-                              time_t expiration,
-                              uint32_t flags) WARN_UNUSED_RESULT;
-  common::Error Replace(const NKey& key,
-                        const std::string& value,
-                        time_t expiration,
-                        uint32_t flags) WARN_UNUSED_RESULT;
-  common::Error Append(const NKey& key, const std::string& value, time_t expiration, uint32_t flags)
+  common::Error AddIfNotExist(const NKey& key, const std::string& value, time_t expiration, uint32_t flags)
       WARN_UNUSED_RESULT;
-  common::Error Prepend(const NKey& key,
-                        const std::string& value,
-                        time_t expiration,
-                        uint32_t flags) WARN_UNUSED_RESULT;
+  common::Error Replace(const NKey& key, const std::string& value, time_t expiration, uint32_t flags)
+      WARN_UNUSED_RESULT;
+  common::Error Append(const NKey& key, const std::string& value, time_t expiration, uint32_t flags) WARN_UNUSED_RESULT;
+  common::Error Prepend(const NKey& key, const std::string& value, time_t expiration, uint32_t flags)
+      WARN_UNUSED_RESULT;
   common::Error Incr(const NKey& key, uint32_t value, uint64_t* result) WARN_UNUSED_RESULT;
   common::Error Decr(const NKey& key, uint32_t value, uint64_t* result) WARN_UNUSED_RESULT;
   common::Error VersionServer() const WARN_UNUSED_RESULT;
@@ -94,10 +87,8 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
  private:
   common::Error DelInner(const std::string& key, time_t expiration) WARN_UNUSED_RESULT;
   common::Error GetInner(const std::string& key, std::string* ret_val) WARN_UNUSED_RESULT;
-  common::Error SetInner(const std::string& key,
-                         const std::string& value,
-                         time_t expiration,
-                         uint32_t flags) WARN_UNUSED_RESULT;
+  common::Error SetInner(const std::string& key, const std::string& value, time_t expiration, uint32_t flags)
+      WARN_UNUSED_RESULT;
   common::Error ExpireInner(const std::string& key, ttl_t expiration) WARN_UNUSED_RESULT;
 
   virtual common::Error ScanImpl(uint64_t cursor_in,

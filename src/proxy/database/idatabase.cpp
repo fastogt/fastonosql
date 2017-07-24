@@ -28,8 +28,7 @@
 namespace fastonosql {
 namespace proxy {
 
-IDatabase::IDatabase(IServerSPtr server, core::IDataBaseInfoSPtr info)
-    : info_(info), server_(server) {
+IDatabase::IDatabase(IServerSPtr server, core::IDataBaseInfoSPtr info) : info_(info), server_(server) {
   CHECK(server);
   CHECK(info);
   CHECK(server->Type() == info->Type());

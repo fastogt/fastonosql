@@ -42,9 +42,8 @@ class ClusterDialog : public QDialog {
   Q_OBJECT
  public:
   typedef std::vector<proxy::IConnectionSettingsBaseSPtr> cluster_connection_t;
-  explicit ClusterDialog(
-      QWidget* parent,
-      proxy::IClusterSettingsBase* connection = nullptr);  // get ownerships connection
+  explicit ClusterDialog(QWidget* parent,
+                         proxy::IClusterSettingsBase* connection = nullptr);  // get ownerships connection
   proxy::IClusterSettingsBaseSPtr connection() const;
 
  public Q_SLOTS:

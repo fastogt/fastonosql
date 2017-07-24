@@ -39,9 +39,9 @@ common::Error TestArgsInRange(const CommandInfo& cmd, int argc, const char** arg
   const uint16_t max = cmd.MaxArgumentsCount();
   const uint16_t min = cmd.MinArgumentsCount();
   if (argc > max || argc < min) {
-    std::string buff = common::MemSPrintf(
-        "Invalid input argument for command: '%s', passed %d arguments, must be in range %u - %u.",
-        cmd.name, argc, min, max);
+    std::string buff =
+        common::MemSPrintf("Invalid input argument for command: '%s', passed %d arguments, must be in range %u - %u.",
+                           cmd.name, argc, min, max);
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -53,8 +53,7 @@ common::Error TestArgsModule2Equal1(const CommandInfo& cmd, int argc, const char
 
   if (argc % 2 != 1) {
     std::string buff = common::MemSPrintf(
-        "Invalid input argument for command: '%s', passed %d arguments, must be 1 by module 2.",
-        cmd.name, argc);
+        "Invalid input argument for command: '%s', passed %d arguments, must be 1 by module 2.", cmd.name, argc);
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -70,13 +69,7 @@ CommandHolder::CommandHolder(const std::string& name,
                              uint8_t optional_arguments_count,
                              function_t func,
                              test_functions_t tests)
-    : CommandInfo(name,
-                  params,
-                  summary,
-                  since,
-                  example,
-                  required_arguments_count,
-                  optional_arguments_count),
+    : CommandInfo(name, params, summary, since, example, required_arguments_count, optional_arguments_count),
       func_(func),
       white_spaces_count_(count_space(name)),
       test_funcs_(tests) {}

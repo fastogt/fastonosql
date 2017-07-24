@@ -27,8 +27,7 @@ namespace ssdb {
 ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionRemoteWidget(parent) {}
 
 void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
-  proxy::IConnectionSettingsRemote* remote =
-      static_cast<proxy::IConnectionSettingsRemote*>(connection);
+  proxy::IConnectionSettingsRemote* remote = static_cast<proxy::IConnectionSettingsRemote*>(connection);
   ConnectionRemoteWidget::syncControls(remote);
 }
 

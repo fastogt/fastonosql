@@ -137,9 +137,7 @@ namespace gui {
 class BaseShellWidget : public QWidget {
   Q_OBJECT
  public:
-  explicit BaseShellWidget(proxy::IServerSPtr server,
-                           const QString& filePath = QString(),
-                           QWidget* parent = 0);
+  explicit BaseShellWidget(proxy::IServerSPtr server, const QString& filePath = QString(), QWidget* parent = 0);
   virtual ~BaseShellWidget();
 
   QString text() const;

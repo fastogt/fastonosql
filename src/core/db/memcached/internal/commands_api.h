@@ -28,39 +28,15 @@ namespace core {
 namespace memcached {
 
 struct CommandsApi : public internal::ApiTraits<DBConnection> {
-  static common::Error Info(internal::CommandHandler* handler,
-                            int argc,
-                            const char** argv,
-                            FastoObject* out);
-  static common::Error Version(internal::CommandHandler* handler,
-                               int argc,
-                               const char** argv,
-                               FastoObject* out);
+  static common::Error Info(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+  static common::Error Version(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 
-  static common::Error Add(internal::CommandHandler* handler,
-                           int argc,
-                           const char** argv,
-                           FastoObject* out);
-  static common::Error Replace(internal::CommandHandler* handler,
-                               int argc,
-                               const char** argv,
-                               FastoObject* out);
-  static common::Error Append(internal::CommandHandler* handler,
-                              int argc,
-                              const char** argv,
-                              FastoObject* out);
-  static common::Error Prepend(internal::CommandHandler* handler,
-                               int argc,
-                               const char** argv,
-                               FastoObject* out);
-  static common::Error Incr(internal::CommandHandler* handler,
-                            int argc,
-                            const char** argv,
-                            FastoObject* out);
-  static common::Error Decr(internal::CommandHandler* handler,
-                            int argc,
-                            const char** argv,
-                            FastoObject* out);
+  static common::Error Add(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+  static common::Error Replace(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+  static common::Error Append(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+  static common::Error Prepend(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+  static common::Error Incr(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+  static common::Error Decr(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
 };
 
 // TODO: cas command implementation

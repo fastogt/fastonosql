@@ -66,8 +66,7 @@ bool SentinelSettingsfromString(const std::string& text, SentinelSettings* sent)
     if (ch == ',' || i == len - 1) {
       if (commaCount == 0) {
         std::string sent_raw = common::utils::base64::decode64(elText);
-        IConnectionSettingsBaseSPtr sent(
-            ConnectionSettingsFactory::Instance().CreateFromString(sent_raw));
+        IConnectionSettingsBaseSPtr sent(ConnectionSettingsFactory::Instance().CreateFromString(sent_raw));
         if (!sent) {
           return false;
         }
@@ -80,8 +79,7 @@ bool SentinelSettingsfromString(const std::string& text, SentinelSettings* sent)
         for (size_t j = 0; j < len; ++j) {
           ch = raw_sent[j];
           if (ch == magicNumber || j == len - 1) {
-            IConnectionSettingsBaseSPtr ser(
-                ConnectionSettingsFactory::Instance().CreateFromString(serText));
+            IConnectionSettingsBaseSPtr ser(ConnectionSettingsFactory::Instance().CreateFromString(serText));
             if (ser) {
               result.sentinel_nodes.push_back(ser);
             }
@@ -105,8 +103,7 @@ bool SentinelSettingsfromString(const std::string& text, SentinelSettings* sent)
 
 //
 
-ISentinelSettingsBase::ISentinelSettingsBase(const connection_path_t& connectionName,
-                                             core::connectionTypes type)
+ISentinelSettingsBase::ISentinelSettingsBase(const connection_path_t& connectionName, core::connectionTypes type)
     : IConnectionSettings(connectionName, type), sentinel_nodes_() {}
 
 ISentinelSettingsBase::sentinel_connections_t ISentinelSettingsBase::Sentinels() const {

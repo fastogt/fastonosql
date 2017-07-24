@@ -35,8 +35,7 @@ FastoEditorOutput::FastoEditorOutput(const QString& delimiter, QWidget* parent)
     : QWidget(parent), model_(nullptr), view_method_(JSON), delimiter_(delimiter) {
   editor_ = new FastoHexEdit;
   VERIFY(connect(editor_, &FastoHexEdit::textChanged, this, &FastoEditorOutput::textChanged));
-  VERIFY(
-      connect(editor_, &FastoHexEdit::readOnlyChanged, this, &FastoEditorOutput::readOnlyChanged));
+  VERIFY(connect(editor_, &FastoHexEdit::readOnlyChanged, this, &FastoEditorOutput::readOnlyChanged));
 
   QVBoxLayout* mainL = new QVBoxLayout;
   mainL->addWidget(editor_);
@@ -50,27 +49,19 @@ void FastoEditorOutput::setModel(QAbstractItemModel* model) {
   }
 
   if (model_) {
-    VERIFY(disconnect(model_, &QAbstractItemModel::destroyed, this,
-                      &FastoEditorOutput::modelDestroyed));
-    VERIFY(disconnect(model_, &QAbstractItemModel::dataChanged, this,
-                      &FastoEditorOutput::dataChanged));
-    VERIFY(disconnect(model_, &QAbstractItemModel::headerDataChanged, this,
-                      &FastoEditorOutput::headerDataChanged));
-    VERIFY(disconnect(model_, &QAbstractItemModel::rowsInserted, this,
-                      &FastoEditorOutput::rowsInserted));
-    VERIFY(disconnect(model_, &QAbstractItemModel::rowsAboutToBeRemoved, this,
-                      &FastoEditorOutput::rowsAboutToBeRemoved));
-    VERIFY(disconnect(model_, &QAbstractItemModel::rowsRemoved, this,
-                      &FastoEditorOutput::rowsRemoved));
+    VERIFY(disconnect(model_, &QAbstractItemModel::destroyed, this, &FastoEditorOutput::modelDestroyed));
+    VERIFY(disconnect(model_, &QAbstractItemModel::dataChanged, this, &FastoEditorOutput::dataChanged));
+    VERIFY(disconnect(model_, &QAbstractItemModel::headerDataChanged, this, &FastoEditorOutput::headerDataChanged));
+    VERIFY(disconnect(model_, &QAbstractItemModel::rowsInserted, this, &FastoEditorOutput::rowsInserted));
+    VERIFY(
+        disconnect(model_, &QAbstractItemModel::rowsAboutToBeRemoved, this, &FastoEditorOutput::rowsAboutToBeRemoved));
+    VERIFY(disconnect(model_, &QAbstractItemModel::rowsRemoved, this, &FastoEditorOutput::rowsRemoved));
     VERIFY(disconnect(model_, &QAbstractItemModel::columnsAboutToBeRemoved, this,
                       &FastoEditorOutput::columnsAboutToBeRemoved));
-    VERIFY(disconnect(model_, &QAbstractItemModel::columnsRemoved, this,
-                      &FastoEditorOutput::columnsRemoved));
-    VERIFY(disconnect(model_, &QAbstractItemModel::columnsInserted, this,
-                      &FastoEditorOutput::columnsInserted));
+    VERIFY(disconnect(model_, &QAbstractItemModel::columnsRemoved, this, &FastoEditorOutput::columnsRemoved));
+    VERIFY(disconnect(model_, &QAbstractItemModel::columnsInserted, this, &FastoEditorOutput::columnsInserted));
     VERIFY(disconnect(model_, &QAbstractItemModel::modelReset, this, &FastoEditorOutput::reset));
-    VERIFY(disconnect(model_, &QAbstractItemModel::layoutChanged, this,
-                      &FastoEditorOutput::layoutChanged));
+    VERIFY(disconnect(model_, &QAbstractItemModel::layoutChanged, this, &FastoEditorOutput::layoutChanged));
   }
 
   model_ = model;
@@ -84,27 +75,18 @@ void FastoEditorOutput::setModel(QAbstractItemModel* model) {
              "The parent of a top level index should be invalid");
 
   if (model_) {
-    VERIFY(
-        connect(model_, &QAbstractItemModel::destroyed, this, &FastoEditorOutput::modelDestroyed));
-    VERIFY(
-        connect(model_, &QAbstractItemModel::dataChanged, this, &FastoEditorOutput::dataChanged));
-    VERIFY(connect(model_, &QAbstractItemModel::headerDataChanged, this,
-                   &FastoEditorOutput::headerDataChanged));
-    VERIFY(
-        connect(model_, &QAbstractItemModel::rowsInserted, this, &FastoEditorOutput::rowsInserted));
-    VERIFY(connect(model_, &QAbstractItemModel::rowsAboutToBeRemoved, this,
-                   &FastoEditorOutput::rowsAboutToBeRemoved));
-    VERIFY(
-        connect(model_, &QAbstractItemModel::rowsRemoved, this, &FastoEditorOutput::rowsRemoved));
+    VERIFY(connect(model_, &QAbstractItemModel::destroyed, this, &FastoEditorOutput::modelDestroyed));
+    VERIFY(connect(model_, &QAbstractItemModel::dataChanged, this, &FastoEditorOutput::dataChanged));
+    VERIFY(connect(model_, &QAbstractItemModel::headerDataChanged, this, &FastoEditorOutput::headerDataChanged));
+    VERIFY(connect(model_, &QAbstractItemModel::rowsInserted, this, &FastoEditorOutput::rowsInserted));
+    VERIFY(connect(model_, &QAbstractItemModel::rowsAboutToBeRemoved, this, &FastoEditorOutput::rowsAboutToBeRemoved));
+    VERIFY(connect(model_, &QAbstractItemModel::rowsRemoved, this, &FastoEditorOutput::rowsRemoved));
     VERIFY(connect(model_, &QAbstractItemModel::columnsAboutToBeRemoved, this,
                    &FastoEditorOutput::columnsAboutToBeRemoved));
-    VERIFY(connect(model_, &QAbstractItemModel::columnsRemoved, this,
-                   &FastoEditorOutput::columnsRemoved));
-    VERIFY(connect(model_, &QAbstractItemModel::columnsInserted, this,
-                   &FastoEditorOutput::columnsInserted));
+    VERIFY(connect(model_, &QAbstractItemModel::columnsRemoved, this, &FastoEditorOutput::columnsRemoved));
+    VERIFY(connect(model_, &QAbstractItemModel::columnsInserted, this, &FastoEditorOutput::columnsInserted));
     VERIFY(connect(model_, &QAbstractItemModel::modelReset, this, &FastoEditorOutput::reset));
-    VERIFY(connect(model_, &QAbstractItemModel::layoutChanged, this,
-                   &FastoEditorOutput::layoutChanged));
+    VERIFY(connect(model_, &QAbstractItemModel::layoutChanged, this, &FastoEditorOutput::layoutChanged));
   }
 
   reset();

@@ -39,12 +39,11 @@ namespace core {
 
 namespace {
 
-const std::vector<Field> LeveldbCommonFields = {
-    Field(LEVELDB_CAMPACTIONS_LEVEL_LABEL, common::Value::TYPE_UINTEGER),
-    Field(LEVELDB_FILE_SIZE_MB_LABEL, common::Value::TYPE_UINTEGER),
-    Field(LEVELDB_TIME_SEC_LABEL, common::Value::TYPE_UINTEGER),
-    Field(LEVELDB_READ_MB_LABEL, common::Value::TYPE_UINTEGER),
-    Field(LEVELDB_WRITE_MB_LABEL, common::Value::TYPE_UINTEGER)};
+const std::vector<Field> LeveldbCommonFields = {Field(LEVELDB_CAMPACTIONS_LEVEL_LABEL, common::Value::TYPE_UINTEGER),
+                                                Field(LEVELDB_FILE_SIZE_MB_LABEL, common::Value::TYPE_UINTEGER),
+                                                Field(LEVELDB_TIME_SEC_LABEL, common::Value::TYPE_UINTEGER),
+                                                Field(LEVELDB_READ_MB_LABEL, common::Value::TYPE_UINTEGER),
+                                                Field(LEVELDB_WRITE_MB_LABEL, common::Value::TYPE_UINTEGER)};
 
 }  // namespace
 
@@ -61,8 +60,7 @@ std::vector<info_field_t> DBTraits<LEVELDB>::InfoFields() {
 
 namespace leveldb {
 
-ServerInfo::Stats::Stats()
-    : compactions_level(0), file_size_mb(0), time_sec(0), read_mb(0), write_mb(0) {}
+ServerInfo::Stats::Stats() : compactions_level(0), file_size_mb(0), time_sec(0), read_mb(0), write_mb(0) {}
 
 ServerInfo::Stats::Stats(const std::string& common_text) {
   size_t pos = 0;
@@ -141,9 +139,9 @@ common::Value* ServerInfo::ValueByIndexes(unsigned char property, unsigned char 
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo::Stats& value) {
   return out << LEVELDB_CAMPACTIONS_LEVEL_LABEL ":" << value.compactions_level << MARKER
-             << LEVELDB_FILE_SIZE_MB_LABEL ":" << value.file_size_mb << MARKER
-             << LEVELDB_TIME_SEC_LABEL ":" << value.time_sec << MARKER << LEVELDB_READ_MB_LABEL ":"
-             << value.read_mb << MARKER << LEVELDB_WRITE_MB_LABEL ":" << value.write_mb << MARKER;
+             << LEVELDB_FILE_SIZE_MB_LABEL ":" << value.file_size_mb << MARKER << LEVELDB_TIME_SEC_LABEL ":"
+             << value.time_sec << MARKER << LEVELDB_READ_MB_LABEL ":" << value.read_mb << MARKER
+             << LEVELDB_WRITE_MB_LABEL ":" << value.write_mb << MARKER;
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {

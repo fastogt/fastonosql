@@ -184,8 +184,7 @@ void KeysTableModel::updateKey(const core::NKey& key) {
     core::NDbKValue dbv = it->dbv();
     if (dbv.KeyString() == key.Key()) {
       it->setKey(key);
-      updateItem(index(i, KeyTableItem::kKey, QModelIndex()),
-                 index(i, KeyTableItem::kTTL, QModelIndex()));
+      updateItem(index(i, KeyTableItem::kKey, QModelIndex()), index(i, KeyTableItem::kTTL, QModelIndex()));
       break;
     }
   }

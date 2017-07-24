@@ -35,8 +35,7 @@ namespace gui {
 LogWidget::LogWidget(QWidget* parent) : QWidget(parent), logTextEdit_(new QTextEdit) {
   logTextEdit_->setReadOnly(true);
   logTextEdit_->setContextMenuPolicy(Qt::CustomContextMenu);
-  VERIFY(connect(logTextEdit_, &QTextEdit::customContextMenuRequested, this,
-                 &LogWidget::showContextMenu));
+  VERIFY(connect(logTextEdit_, &QTextEdit::customContextMenuRequested, this, &LogWidget::showContextMenu));
 
   QHBoxLayout* hlayout = new QHBoxLayout;
   hlayout->setContentsMargins(0, 0, 0, 0);
@@ -49,8 +48,7 @@ LogWidget::LogWidget(QWidget* parent) : QWidget(parent), logTextEdit_(new QTextE
 
 void LogWidget::addLogMessage(const QString& message, common::logging::LEVEL_LOG level) {
   QTime time = QTime::currentTime();
-  logTextEdit_->setTextColor(level == common::logging::L_CRIT ? QColor(Qt::red)
-                                                              : QColor(Qt::black));
+  logTextEdit_->setTextColor(level == common::logging::L_CRIT ? QColor(Qt::red) : QColor(Qt::black));
   logTextEdit_->append(time.toString("hh:mm:ss.zzz: %1").arg(message));
   QScrollBar* sb = logTextEdit_->verticalScrollBar();
   sb->setValue(sb->maximum());

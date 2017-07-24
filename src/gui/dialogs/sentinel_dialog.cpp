@@ -146,27 +146,22 @@ SentinelDialog::SentinelDialog(QWidget* parent, proxy::ISentinelSettingsBase* co
     }
   }
 
-  VERIFY(connect(listWidget_, &QTreeWidget::itemSelectionChanged, this,
-                 &SentinelDialog::itemSelectionChanged));
+  VERIFY(connect(listWidget_, &QTreeWidget::itemSelectionChanged, this, &SentinelDialog::itemSelectionChanged));
 
   QHBoxLayout* toolBarLayout = new QHBoxLayout;
   savebar_ = new QToolBar;
   toolBarLayout->addWidget(savebar_);
 
-  QAction* addB =
-      new QAction(GuiFactory::Instance().loadIcon(), translations::trAddConnection, savebar_);
+  QAction* addB = new QAction(GuiFactory::Instance().loadIcon(), translations::trAddConnection, savebar_);
   typedef void (QAction::*trig)(bool);
-  VERIFY(connect(addB, static_cast<trig>(&QAction::triggered), this,
-                 &SentinelDialog::addConnectionSettings));
+  VERIFY(connect(addB, static_cast<trig>(&QAction::triggered), this, &SentinelDialog::addConnectionSettings));
   savebar_->addAction(addB);
 
-  QAction* rmB =
-      new QAction(GuiFactory::Instance().removeIcon(), translations::trRemoveConnection, savebar_);
+  QAction* rmB = new QAction(GuiFactory::Instance().removeIcon(), translations::trRemoveConnection, savebar_);
   VERIFY(connect(rmB, static_cast<trig>(&QAction::triggered), this, &SentinelDialog::remove));
   savebar_->addAction(rmB);
 
-  QAction* editB =
-      new QAction(GuiFactory::Instance().editIcon(), translations::trEditConnection, savebar_);
+  QAction* editB = new QAction(GuiFactory::Instance().editIcon(), translations::trEditConnection, savebar_);
   VERIFY(connect(editB, static_cast<trig>(&QAction::triggered), this, &SentinelDialog::edit));
   savebar_->addAction(editB);
 
@@ -188,8 +183,7 @@ SentinelDialog::SentinelDialog(QWidget* parent, proxy::ISentinelSettingsBase* co
 
   discoveryButton_ = new QPushButton("&Discovery");
   discoveryButton_->setIcon(GuiFactory::Instance().discoveryIcon());
-  VERIFY(
-      connect(discoveryButton_, &QPushButton::clicked, this, &SentinelDialog::discoverySentinel));
+  VERIFY(connect(discoveryButton_, &QPushButton::clicked, this, &SentinelDialog::discoverySentinel));
 
   QHBoxLayout* bottomLayout = new QHBoxLayout;
   bottomLayout->addWidget(testButton_, 0, Qt::AlignLeft);
@@ -224,8 +218,7 @@ void SentinelDialog::accept() {
 
 void SentinelDialog::typeConnectionChange(int index) {
   QVariant var = typeConnection_->itemData(index);
-  core::connectionTypes currentType =
-      static_cast<core::connectionTypes>(qvariant_cast<unsigned char>(var));
+  core::connectionTypes currentType = static_cast<core::connectionTypes>(qvariant_cast<unsigned char>(var));
   bool isValidType = currentType == core::REDIS;
   connectionName_->setEnabled(isValidType);
   buttonBox_->button(QDialogButtonBox::Save)->setEnabled(isValidType);
@@ -241,8 +234,7 @@ void SentinelDialog::loggingStateChange(int value) {
 }
 
 void SentinelDialog::testConnection() {
-  ConnectionListWidgetItem* currentItem =
-      dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
+  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
 
   // Do nothing if no item selected
   if (!currentItem) {
@@ -296,8 +288,7 @@ void SentinelDialog::addConnectionSettings() {
 }
 
 void SentinelDialog::remove() {
-  ConnectionListWidgetItem* currentItem =
-      dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
+  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
 
   // Do nothing if no item selected
   if (!currentItem) {
@@ -305,10 +296,9 @@ void SentinelDialog::remove() {
   }
 
   // Ask user
-  int answer =
-      QMessageBox::question(this, translations::trConnections,
-                            translations::trDeleteConnectionTemplate_1S.arg(currentItem->text(0)),
-                            QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
+  int answer = QMessageBox::question(this, translations::trConnections,
+                                     translations::trDeleteConnectionTemplate_1S.arg(currentItem->text(0)),
+                                     QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
   if (answer != QMessageBox::Yes) {
     return;
@@ -318,8 +308,7 @@ void SentinelDialog::remove() {
 }
 
 void SentinelDialog::edit() {
-  ConnectionListWidgetItem* currentItem =
-      dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
+  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
 
   // Do nothing if no item selected
   if (!currentItem) {
@@ -339,14 +328,12 @@ void SentinelDialog::edit() {
 }
 
 void SentinelDialog::itemSelectionChanged() {
-  ConnectionListWidgetItem* currentItem =
-      dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
+  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
   bool isValidConnection = currentItem != nullptr;
 
   testButton_->setEnabled(isValidConnection);
 
-  SentinelConnectionWidgetItem* sent =
-      dynamic_cast<SentinelConnectionWidgetItem*>(listWidget_->currentItem());  // +
+  SentinelConnectionWidgetItem* sent = dynamic_cast<SentinelConnectionWidgetItem*>(listWidget_->currentItem());  // +
   bool isValidSentConnection = sent != nullptr;
   discoveryButton_->setEnabled(isValidSentConnection);
 }
@@ -366,8 +353,7 @@ void SentinelDialog::retranslateUi() {
 
 bool SentinelDialog::validateAndApply() {
   QVariant var = typeConnection_->currentData();
-  core::connectionTypes currentType =
-      static_cast<core::connectionTypes>(qvariant_cast<unsigned char>(var));
+  core::connectionTypes currentType = static_cast<core::connectionTypes>(qvariant_cast<unsigned char>(var));
   std::string conName = common::ConvertToString(connectionName_->text());
   std::string conFolder = common::ConvertToString(connectionFolder_->text());
   if (conFolder.empty()) {
@@ -404,8 +390,7 @@ bool SentinelDialog::validateAndApply() {
 }
 
 void SentinelDialog::addSentinel(proxy::SentinelSettings sent) {
-  SentinelConnectionWidgetItem* sent_item =
-      new SentinelConnectionWidgetItem(core::ServerCommonInfo(), nullptr);
+  SentinelConnectionWidgetItem* sent_item = new SentinelConnectionWidgetItem(core::ServerCommonInfo(), nullptr);
   sent_item->setConnection(sent.sentinel);
   auto nodes = sent.sentinel_nodes;
   for (const auto& node : nodes) {

@@ -31,9 +31,7 @@ class NumericDelegate : public QStyledItemDelegate {
  public:
   explicit NumericDelegate(QObject* parent = 0) : QStyledItemDelegate(parent) {}
 
-  QWidget* createEditor(QWidget* parent,
-                        const QStyleOptionViewItem& option,
-                        const QModelIndex& index) const override {
+  QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index) const override {
     UNUSED(option);
     UNUSED(index);
 
@@ -50,9 +48,7 @@ class NumericDelegate : public QStyledItemDelegate {
     spinBox->setValue(value);
   }
 
-  void setModelData(QWidget* editor,
-                    QAbstractItemModel* model,
-                    const QModelIndex& index) const override {
+  void setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const override {
     QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
     int value = spinBox->value();
 
@@ -77,8 +73,7 @@ KeysTableView::KeysTableView(QWidget* parent) : FastoTableView(parent) {
   proxy_model_ = new QSortFilterProxyModel(this);
   proxy_model_->setSourceModel(source_model_);
   proxy_model_->setDynamicSortFilter(true);
-  VERIFY(connect(source_model_, &KeysTableModel::changedTTL, this, &KeysTableView::changedTTL,
-                 Qt::DirectConnection));
+  VERIFY(connect(source_model_, &KeysTableModel::changedTTL, this, &KeysTableView::changedTTL, Qt::DirectConnection));
 
   setSortingEnabled(true);
   sortByColumn(1, Qt::AscendingOrder);
@@ -89,8 +84,7 @@ KeysTableView::KeysTableView(QWidget* parent) : FastoTableView(parent) {
   // setSelectionBehavior(QAbstractItemView::SelectRows);
   // setSelectionMode(QAbstractItemView::SingleSelection);
   setContextMenuPolicy(Qt::CustomContextMenu);
-  VERIFY(connect(this, &KeysTableView::customContextMenuRequested, this,
-                 &KeysTableView::showContextMenu));
+  VERIFY(connect(this, &KeysTableView::customContextMenuRequested, this, &KeysTableView::showContextMenu));
 }
 
 void KeysTableView::insertKey(const core::NDbKValue& key) {

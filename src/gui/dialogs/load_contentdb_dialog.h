@@ -39,9 +39,7 @@ class LoadContentDbDialog : public QDialog {
     step_keys_on_page = defaults_key
   };
 
-  explicit LoadContentDbDialog(const QString& title,
-                               core::connectionTypes type,
-                               QWidget* parent = 0);
+  explicit LoadContentDbDialog(const QString& title, core::connectionTypes type, QWidget* parent = 0);
   int count() const;
   QString pattern() const;
 

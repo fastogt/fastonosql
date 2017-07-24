@@ -72,8 +72,7 @@ Config parseOptions(int argc, char** argv) {
 
 }  // namespace
 
-Config::Config()
-    : LocalConfig(common::file_system::prepare_path("~/test.rocksdb")), create_if_missing(false) {}
+Config::Config() : LocalConfig(common::file_system::prepare_path("~/test.rocksdb")), create_if_missing(false) {}
 
 }  // namespace rocksdb
 }  // namespace core

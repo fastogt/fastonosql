@@ -78,8 +78,7 @@ Config parseOptions(int argc, char** argv) {
 
 }  // namespace
 
-Config::Config()
-    : RemoteConfig(common::net::HostAndPort::CreateLocalHost(DEFAULT_SSDB_SERVER_PORT)) {}
+Config::Config() : RemoteConfig(common::net::HostAndPort::CreateLocalHost(DEFAULT_SSDB_SERVER_PORT)) {}
 
 }  // namespace ssdb
 }  // namespace core

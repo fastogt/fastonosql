@@ -92,9 +92,8 @@ ConnectionBaseWidget* createWidgetImpl(core::connectionTypes type, QWidget* pare
 }
 }  // namespace
 
-ConnectionBaseWidget* ConnectionWidgetsFactory::createWidget(
-    proxy::IConnectionSettingsBase* connection,
-    QWidget* parent) {
+ConnectionBaseWidget* ConnectionWidgetsFactory::createWidget(proxy::IConnectionSettingsBase* connection,
+                                                             QWidget* parent) {
   if (!connection) {
     NOTREACHED();
     return nullptr;

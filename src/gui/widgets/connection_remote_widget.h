@@ -40,8 +40,7 @@ class ConnectionRemoteWidget : public ConnectionBaseWidget {
  protected:
   virtual proxy::IConnectionSettingsBase* createConnectionImpl(
       const proxy::connection_path_t& path) const override final;
-  virtual proxy::IConnectionSettingsRemote* createConnectionRemoteImpl(
-      const proxy::connection_path_t& path) const = 0;
+  virtual proxy::IConnectionSettingsRemote* createConnectionRemoteImpl(const proxy::connection_path_t& path) const = 0;
 
  private:
   HostPortWidget* hostWidget_;

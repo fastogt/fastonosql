@@ -78,14 +78,12 @@ const char* CDBConnection<leveldb::NativeConnection, leveldb::Config, LEVELDB>::
 
 template <>
 const char* CDBConnection<leveldb::NativeConnection, leveldb::Config, LEVELDB>::VersionApi() {
-  static std::string leveldb_version =
-      common::MemSPrintf("%d.%d", leveldb_major_version(), leveldb_minor_version());
+  static std::string leveldb_version = common::MemSPrintf("%d.%d", leveldb_major_version(), leveldb_minor_version());
   return leveldb_version.c_str();
 }
 
 template <>
-ConstantCommandsArray
-CDBConnection<leveldb::NativeConnection, leveldb::Config, LEVELDB>::Commands() {
+ConstantCommandsArray CDBConnection<leveldb::NativeConnection, leveldb::Config, LEVELDB>::Commands() {
   return leveldb::g_commands;
 }
 }  // namespace internal
@@ -101,8 +99,7 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   std::string folder = config.dbname;  // start point must be folder
   common::tribool is_dir = common::file_system::is_directory(folder);
   if (is_dir != common::SUCCESS) {
-    return common::make_error_value(common::MemSPrintf("Invalid input path(%s)", folder),
-                                    common::ErrorValue::E_ERROR);
+    return common::make_error_value(common::MemSPrintf("Invalid input path(%s)", folder), common::ErrorValue::E_ERROR);
   }
 
   ::leveldb::Options lv;
@@ -296,8 +293,7 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
                                      uint64_t limit,
                                      std::vector<std::string>* ret) {
   ::leveldb::ReadOptions ro;
-  ::leveldb::Iterator* it =
-      connection_.handle_->NewIterator(ro);  // keys(key_start, key_end, limit, ret);
+  ::leveldb::Iterator* it = connection_.handle_->NewIterator(ro);  // keys(key_start, key_end, limit, ret);
   for (it->Seek(key_start); it->Valid(); it->Next()) {
     std::string key = it->key().ToString();
     if (ret->size() < limit) {
@@ -439,16 +435,14 @@ common::Error DBConnection::RenameImpl(const NKey& key, const std::string& new_k
 common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
   UNUSED(key);
   UNUSED(ttl);
-  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE
-                                  " for LevelDB not supported TTL commands.",
+  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE " for LevelDB not supported TTL commands.",
                                   common::ErrorValue::E_ERROR);
 }
 
 common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
   UNUSED(key);
   UNUSED(ttl);
-  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE
-                                  " for LevelDB not supported TTL commands.",
+  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE " for LevelDB not supported TTL commands.",
                                   common::ErrorValue::E_ERROR);
 }
 

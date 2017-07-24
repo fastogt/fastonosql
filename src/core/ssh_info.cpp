@@ -46,10 +46,9 @@ const std::string sshMethods[] = {"0", "1", "2"};
 namespace common {
 
 std::string ConvertToString(const fastonosql::core::SSHInfo& ssh_info) {
-  return HOST_FIELD ":" + common::ConvertToString(ssh_info.host) + MARKER USER_FIELD ":" +
-         ssh_info.user_name + MARKER PASSWORD_FIELD ":" + ssh_info.password +
-         MARKER PUBKEY_FIELD ":" + ssh_info.public_key + MARKER PRIVKEY_FIELD ":" +
-         ssh_info.private_key + MARKER PASSPHRASE_FIELD ":" + ssh_info.passphrase +
+  return HOST_FIELD ":" + common::ConvertToString(ssh_info.host) + MARKER USER_FIELD ":" + ssh_info.user_name +
+         MARKER PASSWORD_FIELD ":" + ssh_info.password + MARKER PUBKEY_FIELD ":" + ssh_info.public_key +
+         MARKER PRIVKEY_FIELD ":" + ssh_info.private_key + MARKER PASSPHRASE_FIELD ":" + ssh_info.passphrase +
          MARKER CURMETHOD_FIELD ":" + common::ConvertToString(ssh_info.current_method) + MARKER;
 }
 
@@ -66,8 +65,7 @@ std::string ConvertToString(fastonosql::core::SSHInfo::SupportedAuthenticationMe
   return sshMethods[method];
 }
 
-bool ConvertFromString(const std::string& from,
-                       fastonosql::core::SSHInfo::SupportedAuthenticationMetods* out) {
+bool ConvertFromString(const std::string& from, fastonosql::core::SSHInfo::SupportedAuthenticationMetods* out) {
   if (!out) {
     return false;
   }

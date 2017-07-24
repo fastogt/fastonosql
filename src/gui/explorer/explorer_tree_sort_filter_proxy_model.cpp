@@ -24,26 +24,22 @@
 
 namespace fastonosql {
 namespace gui {
-ExplorerTreeSortFilterProxyModel::ExplorerTreeSortFilterProxyModel(QObject* parent)
-    : QSortFilterProxyModel(parent) {}
+ExplorerTreeSortFilterProxyModel::ExplorerTreeSortFilterProxyModel(QObject* parent) : QSortFilterProxyModel(parent) {}
 
-bool ExplorerTreeSortFilterProxyModel::lessThan(const QModelIndex& left,
-                                                const QModelIndex& right) const {
+bool ExplorerTreeSortFilterProxyModel::lessThan(const QModelIndex& left, const QModelIndex& right) const {
   IExplorerTreeItem* lnode = common::qt::item<common::qt::gui::TreeItem*, IExplorerTreeItem*>(left);
   if (!lnode) {
     DNOTREACHED();
     return true;
   }
 
-  IExplorerTreeItem* rnode =
-      common::qt::item<common::qt::gui::TreeItem*, IExplorerTreeItem*>(right);
+  IExplorerTreeItem* rnode = common::qt::item<common::qt::gui::TreeItem*, IExplorerTreeItem*>(right);
   if (!rnode) {
     DNOTREACHED();
     return true;
   }
 
-  if (rnode->type() == IExplorerTreeItem::eDatabase &&
-      lnode->type() == IExplorerTreeItem::eDatabase) {
+  if (rnode->type() == IExplorerTreeItem::eDatabase && lnode->type() == IExplorerTreeItem::eDatabase) {
     QString leftString = lnode->name();
     QString rightString = rnode->name();
 
@@ -63,8 +59,7 @@ bool ExplorerTreeSortFilterProxyModel::lessThan(const QModelIndex& left,
   return QString::localeAwareCompare(leftString, rightString) < 0;
 }
 
-bool ExplorerTreeSortFilterProxyModel::filterAcceptsRow(int source_row,
-                                                        const QModelIndex& source_parent) const {
+bool ExplorerTreeSortFilterProxyModel::filterAcceptsRow(int source_row, const QModelIndex& source_parent) const {
   QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
   IExplorerTreeItem* node = common::qt::item<common::qt::gui::TreeItem*, IExplorerTreeItem*>(index);
   if (!node) {

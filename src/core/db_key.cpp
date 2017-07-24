@@ -29,8 +29,7 @@
 namespace fastonosql {
 namespace core {
 
-KeyInfo::KeyInfo(const splited_namespaces_t& splited_namespaces_and_key,
-                 const std::string& ns_separator)
+KeyInfo::KeyInfo(const splited_namespaces_t& splited_namespaces_and_key, const std::string& ns_separator)
     : splited_namespaces_and_key_(splited_namespaces_and_key), ns_separator_(ns_separator) {}
 
 std::string KeyInfo::Key() const {

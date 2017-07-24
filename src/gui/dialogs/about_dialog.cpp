@@ -94,10 +94,7 @@ const QString trDescription = QObject::tr(
 
 const QString tAboutTitle = QObject::tr("About " PROJECT_NAME_TITLE);
 
-void addDBItem(QTreeWidget* listWidget,
-               const std::string& name,
-               const char* lib_name,
-               const char* version) {
+void addDBItem(QTreeWidget* listWidget, const std::string& name, const char* lib_name, const char* version) {
   QTreeWidgetItem* treeItem = new QTreeWidgetItem;
   QString qname;
   if (common::ConvertFromString(name, &qname)) {
@@ -124,8 +121,8 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
 
   QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
   QPushButton* closeButton = buttonBox->button(QDialogButtonBox::Close);
-  buttonBox->addButton(closeButton, QDialogButtonBox::ButtonRole(QDialogButtonBox::RejectRole |
-                                                                 QDialogButtonBox::AcceptRole));
+  buttonBox->addButton(closeButton,
+                       QDialogButtonBox::ButtonRole(QDialogButtonBox::RejectRole | QDialogButtonBox::AcceptRole));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &AboutDialog::reject));
 
   QIcon icon = GuiFactory::Instance().mainWindowIcon();
@@ -145,32 +142,32 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
   colums << translations::trName << QObject::tr("Based on") << QObject::tr("Version");
   listWidget->setHeaderLabels(colums);
 #ifdef BUILD_WITH_REDIS
-  addDBItem(listWidget, core::redis::DBConnection::GetConnectionTypeName(),
-            core::redis::DBConnection::BasedOn(), core::redis::DBConnection::VersionApi());
+  addDBItem(listWidget, core::redis::DBConnection::GetConnectionTypeName(), core::redis::DBConnection::BasedOn(),
+            core::redis::DBConnection::VersionApi());
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   addDBItem(listWidget, core::memcached::DBConnection::GetConnectionTypeName(),
             core::memcached::DBConnection::BasedOn(), core::memcached::DBConnection::VersionApi());
 #endif
 #ifdef BUILD_WITH_SSDB
-  addDBItem(listWidget, core::ssdb::DBConnection::GetConnectionTypeName(),
-            core::ssdb::DBConnection::BasedOn(), core::ssdb::DBConnection::VersionApi());
+  addDBItem(listWidget, core::ssdb::DBConnection::GetConnectionTypeName(), core::ssdb::DBConnection::BasedOn(),
+            core::ssdb::DBConnection::VersionApi());
 #endif
 #ifdef BUILD_WITH_LEVELDB
-  addDBItem(listWidget, core::leveldb::DBConnection::GetConnectionTypeName(),
-            core::leveldb::DBConnection::BasedOn(), core::leveldb::DBConnection::VersionApi());
+  addDBItem(listWidget, core::leveldb::DBConnection::GetConnectionTypeName(), core::leveldb::DBConnection::BasedOn(),
+            core::leveldb::DBConnection::VersionApi());
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-  addDBItem(listWidget, core::rocksdb::DBConnection::GetConnectionTypeName(),
-            core::rocksdb::DBConnection::BasedOn(), core::rocksdb::DBConnection::VersionApi());
+  addDBItem(listWidget, core::rocksdb::DBConnection::GetConnectionTypeName(), core::rocksdb::DBConnection::BasedOn(),
+            core::rocksdb::DBConnection::VersionApi());
 #endif
 #ifdef BUILD_WITH_UNQLITE
-  addDBItem(listWidget, core::unqlite::DBConnection::GetConnectionTypeName(),
-            core::unqlite::DBConnection::BasedOn(), core::unqlite::DBConnection::VersionApi());
+  addDBItem(listWidget, core::unqlite::DBConnection::GetConnectionTypeName(), core::unqlite::DBConnection::BasedOn(),
+            core::unqlite::DBConnection::VersionApi());
 #endif
 #ifdef BUILD_WITH_LMDB
-  addDBItem(listWidget, core::lmdb::DBConnection::GetConnectionTypeName(),
-            core::lmdb::DBConnection::BasedOn(), core::lmdb::DBConnection::VersionApi());
+  addDBItem(listWidget, core::lmdb::DBConnection::GetConnectionTypeName(), core::lmdb::DBConnection::BasedOn(),
+            core::lmdb::DBConnection::VersionApi());
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
   addDBItem(listWidget, core::upscaledb::DBConnection::GetConnectionTypeName(),

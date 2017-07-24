@@ -22,10 +22,7 @@ namespace fastonosql {
 namespace core {
 namespace lmdb {
 
-common::Error CommandsApi::Info(internal::CommandHandler* handler,
-                                int argc,
-                                const char** argv,
-                                FastoObject* out) {
+common::Error CommandsApi::Info(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   DBConnection* mdb = static_cast<DBConnection*>(handler);
   ServerInfo::Stats statsout;
   common::Error err = mdb->Info(argc == 1 ? argv[0] : nullptr, &statsout);

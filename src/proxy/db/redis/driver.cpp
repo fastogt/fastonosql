@@ -144,8 +144,7 @@ core::FastoObjectCommandIPtr Driver::CreateCommand(core::FastoObject* parent,
   return proxy::CreateCommand<Command>(parent, input, ct);
 }
 
-core::FastoObjectCommandIPtr Driver::CreateCommandFast(const std::string& input,
-                                                       core::CmdLoggingType ct) {
+core::FastoObjectCommandIPtr Driver::CreateCommandFast(const std::string& input, core::CmdLoggingType ct) {
   return proxy::CreateCommandFast<Command>(input, ct);
 }
 
@@ -175,8 +174,7 @@ common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
   *info = core::redis::MakeRedisServerInfo(content);
 
   if (!*info) {
-    return common::make_error_value("Invalid " INFO_REQUEST " command output",
-                                    common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid " INFO_REQUEST " command output", common::ErrorValue::E_ERROR);
   }
   return common::Error();
 }
@@ -261,8 +259,7 @@ void Driver::HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEv
   NotifyProgress(sender, 0);
   events::ChangeMaxConnectionResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 25);
-  std::string patternResult =
-      common::MemSPrintf(REDIS_SET_MAX_CONNECTIONS_1ARGS_I, res.max_connection);
+  std::string patternResult = common::MemSPrintf(REDIS_SET_MAX_CONNECTIONS_1ARGS_I, res.max_connection);
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(patternResult, core::C_INNER);
   common::Error er = Execute(cmd);
   if (er && er->IsError()) {
@@ -313,8 +310,7 @@ void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
     size_t countDb;
     if (common::ConvertFromString(scountDb, &countDb) && countDb > 0) {
       for (size_t i = 0; i < countDb; ++i) {
-        core::IDataBaseInfoSPtr dbInf(
-            new core::redis::DataBaseInfo(common::ConvertToString(i), false, 0));
+        core::IDataBaseInfoSPtr dbInf(new core::redis::DataBaseInfo(common::ConvertToString(i), false, 0));
         if (dbInf->Name() == curdb->Name()) {
           res.databases.push_back(curdb);
         } else {
@@ -334,8 +330,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
-  const std::string pattern_result =
-      core::internal::GetKeysPattern(res.cursor_in, res.pattern, res.count_keys);
+  const std::string pattern_result = core::internal::GetKeysPattern(res.cursor_in, res.pattern, res.count_keys);
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(pattern_result, core::C_INNER);
   NotifyProgress(sender, 50);
   common::Error err = Execute(cmd);
@@ -345,8 +340,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
     core::FastoObject::childs_t rchildrens = cmd->Childrens();
     if (rchildrens.size()) {
       CHECK_EQ(rchildrens.size(), 1);
-      core::FastoObjectArray* array =
-          dynamic_cast<core::FastoObjectArray*>(rchildrens[0].get());  // +
+      core::FastoObjectArray* array = dynamic_cast<core::FastoObjectArray*>(rchildrens[0].get());  // +
       if (!array) {
         goto done;
       }
@@ -500,8 +494,7 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
     core::FastoObject::childs_t rchildrens = cmd->Childrens();
     if (rchildrens.size()) {
       CHECK_EQ(rchildrens.size(), 1);
-      core::FastoObjectArray* array =
-          dynamic_cast<core::FastoObjectArray*>(rchildrens[0].get());  // +
+      core::FastoObjectArray* array = dynamic_cast<core::FastoObjectArray*>(rchildrens[0].get());  // +
       if (!array) {
         goto done;
       }
@@ -535,8 +528,7 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
         if (tchildrens.size()) {
           DCHECK_EQ(tchildrens.size(), 1);
           if (tchildrens.size() == 1) {
-            core::FastoObjectArray* array_sub =
-                dynamic_cast<core::FastoObjectArray*>(tchildrens[0].get());  // +
+            core::FastoObjectArray* array_sub = dynamic_cast<core::FastoObjectArray*>(tchildrens[0].get());  // +
             if (array_sub) {
               common::ArrayValue* array_sub_inner = array_sub->Array();
               common::Value* fund_sub = nullptr;

@@ -37,8 +37,7 @@ namespace fastonosql {
 namespace core {
 namespace {
 
-const std::vector<Field> unqliteCommonFields = {
-    Field(UNQLITE_FILE_NAME_LABEL, common::Value::TYPE_STRING)};
+const std::vector<Field> unqliteCommonFields = {Field(UNQLITE_FILE_NAME_LABEL, common::Value::TYPE_STRING)};
 
 }  // namespace
 

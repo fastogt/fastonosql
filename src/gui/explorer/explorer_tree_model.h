@@ -90,8 +90,7 @@ class ExplorerTreeModel : public common::qt::gui::TreeModel {
   ExplorerClusterItem* findClusterItem(proxy::IClusterSPtr cl);
   ExplorerSentinelItem* findSentinelItem(proxy::ISentinelSPtr sentinel);
   ExplorerServerItem* findServerItem(proxy::IServer* server) const;
-  ExplorerDatabaseItem* findDatabaseItem(ExplorerServerItem* server,
-                                         core::IDataBaseInfoSPtr db) const;
+  ExplorerDatabaseItem* findDatabaseItem(ExplorerServerItem* server, core::IDataBaseInfoSPtr db) const;
   ExplorerKeyItem* findKeyItem(IExplorerTreeItem* db_or_ns, const core::NKey& key) const;
   ExplorerNSItem* findNSItem(IExplorerTreeItem* db_or_ns, const QString& name) const;
   ExplorerNSItem* findOrCreateNSItem(IExplorerTreeItem* db_or_ns, const core::KeyInfo& kinf);

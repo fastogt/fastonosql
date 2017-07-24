@@ -46,8 +46,7 @@ HostPortWidget::HostPortWidget(QWidget* parent) : QWidget(parent) {
 }
 
 common::net::HostAndPort HostPortWidget::host() const {
-  return common::net::HostAndPort(common::ConvertToString(hostName_->text()),
-                                  hostPort_->text().toInt());
+  return common::net::HostAndPort(common::ConvertToString(hostName_->text()), hostPort_->text().toInt());
 }
 
 void HostPortWidget::setHost(const common::net::HostAndPort& host) {

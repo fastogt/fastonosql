@@ -58,8 +58,7 @@ void FirstChildUpdateRootLocker::ChildrenAdded(core::FastoObjectIPtr child) {
   watched_child->SetValue(val);
 }
 
-core::FastoObjectIPtr FirstChildUpdateRootLocker::FindCmdChildNode(
-    core::FastoObjectIPtr child) const {
+core::FastoObjectIPtr FirstChildUpdateRootLocker::FindCmdChildNode(core::FastoObjectIPtr child) const {
   core::FastoObject* parent = child->Parent();
   core::FastoObjectCommand* cmd = dynamic_cast<core::FastoObjectCommand*>(parent);
   if (!cmd) {
@@ -82,8 +81,7 @@ core::FastoObjectIPtr FirstChildUpdateRootLocker::FindCmdChildNode(
   return childs[0];
 }
 
-core::FastoObjectIPtr FirstChildUpdateRootLocker::FindWatchedCmd(
-    core::FastoObjectCommand* cmd) const {
+core::FastoObjectIPtr FirstChildUpdateRootLocker::FindWatchedCmd(core::FastoObjectCommand* cmd) const {
   for (auto child_cmd : watched_cmds_) {
     core::FastoObjectCommand* wcmd = dynamic_cast<core::FastoObjectCommand*>(child_cmd.get());
     if (wcmd->InputCommand() == cmd->InputCommand()) {

@@ -74,12 +74,10 @@ const QString trViewKeyTemplate_1S = QObject::tr("View key in %1 database");
 const QString trViewChannelsTemplate_1S = QObject::tr("View channels in %1 server");
 const QString trConnectDisconnect = QObject::tr("Connect/Disconnect");
 const QString trClearDb = QObject::tr("Clear database");
-const QString trRealyRemoveAllKeysTemplate_1S =
-    QObject::tr("Really remove all keys from %1 database?");
+const QString trRealyRemoveAllKeysTemplate_1S = QObject::tr("Really remove all keys from %1 database?");
 const QString trLoadContentTemplate_1S = QObject::tr("Load %1 content");
 const QString trReallyShutdownTemplate_1S = QObject::tr("Really shutdown \"%1\" server?");
-const QString trSetMaxConnectionOnServerTemplate_1S =
-    QObject::tr("Set max connection on %1 server");
+const QString trSetMaxConnectionOnServerTemplate_1S = QObject::tr("Set max connection on %1 server");
 const QString trMaximumConnectionTemplate = QObject::tr("Maximum connection:");
 const QString trSetTTLOnKeyTemplate_1S = QObject::tr("Set ttl for %1 key");
 const QString trTTLValue = QObject::tr("New TTL:");
@@ -108,52 +106,41 @@ ExplorerTreeView::ExplorerTreeView(QWidget* parent) : QTreeView(parent) {
   setSelectionBehavior(QAbstractItemView::SelectRows);
   setSelectionMode(QAbstractItemView::SingleSelection);
   setContextMenuPolicy(Qt::CustomContextMenu);
-  VERIFY(connect(this, &ExplorerTreeView::customContextMenuRequested, this,
-                 &ExplorerTreeView::showContextMenu));
+  VERIFY(connect(this, &ExplorerTreeView::customContextMenuRequested, this, &ExplorerTreeView::showContextMenu));
 
   connectAction_ = new QAction(this);
-  VERIFY(connect(connectAction_, &QAction::triggered, this,
-                 &ExplorerTreeView::connectDisconnectToServer));
+  VERIFY(connect(connectAction_, &QAction::triggered, this, &ExplorerTreeView::connectDisconnectToServer));
   openConsoleAction_ = new QAction(this);
   VERIFY(connect(openConsoleAction_, &QAction::triggered, this, &ExplorerTreeView::openConsole));
   loadDatabaseAction_ = new QAction(this);
   VERIFY(connect(loadDatabaseAction_, &QAction::triggered, this, &ExplorerTreeView::loadDatabases));
 
   infoServerAction_ = new QAction(this);
-  VERIFY(connect(infoServerAction_, &QAction::triggered, this,
-                 &ExplorerTreeView::openInfoServerDialog));
+  VERIFY(connect(infoServerAction_, &QAction::triggered, this, &ExplorerTreeView::openInfoServerDialog));
 
   propertyServerAction_ = new QAction(this);
-  VERIFY(connect(propertyServerAction_, &QAction::triggered, this,
-                 &ExplorerTreeView::openPropertyServerDialog));
+  VERIFY(connect(propertyServerAction_, &QAction::triggered, this, &ExplorerTreeView::openPropertyServerDialog));
 
   setServerPassword_ = new QAction(this);
-  VERIFY(connect(setServerPassword_, &QAction::triggered, this,
-                 &ExplorerTreeView::openSetPasswordServerDialog));
+  VERIFY(connect(setServerPassword_, &QAction::triggered, this, &ExplorerTreeView::openSetPasswordServerDialog));
 
   setMaxClientConnection_ = new QAction(this);
-  VERIFY(connect(setMaxClientConnection_, &QAction::triggered, this,
-                 &ExplorerTreeView::openMaxClientSetDialog));
+  VERIFY(connect(setMaxClientConnection_, &QAction::triggered, this, &ExplorerTreeView::openMaxClientSetDialog));
 
   historyServerAction_ = new QAction(this);
-  VERIFY(connect(historyServerAction_, &QAction::triggered, this,
-                 &ExplorerTreeView::openHistoryServerDialog));
+  VERIFY(connect(historyServerAction_, &QAction::triggered, this, &ExplorerTreeView::openHistoryServerDialog));
 
   clearHistoryServerAction_ = new QAction(this);
-  VERIFY(connect(clearHistoryServerAction_, &QAction::triggered, this,
-                 &ExplorerTreeView::clearHistory));
+  VERIFY(connect(clearHistoryServerAction_, &QAction::triggered, this, &ExplorerTreeView::clearHistory));
 
   closeServerAction_ = new QAction(this);
-  VERIFY(connect(closeServerAction_, &QAction::triggered, this,
-                 &ExplorerTreeView::closeServerConnection));
+  VERIFY(connect(closeServerAction_, &QAction::triggered, this, &ExplorerTreeView::closeServerConnection));
 
   closeClusterAction_ = new QAction(this);
-  VERIFY(connect(closeClusterAction_, &QAction::triggered, this,
-                 &ExplorerTreeView::closeClusterConnection));
+  VERIFY(connect(closeClusterAction_, &QAction::triggered, this, &ExplorerTreeView::closeClusterConnection));
 
   closeSentinelAction_ = new QAction(this);
-  VERIFY(connect(closeSentinelAction_, &QAction::triggered, this,
-                 &ExplorerTreeView::closeSentinelConnection));
+  VERIFY(connect(closeSentinelAction_, &QAction::triggered, this, &ExplorerTreeView::closeSentinelConnection));
 
   pubSubAction_ = new QAction(this);
   VERIFY(connect(pubSubAction_, &QAction::triggered, this, &ExplorerTreeView::viewPubSub));
@@ -171,8 +158,7 @@ ExplorerTreeView::ExplorerTreeView(QWidget* parent) : QTreeView(parent) {
   VERIFY(connect(loadContentAction_, &QAction::triggered, this, &ExplorerTreeView::loadContentDb));
 
   removeAllKeysAction_ = new QAction(this);
-  VERIFY(
-      connect(removeAllKeysAction_, &QAction::triggered, this, &ExplorerTreeView::removeAllKeys));
+  VERIFY(connect(removeAllKeysAction_, &QAction::triggered, this, &ExplorerTreeView::removeAllKeys));
 
   removeBranchAction_ = new QAction(this);
   VERIFY(connect(removeBranchAction_, &QAction::triggered, this, &ExplorerTreeView::removeBranch));
@@ -561,8 +547,8 @@ void ExplorerTreeView::openMaxClientSetDialog() {
   bool ok;
   QString name;
   common::ConvertFromString(server->Name(), &name);
-  int maxcl = QInputDialog::getInt(this, trSetMaxConnectionOnServerTemplate_1S.arg(name),
-                                   trMaximumConnectionTemplate, 10000, 1, INT32_MAX, 100, &ok);
+  int maxcl = QInputDialog::getInt(this, trSetMaxConnectionOnServerTemplate_1S.arg(name), trMaximumConnectionTemplate,
+                                   10000, 1, INT32_MAX, 100, &ok);
   if (ok) {
     proxy::events_info::ChangeMaxConnectionRequest req(this, maxcl);
     server->SetMaxConnection(req);
@@ -615,8 +601,7 @@ void ExplorerTreeView::closeServerConnection() {
     return;
   }
 
-  ExplorerServerItem* snode =
-      common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
+  ExplorerServerItem* snode = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
   if (snode) {
     proxy::IServerSPtr server = snode->server();
     if (server) {
@@ -625,8 +610,7 @@ void ExplorerTreeView::closeServerConnection() {
     return;
   }
 
-  ExplorerClusterItem* cnode =
-      common::qt::item<common::qt::gui::TreeItem*, ExplorerClusterItem*>(sel);
+  ExplorerClusterItem* cnode = common::qt::item<common::qt::gui::TreeItem*, ExplorerClusterItem*>(sel);
   if (cnode && cnode->type() == IExplorerTreeItem::eCluster) {
     proxy::IClusterSPtr server = cnode->cluster();
     if (server) {
@@ -642,8 +626,7 @@ void ExplorerTreeView::closeClusterConnection() {
     return;
   }
 
-  ExplorerClusterItem* cnode =
-      common::qt::item<common::qt::gui::TreeItem*, ExplorerClusterItem*>(sel);
+  ExplorerClusterItem* cnode = common::qt::item<common::qt::gui::TreeItem*, ExplorerClusterItem*>(sel);
   if (!cnode) {
     return;
   }
@@ -660,8 +643,7 @@ void ExplorerTreeView::closeSentinelConnection() {
     return;
   }
 
-  ExplorerSentinelItem* snode =
-      common::qt::item<common::qt::gui::TreeItem*, ExplorerSentinelItem*>(sel);
+  ExplorerSentinelItem* snode = common::qt::item<common::qt::gui::TreeItem*, ExplorerSentinelItem*>(sel);
   if (!snode) {
     return;
   }
@@ -685,8 +667,7 @@ void ExplorerTreeView::viewPubSub() {
 
   proxy::IServerSPtr server = node->server();
   PubSubDialog diag(trViewChannelsTemplate_1S.arg(node->name()), server, this);
-  VERIFY(connect(&diag, &PubSubDialog::consoleOpenedAndExecute, this,
-                 &ExplorerTreeView::consoleOpenedAndExecute));
+  VERIFY(connect(&diag, &PubSubDialog::consoleOpenedAndExecute, this, &ExplorerTreeView::consoleOpenedAndExecute));
   diag.exec();
 }
 
@@ -702,8 +683,8 @@ void ExplorerTreeView::backupServer() {
   }
 
   proxy::IServerSPtr server = node->server();
-  QString filepath = QFileDialog::getOpenFileName(this, translations::trBackup, QString(),
-                                                  translations::trfilterForRdb);
+  QString filepath =
+      QFileDialog::getOpenFileName(this, translations::trBackup, QString(), translations::trfilterForRdb);
   if (!filepath.isEmpty() && server) {
     proxy::events_info::BackupInfoRequest req(this, common::ConvertToString(filepath));
     server->BackupToPath(req);
@@ -722,8 +703,8 @@ void ExplorerTreeView::importServer() {
   }
 
   proxy::IServerSPtr server = node->server();
-  QString filepath = QFileDialog::getOpenFileName(this, translations::trImport, QString(),
-                                                  translations::trfilterForRdb);
+  QString filepath =
+      QFileDialog::getOpenFileName(this, translations::trImport, QString(), translations::trfilterForRdb);
   if (filepath.isEmpty() && server) {
     proxy::events_info::ExportInfoRequest req(this, common::ConvertToString(filepath));
     server->ExportFromPath(req);
@@ -746,9 +727,8 @@ void ExplorerTreeView::shutdownServer() {
     // Ask user
     QString name;
     common::ConvertFromString(server->Name(), &name);
-    int answer =
-        QMessageBox::question(this, translations::trShutdown, trReallyShutdownTemplate_1S.arg(name),
-                              QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
+    int answer = QMessageBox::question(this, translations::trShutdown, trReallyShutdownTemplate_1S.arg(name),
+                                       QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
     if (answer != QMessageBox::Yes) {
       return;
@@ -765,14 +745,12 @@ void ExplorerTreeView::loadContentDb() {
     return;
   }
 
-  ExplorerDatabaseItem* node =
-      common::qt::item<common::qt::gui::TreeItem*, ExplorerDatabaseItem*>(sel);
+  ExplorerDatabaseItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerDatabaseItem*>(sel);
   if (!node) {
     return;
   }
 
-  LoadContentDbDialog loadDb(trLoadContentTemplate_1S.arg(node->name()), node->server()->Type(),
-                             this);
+  LoadContentDbDialog loadDb(trLoadContentTemplate_1S.arg(node->name()), node->server()->Type(), this);
   int result = loadDb.exec();
   if (result == QDialog::Accepted) {
     node->loadContent(common::ConvertToString(loadDb.pattern()), loadDb.count());
@@ -785,12 +763,10 @@ void ExplorerTreeView::removeAllKeys() {
     return;
   }
 
-  ExplorerDatabaseItem* node =
-      common::qt::item<common::qt::gui::TreeItem*, ExplorerDatabaseItem*>(sel);
+  ExplorerDatabaseItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerDatabaseItem*>(sel);
   if (node) {
-    int answer =
-        QMessageBox::question(this, trClearDb, trRealyRemoveAllKeysTemplate_1S.arg(node->name()),
-                              QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
+    int answer = QMessageBox::question(this, trClearDb, trRealyRemoveAllKeysTemplate_1S.arg(node->name()),
+                                       QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
     if (answer != QMessageBox::Yes) {
       return;
@@ -811,9 +787,8 @@ void ExplorerTreeView::removeBranch() {
     return;
   }
 
-  int answer =
-      QMessageBox::question(this, trRemoveBranch, trRemoveAllKeysTemplate_1S.arg(node->name()),
-                            QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
+  int answer = QMessageBox::question(this, trRemoveBranch, trRemoveAllKeysTemplate_1S.arg(node->name()),
+                                     QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
   if (answer != QMessageBox::Yes) {
     return;
@@ -828,8 +803,7 @@ void ExplorerTreeView::setDefaultDb() {
     return;
   }
 
-  ExplorerDatabaseItem* node =
-      common::qt::item<common::qt::gui::TreeItem*, ExplorerDatabaseItem*>(sel);
+  ExplorerDatabaseItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerDatabaseItem*>(sel);
   if (node) {
     node->setDefault();
   }
@@ -841,15 +815,13 @@ void ExplorerTreeView::createKey() {
     return;
   }
 
-  ExplorerDatabaseItem* node =
-      common::qt::item<common::qt::gui::TreeItem*, ExplorerDatabaseItem*>(sel);
+  ExplorerDatabaseItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerDatabaseItem*>(sel);
   if (!node) {
     return;
   }
 
   proxy::IServerSPtr server = node->server();
-  DbKeyDialog loadDb(trCreateKeyForDbTemplate_1S.arg(node->name()), server->Type(),
-                     core::NDbKValue(), this);
+  DbKeyDialog loadDb(trCreateKeyForDbTemplate_1S.arg(node->name()), server->Type(), core::NDbKValue(), this);
   int result = loadDb.exec();
   if (result == QDialog::Accepted) {
     core::NDbKValue key = loadDb.key();
@@ -883,8 +855,7 @@ void ExplorerTreeView::viewKeys() {
     return;
   }
 
-  ExplorerDatabaseItem* node =
-      common::qt::item<common::qt::gui::TreeItem*, ExplorerDatabaseItem*>(sel);
+  ExplorerDatabaseItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerDatabaseItem*>(sel);
   if (!node) {
     return;
   }
@@ -969,8 +940,8 @@ void ExplorerTreeView::watchKey() {
 
   bool ok;
   QString name = node->name();
-  int interval = QInputDialog::getInt(this, trSetIntervalOnKeyTemplate_1S.arg(name),
-                                      trIntervalValue, 1000, 0, INT32_MAX, 1000, &ok);
+  int interval = QInputDialog::getInt(this, trSetIntervalOnKeyTemplate_1S.arg(name), trIntervalValue, 1000, 0,
+                                      INT32_MAX, 1000, &ok);
   if (ok) {
     node->watchKey(interval);
   }
@@ -990,8 +961,8 @@ void ExplorerTreeView::setTTL() {
   bool ok;
   QString name = node->name();
   core::NKey key = node->key();
-  int ttl = QInputDialog::getInt(this, trSetTTLOnKeyTemplate_1S.arg(name), trTTLValue, key.TTL(),
-                                 -1, INT32_MAX, 100, &ok);
+  int ttl =
+      QInputDialog::getInt(this, trSetTTLOnKeyTemplate_1S.arg(name), trTTLValue, key.TTL(), -1, INT32_MAX, 100, &ok);
   if (ok) {
     node->setTTL(ttl);
   }
@@ -1001,8 +972,7 @@ void ExplorerTreeView::startLoadDatabases(const proxy::events_info::LoadDatabase
   UNUSED(req);
 }
 
-void ExplorerTreeView::finishLoadDatabases(
-    const proxy::events_info::LoadDatabasesInfoResponce& res) {
+void ExplorerTreeView::finishLoadDatabases(const proxy::events_info::LoadDatabasesInfoResponce& res) {
   common::Error er = res.errorInfo();
   if (er && er->IsError()) {
     return;
@@ -1018,13 +988,11 @@ void ExplorerTreeView::finishLoadDatabases(
   }
 }
 
-void ExplorerTreeView::startLoadDatabaseContent(
-    const proxy::events_info::LoadDatabaseContentRequest& req) {
+void ExplorerTreeView::startLoadDatabaseContent(const proxy::events_info::LoadDatabaseContentRequest& req) {
   UNUSED(req);
 }
 
-void ExplorerTreeView::finishLoadDatabaseContent(
-    const proxy::events_info::LoadDatabaseContentResponce& res) {
+void ExplorerTreeView::finishLoadDatabaseContent(const proxy::events_info::LoadDatabaseContentResponce& res) {
   common::Error er = res.errorInfo();
   if (er && er->IsError()) {
     return;
@@ -1127,32 +1095,22 @@ void ExplorerTreeView::syncWithServer(proxy::IServer* server) {
     return;
   }
 
-  VERIFY(connect(server, &proxy::IServer::LoadDatabasesStarted, this,
-                 &ExplorerTreeView::startLoadDatabases));
-  VERIFY(connect(server, &proxy::IServer::LoadDatabasesFinished, this,
-                 &ExplorerTreeView::finishLoadDatabases));
-  VERIFY(connect(server, &proxy::IServer::LoadDataBaseContentStarted, this,
-                 &ExplorerTreeView::startLoadDatabaseContent));
+  VERIFY(connect(server, &proxy::IServer::LoadDatabasesStarted, this, &ExplorerTreeView::startLoadDatabases));
+  VERIFY(connect(server, &proxy::IServer::LoadDatabasesFinished, this, &ExplorerTreeView::finishLoadDatabases));
+  VERIFY(
+      connect(server, &proxy::IServer::LoadDataBaseContentStarted, this, &ExplorerTreeView::startLoadDatabaseContent));
   VERIFY(connect(server, &proxy::IServer::LoadDatabaseContentFinished, this,
                  &ExplorerTreeView::finishLoadDatabaseContent));
-  VERIFY(connect(server, &proxy::IServer::ExecuteStarted, this,
-                 &ExplorerTreeView::startExecuteCommand));
-  VERIFY(connect(server, &proxy::IServer::ExecuteFinished, this,
-                 &ExplorerTreeView::finishExecuteCommand));
+  VERIFY(connect(server, &proxy::IServer::ExecuteStarted, this, &ExplorerTreeView::startExecuteCommand));
+  VERIFY(connect(server, &proxy::IServer::ExecuteFinished, this, &ExplorerTreeView::finishExecuteCommand));
 
   VERIFY(connect(server, &proxy::IServer::FlushedDB, this, &ExplorerTreeView::flushDB));
-  VERIFY(connect(server, &proxy::IServer::CurrentDataBaseChanged, this,
-                 &ExplorerTreeView::currentDataBaseChange));
-  VERIFY(connect(server, &proxy::IServer::KeyRemoved, this, &ExplorerTreeView::removeKey,
-                 Qt::DirectConnection));
-  VERIFY(connect(server, &proxy::IServer::KeyAdded, this, &ExplorerTreeView::addKey,
-                 Qt::DirectConnection));
-  VERIFY(connect(server, &proxy::IServer::KeyRenamed, this, &ExplorerTreeView::renameKey,
-                 Qt::DirectConnection));
-  VERIFY(connect(server, &proxy::IServer::KeyLoaded, this, &ExplorerTreeView::loadKey,
-                 Qt::DirectConnection));
-  VERIFY(connect(server, &proxy::IServer::KeyTTLChanged, this, &ExplorerTreeView::changeTTLKey,
-                 Qt::DirectConnection));
+  VERIFY(connect(server, &proxy::IServer::CurrentDataBaseChanged, this, &ExplorerTreeView::currentDataBaseChange));
+  VERIFY(connect(server, &proxy::IServer::KeyRemoved, this, &ExplorerTreeView::removeKey, Qt::DirectConnection));
+  VERIFY(connect(server, &proxy::IServer::KeyAdded, this, &ExplorerTreeView::addKey, Qt::DirectConnection));
+  VERIFY(connect(server, &proxy::IServer::KeyRenamed, this, &ExplorerTreeView::renameKey, Qt::DirectConnection));
+  VERIFY(connect(server, &proxy::IServer::KeyLoaded, this, &ExplorerTreeView::loadKey, Qt::DirectConnection));
+  VERIFY(connect(server, &proxy::IServer::KeyTTLChanged, this, &ExplorerTreeView::changeTTLKey, Qt::DirectConnection));
 }
 
 void ExplorerTreeView::unsyncWithServer(proxy::IServer* server) {
@@ -1160,22 +1118,17 @@ void ExplorerTreeView::unsyncWithServer(proxy::IServer* server) {
     return;
   }
 
-  VERIFY(disconnect(server, &proxy::IServer::LoadDatabasesStarted, this,
-                    &ExplorerTreeView::startLoadDatabases));
-  VERIFY(disconnect(server, &proxy::IServer::LoadDatabasesFinished, this,
-                    &ExplorerTreeView::finishLoadDatabases));
+  VERIFY(disconnect(server, &proxy::IServer::LoadDatabasesStarted, this, &ExplorerTreeView::startLoadDatabases));
+  VERIFY(disconnect(server, &proxy::IServer::LoadDatabasesFinished, this, &ExplorerTreeView::finishLoadDatabases));
   VERIFY(disconnect(server, &proxy::IServer::LoadDataBaseContentStarted, this,
                     &ExplorerTreeView::startLoadDatabaseContent));
   VERIFY(disconnect(server, &proxy::IServer::LoadDatabaseContentFinished, this,
                     &ExplorerTreeView::finishLoadDatabaseContent));
-  VERIFY(disconnect(server, &proxy::IServer::ExecuteStarted, this,
-                    &ExplorerTreeView::startExecuteCommand));
-  VERIFY(disconnect(server, &proxy::IServer::ExecuteFinished, this,
-                    &ExplorerTreeView::finishExecuteCommand));
+  VERIFY(disconnect(server, &proxy::IServer::ExecuteStarted, this, &ExplorerTreeView::startExecuteCommand));
+  VERIFY(disconnect(server, &proxy::IServer::ExecuteFinished, this, &ExplorerTreeView::finishExecuteCommand));
 
   VERIFY(disconnect(server, &proxy::IServer::FlushedDB, this, &ExplorerTreeView::flushDB));
-  VERIFY(disconnect(server, &proxy::IServer::CurrentDataBaseChanged, this,
-                    &ExplorerTreeView::currentDataBaseChange));
+  VERIFY(disconnect(server, &proxy::IServer::CurrentDataBaseChanged, this, &ExplorerTreeView::currentDataBaseChange));
   VERIFY(disconnect(server, &proxy::IServer::KeyRemoved, this, &ExplorerTreeView::removeKey));
   VERIFY(disconnect(server, &proxy::IServer::KeyAdded, this, &ExplorerTreeView::addKey));
   VERIFY(disconnect(server, &proxy::IServer::KeyRenamed, this, &ExplorerTreeView::renameKey));

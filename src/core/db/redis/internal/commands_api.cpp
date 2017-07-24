@@ -50,10 +50,7 @@ common::Error CommandsApi::CommonExecOff2(internal::CommandHandler* handler,
   return red->CommonExec(argc + 2, argv - 2, out);
 }
 
-common::Error CommandsApi::Auth(internal::CommandHandler* handler,
-                                int argc,
-                                const char** argv,
-                                FastoObject* out) {
+common::Error CommandsApi::Auth(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
   DBConnection* red = static_cast<DBConnection*>(handler);
   common::Error err = red->Auth(argv[0]);
@@ -67,10 +64,7 @@ common::Error CommandsApi::Auth(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::Lpush(internal::CommandHandler* handler,
-                                 int argc,
-                                 const char** argv,
-                                 FastoObject* out) {
+common::Error CommandsApi::Lpush(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   NKey key(argv[0]);
   common::ArrayValue* arr = common::Value::CreateArrayValue();
   for (int i = 1; i < argc; ++i) {
@@ -90,10 +84,7 @@ common::Error CommandsApi::Lpush(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::Lrange(internal::CommandHandler* handler,
-                                  int argc,
-                                  const char** argv,
-                                  FastoObject* out) {
+common::Error CommandsApi::Lrange(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -120,10 +111,7 @@ common::Error CommandsApi::Lrange(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::SetEx(internal::CommandHandler* handler,
-                                 int argc,
-                                 const char** argv,
-                                 FastoObject* out) {
+common::Error CommandsApi::SetEx(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -146,10 +134,7 @@ common::Error CommandsApi::SetEx(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::SetNX(internal::CommandHandler* handler,
-                                 int argc,
-                                 const char** argv,
-                                 FastoObject* out) {
+common::Error CommandsApi::SetNX(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -169,10 +154,7 @@ common::Error CommandsApi::SetNX(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::Sadd(internal::CommandHandler* handler,
-                                int argc,
-                                const char** argv,
-                                FastoObject* out) {
+common::Error CommandsApi::Sadd(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   NKey key(argv[0]);
   common::SetValue* set = common::Value::CreateSetValue();
   for (int i = 1; i < argc; ++i) {
@@ -192,10 +174,7 @@ common::Error CommandsApi::Sadd(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::Smembers(internal::CommandHandler* handler,
-                                    int argc,
-                                    const char** argv,
-                                    FastoObject* out) {
+common::Error CommandsApi::Smembers(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -213,10 +192,7 @@ common::Error CommandsApi::Smembers(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::Zadd(internal::CommandHandler* handler,
-                                int argc,
-                                const char** argv,
-                                FastoObject* out) {
+common::Error CommandsApi::Zadd(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   NKey key(argv[0]);
   common::ZSetValue* zset = common::Value::CreateZSetValue();
   for (int i = 1; i < argc; i += 2) {
@@ -238,10 +214,7 @@ common::Error CommandsApi::Zadd(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::Zrange(internal::CommandHandler* handler,
-                                  int argc,
-                                  const char** argv,
-                                  FastoObject* out) {
+common::Error CommandsApi::Zrange(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -269,10 +242,7 @@ common::Error CommandsApi::Zrange(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::Hmset(internal::CommandHandler* handler,
-                                 int argc,
-                                 const char** argv,
-                                 FastoObject* out) {
+common::Error CommandsApi::Hmset(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   NKey key(argv[0]);
   common::HashValue* hmset = common::Value::CreateHashValue();
   for (int i = 1; i < argc; i += 2) {
@@ -293,10 +263,7 @@ common::Error CommandsApi::Hmset(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::Hgetall(internal::CommandHandler* handler,
-                                   int argc,
-                                   const char** argv,
-                                   FastoObject* out) {
+common::Error CommandsApi::Hgetall(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -314,10 +281,7 @@ common::Error CommandsApi::Hgetall(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::Decr(internal::CommandHandler* handler,
-                                int argc,
-                                const char** argv,
-                                FastoObject* out) {
+common::Error CommandsApi::Decr(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -334,10 +298,7 @@ common::Error CommandsApi::Decr(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::DecrBy(internal::CommandHandler* handler,
-                                  int argc,
-                                  const char** argv,
-                                  FastoObject* out) {
+common::Error CommandsApi::DecrBy(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -358,10 +319,7 @@ common::Error CommandsApi::DecrBy(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::Incr(internal::CommandHandler* handler,
-                                int argc,
-                                const char** argv,
-                                FastoObject* out) {
+common::Error CommandsApi::Incr(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -378,10 +336,7 @@ common::Error CommandsApi::Incr(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::IncrBy(internal::CommandHandler* handler,
-                                  int argc,
-                                  const char** argv,
-                                  FastoObject* out) {
+common::Error CommandsApi::IncrBy(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -427,10 +382,7 @@ common::Error CommandsApi::IncrByFloat(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::Persist(internal::CommandHandler* handler,
-                                   int argc,
-                                   const char** argv,
-                                   FastoObject* out) {
+common::Error CommandsApi::Persist(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
   NKey key(argv[0]);
 
@@ -475,26 +427,17 @@ common::Error CommandsApi::ExpireRedis(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::Monitor(internal::CommandHandler* handler,
-                                   int argc,
-                                   const char** argv,
-                                   FastoObject* out) {
+common::Error CommandsApi::Monitor(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->Monitor(argc + 1, argv - 1, out);
 }
 
-common::Error CommandsApi::Subscribe(internal::CommandHandler* handler,
-                                     int argc,
-                                     const char** argv,
-                                     FastoObject* out) {
+common::Error CommandsApi::Subscribe(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->Subscribe(argc + 1, argv - 1, out);
 }
 
-common::Error CommandsApi::Sync(internal::CommandHandler* handler,
-                                int argc,
-                                const char** argv,
-                                FastoObject* out) {
+common::Error CommandsApi::Sync(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
   UNUSED(argv);
   DBConnection* red = static_cast<DBConnection*>(handler);

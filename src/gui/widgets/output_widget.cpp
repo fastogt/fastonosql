@@ -76,32 +76,25 @@ FastoCommonItem* createRootItem(core::FastoObject* item) {
 
 }  // namespace
 
-OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent)
-    : QWidget(parent), server_(server) {
+OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget(parent), server_(server) {
   CHECK(server_);
 
   commonModel_ = new FastoCommonModel(this);
-  VERIFY(connect(commonModel_, &FastoCommonModel::changedValue, this, &OutputWidget::createKey,
+  VERIFY(connect(commonModel_, &FastoCommonModel::changedValue, this, &OutputWidget::createKey, Qt::DirectConnection));
+  VERIFY(connect(server_.get(), &proxy::IServer::ExecuteStarted, this, &OutputWidget::startExecuteCommand,
                  Qt::DirectConnection));
-  VERIFY(connect(server_.get(), &proxy::IServer::ExecuteStarted, this,
-                 &OutputWidget::startExecuteCommand, Qt::DirectConnection));
-  VERIFY(connect(server_.get(), &proxy::IServer::ExecuteFinished, this,
-                 &OutputWidget::finishExecuteCommand, Qt::DirectConnection));
-
-  VERIFY(connect(server_.get(), &proxy::IServer::KeyAdded, this, &OutputWidget::addKey,
-                 Qt::DirectConnection));
-  VERIFY(connect(server_.get(), &proxy::IServer::KeyLoaded, this, &OutputWidget::updateKey,
+  VERIFY(connect(server_.get(), &proxy::IServer::ExecuteFinished, this, &OutputWidget::finishExecuteCommand,
                  Qt::DirectConnection));
 
-  VERIFY(connect(server_.get(), &proxy::IServer::RootCreated, this, &OutputWidget::rootCreate,
-                 Qt::DirectConnection));
+  VERIFY(connect(server_.get(), &proxy::IServer::KeyAdded, this, &OutputWidget::addKey, Qt::DirectConnection));
+  VERIFY(connect(server_.get(), &proxy::IServer::KeyLoaded, this, &OutputWidget::updateKey, Qt::DirectConnection));
+
+  VERIFY(connect(server_.get(), &proxy::IServer::RootCreated, this, &OutputWidget::rootCreate, Qt::DirectConnection));
   VERIFY(connect(server_.get(), &proxy::IServer::RootCompleated, this, &OutputWidget::rootCompleate,
                  Qt::DirectConnection));
 
-  VERIFY(connect(server_.get(), &proxy::IServer::ChildAdded, this, &OutputWidget::addChild,
-                 Qt::DirectConnection));
-  VERIFY(connect(server_.get(), &proxy::IServer::ItemUpdated, this, &OutputWidget::updateItem,
-                 Qt::DirectConnection));
+  VERIFY(connect(server_.get(), &proxy::IServer::ChildAdded, this, &OutputWidget::addChild, Qt::DirectConnection));
+  VERIFY(connect(server_.get(), &proxy::IServer::ItemUpdated, this, &OutputWidget::updateItem, Qt::DirectConnection));
 
   treeView_ = new QTreeView;
   treeView_->setModel(commonModel_);
@@ -122,8 +115,7 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent)
   textView_ = new FastoTextView(delimiter);
   textView_->setModel(commonModel_);
 
-  timeLabel_ =
-      new common::qt::gui::IconLabel(GuiFactory::Instance().timeIcon(), "0", QSize(32, 32));
+  timeLabel_ = new common::qt::gui::IconLabel(GuiFactory::Instance().timeIcon(), "0", QSize(32, 32));
 
   QVBoxLayout* mainL = new QVBoxLayout;
   QHBoxLayout* topL = new QHBoxLayout;

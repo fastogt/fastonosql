@@ -78,9 +78,7 @@ Config parseOptions(int argc, char** argv) {
 
 }  // namespace
 
-Config::Config()
-    : LocalConfig(common::file_system::prepare_path("~/test.lmdb")),
-      env_flags(LMDB_DEFAULT_ENV_FLAGS) {}
+Config::Config() : LocalConfig(common::file_system::prepare_path("~/test.lmdb")), env_flags(LMDB_DEFAULT_ENV_FLAGS) {}
 
 bool Config::ReadOnlyDB() const {
   return env_flags & MDB_RDONLY;

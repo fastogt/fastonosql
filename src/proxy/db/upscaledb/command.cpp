@@ -22,10 +22,7 @@ namespace fastonosql {
 namespace proxy {
 namespace upscaledb {
 
-Command::Command(FastoObject* parent,
-                 common::StringValue* cmd,
-                 core::CmdLoggingType ct,
-                 const std::string& delimiter)
+Command::Command(FastoObject* parent, common::StringValue* cmd, core::CmdLoggingType ct, const std::string& delimiter)
     : FastoObjectCommand(parent, cmd, ct, delimiter, core::UPSCALEDB) {}
 
 }  // namespace upscaledb

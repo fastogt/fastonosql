@@ -42,21 +42,18 @@ void DiscoveryConnection::routine() {
   std::vector<core::ServerDiscoveryClusterInfoSPtr> inf;
 
   if (!connection_) {
-    emit connectionResult(false, common::time::current_mstime() - start_time_,
-                          "Invalid connection settings", inf);
+    emit connectionResult(false, common::time::current_mstime() - start_time_, "Invalid connection settings", inf);
     return;
   }
 
-  common::Error er =
-      proxy::ServersManager::Instance().DiscoveryClusterConnection(connection_, &inf);
+  common::Error er = proxy::ServersManager::Instance().DiscoveryClusterConnection(connection_, &inf);
 
   if (er && er->IsError()) {
     QString qdesc;
     common::ConvertFromString(er->Description(), &qdesc);
     emit connectionResult(false, common::time::current_mstime() - start_time_, qdesc, inf);
   } else {
-    emit connectionResult(true, common::time::current_mstime() - start_time_,
-                          translations::trSuccess, inf);
+    emit connectionResult(true, common::time::current_mstime() - start_time_, translations::trSuccess, inf);
   }
 }
 

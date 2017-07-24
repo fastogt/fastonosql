@@ -53,9 +53,8 @@ const QSize stateIconSize = QSize(64, 64);
 namespace fastonosql {
 namespace gui {
 
-DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(
-    QWidget* parent,
-    proxy::IConnectionSettingsBaseSPtr connection)
+DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(QWidget* parent,
+                                                                     proxy::IConnectionSettingsBaseSPtr connection)
     : QDialog(parent) {
   setWindowTitle(translations::trConnectionDiscovery);
   setWindowIcon(GuiFactory::Instance().serverIcon());
@@ -81,8 +80,7 @@ DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(
   listWidget_->setIndentation(5);
 
   QStringList colums;
-  colums << translations::trName << translations::trAddress << translations::trType
-         << translations::trState;
+  colums << translations::trName << translations::trAddress << translations::trType << translations::trState;
   listWidget_->setHeaderLabels(colums);
   listWidget_->setContextMenuPolicy(Qt::ActionsContextMenu);
   listWidget_->setIndentation(15);
@@ -98,27 +96,23 @@ DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(
 
   QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
-  VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this,
-                 &DiscoverySentinelDiagnosticDialog::accept));
+  VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &DiscoverySentinelDiagnosticDialog::accept));
 
   mainLayout->addWidget(buttonBox);
   setFixedSize(QSize(fix_width, fix_height));
   setLayout(mainLayout);
 
   glassWidget_ = new common::qt::gui::GlassWidget(GuiFactory::Instance().pathToLoadingGif(),
-                                                  translations::trTryToConnect, 0.5,
-                                                  QColor(111, 111, 100), this);
+                                                  translations::trTryToConnect, 0.5, QColor(111, 111, 100), this);
   testConnection(connection);
 }
 
-std::vector<ConnectionListWidgetItemDiscovered*>
-DiscoverySentinelDiagnosticDialog::selectedConnections() const {
+std::vector<ConnectionListWidgetItemDiscovered*> DiscoverySentinelDiagnosticDialog::selectedConnections() const {
   std::vector<ConnectionListWidgetItemDiscovered*> res;
   for (int i = 0; i < listWidget_->topLevelItemCount(); ++i) {
     QTreeWidgetItem* citem = listWidget_->topLevelItem(i);
     if (citem->isSelected()) {
-      ConnectionListWidgetItemDiscovered* item =
-          dynamic_cast<ConnectionListWidgetItemDiscovered*>(citem);  // +
+      ConnectionListWidgetItemDiscovered* item = dynamic_cast<ConnectionListWidgetItemDiscovered*>(citem);  // +
       if (item) {
         res.push_back(item);
       }
@@ -145,14 +139,11 @@ void DiscoverySentinelDiagnosticDialog::connectionResultReady(
     for (size_t i = 0; i < infos.size(); ++i) {
       core::ServerDiscoverySentinelInfoSPtr inf = infos[i];
       common::net::HostAndPort host = inf->host();
-      proxy::connection_path_t path(common::file_system::get_separator_string<char>() +
-                                    inf->name());
+      proxy::connection_path_t path(common::file_system::get_separator_string<char>() + inf->name());
       proxy::IConnectionSettingsBaseSPtr con(
-          proxy::ConnectionSettingsFactory::Instance().CreateFromType(inf->connectionType(), path,
-                                                                      host));
+          proxy::ConnectionSettingsFactory::Instance().CreateFromType(inf->connectionType(), path, host));
 
-      ConnectionListWidgetItemDiscovered* item =
-          new ConnectionListWidgetItemDiscovered(inf->info(), nullptr);
+      ConnectionListWidgetItemDiscovered* item = new ConnectionListWidgetItemDiscovered(inf->info(), nullptr);
       item->setConnection(con);
       listWidget_->addTopLevelItem(item);
     }
@@ -165,8 +156,7 @@ void DiscoverySentinelDiagnosticDialog::showEvent(QShowEvent* e) {
   glassWidget_->start();
 }
 
-void DiscoverySentinelDiagnosticDialog::testConnection(
-    proxy::IConnectionSettingsBaseSPtr connection) {
+void DiscoverySentinelDiagnosticDialog::testConnection(proxy::IConnectionSettingsBaseSPtr connection) {
   QThread* th = new QThread;
   DiscoverySentinelConnection* cheker = new DiscoverySentinelConnection(connection);
   cheker->moveToThread(th);

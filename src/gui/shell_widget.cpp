@@ -80,30 +80,21 @@ namespace gui {
 
 namespace {
 BaseShell* makeBaseShell(core::connectionTypes type, QWidget* parent) {
-  BaseShell* shell =
-      BaseShell::createFromType(type, proxy::SettingsManager::Instance().AutoCompletion());
-  parent->setToolTip(
-      QObject::tr("Based on <b>%1</b> version: <b>%2</b>").arg(shell->basedOn(), shell->version()));
+  BaseShell* shell = BaseShell::createFromType(type, proxy::SettingsManager::Instance().AutoCompletion());
+  parent->setToolTip(QObject::tr("Based on <b>%1</b> version: <b>%2</b>").arg(shell->basedOn(), shell->version()));
   shell->setContextMenuPolicy(Qt::CustomContextMenu);
   return shell;
 }
 }  // namespace
-BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server,
-                                 const QString& filePath,
-                                 QWidget* parent)
+BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server, const QString& filePath, QWidget* parent)
     : QWidget(parent), server_(server), input_(nullptr), filePath_(filePath) {
   CHECK(server_);
 
-  VERIFY(connect(server_.get(), &proxy::IServer::ConnectStarted, this,
-                 &BaseShellWidget::startConnect));
-  VERIFY(connect(server_.get(), &proxy::IServer::ConnectFinished, this,
-                 &BaseShellWidget::finishConnect));
-  VERIFY(connect(server_.get(), &proxy::IServer::DisconnectStarted, this,
-                 &BaseShellWidget::startDisconnect));
-  VERIFY(connect(server_.get(), &proxy::IServer::DisconnectFinished, this,
-                 &BaseShellWidget::finishDisconnect));
-  VERIFY(connect(server_.get(), &proxy::IServer::ProgressChanged, this,
-                 &BaseShellWidget::progressChange));
+  VERIFY(connect(server_.get(), &proxy::IServer::ConnectStarted, this, &BaseShellWidget::startConnect));
+  VERIFY(connect(server_.get(), &proxy::IServer::ConnectFinished, this, &BaseShellWidget::finishConnect));
+  VERIFY(connect(server_.get(), &proxy::IServer::DisconnectStarted, this, &BaseShellWidget::startDisconnect));
+  VERIFY(connect(server_.get(), &proxy::IServer::DisconnectFinished, this, &BaseShellWidget::finishDisconnect));
+  VERIFY(connect(server_.get(), &proxy::IServer::ProgressChanged, this, &BaseShellWidget::progressChange));
 
   VERIFY(connect(server_.get(), &proxy::IServer::ModeEntered, this, &BaseShellWidget::enterMode));
   VERIFY(connect(server_.get(), &proxy::IServer::ModeLeaved, this, &BaseShellWidget::leaveMode));
@@ -113,15 +104,14 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server,
   VERIFY(connect(server_.get(), &proxy::IServer::LoadDiscoveryInfoFinished, this,
                  &BaseShellWidget::finishLoadDiscoveryInfo));
 
-  VERIFY(connect(server_.get(), &proxy::IServer::ExecuteStarted, this,
-                 &BaseShellWidget::startExecute, Qt::DirectConnection));
-  VERIFY(connect(server_.get(), &proxy::IServer::ExecuteFinished, this,
-                 &BaseShellWidget::finishExecute, Qt::DirectConnection));
+  VERIFY(connect(server_.get(), &proxy::IServer::ExecuteStarted, this, &BaseShellWidget::startExecute,
+                 Qt::DirectConnection));
+  VERIFY(connect(server_.get(), &proxy::IServer::ExecuteFinished, this, &BaseShellWidget::finishExecute,
+                 Qt::DirectConnection));
 
-  VERIFY(connect(server_.get(), &proxy::IServer::CurrentDataBaseChanged, this,
-                 &BaseShellWidget::updateDefaultDatabase));
-  VERIFY(connect(server_.get(), &proxy::IServer::Disconnected, this,
-                 &BaseShellWidget::serverDisconnect));
+  VERIFY(
+      connect(server_.get(), &proxy::IServer::CurrentDataBaseChanged, this, &BaseShellWidget::updateDefaultDatabase));
+  VERIFY(connect(server_.get(), &proxy::IServer::Disconnected, this, &BaseShellWidget::serverDisconnect));
 
   QVBoxLayout* mainlayout = new QVBoxLayout;
   QHBoxLayout* hlayout = new QHBoxLayout;
@@ -130,32 +120,26 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server,
 
   loadAction_ = new QAction(gui::GuiFactory::Instance().loadIcon(), translations::trLoad, savebar);
   typedef void (BaseShellWidget::*lf)();
-  VERIFY(connect(loadAction_, &QAction::triggered, this,
-                 static_cast<lf>(&BaseShellWidget::loadFromFile)));
+  VERIFY(connect(loadAction_, &QAction::triggered, this, static_cast<lf>(&BaseShellWidget::loadFromFile)));
   savebar->addAction(loadAction_);
 
   saveAction_ = new QAction(gui::GuiFactory::Instance().saveIcon(), translations::trSave, savebar);
   VERIFY(connect(saveAction_, &QAction::triggered, this, &BaseShellWidget::saveToFile));
   savebar->addAction(saveAction_);
 
-  saveAsAction_ =
-      new QAction(gui::GuiFactory::Instance().saveAsIcon(), translations::trSaveAs, savebar);
+  saveAsAction_ = new QAction(gui::GuiFactory::Instance().saveAsIcon(), translations::trSaveAs, savebar);
   VERIFY(connect(saveAsAction_, &QAction::triggered, this, &BaseShellWidget::saveToFileAs));
   savebar->addAction(saveAsAction_);
 
-  connectAction_ =
-      new QAction(gui::GuiFactory::Instance().connectIcon(), translations::trConnect, savebar);
+  connectAction_ = new QAction(gui::GuiFactory::Instance().connectIcon(), translations::trConnect, savebar);
   VERIFY(connect(connectAction_, &QAction::triggered, this, &BaseShellWidget::connectToServer));
   savebar->addAction(connectAction_);
 
-  disConnectAction_ = new QAction(gui::GuiFactory::Instance().disConnectIcon(),
-                                  translations::trDisconnect, savebar);
-  VERIFY(connect(disConnectAction_, &QAction::triggered, this,
-                 &BaseShellWidget::disconnectFromServer));
+  disConnectAction_ = new QAction(gui::GuiFactory::Instance().disConnectIcon(), translations::trDisconnect, savebar);
+  VERIFY(connect(disConnectAction_, &QAction::triggered, this, &BaseShellWidget::disconnectFromServer));
   savebar->addAction(disConnectAction_);
 
-  executeAction_ =
-      new QAction(gui::GuiFactory::Instance().executeIcon(), translations::trExecute, savebar);
+  executeAction_ = new QAction(gui::GuiFactory::Instance().executeIcon(), translations::trExecute, savebar);
   executeAction_->setShortcut(gui::executeKey);
   VERIFY(connect(executeAction_, &QAction::triggered, this, &BaseShellWidget::execute));
   savebar->addAction(executeAction_);
@@ -168,8 +152,7 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server,
   std::string mode_str = common::ConvertToString(mode);
   QString qmode_str;
   common::ConvertFromString(mode_str, &qmode_str);
-  connectionMode_ = new common::qt::gui::IconLabel(gui::GuiFactory::Instance().modeIcon(mode),
-                                                   qmode_str, iconSize);
+  connectionMode_ = new common::qt::gui::IconLabel(gui::GuiFactory::Instance().modeIcon(mode), qmode_str, iconSize);
 
   hlayout->addWidget(savebar);
   hlayout->addWidget(new QSplitter(Qt::Horizontal));
@@ -179,13 +162,11 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server,
   workProgressBar_->setTextVisible(true);
   hlayout->addWidget(workProgressBar_);
   QToolBar* helpbar = new QToolBar;
-  validateAction_ =
-      new QAction(gui::GuiFactory::Instance().failIcon(), translations::trValidate, helpbar);
+  validateAction_ = new QAction(gui::GuiFactory::Instance().failIcon(), translations::trValidate, helpbar);
   VERIFY(connect(validateAction_, &QAction::triggered, this, &BaseShellWidget::validateClick));
   helpbar->addAction(validateAction_);
 
-  QAction* helpAction =
-      new QAction(gui::GuiFactory::Instance().helpIcon(), translations::trHelp, helpbar);
+  QAction* helpAction = new QAction(gui::GuiFactory::Instance().helpIcon(), translations::trHelp, helpbar);
   VERIFY(connect(helpAction, &QAction::triggered, this, &BaseShellWidget::helpClick));
   helpbar->addAction(helpAction);
   hlayout->addWidget(helpbar);
@@ -193,8 +174,7 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server,
 
   advancedOptions_ = new QCheckBox;
   advancedOptions_->setText(trAdvancedOptions);
-  VERIFY(connect(advancedOptions_, &QCheckBox::stateChanged, this,
-                 &BaseShellWidget::advancedOptionsChange));
+  VERIFY(connect(advancedOptions_, &QCheckBox::stateChanged, this, &BaseShellWidget::advancedOptionsChange));
 
   input_ = makeBaseShell(server->Type(), this);
   VERIFY(connect(input_, &BaseShell::textChanged, this, &BaseShellWidget::inputTextChanged));
@@ -228,12 +208,10 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server,
 
   QHBoxLayout* hlayout2 = new QHBoxLayout;
   core::connectionTypes ct = server_->Type();
-  serverName_ =
-      new common::qt::gui::IconLabel(gui::GuiFactory::Instance().icon(ct), trCalculating, iconSize);
+  serverName_ = new common::qt::gui::IconLabel(gui::GuiFactory::Instance().icon(ct), trCalculating, iconSize);
   serverName_->setElideMode(Qt::ElideRight);
   hlayout2->addWidget(serverName_);
-  dbName_ = new common::qt::gui::IconLabel(gui::GuiFactory::Instance().databaseIcon(),
-                                           trCalculating, iconSize);
+  dbName_ = new common::qt::gui::IconLabel(gui::GuiFactory::Instance().databaseIcon(), trCalculating, iconSize);
   hlayout2->addWidget(dbName_);
   hlayout2->addWidget(new QSplitter(Qt::Horizontal));
   hlayout2->addWidget(advancedOptions_);
@@ -245,8 +223,7 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server,
   mainlayout->addLayout(inputLayout);
 
   QHBoxLayout* apilayout = new QHBoxLayout;
-  apilayout->addWidget(
-      new QLabel(trSupportedCommandsCountTemplate_1S.arg(input_->commandsCount())));
+  apilayout->addWidget(new QLabel(trSupportedCommandsCountTemplate_1S.arg(input_->commandsCount())));
   apilayout->addWidget(new QSplitter(Qt::Horizontal));
 
   commandsVersionApi_ = new QComboBox;
@@ -324,8 +301,7 @@ void BaseShellWidget::execute() {
 }
 
 void BaseShellWidget::executeArgs(const QString& text, int repeat, int interval, bool history) {
-  proxy::events_info::ExecuteInfoRequest req(this, common::ConvertToString(text), repeat, interval,
-                                             history);
+  proxy::events_info::ExecuteInfoRequest req(this, common::ConvertToString(text), repeat, interval, history);
   server_->Execute(req);
 }
 
@@ -348,16 +324,14 @@ void BaseShellWidget::loadFromFile() {
 }
 
 bool BaseShellWidget::loadFromFile(const QString& path) {
-  QString filepath =
-      QFileDialog::getOpenFileName(this, path, QString(), translations::trfilterForScripts);
+  QString filepath = QFileDialog::getOpenFileName(this, path, QString(), translations::trfilterForScripts);
   if (!filepath.isEmpty()) {
     QString out;
     common::Error err = common::qt::LoadFromFileText(filepath, &out);
     if (err && err->IsError()) {
       QString qdesc;
       common::ConvertFromString(err->Description(), &qdesc);
-      QMessageBox::critical(this, translations::trError,
-                            trCantReadTemplate_2S.arg(filepath, qdesc));
+      QMessageBox::critical(this, translations::trError, trCantReadTemplate_2S.arg(filepath, qdesc));
       return false;
     }
 
@@ -370,8 +344,8 @@ bool BaseShellWidget::loadFromFile(const QString& path) {
 }
 
 void BaseShellWidget::saveToFileAs() {
-  QString filepath = QFileDialog::getSaveFileName(this, translations::trSaveAs, filePath_,
-                                                  translations::trfilterForScripts);
+  QString filepath =
+      QFileDialog::getSaveFileName(this, translations::trSaveAs, filePath_, translations::trfilterForScripts);
   if (filepath.isEmpty()) {
     return;
   }
@@ -405,8 +379,7 @@ void BaseShellWidget::saveToFile() {
     if (err && err->IsError()) {
       QString qdesc;
       common::ConvertFromString(err->Description(), &qdesc);
-      QMessageBox::critical(this, translations::trError,
-                            trCantSaveTemplate_2S.arg(filePath_, qdesc));
+      QMessageBox::critical(this, translations::trError, trCantSaveTemplate_2S.arg(filePath_, qdesc));
     }
   }
 }
@@ -478,8 +451,7 @@ void BaseShellWidget::startLoadDiscoveryInfo(const proxy::events_info::Discovery
   UNUSED(res);
 }
 
-void BaseShellWidget::finishLoadDiscoveryInfo(
-    const proxy::events_info::DiscoveryInfoResponce& res) {
+void BaseShellWidget::finishLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponce& res) {
   common::Error err = res.errorInfo();
   if (err && err->IsError()) {
     return;

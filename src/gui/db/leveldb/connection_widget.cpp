@@ -33,8 +33,7 @@ ConnectionWidget::ConnectionWidget(QWidget* parent)
 }
 
 void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
-  proxy::leveldb::ConnectionSettings* lev =
-      static_cast<proxy::leveldb::ConnectionSettings*>(connection);
+  proxy::leveldb::ConnectionSettings* lev = static_cast<proxy::leveldb::ConnectionSettings*>(connection);
   if (lev) {
     core::leveldb::Config config = lev->Info();
     createDBIfMissing_->setChecked(config.create_if_missing);

@@ -51,8 +51,7 @@ class ConnectionWidget : public ConnectionBaseWidget {
   void selectLocalDBPath(bool checked);
 
  private:
-  virtual proxy::IConnectionSettingsBase* createConnectionImpl(
-      const proxy::connection_path_t& path) const override;
+  virtual proxy::IConnectionSettingsBase* createConnectionImpl(const proxy::connection_path_t& path) const override;
   QGroupBox* groupBox_;
   QRadioButton* remote_;
   QRadioButton* local_;

@@ -54,8 +54,7 @@ struct SSHInfo {
 
 inline bool operator==(const SSHInfo& r, const SSHInfo& l) {
   return r.host == l.host && r.password == l.password && r.public_key == l.public_key &&
-         r.private_key == l.private_key && r.passphrase == l.passphrase &&
-         r.user_name == l.user_name;
+         r.private_key == l.private_key && r.passphrase == l.passphrase && r.user_name == l.user_name;
 }
 
 }  // namespace core
@@ -66,7 +65,6 @@ std::string ConvertToString(const fastonosql::core::SSHInfo& ssh_info);
 bool ConvertFromString(const std::string& from, fastonosql::core::SSHInfo* out);
 
 std::string ConvertToString(fastonosql::core::SSHInfo::SupportedAuthenticationMetods method);
-bool ConvertFromString(const std::string& from,
-                       fastonosql::core::SSHInfo::SupportedAuthenticationMetods* out);
+bool ConvertFromString(const std::string& from, fastonosql::core::SSHInfo::SupportedAuthenticationMetods* out);
 
 }  // namespace common

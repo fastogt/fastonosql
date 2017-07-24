@@ -41,15 +41,12 @@ QSize ActionDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelI
   return QSize(16, 16);
 }
 
-void ActionDelegate::paint(QPainter* painter,
-                           const QStyleOptionViewItem& option,
-                           const QModelIndex& index) const {
+void ActionDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const {
   if (!index.isValid()) {
     return;
   }
 
-  KeyValueTableItem* node =
-      common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
+  KeyValueTableItem* node = common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
   QStyleOptionViewItem opt = option;
   initStyleOption(&opt, index);
 
@@ -62,9 +59,8 @@ void ActionDelegate::paint(QPainter* painter,
   pb_Style.features |= QStyleOptionButton::Flat;
   pb_Style.text = QString();
   pb_Style.iconSize = QSize(16, 16);
-  pb_Style.icon = node->actionState() == KeyValueTableItem::AddAction
-                      ? GuiFactory::Instance().addIcon()
-                      : GuiFactory::Instance().removeIcon();
+  pb_Style.icon = node->actionState() == KeyValueTableItem::AddAction ? GuiFactory::Instance().addIcon()
+                                                                      : GuiFactory::Instance().removeIcon();
   if (current_index_.row() == index.row()) {
     pb_Style.state |= QStyle::State_Sunken;
   } else {
@@ -89,8 +85,7 @@ bool ActionDelegate::editorEvent(QEvent* event,
   if (event->type() == QEvent::MouseButtonPress) {
     current_index_ = index;
   } else if (event->type() == QEvent::MouseButtonRelease) {
-    KeyValueTableItem* node =
-        common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
+    KeyValueTableItem* node = common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
     if (node->actionState() == KeyValueTableItem::AddAction) {
       emit addClicked(index);
     } else {

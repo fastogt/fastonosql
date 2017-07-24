@@ -113,8 +113,7 @@ struct RegisterTypes {
 } reg_type;
 
 void notifyProgressImpl(IDriver* sender, QObject* reciver, int value) {
-  IDriver::Reply(reciver, new events::ProgressResponceEvent(
-                              sender, events::ProgressResponceEvent::value_type(value)));
+  IDriver::Reply(reciver, new events::ProgressResponceEvent(sender, events::ProgressResponceEvent::value_type(value)));
 }
 
 template <typename event_request_type, typename event_responce_type>
@@ -123,8 +122,8 @@ void replyNotImplementedYet(IDriver* sender, event_request_type* ev, const char*
   notifyProgressImpl(sender, esender, 0);
   typename event_responce_type::value_type res(ev->value());
 
-  std::string patternResult = common::MemSPrintf(
-      "Sorry, but now " PROJECT_NAME_TITLE " not supported %s command.", eventCommandText);
+  std::string patternResult =
+      common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported %s command.", eventCommandText);
   common::Error er = common::make_error_value(patternResult, common::ErrorValue::E_ERROR);
   res.setErrorInfo(er);
   event_responce_type* resp = new event_responce_type(sender, res);
@@ -224,32 +223,26 @@ void IDriver::customEvent(QEvent* event) {
     events::ExecuteRequestEvent* ev = static_cast<events::ExecuteRequestEvent*>(event);
     HandleExecuteEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::LoadDatabasesInfoRequestEvent::EventType)) {
-    events::LoadDatabasesInfoRequestEvent* ev =
-        static_cast<events::LoadDatabasesInfoRequestEvent*>(event);
+    events::LoadDatabasesInfoRequestEvent* ev = static_cast<events::LoadDatabasesInfoRequestEvent*>(event);
     HandleLoadDatabaseInfosEvent(ev);  //
   } else if (type == static_cast<QEvent::Type>(events::ServerInfoRequestEvent::EventType)) {
     events::ServerInfoRequestEvent* ev = static_cast<events::ServerInfoRequestEvent*>(event);
     HandleLoadServerInfoEvent(ev);  //
   } else if (type == static_cast<QEvent::Type>(events::ServerInfoHistoryRequestEvent::EventType)) {
-    events::ServerInfoHistoryRequestEvent* ev =
-        static_cast<events::ServerInfoHistoryRequestEvent*>(event);
+    events::ServerInfoHistoryRequestEvent* ev = static_cast<events::ServerInfoHistoryRequestEvent*>(event);
     HandleLoadServerInfoHistoryEvent(ev);  //
   } else if (type == static_cast<QEvent::Type>(events::ClearServerHistoryRequestEvent::EventType)) {
-    events::ClearServerHistoryRequestEvent* ev =
-        static_cast<events::ClearServerHistoryRequestEvent*>(event);
+    events::ClearServerHistoryRequestEvent* ev = static_cast<events::ClearServerHistoryRequestEvent*>(event);
     HandleClearServerHistoryEvent(ev);  //
   } else if (type == static_cast<QEvent::Type>(events::ServerPropertyInfoRequestEvent::EventType)) {
-    events::ServerPropertyInfoRequestEvent* ev =
-        static_cast<events::ServerPropertyInfoRequestEvent*>(event);
+    events::ServerPropertyInfoRequestEvent* ev = static_cast<events::ServerPropertyInfoRequestEvent*>(event);
     HandleLoadServerPropertyEvent(ev);  // ni
-  } else if (type ==
-             static_cast<QEvent::Type>(events::ChangeServerPropertyInfoRequestEvent::EventType)) {
+  } else if (type == static_cast<QEvent::Type>(events::ChangeServerPropertyInfoRequestEvent::EventType)) {
     events::ChangeServerPropertyInfoRequestEvent* ev =
         static_cast<events::ChangeServerPropertyInfoRequestEvent*>(event);
     HandleServerPropertyChangeEvent(ev);  // ni
   } else if (type == static_cast<QEvent::Type>(events::LoadServerChannelsRequestEvent::EventType)) {
-    events::LoadServerChannelsRequestEvent* ev =
-        static_cast<events::LoadServerChannelsRequestEvent*>(event);
+    events::LoadServerChannelsRequestEvent* ev = static_cast<events::LoadServerChannelsRequestEvent*>(event);
     HandleLoadServerChannelsRequestEvent(ev);  // ni
   } else if (type == static_cast<QEvent::Type>(events::BackupRequestEvent::EventType)) {
     events::BackupRequestEvent* ev = static_cast<events::BackupRequestEvent*>(event);
@@ -258,18 +251,13 @@ void IDriver::customEvent(QEvent* event) {
     events::ExportRequestEvent* ev = static_cast<events::ExportRequestEvent*>(event);
     HandleExportEvent(ev);  // ni
   } else if (type == static_cast<QEvent::Type>(events::ChangePasswordRequestEvent::EventType)) {
-    events::ChangePasswordRequestEvent* ev =
-        static_cast<events::ChangePasswordRequestEvent*>(event);
+    events::ChangePasswordRequestEvent* ev = static_cast<events::ChangePasswordRequestEvent*>(event);
     HandleChangePasswordEvent(ev);  // ni
-  } else if (type ==
-             static_cast<QEvent::Type>(events::ChangeMaxConnectionRequestEvent::EventType)) {
-    events::ChangeMaxConnectionRequestEvent* ev =
-        static_cast<events::ChangeMaxConnectionRequestEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::ChangeMaxConnectionRequestEvent::EventType)) {
+    events::ChangeMaxConnectionRequestEvent* ev = static_cast<events::ChangeMaxConnectionRequestEvent*>(event);
     HandleChangeMaxConnectionEvent(ev);  // ni
-  } else if (type ==
-             static_cast<QEvent::Type>(events::LoadDatabaseContentRequestEvent::EventType)) {
-    events::LoadDatabaseContentRequestEvent* ev =
-        static_cast<events::LoadDatabaseContentRequestEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::LoadDatabaseContentRequestEvent::EventType)) {
+    events::LoadDatabaseContentRequestEvent* ev = static_cast<events::LoadDatabaseContentRequestEvent*>(event);
     HandleLoadDatabaseContentEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::DiscoveryInfoRequestEvent::EventType)) {
     events::DiscoveryInfoRequestEvent* ev = static_cast<events::DiscoveryInfoRequestEvent*>(event);
@@ -374,9 +362,8 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
   const bool history = res.history;
   const common::time64_t msec_repeat_interval = res.msec_repeat_interval;
   const core::CmdLoggingType log_type = res.logtype;
-  RootLocker* lock =
-      history ? new RootLocker(this, sender, inputLine, silence)
-              : new FirstChildUpdateRootLocker(this, sender, inputLine, silence, commands);
+  RootLocker* lock = history ? new RootLocker(this, sender, inputLine, silence)
+                             : new FirstChildUpdateRootLocker(this, sender, inputLine, silence, commands);
   core::FastoObjectIPtr obj = lock->Root();
   const double step = 99.0 / double(commands.size() * (repeat + 1));
   double cur_progress = 0.0;
@@ -384,8 +371,8 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
     common::time64_t start_ts = common::time::current_mstime();
     for (size_t i = 0; i < commands.size(); ++i) {
       if (IsInterrupted()) {
-        res.setErrorInfo(common::make_error_value(
-            "Interrupted exec.", common::ErrorValue::E_INTERRUPTED, common::logging::L_WARNING));
+        res.setErrorInfo(common::make_error_value("Interrupted exec.", common::ErrorValue::E_INTERRUPTED,
+                                                  common::logging::L_WARNING));
         goto done;
       }
 
@@ -393,8 +380,8 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
       NotifyProgress(sender, cur_progress);
 
       std::string command = commands[i];
-      core::FastoObjectCommandIPtr cmd = silence ? CreateCommandFast(command, log_type)
-                                                 : CreateCommand(obj.get(), command, log_type);  //
+      core::FastoObjectCommandIPtr cmd =
+          silence ? CreateCommandFast(command, log_type) : CreateCommand(obj.get(), command, log_type);  //
       common::Error err = Execute(cmd);
       if (err && err->IsError()) {
         res.setErrorInfo(err);
@@ -417,45 +404,40 @@ done:
 }
 
 void IDriver::HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev) {
-  replyNotImplementedYet<events::ServerPropertyInfoRequestEvent,
-                         events::ServerPropertyInfoResponceEvent>(this, ev, "server property");
+  replyNotImplementedYet<events::ServerPropertyInfoRequestEvent, events::ServerPropertyInfoResponceEvent>(
+      this, ev, "server property");
 }
 
 void IDriver::HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev) {
-  replyNotImplementedYet<events::ChangeServerPropertyInfoRequestEvent,
-                         events::ChangeServerPropertyInfoResponceEvent>(this, ev,
-                                                                        "change server property");
+  replyNotImplementedYet<events::ChangeServerPropertyInfoRequestEvent, events::ChangeServerPropertyInfoResponceEvent>(
+      this, ev, "change server property");
 }
 
 void IDriver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequestEvent* ev) {
-  replyNotImplementedYet<events::LoadServerChannelsRequestEvent,
-                         events::LoadServerChannelsResponceEvent>(this, ev, "load server channels");
+  replyNotImplementedYet<events::LoadServerChannelsRequestEvent, events::LoadServerChannelsResponceEvent>(
+      this, ev, "load server channels");
 }
 
 void IDriver::HandleShutdownEvent(events::ShutDownRequestEvent* ev) {
-  replyNotImplementedYet<events::ShutDownRequestEvent, events::ShutDownResponceEvent>(this, ev,
-                                                                                      "shutdown");
+  replyNotImplementedYet<events::ShutDownRequestEvent, events::ShutDownResponceEvent>(this, ev, "shutdown");
 }
 
 void IDriver::HandleBackupEvent(events::BackupRequestEvent* ev) {
-  replyNotImplementedYet<events::BackupRequestEvent, events::BackupResponceEvent>(this, ev,
-                                                                                  "backup server");
+  replyNotImplementedYet<events::BackupRequestEvent, events::BackupResponceEvent>(this, ev, "backup server");
 }
 
 void IDriver::HandleExportEvent(events::ExportRequestEvent* ev) {
-  replyNotImplementedYet<events::ExportRequestEvent, events::ExportResponceEvent>(this, ev,
-                                                                                  "export server");
+  replyNotImplementedYet<events::ExportRequestEvent, events::ExportResponceEvent>(this, ev, "export server");
 }
 
 void IDriver::HandleChangePasswordEvent(events::ChangePasswordRequestEvent* ev) {
-  replyNotImplementedYet<events::ChangePasswordRequestEvent, events::ChangePasswordResponceEvent>(
-      this, ev, "change password");
+  replyNotImplementedYet<events::ChangePasswordRequestEvent, events::ChangePasswordResponceEvent>(this, ev,
+                                                                                                  "change password");
 }
 
 void IDriver::HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev) {
-  replyNotImplementedYet<events::ChangeMaxConnectionRequestEvent,
-                         events::ChangeMaxConnectionResponceEvent>(this, ev,
-                                                                   "change maximum connection");
+  replyNotImplementedYet<events::ChangeMaxConnectionRequestEvent, events::ChangeMaxConnectionResponceEvent>(
+      this, ev, "change maximum connection");
 }
 
 void IDriver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) {
@@ -510,8 +492,7 @@ void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
       bool res = readFile.ReadLine(&data);
       if (!res || readFile.IsEOF()) {
         if (curStamp) {
-          struct core::ServerInfoSnapShoot shoot(
-              curStamp, MakeServerInfoFromString(common::ConvertToString(dataInfo)));
+          struct core::ServerInfoSnapShoot shoot(curStamp, MakeServerInfoFromString(common::ConvertToString(dataInfo)));
           tmpInfos.push_back(shoot);
         }
         break;
@@ -521,8 +502,7 @@ void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
       bool isSt = getStamp(data, &tmpStamp);
       if (isSt) {
         if (curStamp) {
-          struct core::ServerInfoSnapShoot shoot(
-              curStamp, MakeServerInfoFromString(common::ConvertToString(dataInfo)));
+          struct core::ServerInfoSnapShoot shoot(curStamp, MakeServerInfoFromString(common::ConvertToString(dataInfo)));
           tmpInfos.push_back(shoot);
         }
         curStamp = tmpStamp;
@@ -534,8 +514,7 @@ void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
     res.setInfos(tmpInfos);
     readFile.Close();
   } else {
-    res.setErrorInfo(
-        common::make_error_value("History file not found", common::ErrorValue::E_ERROR));
+    res.setErrorInfo(common::make_error_value("History file not found", common::ErrorValue::E_ERROR));
   }
 
   Reply(sender, new events::ServerInfoHistoryResponceEvent(this, res));
@@ -593,8 +572,8 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
       res.dbinfo = current_database_info;
     }
   } else {
-    res.setErrorInfo(common::make_error_value(
-        "Not connected to server, impossible to get discovery info!", common::Value::E_ERROR));
+    res.setErrorInfo(
+        common::make_error_value("Not connected to server, impossible to get discovery info!", common::Value::E_ERROR));
   }
 
   NotifyProgress(sender, 75);
@@ -602,8 +581,7 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
   NotifyProgress(sender, 100);
 }
 
-common::Error IDriver::ServerDiscoveryInfo(core::IServerInfo** sinfo,
-                                           core::IDataBaseInfo** dbinfo) {
+common::Error IDriver::ServerDiscoveryInfo(core::IServerInfo** sinfo, core::IDataBaseInfo** dbinfo) {
   core::IServerInfo* lsinfo = nullptr;
   common::Error er = CurrentServerInfo(&lsinfo);
   if (er && er->IsError()) {

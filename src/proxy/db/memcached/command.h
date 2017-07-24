@@ -28,10 +28,7 @@ namespace memcached {
 
 class Command : public core::FastoObjectCommand {
  public:
-  Command(core::FastoObject* parent,
-          common::StringValue* cmd,
-          core::CmdLoggingType ct,
-          const std::string& delimiter);
+  Command(core::FastoObject* parent, common::StringValue* cmd, core::CmdLoggingType ct, const std::string& delimiter);
 };
 
 }  // namespace memcached

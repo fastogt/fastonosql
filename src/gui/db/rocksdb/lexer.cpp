@@ -24,11 +24,9 @@ namespace fastonosql {
 namespace gui {
 namespace rocksdb {
 
-RocksDBApi::RocksDBApi(QsciLexer* lexer)
-    : BaseQsciApiCommandHolder(core::rocksdb::DBConnection::Commands(), lexer) {}
+RocksDBApi::RocksDBApi(QsciLexer* lexer) : BaseQsciApiCommandHolder(core::rocksdb::DBConnection::Commands(), lexer) {}
 
-Lexer::Lexer(QObject* parent)
-    : BaseQsciLexerCommandHolder(core::rocksdb::DBConnection::Commands(), parent) {
+Lexer::Lexer(QObject* parent) : BaseQsciLexerCommandHolder(core::rocksdb::DBConnection::Commands(), parent) {
   setAPIs(new RocksDBApi(this));
 }
 

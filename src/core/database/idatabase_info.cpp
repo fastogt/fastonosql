@@ -113,8 +113,7 @@ bool IDataBaseInfo::UpdateKeyTTL(const NKey& key, ttl_t ttl) {
 }
 
 bool IDataBaseInfo::RemoveKey(const core::NKey& key) {
-  auto it = std::remove_if(keys_.begin(), keys_.end(),
-                           [key](NDbKValue kv) { return kv.KeyString() == key.Key(); });
+  auto it = std::remove_if(keys_.begin(), keys_.end(), [key](NDbKValue kv) { return kv.KeyString() == key.Key(); });
   if (it == keys_.end()) {
     return false;
   }

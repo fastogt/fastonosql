@@ -269,26 +269,20 @@ common::Value* ServerInfo::ValueByIndexes(unsigned char property, unsigned char 
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo::Stats& value) {
-  return out << MEMCACHED_PID_LABEL ":" << value.pid << MARKER << MEMCACHED_UPTIME_LABEL ":"
-             << value.uptime << MARKER << MEMCACHED_TIME_LABEL ":" << value.time << MARKER
-             << MEMCACHED_VERSION_LABEL ":" << value.version << MARKER
-             << MEMCACHED_POINTER_SIZE_LABEL ":" << value.pointer_size << MARKER
-             << MEMCACHED_RUSAGE_USER_LABEL ":" << value.rusage_user << MARKER
-             << MEMCACHED_RUSAGE_SYSTEM_LABEL ":" << value.rusage_system << MARKER
-             << MEMCACHED_CURR_ITEMS_LABEL ":" << value.curr_items << MARKER
-             << MEMCACHED_TOTAL_ITEMS_LABEL ":" << value.total_items << MARKER
-             << MEMCACHED_BYTES_LABEL ":" << value.bytes << MARKER
-             << MEMCACHED_CURR_CONNECTIONS_LABEL ":" << value.curr_connections << MARKER
+  return out << MEMCACHED_PID_LABEL ":" << value.pid << MARKER << MEMCACHED_UPTIME_LABEL ":" << value.uptime << MARKER
+             << MEMCACHED_TIME_LABEL ":" << value.time << MARKER << MEMCACHED_VERSION_LABEL ":" << value.version
+             << MARKER << MEMCACHED_POINTER_SIZE_LABEL ":" << value.pointer_size << MARKER
+             << MEMCACHED_RUSAGE_USER_LABEL ":" << value.rusage_user << MARKER << MEMCACHED_RUSAGE_SYSTEM_LABEL ":"
+             << value.rusage_system << MARKER << MEMCACHED_CURR_ITEMS_LABEL ":" << value.curr_items << MARKER
+             << MEMCACHED_TOTAL_ITEMS_LABEL ":" << value.total_items << MARKER << MEMCACHED_BYTES_LABEL ":"
+             << value.bytes << MARKER << MEMCACHED_CURR_CONNECTIONS_LABEL ":" << value.curr_connections << MARKER
              << MEMCACHED_TOTAL_CONNECTIONS_LABEL ":" << value.total_connections << MARKER
              << MEMCACHED_CONNECTION_STRUCTURES_LABEL ":" << value.connection_structures << MARKER
-             << MEMCACHED_CMD_GET_LABEL ":" << value.cmd_get << MARKER
-             << MEMCACHED_CMD_SET_LABEL ":" << value.cmd_set << MARKER
-             << MEMCACHED_GET_HITS_LABEL ":" << value.get_hits << MARKER
-             << MEMCACHED_GET_MISSES_LABEL ":" << value.get_misses << MARKER
-             << MEMCACHED_EVICTIONS_LABEL ":" << value.evictions << MARKER
-             << MEMCACHED_BYTES_READ_LABEL ":" << value.bytes_read << MARKER
-             << MEMCACHED_BYTES_WRITTEN_LABEL ":" << value.bytes_written << MARKER
-             << MEMCACHED_LIMIT_MAXBYTES_LABEL ":" << value.limit_maxbytes << MARKER
+             << MEMCACHED_CMD_GET_LABEL ":" << value.cmd_get << MARKER << MEMCACHED_CMD_SET_LABEL ":" << value.cmd_set
+             << MARKER << MEMCACHED_GET_HITS_LABEL ":" << value.get_hits << MARKER << MEMCACHED_GET_MISSES_LABEL ":"
+             << value.get_misses << MARKER << MEMCACHED_EVICTIONS_LABEL ":" << value.evictions << MARKER
+             << MEMCACHED_BYTES_READ_LABEL ":" << value.bytes_read << MARKER << MEMCACHED_BYTES_WRITTEN_LABEL ":"
+             << value.bytes_written << MARKER << MEMCACHED_LIMIT_MAXBYTES_LABEL ":" << value.limit_maxbytes << MARKER
              << MEMCACHED_THREADS_LABEL ":" << value.threads << MARKER;
 }
 

@@ -28,11 +28,8 @@ class ActionDelegate : public QStyledItemDelegate {
  public:
   explicit ActionDelegate(QObject* parent = Q_NULLPTR);
 
-  virtual QSize sizeHint(const QStyleOptionViewItem& option,
-                         const QModelIndex& index) const override;
-  virtual void paint(QPainter* painter,
-                     const QStyleOptionViewItem& option,
-                     const QModelIndex& index) const override;
+  virtual QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
+  virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 
  Q_SIGNALS:
   void addClicked(const QModelIndex& index);

@@ -154,8 +154,8 @@ void FastoEditor::keyPressEvent(QKeyEvent* keyEvent) {
     findPanel_->hide();
     scin_->setFocus();
     keyEvent->accept();
-  } else if (keyEvent->key() == Qt::Key_Return && (keyEvent->modifiers() & Qt::ShiftModifier) &&
-             isFocusScin && isShowFind) {
+  } else if (keyEvent->key() == Qt::Key_Return && (keyEvent->modifiers() & Qt::ShiftModifier) && isFocusScin &&
+             isShowFind) {
     goToPrevElement();
   } else if (keyEvent->key() == Qt::Key_Return && isFocusScin && isShowFind) {
     goToNextElement();
@@ -210,8 +210,8 @@ void FastoEditor::findElement(bool forward) {
     }
 
     scin_->setCursorPosition(line, 0);
-    bool isFounded = scin_->findFirst(text, re, caseSensitive_->checkState() == Qt::Checked, wo,
-                                      looped, forward, line, index);
+    bool isFounded =
+        scin_->findFirst(text, re, caseSensitive_->checkState() == Qt::Checked, wo, looped, forward, line, index);
 
     if (isFounded) {
       scin_->ensureCursorVisible();

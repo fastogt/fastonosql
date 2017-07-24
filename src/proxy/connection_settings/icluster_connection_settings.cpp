@@ -29,8 +29,7 @@
 namespace fastonosql {
 namespace proxy {
 
-IClusterSettingsBase::IClusterSettingsBase(const connection_path_t& connectionPath,
-                                           core::connectionTypes type)
+IClusterSettingsBase::IClusterSettingsBase(const connection_path_t& connectionPath, core::connectionTypes type)
     : IConnectionSettings(connectionPath, type) {}
 
 IClusterSettingsBase::cluster_nodes_t IClusterSettingsBase::Nodes() const {
@@ -60,8 +59,7 @@ std::string IClusterSettingsBase::ToString() const {
   return res;
 }
 
-IConnectionSettingsBaseSPtr IClusterSettingsBase::FindSettingsByHost(
-    const common::net::HostAndPort& host) const {
+IConnectionSettingsBaseSPtr IClusterSettingsBase::FindSettingsByHost(const common::net::HostAndPort& host) const {
   for (size_t i = 0; i < clusters_nodes_.size(); ++i) {
     IConnectionSettingsBaseSPtr cur = clusters_nodes_[i];
     IConnectionSettingsRemote* remote = dynamic_cast<IConnectionSettingsRemote*>(cur.get());  // +

@@ -39,10 +39,8 @@ namespace core {
 namespace {
 
 const std::vector<Field> SsdbCommonFields = {
-    Field(SSDB_VERSION_LABEL, common::Value::TYPE_STRING),
-    Field(SSDB_LINKS_LABEL, common::Value::TYPE_UINTEGER),
-    Field(SSDB_TOTAL_CALLS_LABEL, common::Value::TYPE_UINTEGER),
-    Field(SSDB_DBSIZE_LABEL, common::Value::TYPE_UINTEGER),
+    Field(SSDB_VERSION_LABEL, common::Value::TYPE_STRING), Field(SSDB_LINKS_LABEL, common::Value::TYPE_UINTEGER),
+    Field(SSDB_TOTAL_CALLS_LABEL, common::Value::TYPE_UINTEGER), Field(SSDB_DBSIZE_LABEL, common::Value::TYPE_UINTEGER),
     Field(SSDB_BINLOGS_LABEL, common::Value::TYPE_STRING)};
 
 }  // namespace
@@ -133,10 +131,9 @@ common::Value* ServerInfo::ValueByIndexes(unsigned char property, unsigned char 
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo::Stats& value) {
-  return out << SSDB_VERSION_LABEL ":" << value.version << MARKER << SSDB_LINKS_LABEL ":"
-             << value.links << MARKER << SSDB_TOTAL_CALLS_LABEL ":" << value.total_calls << MARKER
-             << SSDB_DBSIZE_LABEL ":" << value.dbsize << MARKER << SSDB_BINLOGS_LABEL ":"
-             << value.binlogs << MARKER;
+  return out << SSDB_VERSION_LABEL ":" << value.version << MARKER << SSDB_LINKS_LABEL ":" << value.links << MARKER
+             << SSDB_TOTAL_CALLS_LABEL ":" << value.total_calls << MARKER << SSDB_DBSIZE_LABEL ":" << value.dbsize
+             << MARKER << SSDB_BINLOGS_LABEL ":" << value.binlogs << MARKER;
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {

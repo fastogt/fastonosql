@@ -209,8 +209,7 @@ common::Error ServersManager::TestConnection(IConnectionSettingsBaseSPtr connect
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == core::MEMCACHED) {
-    memcached::ConnectionSettings* settings =
-        static_cast<memcached::ConnectionSettings*>(connection.get());
+    memcached::ConnectionSettings* settings = static_cast<memcached::ConnectionSettings*>(connection.get());
     return fastonosql::core::memcached::TestConnection(settings->Info());
   }
 #endif
@@ -222,22 +221,19 @@ common::Error ServersManager::TestConnection(IConnectionSettingsBaseSPtr connect
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type == core::LEVELDB) {
-    leveldb::ConnectionSettings* settings =
-        static_cast<leveldb::ConnectionSettings*>(connection.get());
+    leveldb::ConnectionSettings* settings = static_cast<leveldb::ConnectionSettings*>(connection.get());
     return fastonosql::core::leveldb::TestConnection(settings->Info());
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == core::ROCKSDB) {
-    rocksdb::ConnectionSettings* settings =
-        static_cast<rocksdb::ConnectionSettings*>(connection.get());
+    rocksdb::ConnectionSettings* settings = static_cast<rocksdb::ConnectionSettings*>(connection.get());
     return fastonosql::core::rocksdb::TestConnection(settings->Info());
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (type == core::UNQLITE) {
-    unqlite::ConnectionSettings* settings =
-        static_cast<unqlite::ConnectionSettings*>(connection.get());
+    unqlite::ConnectionSettings* settings = static_cast<unqlite::ConnectionSettings*>(connection.get());
     return fastonosql::core::unqlite::TestConnection(settings->Info());
   }
 #endif
@@ -249,8 +245,7 @@ common::Error ServersManager::TestConnection(IConnectionSettingsBaseSPtr connect
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
   if (type == core::UPSCALEDB) {
-    upscaledb::ConnectionSettings* settings =
-        static_cast<upscaledb::ConnectionSettings*>(connection.get());
+    upscaledb::ConnectionSettings* settings = static_cast<upscaledb::ConnectionSettings*>(connection.get());
     return fastonosql::core::upscaledb::TestConnection(settings->Info());
   }
 #endif
@@ -259,9 +254,8 @@ common::Error ServersManager::TestConnection(IConnectionSettingsBaseSPtr connect
   return common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);
 }
 
-common::Error ServersManager::DiscoveryClusterConnection(
-    IConnectionSettingsBaseSPtr connection,
-    std::vector<core::ServerDiscoveryClusterInfoSPtr>* inf) {
+common::Error ServersManager::DiscoveryClusterConnection(IConnectionSettingsBaseSPtr connection,
+                                                         std::vector<core::ServerDiscoveryClusterInfoSPtr>* inf) {
   if (!connection || !inf) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -314,9 +308,8 @@ common::Error ServersManager::DiscoveryClusterConnection(
   return common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);
 }
 
-common::Error ServersManager::DiscoverySentinelConnection(
-    IConnectionSettingsBaseSPtr connection,
-    std::vector<core::ServerDiscoverySentinelInfoSPtr>* inf) {
+common::Error ServersManager::DiscoverySentinelConnection(IConnectionSettingsBaseSPtr connection,
+                                                          std::vector<core::ServerDiscoverySentinelInfoSPtr>* inf) {
   if (!connection || !inf) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }

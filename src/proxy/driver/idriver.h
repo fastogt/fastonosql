@@ -130,8 +130,7 @@ class IDriver : public QObject, public core::CDBConnectionClient {
                                                      const std::string& input,
                                                      core::CmdLoggingType ct) = 0;
 
-  virtual core::FastoObjectCommandIPtr CreateCommandFast(const std::string& input,
-                                                         core::CmdLoggingType ct) = 0;
+  virtual core::FastoObjectCommandIPtr CreateCommandFast(const std::string& input, core::CmdLoggingType ct) = 0;
 
  private:
   virtual common::Error SyncConnect() WARN_UNUSED_RESULT = 0;
@@ -156,8 +155,7 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   // internal methods
   virtual core::IServerInfoSPtr MakeServerInfoFromString(const std::string& val) = 0;
   virtual common::Error CurrentServerInfo(core::IServerInfo** info) = 0;
-  virtual common::Error ServerDiscoveryInfo(core::IServerInfo** sinfo,
-                                            core::IDataBaseInfo** dbinfo);
+  virtual common::Error ServerDiscoveryInfo(core::IServerInfo** sinfo, core::IDataBaseInfo** dbinfo);
   virtual common::Error CurrentDataBaseInfo(core::IDataBaseInfo** info) = 0;
   virtual void InitImpl() = 0;
   virtual void ClearImpl() = 0;

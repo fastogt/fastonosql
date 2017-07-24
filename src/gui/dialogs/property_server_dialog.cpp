@@ -60,8 +60,7 @@ PropertyServerDialog::PropertyServerDialog(proxy::IServerSPtr server, QWidget* p
 
   PropertyTableModel* mod = new PropertyTableModel(this);
   propertyes_table_ = new QTableView;
-  VERIFY(connect(mod, &PropertyTableModel::propertyChanged, this,
-                 &PropertyServerDialog::changedProperty));
+  VERIFY(connect(mod, &PropertyTableModel::propertyChanged, this, &PropertyServerDialog::changedProperty));
   propertyes_table_->setModel(mod);
 
   QHBoxLayout* mainL = new QHBoxLayout;
@@ -70,9 +69,8 @@ PropertyServerDialog::PropertyServerDialog(proxy::IServerSPtr server, QWidget* p
   setMinimumSize(QSize(min_width, min_height));
   setLayout(mainL);
 
-  glassWidget_ =
-      new common::qt::gui::GlassWidget(GuiFactory::Instance().pathToLoadingGif(),
-                                       translations::trLoading, 0.5, QColor(111, 111, 100), this);
+  glassWidget_ = new common::qt::gui::GlassWidget(GuiFactory::Instance().pathToLoadingGif(), translations::trLoading,
+                                                  0.5, QColor(111, 111, 100), this);
 
   VERIFY(connect(server.get(), &proxy::IServer::LoadServerPropertyStarted, this,
                  &PropertyServerDialog::startServerProperty));
@@ -85,15 +83,13 @@ PropertyServerDialog::PropertyServerDialog(proxy::IServerSPtr server, QWidget* p
   retranslateUi();
 }
 
-void PropertyServerDialog::startServerProperty(
-    const proxy::events_info::ServerPropertyInfoRequest& req) {
+void PropertyServerDialog::startServerProperty(const proxy::events_info::ServerPropertyInfoRequest& req) {
   UNUSED(req);
 
   glassWidget_->start();
 }
 
-void PropertyServerDialog::finishServerProperty(
-    const proxy::events_info::ServerPropertyInfoResponce& res) {
+void PropertyServerDialog::finishServerProperty(const proxy::events_info::ServerPropertyInfoResponce& res) {
   glassWidget_->stop();
   common::Error er = res.errorInfo();
   if (er && er->IsError()) {
@@ -110,13 +106,11 @@ void PropertyServerDialog::finishServerProperty(
   }
 }
 
-void PropertyServerDialog::startServerChangeProperty(
-    const proxy::events_info::ChangeServerPropertyInfoRequest& req) {
+void PropertyServerDialog::startServerChangeProperty(const proxy::events_info::ChangeServerPropertyInfoRequest& req) {
   UNUSED(req);
 }
 
-void PropertyServerDialog::finishServerChangeProperty(
-    const proxy::events_info::ChangeServerPropertyInfoResponce& res) {
+void PropertyServerDialog::finishServerChangeProperty(const proxy::events_info::ChangeServerPropertyInfoResponce& res) {
   common::Error er = res.errorInfo();
   if (er && er->IsError()) {
     return;

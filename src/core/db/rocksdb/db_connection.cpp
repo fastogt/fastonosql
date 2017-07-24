@@ -100,8 +100,7 @@ const char* CDBConnection<rocksdb::NativeConnection, rocksdb::Config, ROCKSDB>::
 }
 
 template <>
-ConstantCommandsArray
-CDBConnection<rocksdb::NativeConnection, rocksdb::Config, ROCKSDB>::Commands() {
+ConstantCommandsArray CDBConnection<rocksdb::NativeConnection, rocksdb::Config, ROCKSDB>::Commands() {
   return rocksdb::g_commands;
 }
 }  // namespace internal
@@ -117,8 +116,7 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   std::string folder = config.dbname;  // start point must be folder
   common::tribool is_dir = common::file_system::is_directory(folder);
   if (is_dir != common::SUCCESS) {
-    return common::make_error_value(common::MemSPrintf("Invalid input path(%s)", folder),
-                                    common::ErrorValue::E_ERROR);
+    return common::make_error_value(common::MemSPrintf("Invalid input path(%s)", folder), common::ErrorValue::E_ERROR);
   }
 
   ::rocksdb::Options rs;
@@ -241,8 +239,7 @@ common::Error DBConnection::GetInner(const std::string& key, std::string* ret_va
   return common::Error();
 }
 
-common::Error DBConnection::Mget(const std::vector<std::string>& keys,
-                                 std::vector<std::string>* ret) {
+common::Error DBConnection::Mget(const std::vector<std::string>& keys, std::vector<std::string>* ret) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
@@ -319,8 +316,7 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
                                      std::vector<std::string>* keys_out,
                                      uint64_t* cursor_out) {
   ::rocksdb::ReadOptions ro;
-  ::rocksdb::Iterator* it =
-      connection_.handle_->NewIterator(ro);  // keys(key_start, key_end, limit, ret);
+  ::rocksdb::Iterator* it = connection_.handle_->NewIterator(ro);  // keys(key_start, key_end, limit, ret);
   uint64_t offset_pos = cursor_in;
   uint64_t lcursor_out = 0;
   std::vector<std::string> lkeys_out;
@@ -358,8 +354,7 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
                                      uint64_t limit,
                                      std::vector<std::string>* ret) {
   ::rocksdb::ReadOptions ro;
-  ::rocksdb::Iterator* it =
-      connection_.handle_->NewIterator(ro);  // keys(key_start, key_end, limit, ret);
+  ::rocksdb::Iterator* it = connection_.handle_->NewIterator(ro);  // keys(key_start, key_end, limit, ret);
   for (it->Seek(key_start); it->Valid(); it->Next()) {
     std::string key = it->key().ToString();
     if (ret->size() < limit) {
@@ -501,16 +496,14 @@ common::Error DBConnection::RenameImpl(const NKey& key, const std::string& new_k
 common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
   UNUSED(key);
   UNUSED(ttl);
-  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE
-                                  " for RocksDB not supported TTL commands.",
+  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE " for RocksDB not supported TTL commands.",
                                   common::ErrorValue::E_ERROR);
 }
 
 common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
   UNUSED(key);
   UNUSED(ttl);
-  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE
-                                  " for RocksDB not supported TTL commands.",
+  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE " for RocksDB not supported TTL commands.",
                                   common::ErrorValue::E_ERROR);
 }
 

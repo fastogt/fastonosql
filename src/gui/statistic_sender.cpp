@@ -40,11 +40,9 @@ StatisticSender::StatisticSender(QObject* parent) : QObject(parent) {}
 
 void StatisticSender::routine() {
 #if defined(FASTONOSQL)
-  common::net::ClientSocketTcp client(
-      common::net::HostAndPort(FASTONOSQL_URL, SERV_STATISTIC_PORT));
+  common::net::ClientSocketTcp client(common::net::HostAndPort(FASTONOSQL_URL, SERV_STATISTIC_PORT));
 #elif defined(FASTOREDIS)
-  common::net::ClientSocketTcp client(
-      common::net::HostAndPort(FASTOREDIS_URL, SERV_STATISTIC_PORT));
+  common::net::ClientSocketTcp client(common::net::HostAndPort(FASTOREDIS_URL, SERV_STATISTIC_PORT));
 #else
 #error please specify url and port to send statistic information
 #endif
@@ -65,8 +63,7 @@ void StatisticSender::routine() {
 
   json_object* project_json = json_object_new_object();
   json_object_object_add(project_json, FIELD_PROJECT_NAME, json_object_new_string(PROJECT_NAME));
-  json_object_object_add(project_json, FIELD_PROJECT_VERSION,
-                         json_object_new_string(PROJECT_VERSION));
+  json_object_object_add(project_json, FIELD_PROJECT_VERSION, json_object_new_string(PROJECT_VERSION));
   json_object_object_add(project_json, FILED_PROJECT_ARCH, json_object_new_string(PROJECT_ARCH));
   json_object_object_add(stats_json, FIELD_PROJECT, project_json);
 

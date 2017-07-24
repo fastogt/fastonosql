@@ -160,8 +160,7 @@ MainWindow::MainWindow() : QMainWindow(), isCheckedInSession_(false) {
   recentConnections_ = fileMenu->addMenu(recentMenu);
   for (auto i = 0; i < max_recent_connections; ++i) {
     recentConnectionsActs_[i] = new QAction(this);
-    VERIFY(connect(recentConnectionsActs_[i], &QAction::triggered, this,
-                   &MainWindow::openRecentConnection));
+    VERIFY(connect(recentConnectionsActs_[i], &QAction::triggered, this, &MainWindow::openRecentConnection));
     recentMenu->addAction(recentConnectionsActs_[i]);
   }
 
@@ -189,8 +188,7 @@ MainWindow::MainWindow() : QMainWindow(), isCheckedInSession_(false) {
 
   encodeDecodeDialogAction_ = new QAction(this);
   encodeDecodeDialogAction_->setIcon(GuiFactory::Instance().encodeDecodeIcon());
-  VERIFY(connect(encodeDecodeDialogAction_, &QAction::triggered, this,
-                 &MainWindow::openEncodeDecodeDialog));
+  VERIFY(connect(encodeDecodeDialogAction_, &QAction::triggered, this, &MainWindow::openEncodeDecodeDialog));
   tools->addAction(encodeDecodeDialogAction_);
 
   // window menu
@@ -227,32 +225,26 @@ MainWindow::MainWindow() : QMainWindow(), isCheckedInSession_(false) {
 
   exp_ = new ExplorerTreeWidget(this);
   VERIFY(connect(exp_, &ExplorerTreeWidget::consoleOpened, mainW, &MainWidget::openConsole));
-  VERIFY(connect(exp_, &ExplorerTreeWidget::consoleOpenedAndExecute, mainW,
-                 &MainWidget::openConsoleAndExecute));
-  VERIFY(connect(exp_, &ExplorerTreeWidget::serverClosed, this, &MainWindow::closeServer,
-                 Qt::DirectConnection));
-  VERIFY(connect(exp_, &ExplorerTreeWidget::clusterClosed, this, &MainWindow::closeCluster,
-                 Qt::DirectConnection));
-  VERIFY(connect(exp_, &ExplorerTreeWidget::sentinelClosed, this, &MainWindow::closeSentinel,
-                 Qt::DirectConnection));
+  VERIFY(connect(exp_, &ExplorerTreeWidget::consoleOpenedAndExecute, mainW, &MainWidget::openConsoleAndExecute));
+  VERIFY(connect(exp_, &ExplorerTreeWidget::serverClosed, this, &MainWindow::closeServer, Qt::DirectConnection));
+  VERIFY(connect(exp_, &ExplorerTreeWidget::clusterClosed, this, &MainWindow::closeCluster, Qt::DirectConnection));
+  VERIFY(connect(exp_, &ExplorerTreeWidget::sentinelClosed, this, &MainWindow::closeSentinel, Qt::DirectConnection));
   expDock_ = new QDockWidget(this);
   explorerAction_ = expDock_->toggleViewAction();
   explorerAction_->setShortcut(explorerKeySequence);
   explorerAction_->setChecked(true);
   views->addAction(explorerAction_);
 
-  expDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea |
-                            Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
+  expDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea |
+                            Qt::TopDockWidgetArea);
   expDock_->setWidget(exp_);
   expDock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
   expDock_->setVisible(true);
   addDockWidget(Qt::LeftDockWidgetArea, expDock_);
 
   LogTabWidget* log = new LogTabWidget(this);
-  VERIFY(connect(&common::qt::Logger::Instance(), &common::qt::Logger::printed, log,
-                 &LogTabWidget::addLogMessage));
-  VERIFY(connect(&proxy::CommandLogger::Instance(), &proxy::CommandLogger::Printed, log,
-                 &LogTabWidget::addCommand));
+  VERIFY(connect(&common::qt::Logger::Instance(), &common::qt::Logger::printed, log, &LogTabWidget::addLogMessage));
+  VERIFY(connect(&proxy::CommandLogger::Instance(), &proxy::CommandLogger::Printed, log, &LogTabWidget::addCommand));
   SET_LOG_WATCHER(&LogWatcherRedirect);
   logDock_ = new QDockWidget(this);
   logsAction_ = logDock_->toggleViewAction();
@@ -260,8 +252,8 @@ MainWindow::MainWindow() : QMainWindow(), isCheckedInSession_(false) {
   logsAction_->setChecked(true);
   views->addAction(logsAction_);
 
-  logDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea |
-                            Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
+  logDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea |
+                            Qt::TopDockWidgetArea);
   logDock_->setWidget(log);
   logDock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
   logDock_->setVisible(true);
@@ -392,8 +384,8 @@ void MainWindow::openRecentConnection() {
 void MainWindow::loadConnection() {
   QString standardIni;
   common::ConvertFromString(proxy::SettingsManager::SettingsFilePath(), &standardIni);
-  QString filepathR = QFileDialog::getOpenFileName(this, tr("Select settings file"), standardIni,
-                                                   tr("Settings files (*.ini)"));
+  QString filepathR =
+      QFileDialog::getOpenFileName(this, tr("Select settings file"), standardIni, tr("Settings files (*.ini)"));
   if (filepathR.isNull()) {
     return;
   }
@@ -406,9 +398,8 @@ void MainWindow::importConnection() {
   std::string dir_path = proxy::SettingsManager::SettingsDirPath();
   QString qdir_path;
   common::ConvertFromString(dir_path, &qdir_path);
-  QString filepathR =
-      QFileDialog::getOpenFileName(this, tr("Select encrypted settings file"), qdir_path,
-                                   tr("Encrypted settings files (*.cini)"));
+  QString filepathR = QFileDialog::getOpenFileName(this, tr("Select encrypted settings file"), qdir_path,
+                                                   tr("Encrypted settings files (*.cini)"));
   if (filepathR.isNull()) {
     return;
   }
@@ -485,8 +476,8 @@ void MainWindow::exportConnection() {
   std::string dir_path = proxy::SettingsManager::SettingsDirPath();
   QString qdir;
   common::ConvertFromString(dir_path, &qdir);
-  QString filepathW = QFileDialog::getSaveFileName(this, tr("Select file to save settings"), qdir,
-                                                   tr("Settings files (*.cini)"));
+  QString filepathW =
+      QFileDialog::getSaveFileName(this, tr("Select file to save settings"), qdir, tr("Settings files (*.cini)"));
   if (filepathW.isEmpty()) {
     return;
   }
@@ -554,8 +545,7 @@ void MainWindow::exportConnection() {
 
 void MainWindow::versionAvailible(bool succesResult, const QString& version) {
   if (!succesResult) {
-    QMessageBox::information(this, translations::trCheckVersion,
-                             translations::trConnectionErrorText);
+    QMessageBox::information(this, translations::trCheckVersion, translations::trConnectionErrorText);
     checkUpdateAction_->setEnabled(true);
     return;
   }
@@ -563,17 +553,15 @@ void MainWindow::versionAvailible(bool succesResult, const QString& version) {
   std::string sver = common::ConvertToString(version);
   bool isn = isNeededUpdate(sver);
   if (isn) {
-    QMessageBox::information(
-        this, translations::trCheckVersion,
-        QObject::tr("<h4>A new version(%1) of " PROJECT_NAME_TITLE " is Availible!</h4>"
-                    "You can download it  <a href=\"" PROJECT_DOWNLOAD_LINK "\">here</a>")
-            .arg(version));
+    QMessageBox::information(this, translations::trCheckVersion,
+                             QObject::tr("<h4>A new version(%1) of " PROJECT_NAME_TITLE " is Availible!</h4>"
+                                         "You can download it  <a href=\"" PROJECT_DOWNLOAD_LINK "\">here</a>")
+                                 .arg(version));
   } else {
     QMessageBox::information(
         this, translations::trCheckVersion,
         QObject::tr("<h4>You're' "
-                    "up-to-date!</h4>You are using the latest version(%1) of " PROJECT_NAME_TITLE
-                    ".")
+                    "up-to-date!</h4>You are using the latest version(%1) of " PROJECT_NAME_TITLE ".")
             .arg(version));
   }
 

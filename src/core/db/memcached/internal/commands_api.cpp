@@ -28,10 +28,7 @@ namespace fastonosql {
 namespace core {
 namespace memcached {
 
-common::Error CommandsApi::Version(internal::CommandHandler* handler,
-                                   int argc,
-                                   const char** argv,
-                                   FastoObject* out) {
+common::Error CommandsApi::Version(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
   UNUSED(argv);
   UNUSED(out);
@@ -40,10 +37,7 @@ common::Error CommandsApi::Version(internal::CommandHandler* handler,
   return mem->VersionServer();
 }
 
-common::Error CommandsApi::Info(internal::CommandHandler* handler,
-                                int argc,
-                                const char** argv,
-                                FastoObject* out) {
+common::Error CommandsApi::Info(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   DBConnection* mem = static_cast<DBConnection*>(handler);
   const char* args = argc == 1 ? argv[0] : nullptr;
   if (args && strcasecmp(args, "items") == 0) {
@@ -64,10 +58,7 @@ common::Error CommandsApi::Info(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::Add(internal::CommandHandler* handler,
-                               int argc,
-                               const char** argv,
-                               FastoObject* out) {
+common::Error CommandsApi::Add(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -93,10 +84,7 @@ common::Error CommandsApi::Add(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::Replace(internal::CommandHandler* handler,
-                                   int argc,
-                                   const char** argv,
-                                   FastoObject* out) {
+common::Error CommandsApi::Replace(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -122,10 +110,7 @@ common::Error CommandsApi::Replace(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::Append(internal::CommandHandler* handler,
-                                  int argc,
-                                  const char** argv,
-                                  FastoObject* out) {
+common::Error CommandsApi::Append(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -150,10 +135,7 @@ common::Error CommandsApi::Append(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::Prepend(internal::CommandHandler* handler,
-                                   int argc,
-                                   const char** argv,
-                                   FastoObject* out) {
+common::Error CommandsApi::Prepend(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -178,10 +160,7 @@ common::Error CommandsApi::Prepend(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::Incr(internal::CommandHandler* handler,
-                                int argc,
-                                const char** argv,
-                                FastoObject* out) {
+common::Error CommandsApi::Incr(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);
@@ -202,10 +181,7 @@ common::Error CommandsApi::Incr(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::Decr(internal::CommandHandler* handler,
-                                int argc,
-                                const char** argv,
-                                FastoObject* out) {
+common::Error CommandsApi::Decr(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
   NKey key(argv[0]);

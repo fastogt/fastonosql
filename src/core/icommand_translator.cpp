@@ -54,13 +54,11 @@ common::Error ParseCommands(const std::string& cmd, std::vector<std::string>* cm
   return common::Error();
 }
 
-ICommandTranslator::ICommandTranslator(const std::vector<CommandHolder>& commands)
-    : commands_(commands) {}
+ICommandTranslator::ICommandTranslator(const std::vector<CommandHolder>& commands) : commands_(commands) {}
 
 ICommandTranslator::~ICommandTranslator() {}
 
-common::Error ICommandTranslator::SelectDBCommand(const std::string& name,
-                                                  std::string* cmdstring) const {
+common::Error ICommandTranslator::SelectDBCommand(const std::string& name, std::string* cmdstring) const {
   if (!cmdstring) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -96,8 +94,7 @@ common::Error ICommandTranslator::RenameKeyCommand(const NKey& key,
   return RenameKeyCommandImpl(key, new_name, cmdstring);
 }
 
-common::Error ICommandTranslator::CreateKeyCommand(const NDbKValue& key,
-                                                   std::string* cmdstring) const {
+common::Error ICommandTranslator::CreateKeyCommand(const NDbKValue& key, std::string* cmdstring) const {
   if (!cmdstring) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -115,9 +112,7 @@ common::Error ICommandTranslator::LoadKeyCommand(const NKey& key,
   return LoadKeyCommandImpl(key, type, cmdstring);
 }
 
-common::Error ICommandTranslator::ChangeKeyTTLCommand(const NKey& key,
-                                                      ttl_t ttl,
-                                                      std::string* cmdstring) const {
+common::Error ICommandTranslator::ChangeKeyTTLCommand(const NKey& key, ttl_t ttl, std::string* cmdstring) const {
   if (!cmdstring) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }
@@ -173,8 +168,7 @@ common::Error ICommandTranslator::PublishCommand(const NDbPSChannel& channel,
   return PublishCommandImpl(channel, message, cmdstring);
 }
 
-common::Error ICommandTranslator::SubscribeCommand(const NDbPSChannel& channel,
-                                                   std::string* cmdstring) const {
+common::Error ICommandTranslator::SubscribeCommand(const NDbPSChannel& channel, std::string* cmdstring) const {
   if (!cmdstring) {
     return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
   }

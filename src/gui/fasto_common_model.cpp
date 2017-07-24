@@ -181,8 +181,7 @@ void FastoCommonModel::changeValue(const core::NDbKValue& value) {
 
     if (child->key() == key) {  // optimize easy
       child->setValue(value.Value());
-      updateItem(index(i, FastoCommonItem::eValue, QModelIndex()),
-                 index(i, FastoCommonItem::eType, QModelIndex()));
+      updateItem(index(i, FastoCommonItem::eValue, QModelIndex()), index(i, FastoCommonItem::eType, QModelIndex()));
       break;
     }
   }

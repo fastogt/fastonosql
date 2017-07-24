@@ -35,29 +35,23 @@ class CommandTranslator : public ICommandTranslator {
   explicit CommandTranslator(const std::vector<CommandHolder>& commands);
 
  private:
-  virtual common::Error CreateKeyCommandImpl(const NDbKValue& key,
-                                             std::string* cmdstring) const override;
+  virtual common::Error CreateKeyCommandImpl(const NDbKValue& key, std::string* cmdstring) const override;
   virtual common::Error LoadKeyCommandImpl(const NKey& key,
                                            common::Value::Type type,
                                            std::string* cmdstring) const override;
-  virtual common::Error DeleteKeyCommandImpl(const NKey& key,
-                                             std::string* cmdstring) const override;
+  virtual common::Error DeleteKeyCommandImpl(const NKey& key, std::string* cmdstring) const override;
   virtual common::Error RenameKeyCommandImpl(const NKey& key,
                                              const std::string& new_name,
                                              std::string* cmdstring) const override;
-  virtual common::Error ChangeKeyTTLCommandImpl(const NKey& key,
-                                                ttl_t ttl,
-                                                std::string* cmdstring) const override;
-  virtual common::Error LoadKeyTTLCommandImpl(const NKey& key,
-                                              std::string* cmdstring) const override;
+  virtual common::Error ChangeKeyTTLCommandImpl(const NKey& key, ttl_t ttl, std::string* cmdstring) const override;
+  virtual common::Error LoadKeyTTLCommandImpl(const NKey& key, std::string* cmdstring) const override;
 
   virtual bool IsLoadKeyCommandImpl(const CommandInfo& cmd) const override;
 
   virtual common::Error PublishCommandImpl(const NDbPSChannel& channel,
                                            const std::string& message,
                                            std::string* cmdstring) const override;
-  virtual common::Error SubscribeCommandImpl(const NDbPSChannel& channel,
-                                             std::string* cmdstring) const override;
+  virtual common::Error SubscribeCommandImpl(const NDbPSChannel& channel, std::string* cmdstring) const override;
 };
 
 }  // namespace unqlite

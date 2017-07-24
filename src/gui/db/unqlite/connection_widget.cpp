@@ -31,18 +31,15 @@ namespace unqlite {
 ConnectionWidget::ConnectionWidget(QWidget* parent)
     : ConnectionLocalWidget(false, trDBPath, trCaption, trFilter, parent) {
   createDBIfMissing_ = new QCheckBox;
-  VERIFY(connect(createDBIfMissing_, &QCheckBox::stateChanged, this,
-                 &ConnectionWidget::createDBStateChange));
+  VERIFY(connect(createDBIfMissing_, &QCheckBox::stateChanged, this, &ConnectionWidget::createDBStateChange));
   addWidget(createDBIfMissing_);
   readOnlyDB_ = new QCheckBox;
-  VERIFY(connect(readOnlyDB_, &QCheckBox::stateChanged, this,
-                 &ConnectionWidget::readOnlyDBStateChange));
+  VERIFY(connect(readOnlyDB_, &QCheckBox::stateChanged, this, &ConnectionWidget::readOnlyDBStateChange));
   addWidget(readOnlyDB_);
 }
 
 void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
-  proxy::unqlite::ConnectionSettings* unq =
-      static_cast<proxy::unqlite::ConnectionSettings*>(connection);
+  proxy::unqlite::ConnectionSettings* unq = static_cast<proxy::unqlite::ConnectionSettings*>(connection);
   if (unq) {
     core::unqlite::Config config = unq->Info();
     createDBIfMissing_->setChecked(config.CreateIfMissingDB());

@@ -57,8 +57,7 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionRemoteWidget(par
 }
 
 void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
-  proxy::memcached::ConnectionSettings* memc =
-      static_cast<proxy::memcached::ConnectionSettings*>(connection);
+  proxy::memcached::ConnectionSettings* memc = static_cast<proxy::memcached::ConnectionSettings*>(connection);
   if (memc) {
     core::memcached::Config config = memc->Info();
     std::string uname = config.user;

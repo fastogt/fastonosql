@@ -44,8 +44,7 @@ QVariant HashTableModel::data(const QModelIndex& index, int role) const {
 
   // int row = index.row();
   int col = index.column();
-  KeyValueTableItem* node =
-      common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
+  KeyValueTableItem* node = common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
   QVariant result;
   if (role == Qt::DisplayRole) {
     if (col == KeyValueTableItem::kKey) {
@@ -65,8 +64,7 @@ bool HashTableModel::setData(const QModelIndex& index, const QVariant& value, in
     // int row = index.row();
     int col = index.column();
 
-    KeyValueTableItem* node =
-        common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
+    KeyValueTableItem* node = common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
 
     if (!node) {
       return false;
@@ -195,8 +193,7 @@ common::HashValue* HashTableModel::hashValue() const {
 void HashTableModel::insertRow(const QString& key, const QString& value) {
   size_t size = data_.size();
   beginInsertRows(QModelIndex(), size, size);
-  data_.insert(data_.begin() + size - 1,
-               new KeyValueTableItem(key, value, KeyValueTableItem::RemoveAction));
+  data_.insert(data_.begin() + size - 1, new KeyValueTableItem(key, value, KeyValueTableItem::RemoveAction));
   KeyValueTableItem* last = static_cast<KeyValueTableItem*>(data_.back());
   last->setKey(QString());
   last->setValue(QString());

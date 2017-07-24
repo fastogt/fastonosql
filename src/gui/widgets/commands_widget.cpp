@@ -41,8 +41,7 @@ namespace gui {
 CommandsWidget::CommandsWidget(QWidget* parent) : QWidget(parent), logTextEdit_(new QTextEdit) {
   logTextEdit_->setReadOnly(true);
   logTextEdit_->setContextMenuPolicy(Qt::CustomContextMenu);
-  VERIFY(connect(logTextEdit_, &QTextEdit::customContextMenuRequested, this,
-                 &CommandsWidget::showContextMenu));
+  VERIFY(connect(logTextEdit_, &QTextEdit::customContextMenuRequested, this, &CommandsWidget::showContextMenu));
 
   QHBoxLayout* hlayout = new QHBoxLayout;
   hlayout->setContentsMargins(0, 0, 0, 0);
@@ -55,8 +54,7 @@ CommandsWidget::CommandsWidget(QWidget* parent) : QWidget(parent), logTextEdit_(
 
 void CommandsWidget::addCommand(core::FastoObjectCommandIPtr command) {
   QTime time = QTime::currentTime();
-  logTextEdit_->setTextColor(command->CommandLoggingType() == core::C_INNER ? QColor(Qt::gray)
-                                                                            : QColor(Qt::black));
+  logTextEdit_->setTextColor(command->CommandLoggingType() == core::C_INNER ? QColor(Qt::gray) : QColor(Qt::black));
   QString mess;
   common::ConvertFromString(command->InputCommand(), &mess);
   std::string stype = common::ConvertToString(command->ConnectionType());

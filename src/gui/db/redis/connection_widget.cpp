@@ -86,8 +86,7 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(paren
   passwordBox_ = new QLineEdit;
   passwordBox_->setEchoMode(QLineEdit::Password);
   passwordEchoModeButton_ = new QPushButton(translations::trShow);
-  VERIFY(connect(passwordEchoModeButton_, &QPushButton::clicked, this,
-                 &ConnectionWidget::togglePasswordEchoMode));
+  VERIFY(connect(passwordEchoModeButton_, &QPushButton::clicked, this, &ConnectionWidget::togglePasswordEchoMode));
   passwordLayout->addWidget(passwordBox_);
   passwordLayout->addWidget(passwordEchoModeButton_);
   addLayout(passwordLayout);
@@ -116,8 +115,7 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(paren
 }
 
 void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
-  proxy::redis::ConnectionSettings* redis =
-      static_cast<proxy::redis::ConnectionSettings*>(connection);
+  proxy::redis::ConnectionSettings* redis = static_cast<proxy::redis::ConnectionSettings*>(connection);
   if (redis) {
     core::redis::Config config = redis->Info();
     bool is_remote = config.hostsocket.empty();
@@ -212,8 +210,7 @@ bool ConnectionWidget::isValidCredential() const {
   return true;
 }
 
-proxy::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(
-    const proxy::connection_path_t& path) const {
+proxy::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(const proxy::connection_path_t& path) const {
   proxy::redis::ConnectionSettings* conn = new proxy::redis::ConnectionSettings(path);
   core::redis::Config config = conn->Info();
   bool is_remote = remote_->isChecked();

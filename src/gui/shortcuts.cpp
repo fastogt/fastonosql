@@ -35,36 +35,25 @@ Qt::ControlModifier) &&
 }*/
 
 // global variables
-const common::qt::gui::FastoQKeySequence openKey =
-    common::qt::gui::FastoQKeySequence(QKeySequence::Open);
-const common::qt::gui::FastoQKeySequence saveKey =
-    common::qt::gui::FastoQKeySequence(QKeySequence::Save);
-const common::qt::gui::FastoQKeySequence saveAsKey =
-    common::qt::gui::FastoQKeySequence(QKeySequence::SaveAs);
+const common::qt::gui::FastoQKeySequence openKey = common::qt::gui::FastoQKeySequence(QKeySequence::Open);
+const common::qt::gui::FastoQKeySequence saveKey = common::qt::gui::FastoQKeySequence(QKeySequence::Save);
+const common::qt::gui::FastoQKeySequence saveAsKey = common::qt::gui::FastoQKeySequence(QKeySequence::SaveAs);
 
-const common::qt::gui::FastoQKeySequence closeKey =
-    common::qt::gui::FastoQKeySequence(QKeySequence::Close);
-const common::qt::gui::FastoQKeySequence newTabKey =
-    common::qt::gui::FastoQKeySequence(QKeySequence::AddTab);
-const common::qt::gui::FastoQKeySequence nextTabKey =
-    common::qt::gui::FastoQKeySequence(QKeySequence::NextChild);
-const common::qt::gui::FastoQKeySequence prevTabKey =
-    common::qt::gui::FastoQKeySequence(QKeySequence::PreviousChild);
-const common::qt::gui::FastoQKeySequence refreshKey =
-    common::qt::gui::FastoQKeySequence(QKeySequence::Refresh);
+const common::qt::gui::FastoQKeySequence closeKey = common::qt::gui::FastoQKeySequence(QKeySequence::Close);
+const common::qt::gui::FastoQKeySequence newTabKey = common::qt::gui::FastoQKeySequence(QKeySequence::AddTab);
+const common::qt::gui::FastoQKeySequence nextTabKey = common::qt::gui::FastoQKeySequence(QKeySequence::NextChild);
+const common::qt::gui::FastoQKeySequence prevTabKey = common::qt::gui::FastoQKeySequence(QKeySequence::PreviousChild);
+const common::qt::gui::FastoQKeySequence refreshKey = common::qt::gui::FastoQKeySequence(QKeySequence::Refresh);
 const common::qt::gui::FastoQKeySequence executeKey =
     common::qt::gui::FastoQKeySequence(Qt::ControlModifier, Qt::Key_Return);
 
 #ifdef OS_MAC
-const common::qt::gui::FastoQKeySequence fullScreenKey =
-    common::qt::gui::FastoQKeySequence(QKeySequence::FullScreen);
-const common::qt::gui::FastoQKeySequence quitKey =
-    common::qt::gui::FastoQKeySequence(QKeySequence::Quit);
+const common::qt::gui::FastoQKeySequence fullScreenKey = common::qt::gui::FastoQKeySequence(QKeySequence::FullScreen);
+const common::qt::gui::FastoQKeySequence quitKey = common::qt::gui::FastoQKeySequence(QKeySequence::Quit);
 #else
 const common::qt::gui::FastoQKeySequence fullScreenKey =
     common::qt::gui::FastoQKeySequence(Qt::ControlModifier | Qt::ShiftModifier, Qt::Key_F11);
-const common::qt::gui::FastoQKeySequence quitKey =
-    common::qt::gui::FastoQKeySequence(Qt::ControlModifier, Qt::Key_Q);
+const common::qt::gui::FastoQKeySequence quitKey = common::qt::gui::FastoQKeySequence(Qt::ControlModifier, Qt::Key_Q);
 #endif
 
 bool isOpenShortcut(QKeyEvent* keyEvent) {

@@ -91,8 +91,7 @@ void FastoTextView::setModel(QAbstractItemModel* model) {
 
 void FastoTextView::saveChanges() {
   QModelIndex index = editor_->selectedItem(1);  // eValue
-  common::StringValue* string =
-      common::Value::CreateStringValue(common::ConvertToString(editor_->text().simplified()));
+  common::StringValue* string = common::Value::CreateStringValue(common::ConvertToString(editor_->text().simplified()));
   QVariant var = QVariant::fromValue(core::NValue(string));
   editor_->setData(index, var, Qt::EditRole);
 }
@@ -104,8 +103,7 @@ void FastoTextView::textChange() {
   }
 
   QModelIndex index = editor_->selectedItem(1);  // eValue
-  bool isEnabled = !editor_->isReadOnly() && index.isValid() &&
-                   (index.flags() & Qt::ItemIsEditable) &&
+  bool isEnabled = !editor_->isReadOnly() && index.isValid() && (index.flags() & Qt::ItemIsEditable) &&
                    index.data() != editor_->text().simplified();
 
   saveChangeButton_->setEnabled(isEnabled);

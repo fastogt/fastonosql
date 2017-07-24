@@ -35,11 +35,9 @@ namespace fastonosql {
 namespace core {
 namespace memcached {
 
-CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands)
-    : ICommandTranslator(commands) {}
+CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands) : ICommandTranslator(commands) {}
 
-common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key,
-                                                      std::string* cmdstring) const {
+common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, std::string* cmdstring) const {
   std::string key_str = key.KeyString();
   std::string value_str = key.ValueString();
   *cmdstring = common::MemSPrintf(MEMCACHED_SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
@@ -56,8 +54,7 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
   return common::Error();
 }
 
-common::Error CommandTranslator::DeleteKeyCommandImpl(const NKey& key,
-                                                      std::string* cmdstring) const {
+common::Error CommandTranslator::DeleteKeyCommandImpl(const NKey& key, std::string* cmdstring) const {
   std::string key_str = key.Key();
   *cmdstring = common::MemSPrintf(MEMCACHED_DELETE_KEY_PATTERN_1ARGS_S, key_str);
   return common::Error();
@@ -71,16 +68,13 @@ common::Error CommandTranslator::RenameKeyCommandImpl(const NKey& key,
   return common::Error();
 }
 
-common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key,
-                                                         ttl_t ttl,
-                                                         std::string* cmdstring) const {
+common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key, ttl_t ttl, std::string* cmdstring) const {
   std::string key_str = key.Key();
   *cmdstring = common::MemSPrintf(MEMCACHED_CHANGE_TTL_2ARGS_SI, key_str, ttl);
   return common::Error();
 }
 
-common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key,
-                                                       std::string* cmdstring) const {
+common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key, std::string* cmdstring) const {
   std::string key_str = key.Key();
   *cmdstring = common::MemSPrintf(MEMCACHED_GET_TTL_1ARGS_S, key_str);
   return common::Error();
@@ -97,18 +91,17 @@ common::Error CommandTranslator::PublishCommandImpl(const NDbPSChannel& channel,
   UNUSED(message);
   UNUSED(cmdstring);
 
-  std::string errorMsg = common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE
-                                            " not supported publish command for Memcached.");
+  std::string errorMsg =
+      common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported publish command for Memcached.");
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
 }
 
-common::Error CommandTranslator::SubscribeCommandImpl(const NDbPSChannel& channel,
-                                                      std::string* cmdstring) const {
+common::Error CommandTranslator::SubscribeCommandImpl(const NDbPSChannel& channel, std::string* cmdstring) const {
   UNUSED(channel);
   UNUSED(cmdstring);
 
-  std::string errorMsg = common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE
-                                            " not supported subscribe command for Memcached.");
+  std::string errorMsg =
+      common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported subscribe command for Memcached.");
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
 }
 

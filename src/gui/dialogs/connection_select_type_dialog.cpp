@@ -62,10 +62,8 @@ ConnectionSelectTypeDialog::ConnectionSelectTypeDialog(QWidget* parent) : QDialo
   QHBoxLayout* bottomLayout = new QHBoxLayout;
   buttonBox_ = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   buttonBox_->setOrientation(Qt::Horizontal);
-  VERIFY(
-      connect(buttonBox_, &QDialogButtonBox::accepted, this, &ConnectionSelectTypeDialog::accept));
-  VERIFY(
-      connect(buttonBox_, &QDialogButtonBox::rejected, this, &ConnectionSelectTypeDialog::reject));
+  VERIFY(connect(buttonBox_, &QDialogButtonBox::accepted, this, &ConnectionSelectTypeDialog::accept));
+  VERIFY(connect(buttonBox_, &QDialogButtonBox::rejected, this, &ConnectionSelectTypeDialog::reject));
   bottomLayout->addWidget(buttonBox_);
   mainLayout->addLayout(bottomLayout);
 

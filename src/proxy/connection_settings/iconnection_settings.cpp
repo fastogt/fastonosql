@@ -64,8 +64,7 @@ ConnectionSettingsPath::ConnectionSettingsPath() : path_() {}
 
 ConnectionSettingsPath::ConnectionSettingsPath(const std::string& path) : path_(path) {}
 
-ConnectionSettingsPath::ConnectionSettingsPath(const common::file_system::ascii_string_path& path)
-    : path_(path) {}
+ConnectionSettingsPath::ConnectionSettingsPath(const common::file_system::ascii_string_path& path) : path_(path) {}
 
 bool ConnectionSettingsPath::Equals(const ConnectionSettingsPath& path) const {
   return path_.Equals(path.path_);
@@ -84,13 +83,11 @@ std::string ConnectionSettingsPath::ToString() const {
 }
 
 ConnectionSettingsPath ConnectionSettingsPath::Root() {
-  static common::file_system::ascii_string_path root(
-      common::file_system::get_separator_string<char>());
+  static common::file_system::ascii_string_path root(common::file_system::get_separator_string<char>());
   return ConnectionSettingsPath(root);
 }
 
-IConnectionSettings::IConnectionSettings(const connection_path_t& connectionPath,
-                                         core::connectionTypes type)
+IConnectionSettings::IConnectionSettings(const connection_path_t& connectionPath, core::connectionTypes type)
     : connection_path_(connectionPath), type_(type), msinterval_(0) {}
 
 IConnectionSettings::~IConnectionSettings() {}
@@ -123,8 +120,7 @@ std::string IConnectionSettings::ToString() const {
   return common::MemSPrintf("%d,%s,%" PRIu32, type_, connection_path_.ToString(), msinterval_);
 }
 
-IConnectionSettingsBase::IConnectionSettingsBase(const connection_path_t& connectionPath,
-                                                 core::connectionTypes type)
+IConnectionSettingsBase::IConnectionSettingsBase(const connection_path_t& connectionPath, core::connectionTypes type)
     : IConnectionSettings(connectionPath, type), hash_() {
   SetConnectionPathAndUpdateHash(connectionPath);
 }
@@ -146,8 +142,7 @@ std::string IConnectionSettingsBase::Hash() const {
 }
 
 std::string IConnectionSettingsBase::LoggingPath() const {
-  const std::string logDir =
-      common::ConvertToString(SettingsManager::Instance().LoggingDirectory());
+  const std::string logDir = common::ConvertToString(SettingsManager::Instance().LoggingDirectory());
   const std::string prefix = logDir + Hash();
 #ifdef BUILD_WITH_REDIS
   if (type_ == core::REDIS) {

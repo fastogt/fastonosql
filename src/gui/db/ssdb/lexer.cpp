@@ -24,11 +24,9 @@ namespace fastonosql {
 namespace gui {
 namespace ssdb {
 
-SsdbApi::SsdbApi(QsciLexer* lexer)
-    : BaseQsciApiCommandHolder(core::ssdb::DBConnection::Commands(), lexer) {}
+SsdbApi::SsdbApi(QsciLexer* lexer) : BaseQsciApiCommandHolder(core::ssdb::DBConnection::Commands(), lexer) {}
 
-Lexer::Lexer(QObject* parent)
-    : BaseQsciLexerCommandHolder(core::ssdb::DBConnection::Commands(), parent) {
+Lexer::Lexer(QObject* parent) : BaseQsciLexerCommandHolder(core::ssdb::DBConnection::Commands(), parent) {
   setAPIs(new SsdbApi(this));
 }
 

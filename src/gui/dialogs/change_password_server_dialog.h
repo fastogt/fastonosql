@@ -48,9 +48,7 @@ class ChangePasswordServerDialog : public QDialog {
  public:
   enum { min_width = 240, min_height = 120 };
 
-  explicit ChangePasswordServerDialog(const QString& title,
-                                      proxy::IServerSPtr server,
-                                      QWidget* parent = 0);
+  explicit ChangePasswordServerDialog(const QString& title, proxy::IServerSPtr server, QWidget* parent = 0);
 
  private Q_SLOTS:
   void tryToCreatePassword();
