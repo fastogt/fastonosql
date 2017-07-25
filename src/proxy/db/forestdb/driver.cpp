@@ -85,7 +85,7 @@ bool Driver::IsAuthenticated() const {
 
 std::string Driver::Path() const {
   core::forestdb::Config config = impl_->config();
-  return config.dbname;
+  return config.db_path;
 }
 
 std::string Driver::NsSeparator() const {

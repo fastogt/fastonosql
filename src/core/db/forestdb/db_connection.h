@@ -25,7 +25,7 @@
 #include <common/macros.h>  // for WARN_UNUSED_RESULT
 
 #include "core/command_info.h"             // for UNDEFINED_EXAMPLE_STR, UNDEFINED_...
-#include "core/connection_types.h"         // for connectionTypes::LMDB
+#include "core/connection_types.h"         // for connectionTypes::FORESTDB
 #include "core/db_key.h"                   // for NDbKValue, NKey, NKeys
 #include "core/internal/cdb_connection.h"  // for CDBConnection
 
@@ -53,7 +53,7 @@ class IDataBaseInfo;
 namespace fastonosql {
 namespace core {
 namespace forestdb {
-struct lmdb;
+struct fdb;
 }
 }  // namespace core
 }  // namespace fastonosql
@@ -62,7 +62,7 @@ namespace fastonosql {
 namespace core {
 namespace forestdb {
 
-typedef lmdb NativeConnection;
+typedef fdb NativeConnection;
 
 common::Error CreateConnection(const Config& config, NativeConnection** context);
 common::Error TestConnection(const Config& config);

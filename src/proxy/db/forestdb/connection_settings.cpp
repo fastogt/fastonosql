@@ -22,14 +22,14 @@
 
 #include <common/convert2string.h>  // for ConvertFromString
 
-#include "core/connection_types.h"  // for core::connectionTypes::LMDB
+#include "core/connection_types.h"  // for core::connectionTypes::FORESTDB
 
 namespace fastonosql {
 namespace proxy {
 namespace forestdb {
 
 ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
-    : IConnectionSettingsLocal(connectionName, core::LMDB), info_() {}
+    : IConnectionSettingsLocal(connectionName, core::FORESTDB), info_() {}
 
 core::forestdb::Config ConnectionSettings::Info() const {
   return info_;
@@ -56,11 +56,11 @@ void ConnectionSettings::SetNsSeparator(const std::string& ns) {
 }
 
 std::string ConnectionSettings::DBPath() const {
-  return info_.dbname;
+  return info_.db_path;
 }
 
 void ConnectionSettings::SetDBPath(const std::string& db_path) {
-  info_.dbname = db_path;
+  info_.db_path = db_path;
 }
 
 std::string ConnectionSettings::CommandLine() const {

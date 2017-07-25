@@ -56,11 +56,11 @@ void ConnectionSettings::SetNsSeparator(const std::string& ns) {
 }
 
 std::string ConnectionSettings::DBPath() const {
-  return info_.dbname;
+  return info_.db_path;
 }
 
 void ConnectionSettings::SetDBPath(const std::string& db_path) {
-  info_.dbname = db_path;
+  info_.db_path = db_path;
 }
 
 std::string ConnectionSettings::CommandLine() const {

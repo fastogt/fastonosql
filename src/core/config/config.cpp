@@ -30,14 +30,14 @@ extern "C" {
 namespace fastonosql {
 namespace core {
 
-LocalConfig::LocalConfig(const std::string& dbname) : BaseConfig(), dbname(dbname) {}
+LocalConfig::LocalConfig(const std::string& db_path) : BaseConfig(), db_path(db_path) {}
 
 config_args_t LocalConfig::Args() const {
   config_args_t argv;
 
-  if (!dbname.empty()) {
+  if (!db_path.empty()) {
     argv.push_back("-f");
-    argv.push_back(dbname);
+    argv.push_back(db_path);
   }
 
   if (!delimiter.empty()) {

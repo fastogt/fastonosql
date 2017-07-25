@@ -18,9 +18,17 @@
 
 #include "gui/db/forestdb/connection_widget.h"
 
-#include <QCheckBox>
+#include <QLineEdit>
+#include <QHBoxLayout>
+#include <QLabel>
+
+#include <common/qt/convert2string.h>
 
 #include "proxy/db/forestdb/connection_settings.h"
+
+namespace {
+const QString trDBName = QObject::tr("Database name:");
+}
 
 namespace fastonosql {
 namespace gui {
@@ -28,21 +36,28 @@ namespace forestdb {
 
 ConnectionWidget::ConnectionWidget(QWidget* parent)
     : ConnectionLocalWidget(true, trDBPath, trCaption, trFilter, parent) {
-  readOnlyDB_ = new QCheckBox;
-  addWidget(readOnlyDB_);
+  QHBoxLayout* name_layout = new QHBoxLayout;
+  nameLabel_ = new QLabel;
+  name_layout->addWidget(nameLabel_);
+  nameEdit_ = new QLineEdit;
+  name_layout->addWidget(nameEdit_);
+  addLayout(name_layout);
 }
 
 void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
   proxy::forestdb::ConnectionSettings* forestdb = static_cast<proxy::forestdb::ConnectionSettings*>(connection);
   if (forestdb) {
     core::forestdb::Config config = forestdb->Info();
-    readOnlyDB_->setChecked(config.ReadOnlyDB());
+    QString qdb_name;
+    if (common::ConvertFromString(config.db_name, &qdb_name)) {
+      nameEdit_->setText(qdb_name);
+    }
   }
   ConnectionLocalWidget::syncControls(forestdb);
 }
 
 void ConnectionWidget::retranslateUi() {
-  readOnlyDB_->setText(trReadOnlyDB);
+  nameLabel_->setText(trDBName);
   ConnectionLocalWidget::retranslateUi();
 }
 
@@ -50,7 +65,7 @@ proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
     const proxy::connection_path_t& path) const {
   proxy::forestdb::ConnectionSettings* conn = new proxy::forestdb::ConnectionSettings(path);
   core::forestdb::Config config = conn->Info();
-  config.SetReadOnlyDB(readOnlyDB_->isChecked());
+  config.db_name = common::ConvertToString(nameEdit_->text());
   conn->SetInfo(config);
   return conn;
 }

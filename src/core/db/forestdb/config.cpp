@@ -24,8 +24,6 @@
 #include <string>  // for string, basic_string
 #include <vector>  // for vector
 
-#include <lmdb.h>  // for mdb_txn_abort, MDB_val
-
 extern "C" {
 #include "sds.h"
 }
@@ -53,12 +51,9 @@ Config parseOptions(int argc, char** argv) {
     } else if (!strcmp(argv[i], "-ns") && !lastarg) {
       cfg.ns_separator = argv[++i];
     } else if (!strcmp(argv[i], "-f") && !lastarg) {
-      cfg.dbname = argv[++i];
-    } else if (!strcmp(argv[i], "-e") && !lastarg) {
-      int env_flags;
-      if (common::ConvertFromString(argv[++i], &env_flags)) {
-        cfg.env_flags = env_flags;
-      }
+      cfg.db_path = argv[++i];
+    } else if (!strcmp(argv[i], "-n") && !lastarg) {
+      cfg.db_name = argv[++i];
     } else {
       if (argv[i][0] == '-') {
         const std::string buff = common::MemSPrintf(
@@ -78,19 +73,7 @@ Config parseOptions(int argc, char** argv) {
 
 }  // namespace
 
-Config::Config() : LocalConfig(common::file_system::prepare_path("~/test.lmdb")), env_flags(LMDB_DEFAULT_ENV_FLAGS) {}
-
-bool Config::ReadOnlyDB() const {
-  return env_flags & MDB_RDONLY;
-}
-
-void Config::SetReadOnlyDB(bool ro) {
-  if (ro) {
-    env_flags |= MDB_RDONLY;
-  } else {
-    env_flags &= ~MDB_RDONLY;
-  }
-}
+Config::Config() : LocalConfig(common::file_system::prepare_path("~/test.forestdb")), db_name("default") {}
 
 }  // namespace forestdb
 }  // namespace core
@@ -101,9 +84,9 @@ namespace common {
 std::string ConvertToString(const fastonosql::core::forestdb::Config& conf) {
   std::vector<std::string> argv = conf.Args();
 
-  if (conf.env_flags != LMDB_DEFAULT_ENV_FLAGS) {
-    argv.push_back("-e");
-    argv.push_back(common::ConvertToString(conf.env_flags));
+  if (!conf.db_name.empty()) {
+    argv.push_back("-n");
+    argv.push_back(conf.db_name);
   }
 
   return fastonosql::core::ConvertToStringConfigArgs(argv);

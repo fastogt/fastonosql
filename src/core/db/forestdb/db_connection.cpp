@@ -19,10 +19,11 @@
 #include "core/db/forestdb/db_connection.h"
 
 #include <errno.h>   // for EACCES
-#include <lmdb.h>    // for mdb_txn_abort, MDB_val
 #include <stdlib.h>  // for NULL, free, calloc
 #include <time.h>    // for time_t
 #include <string>    // for string
+
+#include <libforestdb/forestdb.h>
 
 #include <common/convert2string.h>
 #include <common/file_system.h>
@@ -36,66 +37,50 @@
 
 #include "core/global.h"  // for FastoObject, etc
 
-#define LMDB_OK 0
-
 namespace fastonosql {
 namespace core {
 namespace forestdb {
-struct lmdb {
-  MDB_env* env;
-  MDB_dbi dbir;
+struct fdb {
+  fdb_file_handle* handle;
+  fdb_kvs_handle* kvs;
+  char* db_name;
 };
 
 namespace {
 
-unsigned int lmdb_db_flag_from_env_flags(int env_flags) {
-  return (env_flags & MDB_RDONLY) ? MDB_RDONLY : 0;
-}
-
-int lmdb_open(lmdb** context, const char* db_path, const char* db_name, int env_flags, unsigned int db_env_flags) {
-  lmdb* lcontext = reinterpret_cast<lmdb*>(calloc(1, sizeof(lmdb)));
-  int rc = mdb_env_create(&lcontext->env);
-  if (rc != LMDB_OK) {
+fdb_status forestdb_open(fdb** context, const char* db_path, const char* db_name, fdb_config* fconfig) {
+  fdb* lcontext = reinterpret_cast<fdb*>(calloc(1, sizeof(fdb)));
+  fdb_status rc = fdb_open(&lcontext->handle, db_path, fconfig);
+  if (rc != FDB_RESULT_SUCCESS) {
     free(lcontext);
     return rc;
   }
 
-  rc = mdb_env_open(lcontext->env, db_path, env_flags, 0664);
-  if (rc != LMDB_OK) {
+  fdb_kvs_config kvs_config = fdb_get_default_kvs_config();
+  rc = fdb_kvs_open(lcontext->handle, &lcontext->kvs, db_name, &kvs_config);
+  if (rc != FDB_RESULT_SUCCESS) {
     free(lcontext);
     return rc;
   }
 
-  MDB_txn* txn = NULL;
-  rc = mdb_txn_begin(lcontext->env, NULL, db_env_flags, &txn);
-  if (rc != LMDB_OK) {
-    free(lcontext);
-    return rc;
-  }
-
-  rc = mdb_dbi_open(txn, db_name, 0, &lcontext->dbir);
-  mdb_txn_abort(txn);
-  if (rc != LMDB_OK) {
-    free(lcontext);
-    return rc;
-  }
-
+  lcontext->db_name = common::utils::strdupornull(db_name);
   *context = lcontext;
   return rc;
 }
 
-void lmdb_close(lmdb** context) {
+void forestdb_close(fdb** context) {
   if (!context) {
     return;
   }
 
-  lmdb* lcontext = *context;
+  fdb* lcontext = *context;
   if (!lcontext) {
     return;
   }
 
-  mdb_dbi_close(lcontext->env, lcontext->dbir);
-  mdb_env_close(lcontext->env);
+  common::utils::freeifnotnull(lcontext->db_name);
+  fdb_kvs_close(lcontext->kvs);
+  fdb_close(lcontext->handle);
   free(lcontext);
   *context = NULL;
 }
@@ -120,7 +105,7 @@ common::Error ConnectionAllocatorTraits<forestdb::NativeConnection, forestdb::Co
 template <>
 common::Error ConnectionAllocatorTraits<forestdb::NativeConnection, forestdb::Config>::Disconnect(
     forestdb::NativeConnection** handle) {
-  forestdb::lmdb_close(handle);
+  forestdb::forestdb_close(handle);
   *handle = nullptr;
   return common::Error();
 }
@@ -136,17 +121,17 @@ bool ConnectionAllocatorTraits<forestdb::NativeConnection, forestdb::Config>::Is
 }
 
 template <>
-const char* CDBConnection<forestdb::NativeConnection, forestdb::Config, LMDB>::BasedOn() {
-  return "liblmdb";
+const char* CDBConnection<forestdb::NativeConnection, forestdb::Config, FORESTDB>::BasedOn() {
+  return "libforestdb";
 }
 
 template <>
-const char* CDBConnection<forestdb::NativeConnection, forestdb::Config, LMDB>::VersionApi() {
-  return STRINGIZE(MDB_VERSION_MAJOR) "." STRINGIZE(MDB_VERSION_MINOR) "." STRINGIZE(MDB_VERSION_PATCH);
+const char* CDBConnection<forestdb::NativeConnection, forestdb::Config, FORESTDB>::VersionApi() {
+  return fdb_get_lib_version();
 }
 
 template <>
-ConstantCommandsArray CDBConnection<forestdb::NativeConnection, forestdb::Config, LMDB>::Commands() {
+ConstantCommandsArray CDBConnection<forestdb::NativeConnection, forestdb::Config, FORESTDB>::Commands() {
   return forestdb::g_commands;
 }
 
@@ -160,18 +145,14 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   }
 
   DCHECK(*context == NULL);
-  struct lmdb* lcontext = NULL;
-  std::string folder = config.dbname;  // start point must be folder
-  common::tribool is_dir = common::file_system::is_directory(folder);
-  if (is_dir != common::SUCCESS) {
-    return common::make_error_value(common::MemSPrintf("Invalid input path(%s)", folder), common::ErrorValue::E_ERROR);
-  }
-
-  const char* db_path = common::utils::c_strornull(folder);
-  int env_flags = config.env_flags;
-  int st = lmdb_open(&lcontext, db_path, NULL, env_flags, lmdb_db_flag_from_env_flags(env_flags));
-  if (st != LMDB_OK) {
-    std::string buff = common::MemSPrintf("Fail open database: %s", mdb_strerror(st));
+  NativeConnection* lcontext = NULL;
+  fdb_config fconfig = fdb_get_default_config();
+  // fconfig.flags = FDB_OPEN_FLAG_CREATE;
+  const char* db_path = common::utils::c_strornull(config.db_path);  // start point must be file
+  const char* db_name = common::utils::c_strornull(config.db_name);
+  fdb_status st = forestdb_open(&lcontext, db_path, db_name, &fconfig);
+  if (st != FDB_RESULT_SUCCESS) {
+    std::string buff = common::MemSPrintf("Fail open database: %s", fdb_error_msg(st));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -186,7 +167,7 @@ common::Error TestConnection(const Config& config) {
     return er;
   }
 
-  lmdb_close(&ldb);
+  forestdb_close(&ldb);
   return common::Error();
 }
 
@@ -195,7 +176,7 @@ DBConnection::DBConnection(CDBConnectionClient* client)
 
 std::string DBConnection::CurrentDBName() const {
   if (connection_.handle_) {
-    return common::ConvertToString(connection_.handle_->dbir);
+    return connection_.handle_->db_name;
   }
 
   DNOTREACHED();
@@ -215,7 +196,7 @@ common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) 
 
   ServerInfo::Stats linfo;
   Config conf = config();
-  linfo.db_path = conf.dbname;
+  linfo.db_path = conf.db_path;
 
   *statsout = linfo;
   return common::Error();
@@ -226,27 +207,9 @@ common::Error DBConnection::SetInner(const std::string& key, const std::string& 
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  MDB_val mkey;
-  mkey.mv_size = key.size();
-  mkey.mv_data = const_cast<char*>(key.c_str());
-  MDB_val mval;
-  mval.mv_size = value.size();
-  mval.mv_data = const_cast<char*>(value.c_str());
-
-  MDB_txn* txn = NULL;
-  int env_flags = connection_.config_.env_flags;
-  int rc = mdb_txn_begin(connection_.handle_->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn);
-  if (rc == LMDB_OK) {
-    rc = mdb_put(txn, connection_.handle_->dbir, &mkey, &mval, 0);
-    if (rc == LMDB_OK) {
-      rc = mdb_txn_commit(txn);
-    } else {
-      mdb_txn_abort(txn);
-    }
-  }
-
-  if (rc != LMDB_OK) {
-    std::string buff = common::MemSPrintf("set function error: %s", mdb_strerror(rc));
+  fdb_status rc = fdb_set_kv(connection_.handle_->kvs, key.c_str(), key.size(), value.c_str(), value.size());
+  if (rc != FDB_RESULT_SUCCESS) {
+    std::string buff = common::MemSPrintf("set function error: %s", fdb_error_msg(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -258,24 +221,15 @@ common::Error DBConnection::GetInner(const std::string& key, std::string* ret_va
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  MDB_val mkey;
-  mkey.mv_size = key.size();
-  mkey.mv_data = const_cast<char*>(key.c_str());
-  MDB_val mval;
-
-  MDB_txn* txn = NULL;
-  int rc = mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn);
-  if (rc == LMDB_OK) {
-    rc = mdb_get(txn, connection_.handle_->dbir, &mkey, &mval);
-  }
-  mdb_txn_abort(txn);
-
-  if (rc != LMDB_OK) {
-    std::string buff = common::MemSPrintf("get function error: %s", mdb_strerror(rc));
+  void* value_out = NULL;
+  size_t valuelen_out = 0;
+  fdb_status rc = fdb_get_kv(connection_.handle_->kvs, key.c_str(), key.size(), &value_out, &valuelen_out);
+  if (rc != FDB_RESULT_SUCCESS) {
+    std::string buff = common::MemSPrintf("get function error: %s", fdb_error_msg(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
-  ret_val->assign(reinterpret_cast<const char*>(mval.mv_data), mval.mv_size);
+  ret_val->assign(reinterpret_cast<const char*>(value_out), valuelen_out);
   return common::Error();
 }
 
@@ -284,24 +238,9 @@ common::Error DBConnection::DelInner(const std::string& key) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  MDB_val mkey;
-  mkey.mv_size = key.size();
-  mkey.mv_data = const_cast<char*>(key.c_str());
-
-  MDB_txn* txn = NULL;
-  int env_flags = connection_.config_.env_flags;
-  int rc = mdb_txn_begin(connection_.handle_->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn);
-  if (rc == LMDB_OK) {
-    rc = mdb_del(txn, connection_.handle_->dbir, &mkey, NULL);
-    if (rc == LMDB_OK) {
-      rc = mdb_txn_commit(txn);
-    } else {
-      mdb_txn_abort(txn);
-    }
-  }
-
-  if (rc != LMDB_OK) {
-    std::string buff = common::MemSPrintf("delete function error: %s", mdb_strerror(rc));
+  fdb_status rc = fdb_del_kv(connection_.handle_->kvs, key.c_str(), key.size());
+  if (rc != FDB_RESULT_SUCCESS) {
+    std::string buff = common::MemSPrintf("delete function error: %s", fdb_error_msg(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -313,27 +252,27 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
                                      uint64_t count_keys,
                                      std::vector<std::string>* keys_out,
                                      uint64_t* cursor_out) {
-  MDB_cursor* cursor = NULL;
-  MDB_txn* txn = NULL;
-  int rc = mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn);
-  if (rc == LMDB_OK) {
-    rc = mdb_cursor_open(txn, connection_.handle_->dbir, &cursor);
-  }
+  fdb_iterator* it = NULL;
+  fdb_iterator_opt_t opt = FDB_ITR_NONE;
 
-  if (rc != LMDB_OK) {
-    mdb_txn_abort(txn);
-    std::string buff = common::MemSPrintf("Keys function error: %s", mdb_strerror(rc));
+  fdb_status rc = fdb_iterator_init(connection_.handle_->kvs, &it, NULL, 0, NULL, 0, opt);
+  if (rc != FDB_RESULT_SUCCESS) {
+    std::string buff = common::MemSPrintf("Keys function error: %s", fdb_error_msg(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
-  MDB_val key;
-  MDB_val data;
+  fdb_doc* doc = NULL;
   uint64_t offset_pos = cursor_in;
   uint64_t lcursor_out = 0;
   std::vector<std::string> lkeys_out;
-  while ((mdb_cursor_get(cursor, &key, &data, MDB_NEXT) == LMDB_OK)) {
+  do {
+    rc = fdb_iterator_get(it, &doc);
+    if (rc != FDB_RESULT_SUCCESS) {
+      break;
+    }
+
     if (lkeys_out.size() < count_keys) {
-      std::string skey(reinterpret_cast<const char*>(key.mv_data), key.mv_size);
+      std::string skey = std::string(static_cast<const char*>(doc->key), doc->keylen);
       if (common::MatchPattern(skey, pattern)) {
         if (offset_pos == 0) {
           lkeys_out.push_back(skey);
@@ -345,12 +284,12 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
       lcursor_out = cursor_in + count_keys;
       break;
     }
-  }
+    fdb_doc_free(doc);
+  } while (fdb_iterator_next(it) != FDB_RESULT_ITERATOR_FAIL);
+  fdb_iterator_close(it);
 
   *keys_out = lkeys_out;
   *cursor_out = lcursor_out;
-  mdb_cursor_close(cursor);
-  mdb_txn_abort(txn);
   return common::Error();
 }
 
@@ -358,100 +297,92 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
                                      const std::string& key_end,
                                      uint64_t limit,
                                      std::vector<std::string>* ret) {
-  MDB_cursor* cursor = NULL;
-  MDB_txn* txn = NULL;
-  int rc = mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn);
-  if (rc == LMDB_OK) {
-    rc = mdb_cursor_open(txn, connection_.handle_->dbir, &cursor);
-  }
+  fdb_iterator* it = NULL;
+  fdb_iterator_opt_t opt = FDB_ITR_NONE;
+  fdb_status rc = fdb_iterator_init(connection_.handle_->kvs, &it, key_start.c_str(), key_start.size(), key_end.c_str(),
+                                    key_end.size(), opt);
 
-  if (rc != LMDB_OK) {
-    mdb_txn_abort(txn);
-    std::string buff = common::MemSPrintf("Keys function error: %s", mdb_strerror(rc));
+  if (rc != FDB_RESULT_SUCCESS) {
+    std::string buff = common::MemSPrintf("Keys function error: %s", fdb_error_msg(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
-  MDB_val key;
-  MDB_val data;
-  while ((mdb_cursor_get(cursor, &key, &data, MDB_NEXT) == LMDB_OK) && limit > ret->size()) {
-    std::string skey(reinterpret_cast<const char*>(key.mv_data), key.mv_size);
-    if (key_start < skey && key_end > skey) {
-      ret->push_back(skey);
+  fdb_doc* doc = NULL;
+  do {
+    rc = fdb_iterator_get(it, &doc);
+    if (rc != FDB_RESULT_SUCCESS) {
+      break;
     }
-  }
 
-  mdb_cursor_close(cursor);
-  mdb_txn_abort(txn);
+    std::string key = std::string(static_cast<const char*>(doc->key), doc->keylen);
+    if (ret->size() < limit) {
+      if (key < key_end) {
+        ret->push_back(key);
+      }
+    } else {
+      break;
+    }
+    fdb_doc_free(doc);
+  } while (fdb_iterator_next(it) != FDB_RESULT_ITERATOR_FAIL);
+  fdb_iterator_close(it);
   return common::Error();
 }
 
 common::Error DBConnection::DBkcountImpl(size_t* size) {
-  MDB_cursor* cursor = NULL;
-  MDB_txn* txn = NULL;
-  int rc = mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn);
-  if (rc == LMDB_OK) {
-    rc = mdb_cursor_open(txn, connection_.handle_->dbir, &cursor);
-  }
+  fdb_iterator* it = NULL;
+  fdb_iterator_opt_t opt = FDB_ITR_NONE;
 
-  if (rc != LMDB_OK) {
-    mdb_txn_abort(txn);
-    std::string buff = common::MemSPrintf("DBKCOUNT function error: %s", mdb_strerror(rc));
+  fdb_status rc = fdb_iterator_init(connection_.handle_->kvs, &it, NULL, 0, NULL, 0, opt);
+  if (rc != FDB_RESULT_SUCCESS) {
+    std::string buff = common::MemSPrintf("Keys function error: %s", fdb_error_msg(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
-  MDB_val key;
-  MDB_val data;
   size_t sz = 0;
-  while (mdb_cursor_get(cursor, &key, &data, MDB_NEXT) == LMDB_OK) {
+  fdb_doc* doc = NULL;
+  do {
+    rc = fdb_iterator_get(it, &doc);
+    if (rc != FDB_RESULT_SUCCESS) {
+      break;
+    }
+
     sz++;
-  }
-  mdb_cursor_close(cursor);
-  mdb_txn_abort(txn);
+    fdb_doc_free(doc);
+  } while (fdb_iterator_next(it) != FDB_RESULT_ITERATOR_FAIL);
+  fdb_iterator_close(it);
 
   *size = sz;
   return common::Error();
 }
 
 common::Error DBConnection::FlushDBImpl() {
-  MDB_cursor* cursor = NULL;
-  MDB_txn* txn = NULL;
-  int env_flags = connection_.config_.env_flags;
-  int rc = mdb_txn_begin(connection_.handle_->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn);
-  if (rc == LMDB_OK) {
-    rc = mdb_cursor_open(txn, connection_.handle_->dbir, &cursor);
-  }
+  fdb_iterator* it = NULL;
+  fdb_iterator_opt_t opt = FDB_ITR_NONE;
 
-  if (rc != LMDB_OK) {
-    mdb_txn_abort(txn);
-    std::string buff = common::MemSPrintf("flushdb function error: %s", mdb_strerror(rc));
+  fdb_status rc = fdb_iterator_init(connection_.handle_->kvs, &it, NULL, 0, NULL, 0, opt);
+  if (rc != FDB_RESULT_SUCCESS) {
+    std::string buff = common::MemSPrintf("Keys function error: %s", fdb_error_msg(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
-  MDB_val key;
-  MDB_val data;
-  size_t sz = 0;
-  while (mdb_cursor_get(cursor, &key, &data, MDB_NEXT) == LMDB_OK) {
-    sz++;
-    rc = mdb_del(txn, connection_.handle_->dbir, &key, NULL);
-    if (rc != LMDB_OK) {
-      mdb_cursor_close(cursor);
-      mdb_txn_abort(txn);
-      std::string buff = common::MemSPrintf("del function error: %s", mdb_strerror(rc));
+  fdb_doc* doc = NULL;
+  do {
+    rc = fdb_iterator_get(it, &doc);
+    if (rc != FDB_RESULT_SUCCESS) {
+      break;
+    }
+
+    std::string key;
+    rc = fdb_del_kv(connection_.handle_->kvs, key.c_str(), key.size());
+    if (rc != FDB_RESULT_SUCCESS) {
+      fdb_iterator_close(it);
+      std::string buff = common::MemSPrintf("del function error: %s", fdb_error_msg(rc));
       return common::make_error_value(buff, common::ErrorValue::E_ERROR);
     }
-  }
+    fdb_doc_free(doc);
+  } while (fdb_iterator_next(it) != FDB_RESULT_ITERATOR_FAIL);
+  fdb_iterator_close(it);
 
-  mdb_cursor_close(cursor);
-  if (sz != 0) {
-    rc = mdb_txn_commit(txn);
-    if (rc != LMDB_OK) {
-      std::string buff = common::MemSPrintf("commit function error: %s", mdb_strerror(rc));
-      return common::make_error_value(buff, common::ErrorValue::E_ERROR);
-    }
-    return common::Error();
-  }
-
-  mdb_txn_abort(txn);
   return common::Error();
 }
 
@@ -531,14 +462,14 @@ common::Error DBConnection::RenameImpl(const NKey& key, const std::string& new_k
 common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
   UNUSED(key);
   UNUSED(ttl);
-  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE " for LMDB not supported TTL commands.",
+  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE " for ForestDB not supported TTL commands.",
                                   common::ErrorValue::E_ERROR);
 }
 
 common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
   UNUSED(key);
   UNUSED(ttl);
-  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE " for LMDB not supported TTL commands.",
+  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE " for ForestDB not supported TTL commands.",
                                   common::ErrorValue::E_ERROR);
 }
 

@@ -27,7 +27,7 @@
 #include <common/macros.h>  // for NOTREACHED, DCHECK_EQ
 #include <common/value.h>   // for Value, Value::Type, etc
 
-#include "core/connection_types.h"  // for connectionTypes::LMDB
+#include "core/connection_types.h"  // for connectionTypes::FORESTDB
 #include "core/db_traits.h"
 
 #define MARKER "\r\n"
@@ -36,7 +36,7 @@ namespace fastonosql {
 namespace core {
 namespace {
 
-const std::vector<Field> lmdbCommonFields = {Field(LMDB_FILE_NAME_LABEL, common::Value::TYPE_STRING)};
+const std::vector<Field> lmdbCommonFields = {Field(FORESTDB_FILE_NAME_LABEL, common::Value::TYPE_STRING)};
 
 }  // namespace
 
@@ -48,7 +48,7 @@ std::vector<common::Value::Type> DBTraits<FORESTDB>::SupportedTypes() {
 
 template <>
 std::vector<info_field_t> DBTraits<FORESTDB>::InfoFields() {
-  return {std::make_pair(LMDB_STATS_LABEL, lmdbCommonFields)};
+  return {std::make_pair(FORESTDB_STATS_LABEL, lmdbCommonFields)};
 }
 namespace forestdb {
 
@@ -63,7 +63,7 @@ ServerInfo::Stats::Stats(const std::string& common_text) {
     size_t delem = line.find_first_of(':');
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
-    if (field == LMDB_FILE_NAME_LABEL) {
+    if (field == FORESTDB_FILE_NAME_LABEL) {
       db_path = value;
     }
     start = pos + 2;
@@ -82,9 +82,9 @@ common::Value* ServerInfo::Stats::ValueByIndex(unsigned char index) const {
   return nullptr;
 }
 
-ServerInfo::ServerInfo() : IServerInfo(LMDB) {}
+ServerInfo::ServerInfo() : IServerInfo(FORESTDB) {}
 
-ServerInfo::ServerInfo(const Stats& stats) : IServerInfo(LMDB), stats_(stats) {}
+ServerInfo::ServerInfo(const Stats& stats) : IServerInfo(FORESTDB), stats_(stats) {}
 
 common::Value* ServerInfo::ValueByIndexes(unsigned char property, unsigned char field) const {
   switch (property) {
@@ -99,7 +99,7 @@ common::Value* ServerInfo::ValueByIndexes(unsigned char property, unsigned char 
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo::Stats& value) {
-  return out << LMDB_FILE_NAME_LABEL ":" << value.db_path << MARKER;
+  return out << FORESTDB_FILE_NAME_LABEL ":" << value.db_path << MARKER;
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {
@@ -112,7 +112,7 @@ ServerInfo* MakeLmdbServerInfo(const std::string& content) {
   }
 
   ServerInfo* result = new ServerInfo;
-  static const std::vector<info_field_t> fields = DBTraits<LMDB>::InfoFields();
+  static const std::vector<info_field_t> fields = DBTraits<FORESTDB>::InfoFields();
   std::string word;
   DCHECK_EQ(fields.size(), 1);
 
@@ -130,7 +130,7 @@ ServerInfo* MakeLmdbServerInfo(const std::string& content) {
 
 std::string ServerInfo::ToString() const {
   std::stringstream str;
-  str << LMDB_STATS_LABEL MARKER << stats_;
+  str << FORESTDB_STATS_LABEL MARKER << stats_;
   return str.str();
 }
 

@@ -42,6 +42,9 @@
 #ifdef BUILD_WITH_UPSCALEDB
 #include "gui/db/upscaledb/connection_widget.h"
 #endif
+#ifdef BUILD_WITH_FORESTDB
+#include "gui/db/forestdb/connection_widget.h"
+#endif
 
 namespace fastonosql {
 namespace gui {
@@ -85,6 +88,11 @@ ConnectionBaseWidget* createWidgetImpl(core::connectionTypes type, QWidget* pare
 #ifdef BUILD_WITH_UPSCALEDB
   if (type == core::UPSCALEDB) {
     return new upscaledb::ConnectionWidget(parent);
+  }
+#endif
+#ifdef BUILD_WITH_FORESTDB
+  if (type == core::FORESTDB) {
+    return new forestdb::ConnectionWidget(parent);
   }
 #endif
   NOTREACHED();

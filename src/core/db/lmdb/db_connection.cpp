@@ -159,7 +159,7 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
 
   DCHECK(*context == NULL);
   struct lmdb* lcontext = NULL;
-  std::string folder = config.dbname;  // start point must be folder
+  std::string folder = config.db_path;  // start point must be folder
   common::tribool is_dir = common::file_system::is_directory(folder);
   if (is_dir != common::SUCCESS) {
     return common::make_error_value(common::MemSPrintf("Invalid input path(%s)", folder), common::ErrorValue::E_ERROR);
@@ -213,7 +213,7 @@ common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) 
 
   ServerInfo::Stats linfo;
   Config conf = config();
-  linfo.db_path = conf.dbname;
+  linfo.db_path = conf.db_path;
 
   *statsout = linfo;
   return common::Error();

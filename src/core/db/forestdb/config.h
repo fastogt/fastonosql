@@ -33,10 +33,7 @@ namespace forestdb {
 struct Config : public LocalConfig {
   Config();
 
-  bool ReadOnlyDB() const;
-  void SetReadOnlyDB(bool ro);
-
-  int env_flags;
+  std::string db_name;
 };
 
 }  // namespace forestdb

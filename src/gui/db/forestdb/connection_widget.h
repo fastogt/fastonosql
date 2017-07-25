@@ -38,7 +38,8 @@ class ConnectionWidget : public ConnectionLocalWidget {
   virtual proxy::IConnectionSettingsLocal* createConnectionLocalImpl(
       const proxy::connection_path_t& path) const override;
 
-  QCheckBox* readOnlyDB_;
+  QLabel* nameLabel_;
+  QLineEdit* nameEdit_;
 };
 
 }  // namespace forestdb

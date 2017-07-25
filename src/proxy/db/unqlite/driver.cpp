@@ -87,7 +87,7 @@ bool Driver::IsAuthenticated() const {
 
 std::string Driver::Path() const {
   core::unqlite::Config conf = impl_->config();
-  return conf.dbname;
+  return conf.db_path;
 }
 
 std::string Driver::NsSeparator() const {

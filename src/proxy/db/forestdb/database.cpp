@@ -22,7 +22,7 @@
 
 #include <common/macros.h>  // for DCHECK
 
-#include "core/connection_types.h"  // for core::connectionTypes::LMDB
+#include "core/connection_types.h"  // for core::connectionTypes::FORESTDB
 
 namespace fastonosql {
 namespace proxy {

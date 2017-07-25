@@ -18,7 +18,7 @@
 
 #include "core/db/forestdb/database_info.h"
 
-#include "core/connection_types.h"  // for connectionTypes::LMDB
+#include "core/connection_types.h"  // for connectionTypes::FORESTDB
 
 namespace fastonosql {
 namespace core {

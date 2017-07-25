@@ -20,12 +20,12 @@
 
 #include <common/sprintf.h>
 
-#define LMDB_COMMONTYPE_GET_KEY_COMMAND COMMONTYPE_GET_KEY_COMMAND
+#define FORESTDB_COMMONTYPE_GET_KEY_COMMAND COMMONTYPE_GET_KEY_COMMAND
 
-#define LMDB_SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
-#define LMDB_GET_KEY_PATTERN_1ARGS_S LMDB_COMMONTYPE_GET_KEY_COMMAND " %s"
-#define LMDB_DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
-#define LMDB_RENAME_KEY_PATTERN_2ARGS_SS "RENAME %s %s"
+#define FORESTDB_SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
+#define FORESTDB_GET_KEY_PATTERN_1ARGS_S FORESTDB_COMMONTYPE_GET_KEY_COMMAND " %s"
+#define FORESTDB_DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
+#define FORESTDB_RENAME_KEY_PATTERN_2ARGS_SS "RENAME %s %s"
 
 namespace fastonosql {
 namespace core {
@@ -36,7 +36,7 @@ CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands)
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, std::string* cmdstring) const {
   std::string key_str = key.KeyString();
   std::string value_str = key.ValueString();
-  *cmdstring = common::MemSPrintf(LMDB_SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
+  *cmdstring = common::MemSPrintf(FORESTDB_SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
   return common::Error();
 }
 
@@ -46,13 +46,13 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
   UNUSED(type);
 
   std::string key_str = key.Key();
-  *cmdstring = common::MemSPrintf(LMDB_GET_KEY_PATTERN_1ARGS_S, key_str);
+  *cmdstring = common::MemSPrintf(FORESTDB_GET_KEY_PATTERN_1ARGS_S, key_str);
   return common::Error();
 }
 
 common::Error CommandTranslator::DeleteKeyCommandImpl(const NKey& key, std::string* cmdstring) const {
   std::string key_str = key.Key();
-  *cmdstring = common::MemSPrintf(LMDB_DELETE_KEY_PATTERN_1ARGS_S, key_str);
+  *cmdstring = common::MemSPrintf(FORESTDB_DELETE_KEY_PATTERN_1ARGS_S, key_str);
   return common::Error();
 }
 
@@ -60,7 +60,7 @@ common::Error CommandTranslator::RenameKeyCommandImpl(const NKey& key,
                                                       const std::string& new_name,
                                                       std::string* cmdstring) const {
   std::string key_str = key.Key();
-  *cmdstring = common::MemSPrintf(LMDB_RENAME_KEY_PATTERN_2ARGS_SS, key_str, new_name);
+  *cmdstring = common::MemSPrintf(FORESTDB_RENAME_KEY_PATTERN_2ARGS_SS, key_str, new_name);
   return common::Error();
 }
 
@@ -70,7 +70,7 @@ common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key, ttl_t 
   UNUSED(cmdstring);
 
   std::string errorMsg =
-      common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported change ttl command for LMDB.");
+      common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported change ttl command for ForestDB.");
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
 }
 
@@ -79,12 +79,12 @@ common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key, std::str
   UNUSED(cmdstring);
 
   std::string errorMsg =
-      common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported get ttl command for LMDB.");
+      common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported get ttl command for ForestDB.");
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
 }
 
 bool CommandTranslator::IsLoadKeyCommandImpl(const CommandInfo& cmd) const {
-  return cmd.IsEqualName(LMDB_COMMONTYPE_GET_KEY_COMMAND);
+  return cmd.IsEqualName(FORESTDB_COMMONTYPE_GET_KEY_COMMAND);
 }
 
 common::Error CommandTranslator::PublishCommandImpl(const NDbPSChannel& channel,
@@ -95,7 +95,7 @@ common::Error CommandTranslator::PublishCommandImpl(const NDbPSChannel& channel,
   UNUSED(cmdstring);
 
   std::string errorMsg =
-      common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported publish command for LMDB.");
+      common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported publish command for ForestDB.");
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
 }
 
@@ -104,7 +104,7 @@ common::Error CommandTranslator::SubscribeCommandImpl(const NDbPSChannel& channe
   UNUSED(cmdstring);
 
   std::string errorMsg =
-      common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported subscribe command for LMDB.");
+      common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported subscribe command for ForestDB.");
   return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
 }
 

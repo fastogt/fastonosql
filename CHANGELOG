@@ -7,6 +7,7 @@
 - [RocksDB] Update sources to version 5.7.0
 - [SSDB] Update sources to version 1.9.4
 - [UpscaleDB] Update sources to version 2.2.1
+- ForestDB support
 - #26 Different JsonFormat for better readable json
 
 1.5.1 / May 18, 2017

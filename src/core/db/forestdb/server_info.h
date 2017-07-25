@@ -28,9 +28,9 @@
 #include "core/server/iserver_info.h"
 #include "core/types.h"
 
-#define LMDB_STATS_LABEL "# Stats"
+#define FORESTDB_STATS_LABEL "# Stats"
 
-#define LMDB_FILE_NAME_LABEL "db_path"
+#define FORESTDB_FILE_NAME_LABEL "db_path"
 
 namespace fastonosql {
 namespace core {

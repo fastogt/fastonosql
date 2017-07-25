@@ -96,7 +96,7 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
 
   DCHECK(*context == nullptr);
   ::leveldb::DB* lcontext = nullptr;
-  std::string folder = config.dbname;  // start point must be folder
+  std::string folder = config.db_path;  // start point must be folder
   common::tribool is_dir = common::file_system::is_directory(folder);
   if (is_dir != common::SUCCESS) {
     return common::make_error_value(common::MemSPrintf("Invalid input path(%s)", folder), common::ErrorValue::E_ERROR);

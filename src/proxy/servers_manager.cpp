@@ -80,6 +80,12 @@
 #include "proxy/db/upscaledb/server.h"               // for Server
 #endif
 
+#ifdef BUILD_WITH_FORESTDB
+#include "core/db/forestdb/db_connection.h"         // for TestConnection
+#include "proxy/db/forestdb/connection_settings.h"  // for ConnectionSettings
+#include "proxy/db/forestdb/server.h"               // for Server
+#endif
+
 namespace fastonosql {
 namespace proxy {
 
@@ -131,6 +137,11 @@ ServersManager::server_t ServersManager::CreateServer(IConnectionSettingsBaseSPt
 #ifdef BUILD_WITH_UPSCALEDB
   if (conT == core::UPSCALEDB) {
     server = common::make_shared<upscaledb::Server>(settings);
+  }
+#endif
+#ifdef BUILD_WITH_FORESTDB
+  if (conT == core::FORESTDB) {
+    server = common::make_shared<forestdb::Server>(settings);
   }
 #endif
 
@@ -249,6 +260,12 @@ common::Error ServersManager::TestConnection(IConnectionSettingsBaseSPtr connect
     return fastonosql::core::upscaledb::TestConnection(settings->Info());
   }
 #endif
+#ifdef BUILD_WITH_FORESTDB
+  if (type == core::FORESTDB) {
+    forestdb::ConnectionSettings* settings = static_cast<forestdb::ConnectionSettings*>(connection.get());
+    return fastonosql::core::forestdb::TestConnection(settings->Info());
+  }
+#endif
 
   NOTREACHED();
   return common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);
@@ -303,6 +320,11 @@ common::Error ServersManager::DiscoveryClusterConnection(IConnectionSettingsBase
     return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
   }
 #endif
+#ifdef BUILD_WITH_FORESTDB
+  if (type == core::FORESTDB) {
+    return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
+  }
+#endif
 
   NOTREACHED();
   return common::make_error_value("Invalid setting type", common::ErrorValue::E_ERROR);
@@ -354,6 +376,11 @@ common::Error ServersManager::DiscoverySentinelConnection(IConnectionSettingsBas
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
   if (type == core::UPSCALEDB) {
+    return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
+  }
+#endif
+#ifdef BUILD_WITH_FORESTDB
+  if (type == core::FORESTDB) {
     return common::make_error_value("Not supported setting type", common::ErrorValue::E_ERROR);
   }
 #endif
