@@ -30,17 +30,17 @@
 #include <common/value.h>           // for ErrorValue, etc
 
 #include "core/connection_types.h"           // for ConvertToString, etc
-#include "core/db_key.h"                     // for NDbKValue, NValue, NKey
 #include "core/db/forestdb/config.h"         // for Config
 #include "core/db/forestdb/db_connection.h"  // for DBConnection
 #include "core/db/forestdb/server_info.h"    // for ServerInfo, etc
+#include "core/db_key.h"                     // for NDbKValue, NValue, NKey
 
-#include "proxy/command/command.h"         // for CreateCommand, etc
-#include "proxy/command/command_logger.h"  // for LOG_COMMAND
-#include "proxy/events/events_info.h"
+#include "proxy/command/command.h"                  // for CreateCommand, etc
+#include "proxy/command/command_logger.h"           // for LOG_COMMAND
 #include "proxy/db/forestdb/command.h"              // for Command
 #include "proxy/db/forestdb/connection_settings.h"  // for ConnectionSettings
 #include "proxy/db/forestdb/database.h"             // for DataBaseInfo
+#include "proxy/events/events_info.h"
 
 #include "core/global.h"  // for FastoObject::childs_t, etc
 

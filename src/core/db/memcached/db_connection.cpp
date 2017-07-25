@@ -336,7 +336,7 @@ common::Error DBConnection::AddIfNotExist(const NKey& key,
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  const std::string key_str = key.Key();
+  const std::string key_str = key.GetKey();
   memcached_return_t error = memcached_add(connection_.handle_, key_str.c_str(), key_str.length(), value.c_str(),
                                            value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
@@ -355,7 +355,7 @@ common::Error DBConnection::Replace(const NKey& key, const std::string& value, t
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  const std::string key_str = key.Key();
+  const std::string key_str = key.GetKey();
   memcached_return_t error = memcached_replace(connection_.handle_, key_str.c_str(), key_str.length(), value.c_str(),
                                                value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
@@ -374,7 +374,7 @@ common::Error DBConnection::Append(const NKey& key, const std::string& value, ti
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  const std::string key_str = key.Key();
+  const std::string key_str = key.GetKey();
   memcached_return_t error = memcached_append(connection_.handle_, key_str.c_str(), key_str.length(), value.c_str(),
                                               value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
@@ -393,7 +393,7 @@ common::Error DBConnection::Prepend(const NKey& key, const std::string& value, t
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  const std::string key_str = key.Key();
+  const std::string key_str = key.GetKey();
   memcached_return_t error = memcached_prepend(connection_.handle_, key_str.c_str(), key_str.length(), value.c_str(),
                                                value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
@@ -417,7 +417,7 @@ common::Error DBConnection::Incr(const NKey& key, uint32_t value, uint64_t* resu
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  const std::string key_str = key.Key();
+  const std::string key_str = key.GetKey();
   uint64_t local_value = 0;
   memcached_return_t error =
       memcached_increment(connection_.handle_, key_str.c_str(), key_str.length(), value, &local_value);
@@ -444,7 +444,7 @@ common::Error DBConnection::Decr(const NKey& key, uint32_t value, uint64_t* resu
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  const std::string key_str = key.Key();
+  const std::string key_str = key.GetKey();
   uint64_t local_value = 0;
   memcached_return_t error =
       memcached_decrement(connection_.handle_, key_str.c_str(), key_str.length(), value, &local_value);
@@ -659,7 +659,7 @@ common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** 
 common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     NKey key = keys[i];
-    std::string key_str = key.Key();
+    std::string key_str = key.GetKey();
     common::Error err = DelInner(key_str, 0);
     if (err && err->IsError()) {
       continue;
@@ -672,7 +672,7 @@ common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
 }
 
 common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
-  std::string key_str = key.Key();
+  std::string key_str = key.GetKey();
   std::string value_str;
   common::Error err = GetInner(key_str, &value_str);
   if (err && err->IsError()) {
@@ -697,7 +697,7 @@ common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) 
 }
 
 common::Error DBConnection::RenameImpl(const NKey& key, const std::string& new_key) {
-  std::string key_str = key.Key();
+  std::string key_str = key.GetKey();
   std::string value_str;
   common::Error err = GetInner(key_str, &value_str);
   if (err && err->IsError()) {
@@ -718,11 +718,11 @@ common::Error DBConnection::RenameImpl(const NKey& key, const std::string& new_k
 }
 
 common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
-  return ExpireInner(key.Key(), ttl);
+  return ExpireInner(key.GetKey(), ttl);
 }
 
 common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
-  return TTL(key.Key(), ttl);
+  return TTL(key.GetKey(), ttl);
 }
 
 common::Error DBConnection::QuitImpl() {

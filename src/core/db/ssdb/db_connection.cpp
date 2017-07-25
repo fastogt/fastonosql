@@ -901,7 +901,7 @@ common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** 
 common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     NKey key = keys[i];
-    std::string key_str = key.Key();
+    std::string key_str = key.GetKey();
     common::Error err = DelInner(key_str);
     if (err && err->IsError()) {
       continue;
@@ -914,7 +914,7 @@ common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
 }
 
 common::Error DBConnection::RenameImpl(const NKey& key, const std::string& new_key) {
-  std::string key_str = key.Key();
+  std::string key_str = key.GetKey();
   std::string value_str;
   common::Error err = GetInner(key_str, &value_str);
   if (err && err->IsError()) {
@@ -947,7 +947,7 @@ common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) 
 }
 
 common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
-  std::string key_str = key.Key();
+  std::string key_str = key.GetKey();
   std::string value_str;
   common::Error err = GetInner(key_str, &value_str);
   if (err && err->IsError()) {
@@ -960,7 +960,7 @@ common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
 }
 
 common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
-  std::string key_str = key.Key();
+  std::string key_str = key.GetKey();
   common::Error err = Expire(key_str, ttl);
   if (err && err->IsError()) {
     return err;
@@ -970,7 +970,7 @@ common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
 }
 
 common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
-  std::string key_str = key.Key();
+  std::string key_str = key.GetKey();
   common::Error err = TTL(key_str, ttl);
   if (err && err->IsError()) {
     return err;

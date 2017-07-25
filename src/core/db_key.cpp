@@ -32,20 +32,20 @@ namespace core {
 KeyInfo::KeyInfo(const splited_namespaces_t& splited_namespaces_and_key, const std::string& ns_separator)
     : splited_namespaces_and_key_(splited_namespaces_and_key), ns_separator_(ns_separator) {}
 
-std::string KeyInfo::Key() const {
+std::string KeyInfo::GetKey() const {
   return common::JoinString(splited_namespaces_and_key_, ns_separator_);
 }
 
 bool KeyInfo::HasNamespace() const {
-  size_t ns_size = NspaceSize();
+  size_t ns_size = GetNspaceSize();
   return ns_size > 0;
 }
 
-std::string KeyInfo::Nspace() const {
+std::string KeyInfo::GetNspace() const {
   return JoinNamespace(splited_namespaces_and_key_.size() - 1);
 }
 
-size_t KeyInfo::NspaceSize() const {
+size_t KeyInfo::GetNspaceSize() const {
   if (splited_namespaces_and_key_.empty()) {
     return 0;
   }
@@ -54,7 +54,7 @@ size_t KeyInfo::NspaceSize() const {
 }
 
 std::string KeyInfo::JoinNamespace(size_t pos) const {
-  size_t ns_size = NspaceSize();
+  size_t ns_size = GetNspaceSize();
   if (ns_size > pos) {
     std::vector<std::string> copy;
     for (size_t i = 0; i <= pos; ++i) {
@@ -76,7 +76,7 @@ KeyInfo NKey::Info(const std::string& ns_separator) const {
   return KeyInfo(tokens, ns_separator);
 }
 
-std::string NKey::Key() const {
+std::string NKey::GetKey() const {
   return key_;
 }
 
@@ -84,7 +84,7 @@ void NKey::SetKey(const std::string& key) {
   key_ = key;
 }
 
-ttl_t NKey::TTL() const {
+ttl_t NKey::GetTTL() const {
   return ttl_;
 }
 
@@ -129,7 +129,7 @@ void NDbKValue::SetValue(NValue value) {
 }
 
 std::string NDbKValue::KeyString() const {
-  return key_.Key();
+  return key_.GetKey();
 }
 
 std::string NDbKValue::ValueString() const {

@@ -469,7 +469,7 @@ common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) 
 }
 
 common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
-  std::string key_str = key.Key();
+  std::string key_str = key.GetKey();
   std::string value_str;
   common::Error err = GetInner(key_str, &value_str);
   if (err && err->IsError()) {
@@ -484,7 +484,7 @@ common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
 common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     NKey key = keys[i];
-    std::string key_str = key.Key();
+    std::string key_str = key.GetKey();
     common::Error err = DelInner(key_str);
     if (err && err->IsError()) {
       continue;
@@ -497,7 +497,7 @@ common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
 }
 
 common::Error DBConnection::RenameImpl(const NKey& key, const std::string& new_key) {
-  std::string key_str = key.Key();
+  std::string key_str = key.GetKey();
   std::string value_str;
   common::Error err = GetInner(key_str, &value_str);
   if (err && err->IsError()) {

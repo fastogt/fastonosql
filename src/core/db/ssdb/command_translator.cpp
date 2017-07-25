@@ -69,7 +69,7 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
                                                     common::Value::Type type,
                                                     std::string* cmdstring) const {
   std::string patternResult;
-  std::string key_str = key.Key();
+  std::string key_str = key.GetKey();
   if (type == common::Value::TYPE_ARRAY) {
     patternResult = common::MemSPrintf(SSDB_GET_KEY_LIST_PATTERN_1ARGS_S, key_str);
   } else if (type == common::Value::TYPE_SET) {
@@ -87,7 +87,7 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
 }
 
 common::Error CommandTranslator::DeleteKeyCommandImpl(const NKey& key, std::string* cmdstring) const {
-  std::string key_str = key.Key();
+  std::string key_str = key.GetKey();
   *cmdstring = common::MemSPrintf(SSDB_DELETE_KEY_PATTERN_1ARGS_S, key_str);
   return common::Error();
 }
@@ -95,19 +95,19 @@ common::Error CommandTranslator::DeleteKeyCommandImpl(const NKey& key, std::stri
 common::Error CommandTranslator::RenameKeyCommandImpl(const NKey& key,
                                                       const std::string& new_name,
                                                       std::string* cmdstring) const {
-  std::string key_str = key.Key();
+  std::string key_str = key.GetKey();
   *cmdstring = common::MemSPrintf(SSDB_RENAME_KEY_PATTERN_2ARGS_SS, key_str, new_name);
   return common::Error();
 }
 
 common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key, ttl_t ttl, std::string* cmdstring) const {
-  std::string key_str = key.Key();
+  std::string key_str = key.GetKey();
   *cmdstring = common::MemSPrintf(SSDB_CHANGE_TTL_2ARGS_SI, key_str, ttl);
   return common::Error();
 }
 
 common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key, std::string* cmdstring) const {
-  std::string key_str = key.Key();
+  std::string key_str = key.GetKey();
   *cmdstring = common::MemSPrintf(SSDB_GET_TTL_1ARGS_S, key_str);
   return common::Error();
 }

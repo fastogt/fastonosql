@@ -18,9 +18,9 @@
 
 #include "gui/db/forestdb/connection_widget.h"
 
-#include <QLineEdit>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QLineEdit>
 
 #include <common/qt/convert2string.h>
 

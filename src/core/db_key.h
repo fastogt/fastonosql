@@ -43,11 +43,11 @@ class KeyInfo {
   typedef std::vector<std::string> splited_namespaces_t;
   KeyInfo(const splited_namespaces_t& splited_namespaces_and_key, const std::string& ns_separator);
 
-  std::string Key() const;
+  std::string GetKey() const;
   bool HasNamespace() const;
-  std::string Nspace() const;
+  std::string GetNspace() const;
   std::string JoinNamespace(size_t pos) const;
-  size_t NspaceSize() const;
+  size_t GetNspaceSize() const;
 
  private:
   splited_namespaces_t splited_namespaces_and_key_;
@@ -60,10 +60,10 @@ class NKey {
   explicit NKey(const std::string& key, ttl_t ttl_sec = NO_TTL);
   KeyInfo Info(const std::string& ns_separator) const;
 
-  std::string Key() const;
+  std::string GetKey() const;
   void SetKey(const std::string& key);
 
-  ttl_t TTL() const;
+  ttl_t GetTTL() const;
   void SetTTL(ttl_t ttl);
 
   bool Equals(const NKey& other) const;

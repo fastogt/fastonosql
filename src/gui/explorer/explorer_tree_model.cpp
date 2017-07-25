@@ -131,7 +131,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
     } else if (type == IExplorerTreeItem::eKey) {
       ExplorerKeyItem* key = static_cast<ExplorerKeyItem*>(node);
       core::NKey nkey = key->key();
-      if (nkey.TTL() == NO_TTL) {
+      if (nkey.GetTTL() == NO_TTL) {
         return GuiFactory::Instance().keyIcon();
       } else {
         return GuiFactory::Instance().keyTTLIcon();
@@ -526,7 +526,7 @@ ExplorerKeyItem* ExplorerTreeModel::findKeyItem(IExplorerTreeItem* db_or_ns, con
         }
 
         core::NKey ckey = key_item->key();
-        return ckey.Key() == key.Key();
+        return ckey.GetKey() == key.GetKey();
       }));
 }
 
@@ -543,7 +543,7 @@ ExplorerNSItem* ExplorerTreeModel::findNSItem(IExplorerTreeItem* db_or_ns, const
 }
 
 ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_ns, const core::KeyInfo& kinf) {
-  std::string nspace = kinf.Nspace();
+  std::string nspace = kinf.GetNspace();
   QString qnspace;
   common::ConvertFromString(nspace, &qnspace);
   ExplorerNSItem* founded_item = findNSItem(db_or_ns, qnspace);
@@ -551,7 +551,7 @@ ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_n
     return founded_item;
   }
 
-  size_t sz = kinf.NspaceSize();
+  size_t sz = kinf.GetNspaceSize();
   IExplorerTreeItem* par = db_or_ns;
   for (size_t i = 0; i < sz; ++i) {
     ExplorerNSItem* item = nullptr;

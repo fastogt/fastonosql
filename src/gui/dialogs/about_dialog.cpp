@@ -178,8 +178,8 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
             core::upscaledb::DBConnection::BasedOn(), core::upscaledb::DBConnection::VersionApi());
 #endif
 #ifdef BUILD_WITH_FORESTDB
-  addDBItem(listWidget, core::forestdb::DBConnection::GetConnectionTypeName(),
-            core::forestdb::DBConnection::BasedOn(), core::forestdb::DBConnection::VersionApi());
+  addDBItem(listWidget, core::forestdb::DBConnection::GetConnectionTypeName(), core::forestdb::DBConnection::BasedOn(),
+            core::forestdb::DBConnection::VersionApi());
 #endif
   copy_rights_layout->addWidget(listWidget, 4, 1, 1, 5);
   glayout->addLayout(copy_rights_layout);
