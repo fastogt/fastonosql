@@ -211,6 +211,23 @@ class BuildRequest(object):
             raise ex
 
 
+	try:
+            cloned_dir = utils.git_clone('https://github.com/fastogt/forestdb.git', abs_dir_path)
+            os.chdir(cloned_dir)
+
+            os.mkdir('build_cmake_release')
+            os.chdir('build_cmake_release')
+            common_cmake_line = list(cmake_line)
+            cmake_policy = run_command.CmakePolicy(print_message)
+            make_policy = run_command.CommonPolicy(print_message)
+            run_command.run_command_cb(common_cmake_line, cmake_policy)
+            run_command.run_command_cb(make_install, make_policy)
+            os.chdir(abs_dir_path)
+        except Exception as ex:
+            os.chdir(pwd)
+            raise ex
+
+
 if __name__ == "__main__":
     argc = len(sys.argv)
 

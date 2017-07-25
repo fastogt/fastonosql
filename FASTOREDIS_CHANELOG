@@ -1,5 +1,6 @@
 1.6.0 /
 [Alexandr Topilski]
+- Snappy view
 - Added BITFIELD command
 - #26 Different JsonFormat for better readable json
 
