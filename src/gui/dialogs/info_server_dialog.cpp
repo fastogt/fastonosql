@@ -64,6 +64,10 @@
 #include "core/db/upscaledb/server_info.h"
 #endif
 
+#ifdef BUILD_WITH_FORESTDB
+#include "core/db/forestdb/server_info.h"
+#endif
+
 #include "core/connection_types.h"     // for connectionTypes, etc
 #include "proxy/events/events_info.h"  // for ServerInfoResponce, etc
 #include "proxy/server/iserver.h"      // for IServer
@@ -222,6 +226,10 @@ const QString trLmdbTextServerTemplate = QObject::tr(
 const QString trUpscaledbTextServerTemplate = QObject::tr(
     "<b>Stats:</b><br/>"
     "Db path: %1<br/>");
+
+const QString trForestdbTextServerTemplate = QObject::tr(
+    "<b>Stats:</b><br/>"
+    "Db path: %1<br/>");
 }  // namespace
 
 namespace fastonosql {
@@ -284,6 +292,11 @@ InfoServerDialog::InfoServerDialog(proxy::IServerSPtr server, QWidget* parent) :
 #ifdef BUILD_WITH_UPSCALEDB
   if (type == core::UPSCALEDB) {
     updateText(core::upscaledb::ServerInfo());
+  }
+#endif
+#ifdef BUILD_WITH_FORESTDB
+  if (type == core::FORESTDB) {
+    updateText(core::forestdb::ServerInfo());
   }
 #endif
 
@@ -364,6 +377,13 @@ void InfoServerDialog::finishServerInfo(const proxy::events_info::ServerInfoResp
 #ifdef BUILD_WITH_UPSCALEDB
   if (type == core::UPSCALEDB) {
     core::upscaledb::ServerInfo* infr = static_cast<core::upscaledb::ServerInfo*>(inf.get());
+    CHECK(infr);
+    updateText(*infr);
+  }
+#endif
+#ifdef BUILD_WITH_FORESTDB
+  if (type == core::UPSCALEDB) {
+    core::forestdb::ServerInfo* infr = static_cast<core::forestdb::ServerInfo*>(inf.get());
     CHECK(infr);
     updateText(*infr);
   }
@@ -619,6 +639,16 @@ void InfoServerDialog::updateText(const core::upscaledb::ServerInfo& serv) {
   common::ConvertFromString(stats.db_path, &qdb_path);
 
   QString textServ = trUpscaledbTextServerTemplate.arg(qdb_path);
+  serverTextInfo_->setText(textServ);
+}
+#endif
+#ifdef BUILD_WITH_FORESTDB
+void InfoServerDialog::updateText(const core::forestdb::ServerInfo& serv) {
+  core::forestdb::ServerInfo::Stats stats = serv.stats_;
+  QString qdb_path;
+  common::ConvertFromString(stats.db_path, &qdb_path);
+
+  QString textServ = trForestdbTextServerTemplate.arg(qdb_path);
   serverTextInfo_->setText(textServ);
 }
 #endif

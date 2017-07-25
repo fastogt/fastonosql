@@ -38,11 +38,11 @@ struct BaseConfig {
 
 // -f -d -ns
 struct LocalConfig : public BaseConfig {
-  explicit LocalConfig(const std::string& dbname);
+  explicit LocalConfig(const std::string& db_path);
 
   config_args_t Args() const;
 
-  std::string dbname;
+  std::string db_path;
 };
 
 // -h -p -d -ns

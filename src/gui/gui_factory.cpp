@@ -168,6 +168,8 @@ const QIcon& GuiFactory::icon(core::connectionTypes type) const {
     return lmdbConnectionIcon();
   } else if (type == core::UPSCALEDB) {
     return upscaledbConnectionIcon();
+  } else if (type == core::FORESTDB) {
+    return forestdbConnectionIcon();
   } else {
     return serverIcon();
   }
@@ -410,6 +412,11 @@ const QIcon& GuiFactory::lmdbConnectionIcon() const {
 
 const QIcon& GuiFactory::upscaledbConnectionIcon() const {
   static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/upscaledb.png");
+  return main;
+}
+
+const QIcon& GuiFactory::forestdbConnectionIcon() const {
+  static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/forestdb.png");
   return main;
 }
 

@@ -56,6 +56,9 @@
 #ifdef BUILD_WITH_UPSCALEDB
 #define LOGGING_UPSCALEDB_FILE_EXTENSION ".upscaledb"
 #endif
+#ifdef BUILD_WITH_FORESTDB
+#define LOGGING_FORESTDB_FILE_EXTENSION ".forestdb"
+#endif
 
 namespace fastonosql {
 namespace proxy {
@@ -180,8 +183,13 @@ std::string IConnectionSettingsBase::LoggingPath() const {
   }
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
-  if (type_ == core::LMDB) {
+  if (type_ == core::UPSCALEDB) {
     return prefix + LOGGING_UPSCALEDB_FILE_EXTENSION;
+  }
+#endif
+#ifdef BUILD_WITH_FORESTDB
+  if (type_ == core::FORESTDB) {
+    return prefix + LOGGING_FORESTDB_FILE_EXTENSION;
   }
 #endif
 

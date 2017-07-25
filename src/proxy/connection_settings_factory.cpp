@@ -52,6 +52,10 @@
 #include "proxy/db/upscaledb/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_UPSCALEDB_FILE_EXTENSION ".upscaledb"
 #endif
+#ifdef BUILD_WITH_FORESTDB
+#include "proxy/db/forestdb/connection_settings.h"  // for ConnectionSettings
+#define LOGGING_FORESTDB_FILE_EXTENSION ".forestdb"
+#endif
 
 namespace fastonosql {
 namespace proxy {
@@ -96,6 +100,11 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateFromType(core::connect
 #ifdef BUILD_WITH_UPSCALEDB
   if (type == core::UPSCALEDB) {
     return new upscaledb::ConnectionSettings(conName);
+  }
+#endif
+#ifdef BUILD_WITH_FORESTDB
+  if (type == core::FORESTDB) {
+    return new forestdb::ConnectionSettings(conName);
   }
 #endif
   return nullptr;

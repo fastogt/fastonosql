@@ -59,6 +59,10 @@
 #include "core/db/upscaledb/db_connection.h"
 #endif
 
+#ifdef BUILD_WITH_FORESTDB
+#include "core/db/forestdb/db_connection.h"
+#endif
+
 #include "gui/gui_factory.h"  // for GuiFactory
 
 #include "translations/global.h"
@@ -172,6 +176,10 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
 #ifdef BUILD_WITH_UPSCALEDB
   addDBItem(listWidget, core::upscaledb::DBConnection::GetConnectionTypeName(),
             core::upscaledb::DBConnection::BasedOn(), core::upscaledb::DBConnection::VersionApi());
+#endif
+#ifdef BUILD_WITH_FORESTDB
+  addDBItem(listWidget, core::forestdb::DBConnection::GetConnectionTypeName(),
+            core::forestdb::DBConnection::BasedOn(), core::forestdb::DBConnection::VersionApi());
 #endif
   copy_rights_layout->addWidget(listWidget, 4, 1, 1, 5);
   glayout->addLayout(copy_rights_layout);

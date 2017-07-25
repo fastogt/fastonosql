@@ -70,6 +70,11 @@ std::vector<common::Value::Type> SupportedTypesFromType(connectionTypes type) {
     return DBTraits<UPSCALEDB>::SupportedTypes();
   }
 #endif
+#ifdef BUILD_WITH_FORESTDB
+  if (type == FORESTDB) {
+    return DBTraits<FORESTDB>::SupportedTypes();
+  }
+#endif
   NOTREACHED();
   return std::vector<common::Value::Type>();
 }
@@ -113,6 +118,11 @@ std::vector<info_field_t> InfoFieldsFromType(connectionTypes type) {
 #ifdef BUILD_WITH_UPSCALEDB
   if (type == UPSCALEDB) {
     return DBTraits<UPSCALEDB>::InfoFields();
+  }
+#endif
+#ifdef BUILD_WITH_UPSCALEDB
+  if (type == FORESTDB) {
+    return DBTraits<FORESTDB>::InfoFields();
   }
 #endif
   NOTREACHED();

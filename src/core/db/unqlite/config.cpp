@@ -50,7 +50,7 @@ Config parseOptions(int argc, char** argv) {
     } else if (!strcmp(argv[i], "-ns") && !lastarg) {
       cfg.ns_separator = argv[++i];
     } else if (!strcmp(argv[i], "-f") && !lastarg) {
-      cfg.dbname = argv[++i];
+      cfg.db_path = argv[++i];
     } else if (!strcmp(argv[i], "-e") && !lastarg) {
       int env_flags;
       if (common::ConvertFromString(argv[++i], &env_flags)) {

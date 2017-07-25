@@ -61,6 +61,10 @@
 #include "gui/db/upscaledb/lexer.h"
 #endif
 
+#ifdef BUILD_WITH_FORESTDB
+#include "gui/db/forestdb/lexer.h"
+#endif
+
 namespace {
 const QSize image_size(64, 64);
 }
@@ -110,6 +114,11 @@ BaseShell::BaseShell(core::connectionTypes type, bool showAutoCompl, QWidget* pa
 #ifdef BUILD_WITH_UPSCALEDB
   if (type == core::UPSCALEDB) {
     lex = new upscaledb::Lexer(this);
+  }
+#endif
+#ifdef BUILD_WITH_FORESTDB
+  if (type == core::FORESTDB) {
+    lex = new forestdb::Lexer(this);
   }
 #endif
   registerImage(BaseQsciLexer::Command, gui::GuiFactory::Instance().commandIcon(type).pixmap(image_size));

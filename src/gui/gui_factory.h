@@ -108,6 +108,7 @@ class GuiFactory : public common::patterns::LazySingleton<GuiFactory> {
   const QIcon& unqliteConnectionIcon() const;
   const QIcon& lmdbConnectionIcon() const;
   const QIcon& upscaledbConnectionIcon() const;
+  const QIcon& forestdbConnectionIcon() const;
 };
 
 }  // namespace gui

@@ -156,7 +156,7 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
 
   DCHECK(*context == NULL);
   struct upscaledb* lcontext = NULL;
-  std::string db_path = config.dbname;  // start point must be folder
+  std::string db_path = config.db_path;  // start point must be folder
   std::string folder = common::file_system::get_dir_path(db_path);
   common::tribool is_dir = common::file_system::is_directory(folder);
   if (is_dir != common::SUCCESS) {
@@ -224,7 +224,7 @@ common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) 
 
   ServerInfo::Stats linfo;
   Config conf = config();
-  linfo.db_path = conf.dbname;
+  linfo.db_path = conf.db_path;
 
   *statsout = linfo;
   return common::Error();
