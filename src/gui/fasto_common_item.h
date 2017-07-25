@@ -61,6 +61,7 @@ QString toHex(FastoCommonItem* item);
 QString toCsv(FastoCommonItem* item, const QString& delimiter);
 
 QString fromGzip(FastoCommonItem* item);
+QString fromSnappy(FastoCommonItem* item);
 QString fromHexMsgPack(FastoCommonItem* item);
 
 }  // namespace gui

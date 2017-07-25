@@ -225,6 +225,8 @@ void FastoEditorOutput::layoutChanged() {
     methodText = translations::trMsgPack;
   } else if (view_method_ == GZIP) {
     methodText = translations::trGzip;
+  } else if (view_method_ == SNAPPY) {
+    methodText = translations::trSnappy;
   } else {
     NOTREACHED();
   }
@@ -253,6 +255,9 @@ void FastoEditorOutput::layoutChanged() {
     } else if (view_method_ == GZIP) {
       QString gzip = fromGzip(child);
       result += common::EscapedText(gzip);
+    } else if (view_method_ == SNAPPY) {
+      QString snap = fromSnappy(child);
+      result += common::EscapedText(snap);
     }
   }
 

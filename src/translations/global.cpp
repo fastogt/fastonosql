@@ -106,6 +106,7 @@ const QString trLoggingEnabled = QObject::tr("Logging enabled");
 const QString trHex = QObject::tr("Hex");
 const QString trMsgPack = QObject::tr("MsgPack");
 const QString trGzip = QObject::tr("Gzip");
+const QString trSnappy = QObject::tr("Snappy");
 const QString trCannotConvertPattern1ArgsS = QObject::tr("Cannot convert to '%1' format!");
 const QString trSearch = QObject::tr("Search");
 const QString trSearching = QObject::tr("Search...");

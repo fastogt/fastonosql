@@ -106,6 +106,7 @@ extern const QString trLoggingEnabled;
 extern const QString trHex;
 extern const QString trMsgPack;
 extern const QString trGzip;
+extern const QString trSnappy;
 extern const QString trCannotConvertPattern1ArgsS;
 extern const QString trSearch;
 extern const QString trSearching;
