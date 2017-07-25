@@ -25,7 +25,8 @@
 #include <common/macros.h>  // for NOTREACHED, SIZEOFMASS
 
 namespace {
-const char* connnectionType[] = {"Redis", "Memcached", "SSDB", "LevelDB", "RocksDB", "UnQLite", "LMDB", "UpscaleDB"};
+const char* connnectionType[] = {"Redis",   "Memcached", "SSDB",      "LevelDB", "RocksDB",
+                                 "UnQLite", "LMDB",      "UpscaleDB", "ForestDB"};
 const std::string connnectionMode[] = {"Interactive mode"};
 const std::string serverTypes[] = {"Master", "Slave"};
 const std::string serverState[] = {"Up", "Down"};
@@ -44,7 +45,7 @@ bool IsSupportTTLKeys(connectionTypes type) {
 }
 
 bool IsLocalType(connectionTypes type) {
-  return type == ROCKSDB || type == LEVELDB || type == LMDB || type == UPSCALEDB || type == UNQLITE;
+  return type == ROCKSDB || type == LEVELDB || type == LMDB || type == UPSCALEDB || type == UNQLITE || type == FORESTDB;
 }
 
 bool IsCanSSHConnection(connectionTypes type) {
@@ -225,6 +226,20 @@ const char* CommandLineHelpText(connectionTypes type) {
            "separator.<br/>";
   }
   if (type == UPSCALEDB) {
+    return "<b>Usage: [OPTIONS] [cmd [arg [arg "
+           "...]]]</b><br/>"
+           "<b>-f &lt;db&gt;</b>            Directory path to "
+           "database.<br/>"
+           "<b>-c </b>            Create database if "
+           "missing.<br/>"
+           "<b>-d &lt;delimiter&gt;</b>     Multi-bulk "
+           "delimiter in for raw "
+           "formatting (default: "
+           "\\n).<br/>"
+           "<b>-ns &lt;separator&gt;</b>    Namespace "
+           "separator.<br/>";
+  }
+  if (type == FORESTDB) {
     return "<b>Usage: [OPTIONS] [cmd [arg [arg "
            "...]]]</b><br/>"
            "<b>-f &lt;db&gt;</b>            Directory path to "

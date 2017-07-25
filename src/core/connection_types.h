@@ -24,7 +24,17 @@
 namespace fastonosql {
 namespace core {
 
-enum connectionTypes { REDIS = 0, MEMCACHED, SSDB, LEVELDB, ROCKSDB, UNQLITE, LMDB, UPSCALEDB };
+enum connectionTypes {
+  REDIS = 0,
+  MEMCACHED,
+  SSDB,
+  LEVELDB,
+  ROCKSDB,
+  UNQLITE,
+  LMDB,
+  UPSCALEDB,
+  FORESTDB
+};  // supported types
 enum serverTypes { MASTER = 0, SLAVE };
 enum serverState { SUP = 0, SDOWN };
 enum serverConnectState { SCONNECTED = 0, SDISCONNECTED };
@@ -53,7 +63,10 @@ static const connectionTypes compiled_types[] = {
     LMDB,
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
-    UPSCALEDB
+    UPSCALEDB,
+#endif
+#ifdef BUILD_WITH_FORESTDB
+    FORESTDB
 #endif
 };
 

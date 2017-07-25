@@ -937,6 +937,66 @@ IF(BUILD_WITH_UPSCALEDB)
   SET(DB_LIBS ${DB_LIBS} ${UPSCALEDB_LIBRARY} ${Boost_LIBRARIES})
 ENDIF(BUILD_WITH_UPSCALEDB)
 
+#forestdb
+IF(BUILD_WITH_FORESTDB)
+  FIND_LIBRARY(FORESTDB_LIBRARY forestdb)
+  FIND_PATH(FORESTDB_INCLUDE_DIR NAMES libforestdb/forestdb.h PATH_SUFFIXES include)
+  SET(INCLUDE_DIRS ${INCLUDE_DIRS} ${FORESTDB_INCLUDE_DIR})
+
+  #core
+  SET(HEADERS_CORE_DB_FORESTDB
+    core/db/forestdb/config.h
+    core/db/forestdb/command_translator.h
+    core/db/forestdb/server_info.h
+    core/db/forestdb/db_connection.h
+    core/db/forestdb/internal/commands_api.h
+    core/db/forestdb/database_info.h)
+  SET(SOURCES_CORE_DB_FORESTDB
+    core/db/forestdb/config.cpp
+    core/db/forestdb/command_translator.cpp
+    core/db/forestdb/server_info.cpp
+    core/db/forestdb/db_connection.cpp
+    core/db/forestdb/internal/commands_api.cpp
+    core/db/forestdb/database_info.cpp
+  )
+
+  #proxy
+  SET(HEADERS_FORESTDB_PROXY_TO_MOC
+    proxy/db/forestdb/server.h
+    proxy/db/forestdb/driver.h
+  )
+  SET(HEADERS_PROXY_DB_FORESTDB
+    proxy/db/forestdb/connection_settings.h
+    proxy/db/forestdb/database.h
+    proxy/db/forestdb/command.h
+  )
+  SET(SOURCES_PROXY_DB_FORESTDB
+    proxy/db/forestdb/connection_settings.cpp
+    proxy/db/forestdb/database.cpp
+    proxy/db/forestdb/server.cpp
+    proxy/db/forestdb/driver.cpp
+    proxy/db/forestdb/command.cpp
+  )
+
+  #gui
+  SET(HEADERS_FORESTDB_GUI_TO_MOC gui/db/forestdb/connection_widget.h gui/db/forestdb/lexer.h)
+  SET(HEADERS_FORESTDB_GUI)
+  SET(SOURCES_FORESTDB_GUI gui/db/forestdb/connection_widget.cpp gui/db/forestdb/lexer.cpp)
+
+  #update common variables
+  SET(HEADERS_CORE ${HEADERS_CORE} ${HEADERS_CORE_DB_FORESTDB})
+  SET(SOURCES_CORE ${SOURCES_CORE} ${SOURCES_CORE_DB_FORESTDB})
+
+  SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_FORESTDB_PROXY_TO_MOC})
+  SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_FORESTDB})
+  SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_FORESTDB})
+
+  SET(HEADERS_GUI_TO_MOC ${HEADERS_GUI_TO_MOC} ${HEADERS_FORESTDB_GUI_TO_MOC})
+  SET(HEADERS_GUI ${HEADERS_GUI} ${HEADERS_FORESTDB_GUI})
+  SET(SOURCES_GUI ${SOURCES_GUI} ${SOURCES_FORESTDB_GUI})
+  SET(DB_LIBS ${DB_LIBS} ${FORESTDB_LIBRARY})
+ENDIF(BUILD_WITH_FORESTDB)
+
 SET(SOURCES_SDS
   third-party/sds/sds.c
 )
