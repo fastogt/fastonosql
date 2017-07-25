@@ -49,6 +49,7 @@ FastoTextView::FastoTextView(const QString& delimiter, QWidget* parent) : QWidge
   hexRadioButton_ = new QRadioButton;
   msgPackRadioButton_ = new QRadioButton;
   gzipRadioButton_ = new QRadioButton;
+  snappyRadioButton_ = new QRadioButton;
 
   saveChangeButton_ = new QPushButton;
   saveChangeButton_->setIcon(GuiFactory::Instance().saveIcon());
@@ -60,6 +61,8 @@ FastoTextView::FastoTextView(const QString& delimiter, QWidget* parent) : QWidge
   VERIFY(connect(hexRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChange));
   VERIFY(connect(msgPackRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChange));
   VERIFY(connect(gzipRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChange));
+  VERIFY(connect(snappyRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChange));
+
   VERIFY(connect(saveChangeButton_, &QPushButton::clicked, this, &FastoTextView::saveChanges));
   VERIFY(connect(editor_, &FastoEditorOutput::textChanged, this, &FastoTextView::textChange));
   VERIFY(connect(editor_, &FastoEditorOutput::readOnlyChanged, this, &FastoTextView::textChange));
@@ -71,6 +74,7 @@ FastoTextView::FastoTextView(const QString& delimiter, QWidget* parent) : QWidge
   radLaout->addWidget(hexRadioButton_);
   radLaout->addWidget(msgPackRadioButton_);
   radLaout->addWidget(gzipRadioButton_);
+  radLaout->addWidget(snappyRadioButton_);
 
   mainL->addLayout(radLaout);
   mainL->addWidget(editor_);
@@ -143,6 +147,11 @@ void FastoTextView::viewChange(bool checked) {
     editor_->viewChange(GZIP);
     return;
   }
+
+  if (snappyRadioButton_->isChecked()) {
+    editor_->viewChange(SNAPPY);
+    return;
+  }
 }
 
 void FastoTextView::changeEvent(QEvent* ev) {
@@ -160,6 +169,8 @@ void FastoTextView::retranslateUi() {
   hexRadioButton_->setText(translations::trHex);
   msgPackRadioButton_->setText(translations::trMsgPack);
   gzipRadioButton_->setText(translations::trGzip);
+  snappyRadioButton_->setText(translations::trSnappy);
+
   saveChangeButton_->setText(translations::trSave);
 }
 

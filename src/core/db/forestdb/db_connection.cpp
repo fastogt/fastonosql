@@ -78,6 +78,8 @@ void forestdb_close(fdb** context) {
     return;
   }
 
+  fdb_commit_opt_t opt = FDB_COMMIT_NORMAL;
+  fdb_commit(lcontext->handle, opt);
   common::utils::freeifnotnull(lcontext->db_name);
   fdb_kvs_close(lcontext->kvs);
   fdb_close(lcontext->handle);

@@ -22,12 +22,13 @@
 #include <memory>    // for __shared_ptr
 #include <string>    // for string
 
-#include <common/convert2string.h>                  // for ConvertFromString
-#include <common/error.h>                           // for Error
-#include <common/qt/convert2string.h>               // for ConvertToString
-#include <common/text_decoders/compress_edcoder.h>  // for CompressEDcoder
-#include <common/text_decoders/hex_edcoder.h>       // for HexEDcoder
-#include <common/text_decoders/msgpack_edcoder.h>   // for MsgPackEDcoder
+#include <common/convert2string.h>                         // for ConvertFromString
+#include <common/error.h>                                  // for Error
+#include <common/qt/convert2string.h>                      // for ConvertToString
+#include <common/text_decoders/compress_snappy_edcoder.h>  // for CompressEDcoder
+#include <common/text_decoders/compress_zlib_edcoder.h>    // for CompressEDcoder
+#include <common/text_decoders/hex_edcoder.h>              // for HexEDcoder
+#include <common/text_decoders/msgpack_edcoder.h>          // for MsgPackEDcoder
 #include <common/utils.h>
 
 #include <common/qt/gui/base/tree_item.h>  // for TreeItem
@@ -174,6 +175,34 @@ QString toCsv(FastoCommonItem* item, const QString& delimiter) {
   return value;
 }
 
+QString fromSnappy(FastoCommonItem* item) {
+  if (!item) {
+    return QString();
+  }
+
+  if (!item->childrenCount()) {
+    QString val = item->value();
+    std::string sval = common::ConvertToString(val);
+    std::string out;
+    common::CompressSnappyEDcoder enc;
+    common::Error err = enc.Decode(sval, &out);
+    if (err && err->IsError()) {
+      return QString();
+    }
+
+    QString qout;
+    common::ConvertFromString(out, &qout);
+    return qout;
+  }
+
+  QString value;
+  for (size_t i = 0; i < item->childrenCount(); ++i) {
+    value += fromSnappy(dynamic_cast<FastoCommonItem*>(item->child(i)));  // +
+  }
+
+  return value;
+}
+
 QString fromGzip(FastoCommonItem* item) {
   if (!item) {
     return QString();
@@ -183,7 +212,7 @@ QString fromGzip(FastoCommonItem* item) {
     QString val = item->value();
     std::string sval = common::ConvertToString(val);
     std::string out;
-    common::CompressEDcoder enc;
+    common::CompressZlibEDcoder enc;
     common::Error err = enc.Decode(sval, &out);
     if (err && err->IsError()) {
       return QString();
