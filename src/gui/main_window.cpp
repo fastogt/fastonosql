@@ -557,13 +557,13 @@ void MainWindow::versionAvailible(bool succesResult, const QString& version) {
                              QObject::tr("<h4>A new version(%1) of " PROJECT_NAME_TITLE " is Availible!</h4>"
                                          "You can download it  <a href=\"" PROJECT_DOWNLOAD_LINK "\">here</a>")
                                  .arg(version));
-  } else {
-    QMessageBox::information(
-        this, translations::trCheckVersion,
-        QObject::tr("<h4>You're' "
-                    "up-to-date!</h4>You are using the latest version(%1) of " PROJECT_NAME_TITLE ".")
-            .arg(version));
-  }
+  } /* else {
+     QMessageBox::information(
+         this, translations::trCheckVersion,
+         QObject::tr("<h4>You're' "
+                     "up-to-date!</h4>You are using the latest version(%1) of " PROJECT_NAME_TITLE ".")
+             .arg(version));
+   }*/
 
   checkUpdateAction_->setEnabled(isn);
 }

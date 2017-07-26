@@ -214,7 +214,7 @@ std::string ConvertToString(common::Value* value, const std::string& delimiter) 
   }
 
   common::Value::Type t = value->GetType();
-  if (t == common::Value::TYPE_BOOLEAN) {
+  if (t == common::Value::TYPE_NULL) {
     return "(nil)";
   } else if (t == common::Value::TYPE_BOOLEAN) {
     return ConvertToString(static_cast<FundamentalValue*>(value), delimiter);
@@ -248,7 +248,7 @@ std::string ConvertToString(common::Value* value, const std::string& delimiter) 
   } else if (t == common::Value::TYPE_HASH) {
     return ConvertToString(static_cast<HashValue*>(value), delimiter);
   } else {
-    NOTREACHED();
+    DNOTREACHED();
     return std::string();
   }
 }
