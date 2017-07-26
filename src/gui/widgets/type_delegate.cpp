@@ -91,7 +91,7 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
   }
 
   core::NDbKValue dbv = node->dbv();
-  core::NValue val = dbv.Value();
+  core::NValue val = dbv.GetValue();
   common::Value::Type t = node->type();
   if (t == common::Value::TYPE_INTEGER) {
     int value = 0;

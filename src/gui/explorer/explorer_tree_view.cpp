@@ -845,7 +845,7 @@ void ExplorerTreeView::editKey() {
   int result = loadDb.exec();
   if (result == QDialog::Accepted) {
     core::NDbKValue key = loadDb.key();
-    node->editKey(key.Value());
+    node->editKey(key.GetValue());
   }
 }
 

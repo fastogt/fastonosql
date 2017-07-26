@@ -70,7 +70,7 @@ NKey::NKey() : key_(), ttl_(NO_TTL) {}
 
 NKey::NKey(const std::string& key, ttl_t ttl_sec) : key_(key), ttl_(ttl_sec) {}
 
-KeyInfo NKey::Info(const std::string& ns_separator) const {
+KeyInfo NKey::GetInfo(const std::string& ns_separator) const {
   KeyInfo::splited_namespaces_t tokens;
   common::Tokenize(key_, ns_separator, &tokens);
   return KeyInfo(tokens, ns_separator);
@@ -104,15 +104,15 @@ NDbKValue::NDbKValue() : key_(), value_() {}
 
 NDbKValue::NDbKValue(const NKey& key, NValue value) : key_(key), value_(value) {}
 
-NKey NDbKValue::Key() const {
+NKey NDbKValue::GetKey() const {
   return key_;
 }
 
-NValue NDbKValue::Value() const {
+NValue NDbKValue::GetValue() const {
   return value_;
 }
 
-common::Value::Type NDbKValue::Type() const {
+common::Value::Type NDbKValue::GetType() const {
   if (!value_) {
     return common::Value::TYPE_NULL;
   }
@@ -126,10 +126,6 @@ void NDbKValue::SetKey(const NKey& key) {
 
 void NDbKValue::SetValue(NValue value) {
   value_ = value;
-}
-
-std::string NDbKValue::KeyString() const {
-  return key_.GetKey();
 }
 
 std::string NDbKValue::ValueString() const {

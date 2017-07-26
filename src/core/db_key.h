@@ -58,7 +58,7 @@ class NKey {
  public:
   NKey();
   explicit NKey(const std::string& key, ttl_t ttl_sec = NO_TTL);
-  KeyInfo Info(const std::string& ns_separator) const;
+  KeyInfo GetInfo(const std::string& ns_separator) const;
 
   std::string GetKey() const;
   void SetKey(const std::string& key);
@@ -85,14 +85,13 @@ class NDbKValue {
   NDbKValue();
   NDbKValue(const NKey& key, NValue value);
 
-  NKey Key() const;
-  NValue Value() const;
-  common::Value::Type Type() const;
+  NKey GetKey() const;
+  NValue GetValue() const;
+  common::Value::Type GetType() const;
 
   void SetKey(const NKey& key);
   void SetValue(NValue value);
 
-  std::string KeyString() const;
   std::string ValueString() const;
 
   bool Equals(const NDbKValue& other) const;

@@ -417,7 +417,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
             auto vttl = tchildrens[0]->Value();
             core::ttl_t ttl = 0;
             if (vttl->GetAsLongLongInteger(&ttl)) {
-              core::NKey key = res.keys[i].Key();
+              core::NKey key = res.keys[i].GetKey();
               key.SetTTL(ttl);
               res.keys[i].SetKey(key);
             }

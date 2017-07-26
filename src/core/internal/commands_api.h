@@ -251,7 +251,7 @@ common::Error ApiTraits<CDBConnection>::Get(internal::CommandHandler* handler,
     return err;
   }
 
-  NValue val = key_loaded.Value();
+  NValue val = key_loaded.GetValue();
   common::Value* copy = val->DeepCopy();
   FastoObject* child = new FastoObject(out, copy, cdb->Delimiter());
   out->AddChildren(child);

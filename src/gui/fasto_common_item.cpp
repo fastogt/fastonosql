@@ -49,12 +49,13 @@ FastoCommonItem::FastoCommonItem(const core::NDbKValue& key,
 
 QString FastoCommonItem::key() const {
   QString qkey;
-  common::ConvertFromString(key_.KeyString(), &qkey);
+  const core::NKey key = key_.GetKey();
+  common::ConvertFromString(key.GetKey(), &qkey);
   return qkey;
 }
 
 QString FastoCommonItem::value() const {
-  core::NValue nval = key_.Value();
+  core::NValue nval = key_.GetValue();
   common::Value* val = nval.get();
   std::string valstr = common::ConvertToString(val, delimiter_);
   QString qvalstr;
@@ -67,7 +68,7 @@ void FastoCommonItem::setValue(core::NValue val) {
 }
 
 core::NValue FastoCommonItem::nvalue() const {
-  return key_.Value();
+  return key_.GetValue();
 }
 
 core::NDbKValue FastoCommonItem::dbv() const {
@@ -75,7 +76,7 @@ core::NDbKValue FastoCommonItem::dbv() const {
 }
 
 common::Value::Type FastoCommonItem::type() const {
-  return key_.Type();
+  return key_.GetType();
 }
 
 bool FastoCommonItem::isReadOnly() const {

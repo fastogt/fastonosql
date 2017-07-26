@@ -785,7 +785,8 @@ common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
 }
 
 common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) {
-  std::string key_str = key.KeyString();
+  const NKey cur = key.GetKey();
+  std::string key_str = cur.GetKey();
   std::string value_str = key.ValueString();
   redisReply* reply =
       reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "SET %s %s", key_str.c_str(), value_str.c_str()));
@@ -1223,7 +1224,8 @@ common::Error DBConnection::Subscribe(int argc, const char** argv, FastoObject* 
 }
 
 common::Error DBConnection::SetEx(const NDbKValue& key, ttl_t ttl) {
-  std::string key_str = key.KeyString();
+  const NKey cur = key.GetKey();
+  std::string key_str = cur.GetKey();
   std::string value_str = key.ValueString();
   redisReply* reply = reinterpret_cast<redisReply*>(
       redisCommand(connection_.handle_, "SETEX %s %d %s", key_str.c_str(), ttl, value_str.c_str()));
@@ -1241,14 +1243,15 @@ common::Error DBConnection::SetEx(const NDbKValue& key, ttl_t ttl) {
     client_->OnKeyAdded(key);
   }
   if (client_) {
-    client_->OnKeyTTLChanged(key.Key(), ttl);
+    client_->OnKeyTTLChanged(key.GetKey(), ttl);
   }
   freeReplyObject(reply);
   return common::Error();
 }
 
 common::Error DBConnection::SetNX(const NDbKValue& key, long long* result) {
-  std::string key_str = key.KeyString();
+  const NKey cur = key.GetKey();
+  std::string key_str = cur.GetKey();
   std::string value_str = key.ValueString();
   redisReply* reply = reinterpret_cast<redisReply*>(
       redisCommand(connection_.handle_, "SETNX %s %s", key_str.c_str(), value_str.c_str()));

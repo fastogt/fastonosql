@@ -181,7 +181,7 @@ void ViewKeysDialog::changeTTL(const core::NDbKValue& value, core::ttl_t ttl) {
   proxy::IServerSPtr server = db_->Server();
   core::translator_t tran = server->Translator();
   std::string cmd_str;
-  common::Error err = tran->ChangeKeyTTLCommand(value.Key(), ttl, &cmd_str);
+  common::Error err = tran->ChangeKeyTTLCommand(value.GetKey(), ttl, &cmd_str);
   if (err && err->IsError()) {
     LOG_ERROR(err, true);
     return;

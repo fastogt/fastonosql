@@ -41,23 +41,24 @@ KeyTableItem::KeyTableItem(const core::NDbKValue& dbv) : dbv_(dbv) {}
 
 QString KeyTableItem::keyString() const {
   QString qkey;
-  common::ConvertFromString(dbv_.KeyString(), &qkey);
+  const core::NKey key = dbv_.GetKey();
+  common::ConvertFromString(key.GetKey(), &qkey);
   return qkey;
 }
 
 QString KeyTableItem::typeText() const {
   QString qtype;
-  common::ConvertFromString(common::Value::GetTypeName(dbv_.Type()), &qtype);
+  common::ConvertFromString(common::Value::GetTypeName(dbv_.GetType()), &qtype);
   return qtype;
 }
 
 core::ttl_t KeyTableItem::ttl() const {
-  core::NKey key = dbv_.Key();
+  core::NKey key = dbv_.GetKey();
   return key.GetTTL();
 }
 
 common::Value::Type KeyTableItem::type() const {
-  return dbv_.Type();
+  return dbv_.GetType();
 }
 
 core::NDbKValue KeyTableItem::dbv() const {
@@ -69,8 +70,9 @@ void KeyTableItem::setDbv(const core::NDbKValue& val) {
 }
 
 core::NKey KeyTableItem::key() const {
-  return dbv_.Key();
+  return dbv_.GetKey();
 }
+
 void KeyTableItem::setKey(const core::NKey& key) {
   dbv_.SetKey(key);
 }
@@ -182,7 +184,8 @@ void KeysTableModel::updateKey(const core::NKey& key) {
     }
 
     core::NDbKValue dbv = it->dbv();
-    if (dbv.KeyString() == key.GetKey()) {
+    const core::NKey dbv_key = dbv.GetKey();
+    if (dbv_key.GetKey() == key.GetKey()) {
       it->setKey(key);
       updateItem(index(i, KeyTableItem::kKey, QModelIndex()), index(i, KeyTableItem::kTTL, QModelIndex()));
       break;

@@ -104,7 +104,7 @@ common::Error CommandsApi::Lrange(internal::CommandHandler* handler, int argc, c
     return err;
   }
 
-  NValue val = key_loaded.Value();
+  NValue val = key_loaded.GetValue();
   common::Value* copy = val->DeepCopy();
   FastoObject* child = new FastoObject(out, copy, redis->Delimiter());
   out->AddChildren(child);
@@ -185,7 +185,7 @@ common::Error CommandsApi::Smembers(internal::CommandHandler* handler, int argc,
     return err;
   }
 
-  NValue val = key_loaded.Value();
+  NValue val = key_loaded.GetValue();
   common::Value* copy = val->DeepCopy();
   FastoObject* child = new FastoObject(out, copy, redis->Delimiter());
   out->AddChildren(child);
@@ -235,7 +235,7 @@ common::Error CommandsApi::Zrange(internal::CommandHandler* handler, int argc, c
     return err;
   }
 
-  NValue val = key_loaded.Value();
+  NValue val = key_loaded.GetValue();
   common::Value* copy = val->DeepCopy();
   FastoObject* child = new FastoObject(out, copy, redis->Delimiter());
   out->AddChildren(child);
@@ -274,7 +274,7 @@ common::Error CommandsApi::Hgetall(internal::CommandHandler* handler, int argc, 
     return err;
   }
 
-  NValue val = key_loaded.Value();
+  NValue val = key_loaded.GetValue();
   common::Value* copy = val->DeepCopy();
   FastoObject* child = new FastoObject(out, copy, redis->Delimiter());
   out->AddChildren(child);

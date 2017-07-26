@@ -76,7 +76,7 @@ DbKeyDialog::DbKeyDialog(const QString& title, core::connectionTypes type, const
   std::vector<common::Value::Type> types = SupportedTypesFromType(type);
   common::Value::Type kt = common::Value::TYPE_STRING;
   if (is_edit) {
-    kt = key_.Type();
+    kt = key_.GetType();
   }
   int current_index = 0;
   for (size_t i = 0; i < types.size(); ++i) {
@@ -140,13 +140,14 @@ DbKeyDialog::DbKeyDialog(const QString& title, core::connectionTypes type, const
 
   if (is_edit) {
     QString qkey;
-    if (common::ConvertFromString(key_.KeyString(), &qkey)) {
+    core::NKey key = key_.GetKey();
+    if (common::ConvertFromString(key.GetKey(), &qkey)) {
       keyEdit_->setText(qkey);
     }
     keyEdit_->setEnabled(false);
   }
   typesCombo_->setCurrentIndex(current_index);
-  core::NValue val = key_.Value();
+  core::NValue val = key_.GetValue();
   syncControls(val.get());
 
   setMinimumSize(QSize(min_width, min_height));

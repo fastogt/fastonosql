@@ -35,7 +35,8 @@ namespace leveldb {
 CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands) : ICommandTranslator(commands) {}
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, std::string* cmdstring) const {
-  std::string key_str = key.KeyString();
+  const NKey cur = key.GetKey();
+  std::string key_str = cur.GetKey();
   std::string value_str = key.ValueString();
   *cmdstring = common::MemSPrintf(LEVELDB_SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
   return common::Error();

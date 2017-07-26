@@ -237,7 +237,7 @@ void ExplorerDatabaseItem::loadValue(const core::NDbKValue& key) {
   proxy::IServerSPtr server = dbs->Server();
   core::translator_t tran = server->Translator();
   std::string cmd_str;
-  common::Error err = tran->LoadKeyCommand(key.Key(), key.Type(), &cmd_str);
+  common::Error err = tran->LoadKeyCommand(key.GetKey(), key.GetType(), &cmd_str);
   if (err && err->IsError()) {
     LOG_ERROR(err, true);
     return;
@@ -253,7 +253,7 @@ void ExplorerDatabaseItem::watchKey(const core::NDbKValue& key, int interval) {
   proxy::IServerSPtr server = dbs->Server();
   core::translator_t tran = server->Translator();
   std::string cmd_str;
-  common::Error err = tran->LoadKeyCommand(key.Key(), key.Type(), &cmd_str);
+  common::Error err = tran->LoadKeyCommand(key.GetKey(), key.GetType(), &cmd_str);
   if (err && err->IsError()) {
     LOG_ERROR(err, true);
     return;
@@ -355,7 +355,7 @@ void ExplorerKeyItem::setDbv(const core::NDbKValue& key) {
 }
 
 core::NKey ExplorerKeyItem::key() const {
-  return dbv_.Key();
+  return dbv_.GetKey();
 }
 
 void ExplorerKeyItem::setKey(const core::NKey& key) {
@@ -364,7 +364,8 @@ void ExplorerKeyItem::setKey(const core::NKey& key) {
 
 QString ExplorerKeyItem::name() const {
   QString qname;
-  common::ConvertFromString(dbv_.KeyString(), &qname);
+  const core::NKey key = dbv_.GetKey();
+  common::ConvertFromString(key.GetKey(), &qname);
   return qname;
 }
 
@@ -384,7 +385,7 @@ IExplorerTreeItem::eType ExplorerKeyItem::type() const {
 void ExplorerKeyItem::renameKey(const QString& newName) {
   ExplorerDatabaseItem* par = db();
   if (par) {
-    par->renameKey(dbv_.Key(), newName);
+    par->renameKey(dbv_.GetKey(), newName);
   }
 }
 
@@ -398,7 +399,7 @@ void ExplorerKeyItem::editKey(const core::NValue& value) {
 void ExplorerKeyItem::removeFromDb() {
   ExplorerDatabaseItem* par = db();
   if (par) {
-    par->removeKey(dbv_.Key());
+    par->removeKey(dbv_.GetKey());
   }
 }
 
@@ -419,7 +420,7 @@ void ExplorerKeyItem::loadValueFromDb() {
 void ExplorerKeyItem::setTTL(core::ttl_t ttl) {
   ExplorerDatabaseItem* par = db();
   if (par) {
-    par->setTTL(dbv_.Key(), ttl);
+    par->setTTL(dbv_.GetKey(), ttl);
   }
 }
 

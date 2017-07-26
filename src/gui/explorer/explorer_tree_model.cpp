@@ -356,11 +356,11 @@ void ExplorerTreeModel::addKey(proxy::IServer* server,
     return;
   }
 
-  core::NKey key = dbv.Key();
+  core::NKey key = dbv.GetKey();
   ExplorerKeyItem* keyit = findKeyItem(dbs, key);
   if (!keyit) {
     IExplorerTreeItem* nitem = dbs;
-    core::KeyInfo kinf = key.Info(ns_separator);
+    core::KeyInfo kinf = key.GetInfo(ns_separator);
     if (kinf.HasNamespace()) {
       nitem = findOrCreateNSItem(dbs, kinf);
     }
@@ -427,7 +427,7 @@ void ExplorerTreeModel::updateValue(proxy::IServer* server, core::IDataBaseInfoS
     return;
   }
 
-  ExplorerKeyItem* keyit = findKeyItem(dbs, dbv.Key());
+  ExplorerKeyItem* keyit = findKeyItem(dbs, dbv.GetKey());
   if (keyit) {
     common::qt::gui::TreeItem* par = keyit->parent();
     int index_key = par->indexOf(keyit);

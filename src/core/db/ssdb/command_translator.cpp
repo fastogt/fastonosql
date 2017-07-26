@@ -45,23 +45,24 @@ namespace ssdb {
 CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands) : ICommandTranslator(commands) {}
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, std::string* cmdstring) const {
-  std::string patternResult;
-  std::string key_str = key.KeyString();
+  std::string pattern_result;
+  const NKey cur = key.GetKey();
+  std::string key_str = cur.GetKey();
   std::string value_str = key.ValueString();
-  common::Value::Type type = key.Type();
+  common::Value::Type type = key.GetType();
   if (type == common::Value::TYPE_ARRAY) {
-    patternResult = common::MemSPrintf(SSDB_SET_KEY_LIST_PATTERN_2ARGS_SS, key_str, value_str);
+    pattern_result = common::MemSPrintf(SSDB_SET_KEY_LIST_PATTERN_2ARGS_SS, key_str, value_str);
   } else if (type == common::Value::TYPE_SET) {
-    patternResult = common::MemSPrintf(SSDB_SET_KEY_SET_PATTERN_2ARGS_SS, key_str, value_str);
+    pattern_result = common::MemSPrintf(SSDB_SET_KEY_SET_PATTERN_2ARGS_SS, key_str, value_str);
   } else if (type == common::Value::TYPE_ZSET) {
-    patternResult = common::MemSPrintf(SSDB_SET_KEY_ZSET_PATTERN_2ARGS_SS, key_str, value_str);
+    pattern_result = common::MemSPrintf(SSDB_SET_KEY_ZSET_PATTERN_2ARGS_SS, key_str, value_str);
   } else if (type == common::Value::TYPE_HASH) {
-    patternResult = common::MemSPrintf(SSDB_SET_KEY_HASH_PATTERN_2ARGS_SS, key_str, value_str);
+    pattern_result = common::MemSPrintf(SSDB_SET_KEY_HASH_PATTERN_2ARGS_SS, key_str, value_str);
   } else {
-    patternResult = common::MemSPrintf(SSDB_SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
+    pattern_result = common::MemSPrintf(SSDB_SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
   }
 
-  *cmdstring = patternResult;
+  *cmdstring = pattern_result;
   return common::Error();
 }
 

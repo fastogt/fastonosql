@@ -614,7 +614,7 @@ void IServer::HandleCheckDBKeys(core::IDataBaseInfoSPtr db, core::ttl_t expired_
 
   auto keys = db->Keys();
   for (core::NDbKValue key : keys) {
-    core::NKey nkey = key.Key();
+    core::NKey nkey = key.GetKey();
     core::ttl_t key_ttl = nkey.GetTTL();
     if (key_ttl == NO_TTL) {
     } else if (key_ttl == EXPIRED_TTL) {

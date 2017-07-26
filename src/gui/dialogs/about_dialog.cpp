@@ -137,7 +137,6 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
   logoLabel->setPixmap(iconPixmap);
   copy_rights_layout->addWidget(logoLabel, 0, 0, 1, 1);
   copy_rights_layout->addWidget(copyRightLabel, 0, 1, 4, 4);
-  glayout->addLayout(copy_rights_layout);
 
   QTreeWidget* listWidget = new QTreeWidget;
   listWidget->setIndentation(5);

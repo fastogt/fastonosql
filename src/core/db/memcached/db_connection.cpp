@@ -685,7 +685,8 @@ common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
 }
 
 common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) {
-  std::string key_str = key.KeyString();
+  const NKey cur = key.GetKey();
+  std::string key_str = cur.GetKey();
   std::string value_str = key.ValueString();
   common::Error err = SetInner(key_str, value_str, 0, 0);
   if (err && err->IsError()) {
