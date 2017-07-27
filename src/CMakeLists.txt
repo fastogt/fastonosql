@@ -1,40 +1,40 @@
 # core
 SET(HEADERS_CORE_INTERNAL
-  core/internal/connection.h
-  core/internal/db_connection.h
-  core/internal/cdb_connection.h
-  core/internal/cdb_connection_client.h
-  core/internal/command_handler.h
-  core/internal/commands_api.h
+  ${CMAKE_SOURCE_DIR}/src/core/internal/connection.h
+  ${CMAKE_SOURCE_DIR}/src/core/internal/db_connection.h
+  ${CMAKE_SOURCE_DIR}/src/core/internal/cdb_connection.h
+  ${CMAKE_SOURCE_DIR}/src/core/internal/cdb_connection_client.h
+  ${CMAKE_SOURCE_DIR}/src/core/internal/command_handler.h
+  ${CMAKE_SOURCE_DIR}/src/core/internal/commands_api.h
 )
 SET(SOURCES_CORE_INTERNAL
-  core/internal/connection.cpp
-  core/internal/db_connection.cpp
-  core/internal/cdb_connection.cpp
-  core/internal/cdb_connection_client.cpp
-  core/internal/command_handler.cpp
-  core/internal/commands_api.cpp
+  ${CMAKE_SOURCE_DIR}/src/core/internal/connection.cpp
+  ${CMAKE_SOURCE_DIR}/src/core/internal/db_connection.cpp
+  ${CMAKE_SOURCE_DIR}/src/core/internal/cdb_connection.cpp
+  ${CMAKE_SOURCE_DIR}/src/core/internal/cdb_connection_client.cpp
+  ${CMAKE_SOURCE_DIR}/src/core/internal/command_handler.cpp
+  ${CMAKE_SOURCE_DIR}/src/core/internal/commands_api.cpp
 )
 
 SET(HEADERS_CORE_DATABASE
-  core/database/idatabase_info.h
+  ${CMAKE_SOURCE_DIR}/src/core/database/idatabase_info.h
 )
 SET(SOURCES_CORE_DATABASE
-  core/database/idatabase_info.cpp
+  ${CMAKE_SOURCE_DIR}/src/core/database/idatabase_info.cpp
 )
 
 SET(HEADERS_CORE_SERVER
-  core/server/iserver_info.h
+  ${CMAKE_SOURCE_DIR}/src/core/server/iserver_info.h
 )
 SET(SOURCES_CORE_SERVER
-  core/server/iserver_info.cpp
+  ${CMAKE_SOURCE_DIR}/src/core/server/iserver_info.cpp
 )
 
 SET(HEADERS_CORE_CONFIG
-  core/config/config.h
+  ${CMAKE_SOURCE_DIR}/src/core/config/config.h
 )
 SET(SOURCES_CORE_CONFIG
-  core/config/config.cpp
+  ${CMAKE_SOURCE_DIR}/src/core/config/config.cpp
 )
 
 SET(HEADERS_CORE
@@ -44,18 +44,18 @@ SET(HEADERS_CORE
   ${HEADERS_CORE_TRANSLATOR}
   ${HEADERS_CORE_INTERNAL}
 
-  core/connection_types.h
-  core/types.h
-  core/db_traits.h
-  core/db_key.h
-  core/db_ps_channel.h
-  core/icommand_translator.h
-  core/command_info.h
-  core/command_holder.h
-  core/server_property_info.h
-  core/ssh_info.h
-  core/logger.h
-  core/global.h
+  ${CMAKE_SOURCE_DIR}/src/core/connection_types.h
+  ${CMAKE_SOURCE_DIR}/src/core/types.h
+  ${CMAKE_SOURCE_DIR}/src/core/db_traits.h
+  ${CMAKE_SOURCE_DIR}/src/core/db_key.h
+  ${CMAKE_SOURCE_DIR}/src/core/db_ps_channel.h
+  ${CMAKE_SOURCE_DIR}/src/core/icommand_translator.h
+  ${CMAKE_SOURCE_DIR}/src/core/command_info.h
+  ${CMAKE_SOURCE_DIR}/src/core/command_holder.h
+  ${CMAKE_SOURCE_DIR}/src/core/server_property_info.h
+  ${CMAKE_SOURCE_DIR}/src/core/ssh_info.h
+  ${CMAKE_SOURCE_DIR}/src/core/logger.h
+  ${CMAKE_SOURCE_DIR}/src/core/global.h
 )
 
 SET(SOURCES_CORE
@@ -65,106 +65,106 @@ SET(SOURCES_CORE
   ${SOURCES_CORE_TRANSLATOR}
   ${SOURCES_CORE_INTERNAL}
 
-  core/connection_types.cpp
-  core/types.cpp
-  core/db_traits.cpp
-  core/db_key.cpp
-  core/db_ps_channel.cpp
-  core/icommand_translator.cpp
-  core/command_info.cpp
-  core/command_holder.cpp
-  core/server_property_info.cpp
-  core/ssh_info.cpp
-  core/logger.cpp
-  core/global.cpp
+  ${CMAKE_SOURCE_DIR}/src/core/connection_types.cpp
+  ${CMAKE_SOURCE_DIR}/src/core/types.cpp
+  ${CMAKE_SOURCE_DIR}/src/core/db_traits.cpp
+  ${CMAKE_SOURCE_DIR}/src/core/db_key.cpp
+  ${CMAKE_SOURCE_DIR}/src/core/db_ps_channel.cpp
+  ${CMAKE_SOURCE_DIR}/src/core/icommand_translator.cpp
+  ${CMAKE_SOURCE_DIR}/src/core/command_info.cpp
+  ${CMAKE_SOURCE_DIR}/src/core/command_holder.cpp
+  ${CMAKE_SOURCE_DIR}/src/core/server_property_info.cpp
+  ${CMAKE_SOURCE_DIR}/src/core/ssh_info.cpp
+  ${CMAKE_SOURCE_DIR}/src/core/logger.cpp
+  ${CMAKE_SOURCE_DIR}/src/core/global.cpp
 )
 
 # proxy
 SET(HEADERS_PROXY_CONNECTION_SETTINGS
-  proxy/connection_settings/icluster_connection_settings.h
-  proxy/connection_settings/isentinel_connection_settings.h
-  proxy/connection_settings/iconnection_settings.h
-  proxy/connection_settings/iconnection_settings_local.h
-  proxy/connection_settings/iconnection_settings_remote.h
-  proxy/connection_settings/iconnection_settings_ssh.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/icluster_connection_settings.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/isentinel_connection_settings.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/iconnection_settings.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/iconnection_settings_local.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/iconnection_settings_remote.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/iconnection_settings_ssh.h
 )
 SET(SOURCES_PROXY_CONNECTION_SETTINGS
-  proxy/connection_settings/icluster_connection_settings.cpp
-  proxy/connection_settings/isentinel_connection_settings.cpp
-  proxy/connection_settings/iconnection_settings.cpp
-  proxy/connection_settings/iconnection_settings_local.cpp
-  proxy/connection_settings/iconnection_settings_remote.cpp
-  proxy/connection_settings/iconnection_settings_ssh.cpp
+  ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/icluster_connection_settings.cpp
+  ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/isentinel_connection_settings.cpp
+  ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/iconnection_settings.cpp
+  ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/iconnection_settings_local.cpp
+  ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/iconnection_settings_remote.cpp
+  ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/iconnection_settings_ssh.cpp
 )
 
 SET(HEADERS_PROXY_DRIVER_TO_MOC
-  proxy/driver/idriver.h
-  proxy/driver/idriver_local.h
-  proxy/driver/idriver_remote.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/driver/idriver.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/driver/idriver_local.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/driver/idriver_remote.h
 )
 SET(HEADERS_PROXY_DRIVER
-  proxy/driver/root_locker.h
-  proxy/driver/first_child_update_root_locker.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/driver/root_locker.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/driver/first_child_update_root_locker.h
 )
 SET(SOURCES_PROXY_DRIVER
-  proxy/driver/idriver.cpp
-  proxy/driver/idriver_local.cpp
-  proxy/driver/idriver_remote.cpp
-  proxy/driver/root_locker.cpp
-  proxy/driver/first_child_update_root_locker.cpp
+  ${CMAKE_SOURCE_DIR}/src/proxy/driver/idriver.cpp
+  ${CMAKE_SOURCE_DIR}/src/proxy/driver/idriver_local.cpp
+  ${CMAKE_SOURCE_DIR}/src/proxy/driver/idriver_remote.cpp
+  ${CMAKE_SOURCE_DIR}/src/proxy/driver/root_locker.cpp
+  ${CMAKE_SOURCE_DIR}/src/proxy/driver/first_child_update_root_locker.cpp
 )
 
 SET(HEADERS_PROXY_SERVER_TO_MOC
-  proxy/server/iserver_base.h
-  proxy/server/iserver.h
-  proxy/server/iserver_local.h
-  proxy/server/iserver_remote.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/server/iserver_base.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/server/iserver.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/server/iserver_local.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/server/iserver_remote.h
 )
 SET(HEADERS_PROXY_SERVER
 )
 SET(SOURCES_PROXY_SERVER
-  proxy/server/iserver_base.cpp
-  proxy/server/iserver.cpp
-  proxy/server/iserver_local.cpp
-  proxy/server/iserver_remote.cpp
+  ${CMAKE_SOURCE_DIR}/src/proxy/server/iserver_base.cpp
+  ${CMAKE_SOURCE_DIR}/src/proxy/server/iserver.cpp
+  ${CMAKE_SOURCE_DIR}/src/proxy/server/iserver_local.cpp
+  ${CMAKE_SOURCE_DIR}/src/proxy/server/iserver_remote.cpp
 )
 
 SET(HEADERS_PROXY_EVENTS
-  proxy/events/events.h
-  proxy/events/events_info.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/events/events.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/events/events_info.h
 )
 SET(SOURCES_PROXY_EVENTS
-  proxy/events/events_info.cpp
+  ${CMAKE_SOURCE_DIR}/src/proxy/events/events_info.cpp
 )
 
 SET(HEADERS_PROXY_CLUSTER
-  proxy/cluster/icluster.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/cluster/icluster.h
 )
 SET(SOURCES_PROXY_CLUSTER
-  proxy/cluster/icluster.cpp
+  ${CMAKE_SOURCE_DIR}/src/proxy/cluster/icluster.cpp
 )
 
 SET(HEADERS_PROXY_SENTINEL
-  proxy/sentinel/isentinel.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/sentinel/isentinel.h
 )
 SET(SOURCES_PROXY_SENTINEL
-  proxy/sentinel/isentinel.cpp
+  ${CMAKE_SOURCE_DIR}/src/proxy/sentinel/isentinel.cpp
 )
 
 SET(HEADERS_PROXY_DATABASE
-  proxy/database/idatabase.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/database/idatabase.h
 )
 SET(SOURCES_PROXY_DATABASE
-  proxy/database/idatabase.cpp
+  ${CMAKE_SOURCE_DIR}/src/proxy/database/idatabase.cpp
 )
 
 SET(HEADERS_PROXY_COMMAND_TO_MOC
-  proxy/command/command_logger.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/command/command_logger.h
 )
 SET(HEADERS_PROXY_COMMAND
 )
 SET(SOURCES_PROXY_COMMAND
-  proxy/command/command_logger.cpp
+  ${CMAKE_SOURCE_DIR}/src/proxy/command/command_logger.cpp
 )
 
 #
@@ -184,14 +184,14 @@ SET(HEADERS_PROXY
   ${HEADERS_PROXY_CONNECTION_SETTINGS}
   ${HEADERS_PROXY_COMMAND}
 
-  proxy/types.h
-  proxy/command/command.h
-  proxy/servers_manager.h
-  proxy/proxy_fwd.h
-  proxy/settings_manager.h
-  proxy/cluster_connection_settings_factory.h
-  proxy/sentinel_connection_settings_factory.h
-  proxy/sentinel_connection_settings_factory.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/types.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/command/command.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/servers_manager.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/proxy_fwd.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/settings_manager.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/cluster_connection_settings_factory.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/sentinel_connection_settings_factory.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/sentinel_connection_settings_factory.h
 )
 
 SET(SOURCES_PROXY
@@ -204,149 +204,149 @@ SET(SOURCES_PROXY
   ${SOURCES_PROXY_CONNECTION_SETTINGS}
   ${SOURCES_PROXY_COMMAND}
 
-  proxy/types.cpp
-  proxy/command/command.cpp
-  proxy/servers_manager.cpp
-  proxy/settings_manager.cpp
-  proxy/cluster_connection_settings_factory.cpp
-  proxy/sentinel_connection_settings_factory.cpp
-  proxy/connection_settings_factory.cpp
+  ${CMAKE_SOURCE_DIR}/src/proxy/types.cpp
+  ${CMAKE_SOURCE_DIR}/src/proxy/command/command.cpp
+  ${CMAKE_SOURCE_DIR}/src/proxy/servers_manager.cpp
+  ${CMAKE_SOURCE_DIR}/src/proxy/settings_manager.cpp
+  ${CMAKE_SOURCE_DIR}/src/proxy/cluster_connection_settings_factory.cpp
+  ${CMAKE_SOURCE_DIR}/src/proxy/sentinel_connection_settings_factory.cpp
+  ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings_factory.cpp
 )
 
 # gui, translation, global
 SET(HEADERS_TRANSLATIONS
-  translations/global.h
+  ${CMAKE_SOURCE_DIR}/src/translations/global.h
 )
 SET(SOURCES_TRANSLATIONS
-  translations/global.cpp
+  ${CMAKE_SOURCE_DIR}/src/translations/global.cpp
 )
 
 SET(HEADERS_GUI_DIALOGS_TO_MOC
-  gui/dialogs/about_dialog.h
-  gui/dialogs/input_dialog.h
-  gui/dialogs/info_server_dialog.h
-  gui/dialogs/history_server_dialog.h
-  gui/dialogs/property_server_dialog.h
-  gui/dialogs/preferences_dialog.h
-  gui/dialogs/connections_dialog.h
-  gui/dialogs/connection_dialog.h
-  gui/dialogs/connection_select_type_dialog.h
-  gui/dialogs/cluster_dialog.h
-  gui/dialogs/sentinel_dialog.h
-  gui/dialogs/connection_diagnostic_dialog.h
-  gui/dialogs/discovery_cluster_dialog.h
-  gui/dialogs/discovery_sentinel_dialog.h
-  gui/dialogs/encode_decode_dialog.h
-  gui/dialogs/load_contentdb_dialog.h
-  gui/dialogs/dbkey_dialog.h
-  gui/dialogs/view_keys_dialog.h
-  gui/dialogs/pub_sub_dialog.h
-  gui/dialogs/change_password_server_dialog.h
-  gui/dialogs/discovery_connection.h
-  gui/dialogs/discovery_sentinel_connection.h
-  gui/dialogs/test_connection.h
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/about_dialog.h
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/input_dialog.h
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/info_server_dialog.h
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/history_server_dialog.h
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/property_server_dialog.h
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/preferences_dialog.h
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/connections_dialog.h
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/connection_dialog.h
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/connection_select_type_dialog.h
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/cluster_dialog.h
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/sentinel_dialog.h
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/connection_diagnostic_dialog.h
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_cluster_dialog.h
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_sentinel_dialog.h
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/encode_decode_dialog.h
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/load_contentdb_dialog.h
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/dbkey_dialog.h
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/view_keys_dialog.h
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/pub_sub_dialog.h
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/change_password_server_dialog.h
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_connection.h
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_sentinel_connection.h
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/test_connection.h
 )
 
 SET(HEADERS_GUI_DIALOGS
-  gui/dialogs/connection_listwidget_items.h
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/connection_listwidget_items.h
 )
 
 SET(SOURCES_GUI_DIALOGS
-  gui/dialogs/about_dialog.cpp
-  gui/dialogs/input_dialog.cpp
-  gui/dialogs/preferences_dialog.cpp
-  gui/dialogs/connections_dialog.cpp
-  gui/dialogs/connection_dialog.cpp
-  gui/dialogs/connection_select_type_dialog.cpp
-  gui/dialogs/cluster_dialog.cpp
-  gui/dialogs/sentinel_dialog.cpp
-  gui/dialogs/connection_diagnostic_dialog.cpp
-  gui/dialogs/discovery_cluster_dialog.cpp
-  gui/dialogs/discovery_sentinel_dialog.cpp
-  gui/dialogs/connection_listwidget_items.cpp
-  gui/dialogs/info_server_dialog.cpp
-  gui/dialogs/property_server_dialog.cpp
-  gui/dialogs/history_server_dialog.cpp
-  gui/dialogs/encode_decode_dialog.cpp
-  gui/dialogs/load_contentdb_dialog.cpp
-  gui/dialogs/dbkey_dialog.cpp
-  gui/dialogs/view_keys_dialog.cpp
-  gui/dialogs/pub_sub_dialog.cpp
-  gui/dialogs/change_password_server_dialog.cpp
-  gui/dialogs/discovery_connection.cpp
-  gui/dialogs/discovery_sentinel_connection.cpp
-  gui/dialogs/test_connection.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/about_dialog.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/input_dialog.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/preferences_dialog.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/connections_dialog.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/connection_dialog.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/connection_select_type_dialog.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/cluster_dialog.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/sentinel_dialog.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/connection_diagnostic_dialog.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_cluster_dialog.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_sentinel_dialog.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/connection_listwidget_items.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/info_server_dialog.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/property_server_dialog.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/history_server_dialog.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/encode_decode_dialog.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/load_contentdb_dialog.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/dbkey_dialog.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/view_keys_dialog.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/pub_sub_dialog.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/change_password_server_dialog.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_connection.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_sentinel_connection.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/test_connection.cpp
 )
 
 SET(HEADERS_GUI_EDITOR_TO_MOC
-  gui/editor/fasto_editor.h
-  gui/editor/fasto_editor_shell.h
-  gui/editor/fasto_editor_output.h
-  gui/editor/fasto_hex_edit.h
+  ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor.h
+  ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor_shell.h
+  ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor_output.h
+  ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_hex_edit.h
 )
 
 SET(SOURCES_GUI_EDITOR
-  gui/editor/fasto_editor.cpp
-  gui/editor/fasto_editor_shell.cpp
-  gui/editor/fasto_editor_output.cpp
-  gui/editor/fasto_hex_edit.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor_shell.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor_output.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_hex_edit.cpp
 )
 
 SET(HEADERS_GUI_EXPLORER_TO_MOC
-  gui/explorer/explorer_tree_widget.h
-  gui/explorer/explorer_tree_view.h
-  gui/explorer/explorer_tree_model.h
-  gui/explorer/explorer_tree_sort_filter_proxy_model.h
+  ${CMAKE_SOURCE_DIR}/src/gui/explorer/explorer_tree_widget.h
+  ${CMAKE_SOURCE_DIR}/src/gui/explorer/explorer_tree_view.h
+  ${CMAKE_SOURCE_DIR}/src/gui/explorer/explorer_tree_model.h
+  ${CMAKE_SOURCE_DIR}/src/gui/explorer/explorer_tree_sort_filter_proxy_model.h
 )
 
 SET(HEADERS_GUI_EXPLORER
-  gui/explorer/explorer_tree_item.h
+  ${CMAKE_SOURCE_DIR}/src/gui/explorer/explorer_tree_item.h
 )
 
 SET(SOURCES_GUI_EXPLORER
-  gui/explorer/explorer_tree_widget.cpp
-  gui/explorer/explorer_tree_view.cpp
-  gui/explorer/explorer_tree_model.cpp
-  gui/explorer/explorer_tree_sort_filter_proxy_model.cpp
-  gui/explorer/explorer_tree_item.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/explorer/explorer_tree_widget.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/explorer/explorer_tree_view.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/explorer/explorer_tree_model.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/explorer/explorer_tree_sort_filter_proxy_model.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/explorer/explorer_tree_item.cpp
 )
 
 SET(HEADERS_GUI_WIDGETS_TO_MOC
-  gui/widgets/log_tab_widget.h
-  gui/widgets/log_widget.h
-  gui/widgets/commands_widget.h
-  gui/widgets/query_widget.h
-  gui/widgets/output_widget.h
-  gui/widgets/main_widget.h
-  gui/widgets/connection_base_widget.h
-  gui/widgets/connection_local_widget.h
-  gui/widgets/connection_remote_widget.h
-  gui/widgets/host_port_widget.h
-  gui/widgets/path_widget.h
-  gui/widgets/ssh_widget.h
-  gui/widgets/user_password_widget.h
-  gui/widgets/list_type_widget.h
-  gui/widgets/type_delegate.h
-  gui/widgets/hash_type_widget.h
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/log_tab_widget.h
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/log_widget.h
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/commands_widget.h
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/query_widget.h
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/output_widget.h
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/main_widget.h
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/connection_base_widget.h
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/connection_local_widget.h
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/connection_remote_widget.h
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/host_port_widget.h
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/path_widget.h
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/ssh_widget.h
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/user_password_widget.h
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/list_type_widget.h
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/type_delegate.h
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/hash_type_widget.h
 )
 
 SET(SOURCES_GUI_WIDGETS
-  gui/widgets/log_tab_widget.cpp
-  gui/widgets/log_widget.cpp
-  gui/widgets/commands_widget.cpp
-  gui/widgets/main_widget.cpp
-  gui/widgets/query_widget.cpp
-  gui/widgets/output_widget.cpp
-  gui/widgets/connection_base_widget.cpp
-  gui/widgets/connection_local_widget.cpp
-  gui/widgets/connection_remote_widget.cpp
-  gui/widgets/host_port_widget.cpp
-  gui/widgets/path_widget.cpp
-  gui/widgets/ssh_widget.cpp
-  gui/widgets/user_password_widget.cpp
-  gui/widgets/list_type_widget.cpp
-  gui/widgets/type_delegate.cpp
-  gui/widgets/hash_type_widget.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/log_tab_widget.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/log_widget.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/commands_widget.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/main_widget.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/query_widget.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/output_widget.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/connection_base_widget.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/connection_local_widget.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/connection_remote_widget.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/host_port_widget.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/path_widget.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/ssh_widget.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/user_password_widget.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/list_type_widget.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/type_delegate.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/hash_type_widget.cpp
 )
 
 SET(HEADERS_GUI_TO_MOC
@@ -354,64 +354,67 @@ SET(HEADERS_GUI_TO_MOC
   ${HEADERS_GUI_EDITOR_TO_MOC}
   ${HEADERS_GUI_WIDGETS_TO_MOC}
   ${HEADERS_GUI_EXPLORER_TO_MOC}
-  gui/main_window.h
-  gui/statistic_sender.h
-  gui/update_checker.h
-  gui/property_table_model.h
-  gui/main_tab_bar.h
-  gui/fasto_text_view.h
-  gui/keys_table_model.h
-  gui/channels_table_model.h
-  gui/fasto_tree_view.h
-  gui/fasto_common_model.h
-  gui/fasto_table_view.h
-  gui/keys_table_view.h
-  gui/fasto_scintilla.h
-  gui/shell_widget.h
-  gui/base_lexer.h
-  gui/base_shell.h
-  gui/hash_table_model.h
-  gui/action_cell_delegate.h
+
+  ${CMAKE_SOURCE_DIR}/src/gui/main_window.h
+  ${CMAKE_SOURCE_DIR}/src/gui/statistic_sender.h
+  ${CMAKE_SOURCE_DIR}/src/gui/update_checker.h
+  ${CMAKE_SOURCE_DIR}/src/gui/property_table_model.h
+  ${CMAKE_SOURCE_DIR}/src/gui/main_tab_bar.h
+  ${CMAKE_SOURCE_DIR}/src/gui/fasto_text_view.h
+  ${CMAKE_SOURCE_DIR}/src/gui/keys_table_model.h
+  ${CMAKE_SOURCE_DIR}/src/gui/channels_table_model.h
+  ${CMAKE_SOURCE_DIR}/src/gui/fasto_tree_view.h
+  ${CMAKE_SOURCE_DIR}/src/gui/fasto_common_model.h
+  ${CMAKE_SOURCE_DIR}/src/gui/fasto_table_view.h
+  ${CMAKE_SOURCE_DIR}/src/gui/keys_table_view.h
+  ${CMAKE_SOURCE_DIR}/src/gui/fasto_scintilla.h
+  ${CMAKE_SOURCE_DIR}/src/gui/shell_widget.h
+  ${CMAKE_SOURCE_DIR}/src/gui/base_lexer.h
+  ${CMAKE_SOURCE_DIR}/src/gui/base_shell.h
+  ${CMAKE_SOURCE_DIR}/src/gui/hash_table_model.h
+  ${CMAKE_SOURCE_DIR}/src/gui/action_cell_delegate.h
 )
 SET(HEADERS_GUI
   ${HEADERS_GUI_EXPLORER}
   ${HEADERS_GUI_DIALOGS}
-  gui/gui_factory.h
-  gui/fasto_common_item.h
-  gui/property_table_item.h
-  gui/shortcuts.h
-  gui/connection_widgets_factory.h
-  gui/key_value_table_item.h
+
+  ${CMAKE_SOURCE_DIR}/src/gui/gui_factory.h
+  ${CMAKE_SOURCE_DIR}/src/gui/fasto_common_item.h
+  ${CMAKE_SOURCE_DIR}/src/gui/property_table_item.h
+  ${CMAKE_SOURCE_DIR}/src/gui/shortcuts.h
+  ${CMAKE_SOURCE_DIR}/src/gui/connection_widgets_factory.h
+  ${CMAKE_SOURCE_DIR}/src/gui/key_value_table_item.h
 )
 SET(SOURCES_GUI
   ${SOURCES_GUI_DIALOGS}
   ${SOURCES_GUI_EDITOR}
   ${SOURCES_GUI_WIDGETS}
   ${SOURCES_GUI_EXPLORER}
-  gui/main_window.cpp
-  gui/statistic_sender.cpp
-  gui/update_checker.cpp
-  gui/gui_factory.cpp
-  gui/property_table_item.cpp
-  gui/property_table_model.cpp
-  gui/main_tab_bar.cpp
-  gui/fasto_text_view.cpp
-  gui/keys_table_model.cpp
-  gui/channels_table_model.cpp
-  gui/fasto_tree_view.cpp
-  gui/fasto_common_model.cpp
-  gui/fasto_table_view.cpp
-  gui/keys_table_view.cpp
-  gui/fasto_common_item.cpp
-  gui/shortcuts.cpp
-  gui/fasto_scintilla.cpp
-  gui/connection_widgets_factory.cpp
-  gui/shell_widget.cpp
-  gui/base_lexer.cpp
-  gui/base_shell.cpp
-  gui/hash_table_model.cpp
-  gui/action_cell_delegate.cpp
-  gui/key_value_table_item.cpp
+
+  ${CMAKE_SOURCE_DIR}/src/gui/main_window.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/statistic_sender.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/update_checker.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/gui_factory.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/property_table_item.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/property_table_model.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/main_tab_bar.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/fasto_text_view.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/keys_table_model.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/channels_table_model.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/fasto_tree_view.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/fasto_common_model.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/fasto_table_view.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/keys_table_view.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/fasto_common_item.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/shortcuts.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/fasto_scintilla.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/connection_widgets_factory.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/shell_widget.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/base_lexer.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/base_shell.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/hash_table_model.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/action_cell_delegate.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/key_value_table_item.cpp
 )
 
 SET_DESKTOP_TARGET()
@@ -444,50 +447,50 @@ IF(BUILD_WITH_REDIS)
 
   #core redis
   SET(HEADERS_CORE_DB_REDIS
-    core/db/redis/config.h
-    core/db/redis/command_translator.h
-    core/db/redis/server_info.h
-    core/db/redis/db_connection.h
-    core/db/redis/internal/commands_api.h
-    core/db/redis/database_info.h
-    core/db/redis/sentinel_info.h
-    core/db/redis/cluster_infos.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis/config.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis/command_translator.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis/server_info.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis/db_connection.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis/internal/commands_api.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis/database_info.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis/sentinel_info.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis/cluster_infos.h
   )
   SET(SOURCES_CORE_DB_REDIS
-    core/db/redis/config.cpp
-    core/db/redis/command_translator.cpp
-    core/db/redis/server_info.cpp
-    core/db/redis/db_connection.cpp
-    core/db/redis/internal/commands_api.cpp
-    core/db/redis/sentinel_info.cpp
-    core/db/redis/cluster_infos.cpp
-    core/db/redis/database_info.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis/config.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis/command_translator.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis/server_info.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis/db_connection.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis/internal/commands_api.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis/sentinel_info.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis/cluster_infos.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis/database_info.cpp
   )
 
   # proxy redis
   SET(HEADERS_REDIS_PROXY_TO_MOC
-    proxy/db/redis/sentinel.h
-    proxy/db/redis/cluster.h
-    proxy/db/redis/server.h
-    proxy/db/redis/driver.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/sentinel.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/cluster.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/server.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/driver.h
   )
   SET(HEADERS_PROXY_DB_REDIS
-    proxy/db/redis/command.h
-    proxy/db/redis/connection_settings.h
-    proxy/db/redis/sentinel_settings.h
-    proxy/db/redis/cluster_settings.h
-    proxy/db/redis/database.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/command.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/connection_settings.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/sentinel_settings.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/cluster_settings.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/database.h
   )
   SET(SOURCES_PROXY_DB_REDIS
-    proxy/db/redis/command.cpp
-    proxy/db/redis/connection_settings.cpp
-    proxy/db/redis/sentinel_settings.cpp
-    proxy/db/redis/cluster_settings.cpp
-    proxy/db/redis/server.cpp
-    proxy/db/redis/driver.cpp
-    proxy/db/redis/sentinel.cpp
-    proxy/db/redis/cluster.cpp
-    proxy/db/redis/database.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/command.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/connection_settings.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/sentinel_settings.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/cluster_settings.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/server.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/driver.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/sentinel.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/cluster.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/database.cpp
   )
 
   #gui redis
@@ -519,38 +522,38 @@ IF(BUILD_WITH_MEMCACHED)
 
   #core
   SET(HEADERS_CORE_DB_MEMCACHED
-    core/db/memcached/config.h
-    core/db/memcached/command_translator.h
-    core/db/memcached/server_info.h
-    core/db/memcached/db_connection.h
-    core/db/memcached/internal/commands_api.h
-    core/db/memcached/database_info.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/memcached/config.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/memcached/command_translator.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/memcached/server_info.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/memcached/db_connection.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/memcached/internal/commands_api.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/memcached/database_info.h
   )
   SET(SOURCES_CORE_DB_MEMCACHED
-    core/db/memcached/config.cpp    
-    core/db/memcached/command_translator.cpp
-    core/db/memcached/server_info.cpp
-    core/db/memcached/db_connection.cpp
-    core/db/memcached/internal/commands_api.cpp
-    core/db/memcached/database_info.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/memcached/config.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/memcached/command_translator.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/memcached/server_info.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/memcached/db_connection.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/memcached/internal/commands_api.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/memcached/database_info.cpp
   )
 
   #proxy
   SET(HEADERS_MEMCACHED_PROXY_TO_MOC
-    proxy/db/memcached/server.h
-    proxy/db/memcached/driver.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/memcached/server.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/memcached/driver.h
   )
   SET(HEADERS_PROXY_DB_MEMCACHED
-    proxy/db/memcached/connection_settings.h
-    proxy/db/memcached/database.h
-    proxy/db/memcached/command.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/memcached/connection_settings.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/memcached/database.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/memcached/command.h
   )
   SET(SOURCES_PROXY_DB_MEMCACHED
-    proxy/db/memcached/connection_settings.cpp
-    proxy/db/memcached/database.cpp
-    proxy/db/memcached/server.cpp
-    proxy/db/memcached/driver.cpp
-    proxy/db/memcached/command.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/memcached/connection_settings.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/memcached/database.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/memcached/server.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/memcached/driver.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/memcached/command.cpp
   )
 
   #gui
@@ -579,38 +582,38 @@ IF(BUILD_WITH_SSDB)
 
   #core
   SET(HEADERS_CORE_DB_SSDB
-    core/db/ssdb/config.h
-    core/db/ssdb/command_translator.h
-    core/db/ssdb/server_info.h
-    core/db/ssdb/db_connection.h
-    core/db/ssdb/internal/commands_api.h
-    core/db/ssdb/database_info.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/config.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/command_translator.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/server_info.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/db_connection.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/internal/commands_api.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/database_info.h
   )
   SET(SOURCES_CORE_DB_SSDB
-    core/db/ssdb/config.cpp
-    core/db/ssdb/command_translator.cpp
-    core/db/ssdb/server_info.cpp
-    core/db/ssdb/db_connection.cpp
-    core/db/ssdb/internal/commands_api.cpp
-    core/db/ssdb/database_info.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/config.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/command_translator.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/server_info.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/db_connection.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/internal/commands_api.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/database_info.cpp
   )
 
   #proxy
   SET(HEADERS_SSDB_PROXY_TO_MOC
-    proxy/db/ssdb/server.h
-    proxy/db/ssdb/driver.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/ssdb/server.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/ssdb/driver.h
   )
   SET(HEADERS_PROXY_DB_SSDB
-    proxy/db/ssdb/connection_settings.h
-    proxy/db/ssdb/database.h
-    proxy/db/ssdb/command.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/ssdb/connection_settings.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/ssdb/database.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/ssdb/command.h
   )
   SET(SOURCES_PROXY_DB_SSDB
-    proxy/db/ssdb/connection_settings.cpp
-    proxy/db/ssdb/database.cpp
-    proxy/db/ssdb/server.cpp
-    proxy/db/ssdb/driver.cpp
-    proxy/db/ssdb/command.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/ssdb/connection_settings.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/ssdb/database.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/ssdb/server.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/ssdb/driver.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/ssdb/command.cpp
   )
 
   #gui
@@ -640,38 +643,38 @@ IF(BUILD_WITH_LEVELDB)
 
   #core
   SET(HEADERS_CORE_DB_LEVELDB
-    core/db/leveldb/config.h
-    core/db/leveldb/command_translator.h
-    core/db/leveldb/server_info.h
-    core/db/leveldb/db_connection.h
-    core/db/leveldb/internal/commands_api.h
-    core/db/leveldb/database_info.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/config.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/command_translator.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/server_info.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/db_connection.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/internal/commands_api.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/database_info.h
   )
   SET(SOURCES_CORE_DB_LEVELDB
-    core/db/leveldb/config.cpp
-    core/db/leveldb/command_translator.cpp
-    core/db/leveldb/server_info.cpp
-    core/db/leveldb/db_connection.cpp
-    core/db/leveldb/internal/commands_api.cpp
-    core/db/leveldb/database_info.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/config.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/command_translator.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/server_info.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/db_connection.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/internal/commands_api.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/database_info.cpp
   )
 
   #proxy
   SET(HEADERS_LEVELDB_PROXY_TO_MOC
-    proxy/db/leveldb/server.h
-    proxy/db/leveldb/driver.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/leveldb/server.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/leveldb/driver.h
   )
   SET(HEADERS_PROXY_DB_LEVELDB
-    proxy/db/leveldb/connection_settings.h
-    proxy/db/leveldb/database.h
-    proxy/db/leveldb/command.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/leveldb/connection_settings.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/leveldb/database.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/leveldb/command.h
   )
   SET(SOURCES_PROXY_DB_LEVELDB
-    proxy/db/leveldb/connection_settings.cpp
-    proxy/db/leveldb/database.cpp
-    proxy/db/leveldb/server.cpp
-    proxy/db/leveldb/driver.cpp
-    proxy/db/leveldb/command.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/leveldb/connection_settings.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/leveldb/database.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/leveldb/server.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/leveldb/driver.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/leveldb/command.cpp
   )
 
   #gui
@@ -701,38 +704,38 @@ IF(BUILD_WITH_ROCKSDB)
 
   #core
   SET(HEADERS_CORE_DB_ROCKSDB
-    core/db/rocksdb/config.h
-    core/db/rocksdb/command_translator.h
-    core/db/rocksdb/server_info.h
-    core/db/rocksdb/db_connection.h
-    core/db/rocksdb/internal/commands_api.h
-    core/db/rocksdb/database_info.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/config.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/command_translator.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/server_info.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/db_connection.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/internal/commands_api.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/database_info.h
   )
   SET(SOURCES_CORE_DB_ROCKSDB
-    core/db/rocksdb/config.cpp
-    core/db/rocksdb/command_translator.cpp
-    core/db/rocksdb/server_info.cpp
-    core/db/rocksdb/db_connection.cpp
-    core/db/rocksdb/internal/commands_api.cpp
-    core/db/rocksdb/database_info.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/config.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/command_translator.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/server_info.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/db_connection.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/internal/commands_api.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/database_info.cpp
   )
 
   #proxy
   SET(HEADERS_ROCKSDB_PROXY_TO_MOC
-    proxy/db/rocksdb/server.h
-    proxy/db/rocksdb/driver.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/rocksdb/server.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/rocksdb/driver.h
   )
   SET(HEADERS_PROXY_DB_ROCKSDB
-    proxy/db/rocksdb/connection_settings.h
-    proxy/db/rocksdb/database.h
-    proxy/db/rocksdb/command.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/rocksdb/connection_settings.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/rocksdb/database.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/rocksdb/command.h
   )
   SET(SOURCES_PROXY_DB_ROCKSDB
-    proxy/db/rocksdb/connection_settings.cpp
-    proxy/db/rocksdb/database.cpp
-    proxy/db/rocksdb/server.cpp
-    proxy/db/rocksdb/driver.cpp
-    proxy/db/rocksdb/command.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/rocksdb/connection_settings.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/rocksdb/database.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/rocksdb/server.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/rocksdb/driver.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/rocksdb/command.cpp
   )
 
   #gui
@@ -761,44 +764,50 @@ IF(BUILD_WITH_UNQLITE)
 
   #core
   SET(HEADERS_CORE_DB_UNQLITE
-    core/db/unqlite/config.h
-    core/db/unqlite/command_translator.h
-    core/db/unqlite/server_info.h
-    core/db/unqlite/db_connection.h
-    core/db/unqlite/internal/commands_api.h
-    core/db/unqlite/database_info.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/config.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/command_translator.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/server_info.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/db_connection.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/internal/commands_api.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/database_info.h
   )
   SET(SOURCES_CORE_DB_UNQLITE
-    core/db/unqlite/config.cpp
-    core/db/unqlite/command_translator.cpp
-    core/db/unqlite/server_info.cpp
-    core/db/unqlite/db_connection.cpp
-    core/db/unqlite/internal/commands_api.cpp
-    core/db/unqlite/database_info.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/config.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/command_translator.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/server_info.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/db_connection.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/internal/commands_api.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/database_info.cpp
   )
 
   #proxy
   SET(HEADERS_UNQLITE_PROXY_TO_MOC
-    proxy/db/unqlite/server.h
-    proxy/db/unqlite/driver.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/unqlite/server.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/unqlite/driver.h
   )
   SET(HEADERS_PROXY_DB_UNQLITE
-    proxy/db/unqlite/connection_settings.h
-    proxy/db/unqlite/database.h
-    proxy/db/unqlite/command.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/unqlite/connection_settings.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/unqlite/database.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/unqlite/command.h
   )
   SET(SOURCES_PROXY_DB_UNQLITE
-    proxy/db/unqlite/connection_settings.cpp
-    proxy/db/unqlite/database.cpp
-    proxy/db/unqlite/server.cpp
-    proxy/db/unqlite/driver.cpp
-    proxy/db/unqlite/command.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/unqlite/connection_settings.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/unqlite/database.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/unqlite/server.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/unqlite/driver.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/unqlite/command.cpp
   )
 
   #gui
-  SET(HEADERS_UNQLITE_GUI_TO_MOC gui/db/unqlite/connection_widget.h gui/db/unqlite/lexer.h)
+  SET(HEADERS_UNQLITE_GUI_TO_MOC
+    ${CMAKE_SOURCE_DIR}/src/gui/db/unqlite/connection_widget.h
+    ${CMAKE_SOURCE_DIR}/src/gui/db/unqlite/lexer.h
+  )
   SET(HEADERS_UNQLITE_GUI)
-  SET(SOURCES_UNQLITE_GUI gui/db/unqlite/connection_widget.cpp gui/db/unqlite/lexer.cpp)
+  SET(SOURCES_UNQLITE_GUI
+    ${CMAKE_SOURCE_DIR}/src/gui/db/unqlite/connection_widget.cpp
+    ${CMAKE_SOURCE_DIR}/src/gui/db/unqlite/lexer.cpp
+  )
 
   #update common variables
   SET(HEADERS_CORE ${HEADERS_CORE} ${HEADERS_CORE_DB_UNQLITE})
@@ -821,37 +830,37 @@ IF(BUILD_WITH_LMDB)
 
   #core
   SET(HEADERS_CORE_DB_LMDB
-    core/db/lmdb/config.h
-    core/db/lmdb/command_translator.h
-    core/db/lmdb/server_info.h
-    core/db/lmdb/db_connection.h
-    core/db/lmdb/internal/commands_api.h
-    core/db/lmdb/database_info.h)
+    ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/config.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/command_translator.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/server_info.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/db_connection.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/internal/commands_api.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/database_info.h)
   SET(SOURCES_CORE_DB_LMDB
-    core/db/lmdb/config.cpp
-    core/db/lmdb/command_translator.cpp
-    core/db/lmdb/server_info.cpp
-    core/db/lmdb/db_connection.cpp
-    core/db/lmdb/internal/commands_api.cpp
-    core/db/lmdb/database_info.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/config.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/command_translator.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/server_info.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/db_connection.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/internal/commands_api.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/database_info.cpp
   )
 
   #proxy
   SET(HEADERS_LMDB_PROXY_TO_MOC
-    proxy/db/lmdb/server.h
-    proxy/db/lmdb/driver.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/lmdb/server.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/lmdb/driver.h
   )
   SET(HEADERS_PROXY_DB_LMDB
-    proxy/db/lmdb/connection_settings.h
-    proxy/db/lmdb/database.h
-    proxy/db/lmdb/command.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/lmdb/connection_settings.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/lmdb/database.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/lmdb/command.h
   )
   SET(SOURCES_PROXY_DB_LMDB
-    proxy/db/lmdb/connection_settings.cpp
-    proxy/db/lmdb/database.cpp
-    proxy/db/lmdb/server.cpp
-    proxy/db/lmdb/driver.cpp
-    proxy/db/lmdb/command.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/lmdb/connection_settings.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/lmdb/database.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/lmdb/server.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/lmdb/driver.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/lmdb/command.cpp
   )
 
   #gui
@@ -884,38 +893,38 @@ IF(BUILD_WITH_UPSCALEDB)
 
   #core
   SET(HEADERS_CORE_DB_UPSCALEDB
-    core/db/upscaledb/config.h
-    core/db/upscaledb/command_translator.h
-    core/db/upscaledb/server_info.h
-    core/db/upscaledb/db_connection.h
-    core/db/upscaledb/internal/commands_api.h
-    core/db/upscaledb/database_info.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/config.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/command_translator.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/server_info.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/db_connection.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/internal/commands_api.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/database_info.h
   )
   SET(SOURCES_CORE_DB_UPSCALEDB
-    core/db/upscaledb/config.cpp
-    core/db/upscaledb/command_translator.cpp
-    core/db/upscaledb/server_info.cpp
-    core/db/upscaledb/db_connection.cpp
-    core/db/upscaledb/internal/commands_api.cpp
-    core/db/upscaledb/database_info.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/config.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/command_translator.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/server_info.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/db_connection.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/internal/commands_api.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/database_info.cpp
   )
 
   #proxy
   SET(HEADERS_UPSCALEDB_PROXY_TO_MOC
-    proxy/db/upscaledb/server.h
-    proxy/db/upscaledb/driver.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/upscaledb/server.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/upscaledb/driver.h
   )
   SET(HEADERS_PROXY_DB_UPSCALEDB
-    proxy/db/upscaledb/connection_settings.h
-    proxy/db/upscaledb/database.h
-    proxy/db/upscaledb/command.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/upscaledb/connection_settings.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/upscaledb/database.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/upscaledb/command.h
   )
   SET(SOURCES_PROXY_DB_UPSCALEDB
-    proxy/db/upscaledb/connection_settings.cpp
-    proxy/db/upscaledb/database.cpp
-    proxy/db/upscaledb/server.cpp
-    proxy/db/upscaledb/driver.cpp
-    proxy/db/upscaledb/command.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/upscaledb/connection_settings.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/upscaledb/database.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/upscaledb/server.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/upscaledb/driver.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/upscaledb/command.cpp
   )
 
   #gui
@@ -945,37 +954,37 @@ IF(BUILD_WITH_FORESTDB)
 
   #core
   SET(HEADERS_CORE_DB_FORESTDB
-    core/db/forestdb/config.h
-    core/db/forestdb/command_translator.h
-    core/db/forestdb/server_info.h
-    core/db/forestdb/db_connection.h
-    core/db/forestdb/internal/commands_api.h
-    core/db/forestdb/database_info.h)
+    ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/config.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/command_translator.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/server_info.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/db_connection.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/internal/commands_api.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/database_info.h)
   SET(SOURCES_CORE_DB_FORESTDB
-    core/db/forestdb/config.cpp
-    core/db/forestdb/command_translator.cpp
-    core/db/forestdb/server_info.cpp
-    core/db/forestdb/db_connection.cpp
-    core/db/forestdb/internal/commands_api.cpp
-    core/db/forestdb/database_info.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/config.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/command_translator.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/server_info.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/db_connection.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/internal/commands_api.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/database_info.cpp
   )
 
   #proxy
   SET(HEADERS_FORESTDB_PROXY_TO_MOC
-    proxy/db/forestdb/server.h
-    proxy/db/forestdb/driver.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/forestdb/server.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/forestdb/driver.h
   )
   SET(HEADERS_PROXY_DB_FORESTDB
-    proxy/db/forestdb/connection_settings.h
-    proxy/db/forestdb/database.h
-    proxy/db/forestdb/command.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/forestdb/connection_settings.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/forestdb/database.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/forestdb/command.h
   )
   SET(SOURCES_PROXY_DB_FORESTDB
-    proxy/db/forestdb/connection_settings.cpp
-    proxy/db/forestdb/database.cpp
-    proxy/db/forestdb/server.cpp
-    proxy/db/forestdb/driver.cpp
-    proxy/db/forestdb/command.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/forestdb/connection_settings.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/forestdb/database.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/forestdb/server.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/forestdb/driver.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/forestdb/command.cpp
   )
 
   #gui
@@ -1045,8 +1054,8 @@ SOURCE_GROUP("Platform Files" FILES ${PLATFORM_HDRS} ${PLATFORM_SRCS})
 SOURCE_GROUP("Resources" FILES ${RES_SRC} ${RESOURCE_OS})
 
 SET(TRANSLATIONS
-  translations/${PROJECT_NAME_LOWERCASE}/${PROJECT_NAME_LOWERCASE}_ru.ts
-  translations/${PROJECT_NAME_LOWERCASE}/${PROJECT_NAME_LOWERCASE}_fr.ts
+  ${CMAKE_SOURCE_DIR}/src/translations/${PROJECT_NAME_LOWERCASE}/${PROJECT_NAME_LOWERCASE}_ru.ts
+  ${CMAKE_SOURCE_DIR}/src/translations/${PROJECT_NAME_LOWERCASE}/${PROJECT_NAME_LOWERCASE}_fr.ts
 )
 
 FIND_PACKAGE(Common REQUIRED)

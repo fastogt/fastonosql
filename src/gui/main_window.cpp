@@ -419,7 +419,7 @@ void MainWindow::importConnection() {
   err = readFile.Open("rb");
   if (err && err->IsError()) {
     writeFile.Close();
-    err = common::file_system::remove_file(wp.Path());
+    err = common::file_system::remove_file(wp.GetPath());
     if (err && err->IsError()) {
       DNOTREACHED();
     }
@@ -431,7 +431,7 @@ void MainWindow::importConnection() {
   if (!hexEnc) {
     readFile.Close();
     writeFile.Close();
-    err = common::file_system::remove_file(wp.Path());
+    err = common::file_system::remove_file(wp.GetPath());
     if (err && err->IsError()) {
       DNOTREACHED();
     }
@@ -451,7 +451,7 @@ void MainWindow::importConnection() {
     if (er && er->IsError()) {
       readFile.Close();
       writeFile.Close();
-      common::Error err = common::file_system::remove_file(wp.Path());
+      common::Error err = common::file_system::remove_file(wp.GetPath());
       if (err && err->IsError()) {
         DNOTREACHED();
       }
@@ -495,7 +495,7 @@ void MainWindow::exportConnection() {
   err = readFile.Open("rb");
   if (err && err->IsError()) {
     writeFile.Close();
-    common::Error err = common::file_system::remove_file(wp.Path());
+    common::Error err = common::file_system::remove_file(wp.GetPath());
     if (err && err->IsError()) {
       DNOTREACHED();
     }
@@ -507,7 +507,7 @@ void MainWindow::exportConnection() {
   if (!hexEnc) {
     readFile.Close();
     writeFile.Close();
-    common::Error err = common::file_system::remove_file(wp.Path());
+    common::Error err = common::file_system::remove_file(wp.GetPath());
     if (err && err->IsError()) {
       DNOTREACHED();
     }
@@ -527,7 +527,7 @@ void MainWindow::exportConnection() {
     if (er && er->IsError()) {
       readFile.Close();
       writeFile.Close();
-      common::Error err = common::file_system::remove_file(wp.Path());
+      common::Error err = common::file_system::remove_file(wp.GetPath());
       if (err && err->IsError()) {
         DNOTREACHED();
       }

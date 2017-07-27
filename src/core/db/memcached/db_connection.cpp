@@ -626,7 +626,7 @@ common::Error DBConnection::DBkcountImpl(size_t* size) {
   std::vector<std::string> ret;
   common::Error err = Keys("a", "z", UINT64_MAX, &ret);
   if (err && err->IsError()) {
-    std::string buff = common::MemSPrintf("Couldn't determine DBKCOUNT error: %s", err->Description());
+    std::string buff = common::MemSPrintf("Couldn't determine DBKCOUNT error: %s", err->GetDescription());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 

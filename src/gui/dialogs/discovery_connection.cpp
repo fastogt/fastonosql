@@ -50,7 +50,7 @@ void DiscoveryConnection::routine() {
 
   if (er && er->IsError()) {
     QString qdesc;
-    common::ConvertFromString(er->Description(), &qdesc);
+    common::ConvertFromString(er->GetDescription(), &qdesc);
     emit connectionResult(false, common::time::current_mstime() - start_time_, qdesc, inf);
   } else {
     emit connectionResult(true, common::time::current_mstime() - start_time_, translations::trSuccess, inf);

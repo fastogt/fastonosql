@@ -330,7 +330,7 @@ bool BaseShellWidget::loadFromFile(const QString& path) {
     common::Error err = common::qt::LoadFromFileText(filepath, &out);
     if (err && err->IsError()) {
       QString qdesc;
-      common::ConvertFromString(err->Description(), &qdesc);
+      common::ConvertFromString(err->GetDescription(), &qdesc);
       QMessageBox::critical(this, translations::trError, trCantReadTemplate_2S.arg(filepath, qdesc));
       return false;
     }
@@ -353,7 +353,7 @@ void BaseShellWidget::saveToFileAs() {
   common::Error err = common::qt::SaveToFileText(filepath, text());
   if (err && err->IsError()) {
     QString qdesc;
-    common::ConvertFromString(err->Description(), &qdesc);
+    common::ConvertFromString(err->GetDescription(), &qdesc);
     QMessageBox::critical(this, translations::trError, trCantSaveTemplate_2S.arg(filepath, qdesc));
     return;
   }
@@ -378,7 +378,7 @@ void BaseShellWidget::saveToFile() {
     common::Error err = common::qt::SaveToFileText(filePath_, text());
     if (err && err->IsError()) {
       QString qdesc;
-      common::ConvertFromString(err->Description(), &qdesc);
+      common::ConvertFromString(err->GetDescription(), &qdesc);
       QMessageBox::critical(this, translations::trError, trCantSaveTemplate_2S.arg(filePath_, qdesc));
     }
   }
