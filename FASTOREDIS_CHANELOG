@@ -5,6 +5,7 @@
 - #26 Different JsonFormat for better readable json
 - #68 Don't show "Check version" modal on every start
 - #71 Bug: Crashes on windows if key doesn't exist
+- Update QScintilla to version 2.10.1
 
 1.5.1 / May 18, 2017
 [Alexandr Topilski]

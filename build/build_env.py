@@ -100,6 +100,7 @@ class BuildRequest(object):
             os.chdir('build_cmake_release')
             common_cmake_line = list(cmake_line)
             common_cmake_line.append('-DQT_ENABLED=ON')
+            common_cmake_line.append('-DSNAPPY_USE_STATIC=ON')
             cmake_policy = run_command.CmakePolicy(print_message)
             make_policy = run_command.CommonPolicy(print_message)
             run_command.run_command_cb(common_cmake_line, cmake_policy)
@@ -210,8 +211,7 @@ class BuildRequest(object):
             os.chdir(pwd)
             raise ex
 
-
-	try:
+        try:
             cloned_dir = utils.git_clone('https://github.com/fastogt/forestdb.git', abs_dir_path)
             os.chdir(cloned_dir)
 

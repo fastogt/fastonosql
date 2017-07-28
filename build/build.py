@@ -124,9 +124,10 @@ class BuildRequest(object):
         openssl_args = '-DOPENSSL_USE_STATIC=ON'
         zlib_args = '-DZLIB_USE_STATIC=ON'
         bzip2_args = '-DBZIP2_USE_STATIC=ON'
+        snappy_args = '-DSNAPPY_USE_STATIC=ON'
 
         cmake_line = ['cmake', cmake_project_root_abs_path, generator, '-DCMAKE_BUILD_TYPE=RELEASE', log_to_file_args,
-                      openssl_args, zlib_args, bzip2_args]
+                      openssl_args, zlib_args, bzip2_args, snappy_args]
 
         if is_android:
             toolchain_path = os.path.join(cmake_project_root_abs_path, 'cmake/android.toolchain.cmake')

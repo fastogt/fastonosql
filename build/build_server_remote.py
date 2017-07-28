@@ -3,9 +3,10 @@ import json
 import shlex
 import sys
 
-import build
 import config
 import pika
+
+import build
 from pybuild_utils.base import system_info
 from pybuild_utils.base import utils
 

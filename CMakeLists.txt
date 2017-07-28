@@ -3,7 +3,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.3.0) # deb package fix in 3.3.0
 
 SET(BRANDING_PROJECT_NAME "FastoNoSQL" CACHE STRING "Branding for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_VERSION "1.6.0.0" CACHE STRING "Branding version for ${BRANDING_PROJECT_NAME}") #default
-SET(BRANDING_PROJECT_BUILD_TYPE_VERSION "beta" CACHE STRING "Build version type for ${BRANDING_PROJECT_NAME}") #default
+SET(BRANDING_PROJECT_BUILD_TYPE_VERSION "rc" CACHE STRING "Build version type for ${BRANDING_PROJECT_NAME}") #default
   #possible variables: alfa, beta, rc, release
 
 SET(BRANDING_PROJECT_DOMAIN "http://www.fastonosql.com" CACHE STRING "Branding domain url for ${BRANDING_PROJECT_NAME}") #default
@@ -21,8 +21,10 @@ SET(BRANDING_PROJECT_FACEBOOK_LINK "https://www.facebook.com/profile.php?id=1000
 SET(BRANDING_PROJECT_TWITTER_LINK "https://www.twitter.com/FastoNoSQL" CACHE STRING "Twitter link for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_GITHUB_LINK "https://www.github.com/fastogt/fastonosql" CACHE STRING "Github link for ${BRANDING_PROJECT_NAME}") #default
 
-SET(BRANDING_PROJECT_SUMMARY "Cross-platform open source Redis, Memcached, SSDB, LevelDB, RocksDB, UnQLite, LMDB, UpscaleDB GUI management tool."
-  CACHE STRING "Short description of ${BRANDING_PROJECT_NAME}")
+SET(BRANDING_PROJECT_SUMMARY "Cross-platform open source Redis, Memcached, SSDB, LevelDB,
+  RocksDB, UnQLite, LMDB, UpscaleDB, ForestDB GUI management tool."
+  CACHE STRING "Short description of ${BRANDING_PROJECT_NAME}"
+)
 SET(BRANDING_PROJECT_DESCRIPTION "${BRANDING_PROJECT_NAME} it is GUI platform for NoSQL databases. Currently we support next databases: \
   * Redis \
   * Memcached \
@@ -32,8 +34,10 @@ SET(BRANDING_PROJECT_DESCRIPTION "${BRANDING_PROJECT_NAME} it is GUI platform fo
   * UnQLite \
   * LMDB \
   * UpscaleDB \
+  * ForestDB \
   For all this databases you can connect and use them in any way you need. \
-  Also ${BRANDING_PROJECT_NAME} is IDE tool for NoSQL which works on the most famous platforms like: Windows, Linux, MacOSX, Android, FreeBSD."
+  Also ${BRANDING_PROJECT_NAME} is IDE tool for NoSQL which works on the most famous platforms like:
+  Windows, Linux, MacOSX, Android, FreeBSD."
   CACHE STRING "Description of ${BRANDING_PROJECT_NAME}")
 SET(BRANDING_PROJECT_COPYRIGHT "Copyright (C) 2014-2016 ${BRANDING_PROJECT_COMPANYNAME} All Rights Reserved."
   CACHE STRING "Copyright notice for ${BRANDING_PROJECT_NAME}") #default
