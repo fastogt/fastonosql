@@ -42,6 +42,7 @@ class FastoScintilla;
 
 namespace fastonosql {
 namespace gui {
+
 class FastoEditor : public QWidget {
   Q_OBJECT
  public:
@@ -54,8 +55,14 @@ class FastoEditor : public QWidget {
   QString text() const;
   QString selectedText() const;
 
+  void setLexer(QsciLexer* lexer);
+  QsciLexer* lexer() const;
+
+  bool isReadOnly() const;
+
  Q_SIGNALS:
   void textChanged();
+  void readOnlyChanged();
 
  public Q_SLOTS:
   void append(const QString& text);
@@ -70,9 +77,6 @@ class FastoEditor : public QWidget {
  protected:
   void setShowAutoCompletion(bool showA);
   QMenu* createStandardContextMenu();
-
-  void setLexer(QsciLexer* lexer);
-  QsciLexer* lexer() const;
 
   void setCallTipsStyle(int style);
   void sendScintilla(unsigned int msg, unsigned long wParam = 0, long lParam = 0);
@@ -93,5 +97,6 @@ class FastoEditor : public QWidget {
   QPushButton* prev_;
   QCheckBox* caseSensitive_;
 };
+
 }  // namespace gui
 }  // namespace fastonosql

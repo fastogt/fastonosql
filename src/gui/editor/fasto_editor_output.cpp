@@ -20,6 +20,8 @@
 
 #include <QHBoxLayout>
 
+#include <Qsci/qscilexerjson.h>
+
 #include <common/macros.h>
 #include <common/qt/convert2string.h>
 #include <common/qt/utils_qt.h>  // for item
@@ -31,16 +33,54 @@
 
 namespace fastonosql {
 namespace gui {
+
 FastoEditorOutput::FastoEditorOutput(const QString& delimiter, QWidget* parent)
     : QWidget(parent), model_(nullptr), view_method_(JSON), delimiter_(delimiter) {
   editor_ = new FastoHexEdit;
   VERIFY(connect(editor_, &FastoHexEdit::textChanged, this, &FastoEditorOutput::textChanged));
   VERIFY(connect(editor_, &FastoHexEdit::readOnlyChanged, this, &FastoEditorOutput::readOnlyChanged));
 
+  text_json_editor_ = new FastoEditor;
+  json_lexer_ = new QsciLexerJSON;
+  VERIFY(connect(text_json_editor_, &FastoEditor::textChanged, this, &FastoEditorOutput::textChanged));
+  VERIFY(connect(text_json_editor_, &FastoEditor::readOnlyChanged, this, &FastoEditorOutput::readOnlyChanged));
+
   QVBoxLayout* mainL = new QVBoxLayout;
   mainL->addWidget(editor_);
+  mainL->addWidget(text_json_editor_);
   mainL->setContentsMargins(0, 0, 0, 0);
   setLayout(mainL);
+  SyncEditors();
+}
+
+FastoEditorOutput::~FastoEditorOutput() {
+  delete json_lexer_;
+}
+
+bool FastoEditorOutput::IsTextJsonEditor() const {
+  return view_method_ != HEX;
+}
+
+void FastoEditorOutput::SyncEditors() {
+  editor_->clear();
+  editor_->setReadOnly(false);
+  text_json_editor_->clear();
+  text_json_editor_->setReadOnly(false);
+
+  if (IsTextJsonEditor()) {
+    if (view_method_ == JSON) {
+      text_json_editor_->setLexer(json_lexer_);
+    } else {
+      text_json_editor_->setLexer(NULL);
+    }
+
+    text_json_editor_->setVisible(true);
+    editor_->setVisible(false);
+    return;
+  }
+
+  text_json_editor_->setVisible(false);
+  editor_->setVisible(true);
 }
 
 void FastoEditorOutput::setModel(QAbstractItemModel* model) {
@@ -93,6 +133,11 @@ void FastoEditorOutput::setModel(QAbstractItemModel* model) {
 }
 
 void FastoEditorOutput::setReadOnly(bool ro) {
+  if (IsTextJsonEditor()) {
+    text_json_editor_->setReadOnly(ro);
+    return;
+  }
+
   editor_->setReadOnly(ro);
 }
 
@@ -175,10 +220,18 @@ int FastoEditorOutput::viewMethod() const {
 }
 
 QString FastoEditorOutput::text() const {
+  if (IsTextJsonEditor()) {
+    return text_json_editor_->text();
+  }
+
   return editor_->text();
 }
 
 bool FastoEditorOutput::isReadOnly() const {
+  if (IsTextJsonEditor()) {
+    return text_json_editor_->isReadOnly();
+  }
+
   return editor_->isReadOnly();
 }
 
@@ -192,7 +245,8 @@ int FastoEditorOutput::childCount() const {
 }
 
 void FastoEditorOutput::layoutChanged() {
-  editor_->clear();
+  SyncEditors();
+
   if (!model_) {
     return;
   }
@@ -261,6 +315,16 @@ void FastoEditorOutput::layoutChanged() {
     }
   }
 
+  if (IsTextJsonEditor()) {
+    if (result.isEmpty()) {
+      result = QString(translations::trCannotConvertPattern1ArgsS).arg(methodText);
+      text_json_editor_->setReadOnly(true);
+    }
+    text_json_editor_->setText(result);
+    editor_->setData(result.toUtf8());
+    return;
+  }
+
   if (view_method_ == HEX) {
     editor_->setMode(FastoHexEdit::HEX_MODE);
   } else {
@@ -273,5 +337,6 @@ void FastoEditorOutput::layoutChanged() {
   }
   editor_->setData(result.toUtf8());
 }
+
 }  // namespace gui
 }  // namespace fastonosql

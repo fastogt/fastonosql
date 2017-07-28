@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "fasto_editor.h"
+#include "gui/editor/fasto_editor.h"
 
 #define JSON 0
 #define CSV 1
@@ -36,10 +36,12 @@ class FastoHexEdit;
 
 namespace fastonosql {
 namespace gui {
+
 class FastoEditorOutput : public QWidget {
   Q_OBJECT
  public:
   explicit FastoEditorOutput(const QString& delimiter, QWidget* parent = 0);
+  virtual ~FastoEditorOutput();
 
   void setModel(QAbstractItemModel* model);
 
@@ -72,10 +74,18 @@ class FastoEditorOutput : public QWidget {
   void layoutChanged();
 
  private:
+  bool IsTextJsonEditor() const;
+  void SyncEditors();
+
+  FastoEditor* text_json_editor_;
+  QsciLexer* json_lexer_;
+
   FastoHexEdit* editor_;
+
   QAbstractItemModel* model_;
   int view_method_;
   const QString delimiter_;
 };
+
 }  // namespace gui
 }  // namespace fastonosql

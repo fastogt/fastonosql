@@ -36,7 +36,7 @@ SET(BRANDING_PROJECT_DESCRIPTION "${BRANDING_PROJECT_NAME} it is GUI platform fo
   * UpscaleDB \
   * ForestDB \
   For all this databases you can connect and use them in any way you need. \
-  Also ${BRANDING_PROJECT_NAME} is IDE tool for NoSQL which works on the most famous platforms like:
+  Also ${BRANDING_PROJECT_NAME} is IDE tool for NoSQL which works on the most famous platforms like:\
   Windows, Linux, MacOSX, Android, FreeBSD."
   CACHE STRING "Description of ${BRANDING_PROJECT_NAME}")
 SET(BRANDING_PROJECT_COPYRIGHT "Copyright (C) 2014-2016 ${BRANDING_PROJECT_COMPANYNAME} All Rights Reserved."

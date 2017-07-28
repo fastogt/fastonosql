@@ -24,6 +24,7 @@
 
 namespace fastonosql {
 namespace gui {
+
 FastoEditorShell::FastoEditorShell(bool showAutoCompl, QWidget* parent) : FastoEditor(parent) {
   setShowAutoCompletion(showAutoCompl);
   VERIFY(connect(this, &FastoEditorShell::customContextMenuRequested, this, &FastoEditorShell::showContextMenu));
@@ -34,5 +35,6 @@ void FastoEditorShell::showContextMenu(const QPoint& pt) {
   menu->exec(mapToGlobal(pt));
   delete menu;
 }
+
 }  // namespace gui
 }  // namespace fastonosql

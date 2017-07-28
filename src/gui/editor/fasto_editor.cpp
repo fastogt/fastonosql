@@ -42,6 +42,7 @@
 
 namespace fastonosql {
 namespace gui {
+
 FastoEditor::FastoEditor(QWidget* parent) : QWidget(parent), scin_(nullptr) {
   scin_ = new FastoScintilla;
 
@@ -112,6 +113,7 @@ void FastoEditor::append(const QString& text) {
 
 void FastoEditor::setReadOnly(bool ro) {
   scin_->setReadOnly(ro);
+  emit readOnlyChanged();
 }
 
 void FastoEditor::setText(const QString& text) {
@@ -137,6 +139,10 @@ void FastoEditor::setLexer(QsciLexer* lexer) {
 
 QsciLexer* FastoEditor::lexer() const {
   return scin_->lexer();
+}
+
+bool FastoEditor::isReadOnly() const {
+  return scin_->isReadOnly();
 }
 
 void FastoEditor::setCallTipsStyle(int style) {
@@ -220,5 +226,6 @@ void FastoEditor::findElement(bool forward) {
     }
   }
 }
+
 }  // namespace gui
 }  // namespace fastonosql
