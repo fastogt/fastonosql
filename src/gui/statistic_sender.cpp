@@ -29,7 +29,7 @@
 #include <common/net/types.h>                // for HostAndPort
 #include <common/system_info/system_info.h>  // for SystemInfo, etc
 
-#include "third-party/json-c/json-c/json_object.h"
+#include <json-c/json_object.h>
 
 #include "server_config_daemon/server_config.h"  // for FASTONOSQL_URL, etc
 

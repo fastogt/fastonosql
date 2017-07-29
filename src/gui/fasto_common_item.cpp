@@ -33,7 +33,7 @@
 
 #include <common/qt/gui/base/tree_item.h>  // for TreeItem
 
-#include "third-party/json-c/json-c/json_tokener.h"
+#include <json-c/json_tokener.h>
 
 #include "core/global.h"  // for ConvertToString
 
