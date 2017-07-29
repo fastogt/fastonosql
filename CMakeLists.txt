@@ -21,8 +21,7 @@ SET(BRANDING_PROJECT_FACEBOOK_LINK "https://www.facebook.com/profile.php?id=1000
 SET(BRANDING_PROJECT_TWITTER_LINK "https://www.twitter.com/FastoNoSQL" CACHE STRING "Twitter link for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_GITHUB_LINK "https://www.github.com/fastogt/fastonosql" CACHE STRING "Github link for ${BRANDING_PROJECT_NAME}") #default
 
-SET(BRANDING_PROJECT_SUMMARY "Cross-platform open source Redis, Memcached, SSDB, LevelDB,
-  RocksDB, UnQLite, LMDB, UpscaleDB, ForestDB GUI management tool."
+SET(BRANDING_PROJECT_SUMMARY "Cross-platform open source Redis, Memcached, SSDB, LevelDB, RocksDB, UnQLite, LMDB, UpscaleDB, ForestDB GUI management tool."
   CACHE STRING "Short description of ${BRANDING_PROJECT_NAME}"
 )
 SET(BRANDING_PROJECT_DESCRIPTION "${BRANDING_PROJECT_NAME} it is GUI platform for NoSQL databases. Currently we support next databases: \
