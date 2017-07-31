@@ -1,4 +1,4 @@
-/*  Copyright (C) 2014-2016 FastoGT. All right reserved.
+/*  Copyright (C) 2014-2017 FastoGT. All right reserved.
 
     This file is part of FastoNoSQL.
 
@@ -23,6 +23,10 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QTreeWidget>
+
+#include <Qsci/qsciglobal.h>
+#include <libssh2.h>
+#include <openssl/opensslv.h>
 
 #include <common/macros.h>  // for STRINGIZE, VERIFY
 #include <common/qt/convert2string.h>
@@ -98,7 +102,7 @@ const QString trDescription = QObject::tr(
 
 const QString tAboutTitle = QObject::tr("About " PROJECT_NAME_TITLE);
 
-void addDBItem(QTreeWidget* listWidget, const std::string& name, const char* lib_name, const char* version) {
+void addDBItem(QTreeWidget* dblist_widget, const std::string& name, const char* lib_name, const char* version) {
   QTreeWidgetItem* treeItem = new QTreeWidgetItem;
   QString qname;
   if (common::ConvertFromString(name, &qname)) {
@@ -106,7 +110,17 @@ void addDBItem(QTreeWidget* listWidget, const std::string& name, const char* lib
   }
   treeItem->setText(1, lib_name);
   treeItem->setText(2, version);
-  listWidget->addTopLevelItem(treeItem);
+  dblist_widget->addTopLevelItem(treeItem);
+}
+
+void addLibItem(QTreeWidget* libs_list_widget, const std::string& name, const char* version) {
+  QTreeWidgetItem* treeItem = new QTreeWidgetItem;
+  QString qname;
+  if (common::ConvertFromString(name, &qname)) {
+    treeItem->setText(0, qname);
+  }
+  treeItem->setText(1, version);
+  libs_list_widget->addTopLevelItem(treeItem);
 }
 }  // namespace
 
@@ -138,49 +152,64 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
   copy_rights_layout->addWidget(logoLabel, 0, 0, 1, 1);
   copy_rights_layout->addWidget(copyRightLabel, 0, 1, 4, 4);
 
-  QTreeWidget* listWidget = new QTreeWidget;
-  listWidget->setIndentation(5);
+  QTabWidget* main_tab = new QTabWidget;
+  QTreeWidget* dblist_widget = new QTreeWidget;
+  dblist_widget->setIndentation(5);
 
-  QStringList colums;
-  colums << translations::trName << QObject::tr("Based on") << QObject::tr("Version");
-  listWidget->setHeaderLabels(colums);
+  QStringList dbcolums;
+  dbcolums << translations::trName << QObject::tr("Based on") << QObject::tr("Version");
+  dblist_widget->setHeaderLabels(dbcolums);
 #ifdef BUILD_WITH_REDIS
-  addDBItem(listWidget, core::redis::DBConnection::GetConnectionTypeName(), core::redis::DBConnection::BasedOn(),
+  addDBItem(dblist_widget, core::redis::DBConnection::GetConnectionTypeName(), core::redis::DBConnection::BasedOn(),
             core::redis::DBConnection::VersionApi());
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-  addDBItem(listWidget, core::memcached::DBConnection::GetConnectionTypeName(),
+  addDBItem(dblist_widget, core::memcached::DBConnection::GetConnectionTypeName(),
             core::memcached::DBConnection::BasedOn(), core::memcached::DBConnection::VersionApi());
 #endif
 #ifdef BUILD_WITH_SSDB
-  addDBItem(listWidget, core::ssdb::DBConnection::GetConnectionTypeName(), core::ssdb::DBConnection::BasedOn(),
+  addDBItem(dblist_widget, core::ssdb::DBConnection::GetConnectionTypeName(), core::ssdb::DBConnection::BasedOn(),
             core::ssdb::DBConnection::VersionApi());
 #endif
 #ifdef BUILD_WITH_LEVELDB
-  addDBItem(listWidget, core::leveldb::DBConnection::GetConnectionTypeName(), core::leveldb::DBConnection::BasedOn(),
+  addDBItem(dblist_widget, core::leveldb::DBConnection::GetConnectionTypeName(), core::leveldb::DBConnection::BasedOn(),
             core::leveldb::DBConnection::VersionApi());
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-  addDBItem(listWidget, core::rocksdb::DBConnection::GetConnectionTypeName(), core::rocksdb::DBConnection::BasedOn(),
+  addDBItem(dblist_widget, core::rocksdb::DBConnection::GetConnectionTypeName(), core::rocksdb::DBConnection::BasedOn(),
             core::rocksdb::DBConnection::VersionApi());
 #endif
 #ifdef BUILD_WITH_UNQLITE
-  addDBItem(listWidget, core::unqlite::DBConnection::GetConnectionTypeName(), core::unqlite::DBConnection::BasedOn(),
+  addDBItem(dblist_widget, core::unqlite::DBConnection::GetConnectionTypeName(), core::unqlite::DBConnection::BasedOn(),
             core::unqlite::DBConnection::VersionApi());
 #endif
 #ifdef BUILD_WITH_LMDB
-  addDBItem(listWidget, core::lmdb::DBConnection::GetConnectionTypeName(), core::lmdb::DBConnection::BasedOn(),
+  addDBItem(dblist_widget, core::lmdb::DBConnection::GetConnectionTypeName(), core::lmdb::DBConnection::BasedOn(),
             core::lmdb::DBConnection::VersionApi());
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
-  addDBItem(listWidget, core::upscaledb::DBConnection::GetConnectionTypeName(),
+  addDBItem(dblist_widget, core::upscaledb::DBConnection::GetConnectionTypeName(),
             core::upscaledb::DBConnection::BasedOn(), core::upscaledb::DBConnection::VersionApi());
 #endif
 #ifdef BUILD_WITH_FORESTDB
-  addDBItem(listWidget, core::forestdb::DBConnection::GetConnectionTypeName(), core::forestdb::DBConnection::BasedOn(),
-            core::forestdb::DBConnection::VersionApi());
+  addDBItem(dblist_widget, core::forestdb::DBConnection::GetConnectionTypeName(),
+            core::forestdb::DBConnection::BasedOn(), core::forestdb::DBConnection::VersionApi());
 #endif
-  copy_rights_layout->addWidget(listWidget, 4, 1, 1, 5);
+  main_tab->addTab(dblist_widget, QObject::tr("Availible databases"));
+
+  QTreeWidget* libs_list_widget = new QTreeWidget;
+  libs_list_widget->setIndentation(5);
+
+  QStringList libscolums;
+  libscolums << translations::trName << QObject::tr("Version");
+  libs_list_widget->setHeaderLabels(libscolums);
+  addLibItem(libs_list_widget, "Qt", QT_VERSION_STR);
+  addLibItem(libs_list_widget, "QScintilla", QSCINTILLA_VERSION_STR);
+  addLibItem(libs_list_widget, "libssh2", LIBSSH2_VERSION);
+  addLibItem(libs_list_widget, "OpenSSL", OPENSSL_VERSION_TEXT);
+  main_tab->addTab(libs_list_widget, QObject::tr("External libraries"));
+
+  copy_rights_layout->addWidget(main_tab, 4, 1, 1, 5);
   glayout->addLayout(copy_rights_layout);
 
   glayout->addWidget(buttonBox);
