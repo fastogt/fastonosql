@@ -41,11 +41,10 @@ void TestConnection::routine() {
     return;
   }
 
-  common::Error er = proxy::ServersManager::Instance().TestConnection(connection_);
-
-  if (er && er->IsError()) {
+  common::Error err = proxy::ServersManager::Instance().TestConnection(connection_);
+  if (err && err->IsError()) {
     QString qdesc;
-    common::ConvertFromString(er->GetDescription(), &qdesc);
+    common::ConvertFromString(err->GetDescription(), &qdesc);
     emit connectionResult(false, common::time::current_mstime() - start_time_, qdesc);
   } else {
     emit connectionResult(true, common::time::current_mstime() - start_time_, translations::trSuccess);

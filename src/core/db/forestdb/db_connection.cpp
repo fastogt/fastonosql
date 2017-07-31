@@ -240,6 +240,12 @@ common::Error DBConnection::DelInner(const std::string& key) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
+  std::string exist_key;
+  common::Error err = GetInner(key, &exist_key);
+  if (err && err->IsError()) {
+    return err;
+  }
+
   fdb_status rc = fdb_del_kv(connection_.handle_->kvs, key.c_str(), key.size());
   if (rc != FDB_RESULT_SUCCESS) {
     std::string buff = common::MemSPrintf("delete function error: %s", fdb_error_msg(rc));

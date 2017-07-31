@@ -35,7 +35,7 @@ class LoadContentDbDialog : public QDialog {
     min_height = 120,
     min_key_on_page = 1,
     max_key_on_page = 100000,
-    defaults_key = 100,
+    defaults_key = 1000,
     step_keys_on_page = defaults_key
   };
 

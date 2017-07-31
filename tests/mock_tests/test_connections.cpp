@@ -7,6 +7,7 @@
 #include "core/db/lmdb/db_connection.h"
 #include "core/db/unqlite/db_connection.h"
 #include "core/db/upscaledb/db_connection.h"
+#include "core/db/forestdb/db_connection.h"
 
 using namespace fastonosql;
 
@@ -148,6 +149,23 @@ TEST(Connection, upscaledb) {
   core::upscaledb::DBConnection db(nullptr);
   core::upscaledb::Config lcfg;
   lcfg.create_if_missing = true;  // workaround
+  common::Error err = db.Connect(lcfg);
+  ASSERT_TRUE(!err);
+  ASSERT_TRUE(db.IsConnected());
+
+  CheckSetGet(&db);
+
+  err = db.Disconnect();
+  ASSERT_TRUE(!err);
+  ASSERT_TRUE(!db.IsConnected());
+
+  err = common::file_system::remove_file(lcfg.db_path);
+  ASSERT_TRUE(!err);
+}
+
+TEST(Connection, forestdb) {
+  core::forestdb::DBConnection db(nullptr);
+  core::forestdb::Config lcfg;
   common::Error err = db.Connect(lcfg);
   ASSERT_TRUE(!err);
   ASSERT_TRUE(db.IsConnected());
