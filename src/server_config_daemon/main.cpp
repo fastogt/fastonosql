@@ -14,8 +14,9 @@
 #include <poll.h>
 #include <netinet/in.h>
 
+#include <json-c/json.h>
+
 #include "uthash.h"
-#include "../third-party/json-c/json-c/json.h"
 #include "server_config.h"
 
 #define MAXLINE 1024
