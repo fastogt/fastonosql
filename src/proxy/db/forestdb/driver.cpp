@@ -193,7 +193,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
       }
 
       common::ArrayValue* ar = arr->Array();
-      if (ar->empty()) {
+      if (ar->IsEmpty()) {
         goto done;
       }
 

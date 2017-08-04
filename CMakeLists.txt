@@ -6,8 +6,8 @@ SET(BRANDING_PROJECT_VERSION "1.6.1.0" CACHE STRING "Branding version for ${BRAN
 SET(BRANDING_PROJECT_BUILD_TYPE_VERSION "alfa" CACHE STRING "Build version type for ${BRANDING_PROJECT_NAME}") #default
   #possible variables: alfa, beta, rc, release
 
-SET(BRANDING_PROJECT_DOMAIN "http://www.fastonosql.com" CACHE STRING "Branding domain url for ${BRANDING_PROJECT_NAME}") #default
-SET(BRANDING_PROJECT_DOWNLOAD_LINK "http://fastonosql.com/download" CACHE STRING "Branding download root url for ${BRANDING_PROJECT_NAME}")
+SET(BRANDING_PROJECT_DOMAIN "https://www.fastonosql.com" CACHE STRING "Branding domain url for ${BRANDING_PROJECT_NAME}") #default
+SET(BRANDING_PROJECT_DOWNLOAD_LINK "https://fastonosql.com/download" CACHE STRING "Branding download root url for ${BRANDING_PROJECT_NAME}")
 SET(BRANDING_PROJECT_COMPANYNAME "FastoGT" CACHE STRING "Company name for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_COMPANYNAME_DOMAIN "http://www.fastogt.com" CACHE STRING "Internet domain name company for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_MAINTAINER_MAIL "atopilski@fastogt.com" CACHE STRING "Internet mail address mainteiner of ${BRANDING_PROJECT_NAME}") #default
@@ -16,7 +16,7 @@ SET(BRANDING_PROJECT_MAINTAINER_NAME "Alexandr Topilski" CACHE STRING "Name of m
 SET(BRANDING_PROJECT_GITHUB_FORK "https://www.github.com/fastogt/fastonosql" CACHE STRING "Branding fork url for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_GITHUB_ISSUES "https://www.github.com/fastogt/fastonosql/issues" CACHE STRING "Branding issues url for ${BRANDING_PROJECT_NAME}") #default
 
-SET(BRANDING_PROJECT_HOMEPAGE_LINK "http://www.fastonosql.com" CACHE STRING "Home page link for ${BRANDING_PROJECT_NAME}") #default
+SET(BRANDING_PROJECT_HOMEPAGE_LINK "https://www.fastonosql.com" CACHE STRING "Home page link for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_FACEBOOK_LINK "https://www.facebook.com/profile.php?id=100010049712549" CACHE STRING "Facebook link for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_TWITTER_LINK "https://www.twitter.com/FastoNoSQL" CACHE STRING "Twitter link for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_GITHUB_LINK "https://www.github.com/fastogt/fastonosql" CACHE STRING "Github link for ${BRANDING_PROJECT_NAME}") #default
