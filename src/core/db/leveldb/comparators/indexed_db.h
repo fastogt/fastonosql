@@ -18,32 +18,25 @@
 
 #pragma once
 
-#include <string>
-
-#include "core/config/config.h"
+#include <leveldb/comparator.h>
 
 namespace fastonosql {
 namespace core {
 namespace leveldb {
+namespace comparator {
 
-static const char* g_comparator_types[] = {"NONE", "INDEXED_DB"};
+class IndexedDB : public ::leveldb::Comparator {
+ public:
+  virtual int Compare(const ::leveldb::Slice& a, const ::leveldb::Slice& b) const override;
 
-struct Config : public LocalConfig {
-  enum ComparatorType { COMP_NONE = 0, COMP_INDEXED_DB };
-  Config();
+  virtual const char* Name() const override;
 
-  bool create_if_missing;
-  ComparatorType comparator;
+  virtual void FindShortestSeparator(std::string* start, const ::leveldb::Slice& limit) const override;
+
+  virtual void FindShortSuccessor(std::string* key) const override;
 };
 
+}  // namespace comparator
 }  // namespace leveldb
 }  // namespace core
 }  // namespace fastonosql
-
-namespace common {
-std::string ConvertToString(const fastonosql::core::leveldb::Config& conf);
-bool ConvertFromString(const std::string& from, fastonosql::core::leveldb::Config* out);
-
-std::string ConvertToString(fastonosql::core::leveldb::Config::ComparatorType comp);
-bool ConvertFromString(const std::string& from, fastonosql::core::leveldb::Config::ComparatorType* out);
-}  // namespace common

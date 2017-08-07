@@ -39,6 +39,8 @@ class ConnectionWidget : public ConnectionLocalWidget {
       const proxy::connection_path_t& path) const override;
 
   QCheckBox* createDBIfMissing_;
+  QLabel* compLabel_;
+  QComboBox* typeComparators_;
 };
 
 }  // namespace leveldb

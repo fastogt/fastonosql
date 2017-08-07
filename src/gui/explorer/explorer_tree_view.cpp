@@ -854,7 +854,6 @@ void ExplorerTreeView::loadValue() {
   for (QModelIndex ind : selected) {
     ExplorerKeyItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerKeyItem*>(ind);
     if (!node) {
-      DNOTREACHED();
       continue;
     }
 

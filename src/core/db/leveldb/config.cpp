@@ -56,6 +56,11 @@ Config parseOptions(int argc, char** argv) {
       cfg.db_path = argv[++i];
     } else if (!strcmp(argv[i], "-c")) {
       cfg.create_if_missing = true;
+    } else if (!strcmp(argv[i], "-comp") && !lastarg) {
+      Config::ComparatorType lcomparator;
+      if (common::ConvertFromString(argv[++i], &lcomparator)) {
+        cfg.comparator = lcomparator;
+      }
     } else {
       if (argv[i][0] == '-') {
         std::string buff = common::MemSPrintf(
@@ -75,7 +80,10 @@ Config parseOptions(int argc, char** argv) {
 
 }  // namespace
 
-Config::Config() : LocalConfig(common::file_system::prepare_path("~/test.leveldb")), create_if_missing(false) {}
+Config::Config()
+    : LocalConfig(common::file_system::prepare_path("~/test.leveldb")),
+      create_if_missing(false),
+      comparator(COMP_NONE) {}
 
 }  // namespace leveldb
 }  // namespace core
@@ -90,6 +98,8 @@ std::string ConvertToString(const fastonosql::core::leveldb::Config& conf) {
     argv.push_back("-c");
   }
 
+  argv.push_back("-comp");
+  argv.push_back(common::ConvertToString(conf.comparator));
   return fastonosql::core::ConvertToStringConfigArgs(argv);
 }
 
@@ -106,6 +116,26 @@ bool ConvertFromString(const std::string& from, fastonosql::core::leveldb::Confi
     return true;
   }
 
+  return false;
+}
+
+std::string ConvertToString(fastonosql::core::leveldb::Config::ComparatorType comp) {
+  return fastonosql::core::leveldb::g_comparator_types[comp];
+}
+
+bool ConvertFromString(const std::string& from, fastonosql::core::leveldb::Config::ComparatorType* out) {
+  if (!out) {
+    return false;
+  }
+
+  for (size_t i = 0; i < SIZEOFMASS(fastonosql::core::leveldb::g_comparator_types); ++i) {
+    if (from == fastonosql::core::leveldb::g_comparator_types[i]) {
+      *out = static_cast<fastonosql::core::leveldb::Config::ComparatorType>(i);
+      return true;
+    }
+  }
+
+  NOTREACHED();
   return false;
 }
 

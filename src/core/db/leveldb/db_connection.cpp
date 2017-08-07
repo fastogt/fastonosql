@@ -27,6 +27,7 @@
 #include <common/sprintf.h>
 
 #include "core/db/leveldb/command_translator.h"
+#include "core/db/leveldb/comparators/indexed_db.h"
 #include "core/db/leveldb/database_info.h"
 #include "core/db/leveldb/internal/commands_api.h"
 
@@ -104,6 +105,9 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
 
   ::leveldb::Options lv;
   lv.create_if_missing = config.create_if_missing;
+  if (config.comparator == Config::COMP_INDEXED_DB) {
+    lv.comparator = new comparator::IndexedDB;
+  }
   auto st = ::leveldb::DB::Open(lv, folder, &lcontext);
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("Fail connect to server: %s!", st.ToString());
