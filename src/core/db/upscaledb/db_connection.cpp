@@ -151,7 +151,7 @@ ConstantCommandsArray CDBConnection<upscaledb::NativeConnection, upscaledb::Conf
 namespace upscaledb {
 common::Error CreateConnection(const Config& config, NativeConnection** context) {
   if (!context) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   DCHECK(*context == NULL);
@@ -215,7 +215,7 @@ common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) 
   UNUSED(args);
   if (!statsout) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!IsConnected()) {
@@ -432,7 +432,7 @@ common::Error DBConnection::FlushDBImpl() {
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
   uint16_t num;
   if (!common::ConvertFromString(name, &num)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
   ups_db_t* db = NULL;
   ups_status_t st = ups_env_open_db(connection_.handle_->env, &db, num, 0, NULL);

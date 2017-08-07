@@ -40,8 +40,6 @@ LogWidget::LogWidget(QWidget* parent) : QWidget(parent), logTextEdit_(new QTextE
   QHBoxLayout* hlayout = new QHBoxLayout;
   hlayout->setContentsMargins(0, 0, 0, 0);
   hlayout->addWidget(logTextEdit_);
-  clear_ = new QAction(this);
-  VERIFY(connect(clear_, &QAction::triggered, logTextEdit_, &QTextEdit::clear));
   setLayout(hlayout);
   retranslateUi();
 }
@@ -56,8 +54,10 @@ void LogWidget::addLogMessage(const QString& message, common::logging::LEVEL_LOG
 
 void LogWidget::showContextMenu(const QPoint& pt) {
   QMenu* menu = logTextEdit_->createStandardContextMenu();
-  menu->addAction(clear_);
-  clear_->setEnabled(!logTextEdit_->toPlainText().isEmpty());
+  QAction* clear = new QAction(translations::trClearAll, this);
+  VERIFY(connect(clear, &QAction::triggered, logTextEdit_, &QTextEdit::clear));
+  menu->addAction(clear);
+  clear->setEnabled(!logTextEdit_->toPlainText().isEmpty());
 
   menu->exec(logTextEdit_->mapToGlobal(pt));
   delete menu;
@@ -71,8 +71,7 @@ void LogWidget::changeEvent(QEvent* ev) {
   QWidget::changeEvent(ev);
 }
 
-void LogWidget::retranslateUi() {
-  clear_->setText(translations::trClearAll);
-}
+void LogWidget::retranslateUi() {}
+
 }  // namespace gui
 }  // namespace fastonosql

@@ -33,32 +33,6 @@ namespace fastonosql {
 namespace gui {
 
 MainTabBar::MainTabBar(QWidget* parent) : QTabBar(parent) {
-  newShellAction_ = new QAction(this);
-  newShellAction_->setShortcut(newTabKey);
-  VERIFY(connect(newShellAction_, &QAction::triggered, this, &MainTabBar::createdNewTab));
-
-  nextTabAction_ = new QAction(this);
-  nextTabAction_->setShortcut(nextTabKey);
-  VERIFY(connect(nextTabAction_, &QAction::triggered, this, &MainTabBar::nextTab));
-
-  prevTabAction_ = new QAction(this);
-  prevTabAction_->setShortcut(prevTabKey);
-  VERIFY(connect(prevTabAction_, &QAction::triggered, this, &MainTabBar::prevTab));
-
-  reloadShellAction_ = new QAction(this);
-  reloadShellAction_->setShortcut(refreshKey);
-  VERIFY(connect(reloadShellAction_, &QAction::triggered, this, &MainTabBar::reloadedTab));
-
-  duplicateShellAction_ = new QAction(this);
-  VERIFY(connect(duplicateShellAction_, &QAction::triggered, this, &MainTabBar::duplicatedTab));
-
-  closeShellAction_ = new QAction(this);
-  closeShellAction_->setShortcut(closeKey);
-  VERIFY(connect(closeShellAction_, &QAction::triggered, this, &MainTabBar::closedTab));
-
-  closeOtherShellsAction_ = new QAction(this);
-  VERIFY(connect(closeOtherShellsAction_, &QAction::triggered, this, &MainTabBar::closedOtherTabs));
-
   setContextMenuPolicy(Qt::CustomContextMenu);
   VERIFY(connect(this, &MainTabBar::customContextMenuRequested, this, &MainTabBar::showContextMenu));
 
@@ -67,15 +41,41 @@ MainTabBar::MainTabBar(QWidget* parent) : QTabBar(parent) {
 
 void MainTabBar::showContextMenu(const QPoint& p) {
   QMenu menu(this);
-  menu.addAction(newShellAction_);
-  menu.addAction(nextTabAction_);
-  menu.addAction(prevTabAction_);
+  QAction* newShellAction = new QAction(translations::trNewTab, this);
+  newShellAction->setShortcut(newTabKey);
+  VERIFY(connect(newShellAction, &QAction::triggered, this, &MainTabBar::createdNewTab));
+
+  QAction* nextTabAction = new QAction(translations::trNextTab, this);
+  nextTabAction->setShortcut(nextTabKey);
+  VERIFY(connect(nextTabAction, &QAction::triggered, this, &MainTabBar::nextTab));
+
+  QAction* prevTabAction = new QAction(translations::trPrevTab, this);
+  prevTabAction->setShortcut(prevTabKey);
+  VERIFY(connect(prevTabAction, &QAction::triggered, this, &MainTabBar::prevTab));
+
+  QAction* reloadShellAction = new QAction(translations::trReload, this);
+  reloadShellAction->setShortcut(refreshKey);
+  VERIFY(connect(reloadShellAction, &QAction::triggered, this, &MainTabBar::reloadedTab));
+
+  QAction* duplicateShellAction = new QAction(translations::trDuplicate, this);
+  VERIFY(connect(duplicateShellAction, &QAction::triggered, this, &MainTabBar::duplicatedTab));
+
+  QAction* closeShellAction = new QAction(translations::trCloseTab, this);
+  closeShellAction->setShortcut(closeKey);
+  VERIFY(connect(closeShellAction, &QAction::triggered, this, &MainTabBar::closedTab));
+
+  QAction* closeOtherShellsAction = new QAction(translations::trCloseOtherTab, this);
+  VERIFY(connect(closeOtherShellsAction, &QAction::triggered, this, &MainTabBar::closedOtherTabs));
+
+  menu.addAction(newShellAction);
+  menu.addAction(nextTabAction);
+  menu.addAction(prevTabAction);
   menu.addSeparator();
-  menu.addAction(reloadShellAction_);
-  menu.addAction(duplicateShellAction_);
+  menu.addAction(reloadShellAction);
+  menu.addAction(duplicateShellAction);
   menu.addSeparator();
-  menu.addAction(closeShellAction_);
-  menu.addAction(closeOtherShellsAction_);
+  menu.addAction(closeShellAction);
+  menu.addAction(closeOtherShellsAction);
   menu.exec(mapToGlobal(p));
 }
 
@@ -87,15 +87,7 @@ void MainTabBar::changeEvent(QEvent* e) {
   QTabBar::changeEvent(e);
 }
 
-void MainTabBar::retranslateUi() {
-  newShellAction_->setText(translations::trNewTab);
-  nextTabAction_->setText(translations::trNextTab);
-  prevTabAction_->setText(translations::trPrevTab);
-  reloadShellAction_->setText(translations::trReload);
-  duplicateShellAction_->setText(translations::trDuplicate);
-  closeShellAction_->setText(translations::trCloseTab);
-  closeOtherShellsAction_->setText(translations::trCloseOtherTab);
-}
+void MainTabBar::retranslateUi() {}
 
 }  // namespace gui
 }  // namespace fastonosql

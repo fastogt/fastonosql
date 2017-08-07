@@ -46,7 +46,6 @@ class CommandsWidget : public QWidget {
  private:
   void retranslateUi();
   QTextEdit* const logTextEdit_;
-  QAction* clear_;
 };
 }  // namespace gui
 }  // namespace fastonosql

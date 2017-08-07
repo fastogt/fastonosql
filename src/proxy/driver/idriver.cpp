@@ -152,7 +152,7 @@ IDriver::~IDriver() {
 common::Error IDriver::Execute(core::FastoObjectCommandIPtr cmd) {
   if (!cmd) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   LOG_COMMAND(cmd);

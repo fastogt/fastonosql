@@ -211,7 +211,7 @@ namespace memcached {
 
 common::Error CreateConnection(const Config& config, NativeConnection** context) {
   if (!context) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   DCHECK(*context == nullptr);
@@ -284,7 +284,7 @@ DBConnection::DBConnection(CDBConnectionClient* client)
 common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) {
   if (!statsout) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!IsConnected()) {
@@ -410,7 +410,7 @@ common::Error DBConnection::Prepend(const NKey& key, const std::string& value, t
 common::Error DBConnection::Incr(const NKey& key, uint32_t value, uint64_t* result) {
   if (!result) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!IsConnected()) {
@@ -437,7 +437,7 @@ common::Error DBConnection::Incr(const NKey& key, uint32_t value, uint64_t* resu
 common::Error DBConnection::Decr(const NKey& key, uint32_t value, uint64_t* result) {
   if (!result) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!IsConnected()) {
@@ -496,7 +496,7 @@ common::Error DBConnection::SetInner(const std::string& key,
 common::Error DBConnection::GetInner(const std::string& key, std::string* ret_val) {
   if (!ret_val) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!IsConnected()) {

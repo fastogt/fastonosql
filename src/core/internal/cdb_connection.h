@@ -144,7 +144,7 @@ template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::Help(int argc, const char** argv, std::string* answer) {
   if (!answer || argc < 0) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (argc == 0) {
@@ -193,7 +193,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::Scan(uint64_t cursor
                                                                  uint64_t* cursor_out) {
   if (!keys_out || !cursor_out) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
@@ -215,7 +215,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::Keys(const std::stri
                                                                  std::vector<std::string>* ret) {
   if (!ret) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
@@ -234,7 +234,7 @@ template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::DBkcount(size_t* size) {
   if (!size) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
@@ -296,7 +296,7 @@ template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::Delete(const NKeys& keys, NKeys* deleted_keys) {
   if (!deleted_keys) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
@@ -319,7 +319,7 @@ template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::Set(const NDbKValue& key, NDbKValue* added_key) {
   if (!added_key) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
@@ -342,7 +342,7 @@ template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::Get(const NKey& key, NDbKValue* loaded_key) {
   if (!loaded_key) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
@@ -400,7 +400,7 @@ template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::GetTTL(const NKey& key, ttl_t* ttl) {
   if (!ttl) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {

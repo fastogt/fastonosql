@@ -89,13 +89,13 @@ common::Error ApiTraits<CDBConnection>::Scan(internal::CommandHandler* handler,
                                              FastoObject* out) {
   uint32_t cursor_in;
   if (!common::ConvertFromString(std::string(argv[0]), &cursor_in)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   std::string pattern = argc >= 3 ? argv[2] : ALL_KEYS_PATTERNS;
   uint64_t count_keys = NO_KEYS_LIMIT;
   if (argc >= 5 && !common::ConvertFromString(std::string(argv[4]), &count_keys)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   uint64_t cursor_out = 0;
@@ -135,7 +135,7 @@ common::Error ApiTraits<CDBConnection>::Keys(internal::CommandHandler* handler,
 
   uint64_t limit;
   if (!common::ConvertFromString(argv[2], &limit)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   std::vector<std::string> keysout;
@@ -313,7 +313,7 @@ common::Error ApiTraits<CDBConnection>::SetTTL(internal::CommandHandler* handler
   NKey key(argv[0]);
   ttl_t ttl;
   if (!common::ConvertFromString(argv[1], &ttl)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   common::Error err = cdb->SetTTL(key, ttl);

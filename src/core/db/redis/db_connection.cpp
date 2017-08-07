@@ -245,7 +245,7 @@ namespace {
 common::Error valueFromReplay(redisReply* r, common::Value** out) {
   if (!out) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   switch (r->type) {
@@ -331,7 +331,7 @@ RConfig::RConfig() : Config(), ssh_info() {}
 
 common::Error CreateConnection(const RConfig& config, NativeConnection** context) {
   if (!context) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   redisContext* lcontext = NULL;
@@ -404,7 +404,7 @@ common::Error TestConnection(const RConfig& rconfig) {
 
 common::Error DiscoveryClusterConnection(const RConfig& rconfig, std::vector<ServerDiscoveryClusterInfoSPtr>* infos) {
   if (!infos) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   redisContext* context = NULL;
@@ -443,7 +443,7 @@ common::Error DiscoveryClusterConnection(const RConfig& rconfig, std::vector<Ser
 
 common::Error DiscoverySentinelConnection(const RConfig& rconfig, std::vector<ServerDiscoverySentinelInfoSPtr>* infos) {
   if (!infos) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   redisContext* context = NULL;
@@ -559,7 +559,7 @@ std::string DBConnection::CurrentDBName() const {
 common::Error DBConnection::SendSync(unsigned long long* payload) {
   if (!payload) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
   /* To start we need to send the SYNC command and return
    * the payload.
@@ -610,7 +610,7 @@ common::Error DBConnection::SendSync(unsigned long long* payload) {
 common::Error DBConnection::SlaveMode(FastoObject* out) {
   if (!out) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!IsConnected()) {
@@ -690,7 +690,7 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
 
   uint64_t lcursor_out;
   if (!common::ConvertFromString(cursor_out_str, &lcursor_out)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   *cursor_out = lcursor_out;
@@ -736,7 +736,7 @@ common::Error DBConnection::FlushDBImpl() {
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
   int num;
   if (!common::ConvertFromString(name, &num)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "SELECT %d", num));
@@ -921,7 +921,7 @@ common::Error DBConnection::QuitImpl() {
 common::Error DBConnection::CliFormatReplyRaw(FastoObjectArray* ar, redisReply* r) {
   if (!ar || !r) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   switch (r->type) {
@@ -974,7 +974,7 @@ common::Error DBConnection::CliFormatReplyRaw(FastoObjectArray* ar, redisReply* 
 common::Error DBConnection::CliFormatReplyRaw(FastoObject* out, redisReply* r) {
   if (!out) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   FastoObject* obj = nullptr;
@@ -1032,7 +1032,7 @@ common::Error DBConnection::CliFormatReplyRaw(FastoObject* out, redisReply* r) {
 common::Error DBConnection::CliReadReply(FastoObject* out) {
   if (!out) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!IsConnected()) {
@@ -1109,7 +1109,7 @@ common::Error DBConnection::ExecuteAsPipeline(const std::vector<FastoObjectComma
 common::Error DBConnection::CommonExec(int argc, const char** argv, FastoObject* out) {
   if (!out || argc < 1) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!IsConnected()) {
@@ -1154,7 +1154,7 @@ common::Error DBConnection::Auth(const std::string& password) {
 common::Error DBConnection::Monitor(int argc, const char** argv, FastoObject* out) {
   if (!out || argc < 1) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!IsConnected()) {
@@ -1190,7 +1190,7 @@ common::Error DBConnection::Monitor(int argc, const char** argv, FastoObject* ou
 common::Error DBConnection::Subscribe(int argc, const char** argv, FastoObject* out) {
   if (!out || argc < 1) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!IsConnected()) {
@@ -1280,7 +1280,7 @@ common::Error DBConnection::SetNX(const NDbKValue& key, long long* result) {
 common::Error DBConnection::Lpush(const NKey& key, NValue arr, long long* list_len) {
   if (!arr || arr->GetType() != common::Value::TYPE_ARRAY || !list_len) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!IsConnected()) {
@@ -1359,7 +1359,7 @@ common::Error DBConnection::Lrange(const NKey& key, int start, int stop, NDbKVal
 common::Error DBConnection::Sadd(const NKey& key, NValue set, long long* added) {
   if (!set || set->GetType() != common::Value::TYPE_SET || !added) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!IsConnected()) {
@@ -1400,7 +1400,7 @@ common::Error DBConnection::Sadd(const NKey& key, NValue set, long long* added) 
 common::Error DBConnection::Smembers(const NKey& key, NDbKValue* loaded_key) {
   if (!loaded_key) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!IsConnected()) {
@@ -1457,7 +1457,7 @@ common::Error DBConnection::Smembers(const NKey& key, NDbKValue* loaded_key) {
 common::Error DBConnection::Zadd(const NKey& key, NValue scores, long long* added) {
   if (!scores || scores->GetType() != common::Value::TYPE_ZSET || !added) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!IsConnected()) {
@@ -1498,7 +1498,7 @@ common::Error DBConnection::Zadd(const NKey& key, NValue scores, long long* adde
 common::Error DBConnection::Zrange(const NKey& key, int start, int stop, bool withscores, NDbKValue* loaded_key) {
   if (!loaded_key) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!IsConnected()) {
@@ -1571,7 +1571,7 @@ common::Error DBConnection::Zrange(const NKey& key, int start, int stop, bool wi
 common::Error DBConnection::Hmset(const NKey& key, NValue hash) {
   if (!hash || hash->GetType() != common::Value::TYPE_HASH) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!IsConnected()) {
@@ -1611,7 +1611,7 @@ common::Error DBConnection::Hmset(const NKey& key, NValue hash) {
 common::Error DBConnection::Hgetall(const NKey& key, NDbKValue* loaded_key) {
   if (!loaded_key) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!IsConnected()) {
@@ -1669,7 +1669,7 @@ common::Error DBConnection::Hgetall(const NKey& key, NDbKValue* loaded_key) {
 common::Error DBConnection::Decr(const NKey& key, long long* decr) {
   if (!decr) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!IsConnected()) {
@@ -1703,7 +1703,7 @@ common::Error DBConnection::Decr(const NKey& key, long long* decr) {
 common::Error DBConnection::DecrBy(const NKey& key, int dec, long long* decr) {
   if (!decr) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!IsConnected()) {
@@ -1738,7 +1738,7 @@ common::Error DBConnection::DecrBy(const NKey& key, int dec, long long* decr) {
 common::Error DBConnection::Incr(const NKey& key, long long* incr) {
   if (!incr) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!IsConnected()) {
@@ -1772,7 +1772,7 @@ common::Error DBConnection::Incr(const NKey& key, long long* incr) {
 common::Error DBConnection::IncrBy(const NKey& key, int inc, long long* incr) {
   if (!incr) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!IsConnected()) {
@@ -1807,7 +1807,7 @@ common::Error DBConnection::IncrBy(const NKey& key, int inc, long long* incr) {
 common::Error DBConnection::IncrByFloat(const NKey& key, double inc, std::string* str_incr) {
   if (!str_incr) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!IsConnected()) {

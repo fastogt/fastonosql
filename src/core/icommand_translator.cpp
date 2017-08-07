@@ -60,7 +60,7 @@ ICommandTranslator::~ICommandTranslator() {}
 
 common::Error ICommandTranslator::SelectDBCommand(const std::string& name, std::string* cmdstring) const {
   if (!cmdstring) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   *cmdstring = common::MemSPrintf(SELECTDB_COMMAND_1S, name);
@@ -69,7 +69,7 @@ common::Error ICommandTranslator::SelectDBCommand(const std::string& name, std::
 
 common::Error ICommandTranslator::FlushDBCommand(std::string* cmdstring) const {
   if (!cmdstring) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   *cmdstring = FLUSHDB_COMMAND;
@@ -78,7 +78,7 @@ common::Error ICommandTranslator::FlushDBCommand(std::string* cmdstring) const {
 
 common::Error ICommandTranslator::DeleteKeyCommand(const NKey& key, std::string* cmdstring) const {
   if (!cmdstring) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   return DeleteKeyCommandImpl(key, cmdstring);
@@ -88,7 +88,7 @@ common::Error ICommandTranslator::RenameKeyCommand(const NKey& key,
                                                    const std::string& new_name,
                                                    std::string* cmdstring) const {
   if (!cmdstring) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   return RenameKeyCommandImpl(key, new_name, cmdstring);
@@ -96,7 +96,7 @@ common::Error ICommandTranslator::RenameKeyCommand(const NKey& key,
 
 common::Error ICommandTranslator::CreateKeyCommand(const NDbKValue& key, std::string* cmdstring) const {
   if (!cmdstring) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   return CreateKeyCommandImpl(key, cmdstring);
@@ -106,7 +106,7 @@ common::Error ICommandTranslator::LoadKeyCommand(const NKey& key,
                                                  common::Value::Type type,
                                                  std::string* cmdstring) const {
   if (!cmdstring) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   return LoadKeyCommandImpl(key, type, cmdstring);
@@ -114,7 +114,7 @@ common::Error ICommandTranslator::LoadKeyCommand(const NKey& key,
 
 common::Error ICommandTranslator::ChangeKeyTTLCommand(const NKey& key, ttl_t ttl, std::string* cmdstring) const {
   if (!cmdstring) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   return ChangeKeyTTLCommandImpl(key, ttl, cmdstring);
@@ -122,7 +122,7 @@ common::Error ICommandTranslator::ChangeKeyTTLCommand(const NKey& key, ttl_t ttl
 
 common::Error ICommandTranslator::LoadKeyTTLCommand(const NKey& key, std::string* cmdstring) const {
   if (!cmdstring) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   return LoadKeyTTLCommandImpl(key, cmdstring);
@@ -162,7 +162,7 @@ common::Error ICommandTranslator::PublishCommand(const NDbPSChannel& channel,
                                                  const std::string& message,
                                                  std::string* cmdstring) const {
   if (!cmdstring || message.empty()) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   return PublishCommandImpl(channel, message, cmdstring);
@@ -170,7 +170,7 @@ common::Error ICommandTranslator::PublishCommand(const NDbPSChannel& channel,
 
 common::Error ICommandTranslator::SubscribeCommand(const NDbPSChannel& channel, std::string* cmdstring) const {
   if (!cmdstring) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   return SubscribeCommandImpl(channel, cmdstring);
@@ -212,7 +212,7 @@ common::Error ICommandTranslator::FindCommand(int argc,
                                               const CommandHolder** info,
                                               size_t* off) const {
   if (!info || !off) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   for (size_t i = 0; i < commands_.size(); ++i) {
@@ -232,7 +232,7 @@ common::Error ICommandTranslator::TestCommandArgs(const CommandHolder* cmd,
                                                   int argc_to_call,
                                                   const char** argv_to_call) const {
   if (!cmd) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   return cmd->TestArgs(argc_to_call, argv_to_call);
@@ -240,13 +240,13 @@ common::Error ICommandTranslator::TestCommandArgs(const CommandHolder* cmd,
 
 common::Error ICommandTranslator::TestCommandLine(const std::string& cmd) const {
   if (cmd.empty()) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   int argc;
   sds* argv = sdssplitargslong(cmd.c_str(), &argc);
   if (!argv) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   const char** standart_argv = const_cast<const char**>(argv);

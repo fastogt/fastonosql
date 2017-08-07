@@ -109,12 +109,6 @@ PubSubDialog::PubSubDialog(const QString& title, proxy::IServerSPtr server, QWid
   mainlayout->addWidget(channelsTable_);
   mainlayout->addWidget(buttonBox);
 
-  publishAction_ = new QAction(this);
-  VERIFY(connect(publishAction_, &QAction::triggered, this, &PubSubDialog::publish));
-
-  subscribeAction_ = new QAction(this);
-  VERIFY(connect(subscribeAction_, &QAction::triggered, this, &PubSubDialog::subscribeInNewConsole));
-
   setMinimumSize(QSize(min_width, min_height));
   setLayout(mainlayout);
   retranslateUi();
@@ -165,8 +159,15 @@ void PubSubDialog::showContextMenu(const QPoint& point) {
 
   QPoint menuPoint = channelsTable_->calculateMenuPoint(point);
   QMenu* menu = new QMenu(channelsTable_);
-  menu->addAction(publishAction_);
-  menu->addAction(subscribeAction_);
+
+  QAction* publishAction = new QAction(translations::trPublish, this);
+  VERIFY(connect(publishAction, &QAction::triggered, this, &PubSubDialog::publish));
+
+  QAction* subscribeAction = new QAction(trSubscribeInNewConsole, this);
+  VERIFY(connect(subscribeAction, &QAction::triggered, this, &PubSubDialog::subscribeInNewConsole));
+
+  menu->addAction(publishAction);
+  menu->addAction(subscribeAction);
   menu->exec(menuPoint);
   delete menu;
 }
@@ -249,8 +250,6 @@ void PubSubDialog::changeEvent(QEvent* e) {
 
 void PubSubDialog::retranslateUi() {
   searchButton_->setText(translations::trSearch);
-  publishAction_->setText(translations::trPublish);
-  subscribeAction_->setText(trSubscribeInNewConsole);
 }
 
 }  // namespace gui

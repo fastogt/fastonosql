@@ -59,7 +59,7 @@ common::Error CommandsApi::ScanSSDB(internal::CommandHandler* handler, int argc,
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   uint64_t limit;
   if (!common::ConvertFromString(argv[2], &limit)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
   std::vector<std::string> keysout;
   common::Error err = ssdb->Scan(argv[0], argv[1], limit, &keysout);
@@ -115,7 +115,7 @@ common::Error CommandsApi::Setx(internal::CommandHandler* handler, int argc, con
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   ttl_t ttl;
   if (!common::ConvertFromString(argv[2], &ttl)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
   common::Error err = ssdb->Setx(argv[0], argv[1], ttl);
   if (err && err->IsError()) {
@@ -134,7 +134,7 @@ common::Error CommandsApi::Incr(internal::CommandHandler* handler, int argc, con
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t incrby;
   if (!common::ConvertFromString(argv[1], &incrby)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
   int64_t ret = 0;
   common::Error err = ssdb->Incr(argv[0], incrby, &ret);
@@ -154,7 +154,7 @@ common::Error CommandsApi::Rscan(internal::CommandHandler* handler, int argc, co
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   uint64_t limit;
   if (!common::ConvertFromString(argv[2], &limit)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
   std::vector<std::string> keysout;
   common::Error err = ssdb->Rscan(argv[0], argv[1], limit, &keysout);
@@ -303,7 +303,7 @@ common::Error CommandsApi::Hincr(internal::CommandHandler* handler, int argc, co
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t incrby;
   if (!common::ConvertFromString(argv[2], &incrby)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
   int64_t res = 0;
   common::Error err = ssdb->Hincr(argv[0], argv[1], incrby, &res);
@@ -355,7 +355,7 @@ common::Error CommandsApi::Hkeys(internal::CommandHandler* handler, int argc, co
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   uint64_t limit;
   if (!common::ConvertFromString(argv[3], &limit)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
   std::vector<std::string> keysout;
   common::Error err = ssdb->Hkeys(argv[0], argv[1], argv[2], limit, &keysout);
@@ -379,7 +379,7 @@ common::Error CommandsApi::Hscan(internal::CommandHandler* handler, int argc, co
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   uint64_t limit;
   if (!common::ConvertFromString(argv[3], &limit)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
   std::vector<std::string> keysout;
   common::Error err = ssdb->Hscan(argv[0], argv[1], argv[2], limit, &keysout);
@@ -403,7 +403,7 @@ common::Error CommandsApi::Hrscan(internal::CommandHandler* handler, int argc, c
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   uint64_t limit;
   if (!common::ConvertFromString(argv[3], &limit)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
   std::vector<std::string> keysout;
   common::Error err = ssdb->Hrscan(argv[0], argv[1], argv[2], limit, &keysout);
@@ -484,7 +484,7 @@ common::Error CommandsApi::Zset(internal::CommandHandler* handler, int argc, con
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t score;
   if (!common::ConvertFromString(argv[2], &score)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   common::Error err = ssdb->Zset(argv[0], argv[1], score);
@@ -519,7 +519,7 @@ common::Error CommandsApi::Zincr(internal::CommandHandler* handler, int argc, co
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t incrby;
   if (!common::ConvertFromString(argv[2], &incrby)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   int64_t ret = 0;
@@ -604,12 +604,12 @@ common::Error CommandsApi::Zrange(internal::CommandHandler* handler, int argc, c
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   uint64_t offset;
   if (!common::ConvertFromString(argv[1], &offset)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   uint64_t limit;
   if (!common::ConvertFromString(argv[2], &limit)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   std::vector<std::string> res;
@@ -634,12 +634,12 @@ common::Error CommandsApi::Zrrange(internal::CommandHandler* handler, int argc, 
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   uint64_t offset;
   if (!common::ConvertFromString(argv[1], &offset)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   uint64_t limit;
   if (!common::ConvertFromString(argv[2], &limit)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   std::vector<std::string> res;
@@ -665,17 +665,17 @@ common::Error CommandsApi::Zkeys(internal::CommandHandler* handler, int argc, co
   std::vector<std::string> res;
   int64_t st;
   if (!common::ConvertFromString(argv[2], &st)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   int64_t end;
   if (!common::ConvertFromString(argv[3], &end)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   uint64_t limit;
   if (!common::ConvertFromString(argv[4], &limit)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   common::Error err = ssdb->Zkeys(argv[0], argv[1], &st, &end, limit, &res);
@@ -700,17 +700,17 @@ common::Error CommandsApi::Zscan(internal::CommandHandler* handler, int argc, co
   std::vector<std::string> res;
   int64_t st;
   if (!common::ConvertFromString(argv[2], &st)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   int64_t end;
   if (!common::ConvertFromString(argv[3], &end)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   uint64_t limit;
   if (!common::ConvertFromString(argv[4], &limit)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
   common::Error err = ssdb->Zscan(argv[0], argv[1], &st, &end, limit, &res);
   if (err && err->IsError()) {
@@ -734,17 +734,17 @@ common::Error CommandsApi::Zrscan(internal::CommandHandler* handler, int argc, c
   std::vector<std::string> res;
   int64_t st;
   if (!common::ConvertFromString(argv[2], &st)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   int64_t end;
   if (!common::ConvertFromString(argv[3], &end)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   uint64_t limit;
   if (!common::ConvertFromString(argv[4], &limit)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
   common::Error err = ssdb->Zrscan(argv[0], argv[1], &st, &end, limit, &res);
   if (err && err->IsError()) {
@@ -860,12 +860,12 @@ common::Error CommandsApi::Qslice(internal::CommandHandler* handler, int argc, c
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t begin;
   if (!common::ConvertFromString(argv[1], &begin)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   int64_t end;
   if (!common::ConvertFromString(argv[2], &end)) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   std::vector<std::string> keysout;

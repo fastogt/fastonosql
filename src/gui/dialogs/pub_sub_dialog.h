@@ -77,8 +77,6 @@ class PubSubDialog : public QDialog {
 
   QLineEdit* searchBox_;
   QPushButton* searchButton_;
-  QAction* publishAction_;
-  QAction* subscribeAction_;
 
   FastoTableView* channelsTable_;
   ChannelsTableModel* channelsModel_;

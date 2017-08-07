@@ -40,13 +40,13 @@ CommandHandler::CommandHandler(ICommandTranslator* translator) : translator_(tra
 common::Error CommandHandler::Execute(const std::string& command, FastoObject* out) {
   const char* ccommand = common::utils::c_strornull(command);
   if (!ccommand) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   int argc;
   sds* argv = sdssplitargslong(ccommand, &argc);
   if (!argv) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   const char** exec_argv = const_cast<const char**>(argv);

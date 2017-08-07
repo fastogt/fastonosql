@@ -29,6 +29,7 @@ class QTextEdit;  // lines 23-23
 
 namespace fastonosql {
 namespace gui {
+
 class LogWidget : public QWidget {
   Q_OBJECT
  public:
@@ -46,7 +47,7 @@ class LogWidget : public QWidget {
  private:
   void retranslateUi();
   QTextEdit* const logTextEdit_;
-  QAction* clear_;
 };
+
 }  // namespace gui
 }  // namespace fastonosql

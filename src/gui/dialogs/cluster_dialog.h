@@ -84,7 +84,6 @@ class ClusterDialog : public QDialog {
   QPushButton* testButton_;
   QPushButton* discoveryButton_;
   QDialogButtonBox* buttonBox_;
-  QAction* setDefault_;
 };
 
 }  // namespace gui

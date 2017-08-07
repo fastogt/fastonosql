@@ -143,7 +143,7 @@ namespace forestdb {
 
 common::Error CreateConnection(const Config& config, NativeConnection** context) {
   if (!context) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   DCHECK(*context == NULL);
@@ -189,7 +189,7 @@ common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) 
   UNUSED(args);
   if (!statsout) {
     DNOTREACHED();
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   if (!IsConnected()) {

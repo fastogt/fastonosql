@@ -50,14 +50,6 @@ class MainTabBar : public QTabBar {
 
  private:
   void retranslateUi();
-
-  QAction* newShellAction_;
-  QAction* nextTabAction_;
-  QAction* prevTabAction_;
-  QAction* reloadShellAction_;
-  QAction* duplicateShellAction_;
-  QAction* closeShellAction_;
-  QAction* closeOtherShellsAction_;
 };
 
 }  // namespace gui

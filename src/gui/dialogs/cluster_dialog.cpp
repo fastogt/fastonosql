@@ -146,9 +146,6 @@ ClusterDialog::ClusterDialog(QWidget* parent, proxy::IClusterSettingsBase* conne
   listWidget_->setContextMenuPolicy(Qt::CustomContextMenu);
   VERIFY(connect(listWidget_, &QTreeWidget::customContextMenuRequested, this, &ClusterDialog::showContextMenu));
 
-  setDefault_ = new QAction(this);
-  VERIFY(connect(setDefault_, &QAction::triggered, this, &ClusterDialog::setStartNode));
-
   if (cluster_connection_) {
     auto nodes = cluster_connection_->Nodes();
     for (const auto& node : nodes) {
@@ -288,9 +285,11 @@ void ClusterDialog::showContextMenu(const QPoint& point) {
   }
 
   QMenu menu(this);
-  bool isPrimary = listWidget_->topLevelItem(0) == currentItem;
-  setDefault_->setEnabled(!isPrimary);
-  menu.addAction(setDefault_);
+  bool is_primary = listWidget_->topLevelItem(0) == currentItem;
+  QAction* setDefault = new QAction(translations::trSetAsStartNode, this);
+  VERIFY(connect(setDefault, &QAction::triggered, this, &ClusterDialog::setStartNode));
+  setDefault->setEnabled(!is_primary);
+  menu.addAction(setDefault);
 
   QPoint menuPoint = listWidget_->mapToGlobal(point);
   menu.exec(menuPoint);
@@ -386,7 +385,6 @@ void ClusterDialog::changeEvent(QEvent* e) {
 void ClusterDialog::retranslateUi() {
   logging_->setText(translations::trLoggingEnabled);
   folderLabel_->setText(translations::trFolder);
-  setDefault_->setText(translations::trSetAsStartNode);
 }
 
 bool ClusterDialog::validateAndApply() {

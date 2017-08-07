@@ -50,7 +50,7 @@ DiscoverySentinelInfo::DiscoverySentinelInfo(const ServerCommonInfo& args) : Ser
 
 common::Error MakeServerCommonInfo(struct redisReply* repl_info, ServerCommonInfo* info) {
   if (!repl_info || !info) {
-    return common::make_error_value("Invalid input argument(s)", common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   ServerCommonInfo linf;
