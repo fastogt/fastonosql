@@ -123,35 +123,8 @@ class ExplorerTreeView : public QTreeView {
   void unsyncWithServer(proxy::IServer* server);
 
   void retranslateUi();
-  QModelIndex selectedIndex() const;
+  QModelIndexList selectedEqualTypeIndexes() const;
 
-  QAction* connectAction_;
-  QAction* openConsoleAction_;
-  QAction* loadDatabaseAction_;
-  QAction* loadContentAction_;
-  QAction* removeAllKeysAction_;
-  QAction* removeBranchAction_;
-  QAction* setDefaultDbAction_;
-  QAction* createKeyAction_;
-  QAction* editKeyAction_;
-  QAction* viewKeysAction_;
-  QAction* pubSubAction_;
-  QAction* getValueAction_;
-  QAction* renameKeyAction_;
-  QAction* deleteKeyAction_;
-  QAction* watchKeyAction_;
-  QAction* infoServerAction_;
-  QAction* propertyServerAction_;
-  QAction* setServerPassword_;
-  QAction* setMaxClientConnection_;
-  QAction* historyServerAction_;
-  QAction* clearHistoryServerAction_;
-  QAction* closeServerAction_;
-  QAction* closeClusterAction_;
-  QAction* closeSentinelAction_;
-  QAction* importAction_;
-  QAction* backupAction_;
-  QAction* shutdownAction_;
   ExplorerTreeModel* source_model_;
   QSortFilterProxyModel* proxy_model_;
 };

@@ -104,88 +104,9 @@ ExplorerTreeView::ExplorerTreeView(QWidget* parent) : QTreeView(parent) {
   sortByColumn(0, Qt::AscendingOrder);
 
   setSelectionBehavior(QAbstractItemView::SelectRows);
-  setSelectionMode(QAbstractItemView::SingleSelection);
+  setSelectionMode(QAbstractItemView::ExtendedSelection);
   setContextMenuPolicy(Qt::CustomContextMenu);
   VERIFY(connect(this, &ExplorerTreeView::customContextMenuRequested, this, &ExplorerTreeView::showContextMenu));
-
-  connectAction_ = new QAction(this);
-  VERIFY(connect(connectAction_, &QAction::triggered, this, &ExplorerTreeView::connectDisconnectToServer));
-  openConsoleAction_ = new QAction(this);
-  VERIFY(connect(openConsoleAction_, &QAction::triggered, this, &ExplorerTreeView::openConsole));
-  loadDatabaseAction_ = new QAction(this);
-  VERIFY(connect(loadDatabaseAction_, &QAction::triggered, this, &ExplorerTreeView::loadDatabases));
-
-  infoServerAction_ = new QAction(this);
-  VERIFY(connect(infoServerAction_, &QAction::triggered, this, &ExplorerTreeView::openInfoServerDialog));
-
-  propertyServerAction_ = new QAction(this);
-  VERIFY(connect(propertyServerAction_, &QAction::triggered, this, &ExplorerTreeView::openPropertyServerDialog));
-
-  setServerPassword_ = new QAction(this);
-  VERIFY(connect(setServerPassword_, &QAction::triggered, this, &ExplorerTreeView::openSetPasswordServerDialog));
-
-  setMaxClientConnection_ = new QAction(this);
-  VERIFY(connect(setMaxClientConnection_, &QAction::triggered, this, &ExplorerTreeView::openMaxClientSetDialog));
-
-  historyServerAction_ = new QAction(this);
-  VERIFY(connect(historyServerAction_, &QAction::triggered, this, &ExplorerTreeView::openHistoryServerDialog));
-
-  clearHistoryServerAction_ = new QAction(this);
-  VERIFY(connect(clearHistoryServerAction_, &QAction::triggered, this, &ExplorerTreeView::clearHistory));
-
-  closeServerAction_ = new QAction(this);
-  VERIFY(connect(closeServerAction_, &QAction::triggered, this, &ExplorerTreeView::closeServerConnection));
-
-  closeClusterAction_ = new QAction(this);
-  VERIFY(connect(closeClusterAction_, &QAction::triggered, this, &ExplorerTreeView::closeClusterConnection));
-
-  closeSentinelAction_ = new QAction(this);
-  VERIFY(connect(closeSentinelAction_, &QAction::triggered, this, &ExplorerTreeView::closeSentinelConnection));
-
-  pubSubAction_ = new QAction(this);
-  VERIFY(connect(pubSubAction_, &QAction::triggered, this, &ExplorerTreeView::viewPubSub));
-
-  importAction_ = new QAction(this);
-  VERIFY(connect(importAction_, &QAction::triggered, this, &ExplorerTreeView::importServer));
-
-  backupAction_ = new QAction(this);
-  VERIFY(connect(backupAction_, &QAction::triggered, this, &ExplorerTreeView::backupServer));
-
-  shutdownAction_ = new QAction(this);
-  VERIFY(connect(shutdownAction_, &QAction::triggered, this, &ExplorerTreeView::shutdownServer));
-
-  loadContentAction_ = new QAction(this);
-  VERIFY(connect(loadContentAction_, &QAction::triggered, this, &ExplorerTreeView::loadContentDb));
-
-  removeAllKeysAction_ = new QAction(this);
-  VERIFY(connect(removeAllKeysAction_, &QAction::triggered, this, &ExplorerTreeView::removeAllKeys));
-
-  removeBranchAction_ = new QAction(this);
-  VERIFY(connect(removeBranchAction_, &QAction::triggered, this, &ExplorerTreeView::removeBranch));
-
-  setDefaultDbAction_ = new QAction(this);
-  VERIFY(connect(setDefaultDbAction_, &QAction::triggered, this, &ExplorerTreeView::setDefaultDb));
-
-  createKeyAction_ = new QAction(this);
-  VERIFY(connect(createKeyAction_, &QAction::triggered, this, &ExplorerTreeView::createKey));
-
-  editKeyAction_ = new QAction(this);
-  VERIFY(connect(editKeyAction_, &QAction::triggered, this, &ExplorerTreeView::editKey));
-
-  viewKeysAction_ = new QAction(this);
-  VERIFY(connect(viewKeysAction_, &QAction::triggered, this, &ExplorerTreeView::viewKeys));
-
-  getValueAction_ = new QAction(this);
-  VERIFY(connect(getValueAction_, &QAction::triggered, this, &ExplorerTreeView::loadValue));
-
-  renameKeyAction_ = new QAction(this);
-  VERIFY(connect(renameKeyAction_, &QAction::triggered, this, &ExplorerTreeView::renKey));
-
-  deleteKeyAction_ = new QAction(this);
-  VERIFY(connect(deleteKeyAction_, &QAction::triggered, this, &ExplorerTreeView::deleteKey));
-
-  watchKeyAction_ = new QAction(this);
-  VERIFY(connect(watchKeyAction_, &QAction::triggered, this, &ExplorerTreeView::watchKey));
 
   retranslateUi();
 }
@@ -283,12 +204,14 @@ void ExplorerTreeView::changeTextFilter(const QString& text) {
 }
 
 void ExplorerTreeView::showContextMenu(const QPoint& point) {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  if (selected.empty()) {
     return;
   }
 
-  IExplorerTreeItem* node = common::qt::item<common::qt::gui::TreeItem*, IExplorerTreeItem*>(sel);
+  const QModelIndex index = selected[0];
+  const bool is_multi = selected.size() > 1;
+  IExplorerTreeItem* node = common::qt::item<common::qt::gui::TreeItem*, IExplorerTreeItem*>(index);
   if (!node) {
     DNOTREACHED();
     return;
@@ -298,478 +221,543 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
   menuPoint.setY(menuPoint.y() + header()->height());
   if (node->type() == IExplorerTreeItem::eCluster) {
     QMenu menu(this);
-    closeClusterAction_->setEnabled(true);
-    menu.addAction(closeClusterAction_);
+    QAction* closeClusterAction = new QAction(translations::trClose, this);
+    VERIFY(connect(closeClusterAction, &QAction::triggered, this, &ExplorerTreeView::closeClusterConnection));
+    menu.addAction(closeClusterAction);
     menu.exec(menuPoint);
   } else if (node->type() == IExplorerTreeItem::eSentinel) {
     QMenu menu(this);
-    closeSentinelAction_->setEnabled(true);
-    menu.addAction(closeSentinelAction_);
+    QAction* closeSentinelAction = new QAction(translations::trClose, this);
+    VERIFY(connect(closeSentinelAction, &QAction::triggered, this, &ExplorerTreeView::closeSentinelConnection));
     menu.exec(menuPoint);
   } else if (node->type() == IExplorerTreeItem::eServer) {
     ExplorerServerItem* server_node = static_cast<ExplorerServerItem*>(node);
 
     QMenu menu(this);
-    menu.addAction(connectAction_);
-    menu.addAction(openConsoleAction_);
+    QAction* connectAction = new QAction(trConnectDisconnect, this);
+    VERIFY(connect(connectAction, &QAction::triggered, this, &ExplorerTreeView::connectDisconnectToServer));
+
+    QAction* openConsoleAction = new QAction(translations::trOpenConsole, this);
+    VERIFY(connect(openConsoleAction, &QAction::triggered, this, &ExplorerTreeView::openConsole));
+
+    menu.addAction(connectAction);
+    menu.addAction(openConsoleAction);
     proxy::IServerSPtr server = server_node->server();
     bool is_connected = server->IsConnected();
     bool is_redis = server->Type() == core::REDIS;
 
-    bool isClusterMember = dynamic_cast<ExplorerClusterItem*>(node->parent()) != nullptr;  // +
+    bool is_cluster_member = dynamic_cast<ExplorerClusterItem*>(node->parent()) != nullptr;  // +
 
-    loadDatabaseAction_->setEnabled(is_connected);
-    menu.addAction(loadDatabaseAction_);
-    infoServerAction_->setEnabled(is_connected);
-    menu.addAction(infoServerAction_);
-    propertyServerAction_->setEnabled(is_connected && is_redis);
-    menu.addAction(propertyServerAction_);
+    QAction* loadDatabaseAction = new QAction(translations::trLoadDataBases, this);
+    VERIFY(connect(loadDatabaseAction, &QAction::triggered, this, &ExplorerTreeView::loadDatabases));
 
-    setServerPassword_->setEnabled(is_connected && is_redis);
-    menu.addAction(setServerPassword_);
+    QAction* infoServerAction = new QAction(translations::trInfo, this);
+    VERIFY(connect(infoServerAction, &QAction::triggered, this, &ExplorerTreeView::openInfoServerDialog));
 
-    setMaxClientConnection_->setEnabled(is_connected && is_redis);
-    menu.addAction(setMaxClientConnection_);
+    loadDatabaseAction->setEnabled(is_connected);
+    menu.addAction(loadDatabaseAction);
+    infoServerAction->setEnabled(is_connected);
+    menu.addAction(infoServerAction);
 
-    menu.addAction(historyServerAction_);
-    menu.addAction(clearHistoryServerAction_);
-    closeServerAction_->setEnabled(!isClusterMember);
-    menu.addAction(closeServerAction_);
+    if (is_redis) {
+      QAction* propertyServerAction = new QAction(translations::trProperty, this);
+      VERIFY(connect(propertyServerAction, &QAction::triggered, this, &ExplorerTreeView::openPropertyServerDialog));
 
-    pubSubAction_->setEnabled(is_connected && is_redis);
-    menu.addAction(pubSubAction_);
+      QAction* setServerPassword = new QAction(translations::trSetPassword, this);
+      VERIFY(connect(setServerPassword, &QAction::triggered, this, &ExplorerTreeView::openSetPasswordServerDialog));
 
-    bool is_can_remote = server->IsCanRemote();
-    bool is_local = true;
-    if (is_can_remote) {
-      proxy::IServerRemote* rserver = dynamic_cast<proxy::IServerRemote*>(server.get());  // +
-      CHECK(rserver);
-      common::net::HostAndPort host = rserver->Host();
-      is_local = host.IsLocalHost();
+      QAction* setMaxClientConnection = new QAction(translations::trSetMaxNumberOfClients, this);
+      VERIFY(connect(setMaxClientConnection, &QAction::triggered, this, &ExplorerTreeView::openMaxClientSetDialog));
+
+      QAction* pubSubAction = new QAction(translations::trPubSubDialog, this);
+      VERIFY(connect(pubSubAction, &QAction::triggered, this, &ExplorerTreeView::viewPubSub));
+
+      propertyServerAction->setEnabled(is_connected);
+      menu.addAction(propertyServerAction);
+
+      setServerPassword->setEnabled(is_connected);
+      menu.addAction(setServerPassword);
+
+      setMaxClientConnection->setEnabled(is_connected);
+      menu.addAction(setMaxClientConnection);
+
+      pubSubAction->setEnabled(is_connected);
+      menu.addAction(pubSubAction);
+
+      bool is_can_remote = server->IsCanRemote();
+      bool is_local = true;
+      if (is_can_remote) {
+        proxy::IServerRemote* rserver = dynamic_cast<proxy::IServerRemote*>(server.get());  // +
+        CHECK(rserver);
+        common::net::HostAndPort host = rserver->Host();
+        is_local = host.IsLocalHost();
+      }
+
+      QAction* importAction = new QAction(translations::trImport, this);
+      VERIFY(connect(importAction, &QAction::triggered, this, &ExplorerTreeView::importServer));
+
+      QAction* backupAction = new QAction(translations::trBackup, this);
+      VERIFY(connect(backupAction, &QAction::triggered, this, &ExplorerTreeView::backupServer));
+
+      QAction* shutdownAction = new QAction(translations::trShutdown, this);
+      VERIFY(connect(shutdownAction, &QAction::triggered, this, &ExplorerTreeView::shutdownServer));
+
+      importAction->setEnabled(!is_connected && is_local);
+      menu.addAction(importAction);
+      backupAction->setEnabled(is_connected && is_local);
+      menu.addAction(backupAction);
+      shutdownAction->setEnabled(is_connected);
+      menu.addAction(shutdownAction);
     }
 
-    importAction_->setEnabled(!is_connected && is_local && is_redis);
-    menu.addAction(importAction_);
-    backupAction_->setEnabled(is_connected && is_local && is_redis);
-    menu.addAction(backupAction_);
-    shutdownAction_->setEnabled(is_connected && is_redis);
-    menu.addAction(shutdownAction_);
+    QAction* historyServerAction = new QAction(translations::trHistory, this);
+    VERIFY(connect(historyServerAction, &QAction::triggered, this, &ExplorerTreeView::openHistoryServerDialog));
+
+    QAction* clearHistoryServerAction = new QAction(translations::trClearHistory, this);
+    VERIFY(connect(clearHistoryServerAction, &QAction::triggered, this, &ExplorerTreeView::clearHistory));
+
+    QAction* closeServerAction = new QAction(translations::trClose, this);
+    VERIFY(connect(closeServerAction, &QAction::triggered, this, &ExplorerTreeView::closeServerConnection));
+
+    menu.addAction(historyServerAction);
+    menu.addAction(clearHistoryServerAction);
+    closeServerAction->setEnabled(!is_cluster_member);
+    menu.addAction(closeServerAction);
 
     menu.exec(menuPoint);
   } else if (node->type() == IExplorerTreeItem::eDatabase) {
     ExplorerDatabaseItem* db = static_cast<ExplorerDatabaseItem*>(node);
 
     QMenu menu(this);
-    menu.addAction(loadContentAction_);
-    bool isDefault = db->isDefault();
+    QAction* loadContentAction = new QAction(translations::trLoadContOfDataBases, this);
+    VERIFY(connect(loadContentAction, &QAction::triggered, this, &ExplorerTreeView::loadContentDb));
+
+    QAction* createKeyAction = new QAction(translations::trCreateKey, this);
+    VERIFY(connect(createKeyAction, &QAction::triggered, this, &ExplorerTreeView::createKey));
+
+    QAction* viewKeysAction = new QAction(translations::trViewKeysDialog, this);
+    VERIFY(connect(viewKeysAction, &QAction::triggered, this, &ExplorerTreeView::viewKeys));
+
+    QAction* removeAllKeysAction = new QAction(translations::trRemoveAllKeys, this);
+    VERIFY(connect(removeAllKeysAction, &QAction::triggered, this, &ExplorerTreeView::removeAllKeys));
+
+    QAction* setDefaultDbAction = new QAction(translations::trSetDefault, this);
+    VERIFY(connect(setDefaultDbAction, &QAction::triggered, this, &ExplorerTreeView::setDefaultDb));
+
+    menu.addAction(loadContentAction);
+    bool is_default = db->isDefault();
     proxy::IServerSPtr server = db->server();
 
     bool is_connected = server->IsConnected();
-    loadContentAction_->setEnabled(isDefault && is_connected);
+    loadContentAction->setEnabled(is_default && is_connected);
 
-    menu.addAction(createKeyAction_);
-    createKeyAction_->setEnabled(isDefault && is_connected);
+    menu.addAction(createKeyAction);
+    createKeyAction->setEnabled(is_default && is_connected);
 
-    menu.addAction(viewKeysAction_);
-    viewKeysAction_->setEnabled(isDefault && is_connected);
+    menu.addAction(viewKeysAction);
+    viewKeysAction->setEnabled(is_default && is_connected);
 
-    menu.addAction(removeAllKeysAction_);
-    removeAllKeysAction_->setEnabled(isDefault && is_connected);
+    menu.addAction(removeAllKeysAction);
+    removeAllKeysAction->setEnabled(is_default && is_connected);
 
-    menu.addAction(setDefaultDbAction_);
-    setDefaultDbAction_->setEnabled(!isDefault && is_connected);
+    menu.addAction(setDefaultDbAction);
+    setDefaultDbAction->setEnabled(!is_default && is_connected);
     menu.exec(menuPoint);
   } else if (node->type() == IExplorerTreeItem::eNamespace) {
     ExplorerNSItem* ns = static_cast<ExplorerNSItem*>(node);
 
     QMenu menu(this);
+    QAction* removeBranchAction = new QAction(translations::trRemoveBranch, this);
+    VERIFY(connect(removeBranchAction, &QAction::triggered, this, &ExplorerTreeView::removeBranch));
+
     proxy::IServerSPtr server = ns->server();
     ExplorerDatabaseItem* db = ns->db();
-    bool isDefault = db && db->isDefault();
+    bool is_default = db && db->isDefault();
     bool is_connected = server->IsConnected();
 
-    menu.addAction(removeBranchAction_);
-    removeBranchAction_->setEnabled(isDefault && is_connected);
+    menu.addAction(removeBranchAction);
+    removeBranchAction->setEnabled(is_default && is_connected);
     menu.exec(menuPoint);
   } else if (node->type() == IExplorerTreeItem::eKey) {
     ExplorerKeyItem* key = static_cast<ExplorerKeyItem*>(node);
 
     QMenu menu(this);
+    QAction* getValueAction = new QAction(translations::trGetValue, this);
+    VERIFY(connect(getValueAction, &QAction::triggered, this, &ExplorerTreeView::loadValue));
+
+    QAction* editKeyAction = new QAction(translations::trEdit, this);
+    VERIFY(connect(editKeyAction, &QAction::triggered, this, &ExplorerTreeView::editKey));
+
+    QAction* renameKeyAction = new QAction(trRenameKey, this);
+    VERIFY(connect(renameKeyAction, &QAction::triggered, this, &ExplorerTreeView::renKey));
+
+    QAction* deleteKeyAction = new QAction(translations::trDelete, this);
+    VERIFY(connect(deleteKeyAction, &QAction::triggered, this, &ExplorerTreeView::deleteKey));
+
+    QAction* watchKeyAction = new QAction(translations::trWatch, this);
+    VERIFY(connect(watchKeyAction, &QAction::triggered, this, &ExplorerTreeView::watchKey));
+
     proxy::IServerSPtr server = key->server();
 
     bool is_connected = server->IsConnected();
-    menu.addAction(getValueAction_);
-    getValueAction_->setEnabled(is_connected);
-    bool isTTLSupported = server->IsSupportTTLKeys();
-    if (isTTLSupported) {
+    menu.addAction(getValueAction);
+    getValueAction->setEnabled(is_connected);
+    bool is_TTL_supported = server->IsSupportTTLKeys();
+    if (is_TTL_supported) {
       QAction* setTTLKeyAction = new QAction(trSetTTL, this);
       setTTLKeyAction->setEnabled(is_connected);
       VERIFY(connect(setTTLKeyAction, &QAction::triggered, this, &ExplorerTreeView::setTTL));
       menu.addAction(setTTLKeyAction);
     }
-    menu.addAction(renameKeyAction_);
-    renameKeyAction_->setEnabled(is_connected);
-    menu.addAction(editKeyAction_);
-    editKeyAction_->setEnabled(is_connected);
-    menu.addAction(deleteKeyAction_);
-    deleteKeyAction_->setEnabled(is_connected);
-    menu.addAction(watchKeyAction_);
-    watchKeyAction_->setEnabled(is_connected);
+    menu.addAction(renameKeyAction);
+    renameKeyAction->setEnabled(is_connected);
+    menu.addAction(editKeyAction);
+    editKeyAction->setEnabled(is_connected);
+    menu.addAction(deleteKeyAction);
+    deleteKeyAction->setEnabled(is_connected);
+    menu.addAction(watchKeyAction);
+    watchKeyAction->setEnabled(is_connected);
     menu.exec(menuPoint);
   }
 }
 
 void ExplorerTreeView::connectDisconnectToServer() {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
-    return;
-  }
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
 
-  ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
-  if (!node) {
-    return;
-  }
+    proxy::IServerSPtr server = node->server();
+    if (!server) {
+      continue;
+    }
 
-  proxy::IServerSPtr server = node->server();
-  if (!server) {
-    return;
-  }
-
-  if (server->IsConnected()) {
-    proxy::events_info::DisConnectInfoRequest req(this);
-    server->Disconnect(req);
-  } else {
-    proxy::events_info::ConnectInfoRequest req(this);
-    server->Connect(req);
+    if (server->IsConnected()) {
+      proxy::events_info::DisConnectInfoRequest req(this);
+      server->Disconnect(req);
+    } else {
+      proxy::events_info::ConnectInfoRequest req(this);
+      server->Connect(req);
+    }
   }
 }
 
 void ExplorerTreeView::openConsole() {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
-    return;
-  }
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
 
-  ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
-  if (node) {
     emit consoleOpened(node->server(), QString());
   }
 }
 
 void ExplorerTreeView::loadDatabases() {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
-    return;
-  }
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
 
-  ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
-  if (node) {
     node->loadDatabases();
   }
 }
 
 void ExplorerTreeView::openInfoServerDialog() {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
-    return;
-  }
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
 
-  ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
-  if (!node) {
-    return;
-  }
+    proxy::IServerSPtr server = node->server();
+    if (!server) {
+      continue;
+    }
 
-  proxy::IServerSPtr server = node->server();
-  if (!server) {
-    return;
+    InfoServerDialog infDialog(server, this);
+    infDialog.exec();
   }
-
-  InfoServerDialog infDialog(server, this);
-  infDialog.exec();
 }
 
 void ExplorerTreeView::openPropertyServerDialog() {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
-    return;
-  }
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
 
-  ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
-  if (!node) {
-    return;
-  }
+    proxy::IServerSPtr server = node->server();
+    if (!server) {
+      continue;
+    }
 
-  proxy::IServerSPtr server = node->server();
-  if (!server) {
-    return;
+    PropertyServerDialog infDialog(server, this);
+    infDialog.exec();
   }
-
-  PropertyServerDialog infDialog(server, this);
-  infDialog.exec();
 }
 
 void ExplorerTreeView::openSetPasswordServerDialog() {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
-    return;
-  }
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
 
-  ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
-  if (!node) {
-    return;
-  }
+    proxy::IServerSPtr server = node->server();
+    if (!server) {
+      continue;
+    }
 
-  proxy::IServerSPtr server = node->server();
-  if (!server) {
-    return;
+    ChangePasswordServerDialog pass(trChangePasswordTemplate_1S.arg(node->name()), server, this);
+    pass.exec();
   }
-
-  ChangePasswordServerDialog pass(trChangePasswordTemplate_1S.arg(node->name()), server, this);
-  pass.exec();
 }
 
 void ExplorerTreeView::openMaxClientSetDialog() {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
-    return;
-  }
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
 
-  ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
-  if (!node) {
-    return;
-  }
+    proxy::IServerSPtr server = node->server();
+    if (!server) {
+      continue;
+    }
 
-  proxy::IServerSPtr server = node->server();
-  if (!server) {
-    return;
-  }
-
-  bool ok;
-  QString name;
-  common::ConvertFromString(server->Name(), &name);
-  int maxcl = QInputDialog::getInt(this, trSetMaxConnectionOnServerTemplate_1S.arg(name), trMaximumConnectionTemplate,
-                                   10000, 1, INT32_MAX, 100, &ok);
-  if (ok) {
-    proxy::events_info::ChangeMaxConnectionRequest req(this, maxcl);
-    server->SetMaxConnection(req);
+    bool ok;
+    QString name;
+    common::ConvertFromString(server->Name(), &name);
+    int maxcl = QInputDialog::getInt(this, trSetMaxConnectionOnServerTemplate_1S.arg(name), trMaximumConnectionTemplate,
+                                     10000, 1, INT32_MAX, 100, &ok);
+    if (ok) {
+      proxy::events_info::ChangeMaxConnectionRequest req(this, maxcl);
+      server->SetMaxConnection(req);
+    }
   }
 }
 
 void ExplorerTreeView::openHistoryServerDialog() {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
-    return;
-  }
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
 
-  ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
-  if (!node) {
-    return;
-  }
+    proxy::IServerSPtr server = node->server();
+    if (!server) {
+      continue;
+    }
 
-  proxy::IServerSPtr server = node->server();
-  if (!server) {
-    return;
+    ServerHistoryDialog histDialog(server, this);
+    histDialog.exec();
   }
-
-  ServerHistoryDialog histDialog(server, this);
-  histDialog.exec();
 }
 
 void ExplorerTreeView::clearHistory() {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
-    return;
-  }
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
 
-  ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
-  if (!node) {
-    return;
-  }
+    proxy::IServerSPtr server = node->server();
+    if (!server) {
+      continue;
+    }
 
-  proxy::IServerSPtr server = node->server();
-  if (!server) {
-    return;
+    proxy::events_info::ClearServerHistoryRequest req(this);
+    server->ClearHistory(req);
   }
-
-  proxy::events_info::ClearServerHistoryRequest req(this);
-  server->ClearHistory(req);
 }
 
 void ExplorerTreeView::closeServerConnection() {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
-    return;
-  }
-
-  ExplorerServerItem* snode = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
-  if (snode) {
-    proxy::IServerSPtr server = snode->server();
-    if (server) {
-      removeServer(server);
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerServerItem* snode = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(ind);
+    if (snode) {
+      proxy::IServerSPtr server = snode->server();
+      if (server) {
+        removeServer(server);
+      }
+      continue;
     }
-    return;
-  }
 
-  ExplorerClusterItem* cnode = common::qt::item<common::qt::gui::TreeItem*, ExplorerClusterItem*>(sel);
-  if (cnode && cnode->type() == IExplorerTreeItem::eCluster) {
-    proxy::IClusterSPtr server = cnode->cluster();
-    if (server) {
-      removeCluster(server);
+    ExplorerClusterItem* cnode = common::qt::item<common::qt::gui::TreeItem*, ExplorerClusterItem*>(ind);
+    if (cnode && cnode->type() == IExplorerTreeItem::eCluster) {
+      proxy::IClusterSPtr server = cnode->cluster();
+      if (server) {
+        removeCluster(server);
+      }
+      continue;
     }
-    return;
   }
 }
 
 void ExplorerTreeView::closeClusterConnection() {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
-    return;
-  }
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerClusterItem* cnode = common::qt::item<common::qt::gui::TreeItem*, ExplorerClusterItem*>(ind);
+    if (!cnode) {
+      continue;
+    }
 
-  ExplorerClusterItem* cnode = common::qt::item<common::qt::gui::TreeItem*, ExplorerClusterItem*>(sel);
-  if (!cnode) {
-    return;
-  }
-
-  proxy::IClusterSPtr server = cnode->cluster();
-  if (server) {
-    removeCluster(server);
+    proxy::IClusterSPtr server = cnode->cluster();
+    if (server) {
+      removeCluster(server);
+    }
   }
 }
 
 void ExplorerTreeView::closeSentinelConnection() {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
-    return;
-  }
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerSentinelItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerSentinelItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
 
-  ExplorerSentinelItem* snode = common::qt::item<common::qt::gui::TreeItem*, ExplorerSentinelItem*>(sel);
-  if (!snode) {
-    return;
-  }
-
-  proxy::ISentinelSPtr sent = snode->sentinel();
-  if (sent) {
-    removeSentinel(sent);
+    proxy::ISentinelSPtr sent = node->sentinel();
+    if (sent) {
+      removeSentinel(sent);
+    }
   }
 }
 
 void ExplorerTreeView::viewPubSub() {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
-    return;
-  }
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
 
-  ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
-  if (!node) {
-    return;
+    proxy::IServerSPtr server = node->server();
+    PubSubDialog diag(trViewChannelsTemplate_1S.arg(node->name()), server, this);
+    VERIFY(connect(&diag, &PubSubDialog::consoleOpenedAndExecute, this, &ExplorerTreeView::consoleOpenedAndExecute));
+    diag.exec();
   }
-
-  proxy::IServerSPtr server = node->server();
-  PubSubDialog diag(trViewChannelsTemplate_1S.arg(node->name()), server, this);
-  VERIFY(connect(&diag, &PubSubDialog::consoleOpenedAndExecute, this, &ExplorerTreeView::consoleOpenedAndExecute));
-  diag.exec();
 }
 
 void ExplorerTreeView::backupServer() {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
-    return;
-  }
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
 
-  ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
-  if (!node) {
-    return;
-  }
-
-  proxy::IServerSPtr server = node->server();
-  QString filepath =
-      QFileDialog::getOpenFileName(this, translations::trBackup, QString(), translations::trfilterForRdb);
-  if (!filepath.isEmpty() && server) {
-    proxy::events_info::BackupInfoRequest req(this, common::ConvertToString(filepath));
-    server->BackupToPath(req);
+    proxy::IServerSPtr server = node->server();
+    QString filepath =
+        QFileDialog::getOpenFileName(this, translations::trBackup, QString(), translations::trfilterForRdb);
+    if (!filepath.isEmpty() && server) {
+      proxy::events_info::BackupInfoRequest req(this, common::ConvertToString(filepath));
+      server->BackupToPath(req);
+    }
   }
 }
 
 void ExplorerTreeView::importServer() {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
-    return;
-  }
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
 
-  ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
-  if (!node) {
-    return;
-  }
-
-  proxy::IServerSPtr server = node->server();
-  QString filepath =
-      QFileDialog::getOpenFileName(this, translations::trImport, QString(), translations::trfilterForRdb);
-  if (filepath.isEmpty() && server) {
-    proxy::events_info::ExportInfoRequest req(this, common::ConvertToString(filepath));
-    server->ExportFromPath(req);
+    proxy::IServerSPtr server = node->server();
+    QString filepath =
+        QFileDialog::getOpenFileName(this, translations::trImport, QString(), translations::trfilterForRdb);
+    if (filepath.isEmpty() && server) {
+      proxy::events_info::ExportInfoRequest req(this, common::ConvertToString(filepath));
+      server->ExportFromPath(req);
+    }
   }
 }
 
 void ExplorerTreeView::shutdownServer() {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
-    return;
-  }
-
-  ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(sel);
-  if (!node) {
-    return;
-  }
-
-  proxy::IServerSPtr server = node->server();
-  if (server && server->IsConnected()) {
-    // Ask user
-    QString name;
-    common::ConvertFromString(server->Name(), &name);
-    int answer = QMessageBox::question(this, translations::trShutdown, trReallyShutdownTemplate_1S.arg(name),
-                                       QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
-
-    if (answer != QMessageBox::Yes) {
-      return;
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
     }
 
-    proxy::events_info::ShutDownInfoRequest req(this);
-    server->ShutDown(req);
+    proxy::IServerSPtr server = node->server();
+    if (server && server->IsConnected()) {
+      // Ask user
+      QString name;
+      common::ConvertFromString(server->Name(), &name);
+      int answer = QMessageBox::question(this, translations::trShutdown, trReallyShutdownTemplate_1S.arg(name),
+                                         QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
+
+      if (answer != QMessageBox::Yes) {
+        continue;
+      }
+
+      proxy::events_info::ShutDownInfoRequest req(this);
+      server->ShutDown(req);
+    }
   }
 }
 
 void ExplorerTreeView::loadContentDb() {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
-    return;
-  }
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerDatabaseItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerDatabaseItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
 
-  ExplorerDatabaseItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerDatabaseItem*>(sel);
-  if (!node) {
-    return;
-  }
-
-  LoadContentDbDialog loadDb(trLoadContentTemplate_1S.arg(node->name()), node->server()->Type(), this);
-  int result = loadDb.exec();
-  if (result == QDialog::Accepted) {
-    node->loadContent(common::ConvertToString(loadDb.pattern()), loadDb.count());
+    LoadContentDbDialog loadDb(trLoadContentTemplate_1S.arg(node->name()), node->server()->Type(), this);
+    int result = loadDb.exec();
+    if (result == QDialog::Accepted) {
+      node->loadContent(common::ConvertToString(loadDb.pattern()), loadDb.count());
+    }
   }
 }
 
 void ExplorerTreeView::removeAllKeys() {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
-    return;
-  }
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerDatabaseItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerDatabaseItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
 
-  ExplorerDatabaseItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerDatabaseItem*>(sel);
-  if (node) {
     int answer = QMessageBox::question(this, trClearDb, trRealyRemoveAllKeysTemplate_1S.arg(node->name()),
                                        QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
     if (answer != QMessageBox::Yes) {
-      return;
+      continue;
     }
 
     node->removeAllKeys();
@@ -777,194 +765,186 @@ void ExplorerTreeView::removeAllKeys() {
 }
 
 void ExplorerTreeView::removeBranch() {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
-    return;
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerNSItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerNSItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
+
+    int answer = QMessageBox::question(this, trRemoveBranch, trRemoveAllKeysTemplate_1S.arg(node->name()),
+                                       QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
+
+    if (answer != QMessageBox::Yes) {
+      continue;
+    }
+
+    node->removeBranch();
   }
-
-  ExplorerNSItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerNSItem*>(sel);
-  if (!node) {
-    return;
-  }
-
-  int answer = QMessageBox::question(this, trRemoveBranch, trRemoveAllKeysTemplate_1S.arg(node->name()),
-                                     QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
-
-  if (answer != QMessageBox::Yes) {
-    return;
-  }
-
-  node->removeBranch();
 }
 
 void ExplorerTreeView::setDefaultDb() {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
-    return;
-  }
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerDatabaseItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerDatabaseItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
 
-  ExplorerDatabaseItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerDatabaseItem*>(sel);
-  if (node) {
     node->setDefault();
   }
 }
 
 void ExplorerTreeView::createKey() {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
-    return;
-  }
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerDatabaseItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerDatabaseItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
 
-  ExplorerDatabaseItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerDatabaseItem*>(sel);
-  if (!node) {
-    return;
-  }
-
-  proxy::IServerSPtr server = node->server();
-  DbKeyDialog loadDb(trCreateKeyForDbTemplate_1S.arg(node->name()), server->Type(), core::NDbKValue(), this);
-  int result = loadDb.exec();
-  if (result == QDialog::Accepted) {
-    core::NDbKValue key = loadDb.key();
-    node->createKey(key);
+    proxy::IServerSPtr server = node->server();
+    DbKeyDialog loadDb(trCreateKeyForDbTemplate_1S.arg(node->name()), server->Type(), core::NDbKValue(), this);
+    int result = loadDb.exec();
+    if (result == QDialog::Accepted) {
+      core::NDbKValue key = loadDb.key();
+      node->createKey(key);
+    }
   }
 }
 
 void ExplorerTreeView::editKey() {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
-    return;
-  }
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerKeyItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerKeyItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
 
-  ExplorerKeyItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerKeyItem*>(sel);
-  if (!node) {
-    return;
-  }
-
-  proxy::IServerSPtr server = node->server();
-  DbKeyDialog loadDb(trEditKey_1S.arg(node->name()), server->Type(), node->dbv(), this);
-  int result = loadDb.exec();
-  if (result == QDialog::Accepted) {
-    core::NDbKValue key = loadDb.key();
-    node->editKey(key.GetValue());
+    proxy::IServerSPtr server = node->server();
+    DbKeyDialog loadDb(trEditKey_1S.arg(node->name()), server->Type(), node->dbv(), this);
+    int result = loadDb.exec();
+    if (result == QDialog::Accepted) {
+      core::NDbKValue key = loadDb.key();
+      node->editKey(key.GetValue());
+    }
   }
 }
 
 void ExplorerTreeView::viewKeys() {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
-    return;
-  }
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerDatabaseItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerDatabaseItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
 
-  ExplorerDatabaseItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerDatabaseItem*>(sel);
-  if (!node) {
-    return;
+    ViewKeysDialog diag(trViewKeyTemplate_1S.arg(node->name()), node->db(), this);
+    diag.exec();
   }
-
-  ViewKeysDialog diag(trViewKeyTemplate_1S.arg(node->name()), node->db(), this);
-  diag.exec();
 }
 
 void ExplorerTreeView::loadValue() {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
-    return;
-  }
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerKeyItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerKeyItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
 
-  ExplorerKeyItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerKeyItem*>(sel);
-  if (!node) {
-    return;
+    node->loadValueFromDb();
   }
-
-  node->loadValueFromDb();
 }
 
 void ExplorerTreeView::renKey() {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
-    return;
-  }
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerKeyItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerKeyItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
 
-  ExplorerKeyItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerKeyItem*>(sel);
-  if (!node) {
-    return;
-  }
+    QString name = node->name();
+    common::qt::gui::RegExpInputDialog reg_dialog(this);
+    reg_dialog.setWindowTitle(trRenameKey);
+    reg_dialog.setLabelText(trRenameKeyLabel);
+    reg_dialog.setText(name);
+    QRegExp regExp("\\S+");
+    reg_dialog.setRegExp(regExp);
+    int result = reg_dialog.exec();
+    if (result != QDialog::Accepted) {
+      continue;
+    }
 
-  QString name = node->name();
-  common::qt::gui::RegExpInputDialog reg_dialog(this);
-  reg_dialog.setWindowTitle(trRenameKey);
-  reg_dialog.setLabelText(trRenameKeyLabel);
-  reg_dialog.setText(name);
-  QRegExp regExp("\\S+");
-  reg_dialog.setRegExp(regExp);
-  int result = reg_dialog.exec();
-  if (result != QDialog::Accepted) {
-    return;
-  }
+    QString new_key_name = reg_dialog.text();
+    if (new_key_name.isEmpty()) {
+      continue;
+    }
 
-  QString new_key_name = reg_dialog.text();
-  if (new_key_name.isEmpty()) {
-    return;
-  }
+    if (new_key_name == name) {
+      continue;
+    }
 
-  if (new_key_name == name) {
-    return;
+    node->renameKey(new_key_name);
   }
-
-  node->renameKey(new_key_name);
 }
 
 void ExplorerTreeView::deleteKey() {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
-    return;
-  }
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerKeyItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerKeyItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
 
-  ExplorerKeyItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerKeyItem*>(sel);
-  if (!node) {
-    return;
+    node->removeFromDb();
   }
-
-  node->removeFromDb();
 }
 
 void ExplorerTreeView::watchKey() {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
-    return;
-  }
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerKeyItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerKeyItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
 
-  ExplorerKeyItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerKeyItem*>(sel);
-  if (!node) {
-    return;
-  }
-
-  bool ok;
-  QString name = node->name();
-  int interval = QInputDialog::getInt(this, trSetIntervalOnKeyTemplate_1S.arg(name), trIntervalValue, 1000, 0,
-                                      INT32_MAX, 1000, &ok);
-  if (ok) {
-    node->watchKey(interval);
+    bool ok;
+    QString name = node->name();
+    int interval = QInputDialog::getInt(this, trSetIntervalOnKeyTemplate_1S.arg(name), trIntervalValue, 1000, 0,
+                                        INT32_MAX, 1000, &ok);
+    if (ok) {
+      node->watchKey(interval);
+    }
   }
 }
 
 void ExplorerTreeView::setTTL() {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
-    return;
-  }
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerKeyItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerKeyItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
 
-  ExplorerKeyItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerKeyItem*>(sel);
-  if (!node) {
-    return;
-  }
-
-  bool ok;
-  QString name = node->name();
-  core::NKey key = node->key();
-  int ttl =
-      QInputDialog::getInt(this, trSetTTLOnKeyTemplate_1S.arg(name), trTTLValue, key.GetTTL(), -1, INT32_MAX, 100, &ok);
-  if (ok) {
-    node->setTTL(ttl);
+    bool ok;
+    QString name = node->name();
+    core::NKey key = node->key();
+    int ttl = QInputDialog::getInt(this, trSetTTLOnKeyTemplate_1S.arg(name), trTTLValue, key.GetTTL(), -1, INT32_MAX,
+                                   100, &ok);
+    if (ok) {
+      node->setTTL(ttl);
+    }
   }
 }
 
@@ -1136,45 +1116,38 @@ void ExplorerTreeView::unsyncWithServer(proxy::IServer* server) {
   VERIFY(disconnect(server, &proxy::IServer::KeyTTLChanged, this, &ExplorerTreeView::changeTTLKey));
 }
 
-void ExplorerTreeView::retranslateUi() {
-  connectAction_->setText(trConnectDisconnect);
-  openConsoleAction_->setText(translations::trOpenConsole);
-  loadDatabaseAction_->setText(translations::trLoadDataBases);
-  infoServerAction_->setText(translations::trInfo);
-  propertyServerAction_->setText(translations::trProperty);
-  setServerPassword_->setText(translations::trSetPassword);
-  setMaxClientConnection_->setText(translations::trSetMaxNumberOfClients);
-  historyServerAction_->setText(translations::trHistory);
-  clearHistoryServerAction_->setText(translations::trClearHistory);
-  closeServerAction_->setText(translations::trClose);
-  closeClusterAction_->setText(translations::trClose);
-  closeSentinelAction_->setText(translations::trClose);
-  backupAction_->setText(translations::trBackup);
-  importAction_->setText(translations::trImport);
-  shutdownAction_->setText(translations::trShutdown);
+void ExplorerTreeView::retranslateUi() {}
 
-  loadContentAction_->setText(translations::trLoadContOfDataBases);
-  removeAllKeysAction_->setText(translations::trRemoveAllKeys);
-  removeBranchAction_->setText(translations::trRemoveBranch);
-  createKeyAction_->setText(translations::trCreateKey);
-  editKeyAction_->setText(translations::trEdit);
-  viewKeysAction_->setText(translations::trViewKeysDialog);
-  pubSubAction_->setText(translations::trPubSubDialog);
-  setDefaultDbAction_->setText(translations::trSetDefault);
-  getValueAction_->setText(translations::trGetValue);
-  renameKeyAction_->setText(trRenameKey);
-  deleteKeyAction_->setText(translations::trDelete);
-  watchKeyAction_->setText(translations::trWatch);
-}
-
-QModelIndex ExplorerTreeView::selectedIndex() const {
+QModelIndexList ExplorerTreeView::selectedEqualTypeIndexes() const {
   QModelIndexList indexses = selectionModel()->selectedRows();
-
-  if (indexses.count() != 1) {
-    return QModelIndex();
+  if (indexses.empty()) {
+    return QModelIndexList();
   }
 
-  return proxy_model_->mapToSource(indexses[0]);
+  const QModelIndex first = indexses[0];
+  IExplorerTreeItem* first_node =
+      common::qt::item<common::qt::gui::TreeItem*, IExplorerTreeItem*>(proxy_model_->mapToSource(first));
+  if (!first_node) {
+    DNOTREACHED();
+    return QModelIndexList();
+  }
+
+  QModelIndexList selected;
+  for (QModelIndex ind : indexses) {
+    QModelIndex pr = proxy_model_->mapToSource(ind);
+    IExplorerTreeItem* node = common::qt::item<common::qt::gui::TreeItem*, IExplorerTreeItem*>(pr);
+    if (!node) {
+      DNOTREACHED();
+      return QModelIndexList();
+    }
+
+    IExplorerTreeItem::eType cur_typ = node->type();
+    if (first_node->type() != cur_typ) {
+      return QModelIndexList();
+    }
+    selected.push_back(pr);
+  }
+  return selected;
 }
 
 }  // namespace gui
