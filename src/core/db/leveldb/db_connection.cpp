@@ -105,7 +105,9 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
 
   ::leveldb::Options lv;
   lv.create_if_missing = config.create_if_missing;
-  if (config.comparator == Config::COMP_INDEXED_DB) {
+  if (config.comparator == COMP_BYTEWISE) {
+    lv.comparator = ::leveldb::BytewiseComparator();
+  } else if (config.comparator == COMP_INDEXED_DB) {
     lv.comparator = new comparator::IndexedDB;
   }
   auto st = ::leveldb::DB::Open(lv, folder, &lcontext);

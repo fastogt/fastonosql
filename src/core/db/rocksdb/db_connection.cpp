@@ -121,6 +121,11 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
 
   ::rocksdb::Options rs;
   rs.create_if_missing = config.create_if_missing;
+  if (config.comparator == COMP_BYTEWISE) {
+    rs.comparator = ::rocksdb::BytewiseComparator();
+  } else if (config.comparator == COMP_REVERSE_BYTEWISE) {
+    rs.comparator = ::rocksdb::ReverseBytewiseComparator();
+  }
   auto st = ::rocksdb::DB::Open(rs, folder, &lcontext);
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("Fail open database: %s!", st.ToString());

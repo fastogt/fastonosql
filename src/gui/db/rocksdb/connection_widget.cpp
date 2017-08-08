@@ -19,6 +19,9 @@
 #include "gui/db/rocksdb/connection_widget.h"
 
 #include <QCheckBox>
+#include <QHBoxLayout>
+#include <QComboBox>
+#include <QLabel>
 
 #include "proxy/db/rocksdb/connection_settings.h"
 
@@ -30,6 +33,18 @@ ConnectionWidget::ConnectionWidget(QWidget* parent)
     : ConnectionLocalWidget(true, trDBPath, trCaption, trFilter, parent) {
   createDBIfMissing_ = new QCheckBox;
   addWidget(createDBIfMissing_);
+
+  QHBoxLayout* type_comp_layout = new QHBoxLayout;
+  typeComparators_ = new QComboBox;
+  for (uint32_t i = 0; i < SIZEOFMASS(core::rocksdb::g_comparator_types); ++i) {
+    const char* ct = core::rocksdb::g_comparator_types[i];
+    typeComparators_->addItem(ct, i);
+  }
+
+  compLabel_ = new QLabel;
+  type_comp_layout->addWidget(compLabel_);
+  type_comp_layout->addWidget(typeComparators_);
+  addLayout(type_comp_layout);
 }
 
 void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
@@ -37,12 +52,14 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
   if (rock) {
     core::rocksdb::Config config = rock->Info();
     createDBIfMissing_->setChecked(config.create_if_missing);
+    typeComparators_->setCurrentIndex(config.comparator);
   }
   ConnectionLocalWidget::syncControls(rock);
 }
 
 void ConnectionWidget::retranslateUi() {
   createDBIfMissing_->setText(trCreateDBIfMissing);
+  compLabel_->setText(trComparator);
   ConnectionLocalWidget::retranslateUi();
 }
 
@@ -51,6 +68,7 @@ proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
   proxy::rocksdb::ConnectionSettings* conn = new proxy::rocksdb::ConnectionSettings(path);
   core::rocksdb::Config config = conn->Info();
   config.create_if_missing = createDBIfMissing_->isChecked();
+  config.comparator = static_cast<core::rocksdb::ComparatorType>(typeComparators_->currentIndex());
   conn->SetInfo(config);
   return conn;
 }

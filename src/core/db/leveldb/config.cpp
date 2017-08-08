@@ -57,7 +57,7 @@ Config parseOptions(int argc, char** argv) {
     } else if (!strcmp(argv[i], "-c")) {
       cfg.create_if_missing = true;
     } else if (!strcmp(argv[i], "-comp") && !lastarg) {
-      Config::ComparatorType lcomparator;
+      ComparatorType lcomparator;
       if (common::ConvertFromString(argv[++i], &lcomparator)) {
         cfg.comparator = lcomparator;
       }
@@ -83,7 +83,7 @@ Config parseOptions(int argc, char** argv) {
 Config::Config()
     : LocalConfig(common::file_system::prepare_path("~/test.leveldb")),
       create_if_missing(false),
-      comparator(COMP_NONE) {}
+      comparator(COMP_BYTEWISE) {}
 
 }  // namespace leveldb
 }  // namespace core
@@ -119,18 +119,18 @@ bool ConvertFromString(const std::string& from, fastonosql::core::leveldb::Confi
   return false;
 }
 
-std::string ConvertToString(fastonosql::core::leveldb::Config::ComparatorType comp) {
+std::string ConvertToString(fastonosql::core::leveldb::ComparatorType comp) {
   return fastonosql::core::leveldb::g_comparator_types[comp];
 }
 
-bool ConvertFromString(const std::string& from, fastonosql::core::leveldb::Config::ComparatorType* out) {
+bool ConvertFromString(const std::string& from, fastonosql::core::leveldb::ComparatorType* out) {
   if (!out) {
     return false;
   }
 
   for (size_t i = 0; i < SIZEOFMASS(fastonosql::core::leveldb::g_comparator_types); ++i) {
     if (from == fastonosql::core::leveldb::g_comparator_types[i]) {
-      *out = static_cast<fastonosql::core::leveldb::Config::ComparatorType>(i);
+      *out = static_cast<fastonosql::core::leveldb::ComparatorType>(i);
       return true;
     }
   }

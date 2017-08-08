@@ -26,10 +26,10 @@ namespace fastonosql {
 namespace core {
 namespace leveldb {
 
-static const char* g_comparator_types[] = {"NONE", "INDEXED_DB"};
+enum ComparatorType { COMP_BYTEWISE = 0, COMP_INDEXED_DB };
+static const char* g_comparator_types[] = {"BYTEWISE", "INDEXED_DB"};
 
 struct Config : public LocalConfig {
-  enum ComparatorType { COMP_NONE = 0, COMP_INDEXED_DB };
   Config();
 
   bool create_if_missing;
@@ -44,6 +44,6 @@ namespace common {
 std::string ConvertToString(const fastonosql::core::leveldb::Config& conf);
 bool ConvertFromString(const std::string& from, fastonosql::core::leveldb::Config* out);
 
-std::string ConvertToString(fastonosql::core::leveldb::Config::ComparatorType comp);
-bool ConvertFromString(const std::string& from, fastonosql::core::leveldb::Config::ComparatorType* out);
+std::string ConvertToString(fastonosql::core::leveldb::ComparatorType comp);
+bool ConvertFromString(const std::string& from, fastonosql::core::leveldb::ComparatorType* out);
 }  // namespace common

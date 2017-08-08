@@ -53,6 +53,11 @@ Config parseOptions(int argc, char** argv) {
       cfg.db_path = argv[++i];
     } else if (!strcmp(argv[i], "-c")) {
       cfg.create_if_missing = true;
+    } else if (!strcmp(argv[i], "-comp") && !lastarg) {
+      ComparatorType lcomparator;
+      if (common::ConvertFromString(argv[++i], &lcomparator)) {
+        cfg.comparator = lcomparator;
+      }
     } else {
       if (argv[i][0] == '-') {
         const std::string buff = common::MemSPrintf(
@@ -72,7 +77,10 @@ Config parseOptions(int argc, char** argv) {
 
 }  // namespace
 
-Config::Config() : LocalConfig(common::file_system::prepare_path("~/test.rocksdb")), create_if_missing(false) {}
+Config::Config()
+    : LocalConfig(common::file_system::prepare_path("~/test.rocksdb")),
+      create_if_missing(false),
+      comparator(COMP_BYTEWISE) {}
 
 }  // namespace rocksdb
 }  // namespace core
@@ -87,6 +95,8 @@ std::string ConvertToString(const fastonosql::core::rocksdb::Config& conf) {
     argv.push_back("-c");
   }
 
+  argv.push_back("-comp");
+  argv.push_back(common::ConvertToString(conf.comparator));
   return fastonosql::core::ConvertToStringConfigArgs(argv);
 }
 
@@ -103,6 +113,26 @@ bool ConvertFromString(const std::string& from, fastonosql::core::rocksdb::Confi
     return true;
   }
 
+  return false;
+}
+
+std::string ConvertToString(fastonosql::core::rocksdb::ComparatorType comp) {
+  return fastonosql::core::rocksdb::g_comparator_types[comp];
+}
+
+bool ConvertFromString(const std::string& from, fastonosql::core::rocksdb::ComparatorType* out) {
+  if (!out) {
+    return false;
+  }
+
+  for (size_t i = 0; i < SIZEOFMASS(fastonosql::core::rocksdb::g_comparator_types); ++i) {
+    if (from == fastonosql::core::rocksdb::g_comparator_types[i]) {
+      *out = static_cast<fastonosql::core::rocksdb::ComparatorType>(i);
+      return true;
+    }
+  }
+
+  NOTREACHED();
   return false;
 }
 

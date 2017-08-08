@@ -26,10 +26,14 @@ namespace fastonosql {
 namespace core {
 namespace rocksdb {
 
+enum ComparatorType { COMP_BYTEWISE, COMP_REVERSE_BYTEWISE };
+static const char* g_comparator_types[] = {"BYTEWISE", "REVERSE_BYTEWISE"};
+
 struct Config : public LocalConfig {
   Config();
 
   bool create_if_missing;
+  ComparatorType comparator;
 };
 
 }  // namespace rocksdb
@@ -39,4 +43,7 @@ struct Config : public LocalConfig {
 namespace common {
 std::string ConvertToString(const fastonosql::core::rocksdb::Config& conf);
 bool ConvertFromString(const std::string& from, fastonosql::core::rocksdb::Config* out);
+
+std::string ConvertToString(fastonosql::core::rocksdb::ComparatorType comp);
+bool ConvertFromString(const std::string& from, fastonosql::core::rocksdb::ComparatorType* out);
 }  // namespace common

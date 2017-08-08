@@ -36,7 +36,7 @@ ConnectionWidget::ConnectionWidget(QWidget* parent)
 
   QHBoxLayout* type_comp_layout = new QHBoxLayout;
   typeComparators_ = new QComboBox;
-  for (int i = 0; i < SIZEOFMASS(core::leveldb::g_comparator_types); ++i) {
+  for (uint32_t i = 0; i < SIZEOFMASS(core::leveldb::g_comparator_types); ++i) {
     const char* ct = core::leveldb::g_comparator_types[i];
     typeComparators_->addItem(ct, i);
   }
@@ -59,7 +59,7 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
 
 void ConnectionWidget::retranslateUi() {
   createDBIfMissing_->setText(trCreateDBIfMissing);
-  compLabel_->setText(tr("Comparator:"));
+  compLabel_->setText(trComparator);
   ConnectionLocalWidget::retranslateUi();
 }
 
@@ -68,7 +68,7 @@ proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
   proxy::leveldb::ConnectionSettings* conn = new proxy::leveldb::ConnectionSettings(path);
   core::leveldb::Config config = conn->Info();
   config.create_if_missing = createDBIfMissing_->isChecked();
-  config.comparator = static_cast<core::leveldb::Config::ComparatorType>(typeComparators_->currentIndex());
+  config.comparator = static_cast<core::leveldb::ComparatorType>(typeComparators_->currentIndex());
   conn->SetInfo(config);
   return conn;
 }
