@@ -23,24 +23,7 @@
 #include <common/macros.h>
 #include <common/smart_ptr.h>
 #include <common/string_piece.h>
-
-namespace common {
-inline uint16_t ByteSwap(uint16_t x) {
-#if defined(COMPILER_MSVC)
-  return _byteswap_ushort(x);
-#else
-  return __builtin_bswap16(x);
-#endif
-}
-
-inline uint16_t NetToHost16(uint16_t x) {
-#if defined(ARCH_CPU_LITTLE_ENDIAN)
-  return ByteSwap(x);
-#else
-  return x;
-#endif
-}
-}  // namespace common
+#include <common/sys_byteorder.h>
 
 namespace fastonosql {
 namespace core {

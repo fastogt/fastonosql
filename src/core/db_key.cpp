@@ -32,7 +32,7 @@ namespace core {
 KeyInfo::KeyInfo(const splited_namespaces_t& splited_namespaces_and_key, string_key_t ns_separator)
     : splited_namespaces_and_key_(splited_namespaces_and_key), ns_separator_(ns_separator) {}
 
-key_t KeyInfo::GetKey() const {
+string_key_t KeyInfo::GetKey() const {
   return common::JoinString(splited_namespaces_and_key_, ns_separator_);
 }
 
@@ -68,19 +68,19 @@ string_key_t KeyInfo::JoinNamespace(size_t pos) const {
 
 NKey::NKey() : key_(), ttl_(NO_TTL) {}
 
-NKey::NKey(const std::string& key, ttl_t ttl_sec) : key_(key), ttl_(ttl_sec) {}
+NKey::NKey(string_key_t key, ttl_t ttl_sec) : key_(key), ttl_(ttl_sec) {}
 
-KeyInfo NKey::GetInfo(const std::string& ns_separator) const {
+KeyInfo NKey::GetInfo(string_key_t ns_separator) const {
   KeyInfo::splited_namespaces_t tokens;
   common::Tokenize(key_, ns_separator, &tokens);
   return KeyInfo(tokens, ns_separator);
 }
 
-key_t NKey::GetKey() const {
+string_key_t NKey::GetKey() const {
   return key_;
 }
 
-void NKey::SetKey(key_t key) {
+void NKey::SetKey(string_key_t key) {
   key_ = key;
 }
 
