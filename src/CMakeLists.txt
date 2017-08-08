@@ -650,6 +650,8 @@ IF(BUILD_WITH_LEVELDB)
     ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/internal/commands_api.h
     ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/database_info.h
     ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/comparators/indexed_db.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/comparators/constants.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/comparators/utils.h
   )
   SET(SOURCES_CORE_DB_LEVELDB
     ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/config.cpp
@@ -659,6 +661,7 @@ IF(BUILD_WITH_LEVELDB)
     ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/internal/commands_api.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/database_info.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/comparators/indexed_db.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/comparators/utils.cpp
   )
 
   #proxy
