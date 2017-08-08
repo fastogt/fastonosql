@@ -43,7 +43,7 @@
 
 #include "proxy/settings_manager.h"  // for SettingsManager
 
-#include "proxy/types.h"  // for viewsText, ConvertToString, etc
+#include "proxy/types.h"  // for supported_views_text, ConvertToString, etc
 
 #include "gui/gui_factory.h"  // for GuiFactory
 
@@ -124,12 +124,8 @@ PreferencesDialog::PreferencesDialog(QWidget* parent) : QDialog(parent) {
 
   defaultViewLabel_ = new QLabel;
   defaultViewComboBox_ = new QComboBox;
-  for (size_t i = 0; i < SIZEOFMASS(proxy::viewsText); ++i) {
-    std::string vstr = proxy::viewsText[i];
-    QString qstr;
-    if (common::ConvertFromString(vstr, &qstr)) {
-      defaultViewComboBox_->addItem(qstr, static_cast<int>(i));
-    }
+  for (uint32_t i = 0; i < SIZEOFMASS(proxy::supported_views_text); ++i) {
+    defaultViewComboBox_->addItem(proxy::supported_views_text[i], i);
   }
   generalLayout->addWidget(defaultViewLabel_, 6, 0);
   generalLayout->addWidget(defaultViewComboBox_, 6, 1);
@@ -195,11 +191,8 @@ void PreferencesDialog::syncWithSettings() {
   fontComboBox_->setCurrentFont(cf);
   fontSizeSpinBox_->setValue(cf.pointSize());
   proxy::supportedViews v = proxy::SettingsManager::Instance().DefaultView();
-  std::string vstr = proxy::viewsText[v];
-  QString qstr;
-  if (common::ConvertFromString(vstr, &qstr)) {
-    defaultViewComboBox_->setCurrentText(qstr);
-  }
+  QString qstr = proxy::supported_views_text[v];
+  defaultViewComboBox_->setCurrentText(qstr);
   logDirPath_->setText(proxy::SettingsManager::Instance().LoggingDirectory());
   autoOpenConsole_->setChecked(proxy::SettingsManager::Instance().AutoOpenConsole());
   autoConnectDB_->setChecked(proxy::SettingsManager::Instance().AutoConnectDB());

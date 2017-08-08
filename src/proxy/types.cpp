@@ -30,7 +30,7 @@ namespace proxy {}  // namespace proxy
 namespace common {
 
 std::string ConvertToString(fastonosql::proxy::supportedViews v) {
-  return fastonosql::proxy::viewsText[v];
+  return fastonosql::proxy::supported_views_text[v];
 }
 
 bool ConvertFromString(const std::string& from, fastonosql::proxy::supportedViews* out) {
@@ -38,8 +38,8 @@ bool ConvertFromString(const std::string& from, fastonosql::proxy::supportedView
     return false;
   }
 
-  for (size_t i = 0; i < SIZEOFMASS(fastonosql::proxy::viewsText); ++i) {
-    if (from == fastonosql::proxy::viewsText[i]) {
+  for (size_t i = 0; i < SIZEOFMASS(fastonosql::proxy::supported_views_text); ++i) {
+    if (from == fastonosql::proxy::supported_views_text[i]) {
       *out = static_cast<fastonosql::proxy::supportedViews>(i);
       return true;
     }

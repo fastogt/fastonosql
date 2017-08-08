@@ -25,7 +25,7 @@ namespace proxy {
 
 enum supportedViews { Tree = 0, Table, Text };
 
-static const std::string viewsText[] = {"Tree", "Table", "Text"};
+static const char* supported_views_text[] = {"Tree", "Table", "Text"};
 
 }  // namespace proxy
 }  // namespace fastonosql

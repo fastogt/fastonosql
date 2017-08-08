@@ -25,7 +25,6 @@
 #include <vector>  // for vector
 
 #include <common/value.h>  // for Value, Value::Type, etc
-#include <common/string_piece.h>
 
 #define NO_TTL -1
 #define EXPIRED_TTL -2
@@ -39,7 +38,7 @@ COMPILE_ASSERT(std::numeric_limits<ttl_t>::max() >= NO_TTL && NO_TTL >= std::num
 COMPILE_ASSERT(std::numeric_limits<ttl_t>::max() >= EXPIRED_TTL && EXPIRED_TTL >= std::numeric_limits<ttl_t>::min(),
                "EXPIRED_TTL define must be in ttl type range");
 
-typedef common::StringPiece string_key_t;
+typedef std::string string_key_t;
 
 class KeyInfo {
  public:
