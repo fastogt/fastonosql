@@ -25,7 +25,6 @@
 #include <common/macros.h>             // for DCHECK
 #include <common/net/socket_tcp.h>     // for ClientSocketTcp
 #include <common/net/types.h>          // for HostAndPort
-#include <common/qt/convert2string.h>  // for ConvertFromString
 
 #include "server_config_daemon/server_config.h"
 
@@ -71,9 +70,7 @@ void UpdateChecker::routine() {
     return;
   }
 
-  QString qvers;
-  common::ConvertFromString(version, &qvers);
-  emit versionAvailibled(true, qvers);
+  emit versionAvailibled(true, version);
   DCHECK(!client.Close());
   return;
 }

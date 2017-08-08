@@ -543,7 +543,7 @@ ExplorerNSItem* ExplorerTreeModel::findNSItem(IExplorerTreeItem* db_or_ns, const
 }
 
 ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_ns, const core::KeyInfo& kinf) {
-  std::string nspace = kinf.GetNspace();
+  core::string_key_t nspace = kinf.GetNspace();
   QString qnspace;
   common::ConvertFromString(nspace, &qnspace);
   ExplorerNSItem* founded_item = findNSItem(db_or_ns, qnspace);

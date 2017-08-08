@@ -29,10 +29,10 @@
 namespace fastonosql {
 namespace core {
 
-KeyInfo::KeyInfo(const splited_namespaces_t& splited_namespaces_and_key, const std::string& ns_separator)
+KeyInfo::KeyInfo(const splited_namespaces_t& splited_namespaces_and_key, string_key_t ns_separator)
     : splited_namespaces_and_key_(splited_namespaces_and_key), ns_separator_(ns_separator) {}
 
-std::string KeyInfo::GetKey() const {
+key_t KeyInfo::GetKey() const {
   return common::JoinString(splited_namespaces_and_key_, ns_separator_);
 }
 
@@ -41,7 +41,7 @@ bool KeyInfo::HasNamespace() const {
   return ns_size > 0;
 }
 
-std::string KeyInfo::GetNspace() const {
+string_key_t KeyInfo::GetNspace() const {
   return JoinNamespace(splited_namespaces_and_key_.size() - 1);
 }
 
@@ -53,17 +53,17 @@ size_t KeyInfo::GetNspaceSize() const {
   return splited_namespaces_and_key_.size() - 1;
 }
 
-std::string KeyInfo::JoinNamespace(size_t pos) const {
+string_key_t KeyInfo::JoinNamespace(size_t pos) const {
   size_t ns_size = GetNspaceSize();
   if (ns_size > pos) {
-    std::vector<std::string> copy;
+    std::vector<string_key_t> copy;
     for (size_t i = 0; i <= pos; ++i) {
       copy.push_back(splited_namespaces_and_key_[i]);
     }
     return common::JoinString(copy, ns_separator_);
   }
 
-  return std::string();
+  return string_key_t();
 }
 
 NKey::NKey() : key_(), ttl_(NO_TTL) {}
@@ -76,11 +76,11 @@ KeyInfo NKey::GetInfo(const std::string& ns_separator) const {
   return KeyInfo(tokens, ns_separator);
 }
 
-std::string NKey::GetKey() const {
+key_t NKey::GetKey() const {
   return key_;
 }
 
-void NKey::SetKey(const std::string& key) {
+void NKey::SetKey(key_t key) {
   key_ = key;
 }
 

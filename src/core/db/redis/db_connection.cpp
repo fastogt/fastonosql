@@ -187,6 +187,11 @@ bool isPipeLineCommand(const char* command) {
 
 namespace fastonosql {
 namespace core {
+namespace {
+const char* ConvertToRedisSlice(const string_key_t& key) {
+  return key.data();
+}
+}
 namespace internal {
 template <>
 common::Error ConnectionAllocatorTraits<redis::NativeConnection, redis::RConfig>::Connect(
@@ -786,10 +791,11 @@ common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
 
 common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) {
   const NKey cur = key.GetKey();
-  std::string key_str = cur.GetKey();
+  string_key_t key_str = cur.GetKey();
   std::string value_str = key.ValueString();
+  const char* key_slice = ConvertToRedisSlice(key_str);
   redisReply* reply =
-      reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "SET %s %s", key_str.c_str(), value_str.c_str()));
+      reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "SET %s %s", key_slice, value_str.c_str()));
   if (!reply) {
     return cliPrintContextError(connection_.handle_);
   }
@@ -806,8 +812,9 @@ common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) 
 }
 
 common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
-  std::string key_str = key.GetKey();
-  redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "GET %s", key_str.c_str()));
+  string_key_t key_str = key.GetKey();
+  const char* key_slice = ConvertToRedisSlice(key_str);
+  redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "GET %s", key_slice));
   if (!reply) {
     return cliPrintContextError(connection_.handle_);
   }
@@ -852,7 +859,7 @@ common::Error DBConnection::RenameImpl(const NKey& key, const std::string& new_k
 }
 
 common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
-  std::string key_str = key.GetKey();
+  string_key_t key_str = key.GetKey();
   translator_t tran = Translator();
   std::string ttl_cmd;
   common::Error err = tran->ChangeKeyTTLCommand(key, ttl, &ttl_cmd);
@@ -1225,10 +1232,11 @@ common::Error DBConnection::Subscribe(int argc, const char** argv, FastoObject* 
 
 common::Error DBConnection::SetEx(const NDbKValue& key, ttl_t ttl) {
   const NKey cur = key.GetKey();
-  std::string key_str = cur.GetKey();
+  string_key_t key_str = cur.GetKey();
   std::string value_str = key.ValueString();
+  const char* key_slice = ConvertToRedisSlice(key_str);
   redisReply* reply = reinterpret_cast<redisReply*>(
-      redisCommand(connection_.handle_, "SETEX %s %d %s", key_str.c_str(), ttl, value_str.c_str()));
+      redisCommand(connection_.handle_, "SETEX %s %d %s", key_slice, ttl, value_str.c_str()));
   if (!reply) {
     return cliPrintContextError(connection_.handle_);
   }
@@ -1251,10 +1259,11 @@ common::Error DBConnection::SetEx(const NDbKValue& key, ttl_t ttl) {
 
 common::Error DBConnection::SetNX(const NDbKValue& key, long long* result) {
   const NKey cur = key.GetKey();
-  std::string key_str = cur.GetKey();
+  string_key_t key_str = cur.GetKey();
   std::string value_str = key.ValueString();
-  redisReply* reply = reinterpret_cast<redisReply*>(
-      redisCommand(connection_.handle_, "SETNX %s %s", key_str.c_str(), value_str.c_str()));
+  const char* key_slice = ConvertToRedisSlice(key_str);
+  redisReply* reply =
+      reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "SETNX %s %s", key_slice, value_str.c_str()));
   if (!reply) {
     return cliPrintContextError(connection_.handle_);
   }
@@ -1324,9 +1333,10 @@ common::Error DBConnection::Lrange(const NKey& key, int start, int stop, NDbKVal
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  std::string key_str = key.GetKey();
+  string_key_t key_str = key.GetKey();
+  const char* key_slice = ConvertToRedisSlice(key_str);
   redisReply* reply =
-      reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "LRANGE %s %d %d", key_str.c_str(), start, stop));
+      reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "LRANGE %s %d %d", key_slice, start, stop));
   if (!reply) {
     return cliPrintContextError(connection_.handle_);
   }
@@ -1407,8 +1417,9 @@ common::Error DBConnection::Smembers(const NKey& key, NDbKValue* loaded_key) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  std::string key_str = key.GetKey();
-  redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "SMEMBERS %s", key_str.c_str()));
+  string_key_t key_str = key.GetKey();
+  const char* key_slice = ConvertToRedisSlice(key_str);
+  redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "SMEMBERS %s", key_slice));
   if (!reply) {
     return cliPrintContextError(connection_.handle_);
   }
@@ -1505,12 +1516,13 @@ common::Error DBConnection::Zrange(const NKey& key, int start, int stop, bool wi
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  std::string key_str = key.GetKey();
+  string_key_t key_str = key.GetKey();
+  const char* key_slice = ConvertToRedisSlice(key_str);
   std::string line;
   if (withscores) {
-    line = common::MemSPrintf("ZRANGE %s %d %d WITHSCORES", key_str.c_str(), start, stop);
+    line = common::MemSPrintf("ZRANGE %s %d %d WITHSCORES", key_slice, start, stop);
   } else {
-    line = common::MemSPrintf("ZRANGE %s %d %d", key_str.c_str(), start, stop);
+    line = common::MemSPrintf("ZRANGE %s %d %d", key_slice, start, stop);
   }
   redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, line.c_str()));
   if (!reply) {
@@ -1618,8 +1630,9 @@ common::Error DBConnection::Hgetall(const NKey& key, NDbKValue* loaded_key) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  std::string key_str = key.GetKey();
-  redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "HGETALL %s", key_str.c_str()));
+  string_key_t key_str = key.GetKey();
+  const char* key_slice = ConvertToRedisSlice(key_str);
+  redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "HGETALL %s", key_slice));
   if (!reply) {
     return cliPrintContextError(connection_.handle_);
   }
@@ -1676,8 +1689,9 @@ common::Error DBConnection::Decr(const NKey& key, long long* decr) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  std::string key_str = key.GetKey();
-  redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "DECR %s", key_str.c_str()));
+  string_key_t key_str = key.GetKey();
+  const char* key_slice = ConvertToRedisSlice(key_str);
+  redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "DECR %s", key_slice));
   if (!reply) {
     return cliPrintContextError(connection_.handle_);
   }
@@ -1710,9 +1724,9 @@ common::Error DBConnection::DecrBy(const NKey& key, int dec, long long* decr) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  std::string key_str = key.GetKey();
-  redisReply* reply =
-      reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "DECRBY %s %d", key_str.c_str(), dec));
+  string_key_t key_str = key.GetKey();
+  const char* key_slice = ConvertToRedisSlice(key_str);
+  redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "DECRBY %s %d", key_slice, dec));
   if (!reply) {
     return cliPrintContextError(connection_.handle_);
   }
@@ -1745,8 +1759,9 @@ common::Error DBConnection::Incr(const NKey& key, long long* incr) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  std::string key_str = key.GetKey();
-  redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "INCR %s", key_str.c_str()));
+  string_key_t key_str = key.GetKey();
+  const char* key_slice = ConvertToRedisSlice(key_str);
+  redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "INCR %s", key_slice));
   if (!reply) {
     return cliPrintContextError(connection_.handle_);
   }
@@ -1779,9 +1794,9 @@ common::Error DBConnection::IncrBy(const NKey& key, int inc, long long* incr) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  std::string key_str = key.GetKey();
-  redisReply* reply =
-      reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "INCRBY %s %d", key_str.c_str(), inc));
+  string_key_t key_str = key.GetKey();
+  const char* key_slice = ConvertToRedisSlice(key_str);
+  redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "INCRBY %s %d", key_slice, inc));
   if (!reply) {
     return cliPrintContextError(connection_.handle_);
   }
@@ -1814,10 +1829,11 @@ common::Error DBConnection::IncrByFloat(const NKey& key, double inc, std::string
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  std::string key_str = key.GetKey();
+  string_key_t key_str = key.GetKey();
+  const char* key_slice = ConvertToRedisSlice(key_str);
   std::string value_str = common::ConvertToString(inc);
   redisReply* reply = reinterpret_cast<redisReply*>(
-      redisCommand(connection_.handle_, "INCRBYFLOAT %s %s", key_str.c_str(), value_str.c_str()));
+      redisCommand(connection_.handle_, "INCRBYFLOAT %s %s", key_slice, value_str.c_str()));
   if (!reply) {
     return cliPrintContextError(connection_.handle_);
   }

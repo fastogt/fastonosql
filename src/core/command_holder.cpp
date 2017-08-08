@@ -89,7 +89,8 @@ bool CommandHolder::IsCommand(int argc, const char** argv, size_t* offset) const
   for (size_t i = 0; i < white_spaces_count_ + 1; ++i) {
     merged.push_back(argv[i]);
   }
-  std::string ws = common::JoinString(merged, ' ');
+
+  std::string ws = common::JoinString(merged, " ");
   if (!IsEqualName(ws)) {
     return false;
   }

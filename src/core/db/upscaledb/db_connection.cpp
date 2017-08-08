@@ -42,6 +42,15 @@
 
 namespace fastonosql {
 namespace core {
+namespace {
+ups_key_t ConvertToUpscaleDBSlice(const string_key_t& key) {
+  ups_key_t dkey;
+  memset(&dkey, 0, sizeof(dkey));
+  dkey.size = key.size();
+  dkey.data = const_cast<char*>(key.data());
+  return dkey;
+}
+}
 namespace upscaledb {
 
 struct upscaledb {
@@ -230,22 +239,19 @@ common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) 
   return common::Error();
 }
 
-common::Error DBConnection::SetInner(const std::string& key, const std::string& value) {
+common::Error DBConnection::SetInner(string_key_t key, const std::string& value) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  ups_key_t dkey;
-  memset(&dkey, 0, sizeof(dkey));
-  dkey.size = key.size();
-  dkey.data = const_cast<char*>(key.c_str());
+  ups_key_t key_slice = ConvertToUpscaleDBSlice(key);
 
   ups_record_t rec;
   memset(&rec, 0, sizeof(rec));
   rec.data = const_cast<char*>(value.c_str());
   rec.size = value.size();
 
-  ups_status_t st = ups_db_insert(connection_.handle_->db, 0, &dkey, &rec, UPS_OVERWRITE);
+  ups_status_t st = ups_db_insert(connection_.handle_->db, 0, &key_slice, &rec, UPS_OVERWRITE);
   if (st != UPS_SUCCESS) {
     std::string buff = common::MemSPrintf("SET function error: %s", ups_strerror(st));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -253,20 +259,17 @@ common::Error DBConnection::SetInner(const std::string& key, const std::string& 
   return common::Error();
 }
 
-common::Error DBConnection::GetInner(const std::string& key, std::string* ret_val) {
+common::Error DBConnection::GetInner(string_key_t key, std::string* ret_val) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  ups_key_t dkey;
-  memset(&dkey, 0, sizeof(dkey));
-  dkey.size = key.size();
-  dkey.data = const_cast<char*>(key.c_str());
+  ups_key_t key_slice = ConvertToUpscaleDBSlice(key);
 
   ups_record_t rec;
   memset(&rec, 0, sizeof(rec));
 
-  ups_status_t st = ups_db_find(connection_.handle_->db, NULL, &dkey, &rec, 0);
+  ups_status_t st = ups_db_find(connection_.handle_->db, NULL, &key_slice, &rec, 0);
   if (st != UPS_SUCCESS) {
     std::string buff = common::MemSPrintf("GET function error: %s", ups_strerror(st));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -276,18 +279,14 @@ common::Error DBConnection::GetInner(const std::string& key, std::string* ret_va
   return common::Error();
 }
 
-common::Error DBConnection::DelInner(const std::string& key) {
+common::Error DBConnection::DelInner(string_key_t key) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  ups_key_t dkey;
-  memset(&dkey, 0, sizeof(dkey));
+  ups_key_t key_slice = ConvertToUpscaleDBSlice(key);
 
-  dkey.size = key.size();
-  dkey.data = const_cast<char*>(key.c_str());
-
-  ups_status_t st = ups_db_erase(connection_.handle_->db, 0, &dkey, 0);
+  ups_status_t st = ups_db_erase(connection_.handle_->db, 0, &key_slice, 0);
   if (st != UPS_SUCCESS) {
     std::string buff = common::MemSPrintf("DEL function error: %s", ups_strerror(st));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -458,7 +457,7 @@ common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** 
 
 common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) {
   const NKey cur = key.GetKey();
-  std::string key_str = cur.GetKey();
+  string_key_t key_str = cur.GetKey();
   std::string value_str = key.ValueString();
   common::Error err = SetInner(key_str, value_str);
   if (err && err->IsError()) {
@@ -470,7 +469,7 @@ common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) 
 }
 
 common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
-  std::string key_str = key.GetKey();
+  string_key_t key_str = key.GetKey();
   std::string value_str;
   common::Error err = GetInner(key_str, &value_str);
   if (err && err->IsError()) {
@@ -485,7 +484,7 @@ common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
 common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     NKey key = keys[i];
-    std::string key_str = key.GetKey();
+    string_key_t key_str = key.GetKey();
     common::Error err = DelInner(key_str);
     if (err && err->IsError()) {
       continue;
@@ -498,7 +497,7 @@ common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
 }
 
 common::Error DBConnection::RenameImpl(const NKey& key, const std::string& new_key) {
-  std::string key_str = key.GetKey();
+  string_key_t key_str = key.GetKey();
   std::string value_str;
   common::Error err = GetInner(key_str, &value_str);
   if (err && err->IsError()) {

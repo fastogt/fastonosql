@@ -95,7 +95,7 @@ QString toJson(FastoCommonItem* item) {
       return QString();
     }
 
-    const char* jstring = json_object_to_json_string_ext(obj, JSON_C_TO_STRING_PRETTY);
+    std::string jstring = json_object_to_json_string_ext(obj, JSON_C_TO_STRING_PRETTY);
     QString result;
     common::ConvertFromString(jstring, &result);
     json_object_put(obj);

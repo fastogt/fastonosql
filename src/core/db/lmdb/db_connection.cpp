@@ -40,6 +40,14 @@
 
 namespace fastonosql {
 namespace core {
+namespace {
+MDB_val ConvertToLMDBSlice(const string_key_t& key) {
+  MDB_val mkey;
+  mkey.mv_size = key.size();
+  mkey.mv_data = const_cast<char*>(key.data());
+  return mkey;
+}
+}
 namespace lmdb {
 struct lmdb {
   MDB_env* env;
@@ -219,14 +227,12 @@ common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) 
   return common::Error();
 }
 
-common::Error DBConnection::SetInner(const std::string& key, const std::string& value) {
+common::Error DBConnection::SetInner(string_key_t key, const std::string& value) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  MDB_val mkey;
-  mkey.mv_size = key.size();
-  mkey.mv_data = const_cast<char*>(key.c_str());
+  MDB_val key_slice = ConvertToLMDBSlice(key);
   MDB_val mval;
   mval.mv_size = value.size();
   mval.mv_data = const_cast<char*>(value.c_str());
@@ -235,7 +241,7 @@ common::Error DBConnection::SetInner(const std::string& key, const std::string& 
   int env_flags = connection_.config_.env_flags;
   int rc = mdb_txn_begin(connection_.handle_->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn);
   if (rc == LMDB_OK) {
-    rc = mdb_put(txn, connection_.handle_->dbir, &mkey, &mval, 0);
+    rc = mdb_put(txn, connection_.handle_->dbir, &key_slice, &mval, 0);
     if (rc == LMDB_OK) {
       rc = mdb_txn_commit(txn);
     } else {
@@ -251,20 +257,18 @@ common::Error DBConnection::SetInner(const std::string& key, const std::string& 
   return common::Error();
 }
 
-common::Error DBConnection::GetInner(const std::string& key, std::string* ret_val) {
+common::Error DBConnection::GetInner(string_key_t key, std::string* ret_val) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  MDB_val mkey;
-  mkey.mv_size = key.size();
-  mkey.mv_data = const_cast<char*>(key.c_str());
+  MDB_val key_slice = ConvertToLMDBSlice(key);
   MDB_val mval;
 
   MDB_txn* txn = NULL;
   int rc = mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn);
   if (rc == LMDB_OK) {
-    rc = mdb_get(txn, connection_.handle_->dbir, &mkey, &mval);
+    rc = mdb_get(txn, connection_.handle_->dbir, &key_slice, &mval);
   }
   mdb_txn_abort(txn);
 
@@ -277,20 +281,18 @@ common::Error DBConnection::GetInner(const std::string& key, std::string* ret_va
   return common::Error();
 }
 
-common::Error DBConnection::DelInner(const std::string& key) {
+common::Error DBConnection::DelInner(string_key_t key) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  MDB_val mkey;
-  mkey.mv_size = key.size();
-  mkey.mv_data = const_cast<char*>(key.c_str());
+  MDB_val key_slice = ConvertToLMDBSlice(key);
 
   MDB_txn* txn = NULL;
   int env_flags = connection_.config_.env_flags;
   int rc = mdb_txn_begin(connection_.handle_->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn);
   if (rc == LMDB_OK) {
-    rc = mdb_del(txn, connection_.handle_->dbir, &mkey, NULL);
+    rc = mdb_del(txn, connection_.handle_->dbir, &key_slice, NULL);
     if (rc == LMDB_OK) {
       rc = mdb_txn_commit(txn);
     } else {
@@ -467,7 +469,7 @@ common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** 
 
 common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) {
   const NKey cur = key.GetKey();
-  std::string key_str = cur.GetKey();
+  string_key_t key_str = cur.GetKey();
   std::string value_str = key.ValueString();
   common::Error err = SetInner(key_str, value_str);
   if (err && err->IsError()) {
@@ -479,7 +481,7 @@ common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) 
 }
 
 common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
-  std::string key_str = key.GetKey();
+  string_key_t key_str = key.GetKey();
   std::string value_str;
   common::Error err = GetInner(key_str, &value_str);
   if (err && err->IsError()) {
@@ -494,7 +496,7 @@ common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
 common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     NKey key = keys[i];
-    std::string key_str = key.GetKey();
+    string_key_t key_str = key.GetKey();
     common::Error err = DelInner(key_str);
     if (err && err->IsError()) {
       continue;
@@ -507,7 +509,7 @@ common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
 }
 
 common::Error DBConnection::RenameImpl(const NKey& key, const std::string& new_key) {
-  std::string key_str = key.GetKey();
+  string_key_t key_str = key.GetKey();
   std::string value_str;
   common::Error err = GetInner(key_str, &value_str);
   if (err && err->IsError()) {

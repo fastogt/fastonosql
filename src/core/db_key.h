@@ -25,6 +25,7 @@
 #include <vector>  // for vector
 
 #include <common/value.h>  // for Value, Value::Type, etc
+#include <common/string_piece.h>
 
 #define NO_TTL -1
 #define EXPIRED_TTL -2
@@ -38,20 +39,23 @@ COMPILE_ASSERT(std::numeric_limits<ttl_t>::max() >= NO_TTL && NO_TTL >= std::num
 COMPILE_ASSERT(std::numeric_limits<ttl_t>::max() >= EXPIRED_TTL && EXPIRED_TTL >= std::numeric_limits<ttl_t>::min(),
                "EXPIRED_TTL define must be in ttl type range");
 
+typedef std::string string_key_t;
+typedef string_key_t key_t;
+
 class KeyInfo {
  public:
-  typedef std::vector<std::string> splited_namespaces_t;
-  KeyInfo(const splited_namespaces_t& splited_namespaces_and_key, const std::string& ns_separator);
+  typedef std::vector<string_key_t> splited_namespaces_t;
+  KeyInfo(const splited_namespaces_t& splited_namespaces_and_key, string_key_t ns_separator);
 
-  std::string GetKey() const;
+  key_t GetKey() const;
   bool HasNamespace() const;
-  std::string GetNspace() const;
-  std::string JoinNamespace(size_t pos) const;
+  string_key_t GetNspace() const;
+  string_key_t JoinNamespace(size_t pos) const;
   size_t GetNspaceSize() const;
 
  private:
   splited_namespaces_t splited_namespaces_and_key_;
-  std::string ns_separator_;
+  string_key_t ns_separator_;
 };
 
 class NKey {
@@ -60,8 +64,8 @@ class NKey {
   explicit NKey(const std::string& key, ttl_t ttl_sec = NO_TTL);
   KeyInfo GetInfo(const std::string& ns_separator) const;
 
-  std::string GetKey() const;
-  void SetKey(const std::string& key);
+  key_t GetKey() const;
+  void SetKey(key_t key);
 
   ttl_t GetTTL() const;
   void SetTTL(ttl_t ttl);
@@ -69,7 +73,7 @@ class NKey {
   bool Equals(const NKey& other) const;
 
  private:
-  std::string key_;
+  key_t key_;
   ttl_t ttl_;
 };
 

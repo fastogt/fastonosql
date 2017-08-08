@@ -136,13 +136,13 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   common::Error Qclear(const std::string& name, int64_t* ret) WARN_UNUSED_RESULT;
   common::Error DBsize(int64_t* size) WARN_UNUSED_RESULT;
 
-  common::Error Expire(const std::string& key, ttl_t ttl) WARN_UNUSED_RESULT;
-  common::Error TTL(const std::string& key, ttl_t* ttl) WARN_UNUSED_RESULT;
+  common::Error Expire(string_key_t key, ttl_t ttl) WARN_UNUSED_RESULT;
+  common::Error TTL(string_key_t key, ttl_t* ttl) WARN_UNUSED_RESULT;
 
  private:
-  common::Error SetInner(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
-  common::Error GetInner(const std::string& key, std::string* ret_val) WARN_UNUSED_RESULT;
-  common::Error DelInner(const std::string& key) WARN_UNUSED_RESULT;
+  common::Error SetInner(string_key_t key, const std::string& value) WARN_UNUSED_RESULT;
+  common::Error GetInner(string_key_t key, std::string* ret_val) WARN_UNUSED_RESULT;
+  common::Error DelInner(string_key_t key) WARN_UNUSED_RESULT;
 
   virtual common::Error ScanImpl(uint64_t cursor_in,
                                  const std::string& pattern,
