@@ -124,18 +124,17 @@ common::Error CommandTranslator::PublishCommandImpl(const NDbPSChannel& channel,
   UNUSED(message);
   UNUSED(cmdstring);
 
-  std::string errorMsg =
-      common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported publish command for SSDB.");
-  return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
+  static const std::string error_msg = "Sorry, but now " PROJECT_NAME_TITLE " not supported publish command for SSDB.";
+  return common::make_error_value(error_msg, common::ErrorValue::E_ERROR);
 }
 
 common::Error CommandTranslator::SubscribeCommandImpl(const NDbPSChannel& channel, std::string* cmdstring) const {
   UNUSED(channel);
   UNUSED(cmdstring);
 
-  std::string errorMsg =
-      common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported subscribe command for SSDB.");
-  return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
+  static const std::string error_msg =
+      "Sorry, but now " PROJECT_NAME_TITLE " not supported subscribe command for SSDB.";
+  return common::make_error_value(error_msg, common::ErrorValue::E_ERROR);
 }
 
 }  // namespace ssdb
