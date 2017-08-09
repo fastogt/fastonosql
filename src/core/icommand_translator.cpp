@@ -24,6 +24,7 @@ extern "C" {
 
 #include <common/sprintf.h>
 #include <common/string_util.h>
+#include <common/utils.h>
 
 #include "core/types.h"
 
@@ -129,12 +130,17 @@ common::Error ICommandTranslator::LoadKeyTTLCommand(const NKey& key, std::string
 }
 
 bool ICommandTranslator::IsLoadKeyCommand(const std::string& cmd, std::string* key) const {
-  if (cmd.empty() || !key) {
+  if (!key) {
+    return false;
+  }
+
+  const char* ccmd = common::utils::c_strornull(cmd);
+  if (!ccmd) {
     return false;
   }
 
   int argc;
-  sds* argv = sdssplitargslong(cmd.c_str(), &argc);
+  sds* argv = sdssplitargslong(ccmd, &argc);
   if (!argv) {
     return false;
   }
@@ -239,12 +245,13 @@ common::Error ICommandTranslator::TestCommandArgs(const CommandHolder* cmd,
 }
 
 common::Error ICommandTranslator::TestCommandLine(const std::string& cmd) const {
-  if (cmd.empty()) {
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+  const char* ccmd = common::utils::c_strornull(cmd);
+  if (!ccmd) {
+    return false;
   }
 
   int argc;
-  sds* argv = sdssplitargslong(cmd.c_str(), &argc);
+  sds* argv = sdssplitargslong(ccmd, &argc);
   if (!argv) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
