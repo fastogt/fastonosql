@@ -120,7 +120,7 @@ void IConnectionSettings::SetLoggingMsTimeInterval(int mstime) {
 }
 
 std::string IConnectionSettings::ToString() const {
-  return common::MemSPrintf("%d,%s,%" PRIu32, type_, connection_path_.ToString(), msinterval_);
+  return common::MemSPrintf("%u,%s,%" PRIu32, static_cast<unsigned char>(type_), connection_path_.ToString(), msinterval_);
 }
 
 IConnectionSettingsBase::IConnectionSettingsBase(const connection_path_t& connectionPath, core::connectionTypes type)

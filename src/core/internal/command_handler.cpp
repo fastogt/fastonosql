@@ -27,7 +27,6 @@ extern "C" {
 #include "sds.h"
 }
 
-#include <common/sprintf.h>  // for MemSPrintf
 #include <common/utils.h>
 #include <common/value.h>  // for ErrorValue, etc
 
