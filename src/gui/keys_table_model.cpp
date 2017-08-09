@@ -42,7 +42,8 @@ KeyTableItem::KeyTableItem(const core::NDbKValue& dbv) : dbv_(dbv) {}
 QString KeyTableItem::keyString() const {
   QString qkey;
   const core::NKey key = dbv_.GetKey();
-  common::ConvertFromString(key.GetKey(), &qkey);
+  const core::key_t raw_key = key.GetKey();
+  common::ConvertFromString(raw_key.ToString(), &qkey);
   return qkey;
 }
 

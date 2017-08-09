@@ -219,7 +219,11 @@ common::Error ApiTraits<CDBConnection>::Set(internal::CommandHandler* handler,
                                             FastoObject* out) {
   UNUSED(argc);
 
-  NKey key(argv[0]);
+  common::ByteWriter wr;
+  wr << argv[0];
+  key_t raw_key(wr);
+  NKey key(raw_key);
+
   NValue string_val(common::Value::CreateStringValue(argv[1]));
   NDbKValue kv(key, string_val);
 
@@ -243,7 +247,11 @@ common::Error ApiTraits<CDBConnection>::Get(internal::CommandHandler* handler,
                                             FastoObject* out) {
   UNUSED(argc);
 
-  NKey key(argv[0]);
+  common::ByteWriter wr;
+  wr << argv[0];
+  key_t raw_key(wr);
+  NKey key(raw_key);
+
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
   NDbKValue key_loaded;
   common::Error err = cdb->Get(key, &key_loaded);
@@ -265,7 +273,12 @@ common::Error ApiTraits<CDBConnection>::Delete(internal::CommandHandler* handler
                                                FastoObject* out) {
   NKeys keysdel;
   for (int i = 0; i < argc; ++i) {
-    keysdel.push_back(NKey(argv[i]));
+    common::ByteWriter wr;
+    wr << argv[i];
+    key_t raw_key(wr);
+    NKey key(raw_key);
+
+    keysdel.push_back(key);
   }
 
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
@@ -288,7 +301,11 @@ common::Error ApiTraits<CDBConnection>::Rename(internal::CommandHandler* handler
                                                FastoObject* out) {
   UNUSED(argc);
 
-  NKey key(argv[0]);
+  common::ByteWriter wr;
+  wr << argv[0];
+  key_t raw_key(wr);
+  NKey key(raw_key);
+
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
   common::Error err = cdb->Rename(key, argv[1]);
   if (err && err->IsError()) {
@@ -310,7 +327,11 @@ common::Error ApiTraits<CDBConnection>::SetTTL(internal::CommandHandler* handler
   UNUSED(argc);
 
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
-  NKey key(argv[0]);
+  common::ByteWriter wr;
+  wr << argv[0];
+  key_t raw_key(wr);
+  NKey key(raw_key);
+
   ttl_t ttl;
   if (!common::ConvertFromString(argv[1], &ttl)) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
@@ -336,7 +357,11 @@ common::Error ApiTraits<CDBConnection>::GetTTL(internal::CommandHandler* handler
   UNUSED(argc);
 
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
-  NKey key(argv[0]);
+  common::ByteWriter wr;
+  wr << argv[0];
+  key_t raw_key(wr);
+  NKey key(raw_key);
+
   ttl_t ttl;
   common::Error err = cdb->GetTTL(key, &ttl);
   if (err && err->IsError()) {

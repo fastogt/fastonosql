@@ -36,7 +36,7 @@ CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands)
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, std::string* cmdstring) const {
   const NKey cur = key.GetKey();
-  string_key_t key_str = cur.GetKey();
+  key_t key_str = cur.GetKey();
   std::string value_str = key.ValueString();
   *cmdstring = common::MemSPrintf(ROCKSDB_SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
   return common::Error();
@@ -47,13 +47,13 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
                                                     std::string* cmdstring) const {
   UNUSED(type);
 
-  string_key_t key_str = key.GetKey();
+  key_t key_str = key.GetKey();
   *cmdstring = common::MemSPrintf(ROCKSDB_GET_KEY_PATTERN_1ARGS_S, key_str);
   return common::Error();
 }
 
 common::Error CommandTranslator::DeleteKeyCommandImpl(const NKey& key, std::string* cmdstring) const {
-  string_key_t key_str = key.GetKey();
+  key_t key_str = key.GetKey();
   *cmdstring = common::MemSPrintf(ROCKSDB_DELETE_KEY_PATTERN_1ARGS_S, key_str);
   return common::Error();
 }
@@ -61,7 +61,7 @@ common::Error CommandTranslator::DeleteKeyCommandImpl(const NKey& key, std::stri
 common::Error CommandTranslator::RenameKeyCommandImpl(const NKey& key,
                                                       const std::string& new_name,
                                                       std::string* cmdstring) const {
-  string_key_t key_str = key.GetKey();
+  key_t key_str = key.GetKey();
   *cmdstring = common::MemSPrintf(ROCKSDB_RENAME_KEY_PATTERN_2ARGS_SS, key_str, new_name);
   return common::Error();
 }

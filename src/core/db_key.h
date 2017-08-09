@@ -25,6 +25,7 @@
 #include <vector>  // for vector
 
 #include <common/value.h>  // for Value, Value::Type, etc
+#include <common/byte_writer.h>
 
 #define NO_TTL -1
 #define EXPIRED_TTL -2
@@ -38,7 +39,46 @@ COMPILE_ASSERT(std::numeric_limits<ttl_t>::max() >= NO_TTL && NO_TTL >= std::num
 COMPILE_ASSERT(std::numeric_limits<ttl_t>::max() >= EXPIRED_TTL && EXPIRED_TTL >= std::numeric_limits<ttl_t>::min(),
                "EXPIRED_TTL define must be in ttl type range");
 
+bool IsBinaryKey(const std::string& key);
+
 typedef std::string string_key_t;
+
+class KeyString {
+ public:
+  enum KeyType { TEXT_KEY, BINARY_KEY };
+  KeyString();
+  explicit KeyString(const common::ByteWriter& key_data);
+
+  KeyType GetType() const;
+
+  string_key_t GetKey() const;
+  void SetKey(const common::ByteWriter& key_data);
+
+  const string_key_t::value_type* GetKeyData() const;
+  string_key_t::size_type GetKeySize() const;
+
+  std::string ToString() const;  // human readable string
+
+  bool Equals(const KeyString& other) const;
+
+  static KeyString MakeKeyString(string_key_t str);
+
+ private:
+  void SetKey(string_key_t new_key);
+
+  string_key_t key_;
+  KeyType type_;
+};
+
+inline bool operator==(const KeyString& r, const KeyString& l) {
+  return r.Equals(l);
+}
+
+inline bool operator!=(const KeyString& r, const KeyString& l) {
+  return !r.Equals(l);
+}
+
+typedef KeyString key_t;
 
 class KeyInfo {
  public:
@@ -59,11 +99,11 @@ class KeyInfo {
 class NKey {
  public:
   NKey();
-  explicit NKey(string_key_t key, ttl_t ttl_sec = NO_TTL);
+  explicit NKey(key_t key, ttl_t ttl_sec = NO_TTL);
   KeyInfo GetInfo(string_key_t ns_separator) const;
 
-  string_key_t GetKey() const;
-  void SetKey(string_key_t key);
+  key_t GetKey() const;
+  void SetKey(key_t key);
 
   ttl_t GetTTL() const;
   void SetTTL(ttl_t ttl);
@@ -71,7 +111,7 @@ class NKey {
   bool Equals(const NKey& other) const;
 
  private:
-  string_key_t key_;
+  key_t key_;
   ttl_t ttl_;
 };
 

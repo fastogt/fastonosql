@@ -129,7 +129,7 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
   virtual common::Error DeleteImpl(const NKeys& keys, NKeys* deleted_keys) = 0;
   virtual common::Error SetImpl(const NDbKValue& key, NDbKValue* added_key) = 0;
   virtual common::Error GetImpl(const NKey& key, NDbKValue* loaded_key) = 0;
-  virtual common::Error RenameImpl(const NKey& key, const std::string& new_key) = 0;
+  virtual common::Error RenameImpl(const NKey& key, string_key_t new_key) = 0;
   virtual common::Error SetTTLImpl(const NKey& key, ttl_t ttl) = 0;
   virtual common::Error GetTTLImpl(const NKey& key, ttl_t* ttl) = 0;
   virtual common::Error QuitImpl() = 0;

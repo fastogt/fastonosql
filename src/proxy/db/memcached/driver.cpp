@@ -196,10 +196,13 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
       }
 
       for (size_t i = 0; i < ar->GetSize(); ++i) {
-        std::string key;
-        if (ar->GetString(i, &key)) {
+        std::string key_str;
+        if (ar->GetString(i, &key_str)) {
+          core::key_t key = core::key_t::MakeKeyString(key_str);
           core::NKey k(key);
-          core::FastoObjectCommandIPtr cmd_ttl = CreateCommandFast(common::MemSPrintf("TTL %s", key), core::C_INNER);
+          common::ByteWriter wr;
+          wr << "TTL " << key.GetKey();
+          core::FastoObjectCommandIPtr cmd_ttl = CreateCommandFast(wr.GetString(), core::C_INNER);
           LOG_COMMAND(cmd_ttl);
           core::ttl_t ttl = NO_TTL;
           common::Error err = impl_->TTL(key, &ttl);

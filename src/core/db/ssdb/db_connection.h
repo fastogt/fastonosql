@@ -136,13 +136,13 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   common::Error Qclear(const std::string& name, int64_t* ret) WARN_UNUSED_RESULT;
   common::Error DBsize(int64_t* size) WARN_UNUSED_RESULT;
 
-  common::Error Expire(string_key_t key, ttl_t ttl) WARN_UNUSED_RESULT;
-  common::Error TTL(string_key_t key, ttl_t* ttl) WARN_UNUSED_RESULT;
+  common::Error Expire(key_t key, ttl_t ttl) WARN_UNUSED_RESULT;
+  common::Error TTL(key_t key, ttl_t* ttl) WARN_UNUSED_RESULT;
 
  private:
-  common::Error SetInner(string_key_t key, const std::string& value) WARN_UNUSED_RESULT;
-  common::Error GetInner(string_key_t key, std::string* ret_val) WARN_UNUSED_RESULT;
-  common::Error DelInner(string_key_t key) WARN_UNUSED_RESULT;
+  common::Error SetInner(key_t key, const std::string& value) WARN_UNUSED_RESULT;
+  common::Error GetInner(key_t key, std::string* ret_val) WARN_UNUSED_RESULT;
+  common::Error DelInner(key_t key) WARN_UNUSED_RESULT;
 
   virtual common::Error ScanImpl(uint64_t cursor_in,
                                  const std::string& pattern,
@@ -159,7 +159,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   virtual common::Error SetImpl(const NDbKValue& key, NDbKValue* added_key) override;
   virtual common::Error GetImpl(const NKey& key, NDbKValue* loaded_key) override;
   virtual common::Error DeleteImpl(const NKeys& keys, NKeys* deleted_keys) override;
-  virtual common::Error RenameImpl(const NKey& key, const std::string& new_key) override;
+  virtual common::Error RenameImpl(const NKey& key, string_key_t new_key) override;
   virtual common::Error SetTTLImpl(const NKey& key, ttl_t ttl) override;
   virtual common::Error GetTTLImpl(const NKey& key, ttl_t* ttl) override;
   virtual common::Error QuitImpl() override;
