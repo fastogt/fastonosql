@@ -60,17 +60,19 @@ namespace gui {
 namespace {
 
 FastoCommonItem* createItem(common::qt::gui::TreeItem* parent,
-                            const std::string& key,
+                            core::string_key_t key,
                             bool readOnly,
                             core::FastoObject* item) {
   core::NValue value = item->Value();
-  core::NDbKValue nkey(core::NKey(key), value);
+  core::key_t raw_key = core::key_t::MakeKeyString(key);
+  core::NDbKValue nkey(core::NKey(raw_key), value);
   return new FastoCommonItem(nkey, item->Delimiter(), readOnly, parent, item);
 }
 
 FastoCommonItem* createRootItem(core::FastoObject* item) {
   core::NValue value = item->Value();
-  core::NDbKValue nkey(core::NKey(std::string()), value);
+  core::key_t raw_key = core::key_t::MakeKeyString(std::string());
+  core::NDbKValue nkey(core::NKey(raw_key), value);
   return new FastoCommonItem(nkey, item->Delimiter(), true, nullptr, item);
 }
 

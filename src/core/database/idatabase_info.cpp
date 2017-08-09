@@ -69,7 +69,7 @@ void IDataBaseInfo::ClearKeys() {
   keys_.clear();
 }
 
-bool IDataBaseInfo::RenameKey(const NKey& okey, const std::string& new_name) {
+bool IDataBaseInfo::RenameKey(const NKey& okey, const key_t& new_name) {
   for (auto& kv : keys_) {
     NKey cur_key = kv.GetKey();
     if (cur_key.GetKey() == okey.GetKey()) {

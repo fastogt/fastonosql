@@ -21,12 +21,10 @@
 #include <common/macros.h>   // for UNUSED
 #include <common/sprintf.h>  // for MemSPrintf
 
-#define LEVELDB_COMMONTYPE_GET_KEY_COMMAND COMMONTYPE_GET_KEY_COMMAND
-
-#define LEVELDB_SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
-#define LEVELDB_GET_KEY_PATTERN_1ARGS_S LEVELDB_COMMONTYPE_GET_KEY_COMMAND " %s"
-#define LEVELDB_RENAME_KEY_PATTERN_2ARGS_SS "RENAME %s %s"
-#define LEVELDB_DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
+#define LEVELDB_GET_KEY_COMMAND COMMONTYPE_GET_KEY_COMMAND
+#define LEVELDB_SET_KEY_COMMAND COMMONTYPE_SET_KEY_COMMAND
+#define LEVELDB_RENAME_KEY_COMMAND "RENAME"
+#define LEVELDB_DELETE_KEY_COMMAND "DEL"
 
 namespace fastonosql {
 namespace core {
@@ -36,9 +34,11 @@ CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands)
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, std::string* cmdstring) const {
   const NKey cur = key.GetKey();
-  string_key_t key_str = cur.GetKey();
+  key_t key_str = cur.GetKey();
   std::string value_str = key.ValueString();
-  *cmdstring = common::MemSPrintf(LEVELDB_SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
+  string_byte_writer_t wr;
+  wr << LEVELDB_SET_KEY_COMMAND << " " << key_str << " " << value_str;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
@@ -47,22 +47,28 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
                                                     std::string* cmdstring) const {
   UNUSED(type);
 
-  string_key_t key_str = key.GetKey();
-  *cmdstring = common::MemSPrintf(LEVELDB_GET_KEY_PATTERN_1ARGS_S, key_str);
+  key_t key_str = key.GetKey();
+  string_byte_writer_t wr;
+  wr << LEVELDB_GET_KEY_COMMAND << " " << key_str;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
 common::Error CommandTranslator::DeleteKeyCommandImpl(const NKey& key, std::string* cmdstring) const {
-  string_key_t key_str = key.GetKey();
-  *cmdstring = common::MemSPrintf(LEVELDB_DELETE_KEY_PATTERN_1ARGS_S, key_str);
+  key_t key_str = key.GetKey();
+  string_byte_writer_t wr;
+  wr << LEVELDB_DELETE_KEY_COMMAND << " " << key_str;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
 common::Error CommandTranslator::RenameKeyCommandImpl(const NKey& key,
                                                       const std::string& new_name,
                                                       std::string* cmdstring) const {
-  string_key_t key_str = key.GetKey();
-  *cmdstring = common::MemSPrintf(LEVELDB_RENAME_KEY_PATTERN_2ARGS_SS, key_str, new_name);
+  key_t key_str = key.GetKey();
+  string_byte_writer_t wr;
+  wr << LEVELDB_RENAME_KEY_COMMAND << " " << key_str << " " << new_name;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
@@ -86,7 +92,7 @@ common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key, std::str
 }
 
 bool CommandTranslator::IsLoadKeyCommandImpl(const CommandInfo& cmd) const {
-  return cmd.IsEqualName(LEVELDB_COMMONTYPE_GET_KEY_COMMAND);
+  return cmd.IsEqualName(LEVELDB_GET_KEY_COMMAND);
 }
 
 common::Error CommandTranslator::PublishCommandImpl(const NDbPSChannel& channel,

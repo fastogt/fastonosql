@@ -567,13 +567,13 @@ void IServer::KeyLoad(core::NDbKValue key) {
   }
 }
 
-void IServer::KeyRename(core::NKey key, std::string new_name) {
+void IServer::KeyRename(core::NKey key, core::string_key_t new_name) {
   database_t cdb = CurrentDatabaseInfo();
   if (!cdb) {
     return;
   }
 
-  if (cdb->RenameKey(key, new_name)) {
+  if (cdb->RenameKey(key, core::key_t::MakeKeyString(new_name))) {
     emit KeyRenamed(cdb, key, new_name);
   }
 }

@@ -365,7 +365,8 @@ void ExplorerKeyItem::setKey(const core::NKey& key) {
 QString ExplorerKeyItem::name() const {
   QString qname;
   const core::NKey key = dbv_.GetKey();
-  common::ConvertFromString(key.GetKey(), &qname);
+  const core::key_t raw_key = key.GetKey();
+  common::ConvertFromString(raw_key.ToString(), &qname);
   return qname;
 }
 

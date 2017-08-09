@@ -20,35 +20,26 @@
 
 #include <common/sprintf.h>
 
-#define REDIS_SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
-#define REDIS_SET_KEY_LIST_PATTERN_2ARGS_SS "LPUSH %s %s"
-#define REDIS_SET_KEY_SET_PATTERN_2ARGS_SS "SADD %s %s"
-#define REDIS_SET_KEY_ZSET_PATTERN_2ARGS_SS "ZADD %s %s"
-#define REDIS_SET_KEY_HASHM_PATTERN_2ARGS_SS "HMSET %s %s"
+#define REDIS_SET_KEY_COMMAND COMMONTYPE_SET_KEY_COMMAND
+#define REDIS_SET_KEY_ARRAY_COMMAND "LPUSH"
+#define REDIS_SET_KEY_SET_COMMAND "SADD"
+#define REDIS_SET_KEY_ZSET_COMMAND "ZADD"
+#define REDIS_SET_KEY_HASH_COMMAND "HMSET"
 
-#define REDIS_COMMONTYPE_GET_KEY_COMMAND COMMONTYPE_GET_KEY_COMMAND
-#define REDIS_LISTTYPE_GET_KEY_COMMAND "LRANGE"
-#define REDIS_SETTYPE_GET_KEY_COMMAND "SMEMBERS"
-#define REDIS_ZSETTYPE_GET_KEY_COMMAND "ZRANGE"
-#define REDIS_HASHTYPE_GET_KEY_COMMAND "HGETALL"
+#define REDIS_GET_KEY_COMMAND COMMONTYPE_GET_KEY_COMMAND
+#define REDIS_GET_KEY_ARRAY_COMMAND "LRANGE"
+#define REDIS_GET_KEY_SET_COMMAND "SMEMBERS"
+#define REDIS_GET_KEY_ZSET_COMMAND "ZRANGE"
+#define REDIS_GET_KEY_HASH_COMMAND "HGETALL"
 
-#define REDIS_COMMONTYPE_GET_KEY_COMMAND_PATTERN_1ARGS_S REDIS_COMMONTYPE_GET_KEY_COMMAND " %s"
-#define REDIS_LISTTYPE_GET_KEY_COMMAND_PATTERN_1ARGS_S REDIS_LISTTYPE_GET_KEY_COMMAND " %s 0 -1"
-#define REDIS_SETTYPE_GET_KEY_COMMAND_PATTERN_1ARGS_S REDIS_SETTYPE_GET_KEY_COMMAND " %s"
-#define REDIS_ZSETTYPE_GET_KEY_COMMAND_PATTERN_1ARGS_S REDIS_ZSETTYPE_GET_KEY_COMMAND " %s 0 -1 WITHSCORES"
-#define REDIS_HASHTYPE_GET_KEY_COMMAND_PATTERN_1ARGS_S REDIS_HASHTYPE_GET_KEY_COMMAND " %s"
+#define REDIS_DELETE_KEY_COMMAND "DEL"
+#define REDIS_RENAME_KEY_COMMAND "RENAME"
+#define REDIS_CHANGE_TTL_COMMAND "EXPIRE"
+#define REDIS_PERSIST_KEY_COMMAND "PERSIST"
 
-#define REDIS_DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
-
-#define REDIS_RENAME_KEY_PATTERN_2ARGS_SS "RENAME %s %s"
-
-#define REDIS_CHANGE_TTL_2ARGS_SI "EXPIRE %s %d"
-#define REDIS_PERSIST_KEY_1ARGS_S "PERSIST %s"
-
-#define REDIS_GET_TTL_1ARGS_S "TTL %s"
-
-#define REDIS_PUBLISH_2ARGS_SS "PUBLISH %s %s"
-#define REDIS_SUBSCRIBE_1ARGS_S "SUBSCRIBE %s"
+#define REDIS_GET_TTL_COMMAND "TTL"
+#define REDIS_PUBLISH_COMMAND "PUBLISH"
+#define REDIS_SUBSCRIBE_COMMAND "SUBSCRIBE"
 
 namespace fastonosql {
 namespace core {
@@ -57,98 +48,108 @@ namespace redis {
 CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands) : ICommandTranslator(commands) {}
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, std::string* cmdstring) const {
-  std::string pattern_result;
   const NKey cur = key.GetKey();
-  string_key_t key_str = cur.GetKey();
+  key_t key_str = cur.GetKey();
   std::string value_str = key.ValueString();
+  string_byte_writer_t wr;
   common::Value::Type type = key.GetType();
   if (type == common::Value::TYPE_ARRAY) {
-    pattern_result = common::MemSPrintf(REDIS_SET_KEY_LIST_PATTERN_2ARGS_SS, key_str, value_str);
+    wr << REDIS_SET_KEY_ARRAY_COMMAND << " " << key_str << " " << value_str;
   } else if (type == common::Value::TYPE_SET) {
-    pattern_result = common::MemSPrintf(REDIS_SET_KEY_SET_PATTERN_2ARGS_SS, key_str, value_str);
+    wr << REDIS_SET_KEY_SET_COMMAND << " " << key_str << " " << value_str;
   } else if (type == common::Value::TYPE_ZSET) {
-    pattern_result = common::MemSPrintf(REDIS_SET_KEY_ZSET_PATTERN_2ARGS_SS, key_str, value_str);
+    wr << REDIS_SET_KEY_ZSET_COMMAND << " " << key_str << " " << value_str;
   } else if (type == common::Value::TYPE_HASH) {
-    pattern_result = common::MemSPrintf(REDIS_SET_KEY_HASHM_PATTERN_2ARGS_SS, key_str, value_str);
+    wr << REDIS_SET_KEY_HASH_COMMAND << " " << key_str << " " << value_str;
   } else {
-    pattern_result = common::MemSPrintf(REDIS_SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
+    wr << REDIS_SET_KEY_COMMAND << " " << key_str << " " << value_str;
   }
 
-  *cmdstring = pattern_result;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
 common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
                                                     common::Value::Type type,
                                                     std::string* cmdstring) const {
-  std::string patternResult;
-  string_key_t key_str = key.GetKey();
+  key_t key_str = key.GetKey();
+  string_byte_writer_t wr;
   if (type == common::Value::TYPE_ARRAY) {
-    patternResult = common::MemSPrintf(REDIS_LISTTYPE_GET_KEY_COMMAND_PATTERN_1ARGS_S, key_str);
+    wr << REDIS_GET_KEY_ARRAY_COMMAND << " " << key_str << " 0 -1";
   } else if (type == common::Value::TYPE_SET) {
-    patternResult = common::MemSPrintf(REDIS_SETTYPE_GET_KEY_COMMAND_PATTERN_1ARGS_S, key_str);
+    wr << REDIS_GET_KEY_SET_COMMAND << " " << key_str;
   } else if (type == common::Value::TYPE_ZSET) {
-    patternResult = common::MemSPrintf(REDIS_ZSETTYPE_GET_KEY_COMMAND_PATTERN_1ARGS_S, key_str);
+    wr << REDIS_GET_KEY_ZSET_COMMAND << " " << key_str << " 0 -1 WITHSCORES";
   } else if (type == common::Value::TYPE_HASH) {
-    patternResult = common::MemSPrintf(REDIS_HASHTYPE_GET_KEY_COMMAND_PATTERN_1ARGS_S, key_str);
+    wr << REDIS_GET_KEY_HASH_COMMAND << " " << key_str;
   } else {
-    patternResult = common::MemSPrintf(REDIS_COMMONTYPE_GET_KEY_COMMAND_PATTERN_1ARGS_S, key_str);
+    wr << REDIS_GET_KEY_COMMAND << " " << key_str;
   }
 
-  *cmdstring = patternResult;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
 common::Error CommandTranslator::DeleteKeyCommandImpl(const NKey& key, std::string* cmdstring) const {
-  string_key_t key_str = key.GetKey();
-  *cmdstring = common::MemSPrintf(REDIS_DELETE_KEY_PATTERN_1ARGS_S, key_str);
+  key_t key_str = key.GetKey();
+  string_byte_writer_t wr;
+  wr << REDIS_DELETE_KEY_COMMAND << " " << key_str;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
 common::Error CommandTranslator::RenameKeyCommandImpl(const NKey& key,
                                                       const std::string& new_name,
                                                       std::string* cmdstring) const {
-  string_key_t key_str = key.GetKey();
-  *cmdstring = common::MemSPrintf(REDIS_RENAME_KEY_PATTERN_2ARGS_SS, key_str, new_name);
+  key_t key_str = key.GetKey();
+  string_byte_writer_t wr;
+  wr << REDIS_RENAME_KEY_COMMAND << " " << key_str << " " << new_name;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
 common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key, ttl_t ttl, std::string* cmdstring) const {
-  std::string patternResult;
-  string_key_t key_str = key.GetKey();
+  key_t key_str = key.GetKey();
+  string_byte_writer_t wr;
   if (ttl == NO_TTL) {
-    patternResult = common::MemSPrintf(REDIS_PERSIST_KEY_1ARGS_S, key_str);
+    wr << REDIS_PERSIST_KEY_COMMAND << " " << key_str;
   } else {
-    patternResult = common::MemSPrintf(REDIS_CHANGE_TTL_2ARGS_SI, key_str, ttl);
+    wr << REDIS_CHANGE_TTL_COMMAND << " " << key_str << " " << ttl;
   }
 
-  *cmdstring = patternResult;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
 common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key, std::string* cmdstring) const {
-  string_key_t key_str = key.GetKey();
-  *cmdstring = common::MemSPrintf(REDIS_GET_TTL_1ARGS_S, key_str);
+  key_t key_str = key.GetKey();
+  string_byte_writer_t wr;
+  wr << REDIS_GET_TTL_COMMAND << " " << key_str;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
 bool CommandTranslator::IsLoadKeyCommandImpl(const CommandInfo& cmd) const {
-  return cmd.IsEqualName(REDIS_COMMONTYPE_GET_KEY_COMMAND) || cmd.IsEqualName(REDIS_LISTTYPE_GET_KEY_COMMAND) ||
-         cmd.IsEqualName(REDIS_SETTYPE_GET_KEY_COMMAND) || cmd.IsEqualName(REDIS_ZSETTYPE_GET_KEY_COMMAND) ||
-         cmd.IsEqualName(REDIS_HASHTYPE_GET_KEY_COMMAND);
+  return cmd.IsEqualName(REDIS_GET_KEY_COMMAND) || cmd.IsEqualName(REDIS_GET_KEY_ARRAY_COMMAND) ||
+         cmd.IsEqualName(REDIS_GET_KEY_SET_COMMAND) || cmd.IsEqualName(REDIS_GET_KEY_ZSET_COMMAND) ||
+         cmd.IsEqualName(REDIS_GET_KEY_HASH_COMMAND);
 }
 
 common::Error CommandTranslator::PublishCommandImpl(const NDbPSChannel& channel,
                                                     const std::string& message,
                                                     std::string* cmdstring) const {
   std::string channel_str = channel.Name();
-  *cmdstring = common::MemSPrintf(REDIS_PUBLISH_2ARGS_SS, channel_str, message);
+  string_byte_writer_t wr;
+  wr << REDIS_PUBLISH_COMMAND << " " << channel_str << " " << message;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
 common::Error CommandTranslator::SubscribeCommandImpl(const NDbPSChannel& channel, std::string* cmdstring) const {
   std::string channel_str = channel.Name();
-  *cmdstring = common::MemSPrintf(REDIS_SUBSCRIBE_1ARGS_S, channel_str);
+  string_byte_writer_t wr;
+  wr << REDIS_SUBSCRIBE_COMMAND << " " << channel_str;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 

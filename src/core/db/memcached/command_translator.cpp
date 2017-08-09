@@ -22,14 +22,12 @@
 
 #include "core/global.h"
 
-#define MEMCACHED_COMMONTYPE_GET_KEY_COMMAND COMMONTYPE_GET_KEY_COMMAND
-
-#define MEMCACHED_SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
-#define MEMCACHED_GET_KEY_PATTERN_1ARGS_S MEMCACHED_COMMONTYPE_GET_KEY_COMMAND " %s"
-#define MEMCACHED_DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
-#define MEMCACHED_RENAME_KEY_PATTERN_2ARGS_SS "RENAME %s %s"
-#define MEMCACHED_CHANGE_TTL_2ARGS_SI "EXPIRE %s %d"
-#define MEMCACHED_GET_TTL_1ARGS_S "TTL %s"
+#define MEMCACHED_GET_KEY_COMMAND COMMONTYPE_GET_KEY_COMMAND
+#define MEMCACHED_SET_KEY_COMMAND COMMONTYPE_SET_KEY_COMMAND
+#define MEMCACHED_DELETE_KEY_COMMAND "DEL"
+#define MEMCACHED_RENAME_KEY_COMMAND "RENAME"
+#define MEMCACHED_CHANGE_TTL_COMMAND "EXPIRE"
+#define MEMCACHED_GET_TTL_COMMAND "TTL"
 
 namespace fastonosql {
 namespace core {
@@ -39,9 +37,11 @@ CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands)
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, std::string* cmdstring) const {
   const NKey cur = key.GetKey();
-  string_key_t key_str = cur.GetKey();
+  key_t key_str = cur.GetKey();
   std::string value_str = key.ValueString();
-  *cmdstring = common::MemSPrintf(MEMCACHED_SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
+  string_byte_writer_t wr;
+  wr << MEMCACHED_SET_KEY_COMMAND << " " << key_str << " " << value_str;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
@@ -50,39 +50,49 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
                                                     std::string* cmdstring) const {
   UNUSED(type);
 
-  string_key_t key_str = key.GetKey();
-  *cmdstring = common::MemSPrintf(MEMCACHED_GET_KEY_PATTERN_1ARGS_S, key_str);
+  key_t key_str = key.GetKey();
+  string_byte_writer_t wr;
+  wr << MEMCACHED_GET_KEY_COMMAND << " " << key_str;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
 common::Error CommandTranslator::DeleteKeyCommandImpl(const NKey& key, std::string* cmdstring) const {
-  string_key_t key_str = key.GetKey();
-  *cmdstring = common::MemSPrintf(MEMCACHED_DELETE_KEY_PATTERN_1ARGS_S, key_str);
+  key_t key_str = key.GetKey();
+  string_byte_writer_t wr;
+  wr << MEMCACHED_DELETE_KEY_COMMAND << " " << key_str;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
 common::Error CommandTranslator::RenameKeyCommandImpl(const NKey& key,
                                                       const std::string& new_name,
                                                       std::string* cmdstring) const {
-  string_key_t key_str = key.GetKey();
-  *cmdstring = common::MemSPrintf(MEMCACHED_RENAME_KEY_PATTERN_2ARGS_SS, key_str, new_name);
+  key_t key_str = key.GetKey();
+  string_byte_writer_t wr;
+  wr << MEMCACHED_RENAME_KEY_COMMAND << " " << key_str << " " << new_name;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
 common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key, ttl_t ttl, std::string* cmdstring) const {
-  string_key_t key_str = key.GetKey();
-  *cmdstring = common::MemSPrintf(MEMCACHED_CHANGE_TTL_2ARGS_SI, key_str, ttl);
+  key_t key_str = key.GetKey();
+  string_byte_writer_t wr;
+  wr << MEMCACHED_CHANGE_TTL_COMMAND << " " << key_str << " " << ttl;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
 common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key, std::string* cmdstring) const {
-  string_key_t key_str = key.GetKey();
-  *cmdstring = common::MemSPrintf(MEMCACHED_GET_TTL_1ARGS_S, key_str);
+  key_t key_str = key.GetKey();
+  string_byte_writer_t wr;
+  wr << MEMCACHED_GET_TTL_COMMAND << " " << key_str;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
 bool CommandTranslator::IsLoadKeyCommandImpl(const CommandInfo& cmd) const {
-  return cmd.IsEqualName(MEMCACHED_COMMONTYPE_GET_KEY_COMMAND);
+  return cmd.IsEqualName(MEMCACHED_GET_KEY_COMMAND);
 }
 
 common::Error CommandTranslator::PublishCommandImpl(const NDbPSChannel& channel,

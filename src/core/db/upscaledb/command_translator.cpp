@@ -21,11 +21,10 @@
 #include <common/macros.h>  // for UNUSED
 #include <common/sprintf.h>
 
-#define UPSCALEDB_SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
-#define UPSCALEDB_GET_COMMAND "GET"
-#define UPSCALEDB_GET_KEY_PATTERN_1ARGS_S UPSCALEDB_GET_COMMAND " %s"
-#define UPSCALEDB_DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
-#define UPSCALEDB_RENAME_KEY_PATTERN_2ARGS_SS "RENAME %s %s"
+#define UPSCALEDB_SET_KEY_COMMAND COMMONTYPE_SET_KEY_COMMAND
+#define UPSCALEDB_GET_COMMAND COMMONTYPE_GET_KEY_COMMAND
+#define UPSCALEDB_DELETE_KEY_COMMAND "DEL"
+#define UPSCALEDB_RENAME_KEY_COMMAND "RENAME"
 
 namespace fastonosql {
 namespace core {
@@ -35,9 +34,11 @@ CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands)
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, std::string* cmdstring) const {
   const NKey cur = key.GetKey();
-  string_key_t key_str = cur.GetKey();
+  key_t key_str = cur.GetKey();
   std::string value_str = key.ValueString();
-  *cmdstring = common::MemSPrintf(UPSCALEDB_SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
+  string_byte_writer_t wr;
+  wr << UPSCALEDB_SET_KEY_COMMAND << " " << key_str << " " << value_str;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
@@ -46,22 +47,28 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
                                                     std::string* cmdstring) const {
   UNUSED(type);
 
-  string_key_t key_str = key.GetKey();
-  *cmdstring = common::MemSPrintf(UPSCALEDB_GET_KEY_PATTERN_1ARGS_S, key_str);
+  key_t key_str = key.GetKey();
+  string_byte_writer_t wr;
+  wr << UPSCALEDB_GET_COMMAND << " " << key_str;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
 common::Error CommandTranslator::DeleteKeyCommandImpl(const NKey& key, std::string* cmdstring) const {
-  string_key_t key_str = key.GetKey();
-  *cmdstring = common::MemSPrintf(UPSCALEDB_DELETE_KEY_PATTERN_1ARGS_S, key_str);
+  key_t key_str = key.GetKey();
+  string_byte_writer_t wr;
+  wr << UPSCALEDB_DELETE_KEY_COMMAND << " " << key_str;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
 common::Error CommandTranslator::RenameKeyCommandImpl(const NKey& key,
                                                       const std::string& new_name,
                                                       std::string* cmdstring) const {
-  string_key_t key_str = key.GetKey();
-  *cmdstring = common::MemSPrintf(UPSCALEDB_RENAME_KEY_PATTERN_2ARGS_SS, key_str, new_name);
+  key_t key_str = key.GetKey();
+  string_byte_writer_t wr;
+  wr << UPSCALEDB_RENAME_KEY_COMMAND << " " << key_str << " " << new_name;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
@@ -95,18 +102,18 @@ common::Error CommandTranslator::PublishCommandImpl(const NDbPSChannel& channel,
   UNUSED(message);
   UNUSED(cmdstring);
 
-  std::string errorMsg =
-      common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported publish command for UPSCALEDB.");
-  return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
+  static const std::string error_msg =
+      "Sorry, but now " PROJECT_NAME_TITLE " not supported publish command for UPSCALEDB.";
+  return common::make_error_value(error_msg, common::ErrorValue::E_ERROR);
 }
 
 common::Error CommandTranslator::SubscribeCommandImpl(const NDbPSChannel& channel, std::string* cmdstring) const {
   UNUSED(channel);
   UNUSED(cmdstring);
 
-  std::string errorMsg =
-      common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported subscribe command for UPSCALEDB.");
-  return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
+  static const std::string error_msg =
+      "Sorry, but now " PROJECT_NAME_TITLE " not supported subscribe command for UPSCALEDB.";
+  return common::make_error_value(error_msg, common::ErrorValue::E_ERROR);
 }
 
 }  // namespace upscaledb

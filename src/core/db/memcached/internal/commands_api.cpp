@@ -61,7 +61,7 @@ common::Error CommandsApi::Info(internal::CommandHandler* handler, int argc, con
 common::Error CommandsApi::Add(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
-  NKey key(argv[0]);
+  NKey key(key_t::MakeKeyString(argv[0]));
   DBConnection* mem = static_cast<DBConnection*>(handler);
   time_t expiration;
   if (!common::ConvertFromString(argv[2], &expiration)) {
@@ -87,7 +87,7 @@ common::Error CommandsApi::Add(internal::CommandHandler* handler, int argc, cons
 common::Error CommandsApi::Replace(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
-  NKey key(argv[0]);
+  NKey key(key_t::MakeKeyString(argv[0]));
   DBConnection* mem = static_cast<DBConnection*>(handler);
   time_t expiration;
   if (!common::ConvertFromString(argv[2], &expiration)) {
@@ -113,7 +113,7 @@ common::Error CommandsApi::Replace(internal::CommandHandler* handler, int argc, 
 common::Error CommandsApi::Append(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
-  NKey key(argv[0]);
+  NKey key(key_t::MakeKeyString(argv[0]));
   DBConnection* mem = static_cast<DBConnection*>(handler);
   time_t expiration;
   if (!common::ConvertFromString(argv[2], &expiration)) {
@@ -138,7 +138,7 @@ common::Error CommandsApi::Append(internal::CommandHandler* handler, int argc, c
 common::Error CommandsApi::Prepend(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
-  NKey key(argv[0]);
+  NKey key(key_t::MakeKeyString(argv[0]));
   DBConnection* mem = static_cast<DBConnection*>(handler);
   time_t expiration;
   if (!common::ConvertFromString(argv[2], &expiration)) {
@@ -163,7 +163,7 @@ common::Error CommandsApi::Prepend(internal::CommandHandler* handler, int argc, 
 common::Error CommandsApi::Incr(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
-  NKey key(argv[0]);
+  NKey key(key_t::MakeKeyString(argv[0]));
   DBConnection* mem = static_cast<DBConnection*>(handler);
   uint32_t value;
   if (!common::ConvertFromString(argv[1], &value)) {
@@ -184,7 +184,7 @@ common::Error CommandsApi::Incr(internal::CommandHandler* handler, int argc, con
 common::Error CommandsApi::Decr(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
   UNUSED(argc);
 
-  NKey key(argv[0]);
+  NKey key(key_t::MakeKeyString(argv[0]));
   DBConnection* mem = static_cast<DBConnection*>(handler);
   uint32_t value;
   if (!common::ConvertFromString(argv[1], &value)) {

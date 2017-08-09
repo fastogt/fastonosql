@@ -110,7 +110,7 @@ class ExplorerTreeView : public QTreeView {
   void currentDataBaseChange(core::IDataBaseInfoSPtr db);
   void removeKey(core::IDataBaseInfoSPtr db, core::NKey key);
   void addKey(core::IDataBaseInfoSPtr db, core::NDbKValue key);
-  void renameKey(core::IDataBaseInfoSPtr db, core::NKey key, std::string new_name);
+  void renameKey(core::IDataBaseInfoSPtr db, core::NKey key, core::string_key_t new_name);
   void loadKey(core::IDataBaseInfoSPtr db, core::NDbKValue key);
   void changeTTLKey(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl);
 

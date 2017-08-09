@@ -22,12 +22,76 @@
 #include <string>  // for string
 #include <vector>  // for vector
 
+#include <common/convert2string.h>
 #include <common/string_util.h>  // for JoinString, Tokenize
 
 #include "core/global.h"
 
 namespace fastonosql {
 namespace core {
+
+bool IsBinaryKey(const std::string& key) {
+  for (size_t i = 0; i < key.size(); ++i) {
+    char c = key[i];
+    if (isprint(c) == 0) {  // should be hexed symbol
+      return true;
+    }
+  }
+  return false;
+}
+
+KeyString::KeyString() : key_(), type_(TEXT_KEY) {}
+
+KeyString::KeyString(const common::string_byte_writer& key_data) : key_(), type_() {
+  SetKey(key_data);
+}
+
+KeyString::KeyType KeyString::GetType() const {
+  return type_;
+}
+
+string_key_t KeyString::GetKey() const {
+  return key_;
+}
+
+void KeyString::SetKey(const common::string_byte_writer& key_data) {
+  SetKey(key_data.GetBuffer());
+}
+
+const string_key_t::value_type* KeyString::GetKeyData() const {
+  return key_.c_str();
+}
+
+string_key_t::size_type KeyString::GetKeySize() const {
+  return key_.size();
+}
+
+void KeyString::SetKey(string_key_t new_key) {
+  key_ = new_key;
+  type_ = IsBinaryKey(new_key) ? BINARY_KEY : TEXT_KEY;
+}
+
+std::string KeyString::ToString() const {
+  if (type_ == BINARY_KEY) {
+    return common::utils::hex::encode(key_, true);
+  }
+
+  return key_;
+}
+
+bool KeyString::Equals(const KeyString& other) const {
+  if (key_ != other.key_) {
+    return false;
+  }
+
+  return type_ == other.type_;
+}
+
+KeyString KeyString::MakeKeyString(string_key_t str) {
+  KeyString ks;
+  ks.SetKey(str);
+  return ks;
+}
 
 KeyInfo::KeyInfo(const splited_namespaces_t& splited_namespaces_and_key, string_key_t ns_separator)
     : splited_namespaces_and_key_(splited_namespaces_and_key), ns_separator_(ns_separator) {}
@@ -68,19 +132,19 @@ string_key_t KeyInfo::JoinNamespace(size_t pos) const {
 
 NKey::NKey() : key_(), ttl_(NO_TTL) {}
 
-NKey::NKey(string_key_t key, ttl_t ttl_sec) : key_(key), ttl_(ttl_sec) {}
+NKey::NKey(key_t key, ttl_t ttl_sec) : key_(key), ttl_(ttl_sec) {}
 
 KeyInfo NKey::GetInfo(string_key_t ns_separator) const {
   KeyInfo::splited_namespaces_t tokens;
-  common::Tokenize(key_, ns_separator, &tokens);
+  common::Tokenize(key_.ToString(), ns_separator, &tokens);
   return KeyInfo(tokens, ns_separator);
 }
 
-string_key_t NKey::GetKey() const {
+key_t NKey::GetKey() const {
   return key_;
 }
 
-void NKey::SetKey(string_key_t key) {
+void NKey::SetKey(key_t key) {
   key_ = key;
 }
 

@@ -385,10 +385,10 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
       std::vector<core::FastoObjectCommandIPtr> cmds;
       cmds.reserve(ar->GetSize() * 2);
       for (size_t i = 0; i < ar->GetSize(); ++i) {
-        std::string key;
+        core::string_key_t key;
         bool isok = ar->GetString(i, &key);
         if (isok) {
-          core::NKey k(key);
+          core::NKey k(core::key_t::MakeKeyString(key));
           core::NDbKValue dbv(k, core::NValue());
           cmds.push_back(CreateCommandFast("TYPE " + key, core::C_INNER));
           cmds.push_back(CreateCommandFast("TTL " + key, core::C_INNER));

@@ -223,7 +223,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void KeyRemove(core::NKey key);
   void KeyAdd(core::NDbKValue key);
   void KeyLoad(core::NDbKValue key);
-  void KeyRename(core::NKey key, std::string new_name);
+  void KeyRename(core::NKey key, core::string_key_t new_name);
   void KeyTTLChange(core::NKey key, core::ttl_t ttl);
   void KeyTTLLoad(core::NKey key, core::ttl_t ttl);
 

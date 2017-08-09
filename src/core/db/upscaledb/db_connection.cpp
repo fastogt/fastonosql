@@ -43,11 +43,11 @@
 namespace fastonosql {
 namespace core {
 namespace {
-ups_key_t ConvertToUpscaleDBSlice(const string_key_t& key) {
+ups_key_t ConvertToUpscaleDBSlice(const key_t& key) {
   ups_key_t dkey;
   memset(&dkey, 0, sizeof(dkey));
-  dkey.size = key.size();
-  dkey.data = const_cast<char*>(key.data());
+  dkey.size = key.GetKeySize();
+  dkey.data = const_cast<char*>(key.GetKeyData());
   return dkey;
 }
 }
@@ -239,7 +239,7 @@ common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) 
   return common::Error();
 }
 
-common::Error DBConnection::SetInner(string_key_t key, const std::string& value) {
+common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
@@ -259,7 +259,7 @@ common::Error DBConnection::SetInner(string_key_t key, const std::string& value)
   return common::Error();
 }
 
-common::Error DBConnection::GetInner(string_key_t key, std::string* ret_val) {
+common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
@@ -279,7 +279,7 @@ common::Error DBConnection::GetInner(string_key_t key, std::string* ret_val) {
   return common::Error();
 }
 
-common::Error DBConnection::DelInner(string_key_t key) {
+common::Error DBConnection::DelInner(key_t key) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
@@ -457,7 +457,7 @@ common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** 
 
 common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) {
   const NKey cur = key.GetKey();
-  string_key_t key_str = cur.GetKey();
+  key_t key_str = cur.GetKey();
   std::string value_str = key.ValueString();
   common::Error err = SetInner(key_str, value_str);
   if (err && err->IsError()) {
@@ -469,7 +469,7 @@ common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) 
 }
 
 common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
-  string_key_t key_str = key.GetKey();
+  key_t key_str = key.GetKey();
   std::string value_str;
   common::Error err = GetInner(key_str, &value_str);
   if (err && err->IsError()) {
@@ -484,7 +484,7 @@ common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
 common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     NKey key = keys[i];
-    string_key_t key_str = key.GetKey();
+    key_t key_str = key.GetKey();
     common::Error err = DelInner(key_str);
     if (err && err->IsError()) {
       continue;
@@ -496,8 +496,8 @@ common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
   return common::Error();
 }
 
-common::Error DBConnection::RenameImpl(const NKey& key, const std::string& new_key) {
-  string_key_t key_str = key.GetKey();
+common::Error DBConnection::RenameImpl(const NKey& key, string_key_t new_key) {
+  key_t key_str = key.GetKey();
   std::string value_str;
   common::Error err = GetInner(key_str, &value_str);
   if (err && err->IsError()) {
@@ -509,7 +509,7 @@ common::Error DBConnection::RenameImpl(const NKey& key, const std::string& new_k
     return err;
   }
 
-  err = SetInner(new_key, value_str);
+  err = SetInner(key_t::MakeKeyString(new_key), value_str);
   if (err && err->IsError()) {
     return err;
   }
