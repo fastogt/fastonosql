@@ -20,23 +20,22 @@
 
 #include <common/sprintf.h>
 
-#define SSDB_SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
-#define SSDB_SET_KEY_LIST_PATTERN_2ARGS_SS "LPUSH %s %s"
-#define SSDB_SET_KEY_SET_PATTERN_2ARGS_SS "SADD %s %s"
-#define SSDB_SET_KEY_ZSET_PATTERN_2ARGS_SS "ZADD %s %s"
-#define SSDB_SET_KEY_HASH_PATTERN_2ARGS_SS "HMSET %s %s"
+#define SSDB_SET_KEY_COMMAND COMMONTYPE_SET_KEY_COMMAND
+#define SSDB_SET_KEY_ARRAY_COMMAND "LPUSH"
+#define SSDB_SET_KEY_SET_COMMAND "SADD"
+#define SSDB_SET_KEY_ZSET_COMMAND "ZADD"
+#define SSDB_SET_KEY_HASH_COMMAND "HMSET"
 
-#define SSDB_COMMONTYPE_GET_KEY_COMMAND COMMONTYPE_GET_KEY_COMMAND
-#define SSDB_GET_KEY_PATTERN_1ARGS_S SSDB_COMMONTYPE_GET_KEY_COMMAND " %s"
-#define SSDB_GET_KEY_LIST_PATTERN_1ARGS_S "LRANGE %s 0 -1"
-#define SSDB_GET_KEY_SET_PATTERN_1ARGS_S "SMEMBERS %s"
-#define SSDB_GET_KEY_ZSET_PATTERN_1ARGS_S "ZRANGE %s 0 -1"
-#define SSDB_GET_KEY_HASH_PATTERN_1ARGS_S "HGET %s"
-#define SSDB_DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
-#define SSDB_RENAME_KEY_PATTERN_2ARGS_SS "RENAME %s %s"
+#define SSDB_GET_KEY_COMMAND COMMONTYPE_GET_KEY_COMMAND
+#define SSDB_GET_KEY_ARRAY_COMMAND "LRANGE"
+#define SSDB_GET_KEY_SET_COMMAND "SMEMBERS"
+#define SSDB_GET_KEY_ZSET_COMMAND "ZRANGE"
+#define SSDB_GET_KEY_HASH_COMMAND "HGET"
 
-#define SSDB_CHANGE_TTL_2ARGS_SI "EXPIRE %s %d"
-#define SSDB_GET_TTL_1ARGS_S "TTL %s"
+#define SSDB_DELETE_KEY_COMMAND "DEL"
+#define SSDB_RENAME_KEY_COMMAND "RENAME"
+#define SSDB_CHANGE_TTL_COMMAND "EXPIRE"
+#define SSDB_GET_TTL_COMMAND "TTL"
 
 namespace fastonosql {
 namespace core {
@@ -45,51 +44,53 @@ namespace ssdb {
 CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands) : ICommandTranslator(commands) {}
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, std::string* cmdstring) const {
-  std::string pattern_result;
+  string_byte_writer_t wr;
   const NKey cur = key.GetKey();
   key_t key_str = cur.GetKey();
   std::string value_str = key.ValueString();
   common::Value::Type type = key.GetType();
   if (type == common::Value::TYPE_ARRAY) {
-    pattern_result = common::MemSPrintf(SSDB_SET_KEY_LIST_PATTERN_2ARGS_SS, key_str, value_str);
+    wr << SSDB_SET_KEY_ARRAY_COMMAND << " " << key_str << " " << value_str;
   } else if (type == common::Value::TYPE_SET) {
-    pattern_result = common::MemSPrintf(SSDB_SET_KEY_SET_PATTERN_2ARGS_SS, key_str, value_str);
+    wr << SSDB_SET_KEY_SET_COMMAND << " " << key_str << " " << value_str;
   } else if (type == common::Value::TYPE_ZSET) {
-    pattern_result = common::MemSPrintf(SSDB_SET_KEY_ZSET_PATTERN_2ARGS_SS, key_str, value_str);
+    wr << SSDB_SET_KEY_ZSET_COMMAND << " " << key_str << " " << value_str;
   } else if (type == common::Value::TYPE_HASH) {
-    pattern_result = common::MemSPrintf(SSDB_SET_KEY_HASH_PATTERN_2ARGS_SS, key_str, value_str);
+    wr << SSDB_SET_KEY_HASH_COMMAND << " " << key_str << " " << value_str;
   } else {
-    pattern_result = common::MemSPrintf(SSDB_SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
+    wr << SSDB_SET_KEY_COMMAND << " " << key_str << " " << value_str;
   }
 
-  *cmdstring = pattern_result;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
 common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
                                                     common::Value::Type type,
                                                     std::string* cmdstring) const {
-  std::string patternResult;
+  string_byte_writer_t wr;
   key_t key_str = key.GetKey();
   if (type == common::Value::TYPE_ARRAY) {
-    patternResult = common::MemSPrintf(SSDB_GET_KEY_LIST_PATTERN_1ARGS_S, key_str);
+    wr << SSDB_GET_KEY_ARRAY_COMMAND << " " << key_str << " 0 -1";
   } else if (type == common::Value::TYPE_SET) {
-    patternResult = common::MemSPrintf(SSDB_GET_KEY_SET_PATTERN_1ARGS_S, key_str);
+    wr << SSDB_GET_KEY_SET_COMMAND << " " << key_str;
   } else if (type == common::Value::TYPE_ZSET) {
-    patternResult = common::MemSPrintf(SSDB_GET_KEY_ZSET_PATTERN_1ARGS_S, key_str);
+    wr << SSDB_GET_KEY_ZSET_COMMAND << " " << key_str << " 0 -1";
   } else if (type == common::Value::TYPE_HASH) {
-    patternResult = common::MemSPrintf(SSDB_GET_KEY_HASH_PATTERN_1ARGS_S, key_str);
+    wr << SSDB_GET_KEY_HASH_COMMAND << " " << key_str;
   } else {
-    patternResult = common::MemSPrintf(SSDB_GET_KEY_PATTERN_1ARGS_S, key_str);
+    wr << SSDB_GET_KEY_COMMAND << " " << key_str;
   }
 
-  *cmdstring = patternResult;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
 common::Error CommandTranslator::DeleteKeyCommandImpl(const NKey& key, std::string* cmdstring) const {
   key_t key_str = key.GetKey();
-  *cmdstring = common::MemSPrintf(SSDB_DELETE_KEY_PATTERN_1ARGS_S, key_str);
+  string_byte_writer_t wr;
+  wr << SSDB_DELETE_KEY_COMMAND << " " << key_str;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
@@ -97,24 +98,30 @@ common::Error CommandTranslator::RenameKeyCommandImpl(const NKey& key,
                                                       const std::string& new_name,
                                                       std::string* cmdstring) const {
   key_t key_str = key.GetKey();
-  *cmdstring = common::MemSPrintf(SSDB_RENAME_KEY_PATTERN_2ARGS_SS, key_str, new_name);
+  string_byte_writer_t wr;
+  wr << SSDB_RENAME_KEY_COMMAND << " " << key_str << " " << new_name;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
 common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key, ttl_t ttl, std::string* cmdstring) const {
   key_t key_str = key.GetKey();
-  *cmdstring = common::MemSPrintf(SSDB_CHANGE_TTL_2ARGS_SI, key_str, ttl);
+  string_byte_writer_t wr;
+  wr << SSDB_CHANGE_TTL_COMMAND << " " << key_str << " " << ttl;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
 common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key, std::string* cmdstring) const {
   key_t key_str = key.GetKey();
-  *cmdstring = common::MemSPrintf(SSDB_GET_TTL_1ARGS_S, key_str);
+  string_byte_writer_t wr;
+  wr << SSDB_GET_TTL_COMMAND << " " << key_str;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
 bool CommandTranslator::IsLoadKeyCommandImpl(const CommandInfo& cmd) const {
-  return cmd.IsEqualName(SSDB_COMMONTYPE_GET_KEY_COMMAND);
+  return cmd.IsEqualName(SSDB_GET_KEY_COMMAND);
 }
 
 common::Error CommandTranslator::PublishCommandImpl(const NDbPSChannel& channel,

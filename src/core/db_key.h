@@ -24,8 +24,8 @@
 #include <string>  // for string
 #include <vector>  // for vector
 
-#include <common/value.h>  // for Value, Value::Type, etc
 #include <common/byte_writer.h>
+#include <common/value.h>  // for Value, Value::Type, etc
 
 #define NO_TTL -1
 #define EXPIRED_TTL -2
@@ -42,17 +42,18 @@ COMPILE_ASSERT(std::numeric_limits<ttl_t>::max() >= EXPIRED_TTL && EXPIRED_TTL >
 bool IsBinaryKey(const std::string& key);
 
 typedef std::string string_key_t;
+typedef common::string_byte_writer string_byte_writer_t;
 
 class KeyString {
  public:
   enum KeyType { TEXT_KEY, BINARY_KEY };
   KeyString();
-  explicit KeyString(const common::ByteWriter& key_data);
+  explicit KeyString(const common::string_byte_writer& key_data);
 
   KeyType GetType() const;
 
   string_key_t GetKey() const;
-  void SetKey(const common::ByteWriter& key_data);
+  void SetKey(const common::string_byte_writer& key_data);
 
   const string_key_t::value_type* GetKeyData() const;
   string_key_t::size_type GetKeySize() const;
@@ -76,6 +77,12 @@ inline bool operator==(const KeyString& r, const KeyString& l) {
 
 inline bool operator!=(const KeyString& r, const KeyString& l) {
   return !r.Equals(l);
+}
+
+template <typename CharT, typename Traits>
+inline std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& out, const KeyString& key) {
+  out << key.GetKey();
+  return out;
 }
 
 typedef KeyString key_t;

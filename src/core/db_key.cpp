@@ -22,8 +22,8 @@
 #include <string>  // for string
 #include <vector>  // for vector
 
-#include <common/string_util.h>  // for JoinString, Tokenize
 #include <common/convert2string.h>
+#include <common/string_util.h>  // for JoinString, Tokenize
 
 #include "core/global.h"
 
@@ -42,7 +42,7 @@ bool IsBinaryKey(const std::string& key) {
 
 KeyString::KeyString() : key_(), type_(TEXT_KEY) {}
 
-KeyString::KeyString(const common::ByteWriter& key_data) : key_(), type_() {
+KeyString::KeyString(const common::string_byte_writer& key_data) : key_(), type_() {
   SetKey(key_data);
 }
 
@@ -54,8 +54,8 @@ string_key_t KeyString::GetKey() const {
   return key_;
 }
 
-void KeyString::SetKey(const common::ByteWriter& key_data) {
-  SetKey(key_data.GetString());
+void KeyString::SetKey(const common::string_byte_writer& key_data) {
+  SetKey(key_data.GetBuffer());
 }
 
 const string_key_t::value_type* KeyString::GetKeyData() const {

@@ -200,9 +200,9 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         if (ar->GetString(i, &key_str)) {
           core::key_t key = core::key_t::MakeKeyString(key_str);
           core::NKey k(key);
-          common::ByteWriter wr;
-          wr << "TTL " << key.GetKey();
-          core::FastoObjectCommandIPtr cmd_ttl = CreateCommandFast(wr.GetString(), core::C_INNER);
+          core::string_byte_writer_t wr;
+          wr << "TTL " << key;
+          core::FastoObjectCommandIPtr cmd_ttl = CreateCommandFast(wr.GetBuffer(), core::C_INNER);
           LOG_COMMAND(cmd_ttl);
           core::ttl_t ttl = NO_TTL;
           common::Error err = impl_->TTL(key, &ttl);

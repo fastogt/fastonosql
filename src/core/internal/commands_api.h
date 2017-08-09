@@ -219,7 +219,7 @@ common::Error ApiTraits<CDBConnection>::Set(internal::CommandHandler* handler,
                                             FastoObject* out) {
   UNUSED(argc);
 
-  common::ByteWriter wr;
+  common::string_byte_writer wr;
   wr << argv[0];
   key_t raw_key(wr);
   NKey key(raw_key);
@@ -247,7 +247,7 @@ common::Error ApiTraits<CDBConnection>::Get(internal::CommandHandler* handler,
                                             FastoObject* out) {
   UNUSED(argc);
 
-  common::ByteWriter wr;
+  common::string_byte_writer wr;
   wr << argv[0];
   key_t raw_key(wr);
   NKey key(raw_key);
@@ -273,7 +273,7 @@ common::Error ApiTraits<CDBConnection>::Delete(internal::CommandHandler* handler
                                                FastoObject* out) {
   NKeys keysdel;
   for (int i = 0; i < argc; ++i) {
-    common::ByteWriter wr;
+    common::string_byte_writer wr;
     wr << argv[i];
     key_t raw_key(wr);
     NKey key(raw_key);
@@ -301,7 +301,7 @@ common::Error ApiTraits<CDBConnection>::Rename(internal::CommandHandler* handler
                                                FastoObject* out) {
   UNUSED(argc);
 
-  common::ByteWriter wr;
+  common::string_byte_writer wr;
   wr << argv[0];
   key_t raw_key(wr);
   NKey key(raw_key);
@@ -327,7 +327,7 @@ common::Error ApiTraits<CDBConnection>::SetTTL(internal::CommandHandler* handler
   UNUSED(argc);
 
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
-  common::ByteWriter wr;
+  common::string_byte_writer wr;
   wr << argv[0];
   key_t raw_key(wr);
   NKey key(raw_key);
@@ -357,7 +357,7 @@ common::Error ApiTraits<CDBConnection>::GetTTL(internal::CommandHandler* handler
   UNUSED(argc);
 
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
-  common::ByteWriter wr;
+  common::string_byte_writer wr;
   wr << argv[0];
   key_t raw_key(wr);
   NKey key(raw_key);

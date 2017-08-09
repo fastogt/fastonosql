@@ -786,9 +786,9 @@ common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
 
 common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) {
   key_t key_str = key.GetKey().GetKey();
-  common::ByteWriter wr;
+  common::string_byte_writer wr;
   wr << "SET " << key_str.GetKey() << " " << key.ValueString();
-  const std::string set_cmd = wr.GetString();
+  const std::string set_cmd = wr.GetBuffer();
 
   redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, set_cmd.c_str()));
   if (!reply) {
@@ -808,9 +808,9 @@ common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) 
 
 common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
   key_t key_str = key.GetKey();
-  common::ByteWriter wr;
+  common::string_byte_writer wr;
   wr << "GET " << key_str.GetKey();
-  const std::string get_cmd = wr.GetString();
+  const std::string get_cmd = wr.GetBuffer();
   redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, get_cmd.c_str()));
   if (!reply) {
     return cliPrintContextError(connection_.handle_);
@@ -875,8 +875,9 @@ common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
   }
 
   if (reply->integer == 0) {
-    return common::make_error_value(common::MemSPrintf("%s does not exist or the timeout could not be set.", key_str),
-                                    common::ErrorValue::E_ERROR);
+    string_byte_writer_t wr;
+    wr << key_str << " does not exist or the timeout could not be set.";
+    return common::make_error_value(wr.GetBuffer(), common::ErrorValue::E_ERROR);
   }
 
   freeReplyObject(reply);
@@ -1231,9 +1232,9 @@ common::Error DBConnection::SetEx(const NDbKValue& key, ttl_t ttl) {
   const NKey cur = key.GetKey();
   key_t key_str = cur.GetKey();
   std::string value_str = key.ValueString();
-  common::ByteWriter wr;
+  common::string_byte_writer wr;
   wr << "SETEX " << key_str.GetKey() << " " << ttl << " " << value_str;
-  const std::string setex_cmd = wr.GetString();
+  const std::string setex_cmd = wr.GetBuffer();
 
   redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, setex_cmd.c_str()));
   if (!reply) {
@@ -1260,9 +1261,9 @@ common::Error DBConnection::SetNX(const NDbKValue& key, long long* result) {
   const NKey cur = key.GetKey();
   key_t key_str = cur.GetKey();
   std::string value_str = key.ValueString();
-  common::ByteWriter wr;
+  common::string_byte_writer wr;
   wr << "SETNX " << key_str.GetKey() << " " << value_str;
-  const std::string setnx_cmd = wr.GetString();
+  const std::string setnx_cmd = wr.GetBuffer();
 
   redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, setnx_cmd.c_str()));
   if (!reply) {
@@ -1335,9 +1336,9 @@ common::Error DBConnection::Lrange(const NKey& key, int start, int stop, NDbKVal
   }
 
   key_t key_str = key.GetKey();
-  common::ByteWriter wr;
+  common::string_byte_writer wr;
   wr << "LRANGE " << key_str.GetKey() << " " << start << " " << stop;
-  const std::string lrange_cmd = wr.GetString();
+  const std::string lrange_cmd = wr.GetBuffer();
 
   redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, lrange_cmd.c_str()));
   if (!reply) {
@@ -1421,9 +1422,9 @@ common::Error DBConnection::Smembers(const NKey& key, NDbKValue* loaded_key) {
   }
 
   key_t key_str = key.GetKey();
-  common::ByteWriter wr;
+  common::string_byte_writer wr;
   wr << "SMEMBERS " << key_str.GetKey();
-  const std::string smembers_cmd = wr.GetString();
+  const std::string smembers_cmd = wr.GetBuffer();
 
   redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, smembers_cmd.c_str()));
   if (!reply) {
@@ -1523,12 +1524,12 @@ common::Error DBConnection::Zrange(const NKey& key, int start, int stop, bool wi
   }
 
   key_t key_str = key.GetKey();
-  common::ByteWriter wr;
+  common::string_byte_writer wr;
   wr << "ZRANGE " << key_str.GetKey() << " " << start << " " << stop;
   if (withscores) {
     wr << " WITHSCORES";
   }
-  std::string line = wr.GetString();
+  std::string line = wr.GetBuffer();
 
   redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, line.c_str()));
   if (!reply) {
@@ -1637,9 +1638,9 @@ common::Error DBConnection::Hgetall(const NKey& key, NDbKValue* loaded_key) {
   }
 
   key_t key_str = key.GetKey();
-  common::ByteWriter wr;
+  common::string_byte_writer wr;
   wr << "HGETALL " << key_str.GetKey();
-  const std::string hgetall_cmd = wr.GetString();
+  const std::string hgetall_cmd = wr.GetBuffer();
 
   redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, hgetall_cmd.c_str()));
   if (!reply) {
@@ -1699,9 +1700,9 @@ common::Error DBConnection::Decr(const NKey& key, long long* decr) {
   }
 
   key_t key_str = key.GetKey();
-  common::ByteWriter wr;
+  common::string_byte_writer wr;
   wr << "DECR " << key_str.GetKey();
-  const std::string decr_cmd = wr.GetString();
+  const std::string decr_cmd = wr.GetBuffer();
 
   redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, decr_cmd.c_str()));
   if (!reply) {
@@ -1737,9 +1738,9 @@ common::Error DBConnection::DecrBy(const NKey& key, int dec, long long* decr) {
   }
 
   key_t key_str = key.GetKey();
-  common::ByteWriter wr;
+  common::string_byte_writer wr;
   wr << "DECRBY " << key_str.GetKey() << " " << dec;
-  const std::string decrby_cmd = wr.GetString();
+  const std::string decrby_cmd = wr.GetBuffer();
 
   redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, decrby_cmd.c_str()));
   if (!reply) {
@@ -1775,9 +1776,9 @@ common::Error DBConnection::Incr(const NKey& key, long long* incr) {
   }
 
   key_t key_str = key.GetKey();
-  common::ByteWriter wr;
+  common::string_byte_writer wr;
   wr << "INCR " << key_str.GetKey();
-  const std::string incr_cmd = wr.GetString();
+  const std::string incr_cmd = wr.GetBuffer();
 
   redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, incr_cmd.c_str()));
   if (!reply) {
@@ -1813,9 +1814,9 @@ common::Error DBConnection::IncrBy(const NKey& key, int inc, long long* incr) {
   }
 
   key_t key_str = key.GetKey();
-  common::ByteWriter wr;
+  common::string_byte_writer wr;
   wr << "INCRBY " << key_str.GetKey() << " " << inc;
-  const std::string incrby_cmd = wr.GetString();
+  const std::string incrby_cmd = wr.GetBuffer();
 
   redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, incrby_cmd.c_str()));
   if (!reply) {
@@ -1851,9 +1852,9 @@ common::Error DBConnection::IncrByFloat(const NKey& key, double inc, std::string
   }
 
   key_t key_str = key.GetKey();
-  common::ByteWriter wr;
+  common::string_byte_writer wr;
   wr << "INCRBYFLOAT " << key_str.GetKey() << " " << inc;
-  const std::string incrfloat_cmd = wr.GetString();
+  const std::string incrfloat_cmd = wr.GetBuffer();
 
   redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, incrfloat_cmd.c_str()));
   if (!reply) {

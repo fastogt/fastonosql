@@ -18,15 +18,13 @@
 
 #include "core/db/rocksdb/command_translator.h"
 
-#include <common/macros.h>  // for UNUSE
+#include <common/macros.h>  // for UNUSED
 #include <common/sprintf.h>
 
-#define ROCKSDB_COMMONTYPE_GET_KEY_COMMAND COMMONTYPE_GET_KEY_COMMAND
-
-#define ROCKSDB_SET_KEY_PATTERN_2ARGS_SS "SET %s %s"
-#define ROCKSDB_GET_KEY_PATTERN_1ARGS_S ROCKSDB_COMMONTYPE_GET_KEY_COMMAND " %s"
-#define ROCKSDB_DELETE_KEY_PATTERN_1ARGS_S "DEL %s"
-#define ROCKSDB_RENAME_KEY_PATTERN_2ARGS_SS "RENAME %s %s"
+#define ROCKSDB_GET_KEY_COMMAND COMMONTYPE_GET_KEY_COMMAND
+#define ROCKSDB_SET_KEY_COMMAND COMMONTYPE_SET_KEY_COMMAND
+#define ROCKSDB_DELETE_KEY_COMMAND "DEL"
+#define ROCKSDB_RENAME_KEY_COMMAND "RENAME"
 
 namespace fastonosql {
 namespace core {
@@ -38,7 +36,9 @@ common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, std:
   const NKey cur = key.GetKey();
   key_t key_str = cur.GetKey();
   std::string value_str = key.ValueString();
-  *cmdstring = common::MemSPrintf(ROCKSDB_SET_KEY_PATTERN_2ARGS_SS, key_str, value_str);
+  string_byte_writer_t wr;
+  wr << ROCKSDB_SET_KEY_COMMAND << " " << key_str << " " << value_str;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
@@ -48,13 +48,17 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
   UNUSED(type);
 
   key_t key_str = key.GetKey();
-  *cmdstring = common::MemSPrintf(ROCKSDB_GET_KEY_PATTERN_1ARGS_S, key_str);
+  string_byte_writer_t wr;
+  wr << ROCKSDB_GET_KEY_COMMAND << " " << key_str;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
 common::Error CommandTranslator::DeleteKeyCommandImpl(const NKey& key, std::string* cmdstring) const {
   key_t key_str = key.GetKey();
-  *cmdstring = common::MemSPrintf(ROCKSDB_DELETE_KEY_PATTERN_1ARGS_S, key_str);
+  string_byte_writer_t wr;
+  wr << ROCKSDB_DELETE_KEY_COMMAND << " " << key_str;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
@@ -62,7 +66,9 @@ common::Error CommandTranslator::RenameKeyCommandImpl(const NKey& key,
                                                       const std::string& new_name,
                                                       std::string* cmdstring) const {
   key_t key_str = key.GetKey();
-  *cmdstring = common::MemSPrintf(ROCKSDB_RENAME_KEY_PATTERN_2ARGS_SS, key_str, new_name);
+  string_byte_writer_t wr;
+  wr << ROCKSDB_RENAME_KEY_COMMAND << " " << key_str << " " << new_name;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
@@ -86,7 +92,7 @@ common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key, std::str
 }
 
 bool CommandTranslator::IsLoadKeyCommandImpl(const CommandInfo& cmd) const {
-  return cmd.IsEqualName(ROCKSDB_COMMONTYPE_GET_KEY_COMMAND);
+  return cmd.IsEqualName(ROCKSDB_GET_KEY_COMMAND);
 }
 
 common::Error CommandTranslator::PublishCommandImpl(const NDbPSChannel& channel,
