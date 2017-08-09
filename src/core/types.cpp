@@ -25,9 +25,9 @@ namespace core {
 
 IStateField::~IStateField() {}
 
-std::string StableCommand(std::string command) {
+command_buffer_t StableCommand(command_buffer_t command) {
   if (command.empty()) {
-    return std::string();
+    return command_buffer_t();
   }
 
   if (command[command.size() - 1] == '\r') {

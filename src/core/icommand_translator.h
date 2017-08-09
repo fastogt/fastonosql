@@ -38,33 +38,33 @@
 namespace fastonosql {
 namespace core {
 
-common::Error ParseCommands(const std::string& cmd, std::vector<std::string>* cmds);
+common::Error ParseCommands(const command_buffer_t& cmd, std::vector<command_buffer_t>* cmds);
 
 class ICommandTranslator {
  public:
   explicit ICommandTranslator(const std::vector<CommandHolder>& commands);
   virtual ~ICommandTranslator();
 
-  common::Error SelectDBCommand(const std::string& name, std::string* cmdstring) const WARN_UNUSED_RESULT;
-  common::Error FlushDBCommand(std::string* cmdstring) const WARN_UNUSED_RESULT;
-  common::Error CreateKeyCommand(const NDbKValue& key, std::string* cmdstring) const WARN_UNUSED_RESULT;
+  common::Error SelectDBCommand(const std::string& name, command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
+  common::Error FlushDBCommand(command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
+  common::Error CreateKeyCommand(const NDbKValue& key, command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
   common::Error LoadKeyCommand(const NKey& key,
                                common::Value::Type type,
-                               std::string* cmdstring) const WARN_UNUSED_RESULT;
-  common::Error DeleteKeyCommand(const NKey& key, std::string* cmdstring) const WARN_UNUSED_RESULT;
+                               command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
+  common::Error DeleteKeyCommand(const NKey& key, command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
   common::Error RenameKeyCommand(const NKey& key,
                                  const std::string& new_name,
-                                 std::string* cmdstring) const WARN_UNUSED_RESULT;
-  common::Error ChangeKeyTTLCommand(const NKey& key, ttl_t ttl, std::string* cmdstring) const WARN_UNUSED_RESULT;
-  common::Error LoadKeyTTLCommand(const NKey& key, std::string* cmdstring) const WARN_UNUSED_RESULT;
+                                 command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
+  common::Error ChangeKeyTTLCommand(const NKey& key, ttl_t ttl, command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
+  common::Error LoadKeyTTLCommand(const NKey& key, command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
 
-  bool IsLoadKeyCommand(const std::string& cmd, std::string* key) const WARN_UNUSED_RESULT;
+  bool IsLoadKeyCommand(const command_buffer_t& cmd, string_key_t* key) const WARN_UNUSED_RESULT;
 
   common::Error PublishCommand(const NDbPSChannel& channel,
                                const std::string& message,
-                               std::string* cmdstring) const WARN_UNUSED_RESULT;
+                               command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
 
-  common::Error SubscribeCommand(const NDbPSChannel& channel, std::string* cmdstring) const WARN_UNUSED_RESULT;
+  common::Error SubscribeCommand(const NDbPSChannel& channel, command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
 
   std::vector<CommandInfo> Commands() const;
   common::Error FindCommand(int argc,
@@ -75,29 +75,31 @@ class ICommandTranslator {
   common::Error TestCommandArgs(const CommandHolder* cmd,
                                 int argc_to_call,
                                 const char** argv_to_call) const WARN_UNUSED_RESULT;
-  common::Error TestCommandLine(const std::string& cmd) const WARN_UNUSED_RESULT;
+  common::Error TestCommandLine(const command_buffer_t& cmd) const WARN_UNUSED_RESULT;
   common::Error TestCommandLineArgs(int argc,
                                     const char** argv,
                                     const CommandHolder** info,
                                     size_t* off) const WARN_UNUSED_RESULT;
 
-  static common::Error InvalidInputArguments(const std::string& cmd);
-  static common::Error NotSupported(const std::string& cmd);
+  static common::Error InvalidInputArguments(const command_buffer_t& cmd);
+  static common::Error NotSupported(const command_buffer_t& cmd);
   static common::Error UnknownSequence(int argc, const char** argv);
 
  private:
-  virtual common::Error CreateKeyCommandImpl(const NDbKValue& key, std::string* cmdstring) const = 0;
-  virtual common::Error LoadKeyCommandImpl(const NKey& key, common::Value::Type type, std::string* cmdstring) const = 0;
-  virtual common::Error DeleteKeyCommandImpl(const NKey& key, std::string* cmdstring) const = 0;
+  virtual common::Error CreateKeyCommandImpl(const NDbKValue& key, command_buffer_t* cmdstring) const = 0;
+  virtual common::Error LoadKeyCommandImpl(const NKey& key,
+                                           common::Value::Type type,
+                                           command_buffer_t* cmdstring) const = 0;
+  virtual common::Error DeleteKeyCommandImpl(const NKey& key, command_buffer_t* cmdstring) const = 0;
   virtual common::Error RenameKeyCommandImpl(const NKey& key,
                                              const std::string& new_name,
-                                             std::string* cmdstring) const = 0;
-  virtual common::Error ChangeKeyTTLCommandImpl(const NKey& key, ttl_t ttl, std::string* cmdstring) const = 0;
-  virtual common::Error LoadKeyTTLCommandImpl(const NKey& key, std::string* cmdstring) const = 0;
+                                             command_buffer_t* cmdstring) const = 0;
+  virtual common::Error ChangeKeyTTLCommandImpl(const NKey& key, ttl_t ttl, command_buffer_t* cmdstring) const = 0;
+  virtual common::Error LoadKeyTTLCommandImpl(const NKey& key, command_buffer_t* cmdstring) const = 0;
   virtual common::Error PublishCommandImpl(const NDbPSChannel& channel,
                                            const std::string& message,
-                                           std::string* cmdstring) const = 0;
-  virtual common::Error SubscribeCommandImpl(const NDbPSChannel& channel, std::string* cmdstring) const = 0;
+                                           command_buffer_t* cmdstring) const = 0;
+  virtual common::Error SubscribeCommandImpl(const NDbPSChannel& channel, command_buffer_t* cmdstring) const = 0;
 
   virtual bool IsLoadKeyCommandImpl(const CommandInfo& cmd) const = 0;
 

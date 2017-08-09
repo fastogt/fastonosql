@@ -31,20 +31,20 @@ extern "C" {
 namespace fastonosql {
 namespace core {
 
-common::Error ParseCommands(const std::string& cmd, std::vector<std::string>* cmds) {
+common::Error ParseCommands(const command_buffer_t& cmd, std::vector<command_buffer_t>* cmds) {
   if (cmd.empty()) {
     return common::make_error_value("Empty command line.", common::ErrorValue::E_ERROR);
   }
 
-  std::vector<std::string> commands;
+  std::vector<command_buffer_t> commands;
   size_t commands_count = common::Tokenize(cmd, "\n", &commands);
   if (!commands_count) {
     return common::make_error_value("Invaid command line.", common::ErrorValue::E_ERROR);
   }
 
   std::vector<std::string> stable_commands;
-  for (std::string input : commands) {
-    std::string stable_input = StableCommand(input);
+  for (command_buffer_t input : commands) {
+    command_buffer_t stable_input = StableCommand(input);
     if (stable_input.empty()) {
       continue;
     }
@@ -59,7 +59,7 @@ ICommandTranslator::ICommandTranslator(const std::vector<CommandHolder>& command
 
 ICommandTranslator::~ICommandTranslator() {}
 
-common::Error ICommandTranslator::SelectDBCommand(const std::string& name, std::string* cmdstring) const {
+common::Error ICommandTranslator::SelectDBCommand(const std::string& name, command_buffer_t* cmdstring) const {
   if (!cmdstring) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
@@ -68,7 +68,7 @@ common::Error ICommandTranslator::SelectDBCommand(const std::string& name, std::
   return common::Error();
 }
 
-common::Error ICommandTranslator::FlushDBCommand(std::string* cmdstring) const {
+common::Error ICommandTranslator::FlushDBCommand(command_buffer_t* cmdstring) const {
   if (!cmdstring) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
@@ -77,7 +77,7 @@ common::Error ICommandTranslator::FlushDBCommand(std::string* cmdstring) const {
   return common::Error();
 }
 
-common::Error ICommandTranslator::DeleteKeyCommand(const NKey& key, std::string* cmdstring) const {
+common::Error ICommandTranslator::DeleteKeyCommand(const NKey& key, command_buffer_t* cmdstring) const {
   if (!cmdstring) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
@@ -87,7 +87,7 @@ common::Error ICommandTranslator::DeleteKeyCommand(const NKey& key, std::string*
 
 common::Error ICommandTranslator::RenameKeyCommand(const NKey& key,
                                                    const std::string& new_name,
-                                                   std::string* cmdstring) const {
+                                                   command_buffer_t* cmdstring) const {
   if (!cmdstring) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
@@ -95,7 +95,7 @@ common::Error ICommandTranslator::RenameKeyCommand(const NKey& key,
   return RenameKeyCommandImpl(key, new_name, cmdstring);
 }
 
-common::Error ICommandTranslator::CreateKeyCommand(const NDbKValue& key, std::string* cmdstring) const {
+common::Error ICommandTranslator::CreateKeyCommand(const NDbKValue& key, command_buffer_t* cmdstring) const {
   if (!cmdstring) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
@@ -105,7 +105,7 @@ common::Error ICommandTranslator::CreateKeyCommand(const NDbKValue& key, std::st
 
 common::Error ICommandTranslator::LoadKeyCommand(const NKey& key,
                                                  common::Value::Type type,
-                                                 std::string* cmdstring) const {
+                                                 command_buffer_t* cmdstring) const {
   if (!cmdstring) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
@@ -113,7 +113,7 @@ common::Error ICommandTranslator::LoadKeyCommand(const NKey& key,
   return LoadKeyCommandImpl(key, type, cmdstring);
 }
 
-common::Error ICommandTranslator::ChangeKeyTTLCommand(const NKey& key, ttl_t ttl, std::string* cmdstring) const {
+common::Error ICommandTranslator::ChangeKeyTTLCommand(const NKey& key, ttl_t ttl, command_buffer_t* cmdstring) const {
   if (!cmdstring) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
@@ -121,7 +121,7 @@ common::Error ICommandTranslator::ChangeKeyTTLCommand(const NKey& key, ttl_t ttl
   return ChangeKeyTTLCommandImpl(key, ttl, cmdstring);
 }
 
-common::Error ICommandTranslator::LoadKeyTTLCommand(const NKey& key, std::string* cmdstring) const {
+common::Error ICommandTranslator::LoadKeyTTLCommand(const NKey& key, command_buffer_t* cmdstring) const {
   if (!cmdstring) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
@@ -129,7 +129,7 @@ common::Error ICommandTranslator::LoadKeyTTLCommand(const NKey& key, std::string
   return LoadKeyTTLCommandImpl(key, cmdstring);
 }
 
-bool ICommandTranslator::IsLoadKeyCommand(const std::string& cmd, std::string* key) const {
+bool ICommandTranslator::IsLoadKeyCommand(const command_buffer_t& cmd, string_key_t* key) const {
   if (!key) {
     return false;
   }
@@ -166,7 +166,7 @@ bool ICommandTranslator::IsLoadKeyCommand(const std::string& cmd, std::string* k
 
 common::Error ICommandTranslator::PublishCommand(const NDbPSChannel& channel,
                                                  const std::string& message,
-                                                 std::string* cmdstring) const {
+                                                 command_buffer_t* cmdstring) const {
   if (!cmdstring || message.empty()) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
@@ -174,7 +174,7 @@ common::Error ICommandTranslator::PublishCommand(const NDbPSChannel& channel,
   return PublishCommandImpl(channel, message, cmdstring);
 }
 
-common::Error ICommandTranslator::SubscribeCommand(const NDbPSChannel& channel, std::string* cmdstring) const {
+common::Error ICommandTranslator::SubscribeCommand(const NDbPSChannel& channel, command_buffer_t* cmdstring) const {
   if (!cmdstring) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
@@ -182,12 +182,12 @@ common::Error ICommandTranslator::SubscribeCommand(const NDbPSChannel& channel, 
   return SubscribeCommandImpl(channel, cmdstring);
 }
 
-common::Error ICommandTranslator::InvalidInputArguments(const std::string& cmd) {
+common::Error ICommandTranslator::InvalidInputArguments(const command_buffer_t& cmd) {
   std::string buff = common::MemSPrintf("Invalid input argument(s) for command: %s.", cmd);
   return common::make_error_value(buff, common::ErrorValue::E_ERROR);
 }
 
-common::Error ICommandTranslator::NotSupported(const std::string& cmd) {
+common::Error ICommandTranslator::NotSupported(const command_buffer_t& cmd) {
   std::string buff = common::MemSPrintf("Not supported command: %s.", cmd);
   return common::make_error_value(buff, common::ErrorValue::E_ERROR);
 }
@@ -244,7 +244,7 @@ common::Error ICommandTranslator::TestCommandArgs(const CommandHolder* cmd,
   return cmd->TestArgs(argc_to_call, argv_to_call);
 }
 
-common::Error ICommandTranslator::TestCommandLine(const std::string& cmd) const {
+common::Error ICommandTranslator::TestCommandLine(const command_buffer_t& cmd) const {
   const char* ccmd = common::utils::c_strornull(cmd);
   if (!ccmd) {
     return false;

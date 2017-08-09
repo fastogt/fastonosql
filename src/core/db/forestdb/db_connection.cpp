@@ -210,7 +210,8 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   }
 
   const string_key_t key_slice = key.GetKey();
-  fdb_status rc = fdb_set_kv(connection_.handle_->kvs, key_slice.c_str(), key_slice.size(), value.c_str(), value.size());
+  fdb_status rc =
+      fdb_set_kv(connection_.handle_->kvs, key_slice.c_str(), key_slice.size(), value.c_str(), value.size());
   if (rc != FDB_RESULT_SUCCESS) {
     std::string buff = common::MemSPrintf("set function error: %s", fdb_error_msg(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);

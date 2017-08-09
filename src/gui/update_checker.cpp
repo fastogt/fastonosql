@@ -21,10 +21,10 @@
 #include <sys/types.h>  // for ssize_t
 #include <memory>       // for __shared_ptr
 
-#include <common/error.h>              // for ErrnoError, ErrnoErrorValue
-#include <common/macros.h>             // for DCHECK
-#include <common/net/socket_tcp.h>     // for ClientSocketTcp
-#include <common/net/types.h>          // for HostAndPort
+#include <common/error.h>           // for ErrnoError, ErrnoErrorValue
+#include <common/macros.h>          // for DCHECK
+#include <common/net/socket_tcp.h>  // for ClientSocketTcp
+#include <common/net/types.h>       // for HostAndPort
 
 #include "server_config_daemon/server_config.h"
 

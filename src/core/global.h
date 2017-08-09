@@ -28,6 +28,7 @@
 #include <common/value.h>          // for ArrayValue (ptr only), etc
 
 #include "core/connection_types.h"
+#include "core/types.h"
 
 namespace fastonosql {
 namespace core {
@@ -98,7 +99,7 @@ class FastoObjectCommand : public FastoObject {
 
   core::connectionTypes ConnectionType() const;
 
-  std::string InputCommand() const;
+  command_buffer_t InputCommand() const;
   CmdLoggingType CommandLoggingType() const;
 
  protected:

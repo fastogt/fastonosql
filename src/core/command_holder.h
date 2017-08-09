@@ -28,6 +28,7 @@
 #include <common/macros.h>  // for WARN_UNUSED_RESULT
 
 #include "core/command_info.h"  // for CommandInfo
+#include "core/types.h"
 
 namespace fastonosql {
 namespace core {

@@ -50,27 +50,28 @@ class FakeTranslator : public core::ICommandTranslator {
   explicit FakeTranslator(const std::vector<core::CommandHolder>& commands) : core::ICommandTranslator(commands) {}
 
  private:
-  virtual common::Error CreateKeyCommandImpl(const core::NDbKValue& key, std::string* cmdstring) const override {
+  virtual common::Error CreateKeyCommandImpl(const core::NDbKValue& key,
+                                             core::command_buffer_t* cmdstring) const override {
     UNUSED(key);
     UNUSED(cmdstring);
     return common::Error();
   }
   virtual common::Error LoadKeyCommandImpl(const core::NKey& key,
                                            common::Value::Type type,
-                                           std::string* cmdstring) const override {
+                                           core::command_buffer_t* cmdstring) const override {
     UNUSED(key);
     UNUSED(type);
     UNUSED(cmdstring);
     return common::Error();
   }
-  virtual common::Error DeleteKeyCommandImpl(const core::NKey& key, std::string* cmdstring) const override {
+  virtual common::Error DeleteKeyCommandImpl(const core::NKey& key, core::command_buffer_t* cmdstring) const override {
     UNUSED(key);
     UNUSED(cmdstring);
     return common::Error();
   }
   virtual common::Error RenameKeyCommandImpl(const core::NKey& key,
                                              const std::string& new_name,
-                                             std::string* cmdstring) const override {
+                                             core::command_buffer_t* cmdstring) const override {
     UNUSED(key);
     UNUSED(new_name);
     UNUSED(cmdstring);
@@ -78,13 +79,13 @@ class FakeTranslator : public core::ICommandTranslator {
   }
   virtual common::Error ChangeKeyTTLCommandImpl(const core::NKey& key,
                                                 core::ttl_t ttl,
-                                                std::string* cmdstring) const override {
+                                                core::command_buffer_t* cmdstring) const override {
     UNUSED(key);
     UNUSED(ttl);
     UNUSED(cmdstring);
     return common::Error();
   }
-  virtual common::Error LoadKeyTTLCommandImpl(const core::NKey& key, std::string* cmdstring) const override {
+  virtual common::Error LoadKeyTTLCommandImpl(const core::NKey& key, core::command_buffer_t* cmdstring) const override {
     UNUSED(key);
     UNUSED(cmdstring);
     return common::Error();
@@ -97,13 +98,14 @@ class FakeTranslator : public core::ICommandTranslator {
 
   virtual common::Error PublishCommandImpl(const core::NDbPSChannel& channel,
                                            const std::string& message,
-                                           std::string* cmdstring) const override {
+                                           core::command_buffer_t* cmdstring) const override {
     UNUSED(channel);
     UNUSED(message);
     UNUSED(cmdstring);
     return common::Error();
   }
-  virtual common::Error SubscribeCommandImpl(const core::NDbPSChannel& channel, std::string* cmdstring) const override {
+  virtual common::Error SubscribeCommandImpl(const core::NDbPSChannel& channel,
+                                             core::command_buffer_t* cmdstring) const override {
     UNUSED(channel);
     UNUSED(cmdstring);
     return common::Error();

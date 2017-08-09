@@ -19,8 +19,8 @@
 #include "gui/db/rocksdb/connection_widget.h"
 
 #include <QCheckBox>
-#include <QHBoxLayout>
 #include <QComboBox>
+#include <QHBoxLayout>
 #include <QLabel>
 
 #include "proxy/db/rocksdb/connection_settings.h"

@@ -38,7 +38,7 @@ namespace {
 std::string ConvertToSSDBSlice(const key_t& key) {
   return key.GetKey();
 }
-}
+}  // namespace
 namespace internal {
 template <>
 common::Error ConnectionAllocatorTraits<ssdb::NativeConnection, ssdb::Config>::Connect(const ssdb::Config& config,

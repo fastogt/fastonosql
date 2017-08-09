@@ -47,7 +47,7 @@ MDB_val ConvertToLMDBSlice(const key_t& key) {
   mkey.mv_data = const_cast<char*>(key.GetKeyData());
   return mkey;
 }
-}
+}  // namespace
 namespace lmdb {
 struct lmdb {
   MDB_env* env;

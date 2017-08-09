@@ -390,8 +390,13 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         if (isok) {
           core::NKey k(core::key_t::MakeKeyString(key));
           core::NDbKValue dbv(k, core::NValue());
-          cmds.push_back(CreateCommandFast("TYPE " + key, core::C_INNER));
-          cmds.push_back(CreateCommandFast("TTL " + key, core::C_INNER));
+          core::string_byte_writer_t wr_type;
+          wr_type << "TYPE " << key;
+          cmds.push_back(CreateCommandFast(wr_type.GetBuffer(), core::C_INNER));
+
+          core::string_byte_writer_t wr_ttl;
+          wr_ttl << "TTL " << key;
+          cmds.push_back(CreateCommandFast(wr_ttl.GetBuffer(), core::C_INNER));
           res.keys.push_back(dbv);
         }
       }

@@ -73,7 +73,14 @@ void KeyString::SetKey(string_key_t new_key) {
 
 std::string KeyString::ToString() const {
   if (type_ == BINARY_KEY) {
-    return common::utils::hex::encode(key_, true);
+    std::string hexed = common::utils::hex::encode(key_, false);
+    std::string hexed_x;
+    for (size_t i = 0; i < hexed.size(); i += 2) {
+      hexed_x += "\\x";
+      hexed_x += hexed[i];
+      hexed_x += hexed[i + 1];
+    }
+    return hexed_x;
   }
 
   return key_;

@@ -113,9 +113,9 @@ std::string FastoObjectCommand::ToString() const {
 }
 
 std::string FastoObjectCommand::InputCmd() const {
-  std::string input_cmd;
+  command_buffer_t input_cmd;
   if (value_->GetAsString(&input_cmd)) {
-    std::pair<std::string, std::string> kv = GetKeyValueFromLine(input_cmd);
+    std::pair<std::string, std::string> kv = GetKeyValueFromLine(common::ConvertToString(input_cmd));
     return kv.first;
   }
 
@@ -123,9 +123,9 @@ std::string FastoObjectCommand::InputCmd() const {
 }
 
 std::string FastoObjectCommand::InputArgs() const {
-  std::string input_cmd;
+  command_buffer_t input_cmd;
   if (value_->GetAsString(&input_cmd)) {
-    std::pair<std::string, std::string> kv = GetKeyValueFromLine(input_cmd);
+    std::pair<std::string, std::string> kv = GetKeyValueFromLine(common::ConvertToString(input_cmd));
     return kv.second;
   }
 
@@ -136,13 +136,13 @@ core::connectionTypes FastoObjectCommand::ConnectionType() const {
   return type_;
 }
 
-std::string FastoObjectCommand::InputCommand() const {
-  std::string input_cmd;
+command_buffer_t FastoObjectCommand::InputCommand() const {
+  command_buffer_t input_cmd;
   if (value_->GetAsString(&input_cmd)) {
     return input_cmd;
   }
 
-  return std::string();
+  return command_buffer_t();
 }
 
 CmdLoggingType FastoObjectCommand::CommandLoggingType() const {

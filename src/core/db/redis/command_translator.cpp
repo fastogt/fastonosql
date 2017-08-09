@@ -47,7 +47,7 @@ namespace redis {
 
 CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands) : ICommandTranslator(commands) {}
 
-common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, std::string* cmdstring) const {
+common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, command_buffer_t* cmdstring) const {
   const NKey cur = key.GetKey();
   key_t key_str = cur.GetKey();
   std::string value_str = key.ValueString();
@@ -71,7 +71,7 @@ common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, std:
 
 common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
                                                     common::Value::Type type,
-                                                    std::string* cmdstring) const {
+                                                    command_buffer_t* cmdstring) const {
   key_t key_str = key.GetKey();
   string_byte_writer_t wr;
   if (type == common::Value::TYPE_ARRAY) {
@@ -90,7 +90,7 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
   return common::Error();
 }
 
-common::Error CommandTranslator::DeleteKeyCommandImpl(const NKey& key, std::string* cmdstring) const {
+common::Error CommandTranslator::DeleteKeyCommandImpl(const NKey& key, command_buffer_t* cmdstring) const {
   key_t key_str = key.GetKey();
   string_byte_writer_t wr;
   wr << REDIS_DELETE_KEY_COMMAND << " " << key_str;
@@ -100,7 +100,7 @@ common::Error CommandTranslator::DeleteKeyCommandImpl(const NKey& key, std::stri
 
 common::Error CommandTranslator::RenameKeyCommandImpl(const NKey& key,
                                                       const std::string& new_name,
-                                                      std::string* cmdstring) const {
+                                                      command_buffer_t* cmdstring) const {
   key_t key_str = key.GetKey();
   string_byte_writer_t wr;
   wr << REDIS_RENAME_KEY_COMMAND << " " << key_str << " " << new_name;
@@ -108,7 +108,9 @@ common::Error CommandTranslator::RenameKeyCommandImpl(const NKey& key,
   return common::Error();
 }
 
-common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key, ttl_t ttl, std::string* cmdstring) const {
+common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key,
+                                                         ttl_t ttl,
+                                                         command_buffer_t* cmdstring) const {
   key_t key_str = key.GetKey();
   string_byte_writer_t wr;
   if (ttl == NO_TTL) {
@@ -121,7 +123,7 @@ common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key, ttl_t 
   return common::Error();
 }
 
-common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key, std::string* cmdstring) const {
+common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key, command_buffer_t* cmdstring) const {
   key_t key_str = key.GetKey();
   string_byte_writer_t wr;
   wr << REDIS_GET_TTL_COMMAND << " " << key_str;
@@ -137,7 +139,7 @@ bool CommandTranslator::IsLoadKeyCommandImpl(const CommandInfo& cmd) const {
 
 common::Error CommandTranslator::PublishCommandImpl(const NDbPSChannel& channel,
                                                     const std::string& message,
-                                                    std::string* cmdstring) const {
+                                                    command_buffer_t* cmdstring) const {
   std::string channel_str = channel.Name();
   string_byte_writer_t wr;
   wr << REDIS_PUBLISH_COMMAND << " " << channel_str << " " << message;
@@ -145,7 +147,7 @@ common::Error CommandTranslator::PublishCommandImpl(const NDbPSChannel& channel,
   return common::Error();
 }
 
-common::Error CommandTranslator::SubscribeCommandImpl(const NDbPSChannel& channel, std::string* cmdstring) const {
+common::Error CommandTranslator::SubscribeCommandImpl(const NDbPSChannel& channel, command_buffer_t* cmdstring) const {
   std::string channel_str = channel.Name();
   string_byte_writer_t wr;
   wr << REDIS_SUBSCRIBE_COMMAND << " " << channel_str;

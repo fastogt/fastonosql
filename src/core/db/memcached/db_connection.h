@@ -87,8 +87,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
  private:
   common::Error DelInner(key_t key, time_t expiration) WARN_UNUSED_RESULT;
   common::Error GetInner(key_t key, std::string* ret_val) WARN_UNUSED_RESULT;
-  common::Error SetInner(key_t key, const std::string& value, time_t expiration, uint32_t flags)
-      WARN_UNUSED_RESULT;
+  common::Error SetInner(key_t key, const std::string& value, time_t expiration, uint32_t flags) WARN_UNUSED_RESULT;
   common::Error ExpireInner(key_t key, ttl_t expiration) WARN_UNUSED_RESULT;
 
   virtual common::Error ScanImpl(uint64_t cursor_in,

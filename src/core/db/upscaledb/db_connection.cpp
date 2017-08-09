@@ -50,7 +50,7 @@ ups_key_t ConvertToUpscaleDBSlice(const key_t& key) {
   dkey.data = const_cast<char*>(key.GetKeyData());
   return dkey;
 }
-}
+}  // namespace
 namespace upscaledb {
 
 struct upscaledb {

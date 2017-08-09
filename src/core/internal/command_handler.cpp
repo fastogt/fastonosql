@@ -36,7 +36,7 @@ namespace internal {
 
 CommandHandler::CommandHandler(ICommandTranslator* translator) : translator_(translator) {}
 
-common::Error CommandHandler::Execute(const std::string& command, FastoObject* out) {
+common::Error CommandHandler::Execute(const command_buffer_t& command, FastoObject* out) {
   const char* ccommand = common::utils::c_strornull(command);
   if (!ccommand) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);

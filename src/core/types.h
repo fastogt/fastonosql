@@ -27,12 +27,14 @@ class Value;
 namespace fastonosql {
 namespace core {
 
+typedef std::string command_buffer_t;
+
 struct IStateField {
   virtual common::Value* ValueByIndex(unsigned char index) const = 0;
   virtual ~IStateField();
 };
 
-std::string StableCommand(std::string command);
+command_buffer_t StableCommand(command_buffer_t command);
 
 }  // namespace core
 }  // namespace fastonosql
