@@ -90,7 +90,7 @@ bool KeyString::Equals(const KeyString& other) const {
   return type_ == other.type_;
 }
 
-KeyString KeyString::MakeKeyString(const std::string &str) {
+KeyString KeyString::MakeKeyString(const std::string& str) {
   KeyString ks;
   ks.SetKey(MAKE_BUFFER_SIZE(str.c_str(), str.size()));
   return ks;

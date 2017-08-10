@@ -1093,12 +1093,11 @@ common::Error DBConnection::ExecuteAsPipeline(const std::vector<FastoObjectComma
       continue;
     }
 
-    const char* ccommand = reinterpret_cast<const char*>(command.data());  // FIXME
     if (log_command_cb) {
       log_command_cb(cmd);
     }
     int argc = 0;
-    sds* argv = sdssplitargslong(ccommand, &argc);
+    sds* argv = sdssplitargslong_sized(command.data(), command.size(), &argc);
 
     if (argv) {
       if (isPipeLineCommand(argv[0])) {

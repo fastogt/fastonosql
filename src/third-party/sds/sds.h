@@ -249,6 +249,7 @@ sds sdscatrepr(sds s, const char *p, size_t len);
 sds *sdssplitargs(const char *line, int *argc);
 #ifdef FASTO
 int is_need_escape(const char* line, size_t len);
+sds *sdssplitargslong_sized(const unsigned char *line, size_t len, int *argc);
 sds *sdssplitargslong(const char *line, int *argc);
 sds sdsjoinsdsstable(sds *argv, int argc);
 #endif

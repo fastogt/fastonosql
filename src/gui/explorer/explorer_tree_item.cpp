@@ -205,7 +205,7 @@ void ExplorerDatabaseItem::renameKey(const core::NKey& key, const QString& newNa
   proxy::IServerSPtr server = dbs->Server();
   core::translator_t tran = server->Translator();
   core::command_buffer_t cmd_str;
-  core::string_key_t key_str = common::ConvertToBytes(common::ConvertToString(newName));  // FIXME
+  core::string_key_t key_str = common::ConvertToBytes(newName);
   common::Error err = tran->RenameKeyCommand(key, key_str, &cmd_str);
   if (err && err->IsError()) {
     LOG_ERROR(err, true);

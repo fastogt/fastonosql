@@ -41,9 +41,9 @@ common::Error CommandHandler::Execute(const command_buffer_t& command, FastoObje
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  const char* ccommand = reinterpret_cast<const char*>(command.data());  //FIXME
+  const unsigned char* ccommand = command.data();
   int argc;
-  sds* argv = sdssplitargslong(ccommand, &argc);
+  sds* argv = sdssplitargslong_sized(ccommand, command.size(), &argc);
   if (!argv) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }

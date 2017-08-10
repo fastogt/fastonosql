@@ -1085,6 +1085,136 @@ static int isneed_escape_sds(sds line){
     return is_need_escape(line, sdslen(line));
 }
 
+sds *sdssplitargslong_sized(const unsigned char *line, size_t len, int *argc) {
+    const char *p = line;
+    char *current = NULL;
+    char **vector = NULL;
+
+    *argc = 0;
+    size_t cur_pos = 0;
+    while(1) {
+        /* skip blanks */
+        while(*p && cur_pos < len && isspace_ex(*p)) { p++; cur_pos++;}
+        if (*p && cur_pos < len) {
+            /* get a token */
+            int inq=0;  /* set to 1 if we are in "quotes" */
+            int insq=0; /* set to 1 if we are in 'single quotes' */
+            int inj = 0;
+            int done=0;
+
+            if (current == NULL) current = sdsempty();
+            while(!done) {
+                if (cur_pos >= len) {
+                   done = 1;
+                   break;
+                }
+                if (inq) {
+                    if (*p == '\\' && *(p+1) == 'x' &&
+                                             is_hex_digit(*(p+2)) &&
+                                             is_hex_digit(*(p+3)))
+                    {
+                        unsigned char byte;
+
+                        byte = (hex_digit_to_int(*(p+2))*16)+
+                                hex_digit_to_int(*(p+3));
+                        current = sdscatlen(current,(char*)&byte,1);
+                        p += 3;
+                    } else if (*p == '"') {
+                        /* closing quote must be followed by a space or
+                         * nothing at all. */
+                        if (*(p+1) && !isspace(*(p+1))) {
+                            goto err;
+                        }
+                        done=1;
+                    } else if (!*p) {
+                        /* unterminated quotes */
+                        goto err;
+                    } else {
+                        current = sdscatlen(current,p,1);
+                    }
+                } else if (insq) {
+                    if (*p == '\\' && *(p+1) == '\'') {
+                        p++;
+                        cur_pos++;
+                        current = sdscatlen(current,"'",1);
+                    } else if (*p == '\'') {
+                        /* closing quote must be followed by a space or
+                         * nothing at all. */
+                        if (*(p+1) && !isspace(*(p+1))) {
+                            goto err;
+                        }
+                        done=1;
+                    } else if (!*p) {
+                        /* unterminated quotes */
+                        goto err;
+                    } else {
+                        current = sdscatlen(current,p,1);
+                    }
+                } else if (inj) {
+                    if (*p == '\\' && *(p+1) == '}') {
+                        p++;
+                        cur_pos++;
+                        current = sdscatlen(current,"}",1);
+                    } else if (*p == '{') {
+                        inj++;
+                        current = sdscatlen(current,p,1);
+                    } else if (*p == '}') {
+                        /* closing quote must be followed by a space or
+                         * nothing at all. */
+                        current = sdscatlen(current,p,1);
+                        if (inj == 1) {
+                          done=1;
+                        } else {
+                          inj--;
+                        }
+                    } else if (!*p) {
+                        /* unterminated json */
+                        goto err;
+                    } else {
+                        current = sdscatlen(current,p,1);
+                    }
+                } else {
+                    switch(*p) {
+                    case ' ':
+                    // case '\0':
+                        done=1;
+                        break;
+                    case '"':
+                        inq=1;
+                        break;
+                    case '\'':
+                        insq=1;
+                        break;
+                    case '{':
+                        inj=1;
+                    default:
+                        current = sdscatlen(current,p,1);
+                        break;
+                    }
+                }
+                if (*p) {p++; cur_pos++;}
+            }
+            /* add the token to the vector */
+            vector = s_realloc(vector,((*argc)+1)*sizeof(char*));
+            vector[*argc] = current;
+            (*argc)++;
+            current = NULL;
+        } else {
+            /* Even on empty input string return something not NULL. */
+            if (vector == NULL) vector = s_malloc(sizeof(void*));
+            return vector;
+        }
+    }
+
+err:
+    while((*argc)--)
+        sdsfree(vector[*argc]);
+    s_free(vector);
+    if (current) sdsfree(current);
+    *argc = 0;
+    return NULL;
+}
+
 sds *sdssplitargslong(const char *line, int *argc) {
     const char *p = line;
     char *current = NULL;

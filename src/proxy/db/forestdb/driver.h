@@ -60,15 +60,16 @@ class Driver : public IDriverLocal {
   virtual void InitImpl() override;
   virtual void ClearImpl() override;
   virtual core::FastoObjectCommandIPtr CreateCommand(core::FastoObject* parent,
-                                                     const std::string& input,
+                                                     const core::command_buffer_t& input,
                                                      core::CmdLoggingType ct) override;
 
-  virtual core::FastoObjectCommandIPtr CreateCommandFast(const std::string& input, core::CmdLoggingType ct) override;
+  virtual core::FastoObjectCommandIPtr CreateCommandFast(const core::command_buffer_t& input,
+                                                         core::CmdLoggingType ct) override;
 
   virtual common::Error SyncConnect() override WARN_UNUSED_RESULT;
   virtual common::Error SyncDisconnect() override WARN_UNUSED_RESULT;
 
-  virtual common::Error ExecuteImpl(const std::string& command, core::FastoObject* out) override;
+  virtual common::Error ExecuteImpl(const core::command_buffer_t& command, core::FastoObject* out) override;
   virtual common::Error CurrentServerInfo(core::IServerInfo** info) override;
   virtual common::Error CurrentDataBaseInfo(core::IDataBaseInfo** info) override;
 

@@ -70,7 +70,7 @@ class FakeTranslator : public core::ICommandTranslator {
     return common::Error();
   }
   virtual common::Error RenameKeyCommandImpl(const core::NKey& key,
-                                             const std::string& new_name,
+                                             const core::string_key_t& new_name,
                                              core::command_buffer_t* cmdstring) const override {
     UNUSED(key);
     UNUSED(new_name);

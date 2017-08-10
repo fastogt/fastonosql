@@ -102,12 +102,12 @@ void Driver::InitImpl() {}
 void Driver::ClearImpl() {}
 
 core::FastoObjectCommandIPtr Driver::CreateCommand(core::FastoObject* parent,
-                                                   const std::string& input,
+                                                   const core::command_buffer_t& input,
                                                    core::CmdLoggingType ct) {
   return proxy::CreateCommand<upscaledb::Command>(parent, input, ct);
 }
 
-core::FastoObjectCommandIPtr Driver::CreateCommandFast(const std::string& input, core::CmdLoggingType ct) {
+core::FastoObjectCommandIPtr Driver::CreateCommandFast(const core::command_buffer_t& input, core::CmdLoggingType ct) {
   return proxy::CreateCommandFast<upscaledb::Command>(input, ct);
 }
 
@@ -121,12 +121,12 @@ common::Error Driver::SyncDisconnect() {
   return impl_->Disconnect();
 }
 
-common::Error Driver::ExecuteImpl(const std::string& command, core::FastoObject* out) {
+common::Error Driver::ExecuteImpl(const core::command_buffer_t& command, core::FastoObject* out) {
   return impl_->Execute(command, out);
 }
 
 common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
-  core::FastoObjectCommandIPtr cmd = CreateCommandFast(UPSCALEDB_INFO_REQUEST, core::C_INNER);
+  core::FastoObjectCommandIPtr cmd = CreateCommandFast(MAKE_BUFFER(UPSCALEDB_INFO_REQUEST), core::C_INNER);
   LOG_COMMAND(cmd);
   core::upscaledb::ServerInfo::Stats cm;
   common::Error err = impl_->Info(nullptr, &cm);
@@ -151,7 +151,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
-  const std::string pattern_result = core::internal::GetKeysPattern(res.cursor_in, res.pattern, res.count_keys);
+  const core::command_buffer_t pattern_result = core::internal::GetKeysPattern(res.cursor_in, res.pattern, res.count_keys);
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(pattern_result, core::C_INNER);
   NotifyProgress(sender, 50);
   common::Error er = Execute(cmd);

@@ -142,9 +142,9 @@ bool ICommandTranslator::IsLoadKeyCommand(const command_buffer_t& cmd, string_ke
     return false;
   }
 
-  const char* ccmd = reinterpret_cast<const char*>(cmd.data());  // FIXME
+  const unsigned char* ccmd = cmd.data();
   int argc;
-  sds* argv = sdssplitargslong(ccmd, &argc);
+  sds* argv = sdssplitargslong_sized(ccmd, cmd.size(), &argc);
   if (!argv) {
     return false;
   }
@@ -253,9 +253,9 @@ common::Error ICommandTranslator::TestCommandLine(const command_buffer_t& cmd) c
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  const char* ccmd = reinterpret_cast<const char*>(cmd.data());  // FIXME
+  const unsigned char* ccmd = cmd.data();
   int argc;
-  sds* argv = sdssplitargslong(ccmd, &argc);
+  sds* argv = sdssplitargslong_sized(ccmd, cmd.size(), &argc);
   if (!argv) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
