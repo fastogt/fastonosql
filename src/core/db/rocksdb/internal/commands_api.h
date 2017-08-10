@@ -51,9 +51,9 @@ namespace core {
 namespace rocksdb {
 
 struct CommandsApi : public internal::ApiTraits<DBConnection> {
-  static common::Error Info(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-  static common::Error Mget(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-  static common::Error Merge(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+  static common::Error Info(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
+  static common::Error Mget(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
+  static common::Error Merge(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
 };
 
 static const internal::ConstantCommandsArray g_commands = {CommandHolder("HELP",

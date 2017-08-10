@@ -185,7 +185,7 @@ std::string DBConnection::CurrentDBName() const {
   return base_class::CurrentDBName();
 }
 
-common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) {
+common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* statsout) {
   UNUSED(args);
   if (!statsout) {
     DNOTREACHED();

@@ -41,30 +41,34 @@ common::Error CommandHandler::Execute(const command_buffer_t& command, FastoObje
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  const unsigned char* ccommand = command.data();
   int argc;
-  sds* argv = sdssplitargslong_sized(ccommand, command.size(), &argc);
+  sds* argv = sdssplitargslong_sized(command.data(), command.size(), &argc);
   if (!argv) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  const char** exec_argv = const_cast<const char**>(argv);
-  common::Error err = Execute(argc, exec_argv, out);
+  std::vector<std::string> argvv;
+  for (int i = 0; i < argc; ++i) {
+    argvv.push_back(std::string(argv[i], sdslen(argv[i])));
+  }
+  common::Error err = Execute(argvv, out);
   sdsfreesplitres(argv, argc);
   return err;
 }
 
-common::Error CommandHandler::Execute(int argc, const char** argv, FastoObject* out) {
+common::Error CommandHandler::Execute(std::vector<std::string> argv, FastoObject* out) {
   const command_t* cmd = nullptr;
   size_t off = 0;
-  common::Error err = translator_->TestCommandLineArgs(argc, argv, &cmd, &off);
+  common::Error err = translator_->TestCommandLineArgs(argv, &cmd, &off);
   if (err && err->IsError()) {
     return err;
   }
 
-  int argc_to_call = argc - off;
-  const char** argv_to_call = argv + off;
-  return cmd->func_(this, argc_to_call, argv_to_call, out);
+  std::vector<std::string> stabled;
+  for (size_t i = off; i < argv.size(); ++i) {
+    stabled.push_back(argv[i]);
+  }
+  return cmd->func_(this, stabled, out);
 }
 
 }  // namespace internal

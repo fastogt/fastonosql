@@ -40,14 +40,10 @@ bool IsBinaryKey(const command_buffer_t& key) {
   return false;
 }
 
-KeyString::KeyString() : key_(), type_(TEXT_KEY) {}
+KeyString::KeyString() : key_() {}
 
-KeyString::KeyString(const command_buffer_t& key_data) : key_(), type_() {
+KeyString::KeyString(const command_buffer_t& key_data) : key_() {
   SetKey(key_data);
-}
-
-KeyString::KeyType KeyString::GetType() const {
-  return type_;
 }
 
 string_key_t KeyString::GetKey() const {
@@ -55,8 +51,18 @@ string_key_t KeyString::GetKey() const {
 }
 
 void KeyString::SetKey(const command_buffer_t& key_data) {
-  key_ = key_data;
-  type_ = IsBinaryKey(key_data) ? BINARY_KEY : TEXT_KEY;
+  if (IsBinaryKey(key_data)) {
+    command_buffer_writer_t wr;
+    string_key_t hexed = common::utils::hex::encode(key_data, false);
+    for (size_t i = 0; i < hexed.size(); i += 2) {
+      wr << MAKE_BUFFER("\\x");
+      wr << hexed[i];
+      wr << hexed[i + 1];
+    }
+    key_ = wr.GetBuffer();
+  } else {
+    key_ = key_data;
+  }
 }
 
 const string_key_t::value_type* KeyString::GetKeyData() const {
@@ -67,27 +73,8 @@ string_key_t::size_type KeyString::GetKeySize() const {
   return key_.size();
 }
 
-std::string KeyString::ToString() const {
-  if (type_ == BINARY_KEY) {
-    string_key_t hexed = common::utils::hex::encode(key_, false);
-    std::string wr;
-    for (size_t i = 0; i < hexed.size(); i += 2) {
-      wr += "\\x";
-      wr += hexed[i];
-      wr += hexed[i + 1];
-    }
-    return wr;
-  }
-
-  return common::ConvertToString(key_);
-}
-
 bool KeyString::Equals(const KeyString& other) const {
-  if (key_ != other.key_) {
-    return false;
-  }
-
-  return type_ == other.type_;
+  return key_ == other.key_;
 }
 
 KeyString KeyString::MakeKeyString(const std::string& str) {
@@ -145,7 +132,7 @@ NKey::NKey(key_t key, ttl_t ttl_sec) : key_(key), ttl_(ttl_sec) {}
 
 KeyInfo NKey::GetInfo(const std::string& ns_separator) const {
   KeyInfo::splited_namespaces_t tokens;
-  common::Tokenize(key_.ToString(), ns_separator, &tokens);
+  common::Tokenize(common::ConvertToString(key_.GetKey()), ns_separator, &tokens);
   return KeyInfo(tokens, ns_separator);
 }
 

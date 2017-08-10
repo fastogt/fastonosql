@@ -37,7 +37,7 @@ common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, comm
   key_t key_str = cur.GetKey();
   std::string value_str = key.ValueString();
   command_buffer_writer_t wr;
-  wr << LEVELDB_SET_KEY_COMMAND << " " << key_str.GetKey() << " " << value_str;
+  wr << MAKE_BUFFER(LEVELDB_SET_KEY_COMMAND) << MAKE_BUFFER(" ") << key_str.GetKey() << MAKE_BUFFER(" ") << value_str;
   *cmdstring = wr.GetBuffer();
   return common::Error();
 }
@@ -49,7 +49,7 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
 
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
-  wr << LEVELDB_GET_KEY_COMMAND << " " << key_str.GetKey();
+  wr << MAKE_BUFFER(LEVELDB_GET_KEY_COMMAND) << MAKE_BUFFER(" \"") << key_str.GetKey() << MAKE_BUFFER("\"");
   *cmdstring = wr.GetBuffer();
   return common::Error();
 }
@@ -57,7 +57,7 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
 common::Error CommandTranslator::DeleteKeyCommandImpl(const NKey& key, command_buffer_t* cmdstring) const {
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
-  wr << LEVELDB_DELETE_KEY_COMMAND << " " << key_str.GetKey();
+  wr << MAKE_BUFFER(LEVELDB_DELETE_KEY_COMMAND) << MAKE_BUFFER(" ") << key_str.GetKey();
   *cmdstring = wr.GetBuffer();
   return common::Error();
 }
@@ -67,7 +67,7 @@ common::Error CommandTranslator::RenameKeyCommandImpl(const NKey& key,
                                                       command_buffer_t* cmdstring) const {
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
-  wr << LEVELDB_RENAME_KEY_COMMAND << " " << key_str.GetKey() << " " << new_name;
+  wr << MAKE_BUFFER(LEVELDB_RENAME_KEY_COMMAND) << MAKE_BUFFER(" ") << key_str.GetKey() << MAKE_BUFFER(" ") << new_name;
   *cmdstring = wr.GetBuffer();
   return common::Error();
 }

@@ -46,19 +46,14 @@ bool IsBinaryKey(const command_buffer_t& key);
 
 class KeyString {
  public:
-  enum KeyType { TEXT_KEY, BINARY_KEY };
   KeyString();
   explicit KeyString(const command_buffer_t& key_data);
-
-  KeyType GetType() const;
 
   string_key_t GetKey() const;
   void SetKey(const command_buffer_t& key_data);
 
   const string_key_t::value_type* GetKeyData() const;
   string_key_t::size_type GetKeySize() const;
-
-  std::string ToString() const;  // human readable string
 
   bool Equals(const KeyString& other) const;
 
@@ -67,7 +62,6 @@ class KeyString {
 
  private:
   string_key_t key_;
-  KeyType type_;
 };
 
 inline bool operator==(const KeyString& r, const KeyString& l) {

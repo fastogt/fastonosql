@@ -48,30 +48,29 @@ namespace internal {
 template <class CDBConnection>
 struct ApiTraits {
   typedef CDBConnection cdb_connection_t;
-  static common::Error Help(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+  static common::Error Help(CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
 
-  static common::Error Scan(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-  static common::Error Keys(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-  static common::Error DBkcount(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-  static common::Error FlushDB(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-  static common::Error Select(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-  static common::Error Set(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-  static common::Error Get(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-  static common::Error Rename(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-  static common::Error Delete(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-  static common::Error SetTTL(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-  static common::Error GetTTL(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
-  static common::Error Quit(CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+  static common::Error Scan(CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
+  static common::Error Keys(CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
+  static common::Error DBkcount(CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
+  static common::Error FlushDB(CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
+  static common::Error Select(CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
+  static common::Error Set(CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
+  static common::Error Get(CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
+  static common::Error Rename(CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
+  static common::Error Delete(CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
+  static common::Error SetTTL(CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
+  static common::Error GetTTL(CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
+  static common::Error Quit(CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
 };
 
 template <class CDBConnection>
 common::Error ApiTraits<CDBConnection>::Help(internal::CommandHandler* handler,
-                                             int argc,
-                                             const char** argv,
+                                             std::vector<std::string> argv,
                                              FastoObject* out) {
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
   std::string answer;
-  common::Error err = cdb->Help(argc, argv, &answer);
+  common::Error err = cdb->Help(argv, &answer);
   if (err && err->IsError()) {
     return err;
   }
@@ -84,17 +83,17 @@ common::Error ApiTraits<CDBConnection>::Help(internal::CommandHandler* handler,
 
 template <class CDBConnection>
 common::Error ApiTraits<CDBConnection>::Scan(internal::CommandHandler* handler,
-                                             int argc,
-                                             const char** argv,
+                                             std::vector<std::string> argv,
                                              FastoObject* out) {
   uint32_t cursor_in;
-  if (!common::ConvertFromString(std::string(argv[0]), &cursor_in)) {
+  if (!common::ConvertFromString(argv[0], &cursor_in)) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
+  const size_t argc = argv.size();
   std::string pattern = argc >= 3 ? argv[2] : ALL_KEYS_PATTERNS;
   uint64_t count_keys = NO_KEYS_LIMIT;
-  if (argc >= 5 && !common::ConvertFromString(std::string(argv[4]), &count_keys)) {
+  if (argc >= 5 && !common::ConvertFromString(argv[4], &count_keys)) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
@@ -126,11 +125,8 @@ common::Error ApiTraits<CDBConnection>::Scan(internal::CommandHandler* handler,
 
 template <class CDBConnection>
 common::Error ApiTraits<CDBConnection>::Keys(internal::CommandHandler* handler,
-                                             int argc,
-                                             const char** argv,
+                                             std::vector<std::string> argv,
                                              FastoObject* out) {
-  UNUSED(argc);
-
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
 
   uint64_t limit;
@@ -156,10 +152,8 @@ common::Error ApiTraits<CDBConnection>::Keys(internal::CommandHandler* handler,
 
 template <class CDBConnection>
 common::Error ApiTraits<CDBConnection>::DBkcount(internal::CommandHandler* handler,
-                                                 int argc,
-                                                 const char** argv,
+                                                 std::vector<std::string> argv,
                                                  FastoObject* out) {
-  UNUSED(argc);
   UNUSED(argv);
 
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
@@ -178,10 +172,8 @@ common::Error ApiTraits<CDBConnection>::DBkcount(internal::CommandHandler* handl
 
 template <class CDBConnection>
 common::Error ApiTraits<CDBConnection>::FlushDB(internal::CommandHandler* handler,
-                                                int argc,
-                                                const char** argv,
+                                                std::vector<std::string> argv,
                                                 FastoObject* out) {
-  UNUSED(argc);
   UNUSED(argv);
 
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
@@ -197,9 +189,9 @@ common::Error ApiTraits<CDBConnection>::FlushDB(internal::CommandHandler* handle
 }
 
 template <class CDBConnection>
-common::Error ApiTraits<CDBConnection>::Select(CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
-  UNUSED(argc);
-
+common::Error ApiTraits<CDBConnection>::Select(CommandHandler* handler,
+                                               std::vector<std::string> argv,
+                                               FastoObject* out) {
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
   common::Error err = cdb->Select(argv[0], nullptr);
   if (err && err->IsError()) {
@@ -214,17 +206,14 @@ common::Error ApiTraits<CDBConnection>::Select(CommandHandler* handler, int argc
 
 template <class CDBConnection>
 common::Error ApiTraits<CDBConnection>::Set(internal::CommandHandler* handler,
-                                            int argc,
-                                            const char** argv,
+                                            std::vector<std::string> argv,
                                             FastoObject* out) {
-  UNUSED(argc);
-
   command_buffer_writer_t wr;
   wr << argv[0];
   key_t raw_key(wr.GetBuffer());
   NKey key(raw_key);
 
-  NValue string_val(common::Value::CreateStringValue(argv[1]));
+  NValue string_val(common::Value::CreateStringValue(common::ConvertToString(argv[1])));
   NDbKValue kv(key, string_val);
 
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
@@ -242,11 +231,8 @@ common::Error ApiTraits<CDBConnection>::Set(internal::CommandHandler* handler,
 
 template <class CDBConnection>
 common::Error ApiTraits<CDBConnection>::Get(internal::CommandHandler* handler,
-                                            int argc,
-                                            const char** argv,
+                                            std::vector<std::string> argv,
                                             FastoObject* out) {
-  UNUSED(argc);
-
   command_buffer_writer_t wr;
   wr << argv[0];
   key_t raw_key(wr.GetBuffer());
@@ -268,11 +254,10 @@ common::Error ApiTraits<CDBConnection>::Get(internal::CommandHandler* handler,
 
 template <class CDBConnection>
 common::Error ApiTraits<CDBConnection>::Delete(internal::CommandHandler* handler,
-                                               int argc,
-                                               const char** argv,
+                                               std::vector<std::string> argv,
                                                FastoObject* out) {
   NKeys keysdel;
-  for (int i = 0; i < argc; ++i) {
+  for (size_t i = 0; i < argv.size(); ++i) {
     command_buffer_writer_t wr;
     wr << argv[i];
     key_t raw_key(wr.GetBuffer());
@@ -296,11 +281,8 @@ common::Error ApiTraits<CDBConnection>::Delete(internal::CommandHandler* handler
 
 template <class CDBConnection>
 common::Error ApiTraits<CDBConnection>::Rename(internal::CommandHandler* handler,
-                                               int argc,
-                                               const char** argv,
+                                               std::vector<std::string> argv,
                                                FastoObject* out) {
-  UNUSED(argc);
-
   command_buffer_writer_t wr;
   wr << argv[0];
   key_t raw_key(wr.GetBuffer());
@@ -322,11 +304,9 @@ common::Error ApiTraits<CDBConnection>::Rename(internal::CommandHandler* handler
 
 template <class CDBConnection>
 common::Error ApiTraits<CDBConnection>::SetTTL(internal::CommandHandler* handler,
-                                               int argc,
-                                               const char** argv,
+                                               std::vector<std::string> argv,
                                                FastoObject* out) {
   UNUSED(out);
-  UNUSED(argc);
 
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
   command_buffer_writer_t wr;
@@ -352,11 +332,9 @@ common::Error ApiTraits<CDBConnection>::SetTTL(internal::CommandHandler* handler
 
 template <class CDBConnection>
 common::Error ApiTraits<CDBConnection>::GetTTL(internal::CommandHandler* handler,
-                                               int argc,
-                                               const char** argv,
+                                               std::vector<std::string> argv,
                                                FastoObject* out) {
   UNUSED(out);
-  UNUSED(argc);
 
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
   command_buffer_writer_t wr;
@@ -378,10 +356,8 @@ common::Error ApiTraits<CDBConnection>::GetTTL(internal::CommandHandler* handler
 
 template <class CDBConnection>
 common::Error ApiTraits<CDBConnection>::Quit(internal::CommandHandler* handler,
-                                             int argc,
-                                             const char** argv,
+                                             std::vector<std::string> argv,
                                              FastoObject* out) {
-  UNUSED(argc);
   UNUSED(argv);
 
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);

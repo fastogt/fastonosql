@@ -28,8 +28,9 @@ namespace fastonosql {
 namespace core {
 namespace memcached {
 
-common::Error CommandsApi::Version(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
-  UNUSED(argc);
+common::Error CommandsApi::Version(internal::CommandHandler* handler,
+                                   std::vector<std::string> argv,
+                                   FastoObject* out) {
   UNUSED(argv);
   UNUSED(out);
 
@@ -37,12 +38,14 @@ common::Error CommandsApi::Version(internal::CommandHandler* handler, int argc, 
   return mem->VersionServer();
 }
 
-common::Error CommandsApi::Info(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error CommandsApi::Info(internal::CommandHandler* handler,
+                                std::vector<std::string> argv,
+                                FastoObject* out) {
   DBConnection* mem = static_cast<DBConnection*>(handler);
-  const char* args = argc == 1 ? argv[0] : nullptr;
-  if (args && strcasecmp(args, "items") == 0) {
-    const char* largv[3] = {"a", "z", "100"};
-    return Keys(handler, SIZEOFMASS(argv), largv, out);
+  std::string args = argv.size() == 1 ? argv[0] : std::string();
+  if (args.empty() && strcasecmp(args.c_str(), "items") == 0) {
+    std::vector<std::string> largv = {"a", "z", "100"};
+    return Keys(handler, largv, out);
   }
 
   ServerInfo::Stats statsout;
@@ -58,9 +61,9 @@ common::Error CommandsApi::Info(internal::CommandHandler* handler, int argc, con
   return common::Error();
 }
 
-common::Error CommandsApi::Add(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
-  UNUSED(argc);
-
+common::Error CommandsApi::Add(internal::CommandHandler* handler,
+                               std::vector<std::string> argv,
+                               FastoObject* out) {
   NKey key(key_t::MakeKeyString(argv[0]));
   DBConnection* mem = static_cast<DBConnection*>(handler);
   time_t expiration;
@@ -84,9 +87,9 @@ common::Error CommandsApi::Add(internal::CommandHandler* handler, int argc, cons
   return common::Error();
 }
 
-common::Error CommandsApi::Replace(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
-  UNUSED(argc);
-
+common::Error CommandsApi::Replace(internal::CommandHandler* handler,
+                                   std::vector<std::string> argv,
+                                   FastoObject* out) {
   NKey key(key_t::MakeKeyString(argv[0]));
   DBConnection* mem = static_cast<DBConnection*>(handler);
   time_t expiration;
@@ -110,9 +113,9 @@ common::Error CommandsApi::Replace(internal::CommandHandler* handler, int argc, 
   return common::Error();
 }
 
-common::Error CommandsApi::Append(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
-  UNUSED(argc);
-
+common::Error CommandsApi::Append(internal::CommandHandler* handler,
+                                  std::vector<std::string> argv,
+                                  FastoObject* out) {
   NKey key(key_t::MakeKeyString(argv[0]));
   DBConnection* mem = static_cast<DBConnection*>(handler);
   time_t expiration;
@@ -135,9 +138,9 @@ common::Error CommandsApi::Append(internal::CommandHandler* handler, int argc, c
   return common::Error();
 }
 
-common::Error CommandsApi::Prepend(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
-  UNUSED(argc);
-
+common::Error CommandsApi::Prepend(internal::CommandHandler* handler,
+                                   std::vector<std::string> argv,
+                                   FastoObject* out) {
   NKey key(key_t::MakeKeyString(argv[0]));
   DBConnection* mem = static_cast<DBConnection*>(handler);
   time_t expiration;
@@ -160,9 +163,9 @@ common::Error CommandsApi::Prepend(internal::CommandHandler* handler, int argc, 
   return common::Error();
 }
 
-common::Error CommandsApi::Incr(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
-  UNUSED(argc);
-
+common::Error CommandsApi::Incr(internal::CommandHandler* handler,
+                                std::vector<std::string> argv,
+                                FastoObject* out) {
   NKey key(key_t::MakeKeyString(argv[0]));
   DBConnection* mem = static_cast<DBConnection*>(handler);
   uint32_t value;
@@ -181,9 +184,9 @@ common::Error CommandsApi::Incr(internal::CommandHandler* handler, int argc, con
   return common::Error();
 }
 
-common::Error CommandsApi::Decr(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
-  UNUSED(argc);
-
+common::Error CommandsApi::Decr(internal::CommandHandler* handler,
+                                std::vector<std::string> argv,
+                                FastoObject* out) {
   NKey key(key_t::MakeKeyString(argv[0]));
   DBConnection* mem = static_cast<DBConnection*>(handler);
   uint32_t value;

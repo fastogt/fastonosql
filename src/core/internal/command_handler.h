@@ -44,7 +44,7 @@ class CommandHandler {
 
   explicit CommandHandler(ICommandTranslator* translator);  // take ownerships
   common::Error Execute(const command_buffer_t& command, FastoObject* out) WARN_UNUSED_RESULT;
-  common::Error Execute(int argc, const char** argv, FastoObject* out) WARN_UNUSED_RESULT;
+  common::Error Execute(std::vector<std::string> argv, FastoObject* out) WARN_UNUSED_RESULT;
 
   translator_t Translator() const { return translator_; }
 

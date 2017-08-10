@@ -46,16 +46,16 @@ class CommandHandler;
 namespace fastonosql {
 namespace core {
 
-common::Error TestArgsInRange(const CommandInfo& cmd, int argc, const char** argv);
-common::Error TestArgsModule2Equal1(const CommandInfo& cmd, int argc, const char** argv);
+common::Error TestArgsInRange(const CommandInfo& cmd, std::vector<std::string> argv);
+common::Error TestArgsModule2Equal1(const CommandInfo& cmd, std::vector<std::string> argv);
 
 class CommandHolder : public CommandInfo {
  public:
   friend class internal::CommandHandler;
 
   typedef internal::CommandHandler command_handler_t;
-  typedef std::function<common::Error(command_handler_t*, int, const char**, FastoObject*)> function_t;
-  typedef std::function<common::Error(const CommandInfo&, int, const char**)> test_function_t;
+  typedef std::function<common::Error(command_handler_t*, std::vector<std::string>, FastoObject*)> function_t;
+  typedef std::function<common::Error(const CommandInfo&, std::vector<std::string>)> test_function_t;
   typedef std::vector<test_function_t> test_functions_t;
 
   CommandHolder(const std::string& name,
@@ -68,9 +68,9 @@ class CommandHolder : public CommandInfo {
                 function_t func,
                 test_functions_t tests = {&TestArgsInRange});
 
-  bool IsCommand(int argc, const char** argv, size_t* offset) const;
+  bool IsCommand(std::vector<std::string> argv, size_t* offset) const;
 
-  common::Error TestArgs(int argc, const char** argv) const WARN_UNUSED_RESULT;
+  common::Error TestArgs(std::vector<std::string> argv) const WARN_UNUSED_RESULT;
 
  private:
   const function_t func_;

@@ -281,7 +281,7 @@ common::Error TestConnection(const Config& config) {
 DBConnection::DBConnection(CDBConnectionClient* client)
     : base_class(client, new CommandTranslator(base_class::Commands())), current_info_() {}
 
-common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) {
+common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* statsout) {
   if (!statsout) {
     DNOTREACHED();
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
@@ -292,7 +292,7 @@ common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) 
   }
 
   memcached_return_t error;
-  memcached_stat_st* st = memcached_stat(connection_.handle_, const_cast<char*>(args), &error);
+  memcached_stat_st* st = memcached_stat(connection_.handle_, const_cast<char*>(args.c_str()), &error);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("Stats function error: %s", memcached_strerror(connection_.handle_, error));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -338,7 +338,7 @@ common::Error DBConnection::AddIfNotExist(const NKey& key,
 
   const key_t key_str = key.GetKey();
   const string_key_t key_slice = key_str.GetKey();
-  const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());  // FIXME
+  const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());
   memcached_return_t error = memcached_add(connection_.handle_, key_slice_ptr, key_slice.size(), value.c_str(),
                                            value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
@@ -359,7 +359,7 @@ common::Error DBConnection::Replace(const NKey& key, const std::string& value, t
 
   const key_t key_str = key.GetKey();
   const string_key_t key_slice = key_str.GetKey();
-  const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());  // FIXME
+  const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());
   memcached_return_t error = memcached_replace(connection_.handle_, key_slice_ptr, key_slice.size(), value.c_str(),
                                                value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
@@ -380,7 +380,7 @@ common::Error DBConnection::Append(const NKey& key, const std::string& value, ti
 
   const key_t key_str = key.GetKey();
   const string_key_t key_slice = key_str.GetKey();
-  const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());  // FIXME
+  const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());
   memcached_return_t error = memcached_append(connection_.handle_, key_slice_ptr, key_slice.size(), value.c_str(),
                                               value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
@@ -401,7 +401,7 @@ common::Error DBConnection::Prepend(const NKey& key, const std::string& value, t
 
   const key_t key_str = key.GetKey();
   const string_key_t key_slice = key_str.GetKey();
-  const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());  // FIXME
+  const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());
   memcached_return_t error = memcached_prepend(connection_.handle_, key_slice_ptr, key_slice.size(), value.c_str(),
                                                value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
@@ -428,7 +428,7 @@ common::Error DBConnection::Incr(const NKey& key, uint32_t value, uint64_t* resu
   const key_t key_str = key.GetKey();
   const string_key_t key_slice = key_str.GetKey();
   uint64_t local_value = 0;
-  const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());  // FIXME
+  const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());
   memcached_return_t error =
       memcached_increment(connection_.handle_, key_slice_ptr, key_slice.size(), value, &local_value);
   if (error != MEMCACHED_SUCCESS) {
@@ -457,7 +457,7 @@ common::Error DBConnection::Decr(const NKey& key, uint32_t value, uint64_t* resu
   const key_t key_str = key.GetKey();
   const string_key_t key_slice = key_str.GetKey();
   uint64_t local_value = 0;
-  const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());  // FIXME
+  const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());
   memcached_return_t error =
       memcached_decrement(connection_.handle_, key_slice_ptr, key_slice.size(), value, &local_value);
   if (error != MEMCACHED_SUCCESS) {
@@ -479,7 +479,7 @@ common::Error DBConnection::DelInner(key_t key, time_t expiration) {
   }
 
   const string_key_t key_slice = key.GetKey();
-  const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());  // FIXME
+  const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());
   memcached_return_t error = memcached_delete(connection_.handle_, key_slice_ptr, key_slice.size(), expiration);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("Delete function error: %s", memcached_strerror(connection_.handle_, error));
@@ -495,7 +495,7 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value, time_t
   }
 
   const string_key_t key_slice = key.GetKey();
-  const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());  // FIXME
+  const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());
   memcached_return_t error = memcached_set(connection_.handle_, key_slice_ptr, key_slice.size(), value.c_str(),
                                            value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
@@ -521,7 +521,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   size_t value_length = 0;
 
   const string_key_t key_slice = key.GetKey();
-  const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());  // FIXME
+  const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());
   char* value = memcached_get(connection_.handle_, key_slice_ptr, key_slice.size(), &value_length, &flags, &error);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("Get function error: %s", memcached_strerror(connection_.handle_, error));
@@ -544,7 +544,7 @@ common::Error DBConnection::ExpireInner(key_t key, ttl_t expiration) {
   size_t value_length = 0;
 
   const string_key_t key_slice = key.GetKey();
-  const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());  // FIXME
+  const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());
   char* value = memcached_get(connection_.handle_, key_slice_ptr, key_slice.size(), &value_length, &flags, &error);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("EXPIRE function error: %s", memcached_strerror(connection_.handle_, error));
@@ -627,7 +627,7 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
                                      const std::string& key_end,
                                      uint64_t limit,
                                      std::vector<std::string>* ret) {
-  KeysHolder hld(key_start, key_end, limit, ret);
+  KeysHolder hld(common::ConvertToString(key_start), common::ConvertToString(key_end), limit, ret);
   memcached_dump_fn func[1] = {0};
   func[0] = memcached_dump_keys_callback;
   memcached_return_t result = memcached_dump(connection_.handle_, func, &hld, SIZEOFMASS(func));

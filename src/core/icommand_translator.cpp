@@ -22,6 +22,7 @@ extern "C" {
 #include "sds.h"
 }
 
+#include <common/convert2string.h>
 #include <common/sprintf.h>
 #include <common/string_util.h>
 #include <common/utils.h>
@@ -65,7 +66,7 @@ common::Error ICommandTranslator::SelectDBCommand(const std::string& name, comma
   }
 
   command_buffer_writer_t wr;
-  wr << SELECTDB_COMMAND << " " << name;
+  wr << MAKE_BUFFER(SELECTDB_COMMAND) << MAKE_BUFFER(" ") << name;
   *cmdstring = wr.GetBuffer();
   return common::Error();
 }
@@ -76,7 +77,7 @@ common::Error ICommandTranslator::FlushDBCommand(command_buffer_t* cmdstring) co
   }
 
   command_buffer_writer_t wr;
-  wr << FLUSHDB_COMMAND;
+  wr << MAKE_BUFFER(FLUSHDB_COMMAND);
   *cmdstring = wr.GetBuffer();
   return common::Error();
 }
@@ -142,17 +143,20 @@ bool ICommandTranslator::IsLoadKeyCommand(const command_buffer_t& cmd, string_ke
     return false;
   }
 
-  const unsigned char* ccmd = cmd.data();
   int argc;
-  sds* argv = sdssplitargslong_sized(ccmd, cmd.size(), &argc);
+  sds* argv = sdssplitargslong_sized(cmd.data(), cmd.size(), &argc);
   if (!argv) {
     return false;
   }
 
-  const char** standart_argv = const_cast<const char**>(argv);
+  std::vector<std::string> standart_argv;
+  for (int i = 0; i < argc; ++i) {
+    standart_argv.push_back(std::string(argv[i], sdslen(argv[i])));
+  }
+
   const CommandHolder* cmdh = nullptr;
   size_t off = 0;
-  common::Error err = TestCommandLineArgs(argc, standart_argv, &cmdh, &off);
+  common::Error err = TestCommandLineArgs(standart_argv, &cmdh, &off);
   if (err && err->IsError()) {
     sdsfreesplitres(argv, argc);
     return false;
@@ -196,11 +200,11 @@ common::Error ICommandTranslator::NotSupported(const std::string& cmd) {
   return common::make_error_value(buff, common::ErrorValue::E_ERROR);
 }
 
-common::Error ICommandTranslator::UnknownSequence(int argc, const char** argv) {
+common::Error ICommandTranslator::UnknownSequence(std::vector<std::string> argv) {
   std::string result;
-  for (int i = 0; i < argc; ++i) {
-    result += argv[i];
-    if (i != argc - 1) {
+  for (size_t i = 0; i < argv.size(); ++i) {
+    result += common::ConvertToString(argv[i]);
+    if (i != argv.size() - 1) {
       result += " ";
     }
   }
@@ -217,8 +221,7 @@ std::vector<CommandInfo> ICommandTranslator::Commands() const {
   return cmds;
 }
 
-common::Error ICommandTranslator::FindCommand(int argc,
-                                              const char** argv,
+common::Error ICommandTranslator::FindCommand(std::vector<std::string> argv,
                                               const CommandHolder** info,
                                               size_t* off) const {
   if (!info || !off) {
@@ -228,24 +231,22 @@ common::Error ICommandTranslator::FindCommand(int argc,
   for (size_t i = 0; i < commands_.size(); ++i) {
     const CommandHolder* cmd = &commands_[i];
     size_t loff = 0;
-    if (cmd->IsCommand(argc, argv, &loff)) {
+    if (cmd->IsCommand(argv, &loff)) {
       *info = cmd;
       *off = loff;
       return common::Error();
     }
   }
 
-  return UnknownSequence(argc, argv);
+  return UnknownSequence(argv);
 }
 
-common::Error ICommandTranslator::TestCommandArgs(const CommandHolder* cmd,
-                                                  int argc_to_call,
-                                                  const char** argv_to_call) const {
+common::Error ICommandTranslator::TestCommandArgs(const CommandHolder* cmd, std::vector<std::string> argv) const {
   if (!cmd) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  return cmd->TestArgs(argc_to_call, argv_to_call);
+  return cmd->TestArgs(argv);
 }
 
 common::Error ICommandTranslator::TestCommandLine(const command_buffer_t& cmd) const {
@@ -253,17 +254,19 @@ common::Error ICommandTranslator::TestCommandLine(const command_buffer_t& cmd) c
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  const unsigned char* ccmd = cmd.data();
   int argc;
-  sds* argv = sdssplitargslong_sized(ccmd, cmd.size(), &argc);
+  sds* argv = sdssplitargslong_sized(cmd.data(), cmd.size(), &argc);
   if (!argv) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  const char** standart_argv = const_cast<const char**>(argv);
+  std::vector<std::string> standart_argv;
+  for (int i = 0; i < argc; ++i) {
+    standart_argv.push_back(std::string(argv[i], sdslen(argv[i])));
+  }
   const CommandHolder* cmdh = nullptr;
   size_t loff = 0;
-  common::Error err = TestCommandLineArgs(argc, standart_argv, &cmdh, &loff);
+  common::Error err = TestCommandLineArgs(standart_argv, &cmdh, &loff);
   if (err && err->IsError()) {
     sdsfreesplitres(argv, argc);
     return err;
@@ -272,20 +275,21 @@ common::Error ICommandTranslator::TestCommandLine(const command_buffer_t& cmd) c
   return common::Error();
 }
 
-common::Error ICommandTranslator::TestCommandLineArgs(int argc,
-                                                      const char** argv,
+common::Error ICommandTranslator::TestCommandLineArgs(std::vector<std::string> argv,
                                                       const CommandHolder** info,
                                                       size_t* off) const {
   const CommandHolder* cmd = nullptr;
   size_t loff = 0;
-  common::Error err = FindCommand(argc, argv, &cmd, &loff);
+  common::Error err = FindCommand(argv, &cmd, &loff);
   if (err && err->IsError()) {
     return err;
   }
 
-  int argc_to_call = argc - loff;
-  const char** argv_to_call = argv + loff;
-  err = TestCommandArgs(cmd, argc_to_call, argv_to_call);
+  std::vector<std::string> stabled;
+  for (size_t i = loff; i < argv.size(); ++i) {
+    stabled.push_back(argv[i]);
+  }
+  err = TestCommandArgs(cmd, stabled);
   if (err && err->IsError()) {
     return err;
   }

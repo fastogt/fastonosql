@@ -1094,8 +1094,8 @@ sds *sdssplitargslong_sized(const unsigned char *line, size_t len, int *argc) {
     size_t cur_pos = 0;
     while(1) {
         /* skip blanks */
-        while(*p && cur_pos < len && isspace_ex(*p)) { p++; cur_pos++;}
-        if (*p && cur_pos < len) {
+        while(cur_pos < len && isspace_ex(*p)) { p++; cur_pos++;}
+        if (cur_pos < len) {
             /* get a token */
             int inq=0;  /* set to 1 if we are in "quotes" */
             int insq=0; /* set to 1 if we are in 'single quotes' */
@@ -1119,11 +1119,14 @@ sds *sdssplitargslong_sized(const unsigned char *line, size_t len, int *argc) {
                                 hex_digit_to_int(*(p+3));
                         current = sdscatlen(current,(char*)&byte,1);
                         p += 3;
+                        cur_pos +=3;
                     } else if (*p == '"') {
                         /* closing quote must be followed by a space or
                          * nothing at all. */
-                        if (*(p+1) && !isspace(*(p+1))) {
-                            goto err;
+                        if (cur_pos + 1 != len) {
+                            if (*(p+1) && !isspace(*(p+1))) {
+                                goto err;
+                            }
                         }
                         done=1;
                     } else if (!*p) {
@@ -1176,7 +1179,7 @@ sds *sdssplitargslong_sized(const unsigned char *line, size_t len, int *argc) {
                 } else {
                     switch(*p) {
                     case ' ':
-                    // case '\0':
+                    case '\0':
                         done=1;
                         break;
                     case '"':

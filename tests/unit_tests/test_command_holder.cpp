@@ -16,8 +16,7 @@ using namespace fastonosql;
 
 core::internal::CommandHandler* ghand = NULL;
 
-common::Error test(core::internal::CommandHandler* handler, int argc, const char** argv, core::FastoObject* out) {
-  UNUSED(argc);
+common::Error test(core::internal::CommandHandler* handler, std::vector<std::string> argv, core::FastoObject* out) {
   UNUSED(argv);
 
   CHECK(handler == ghand);
@@ -116,32 +115,32 @@ TEST(CommandHolder, execute) {
   FakeTranslator* ft = new FakeTranslator(cmds);
   core::internal::CommandHandler* hand = new core::internal::CommandHandler(ft);
   ghand = hand;
-  const char* cmd_valid_set[] = {SET, "alex", "palec"};
-  common::Error err = hand->Execute(SIZEOFMASS(cmd_valid_set), cmd_valid_set, NULL);
+  const std::vector<std::string> cmd_valid_set = {SET, "alex", "palec"};
+  common::Error err = hand->Execute(cmd_valid_set, NULL);
   ASSERT_FALSE(err && err->IsError());
 
-  const char* cmd_invalid_set[] = {SET, "alex"};
-  err = hand->Execute(SIZEOFMASS(cmd_invalid_set), cmd_invalid_set, NULL);
+  const std::vector<std::string> cmd_invalid_set = {SET, "alex"};
+  err = hand->Execute(cmd_invalid_set, NULL);
   ASSERT_TRUE(err && err->IsError());
 
-  const char* cmd_not_exists[] = {GET, "alex"};
-  err = hand->Execute(SIZEOFMASS(cmd_not_exists), cmd_not_exists, NULL);
+  const std::vector<std::string> cmd_not_exists = {GET, "alex"};
+  err = hand->Execute(cmd_not_exists, NULL);
   ASSERT_TRUE(err && err->IsError());
 
-  const char* cmd_get_config[] = {GET, CONFIG, "alex"};
-  err = hand->Execute(SIZEOFMASS(cmd_get_config), cmd_get_config, NULL);
+  const std::vector<std::string> cmd_get_config = {GET, CONFIG, "alex"};
+  err = hand->Execute(cmd_get_config, NULL);
   ASSERT_TRUE(!err);
 
-  const char* cmd_get_config_invalid[] = {GET_CONFIG_INVALID, "alex"};
-  err = hand->Execute(SIZEOFMASS(cmd_get_config_invalid), cmd_get_config_invalid, NULL);
+  const std::vector<std::string> cmd_get_config_invalid = {GET_CONFIG_INVALID, "alex"};
+  err = hand->Execute(cmd_get_config_invalid, NULL);
   ASSERT_TRUE(err && err->IsError());
 
-  const char* cmd_get2[] = {GET2, "alex"};
-  err = hand->Execute(SIZEOFMASS(cmd_get2), cmd_get2, NULL);
+  const std::vector<std::string> cmd_get2 = {GET2, "alex"};
+  err = hand->Execute(cmd_get2, NULL);
   ASSERT_TRUE(!err);
 
-  const char* cmd_get_config_many_args[] = {GET, CONFIG, "last", "alex"};
-  err = hand->Execute(SIZEOFMASS(cmd_get_config_many_args), cmd_get_config_many_args, NULL);
+  const std::vector<std::string> cmd_get_config_many_args = {GET, CONFIG, "last", "alex"};
+  err = hand->Execute(cmd_get_config_many_args, NULL);
   ASSERT_TRUE(err && err->IsError());
 
   delete hand;

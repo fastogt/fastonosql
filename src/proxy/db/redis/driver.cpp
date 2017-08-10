@@ -248,7 +248,7 @@ void Driver::HandleChangePasswordEvent(events::ChangePasswordRequestEvent* ev) {
   events::ChangePasswordResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 25);
   core::command_buffer_writer_t wr;
-  wr << REDIS_SET_PASSWORD_COMMAND << " " << res.new_password;
+  wr << MAKE_BUFFER(REDIS_SET_PASSWORD_COMMAND) << MAKE_BUFFER(" ") << res.new_password;
   core::command_buffer_t pattern_result = wr.GetBuffer();
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(pattern_result, core::C_INNER);
   common::Error er = Execute(cmd);
@@ -267,7 +267,7 @@ void Driver::HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEv
   events::ChangeMaxConnectionResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 25);
   core::command_buffer_writer_t wr;
-  wr << REDIS_SET_MAX_CONNECTIONS_COMMAND << " " << common::ConvertToString(res.max_connection);
+  wr << MAKE_BUFFER(REDIS_SET_MAX_CONNECTIONS_COMMAND) << MAKE_BUFFER(" ") << common::ConvertToString(res.max_connection);
   core::command_buffer_t pattern_result = wr.GetBuffer();
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(pattern_result, core::C_INNER);
   common::Error er = Execute(cmd);
@@ -396,11 +396,11 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
           core::NKey k(core::key_t::MakeKeyString(key));
           core::NDbKValue dbv(k, core::NValue());
           core::command_buffer_writer_t wr_type;
-          wr_type << "TYPE " << key;
+          wr_type << MAKE_BUFFER("TYPE ") << key;
           cmds.push_back(CreateCommandFast(wr_type.GetBuffer(), core::C_INNER));
 
           core::command_buffer_writer_t wr_ttl;
-          wr_ttl << "TTL " << key;
+          wr_ttl << MAKE_BUFFER("TTL ") << key;
           cmds.push_back(CreateCommandFast(wr_ttl.GetBuffer(), core::C_INNER));
           res.keys.push_back(dbv);
         }
@@ -481,7 +481,7 @@ void Driver::HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoReq
 
   NotifyProgress(sender, 50);
   core::command_buffer_writer_t wr;
-  wr << "CONFIG SET " << res.new_item.first << " " << res.new_item.second;
+  wr << MAKE_BUFFER("CONFIG SET ") << res.new_item.first << MAKE_BUFFER(" ") << res.new_item.second;
   core::command_buffer_t change_request = wr.GetBuffer();
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(change_request, core::C_INNER);
   common::Error er = Execute(cmd);
@@ -502,7 +502,7 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
 
   NotifyProgress(sender, 50);
   core::command_buffer_writer_t wr;
-  wr << REDIS_PUBSUB_CHANNELS_COMMAND << " " << res.pattern;
+  wr << MAKE_BUFFER(REDIS_PUBSUB_CHANNELS_COMMAND) << MAKE_BUFFER(" ") << res.pattern;
   const core::command_buffer_t load_channels_request = wr.GetBuffer();
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(load_channels_request, core::C_INNER);
   common::Error err = Execute(cmd);
@@ -530,7 +530,7 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
         bool isok = arm->GetString(i, &channel);
         if (isok) {
           core::command_buffer_writer_t wr2;
-          wr2 << REDIS_PUBSUB_NUMSUB_COMMAND << " " << channel;
+          wr2 << MAKE_BUFFER(REDIS_PUBSUB_NUMSUB_COMMAND) << MAKE_BUFFER(" ") << channel;
           core::NDbPSChannel c(channel, 0);
           cmds.push_back(CreateCommandFast(wr2.GetBuffer(), core::C_INNER));
           res.channels.push_back(c);

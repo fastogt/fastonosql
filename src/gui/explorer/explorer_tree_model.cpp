@@ -115,11 +115,6 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
     } else if (type == IExplorerTreeItem::eNamespace) {
       ExplorerNSItem* ns = static_cast<ExplorerNSItem*>(node);
       return trNamespace_1S.arg(ns->keyCount());
-    } else if (type == IExplorerTreeItem::eKey) {
-      ExplorerKeyItem* key = static_cast<ExplorerKeyItem*>(node);
-      core::NKey nkey = key->key();
-      core::key_t key_str = nkey.GetKey();
-      return trKey_1S.arg(key_str.GetType() == core::key_t::BINARY_KEY ? "hex" : "text");
     }
 
     return QVariant();
@@ -172,13 +167,6 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
       ExplorerDatabaseItem* db = static_cast<ExplorerDatabaseItem*>(node);
       if (db->isDefault()) {
         return QVariant(QColor(Qt::red));
-      }
-    } else if (type == IExplorerTreeItem::eKey) {
-      ExplorerKeyItem* key = static_cast<ExplorerKeyItem*>(node);
-      core::NKey nkey = key->key();
-      core::key_t key_str = nkey.GetKey();
-      if (key_str.GetType() == core::key_t::BINARY_KEY) {
-        return QVariant(QColor(Qt::gray));
       }
     }
   }
@@ -558,7 +546,7 @@ ExplorerNSItem* ExplorerTreeModel::findNSItem(IExplorerTreeItem* db_or_ns, const
 ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_ns, const core::KeyInfo& kinf) {
   std::string nspace = kinf.GetNspace();
   QString qnspace;
-  common::ConvertFromString(nspace, &qnspace);  //FIXME
+  common::ConvertFromString(nspace, &qnspace);
   ExplorerNSItem* founded_item = findNSItem(db_or_ns, qnspace);
   if (founded_item) {
     return founded_item;
@@ -569,7 +557,7 @@ ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_n
   for (size_t i = 0; i < sz; ++i) {
     ExplorerNSItem* item = nullptr;
     nspace = kinf.JoinNamespace(i);
-    common::ConvertFromString(common::ConvertToString(nspace), &qnspace);  //FIXME
+    common::ConvertFromString(nspace, &qnspace);
     for (size_t j = 0; j < par->childrenCount(); ++j) {
       ExplorerNSItem* ns_item = dynamic_cast<ExplorerNSItem*>(par->child(j));  // +
       if (!ns_item) {

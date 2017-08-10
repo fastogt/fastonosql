@@ -115,7 +115,7 @@ common::Error TestConnection(const Config& config) {
 DBConnection::DBConnection(CDBConnectionClient* client)
     : base_class(client, new CommandTranslator(base_class::Commands())) {}
 
-common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) {
+common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* statsout) {
   if (!statsout) {
     DNOTREACHED();
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
@@ -126,7 +126,7 @@ common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) 
   }
 
   std::vector<std::string> ret;
-  auto st = connection_.handle_->info(args ? args : std::string(), &ret);
+  auto st = connection_.handle_->info(args, &ret);
   if (st.error()) {
     std::string buff = common::MemSPrintf("info function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);

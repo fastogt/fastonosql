@@ -220,7 +220,7 @@ common::Error DBConnection::Connect(const config_t& config) {
   return common::Error();
 }
 
-common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) {
+common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* statsout) {
   UNUSED(args);
   if (!statsout) {
     DNOTREACHED();

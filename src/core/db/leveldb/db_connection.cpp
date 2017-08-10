@@ -134,7 +134,7 @@ common::Error TestConnection(const Config& config) {
 DBConnection::DBConnection(CDBConnectionClient* client)
     : base_class(client, new CommandTranslator(base_class::Commands())) {}
 
-common::Error DBConnection::Info(const char* args, ServerInfo::Stats* statsout) {
+common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* statsout) {
   UNUSED(args);
 
   if (!statsout) {
@@ -217,7 +217,7 @@ common::Error DBConnection::DelInner(key_t key) {
   }
 
   const string_key_t key_str = key.GetKey();
-  const ::leveldb::Slice key_slice(reinterpret_cast<const char*>(key_str.data()), key_str.size());  // FIXME
+  const ::leveldb::Slice key_slice(reinterpret_cast<const char*>(key_str.data()), key_str.size());
   ::leveldb::WriteOptions wo;
   auto st = connection_.handle_->Delete(wo, key_slice);
   if (!st.ok()) {
@@ -233,7 +233,7 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   }
 
   const string_key_t key_str = key.GetKey();
-  const ::leveldb::Slice key_slice(reinterpret_cast<const char*>(key_str.data()), key_str.size());  // FIXME
+  const ::leveldb::Slice key_slice(reinterpret_cast<const char*>(key_str.data()), key_str.size());
   ::leveldb::WriteOptions wo;
   auto st = connection_.handle_->Put(wo, key_slice, value);
   if (!st.ok()) {
@@ -250,7 +250,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   }
 
   const string_key_t key_str = key.GetKey();
-  const ::leveldb::Slice key_slice(reinterpret_cast<const char*>(key_str.data()), key_str.size());  // FIXME
+  const ::leveldb::Slice key_slice(reinterpret_cast<const char*>(key_str.data()), key_str.size());
   ::leveldb::ReadOptions ro;
   auto st = connection_.handle_->Get(ro, key_slice, ret_val);
   if (!st.ok()) {
@@ -304,12 +304,15 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
                                      const std::string& key_end,
                                      uint64_t limit,
                                      std::vector<std::string>* ret) {
+  std::string skey_start = common::ConvertToString(key_start);
+  std::string skey_end = common::ConvertToString(key_end);
+
   ::leveldb::ReadOptions ro;
   ::leveldb::Iterator* it = connection_.handle_->NewIterator(ro);  // keys(key_start, key_end, limit, ret);
-  for (it->Seek(key_start); it->Valid(); it->Next()) {
+  for (it->Seek(skey_start); it->Valid(); it->Next()) {
     std::string key = it->key().ToString();
     if (ret->size() < limit) {
-      if (key < key_end) {
+      if (key < skey_end) {
         ret->push_back(key);
       }
     } else {

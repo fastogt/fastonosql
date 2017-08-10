@@ -28,7 +28,7 @@ namespace core {
 namespace leveldb {
 
 struct CommandsApi : public internal::ApiTraits<DBConnection> {
-  static common::Error Info(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out);
+  static common::Error Info(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
 };
 
 static internal::ConstantCommandsArray g_commands = {CommandHolder("HELP",

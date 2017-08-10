@@ -22,11 +22,13 @@ namespace fastonosql {
 namespace core {
 namespace leveldb {
 
-common::Error CommandsApi::Info(internal::CommandHandler* handler, int argc, const char** argv, FastoObject* out) {
+common::Error CommandsApi::Info(internal::CommandHandler* handler,
+                                std::vector<std::string> argv,
+                                FastoObject* out) {
   DBConnection* level = static_cast<DBConnection*>(handler);
 
   ServerInfo::Stats statsout;
-  common::Error err = level->Info(argc == 1 ? argv[0] : nullptr, &statsout);
+  common::Error err = level->Info(argv.size() == 1 ? argv[0] : std::string(), &statsout);
   if (err && err->IsError()) {
     return err;
   }

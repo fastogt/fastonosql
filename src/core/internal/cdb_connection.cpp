@@ -31,8 +31,8 @@ namespace internal {
 
 command_buffer_t GetKeysPattern(uint64_t cursor_in, const std::string& pattern, uint64_t count_keys) {
   command_buffer_writer_t wr;
-  wr << "SCAN " << common::ConvertToString(cursor_in) << " MATCH " << pattern << " COUNT "
-     << common::ConvertToString(count_keys);
+  wr << MAKE_BUFFER("SCAN ") << common::ConvertToString(cursor_in) << MAKE_BUFFER(" MATCH ") << pattern
+     << MAKE_BUFFER(" COUNT ") << common::ConvertToString(count_keys);
   return wr.GetBuffer();
 }
 

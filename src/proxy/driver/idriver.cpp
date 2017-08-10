@@ -108,6 +108,7 @@ struct RegisterTypes {
     qRegisterMetaType<core::IDataBaseInfoSPtr>("core::IDataBaseInfoSPtr");
     qRegisterMetaType<core::ttl_t>("core::ttl_t");
     qRegisterMetaType<core::command_buffer_t>("core::command_buffer_t");
+    qRegisterMetaType<core::string_key_t>("core::string_key_t");
     qRegisterMetaType<core::ServerInfoSnapShoot>("core::ServerInfoSnapShoot");
   }
 } reg_type;

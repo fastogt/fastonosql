@@ -86,11 +86,11 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
   static const char* BasedOn();
   static const char* VersionApi();
 
-  std::string CurrentDBName() const;                                                        //
-  common::Error Help(int argc, const char** argv, std::string* answer) WARN_UNUSED_RESULT;  //
+  std::string CurrentDBName() const;                                                               //
+  common::Error Help(std::vector<std::string> argv, std::string* answer) WARN_UNUSED_RESULT;  //
 
   common::Error Scan(uint64_t cursor_in,
-                     const std::string& pattern,
+                     const std::string &pattern,
                      uint64_t count_keys,
                      std::vector<std::string>* keys_out,
                      uint64_t* cursor_out) WARN_UNUSED_RESULT;  // nvi
@@ -140,8 +140,10 @@ std::string CDBConnection<NConnection, Config, ContType>::CurrentDBName() const 
 }
 
 template <typename NConnection, typename Config, connectionTypes ContType>
-common::Error CDBConnection<NConnection, Config, ContType>::Help(int argc, const char** argv, std::string* answer) {
-  if (!answer || argc < 0) {
+common::Error CDBConnection<NConnection, Config, ContType>::Help(std::vector<std::string> argv,
+                                                                 std::string* answer) {
+  size_t argc = argv.size();
+  if (!answer) {
     DNOTREACHED();
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
@@ -169,7 +171,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::Help(int argc, const
 
   const CommandHolder* cmd = nullptr;
   size_t off = 0;
-  common::Error err = tran->FindCommand(argc, argv, &cmd, &off);
+  common::Error err = tran->FindCommand(argv, &cmd, &off);
   if (err && err->IsError()) {
     return err;
   }
