@@ -42,7 +42,7 @@ struct CommandInfo {
   uint16_t MaxArgumentsCount() const;
   uint8_t MinArgumentsCount() const;
 
-  bool IsEqualName(const std::string& cmd_name) const;
+  bool IsEqualName(const std::string &cmd_name) const;
 
   const std::string name;
   const std::string params;

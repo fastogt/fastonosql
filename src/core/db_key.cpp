@@ -30,7 +30,7 @@
 namespace fastonosql {
 namespace core {
 
-bool IsBinaryKey(const std::string& key) {
+bool IsBinaryKey(const command_buffer_t& key) {
   for (size_t i = 0; i < key.size(); ++i) {
     char c = key[i];
     if (isprint(c) == 0) {  // should be hexed symbol
@@ -42,7 +42,7 @@ bool IsBinaryKey(const std::string& key) {
 
 KeyString::KeyString() : key_(), type_(TEXT_KEY) {}
 
-KeyString::KeyString(const common::string_byte_writer& key_data) : key_(), type_() {
+KeyString::KeyString(const command_buffer_t& key_data) : key_(), type_() {
   SetKey(key_data);
 }
 
@@ -54,36 +54,32 @@ string_key_t KeyString::GetKey() const {
   return key_;
 }
 
-void KeyString::SetKey(const common::string_byte_writer& key_data) {
-  SetKey(key_data.GetBuffer());
+void KeyString::SetKey(const command_buffer_t& key_data) {
+  key_ = key_data;
+  type_ = IsBinaryKey(key_data) ? BINARY_KEY : TEXT_KEY;
 }
 
 const string_key_t::value_type* KeyString::GetKeyData() const {
-  return key_.c_str();
+  return key_.data();
 }
 
 string_key_t::size_type KeyString::GetKeySize() const {
   return key_.size();
 }
 
-void KeyString::SetKey(string_key_t new_key) {
-  key_ = new_key;
-  type_ = IsBinaryKey(new_key) ? BINARY_KEY : TEXT_KEY;
-}
-
 std::string KeyString::ToString() const {
   if (type_ == BINARY_KEY) {
-    std::string hexed = common::utils::hex::encode(key_, false);
-    std::string hexed_x;
+    string_key_t hexed = common::utils::hex::encode(key_, false);
+    std::string wr;
     for (size_t i = 0; i < hexed.size(); i += 2) {
-      hexed_x += "\\x";
-      hexed_x += hexed[i];
-      hexed_x += hexed[i + 1];
+      wr += "\\x";
+      wr += hexed[i];
+      wr += hexed[i + 1];
     }
-    return hexed_x;
+    return wr;
   }
 
-  return key_;
+  return common::ConvertToString(key_);
 }
 
 bool KeyString::Equals(const KeyString& other) const {
@@ -94,16 +90,22 @@ bool KeyString::Equals(const KeyString& other) const {
   return type_ == other.type_;
 }
 
+KeyString KeyString::MakeKeyString(const std::string &str) {
+  KeyString ks;
+  ks.SetKey(MAKE_BUFFER_SIZE(str.c_str(), str.size()));
+  return ks;
+}
+
 KeyString KeyString::MakeKeyString(string_key_t str) {
   KeyString ks;
   ks.SetKey(str);
   return ks;
 }
 
-KeyInfo::KeyInfo(const splited_namespaces_t& splited_namespaces_and_key, string_key_t ns_separator)
+KeyInfo::KeyInfo(const splited_namespaces_t& splited_namespaces_and_key, std::string ns_separator)
     : splited_namespaces_and_key_(splited_namespaces_and_key), ns_separator_(ns_separator) {}
 
-string_key_t KeyInfo::GetKey() const {
+std::string KeyInfo::GetKey() const {
   return common::JoinString(splited_namespaces_and_key_, ns_separator_);
 }
 
@@ -112,7 +114,7 @@ bool KeyInfo::HasNamespace() const {
   return ns_size > 0;
 }
 
-string_key_t KeyInfo::GetNspace() const {
+std::string KeyInfo::GetNspace() const {
   return JoinNamespace(splited_namespaces_and_key_.size() - 1);
 }
 
@@ -124,24 +126,24 @@ size_t KeyInfo::GetNspaceSize() const {
   return splited_namespaces_and_key_.size() - 1;
 }
 
-string_key_t KeyInfo::JoinNamespace(size_t pos) const {
+std::string KeyInfo::JoinNamespace(size_t pos) const {
   size_t ns_size = GetNspaceSize();
   if (ns_size > pos) {
-    std::vector<string_key_t> copy;
+    std::vector<std::string> copy;
     for (size_t i = 0; i <= pos; ++i) {
       copy.push_back(splited_namespaces_and_key_[i]);
     }
     return common::JoinString(copy, ns_separator_);
   }
 
-  return string_key_t();
+  return std::string();
 }
 
 NKey::NKey() : key_(), ttl_(NO_TTL) {}
 
 NKey::NKey(key_t key, ttl_t ttl_sec) : key_(key), ttl_(ttl_sec) {}
 
-KeyInfo NKey::GetInfo(string_key_t ns_separator) const {
+KeyInfo NKey::GetInfo(const std::string& ns_separator) const {
   KeyInfo::splited_namespaces_t tokens;
   common::Tokenize(key_.ToString(), ns_separator, &tokens);
   return KeyInfo(tokens, ns_separator);

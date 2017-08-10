@@ -37,12 +37,12 @@ common::Error ParseCommands(const command_buffer_t& cmd, std::vector<command_buf
   }
 
   std::vector<command_buffer_t> commands;
-  size_t commands_count = common::Tokenize(cmd, "\n", &commands);
+  size_t commands_count = common::Tokenize(cmd, {'\n'}, &commands);
   if (!commands_count) {
     return common::make_error_value("Invaid command line.", common::ErrorValue::E_ERROR);
   }
 
-  std::vector<std::string> stable_commands;
+  std::vector<command_buffer_t> stable_commands;
   for (command_buffer_t input : commands) {
     command_buffer_t stable_input = StableCommand(input);
     if (stable_input.empty()) {
@@ -64,7 +64,9 @@ common::Error ICommandTranslator::SelectDBCommand(const std::string& name, comma
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  *cmdstring = common::MemSPrintf(SELECTDB_COMMAND_1S, name);
+  command_buffer_writer_t wr;
+  wr << SELECTDB_COMMAND << " " << name;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
@@ -73,7 +75,9 @@ common::Error ICommandTranslator::FlushDBCommand(command_buffer_t* cmdstring) co
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  *cmdstring = FLUSHDB_COMMAND;
+  command_buffer_writer_t wr;
+  wr << FLUSHDB_COMMAND;
+  *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
@@ -86,7 +90,7 @@ common::Error ICommandTranslator::DeleteKeyCommand(const NKey& key, command_buff
 }
 
 common::Error ICommandTranslator::RenameKeyCommand(const NKey& key,
-                                                   const std::string& new_name,
+                                                   const string_key_t& new_name,
                                                    command_buffer_t* cmdstring) const {
   if (!cmdstring) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
@@ -134,11 +138,11 @@ bool ICommandTranslator::IsLoadKeyCommand(const command_buffer_t& cmd, string_ke
     return false;
   }
 
-  const char* ccmd = common::utils::c_strornull(cmd);
-  if (!ccmd) {
+  if (cmd.empty()) {
     return false;
   }
 
+  const char* ccmd = reinterpret_cast<const char*>(cmd.data());  // FIXME
   int argc;
   sds* argv = sdssplitargslong(ccmd, &argc);
   if (!argv) {
@@ -155,7 +159,7 @@ bool ICommandTranslator::IsLoadKeyCommand(const command_buffer_t& cmd, string_ke
   }
 
   if (IsLoadKeyCommandImpl(*cmdh)) {
-    *key = argv[off];
+    *key = MAKE_BUFFER_SIZE(argv[off], strlen(argv[off]));  // FIXME
     sdsfreesplitres(argv, argc);
     return true;
   }
@@ -182,12 +186,12 @@ common::Error ICommandTranslator::SubscribeCommand(const NDbPSChannel& channel, 
   return SubscribeCommandImpl(channel, cmdstring);
 }
 
-common::Error ICommandTranslator::InvalidInputArguments(const command_buffer_t& cmd) {
+common::Error ICommandTranslator::InvalidInputArguments(const std::string& cmd) {
   std::string buff = common::MemSPrintf("Invalid input argument(s) for command: %s.", cmd);
   return common::make_error_value(buff, common::ErrorValue::E_ERROR);
 }
 
-common::Error ICommandTranslator::NotSupported(const command_buffer_t& cmd) {
+common::Error ICommandTranslator::NotSupported(const std::string& cmd) {
   std::string buff = common::MemSPrintf("Not supported command: %s.", cmd);
   return common::make_error_value(buff, common::ErrorValue::E_ERROR);
 }
@@ -245,11 +249,11 @@ common::Error ICommandTranslator::TestCommandArgs(const CommandHolder* cmd,
 }
 
 common::Error ICommandTranslator::TestCommandLine(const command_buffer_t& cmd) const {
-  const char* ccmd = common::utils::c_strornull(cmd);
-  if (!ccmd) {
-    return false;
+  if (cmd.empty()) {
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
+  const char* ccmd = reinterpret_cast<const char*>(cmd.data());  // FIXME
   int argc;
   sds* argv = sdssplitargslong(ccmd, &argc);
   if (!argv) {

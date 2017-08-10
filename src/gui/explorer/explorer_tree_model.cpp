@@ -556,9 +556,9 @@ ExplorerNSItem* ExplorerTreeModel::findNSItem(IExplorerTreeItem* db_or_ns, const
 }
 
 ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_ns, const core::KeyInfo& kinf) {
-  core::string_key_t nspace = kinf.GetNspace();
+  std::string nspace = kinf.GetNspace();
   QString qnspace;
-  common::ConvertFromString(nspace, &qnspace);
+  common::ConvertFromString(nspace, &qnspace);  //FIXME
   ExplorerNSItem* founded_item = findNSItem(db_or_ns, qnspace);
   if (founded_item) {
     return founded_item;
@@ -569,7 +569,7 @@ ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_n
   for (size_t i = 0; i < sz; ++i) {
     ExplorerNSItem* item = nullptr;
     nspace = kinf.JoinNamespace(i);
-    common::ConvertFromString(nspace, &qnspace);
+    common::ConvertFromString(common::ConvertToString(nspace), &qnspace);  //FIXME
     for (size_t j = 0; j < par->childrenCount(); ++j) {
       ExplorerNSItem* ns_item = dynamic_cast<ExplorerNSItem*>(par->child(j));  // +
       if (!ns_item) {

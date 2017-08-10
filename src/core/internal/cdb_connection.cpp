@@ -22,10 +22,15 @@
 
 namespace fastonosql {
 namespace core {
+
+CDBConnectionClient::~CDBConnectionClient() {}
+
 namespace internal {
 
-std::string GetKeysPattern(uint64_t cursor_in, const std::string& pattern, uint64_t count_keys) {
-  return common::MemSPrintf(GET_KEYS_PATTERN_3ARGS_ISI, cursor_in, pattern, count_keys);
+command_buffer_t GetKeysPattern(uint64_t cursor_in, const std::string& pattern, uint64_t count_keys) {
+  command_buffer_writer_t wr;
+  wr << "SCAN " << cursor_in << " MATCH " << pattern << " COUNT " << count_keys;
+  return wr.GetBuffer();
 }
 
 }  // namespace internal

@@ -99,12 +99,12 @@ void Driver::InitImpl() {}
 void Driver::ClearImpl() {}
 
 core::FastoObjectCommandIPtr Driver::CreateCommand(core::FastoObject* parent,
-                                                   const std::string& input,
+                                                   const core::command_buffer_t& input,
                                                    core::CmdLoggingType ct) {
   return proxy::CreateCommand<memcached::Command>(parent, input, ct);
 }
 
-core::FastoObjectCommandIPtr Driver::CreateCommandFast(const std::string& input, core::CmdLoggingType ct) {
+core::FastoObjectCommandIPtr Driver::CreateCommandFast(const core::command_buffer_t& input, core::CmdLoggingType ct) {
   return proxy::CreateCommandFast<memcached::Command>(input, ct);
 }
 
@@ -118,7 +118,7 @@ common::Error Driver::SyncDisconnect() {
   return impl_->Disconnect();
 }
 
-common::Error Driver::ExecuteImpl(const std::string& command, core::FastoObject* out) {
+common::Error Driver::ExecuteImpl(const core::command_buffer_t& command, core::FastoObject* out) {
   return impl_->Execute(command, out);
 }
 
@@ -200,8 +200,8 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         if (ar->GetString(i, &key_str)) {
           core::key_t key = core::key_t::MakeKeyString(key_str);
           core::NKey k(key);
-          core::string_byte_writer_t wr;
-          wr << "TTL " << key;
+          core::command_buffer_writer_t wr;
+          wr << "TTL " << key.GetKey();
           core::FastoObjectCommandIPtr cmd_ttl = CreateCommandFast(wr.GetBuffer(), core::C_INNER);
           LOG_COMMAND(cmd_ttl);
           core::ttl_t ttl = NO_TTL;

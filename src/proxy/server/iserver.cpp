@@ -625,7 +625,7 @@ void IServer::HandleCheckDBKeys(core::IDataBaseInfoSPtr db, core::ttl_t expired_
       const core::ttl_t new_ttl = key_ttl - expired_time;
       if (new_ttl == NO_TTL) {
         core::translator_t trans = Translator();
-        std::string load_ttl_cmd;
+        core::command_buffer_t load_ttl_cmd;
         common::Error err = trans->LoadKeyTTLCommand(nkey, &load_ttl_cmd);
         if (err && err->IsError()) {
           return;

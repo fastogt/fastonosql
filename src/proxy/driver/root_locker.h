@@ -36,7 +36,7 @@ namespace proxy {
 
 class RootLocker : core::FastoObject::IFastoObjectObserver {
  public:
-  RootLocker(IDriver* parent, QObject* receiver, const std::string& text, bool silence);
+  RootLocker(IDriver* parent, QObject* receiver, const core::command_buffer_t& text, bool silence);
   virtual ~RootLocker();
 
   core::FastoObjectIPtr Root() const;

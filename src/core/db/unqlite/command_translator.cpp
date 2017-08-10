@@ -36,8 +36,8 @@ common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, comm
   const NKey cur = key.GetKey();
   key_t key_str = cur.GetKey();
   std::string value_str = key.ValueString();
-  string_byte_writer_t wr;
-  wr << UNQLITE_SET_KEY_COMMAND << " " << key_str << " " << value_str;
+  command_buffer_writer_t wr;
+  wr << UNQLITE_SET_KEY_COMMAND << " " << key_str.GetKey() << " " << value_str;
   *cmdstring = wr.GetBuffer();
   return common::Error();
 }
@@ -48,26 +48,26 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
   UNUSED(type);
 
   key_t key_str = key.GetKey();
-  string_byte_writer_t wr;
-  wr << UNQLITE_DELETE_KEY_COMMAND << " " << key_str;
+  command_buffer_writer_t wr;
+  wr << UNQLITE_DELETE_KEY_COMMAND << " " << key_str.GetKey();
   *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
 common::Error CommandTranslator::DeleteKeyCommandImpl(const NKey& key, command_buffer_t* cmdstring) const {
   key_t key_str = key.GetKey();
-  string_byte_writer_t wr;
-  wr << UNQLITE_GET_KEY_COMMAND << " " << key_str;
+  command_buffer_writer_t wr;
+  wr << UNQLITE_GET_KEY_COMMAND << " " << key_str.GetKey();
   *cmdstring = wr.GetBuffer();
   return common::Error();
 }
 
 common::Error CommandTranslator::RenameKeyCommandImpl(const NKey& key,
-                                                      const std::string& new_name,
+                                                      const string_key_t &new_name,
                                                       command_buffer_t* cmdstring) const {
   key_t key_str = key.GetKey();
-  string_byte_writer_t wr;
-  wr << UNQLITE_RENAME_KEY_COMMAND << " " << key_str << " " << new_name;
+  command_buffer_writer_t wr;
+  wr << UNQLITE_RENAME_KEY_COMMAND << " " << key_str.GetKey() << " " << new_name;
   *cmdstring = wr.GetBuffer();
   return common::Error();
 }

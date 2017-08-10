@@ -219,9 +219,9 @@ common::Error ApiTraits<CDBConnection>::Set(internal::CommandHandler* handler,
                                             FastoObject* out) {
   UNUSED(argc);
 
-  common::string_byte_writer wr;
+  command_buffer_writer_t wr;
   wr << argv[0];
-  key_t raw_key(wr);
+  key_t raw_key(wr.GetBuffer());
   NKey key(raw_key);
 
   NValue string_val(common::Value::CreateStringValue(argv[1]));
@@ -247,9 +247,9 @@ common::Error ApiTraits<CDBConnection>::Get(internal::CommandHandler* handler,
                                             FastoObject* out) {
   UNUSED(argc);
 
-  common::string_byte_writer wr;
+  command_buffer_writer_t wr;
   wr << argv[0];
-  key_t raw_key(wr);
+  key_t raw_key(wr.GetBuffer());
   NKey key(raw_key);
 
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
@@ -273,9 +273,9 @@ common::Error ApiTraits<CDBConnection>::Delete(internal::CommandHandler* handler
                                                FastoObject* out) {
   NKeys keysdel;
   for (int i = 0; i < argc; ++i) {
-    common::string_byte_writer wr;
+    command_buffer_writer_t wr;
     wr << argv[i];
-    key_t raw_key(wr);
+    key_t raw_key(wr.GetBuffer());
     NKey key(raw_key);
 
     keysdel.push_back(key);
@@ -301,13 +301,15 @@ common::Error ApiTraits<CDBConnection>::Rename(internal::CommandHandler* handler
                                                FastoObject* out) {
   UNUSED(argc);
 
-  common::string_byte_writer wr;
+  command_buffer_writer_t wr;
   wr << argv[0];
-  key_t raw_key(wr);
+  key_t raw_key(wr.GetBuffer());
   NKey key(raw_key);
 
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
-  common::Error err = cdb->Rename(key, argv[1]);
+  wr.clear();
+  wr << argv[1];
+  common::Error err = cdb->Rename(key, wr.GetBuffer());
   if (err && err->IsError()) {
     return err;
   }
@@ -327,9 +329,9 @@ common::Error ApiTraits<CDBConnection>::SetTTL(internal::CommandHandler* handler
   UNUSED(argc);
 
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
-  common::string_byte_writer wr;
+  command_buffer_writer_t wr;
   wr << argv[0];
-  key_t raw_key(wr);
+  key_t raw_key(wr.GetBuffer());
   NKey key(raw_key);
 
   ttl_t ttl;
@@ -357,9 +359,9 @@ common::Error ApiTraits<CDBConnection>::GetTTL(internal::CommandHandler* handler
   UNUSED(argc);
 
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
-  common::string_byte_writer wr;
+  command_buffer_writer_t wr;
   wr << argv[0];
-  key_t raw_key(wr);
+  key_t raw_key(wr.GetBuffer());
   NKey key(raw_key);
 
   ttl_t ttl;

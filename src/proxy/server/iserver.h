@@ -141,7 +141,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void KeyRemoved(core::IDataBaseInfoSPtr db, core::NKey key);
   void KeyAdded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
   void KeyLoaded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
-  void KeyRenamed(core::IDataBaseInfoSPtr db, core::NKey key, std::string new_name);
+  void KeyRenamed(core::IDataBaseInfoSPtr db, core::NKey key, core::string_key_t new_name);
   void KeyTTLChanged(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl);
   void Disconnected();
 

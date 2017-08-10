@@ -23,7 +23,7 @@ namespace proxy {
 namespace redis {
 
 Command::Command(core::FastoObject* parent,
-                 common::StringValue* cmd,
+                 common::ByteArrayValue* cmd,
                  core::CmdLoggingType ct,
                  const std::string& delimiter)
     : core::FastoObjectCommand(parent, cmd, ct, delimiter, core::REDIS) {}

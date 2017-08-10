@@ -189,7 +189,7 @@ void PubSubDialog::publish() {
                                                QLineEdit::Normal, QString(), &ok);
   if (ok && !publish_text.isEmpty()) {
     core::translator_t trans = server_->Translator();
-    std::string cmd_str;
+    core::command_buffer_t cmd_str;
     common::Error err = trans->PublishCommand(node->channel(), common::ConvertToString(publish_text), &cmd_str);
     if (err && err->IsError()) {
       LOG_ERROR(err, true);
@@ -214,7 +214,7 @@ void PubSubDialog::subscribeInNewConsole() {
   }
 
   core::translator_t trans = server_->Translator();
-  std::string cmd_str;
+  core::command_buffer_t cmd_str;
   common::Error err = trans->SubscribeCommand(node->channel(), &cmd_str);
   if (err && err->IsError()) {
     LOG_ERROR(err, true);
@@ -222,7 +222,7 @@ void PubSubDialog::subscribeInNewConsole() {
   }
 
   QString text;
-  if (common::ConvertFromString(cmd_str, &text)) {
+  if (common::ConvertFromString(common::ConvertToString(cmd_str), &text)) {  // FIXME
     emit consoleOpenedAndExecute(server_, text);
   }
 }

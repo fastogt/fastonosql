@@ -235,7 +235,8 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   }
 
   ::rocksdb::ReadOptions ro;
-  const ::rocksdb::Slice key_slice = key.GetKey();
+  const string_key_t key_str = key.GetKey();
+  const ::rocksdb::Slice key_slice(reinterpret_cast<const char*>(key_str.data()), key_str.size());  // FIXME
   auto st = connection_.handle_->Get(ro, key_slice, ret_val);
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("get function error: %s", st.ToString());
@@ -287,7 +288,8 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   }
 
   ::rocksdb::WriteOptions wo;
-  const ::rocksdb::Slice key_slice = key.GetKey();
+  const string_key_t key_str = key.GetKey();
+  const ::rocksdb::Slice key_slice(reinterpret_cast<const char*>(key_str.data()), key_str.size());  // FIXME
   auto st = connection_.handle_->Put(wo, key_slice, value);
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("set function error: %s", st.ToString());
@@ -309,7 +311,8 @@ common::Error DBConnection::DelInner(key_t key) {
   }
 
   ::rocksdb::WriteOptions wo;
-  const ::rocksdb::Slice key_slice = key.GetKey();
+  const string_key_t key_str = key.GetKey();
+  const ::rocksdb::Slice key_slice(reinterpret_cast<const char*>(key_str.data()), key_str.size());  // FIXME
   auto st = connection_.handle_->Delete(wo, key_slice);
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("del function error: %s", st.ToString());

@@ -347,9 +347,9 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
   NotifyProgress(sender, 0);
   events::ExecuteResponceEvent::value_type res(ev->value());
 
-  const std::string inputLine = res.text;
-  std::vector<std::string> commands;
-  common::Error err = core::ParseCommands(inputLine, &commands);
+  const core::command_buffer_t input_line = res.text;
+  std::vector<core::command_buffer_t> commands;
+  common::Error err = core::ParseCommands(input_line, &commands);
   if (err && err->IsError()) {
     res.setErrorInfo(err);
     Reply(sender, new events::ExecuteResponceEvent(this, res));
@@ -362,8 +362,8 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
   const bool history = res.history;
   const common::time64_t msec_repeat_interval = res.msec_repeat_interval;
   const core::CmdLoggingType log_type = res.logtype;
-  RootLocker* lock = history ? new RootLocker(this, sender, inputLine, silence)
-                             : new FirstChildUpdateRootLocker(this, sender, inputLine, silence, commands);
+  RootLocker* lock = history ? new RootLocker(this, sender, input_line, silence)
+                             : new FirstChildUpdateRootLocker(this, sender, input_line, silence, commands);
   core::FastoObjectIPtr obj = lock->Root();
   const double step = 99.0 / double(commands.size() * (repeat + 1));
   double cur_progress = 0.0;
@@ -379,7 +379,7 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
       cur_progress += step;
       NotifyProgress(sender, cur_progress);
 
-      std::string command = commands[i];
+      core::command_buffer_t command = commands[i];
       core::FastoObjectCommandIPtr cmd =
           silence ? CreateCommandFast(command, log_type) : CreateCommand(obj.get(), command, log_type);  //
       common::Error err = Execute(cmd);
@@ -623,7 +623,7 @@ void IDriver::OnKeyLoaded(const core::NDbKValue& key) {
   emit KeyLoaded(key);
 }
 
-void IDriver::OnKeyRenamed(const core::NKey& key, const std::string& new_key) {
+void IDriver::OnKeyRenamed(const core::NKey& key, const core::string_key_t& new_key) {
   emit KeyRenamed(key, new_key);
 }
 

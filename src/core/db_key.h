@@ -24,8 +24,9 @@
 #include <string>  // for string
 #include <vector>  // for vector
 
-#include <common/byte_writer.h>
 #include <common/value.h>  // for Value, Value::Type, etc
+
+#include "core/types.h"
 
 #define NO_TTL -1
 #define EXPIRED_TTL -2
@@ -39,21 +40,20 @@ COMPILE_ASSERT(std::numeric_limits<ttl_t>::max() >= NO_TTL && NO_TTL >= std::num
 COMPILE_ASSERT(std::numeric_limits<ttl_t>::max() >= EXPIRED_TTL && EXPIRED_TTL >= std::numeric_limits<ttl_t>::min(),
                "EXPIRED_TTL define must be in ttl type range");
 
-bool IsBinaryKey(const std::string& key);
+typedef command_buffer_t string_key_t;
 
-typedef std::string string_key_t;
-typedef common::string_byte_writer string_byte_writer_t;
+bool IsBinaryKey(const command_buffer_t& key);
 
 class KeyString {
  public:
   enum KeyType { TEXT_KEY, BINARY_KEY };
   KeyString();
-  explicit KeyString(const common::string_byte_writer& key_data);
+  explicit KeyString(const command_buffer_t& key_data);
 
   KeyType GetType() const;
 
   string_key_t GetKey() const;
-  void SetKey(const common::string_byte_writer& key_data);
+  void SetKey(const command_buffer_t& key_data);
 
   const string_key_t::value_type* GetKeyData() const;
   string_key_t::size_type GetKeySize() const;
@@ -62,11 +62,10 @@ class KeyString {
 
   bool Equals(const KeyString& other) const;
 
+  static KeyString MakeKeyString(const std::string& str);
   static KeyString MakeKeyString(string_key_t str);
 
  private:
-  void SetKey(string_key_t new_key);
-
   string_key_t key_;
   KeyType type_;
 };
@@ -79,35 +78,29 @@ inline bool operator!=(const KeyString& r, const KeyString& l) {
   return !r.Equals(l);
 }
 
-template <typename CharT, typename Traits>
-inline std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& out, const KeyString& key) {
-  out << key.GetKey();
-  return out;
-}
-
 typedef KeyString key_t;
 
 class KeyInfo {
  public:
-  typedef std::vector<string_key_t> splited_namespaces_t;
-  KeyInfo(const splited_namespaces_t& splited_namespaces_and_key, string_key_t ns_separator);
+  typedef std::vector<std::string> splited_namespaces_t;
+  KeyInfo(const splited_namespaces_t& splited_namespaces_and_key, std::string ns_separator);
 
-  string_key_t GetKey() const;
+  std::string GetKey() const;
   bool HasNamespace() const;
-  string_key_t GetNspace() const;
-  string_key_t JoinNamespace(size_t pos) const;
+  std::string GetNspace() const;
+  std::string JoinNamespace(size_t pos) const;
   size_t GetNspaceSize() const;
 
  private:
   splited_namespaces_t splited_namespaces_and_key_;
-  string_key_t ns_separator_;
+  std::string ns_separator_;
 };
 
 class NKey {
  public:
   NKey();
   explicit NKey(key_t key, ttl_t ttl_sec = NO_TTL);
-  KeyInfo GetInfo(string_key_t ns_separator) const;
+  KeyInfo GetInfo(const std::string& ns_separator) const;
 
   key_t GetKey() const;
   void SetKey(key_t key);

@@ -38,10 +38,11 @@ class CDBConnectionClient {
   virtual void OnKeysRemoved(const NKeys& keys) = 0;
   virtual void OnKeyAdded(const NDbKValue& key) = 0;
   virtual void OnKeyLoaded(const NDbKValue& key) = 0;
-  virtual void OnKeyRenamed(const NKey& key, const std::string& new_key) = 0;
+  virtual void OnKeyRenamed(const NKey& key, const string_key_t& new_key) = 0;
   virtual void OnKeyTTLChanged(const NKey& key, ttl_t ttl) = 0;
   virtual void OnKeyTTLLoaded(const NKey& key, ttl_t ttl) = 0;
   virtual void OnQuited() = 0;
+  virtual ~CDBConnectionClient();
 };
 
 }  // namespace core

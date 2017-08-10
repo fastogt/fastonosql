@@ -86,7 +86,7 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   void CurrentDataBaseChanged(core::IDataBaseInfoSPtr db);
   void KeyRemoved(core::NKey key);
   void KeyAdded(core::NDbKValue key);
-  void KeyRenamed(core::NKey key, std::string new_name);
+  void KeyRenamed(core::NKey key, core::string_key_t new_name);
   void KeyLoaded(core::NDbKValue key);
   void KeyTTLChanged(core::NKey key, core::ttl_t ttl);
   void KeyTTLLoaded(core::NKey key, core::ttl_t ttl);
@@ -127,10 +127,10 @@ class IDriver : public QObject, public core::CDBConnectionClient {
 
   common::Error Execute(core::FastoObjectCommandIPtr cmd) WARN_UNUSED_RESULT;
   virtual core::FastoObjectCommandIPtr CreateCommand(core::FastoObject* parent,
-                                                     const std::string& input,
+                                                     const core::command_buffer_t& input,
                                                      core::CmdLoggingType ct) = 0;
 
-  virtual core::FastoObjectCommandIPtr CreateCommandFast(const std::string& input, core::CmdLoggingType ct) = 0;
+  virtual core::FastoObjectCommandIPtr CreateCommandFast(const core::command_buffer_t& input, core::CmdLoggingType ct) = 0;
 
  private:
   virtual common::Error SyncConnect() WARN_UNUSED_RESULT = 0;
@@ -140,14 +140,14 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   void HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev);
   void HandleClearServerHistoryEvent(events::ClearServerHistoryRequestEvent* ev);
 
-  virtual common::Error ExecuteImpl(const std::string& command, core::FastoObject* out) = 0;
+  virtual common::Error ExecuteImpl(const core::command_buffer_t& command, core::FastoObject* out) = 0;
 
   virtual void OnFlushedCurrentDB() override;
   virtual void OnCurrentDataBaseChanged(core::IDataBaseInfo* info) override;
   virtual void OnKeysRemoved(const core::NKeys& keys) override;
   virtual void OnKeyAdded(const core::NDbKValue& key) override;
   virtual void OnKeyLoaded(const core::NDbKValue& key) override;
-  virtual void OnKeyRenamed(const core::NKey& key, const std::string& new_key) override;
+  virtual void OnKeyRenamed(const core::NKey& key, const core::string_key_t& new_key) override;
   virtual void OnKeyTTLChanged(const core::NKey& key, core::ttl_t ttl) override;
   virtual void OnKeyTTLLoaded(const core::NKey& key, core::ttl_t ttl) override;
   virtual void OnQuited() override;

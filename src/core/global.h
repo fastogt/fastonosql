@@ -59,14 +59,13 @@ class FastoObject : public common::intrusive_ptr_base<FastoObject> {
     virtual ~IFastoObjectObserver();
   };
 
-  FastoObject(FastoObject* parent, common::Value* val,
-              const std::string& delimiter);  // val take ownerships
+  FastoObject(FastoObject* parent, common::Value* val, const std::string& delimiter);  // val take ownerships
   virtual ~FastoObject();
 
   common::Value::Type Type() const;
   virtual std::string ToString() const;
 
-  static FastoObject* CreateRoot(const std::string& text, IFastoObjectObserver* observer = nullptr);
+  static FastoObject* CreateRoot(const command_buffer_t& text, IFastoObjectObserver* observer = nullptr);
 
   childs_t Childrens() const;
   void AddChildren(child_t child);
@@ -94,8 +93,8 @@ class FastoObjectCommand : public FastoObject {
   virtual ~FastoObjectCommand();
   virtual std::string ToString() const override;
 
-  virtual std::string InputCmd() const;
-  virtual std::string InputArgs() const;
+  virtual command_buffer_t InputCmd() const;
+  virtual command_buffer_t InputArgs() const;
 
   core::connectionTypes ConnectionType() const;
 
@@ -104,7 +103,7 @@ class FastoObjectCommand : public FastoObject {
 
  protected:
   FastoObjectCommand(FastoObject* parent,
-                     common::StringValue* cmd,
+                     common::ByteArrayValue* cmd,
                      CmdLoggingType ct,
                      const std::string& delimiter,
                      core::connectionTypes type);
@@ -116,7 +115,7 @@ class FastoObjectCommand : public FastoObject {
   const CmdLoggingType ct_;
 };
 
-std::pair<std::string, std::string> GetKeyValueFromLine(const std::string& input);
+std::pair<command_buffer_t, command_buffer_t> GetKeyValueFromLine(const command_buffer_t& input);
 
 class FastoObjectArray : public FastoObject {
  public:

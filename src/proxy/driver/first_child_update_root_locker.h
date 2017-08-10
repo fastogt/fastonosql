@@ -39,9 +39,9 @@ class FirstChildUpdateRootLocker : public RootLocker {
  public:
   FirstChildUpdateRootLocker(IDriver* parent,
                              QObject* receiver,
-                             const std::string& text,
+                             const core::command_buffer_t& text,
                              bool silence,
-                             const std::vector<std::string>& commands);
+                             const std::vector<core::command_buffer_t>& commands);
 
  private:
   // notification of execute events
@@ -50,7 +50,7 @@ class FirstChildUpdateRootLocker : public RootLocker {
   core::FastoObjectIPtr FindCmdChildNode(core::FastoObjectIPtr child) const;
   core::FastoObjectIPtr FindWatchedCmd(core::FastoObjectCommand* cmd) const;
 
-  const std::vector<std::string> commands_;
+  const std::vector<core::command_buffer_t> commands_;
   std::vector<core::FastoObjectIPtr> watched_cmds_;
 };
 

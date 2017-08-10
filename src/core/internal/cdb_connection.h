@@ -70,8 +70,7 @@ class ConstantCommandsArray : public std::vector<CommandHolder> {
   }
 };
 
-std::string GetKeysPattern(uint64_t cursor_in, const std::string& pattern,
-                           uint64_t count_keys);  // for SCAN
+command_buffer_t GetKeysPattern(uint64_t cursor_in, const std::string& pattern, uint64_t count_keys);  // for SCAN
 
 template <typename NConnection, typename Config, connectionTypes ContType>
 class CDBConnection : public DBConnection<NConnection, Config, ContType>, public CommandHandler {
@@ -105,7 +104,7 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
   common::Error Delete(const NKeys& keys, NKeys* deleted_keys) WARN_UNUSED_RESULT;         // nvi
   common::Error Set(const NDbKValue& key, NDbKValue* added_key) WARN_UNUSED_RESULT;        // nvi
   common::Error Get(const NKey& key, NDbKValue* loaded_key) WARN_UNUSED_RESULT;            // nvi
-  common::Error Rename(const NKey& key, const std::string& new_key) WARN_UNUSED_RESULT;    // nvi
+  common::Error Rename(const NKey& key, const string_key_t& new_key) WARN_UNUSED_RESULT;   // nvi
   common::Error SetTTL(const NKey& key, ttl_t ttl) WARN_UNUSED_RESULT;                     // nvi
   common::Error GetTTL(const NKey& key, ttl_t* ttl) WARN_UNUSED_RESULT;                    // nvi
   common::Error Quit() WARN_UNUSED_RESULT;                                                 // nvi
@@ -362,7 +361,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::Get(const NKey& key,
 }
 
 template <typename NConnection, typename Config, connectionTypes ContType>
-common::Error CDBConnection<NConnection, Config, ContType>::Rename(const NKey& key, const std::string& new_key) {
+common::Error CDBConnection<NConnection, Config, ContType>::Rename(const NKey& key, const string_key_t& new_key) {
   if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }

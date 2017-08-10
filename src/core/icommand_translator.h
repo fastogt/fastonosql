@@ -30,7 +30,7 @@
 #include "core/db_ps_channel.h"
 
 #define FLUSHDB_COMMAND "FLUSHDB"
-#define SELECTDB_COMMAND_1S "SELECT %s"
+#define SELECTDB_COMMAND "SELECT"
 
 #define COMMONTYPE_GET_KEY_COMMAND "GET"
 #define COMMONTYPE_SET_KEY_COMMAND "SET"
@@ -53,7 +53,7 @@ class ICommandTranslator {
                                command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
   common::Error DeleteKeyCommand(const NKey& key, command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
   common::Error RenameKeyCommand(const NKey& key,
-                                 const std::string& new_name,
+                                 const string_key_t& new_name,
                                  command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
   common::Error ChangeKeyTTLCommand(const NKey& key, ttl_t ttl, command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
   common::Error LoadKeyTTLCommand(const NKey& key, command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
@@ -81,8 +81,8 @@ class ICommandTranslator {
                                     const CommandHolder** info,
                                     size_t* off) const WARN_UNUSED_RESULT;
 
-  static common::Error InvalidInputArguments(const command_buffer_t& cmd);
-  static common::Error NotSupported(const command_buffer_t& cmd);
+  static common::Error InvalidInputArguments(const std::string& cmd);
+  static common::Error NotSupported(const std::string& cmd);
   static common::Error UnknownSequence(int argc, const char** argv);
 
  private:
@@ -92,7 +92,7 @@ class ICommandTranslator {
                                            command_buffer_t* cmdstring) const = 0;
   virtual common::Error DeleteKeyCommandImpl(const NKey& key, command_buffer_t* cmdstring) const = 0;
   virtual common::Error RenameKeyCommandImpl(const NKey& key,
-                                             const std::string& new_name,
+                                             const string_key_t& new_name,
                                              command_buffer_t* cmdstring) const = 0;
   virtual common::Error ChangeKeyTTLCommandImpl(const NKey& key, ttl_t ttl, command_buffer_t* cmdstring) const = 0;
   virtual common::Error LoadKeyTTLCommandImpl(const NKey& key, command_buffer_t* cmdstring) const = 0;

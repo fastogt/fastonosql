@@ -206,12 +206,12 @@ void OutputWidget::addChild(core::FastoObjectIPtr child) {
 
     fastonosql::gui::FastoCommonItem* comChild = nullptr;
     core::translator_t tr = server_->Translator();
-    std::string inputCmd = command->InputCommand();
-    std::string key;
-    if (tr->IsLoadKeyCommand(inputCmd, &key)) {
+    core::command_buffer_t input_cmd = command->InputCommand();
+    core::string_key_t key;
+    if (tr->IsLoadKeyCommand(input_cmd, &key)) {
       comChild = createItem(par, key, false, child.get());
     } else {
-      comChild = createItem(par, inputCmd, true, child.get());
+      comChild = createItem(par, input_cmd, true, child.get());
     }
     commonModel_->insertItem(parent, comChild);
   } else {
@@ -236,7 +236,7 @@ void OutputWidget::addChild(core::FastoObjectIPtr child) {
       return;
     }
 
-    fastonosql::gui::FastoCommonItem* comChild = createItem(par, std::string(), true, child.get());
+    fastonosql::gui::FastoCommonItem* comChild = createItem(par, core::command_buffer_t(), true, child.get());
     commonModel_->insertItem(parent, comChild);
   }
 }
@@ -260,7 +260,7 @@ void OutputWidget::updateItem(core::FastoObject* item, common::ValueSPtr newValu
 
 void OutputWidget::createKey(const core::NDbKValue& dbv) {
   core::translator_t tran = server_->Translator();
-  std::string cmd_text;
+  core::command_buffer_t cmd_text;
   common::Error err = tran->CreateKeyCommand(dbv, &cmd_text);
   if (err && err->IsError()) {
     LOG_ERROR(err, true);

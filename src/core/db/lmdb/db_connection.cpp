@@ -44,7 +44,7 @@ namespace {
 MDB_val ConvertToLMDBSlice(const key_t& key) {
   MDB_val mkey;
   mkey.mv_size = key.GetKeySize();
-  mkey.mv_data = const_cast<char*>(key.GetKeyData());
+  mkey.mv_data = const_cast<unsigned char*>(key.GetKeyData());
   return mkey;
 }
 }  // namespace

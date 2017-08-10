@@ -30,6 +30,7 @@
 
 #include <common/macros.h>             // for VERIFY
 #include <common/qt/convert2string.h>  // for ConvertFromString
+#include <common/convert2string.h>
 #include <common/value.h>              // for Value, etc
 
 #include "core/global.h"
@@ -54,7 +55,7 @@ void CommandsWidget::addCommand(core::FastoObjectCommandIPtr command) {
   QTime time = QTime::currentTime();
   logTextEdit_->setTextColor(command->CommandLoggingType() == core::C_INNER ? QColor(Qt::gray) : QColor(Qt::black));
   QString mess;
-  common::ConvertFromString(command->InputCommand(), &mess);
+  common::ConvertFromString(common::ConvertToString(command->InputCommand()), &mess);  // FIXME
   std::string stype = common::ConvertToString(command->ConnectionType());
   QString qstype;
   common::ConvertFromString(stype, &qstype);

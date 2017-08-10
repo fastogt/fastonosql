@@ -225,7 +225,7 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   }
 
   const string_key_t key_slice = key.GetKey();
-  int rc = unqlite_kv_store(connection_.handle_, key_slice.c_str(), key_slice.size(), value.c_str(), value.length());
+  int rc = unqlite_kv_store(connection_.handle_, key_slice.data(), key_slice.size(), value.c_str(), value.length());
   if (rc != UNQLITE_OK) {
     std::string buff = common::MemSPrintf("set function error: %s", unqlite_strerror(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -240,7 +240,7 @@ common::Error DBConnection::DelInner(key_t key) {
   }
 
   const string_key_t key_slice = key.GetKey();
-  int rc = unqlite_kv_delete(connection_.handle_, key_slice.c_str(), key_slice.size());
+  int rc = unqlite_kv_delete(connection_.handle_, key_slice.data(), key_slice.size());
   if (rc != UNQLITE_OK) {
     std::string buff = common::MemSPrintf("delete function error: %s", unqlite_strerror(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
@@ -255,7 +255,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   }
 
   const string_key_t key_slice = key.GetKey();
-  int rc = unqlite_kv_fetch_callback(connection_.handle_, key_slice.c_str(), key_slice.size(), unqlite_data_callback,
+  int rc = unqlite_kv_fetch_callback(connection_.handle_, key_slice.data(), key_slice.size(), unqlite_data_callback,
                                      ret_val);
   if (rc != UNQLITE_OK) {
     std::string buff = common::MemSPrintf("get function error: %s", unqlite_strerror(rc));
@@ -394,7 +394,7 @@ common::Error DBConnection::FlushDBImpl() {
 
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
   if (name != CurrentDBName()) {
-    return ICommandTranslator::InvalidInputArguments("SELECT");
+    return ICommandTranslator::InvalidInputArguments(SELECTDB_COMMAND);
   }
 
   size_t kcount = 0;

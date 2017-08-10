@@ -29,7 +29,7 @@
 namespace fastonosql {
 namespace proxy {
 
-RootLocker::RootLocker(IDriver* parent, QObject* receiver, const std::string& text, bool silence)
+RootLocker::RootLocker(IDriver* parent, QObject* receiver, const core::command_buffer_t& text, bool silence)
     : core::FastoObject::IFastoObjectObserver(),
       parent_(parent),
       receiver_(receiver),

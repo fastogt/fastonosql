@@ -36,7 +36,7 @@ namespace fastonosql {
 namespace core {
 namespace {
 std::string ConvertToSSDBSlice(const key_t& key) {
-  return key.GetKey();
+  return common::ConvertToString(key.GetKey());
 }
 }  // namespace
 namespace internal {
@@ -898,7 +898,7 @@ common::Error DBConnection::FlushDBImpl() {
 
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
   if (name != CurrentDBName()) {
-    return ICommandTranslator::InvalidInputArguments("SELECT");
+    return ICommandTranslator::InvalidInputArguments(SELECTDB_COMMAND);
   }
 
   size_t kcount = 0;

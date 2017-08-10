@@ -31,34 +31,34 @@ namespace proxy {
 
 template <typename Command>
 core::FastoObjectCommandIPtr CreateCommand(core::FastoObject* parent,
-                                           const std::string& input,
+                                           const core::command_buffer_t& input,
                                            core::CmdLoggingType ct) {
   if (!parent) {
     DNOTREACHED();
     return nullptr;
   }
 
-  std::string stable_input = core::StableCommand(input);
+  core::command_buffer_t stable_input = core::StableCommand(input);
   if (stable_input.empty()) {
     DNOTREACHED();
     return nullptr;
   }
 
-  common::StringValue* cmd = common::Value::CreateStringValue(stable_input);
+  common::ByteArrayValue* cmd = common::Value::CreateByteArrayValue(stable_input);
   core::FastoObjectCommandIPtr fs = new Command(parent, cmd, ct, parent->Delimiter());
   parent->AddChildren(fs);
   return fs;
 }
 
 template <typename Command>
-core::FastoObjectCommandIPtr CreateCommandFast(const std::string& input, core::CmdLoggingType ct) {
-  std::string stable_input = core::StableCommand(input);
+core::FastoObjectCommandIPtr CreateCommandFast(const core::command_buffer_t& input, core::CmdLoggingType ct) {
+  core::command_buffer_t stable_input = core::StableCommand(input);
   if (stable_input.empty()) {
     DNOTREACHED();
     return nullptr;
   }
 
-  common::StringValue* cmd = common::Value::CreateStringValue(stable_input);
+  common::ByteArrayValue* cmd = common::Value::CreateByteArrayValue(stable_input);
   return new Command(nullptr, cmd, ct, std::string());
 }
 

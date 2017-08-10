@@ -176,7 +176,7 @@ struct DisConnectInfoResponce : DisConnectInfoRequest {
 struct ExecuteInfoRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
   ExecuteInfoRequest(initiator_type sender,
-                     const std::string& text,
+                     const core::command_buffer_t& text,
                      size_t repeat = 0,
                      common::time64_t msec_repeat_interval = 0,
                      bool history = true,
@@ -184,7 +184,7 @@ struct ExecuteInfoRequest : public EventInfoBase {
                      core::CmdLoggingType logtype = core::C_USER,
                      error_type er = error_type());
 
-  const std::string text;
+  const core::command_buffer_t text;
   const size_t repeat;
   const common::time64_t msec_repeat_interval;
   const bool history;

@@ -25,7 +25,7 @@ namespace proxy {
 namespace memcached {
 
 Command::Command(core::FastoObject* parent,
-                 common::StringValue* cmd,
+                 common::ByteArrayValue* cmd,
                  core::CmdLoggingType ct,
                  const std::string& delimiter)
     : FastoObjectCommand(parent, cmd, ct, delimiter, core::MEMCACHED) {}

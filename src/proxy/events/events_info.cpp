@@ -92,7 +92,7 @@ DisConnectInfoRequest::DisConnectInfoRequest(initiator_type sender, error_type e
 DisConnectInfoResponce::DisConnectInfoResponce(const base_class& request) : base_class(request) {}
 
 ExecuteInfoRequest::ExecuteInfoRequest(initiator_type sender,
-                                       const std::string& text,
+                                       const core::command_buffer_t& text,
                                        size_t repeat,
                                        common::time64_t msec_repeat_interval,
                                        bool history,

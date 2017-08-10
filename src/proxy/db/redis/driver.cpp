@@ -144,12 +144,12 @@ void Driver::InitImpl() {}
 void Driver::ClearImpl() {}
 
 core::FastoObjectCommandIPtr Driver::CreateCommand(core::FastoObject* parent,
-                                                   const std::string& input,
+                                                   const core::command_buffer_t& input,
                                                    core::CmdLoggingType ct) {
   return proxy::CreateCommand<Command>(parent, input, ct);
 }
 
-core::FastoObjectCommandIPtr Driver::CreateCommandFast(const std::string& input, core::CmdLoggingType ct) {
+core::FastoObjectCommandIPtr Driver::CreateCommandFast(const core::command_buffer_t& input, core::CmdLoggingType ct) {
   return proxy::CreateCommandFast<Command>(input, ct);
 }
 
@@ -164,12 +164,12 @@ common::Error Driver::SyncDisconnect() {
   return impl_->Disconnect();
 }
 
-common::Error Driver::ExecuteImpl(const std::string& command, core::FastoObject* out) {
+common::Error Driver::ExecuteImpl(const core::command_buffer_t& command, core::FastoObject* out) {
   return impl_->Execute(command, out);
 }
 
 common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
-  core::FastoObjectCommandIPtr cmd = CreateCommandFast(INFO_REQUEST, core::C_INNER);
+  core::FastoObjectCommandIPtr cmd = CreateCommandFast(MAKE_BUFFER(INFO_REQUEST), core::C_INNER);
   common::Error err = Execute(cmd.get());
   if (err && err->IsError()) {
     return err;
@@ -198,7 +198,7 @@ void Driver::HandleShutdownEvent(events::ShutDownRequestEvent* ev) {
   NotifyProgress(sender, 0);
   events::ShutDownResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 25);
-  core::FastoObjectCommandIPtr cmd = CreateCommandFast(REDIS_SHUTDOWN_COMMAND, core::C_INNER);
+  core::FastoObjectCommandIPtr cmd = CreateCommandFast(MAKE_BUFFER(REDIS_SHUTDOWN_COMMAND), core::C_INNER);
   common::Error er = Execute(cmd);
   if (er && er->IsError()) {
     res.setErrorInfo(er);
@@ -213,12 +213,12 @@ void Driver::HandleBackupEvent(events::BackupRequestEvent* ev) {
   NotifyProgress(sender, 0);
   events::BackupResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 25);
-  core::FastoObjectCommandIPtr cmd = CreateCommandFast(REDIS_BACKUP_COMMAND, core::C_INNER);
+  core::FastoObjectCommandIPtr cmd = CreateCommandFast(MAKE_BUFFER(REDIS_BACKUP_COMMAND), core::C_INNER);
   common::Error er = Execute(cmd);
   if (er && er->IsError()) {
     res.setErrorInfo(er);
   } else {
-    common::Error err = common::file_system::copy_file(BACKUP_DEFAULT_PATH, res.path);
+    common::Error err = common::file_system::copy_file(MAKE_BUFFER(BACKUP_DEFAULT_PATH), res.path);
     if (err && err->IsError()) {
       res.setErrorInfo(err);
     }
@@ -390,11 +390,11 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         if (isok) {
           core::NKey k(core::key_t::MakeKeyString(key));
           core::NDbKValue dbv(k, core::NValue());
-          core::string_byte_writer_t wr_type;
+          core::command_buffer_writer_t wr_type;
           wr_type << "TYPE " << key;
           cmds.push_back(CreateCommandFast(wr_type.GetBuffer(), core::C_INNER));
 
-          core::string_byte_writer_t wr_ttl;
+          core::command_buffer_writer_t wr_ttl;
           wr_ttl << "TTL " << key;
           cmds.push_back(CreateCommandFast(wr_ttl.GetBuffer(), core::C_INNER));
           res.keys.push_back(dbv);

@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <string>
+#include <common/byte_writer.h>
 
 namespace common {
 class Value;
@@ -27,7 +27,8 @@ class Value;
 namespace fastonosql {
 namespace core {
 
-typedef std::string command_buffer_t;
+typedef std::vector<unsigned char> command_buffer_t;
+typedef common::unsigned_char_writer<512> command_buffer_writer_t;
 
 struct IStateField {
   virtual common::Value* ValueByIndex(unsigned char index) const = 0;

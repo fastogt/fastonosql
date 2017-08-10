@@ -47,7 +47,7 @@ ups_key_t ConvertToUpscaleDBSlice(const key_t& key) {
   ups_key_t dkey;
   memset(&dkey, 0, sizeof(dkey));
   dkey.size = key.GetKeySize();
-  dkey.data = const_cast<char*>(key.GetKeyData());
+  dkey.data = const_cast<unsigned char*>(key.GetKeyData());
   return dkey;
 }
 }  // namespace
