@@ -221,9 +221,7 @@ std::vector<CommandInfo> ICommandTranslator::Commands() const {
   return cmds;
 }
 
-common::Error ICommandTranslator::FindCommand(commands_args_t argv,
-                                              const CommandHolder** info,
-                                              size_t* off) const {
+common::Error ICommandTranslator::FindCommand(commands_args_t argv, const CommandHolder** info, size_t* off) const {
   if (!info || !off) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }

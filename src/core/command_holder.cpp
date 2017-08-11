@@ -21,9 +21,9 @@
 #include <algorithm>  // for count_if
 #include <vector>     // for vector
 
+#include <common/convert2string.h>
 #include <common/sprintf.h>
 #include <common/string_util.h>
-#include <common/convert2string.h>
 
 namespace {
 auto count_space(const std::string& data) -> std::string::difference_type {

@@ -55,7 +55,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
 
   std::string CurrentDBName() const;
 
-  common::Error Info(const std::string &args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
+  common::Error Info(const std::string& args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
   common::Error Mget(const std::vector<std::string>& keys, std::vector<std::string>* ret);
   common::Error Merge(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
 

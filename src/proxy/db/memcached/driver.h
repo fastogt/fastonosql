@@ -71,7 +71,7 @@ class Driver : public IDriverRemote {
   virtual common::Error SyncConnect() override WARN_UNUSED_RESULT;
   virtual common::Error SyncDisconnect() override WARN_UNUSED_RESULT;
 
-  virtual common::Error ExecuteImpl(const core::command_buffer_t &command, core::FastoObject* out) override;
+  virtual common::Error ExecuteImpl(const core::command_buffer_t& command, core::FastoObject* out) override;
   virtual common::Error CurrentServerInfo(core::IServerInfo** info) override;
   virtual common::Error CurrentDataBaseInfo(core::IDataBaseInfo** info) override;
 

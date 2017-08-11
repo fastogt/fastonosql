@@ -69,7 +69,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   typedef core::internal::CDBConnection<NativeConnection, Config, MEMCACHED> base_class;
   explicit DBConnection(CDBConnectionClient* client);
 
-  common::Error Info(const std::string &args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
+  common::Error Info(const std::string& args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
 
   common::Error AddIfNotExist(const NKey& key, const std::string& value, time_t expiration, uint32_t flags)
       WARN_UNUSED_RESULT;

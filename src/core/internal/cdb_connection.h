@@ -86,11 +86,11 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
   static const char* BasedOn();
   static const char* VersionApi();
 
-  std::string CurrentDBName() const;                                                               //
+  std::string CurrentDBName() const;                                                 //
   common::Error Help(commands_args_t argv, std::string* answer) WARN_UNUSED_RESULT;  //
 
   common::Error Scan(uint64_t cursor_in,
-                     const std::string &pattern,
+                     const std::string& pattern,
                      uint64_t count_keys,
                      std::vector<std::string>* keys_out,
                      uint64_t* cursor_out) WARN_UNUSED_RESULT;  // nvi
@@ -140,8 +140,7 @@ std::string CDBConnection<NConnection, Config, ContType>::CurrentDBName() const 
 }
 
 template <typename NConnection, typename Config, connectionTypes ContType>
-common::Error CDBConnection<NConnection, Config, ContType>::Help(commands_args_t argv,
-                                                                 std::string* answer) {
+common::Error CDBConnection<NConnection, Config, ContType>::Help(commands_args_t argv, std::string* answer) {
   size_t argc = argv.size();
   if (!answer) {
     DNOTREACHED();

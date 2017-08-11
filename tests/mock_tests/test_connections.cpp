@@ -15,7 +15,8 @@ template <typename NConnection, typename Config, core::connectionTypes ContType>
 void CheckSetGet(core::internal::CDBConnection<NConnection, Config, ContType>* db) {
   ASSERT_TRUE(db->IsConnected());
   core::NValue val(common::Value::CreateStringValue("test"));
-  core::NKey key(core::key_t::MakeKeyString("test"));
+  core::key_t key_str("test");
+  core::NKey key(key_str);
   core::NDbKValue res1;
   common::Error err = db->Get(key, &res1);
   ASSERT_TRUE(err && err->IsError());

@@ -34,9 +34,7 @@ namespace fastonosql {
 namespace core {
 namespace rocksdb {
 
-common::Error CommandsApi::Info(internal::CommandHandler* handler,
-                                commands_args_t argv,
-                                FastoObject* out) {
+common::Error CommandsApi::Info(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* rocks = static_cast<DBConnection*>(handler);
   ServerInfo::Stats statsout;
   common::Error err = rocks->Info(argv.size() == 1 ? argv[0] : std::string(), &statsout);
@@ -50,9 +48,7 @@ common::Error CommandsApi::Info(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::Mget(internal::CommandHandler* handler,
-                                commands_args_t argv,
-                                FastoObject* out) {
+common::Error CommandsApi::Mget(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* rocks = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysget;
   for (size_t i = 0; i < argv.size(); ++i) {
@@ -75,9 +71,7 @@ common::Error CommandsApi::Mget(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::Merge(internal::CommandHandler* handler,
-                                 commands_args_t argv,
-                                 FastoObject* out) {
+common::Error CommandsApi::Merge(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* rocks = static_cast<DBConnection*>(handler);
   common::Error err = rocks->Merge(argv[0], argv[1]);
   if (err && err->IsError()) {

@@ -70,7 +70,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   typedef core::internal::CDBConnection<NativeConnection, Config, LEVELDB> base_class;
   explicit DBConnection(CDBConnectionClient* client);
 
-  common::Error Info(const std::string &args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
+  common::Error Info(const std::string& args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
 
  private:
   common::Error DelInner(key_t key) WARN_UNUSED_RESULT;

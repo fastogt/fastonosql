@@ -52,10 +52,190 @@ namespace core {
 namespace redis {
 
 struct CommandsApi : public internal::ApiTraits<DBConnection> {
-  static common::Error CommonExec(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
-  static common::Error CommonExecOff2(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
-
   static common::Error Info(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Append(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error BgRewriteAof(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error BgSave(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error BitCount(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error BitField(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error BitOp(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error BitPos(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error BlPop(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error BrPop(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error BrPopLpush(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ClientGetName(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ClientKill(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ClientList(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ClientPause(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ClientReply(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ClientSetName(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ClusterAddSlots(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ClusterCountFailureReports(internal::CommandHandler* handler,
+                                                  commands_args_t argv,
+                                                  FastoObject* out);
+  static common::Error ClusterCountKeysSinSlot(internal::CommandHandler* handler,
+                                               commands_args_t argv,
+                                               FastoObject* out);
+  static common::Error ClusterDelSlots(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ClusterFailover(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ClusterForget(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ClusterGetKeySinSlot(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ClusterInfo(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ClusterKeySlot(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ClusterMeet(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ClusterNodes(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ClusterReplicate(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ClusterReset(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ClusterSaveConfig(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ClusterSetConfigEpoch(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ClusterSetSlot(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ClusterSlaves(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ClusterSlots(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error CommandCount(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error CommandGetKeys(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error CommandInfo(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Command(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ConfigGet(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ConfigResetStat(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ConfigRewrite(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ConfigSet(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error DbSize(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error DebugObject(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error DebugSegFault(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Discard(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Dump(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Echo(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Eval(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error EvalSha(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Exec(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Exists(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ExpireAt(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error FlushALL(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error GeoAdd(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error GeoDist(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error GeoHash(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error GeoPos(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error GeoRadius(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error GeoRadiusByMember(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error GetBit(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error GetRange(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error GetSet(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Hdel(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Hexists(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Hget(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error HincrBy(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error HincrByFloat(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Hkeys(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Hlen(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Hmget(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Hscan(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Hset(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error HsetNX(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Hstrlen(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Hvals(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error RKeys(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error LastSave(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Lindex(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Linsert(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Llen(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Lpop(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error LpushX(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Lrem(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Lset(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Ltrim(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Mget(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Migrate(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Move(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Mset(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error MsetNX(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Multi(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Object(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Pexpire(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error PexpireAt(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Pfadd(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Pfcount(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Pfmerge(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Ping(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error PsetEx(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Pttl(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Publish(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error PubSub(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error PunSubscribe(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error RandomKey(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ReadOnly(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ReadWrite(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error RenameNx(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Restore(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Role(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Rpop(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error RpopLpush(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Rpush(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error RpushX(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Save(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Scard(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ScriptDebug(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ScriptExists(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ScriptFlush(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ScriptKill(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ScriptLoad(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Sdiff(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error SdiffStore(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error SetBit(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error SetRange(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Shutdown(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Sinter(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error SinterStore(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error SisMember(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error SlaveOf(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error SlowLog(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Smove(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Sort(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Spop(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error SRandMember(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Srem(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Sscan(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error StrLen(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Sunion(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error SunionStore(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Time(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Type(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Unsubscribe(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Unwatch(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Wait(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Watch(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Zcard(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Zcount(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ZincrBy(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ZincrStore(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ZlexCount(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ZrangeByLex(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ZrangeByScore(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Zrank(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Zrem(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ZremRangeByLex(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ZremRangeByRank(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ZremRangeByScore(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ZrevRange(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ZrevRangeByLex(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ZrevRangeByScore(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ZrevRank(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Zscan(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Zscore(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ZunionStore(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error SentinelMasters(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error SentinelMaster(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error SentinelSlaves(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error SentinelSentinels(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error SentinelGetMasterAddrByName(internal::CommandHandler* handler,
+                                                   commands_args_t argv,
+                                                   FastoObject* out);
+  static common::Error SentinelReset(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error SentinelFailover(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error SentinelCkquorum(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error SentinelFlushConfig(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error SentinelMonitor(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error SentinelRemove(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error SentinelSet(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 
   static common::Error SetEx(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error SetNX(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
@@ -103,7 +283,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Append),
     CommandHolder("AUTH",
                   "<password>",
                   "Authenticate to the server",
@@ -119,7 +299,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::BgRewriteAof),
     CommandHolder("BGSAVE",
                   "-",
                   "Asynchronously save the dataset to disk",
@@ -127,7 +307,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::BgSave),
     CommandHolder("BITCOUNT",
                   "<key> [start] [end]",
                   "Count set bits in a string",
@@ -135,7 +315,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   2,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::BitCount),
     CommandHolder("BITFIELD",
                   "key [GET type offset] [SET type offset value] [INCRBY type offset increment] "
                   "[OVERFLOW WRAP|SAT|FAIL]",
@@ -144,7 +324,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   8,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::BitField),
     CommandHolder("BITOP",
                   "<operation> <destkey> <key> [key ...]",
                   "Perform bitwise operations between strings",
@@ -152,7 +332,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   2,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::BitOp),
     CommandHolder("BITPOS",
                   "<key> <bit> [start] [end]",
                   "Find first bit set or clear in a string",
@@ -160,7 +340,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   2,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::BitPos),
     CommandHolder("BLPOP",
                   "<key> [key ...] timeout",
                   "Remove and get the first element in a "
@@ -170,7 +350,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::BlPop),
     CommandHolder("BRPOP",
                   "<key> [key ...] timeout",
                   "Remove and get the last element in a "
@@ -180,7 +360,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::BrPop),
     CommandHolder("BRPOPLPUSH",
                   "source destination timeout",
                   "Pop a value from a list, push it to "
@@ -191,7 +371,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::BrPopLpush),
 
     CommandHolder("CLIENT GETNAME",
                   "-",
@@ -200,7 +380,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ClientGetName),
     CommandHolder("CLIENT KILL",
                   "[ip:port] [ID client-id] [TYPE "
                   "normal|master|slave|pubsub] "
@@ -210,7 +390,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   9,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ClientKill),
     CommandHolder("CLIENT LIST",
                   "-",
                   "Get the list of client connections",
@@ -218,7 +398,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ClientList),
     CommandHolder("CLIENT PAUSE",
                   "<timeout>",
                   "Stop processing commands from clients "
@@ -227,7 +407,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ClientPause),
     CommandHolder("CLIENT REPLY",
                   "ON|OFF|SKIP",
                   "Instruct the server whether to reply to commands",
@@ -235,7 +415,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ClientReply),
     CommandHolder("CLIENT SETNAME",
                   "<connection-name>",
                   "Set the current connection name",
@@ -243,7 +423,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ClientSetName),
 
     CommandHolder("CLUSTER ADDSLOTS",
                   "<slot> [slot ...]",
@@ -252,7 +432,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ClusterAddSlots),
     CommandHolder("CLUSTER COUNT-FAILURE-REPORTS",
                   "<node-id>",
                   "Return the number of failure reports "
@@ -261,7 +441,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ClusterCountFailureReports),
     CommandHolder("CLUSTER COUNTKEYSINSLOT",
                   "<slot>",
                   "Return the number of local keys in the "
@@ -270,7 +450,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ClusterCountKeysSinSlot),
     CommandHolder("CLUSTER DELSLOTS",
                   "<slot> [slot ...]",
                   "Set hash slots as unbound in receiving node",
@@ -278,7 +458,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ClusterDelSlots),
     CommandHolder("CLUSTER FAILOVER",
                   "[FORCE|TAKEOVER]",
                   "Forces a slave to perform a manual "
@@ -287,7 +467,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   1,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ClusterFailover),
     CommandHolder("CLUSTER FORGET",
                   "<node-id>",
                   "Remove a node from the nodes table",
@@ -295,7 +475,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ClusterForget),
     CommandHolder("CLUSTER GETKEYSINSLOT",
                   "<slot> <count>",
                   "Return local key names in the specified hash slot",
@@ -303,7 +483,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ClusterGetKeySinSlot),
     CommandHolder("CLUSTER INFO",
                   "-",
                   "Provides info about Redis Cluster node state",
@@ -311,7 +491,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ClusterInfo),
     CommandHolder("CLUSTER KEYSLOT",
                   "<key>",
                   "Returns the hash slot of the specified key",
@@ -319,7 +499,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ClusterKeySlot),
     CommandHolder("CLUSTER MEET",
                   "<ip> <port>",
                   "Force a node cluster to handshake with "
@@ -328,7 +508,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ClusterMeet),
     CommandHolder("CLUSTER NODES",
                   "-",
                   "Get Cluster config for the node",
@@ -336,7 +516,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ClusterNodes),
     CommandHolder("CLUSTER REPLICATE",
                   "<node-id>",
                   "Reconfigure a node as a slave of the "
@@ -345,7 +525,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ClusterReplicate),
     CommandHolder("CLUSTER RESET",
                   "[HARD|SOFT]",
                   "Reset a Redis Cluster node",
@@ -353,7 +533,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   1,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ClusterReset),
     CommandHolder("CLUSTER SAVECONFIG",
                   "-",
                   "Forces the node to save cluster state on disk",
@@ -361,7 +541,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ClusterSaveConfig),
     CommandHolder("CLUSTER SET-CONFIG-EPOCH",
                   "<config-epoch>",
                   "Set the configuration epoch in a new node",
@@ -369,7 +549,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ClusterSetConfigEpoch),
     CommandHolder("CLUSTER SETSLOT",
                   "<slot> IMPORTING|MIGRATING|STABLE|NODE [node-id]",
                   "Bind a hash slot to a specific node",
@@ -377,7 +557,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   2,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ClusterSetSlot),
     CommandHolder("CLUSTER SLAVES",
                   "<node-id>",
                   "Licommon_execst slave nodes of the "
@@ -386,7 +566,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ClusterSlaves),
     CommandHolder("CLUSTER SLOTS",
                   "-",
                   "Get array of Cluster slot to node mappings",
@@ -394,7 +574,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ClusterSlots),
 
     CommandHolder("COMMAND COUNT",
                   "-",
@@ -403,7 +583,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::CommandCount),
     CommandHolder("COMMAND GETKEYS",
                   "-",
                   "Extract keys given a full Redis command",
@@ -411,7 +591,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::CommandGetKeys),
     CommandHolder("COMMAND INFO",
                   "command-name [command-name ...]",
                   "Get array of specific Redis command details",
@@ -419,7 +599,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::CommandInfo),
     CommandHolder("COMMAND",
                   "-",
                   "Get array of Redis command details",
@@ -427,7 +607,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Command),
 
     CommandHolder("CONFIG GET",
                   "<parameter>",
@@ -436,7 +616,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ConfigGet),
     CommandHolder("CONFIG RESETSTAT",
                   "-",
                   "Reset the stats returned by INFO",
@@ -444,7 +624,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ConfigResetStat),
     CommandHolder("CONFIG REWRITE",
                   "-",
                   "Rewrite the configuration file with the "
@@ -453,7 +633,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ConfigRewrite),
     CommandHolder("CONFIG SET",
                   "<parameter> <value>",
                   "Set a configuration parameter to the given value",
@@ -461,7 +641,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ConfigSet),
 
     CommandHolder("DBSIZE",
                   "-",
@@ -471,7 +651,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::DbSize),
 
     CommandHolder("DEBUG OBJECT",
                   "<key>",
@@ -480,7 +660,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::DebugObject),
     CommandHolder("DEBUG SEGFAULT",
                   "-",
                   "Make the server crash",
@@ -488,7 +668,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::DebugSegFault),
 
     CommandHolder("DECR",
                   "<key>",
@@ -522,7 +702,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Discard),
     CommandHolder("DUMP",
                   "<key>",
                   "Return a serialized version of the "
@@ -531,7 +711,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Dump),
     CommandHolder("ECHO",
                   "<message>",
                   "Echo the given string",
@@ -539,7 +719,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Echo),
     CommandHolder("EVAL",
                   "script numkeys <key> [key ...] <arg> [arg ...]",
                   "Execute a Lua script server side",
@@ -547,7 +727,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Eval),
     CommandHolder("EVALSHA",
                   "sha1 numkeys <key> [key ...] <arg> [arg ...]",
                   "Execute a Lua script server side",
@@ -555,7 +735,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::EvalSha),
     CommandHolder("EXEC",
                   "-",
                   "Execute all commands issued after MULTI",
@@ -563,7 +743,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Exec),
     CommandHolder("EXISTS",
                   "key [key ...]",
                   "Determine if a key exists",
@@ -571,7 +751,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Exists),
     CommandHolder("EXPIRE",
                   "<key> <seconds>",
                   "Set a key's time to live in seconds",
@@ -587,7 +767,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::ExpireAt),
     CommandHolder("FLUSHALL",
                   "-",
                   "Remove all keys from all databases",
@@ -595,7 +775,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::FlushALL),
     CommandHolder("FLUSHDB",
                   "-",
                   "Remove all keys from the current database",
@@ -614,7 +794,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   4,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::GeoAdd),
     CommandHolder("GEODIST",
                   "key member1 member2 [unit]",
                   "Returns the distance between two "
@@ -623,7 +803,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   1,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::GeoDist),
     CommandHolder("GEOHASH",
                   "key member [member ...]",
                   "Returns members of a geospatial index "
@@ -632,7 +812,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::GeoHash),
     CommandHolder("GEOPOS",
                   "key member [member ...]",
                   "Returns longitude and latitude of "
@@ -641,7 +821,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::GeoPos),
 
     CommandHolder("GEORADIUS",
                   "key longitude latitude radius "
@@ -656,7 +836,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   5,
                   6,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::GeoRadius),
     CommandHolder("GEORADIUSBYMEMBER",
                   "key member radius m|km|ft|mi "
                   "[WITHCOORD] [WITHDIST] "
@@ -669,7 +849,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   4,
                   6,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::GeoRadiusByMember),
     CommandHolder("GET",
                   "<key>",
                   "Gecommon_exect the value of a key",
@@ -686,7 +866,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::GetBit),
     CommandHolder("GETRANGE",
                   "<key> <start> <end>",
                   "Get a substring of the string stored at a key",
@@ -694,7 +874,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::GetRange),
     CommandHolder("GETSET",
                   "<key> <value>",
                   "Set the string value of a key and "
@@ -703,7 +883,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::GetSet),
     CommandHolder("HDEL",
                   "<key> <field> [field ...]",
                   "Delete one or more hash fields",
@@ -711,7 +891,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Hdel),
     CommandHolder("HEXISTS",
                   "<key> <field>",
                   "Determine if a hash field exists",
@@ -719,7 +899,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Hexists),
     CommandHolder("HGET",
                   "<key> <field>",
                   "Get the value of a hash field",
@@ -727,7 +907,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Hget),
     CommandHolder("HGETALL",
                   "<key>",
                   "Get all the fields and values in a hash",
@@ -744,7 +924,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::HincrByFloat),
     CommandHolder("HINCRBYFLOAT",
                   "<key> <field> <increment>",
                   "Increment the float value of a hash "
@@ -753,7 +933,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::HincrByFloat),
     CommandHolder("HKEYS",
                   "<key>",
                   "Get all the fields in a hash",
@@ -761,7 +941,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Hkeys),
     CommandHolder("HLEN",
                   "<key>",
                   "Get the number of fields in a hash",
@@ -769,7 +949,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Hlen),
     CommandHolder("HMGET",
                   "<key> <field> [field ...]",
                   "Get the values of all the given hash fields",
@@ -777,7 +957,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Hmget),
     CommandHolder("HMSET",
                   "<key> <field> <value> [field value ...]",
                   "Set multiple hash fields to multiple values",
@@ -795,7 +975,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   4,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Hscan),
     CommandHolder("HSET",
                   "<key> <field> <value>",
                   "Set the string value of a hash field",
@@ -803,7 +983,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Hset),
     CommandHolder("HSETNX",
                   "<key> <field> <value>",
                   "Set the value of a hash field, only if "
@@ -812,7 +992,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::HsetNX),
     CommandHolder("HSTRLEN",
                   "<key> <field>",
                   "Get the length of the value of a hash field",
@@ -820,7 +1000,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Hstrlen),
     CommandHolder("HVALS",
                   "<key>",
                   "Get all the values in a hash",
@@ -828,7 +1008,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Hvals),
     CommandHolder("INCR",
                   "<key>",
                   "Increment the integer value of a key by one",
@@ -870,7 +1050,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::RKeys),
     CommandHolder("LASTSAVE",
                   "-",
                   "Get the UNIX time stamp of the last "
@@ -879,7 +1059,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::LastSave),
     CommandHolder("LINDEX",
                   "<key> <index>",
                   "Get an element from a list by its index",
@@ -887,7 +1067,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Lindex),
     CommandHolder("LINSERT",
                   "<key> <BEFORE|AFTER> <pivot value>",
                   "Insert an element before or after "
@@ -896,7 +1076,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Linsert),
     CommandHolder("LLEN",
                   "<key>",
                   "Get the length of a list",
@@ -904,7 +1084,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Llen),
     CommandHolder("LPOP",
                   "<key>",
                   "Remove and get the first element in a list",
@@ -912,7 +1092,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Lpop),
     CommandHolder("LPUSH",
                   "<key> <value> [value ...]",
                   "Prepend one or multiple values to a list",
@@ -929,7 +1109,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::LpushX),
     CommandHolder("LRANGE",
                   "<key> <start> <stop>",
                   "Get a range of elements from a list",
@@ -945,7 +1125,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Lrem),
     CommandHolder("LSET",
                   "<key> <index> <value>",
                   "Set the value of an element in a list "
@@ -954,7 +1134,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Lset),
     CommandHolder("LTRIM",
                   "<key> <start> <stop>",
                   "Trim a list to the specified range",
@@ -962,7 +1142,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Ltrim),
     CommandHolder("MGET",
                   "<key> [key ...]",
                   "Get the values of all the given keys",
@@ -970,7 +1150,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Mget),
     CommandHolder("MIGRATE",
                   "<host> <port> <key> <destination-db> <timeout> [COPY] [REPLACE] [KEYS key]",
                   "Atomically transfer a key from a Redis instance "
@@ -979,7 +1159,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   5,
                   2,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Migrate),
     CommandHolder("MONITOR",
                   "-",
                   "Listen for all requests received by the "
@@ -996,7 +1176,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Move),
     CommandHolder("MSET",
                   "<key> <value> [key value ...]",
                   "Set multiple keys to multiple values",
@@ -1004,7 +1184,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Mset),
     CommandHolder("MSETNX",
                   "<key> <value> [key value ...]",
                   "Set multiple keys to multiple values, "
@@ -1013,7 +1193,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::MsetNX),
     CommandHolder("MULTI",
                   "-",
                   "Mark the start of a transaction block",
@@ -1021,7 +1201,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Multi),
     CommandHolder("OBJECT",
                   "<subcommand> [arguments [arguments ...]]",
                   "Inspect the internals of Redis objects",
@@ -1029,7 +1209,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Object),
     CommandHolder("PERSIST",
                   "<key>",
                   "Remove the expiration from a key",
@@ -1045,7 +1225,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Pexpire),
     CommandHolder("PEXPIREAT",
                   "<key> <milliseconds-timestamp>",
                   "Set the expiration for a key as a UNIX "
@@ -1055,7 +1235,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::PexpireAt),
     CommandHolder("PFADD",
                   "<key> <element> [element ...]",
                   "Adds the specified elements to the "
@@ -1064,7 +1244,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Pfadd),
     CommandHolder("PFCOUNT",
                   "<key> [key ...]",
                   "Return the approximated cardinality of "
@@ -1074,7 +1254,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Pfcount),
     CommandHolder("PFMERGE",
                   "<destkey> <sourcekey> [sourcekey ...]",
                   "Merge N different HyperLogLogs into a single one.",
@@ -1082,7 +1262,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Pfmerge),
     CommandHolder("PING",
                   "[message]",
                   "Ping the server",
@@ -1090,7 +1270,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   1,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Ping),
     CommandHolder("PSETEX",
                   "<key> <milliseconds> <value>",
                   "Set the value and expiration in "
@@ -1099,7 +1279,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::PsetEx),
     CommandHolder("PSUBSCRIBE",
                   "<pattern> [pattern ...]",
                   "Listen for messages published to "
@@ -1116,7 +1296,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Pttl),
     CommandHolder("PUBLISH",
                   "<channel> <message>",
                   "Post a message to a channel",
@@ -1124,7 +1304,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Publish),
     CommandHolder("PUBSUB",
                   "<subcommand> [argument [argument ...]]",
                   "Inspect the state of the Pub/Sub subsystem",
@@ -1132,7 +1312,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::PubSub),
     CommandHolder("PUNSUBSCRIBE",
                   "[pattern [pattern ...]]",
                   "Stop listening for messages posted to "
@@ -1142,7 +1322,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::PunSubscribe),
     CommandHolder("QUIT",
                   "-",
                   "Close the connection",
@@ -1158,7 +1338,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::RandomKey),
     CommandHolder("READONLY",
                   "-",
                   "Enables read queries for a connection "
@@ -1167,7 +1347,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::ReadOnly),
     CommandHolder("READWRITE",
                   "-",
                   "Disables read queries for a connection "
@@ -1176,7 +1356,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::ReadWrite),
     CommandHolder("RENAME",
                   "<key> <newkey>",
                   "Rename a key",
@@ -1192,7 +1372,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::RenameNx),
     CommandHolder("RESTORE",
                   "<key> <ttl> <serialized-value> [REPLACE]",
                   "Create a key using the provided serialized value, "
@@ -1201,7 +1381,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   1,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Restore),
     CommandHolder("ROLE",
                   "-",
                   "Return the role of the instance in the "
@@ -1210,7 +1390,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Role),
     CommandHolder("RPOP",
                   "<key>",
                   "Remove and get the last element in a list",
@@ -1218,7 +1398,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Rpop),
     CommandHolder("RPOPLPUSH",
                   "<source> <destination>",
                   "Remove the last element in a list, prepend it to another list and return it",
@@ -1226,7 +1406,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::RpopLpush),
     CommandHolder("RPUSH",
                   "<key> <value> [value ...]",
                   "Append one or multiple values to a list",
@@ -1234,7 +1414,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Rpush),
     CommandHolder("RPUSHX",
                   "<key> <value>",
                   "Append a value to a list, only if the list exists",
@@ -1242,7 +1422,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::RpushX),
     CommandHolder("SADD",
                   "<key> <member> [member ...]",
                   "Add one or more members to a set",
@@ -1258,7 +1438,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Save),
     CommandHolder("SCAN",
                   "<cursor> [MATCH pattern] [COUNT count]",
                   "Incrementally iterate the keys space",
@@ -1274,7 +1454,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Scard),
 
     CommandHolder("SCRIPT DEBUG",
                   "<YES|SYNC|NO>",
@@ -1283,7 +1463,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ScriptDebug),
     CommandHolder("SCRIPT EXISTS",
                   "script [script ...]",
                   "Check existence of scripts in the script cache.",
@@ -1291,7 +1471,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ScriptExists),
     CommandHolder("SCRIPT FLUSH",
                   "-",
                   "Remove all the scripts from the script cache.",
@@ -1299,7 +1479,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ScriptFlush),
     CommandHolder("SCRIPT KILL",
                   "-",
                   "Kill the script currently in execution.",
@@ -1307,7 +1487,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ScriptKill),
     CommandHolder("SCRIPT LOAD",
                   "<script>",
                   "Load the specified Lua script into the "
@@ -1316,7 +1496,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::ScriptLoad),
 
     CommandHolder("SDIFF",
                   "<key> [key ...]",
@@ -1325,7 +1505,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Sdiff),
     CommandHolder("SDIFFSTORE",
                   "<destination> <key> [key ...]",
                   "Subtract multiple sets and store the "
@@ -1334,7 +1514,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::SdiffStore),
     CommandHolder("SELECT",
                   "<index>",
                   "Change the selected database for the "
@@ -1360,7 +1540,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::SetBit),
     CommandHolder("SETEX",
                   "<key> <seconds> <value>",
                   "Set the value and expiration of a key",
@@ -1386,7 +1566,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::SetRange),
     CommandHolder("SHUTDOWN",
                   "[NOSAVE|SAVE]",
                   "Synchronously save the dataset to disk "
@@ -1395,7 +1575,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   1,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Shutdown),
     CommandHolder("SINTER",
                   "<key> [key ...]",
                   "Intersect multiple sets",
@@ -1403,7 +1583,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Sinter),
     CommandHolder("SINTERSTORE",
                   "<destination> <key> [key ...]",
                   "Intersect multiple sets and store the "
@@ -1412,7 +1592,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::SinterStore),
     CommandHolder("SISMEMBER",
                   "<key> <member>",
                   "Determine if a given value is a member of a set",
@@ -1420,7 +1600,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::SisMember),
     CommandHolder("SLAVEOF",
                   "<host> <port>",
                   "Make the server a slave of another "
@@ -1429,7 +1609,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::SlaveOf),
     CommandHolder("SLOWLOG",
                   "<subcommand> [argument]",
                   "Manages the Redis slow queries log",
@@ -1437,7 +1617,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   1,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::SlowLog),
     CommandHolder("SMEMBERS",
                   "<key>",
                   "Get all the members in a set",
@@ -1453,7 +1633,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Smove),
     CommandHolder("SORT",
                   "<key> [BY pattern] [LIMIT offset count] [GET "
                   "pattern [GET "
@@ -1464,7 +1644,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Sort),
     CommandHolder("SPOP",
                   "<key> [count]",
                   "Remove and return one or multiple random members from a set",
@@ -1472,7 +1652,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   1,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Spop),
     CommandHolder("SRANDMEMBER",
                   "<key> [count]",
                   "Get one or multiple random members from a set",
@@ -1480,7 +1660,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   1,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::SRandMember),
     CommandHolder("SREM",
                   "<key> <member> [member ...]",
                   "Remove one or more members from a set",
@@ -1488,7 +1668,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Srem),
     CommandHolder("SSCAN",
                   "<key> <cursor> [MATCH pattern] [COUNT count]",
                   "Incrementally iterate Set elements",
@@ -1496,7 +1676,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   4,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Sscan),
     CommandHolder("STRLEN",
                   "<key>",
                   "Get the length of the value stored in a key",
@@ -1504,7 +1684,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::StrLen),
     CommandHolder("SUBSCRIBE",
                   "<channel> [channel ...]",
                   "Listen for messages published to the "
@@ -1521,7 +1701,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Sunion),
     CommandHolder("SUNIONSTORE",
                   "<destination> <key> [key ...]",
                   "Add multiple sets and store the "
@@ -1530,7 +1710,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::SunionStore),
     CommandHolder("SYNC",
                   "-",
                   "Internal command used for replication",
@@ -1554,7 +1734,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Time),
     CommandHolder("TTL",
                   "<key>",
                   "Get the time to live for a key",
@@ -1570,7 +1750,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Type),
     CommandHolder("UNSUBSCRIBE",
                   "[channel [channel ...]]",
                   "Stop listening for messages posted to "
@@ -1579,7 +1759,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Unsubscribe),
     CommandHolder("UNWATCH",
                   "-",
                   "Forget about all watched keys",
@@ -1587,7 +1767,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Unwatch),
     CommandHolder("WAIT",
                   "<numslaves> <timeout>",
                   "Wait for the synchronous replication of "
@@ -1598,7 +1778,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Wait),
     CommandHolder("WATCH",
                   "key [key ...]",
                   "Watch the given keys to determine "
@@ -1607,7 +1787,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Watch),
     CommandHolder("ZADD",
                   "<key> [NX|XX] [CH] [INCR] <score> "
                   "<member> [score member ...]",
@@ -1626,7 +1806,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Zcard),
     CommandHolder("ZCOUNT",
                   "<key> <min> <max>",
                   "Count the members in a sorted set with "
@@ -1635,7 +1815,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Zcount),
     CommandHolder("ZINCRBY",
                   "<key> <increment> <member>",
                   "Increment the score of a member in a sorted set",
@@ -1643,7 +1823,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::ZincrBy),
     CommandHolder("ZINTERSTORE",
                   "<destination> <numkeys> <key> [key ...] "
                   "[WEIGHTS weight] "
@@ -1655,7 +1835,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::ZincrStore),
     CommandHolder("ZLEXCOUNT",
                   "<key> <min> <max>",
                   "Count the number of members in a sorted "
@@ -1665,7 +1845,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::ZlexCount),
     CommandHolder("ZRANGE",
                   "<key> <start> <stop> [WITHSCORES]",
                   "Return a range of members in a sorted "
@@ -1683,7 +1863,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   3,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::ZrangeByLex),
     CommandHolder("ZRANGEBYSCORE",
                   "<key> <min> <max> [WITHSCORES] [LIMIT "
                   "offset count]",
@@ -1693,7 +1873,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   4,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::ZrangeByScore),
     CommandHolder("ZRANK",
                   "<key> <member>",
                   "Determine the index of a member in a sorted set",
@@ -1701,7 +1881,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Zrank),
     CommandHolder("ZREM",
                   "<key> <member> [member ...]",
                   "Remove one or more members from a sorted set",
@@ -1709,7 +1889,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Zrem),
     CommandHolder("ZREMRANGEBYLEX",
                   "<key> <min> <max>",
                   "Remove all members in a sorted set "
@@ -1719,7 +1899,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::ZremRangeByLex),
     CommandHolder("ZREMRANGEBYRANK",
                   "<key> <start> <stop>",
                   "Remove all members in a sorted set "
@@ -1728,7 +1908,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::ZremRangeByRank),
     CommandHolder("ZREMRANGEBYSCORE",
                   "<key> <min> <max>",
                   "Remove all members in a sorted set "
@@ -1737,7 +1917,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::ZremRangeByScore),
     CommandHolder("ZREVRANGE",
                   "<key> <start> <stop> [WITHSCORES]",
                   "Return a range of members in a sorted "
@@ -1747,7 +1927,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   1,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::ZrevRange),
     CommandHolder("ZREVRANGEBYLEX",
                   "<key> <max> <min> [LIMIT offset count]",
                   "Return a range of members in a sorted set, by "
@@ -1757,7 +1937,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   3,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::ZrevRangeByLex),
     CommandHolder("ZREVRANGEBYSCORE",
                   "<key> <max> <min> [WITHSCORES] [LIMIT "
                   "offset count]",
@@ -1768,7 +1948,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   4,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::ZrevRangeByScore),
     CommandHolder("ZREVRANK",
                   "<key> <member>",
                   "Determine the index of a member in a "
@@ -1778,7 +1958,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::ZrevRank),
     CommandHolder("ZSCAN",
                   "<key> <cursor> [MATCH pattern] [COUNT count]",
                   "Incrementally iterate sorted sets elements and "
@@ -1787,7 +1967,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   4,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Zscan),
     CommandHolder("ZSCORE",
                   "<key> <member>",
                   "Get the score associated with the given "
@@ -1796,7 +1976,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   2,
                   0,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Zscore),
     CommandHolder("ZUNIONSTORE",
                   "<destination> <numkeys> <key> [key ...] "
                   "[WEIGHTS weight] "
@@ -1808,7 +1988,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   INFINITE_COMMAND_ARGS,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::ZunionStore),
 
     CommandHolder("SENTINEL MASTERS",
                   "-",
@@ -1817,7 +1997,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::SentinelMasters),
     CommandHolder("SENTINEL MASTER",
                   "<master name>",
                   "Show the state and info of the specified master.",
@@ -1825,7 +2005,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::SentinelMaster),
     CommandHolder("SENTINEL SLAVES",
                   "<master name>",
                   "Show a list of slaves for this master, "
@@ -1834,7 +2014,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::SentinelSlaves),
     CommandHolder("SENTINEL SENTINELS",
                   "<master name>",
                   "Show a list of sentinel instances for "
@@ -1843,7 +2023,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::SentinelSentinels),
     CommandHolder("SENTINEL GET-MASTER-ADDR-BY-NAME",
                   "<master name>",
                   "Return the ip and port number of the "
@@ -1857,7 +2037,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::SentinelGetMasterAddrByName),
     CommandHolder("SENTINEL RESET",
                   "<pattern>",
                   "This command will reset all the masters with "
@@ -1874,7 +2054,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::SentinelReset),
     CommandHolder("SENTINEL FAILOVER",
                   "<master name>",
                   "Force a failover as if the master was not "
@@ -1889,7 +2069,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::SentinelFailover),
     CommandHolder("SENTINEL CKQUORUM",
                   "<master name>",
                   "Check if the current Sentinel "
@@ -1906,7 +2086,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::SentinelCkquorum),
     CommandHolder("SENTINEL FLUSHCONFIG",
                   "-",
                   "Force Sentinel to rewrite its "
@@ -1935,7 +2115,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::SentinelFlushConfig),
     CommandHolder("SENTINEL MONITOR",
                   "<name> <ip> <port> <quorum>",
                   "This command tells the Sentinel to "
@@ -1953,7 +2133,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   4,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::SentinelMonitor),
     CommandHolder("SENTINEL REMOVE",
                   "<name>",
                   "Used in order to remove the specified "
@@ -1967,7 +2147,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   1,
                   0,
-                  &CommandsApi::CommonExecOff2),
+                  &CommandsApi::SentinelRemove),
     CommandHolder("SENTINEL SET",
                   "<name> <option> <value>",
                   "The SET command is very similar to the "
@@ -1985,7 +2165,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &CommandsApi::CommonExecOff2)};
+                  &CommandsApi::SentinelSet)};
 
 }  // namespace redis
 }  // namespace core

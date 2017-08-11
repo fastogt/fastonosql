@@ -36,7 +36,8 @@ common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, comm
   key_t key_str = cur.GetKey();
   std::string value_str = key.ValueString();
   command_buffer_writer_t wr;
-  wr << MAKE_COMMAND_BUFFER(FORESTDB_SET_KEY_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKey() << MAKE_COMMAND_BUFFER(" ") << value_str;
+  wr << MAKE_COMMAND_BUFFER(FORESTDB_SET_KEY_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKey()
+     << MAKE_COMMAND_BUFFER(" ") << value_str;
   *cmdstring = wr.str();
   return common::Error();
 }
@@ -66,8 +67,8 @@ common::Error CommandTranslator::RenameKeyCommandImpl(const NKey& key,
                                                       command_buffer_t* cmdstring) const {
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
-  wr << MAKE_COMMAND_BUFFER(FORESTDB_RENAME_KEY_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKey() << MAKE_COMMAND_BUFFER(" ")
-     << new_name;
+  wr << MAKE_COMMAND_BUFFER(FORESTDB_RENAME_KEY_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKey()
+     << MAKE_COMMAND_BUFFER(" ") << new_name;
   *cmdstring = wr.str();
   return common::Error();
 }

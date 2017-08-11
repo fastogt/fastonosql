@@ -53,9 +53,7 @@ common::Error CommandsApi::Info(internal::CommandHandler* handler, commands_args
   return common::Error();
 }
 
-common::Error CommandsApi::ScanSSDB(internal::CommandHandler* handler,
-                                    commands_args_t argv,
-                                    FastoObject* out) {
+common::Error CommandsApi::ScanSSDB(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   uint64_t limit;
   if (!common::ConvertFromString(argv[2], &limit)) {
@@ -163,9 +161,7 @@ common::Error CommandsApi::Rscan(internal::CommandHandler* handler, commands_arg
   return common::Error();
 }
 
-common::Error CommandsApi::MultiGet(internal::CommandHandler* handler,
-                                    commands_args_t argv,
-                                    FastoObject* out) {
+common::Error CommandsApi::MultiGet(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysget;
   for (size_t i = 0; i < argv.size(); ++i) {
@@ -188,9 +184,7 @@ common::Error CommandsApi::MultiGet(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::MultiSet(internal::CommandHandler* handler,
-                                    commands_args_t argv,
-                                    FastoObject* out) {
+common::Error CommandsApi::MultiSet(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::map<std::string, std::string> keysset;
   for (size_t i = 0; i < argv.size(); i += 2) {
@@ -208,9 +202,7 @@ common::Error CommandsApi::MultiSet(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::MultiDel(internal::CommandHandler* handler,
-                                    commands_args_t argv,
-                                    FastoObject* out) {
+common::Error CommandsApi::MultiDel(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysget;
   for (size_t i = 0; i < argv.size(); ++i) {
@@ -398,9 +390,7 @@ common::Error CommandsApi::Hrscan(internal::CommandHandler* handler, commands_ar
   return common::Error();
 }
 
-common::Error CommandsApi::MultiHget(internal::CommandHandler* handler,
-                                     commands_args_t argv,
-                                     FastoObject* out) {
+common::Error CommandsApi::MultiHget(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysget;
   for (size_t i = 1; i < argv.size(); ++i) {
@@ -423,9 +413,7 @@ common::Error CommandsApi::MultiHget(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::MultiHset(internal::CommandHandler* handler,
-                                     commands_args_t argv,
-                                     FastoObject* out) {
+common::Error CommandsApi::MultiHset(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::map<std::string, std::string> keys;
   for (size_t i = 1; i < argv.size(); i += 2) {
@@ -716,9 +704,7 @@ common::Error CommandsApi::Zrscan(internal::CommandHandler* handler, commands_ar
   return common::Error();
 }
 
-common::Error CommandsApi::MultiZget(internal::CommandHandler* handler,
-                                     commands_args_t argv,
-                                     FastoObject* out) {
+common::Error CommandsApi::MultiZget(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysget;
   for (size_t i = 1; i < argv.size(); ++i) {
@@ -741,9 +727,7 @@ common::Error CommandsApi::MultiZget(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::MultiZset(internal::CommandHandler* handler,
-                                     commands_args_t argv,
-                                     FastoObject* out) {
+common::Error CommandsApi::MultiZset(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::map<std::string, int64_t> keysget;
   for (size_t i = 1; i < argv.size(); i += 2) {
@@ -764,9 +748,7 @@ common::Error CommandsApi::MultiZset(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::MultiZdel(internal::CommandHandler* handler,
-                                     commands_args_t argv,
-                                     FastoObject* out) {
+common::Error CommandsApi::MultiZdel(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysget;
   for (size_t i = 1; i < argv.size(); ++i) {

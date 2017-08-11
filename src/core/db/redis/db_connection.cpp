@@ -1903,7 +1903,8 @@ common::Error DBConnection::IncrByFloat(const NKey& key, double inc, std::string
 
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
-  wr << MAKE_COMMAND_BUFFER("INCRBYFLOAT ") << key_str.GetKey() << MAKE_COMMAND_BUFFER(" ") << common::ConvertToString(inc);
+  wr << MAKE_COMMAND_BUFFER("INCRBYFLOAT ") << key_str.GetKey() << MAKE_COMMAND_BUFFER(" ")
+     << common::ConvertToString(inc);
   const command_buffer_t incrfloat_cmd = wr.str();
 
   redisReply* reply = ExecRedisCommand(connection_.handle_, incrfloat_cmd);

@@ -22,9 +22,7 @@ namespace fastonosql {
 namespace core {
 namespace leveldb {
 
-common::Error CommandsApi::Info(internal::CommandHandler* handler,
-                                commands_args_t argv,
-                                FastoObject* out) {
+common::Error CommandsApi::Info(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* level = static_cast<DBConnection*>(handler);
 
   ServerInfo::Stats statsout;

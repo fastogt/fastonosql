@@ -130,7 +130,8 @@ class IDriver : public QObject, public core::CDBConnectionClient {
                                                      const core::command_buffer_t& input,
                                                      core::CmdLoggingType ct) = 0;
 
-  virtual core::FastoObjectCommandIPtr CreateCommandFast(const core::command_buffer_t& input, core::CmdLoggingType ct) = 0;
+  virtual core::FastoObjectCommandIPtr CreateCommandFast(const core::command_buffer_t& input,
+                                                         core::CmdLoggingType ct) = 0;
 
  private:
   virtual common::Error SyncConnect() WARN_UNUSED_RESULT = 0;

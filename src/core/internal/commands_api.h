@@ -189,9 +189,7 @@ common::Error ApiTraits<CDBConnection>::FlushDB(internal::CommandHandler* handle
 }
 
 template <class CDBConnection>
-common::Error ApiTraits<CDBConnection>::Select(CommandHandler* handler,
-                                               commands_args_t argv,
-                                               FastoObject* out) {
+common::Error ApiTraits<CDBConnection>::Select(CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
   common::Error err = cdb->Select(argv[0], nullptr);
   if (err && err->IsError()) {
@@ -205,9 +203,7 @@ common::Error ApiTraits<CDBConnection>::Select(CommandHandler* handler,
 }
 
 template <class CDBConnection>
-common::Error ApiTraits<CDBConnection>::Set(internal::CommandHandler* handler,
-                                            commands_args_t argv,
-                                            FastoObject* out) {
+common::Error ApiTraits<CDBConnection>::Set(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   command_buffer_writer_t wr;
   wr << argv[0];
   key_t raw_key(wr.str());
@@ -230,9 +226,7 @@ common::Error ApiTraits<CDBConnection>::Set(internal::CommandHandler* handler,
 }
 
 template <class CDBConnection>
-common::Error ApiTraits<CDBConnection>::Get(internal::CommandHandler* handler,
-                                            commands_args_t argv,
-                                            FastoObject* out) {
+common::Error ApiTraits<CDBConnection>::Get(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   command_buffer_writer_t wr;
   wr << argv[0];
   key_t raw_key(wr.str());

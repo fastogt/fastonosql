@@ -16,7 +16,7 @@ using namespace fastonosql;
 
 core::internal::CommandHandler* ghand = NULL;
 
-common::Error test(core::internal::CommandHandler* handler, std::vector<std::string> argv, core::FastoObject* out) {
+common::Error test(core::internal::CommandHandler* handler, core::commands_args_t argv, core::FastoObject* out) {
   UNUSED(argv);
 
   CHECK(handler == ghand);
@@ -115,31 +115,31 @@ TEST(CommandHolder, execute) {
   FakeTranslator* ft = new FakeTranslator(cmds);
   core::internal::CommandHandler* hand = new core::internal::CommandHandler(ft);
   ghand = hand;
-  const std::vector<std::string> cmd_valid_set = {SET, "alex", "palec"};
+  const core::commands_args_t cmd_valid_set = {SET, "alex", "palec"};
   common::Error err = hand->Execute(cmd_valid_set, NULL);
   ASSERT_FALSE(err && err->IsError());
 
-  const std::vector<std::string> cmd_invalid_set = {SET, "alex"};
+  const core::commands_args_t cmd_invalid_set = {SET, "alex"};
   err = hand->Execute(cmd_invalid_set, NULL);
   ASSERT_TRUE(err && err->IsError());
 
-  const std::vector<std::string> cmd_not_exists = {GET, "alex"};
+  const core::commands_args_t cmd_not_exists = {GET, "alex"};
   err = hand->Execute(cmd_not_exists, NULL);
   ASSERT_TRUE(err && err->IsError());
 
-  const std::vector<std::string> cmd_get_config = {GET, CONFIG, "alex"};
+  const core::commands_args_t cmd_get_config = {GET, CONFIG, "alex"};
   err = hand->Execute(cmd_get_config, NULL);
   ASSERT_TRUE(!err);
 
-  const std::vector<std::string> cmd_get_config_invalid = {GET_CONFIG_INVALID, "alex"};
+  const core::commands_args_t cmd_get_config_invalid = {GET_CONFIG_INVALID, "alex"};
   err = hand->Execute(cmd_get_config_invalid, NULL);
   ASSERT_TRUE(err && err->IsError());
 
-  const std::vector<std::string> cmd_get2 = {GET2, "alex"};
+  const core::commands_args_t cmd_get2 = {GET2, "alex"};
   err = hand->Execute(cmd_get2, NULL);
   ASSERT_TRUE(!err);
 
-  const std::vector<std::string> cmd_get_config_many_args = {GET, CONFIG, "last", "alex"};
+  const core::commands_args_t cmd_get_config_many_args = {GET, CONFIG, "last", "alex"};
   err = hand->Execute(cmd_get_config_many_args, NULL);
   ASSERT_TRUE(err && err->IsError());
 

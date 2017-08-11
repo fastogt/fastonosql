@@ -19,10 +19,11 @@
 #pragma once
 
 #include <deque>
-#include <string>
 #include <sstream>
+#include <string>
 
 #define MAKE_COMMAND_BUFFER(x) x
+
 namespace common {
 class Value;
 }

@@ -42,7 +42,7 @@ bool IsBinaryKey(const command_buffer_t& key) {
 
 KeyString::KeyString() : key_() {}
 
-KeyString::KeyString(const string_key_t &key_data) : key_() {
+KeyString::KeyString(const string_key_t& key_data) : key_() {
   SetKey(key_data);
 }
 
@@ -50,7 +50,7 @@ string_key_t KeyString::GetKey() const {
   return key_;
 }
 
-void KeyString::SetKey(const string_key_t &key_data) {
+void KeyString::SetKey(const string_key_t& key_data) {
   if (IsBinaryKey(key_data)) {
     command_buffer_writer_t wr;
     string_key_t hexed = common::utils::hex::encode(key_data, false);

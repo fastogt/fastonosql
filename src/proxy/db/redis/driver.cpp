@@ -267,7 +267,8 @@ void Driver::HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEv
   events::ChangeMaxConnectionResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 25);
   core::command_buffer_writer_t wr;
-  wr << MAKE_COMMAND_BUFFER(REDIS_SET_MAX_CONNECTIONS_COMMAND) << MAKE_COMMAND_BUFFER(" ") << common::ConvertToString(res.max_connection);
+  wr << MAKE_COMMAND_BUFFER(REDIS_SET_MAX_CONNECTIONS_COMMAND) << MAKE_COMMAND_BUFFER(" ")
+     << common::ConvertToString(res.max_connection);
   core::command_buffer_t pattern_result = wr.str();
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(pattern_result, core::C_INNER);
   common::Error er = Execute(cmd);
@@ -455,7 +456,8 @@ void Driver::HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEven
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
   events::ServerPropertyInfoResponceEvent::value_type res(ev->value());
-  core::FastoObjectCommandIPtr cmd = CreateCommandFast(MAKE_COMMAND_BUFFER(REDIS_GET_PROPERTY_SERVER_COMMAND), core::C_INNER);
+  core::FastoObjectCommandIPtr cmd =
+      CreateCommandFast(MAKE_COMMAND_BUFFER(REDIS_GET_PROPERTY_SERVER_COMMAND), core::C_INNER);
   NotifyProgress(sender, 50);
   common::Error er = Execute(cmd);
   if (er && er->IsError()) {
