@@ -101,7 +101,7 @@ Config::Config()
 namespace common {
 
 std::string ConvertToString(const fastonosql::core::redis::Config& conf) {
-  std::vector<std::string> argv = conf.Args();
+  fastonosql::core::config_args_t argv = conf.Args();
 
   if (!conf.hostsocket.empty()) {
     argv.push_back("-s");

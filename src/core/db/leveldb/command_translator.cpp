@@ -49,7 +49,7 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
 
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
-  wr << MAKE_BUFFER(LEVELDB_GET_KEY_COMMAND) << MAKE_BUFFER(" \"") << key_str.GetKey() << MAKE_BUFFER("\"");
+  wr << MAKE_BUFFER(LEVELDB_GET_KEY_COMMAND) << MAKE_BUFFER(" ") << key_str.GetKey();
   *cmdstring = wr.GetBuffer();
   return common::Error();
 }

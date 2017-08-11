@@ -88,7 +88,7 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
   } else if (type == common::Value::TYPE_HASH) {
     wr << MAKE_BUFFER(REDIS_GET_KEY_HASH_COMMAND) << MAKE_BUFFER(" ") << key_str.GetKey();
   } else {
-    wr << MAKE_BUFFER(REDIS_GET_KEY_COMMAND) << MAKE_BUFFER(" \"") << key_str.GetKey() << MAKE_BUFFER("\"");
+    wr << MAKE_BUFFER(REDIS_GET_KEY_COMMAND) << MAKE_BUFFER(" ") << key_str.GetKey();
   }
 
   *cmdstring = wr.GetBuffer();

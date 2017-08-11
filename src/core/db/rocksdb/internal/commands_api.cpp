@@ -35,7 +35,7 @@ namespace core {
 namespace rocksdb {
 
 common::Error CommandsApi::Info(internal::CommandHandler* handler,
-                                std::vector<std::string> argv,
+                                commands_args_t argv,
                                 FastoObject* out) {
   DBConnection* rocks = static_cast<DBConnection*>(handler);
   ServerInfo::Stats statsout;
@@ -51,7 +51,7 @@ common::Error CommandsApi::Info(internal::CommandHandler* handler,
 }
 
 common::Error CommandsApi::Mget(internal::CommandHandler* handler,
-                                std::vector<std::string> argv,
+                                commands_args_t argv,
                                 FastoObject* out) {
   DBConnection* rocks = static_cast<DBConnection*>(handler);
   std::vector<std::string> keysget;
@@ -76,7 +76,7 @@ common::Error CommandsApi::Mget(internal::CommandHandler* handler,
 }
 
 common::Error CommandsApi::Merge(internal::CommandHandler* handler,
-                                 std::vector<std::string> argv,
+                                 commands_args_t argv,
                                  FastoObject* out) {
   DBConnection* rocks = static_cast<DBConnection*>(handler);
   common::Error err = rocks->Merge(argv[0], argv[1]);

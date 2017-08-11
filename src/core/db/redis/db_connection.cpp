@@ -1123,9 +1123,8 @@ common::Error DBConnection::ExecuteAsPipeline(const std::vector<FastoObjectComma
       log_command_cb(cmd);
     }
 
-    const char* ccmd = reinterpret_cast<const char*>(command.data());
     int argc = 0;
-    sds* argv = sdssplitargslong(ccmd, &argc);
+    sds* argv = sdssplitargslong_sized(command.data(), command.size(), &argc);
     if (argv) {
       if (isPipeLineCommand(argv[0])) {
         valid_cmds.push_back(cmd);
@@ -1147,7 +1146,7 @@ common::Error DBConnection::ExecuteAsPipeline(const std::vector<FastoObjectComma
   return common::Error();
 }
 
-common::Error DBConnection::CommonExec(std::vector<std::string> argv, FastoObject* out) {
+common::Error DBConnection::CommonExec(commands_args_t argv, FastoObject* out) {
   if (!out || argv.empty()) {
     DNOTREACHED();
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
@@ -1157,16 +1156,19 @@ common::Error DBConnection::CommonExec(std::vector<std::string> argv, FastoObjec
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  size_t argc = argv.size();
-  size_t* argvlen = reinterpret_cast<size_t*>(malloc(static_cast<size_t>(argc) * sizeof(size_t)));
-  for (int j = 0; j < argc; j++) {
-    char* carg = const_cast<char*>(argv[j].c_str());
-    size_t len = sdslen(carg);
-    argvlen[j] = len;
+  const char** argvc = static_cast<const char**>(calloc(sizeof(const char*), argv.size()));
+  int argcc = 0;
+  size_t* argvlen = reinterpret_cast<size_t*>(malloc(argv.size() * sizeof(size_t)));
+  for (size_t i = 0; i < argv.size(); ++i) {
+    argvc[i] = argv[i].c_str();
+    argvlen[i] = argv[i].size();
+    argcc++;
   }
 
-  // redisAppendCommandArgv(connection_.handle_, argc, const_cast<const char**>(argv), argvlen);
+  redisAppendCommandArgv(connection_.handle_, argcc, argvc, argvlen);
   free(argvlen);
+  free(argvc);
+
   common::Error err = CliReadReply(out);
   if (err && err->IsError()) {
     return err;
@@ -1193,7 +1195,7 @@ common::Error DBConnection::Auth(const std::string& password) {
   return common::Error();
 }
 
-common::Error DBConnection::Monitor(std::vector<std::string> argv, FastoObject* out) {
+common::Error DBConnection::Monitor(commands_args_t argv, FastoObject* out) {
   if (!out || argv.empty()) {
     DNOTREACHED();
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
@@ -1203,16 +1205,19 @@ common::Error DBConnection::Monitor(std::vector<std::string> argv, FastoObject* 
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  size_t argc = argv.size();
-  size_t* argvlen = reinterpret_cast<size_t*>(malloc(static_cast<size_t>(argc) * sizeof(size_t)));
-  for (int j = 0; j < argc; j++) {
-    char* carg = const_cast<char*>(argv[j].c_str());
-    size_t len = sdslen(carg);
-    argvlen[j] = len;
+  const char** argvc = static_cast<const char**>(calloc(sizeof(const char*), argv.size()));
+  int argcc = 0;
+  size_t* argvlen = reinterpret_cast<size_t*>(malloc(argv.size() * sizeof(size_t)));
+  for (size_t i = 0; i < argv.size(); ++i) {
+    argvc[i] = argv[i].c_str();
+    argvlen[i] = argv[i].size();
+    argcc++;
   }
 
-  // redisAppendCommandArgv(connection_.handle_, argc, const_cast<const char**>(argv), argvlen);  // FIXME
+  redisAppendCommandArgv(connection_.handle_, argcc, argvc, argvlen);
   free(argvlen);
+  free(argvc);
+
   common::Error err = CliReadReply(out);
   if (err && err->IsError()) {
     return err;
@@ -1230,7 +1235,7 @@ common::Error DBConnection::Monitor(std::vector<std::string> argv, FastoObject* 
   }
 }
 
-common::Error DBConnection::Subscribe(std::vector<std::string> argv, FastoObject* out) {
+common::Error DBConnection::Subscribe(commands_args_t argv, FastoObject* out) {
   if (!out || argv.empty()) {
     DNOTREACHED();
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
@@ -1240,16 +1245,19 @@ common::Error DBConnection::Subscribe(std::vector<std::string> argv, FastoObject
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  size_t argc = argv.size();
-  size_t* argvlen = reinterpret_cast<size_t*>(malloc(static_cast<size_t>(argc) * sizeof(size_t)));
-  for (int j = 0; j < argc; j++) {
-    char* carg = const_cast<char*>(argv[j].c_str());
-    size_t len = sdslen(carg);
-    argvlen[j] = len;
+  const char** argvc = static_cast<const char**>(calloc(sizeof(const char*), argv.size()));
+  int argcc = 0;
+  size_t* argvlen = reinterpret_cast<size_t*>(malloc(argv.size() * sizeof(size_t)));
+  for (size_t i = 0; i < argv.size(); ++i) {
+    argvc[i] = argv[i].c_str();
+    argvlen[i] = argv[i].size();
+    argcc++;
   }
 
-  // redisAppendCommandArgv(connection_.handle_, argc, const_cast<const char**>(argv), argvlen);  //FIXME
+  redisAppendCommandArgv(connection_.handle_, argcc, argvc, argvlen);
   free(argvlen);
+  free(argvc);
+
   common::Error err = CliReadReply(out);
   if (err && err->IsError()) {
     return err;

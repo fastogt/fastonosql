@@ -99,7 +99,7 @@ void Config::SetReadOnlyDB(bool ro) {
 namespace common {
 
 std::string ConvertToString(const fastonosql::core::lmdb::Config& conf) {
-  std::vector<std::string> argv = conf.Args();
+  fastonosql::core::config_args_t argv = conf.Args();
 
   if (conf.env_flags != LMDB_DEFAULT_ENV_FLAGS) {
     argv.push_back("-e");

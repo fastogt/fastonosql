@@ -92,7 +92,7 @@ Config::Config()
 namespace common {
 
 std::string ConvertToString(const fastonosql::core::leveldb::Config& conf) {
-  std::vector<std::string> argv = conf.Args();
+  fastonosql::core::config_args_t argv = conf.Args();
 
   if (conf.create_if_missing) {
     argv.push_back("-c");

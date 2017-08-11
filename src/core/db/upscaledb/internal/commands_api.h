@@ -51,7 +51,7 @@ namespace core {
 namespace upscaledb {
 
 struct CommandsApi : public internal::ApiTraits<DBConnection> {
-  static common::Error Info(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
+  static common::Error Info(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 };
 
 static const internal::ConstantCommandsArray g_commands = {CommandHolder("HELP",

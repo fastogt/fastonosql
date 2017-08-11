@@ -23,7 +23,7 @@ namespace core {
 namespace leveldb {
 
 common::Error CommandsApi::Info(internal::CommandHandler* handler,
-                                std::vector<std::string> argv,
+                                commands_args_t argv,
                                 FastoObject* out) {
   DBConnection* level = static_cast<DBConnection*>(handler);
 

@@ -34,24 +34,17 @@ namespace fastonosql {
 namespace core {
 namespace redis {
 
-common::Error CommandsApi::CommonExec(internal::CommandHandler* handler,
-                                      std::vector<std::string> argv,
-                                      FastoObject* out) {
+common::Error CommandsApi::CommonExec(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
-  argv.pop_back();
   return red->CommonExec(argv, out);
 }
 
-common::Error CommandsApi::CommonExecOff2(internal::CommandHandler* handler,
-                                          std::vector<std::string> argv,
-                                          FastoObject* out) {
+common::Error CommandsApi::CommonExecOff2(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
-  argv.pop_back();
-  argv.pop_back();
   return red->CommonExec(argv, out);
 }
 
-common::Error CommandsApi::Auth(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out) {
+common::Error CommandsApi::Auth(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
   common::Error err = red->Auth(argv[0]);
   if (err && err->IsError()) {
@@ -64,7 +57,7 @@ common::Error CommandsApi::Auth(internal::CommandHandler* handler, std::vector<s
   return common::Error();
 }
 
-common::Error CommandsApi::Lpush(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out) {
+common::Error CommandsApi::Lpush(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   NKey key(key_t::MakeKeyString(argv[0]));
   common::ArrayValue* arr = common::Value::CreateArrayValue();
   for (size_t i = 1; i < argv.size(); ++i) {
@@ -84,7 +77,7 @@ common::Error CommandsApi::Lpush(internal::CommandHandler* handler, std::vector<
   return common::Error();
 }
 
-common::Error CommandsApi::Lrange(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out) {
+common::Error CommandsApi::Lrange(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   NKey key(key_t::MakeKeyString(argv[0]));
   int start;
   if (!common::ConvertFromString(argv[1], &start)) {
@@ -109,7 +102,13 @@ common::Error CommandsApi::Lrange(internal::CommandHandler* handler, std::vector
   return common::Error();
 }
 
-common::Error CommandsApi::SetEx(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out) {
+common::Error CommandsApi::Info(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  argv.push_front("INFO");
+  return red->CommonExec(argv, out);
+}
+
+common::Error CommandsApi::SetEx(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   NKey key(key_t::MakeKeyString(argv[0]));
   ttl_t ttl;
   if (!common::ConvertFromString(argv[1], &ttl)) {
@@ -130,7 +129,7 @@ common::Error CommandsApi::SetEx(internal::CommandHandler* handler, std::vector<
   return common::Error();
 }
 
-common::Error CommandsApi::SetNX(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out) {
+common::Error CommandsApi::SetNX(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   NKey key(key_t::MakeKeyString(argv[0]));
   NValue string_val(common::Value::CreateStringValue(argv[1]));
   NDbKValue kv(key, string_val);
@@ -147,7 +146,7 @@ common::Error CommandsApi::SetNX(internal::CommandHandler* handler, std::vector<
   return common::Error();
 }
 
-common::Error CommandsApi::Sadd(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out) {
+common::Error CommandsApi::Sadd(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   NKey key(key_t::MakeKeyString(argv[0]));
   common::SetValue* set = common::Value::CreateSetValue();
   for (size_t i = 1; i < argv.size(); ++i) {
@@ -167,9 +166,7 @@ common::Error CommandsApi::Sadd(internal::CommandHandler* handler, std::vector<s
   return common::Error();
 }
 
-common::Error CommandsApi::Smembers(internal::CommandHandler* handler,
-                                    std::vector<std::string> argv,
-                                    FastoObject* out) {
+common::Error CommandsApi::Smembers(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   NKey key(key_t::MakeKeyString(argv[0]));
   DBConnection* redis = static_cast<DBConnection*>(handler);
   NDbKValue key_loaded;
@@ -185,7 +182,7 @@ common::Error CommandsApi::Smembers(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::Zadd(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out) {
+common::Error CommandsApi::Zadd(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   NKey key(key_t::MakeKeyString(argv[0]));
   common::ZSetValue* zset = common::Value::CreateZSetValue();
   for (size_t i = 1; i < argv.size(); i += 2) {
@@ -207,7 +204,7 @@ common::Error CommandsApi::Zadd(internal::CommandHandler* handler, std::vector<s
   return common::Error();
 }
 
-common::Error CommandsApi::Zrange(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out) {
+common::Error CommandsApi::Zrange(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   NKey key(key_t::MakeKeyString(argv[0]));
   int start;
   if (!common::ConvertFromString(argv[1], &start)) {
@@ -233,7 +230,7 @@ common::Error CommandsApi::Zrange(internal::CommandHandler* handler, std::vector
   return common::Error();
 }
 
-common::Error CommandsApi::Hmset(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out) {
+common::Error CommandsApi::Hmset(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   NKey key(key_t::MakeKeyString(argv[0]));
   common::HashValue* hmset = common::Value::CreateHashValue();
   for (size_t i = 1; i < argv.size(); i += 2) {
@@ -254,7 +251,7 @@ common::Error CommandsApi::Hmset(internal::CommandHandler* handler, std::vector<
   return common::Error();
 }
 
-common::Error CommandsApi::Hgetall(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out) {
+common::Error CommandsApi::Hgetall(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   NKey key(key_t::MakeKeyString(argv[0]));
   DBConnection* redis = static_cast<DBConnection*>(handler);
   NDbKValue key_loaded;
@@ -270,7 +267,7 @@ common::Error CommandsApi::Hgetall(internal::CommandHandler* handler, std::vecto
   return common::Error();
 }
 
-common::Error CommandsApi::Decr(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out) {
+common::Error CommandsApi::Decr(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   NKey key(key_t::MakeKeyString(argv[0]));
   DBConnection* redis = static_cast<DBConnection*>(handler);
   long long result = 0;
@@ -285,7 +282,7 @@ common::Error CommandsApi::Decr(internal::CommandHandler* handler, std::vector<s
   return common::Error();
 }
 
-common::Error CommandsApi::DecrBy(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out) {
+common::Error CommandsApi::DecrBy(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   NKey key(key_t::MakeKeyString(argv[0]));
   int incr;
   if (!common::ConvertFromString(argv[1], &incr)) {
@@ -304,7 +301,7 @@ common::Error CommandsApi::DecrBy(internal::CommandHandler* handler, std::vector
   return common::Error();
 }
 
-common::Error CommandsApi::Incr(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out) {
+common::Error CommandsApi::Incr(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   NKey key(key_t::MakeKeyString(argv[0]));
   DBConnection* redis = static_cast<DBConnection*>(handler);
   long long result = 0;
@@ -319,7 +316,7 @@ common::Error CommandsApi::Incr(internal::CommandHandler* handler, std::vector<s
   return common::Error();
 }
 
-common::Error CommandsApi::IncrBy(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out) {
+common::Error CommandsApi::IncrBy(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   NKey key(key_t::MakeKeyString(argv[0]));
   int incr;
   if (!common::ConvertFromString(argv[1], &incr)) {
@@ -338,9 +335,7 @@ common::Error CommandsApi::IncrBy(internal::CommandHandler* handler, std::vector
   return common::Error();
 }
 
-common::Error CommandsApi::IncrByFloat(internal::CommandHandler* handler,
-                                       std::vector<std::string> argv,
-                                       FastoObject* out) {
+common::Error CommandsApi::IncrByFloat(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   NKey key(key_t::MakeKeyString(argv[0]));
   double incr;
   if (!common::ConvertFromString(argv[1], &incr)) {
@@ -360,7 +355,7 @@ common::Error CommandsApi::IncrByFloat(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::Persist(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out) {
+common::Error CommandsApi::Persist(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   NKey key(key_t::MakeKeyString(argv[0]));
   DBConnection* red = static_cast<DBConnection*>(handler);
   common::Error err = red->SetTTL(key, NO_TTL);
@@ -377,9 +372,7 @@ common::Error CommandsApi::Persist(internal::CommandHandler* handler, std::vecto
   return common::Error();
 }
 
-common::Error CommandsApi::ExpireRedis(internal::CommandHandler* handler,
-                                       std::vector<std::string> argv,
-                                       FastoObject* out) {
+common::Error CommandsApi::ExpireRedis(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   NKey key(key_t::MakeKeyString(argv[0]));
   ttl_t ttl;
   if (!common::ConvertFromString(argv[1], &ttl)) {
@@ -401,21 +394,19 @@ common::Error CommandsApi::ExpireRedis(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::Monitor(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out) {
+common::Error CommandsApi::Monitor(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
-  argv.pop_back();
+  argv.push_front("MONITOR");
   return red->Monitor(argv, out);
 }
 
-common::Error CommandsApi::Subscribe(internal::CommandHandler* handler,
-                                     std::vector<std::string> argv,
-                                     FastoObject* out) {
+common::Error CommandsApi::Subscribe(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
-  argv.pop_back();
+  argv.push_front("SUBSCRIBE");
   return red->Subscribe(argv, out);
 }
 
-common::Error CommandsApi::Sync(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out) {
+common::Error CommandsApi::Sync(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   UNUSED(argv);
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->SlaveMode(out);

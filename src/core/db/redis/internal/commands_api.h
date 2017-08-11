@@ -52,39 +52,39 @@ namespace core {
 namespace redis {
 
 struct CommandsApi : public internal::ApiTraits<DBConnection> {
-  static common::Error CommonExec(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
-  static common::Error CommonExecOff2(internal::CommandHandler* handler,
-                                      std::vector<std::string> argv,
-                                      FastoObject* out);
+  static common::Error CommonExec(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error CommonExecOff2(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 
-  static common::Error SetEx(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
-  static common::Error SetNX(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
+  static common::Error Info(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 
-  static common::Error Lpush(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
-  static common::Error Lrange(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
+  static common::Error SetEx(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error SetNX(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 
-  static common::Error Sadd(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
-  static common::Error Smembers(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
+  static common::Error Lpush(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Lrange(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 
-  static common::Error Zadd(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
-  static common::Error Zrange(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
+  static common::Error Sadd(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Smembers(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 
-  static common::Error Hmset(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
-  static common::Error Hgetall(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
+  static common::Error Zadd(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Zrange(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 
-  static common::Error Decr(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
-  static common::Error DecrBy(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
+  static common::Error Hmset(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Hgetall(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 
-  static common::Error Incr(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
-  static common::Error IncrBy(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
-  static common::Error IncrByFloat(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
+  static common::Error Decr(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error DecrBy(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 
-  static common::Error Persist(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
-  static common::Error ExpireRedis(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
-  static common::Error Auth(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
-  static common::Error Monitor(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
-  static common::Error Subscribe(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
-  static common::Error Sync(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out);
+  static common::Error Incr(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error IncrBy(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error IncrByFloat(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+
+  static common::Error Persist(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ExpireRedis(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Auth(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Monitor(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Subscribe(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Sync(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 };
 
 static const internal::ConstantCommandsArray g_commands = {
@@ -862,7 +862,7 @@ static const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   0,
                   1,
-                  &CommandsApi::CommonExec),
+                  &CommandsApi::Info),
     CommandHolder("KEYS",
                   "<pattern>",
                   "Find all keys matching the given pattern",

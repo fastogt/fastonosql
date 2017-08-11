@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <deque>
+
 #include <common/byte_writer.h>
 
 namespace common {
@@ -29,6 +31,7 @@ namespace core {
 
 typedef std::vector<unsigned char> command_buffer_t;
 typedef common::unsigned_char_writer<512> command_buffer_writer_t;
+typedef std::deque<std::string> commands_args_t;
 
 struct IStateField {
   virtual common::Value* ValueByIndex(unsigned char index) const = 0;

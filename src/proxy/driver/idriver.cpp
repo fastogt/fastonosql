@@ -624,7 +624,7 @@ void IDriver::OnKeyLoaded(const core::NDbKValue& key) {
   emit KeyLoaded(key);
 }
 
-void IDriver::OnKeyRenamed(const core::NKey& key, const core::string_key_t& new_key) {
+void IDriver::OnKeyRenamed(const core::NKey& key, const core::string_key_t &new_key) {
   emit KeyRenamed(key, new_key);
 }
 

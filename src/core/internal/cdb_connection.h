@@ -87,7 +87,7 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>, public
   static const char* VersionApi();
 
   std::string CurrentDBName() const;                                                               //
-  common::Error Help(std::vector<std::string> argv, std::string* answer) WARN_UNUSED_RESULT;  //
+  common::Error Help(commands_args_t argv, std::string* answer) WARN_UNUSED_RESULT;  //
 
   common::Error Scan(uint64_t cursor_in,
                      const std::string &pattern,
@@ -140,7 +140,7 @@ std::string CDBConnection<NConnection, Config, ContType>::CurrentDBName() const 
 }
 
 template <typename NConnection, typename Config, connectionTypes ContType>
-common::Error CDBConnection<NConnection, Config, ContType>::Help(std::vector<std::string> argv,
+common::Error CDBConnection<NConnection, Config, ContType>::Help(commands_args_t argv,
                                                                  std::string* answer) {
   size_t argc = argv.size();
   if (!answer) {

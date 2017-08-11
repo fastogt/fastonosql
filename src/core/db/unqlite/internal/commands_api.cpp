@@ -31,7 +31,7 @@ namespace fastonosql {
 namespace core {
 namespace unqlite {
 
-common::Error CommandsApi::Info(internal::CommandHandler* handler, std::vector<std::string> argv, FastoObject* out) {
+common::Error CommandsApi::Info(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* unq = static_cast<DBConnection*>(handler);
   ServerInfo::Stats statsout;
   common::Error err = unq->Info(argv.size() == 1 ? argv[0] : std::string(), &statsout);

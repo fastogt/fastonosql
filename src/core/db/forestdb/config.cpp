@@ -82,7 +82,7 @@ Config::Config() : LocalConfig(common::file_system::prepare_path("~/test.forestd
 namespace common {
 
 std::string ConvertToString(const fastonosql::core::forestdb::Config& conf) {
-  std::vector<std::string> argv = conf.Args();
+  fastonosql::core::config_args_t argv = conf.Args();
 
   if (!conf.db_name.empty()) {
     argv.push_back("-n");

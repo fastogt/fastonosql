@@ -34,7 +34,7 @@ auto count_space(const std::string& data) -> std::string::difference_type {
 namespace fastonosql {
 namespace core {
 
-common::Error TestArgsInRange(const CommandInfo& cmd, std::vector<std::string> argv) {
+common::Error TestArgsInRange(const CommandInfo& cmd, commands_args_t argv) {
   const size_t argc = argv.size();
   const uint16_t max = cmd.MaxArgumentsCount();
   const uint16_t min = cmd.MinArgumentsCount();
@@ -48,7 +48,7 @@ common::Error TestArgsInRange(const CommandInfo& cmd, std::vector<std::string> a
   return common::Error();
 }
 
-common::Error TestArgsModule2Equal1(const CommandInfo& cmd, std::vector<std::string> argv) {
+common::Error TestArgsModule2Equal1(const CommandInfo& cmd, commands_args_t argv) {
   const size_t argc = argv.size();
   if (argc % 2 != 1) {
     std::string buff = common::MemSPrintf(
@@ -73,7 +73,7 @@ CommandHolder::CommandHolder(const std::string& name,
       white_spaces_count_(count_space(name)),
       test_funcs_(tests) {}
 
-bool CommandHolder::IsCommand(std::vector<std::string> argv, size_t* offset) const {
+bool CommandHolder::IsCommand(commands_args_t argv, size_t* offset) const {
   const size_t argc = argv.size();
   if (argc <= 0) {
     return false;
@@ -101,7 +101,7 @@ bool CommandHolder::IsCommand(std::vector<std::string> argv, size_t* offset) con
   return true;
 }
 
-common::Error CommandHolder::TestArgs(std::vector<std::string> argv) const {
+common::Error CommandHolder::TestArgs(commands_args_t argv) const {
   const CommandInfo inf = *this;
   for (test_function_t func : test_funcs_) {
     common::Error err = func(inf, argv);

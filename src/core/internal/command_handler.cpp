@@ -47,7 +47,7 @@ common::Error CommandHandler::Execute(const command_buffer_t& command, FastoObje
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  std::vector<std::string> argvv;
+  commands_args_t argvv;
   for (int i = 0; i < argc; ++i) {
     argvv.push_back(std::string(argv[i], sdslen(argv[i])));
   }
@@ -56,7 +56,7 @@ common::Error CommandHandler::Execute(const command_buffer_t& command, FastoObje
   return err;
 }
 
-common::Error CommandHandler::Execute(std::vector<std::string> argv, FastoObject* out) {
+common::Error CommandHandler::Execute(commands_args_t argv, FastoObject* out) {
   const command_t* cmd = nullptr;
   size_t off = 0;
   common::Error err = translator_->TestCommandLineArgs(argv, &cmd, &off);
@@ -64,7 +64,7 @@ common::Error CommandHandler::Execute(std::vector<std::string> argv, FastoObject
     return err;
   }
 
-  std::vector<std::string> stabled;
+  commands_args_t stabled;
   for (size_t i = off; i < argv.size(); ++i) {
     stabled.push_back(argv[i]);
   }

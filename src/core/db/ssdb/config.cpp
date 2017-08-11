@@ -87,7 +87,7 @@ Config::Config() : RemoteConfig(common::net::HostAndPort::CreateLocalHost(DEFAUL
 namespace common {
 
 std::string ConvertToString(const fastonosql::core::ssdb::Config& conf) {
-  std::vector<std::string> argv = conf.Args();
+  fastonosql::core::config_args_t argv = conf.Args();
 
   return fastonosql::core::ConvertToStringConfigArgs(argv);
 }

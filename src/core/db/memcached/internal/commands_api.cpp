@@ -29,7 +29,7 @@ namespace core {
 namespace memcached {
 
 common::Error CommandsApi::Version(internal::CommandHandler* handler,
-                                   std::vector<std::string> argv,
+                                   commands_args_t argv,
                                    FastoObject* out) {
   UNUSED(argv);
   UNUSED(out);
@@ -39,12 +39,12 @@ common::Error CommandsApi::Version(internal::CommandHandler* handler,
 }
 
 common::Error CommandsApi::Info(internal::CommandHandler* handler,
-                                std::vector<std::string> argv,
+                                commands_args_t argv,
                                 FastoObject* out) {
   DBConnection* mem = static_cast<DBConnection*>(handler);
   std::string args = argv.size() == 1 ? argv[0] : std::string();
   if (args.empty() && strcasecmp(args.c_str(), "items") == 0) {
-    std::vector<std::string> largv = {"a", "z", "100"};
+    commands_args_t largv = {"a", "z", "100"};
     return Keys(handler, largv, out);
   }
 
@@ -62,7 +62,7 @@ common::Error CommandsApi::Info(internal::CommandHandler* handler,
 }
 
 common::Error CommandsApi::Add(internal::CommandHandler* handler,
-                               std::vector<std::string> argv,
+                               commands_args_t argv,
                                FastoObject* out) {
   NKey key(key_t::MakeKeyString(argv[0]));
   DBConnection* mem = static_cast<DBConnection*>(handler);
@@ -88,7 +88,7 @@ common::Error CommandsApi::Add(internal::CommandHandler* handler,
 }
 
 common::Error CommandsApi::Replace(internal::CommandHandler* handler,
-                                   std::vector<std::string> argv,
+                                   commands_args_t argv,
                                    FastoObject* out) {
   NKey key(key_t::MakeKeyString(argv[0]));
   DBConnection* mem = static_cast<DBConnection*>(handler);
@@ -114,7 +114,7 @@ common::Error CommandsApi::Replace(internal::CommandHandler* handler,
 }
 
 common::Error CommandsApi::Append(internal::CommandHandler* handler,
-                                  std::vector<std::string> argv,
+                                  commands_args_t argv,
                                   FastoObject* out) {
   NKey key(key_t::MakeKeyString(argv[0]));
   DBConnection* mem = static_cast<DBConnection*>(handler);
@@ -139,7 +139,7 @@ common::Error CommandsApi::Append(internal::CommandHandler* handler,
 }
 
 common::Error CommandsApi::Prepend(internal::CommandHandler* handler,
-                                   std::vector<std::string> argv,
+                                   commands_args_t argv,
                                    FastoObject* out) {
   NKey key(key_t::MakeKeyString(argv[0]));
   DBConnection* mem = static_cast<DBConnection*>(handler);
@@ -164,7 +164,7 @@ common::Error CommandsApi::Prepend(internal::CommandHandler* handler,
 }
 
 common::Error CommandsApi::Incr(internal::CommandHandler* handler,
-                                std::vector<std::string> argv,
+                                commands_args_t argv,
                                 FastoObject* out) {
   NKey key(key_t::MakeKeyString(argv[0]));
   DBConnection* mem = static_cast<DBConnection*>(handler);
@@ -185,7 +185,7 @@ common::Error CommandsApi::Incr(internal::CommandHandler* handler,
 }
 
 common::Error CommandsApi::Decr(internal::CommandHandler* handler,
-                                std::vector<std::string> argv,
+                                commands_args_t argv,
                                 FastoObject* out) {
   NKey key(key_t::MakeKeyString(argv[0]));
   DBConnection* mem = static_cast<DBConnection*>(handler);

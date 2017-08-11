@@ -149,7 +149,7 @@ bool ICommandTranslator::IsLoadKeyCommand(const command_buffer_t& cmd, string_ke
     return false;
   }
 
-  std::vector<std::string> standart_argv;
+  commands_args_t standart_argv;
   for (int i = 0; i < argc; ++i) {
     standart_argv.push_back(std::string(argv[i], sdslen(argv[i])));
   }
@@ -200,7 +200,7 @@ common::Error ICommandTranslator::NotSupported(const std::string& cmd) {
   return common::make_error_value(buff, common::ErrorValue::E_ERROR);
 }
 
-common::Error ICommandTranslator::UnknownSequence(std::vector<std::string> argv) {
+common::Error ICommandTranslator::UnknownSequence(commands_args_t argv) {
   std::string result;
   for (size_t i = 0; i < argv.size(); ++i) {
     result += common::ConvertToString(argv[i]);
@@ -221,7 +221,7 @@ std::vector<CommandInfo> ICommandTranslator::Commands() const {
   return cmds;
 }
 
-common::Error ICommandTranslator::FindCommand(std::vector<std::string> argv,
+common::Error ICommandTranslator::FindCommand(commands_args_t argv,
                                               const CommandHolder** info,
                                               size_t* off) const {
   if (!info || !off) {
@@ -241,7 +241,7 @@ common::Error ICommandTranslator::FindCommand(std::vector<std::string> argv,
   return UnknownSequence(argv);
 }
 
-common::Error ICommandTranslator::TestCommandArgs(const CommandHolder* cmd, std::vector<std::string> argv) const {
+common::Error ICommandTranslator::TestCommandArgs(const CommandHolder* cmd, commands_args_t argv) const {
   if (!cmd) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
@@ -260,7 +260,7 @@ common::Error ICommandTranslator::TestCommandLine(const command_buffer_t& cmd) c
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  std::vector<std::string> standart_argv;
+  commands_args_t standart_argv;
   for (int i = 0; i < argc; ++i) {
     standart_argv.push_back(std::string(argv[i], sdslen(argv[i])));
   }
@@ -275,7 +275,7 @@ common::Error ICommandTranslator::TestCommandLine(const command_buffer_t& cmd) c
   return common::Error();
 }
 
-common::Error ICommandTranslator::TestCommandLineArgs(std::vector<std::string> argv,
+common::Error ICommandTranslator::TestCommandLineArgs(commands_args_t argv,
                                                       const CommandHolder** info,
                                                       size_t* off) const {
   const CommandHolder* cmd = nullptr;
@@ -285,7 +285,7 @@ common::Error ICommandTranslator::TestCommandLineArgs(std::vector<std::string> a
     return err;
   }
 
-  std::vector<std::string> stabled;
+  commands_args_t stabled;
   for (size_t i = loff; i < argv.size(); ++i) {
     stabled.push_back(argv[i]);
   }
