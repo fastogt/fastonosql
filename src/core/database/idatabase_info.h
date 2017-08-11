@@ -74,7 +74,7 @@ class IDataBaseInfo : public common::ClonableBase<IDataBaseInfo> {
   const connectionTypes type_;
 };
 
-typedef common::shared_ptr<IDataBaseInfo> IDataBaseInfoSPtr;
+typedef std::shared_ptr<IDataBaseInfo> IDataBaseInfoSPtr;
 
 }  // namespace core
 }  // namespace fastonosql

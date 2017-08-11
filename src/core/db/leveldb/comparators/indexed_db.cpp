@@ -18,10 +18,11 @@
 
 #include "core/db/leveldb/comparators/indexed_db.h"
 
+#include <memory>
+
 #include <leveldb/slice.h>
 
 #include <common/macros.h>
-#include <common/smart_ptr.h>
 
 #include "core/db/leveldb/comparators/constants.h"
 #include "core/db/leveldb/comparators/utils.h"
@@ -567,7 +568,7 @@ class ExistsEntryKey {
   static bool Decode(common::StringPiece* slice, ExistsEntryKey* result);
   static std::string Encode(int64_t database_id, int64_t object_store_id, const std::string& encoded_key);
   static std::string Encode(int64_t database_id, int64_t object_store_id, const IndexedDBKey& user_key);
-  common::unique_ptr<IndexedDBKey> user_key() const;
+  std::unique_ptr<IndexedDBKey> user_key() const;
 
  private:
   static const int64_t kSpecialIndexNumber;
@@ -586,7 +587,7 @@ class ObjectStoreDataKey {
   static bool Decode(common::StringPiece* slice, ObjectStoreDataKey* result);
   static std::string Encode(int64_t database_id, int64_t object_store_id, const std::string encoded_user_key);
   static std::string Encode(int64_t database_id, int64_t object_store_id, const IndexedDBKey& user_key);
-  common::unique_ptr<IndexedDBKey> user_key() const;
+  std::unique_ptr<IndexedDBKey> user_key() const;
 
  private:
   std::string encoded_user_key_;

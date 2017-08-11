@@ -100,7 +100,7 @@ class ICommandTranslator {
   const std::vector<CommandHolder> commands_;
 };
 
-typedef common::shared_ptr<ICommandTranslator> translator_t;
+typedef std::shared_ptr<ICommandTranslator> translator_t;
 
 }  // namespace core
 }  // namespace fastonosql

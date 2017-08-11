@@ -18,22 +18,22 @@
 
 #pragma once
 
-#include <common/smart_ptr.h>
+#include <memory>
 
 namespace fastonosql {
 namespace proxy {
 
 class IDatabase;
-typedef common::shared_ptr<IDatabase> IDatabaseSPtr;
+typedef std::shared_ptr<IDatabase> IDatabaseSPtr;
 
 class IServer;
-typedef common::shared_ptr<IServer> IServerSPtr;
+typedef std::shared_ptr<IServer> IServerSPtr;
 
 class ICluster;
-typedef common::shared_ptr<ICluster> IClusterSPtr;
+typedef std::shared_ptr<ICluster> IClusterSPtr;
 
 class ISentinel;
-typedef common::shared_ptr<ISentinel> ISentinelSPtr;
+typedef std::shared_ptr<ISentinel> ISentinelSPtr;
 
 }  // namespace proxy
 }  // namespace fastonosql

@@ -57,7 +57,7 @@ class ISentinelSettingsBase : public IConnectionSettings {
   sentinel_connections_t sentinel_nodes_;
 };
 
-typedef common::shared_ptr<ISentinelSettingsBase> ISentinelSettingsBaseSPtr;
+typedef std::shared_ptr<ISentinelSettingsBase> ISentinelSettingsBaseSPtr;
 
 }  // namespace proxy
 }  // namespace fastonosql

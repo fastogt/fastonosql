@@ -23,8 +23,7 @@
 #include <algorithm>  // for remove
 #include <memory>     // for __shared_ptr, shared_ptr, etc
 
-#include <common/smart_ptr.h>  // for make_shared
-#include <common/value.h>      // for ErrorValue, etc
+#include <common/value.h>  // for ErrorValue, etc
 
 #include "core/connection_types.h"  // for core::connectionTypes, etc
 #include "proxy/cluster/icluster.h"
@@ -101,47 +100,47 @@ ServersManager::server_t ServersManager::CreateServer(IConnectionSettingsBaseSPt
   server_t server;
 #ifdef BUILD_WITH_REDIS
   if (conT == core::REDIS) {
-    server = common::make_shared<redis::Server>(settings);
+    server = std::make_shared<redis::Server>(settings);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (conT == core::MEMCACHED) {
-    server = common::make_shared<memcached::Server>(settings);
+    server = std::make_shared<memcached::Server>(settings);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
   if (conT == core::SSDB) {
-    server = common::make_shared<ssdb::Server>(settings);
+    server = std::make_shared<ssdb::Server>(settings);
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (conT == core::LEVELDB) {
-    server = common::make_shared<leveldb::Server>(settings);
+    server = std::make_shared<leveldb::Server>(settings);
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (conT == core::ROCKSDB) {
-    server = common::make_shared<rocksdb::Server>(settings);
+    server = std::make_shared<rocksdb::Server>(settings);
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (conT == core::UNQLITE) {
-    server = common::make_shared<unqlite::Server>(settings);
+    server = std::make_shared<unqlite::Server>(settings);
   }
 #endif
 #ifdef BUILD_WITH_LMDB
   if (conT == core::LMDB) {
-    server = common::make_shared<lmdb::Server>(settings);
+    server = std::make_shared<lmdb::Server>(settings);
   }
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
   if (conT == core::UPSCALEDB) {
-    server = common::make_shared<upscaledb::Server>(settings);
+    server = std::make_shared<upscaledb::Server>(settings);
   }
 #endif
 #ifdef BUILD_WITH_FORESTDB
   if (conT == core::FORESTDB) {
-    server = common::make_shared<forestdb::Server>(settings);
+    server = std::make_shared<forestdb::Server>(settings);
   }
 #endif
 
@@ -159,7 +158,7 @@ ServersManager::sentinel_t ServersManager::CreateSentinel(ISentinelSettingsBaseS
   core::connectionTypes conT = settings->Type();
 #ifdef BUILD_WITH_REDIS
   if (conT == core::REDIS) {
-    sentinel_t sent = common::make_shared<redis::Sentinel>(settings->Path().ToString());
+    sentinel_t sent = std::make_shared<redis::Sentinel>(settings->Path().ToString());
     auto nodes = settings->Sentinels();
     for (size_t i = 0; i < nodes.size(); ++i) {
       SentinelSettings nd = nodes[i];
@@ -190,7 +189,7 @@ ServersManager::cluster_t ServersManager::CreateCluster(IClusterSettingsBaseSPtr
   core::connectionTypes conT = settings->Type();
 #ifdef BUILD_WITH_REDIS
   if (conT == core::REDIS) {
-    cluster_t cl = common::make_shared<redis::Cluster>(settings->Path().ToString());
+    cluster_t cl = std::make_shared<redis::Cluster>(settings->Path().ToString());
     auto nodes = settings->Nodes();
     for (size_t i = 0; i < nodes.size(); ++i) {
       IConnectionSettingsBaseSPtr nd = nodes[i];

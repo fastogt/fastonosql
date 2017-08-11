@@ -25,8 +25,7 @@
 #include <string>  // for string
 
 #include <common/net/types.h>  // for HostAndPortAndSlot
-#include <common/smart_ptr.h>
-#include <common/types.h>  // for time64_t
+#include <common/types.h>      // for time64_t
 
 #include "core/connection_types.h"  // for connectionTypes, etc
 
@@ -76,7 +75,7 @@ class ServerDiscoverySentinelInfo : public ServerDiscoveryInfoBase {
   ServerDiscoverySentinelInfo(connectionTypes ctype, const ServerCommonInfo& info);
 };
 
-typedef common::shared_ptr<ServerDiscoverySentinelInfo> ServerDiscoverySentinelInfoSPtr;
+typedef std::shared_ptr<ServerDiscoverySentinelInfo> ServerDiscoverySentinelInfoSPtr;
 
 class ServerDiscoveryClusterInfo : public ServerDiscoveryInfoBase {
  public:
@@ -90,7 +89,7 @@ class ServerDiscoveryClusterInfo : public ServerDiscoveryInfoBase {
   const bool self_;
 };
 
-typedef common::shared_ptr<ServerDiscoveryClusterInfo> ServerDiscoveryClusterInfoSPtr;
+typedef std::shared_ptr<ServerDiscoveryClusterInfo> ServerDiscoveryClusterInfoSPtr;
 
 class IServerInfo {
  public:
@@ -106,7 +105,7 @@ class IServerInfo {
   const connectionTypes type_;
 };
 
-typedef common::shared_ptr<IServerInfo> IServerInfoSPtr;
+typedef std::shared_ptr<IServerInfo> IServerInfoSPtr;
 
 struct ServerInfoSnapShoot {
   ServerInfoSnapShoot();

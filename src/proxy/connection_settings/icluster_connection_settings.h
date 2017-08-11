@@ -54,7 +54,7 @@ class IClusterSettingsBase : public IConnectionSettings {
   cluster_nodes_t clusters_nodes_;
 };
 
-typedef common::shared_ptr<IClusterSettingsBase> IClusterSettingsBaseSPtr;
+typedef std::shared_ptr<IClusterSettingsBase> IClusterSettingsBaseSPtr;
 
 }  // namespace proxy
 }  // namespace fastonosql

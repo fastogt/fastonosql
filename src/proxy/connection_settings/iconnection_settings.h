@@ -112,7 +112,7 @@ class IConnectionSettingsBase : public IConnectionSettings {
   std::string hash_;
 };
 
-typedef common::shared_ptr<IConnectionSettingsBase> IConnectionSettingsBaseSPtr;
+typedef std::shared_ptr<IConnectionSettingsBase> IConnectionSettingsBaseSPtr;
 
 }  // namespace proxy
 }  // namespace fastonosql
