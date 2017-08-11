@@ -49,7 +49,8 @@ common::Error CommandHandler::Execute(const command_buffer_t& command, FastoObje
 
   commands_args_t argvv;
   for (int i = 0; i < argc; ++i) {
-    argvv.push_back(std::string(argv[i], sdslen(argv[i])));
+    std::string str(argv[i], sdslen(argv[i]));
+    argvv.push_back(str);
   }
   common::Error err = Execute(argvv, out);
   sdsfreesplitres(argv, argc);

@@ -50,34 +50,47 @@ KeyString::KeyType KeyString::GetType() const {
   return type_;
 }
 
+std::string KeyString::ToBytes() const {
+  return key_;
+}
+
 std::string KeyString::ToString() const {
+  if (type_ == BINARY_KEY) {
+    command_buffer_writer_t wr;
+    string_key_t hexed = common::utils::hex::encode(key_, false);
+    for (size_t i = 0; i < hexed.size(); i += 2) {
+      wr << MAKE_COMMAND_BUFFER("\\x");
+      wr << hexed[i];
+      wr << hexed[i + 1];
+    }
+
+    return wr.str();
+  }
+
   return key_;
 }
 
 string_key_t KeyString::GetKeyData() const {
   if (type_ == BINARY_KEY) {
-    return "\"" + key_ + "\"";
+    command_buffer_writer_t wr;
+    wr << "\"";
+    string_key_t hexed = common::utils::hex::encode(key_, false);
+    for (size_t i = 0; i < hexed.size(); i += 2) {
+      wr << MAKE_COMMAND_BUFFER("\\x");
+      wr << hexed[i];
+      wr << hexed[i + 1];
+    }
+    wr << "\"";
+
+    return wr.str();
   }
 
   return key_;
 }
 
 void KeyString::SetKeyData(const string_key_t& key_data) {
-  if (IsBinaryKey(key_data)) {
-    command_buffer_writer_t wr;
-    string_key_t hexed = common::utils::hex::encode(key_data, false);
-    for (size_t i = 0; i < hexed.size(); i += 2) {
-      wr << MAKE_COMMAND_BUFFER("\\x");
-      wr << hexed[i];
-      wr << hexed[i + 1];
-    }
-    key_ = wr.str();
-    type_ = BINARY_KEY;
-    return;
-  }
-
   key_ = key_data;
-  type_ = TEXT_KEY;
+  type_ = IsBinaryKey(key_data) ? BINARY_KEY : TEXT_KEY;
 }
 
 bool KeyString::Equals(const KeyString& other) const {

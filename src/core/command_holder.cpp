@@ -74,12 +74,11 @@ CommandHolder::CommandHolder(const std::string& name,
       test_funcs_(tests) {}
 
 bool CommandHolder::IsCommand(commands_args_t argv, size_t* offset) const {
-  const size_t argc = argv.size();
-  if (argc <= 0) {
+  if (argv.empty()) {
     return false;
   }
 
-  const size_t uargc = argc;
+  const size_t uargc = argv.size();
   if (uargc == white_spaces_count_) {
     return false;
   }

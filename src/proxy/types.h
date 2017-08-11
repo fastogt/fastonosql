@@ -49,6 +49,8 @@ class KeyInfo {
 
 KeyInfo MakeKeyInfo(const core::key_t& key, const std::string& ns_separator);
 
+core::command_buffer_t StableCommand(core::command_buffer_t command);
+
 }  // namespace proxy
 }  // namespace fastonosql
 

@@ -54,6 +54,7 @@ class KeyString {
 
   KeyType GetType() const;
 
+  std::string ToBytes() const;      // for direct bytes call
   std::string ToString() const;     // for diplaying
   string_key_t GetKeyData() const;  // escape if hex, or not changed if text
   void SetKeyData(const string_key_t& key_data);

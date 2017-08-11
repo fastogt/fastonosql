@@ -20,6 +20,8 @@
 
 #include <common/time.h>  // for current_mstime
 
+#include "proxy/types.h"
+
 namespace fastonosql {
 namespace proxy {
 namespace events_info {
@@ -100,7 +102,7 @@ ExecuteInfoRequest::ExecuteInfoRequest(initiator_type sender,
                                        core::CmdLoggingType logtype,
                                        error_type er)
     : base_class(sender, er),
-      text(text),
+      text(StableCommand(text)),
       repeat(repeat),
       msec_repeat_interval(msec_repeat_interval),
       history(history),
