@@ -26,6 +26,7 @@
 
 #include "proxy/database/idatabase.h"
 #include "proxy/proxy_fwd.h"
+#include "proxy/types.h"
 
 class QModelIndex;
 class QObject;
@@ -93,7 +94,7 @@ class ExplorerTreeModel : public common::qt::gui::TreeModel {
   ExplorerDatabaseItem* findDatabaseItem(ExplorerServerItem* server, core::IDataBaseInfoSPtr db) const;
   ExplorerKeyItem* findKeyItem(IExplorerTreeItem* db_or_ns, const core::NKey& key) const;
   ExplorerNSItem* findNSItem(IExplorerTreeItem* db_or_ns, const QString& name) const;
-  ExplorerNSItem* findOrCreateNSItem(IExplorerTreeItem* db_or_ns, const core::KeyInfo& kinf);
+  ExplorerNSItem* findOrCreateNSItem(IExplorerTreeItem* db_or_ns, const proxy::KeyInfo& kinf);
 };
 }  // namespace gui
 }  // namespace fastonosql

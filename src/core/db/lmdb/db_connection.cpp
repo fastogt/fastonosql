@@ -41,10 +41,10 @@
 namespace fastonosql {
 namespace core {
 namespace {
-MDB_val ConvertToLMDBSlice(const key_t& key) {
+MDB_val ConvertToLMDBSlice(const string_key_t& key) {
   MDB_val mkey;
-  mkey.mv_size = key.GetKeySize();
-  mkey.mv_data = const_cast<command_buffer_char_t*>(key.GetKeyData());
+  mkey.mv_size = key.size();
+  mkey.mv_data = const_cast<command_buffer_char_t*>(key.data());
   return mkey;
 }
 }  // namespace
@@ -232,7 +232,8 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  MDB_val key_slice = ConvertToLMDBSlice(key);
+  const string_key_t key_str = key.ToString();
+  MDB_val key_slice = ConvertToLMDBSlice(key_str);
   MDB_val mval;
   mval.mv_size = value.size();
   mval.mv_data = const_cast<char*>(value.c_str());
@@ -262,7 +263,8 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  MDB_val key_slice = ConvertToLMDBSlice(key);
+  const string_key_t key_str = key.ToString();
+  MDB_val key_slice = ConvertToLMDBSlice(key_str);
   MDB_val mval;
 
   MDB_txn* txn = NULL;
@@ -286,7 +288,8 @@ common::Error DBConnection::DelInner(key_t key) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  MDB_val key_slice = ConvertToLMDBSlice(key);
+  const string_key_t key_str = key.ToString();
+  MDB_val key_slice = ConvertToLMDBSlice(key_str);
 
   MDB_txn* txn = NULL;
   int env_flags = connection_.config_.env_flags;

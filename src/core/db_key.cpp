@@ -40,17 +40,29 @@ bool IsBinaryKey(const command_buffer_t& key) {
   return false;
 }
 
-KeyString::KeyString() : key_() {}
+KeyString::KeyString() : key_(), type_(TEXT_KEY) {}
 
-KeyString::KeyString(const string_key_t& key_data) : key_() {
-  SetKey(key_data);
+KeyString::KeyString(const string_key_t& key_data) : key_(), type_(TEXT_KEY) {
+  SetKeyData(key_data);
 }
 
-string_key_t KeyString::GetKey() const {
+KeyString::KeyType KeyString::GetType() const {
+  return type_;
+}
+
+std::string KeyString::ToString() const {
   return key_;
 }
 
-void KeyString::SetKey(const string_key_t& key_data) {
+string_key_t KeyString::GetKeyData() const {
+  if (type_ == BINARY_KEY) {
+    return "\"" + key_ + "\"";
+  }
+
+  return key_;
+}
+
+void KeyString::SetKeyData(const string_key_t& key_data) {
   if (IsBinaryKey(key_data)) {
     command_buffer_writer_t wr;
     string_key_t hexed = common::utils::hex::encode(key_data, false);
@@ -60,69 +72,21 @@ void KeyString::SetKey(const string_key_t& key_data) {
       wr << hexed[i + 1];
     }
     key_ = wr.str();
-  } else {
-    key_ = key_data;
+    type_ = BINARY_KEY;
+    return;
   }
-}
 
-const string_key_t::value_type* KeyString::GetKeyData() const {
-  return key_.data();
-}
-
-string_key_t::size_type KeyString::GetKeySize() const {
-  return key_.size();
+  key_ = key_data;
+  type_ = TEXT_KEY;
 }
 
 bool KeyString::Equals(const KeyString& other) const {
   return key_ == other.key_;
 }
 
-KeyInfo::KeyInfo(const splited_namespaces_t& splited_namespaces_and_key, std::string ns_separator)
-    : splited_namespaces_and_key_(splited_namespaces_and_key), ns_separator_(ns_separator) {}
-
-std::string KeyInfo::GetKey() const {
-  return common::JoinString(splited_namespaces_and_key_, ns_separator_);
-}
-
-bool KeyInfo::HasNamespace() const {
-  size_t ns_size = GetNspaceSize();
-  return ns_size > 0;
-}
-
-std::string KeyInfo::GetNspace() const {
-  return JoinNamespace(splited_namespaces_and_key_.size() - 1);
-}
-
-size_t KeyInfo::GetNspaceSize() const {
-  if (splited_namespaces_and_key_.empty()) {
-    return 0;
-  }
-
-  return splited_namespaces_and_key_.size() - 1;
-}
-
-std::string KeyInfo::JoinNamespace(size_t pos) const {
-  size_t ns_size = GetNspaceSize();
-  if (ns_size > pos) {
-    std::vector<std::string> copy;
-    for (size_t i = 0; i <= pos; ++i) {
-      copy.push_back(splited_namespaces_and_key_[i]);
-    }
-    return common::JoinString(copy, ns_separator_);
-  }
-
-  return std::string();
-}
-
 NKey::NKey() : key_(), ttl_(NO_TTL) {}
 
 NKey::NKey(key_t key, ttl_t ttl_sec) : key_(key), ttl_(ttl_sec) {}
-
-KeyInfo NKey::GetInfo(const std::string& ns_separator) const {
-  KeyInfo::splited_namespaces_t tokens;
-  common::Tokenize(common::ConvertToString(key_.GetKey()), ns_separator, &tokens);
-  return KeyInfo(tokens, ns_separator);
-}
 
 key_t NKey::GetKey() const {
   return key_;

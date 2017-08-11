@@ -43,11 +43,11 @@
 namespace fastonosql {
 namespace core {
 namespace {
-ups_key_t ConvertToUpscaleDBSlice(const key_t& key) {
+ups_key_t ConvertToUpscaleDBSlice(const string_key_t& key) {
   ups_key_t dkey;
   memset(&dkey, 0, sizeof(dkey));
-  dkey.size = key.GetKeySize();
-  dkey.data = const_cast<command_buffer_char_t*>(key.GetKeyData());
+  dkey.size = key.size();
+  dkey.data = const_cast<command_buffer_char_t*>(key.data());
   return dkey;
 }
 }  // namespace
@@ -244,7 +244,8 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  ups_key_t key_slice = ConvertToUpscaleDBSlice(key);
+  const string_key_t key_str = key.ToString();
+  ups_key_t key_slice = ConvertToUpscaleDBSlice(key_str);
 
   ups_record_t rec;
   memset(&rec, 0, sizeof(rec));
@@ -264,7 +265,8 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  ups_key_t key_slice = ConvertToUpscaleDBSlice(key);
+  const string_key_t key_str = key.ToString();
+  ups_key_t key_slice = ConvertToUpscaleDBSlice(key_str);
 
   ups_record_t rec;
   memset(&rec, 0, sizeof(rec));
@@ -284,7 +286,8 @@ common::Error DBConnection::DelInner(key_t key) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  ups_key_t key_slice = ConvertToUpscaleDBSlice(key);
+  const string_key_t key_str = key.ToString();
+  ups_key_t key_slice = ConvertToUpscaleDBSlice(key_str);
 
   ups_status_t st = ups_db_erase(connection_.handle_->db, 0, &key_slice, 0);
   if (st != UPS_SUCCESS) {

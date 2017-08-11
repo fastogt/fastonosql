@@ -36,7 +36,7 @@ namespace fastonosql {
 namespace core {
 namespace {
 std::string ConvertToSSDBSlice(const key_t& key) {
-  return common::ConvertToString(key.GetKey());
+  return common::ConvertToString(key.ToString());
 }
 }  // namespace
 namespace internal {

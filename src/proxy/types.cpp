@@ -22,9 +22,55 @@
 
 #include <common/convert2string.h>
 #include <common/macros.h>  // for SIZEOFMASS
+#include <common/string_util.h>
 
 namespace fastonosql {
-namespace proxy {}  // namespace proxy
+namespace proxy {
+
+KeyInfo::KeyInfo(const splited_namespaces_t& splited_namespaces_and_key, std::string ns_separator)
+    : splited_namespaces_and_key_(splited_namespaces_and_key), ns_separator_(ns_separator) {}
+
+std::string KeyInfo::GetKey() const {
+  return common::JoinString(splited_namespaces_and_key_, ns_separator_);
+}
+
+bool KeyInfo::HasNamespace() const {
+  size_t ns_size = GetNspaceSize();
+  return ns_size > 0;
+}
+
+std::string KeyInfo::GetNspace() const {
+  return JoinNamespace(splited_namespaces_and_key_.size() - 1);
+}
+
+size_t KeyInfo::GetNspaceSize() const {
+  if (splited_namespaces_and_key_.empty()) {
+    return 0;
+  }
+
+  return splited_namespaces_and_key_.size() - 1;
+}
+
+std::string KeyInfo::JoinNamespace(size_t pos) const {
+  size_t ns_size = GetNspaceSize();
+  if (ns_size > pos) {
+    std::vector<std::string> copy;
+    for (size_t i = 0; i <= pos; ++i) {
+      copy.push_back(splited_namespaces_and_key_[i]);
+    }
+    return common::JoinString(copy, ns_separator_);
+  }
+
+  return std::string();
+}
+
+KeyInfo MakeKeyInfo(const core::key_t& key, const std::string& ns_separator) {
+  KeyInfo::splited_namespaces_t tokens;
+  common::Tokenize(key.ToString(), ns_separator, &tokens);
+  return KeyInfo(tokens, ns_separator);
+}
+
+}  // namespace proxy
 }  // namespace fastonosql
 
 namespace common {

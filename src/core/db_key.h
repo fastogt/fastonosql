@@ -47,19 +47,22 @@ bool IsBinaryKey(const command_buffer_t& key);
 
 class KeyString {
  public:
+  enum KeyType { TEXT_KEY = 0, BINARY_KEY };
+
   KeyString();
   explicit KeyString(const string_key_t& key_data);
 
-  string_key_t GetKey() const;
-  void SetKey(const string_key_t& key_data);
+  KeyType GetType() const;
 
-  const string_key_t::value_type* GetKeyData() const;
-  string_key_t::size_type GetKeySize() const;
+  std::string ToString() const;     // for diplaying
+  string_key_t GetKeyData() const;  // escape if hex, or not changed if text
+  void SetKeyData(const string_key_t& key_data);
 
   bool Equals(const KeyString& other) const;
 
  private:
   string_key_t key_;
+  KeyType type_;
 };
 
 inline bool operator==(const KeyString& r, const KeyString& l) {
@@ -72,27 +75,10 @@ inline bool operator!=(const KeyString& r, const KeyString& l) {
 
 typedef KeyString key_t;
 
-class KeyInfo {
- public:
-  typedef std::vector<std::string> splited_namespaces_t;
-  KeyInfo(const splited_namespaces_t& splited_namespaces_and_key, std::string ns_separator);
-
-  std::string GetKey() const;
-  bool HasNamespace() const;
-  std::string GetNspace() const;
-  std::string JoinNamespace(size_t pos) const;
-  size_t GetNspaceSize() const;
-
- private:
-  splited_namespaces_t splited_namespaces_and_key_;
-  std::string ns_separator_;
-};
-
 class NKey {
  public:
   NKey();
   explicit NKey(key_t key, ttl_t ttl_sec = NO_TTL);
-  KeyInfo GetInfo(const std::string& ns_separator) const;
 
   key_t GetKey() const;
   void SetKey(key_t key);

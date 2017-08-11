@@ -115,6 +115,11 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
     } else if (type == IExplorerTreeItem::eNamespace) {
       ExplorerNSItem* ns = static_cast<ExplorerNSItem*>(node);
       return trNamespace_1S.arg(ns->keyCount());
+    } else if (type == IExplorerTreeItem::eKey) {
+      ExplorerKeyItem* key = static_cast<ExplorerKeyItem*>(node);
+      core::NKey nkey = key->key();
+      core::key_t key_str = nkey.GetKey();
+      return trKey_1S.arg(key_str.GetType() == core::key_t::BINARY_KEY ? "hex" : "text");
     }
 
     return QVariant();
@@ -168,11 +173,18 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
       if (db->isDefault()) {
         return QVariant(QColor(Qt::red));
       }
+    } else if (type == IExplorerTreeItem::eKey) {
+      ExplorerKeyItem* key = static_cast<ExplorerKeyItem*>(node);
+      core::NKey nkey = key->key();
+      core::key_t key_str = nkey.GetKey();
+      if (key_str.GetType() == core::key_t::BINARY_KEY) {
+        return QVariant(QColor(Qt::gray));
+      }
     }
   }
 
   return QVariant();
-}
+}  // namespace gui
 
 Qt::ItemFlags ExplorerTreeModel::flags(const QModelIndex& index) const {
   if (index.isValid()) {
@@ -361,7 +373,7 @@ void ExplorerTreeModel::addKey(proxy::IServer* server,
   ExplorerKeyItem* keyit = findKeyItem(dbs, key);
   if (!keyit) {
     IExplorerTreeItem* nitem = dbs;
-    core::KeyInfo kinf = key.GetInfo(ns_separator);
+    proxy::KeyInfo kinf = proxy::MakeKeyInfo(key.GetKey(), ns_separator);
     if (kinf.HasNamespace()) {
       nitem = findOrCreateNSItem(dbs, kinf);
     }
@@ -543,7 +555,7 @@ ExplorerNSItem* ExplorerTreeModel::findNSItem(IExplorerTreeItem* db_or_ns, const
       }));
 }
 
-ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_ns, const core::KeyInfo& kinf) {
+ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_ns, const proxy::KeyInfo& kinf) {
   std::string nspace = kinf.GetNspace();
   QString qnspace;
   common::ConvertFromString(nspace, &qnspace);

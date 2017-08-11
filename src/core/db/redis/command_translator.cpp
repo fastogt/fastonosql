@@ -54,19 +54,19 @@ common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, comm
   command_buffer_writer_t wr;
   common::Value::Type type = key.GetType();
   if (type == common::Value::TYPE_ARRAY) {
-    wr << MAKE_COMMAND_BUFFER(REDIS_SET_KEY_ARRAY_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKey()
+    wr << MAKE_COMMAND_BUFFER(REDIS_SET_KEY_ARRAY_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKeyData()
        << MAKE_COMMAND_BUFFER(" ") << value_str;
   } else if (type == common::Value::TYPE_SET) {
-    wr << MAKE_COMMAND_BUFFER(REDIS_SET_KEY_SET_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKey()
+    wr << MAKE_COMMAND_BUFFER(REDIS_SET_KEY_SET_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKeyData()
        << MAKE_COMMAND_BUFFER(" ") << value_str;
   } else if (type == common::Value::TYPE_ZSET) {
-    wr << MAKE_COMMAND_BUFFER(REDIS_SET_KEY_ZSET_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKey()
+    wr << MAKE_COMMAND_BUFFER(REDIS_SET_KEY_ZSET_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKeyData()
        << MAKE_COMMAND_BUFFER(" ") << value_str;
   } else if (type == common::Value::TYPE_HASH) {
-    wr << MAKE_COMMAND_BUFFER(REDIS_SET_KEY_HASH_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKey()
+    wr << MAKE_COMMAND_BUFFER(REDIS_SET_KEY_HASH_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKeyData()
        << MAKE_COMMAND_BUFFER(" ") << value_str;
   } else {
-    wr << MAKE_COMMAND_BUFFER(REDIS_SET_KEY_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKey()
+    wr << MAKE_COMMAND_BUFFER(REDIS_SET_KEY_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKeyData()
        << MAKE_COMMAND_BUFFER(" ") << value_str;
   }
 
@@ -80,17 +80,17 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
   if (type == common::Value::TYPE_ARRAY) {
-    wr << MAKE_COMMAND_BUFFER(REDIS_GET_KEY_ARRAY_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKey()
+    wr << MAKE_COMMAND_BUFFER(REDIS_GET_KEY_ARRAY_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKeyData()
        << MAKE_COMMAND_BUFFER(" 0 -1");
   } else if (type == common::Value::TYPE_SET) {
-    wr << MAKE_COMMAND_BUFFER(REDIS_GET_KEY_SET_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKey();
+    wr << MAKE_COMMAND_BUFFER(REDIS_GET_KEY_SET_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKeyData();
   } else if (type == common::Value::TYPE_ZSET) {
-    wr << MAKE_COMMAND_BUFFER(REDIS_GET_KEY_ZSET_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKey()
+    wr << MAKE_COMMAND_BUFFER(REDIS_GET_KEY_ZSET_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKeyData()
        << MAKE_COMMAND_BUFFER(" 0 -1 WITHSCORES");
   } else if (type == common::Value::TYPE_HASH) {
-    wr << MAKE_COMMAND_BUFFER(REDIS_GET_KEY_HASH_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKey();
+    wr << MAKE_COMMAND_BUFFER(REDIS_GET_KEY_HASH_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKeyData();
   } else {
-    wr << MAKE_COMMAND_BUFFER(REDIS_GET_KEY_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKey();
+    wr << MAKE_COMMAND_BUFFER(REDIS_GET_KEY_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKeyData();
   }
 
   *cmdstring = wr.str();
@@ -100,7 +100,7 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
 common::Error CommandTranslator::DeleteKeyCommandImpl(const NKey& key, command_buffer_t* cmdstring) const {
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
-  wr << MAKE_COMMAND_BUFFER(REDIS_DELETE_KEY_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKey();
+  wr << MAKE_COMMAND_BUFFER(REDIS_DELETE_KEY_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKeyData();
   *cmdstring = wr.str();
   return common::Error();
 }
@@ -110,7 +110,7 @@ common::Error CommandTranslator::RenameKeyCommandImpl(const NKey& key,
                                                       command_buffer_t* cmdstring) const {
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
-  wr << MAKE_COMMAND_BUFFER(REDIS_RENAME_KEY_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKey()
+  wr << MAKE_COMMAND_BUFFER(REDIS_RENAME_KEY_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKeyData()
      << MAKE_COMMAND_BUFFER(" ") << new_name;
   *cmdstring = wr.str();
   return common::Error();
@@ -122,9 +122,9 @@ common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key,
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
   if (ttl == NO_TTL) {
-    wr << MAKE_COMMAND_BUFFER(REDIS_PERSIST_KEY_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKey();
+    wr << MAKE_COMMAND_BUFFER(REDIS_PERSIST_KEY_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKeyData();
   } else {
-    wr << MAKE_COMMAND_BUFFER(REDIS_CHANGE_TTL_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKey()
+    wr << MAKE_COMMAND_BUFFER(REDIS_CHANGE_TTL_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKeyData()
        << MAKE_COMMAND_BUFFER(" ") << common::ConvertToString(ttl);
   }
 
@@ -135,7 +135,7 @@ common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key,
 common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key, command_buffer_t* cmdstring) const {
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
-  wr << MAKE_COMMAND_BUFFER(REDIS_GET_TTL_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKey();
+  wr << MAKE_COMMAND_BUFFER(REDIS_GET_TTL_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKeyData();
   *cmdstring = wr.str();
   return common::Error();
 }

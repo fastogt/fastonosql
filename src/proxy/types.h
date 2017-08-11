@@ -20,12 +20,34 @@
 
 #include <string>
 
+#include <vector>
+
+#include "core/db_key.h"
+
 namespace fastonosql {
 namespace proxy {
 
 enum supportedViews { Tree = 0, Table, Text };
 
 static const char* supported_views_text[] = {"Tree", "Table", "Text"};
+
+class KeyInfo {
+ public:
+  typedef std::vector<std::string> splited_namespaces_t;
+  KeyInfo(const splited_namespaces_t& splited_namespaces_and_key, std::string ns_separator);
+
+  std::string GetKey() const;
+  bool HasNamespace() const;
+  std::string GetNspace() const;
+  std::string JoinNamespace(size_t pos) const;
+  size_t GetNspaceSize() const;
+
+ private:
+  splited_namespaces_t splited_namespaces_and_key_;
+  std::string ns_separator_;
+};
+
+KeyInfo MakeKeyInfo(const core::key_t& key, const std::string& ns_separator);
 
 }  // namespace proxy
 }  // namespace fastonosql

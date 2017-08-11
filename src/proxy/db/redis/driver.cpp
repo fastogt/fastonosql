@@ -398,11 +398,11 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
           core::NKey k(key_str);
           core::NDbKValue dbv(k, core::NValue());
           core::command_buffer_writer_t wr_type;
-          wr_type << MAKE_COMMAND_BUFFER("TYPE ") << key;
+          wr_type << MAKE_COMMAND_BUFFER("TYPE ") << key_str.GetKeyData();
           cmds.push_back(CreateCommandFast(wr_type.str(), core::C_INNER));
 
           core::command_buffer_writer_t wr_ttl;
-          wr_ttl << MAKE_COMMAND_BUFFER("TTL ") << key;
+          wr_ttl << MAKE_COMMAND_BUFFER("TTL ") << key_str.GetKeyData();
           cmds.push_back(CreateCommandFast(wr_ttl.str(), core::C_INNER));
           res.keys.push_back(dbv);
         }
