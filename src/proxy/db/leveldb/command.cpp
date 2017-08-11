@@ -23,7 +23,7 @@ namespace proxy {
 namespace leveldb {
 
 Command::Command(core::FastoObject* parent,
-                 common::ByteArrayValue* cmd,
+                 common::StringValue* cmd,
                  core::CmdLoggingType ct,
                  const std::string& delimiter)
     : FastoObjectCommand(parent, cmd, ct, delimiter, core::LEVELDB) {}

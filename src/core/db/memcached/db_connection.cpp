@@ -123,7 +123,7 @@ memcached_return_t memcached_dump_scan_callback(const memcached_st* ptr,
 struct TTLHolder {
   TTLHolder(fastonosql::core::key_t key, time_t* exp) : looked_key(key), exp_out(exp) {}
   memcached_return_t CheckKey(const char* key, size_t key_length, time_t exp) {
-    fastonosql::core::key_t received_key = fastonosql::core::key_t::MakeKeyString(std::string(key, key_length));
+    fastonosql::core::key_t received_key(std::string(key, key_length));
     if (received_key == looked_key) {
       *exp_out = exp;
       return MEMCACHED_END;
@@ -727,7 +727,7 @@ common::Error DBConnection::RenameImpl(const NKey& key, string_key_t new_key) {
     return err;
   }
 
-  err = SetInner(key_t::MakeKeyString(new_key), value_str, 0, 0);
+  err = SetInner(key_t(new_key), value_str, 0, 0);
   if (err && err->IsError()) {
     return err;
   }

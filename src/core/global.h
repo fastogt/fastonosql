@@ -103,7 +103,7 @@ class FastoObjectCommand : public FastoObject {
 
  protected:
   FastoObjectCommand(FastoObject* parent,
-                     common::ByteArrayValue* cmd,
+                     common::StringValue* cmd,
                      CmdLoggingType ct,
                      const std::string& delimiter,
                      core::connectionTypes type);

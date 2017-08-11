@@ -273,7 +273,7 @@ void BaseShellWidget::executeText(const QString& text) {
 common::Error BaseShellWidget::validate(const QString& text) {
   core::translator_t tran = server_->Translator();
   std::vector<core::command_buffer_t> cmds;
-  core::command_buffer_t text_cmd = common::ConvertToBytes(text);
+  core::command_buffer_t text_cmd = common::ConvertToString(text);
   common::Error err = core::ParseCommands(text_cmd, &cmds);
   if (err && err->IsError()) {
     return err;
@@ -302,7 +302,7 @@ void BaseShellWidget::execute() {
 }
 
 void BaseShellWidget::executeArgs(const QString& text, int repeat, int interval, bool history) {
-  core::command_buffer_t text_cmd = common::ConvertToBytes(text);
+  core::command_buffer_t text_cmd = common::ConvertToString(text);
   proxy::events_info::ExecuteInfoRequest req(this, text_cmd, repeat, interval, history);
   server_->Execute(req);
 }

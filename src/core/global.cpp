@@ -54,7 +54,7 @@ std::string FastoObject::ToString() const {
 }
 
 FastoObject* FastoObject::CreateRoot(const command_buffer_t& text, IFastoObjectObserver* observer) {
-  FastoObject* root = new FastoObject(nullptr, common::Value::CreateByteArrayValue(text), std::string());
+  FastoObject* root = new FastoObject(nullptr, common::Value::CreateStringValue(text), std::string());
   root->observer_ = observer;
   return root;
 }
@@ -100,7 +100,7 @@ void FastoObject::SetValue(value_t val) {
 }
 
 FastoObjectCommand::FastoObjectCommand(FastoObject* parent,
-                                       common::ByteArrayValue* cmd,
+                                       common::StringValue* cmd,
                                        CmdLoggingType ct,
                                        const std::string& delimiter,
                                        core::connectionTypes type)
@@ -114,7 +114,7 @@ std::string FastoObjectCommand::ToString() const {
 
 command_buffer_t FastoObjectCommand::InputCmd() const {
   command_buffer_t input_cmd;
-  if (value_->GetAsByteArray(&input_cmd)) {
+  if (value_->GetAsString(&input_cmd)) {
     std::pair<command_buffer_t, command_buffer_t> kv = GetKeyValueFromLine(input_cmd);
     return kv.first;
   }
@@ -124,7 +124,7 @@ command_buffer_t FastoObjectCommand::InputCmd() const {
 
 command_buffer_t FastoObjectCommand::InputArgs() const {
   command_buffer_t input_cmd;
-  if (value_->GetAsByteArray(&input_cmd)) {
+  if (value_->GetAsString(&input_cmd)) {
     std::pair<command_buffer_t, command_buffer_t> kv = GetKeyValueFromLine(input_cmd);
     return kv.second;
   }
@@ -138,7 +138,7 @@ core::connectionTypes FastoObjectCommand::ConnectionType() const {
 
 command_buffer_t FastoObjectCommand::InputCommand() const {
   command_buffer_t input_cmd;
-  if (value_->GetAsByteArray(&input_cmd)) {
+  if (value_->GetAsString(&input_cmd)) {
     return input_cmd;
   }
 
@@ -154,7 +154,7 @@ std::pair<command_buffer_t, command_buffer_t> GetKeyValueFromLine(const command_
     return std::pair<command_buffer_t, command_buffer_t>();
   }
 
-  /*size_t pos = input.find_first_of(' ');
+  size_t pos = input.find_first_of(' ');
   command_buffer_t key = input;
   command_buffer_t value;
   if (pos != command_buffer_t::npos) {
@@ -164,26 +164,7 @@ std::pair<command_buffer_t, command_buffer_t> GetKeyValueFromLine(const command_
 
   command_buffer_t trimed;
   common::TrimWhitespaceASCII(value, common::TRIM_ALL, &trimed);
-  return std::make_pair(key, trimed);*/
-
-  command_buffer_t key = input;
-  command_buffer_t value;
-  for (size_t i = 0; i < input.size(); ++i) {
-    command_buffer_t::value_type c = input[i];
-    if (isspace(c)) {
-      for (size_t j = i; j < input.size(); ++j) {
-        value.push_back(input[j]);
-        if (isspace(c)) {
-          break;
-        }
-      }
-      break;
-    } else {
-      key.push_back(c);
-    }
-  }
-
-  return std::make_pair(key, value);
+  return std::make_pair(key, trimed);
 }
 
 FastoObjectArray::FastoObjectArray(FastoObject* parent, common::ArrayValue* ar, const std::string& delimiter)

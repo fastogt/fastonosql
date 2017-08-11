@@ -44,7 +44,7 @@ namespace {
 MDB_val ConvertToLMDBSlice(const key_t& key) {
   MDB_val mkey;
   mkey.mv_size = key.GetKeySize();
-  mkey.mv_data = const_cast<unsigned char*>(key.GetKeyData());
+  mkey.mv_data = const_cast<command_buffer_char_t*>(key.GetKeyData());
   return mkey;
 }
 }  // namespace
@@ -521,7 +521,7 @@ common::Error DBConnection::RenameImpl(const NKey& key, string_key_t new_key) {
     return err;
   }
 
-  err = SetInner(key_t::MakeKeyString(new_key), value_str);
+  err = SetInner(key_t(new_key), value_str);
   if (err && err->IsError()) {
     return err;
   }

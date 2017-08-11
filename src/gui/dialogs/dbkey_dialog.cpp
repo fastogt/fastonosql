@@ -142,7 +142,7 @@ DbKeyDialog::DbKeyDialog(const QString& title, core::connectionTypes type, const
     QString qkey;
     core::NKey key = key_.GetKey();
     core::key_t raw_key = key.GetKey();
-    if (common::ConvertFromBytes(raw_key.GetKey(), &qkey)) {
+    if (common::ConvertFromString(raw_key.GetKey(), &qkey)) {
       keyEdit_->setText(qkey);
     }
     keyEdit_->setEnabled(false);
@@ -321,7 +321,8 @@ bool DbKeyDialog::validateAndApply() {
   }
 
   std::string key_str = common::ConvertToString(keyEdit_->text());
-  core::NKey key(core::key_t::MakeKeyString(key_str));
+  core::key_t ks(key_str);
+  core::NKey key(ks);
   key_ = core::NDbKValue(key, core::NValue(obj));
   return true;
 }

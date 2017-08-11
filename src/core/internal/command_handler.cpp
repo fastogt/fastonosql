@@ -42,7 +42,7 @@ common::Error CommandHandler::Execute(const command_buffer_t& command, FastoObje
   }
 
   int argc;
-  sds* argv = sdssplitargslong_sized(command.data(), command.size(), &argc);
+  sds* argv = sdssplitargslong(command.data(), &argc);
   if (!argv) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }

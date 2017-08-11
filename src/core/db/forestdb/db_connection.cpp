@@ -463,7 +463,7 @@ common::Error DBConnection::RenameImpl(const NKey& key, string_key_t new_key) {
     return err;
   }
 
-  err = SetInner(key_t::MakeKeyString(new_key), value_str);
+  err = SetInner(key_t(new_key), value_str);
   if (err && err->IsError()) {
     return err;
   }

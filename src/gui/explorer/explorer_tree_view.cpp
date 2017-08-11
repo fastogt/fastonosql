@@ -1033,7 +1033,7 @@ void ExplorerTreeView::renameKey(core::IDataBaseInfoSPtr db, core::NKey key, cor
   CHECK(serv);
 
   core::NKey new_key = key;
-  const core::key_t raw_key = core::key_t::MakeKeyString(new_name);
+  const core::key_t raw_key(new_name);
   new_key.SetKey(raw_key);
   source_model_->updateKey(serv, db, key, new_key);
 }

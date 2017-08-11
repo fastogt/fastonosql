@@ -66,8 +66,8 @@ common::Error ICommandTranslator::SelectDBCommand(const std::string& name, comma
   }
 
   command_buffer_writer_t wr;
-  wr << MAKE_BUFFER(SELECTDB_COMMAND) << MAKE_BUFFER(" ") << name;
-  *cmdstring = wr.GetBuffer();
+  wr << MAKE_COMMAND_BUFFER(SELECTDB_COMMAND) << MAKE_COMMAND_BUFFER(" ") << name;
+  *cmdstring = wr.str();
   return common::Error();
 }
 
@@ -77,8 +77,8 @@ common::Error ICommandTranslator::FlushDBCommand(command_buffer_t* cmdstring) co
   }
 
   command_buffer_writer_t wr;
-  wr << MAKE_BUFFER(FLUSHDB_COMMAND);
-  *cmdstring = wr.GetBuffer();
+  wr << MAKE_COMMAND_BUFFER(FLUSHDB_COMMAND);
+  *cmdstring = wr.str();
   return common::Error();
 }
 
@@ -144,14 +144,14 @@ bool ICommandTranslator::IsLoadKeyCommand(const command_buffer_t& cmd, string_ke
   }
 
   int argc;
-  sds* argv = sdssplitargslong_sized(cmd.data(), cmd.size(), &argc);
+  sds* argv = sdssplitargslong(cmd.data(), &argc);
   if (!argv) {
     return false;
   }
 
   commands_args_t standart_argv;
   for (int i = 0; i < argc; ++i) {
-    standart_argv.push_back(std::string(argv[i], sdslen(argv[i])));
+    standart_argv.push_back(command_buffer_t(argv[i], sdslen(argv[i])));
   }
 
   const CommandHolder* cmdh = nullptr;
@@ -163,7 +163,7 @@ bool ICommandTranslator::IsLoadKeyCommand(const command_buffer_t& cmd, string_ke
   }
 
   if (IsLoadKeyCommandImpl(*cmdh)) {
-    *key = MAKE_BUFFER_SIZE(argv[off], strlen(argv[off]));  // FIXME
+    *key = command_buffer_t(argv[off], strlen(argv[off]));
     sdsfreesplitres(argv, argc);
     return true;
   }
@@ -255,14 +255,14 @@ common::Error ICommandTranslator::TestCommandLine(const command_buffer_t& cmd) c
   }
 
   int argc;
-  sds* argv = sdssplitargslong_sized(cmd.data(), cmd.size(), &argc);
+  sds* argv = sdssplitargslong(cmd.data(), &argc);
   if (!argv) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   commands_args_t standart_argv;
   for (int i = 0; i < argc; ++i) {
-    standart_argv.push_back(std::string(argv[i], sdslen(argv[i])));
+    standart_argv.push_back(command_buffer_t(argv[i], sdslen(argv[i])));
   }
   const CommandHolder* cmdh = nullptr;
   size_t loff = 0;

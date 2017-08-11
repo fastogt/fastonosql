@@ -47,7 +47,7 @@ ups_key_t ConvertToUpscaleDBSlice(const key_t& key) {
   ups_key_t dkey;
   memset(&dkey, 0, sizeof(dkey));
   dkey.size = key.GetKeySize();
-  dkey.data = const_cast<unsigned char*>(key.GetKeyData());
+  dkey.data = const_cast<command_buffer_char_t*>(key.GetKeyData());
   return dkey;
 }
 }  // namespace
@@ -509,7 +509,7 @@ common::Error DBConnection::RenameImpl(const NKey& key, string_key_t new_key) {
     return err;
   }
 
-  err = SetInner(key_t::MakeKeyString(new_key), value_str);
+  err = SetInner(key_t(new_key), value_str);
   if (err && err->IsError()) {
     return err;
   }

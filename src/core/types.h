@@ -19,9 +19,10 @@
 #pragma once
 
 #include <deque>
+#include <string>
+#include <sstream>
 
-#include <common/byte_writer.h>
-
+#define MAKE_COMMAND_BUFFER(x) x
 namespace common {
 class Value;
 }
@@ -29,9 +30,10 @@ class Value;
 namespace fastonosql {
 namespace core {
 
-typedef std::vector<unsigned char> command_buffer_t;
-typedef common::unsigned_char_writer<512> command_buffer_writer_t;
-typedef std::deque<std::string> commands_args_t;
+typedef char command_buffer_char_t;
+typedef std::basic_string<command_buffer_char_t> command_buffer_t;
+typedef std::basic_stringstream<command_buffer_char_t> command_buffer_writer_t;
+typedef std::deque<command_buffer_t> commands_args_t;
 
 struct IStateField {
   virtual common::Value* ValueByIndex(unsigned char index) const = 0;

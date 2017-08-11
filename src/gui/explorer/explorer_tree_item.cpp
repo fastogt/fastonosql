@@ -205,7 +205,7 @@ void ExplorerDatabaseItem::renameKey(const core::NKey& key, const QString& newNa
   proxy::IServerSPtr server = dbs->Server();
   core::translator_t tran = server->Translator();
   core::command_buffer_t cmd_str;
-  core::string_key_t key_str = common::ConvertToBytes(newName);
+  core::string_key_t key_str = common::ConvertToString(newName);
   common::Error err = tran->RenameKeyCommand(key, key_str, &cmd_str);
   if (err && err->IsError()) {
     LOG_ERROR(err, true);
@@ -367,7 +367,7 @@ QString ExplorerKeyItem::name() const {
   QString qname;
   const core::NKey key = dbv_.GetKey();
   const core::key_t raw_key = key.GetKey();
-  common::ConvertFromBytes(raw_key.GetKey(), &qname);
+  common::ConvertFromString(raw_key.GetKey(), &qname);
   return qname;
 }
 

@@ -64,15 +64,16 @@ FastoCommonItem* createItem(common::qt::gui::TreeItem* parent,
                             bool readOnly,
                             core::FastoObject* item) {
   core::NValue value = item->Value();
-  core::key_t raw_key = core::key_t::MakeKeyString(key);
+  core::key_t raw_key(key);
   core::NDbKValue nkey(core::NKey(raw_key), value);
   return new FastoCommonItem(nkey, item->Delimiter(), readOnly, parent, item);
 }
 
 FastoCommonItem* createRootItem(core::FastoObject* item) {
   core::NValue value = item->Value();
-  core::key_t raw_key = core::key_t::MakeKeyString(std::string());
-  core::NDbKValue nkey(core::NKey(raw_key), value);
+  core::key_t raw_key;
+  core::NKey nk(raw_key);
+  core::NDbKValue nkey(nk, value);
   return new FastoCommonItem(nkey, item->Delimiter(), true, nullptr, item);
 }
 

@@ -886,7 +886,7 @@ common::Error DBConnection::FlushDBImpl() {
   }
 
   for (size_t i = 0; i < ret.size(); ++i) {
-    key_t key = key_t::MakeKeyString(ret[i]);
+    key_t key(ret[i]);
     common::Error err = DelInner(key);
     if (err && err->IsError()) {
       return err;
@@ -936,7 +936,7 @@ common::Error DBConnection::RenameImpl(const NKey& key, string_key_t new_key) {
     return err;
   }
 
-  err = SetInner(key_t::MakeKeyString(new_key), value_str);
+  err = SetInner(key_t(new_key), value_str);
   if (err && err->IsError()) {
     return err;
   }

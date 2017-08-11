@@ -573,7 +573,7 @@ void IServer::KeyRename(core::NKey key, core::string_key_t new_name) {
     return;
   }
 
-  if (cdb->RenameKey(key, core::key_t::MakeKeyString(new_name))) {
+  if (cdb->RenameKey(key, core::key_t(new_name))) {
     emit KeyRenamed(cdb, key, new_name);
   }
 }

@@ -124,7 +124,7 @@ common::Error Driver::ExecuteImpl(const core::command_buffer_t& command, core::F
 }
 
 common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
-  core::FastoObjectCommandIPtr cmd = CreateCommandFast(MAKE_BUFFER(LMDB_INFO_REQUEST), core::C_INNER);
+  core::FastoObjectCommandIPtr cmd = CreateCommandFast(MAKE_COMMAND_BUFFER(LMDB_INFO_REQUEST), core::C_INNER);
   LOG_COMMAND(cmd);
   core::forestdb::ServerInfo::Stats cm;
   common::Error err = impl_->Info(nullptr, &cm);
@@ -200,7 +200,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
       for (size_t i = 0; i < ar->GetSize(); ++i) {
         std::string key_str;
         if (ar->GetString(i, &key_str)) {
-          core::key_t key = core::key_t::MakeKeyString(key_str);
+          core::key_t key(key_str);
           core::NKey k(key);
           core::NValue empty_val(common::Value::CreateEmptyValueFromType(common::Value::TYPE_STRING));
           core::NDbKValue ress(k, empty_val);

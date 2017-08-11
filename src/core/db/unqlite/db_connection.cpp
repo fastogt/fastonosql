@@ -379,7 +379,7 @@ common::Error DBConnection::FlushDBImpl() {
   while (unqlite_kv_cursor_valid_entry(pCur)) {
     std::string key;
     unqlite_kv_cursor_key_callback(pCur, unqlite_data_callback, &key);
-    common::Error err = DelInner(key_t::MakeKeyString(key));
+    common::Error err = DelInner(key_t(key));
     if (err && err->IsError()) {
       return err;
     }
@@ -443,7 +443,7 @@ common::Error DBConnection::RenameImpl(const NKey& key, string_key_t new_key) {
     return err;
   }
 
-  err = SetInner(key_t::MakeKeyString(new_key), value_str);
+  err = SetInner(key_t(new_key), value_str);
   if (err && err->IsError()) {
     return err;
   }

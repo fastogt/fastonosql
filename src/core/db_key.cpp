@@ -42,7 +42,7 @@ bool IsBinaryKey(const command_buffer_t& key) {
 
 KeyString::KeyString() : key_() {}
 
-KeyString::KeyString(const command_buffer_t& key_data) : key_() {
+KeyString::KeyString(const string_key_t &key_data) : key_() {
   SetKey(key_data);
 }
 
@@ -50,16 +50,16 @@ string_key_t KeyString::GetKey() const {
   return key_;
 }
 
-void KeyString::SetKey(const command_buffer_t& key_data) {
+void KeyString::SetKey(const string_key_t &key_data) {
   if (IsBinaryKey(key_data)) {
     command_buffer_writer_t wr;
     string_key_t hexed = common::utils::hex::encode(key_data, false);
     for (size_t i = 0; i < hexed.size(); i += 2) {
-      wr << MAKE_BUFFER("\\x");
+      wr << MAKE_COMMAND_BUFFER("\\x");
       wr << hexed[i];
       wr << hexed[i + 1];
     }
-    key_ = wr.GetBuffer();
+    key_ = wr.str();
   } else {
     key_ = key_data;
   }
@@ -75,18 +75,6 @@ string_key_t::size_type KeyString::GetKeySize() const {
 
 bool KeyString::Equals(const KeyString& other) const {
   return key_ == other.key_;
-}
-
-KeyString KeyString::MakeKeyString(const std::string& str) {
-  KeyString ks;
-  ks.SetKey(MAKE_BUFFER_SIZE(str.c_str(), str.size()));
-  return ks;
-}
-
-KeyString KeyString::MakeKeyString(string_key_t str) {
-  KeyString ks;
-  ks.SetKey(str);
-  return ks;
 }
 
 KeyInfo::KeyInfo(const splited_namespaces_t& splited_namespaces_and_key, std::string ns_separator)

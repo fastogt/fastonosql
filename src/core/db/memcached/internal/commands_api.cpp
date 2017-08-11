@@ -28,9 +28,7 @@ namespace fastonosql {
 namespace core {
 namespace memcached {
 
-common::Error CommandsApi::Version(internal::CommandHandler* handler,
-                                   commands_args_t argv,
-                                   FastoObject* out) {
+common::Error CommandsApi::Version(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   UNUSED(argv);
   UNUSED(out);
 
@@ -38,9 +36,7 @@ common::Error CommandsApi::Version(internal::CommandHandler* handler,
   return mem->VersionServer();
 }
 
-common::Error CommandsApi::Info(internal::CommandHandler* handler,
-                                commands_args_t argv,
-                                FastoObject* out) {
+common::Error CommandsApi::Info(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* mem = static_cast<DBConnection*>(handler);
   std::string args = argv.size() == 1 ? argv[0] : std::string();
   if (args.empty() && strcasecmp(args.c_str(), "items") == 0) {
@@ -61,10 +57,9 @@ common::Error CommandsApi::Info(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::Add(internal::CommandHandler* handler,
-                               commands_args_t argv,
-                               FastoObject* out) {
-  NKey key(key_t::MakeKeyString(argv[0]));
+common::Error CommandsApi::Add(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  key_t key_str(argv[0]);
+  NKey key(key_str);
   DBConnection* mem = static_cast<DBConnection*>(handler);
   time_t expiration;
   if (!common::ConvertFromString(argv[2], &expiration)) {
@@ -87,10 +82,9 @@ common::Error CommandsApi::Add(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::Replace(internal::CommandHandler* handler,
-                                   commands_args_t argv,
-                                   FastoObject* out) {
-  NKey key(key_t::MakeKeyString(argv[0]));
+common::Error CommandsApi::Replace(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  key_t key_str(argv[0]);
+  NKey key(key_str);
   DBConnection* mem = static_cast<DBConnection*>(handler);
   time_t expiration;
   if (!common::ConvertFromString(argv[2], &expiration)) {
@@ -113,10 +107,9 @@ common::Error CommandsApi::Replace(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::Append(internal::CommandHandler* handler,
-                                  commands_args_t argv,
-                                  FastoObject* out) {
-  NKey key(key_t::MakeKeyString(argv[0]));
+common::Error CommandsApi::Append(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  key_t key_str(argv[0]);
+  NKey key(key_str);
   DBConnection* mem = static_cast<DBConnection*>(handler);
   time_t expiration;
   if (!common::ConvertFromString(argv[2], &expiration)) {
@@ -138,10 +131,9 @@ common::Error CommandsApi::Append(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::Prepend(internal::CommandHandler* handler,
-                                   commands_args_t argv,
-                                   FastoObject* out) {
-  NKey key(key_t::MakeKeyString(argv[0]));
+common::Error CommandsApi::Prepend(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  key_t key_str(argv[0]);
+  NKey key(key_str);
   DBConnection* mem = static_cast<DBConnection*>(handler);
   time_t expiration;
   if (!common::ConvertFromString(argv[2], &expiration)) {
@@ -163,10 +155,9 @@ common::Error CommandsApi::Prepend(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::Incr(internal::CommandHandler* handler,
-                                commands_args_t argv,
-                                FastoObject* out) {
-  NKey key(key_t::MakeKeyString(argv[0]));
+common::Error CommandsApi::Incr(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  key_t key_str(argv[0]);
+  NKey key(key_str);
   DBConnection* mem = static_cast<DBConnection*>(handler);
   uint32_t value;
   if (!common::ConvertFromString(argv[1], &value)) {
@@ -184,10 +175,9 @@ common::Error CommandsApi::Incr(internal::CommandHandler* handler,
   return common::Error();
 }
 
-common::Error CommandsApi::Decr(internal::CommandHandler* handler,
-                                commands_args_t argv,
-                                FastoObject* out) {
-  NKey key(key_t::MakeKeyString(argv[0]));
+common::Error CommandsApi::Decr(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  key_t key_str(argv[0]);
+  NKey key(key_str);
   DBConnection* mem = static_cast<DBConnection*>(handler);
   uint32_t value;
   if (!common::ConvertFromString(argv[1], &value)) {

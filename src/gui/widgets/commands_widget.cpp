@@ -55,7 +55,7 @@ void CommandsWidget::addCommand(core::FastoObjectCommandIPtr command) {
   QTime time = QTime::currentTime();
   logTextEdit_->setTextColor(command->CommandLoggingType() == core::C_INNER ? QColor(Qt::gray) : QColor(Qt::black));
   QString mess;
-  common::ConvertFromBytes(command->InputCommand(), &mess);
+  common::ConvertFromString(command->InputCommand(), &mess);
   std::string stype = common::ConvertToString(command->ConnectionType());
   QString qstype;
   common::ConvertFromString(stype, &qstype);

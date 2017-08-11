@@ -222,7 +222,7 @@ void PubSubDialog::subscribeInNewConsole() {
   }
 
   QString text;
-  if (common::ConvertFromBytes(cmd_str, &text)) {
+  if (common::ConvertFromString(cmd_str, &text)) {
     emit consoleOpenedAndExecute(server_, text);
   }
 }
