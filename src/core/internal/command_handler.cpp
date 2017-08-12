@@ -37,12 +37,13 @@ namespace internal {
 CommandHandler::CommandHandler(ICommandTranslator* translator) : translator_(translator) {}
 
 common::Error CommandHandler::Execute(const command_buffer_t& command, FastoObject* out) {
-  if (command.empty()) {
+  command_buffer_t stabled_command = StableCommand(command);
+  if (stabled_command.empty()) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   int argc;
-  sds* argv = sdssplitargslong(command.data(), &argc);
+  sds* argv = sdssplitargslong(stabled_command.data(), &argc);
   if (!argv) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }

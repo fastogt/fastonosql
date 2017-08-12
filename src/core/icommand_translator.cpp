@@ -91,7 +91,7 @@ common::Error ICommandTranslator::DeleteKeyCommand(const NKey& key, command_buff
 }
 
 common::Error ICommandTranslator::RenameKeyCommand(const NKey& key,
-                                                   const string_key_t& new_name,
+                                                   const key_t& new_name,
                                                    command_buffer_t* cmdstring) const {
   if (!cmdstring) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
@@ -139,12 +139,13 @@ bool ICommandTranslator::IsLoadKeyCommand(const command_buffer_t& cmd, string_ke
     return false;
   }
 
-  if (cmd.empty()) {
+  command_buffer_t stabled_command = StableCommand(cmd);
+  if (stabled_command.empty()) {
     return false;
   }
 
   int argc;
-  sds* argv = sdssplitargslong(cmd.data(), &argc);
+  sds* argv = sdssplitargslong(stabled_command.data(), &argc);
   if (!argv) {
     return false;
   }
@@ -248,12 +249,13 @@ common::Error ICommandTranslator::TestCommandArgs(const CommandHolder* cmd, comm
 }
 
 common::Error ICommandTranslator::TestCommandLine(const command_buffer_t& cmd) const {
-  if (cmd.empty()) {
+  command_buffer_t stabled_command = StableCommand(cmd);
+  if (stabled_command.empty()) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
   int argc;
-  sds* argv = sdssplitargslong(cmd.data(), &argc);
+  sds* argv = sdssplitargslong(stabled_command.data(), &argc);
   if (!argv) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }

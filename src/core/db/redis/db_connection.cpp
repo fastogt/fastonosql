@@ -880,7 +880,7 @@ common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
 common::Error DBConnection::RenameImpl(const NKey& key, string_key_t new_key) {
   translator_t tran = Translator();
   command_buffer_t rename_cmd;
-  common::Error err = tran->RenameKeyCommand(key, new_key, &rename_cmd);
+  common::Error err = tran->RenameKeyCommand(key, key_t(new_key), &rename_cmd);
   if (err && err->IsError()) {
     return err;
   }

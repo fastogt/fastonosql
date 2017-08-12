@@ -206,7 +206,7 @@ void ExplorerDatabaseItem::renameKey(const core::NKey& key, const QString& newNa
   core::translator_t tran = server->Translator();
   core::command_buffer_t cmd_str;
   core::string_key_t key_str = common::ConvertToString(newName);
-  common::Error err = tran->RenameKeyCommand(key, key_str, &cmd_str);
+  common::Error err = tran->RenameKeyCommand(key, core::key_t(key_str), &cmd_str);
   if (err && err->IsError()) {
     LOG_ERROR(err, true);
     return;

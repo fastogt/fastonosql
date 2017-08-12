@@ -18,6 +18,8 @@
 
 #include "core/types.h"
 
+#include <common/string_util.h>
+
 #include <string>  // for string
 
 namespace fastonosql {
@@ -25,16 +27,38 @@ namespace core {
 
 IStateField::~IStateField() {}
 
-command_buffer_t StableCommand(command_buffer_t command) {
+command_buffer_t StableCommand(const command_buffer_t& command) {
   if (command.empty()) {
     return command_buffer_t();
   }
 
-  if (command[command.size() - 1] == '\r') {
-    command.pop_back();
+  std::vector<command_buffer_t> tokens;
+  size_t tok = common::Tokenize(command, " ", &tokens);
+  command_buffer_t stabled_command;
+  if (tok > 0) {
+    command_buffer_t part = tokens[0];
+    if (part.size() % 4 == 0 && part[0] == '\\' && (part[1] == 'x' || part[1] == 'X')) {
+      stabled_command += "\"" + part + "\"";
+    } else {
+      stabled_command += part;
+    }
+
+    for (size_t i = 1; i < tok; ++i) {
+      command_buffer_t part = tokens[i];
+      stabled_command += " ";
+      if (part.size() % 4 == 0 && part[0] == '\\' && (part[1] == 'x' || part[1] == 'X')) {
+        stabled_command += "\"" + part + "\"";
+      } else {
+        stabled_command += part;
+      }
+    }
   }
 
-  return command;
+  if (stabled_command[stabled_command.size() - 1] == '\r') {
+    stabled_command.pop_back();
+  }
+
+  return stabled_command;
 }
 
 }  // namespace core

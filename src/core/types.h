@@ -41,7 +41,7 @@ struct IStateField {
   virtual ~IStateField();
 };
 
-command_buffer_t StableCommand(command_buffer_t command);
+command_buffer_t StableCommand(const command_buffer_t& command);
 
 }  // namespace core
 }  // namespace fastonosql

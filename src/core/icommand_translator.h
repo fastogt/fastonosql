@@ -53,7 +53,7 @@ class ICommandTranslator {
                                command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
   common::Error DeleteKeyCommand(const NKey& key, command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
   common::Error RenameKeyCommand(const NKey& key,
-                                 const string_key_t& new_name,
+                                 const key_t& new_name,
                                  command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
   common::Error ChangeKeyTTLCommand(const NKey& key, ttl_t ttl, command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
   common::Error LoadKeyTTLCommand(const NKey& key, command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
@@ -86,7 +86,7 @@ class ICommandTranslator {
                                            command_buffer_t* cmdstring) const = 0;
   virtual common::Error DeleteKeyCommandImpl(const NKey& key, command_buffer_t* cmdstring) const = 0;
   virtual common::Error RenameKeyCommandImpl(const NKey& key,
-                                             const string_key_t& new_name,
+                                             const key_t& new_name,
                                              command_buffer_t* cmdstring) const = 0;
   virtual common::Error ChangeKeyTTLCommandImpl(const NKey& key, ttl_t ttl, command_buffer_t* cmdstring) const = 0;
   virtual common::Error LoadKeyTTLCommandImpl(const NKey& key, command_buffer_t* cmdstring) const = 0;

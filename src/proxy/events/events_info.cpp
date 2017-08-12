@@ -102,7 +102,7 @@ ExecuteInfoRequest::ExecuteInfoRequest(initiator_type sender,
                                        core::CmdLoggingType logtype,
                                        error_type er)
     : base_class(sender, er),
-      text(StableCommand(text)),
+      text(text),
       repeat(repeat),
       msec_repeat_interval(msec_repeat_interval),
       history(history),

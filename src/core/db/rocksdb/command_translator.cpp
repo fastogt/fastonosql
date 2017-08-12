@@ -64,12 +64,12 @@ common::Error CommandTranslator::DeleteKeyCommandImpl(const NKey& key, command_b
 }
 
 common::Error CommandTranslator::RenameKeyCommandImpl(const NKey& key,
-                                                      const string_key_t& new_name,
+                                                      const key_t& new_name,
                                                       command_buffer_t* cmdstring) const {
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
   wr << MAKE_COMMAND_BUFFER(ROCKSDB_RENAME_KEY_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKeyData()
-     << MAKE_COMMAND_BUFFER(" ") << new_name;
+     << MAKE_COMMAND_BUFFER(" ") << new_name.GetKeyData();
   *cmdstring = wr.str();
   return common::Error();
 }
