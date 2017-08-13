@@ -31,42 +31,6 @@
 #include <common/macros.h>  // for STRINGIZE, VERIFY
 #include <common/qt/convert2string.h>
 
-#ifdef BUILD_WITH_REDIS
-#include "core/db/redis/db_connection.h"
-#endif
-
-#ifdef BUILD_WITH_MEMCACHED
-#include "core/db/memcached/db_connection.h"
-#endif
-
-#ifdef BUILD_WITH_SSDB
-#include "core/db/ssdb/db_connection.h"
-#endif
-
-#ifdef BUILD_WITH_LEVELDB
-#include "core/db/leveldb/db_connection.h"
-#endif
-
-#ifdef BUILD_WITH_ROCKSDB
-#include "core/db/rocksdb/db_connection.h"
-#endif
-
-#ifdef BUILD_WITH_UNQLITE
-#include "core/db/unqlite/db_connection.h"
-#endif
-
-#ifdef BUILD_WITH_LMDB
-#include "core/db/lmdb/db_connection.h"
-#endif
-
-#ifdef BUILD_WITH_UPSCALEDB
-#include "core/db/upscaledb/db_connection.h"
-#endif
-
-#ifdef BUILD_WITH_FORESTDB
-#include "core/db/forestdb/db_connection.h"
-#endif
-
 #include "gui/gui_factory.h"  // for GuiFactory
 
 #include "translations/global.h"
@@ -160,40 +124,43 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
   dbcolums << translations::trName << QObject::tr("Based on") << QObject::tr("Version");
   dblist_widget->setHeaderLabels(dbcolums);
 #ifdef BUILD_WITH_REDIS
-  addDBItem(dblist_widget, core::redis::DBConnection::GetConnectionTypeName(), core::redis::DBConnection::BasedOn(),
-            core::redis::DBConnection::VersionApi());
+  typedef core::ConnectionTraits<core::REDIS> redis_traits_t;
+  addDBItem(dblist_widget, redis_traits_t::GeDBName(), redis_traits_t::BasedOn(), redis_traits_t::VersionApi());
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-  addDBItem(dblist_widget, core::memcached::DBConnection::GetConnectionTypeName(),
-            core::memcached::DBConnection::BasedOn(), core::memcached::DBConnection::VersionApi());
+  typedef core::ConnectionTraits<core::MEMCACHED> memcached_traits_t;
+  addDBItem(dblist_widget, memcached_traits_t::GeDBName(), memcached_traits_t::BasedOn(),
+            memcached_traits_t::VersionApi());
 #endif
 #ifdef BUILD_WITH_SSDB
-  addDBItem(dblist_widget, core::ssdb::DBConnection::GetConnectionTypeName(), core::ssdb::DBConnection::BasedOn(),
-            core::ssdb::DBConnection::VersionApi());
+  typedef core::ConnectionTraits<core::SSDB> ssdb_traits_t;
+  addDBItem(dblist_widget, ssdb_traits_t::GeDBName(), ssdb_traits_t::BasedOn(), ssdb_traits_t::VersionApi());
 #endif
 #ifdef BUILD_WITH_LEVELDB
-  addDBItem(dblist_widget, core::leveldb::DBConnection::GetConnectionTypeName(), core::leveldb::DBConnection::BasedOn(),
-            core::leveldb::DBConnection::VersionApi());
+  typedef core::ConnectionTraits<core::LEVELDB> leveldb_traits_t;
+  addDBItem(dblist_widget, leveldb_traits_t::GeDBName(), leveldb_traits_t::BasedOn(), leveldb_traits_t::VersionApi());
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-  addDBItem(dblist_widget, core::rocksdb::DBConnection::GetConnectionTypeName(), core::rocksdb::DBConnection::BasedOn(),
-            core::rocksdb::DBConnection::VersionApi());
+  typedef core::ConnectionTraits<core::ROCKSDB> rocksdb_traits_t;
+  addDBItem(dblist_widget, rocksdb_traits_t::GeDBName(), rocksdb_traits_t::BasedOn(), rocksdb_traits_t::VersionApi());
 #endif
 #ifdef BUILD_WITH_UNQLITE
-  addDBItem(dblist_widget, core::unqlite::DBConnection::GetConnectionTypeName(), core::unqlite::DBConnection::BasedOn(),
-            core::unqlite::DBConnection::VersionApi());
+  typedef core::ConnectionTraits<core::UNQLITE> unqlite_traits_t;
+  addDBItem(dblist_widget, unqlite_traits_t::GeDBName(), unqlite_traits_t::BasedOn(), unqlite_traits_t::VersionApi());
 #endif
 #ifdef BUILD_WITH_LMDB
-  addDBItem(dblist_widget, core::lmdb::DBConnection::GetConnectionTypeName(), core::lmdb::DBConnection::BasedOn(),
-            core::lmdb::DBConnection::VersionApi());
+  typedef core::ConnectionTraits<core::LMDB> lmdb_traits_t;
+  addDBItem(dblist_widget, lmdb_traits_t::GeDBName(), lmdb_traits_t::BasedOn(), lmdb_traits_t::VersionApi());
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
-  addDBItem(dblist_widget, core::upscaledb::DBConnection::GetConnectionTypeName(),
-            core::upscaledb::DBConnection::BasedOn(), core::upscaledb::DBConnection::VersionApi());
+  typedef core::ConnectionTraits<core::UPSCALEDB> upscaledb_traits_t;
+  addDBItem(dblist_widget, upscaledb_traits_t::GeDBName(), upscaledb_traits_t::BasedOn(),
+            upscaledb_traits_t::VersionApi());
 #endif
 #ifdef BUILD_WITH_FORESTDB
-  addDBItem(dblist_widget, core::forestdb::DBConnection::GetConnectionTypeName(),
-            core::forestdb::DBConnection::BasedOn(), core::forestdb::DBConnection::VersionApi());
+  typedef core::ConnectionTraits<core::FORESTDB> forestdb_traits_t;
+  addDBItem(dblist_widget, forestdb_traits_t::GeDBName(), forestdb_traits_t::BasedOn(),
+            forestdb_traits_t::VersionApi());
 #endif
   main_tab->addTab(dblist_widget, QObject::tr("Availible databases"));
 

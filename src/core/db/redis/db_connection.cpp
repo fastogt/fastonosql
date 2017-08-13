@@ -187,6 +187,15 @@ bool isPipeLineCommand(const char* command) {
 
 namespace fastonosql {
 namespace core {
+template <>
+const char* ConnectionTraits<REDIS>::BasedOn() {
+  return "hiredis";
+}
+
+template <>
+const char* ConnectionTraits<REDIS>::VersionApi() {
+  return HIREDIS_VERSION;
+}
 namespace internal {
 template <>
 common::Error ConnectionAllocatorTraits<redis::NativeConnection, redis::RConfig>::Connect(
@@ -221,16 +230,6 @@ bool ConnectionAllocatorTraits<redis::NativeConnection, redis::RConfig>::IsConne
   }
 
   return true;
-}
-
-template <>
-const char* CDBConnection<redis::NativeConnection, redis::RConfig, REDIS>::BasedOn() {
-  return "hiredis";
-}
-
-template <>
-const char* CDBConnection<redis::NativeConnection, redis::RConfig, REDIS>::VersionApi() {
-  return HIREDIS_VERSION;
 }
 
 template <>

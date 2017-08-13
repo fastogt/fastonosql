@@ -20,20 +20,22 @@
 
 #include <common/convert2string.h>
 
-#define SSDB_SET_KEY_COMMAND COMMONTYPE_SET_KEY_COMMAND
+#include "core/connection_types.h"
+
+#define SSDB_SET_KEY_COMMAND DB_SET_KEY_COMMAND
 #define SSDB_SET_KEY_ARRAY_COMMAND "LPUSH"
 #define SSDB_SET_KEY_SET_COMMAND "SADD"
 #define SSDB_SET_KEY_ZSET_COMMAND "ZADD"
 #define SSDB_SET_KEY_HASH_COMMAND "HMSET"
 
-#define SSDB_GET_KEY_COMMAND COMMONTYPE_GET_KEY_COMMAND
+#define SSDB_GET_KEY_COMMAND DB_GET_KEY_COMMAND
 #define SSDB_GET_KEY_ARRAY_COMMAND "LRANGE"
 #define SSDB_GET_KEY_SET_COMMAND "SMEMBERS"
 #define SSDB_GET_KEY_ZSET_COMMAND "ZRANGE"
 #define SSDB_GET_KEY_HASH_COMMAND "HGET"
 
-#define SSDB_DELETE_KEY_COMMAND "DEL"
-#define SSDB_RENAME_KEY_COMMAND "RENAME"
+#define SSDB_DELETE_KEY_COMMAND DB_DELETE_KEY_COMMAND
+#define SSDB_RENAME_KEY_COMMAND DB_RENAME_KEY_COMMAND
 #define SSDB_CHANGE_TTL_COMMAND "EXPIRE"
 #define SSDB_GET_TTL_COMMAND "TTL"
 
@@ -41,7 +43,11 @@ namespace fastonosql {
 namespace core {
 namespace ssdb {
 
-CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands) : ICommandTranslator(commands) {}
+CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands) : ICommandTranslatorBase(commands) {}
+
+const char* CommandTranslator::GetDBName() const {
+  return ConnectionTraits<SSDB>::GeDBName();
+}
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, command_buffer_t* cmdstring) const {
   command_buffer_writer_t wr;
@@ -102,7 +108,7 @@ common::Error CommandTranslator::DeleteKeyCommandImpl(const NKey& key, command_b
 }
 
 common::Error CommandTranslator::RenameKeyCommandImpl(const NKey& key,
-                                                      const key_t &new_name,
+                                                      const key_t& new_name,
                                                       command_buffer_t* cmdstring) const {
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
@@ -110,6 +116,10 @@ common::Error CommandTranslator::RenameKeyCommandImpl(const NKey& key,
      << MAKE_COMMAND_BUFFER(" ") << new_name.GetKeyData();
   *cmdstring = wr.str();
   return common::Error();
+}
+
+bool CommandTranslator::IsLoadKeyCommandImpl(const CommandInfo& cmd) const {
+  return cmd.IsEqualName(SSDB_GET_KEY_COMMAND);
 }
 
 common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key,
@@ -129,30 +139,6 @@ common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key, command_
   wr << MAKE_COMMAND_BUFFER(SSDB_GET_TTL_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKeyData();
   *cmdstring = wr.str();
   return common::Error();
-}
-
-bool CommandTranslator::IsLoadKeyCommandImpl(const CommandInfo& cmd) const {
-  return cmd.IsEqualName(SSDB_GET_KEY_COMMAND);
-}
-
-common::Error CommandTranslator::PublishCommandImpl(const NDbPSChannel& channel,
-                                                    const std::string& message,
-                                                    command_buffer_t* cmdstring) const {
-  UNUSED(channel);
-  UNUSED(message);
-  UNUSED(cmdstring);
-
-  static const std::string error_msg = "Sorry, but now " PROJECT_NAME_TITLE " not supported publish command for SSDB.";
-  return common::make_error_value(error_msg, common::ErrorValue::E_ERROR);
-}
-
-common::Error CommandTranslator::SubscribeCommandImpl(const NDbPSChannel& channel, command_buffer_t* cmdstring) const {
-  UNUSED(channel);
-  UNUSED(cmdstring);
-
-  static const std::string error_msg =
-      "Sorry, but now " PROJECT_NAME_TITLE " not supported subscribe command for SSDB.";
-  return common::make_error_value(error_msg, common::ErrorValue::E_ERROR);
 }
 
 }  // namespace ssdb

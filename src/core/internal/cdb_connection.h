@@ -73,18 +73,18 @@ class ConstantCommandsArray : public std::vector<CommandHolder> {
 command_buffer_t GetKeysPattern(uint64_t cursor_in, const std::string& pattern, uint64_t count_keys);  // for SCAN
 
 template <typename NConnection, typename Config, connectionTypes ContType>
-class CDBConnection : public DBConnection<NConnection, Config, ContType>, public CommandHandler {
+class CDBConnection : public DBConnection<NConnection, Config, ContType>,
+                      public CommandHandler,
+                      public ConnectionTraits<ContType> {
  public:
   typedef DBConnection<NConnection, Config, ContType> db_base_class;
+  typedef ConnectionTraits<ContType> connection_traits_class;
 
   CDBConnection(CDBConnectionClient* client, ICommandTranslator* translator)
       : db_base_class(), CommandHandler(translator), client_(client) {}
   virtual ~CDBConnection() {}
 
   static ConstantCommandsArray Commands();
-  static const char* GetConnectionTypeName() { return ConnectionTypeToString(ContType); }
-  static const char* BasedOn();
-  static const char* VersionApi();
 
   std::string CurrentDBName() const;                                                 //
   common::Error Help(commands_args_t argv, std::string* answer) WARN_UNUSED_RESULT;  //
@@ -152,7 +152,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::Help(commands_args_t
                                  " based on %s %s \r\n"
                                  "Type: \"help <command>\" for help on <command>\r\n"
                                  "\"help " ALL_COMMANDS "\" show all supported commands\r\n",
-                                 BasedOn(), VersionApi());
+                                 connection_traits_class::BasedOn(), connection_traits_class::VersionApi());
 
     return common::Error();
   }

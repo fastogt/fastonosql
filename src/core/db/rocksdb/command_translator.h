@@ -23,16 +23,17 @@
 #include <common/error.h>  // for Error
 #include <common/value.h>  // for Value, Value::Type
 
-#include "core/db_key.h"               // for NDbKValue, NKey, ttl_t
-#include "core/icommand_translator.h"  // for ICommandTranslator
+#include "core/db_key.h"                    // for NDbKValue, NKey, ttl_t
+#include "core/icommand_translator_base.h"  // for ICommandTranslator
 
 namespace fastonosql {
 namespace core {
 namespace rocksdb {
 
-class CommandTranslator : public ICommandTranslator {
+class CommandTranslator : public ICommandTranslatorBase {
  public:
   explicit CommandTranslator(const std::vector<CommandHolder>& commands);
+  virtual const char* GetDBName() const override;
 
  private:
   virtual common::Error CreateKeyCommandImpl(const NDbKValue& key, command_buffer_t* cmdstring) const override;
@@ -43,15 +44,8 @@ class CommandTranslator : public ICommandTranslator {
   virtual common::Error RenameKeyCommandImpl(const NKey& key,
                                              const key_t& new_name,
                                              command_buffer_t* cmdstring) const override;
-  virtual common::Error ChangeKeyTTLCommandImpl(const NKey& key, ttl_t ttl, command_buffer_t* cmdstring) const override;
-  virtual common::Error LoadKeyTTLCommandImpl(const NKey& key, command_buffer_t* cmdstring) const override;
 
   virtual bool IsLoadKeyCommandImpl(const CommandInfo& cmd) const override;
-
-  virtual common::Error PublishCommandImpl(const NDbPSChannel& channel,
-                                           const std::string& message,
-                                           command_buffer_t* cmdstring) const override;
-  virtual common::Error SubscribeCommandImpl(const NDbPSChannel& channel, command_buffer_t* cmdstring) const override;
 };
 
 }  // namespace rocksdb

@@ -40,6 +40,16 @@
 
 namespace fastonosql {
 namespace core {
+template <>
+const char* ConnectionTraits<LMDB>::BasedOn() {
+  return "liblmdb";
+}
+
+template <>
+const char* ConnectionTraits<LMDB>::VersionApi() {
+  return STRINGIZE(MDB_VERSION_MAJOR) "." STRINGIZE(MDB_VERSION_MINOR) "." STRINGIZE(MDB_VERSION_PATCH);
+}
+
 namespace {
 MDB_val ConvertToLMDBSlice(const string_key_t& key) {
   MDB_val mkey;
@@ -139,16 +149,6 @@ bool ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::IsConnecte
   }
 
   return true;
-}
-
-template <>
-const char* CDBConnection<lmdb::NativeConnection, lmdb::Config, LMDB>::BasedOn() {
-  return "liblmdb";
-}
-
-template <>
-const char* CDBConnection<lmdb::NativeConnection, lmdb::Config, LMDB>::VersionApi() {
-  return STRINGIZE(MDB_VERSION_MAJOR) "." STRINGIZE(MDB_VERSION_MINOR) "." STRINGIZE(MDB_VERSION_PATCH);
 }
 
 template <>

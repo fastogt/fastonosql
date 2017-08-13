@@ -39,6 +39,15 @@
 
 namespace fastonosql {
 namespace core {
+template <>
+const char* ConnectionTraits<FORESTDB>::BasedOn() {
+  return "libforestdb";
+}
+
+template <>
+const char* ConnectionTraits<FORESTDB>::VersionApi() {
+  return fdb_get_lib_version();
+}
 namespace forestdb {
 struct fdb {
   fdb_file_handle* handle;
@@ -120,16 +129,6 @@ bool ConnectionAllocatorTraits<forestdb::NativeConnection, forestdb::Config>::Is
   }
 
   return true;
-}
-
-template <>
-const char* CDBConnection<forestdb::NativeConnection, forestdb::Config, FORESTDB>::BasedOn() {
-  return "libforestdb";
-}
-
-template <>
-const char* CDBConnection<forestdb::NativeConnection, forestdb::Config, FORESTDB>::VersionApi() {
-  return fdb_get_lib_version();
 }
 
 template <>

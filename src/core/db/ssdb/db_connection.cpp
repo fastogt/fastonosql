@@ -34,6 +34,15 @@
 
 namespace fastonosql {
 namespace core {
+template <>
+const char* ConnectionTraits<SSDB>::BasedOn() {
+  return "ssdb";
+}
+
+template <>
+const char* ConnectionTraits<SSDB>::VersionApi() {
+  return "1.9.4";
+}
 namespace {
 std::string ConvertToSSDBSlice(const key_t& key) {
   return common::ConvertToString(key.ToString());
@@ -67,16 +76,6 @@ bool ConnectionAllocatorTraits<ssdb::NativeConnection, ssdb::Config>::IsConnecte
   }
 
   return true;
-}
-
-template <>
-const char* CDBConnection<ssdb::NativeConnection, ssdb::Config, SSDB>::BasedOn() {
-  return "ssdb";
-}
-
-template <>
-const char* CDBConnection<ssdb::NativeConnection, ssdb::Config, SSDB>::VersionApi() {
-  return "1.9.4";
 }
 
 template <>
@@ -898,7 +897,7 @@ common::Error DBConnection::FlushDBImpl() {
 
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
   if (name != CurrentDBName()) {
-    return ICommandTranslator::InvalidInputArguments(SELECTDB_COMMAND);
+    return ICommandTranslator::InvalidInputArguments(DB_SELECTDB_COMMAND);
   }
 
   size_t kcount = 0;

@@ -79,6 +79,13 @@ bool IsCanSSHConnection(connectionTypes type);
 const char* CommandLineHelpText(connectionTypes type);
 const char* ConnectionTypeToString(connectionTypes t);
 
+template <connectionTypes ContType>
+struct ConnectionTraits {
+  static const char* GeDBName() { return ConnectionTypeToString(ContType); }
+  static const char* BasedOn();
+  static const char* VersionApi();
+};
+
 }  // namespace core
 }  // namespace fastonosql
 

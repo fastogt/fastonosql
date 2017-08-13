@@ -18,43 +18,26 @@
 
 #pragma once
 
-#include <string>  // for string
-
-#include <common/error.h>  // for Error
-#include <common/value.h>  // for Value, Value::Type
-
-#include "core/db_key.h"               // for NDbKValue, NKey, ttl_t
-#include "core/icommand_translator.h"  // for ICommandTranslator
+#include "core/icommand_translator.h"
 
 namespace fastonosql {
 namespace core {
-namespace redis {
 
-class CommandTranslator : public ICommandTranslator {
+class ICommandTranslatorBase : public ICommandTranslator {
  public:
-  explicit CommandTranslator(const std::vector<CommandHolder>& commands);
-  virtual const char* GetDBName() const override;
+  explicit ICommandTranslatorBase(const std::vector<CommandHolder>& commands);
+  virtual ~ICommandTranslatorBase();
+
+  virtual const char* GetDBName() const override = 0;
 
  private:
-  virtual common::Error CreateKeyCommandImpl(const NDbKValue& key, command_buffer_t* cmdstring) const override;
-  virtual common::Error LoadKeyCommandImpl(const NKey& key,
-                                           common::Value::Type type,
-                                           command_buffer_t* cmdstring) const override;
-  virtual common::Error DeleteKeyCommandImpl(const NKey& key, command_buffer_t* cmdstring) const override;
-  virtual common::Error RenameKeyCommandImpl(const NKey& key,
-                                             const key_t& new_name,
-                                             command_buffer_t* cmdstring) const override;
   virtual common::Error ChangeKeyTTLCommandImpl(const NKey& key, ttl_t ttl, command_buffer_t* cmdstring) const override;
   virtual common::Error LoadKeyTTLCommandImpl(const NKey& key, command_buffer_t* cmdstring) const override;
-
-  virtual bool IsLoadKeyCommandImpl(const CommandInfo& cmd) const override;
-
   virtual common::Error PublishCommandImpl(const NDbPSChannel& channel,
                                            const std::string& message,
                                            command_buffer_t* cmdstring) const override;
   virtual common::Error SubscribeCommandImpl(const NDbPSChannel& channel, command_buffer_t* cmdstring) const override;
 };
 
-}  // namespace redis
 }  // namespace core
 }  // namespace fastonosql

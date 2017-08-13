@@ -42,6 +42,15 @@
 
 namespace fastonosql {
 namespace core {
+template <>
+const char* ConnectionTraits<UPSCALEDB>::BasedOn() {
+  return "libupscaledb";
+}
+
+template <>
+const char* ConnectionTraits<UPSCALEDB>::VersionApi() {
+  return STRINGIZE(UPS_VERSION_MAJ) "." STRINGIZE(UPS_VERSION_MIN) "." STRINGIZE(UPS_VERSION_REV);
+}
 namespace {
 ups_key_t ConvertToUpscaleDBSlice(const string_key_t& key) {
   ups_key_t dkey;
@@ -140,16 +149,6 @@ bool ConnectionAllocatorTraits<upscaledb::NativeConnection, upscaledb::Config>::
   }
 
   return true;
-}
-
-template <>
-const char* CDBConnection<upscaledb::NativeConnection, upscaledb::Config, UPSCALEDB>::BasedOn() {
-  return "libupscaledb";
-}
-
-template <>
-const char* CDBConnection<upscaledb::NativeConnection, upscaledb::Config, UPSCALEDB>::VersionApi() {
-  return STRINGIZE(UPS_VERSION_MAJ) "." STRINGIZE(UPS_VERSION_MIN) "." STRINGIZE(UPS_VERSION_REV);
 }
 
 template <>

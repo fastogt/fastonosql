@@ -32,7 +32,7 @@ Lexer::Lexer(QObject* parent) : BaseQsciLexerCommandHolder(core::forestdb::DBCon
 }
 
 const char* Lexer::language() const {
-  return core::forestdb::DBConnection::GetConnectionTypeName();
+  return core::forestdb::DBConnection::GeDBName();
 }
 
 const char* Lexer::version() const {

@@ -18,19 +18,22 @@
 
 #include "core/db/unqlite/command_translator.h"
 
-#include <common/macros.h>  // for UNUSED
-#include <common/sprintf.h>
+#include "core/connection_types.h"
 
-#define UNQLITE_GET_KEY_COMMAND COMMONTYPE_GET_KEY_COMMAND
-#define UNQLITE_SET_KEY_COMMAND COMMONTYPE_SET_KEY_COMMAND
-#define UNQLITE_DELETE_KEY_COMMAND "DEL"
-#define UNQLITE_RENAME_KEY_COMMAND "RENAME"
+#define UNQLITE_GET_KEY_COMMAND DB_GET_KEY_COMMAND
+#define UNQLITE_SET_KEY_COMMAND DB_SET_KEY_COMMAND
+#define UNQLITE_DELETE_KEY_COMMAND DB_DELETE_KEY_COMMAND
+#define UNQLITE_RENAME_KEY_COMMAND DB_RENAME_KEY_COMMAND
 
 namespace fastonosql {
 namespace core {
 namespace unqlite {
 
-CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands) : ICommandTranslator(commands) {}
+CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands) : ICommandTranslatorBase(commands) {}
+
+const char* CommandTranslator::GetDBName() const {
+  return ConnectionTraits<UNQLITE>::GeDBName();
+}
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, command_buffer_t* cmdstring) const {
   const NKey cur = key.GetKey();
@@ -74,50 +77,8 @@ common::Error CommandTranslator::RenameKeyCommandImpl(const NKey& key,
   return common::Error();
 }
 
-common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key,
-                                                         ttl_t ttl,
-                                                         command_buffer_t* cmdstring) const {
-  UNUSED(key);
-  UNUSED(ttl);
-  UNUSED(cmdstring);
-
-  static const std::string error_msg =
-      "Sorry, but now " PROJECT_NAME_TITLE " not supported change ttl command for UnqLite.";
-  return common::make_error_value(error_msg, common::ErrorValue::E_ERROR);
-}
-
-common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key, command_buffer_t* cmdstring) const {
-  UNUSED(key);
-  UNUSED(cmdstring);
-
-  static const std::string error_msg =
-      "Sorry, but now " PROJECT_NAME_TITLE " not supported get ttl command for UnqLite.";
-  return common::make_error_value(error_msg, common::ErrorValue::E_ERROR);
-}
-
 bool CommandTranslator::IsLoadKeyCommandImpl(const CommandInfo& cmd) const {
   return cmd.IsEqualName(UNQLITE_GET_KEY_COMMAND);
-}
-
-common::Error CommandTranslator::PublishCommandImpl(const NDbPSChannel& channel,
-                                                    const std::string& message,
-                                                    command_buffer_t* cmdstring) const {
-  UNUSED(channel);
-  UNUSED(message);
-  UNUSED(cmdstring);
-
-  static const std::string error_msg =
-      "Sorry, but now " PROJECT_NAME_TITLE " not supported publish command for UnqLite.";
-  return common::make_error_value(error_msg, common::ErrorValue::E_ERROR);
-}
-
-common::Error CommandTranslator::SubscribeCommandImpl(const NDbPSChannel& channel, command_buffer_t* cmdstring) const {
-  UNUSED(channel);
-  UNUSED(cmdstring);
-
-  static const std::string error_msg =
-      "Sorry, but now " PROJECT_NAME_TITLE " not supported subscribe command for UnqLite.";
-  return common::make_error_value(error_msg, common::ErrorValue::E_ERROR);
 }
 
 }  // namespace unqlite

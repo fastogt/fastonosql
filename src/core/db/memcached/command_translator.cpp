@@ -20,12 +20,12 @@
 
 #include <common/convert2string.h>
 
-#include "core/global.h"
+#include "core/connection_types.h"
 
-#define MEMCACHED_GET_KEY_COMMAND COMMONTYPE_GET_KEY_COMMAND
-#define MEMCACHED_SET_KEY_COMMAND COMMONTYPE_SET_KEY_COMMAND
-#define MEMCACHED_DELETE_KEY_COMMAND "DEL"
-#define MEMCACHED_RENAME_KEY_COMMAND "RENAME"
+#define MEMCACHED_GET_KEY_COMMAND DB_GET_KEY_COMMAND
+#define MEMCACHED_SET_KEY_COMMAND DB_SET_KEY_COMMAND
+#define MEMCACHED_DELETE_KEY_COMMAND DB_DELETE_KEY_COMMAND
+#define MEMCACHED_RENAME_KEY_COMMAND DB_RENAME_KEY_COMMAND
 #define MEMCACHED_CHANGE_TTL_COMMAND "EXPIRE"
 #define MEMCACHED_GET_TTL_COMMAND "TTL"
 
@@ -33,7 +33,11 @@ namespace fastonosql {
 namespace core {
 namespace memcached {
 
-CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands) : ICommandTranslator(commands) {}
+CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands) : ICommandTranslatorBase(commands) {}
+
+const char* CommandTranslator::GetDBName() const {
+  return ConnectionTraits<MEMCACHED>::GeDBName();
+}
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, command_buffer_t* cmdstring) const {
   const NKey cur = key.GetKey();
@@ -98,27 +102,6 @@ common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key, command_
 
 bool CommandTranslator::IsLoadKeyCommandImpl(const CommandInfo& cmd) const {
   return cmd.IsEqualName(MEMCACHED_GET_KEY_COMMAND);
-}
-
-common::Error CommandTranslator::PublishCommandImpl(const NDbPSChannel& channel,
-                                                    const std::string& message,
-                                                    command_buffer_t* cmdstring) const {
-  UNUSED(channel);
-  UNUSED(message);
-  UNUSED(cmdstring);
-
-  std::string errorMsg =
-      common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported publish command for Memcached.");
-  return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
-}
-
-common::Error CommandTranslator::SubscribeCommandImpl(const NDbPSChannel& channel, command_buffer_t* cmdstring) const {
-  UNUSED(channel);
-  UNUSED(cmdstring);
-
-  std::string errorMsg =
-      common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported subscribe command for Memcached.");
-  return common::make_error_value(errorMsg, common::ErrorValue::E_ERROR);
 }
 
 }  // namespace memcached

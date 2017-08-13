@@ -66,7 +66,7 @@ common::Error ICommandTranslator::SelectDBCommand(const std::string& name, comma
   }
 
   command_buffer_writer_t wr;
-  wr << MAKE_COMMAND_BUFFER(SELECTDB_COMMAND) << MAKE_COMMAND_BUFFER(" ") << name;
+  wr << MAKE_COMMAND_BUFFER(DB_SELECTDB_COMMAND) << MAKE_COMMAND_BUFFER(" ") << name;
   *cmdstring = wr.str();
   return common::Error();
 }
@@ -77,7 +77,7 @@ common::Error ICommandTranslator::FlushDBCommand(command_buffer_t* cmdstring) co
   }
 
   command_buffer_writer_t wr;
-  wr << MAKE_COMMAND_BUFFER(FLUSHDB_COMMAND);
+  wr << MAKE_COMMAND_BUFFER(DB_FLUSHDB_COMMAND);
   *cmdstring = wr.str();
   return common::Error();
 }

@@ -50,6 +50,7 @@ SET(HEADERS_CORE
   ${CMAKE_SOURCE_DIR}/src/core/db_key.h
   ${CMAKE_SOURCE_DIR}/src/core/db_ps_channel.h
   ${CMAKE_SOURCE_DIR}/src/core/icommand_translator.h
+  ${CMAKE_SOURCE_DIR}/src/core/icommand_translator_base.h
   ${CMAKE_SOURCE_DIR}/src/core/command_info.h
   ${CMAKE_SOURCE_DIR}/src/core/command_holder.h
   ${CMAKE_SOURCE_DIR}/src/core/server_property_info.h
@@ -71,6 +72,7 @@ SET(SOURCES_CORE
   ${CMAKE_SOURCE_DIR}/src/core/db_key.cpp
   ${CMAKE_SOURCE_DIR}/src/core/db_ps_channel.cpp
   ${CMAKE_SOURCE_DIR}/src/core/icommand_translator.cpp
+  ${CMAKE_SOURCE_DIR}/src/core/icommand_translator_base.cpp
   ${CMAKE_SOURCE_DIR}/src/core/command_info.cpp
   ${CMAKE_SOURCE_DIR}/src/core/command_holder.cpp
   ${CMAKE_SOURCE_DIR}/src/core/server_property_info.cpp

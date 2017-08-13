@@ -18,22 +18,22 @@
 
 #include "core/db/redis/command_translator.h"
 
-#include <common/convert2string.h>
+#include "core/connection_types.h"
 
-#define REDIS_SET_KEY_COMMAND COMMONTYPE_SET_KEY_COMMAND
+#define REDIS_SET_KEY_COMMAND DB_SET_KEY_COMMAND
 #define REDIS_SET_KEY_ARRAY_COMMAND "LPUSH"
 #define REDIS_SET_KEY_SET_COMMAND "SADD"
 #define REDIS_SET_KEY_ZSET_COMMAND "ZADD"
 #define REDIS_SET_KEY_HASH_COMMAND "HMSET"
 
-#define REDIS_GET_KEY_COMMAND COMMONTYPE_GET_KEY_COMMAND
+#define REDIS_GET_KEY_COMMAND DB_GET_KEY_COMMAND
 #define REDIS_GET_KEY_ARRAY_COMMAND "LRANGE"
 #define REDIS_GET_KEY_SET_COMMAND "SMEMBERS"
 #define REDIS_GET_KEY_ZSET_COMMAND "ZRANGE"
 #define REDIS_GET_KEY_HASH_COMMAND "HGETALL"
 
-#define REDIS_DELETE_KEY_COMMAND "DEL"
-#define REDIS_RENAME_KEY_COMMAND "RENAME"
+#define REDIS_DELETE_KEY_COMMAND DB_DELETE_KEY_COMMAND
+#define REDIS_RENAME_KEY_COMMAND DB_RENAME_KEY_COMMAND
 #define REDIS_CHANGE_TTL_COMMAND "EXPIRE"
 #define REDIS_PERSIST_KEY_COMMAND "PERSIST"
 
@@ -46,6 +46,10 @@ namespace core {
 namespace redis {
 
 CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands) : ICommandTranslator(commands) {}
+
+const char* CommandTranslator::GetDBName() const {
+  return ConnectionTraits<REDIS>::GeDBName();
+}
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, command_buffer_t* cmdstring) const {
   const NKey cur = key.GetKey();
@@ -125,7 +129,7 @@ common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key,
     wr << MAKE_COMMAND_BUFFER(REDIS_PERSIST_KEY_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKeyData();
   } else {
     wr << MAKE_COMMAND_BUFFER(REDIS_CHANGE_TTL_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKeyData()
-       << MAKE_COMMAND_BUFFER(" ") << common::ConvertToString(ttl);
+       << MAKE_COMMAND_BUFFER(" ") << ttl;
   }
 
   *cmdstring = wr.str();

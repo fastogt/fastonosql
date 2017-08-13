@@ -151,6 +151,15 @@ memcached_return_t memcached_dump_ttl_callback(const memcached_st* ptr,
 
 namespace fastonosql {
 namespace core {
+template <>
+const char* ConnectionTraits<MEMCACHED>::BasedOn() {
+  return "libmemcached";
+}
+
+template <>
+const char* ConnectionTraits<MEMCACHED>::VersionApi() {
+  return memcached_lib_version();
+}
 namespace internal {
 template <>
 common::Error ConnectionAllocatorTraits<memcached::NativeConnection, memcached::Config>::Connect(
@@ -190,16 +199,6 @@ bool ConnectionAllocatorTraits<memcached::NativeConnection, memcached::Config>::
   }
 
   return servers->state == MEMCACHED_SERVER_STATE_CONNECTED;
-}
-
-template <>
-const char* CDBConnection<memcached::NativeConnection, memcached::Config, MEMCACHED>::BasedOn() {
-  return "libmemcached";
-}
-
-template <>
-const char* CDBConnection<memcached::NativeConnection, memcached::Config, MEMCACHED>::VersionApi() {
-  return memcached_lib_version();
 }
 
 template <>
@@ -663,7 +662,7 @@ common::Error DBConnection::FlushDBImpl() {
 
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
   if (name != CurrentDBName()) {
-    return ICommandTranslator::InvalidInputArguments(SELECTDB_COMMAND);
+    return ICommandTranslator::InvalidInputArguments(DB_SELECTDB_COMMAND);
   }
 
   size_t kcount = 0;

@@ -57,6 +57,17 @@
 
 namespace fastonosql {
 namespace core {
+
+template <>
+const char* ConnectionTraits<ROCKSDB>::BasedOn() {
+  return "librocksdb";
+}
+
+template <>
+const char* ConnectionTraits<ROCKSDB>::VersionApi() {
+  return STRINGIZE(ROCKSDB_MAJOR) "." STRINGIZE(ROCKSDB_MINOR) "." STRINGIZE(ROCKSDB_PATCH);
+}
+
 namespace internal {
 template <>
 common::Error ConnectionAllocatorTraits<rocksdb::NativeConnection, rocksdb::Config>::Connect(
@@ -87,16 +98,6 @@ bool ConnectionAllocatorTraits<rocksdb::NativeConnection, rocksdb::Config>::IsCo
   }
 
   return true;
-}
-
-template <>
-const char* CDBConnection<rocksdb::NativeConnection, rocksdb::Config, ROCKSDB>::BasedOn() {
-  return "librocksdb";
-}
-
-template <>
-const char* CDBConnection<rocksdb::NativeConnection, rocksdb::Config, ROCKSDB>::VersionApi() {
-  return STRINGIZE(ROCKSDB_MAJOR) "." STRINGIZE(ROCKSDB_MINOR) "." STRINGIZE(ROCKSDB_PATCH);
 }
 
 template <>

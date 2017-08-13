@@ -32,7 +32,7 @@ Lexer::Lexer(QObject* parent) : BaseQsciLexerCommandHolder(core::memcached::DBCo
 }
 
 const char* Lexer::language() const {
-  return core::memcached::DBConnection::GetConnectionTypeName();
+  return core::memcached::DBConnection::GeDBName();
 }
 
 const char* Lexer::version() const {

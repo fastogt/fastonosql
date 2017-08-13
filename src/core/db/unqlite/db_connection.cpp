@@ -113,6 +113,15 @@ int unqlite_data_callback(const void* pData, unsigned int nDatalen, void* str) {
 
 namespace fastonosql {
 namespace core {
+template <>
+const char* ConnectionTraits<UNQLITE>::BasedOn() {
+  return "unqlite";
+}
+
+template <>
+const char* ConnectionTraits<UNQLITE>::VersionApi() {
+  return UNQLITE_VERSION;
+}
 namespace internal {
 template <>
 common::Error ConnectionAllocatorTraits<unqlite::NativeConnection, unqlite::Config>::Connect(
@@ -142,16 +151,6 @@ bool ConnectionAllocatorTraits<unqlite::NativeConnection, unqlite::Config>::IsCo
   }
 
   return true;
-}
-
-template <>
-const char* CDBConnection<unqlite::NativeConnection, unqlite::Config, UNQLITE>::BasedOn() {
-  return "unqlite";
-}
-
-template <>
-const char* CDBConnection<unqlite::NativeConnection, unqlite::Config, UNQLITE>::VersionApi() {
-  return UNQLITE_VERSION;
 }
 
 template <>
@@ -394,7 +393,7 @@ common::Error DBConnection::FlushDBImpl() {
 
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
   if (name != CurrentDBName()) {
-    return ICommandTranslator::InvalidInputArguments(SELECTDB_COMMAND);
+    return ICommandTranslator::InvalidInputArguments(DB_SELECTDB_COMMAND);
   }
 
   size_t kcount = 0;

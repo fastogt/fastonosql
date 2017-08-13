@@ -29,11 +29,13 @@
 #include "core/db_key.h"  // for NKey, NDbKValue, ttl_t
 #include "core/db_ps_channel.h"
 
-#define FLUSHDB_COMMAND "FLUSHDB"
-#define SELECTDB_COMMAND "SELECT"
+#define DB_FLUSHDB_COMMAND "FLUSHDB"
+#define DB_SELECTDB_COMMAND "SELECT"
 
-#define COMMONTYPE_GET_KEY_COMMAND "GET"
-#define COMMONTYPE_SET_KEY_COMMAND "SET"
+#define DB_GET_KEY_COMMAND "GET"
+#define DB_SET_KEY_COMMAND "SET"
+#define DB_DELETE_KEY_COMMAND "DEL"
+#define DB_RENAME_KEY_COMMAND "RENAME"
 
 namespace fastonosql {
 namespace core {
@@ -44,6 +46,8 @@ class ICommandTranslator {
  public:
   explicit ICommandTranslator(const std::vector<CommandHolder>& commands);
   virtual ~ICommandTranslator();
+
+  virtual const char* GetDBName() const = 0;
 
   common::Error SelectDBCommand(const std::string& name, command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
   common::Error FlushDBCommand(command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;

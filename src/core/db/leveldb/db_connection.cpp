@@ -40,6 +40,16 @@
 
 namespace fastonosql {
 namespace core {
+template <>
+const char* ConnectionTraits<LEVELDB>::BasedOn() {
+  return "libleveldb";
+}
+
+template <>
+const char* ConnectionTraits<LEVELDB>::VersionApi() {
+  static std::string leveldb_version = common::MemSPrintf("%d.%d", leveldb_major_version(), leveldb_minor_version());
+  return leveldb_version.c_str();
+}
 namespace internal {
 template <>
 common::Error ConnectionAllocatorTraits<leveldb::NativeConnection, leveldb::Config>::Connect(
@@ -70,17 +80,6 @@ bool ConnectionAllocatorTraits<leveldb::NativeConnection, leveldb::Config>::IsCo
   }
 
   return true;
-}
-
-template <>
-const char* CDBConnection<leveldb::NativeConnection, leveldb::Config, LEVELDB>::BasedOn() {
-  return "libleveldb";
-}
-
-template <>
-const char* CDBConnection<leveldb::NativeConnection, leveldb::Config, LEVELDB>::VersionApi() {
-  static std::string leveldb_version = common::MemSPrintf("%d.%d", leveldb_major_version(), leveldb_minor_version());
-  return leveldb_version.c_str();
 }
 
 template <>
@@ -376,7 +375,7 @@ common::Error DBConnection::FlushDBImpl() {
 
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
   if (name != CurrentDBName()) {
-    return ICommandTranslator::InvalidInputArguments(SELECTDB_COMMAND);
+    return ICommandTranslator::InvalidInputArguments(DB_SELECTDB_COMMAND);
   }
 
   size_t kcount = 0;
