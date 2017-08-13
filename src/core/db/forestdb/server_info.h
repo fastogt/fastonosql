@@ -58,7 +58,7 @@ class ServerInfo : public IServerInfo {
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo& value);
 
-ServerInfo* MakeLmdbServerInfo(const std::string& content);
+ServerInfo* MakeForestDBServerInfo(const std::string& content);
 
 }  // namespace forestdb
 }  // namespace core

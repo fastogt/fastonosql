@@ -382,7 +382,7 @@ void InfoServerDialog::finishServerInfo(const proxy::events_info::ServerInfoResp
   }
 #endif
 #ifdef BUILD_WITH_FORESTDB
-  if (type == core::UPSCALEDB) {
+  if (type == core::FORESTDB) {
     core::forestdb::ServerInfo* infr = static_cast<core::forestdb::ServerInfo*>(inf.get());
     CHECK(infr);
     updateText(*infr);

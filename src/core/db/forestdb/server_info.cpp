@@ -106,7 +106,7 @@ std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {
   return out << value.ToString();
 }
 
-ServerInfo* MakeLmdbServerInfo(const std::string& content) {
+ServerInfo* MakeForestDBServerInfo(const std::string& content) {
   if (content.empty()) {
     return nullptr;
   }

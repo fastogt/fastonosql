@@ -29,7 +29,7 @@
 #include <common/qt/utils_qt.h>    // for Event<>::value_type
 #include <common/value.h>          // for ErrorValue, etc
 
-#include "core/connection_types.h"         // for ConvertToString, etc
+#include "core/connection_types.h"
 #include "core/db_key.h"                   // for NDbKValue, NValue, NKey
 #include "proxy/command/command.h"         // for CreateCommand, etc
 #include "proxy/command/command_logger.h"  // for LOG_COMMAND
@@ -129,7 +129,7 @@ common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(MAKE_COMMAND_BUFFER(UNQLITE_INFO_REQUEST), core::C_INNER);
   LOG_COMMAND(cmd);
   core::unqlite::ServerInfo::Stats cm;
-  common::Error err = impl_->Info(nullptr, &cm);
+  common::Error err = impl_->Info(std::string(), &cm);
   if (err && err->IsError()) {
     return err;
   }

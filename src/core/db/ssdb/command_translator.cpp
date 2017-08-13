@@ -128,7 +128,7 @@ common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key,
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
   wr << MAKE_COMMAND_BUFFER(SSDB_CHANGE_TTL_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKeyData()
-     << MAKE_COMMAND_BUFFER(" ") << common::ConvertToString(ttl);
+     << MAKE_COMMAND_BUFFER(" ") << ttl;
   *cmdstring = wr.str();
   return common::Error();
 }

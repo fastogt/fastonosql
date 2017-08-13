@@ -626,7 +626,7 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
                                      const std::string& key_end,
                                      uint64_t limit,
                                      std::vector<std::string>* ret) {
-  KeysHolder hld(common::ConvertToString(key_start), common::ConvertToString(key_end), limit, ret);
+  KeysHolder hld(key_start, key_end, limit, ret);
   memcached_dump_fn func[1] = {0};
   func[0] = memcached_dump_keys_callback;
   memcached_return_t result = memcached_dump(connection_.handle_, func, &hld, SIZEOFMASS(func));

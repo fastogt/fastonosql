@@ -28,7 +28,7 @@
 #include <common/qt/utils_qt.h>  // for Event<>::value_type
 #include <common/value.h>        // for ErrorValue, etc
 
-#include "core/connection_types.h"         // for ConvertToString, etc
+#include "core/connection_types.h" 
 #include "core/db_key.h"                   // for NDbKValue, NValue, NKey
 #include "proxy/command/command.h"         // for CreateCommand, etc
 #include "proxy/command/command_logger.h"  // for LOG_COMMAND

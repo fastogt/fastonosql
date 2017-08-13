@@ -24,13 +24,13 @@
 #include <memory>  // for __shared_ptr
 #include <string>  // for string
 
-#include <common/convert2string.h>  // for ConvertToString
-#include <common/intrusive_ptr.h>   // for intrusive_ptr
-#include <common/qt/utils_qt.h>     // for Event<>::value_type
-#include <common/value.h>           // for ErrorValue, etc
+#include <common/intrusive_ptr.h>  // for intrusive_ptr
+#include <common/qt/utils_qt.h>    // for Event<>::value_type
+#include <common/value.h>          // for ErrorValue, etc
+#include <common/convert2string.h>
 
-#include "core/connection_types.h"  // for ConvertToString, etc
-#include "core/db_key.h"            // for NDbKValue, NValue, NKey
+#include "core/connection_types.h"
+#include "core/db_key.h"  // for NDbKValue, NValue, NKey
 #include "core/internal/cdb_connection.h"
 #include "core/internal/db_connection.h"
 #include "proxy/command/command.h"         // for CreateCommand, etc
@@ -129,7 +129,7 @@ common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(MAKE_COMMAND_BUFFER(UPSCALEDB_INFO_REQUEST), core::C_INNER);
   LOG_COMMAND(cmd);
   core::upscaledb::ServerInfo::Stats cm;
-  common::Error err = impl_->Info(nullptr, &cm);
+  common::Error err = impl_->Info(std::string(), &cm);
   if (err && err->IsError()) {
     return err;
   }

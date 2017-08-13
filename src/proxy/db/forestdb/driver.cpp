@@ -127,7 +127,7 @@ common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(MAKE_COMMAND_BUFFER(LMDB_INFO_REQUEST), core::C_INNER);
   LOG_COMMAND(cmd);
   core::forestdb::ServerInfo::Stats cm;
-  common::Error err = impl_->Info(nullptr, &cm);
+  common::Error err = impl_->Info(std::string(), &cm);
   if (err && err->IsError()) {
     return err;
   }
@@ -219,7 +219,7 @@ done:
 }
 
 core::IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
-  core::IServerInfoSPtr res(core::forestdb::MakeLmdbServerInfo(val));
+  core::IServerInfoSPtr res(core::forestdb::MakeForestDBServerInfo(val));
   return res;
 }
 

@@ -45,7 +45,7 @@ const char* ConnectionTraits<SSDB>::VersionApi() {
 }
 namespace {
 std::string ConvertToSSDBSlice(const key_t& key) {
-  return common::ConvertToString(key.ToString());
+  return key.ToBytes();
 }
 }  // namespace
 namespace internal {

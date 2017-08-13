@@ -34,7 +34,7 @@
 #include "proxy/db/rocksdb/connection_settings.h"  // for ConnectionSettings
 #include "proxy/events/events_info.h"
 
-#include "core/connection_types.h"  // for ConvertToString, etc
+#include "core/connection_types.h"
 #include "core/db_key.h"            // for NDbKValue, NValue, NKey
 #include "core/global.h"            // for FastoObject::childs_t, etc
 
@@ -125,7 +125,7 @@ common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(MAKE_COMMAND_BUFFER(ROCKSDB_INFO_REQUEST), core::C_INNER);
   LOG_COMMAND(cmd);
   core::rocksdb::ServerInfo::Stats cm;
-  common::Error err = impl_->Info(nullptr, &cm);
+  common::Error err = impl_->Info(std::string(), &cm);
   if (err && err->IsError()) {
     return err;
   }

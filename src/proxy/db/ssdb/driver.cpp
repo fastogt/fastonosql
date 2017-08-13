@@ -29,7 +29,7 @@
 #include <common/sprintf.h>        // for MemSPrintf
 #include <common/value.h>          // for ErrorValue, Value, etc
 
-#include "core/connection_types.h"       // for ConvertToString, etc
+#include "core/connection_types.h"
 #include "core/db/ssdb/config.h"         // for Config
 #include "core/db/ssdb/db_connection.h"  // for DBConnection
 #include "core/db/ssdb/server_info.h"    // for ServerInfo, etc
@@ -125,7 +125,7 @@ common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(MAKE_COMMAND_BUFFER(SSDB_INFO_REQUEST), core::C_INNER);
   LOG_COMMAND(cmd);
   core::ssdb::ServerInfo::Stats cm;
-  common::Error err = impl_->Info(nullptr, &cm);
+  common::Error err = impl_->Info(std::string(), &cm);
   if (err && err->IsError()) {
     return err;
   }

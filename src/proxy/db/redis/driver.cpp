@@ -267,8 +267,7 @@ void Driver::HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEv
   events::ChangeMaxConnectionResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 25);
   core::command_buffer_writer_t wr;
-  wr << MAKE_COMMAND_BUFFER(REDIS_SET_MAX_CONNECTIONS_COMMAND) << MAKE_COMMAND_BUFFER(" ")
-     << common::ConvertToString(res.max_connection);
+  wr << MAKE_COMMAND_BUFFER(REDIS_SET_MAX_CONNECTIONS_COMMAND) << MAKE_COMMAND_BUFFER(" ") << res.max_connection;
   core::command_buffer_t pattern_result = wr.str();
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(pattern_result, core::C_INNER);
   common::Error er = Execute(cmd);

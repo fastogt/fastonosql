@@ -22,8 +22,6 @@
 #include <string>  // for string
 
 #include <common/error.h>   // for Error
-#include <common/macros.h>  // for WARN_UNUSED_RESULT
-#include <common/value.h>   // for Value, Value::Type
 
 #include "core/command_holder.h"
 #include "core/db_key.h"  // for NKey, NDbKValue, ttl_t
