@@ -208,7 +208,7 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  const string_key_t key_slice = key.ToString();
+  const string_key_t key_slice = key.ToBytes();
   fdb_status rc = fdb_set_kv(connection_.handle_->kvs, key_slice.data(), key_slice.size(), value.c_str(), value.size());
   if (rc != FDB_RESULT_SUCCESS) {
     std::string buff = common::MemSPrintf("set function error: %s", fdb_error_msg(rc));
@@ -223,7 +223,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  const string_key_t key_slice = key.ToString();
+  const string_key_t key_slice = key.ToBytes();
   void* value_out = NULL;
   size_t valuelen_out = 0;
   fdb_status rc = fdb_get_kv(connection_.handle_->kvs, key_slice.data(), key_slice.size(), &value_out, &valuelen_out);
@@ -247,7 +247,7 @@ common::Error DBConnection::DelInner(key_t key) {
     return err;
   }
 
-  const string_key_t key_slice = key.ToString();
+  const string_key_t key_slice = key.ToBytes();
   fdb_status rc = fdb_del_kv(connection_.handle_->kvs, key_slice.data(), key_slice.size());
   if (rc != FDB_RESULT_SUCCESS) {
     std::string buff = common::MemSPrintf("delete function error: %s", fdb_error_msg(rc));

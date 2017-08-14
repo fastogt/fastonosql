@@ -243,7 +243,7 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  const string_key_t key_str = key.ToString();
+  const string_key_t key_str = key.ToBytes();
   ups_key_t key_slice = ConvertToUpscaleDBSlice(key_str);
 
   ups_record_t rec;
@@ -264,7 +264,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  const string_key_t key_str = key.ToString();
+  const string_key_t key_str = key.ToBytes();
   ups_key_t key_slice = ConvertToUpscaleDBSlice(key_str);
 
   ups_record_t rec;
@@ -285,7 +285,7 @@ common::Error DBConnection::DelInner(key_t key) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  const string_key_t key_str = key.ToString();
+  const string_key_t key_str = key.ToBytes();
   ups_key_t key_slice = ConvertToUpscaleDBSlice(key_str);
 
   ups_status_t st = ups_db_erase(connection_.handle_->db, 0, &key_slice, 0);

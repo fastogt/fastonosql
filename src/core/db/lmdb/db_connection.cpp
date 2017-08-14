@@ -232,7 +232,7 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  const string_key_t key_str = key.ToString();
+  const string_key_t key_str = key.ToBytes();
   MDB_val key_slice = ConvertToLMDBSlice(key_str);
   MDB_val mval;
   mval.mv_size = value.size();
@@ -263,7 +263,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  const string_key_t key_str = key.ToString();
+  const string_key_t key_str = key.ToBytes();
   MDB_val key_slice = ConvertToLMDBSlice(key_str);
   MDB_val mval;
 
@@ -275,7 +275,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   mdb_txn_abort(txn);
 
   if (rc != LMDB_OK) {
-    std::string buff = common::MemSPrintf("get function error: %s", mdb_strerror(rc));
+    const std::string buff = common::MemSPrintf("Get function error: %s", mdb_strerror(rc));
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 
@@ -288,7 +288,7 @@ common::Error DBConnection::DelInner(key_t key) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  const string_key_t key_str = key.ToString();
+  const string_key_t key_str = key.ToBytes();
   MDB_val key_slice = ConvertToLMDBSlice(key_str);
 
   MDB_txn* txn = NULL;
@@ -304,7 +304,8 @@ common::Error DBConnection::DelInner(key_t key) {
   }
 
   if (rc != LMDB_OK) {
-    std::string buff = common::MemSPrintf("delete function error: %s", mdb_strerror(rc));
+    char* res = mdb_strerror(rc);
+    std::string buff = common::MemSPrintf("Delete function error: %s", res);
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 

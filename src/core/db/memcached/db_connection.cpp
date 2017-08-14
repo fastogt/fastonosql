@@ -477,7 +477,7 @@ common::Error DBConnection::DelInner(key_t key, time_t expiration) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  const string_key_t key_slice = key.ToString();
+  const string_key_t key_slice = key.ToBytes();
   const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());
   memcached_return_t error = memcached_delete(connection_.handle_, key_slice_ptr, key_slice.size(), expiration);
   if (error != MEMCACHED_SUCCESS) {
@@ -493,7 +493,7 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value, time_t
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  const string_key_t key_slice = key.ToString();
+  const string_key_t key_slice = key.ToBytes();
   const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());
   memcached_return_t error = memcached_set(connection_.handle_, key_slice_ptr, key_slice.size(), value.c_str(),
                                            value.length(), expiration, flags);
@@ -519,7 +519,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   memcached_return error;
   size_t value_length = 0;
 
-  const string_key_t key_slice = key.ToString();
+  const string_key_t key_slice = key.ToBytes();
   const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());
   char* value = memcached_get(connection_.handle_, key_slice_ptr, key_slice.size(), &value_length, &flags, &error);
   if (error != MEMCACHED_SUCCESS) {
@@ -542,7 +542,7 @@ common::Error DBConnection::ExpireInner(key_t key, ttl_t expiration) {
   memcached_return error;
   size_t value_length = 0;
 
-  const string_key_t key_slice = key.ToString();
+  const string_key_t key_slice = key.ToBytes();
   const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());
   char* value = memcached_get(connection_.handle_, key_slice_ptr, key_slice.size(), &value_length, &flags, &error);
   if (error != MEMCACHED_SUCCESS) {

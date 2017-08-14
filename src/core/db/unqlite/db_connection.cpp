@@ -223,7 +223,7 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  const string_key_t key_slice = key.ToString();
+  const string_key_t key_slice = key.ToBytes();
   int rc = unqlite_kv_store(connection_.handle_, key_slice.data(), key_slice.size(), value.c_str(), value.length());
   if (rc != UNQLITE_OK) {
     std::string buff = common::MemSPrintf("set function error: %s", unqlite_strerror(rc));
@@ -238,7 +238,7 @@ common::Error DBConnection::DelInner(key_t key) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  const string_key_t key_slice = key.ToString();
+  const string_key_t key_slice = key.ToBytes();
   int rc = unqlite_kv_delete(connection_.handle_, key_slice.data(), key_slice.size());
   if (rc != UNQLITE_OK) {
     std::string buff = common::MemSPrintf("delete function error: %s", unqlite_strerror(rc));
@@ -253,7 +253,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  const string_key_t key_slice = key.ToString();
+  const string_key_t key_slice = key.ToBytes();
   int rc = unqlite_kv_fetch_callback(connection_.handle_, key_slice.data(), key_slice.size(), unqlite_data_callback,
                                      ret_val);
   if (rc != UNQLITE_OK) {

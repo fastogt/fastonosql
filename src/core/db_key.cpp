@@ -32,8 +32,8 @@ namespace core {
 
 bool IsBinaryKey(const command_buffer_t& key) {
   for (size_t i = 0; i < key.size(); ++i) {
-    char c = key[i];
-    if (isprint(c) == 0) {  // should be hexed symbol
+    unsigned char c = static_cast<unsigned char>(key[i]);
+    if (c < ' ') {  // should be hexed symbol
       return true;
     }
   }
