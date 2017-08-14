@@ -19,6 +19,7 @@
 #include "core/db/leveldb/comparators/indexed_db.h"
 
 #include <memory>
+#include <vector>
 
 #include <leveldb/slice.h>
 
