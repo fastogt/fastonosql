@@ -1,9 +1,10 @@
-1.7.0 / August 14, 2017
+1.7.0 / August 15, 2017
 [Alexandr Topilski]
 - [RocksDB] Comparator option
 - [LevelDB] Comparator option (IndexedDB comparator)
 - Binary keys support
 - Multi selection in explorer tree
+- Fix Export/Import settings
 
 1.6.1 / August 5, 2017
 [Alexandr Topilski]

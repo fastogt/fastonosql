@@ -49,7 +49,8 @@
 #include <common/qt/logger.h>          // for LOG_ERROR
 #include <common/qt/utils_qt.h>        // for SaveToFileText, etc
 
-#include "core/command_info.h"         // for UNDEFINED_SINCE, etc
+#include "core/command_info.h"  // for UNDEFINED_SINCE, etc
+
 #include "proxy/events/events_info.h"  // for DiscoveryInfoResponce, etc
 #include "proxy/server/iserver.h"      // for IServer
 #include "proxy/server/iserver_local.h"
@@ -58,12 +59,13 @@
 
 #include "gui/gui_factory.h"  // for GuiFactory
 #include "gui/shortcuts.h"    // for executeKey
-
 #include "gui/base_shell.h"  // for BaseShell
+#include "gui/utils.h"
 
 #include "translations/global.h"  // for trError, trSaveAs, etc
 
 namespace {
+
 const QSize iconSize = QSize(24, 24);
 const QString trSupportedCommandsCountTemplate_1S = QObject::tr("Supported commands count: %1");
 const QString trCommandsVersion = QObject::tr("Command version:");
@@ -346,8 +348,7 @@ bool BaseShellWidget::loadFromFile(const QString& path) {
 }
 
 void BaseShellWidget::saveToFileAs() {
-  QString filepath =
-      QFileDialog::getSaveFileName(this, translations::trSaveAs, filePath_, translations::trfilterForScripts);
+  QString filepath = ShowSaveFileDialog(this, translations::trSaveAs, filePath_, translations::trfilterForScripts);
   if (filepath.isEmpty()) {
     return;
   }

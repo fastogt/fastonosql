@@ -71,8 +71,9 @@
 #include "gui/shortcuts.h"                      // for fullScreenKey, openKey, etc
 #include "gui/statistic_sender.h"               // for StatisticSender
 #include "gui/update_checker.h"                 // for UpdateChecker
-#include "gui/widgets/log_tab_widget.h"         // for LogTabWidget
-#include "gui/widgets/main_widget.h"            // for MainWidget
+#include "gui/utils.h"
+#include "gui/widgets/log_tab_widget.h"  // for LogTabWidget
+#include "gui/widgets/main_widget.h"     // for MainWidget
 
 #include "translations/global.h"  // for trError, trCheckVersion, etc
 
@@ -441,9 +442,13 @@ void MainWindow::importConnection() {
 
   while (!readFile.IsEOF()) {
     std::string data;
-    bool res = readFile.Read(&data, 256);
+    bool res = readFile.Read(&data, 1024);
     if (!res) {
       break;
+    }
+
+    if(data.empty()) {
+      continue;
     }
 
     std::string edata;
@@ -476,8 +481,7 @@ void MainWindow::exportConnection() {
   std::string dir_path = proxy::SettingsManager::SettingsDirPath();
   QString qdir;
   common::ConvertFromString(dir_path, &qdir);
-  QString filepathW =
-      QFileDialog::getSaveFileName(this, tr("Select file to save settings"), qdir, tr("Settings files (*.cini)"));
+  QString filepathW = ShowSaveFileDialog(this, tr("Select file to save settings"), qdir, tr("Settings files (*.cini)"));
   if (filepathW.isEmpty()) {
     return;
   }
@@ -517,9 +521,13 @@ void MainWindow::exportConnection() {
 
   while (!readFile.IsEOF()) {
     std::string data;
-    bool res = readFile.ReadLine(&data);
-    if (!res || readFile.IsEOF()) {
+    bool res = readFile.Read(&data, 512);
+    if (!res) {
       break;
+    }
+
+    if(data.empty()) {
+      continue;
     }
 
     std::string edata;

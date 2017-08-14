@@ -1,7 +1,8 @@
-1.7.0 / August 14, 2017
+1.7.0 / August 15, 2017
 [Alexandr Topilski]
 - Multi selection in explorer tree
 - Binary keys support
+- Fix Export/Import settings
 
 1.6.1 / August 5, 2017
 [Alexandr Topilski]

@@ -26,6 +26,7 @@
 
 #include "core/database/idatabase_info.h"
 #include "core/server/iserver_info.h"
+
 #include "proxy/proxy_fwd.h"  // for IServerSPtr
 
 class QAction;       // lines 26-26

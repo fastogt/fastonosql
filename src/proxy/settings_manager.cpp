@@ -376,6 +376,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
   auto_connect_db_ = settings.value(AUTOCONNECTDB, true).toBool();
   fast_view_keys_ = settings.value(FASTVIEWKEYS, true).toBool();
   config_version_ = settings.value(CONFIG_VERSION, PROJECT_VERSION_NUMBER).toUInt();
+  Save();
 }
 
 void SettingsManager::Load() {

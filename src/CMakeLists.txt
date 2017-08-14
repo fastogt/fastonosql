@@ -386,6 +386,7 @@ SET(HEADERS_GUI
   ${CMAKE_SOURCE_DIR}/src/gui/shortcuts.h
   ${CMAKE_SOURCE_DIR}/src/gui/connection_widgets_factory.h
   ${CMAKE_SOURCE_DIR}/src/gui/key_value_table_item.h
+  ${CMAKE_SOURCE_DIR}/src/gui/utils.h
 )
 SET(SOURCES_GUI
   ${SOURCES_GUI_DIALOGS}
@@ -417,6 +418,7 @@ SET(SOURCES_GUI
   ${CMAKE_SOURCE_DIR}/src/gui/hash_table_model.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/action_cell_delegate.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/key_value_table_item.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/utils.cpp
 )
 
 SET_DESKTOP_TARGET()

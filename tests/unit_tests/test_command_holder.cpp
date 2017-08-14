@@ -47,6 +47,7 @@ static const std::vector<core::CommandHolder> cmds = {
 class FakeTranslator : public core::ICommandTranslator {
  public:
   explicit FakeTranslator(const std::vector<core::CommandHolder>& commands) : core::ICommandTranslator(commands) {}
+  virtual const char* GetDBName() const override { return "Fake"; }
 
  private:
   virtual common::Error CreateKeyCommandImpl(const core::NDbKValue& key,
@@ -69,7 +70,7 @@ class FakeTranslator : public core::ICommandTranslator {
     return common::Error();
   }
   virtual common::Error RenameKeyCommandImpl(const core::NKey& key,
-                                             const core::string_key_t& new_name,
+                                             const core::key_t& new_name,
                                              core::command_buffer_t* cmdstring) const override {
     UNUSED(key);
     UNUSED(new_name);
