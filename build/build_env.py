@@ -174,6 +174,7 @@ class BuildRequest(object):
             os.chdir(cloned_dir)
 
             make_leveldb = list(build_external_system_args)
+            make_leveldb.append('static')
             make_policy = run_command.CommonPolicy(print_message)
             run_command.run_command_cb(make_leveldb, make_policy)
 
