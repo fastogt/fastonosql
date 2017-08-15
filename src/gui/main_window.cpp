@@ -101,34 +101,34 @@ MainWindow::MainWindow() : QMainWindow(), isCheckedInSession_(false) {
 // grabGesture(Qt::PanGesture);  // drag and drop
 // grabGesture(Qt::PinchGesture);  // zoom
 #endif
-  QString lang = proxy::SettingsManager::Instance().CurrentLanguage();
+  QString lang = proxy::SettingsManager::GetInstance().CurrentLanguage();
   QString newLang = common::qt::translations::applyLanguage(lang);
-  proxy::SettingsManager::Instance().SetCurrentLanguage(newLang);
+  proxy::SettingsManager::GetInstance().SetCurrentLanguage(newLang);
 
-  QString style = proxy::SettingsManager::Instance().CurrentStyle();
+  QString style = proxy::SettingsManager::GetInstance().CurrentStyle();
   common::qt::gui::applyStyle(style);
 
-  common::qt::gui::applyFont(gui::GuiFactory::Instance().font());
+  common::qt::gui::applyFont(gui::GuiFactory::GetInstance().font());
 
   setWindowTitle(PROJECT_NAME_TITLE " " PROJECT_VERSION);
 
   openAction_ = new QAction(this);
-  openAction_->setIcon(GuiFactory::Instance().openIcon());
+  openAction_->setIcon(GuiFactory::GetInstance().openIcon());
   openAction_->setShortcut(openKey);
   VERIFY(connect(openAction_, &QAction::triggered, this, &MainWindow::open));
 
   loadFromFileAction_ = new QAction(this);
-  loadFromFileAction_->setIcon(GuiFactory::Instance().loadIcon());
+  loadFromFileAction_->setIcon(GuiFactory::GetInstance().loadIcon());
   // importAction_->setShortcut(openKey);
   VERIFY(connect(loadFromFileAction_, &QAction::triggered, this, &MainWindow::loadConnection));
 
   importAction_ = new QAction(this);
-  importAction_->setIcon(GuiFactory::Instance().importIcon());
+  importAction_->setIcon(GuiFactory::GetInstance().importIcon());
   // importAction_->setShortcut(openKey);
   VERIFY(connect(importAction_, &QAction::triggered, this, &MainWindow::importConnection));
 
   exportAction_ = new QAction(this);
-  exportAction_->setIcon(GuiFactory::Instance().exportIcon());
+  exportAction_->setIcon(GuiFactory::GetInstance().exportIcon());
   // exportAction_->setShortcut(openKey);
   VERIFY(connect(exportAction_, &QAction::triggered, this, &MainWindow::exportConnection));
 
@@ -162,7 +162,7 @@ MainWindow::MainWindow() : QMainWindow(), isCheckedInSession_(false) {
   updateRecentConnectionActions();
 
   preferencesAction_ = new QAction(this);
-  preferencesAction_->setIcon(GuiFactory::Instance().preferencesIcon());
+  preferencesAction_->setIcon(GuiFactory::GetInstance().preferencesIcon());
   VERIFY(connect(preferencesAction_, &QAction::triggered, this, &MainWindow::openPreferences));
 
   // edit menu
@@ -175,7 +175,7 @@ MainWindow::MainWindow() : QMainWindow(), isCheckedInSession_(false) {
   toolsAction_ = menuBar()->addMenu(tools);
 
   encodeDecodeDialogAction_ = new QAction(this);
-  encodeDecodeDialogAction_->setIcon(GuiFactory::Instance().encodeDecodeIcon());
+  encodeDecodeDialogAction_->setIcon(GuiFactory::GetInstance().encodeDecodeIcon());
   VERIFY(connect(encodeDecodeDialogAction_, &QAction::triggered, this, &MainWindow::openEncodeDecodeDialog));
   tools->addAction(encodeDecodeDialogAction_);
 
@@ -231,8 +231,8 @@ MainWindow::MainWindow() : QMainWindow(), isCheckedInSession_(false) {
   addDockWidget(Qt::LeftDockWidgetArea, expDock_);
 
   LogTabWidget* log = new LogTabWidget(this);
-  VERIFY(connect(&common::qt::Logger::Instance(), &common::qt::Logger::printed, log, &LogTabWidget::addLogMessage));
-  VERIFY(connect(&proxy::CommandLogger::Instance(), &proxy::CommandLogger::Printed, log, &LogTabWidget::addCommand));
+  VERIFY(connect(&common::qt::Logger::GetInstance(), &common::qt::Logger::printed, log, &LogTabWidget::addLogMessage));
+  VERIFY(connect(&proxy::CommandLogger::GetInstance(), &proxy::CommandLogger::Printed, log, &LogTabWidget::addCommand));
   SET_LOG_WATCHER(&LogWatcherRedirect);
   logDock_ = new QDockWidget(this);
   logsAction_ = logDock_->toggleViewAction();
@@ -254,7 +254,7 @@ MainWindow::MainWindow() : QMainWindow(), isCheckedInSession_(false) {
 }
 
 MainWindow::~MainWindow() {
-  proxy::ServersManager::Instance().Clear();
+  proxy::ServersManager::GetInstance().Clear();
 }
 
 void MainWindow::changeEvent(QEvent* ev) {
@@ -267,13 +267,13 @@ void MainWindow::changeEvent(QEvent* ev) {
 
 void MainWindow::showEvent(QShowEvent* ev) {
   QMainWindow::showEvent(ev);
-  bool isA = proxy::SettingsManager::Instance().AutoCheckUpdates();
+  bool isA = proxy::SettingsManager::GetInstance().AutoCheckUpdates();
   if (isA && !isCheckedInSession_) {
     isCheckedInSession_ = true;
     checkUpdate();
   }
 
-  bool isSendedStatitic = proxy::SettingsManager::Instance().IsSendedStatistic();
+  bool isSendedStatitic = proxy::SettingsManager::GetInstance().IsSendedStatistic();
   if (!isSendedStatitic) {
     sendStatistic();
   }
@@ -359,7 +359,7 @@ void MainWindow::openRecentConnection() {
   QString rcon = action->text();
   std::string srcon = common::ConvertToString(rcon);
   proxy::ConnectionSettingsPath path(srcon);
-  auto conns = proxy::SettingsManager::Instance().Connections();
+  auto conns = proxy::SettingsManager::GetInstance().Connections();
   for (auto it = conns.begin(); it != conns.end(); ++it) {
     proxy::IConnectionSettingsBaseSPtr con = *it;
     if (con && con->Path() == path) {
@@ -378,7 +378,7 @@ void MainWindow::loadConnection() {
     return;
   }
 
-  proxy::SettingsManager::Instance().ReloadFromPath(common::ConvertToString(filepathR), false);
+  proxy::SettingsManager::GetInstance().ReloadFromPath(common::ConvertToString(filepathR), false);
   QMessageBox::information(this, translations::trInfo, trSettingsLoadedS);
 }
 
@@ -456,7 +456,7 @@ void MainWindow::importConnection() {
 
   readFile.Close();
   writeFile.Close();
-  proxy::SettingsManager::Instance().ReloadFromPath(tmp, false);
+  proxy::SettingsManager::GetInstance().ReloadFromPath(tmp, false);
   err = common::file_system::remove_file(tmp);
   if (err && err->IsError()) {
     DNOTREACHED();
@@ -565,20 +565,20 @@ void MainWindow::versionAvailible(bool succesResult, const QString& version) {
 
 void MainWindow::statitsticSent(bool succesResult) {
   if (succesResult) {
-    proxy::SettingsManager::Instance().SetIsSendedStatistic(true);
+    proxy::SettingsManager::GetInstance().SetIsSendedStatistic(true);
   }
 }
 
 void MainWindow::closeServer(proxy::IServerSPtr server) {
-  proxy::ServersManager::Instance().CloseServer(server);
+  proxy::ServersManager::GetInstance().CloseServer(server);
 }
 
 void MainWindow::closeSentinel(proxy::ISentinelSPtr sentinel) {
-  proxy::ServersManager::Instance().CloseSentinel(sentinel);
+  proxy::ServersManager::GetInstance().CloseSentinel(sentinel);
 }
 
 void MainWindow::closeCluster(proxy::IClusterSPtr cluster) {
-  proxy::ServersManager::Instance().CloseCluster(cluster);
+  proxy::ServersManager::GetInstance().CloseCluster(cluster);
 }
 
 #ifdef OS_ANDROID
@@ -630,19 +630,19 @@ void MainWindow::createToolBar() {
   QToolBar* toolBar = new QToolBar(tr("Share toolbar"));
 
   facebookAction_ = new QAction(this);
-  facebookAction_->setIcon(GuiFactory::Instance().facebookIcon());
+  facebookAction_->setIcon(GuiFactory::GetInstance().facebookIcon());
   VERIFY(connect(facebookAction_, &QAction::triggered, this, &MainWindow::openFacebookLink));
 
   twitterAction_ = new QAction(this);
-  twitterAction_->setIcon(GuiFactory::Instance().twitterIcon());
+  twitterAction_->setIcon(GuiFactory::GetInstance().twitterIcon());
   VERIFY(connect(twitterAction_, &QAction::triggered, this, &MainWindow::openTwitterLink));
 
   githubAction_ = new QAction(this);
-  githubAction_->setIcon(GuiFactory::Instance().githubIcon());
+  githubAction_->setIcon(GuiFactory::GetInstance().githubIcon());
   VERIFY(connect(githubAction_, &QAction::triggered, this, &MainWindow::openGithubLink));
 
   homePageAction_ = new QAction(this);
-  homePageAction_->setIcon(GuiFactory::Instance().homePageIcon());
+  homePageAction_->setIcon(GuiFactory::GetInstance().homePageIcon());
   VERIFY(connect(homePageAction_, &QAction::triggered, this, &MainWindow::openHomePageLink));
 
   toolBar->addAction(homePageAction_);
@@ -704,7 +704,7 @@ void MainWindow::retranslateUi() {
 }
 
 void MainWindow::updateRecentConnectionActions() {
-  QStringList connections = proxy::SettingsManager::Instance().RecentConnections();
+  QStringList connections = proxy::SettingsManager::GetInstance().RecentConnections();
 
   int num_recent_files = qMin(connections.size(), static_cast<int>(max_recent_connections));
 
@@ -724,7 +724,7 @@ void MainWindow::updateRecentConnectionActions() {
 }
 
 void MainWindow::clearRecentConnectionsMenu() {
-  proxy::SettingsManager::Instance().ClearRConnections();
+  proxy::SettingsManager::GetInstance().ClearRConnections();
   updateRecentConnectionActions();
 }
 
@@ -734,17 +734,17 @@ void MainWindow::createServer(proxy::IConnectionSettingsBaseSPtr settings) {
   std::string path = settings->Path().ToString();
   QString rcon;
   common::ConvertFromString(path, &rcon);
-  proxy::SettingsManager::Instance().RemoveRConnection(rcon);
-  proxy::IServerSPtr server = proxy::ServersManager::Instance().CreateServer(settings);
+  proxy::SettingsManager::GetInstance().RemoveRConnection(rcon);
+  proxy::IServerSPtr server = proxy::ServersManager::GetInstance().CreateServer(settings);
   exp_->addServer(server);
-  proxy::SettingsManager::Instance().AddRConnection(rcon);
+  proxy::SettingsManager::GetInstance().AddRConnection(rcon);
   updateRecentConnectionActions();
-  if (proxy::SettingsManager::Instance().AutoConnectDB()) {
+  if (proxy::SettingsManager::GetInstance().AutoConnectDB()) {
     proxy::events_info::ConnectInfoRequest req(this);
     server->Connect(req);
   }
 
-  if (!proxy::SettingsManager::Instance().AutoOpenConsole()) {
+  if (!proxy::SettingsManager::GetInstance().AutoOpenConsole()) {
     return;
   }
 
@@ -757,7 +757,7 @@ void MainWindow::createServer(proxy::IConnectionSettingsBaseSPtr settings) {
 void MainWindow::createSentinel(proxy::ISentinelSettingsBaseSPtr settings) {
   CHECK(settings);
 
-  proxy::ISentinelSPtr sent = proxy::ServersManager::Instance().CreateSentinel(settings);
+  proxy::ISentinelSPtr sent = proxy::ServersManager::GetInstance().CreateSentinel(settings);
   if (!sent) {
     return;
   }
@@ -768,7 +768,7 @@ void MainWindow::createSentinel(proxy::ISentinelSettingsBaseSPtr settings) {
   }
 
   exp_->addSentinel(sent);
-  if (!proxy::SettingsManager::Instance().AutoOpenConsole()) {
+  if (!proxy::SettingsManager::GetInstance().AutoOpenConsole()) {
     return;
   }
 
@@ -784,7 +784,7 @@ void MainWindow::createSentinel(proxy::ISentinelSettingsBaseSPtr settings) {
 void MainWindow::createCluster(proxy::IClusterSettingsBaseSPtr settings) {
   CHECK(settings);
 
-  proxy::IClusterSPtr cl = proxy::ServersManager::Instance().CreateCluster(settings);
+  proxy::IClusterSPtr cl = proxy::ServersManager::GetInstance().CreateCluster(settings);
   if (!cl) {
     return;
   }
@@ -795,7 +795,7 @@ void MainWindow::createCluster(proxy::IClusterSettingsBaseSPtr settings) {
   }
 
   exp_->addCluster(cl);
-  if (!proxy::SettingsManager::Instance().AutoOpenConsole()) {
+  if (!proxy::SettingsManager::GetInstance().AutoOpenConsole()) {
     return;
   }
 

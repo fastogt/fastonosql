@@ -33,7 +33,7 @@ DirectoryListWidgetItem::DirectoryListWidgetItem(const proxy::connection_path_t&
   if (common::ConvertFromString(dir_name, &qdir_name)) {
     setText(0, qdir_name);
   }
-  setIcon(0, GuiFactory::Instance().directoryIcon());
+  setIcon(0, GuiFactory::GetInstance().directoryIcon());
   if (common::ConvertFromString(path_.Directory(), &qdir_name)) {
     setText(1, qdir_name);
   }
@@ -68,7 +68,7 @@ void ConnectionListWidgetItem::setConnection(proxy::IConnectionSettingsBaseSPtr 
     setText(0, conName);
   }
   core::connectionTypes conType = cons->Type();
-  setIcon(0, GuiFactory::Instance().icon(conType));
+  setIcon(0, GuiFactory::GetInstance().icon(conType));
   if (common::ConvertFromString(cons->FullAddress(), &conName)) {
     setText(1, conName);
   }
@@ -140,7 +140,7 @@ void SentinelConnectionListWidgetItemContainer::setConnection(proxy::ISentinelSe
   if (common::ConvertFromString(path, &qpath)) {
     setText(0, qpath);
   }
-  setIcon(0, GuiFactory::Instance().sentinelIcon());
+  setIcon(0, GuiFactory::GetInstance().sentinelIcon());
 }
 
 proxy::ISentinelSettingsBaseSPtr SentinelConnectionListWidgetItemContainer::connection() const {
@@ -173,7 +173,7 @@ void ClusterConnectionListWidgetItemContainer::setConnection(proxy::IClusterSett
   if (common::ConvertFromString(path, &qpath)) {
     setText(0, qpath);
   }
-  setIcon(0, GuiFactory::Instance().clusterIcon());
+  setIcon(0, GuiFactory::GetInstance().clusterIcon());
 }
 
 proxy::IClusterSettingsBaseSPtr ClusterConnectionListWidgetItemContainer::connection() const {

@@ -103,7 +103,7 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget
   textView_ = new FastoTextView(delimiter);
   textView_->setModel(commonModel_);
 
-  timeLabel_ = new common::qt::gui::IconLabel(GuiFactory::Instance().timeIcon(), "0", QSize(32, 32));
+  timeLabel_ = new common::qt::gui::IconLabel(GuiFactory::GetInstance().timeIcon(), "0", QSize(32, 32));
 
   QVBoxLayout* mainL = new QVBoxLayout;
   QHBoxLayout* topL = new QHBoxLayout;
@@ -111,11 +111,11 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget
   treeButton_ = new QPushButton;
   tableButton_ = new QPushButton;
   textButton_ = new QPushButton;
-  treeButton_->setIcon(GuiFactory::Instance().treeIcon());
+  treeButton_->setIcon(GuiFactory::GetInstance().treeIcon());
   VERIFY(connect(treeButton_, &QPushButton::clicked, this, &OutputWidget::setTreeView));
-  tableButton_->setIcon(GuiFactory::Instance().tableIcon());
+  tableButton_->setIcon(GuiFactory::GetInstance().tableIcon());
   VERIFY(connect(tableButton_, &QPushButton::clicked, this, &OutputWidget::setTableView));
-  textButton_->setIcon(GuiFactory::Instance().textIcon());
+  textButton_->setIcon(GuiFactory::GetInstance().textIcon());
   VERIFY(connect(textButton_, &QPushButton::clicked, this, &OutputWidget::setTextView));
 
   topL->addWidget(treeButton_);
@@ -276,7 +276,7 @@ void OutputWidget::setTextView() {
 }
 
 void OutputWidget::syncWithSettings() {
-  proxy::supportedViews curV = proxy::SettingsManager::Instance().DefaultView();
+  proxy::supportedViews curV = proxy::SettingsManager::GetInstance().DefaultView();
   if (curV == proxy::Tree) {
     setTreeView();
   } else if (curV == proxy::Table) {

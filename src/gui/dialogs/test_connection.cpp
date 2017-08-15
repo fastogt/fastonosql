@@ -37,7 +37,7 @@ void TestConnection::routine() {
     return;
   }
 
-  common::Error err = proxy::ServersManager::Instance().TestConnection(connection_);
+  common::Error err = proxy::ServersManager::GetInstance().TestConnection(connection_);
   if (err && err->IsError()) {
     QString qdesc;
     common::ConvertFromString(err->GetDescription(), &qdesc);

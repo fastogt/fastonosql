@@ -325,7 +325,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
     std::string encoded = common::ConvertToString(string);
     std::string raw = common::utils::base64::decode64(encoded);
 
-    IClusterSettingsBaseSPtr sett(ClusterConnectionSettingsFactory::Instance().CreateFromString(raw));
+    IClusterSettingsBaseSPtr sett(ClusterConnectionSettingsFactory::GetInstance().CreateFromString(raw));
     if (sett) {
       clusters_.push_back(sett);
     }
@@ -337,7 +337,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
     std::string encoded = common::ConvertToString(string);
     std::string raw = common::utils::base64::decode64(encoded);
 
-    ISentinelSettingsBaseSPtr sett(SentinelConnectionSettingsFactory::Instance().CreateFromString(raw));
+    ISentinelSettingsBaseSPtr sett(SentinelConnectionSettingsFactory::GetInstance().CreateFromString(raw));
     if (sett) {
       sentinels_.push_back(sett);
     }
@@ -349,7 +349,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
     std::string encoded = common::ConvertToString(string);
     std::string raw = common::utils::base64::decode64(encoded);
 
-    IConnectionSettingsBaseSPtr sett(ConnectionSettingsFactory::Instance().CreateFromString(raw));
+    IConnectionSettingsBaseSPtr sett(ConnectionSettingsFactory::GetInstance().CreateFromString(raw));
     if (sett) {
       connections_.push_back(sett);
     }

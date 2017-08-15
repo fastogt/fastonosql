@@ -146,7 +146,7 @@ std::string IConnectionSettingsBase::Hash() const {
 }
 
 std::string IConnectionSettingsBase::LoggingPath() const {
-  const std::string logDir = common::ConvertToString(SettingsManager::Instance().LoggingDirectory());
+  const std::string logDir = common::ConvertToString(SettingsManager::GetInstance().LoggingDirectory());
   const std::string prefix = logDir + Hash();
 #ifdef BUILD_WITH_REDIS
   if (type_ == core::REDIS) {

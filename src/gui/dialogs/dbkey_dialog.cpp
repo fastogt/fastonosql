@@ -54,7 +54,7 @@ namespace gui {
 DbKeyDialog::DbKeyDialog(const QString& title, core::connectionTypes type, const core::NDbKValue& key, QWidget* parent)
     : QDialog(parent), type_(type), key_(key) {
   bool is_edit = !key.Equals(core::NDbKValue());
-  setWindowIcon(GuiFactory::Instance().icon(type));
+  setWindowIcon(GuiFactory::GetInstance().icon(type));
   setWindowTitle(title);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
@@ -74,7 +74,7 @@ DbKeyDialog::DbKeyDialog(const QString& title, core::connectionTypes type, const
     }
     QString type;
     if (common::ConvertFromString(common::Value::GetTypeName(t), &type)) {
-      typesCombo_->addItem(GuiFactory::Instance().icon(t), type, t);
+      typesCombo_->addItem(GuiFactory::GetInstance().icon(t), type, t);
     }
   }
 

@@ -56,8 +56,8 @@ void ActionDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option
   pb_Style.features |= QStyleOptionButton::Flat;
   pb_Style.text = QString();
   pb_Style.iconSize = QSize(16, 16);
-  pb_Style.icon = node->actionState() == KeyValueTableItem::AddAction ? GuiFactory::Instance().addIcon()
-                                                                      : GuiFactory::Instance().removeIcon();
+  pb_Style.icon = node->actionState() == KeyValueTableItem::AddAction ? GuiFactory::GetInstance().addIcon()
+                                                                      : GuiFactory::GetInstance().removeIcon();
   if (current_index_.row() == index.row()) {
     pb_Style.state |= QStyle::State_Sunken;
   } else {

@@ -46,7 +46,7 @@ DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(QWidget* pare
                                                                    proxy::IClusterSettingsBaseSPtr cluster)
     : QDialog(parent), cluster_(cluster) {
   setWindowTitle(translations::trConnectionDiscovery);
-  setWindowIcon(GuiFactory::Instance().serverIcon());
+  setWindowIcon(GuiFactory::GetInstance().serverIcon());
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
@@ -58,7 +58,7 @@ DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(QWidget* pare
 
   statusLabel_ = new QLabel(translations::trTimeTemplate_1S.arg("calculate..."));
   iconLabel_ = new QLabel;
-  QIcon icon = GuiFactory::Instance().failIcon();
+  QIcon icon = GuiFactory::GetInstance().failIcon();
   const QPixmap pm = icon.pixmap(stateIconSize);
   iconLabel_->setPixmap(pm);
 
@@ -91,7 +91,7 @@ DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(QWidget* pare
   setFixedSize(QSize(fix_width, fix_height));
   setLayout(mainLayout);
 
-  glassWidget_ = new common::qt::gui::GlassWidget(GuiFactory::Instance().pathToLoadingGif(),
+  glassWidget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().pathToLoadingGif(),
                                                   translations::trTryToConnect, 0.5, QColor(111, 111, 100), this);
   testConnection(connection);
 }
@@ -120,7 +120,7 @@ void DiscoveryClusterDiagnosticDialog::connectionResult(bool suc,
   listWidget_->setEnabled(suc);
   listWidget_->clear();
   if (suc) {
-    QIcon icon = GuiFactory::Instance().successIcon();
+    QIcon icon = GuiFactory::GetInstance().successIcon();
     const QPixmap pm = icon.pixmap(stateIconSize);
     iconLabel_->setPixmap(pm);
 
@@ -129,7 +129,7 @@ void DiscoveryClusterDiagnosticDialog::connectionResult(bool suc,
       common::net::HostAndPortAndSlot host = inf->host();
       proxy::connection_path_t path(common::file_system::get_separator_string<char>() + inf->name());
       proxy::IConnectionSettingsBaseSPtr con(
-          proxy::ConnectionSettingsFactory::Instance().CreateFromType(inf->connectionType(), path, host));
+          proxy::ConnectionSettingsFactory::GetInstance().CreateFromType(inf->connectionType(), path, host));
       ConnectionListWidgetItemDiscovered* item = new ConnectionListWidgetItemDiscovered(inf->info(), nullptr);
       item->setConnection(con);
       item->setDisabled(inf->self() || cluster_->FindSettingsByHost(host));

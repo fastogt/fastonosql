@@ -35,7 +35,7 @@ ExplorerTreeWidget::ExplorerTreeWidget(QWidget* parent) : QWidget(parent) {
   view_ = new ExplorerTreeView(this);
   filter_edit_ = new QLineEdit;
   filter_edit_->setClearButtonEnabled(true);
-  filter_edit_->addAction(GuiFactory::Instance().search16Icon(), QLineEdit::LeadingPosition);
+  filter_edit_->addAction(GuiFactory::GetInstance().search16Icon(), QLineEdit::LeadingPosition);
   main_layout->addWidget(view_);
   main_layout->addWidget(filter_edit_);
 

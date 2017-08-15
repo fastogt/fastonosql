@@ -230,7 +230,7 @@ InfoServerDialog::InfoServerDialog(proxy::IServerSPtr server, QWidget* parent) :
   CHECK(server_);
 
   core::connectionTypes type = server->Type();
-  setWindowIcon(GuiFactory::Instance().icon(type));
+  setWindowIcon(GuiFactory::GetInstance().icon(type));
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
@@ -243,7 +243,7 @@ InfoServerDialog::InfoServerDialog(proxy::IServerSPtr server, QWidget* parent) :
   setMinimumSize(QSize(min_width, min_height));
   setLayout(mainL);
 
-  glassWidget_ = new common::qt::gui::GlassWidget(GuiFactory::Instance().pathToLoadingGif(), translations::trLoading,
+  glassWidget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().pathToLoadingGif(), translations::trLoading,
                                                   0.5, QColor(111, 111, 100), this);
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {

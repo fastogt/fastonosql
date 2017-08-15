@@ -42,7 +42,7 @@ void DiscoveryConnection::routine() {
     return;
   }
 
-  common::Error er = proxy::ServersManager::Instance().DiscoveryClusterConnection(connection_, &inf);
+  common::Error er = proxy::ServersManager::GetInstance().DiscoveryClusterConnection(connection_, &inf);
 
   if (er && er->IsError()) {
     QString qdesc;

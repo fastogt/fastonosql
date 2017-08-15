@@ -49,7 +49,8 @@ ConnectionDialog::ConnectionDialog(core::connectionTypes type, const QString& co
     : QDialog(parent), connection_() {
   proxy::connection_path_t path(common::file_system::stable_dir_path(defaultNameConnectionFolder) +
                                 common::ConvertToString(connectionName));
-  proxy::IConnectionSettingsBase* connection = proxy::ConnectionSettingsFactory().Instance().CreateFromType(type, path);
+  proxy::IConnectionSettingsBase* connection =
+      proxy::ConnectionSettingsFactory().GetInstance().CreateFromType(type, path);
   init(connection);
 }
 
@@ -88,16 +89,16 @@ void ConnectionDialog::changeEvent(QEvent* e) {
 }
 
 void ConnectionDialog::init(proxy::IConnectionSettingsBase* connection) {
-  setWindowIcon(GuiFactory::Instance().icon(connection->Type()));
+  setWindowIcon(GuiFactory::GetInstance().icon(connection->Type()));
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
   connection_.reset(connection);
-  connection_widget_ = ConnectionWidgetsFactory::Instance().createWidget(connection);
+  connection_widget_ = ConnectionWidgetsFactory::GetInstance().createWidget(connection);
   connection_widget_->layout()->setContentsMargins(0, 0, 0, 0);
 
   testButton_ = new QPushButton("&Test");
-  testButton_->setIcon(GuiFactory::Instance().messageBoxInformationIcon());
+  testButton_->setIcon(GuiFactory::GetInstance().messageBoxInformationIcon());
   VERIFY(connect(testButton_, &QPushButton::clicked, this, &ConnectionDialog::testConnection));
 
   QHBoxLayout* bottomLayout = new QHBoxLayout;

@@ -147,46 +147,46 @@ PreferencesDialog::PreferencesDialog(QWidget* parent) : QDialog(parent) {
 }
 
 void PreferencesDialog::accept() {
-  proxy::SettingsManager::Instance().SetAutoCheckUpdates(autoCheckUpdates_->isChecked());
-  proxy::SettingsManager::Instance().SetAutoCompletion(autoComletionEnable_->isChecked());
+  proxy::SettingsManager::GetInstance().SetAutoCheckUpdates(autoCheckUpdates_->isChecked());
+  proxy::SettingsManager::GetInstance().SetAutoCompletion(autoComletionEnable_->isChecked());
 
   QString newLang = common::qt::translations::applyLanguage(languagesComboBox_->currentText());
-  proxy::SettingsManager::Instance().SetCurrentLanguage(newLang);
+  proxy::SettingsManager::GetInstance().SetCurrentLanguage(newLang);
 
   common::qt::gui::applyStyle(stylesComboBox_->currentText());
-  proxy::SettingsManager::Instance().SetCurrentStyle(stylesComboBox_->currentText());
+  proxy::SettingsManager::GetInstance().SetCurrentStyle(stylesComboBox_->currentText());
 
   QFont cf(fontComboBox_->currentText(), fontSizeSpinBox_->value());
-  proxy::SettingsManager::Instance().SetCurrentFont(cf);
-  common::qt::gui::applyFont(gui::GuiFactory::Instance().font());
+  proxy::SettingsManager::GetInstance().SetCurrentFont(cf);
+  common::qt::gui::applyFont(gui::GuiFactory::GetInstance().font());
 
   QVariant var = defaultViewComboBox_->currentData();
   proxy::supportedViews v = static_cast<proxy::supportedViews>(qvariant_cast<unsigned char>(var));
-  proxy::SettingsManager::Instance().SetDefaultView(v);
+  proxy::SettingsManager::GetInstance().SetDefaultView(v);
 
-  proxy::SettingsManager::Instance().SetLoggingDirectory(logDirPath_->text());
-  proxy::SettingsManager::Instance().SetAutoOpenConsole(autoOpenConsole_->isChecked());
-  proxy::SettingsManager::Instance().SetAutoConnectDB(autoConnectDB_->isChecked());
-  proxy::SettingsManager::Instance().SetFastViewKeys(fastViewKeys_->isChecked());
+  proxy::SettingsManager::GetInstance().SetLoggingDirectory(logDirPath_->text());
+  proxy::SettingsManager::GetInstance().SetAutoOpenConsole(autoOpenConsole_->isChecked());
+  proxy::SettingsManager::GetInstance().SetAutoConnectDB(autoConnectDB_->isChecked());
+  proxy::SettingsManager::GetInstance().SetFastViewKeys(fastViewKeys_->isChecked());
 
   return QDialog::accept();
 }
 
 void PreferencesDialog::syncWithSettings() {
-  autoCheckUpdates_->setChecked(proxy::SettingsManager::Instance().AutoCheckUpdates());
-  autoComletionEnable_->setChecked(proxy::SettingsManager::Instance().AutoCompletion());
-  languagesComboBox_->setCurrentText(proxy::SettingsManager::Instance().CurrentLanguage());
-  stylesComboBox_->setCurrentText(proxy::SettingsManager::Instance().CurrentStyle());
-  QFont cf = proxy::SettingsManager::Instance().CurrentFont();
+  autoCheckUpdates_->setChecked(proxy::SettingsManager::GetInstance().AutoCheckUpdates());
+  autoComletionEnable_->setChecked(proxy::SettingsManager::GetInstance().AutoCompletion());
+  languagesComboBox_->setCurrentText(proxy::SettingsManager::GetInstance().CurrentLanguage());
+  stylesComboBox_->setCurrentText(proxy::SettingsManager::GetInstance().CurrentStyle());
+  QFont cf = proxy::SettingsManager::GetInstance().CurrentFont();
   fontComboBox_->setCurrentFont(cf);
   fontSizeSpinBox_->setValue(cf.pointSize());
-  proxy::supportedViews v = proxy::SettingsManager::Instance().DefaultView();
+  proxy::supportedViews v = proxy::SettingsManager::GetInstance().DefaultView();
   QString qstr = proxy::supported_views_text[v];
   defaultViewComboBox_->setCurrentText(qstr);
-  logDirPath_->setText(proxy::SettingsManager::Instance().LoggingDirectory());
-  autoOpenConsole_->setChecked(proxy::SettingsManager::Instance().AutoOpenConsole());
-  autoConnectDB_->setChecked(proxy::SettingsManager::Instance().AutoConnectDB());
-  fastViewKeys_->setChecked(proxy::SettingsManager::Instance().FastViewKeys());
+  logDirPath_->setText(proxy::SettingsManager::GetInstance().LoggingDirectory());
+  autoOpenConsole_->setChecked(proxy::SettingsManager::GetInstance().AutoOpenConsole());
+  autoConnectDB_->setChecked(proxy::SettingsManager::GetInstance().AutoConnectDB());
+  fastViewKeys_->setChecked(proxy::SettingsManager::GetInstance().FastViewKeys());
 }
 
 void PreferencesDialog::changeEvent(QEvent* e) {
