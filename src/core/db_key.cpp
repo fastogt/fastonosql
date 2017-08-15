@@ -18,9 +18,7 @@
 
 #include "core/db_key.h"
 
-#include <memory>  // for __shared_ptr
-#include <string>  // for string
-#include <vector>  // for vector
+#include <sstream>
 
 #include <common/convert2string.h>
 #include <common/string_util.h>  // for JoinString, Tokenize
@@ -59,7 +57,7 @@ std::string KeyString::ToString() const {
     command_buffer_writer_t wr;
     string_key_t hexed = common::utils::hex::encode(key_, false);
     for (size_t i = 0; i < hexed.size(); i += 2) {
-      wr << MAKE_COMMAND_BUFFER("\\x");
+      wr << "\\x";
       wr << hexed[i];
       wr << hexed[i + 1];
     }
@@ -76,7 +74,7 @@ string_key_t KeyString::GetKeyData() const {
     wr << "\"";
     string_key_t hexed = common::utils::hex::encode(key_, false);
     for (size_t i = 0; i < hexed.size(); i += 2) {
-      wr << MAKE_COMMAND_BUFFER("\\x");
+      wr << "\\x";
       wr << hexed[i];
       wr << hexed[i + 1];
     }

@@ -18,6 +18,8 @@
 
 #include "core/icommand_translator.h"
 
+#include <sstream>
+
 extern "C" {
 #include "sds.h"
 }
@@ -66,7 +68,7 @@ common::Error ICommandTranslator::SelectDBCommand(const std::string& name, comma
   }
 
   command_buffer_writer_t wr;
-  wr << MAKE_COMMAND_BUFFER(DB_SELECTDB_COMMAND) << MAKE_COMMAND_BUFFER(" ") << name;
+  wr << DB_SELECTDB_COMMAND << " " << name;
   *cmdstring = wr.str();
   return common::Error();
 }
@@ -76,9 +78,7 @@ common::Error ICommandTranslator::FlushDBCommand(command_buffer_t* cmdstring) co
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  command_buffer_writer_t wr;
-  wr << MAKE_COMMAND_BUFFER(DB_FLUSHDB_COMMAND);
-  *cmdstring = wr.str();
+  *cmdstring = DB_FLUSHDB_COMMAND;
   return common::Error();
 }
 

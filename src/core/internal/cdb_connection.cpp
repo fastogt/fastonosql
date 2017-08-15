@@ -18,6 +18,8 @@
 
 #include "core/internal/cdb_connection.h"
 
+#include <sstream>
+
 #include <common/convert2string.h>
 
 #define GET_KEYS_PATTERN_3ARGS_ISI "SCAN %" PRIu64 " MATCH %s COUNT %" PRIu64
@@ -31,8 +33,8 @@ namespace internal {
 
 command_buffer_t GetKeysPattern(uint64_t cursor_in, const std::string& pattern, uint64_t count_keys) {
   command_buffer_writer_t wr;
-  wr << MAKE_COMMAND_BUFFER("SCAN ") << common::ConvertToString(cursor_in) << MAKE_COMMAND_BUFFER(" MATCH ") << pattern
-     << MAKE_COMMAND_BUFFER(" COUNT ") << common::ConvertToString(count_keys);
+  wr << "SCAN " << common::ConvertToString(cursor_in) << " MATCH " << pattern << " COUNT "
+     << common::ConvertToString(count_keys);
   return wr.str();
 }
 

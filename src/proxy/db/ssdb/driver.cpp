@@ -21,6 +21,7 @@
 #include <stddef.h>  // for size_t
 
 #include <memory>  // for __shared_ptr
+#include <sstream>
 #include <string>  // for string
 
 #include <common/convert2string.h>
@@ -122,7 +123,7 @@ common::Error Driver::ExecuteImpl(const core::command_buffer_t& command, core::F
 }
 
 common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
-  core::FastoObjectCommandIPtr cmd = CreateCommandFast(MAKE_COMMAND_BUFFER(SSDB_INFO_REQUEST), core::C_INNER);
+  core::FastoObjectCommandIPtr cmd = CreateCommandFast(SSDB_INFO_REQUEST, core::C_INNER);
   LOG_COMMAND(cmd);
   core::ssdb::ServerInfo::Stats cm;
   common::Error err = impl_->Info(std::string(), &cm);
@@ -201,7 +202,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
           core::key_t key(key_str);
           core::NKey k(key);
           core::command_buffer_writer_t wr;
-          wr << MAKE_COMMAND_BUFFER("TTL ") << key.ToString();
+          wr << "TTL " << key.ToString();
           core::FastoObjectCommandIPtr cmd_ttl = CreateCommandFast(wr.str(), core::C_INNER);
           LOG_COMMAND(cmd_ttl);
           core::ttl_t ttl = NO_TTL;

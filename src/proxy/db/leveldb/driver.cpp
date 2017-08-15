@@ -122,7 +122,7 @@ common::Error Driver::ExecuteImpl(const core::command_buffer_t& command, core::F
 }
 
 common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
-  core::FastoObjectCommandIPtr cmd = CreateCommandFast(MAKE_COMMAND_BUFFER(LEVELDB_INFO_REQUEST), core::C_INNER);
+  core::FastoObjectCommandIPtr cmd = CreateCommandFast(LEVELDB_INFO_REQUEST, core::C_INNER);
   LOG_COMMAND(cmd);
   core::leveldb::ServerInfo::Stats cm;
   common::Error err = impl_->Info(std::string(), &cm);

@@ -91,6 +91,11 @@ class ServerDiscoveryClusterInfo : public ServerDiscoveryInfoBase {
 
 typedef std::shared_ptr<ServerDiscoveryClusterInfo> ServerDiscoveryClusterInfoSPtr;
 
+struct IStateField {
+  virtual common::Value* ValueByIndex(unsigned char index) const = 0;
+  virtual ~IStateField();
+};
+
 class IServerInfo {
  public:
   explicit IServerInfo(connectionTypes type);

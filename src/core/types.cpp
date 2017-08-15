@@ -25,8 +25,6 @@
 namespace fastonosql {
 namespace core {
 
-IStateField::~IStateField() {}
-
 command_buffer_t StableCommand(const command_buffer_t& command) {
   if (command.empty()) {
     return command_buffer_t();

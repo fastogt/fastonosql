@@ -69,6 +69,8 @@ bool ServerDiscoveryClusterInfo::self() const {
   return self_;
 }
 
+IStateField::~IStateField() {}
+
 IServerInfo::~IServerInfo() {}
 
 connectionTypes IServerInfo::Type() const {

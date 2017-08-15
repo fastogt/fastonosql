@@ -35,6 +35,7 @@
 #include <string.h>  // for strcasecmp, NULL, strcmp, etc
 
 #include <memory>  // for __shared_ptr
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -921,7 +922,7 @@ common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
 
   if (reply->integer == 0) {
     command_buffer_writer_t wr;
-    wr << key_str.ToString() << MAKE_COMMAND_BUFFER(" does not exist or the timeout could not be set.");
+    wr << key_str.ToString() << " does not exist or the timeout could not be set.";
     std::string err_str = common::ConvertToString(wr.str());
     return common::make_error_value(err_str, common::ErrorValue::E_ERROR);
   }
@@ -1296,8 +1297,7 @@ common::Error DBConnection::SetEx(const NDbKValue& key, ttl_t ttl) {
   key_t key_str = cur.GetKey();
   std::string value_str = key.ValueString();
   command_buffer_writer_t wr;
-  wr << MAKE_COMMAND_BUFFER("SETEX ") << key_str.GetKeyData() << MAKE_COMMAND_BUFFER(" ") << ttl
-     << MAKE_COMMAND_BUFFER(" ") << value_str;
+  wr << "SETEX " << key_str.GetKeyData() << " " << ttl << " " << value_str;
   const command_buffer_t setex_cmd = wr.str();
 
   redisReply* reply = ExecRedisCommand(connection_.handle_, setex_cmd);
@@ -1326,7 +1326,7 @@ common::Error DBConnection::SetNX(const NDbKValue& key, long long* result) {
   key_t key_str = cur.GetKey();
   std::string value_str = key.ValueString();
   command_buffer_writer_t wr;
-  wr << MAKE_COMMAND_BUFFER("SETNX ") << key_str.GetKeyData() << MAKE_COMMAND_BUFFER(" ") << value_str;
+  wr << "SETNX " << key_str.GetKeyData() << " " << value_str;
   const command_buffer_t setnx_cmd = wr.str();
 
   redisReply* reply = ExecRedisCommand(connection_.handle_, setnx_cmd);
@@ -1401,8 +1401,7 @@ common::Error DBConnection::Lrange(const NKey& key, int start, int stop, NDbKVal
 
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
-  wr << MAKE_COMMAND_BUFFER("LRANGE ") << key_str.GetKeyData() << MAKE_COMMAND_BUFFER(" ") << start
-     << MAKE_COMMAND_BUFFER(" ") << common::ConvertToString(stop);
+  wr << "LRANGE " << key_str.GetKeyData() << " " << start << " " << common::ConvertToString(stop);
   const command_buffer_t lrange_cmd = wr.str();
 
   redisReply* reply = ExecRedisCommand(connection_.handle_, lrange_cmd);
@@ -1488,7 +1487,7 @@ common::Error DBConnection::Smembers(const NKey& key, NDbKValue* loaded_key) {
 
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
-  wr << MAKE_COMMAND_BUFFER("SMEMBERS ") << key_str.GetKeyData();
+  wr << "SMEMBERS " << key_str.GetKeyData();
   const command_buffer_t smembers_cmd = wr.str();
 
   redisReply* reply = ExecRedisCommand(connection_.handle_, smembers_cmd);
@@ -1590,10 +1589,9 @@ common::Error DBConnection::Zrange(const NKey& key, int start, int stop, bool wi
 
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
-  wr << MAKE_COMMAND_BUFFER("ZRANGE ") << key_str.GetKeyData() << MAKE_COMMAND_BUFFER(" ") << start
-     << MAKE_COMMAND_BUFFER(" ") << stop;
+  wr << "ZRANGE " << key_str.GetKeyData() << " " << start << " " << stop;
   if (withscores) {
-    wr << MAKE_COMMAND_BUFFER(" WITHSCORES");
+    wr << " WITHSCORES";
   }
   const command_buffer_t line = wr.str();
 
@@ -1705,7 +1703,7 @@ common::Error DBConnection::Hgetall(const NKey& key, NDbKValue* loaded_key) {
 
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
-  wr << MAKE_COMMAND_BUFFER("HGETALL ") << key_str.GetKeyData();
+  wr << "HGETALL " << key_str.GetKeyData();
   const command_buffer_t hgetall_cmd = wr.str();
 
   redisReply* reply = ExecRedisCommand(connection_.handle_, hgetall_cmd);
@@ -1767,7 +1765,7 @@ common::Error DBConnection::Decr(const NKey& key, long long* decr) {
 
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
-  wr << MAKE_COMMAND_BUFFER("DECR ") << key_str.GetKeyData();
+  wr << "DECR " << key_str.GetKeyData();
   const command_buffer_t decr_cmd = wr.str();
 
   redisReply* reply = ExecRedisCommand(connection_.handle_, decr_cmd);
@@ -1805,7 +1803,7 @@ common::Error DBConnection::DecrBy(const NKey& key, int dec, long long* decr) {
 
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
-  wr << MAKE_COMMAND_BUFFER("DECRBY ") << key_str.GetKeyData() << MAKE_COMMAND_BUFFER(" ") << dec;
+  wr << "DECRBY " << key_str.GetKeyData() << " " << dec;
   const command_buffer_t decrby_cmd = wr.str();
 
   redisReply* reply = ExecRedisCommand(connection_.handle_, decrby_cmd);
@@ -1843,7 +1841,7 @@ common::Error DBConnection::Incr(const NKey& key, long long* incr) {
 
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
-  wr << MAKE_COMMAND_BUFFER("INCR ") << key_str.GetKeyData();
+  wr << "INCR " << key_str.GetKeyData();
   const command_buffer_t incr_cmd = wr.str();
 
   redisReply* reply = ExecRedisCommand(connection_.handle_, incr_cmd);
@@ -1881,7 +1879,7 @@ common::Error DBConnection::IncrBy(const NKey& key, int inc, long long* incr) {
 
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
-  wr << MAKE_COMMAND_BUFFER("INCRBY ") << key_str.GetKeyData() << MAKE_COMMAND_BUFFER(" ") << inc;
+  wr << "INCRBY " << key_str.GetKeyData() << " " << inc;
   const command_buffer_t incrby_cmd = wr.str();
 
   redisReply* reply = ExecRedisCommand(connection_.handle_, incrby_cmd);
@@ -1919,7 +1917,7 @@ common::Error DBConnection::IncrByFloat(const NKey& key, double inc, std::string
 
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
-  wr << MAKE_COMMAND_BUFFER("INCRBYFLOAT ") << key_str.GetKeyData() << MAKE_COMMAND_BUFFER(" ") << inc;
+  wr << "INCRBYFLOAT " << key_str.GetKeyData() << " " << inc;
   const command_buffer_t incrfloat_cmd = wr.str();
 
   redisReply* reply = ExecRedisCommand(connection_.handle_, incrfloat_cmd);

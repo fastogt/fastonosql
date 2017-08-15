@@ -18,12 +18,7 @@
 
 #pragma once
 
-#include <stddef.h>  // for size_t
-#include <stdint.h>  // for int32_t
-
 #include <limits>
-#include <string>  // for string
-#include <vector>  // for vector
 
 #include <common/value.h>  // for Value, Value::Type, etc
 

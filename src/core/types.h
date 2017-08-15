@@ -19,14 +19,7 @@
 #pragma once
 
 #include <deque>
-#include <sstream>
 #include <string>
-
-#define MAKE_COMMAND_BUFFER(x) x
-
-namespace common {
-class Value;
-}
 
 namespace fastonosql {
 namespace core {
@@ -35,11 +28,6 @@ typedef char command_buffer_char_t;
 typedef std::basic_string<command_buffer_char_t> command_buffer_t;
 typedef std::basic_stringstream<command_buffer_char_t> command_buffer_writer_t;
 typedef std::deque<command_buffer_t> commands_args_t;
-
-struct IStateField {
-  virtual common::Value* ValueByIndex(unsigned char index) const = 0;
-  virtual ~IStateField();
-};
 
 command_buffer_t StableCommand(const command_buffer_t& command);
 
