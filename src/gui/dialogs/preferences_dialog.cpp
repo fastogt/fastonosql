@@ -18,10 +18,6 @@
 
 #include "gui/dialogs/preferences_dialog.h"
 
-#include <stddef.h>  // for size_t
-
-#include <string>  // for string
-
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDialogButtonBox>
@@ -32,18 +28,12 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QSpinBox>
-#include <QSplitter>
-
-#include <common/convert2string.h>  // for ConvertFromString
-#include <common/macros.h>          // for VERIFY, SIZEOFMASS
 
 #include <common/qt/convert2string.h>             // for ConvertToString
 #include <common/qt/gui/app_style.h>              // for applyFont, applyStyle, etc
 #include <common/qt/translations/translations.h>  // for applyLanguage, etc
 
 #include "proxy/settings_manager.h"  // for SettingsManager
-
-#include "proxy/types.h"  // for supported_views_text, ConvertToString, etc
 
 #include "gui/gui_factory.h"  // for GuiFactory
 

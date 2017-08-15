@@ -18,21 +18,15 @@
 
 #include "gui/dialogs/change_password_server_dialog.h"
 
-#include <memory>  // for __shared_ptr
-#include <string>  // for string
-
 #include <QDialogButtonBox>
 #include <QLabel>
 #include <QLayout>
 #include <QLineEdit>
 #include <QMessageBox>
 
-#include <common/error.h>                // for Error
-#include <common/macros.h>               // for VERIFY, CHECK, UNUSED
 #include <common/qt/convert2string.h>    // for ConvertToString
 #include <common/qt/gui/glass_widget.h>  // for GlassWidget
 #include <common/qt/logger.h>
-#include <common/value.h>  // for ErrorValue
 
 #include "proxy/events/events_info.h"  // for ChangePasswordResponce, etc
 #include "proxy/server/iserver.h"      // for IServer

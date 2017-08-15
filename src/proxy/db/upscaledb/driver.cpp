@@ -24,10 +24,10 @@
 #include <memory>  // for __shared_ptr
 #include <string>  // for string
 
+#include <common/convert2string.h>
 #include <common/intrusive_ptr.h>  // for intrusive_ptr
 #include <common/qt/utils_qt.h>    // for Event<>::value_type
 #include <common/value.h>          // for ErrorValue, etc
-#include <common/convert2string.h>
 
 #include "core/connection_types.h"
 #include "core/db_key.h"  // for NDbKValue, NValue, NKey

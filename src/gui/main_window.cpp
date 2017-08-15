@@ -18,15 +18,7 @@
 
 #include "gui/main_window.h"
 
-#include <stddef.h>  // for size_t
-#include <stdint.h>  // for uint32_t
-
-#include <memory>  // for allocator, __shared_ptr
-#include <string>  // for string, operator+, etc
-#include <vector>  // for vector
-
 #include <QAction>
-#include <QApplication>
 #include <QDesktopServices>
 #include <QDockWidget>
 #include <QFileDialog>
@@ -34,33 +26,28 @@
 #include <QMessageBox>
 #include <QThread>
 #include <QToolBar>
+#include <QUrl>
 
 #ifdef OS_ANDROID
 #include <QGestureEvent>
 #endif
 
-#include <common/convert2string.h>                // for ConvertFromString, etc
-#include <common/error.h>                         // for Error, ErrnoErrorValue
-#include <common/file_system.h>                   // for File, remove_file, etc
-#include <common/macros.h>                        // for VERIFY, DNOTREACHED, CHECK, etc
+#include <common/convert2string.h>          // for ConvertFromString, etc
+#include <common/text_decoders/iedcoder.h>  // for IEDcoder, EDTypes::Hex
+
 #include <common/qt/convert2string.h>             // for ConvertToString
 #include <common/qt/gui/app_style.h>              // for applyFont, applyStyle
-#include <common/qt/gui/shortcuts.h>              // for FastoQKeySequence
 #include <common/qt/logger.h>                     // for Logger
 #include <common/qt/translations/translations.h>  // for applyLanguage
-#include <common/text_decoders/iedcoder.h>        // for IEDcoder, EDTypes::Hex
-#include <common/value.h>                         // for ErrorValue
 
 #include "core/logger.h"
 
 #include "proxy/cluster/icluster.h"        // for ICluster
 #include "proxy/command/command_logger.h"  // for CommandLogger
-#include "proxy/events/events_info.h"
-#include "proxy/sentinel/isentinel.h"  // for ISentinel
-#include "proxy/servers_manager.h"     // for ServersManager
-#include "proxy/settings_manager.h"    // for SettingsManager
-
+#include "proxy/sentinel/isentinel.h"      // for ISentinel
 #include "proxy/server/iserver.h"
+#include "proxy/servers_manager.h"   // for ServersManager
+#include "proxy/settings_manager.h"  // for SettingsManager
 
 #include "gui/dialogs/about_dialog.h"           // for AboutDialog
 #include "gui/dialogs/connections_dialog.h"     // for ConnectionsDialog
@@ -447,7 +434,7 @@ void MainWindow::importConnection() {
       break;
     }
 
-    if(data.empty()) {
+    if (data.empty()) {
       continue;
     }
 
@@ -526,7 +513,7 @@ void MainWindow::exportConnection() {
       break;
     }
 
-    if(data.empty()) {
+    if (data.empty()) {
       continue;
     }
 
@@ -688,8 +675,8 @@ void MainWindow::createStatusBar() {}
 void MainWindow::retranslateUi() {
   openAction_->setText(translations::trOpen);
   loadFromFileAction_->setText(translations::trLoadFromFile);
-  importAction_->setText(translations::trImport);
-  exportAction_->setText(translations::trExport);
+  importAction_->setText(translations::trImportSettings);
+  exportAction_->setText(translations::trExportSettings);
   exitAction_->setText(translations::trExit);
   fileAction_->setText(translations::trFile);
   toolsAction_->setText(translations::trTools);
@@ -719,21 +706,21 @@ void MainWindow::retranslateUi() {
 void MainWindow::updateRecentConnectionActions() {
   QStringList connections = proxy::SettingsManager::Instance().RecentConnections();
 
-  int numRecentFiles = qMin(connections.size(), static_cast<int>(max_recent_connections));
+  int num_recent_files = qMin(connections.size(), static_cast<int>(max_recent_connections));
 
-  for (int i = 0; i < numRecentFiles; ++i) {
+  for (int i = 0; i < num_recent_files; ++i) {
     QString text = connections[i];
     recentConnectionsActs_[i]->setText(text);
     recentConnectionsActs_[i]->setVisible(true);
   }
 
-  for (int j = numRecentFiles; j < max_recent_connections; ++j) {
+  for (int j = num_recent_files; j < max_recent_connections; ++j) {
     recentConnectionsActs_[j]->setVisible(false);
   }
 
-  bool isHaveItem = numRecentFiles > 0;
-  clearMenu_->setVisible(isHaveItem);
-  recentConnections_->setEnabled(isHaveItem);
+  bool have_items = num_recent_files > 0;
+  clearMenu_->setVisible(have_items);
+  recentConnections_->setEnabled(have_items);
 }
 
 void MainWindow::clearRecentConnectionsMenu() {

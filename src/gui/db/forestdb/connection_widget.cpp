@@ -35,7 +35,7 @@ namespace gui {
 namespace forestdb {
 
 ConnectionWidget::ConnectionWidget(QWidget* parent)
-    : ConnectionLocalWidget(true, trDBPath, trCaption, trFilter, parent) {
+    : ConnectionLocalWidget(true, trDBFolderPath, trCaption, trFilter, parent) {
   QHBoxLayout* name_layout = new QHBoxLayout;
   nameLabel_ = new QLabel;
   name_layout->addWidget(nameLabel_);

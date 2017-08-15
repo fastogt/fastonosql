@@ -18,20 +18,12 @@
 
 #include "gui/dialogs/connection_dialog.h"
 
-#include <stddef.h>  // for size_t
-#include <stdint.h>  // for INT32_MAX
-
-#include <memory>  // for __shared_ptr
-#include <string>  // for string, operator+, etc
-#include <vector>  // for allocator, vector
-
 #include <QDialogButtonBox>
 #include <QEvent>
 #include <QHBoxLayout>
 #include <QMessageBox>
 #include <QPushButton>
 
-#include <common/convert2string.h>     // for ConvertFromString
 #include <common/qt/convert2string.h>  // for ConvertToString
 
 #include "proxy/connection_settings_factory.h"

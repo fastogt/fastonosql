@@ -18,20 +18,16 @@
 
 #include "gui/editor/fasto_editor.h"
 
-#include <stddef.h>  // for size_t
-
 #include <QCheckBox>
 #include <QHBoxLayout>
 #include <QKeyEvent>
 #include <QLineEdit>
-#include <QMenu>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QToolButton>
 
 #include <Qsci/qsciscintilla.h>  // for QsciScintilla, etc
 
-#include <common/macros.h>             // for VERIFY, UNUSED, NOTREACHED
 #include <common/qt/convert2string.h>  // for EscapedText
 
 #include "gui/fasto_scintilla.h"  // for FastoScintilla

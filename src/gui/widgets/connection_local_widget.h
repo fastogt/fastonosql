@@ -25,7 +25,8 @@
 #include "proxy/connection_settings/iconnection_settings_local.h"
 
 namespace {
-const QString trDBPath = QObject::tr("Database path:");
+const QString trDBFilePath = QObject::tr("Database file path:");
+const QString trDBFolderPath = QObject::tr("Database folder path:");
 const QString trCaption = QObject::tr("Select Database path");
 const QString trFilter = QObject::tr("Database files (*.*)");
 const QString trCreateDBIfMissing = QObject::tr("Create database");

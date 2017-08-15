@@ -36,7 +36,7 @@ namespace gui {
 namespace upscaledb {
 
 ConnectionWidget::ConnectionWidget(QWidget* parent)
-    : ConnectionLocalWidget(false, trDBPath, trCaption, trFilter, parent) {
+    : ConnectionLocalWidget(false, trDBFilePath, trCaption, trFilter, parent) {
   createDBIfMissing_ = new QCheckBox;
   addWidget(createDBIfMissing_);
 

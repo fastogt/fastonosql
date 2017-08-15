@@ -19,10 +19,9 @@
 #include "gui/keys_table_view.h"
 
 #include <QModelIndex>
+#include <QSortFilterProxyModel>
 #include <QSpinBox>
 #include <QStyledItemDelegate>
-
-#include <common/macros.h>  // for VERIFY
 
 #include "gui/keys_table_model.h"  // for KeysTableModel, etc
 

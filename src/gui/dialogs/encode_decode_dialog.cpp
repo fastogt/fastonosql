@@ -18,9 +18,6 @@
 
 #include "gui/dialogs/encode_decode_dialog.h"
 
-#include <stddef.h>  // for size_t
-#include <string>    // for string
-
 #include <QComboBox>
 #include <QDialogButtonBox>
 #include <QEvent>
@@ -30,9 +27,6 @@
 #include <QToolButton>
 #include <QVBoxLayout>
 
-#include <common/convert2string.h>          // for ConvertFromString
-#include <common/error.h>                   // for Error
-#include <common/macros.h>                  // for VERIFY, CHECK, SIZEOFMASS
 #include <common/qt/convert2string.h>       // for ConvertToString
 #include <common/text_decoders/iedcoder.h>  // for EDTypes, IEDcoder, etc
 

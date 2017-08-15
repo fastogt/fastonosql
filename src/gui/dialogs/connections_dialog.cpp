@@ -18,9 +18,6 @@
 
 #include "gui/dialogs/connections_dialog.h"
 
-#include <memory>  // for __shared_ptr
-#include <vector>  // for vector
-
 #include <QAction>
 #include <QDialogButtonBox>
 #include <QEvent>
@@ -30,8 +27,6 @@
 #include <QPushButton>
 #include <QToolBar>
 #include <QVBoxLayout>
-
-#include <common/macros.h>  // for VERIFY, CHECK, NOTREACHED
 
 #include "proxy/connection_settings/iconnection_settings.h"  // for IClusterSettingsBaseSPtr, etc
 #include "proxy/settings_manager.h"                          // for SettingsManager

@@ -18,22 +18,12 @@
 
 #include "gui/dialogs/property_server_dialog.h"
 
-#include <stddef.h>  // for size_t
-#include <memory>    // for __shared_ptr
-#include <vector>    // for vector
-
 #include <QHBoxLayout>
 #include <QTableView>
-
-#include <common/convert2string.h>  // for ConvertFromString
-#include <common/error.h>           // for Error
-#include <common/macros.h>          // for VERIFY, UNUSED, CHECK
-#include <common/value.h>           // for ErrorValue
 
 #include <common/qt/convert2string.h>    // for ConvertFromString
 #include <common/qt/gui/glass_widget.h>  // for GlassWidget
 
-#include "core/connection_types.h"  // for connectionTypes::REDIS
 #include "proxy/events/events_info.h"
 #include "proxy/server/iserver.h"  // for IServer
 

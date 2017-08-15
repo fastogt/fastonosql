@@ -18,33 +18,18 @@
 
 #include "gui/widgets/output_widget.h"
 
-#include <memory>  // for __shared_ptr, operator==, etc
-#include <string>  // for string
-
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QPushButton>
 #include <QSplitter>
-#include <QTableView>
-#include <QTreeView>
 
 #include <common/convert2string.h>  // for ConvertFromString
-#include <common/error.h>           // for Error
-#include <common/log_levels.h>      // for LEVEL_LOG::L_DEBUG
-#include <common/macros.h>          // for VERIFY, CHECK, DNOTREACHED, etc
 #include <common/qt/convert2string.h>
-#include <common/qt/gui/base/tree_item.h>  // for TreeItem
-#include <common/qt/gui/icon_label.h>      // for IconLabel
+#include <common/qt/gui/icon_label.h>  // for IconLabel
 #include <common/qt/logger.h>
-#include <common/qt/utils_qt.h>  // for item
-#include <common/value.h>        // for StringValue, Value, etc
 
-#include "core/db_key.h"               // for NKey, NDbKValue, NValue
-#include "proxy/events/events_info.h"  // for CommandResponce, etc
-#include "proxy/server/iserver.h"      // for IServer
-#include "proxy/settings_manager.h"    // for SettingsManager
-
-#include "proxy/types.h"  // for supportedViews, etc
+#include "proxy/server/iserver.h"    // for IServer
+#include "proxy/settings_manager.h"  // for SettingsManager
 
 #include "gui/widgets/type_delegate.h"
 

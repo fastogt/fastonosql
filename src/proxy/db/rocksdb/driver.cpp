@@ -35,8 +35,8 @@
 #include "proxy/events/events_info.h"
 
 #include "core/connection_types.h"
-#include "core/db_key.h"            // for NDbKValue, NValue, NKey
-#include "core/global.h"            // for FastoObject::childs_t, etc
+#include "core/db_key.h"  // for NDbKValue, NValue, NKey
+#include "core/global.h"  // for FastoObject::childs_t, etc
 
 #include "core/db/rocksdb/config.h"         // for Config
 #include "core/db/rocksdb/db_connection.h"  // for DBConnection

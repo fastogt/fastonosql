@@ -19,15 +19,12 @@
 #include "gui/widgets/user_password_widget.h"
 
 #include <QEvent>
-#include <QFileDialog>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QRegExpValidator>
 
-#include <common/convert2string.h>
-#include <common/qt/convert2string.h>
+#include <common/macros.h>
 
 #include "translations/global.h"
 

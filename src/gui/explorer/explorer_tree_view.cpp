@@ -18,35 +18,18 @@
 
 #include "gui/explorer/explorer_tree_view.h"
 
-#include <stddef.h>  // for size_t
-#include <stdint.h>  // for INT32_MAX
-#include <memory>    // for __shared_ptr
-#include <string>    // for string
-#include <vector>    // for vector
-
-#include <QAction>
 #include <QFileDialog>
 #include <QHeaderView>
 #include <QInputDialog>
 #include <QMenu>
 #include <QMessageBox>
-#include <QSortFilterProxyModel>
 
-#include <common/convert2string.h>     // for ConvertFromString
-#include <common/error.h>              // for Error
-#include <common/macros.h>             // for VERIFY, CHECK, DNOTREACHED, etc
-#include <common/net/types.h>          // for HostAndPort
 #include <common/qt/convert2string.h>  // for ConvertToString
 #include <common/qt/utils_qt.h>        // for item
-#include <common/value.h>              // for ErrorValue
 
-#include <common/qt/gui/base/tree_item.h>  // for TreeItem
 #include <common/qt/gui/regexp_input_dialog.h>
 
-#include "core/connection_types.h"        // for connectionTypes::REDIS
-#include "core/db_key.h"                  // for NDbKValue
 #include "proxy/cluster/icluster.h"       // for ICluster
-#include "proxy/events/events_info.h"     // for CommandResponce, etc
 #include "proxy/sentinel/isentinel.h"     // for Sentinel, etc
 #include "proxy/server/iserver_remote.h"  // for IServer, IServerRemote
 #include "proxy/settings_manager.h"       // for SettingsManager

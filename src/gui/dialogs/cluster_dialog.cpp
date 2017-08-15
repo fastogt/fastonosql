@@ -18,13 +18,6 @@
 
 #include "gui/dialogs/cluster_dialog.h"
 
-#include <stddef.h>  // for size_t
-#include <stdint.h>  // for INT32_MAX
-
-#include <memory>  // for __shared_ptr
-#include <string>  // for string, operator+, etc
-#include <vector>  // for allocator, vector
-
 #include <QAction>
 #include <QCheckBox>
 #include <QComboBox>
@@ -39,9 +32,7 @@
 #include <QSpinBox>
 #include <QToolBar>
 
-#include <common/convert2string.h>     // for ConvertFromString
 #include <common/file_system.h>        // for stable_dir_path
-#include <common/macros.h>             // for VERIFY, SIZEOFMASS
 #include <common/qt/convert2string.h>  // for ConvertToString
 
 #include "core/connection_types.h"  // for connectionTypes, etc

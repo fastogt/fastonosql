@@ -18,14 +18,6 @@
 
 #include "gui/dialogs/connection_listwidget_items.h"
 
-#include <stddef.h>  // for size_t
-
-#include <memory>  // for __shared_ptr
-#include <string>  // for string
-#include <vector>  // for vector
-
-#include <common/convert2string.h>  // for ConvertFromString
-#include <common/macros.h>          // for DNOTREACHED
 #include <common/qt/convert2string.h>
 
 #include "core/connection_types.h"  // for ConvertToString, etc

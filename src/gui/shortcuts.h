@@ -19,6 +19,7 @@
 #pragma once
 
 #include <common/qt/gui/shortcuts.h>  // for FastoQKeySequence
+
 class QKeyEvent;
 
 namespace fastonosql {

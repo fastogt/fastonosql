@@ -27,7 +27,7 @@ namespace gui {
 namespace lmdb {
 
 ConnectionWidget::ConnectionWidget(QWidget* parent)
-    : ConnectionLocalWidget(true, trDBPath, trCaption, trFilter, parent) {
+    : ConnectionLocalWidget(true, trDBFolderPath, trCaption, trFilter, parent) {
   readOnlyDB_ = new QCheckBox;
   addWidget(readOnlyDB_);
 }

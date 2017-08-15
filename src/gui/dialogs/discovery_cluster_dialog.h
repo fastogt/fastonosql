@@ -22,8 +22,6 @@
 
 #include <QDialog>
 
-#include <common/types.h>  // for time64_t
-
 #include "core/server/iserver_info.h"
 #include "proxy/connection_settings/icluster_connection_settings.h"
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc

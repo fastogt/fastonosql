@@ -60,7 +60,7 @@ common::Error CommandsApi::ScanSSDB(internal::CommandHandler* handler, commands_
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
   std::vector<std::string> keysout;
-  common::Error err = ssdb->Scan(argv[0], argv[1], limit, &keysout);
+  common::Error err = ssdb->ScanSsdb(argv[0], argv[1], limit, &keysout);
   if (err && err->IsError()) {
     return err;
   }

@@ -24,7 +24,6 @@
 #include <QLineEdit>
 #include <QRegExpValidator>
 
-#include <common/convert2string.h>
 #include <common/qt/convert2string.h>
 
 namespace fastonosql {

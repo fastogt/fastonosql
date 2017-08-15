@@ -261,10 +261,10 @@ common::Error DBConnection::Incr(const std::string& key, int64_t incrby, int64_t
   return common::Error();
 }
 
-common::Error DBConnection::Scan(const std::string& key_start,
-                                 const std::string& key_end,
-                                 uint64_t limit,
-                                 std::vector<std::string>* ret) {
+common::Error DBConnection::ScanSsdb(const std::string& key_start,
+                                     const std::string& key_end,
+                                     uint64_t limit,
+                                     std::vector<std::string>* ret) {
   if (!IsConnected()) {
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
@@ -822,9 +822,9 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
                                      std::vector<std::string>* keys_out,
                                      uint64_t* cursor_out) {
   std::vector<std::string> ret;
-  auto st = connection_.handle_->keys(std::string(), std::string(), 0, &ret);
+  auto st = connection_.handle_->keys(std::string(), std::string(), count_keys, &ret);
   if (st.error()) {
-    std::string buff = common::MemSPrintf("Flushdb function error: %s", st.code());
+    std::string buff = common::MemSPrintf("Scan function error: %s", st.code());
     return common::make_error_value(buff, common::ErrorValue::E_ERROR);
   }
 

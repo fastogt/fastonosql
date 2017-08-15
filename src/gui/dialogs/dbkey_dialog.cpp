@@ -18,13 +18,6 @@
 
 #include "gui/dialogs/dbkey_dialog.h"
 
-#include <stddef.h>  // for size_t
-
-#include <memory>  // for unique_ptr
-#include <string>  // for string
-#include <vector>  // for vector
-
-#include <QAction>
 #include <QComboBox>
 #include <QDialogButtonBox>
 #include <QEvent>
@@ -33,13 +26,8 @@
 #include <QHeaderView>
 #include <QLabel>
 #include <QLineEdit>
-#include <QPushButton>
 
-#include <common/convert2string.h>     // for ConvertFromString
-#include <common/macros.h>             // for VERIFY, CHECK, NOTREACHED
 #include <common/qt/convert2string.h>  // for ConvertToString
-#include <common/qt/utils_qt.h>
-#include <common/value.h>  // for Value, Value::Type, etc
 
 #include "core/db_traits.h"
 #include "core/global.h"

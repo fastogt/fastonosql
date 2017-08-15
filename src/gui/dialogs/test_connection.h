@@ -20,8 +20,6 @@
 
 #include <QObject>
 
-#include <common/types.h>  // for time64_t
-
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 
 namespace fastonosql {

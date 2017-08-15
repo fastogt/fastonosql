@@ -20,8 +20,6 @@
 
 #include <QTabWidget>
 
-#include <common/log_levels.h>  // for LEVEL_LOG
-
 #include "core/global.h"
 
 class QEvent;

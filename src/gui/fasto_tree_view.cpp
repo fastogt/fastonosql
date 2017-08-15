@@ -21,8 +21,6 @@
 #include <QHeaderView>
 #include <QMenu>
 
-#include <common/macros.h>  // for VERIFY
-
 namespace fastonosql {
 namespace gui {
 

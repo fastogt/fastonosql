@@ -22,9 +22,7 @@
 #include <QHeaderView>
 #include <QLineEdit>
 #include <QSpinBox>
-#include <QTableView>
 
-#include <common/convert2string.h>
 #include <common/qt/convert2string.h>
 #include <common/qt/utils_qt.h>
 

@@ -18,15 +18,11 @@
 
 #include "gui/dialogs/connection_diagnostic_dialog.h"
 
-#include <memory>  // for __shared_ptr
-
 #include <QDialogButtonBox>
 #include <QIcon>
 #include <QLabel>
 #include <QThread>
 #include <QVBoxLayout>
-
-#include <common/macros.h>  // for VERIFY
 
 #include <common/qt/gui/glass_widget.h>  // for GlassWidget
 

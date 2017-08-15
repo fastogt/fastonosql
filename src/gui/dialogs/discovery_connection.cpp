@@ -18,12 +18,8 @@
 
 #include "gui/dialogs/discovery_connection.h"
 
-#include <memory>  // for __shared_ptr
-
-#include <common/error.h>              // for Error
 #include <common/qt/convert2string.h>  // for ConvertFromString
 #include <common/time.h>               // for current_mstime
-#include <common/value.h>              // for ErrorValue
 
 #include "proxy/servers_manager.h"  // for ServersManager
 

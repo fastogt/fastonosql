@@ -20,7 +20,6 @@
 
 #include <string>  // for string
 
-#include <QAction>
 #include <QEvent>
 #include <QHBoxLayout>
 #include <QMenu>
@@ -28,12 +27,7 @@
 #include <QTextEdit>
 #include <QTime>
 
-#include <common/convert2string.h>
-#include <common/macros.h>             // for VERIFY
 #include <common/qt/convert2string.h>  // for ConvertFromString
-#include <common/value.h>              // for Value, etc
-
-#include "core/global.h"
 
 #include "translations/global.h"  // for trClearAll
 

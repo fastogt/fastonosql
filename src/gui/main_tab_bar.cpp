@@ -23,8 +23,6 @@
 
 #include <common/macros.h>  // for VERIFY
 
-#include <common/qt/gui/shortcuts.h>  // for FastoQKeySequence
-
 #include "gui/shortcuts.h"  // for closeKey, newTabKey, etc
 
 #include "translations/global.h"  // for trCloseOtherTab, trCloseTab, etc

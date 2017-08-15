@@ -18,22 +18,10 @@
 
 #include "gui/dialogs/history_server_dialog.h"
 
-#include <stddef.h>  // for size_t
-#include <stdint.h>  // for uint32_t
-
-#include <memory>   // for __shared_ptr
-#include <utility>  // for make_pair
-#include <vector>   // for vector
-
 #include <QComboBox>
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QSplitter>
-
-#include <common/convert2string.h>  // for ConvertFromString
-#include <common/error.h>           // for Error
-#include <common/macros.h>          // for VERIFY, UNUSED, CHECK
-#include <common/value.h>           // for ErrorValue, Value
 
 #include <common/qt/convert2string.h>         // for ConvertFromString
 #include <common/qt/gui/base/graph_widget.h>  // for GraphWidget, etc

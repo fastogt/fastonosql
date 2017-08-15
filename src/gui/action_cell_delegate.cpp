@@ -19,10 +19,7 @@
 #include "gui/action_cell_delegate.h"
 
 #include <QApplication>
-#include <QMouseEvent>
-#include <QPainter>
 
-#include <common/macros.h>
 #include <common/qt/utils_qt.h>
 
 #include "gui/key_value_table_item.h"

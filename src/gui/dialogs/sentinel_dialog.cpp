@@ -18,14 +18,6 @@
 
 #include "gui/dialogs/sentinel_dialog.h"
 
-#include <stddef.h>  // for size_t
-#include <stdint.h>  // for INT32_MAX
-
-#include <memory>  // for __shared_ptr
-#include <string>  // for string, operator+, etc
-#include <vector>  // for allocator, vector
-
-#include <QAction>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDialogButtonBox>
@@ -37,14 +29,9 @@
 #include <QPushButton>
 #include <QSpinBox>
 #include <QToolBar>
-#include <QTreeWidget>
 
-#include <common/convert2string.h>     // for ConvertFromString
-#include <common/file_system.h>        // for stable_dir_path
-#include <common/macros.h>             // for VERIFY, CHECK, SIZEOFMASS
 #include <common/qt/convert2string.h>  // for ConvertToString
 
-#include "core/connection_types.h"  // for connectionTypes, etc
 #include "proxy/sentinel_connection_settings_factory.h"
 
 #include "gui/dialogs/connection_diagnostic_dialog.h"

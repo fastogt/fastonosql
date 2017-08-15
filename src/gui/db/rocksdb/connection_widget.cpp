@@ -30,7 +30,7 @@ namespace gui {
 namespace rocksdb {
 
 ConnectionWidget::ConnectionWidget(QWidget* parent)
-    : ConnectionLocalWidget(true, trDBPath, trCaption, trFilter, parent) {
+    : ConnectionLocalWidget(true, trDBFolderPath, trCaption, trFilter, parent) {
   createDBIfMissing_ = new QCheckBox;
   addWidget(createDBIfMissing_);
 

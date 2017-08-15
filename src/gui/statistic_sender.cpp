@@ -18,15 +18,8 @@
 
 #include "gui/statistic_sender.h"
 
-#include <string.h>     // for strlen
-#include <sys/types.h>  // for ssize_t
-#include <memory>       // for __shared_ptr
-#include <string>       // for string
-
 #include <common/error.h>                    // for ErrnoError, ErrnoErrorValue
-#include <common/macros.h>                   // for DCHECK
 #include <common/net/socket_tcp.h>           // for ClientSocketTcp
-#include <common/net/types.h>                // for HostAndPort
 #include <common/system_info/system_info.h>  // for SystemInfo, etc
 
 #include <json-c/json_object.h>

@@ -21,10 +21,10 @@
 #include <QDialog>
 
 class QLineEdit;  // lines 23-23
-class QWidget;
 
 namespace fastonosql {
 namespace gui {
+
 class InputDialog : public QDialog {
   Q_OBJECT
  public:
@@ -45,5 +45,6 @@ class InputDialog : public QDialog {
   QLineEdit* firstLine_;
   QLineEdit* secondLine_;
 };
+
 }  // namespace gui
 }  // namespace fastonosql

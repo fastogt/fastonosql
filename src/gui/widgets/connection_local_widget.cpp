@@ -18,13 +18,8 @@
 
 #include "gui/widgets/connection_local_widget.h"
 
-#include <QFileDialog>
 #include <QHBoxLayout>
-#include <QLabel>
-#include <QLineEdit>
-#include <QPushButton>
 
-#include <common/convert2string.h>
 #include <common/qt/convert2string.h>
 
 #include "gui/widgets/path_widget.h"

@@ -18,15 +18,9 @@
 
 #include "gui/explorer/explorer_tree_item.h"
 
-#include <memory>  // for __shared_ptr, operator==, etc
-#include <string>  // for operator==, string, etc
-#include <vector>  // for vector
-
 #include <QIcon>
 
-#include <common/convert2string.h>  // for ConvertFromString
-#include <common/macros.h>          // for CHECK, NOTREACHED, etc
-#include <common/net/types.h>       // for ConvertToString
+#include <common/net/types.h>  // for ConvertToString
 
 #include <common/qt/convert2string.h>
 #include <common/qt/gui/base/tree_item.h>   // for TreeItem, findItemRecursive, etc

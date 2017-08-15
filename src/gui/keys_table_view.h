@@ -18,11 +18,11 @@
 
 #pragma once
 
-#include <QSortFilterProxyModel>
-
 #include "core/db_key.h"
 
 #include "gui/fasto_table_view.h"
+
+class QSortFilterProxyModel;
 
 namespace fastonosql {
 namespace gui {

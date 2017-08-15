@@ -18,8 +18,6 @@
 
 #pragma once
 
-#include <QTableView>
-
 #include <common/qt/gui/base/table_model.h>
 #include <common/value.h>
 

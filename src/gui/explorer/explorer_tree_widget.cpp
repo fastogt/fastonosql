@@ -19,8 +19,6 @@
 #include "gui/explorer/explorer_tree_widget.h"
 
 #include <QEvent>
-#include <QHBoxLayout>
-#include <QLabel>
 #include <QLineEdit>
 #include <QVBoxLayout>
 

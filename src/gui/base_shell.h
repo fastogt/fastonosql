@@ -18,10 +18,6 @@
 
 #pragma once
 
-#include <stddef.h>  // for size_t
-#include <stdint.h>  // for uint32_t
-#include <vector>    // for vector
-
 #include "core/connection_types.h"  // for connectionTypes
 
 #include "gui/editor/fasto_editor_shell.h"  // for FastoEditorShell

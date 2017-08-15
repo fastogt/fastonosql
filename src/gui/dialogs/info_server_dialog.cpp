@@ -18,19 +18,10 @@
 
 #include "gui/dialogs/info_server_dialog.h"
 
-#include <stddef.h>  // for offsetof
-#include <string.h>  // for strcmp
-
-#include <memory>  // for __shared_ptr
-
 #include <QHBoxLayout>
 #include <QTextEdit>
 
-#include <common/convert2string.h>  // for ConvertFromString
-#include <common/error.h>           // for Error
-#include <common/macros.h>          // for CHECK, VERIFY, UNUSED
 #include <common/qt/convert2string.h>
-#include <common/value.h>  // for ErrorValue
 
 #ifdef BUILD_WITH_REDIS
 #include "core/db/redis/server_info.h"

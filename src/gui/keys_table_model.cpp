@@ -18,17 +18,10 @@
 
 #include "gui/keys_table_model.h"
 
-#include <stddef.h>  // for size_t
-#include <vector>    // for vector
-
 #include <QIcon>
 
-#include <common/macros.h>             // for CHECK, UNUSED
 #include <common/qt/convert2string.h>  // for ConvertFromString
 #include <common/qt/utils_qt.h>        // for item
-
-#include <common/qt/gui/base/table_item.h>   // for TableItem
-#include <common/qt/gui/base/table_model.h>  // for TableModel
 
 #include "gui/gui_factory.h"  // for GuiFactory
 

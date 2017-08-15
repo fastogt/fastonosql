@@ -18,10 +18,6 @@
 
 #pragma once
 
-#include <stddef.h>  // for size_t
-#include <stdint.h>  // for uint32_t
-#include <string>    // for string
-
 #include <common/qt/gui/base/tree_model.h>  // for TreeModel
 
 #include "proxy/database/idatabase.h"

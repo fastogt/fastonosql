@@ -18,20 +18,14 @@
 
 #include "gui/dialogs/pub_sub_dialog.h"
 
-#include <QAction>
 #include <QDialogButtonBox>
-#include <QEvent>
-#include <QHeaderView>
 #include <QInputDialog>
-#include <QLabel>
 #include <QLineEdit>
 #include <QMenu>
 #include <QPushButton>
 #include <QSortFilterProxyModel>
-#include <QSpinBox>
 #include <QVBoxLayout>
 
-#include <common/convert2string.h>
 #include <common/qt/convert2string.h>
 #include <common/qt/logger.h>
 

@@ -25,8 +25,6 @@
 #include <QLabel>
 #include <QVBoxLayout>
 
-#include <common/convert2string.h>
-#include <common/macros.h>
 #include <common/qt/convert2string.h>
 
 #include "gui/gui_factory.h"

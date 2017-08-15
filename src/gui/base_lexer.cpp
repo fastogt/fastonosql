@@ -18,11 +18,7 @@
 
 #include "gui/base_lexer.h"
 
-#include <common/macros.h>             // for UNUSED, CHECK
 #include <common/qt/convert2string.h>  // for ConvertFromString
-
-#include "core/command_holder.h"
-#include "core/command_info.h"  // for CommandInfo, etc
 
 namespace fastonosql {
 namespace gui {

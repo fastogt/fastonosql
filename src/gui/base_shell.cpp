@@ -18,16 +18,9 @@
 
 #include "gui/base_shell.h"
 
-#include <vector>  // for vector
-
 #include <QIcon>
 
-#include <common/convert2string.h>  // for ConvertFromString
-#include <common/macros.h>          // for CHECK, VERIFY
-
 #include "gui/gui_factory.h"  // for GuiFactory
-
-#include "gui/base_lexer.h"  // for BaseQsciLexer, BaseQsciApi, etc
 
 #ifdef BUILD_WITH_REDIS
 #include "gui/db/redis/lexer.h"

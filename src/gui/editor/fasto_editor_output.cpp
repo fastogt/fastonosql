@@ -22,7 +22,6 @@
 
 #include <Qsci/qscilexerjson.h>
 
-#include <common/macros.h>
 #include <common/qt/convert2string.h>
 #include <common/qt/utils_qt.h>  // for item
 

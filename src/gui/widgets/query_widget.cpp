@@ -18,8 +18,6 @@
 
 #include "gui/widgets/query_widget.h"
 
-#include <memory>  // for __shared_ptr
-
 #include <QSplitter>
 #include <QVBoxLayout>
 

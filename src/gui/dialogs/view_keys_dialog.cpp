@@ -18,28 +18,19 @@
 
 #include "gui/dialogs/view_keys_dialog.h"
 
-#include <memory>  // for __shared_ptr
-
 #include <QDialogButtonBox>
-#include <QEvent>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QSortFilterProxyModel>
 #include <QSpinBox>
 #include <QSplitter>
-#include <QStyledItemDelegate>
 #include <QVBoxLayout>
 
-#include <common/error.h>              // for Error
-#include <common/macros.h>             // for VERIFY, UNUSED, CHECK, etc
 #include <common/qt/convert2string.h>  // for ConvertToString
 #include <common/qt/logger.h>          // for LOG_ERROR
-#include <common/value.h>              // for ErrorValue
 
-#include "core/db_key.h"               // for NDbKValue
 #include "proxy/database/idatabase.h"  // for IDatabase
-#include "proxy/events/events_info.h"  // for CommandResponce, etc
 #include "proxy/server/iserver.h"      // for IServer
 
 #include "gui/gui_factory.h"  // for GuiFactory

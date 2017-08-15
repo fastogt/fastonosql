@@ -57,10 +57,10 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   common::Error Auth(const std::string& password) WARN_UNUSED_RESULT;
   common::Error Setx(const std::string& key, const std::string& value, ttl_t ttl) WARN_UNUSED_RESULT;
   common::Error Incr(const std::string& key, int64_t incrby, int64_t* ret) WARN_UNUSED_RESULT;
-  common::Error Scan(const std::string& key_start,
-                     const std::string& key_end,
-                     uint64_t limit,
-                     std::vector<std::string>* ret) WARN_UNUSED_RESULT;
+  common::Error ScanSsdb(const std::string& key_start,
+                         const std::string& key_end,
+                         uint64_t limit,
+                         std::vector<std::string>* ret) WARN_UNUSED_RESULT;
   common::Error Rscan(const std::string& key_start,
                       const std::string& key_end,
                       uint64_t limit,

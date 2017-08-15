@@ -21,14 +21,11 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QEvent>
-#include <QFileDialog>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QRegExpValidator>
 
-#include <common/convert2string.h>
 #include <common/qt/convert2string.h>
 
 #include "gui/widgets/host_port_widget.h"

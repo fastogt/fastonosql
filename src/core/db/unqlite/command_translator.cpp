@@ -53,7 +53,7 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
 
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
-  wr << MAKE_COMMAND_BUFFER(UNQLITE_DELETE_KEY_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKeyData();
+  wr << MAKE_COMMAND_BUFFER(UNQLITE_GET_KEY_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKeyData();
   *cmdstring = wr.str();
   return common::Error();
 }
@@ -61,13 +61,13 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
 common::Error CommandTranslator::DeleteKeyCommandImpl(const NKey& key, command_buffer_t* cmdstring) const {
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
-  wr << MAKE_COMMAND_BUFFER(UNQLITE_GET_KEY_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKeyData();
+  wr << MAKE_COMMAND_BUFFER(UNQLITE_DELETE_KEY_COMMAND) << MAKE_COMMAND_BUFFER(" ") << key_str.GetKeyData();
   *cmdstring = wr.str();
   return common::Error();
 }
 
 common::Error CommandTranslator::RenameKeyCommandImpl(const NKey& key,
-                                                      const key_t &new_name,
+                                                      const key_t& new_name,
                                                       command_buffer_t* cmdstring) const {
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;

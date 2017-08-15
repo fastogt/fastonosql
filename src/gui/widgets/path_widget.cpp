@@ -24,9 +24,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QRegExpValidator>
 
-#include <common/convert2string.h>
 #include <common/file_system.h>
 #include <common/qt/convert2string.h>
 

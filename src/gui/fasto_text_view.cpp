@@ -23,7 +23,6 @@
 #include <QRadioButton>
 #include <QVBoxLayout>
 
-#include <common/macros.h>  // for VERIFY
 #include <common/qt/convert2string.h>
 
 #include "core/db_key.h"

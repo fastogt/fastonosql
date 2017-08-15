@@ -81,7 +81,6 @@ bool CommandTranslator::IsLoadKeyCommandImpl(const CommandInfo& cmd) const {
   return cmd.IsEqualName(ROCKSDB_GET_KEY_COMMAND);
 }
 
-
 }  // namespace rocksdb
 }  // namespace core
 }  // namespace fastonosql

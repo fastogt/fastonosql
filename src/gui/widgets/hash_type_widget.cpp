@@ -18,7 +18,6 @@
 
 #include "gui/widgets/hash_type_widget.h"
 
-#include <common/macros.h>
 #include <common/qt/utils_qt.h>
 
 #include "gui/action_cell_delegate.h"

@@ -24,6 +24,7 @@
 
 namespace fastonosql {
 namespace gui {
+
 ExplorerTreeSortFilterProxyModel::ExplorerTreeSortFilterProxyModel(QObject* parent) : QSortFilterProxyModel(parent) {}
 
 bool ExplorerTreeSortFilterProxyModel::lessThan(const QModelIndex& left, const QModelIndex& right) const {
@@ -73,5 +74,6 @@ bool ExplorerTreeSortFilterProxyModel::filterAcceptsRow(int source_row, const QM
   QString name = node->name();
   return name.contains(filterRegExp());
 }
+
 }  // namespace gui
 }  // namespace fastonosql

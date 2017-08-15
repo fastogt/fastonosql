@@ -18,9 +18,6 @@
 
 #include "gui/hash_table_model.h"
 
-#include <QToolButton>
-
-#include <common/macros.h>
 #include <common/qt/convert2string.h>
 #include <common/qt/utils_qt.h>
 

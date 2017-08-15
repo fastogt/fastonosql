@@ -22,7 +22,6 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
-#include <QPushButton>
 
 #include <common/macros.h>  // for VERIFY
 

@@ -20,10 +20,7 @@
 
 #include <QApplication>
 #include <QIcon>
-#include <QString>
 #include <QStyle>
-
-#include <common/macros.h>  // for NOTREACHED
 
 #include "proxy/settings_manager.h"  // for SettingsManager
 

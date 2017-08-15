@@ -22,8 +22,6 @@
 
 #include <common/error.h>
 
-#include "core/connection_types.h"  // for connectionTypes
-
 #include "core/database/idatabase_info.h"
 #include "core/server/iserver_info.h"
 

@@ -18,11 +18,7 @@
 
 #pragma once
 
-#include <vector>  // for vector
-
 #include <QDialog>
-
-#include <common/types.h>  // for time64_t
 
 #include "core/server/iserver_info.h"
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr

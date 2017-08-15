@@ -18,7 +18,6 @@
 
 #include "gui/editor/fasto_hex_edit.h"
 
-#include <QKeyEvent>
 #include <QPaintEvent>
 #include <QPainter>
 #include <QScrollBar>
