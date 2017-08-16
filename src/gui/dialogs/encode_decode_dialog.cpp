@@ -27,8 +27,8 @@
 #include <QToolButton>
 #include <QVBoxLayout>
 
-#include <common/qt/convert2string.h>       // for ConvertToString
-#include <common/text_decoders/iedcoder.h>  // for EDTypes, IEDcoder, etc
+#include <common/qt/convert2string.h>  // for ConvertToString
+#include <common/text_decoders/iedcoder_factory.h>
 
 #include "gui/editor/fasto_editor.h"  // for FastoEditor
 #include "gui/gui_factory.h"          // for GuiFactory
@@ -105,7 +105,7 @@ void EncodeDecodeDialog::decodeOrEncode() {
   output_->clear();
   QVariant var = decoders_->currentData();
   common::EDTypes currentType = static_cast<common::EDTypes>(qvariant_cast<unsigned char>(var));
-  common::IEDcoder* dec = common::IEDcoder::CreateEDCoder(currentType);
+  common::IEDcoder* dec = common::CreateEDCoder(currentType);
   if (!dec) {
     return;
   }

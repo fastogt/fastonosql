@@ -32,8 +32,8 @@
 #include <QGestureEvent>
 #endif
 
-#include <common/convert2string.h>          // for ConvertFromString, etc
-#include <common/text_decoders/iedcoder.h>  // for IEDcoder, EDTypes::Hex
+#include <common/convert2string.h>                  // for ConvertFromString, etc
+#include <common/text_decoders/iedcoder_factory.h>  // for IEDcoder, EDTypes::Hex
 
 #include <common/qt/convert2string.h>             // for ConvertToString
 #include <common/qt/gui/app_style.h>              // for applyFont, applyStyle
@@ -415,7 +415,7 @@ void MainWindow::importConnection() {
     return;
   }
 
-  common::IEDcoder* hexEnc = common::IEDcoder::CreateEDCoder(common::Hex);
+  common::IEDcoder* hexEnc = common::CreateEDCoder(common::Hex);
   if (!hexEnc) {
     readFile.Close();
     writeFile.Close();
@@ -494,7 +494,7 @@ void MainWindow::exportConnection() {
     return;
   }
 
-  common::IEDcoder* hexEnc = common::IEDcoder::CreateEDCoder(common::Hex);
+  common::IEDcoder* hexEnc = common::CreateEDCoder(common::Hex);
   if (!hexEnc) {
     readFile.Close();
     writeFile.Close();
