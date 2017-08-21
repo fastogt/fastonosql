@@ -191,7 +191,7 @@ void OutputWidget::addChild(core::FastoObjectIPtr child) {
     }
 
     fastonosql::gui::FastoCommonItem* comChild = nullptr;
-    core::translator_t tr = server_->Translator();
+    core::translator_t tr = server_->GetTranslator();
     core::command_buffer_t input_cmd = command->InputCommand();
     core::string_key_t key;
     if (tr->IsLoadKeyCommand(input_cmd, &key)) {
@@ -245,7 +245,7 @@ void OutputWidget::updateItem(core::FastoObject* item, common::ValueSPtr newValu
 }
 
 void OutputWidget::createKey(const core::NDbKValue& dbv) {
-  core::translator_t tran = server_->Translator();
+  core::translator_t tran = server_->GetTranslator();
   core::command_buffer_t cmd_text;
   common::Error err = tran->CreateKeyCommand(dbv, &cmd_text);
   if (err && err->IsError()) {

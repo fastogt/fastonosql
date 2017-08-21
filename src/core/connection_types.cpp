@@ -18,10 +18,6 @@
 
 #include "core/connection_types.h"
 
-#include <stddef.h>  // for size_t
-#include <string>    // for string, operator==
-
-#include <common/convert2string.h>
 #include <common/macros.h>  // for NOTREACHED, SIZEOFMASS
 
 namespace {

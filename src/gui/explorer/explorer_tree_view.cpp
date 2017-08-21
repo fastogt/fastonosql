@@ -227,7 +227,7 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
     menu.addAction(openConsoleAction);
     proxy::IServerSPtr server = server_node->server();
     bool is_connected = server->IsConnected();
-    bool is_redis = server->Type() == core::REDIS;
+    bool is_redis = server->GetType() == core::REDIS;
 
     bool is_cluster_member = dynamic_cast<ExplorerClusterItem*>(node->parent()) != nullptr;  // +
 
@@ -527,7 +527,7 @@ void ExplorerTreeView::openMaxClientSetDialog() {
 
     bool ok;
     QString name;
-    common::ConvertFromString(server->Name(), &name);
+    common::ConvertFromString(server->GetName(), &name);
     int maxcl = QInputDialog::getInt(this, trSetMaxConnectionOnServerTemplate_1S.arg(name), trMaximumConnectionTemplate,
                                      10000, 1, INT32_MAX, 100, &ok);
     if (ok) {
@@ -696,7 +696,7 @@ void ExplorerTreeView::shutdownServer() {
     if (server && server->IsConnected()) {
       // Ask user
       QString name;
-      common::ConvertFromString(server->Name(), &name);
+      common::ConvertFromString(server->GetName(), &name);
       int answer = QMessageBox::question(this, translations::trShutdown, trReallyShutdownTemplate_1S.arg(name),
                                          QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
@@ -719,7 +719,7 @@ void ExplorerTreeView::loadContentDb() {
       continue;
     }
 
-    LoadContentDbDialog loadDb(trLoadContentTemplate_1S.arg(node->name()), node->server()->Type(), this);
+    LoadContentDbDialog loadDb(trLoadContentTemplate_1S.arg(node->name()), node->server()->GetType(), this);
     int result = loadDb.exec();
     if (result == QDialog::Accepted) {
       node->loadContent(common::ConvertToString(loadDb.pattern()), loadDb.count());
@@ -790,7 +790,7 @@ void ExplorerTreeView::createKey() {
     }
 
     proxy::IServerSPtr server = node->server();
-    DbKeyDialog loadDb(trCreateKeyForDbTemplate_1S.arg(node->name()), server->Type(), core::NDbKValue(), this);
+    DbKeyDialog loadDb(trCreateKeyForDbTemplate_1S.arg(node->name()), server->GetType(), core::NDbKValue(), this);
     int result = loadDb.exec();
     if (result == QDialog::Accepted) {
       core::NDbKValue key = loadDb.key();
@@ -809,7 +809,7 @@ void ExplorerTreeView::editKey() {
     }
 
     proxy::IServerSPtr server = node->server();
-    DbKeyDialog loadDb(trEditKey_1S.arg(node->name()), server->Type(), node->dbv(), this);
+    DbKeyDialog loadDb(trEditKey_1S.arg(node->name()), server->GetType(), node->dbv(), this);
     int result = loadDb.exec();
     if (result == QDialog::Accepted) {
       core::NDbKValue key = loadDb.key();

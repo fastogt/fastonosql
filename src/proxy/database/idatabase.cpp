@@ -31,25 +31,25 @@ namespace proxy {
 IDatabase::IDatabase(IServerSPtr server, core::IDataBaseInfoSPtr info) : info_(info), server_(server) {
   CHECK(server);
   CHECK(info);
-  CHECK(server->Type() == info->Type());
+  CHECK(server->GetType() == info->GetType());
 }
 
 IDatabase::~IDatabase() {}
 
-IServerSPtr IDatabase::Server() const {
+IServerSPtr IDatabase::GetServer() const {
   return server_;
 }
 
-core::connectionTypes IDatabase::Type() const {
-  return info_->Type();
+core::connectionTypes IDatabase::GetType() const {
+  return info_->GetType();
 }
 
 bool IDatabase::IsDefault() const {
   return info_->IsDefault();
 }
 
-std::string IDatabase::Name() const {
-  return info_->Name();
+std::string IDatabase::GetName() const {
+  return info_->GetName();
 }
 
 void IDatabase::LoadContent(const events_info::LoadDatabaseContentRequest& req) {
@@ -58,7 +58,7 @@ void IDatabase::LoadContent(const events_info::LoadDatabaseContentRequest& req) 
   server_->LoadDatabaseContent(req);
 }
 
-core::IDataBaseInfoSPtr IDatabase::Info() const {
+core::IDataBaseInfoSPtr IDatabase::GetInfo() const {
   return info_;
 }
 

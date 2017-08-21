@@ -33,7 +33,7 @@ namespace proxy {
 
 ICluster::ICluster(const std::string& name) : name_(name) {}
 
-std::string ICluster::Name() const {
+std::string ICluster::GetName() const {
   return name_;
 }
 

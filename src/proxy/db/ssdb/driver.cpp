@@ -27,7 +27,6 @@
 #include <common/convert2string.h>
 #include <common/intrusive_ptr.h>  // for intrusive_ptr
 #include <common/qt/utils_qt.h>    // for Event<>::value_type
-#include <common/sprintf.h>        // for MemSPrintf
 #include <common/value.h>          // for ErrorValue, Value, etc
 
 #include "core/connection_types.h"

@@ -25,7 +25,7 @@ namespace proxy {
 
 ISentinel::ISentinel(const std::string& name) : name_(name), sentinels_() {}
 
-std::string ISentinel::Name() const {
+std::string ISentinel::GetName() const {
   return name_;
 }
 

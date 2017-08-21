@@ -24,7 +24,6 @@
 #include <vector>   // for vector
 
 #include <common/intrusive_ptr.h>  // for intrusive_ptr, etc
-#include <common/macros.h>         // for DISALLOW_COPY_AND_ASSIGN
 #include <common/value.h>          // for ArrayValue (ptr only), etc
 
 #include "core/connection_types.h"

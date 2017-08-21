@@ -18,8 +18,6 @@
 
 #include "core/command_info.h"
 
-#include <string>
-
 #include <common/convert2string.h>
 #include <common/string_util.h>  // for FullEqualsASCII
 

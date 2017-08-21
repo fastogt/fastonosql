@@ -27,9 +27,9 @@ namespace proxy {
 namespace leveldb {
 
 Database::Database(IServerSPtr server, core::IDataBaseInfoSPtr info) : IDatabase(server, info) {
-  DCHECK(server);
-  DCHECK(info);
-  DCHECK(info->Type() == core::LEVELDB);
+  CHECK(server);
+  CHECK(info);
+  CHECK(info->GetType() == core::LEVELDB);
 }
 
 }  // namespace leveldb

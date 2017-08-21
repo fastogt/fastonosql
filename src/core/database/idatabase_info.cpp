@@ -19,7 +19,6 @@
 #include "core/database/idatabase_info.h"
 
 #include <algorithm>  // for remove_if
-#include <string>     // for string
 
 namespace fastonosql {
 namespace core {
@@ -33,15 +32,15 @@ IDataBaseInfo::IDataBaseInfo(const std::string& name,
 
 IDataBaseInfo::~IDataBaseInfo() {}
 
-connectionTypes IDataBaseInfo::Type() const {
+connectionTypes IDataBaseInfo::GetType() const {
   return type_;
 }
 
-std::string IDataBaseInfo::Name() const {
+std::string IDataBaseInfo::GetName() const {
   return name_;
 }
 
-size_t IDataBaseInfo::DBKeysCount() const {
+size_t IDataBaseInfo::GetDBKeysCount() const {
   return db_kcount_;
 }
 
@@ -130,7 +129,7 @@ bool IDataBaseInfo::RemoveKey(const NKey& key) {
   return true;
 }
 
-IDataBaseInfo::keys_container_t IDataBaseInfo::Keys() const {
+IDataBaseInfo::keys_container_t IDataBaseInfo::GetKeys() const {
   return keys_;
 }
 

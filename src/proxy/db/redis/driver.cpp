@@ -29,7 +29,6 @@
 #include <common/file_system.h>     // for copy_file
 #include <common/intrusive_ptr.h>   // for intrusive_ptr
 #include <common/qt/utils_qt.h>     // for Event<>::value_type
-#include <common/sprintf.h>         // for MemSPrintf
 #include <common/value.h>           // for Value, ErrorValue, etc
 
 #include "core/connection_types.h"
@@ -321,7 +320,7 @@ void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
     if (common::ConvertFromString(scountDb, &countDb) && countDb > 0) {
       for (size_t i = 0; i < countDb; ++i) {
         core::IDataBaseInfoSPtr dbInf(new core::redis::DataBaseInfo(common::ConvertToString(i), false, 0));
-        if (dbInf->Name() == curdb->Name()) {
+        if (dbInf->GetName() == curdb->GetName()) {
           res.databases.push_back(curdb);
         } else {
           res.databases.push_back(dbInf);

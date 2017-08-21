@@ -29,9 +29,9 @@ namespace proxy {
 namespace upscaledb {
 
 Database::Database(IServerSPtr server, core::IDataBaseInfoSPtr info) : IDatabase(server, info) {
-  DCHECK(server);
-  DCHECK(info);
-  DCHECK(info->Type() == core::UPSCALEDB);
+  CHECK(server);
+  CHECK(info);
+  CHECK(info->GetType() == core::UPSCALEDB);
 }
 
 }  // namespace upscaledb

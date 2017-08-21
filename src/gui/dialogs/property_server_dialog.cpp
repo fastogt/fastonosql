@@ -44,7 +44,7 @@ PropertyServerDialog::PropertyServerDialog(proxy::IServerSPtr server, QWidget* p
     : QDialog(parent), server_(server) {
   CHECK(server_);
 
-  setWindowIcon(GuiFactory::GetInstance().icon(server->Type()));
+  setWindowIcon(GuiFactory::GetInstance().icon(server->GetType()));
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
@@ -86,7 +86,7 @@ void PropertyServerDialog::finishServerProperty(const proxy::events_info::Server
     return;
   }
 
-  if (server_->Type() == core::REDIS) {
+  if (server_->GetType() == core::REDIS) {
     core::ServerPropertiesInfo inf = res.info;
     PropertyTableModel* model = qobject_cast<PropertyTableModel*>(propertyes_table_->model());
     for (size_t i = 0; i < inf.properties.size(); ++i) {
@@ -106,7 +106,7 @@ void PropertyServerDialog::finishServerChangeProperty(const proxy::events_info::
     return;
   }
 
-  if (server_->Type() == core::REDIS) {
+  if (server_->GetType() == core::REDIS) {
     core::property_t pr = res.new_item;
     if (res.is_change) {
       PropertyTableModel* model = qobject_cast<PropertyTableModel*>(propertyes_table_->model());
@@ -135,7 +135,7 @@ void PropertyServerDialog::showEvent(QShowEvent* e) {
 
 void PropertyServerDialog::retranslateUi() {
   QString name;
-  if (common::ConvertFromString(server_->Name(), &name)) {
+  if (common::ConvertFromString(server_->GetName(), &name)) {
     setWindowTitle(trPropertiesTemplate_1S.arg(name));
   }
 }

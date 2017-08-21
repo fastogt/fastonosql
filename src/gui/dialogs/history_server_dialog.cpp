@@ -44,7 +44,7 @@ namespace gui {
 ServerHistoryDialog::ServerHistoryDialog(proxy::IServerSPtr server, QWidget* parent)
     : QDialog(parent, Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint), server_(server) {
   CHECK(server_);
-  setWindowIcon(GuiFactory::GetInstance().icon(server_->Type()));
+  setWindowIcon(GuiFactory::GetInstance().icon(server_->GetType()));
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
@@ -62,7 +62,7 @@ ServerHistoryDialog::ServerHistoryDialog(proxy::IServerSPtr server, QWidget* par
   VERIFY(connect(serverInfoFields_, static_cast<curc>(&QComboBox::currentIndexChanged), this,
                  &ServerHistoryDialog::refreshGraph));
 
-  const auto fields = core::InfoFieldsFromType(server_->Type());
+  const auto fields = core::InfoFieldsFromType(server_->GetType());
   for (size_t i = 0; i < fields.size(); ++i) {
     core::info_field_t field = fields[i];
     QString qitem;
@@ -148,7 +148,7 @@ void ServerHistoryDialog::refreshInfoFields(int index) {
 
   serverInfoFields_->clear();
 
-  std::vector<core::info_field_t> fields = InfoFieldsFromType(server_->Type());
+  std::vector<core::info_field_t> fields = InfoFieldsFromType(server_->GetType());
   std::vector<core::Field> field = fields[index].second;
   for (uint32_t i = 0; i < field.size(); ++i) {
     core::Field fl = field[i];
@@ -172,7 +172,7 @@ void ServerHistoryDialog::refreshGraph(int index) {
   common::qt::gui::GraphWidget::nodes_container_type nodes;
   for (auto it = infos_.begin(); it != infos_.end(); ++it) {
     auto val = *it;
-    if (!val.isValid()) {
+    if (!val.IsValid()) {
       continue;
     }
 
@@ -207,7 +207,7 @@ void ServerHistoryDialog::reset() {
 
 void ServerHistoryDialog::retranslateUi() {
   QString name;
-  if (common::ConvertFromString(server_->Name(), &name)) {
+  if (common::ConvertFromString(server_->GetName(), &name)) {
     setWindowTitle(trHistoryTemplate_1S.arg(name));
   }
   clearHistory_->setText(translations::trClearHistory);

@@ -81,22 +81,22 @@ bool IServer::IsConnected() const {
 }
 
 bool IServer::IsCanRemote() const {
-  return IsRemoteType(Type());
+  return IsRemoteType(GetType());
 }
 
 bool IServer::IsSupportTTLKeys() const {
-  return fastonosql::core::IsSupportTTLKeys(Type());
+  return fastonosql::core::IsSupportTTLKeys(GetType());
 }
 
-core::translator_t IServer::Translator() const {
+core::translator_t IServer::GetTranslator() const {
   return drv_->Translator();
 }
 
-core::connectionTypes IServer::Type() const {
+core::connectionTypes IServer::GetType() const {
   return drv_->Type();
 }
 
-std::string IServer::Name() const {
+std::string IServer::GetName() const {
   connection_path_t path = drv_->ConnectionPath();
   return path.Name();
 }
@@ -136,9 +136,9 @@ proxy::IServer::database_t IServer::FindDatabase(core::IDataBaseInfoSPtr inf) co
     return database_t();
   }
 
-  CHECK(Type() == inf->Type());
+  CHECK(GetType() == inf->GetType());
   for (database_t db : databases_) {
-    if (db->Name() == inf->Name()) {
+    if (db->GetName() == inf->GetName()) {
       return db;
     }
   }
@@ -503,14 +503,14 @@ void IServer::FlushDB() {
 void IServer::CurrentDataBaseChange(core::IDataBaseInfoSPtr db) {
   database_t cdb = CurrentDatabaseInfo();
   if (cdb) {
-    if (db->Name() == cdb->Name()) {
+    if (db->GetName() == cdb->GetName()) {
       return;
     }
   }
 
   database_t founded;
   for (database_t cached_db : databases_) {
-    if (db->Name() == cached_db->Name()) {
+    if (db->GetName() == cached_db->GetName()) {
       founded = cached_db;
       founded->SetIsDefault(true);
     } else {
@@ -612,7 +612,7 @@ void IServer::HandleCheckDBKeys(core::IDataBaseInfoSPtr db, core::ttl_t expired_
     return;
   }
 
-  auto keys = db->Keys();
+  auto keys = db->GetKeys();
   for (core::NDbKValue key : keys) {
     core::NKey nkey = key.GetKey();
     core::ttl_t key_ttl = nkey.GetTTL();
@@ -624,7 +624,7 @@ void IServer::HandleCheckDBKeys(core::IDataBaseInfoSPtr db, core::ttl_t expired_
     } else {  // live
       const core::ttl_t new_ttl = key_ttl - expired_time;
       if (new_ttl == NO_TTL) {
-        core::translator_t trans = Translator();
+        core::translator_t trans = GetTranslator();
         core::command_buffer_t load_ttl_cmd;
         common::Error err = trans->LoadKeyTTLCommand(nkey, &load_ttl_cmd);
         if (err && err->IsError()) {

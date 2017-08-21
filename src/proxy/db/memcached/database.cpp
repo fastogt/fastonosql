@@ -27,9 +27,9 @@ namespace proxy {
 namespace memcached {
 
 Database::Database(IServerSPtr server, core::IDataBaseInfoSPtr info) : IDatabase(server, info) {
-  DCHECK(server);
-  DCHECK(info);
-  DCHECK(info->Type() == core::MEMCACHED);
+  CHECK(server);
+  CHECK(info);
+  CHECK(info->GetType() == core::MEMCACHED);
 }
 
 }  // namespace memcached

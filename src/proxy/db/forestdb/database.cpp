@@ -31,7 +31,7 @@ namespace forestdb {
 Database::Database(IServerSPtr server, core::IDataBaseInfoSPtr info) : IDatabase(server, info) {
   CHECK(server);
   CHECK(info);
-  CHECK(info->Type() == core::FORESTDB);
+  CHECK(info->GetType() == core::FORESTDB);
 }
 
 }  // namespace forestdb

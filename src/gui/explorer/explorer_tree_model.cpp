@@ -81,7 +81,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
       ExplorerServerItem* server_node = static_cast<ExplorerServerItem*>(node);
       proxy::IServerSPtr server = server_node->server();
       QString sname;
-      common::ConvertFromString(server->Name(), &sname);
+      common::ConvertFromString(server->GetName(), &sname);
       bool is_can_remote = server->IsCanRemote();
       if (is_can_remote) {
         proxy::IServerRemote* rserver = dynamic_cast<proxy::IServerRemote*>(server.get());  // +
@@ -126,7 +126,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
     } else if (type == IExplorerTreeItem::eServer) {
       ExplorerServerItem* server_node = static_cast<ExplorerServerItem*>(node);
       proxy::IServerSPtr server = server_node->server();
-      return GuiFactory::GetInstance().icon(server->Type());
+      return GuiFactory::GetInstance().icon(server->GetType());
     } else if (type == IExplorerTreeItem::eKey) {
       ExplorerKeyItem* key = static_cast<ExplorerKeyItem*>(node);
       core::NKey nkey = key->key();
@@ -515,7 +515,7 @@ ExplorerDatabaseItem* ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* se
     }
 
     proxy::IDatabaseSPtr inf = item->db();
-    if (inf && inf->Name() == db->Name()) {
+    if (inf && inf->GetName() == db->GetName()) {
       return item;
     }
   }

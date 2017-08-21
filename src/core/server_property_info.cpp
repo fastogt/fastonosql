@@ -18,12 +18,7 @@
 
 #include "core/server_property_info.h"
 
-#include <stddef.h>  // for size_t
-
-#include <vector>  // for vector
-
-#include <common/macros.h>  // for DCHECK, DNOTREACHED
-#include <common/value.h>   // for ArrayValue
+#include <common/value.h>  // for ArrayValue
 
 #include "core/global.h"  // for FastoObjectArray
 

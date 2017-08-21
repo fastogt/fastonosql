@@ -59,7 +59,7 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QW
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
-  proxy::IServerSPtr serv = db_->Server();
+  proxy::IServerSPtr serv = db_->GetServer();
   VERIFY(connect(serv.get(), &proxy::IServer::LoadDataBaseContentStarted, this,
                  &ViewKeysDialog::startLoadDatabaseContent));
   VERIFY(connect(serv.get(), &proxy::IServer::LoadDatabaseContentFinished, this,
@@ -111,8 +111,8 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QW
   VERIFY(connect(rightButtonList_, &QPushButton::clicked, this, &ViewKeysDialog::rightPageClicked));
   QHBoxLayout* pagingLayout = new QHBoxLayout;
   pagingLayout->addWidget(leftButtonList_);
-  core::IDataBaseInfoSPtr inf = db_->Info();
-  size_t keysCount = inf->DBKeysCount();
+  core::IDataBaseInfoSPtr inf = db_->GetInfo();
+  size_t keysCount = inf->GetDBKeysCount();
   currentKey_ = new QSpinBox;
   currentKey_->setEnabled(false);
   currentKey_->setValue(0);
@@ -169,8 +169,8 @@ void ViewKeysDialog::finishLoadDatabaseContent(const proxy::events_info::LoadDat
 }
 
 void ViewKeysDialog::changeTTL(const core::NDbKValue& value, core::ttl_t ttl) {
-  proxy::IServerSPtr server = db_->Server();
-  core::translator_t tran = server->Translator();
+  proxy::IServerSPtr server = db_->GetServer();
+  core::translator_t tran = server->GetTranslator();
   core::command_buffer_t cmd_str;
   common::Error err = tran->ChangeKeyTTLCommand(value.GetKey(), ttl, &cmd_str);
   if (err && err->IsError()) {
@@ -209,13 +209,13 @@ void ViewKeysDialog::search(bool forward) {
 
   DCHECK_EQ(cursorStack_[0], 0);
   if (forward) {
-    proxy::events_info::LoadDatabaseContentRequest req(this, db_->Info(), common::ConvertToString(pattern),
+    proxy::events_info::LoadDatabaseContentRequest req(this, db_->GetInfo(), common::ConvertToString(pattern),
                                                        countSpinEdit_->value(), cursorStack_[curPos_]);
     db_->LoadContent(req);
     ++curPos_;
   } else {
     if (curPos_ > 0) {
-      proxy::events_info::LoadDatabaseContentRequest req(this, db_->Info(), common::ConvertToString(pattern),
+      proxy::events_info::LoadDatabaseContentRequest req(this, db_->GetInfo(), common::ConvertToString(pattern),
                                                          countSpinEdit_->value(), cursorStack_[--curPos_]);
       db_->LoadContent(req);
     }

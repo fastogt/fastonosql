@@ -182,7 +182,7 @@ void PubSubDialog::publish() {
   QString publish_text = QInputDialog::getText(this, trPublishToChannel_1S.arg(node->name()), trEnterWhatYoWantToSend,
                                                QLineEdit::Normal, QString(), &ok);
   if (ok && !publish_text.isEmpty()) {
-    core::translator_t trans = server_->Translator();
+    core::translator_t trans = server_->GetTranslator();
     core::command_buffer_t cmd_str;
     common::Error err = trans->PublishCommand(node->channel(), common::ConvertToString(publish_text), &cmd_str);
     if (err && err->IsError()) {
@@ -207,7 +207,7 @@ void PubSubDialog::subscribeInNewConsole() {
     return;
   }
 
-  core::translator_t trans = server_->Translator();
+  core::translator_t trans = server_->GetTranslator();
   core::command_buffer_t cmd_str;
   common::Error err = trans->SubscribeCommand(node->channel(), &cmd_str);
   if (err && err->IsError()) {

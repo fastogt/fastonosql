@@ -18,11 +18,7 @@
 
 #pragma once
 
-#include <stdbool.h>  // for bool
-#include <stdint.h>   // for uint32_t
-
 #include <memory>  // for shared_ptr
-#include <string>  // for string
 
 #include <common/net/types.h>  // for HostAndPortAndSlot
 #include <common/types.h>      // for time64_t
@@ -49,14 +45,14 @@ struct ServerCommonInfo {
 
 class ServerDiscoveryInfoBase {
  public:
-  connectionTypes connectionType() const;
-  ServerCommonInfo info() const;
+  connectionTypes GetConnectionType() const;
+  ServerCommonInfo GetInfo() const;
 
-  std::string name() const;
-  void setName(const std::string& name);
+  std::string GetName() const;
+  void SetName(const std::string& name);
 
-  common::net::HostAndPortAndSlot host() const;
-  void setHost(const common::net::HostAndPortAndSlot& host);
+  common::net::HostAndPortAndSlot GetHost() const;
+  void SetHost(const common::net::HostAndPortAndSlot& host);
 
  protected:
   ServerDiscoveryInfoBase(connectionTypes ctype, const ServerCommonInfo& info);
@@ -79,7 +75,7 @@ typedef std::shared_ptr<ServerDiscoverySentinelInfo> ServerDiscoverySentinelInfo
 
 class ServerDiscoveryClusterInfo : public ServerDiscoveryInfoBase {
  public:
-  bool self() const;
+  bool Self() const;
   virtual ~ServerDiscoveryClusterInfo();
 
  protected:
@@ -115,7 +111,7 @@ typedef std::shared_ptr<IServerInfo> IServerInfoSPtr;
 struct ServerInfoSnapShoot {
   ServerInfoSnapShoot();
   ServerInfoSnapShoot(common::time64_t msec, IServerInfoSPtr info);
-  bool isValid() const;
+  bool IsValid() const;
 
   common::time64_t msec;
   IServerInfoSPtr info;

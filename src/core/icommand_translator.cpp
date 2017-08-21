@@ -25,11 +25,6 @@ extern "C" {
 }
 
 #include <common/convert2string.h>
-#include <common/sprintf.h>
-#include <common/string_util.h>
-#include <common/utils.h>
-
-#include "core/types.h"
 
 namespace fastonosql {
 namespace core {

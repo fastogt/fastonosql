@@ -126,13 +126,13 @@ void DiscoveryClusterDiagnosticDialog::connectionResult(bool suc,
 
     for (size_t i = 0; i < infos.size(); ++i) {
       core::ServerDiscoveryClusterInfoSPtr inf = infos[i];
-      common::net::HostAndPortAndSlot host = inf->host();
-      proxy::connection_path_t path(common::file_system::get_separator_string<char>() + inf->name());
+      common::net::HostAndPortAndSlot host = inf->GetHost();
+      proxy::connection_path_t path(common::file_system::get_separator_string<char>() + inf->GetName());
       proxy::IConnectionSettingsBaseSPtr con(
-          proxy::ConnectionSettingsFactory::GetInstance().CreateFromType(inf->connectionType(), path, host));
-      ConnectionListWidgetItemDiscovered* item = new ConnectionListWidgetItemDiscovered(inf->info(), nullptr);
+          proxy::ConnectionSettingsFactory::GetInstance().CreateFromType(inf->GetConnectionType(), path, host));
+      ConnectionListWidgetItemDiscovered* item = new ConnectionListWidgetItemDiscovered(inf->GetInfo(), nullptr);
       item->setConnection(con);
-      item->setDisabled(inf->self() || cluster_->FindSettingsByHost(host));
+      item->setDisabled(inf->Self() || cluster_->FindSettingsByHost(host));
       listWidget_->addTopLevelItem(item);
     }
   }

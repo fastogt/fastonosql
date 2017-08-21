@@ -48,7 +48,7 @@ ExplorerServerItem::ExplorerServerItem(proxy::IServerSPtr server, TreeItem* pare
 
 QString ExplorerServerItem::name() const {
   QString qname;
-  common::ConvertFromString(server_->Name(), &qname);
+  common::ConvertFromString(server_->GetName(), &qname);
   return qname;
 }
 
@@ -82,7 +82,7 @@ ExplorerSentinelItem::ExplorerSentinelItem(proxy::ISentinelSPtr sentinel, TreeIt
 
 QString ExplorerSentinelItem::name() const {
   QString qname;
-  common::ConvertFromString(sentinel_->Name(), &qname);
+  common::ConvertFromString(sentinel_->GetName(), &qname);
   return qname;
 }
 
@@ -105,7 +105,7 @@ ExplorerClusterItem::ExplorerClusterItem(proxy::IClusterSPtr cluster, TreeItem* 
 
 QString ExplorerClusterItem::name() const {
   QString qname;
-  common::ConvertFromString(cluster_->Name(), &qname);
+  common::ConvertFromString(cluster_->GetName(), &qname);
   return qname;
 }
 
@@ -124,7 +124,7 @@ ExplorerDatabaseItem::ExplorerDatabaseItem(proxy::IDatabaseSPtr db, ExplorerServ
 
 QString ExplorerDatabaseItem::name() const {
   QString qname;
-  common::ConvertFromString(db_->Name(), &qname);
+  common::ConvertFromString(db_->GetName(), &qname);
   return qname;
 }
 
@@ -138,7 +138,7 @@ bool ExplorerDatabaseItem::isDefault() const {
 
 size_t ExplorerDatabaseItem::totalKeysCount() const {
   core::IDataBaseInfoSPtr inf = info();
-  return inf->DBKeysCount();
+  return inf->GetDBKeysCount();
 }
 
 size_t ExplorerDatabaseItem::loadedKeysCount() const {
@@ -157,7 +157,7 @@ size_t ExplorerDatabaseItem::loadedKeysCount() const {
 
 proxy::IServerSPtr ExplorerDatabaseItem::server() const {
   CHECK(db_);
-  return db_->Server();
+  return db_->GetServer();
 }
 
 proxy::IDatabaseSPtr ExplorerDatabaseItem::db() const {
@@ -168,7 +168,7 @@ proxy::IDatabaseSPtr ExplorerDatabaseItem::db() const {
 void ExplorerDatabaseItem::loadContent(const std::string& pattern, uint32_t countKeys) {
   proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  proxy::events_info::LoadDatabaseContentRequest req(this, dbs->Info(), pattern, countKeys);
+  proxy::events_info::LoadDatabaseContentRequest req(this, dbs->GetInfo(), pattern, countKeys);
   dbs->LoadContent(req);
 }
 
@@ -176,10 +176,10 @@ void ExplorerDatabaseItem::setDefault() {
   proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
 
-  proxy::IServerSPtr server = dbs->Server();
-  core::translator_t tran = server->Translator();
+  proxy::IServerSPtr server = dbs->GetServer();
+  core::translator_t tran = server->GetTranslator();
   core::command_buffer_t cmd_str;
-  common::Error err = tran->SelectDBCommand(dbs->Name(), &cmd_str);
+  common::Error err = tran->SelectDBCommand(dbs->GetName(), &cmd_str);
   if (err && err->IsError()) {
     LOG_ERROR(err, true);
     return;
@@ -190,14 +190,14 @@ void ExplorerDatabaseItem::setDefault() {
 }
 
 core::IDataBaseInfoSPtr ExplorerDatabaseItem::info() const {
-  return db_->Info();
+  return db_->GetInfo();
 }
 
 void ExplorerDatabaseItem::renameKey(const core::NKey& key, const QString& newName) {
   proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  proxy::IServerSPtr server = dbs->Server();
-  core::translator_t tran = server->Translator();
+  proxy::IServerSPtr server = dbs->GetServer();
+  core::translator_t tran = server->GetTranslator();
   core::command_buffer_t cmd_str;
   core::string_key_t key_str = common::ConvertToString(newName);
   common::Error err = tran->RenameKeyCommand(key, core::key_t(key_str), &cmd_str);
@@ -213,8 +213,8 @@ void ExplorerDatabaseItem::renameKey(const core::NKey& key, const QString& newNa
 void ExplorerDatabaseItem::removeKey(const core::NKey& key) {
   proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  proxy::IServerSPtr server = dbs->Server();
-  core::translator_t tran = server->Translator();
+  proxy::IServerSPtr server = dbs->GetServer();
+  core::translator_t tran = server->GetTranslator();
   core::command_buffer_t cmd_str;
   common::Error err = tran->DeleteKeyCommand(key, &cmd_str);
   if (err && err->IsError()) {
@@ -229,8 +229,8 @@ void ExplorerDatabaseItem::removeKey(const core::NKey& key) {
 void ExplorerDatabaseItem::loadValue(const core::NDbKValue& key) {
   proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  proxy::IServerSPtr server = dbs->Server();
-  core::translator_t tran = server->Translator();
+  proxy::IServerSPtr server = dbs->GetServer();
+  core::translator_t tran = server->GetTranslator();
   core::command_buffer_t cmd_str;
   common::Error err = tran->LoadKeyCommand(key.GetKey(), key.GetType(), &cmd_str);
   if (err && err->IsError()) {
@@ -245,8 +245,8 @@ void ExplorerDatabaseItem::loadValue(const core::NDbKValue& key) {
 void ExplorerDatabaseItem::watchKey(const core::NDbKValue& key, int interval) {
   proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  proxy::IServerSPtr server = dbs->Server();
-  core::translator_t tran = server->Translator();
+  proxy::IServerSPtr server = dbs->GetServer();
+  core::translator_t tran = server->GetTranslator();
   core::command_buffer_t cmd_str;
   common::Error err = tran->LoadKeyCommand(key.GetKey(), key.GetType(), &cmd_str);
   if (err && err->IsError()) {
@@ -261,8 +261,8 @@ void ExplorerDatabaseItem::watchKey(const core::NDbKValue& key, int interval) {
 void ExplorerDatabaseItem::createKey(const core::NDbKValue& key) {
   proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  proxy::IServerSPtr server = dbs->Server();
-  core::translator_t tran = server->Translator();
+  proxy::IServerSPtr server = dbs->GetServer();
+  core::translator_t tran = server->GetTranslator();
   core::command_buffer_t cmd_str;
   common::Error err = tran->CreateKeyCommand(key, &cmd_str);
   if (err && err->IsError()) {
@@ -277,8 +277,8 @@ void ExplorerDatabaseItem::createKey(const core::NDbKValue& key) {
 void ExplorerDatabaseItem::editKey(const core::NDbKValue& key, const core::NValue& value) {
   proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  proxy::IServerSPtr server = dbs->Server();
-  core::translator_t tran = server->Translator();
+  proxy::IServerSPtr server = dbs->GetServer();
+  core::translator_t tran = server->GetTranslator();
   core::command_buffer_t cmd_str;
   core::NDbKValue copy_key = key;
   copy_key.SetValue(value);
@@ -295,8 +295,8 @@ void ExplorerDatabaseItem::editKey(const core::NDbKValue& key, const core::NValu
 void ExplorerDatabaseItem::setTTL(const core::NKey& key, core::ttl_t ttl) {
   proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  proxy::IServerSPtr server = dbs->Server();
-  core::translator_t tran = server->Translator();
+  proxy::IServerSPtr server = dbs->GetServer();
+  core::translator_t tran = server->GetTranslator();
   core::command_buffer_t cmd_str;
   common::Error err = tran->ChangeKeyTTLCommand(key, ttl, &cmd_str);
   if (err && err->IsError()) {
@@ -311,8 +311,8 @@ void ExplorerDatabaseItem::setTTL(const core::NKey& key, core::ttl_t ttl) {
 void ExplorerDatabaseItem::removeAllKeys() {
   proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  proxy::IServerSPtr server = dbs->Server();
-  core::translator_t tran = server->Translator();
+  proxy::IServerSPtr server = dbs->GetServer();
+  core::translator_t tran = server->GetTranslator();
   core::command_buffer_t cmd_str;
   common::Error err = tran->FlushDBCommand(&cmd_str);
   if (err && err->IsError()) {

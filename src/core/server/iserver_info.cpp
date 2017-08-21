@@ -18,8 +18,6 @@
 
 #include "core/server/iserver_info.h"
 
-#include <string>  // for string
-
 namespace fastonosql {
 namespace core {
 
@@ -34,27 +32,27 @@ ServerCommonInfo::ServerCommonInfo(const std::string& name,
 ServerDiscoveryInfoBase::ServerDiscoveryInfoBase(connectionTypes ctype, const ServerCommonInfo& info)
     : ctype_(ctype), info_(info) {}
 
-connectionTypes ServerDiscoveryInfoBase::connectionType() const {
+connectionTypes ServerDiscoveryInfoBase::GetConnectionType() const {
   return ctype_;
 }
 
-ServerCommonInfo ServerDiscoveryInfoBase::info() const {
+ServerCommonInfo ServerDiscoveryInfoBase::GetInfo() const {
   return info_;
 }
 
-std::string ServerDiscoveryInfoBase::name() const {
+std::string ServerDiscoveryInfoBase::GetName() const {
   return info_.name;
 }
 
-void ServerDiscoveryInfoBase::setName(const std::string& name) {
+void ServerDiscoveryInfoBase::SetName(const std::string& name) {
   info_.name = name;
 }
 
-common::net::HostAndPortAndSlot ServerDiscoveryInfoBase::host() const {
+common::net::HostAndPortAndSlot ServerDiscoveryInfoBase::GetHost() const {
   return info_.host;
 }
 
-void ServerDiscoveryInfoBase::setHost(const common::net::HostAndPortAndSlot& host) {
+void ServerDiscoveryInfoBase::SetHost(const common::net::HostAndPortAndSlot& host) {
   info_.host = host;
 }
 
@@ -65,7 +63,7 @@ ServerDiscoveryClusterInfo::ServerDiscoveryClusterInfo(connectionTypes ctype, co
 
 ServerDiscoveryClusterInfo::~ServerDiscoveryClusterInfo() {}
 
-bool ServerDiscoveryClusterInfo::self() const {
+bool ServerDiscoveryClusterInfo::Self() const {
   return self_;
 }
 
@@ -88,7 +86,7 @@ ServerInfoSnapShoot::ServerInfoSnapShoot() : msec(0), info() {}
 
 ServerInfoSnapShoot::ServerInfoSnapShoot(common::time64_t msec, IServerInfoSPtr info) : msec(msec), info(info) {}
 
-bool ServerInfoSnapShoot::isValid() const {
+bool ServerInfoSnapShoot::IsValid() const {
   return msec > 0 && info;
 }
 

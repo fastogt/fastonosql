@@ -158,7 +158,7 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server, const QString& fileP
   advancedOptions_->setText(trAdvancedOptions);
   VERIFY(connect(advancedOptions_, &QCheckBox::stateChanged, this, &BaseShellWidget::advancedOptionsChange));
 
-  input_ = makeBaseShell(server->Type(), this);
+  input_ = makeBaseShell(server->GetType(), this);
   VERIFY(connect(input_, &BaseShell::textChanged, this, &BaseShellWidget::inputTextChanged));
 
   advancedOptionsWidget_ = new QWidget;
@@ -189,7 +189,7 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server, const QString& fileP
   advancedOptionsWidget_->setLayout(advOptLayout);
 
   QHBoxLayout* hlayout2 = new QHBoxLayout;
-  core::connectionTypes ct = server_->Type();
+  core::connectionTypes ct = server_->GetType();
   serverName_ = new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().icon(ct), trCalculating, iconSize);
   serverName_->setElideMode(Qt::ElideRight);
   hlayout2->addWidget(serverName_);
@@ -253,7 +253,7 @@ void BaseShellWidget::executeText(const QString& text) {
 }
 
 common::Error BaseShellWidget::validate(const QString& text) {
-  core::translator_t tran = server_->Translator();
+  core::translator_t tran = server_->GetTranslator();
   std::vector<core::command_buffer_t> cmds;
   core::command_buffer_t text_cmd = common::ConvertToString(text);
   common::Error err = core::ParseCommands(text_cmd, &cmds);
@@ -528,7 +528,7 @@ void BaseShellWidget::updateDefaultDatabase(core::IDataBaseInfoSPtr dbs) {
     return;
   }
 
-  std::string name = dbs->Name();
+  std::string name = dbs->GetName();
   QString qname;
   common::ConvertFromString(name, &qname);
   dbName_->setText(qname);

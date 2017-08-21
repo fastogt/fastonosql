@@ -18,13 +18,7 @@
 
 #include "core/ssh_info.h"
 
-#include <stddef.h>  // for size_t
-
-#include <string>  // for allocator, string, etc
-
-#include <common/convert2string.h>  // for ConvertFromString
-#include <common/file_system.h>     // for prepare_path
-#include <common/macros.h>          // for NOTREACHED, SIZEOFMASS
+#include <common/file_system.h>  // for prepare_path
 
 #define DEFAULT_SSH_PORT 22
 #define DEFAULT_PUB_KEY_PATH "~/.ssh/id_rsa.pub"

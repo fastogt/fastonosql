@@ -29,9 +29,9 @@ namespace proxy {
 namespace rocksdb {
 
 Database::Database(IServerSPtr server, core::IDataBaseInfoSPtr info) : IDatabase(server, info) {
-  DCHECK(server);
-  DCHECK(info);
-  DCHECK(info->Type() == core::ROCKSDB);
+  CHECK(server);
+  CHECK(info);
+  CHECK(info->GetType() == core::ROCKSDB);
 }
 
 }  // namespace rocksdb

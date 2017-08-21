@@ -229,7 +229,7 @@ namespace gui {
 InfoServerDialog::InfoServerDialog(proxy::IServerSPtr server, QWidget* parent) : QDialog(parent), server_(server) {
   CHECK(server_);
 
-  core::connectionTypes type = server->Type();
+  core::connectionTypes type = server->GetType();
   setWindowIcon(GuiFactory::GetInstance().icon(type));
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
@@ -314,7 +314,7 @@ void InfoServerDialog::finishServerInfo(const proxy::events_info::ServerInfoResp
     return;
   }
 
-  core::connectionTypes type = server_->Type();
+  core::connectionTypes type = server_->GetType();
   CHECK(type == inf->Type());
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
@@ -396,7 +396,7 @@ void InfoServerDialog::changeEvent(QEvent* e) {
 
 void InfoServerDialog::retranslateUi() {
   QString qname;
-  if (common::ConvertFromString(server_->Name(), &qname)) {
+  if (common::ConvertFromString(server_->GetName(), &qname)) {
     setWindowTitle(tr("%1 info").arg(qname));
   }
 }

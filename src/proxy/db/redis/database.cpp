@@ -29,9 +29,9 @@ namespace proxy {
 namespace redis {
 
 Database::Database(IServerSPtr server, core::IDataBaseInfoSPtr info) : IDatabase(server, info) {
-  DCHECK(server);
-  DCHECK(info);
-  DCHECK(info->Type() == core::REDIS);
+  CHECK(server);
+  CHECK(info);
+  CHECK(info->GetType() == core::REDIS);
 }
 
 }  // namespace redis

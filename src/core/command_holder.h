@@ -18,14 +18,7 @@
 
 #pragma once
 
-#include <stddef.h>  // for size_t
-#include <stdint.h>  // for uint8_t, uint32_t
-
-#include <functional>  // for function
-#include <string>      // for string
-
-#include <common/error.h>   // for Error
-#include <common/macros.h>  // for WARN_UNUSED_RESULT
+#include <common/error.h>  // for Error
 
 #include "core/command_info.h"  // for CommandInfo
 #include "core/types.h"

@@ -18,8 +18,6 @@
 
 #pragma once
 
-#include <string>  // for string, operator==
-
 #include <common/net/types.h>  // for operator==, HostAndPort
 
 namespace fastonosql {

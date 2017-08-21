@@ -29,9 +29,9 @@ namespace proxy {
 namespace lmdb {
 
 Database::Database(IServerSPtr server, core::IDataBaseInfoSPtr info) : IDatabase(server, info) {
-  DCHECK(server);
-  DCHECK(info);
-  DCHECK(info->Type() == core::LMDB);
+  CHECK(server);
+  CHECK(info);
+  CHECK(info->GetType() == core::LMDB);
 }
 
 }  // namespace lmdb

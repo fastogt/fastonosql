@@ -28,7 +28,7 @@ namespace proxy {
 class IServerBase : public QObject {
   Q_OBJECT
  public:
-  virtual std::string Name() const = 0;
+  virtual std::string GetName() const = 0;
   virtual ~IServerBase();
 };
 

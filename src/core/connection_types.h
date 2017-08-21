@@ -19,7 +19,6 @@
 #pragma once
 
 #include <string>  // for string
-#include <vector>
 
 namespace fastonosql {
 namespace core {

@@ -29,9 +29,9 @@ namespace proxy {
 namespace ssdb {
 
 Database::Database(IServerSPtr server, core::IDataBaseInfoSPtr info) : IDatabase(server, info) {
-  DCHECK(server);
-  DCHECK(info);
-  DCHECK(info->Type() == core::SSDB);
+  CHECK(server);
+  CHECK(info);
+  CHECK(info->GetType() == core::SSDB);
 }
 
 }  // namespace ssdb

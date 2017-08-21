@@ -58,10 +58,10 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   bool IsCanRemote() const;
   bool IsSupportTTLKeys() const;
 
-  core::translator_t Translator() const;
+  core::translator_t GetTranslator() const;
 
-  core::connectionTypes Type() const;
-  virtual std::string Name() const override;
+  core::connectionTypes GetType() const;
+  virtual std::string GetName() const override;
 
   database_t CurrentDatabaseInfo() const;
   core::IServerInfoSPtr CurrentServerInfo() const;

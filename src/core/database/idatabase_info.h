@@ -18,14 +18,7 @@
 
 #pragma once
 
-#include <stddef.h>  // for size_t
-
-#include <memory>  // for shared_ptr
-#include <string>  // for string
-#include <vector>  // for vector
-
-#include <common/macros.h>  // for WARN_UNUSED_RESULT
-#include <common/types.h>   // for ClonableBase
+#include <common/types.h>  // for ClonableBase
 
 #include "core/connection_types.h"  // for connectionTypes
 #include "core/db_key.h"            // for NDbKValue
@@ -36,9 +29,9 @@ namespace core {
 class IDataBaseInfo : public common::ClonableBase<IDataBaseInfo> {
  public:
   typedef std::vector<NDbKValue> keys_container_t;
-  connectionTypes Type() const;
-  std::string Name() const;
-  size_t DBKeysCount() const;
+  connectionTypes GetType() const;
+  std::string GetName() const;
+  size_t GetDBKeysCount() const;
   void SetDBKeysCount(size_t size);
   size_t LoadedKeysCount() const;
 
@@ -47,7 +40,7 @@ class IDataBaseInfo : public common::ClonableBase<IDataBaseInfo> {
 
   virtual ~IDataBaseInfo();
 
-  keys_container_t Keys() const;
+  keys_container_t GetKeys() const;
   void SetKeys(const keys_container_t& keys);
   void ClearKeys();
 

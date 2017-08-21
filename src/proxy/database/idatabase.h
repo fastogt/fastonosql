@@ -47,12 +47,12 @@ class IDatabase {
  public:
   virtual ~IDatabase();
 
-  IServerSPtr Server() const;
-  core::IDataBaseInfoSPtr Info() const;
+  IServerSPtr GetServer() const;
+  core::IDataBaseInfoSPtr GetInfo() const;
 
-  core::connectionTypes Type() const;
+  core::connectionTypes GetType() const;
   bool IsDefault() const;
-  std::string Name() const;
+  std::string GetName() const;
 
   void LoadContent(const events_info::LoadDatabaseContentRequest& req);
   void Execute(const events_info::ExecuteInfoRequest& req);

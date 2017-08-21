@@ -65,7 +65,7 @@ void MainWidget::openConsole(proxy::IServerSPtr server, const QString& text) {
 
   QueryWidget* queryWidget = new QueryWidget(server);
   QString name;
-  common::ConvertFromString(server->Name(), &name);
+  common::ConvertFromString(server->GetName(), &name);
   addWidgetToTab(queryWidget, name);
   queryWidget->setInputText(text);
 }
@@ -78,7 +78,7 @@ void MainWidget::openConsoleAndExecute(proxy::IServerSPtr server, const QString&
 
   QueryWidget* queryWidget = new QueryWidget(server);
   QString name;
-  common::ConvertFromString(server->Name(), &name);
+  common::ConvertFromString(server->GetName(), &name);
   addWidgetToTab(queryWidget, name);
   queryWidget->execute(text);
 }
