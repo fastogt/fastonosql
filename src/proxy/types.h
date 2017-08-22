@@ -18,10 +18,6 @@
 
 #pragma once
 
-#include <string>
-
-#include <vector>
-
 #include "core/db_key.h"
 
 namespace fastonosql {

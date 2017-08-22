@@ -137,7 +137,7 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateFromString(const std::
         if (common::ConvertFromString(elText, &msTime)) {
           result->SetLoggingMsTimeInterval(msTime);
         }
-        if (!IsCanSSHConnection(result->Type())) {
+        if (!IsCanSSHConnection(result->GetType())) {
           result->SetCommandLine(val.substr(i + 1));
           break;
         }

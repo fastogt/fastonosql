@@ -31,6 +31,7 @@ class GlassWidget;
 }
 }  // namespace qt
 }  // namespace common
+
 namespace fastonosql {
 namespace proxy {
 namespace events_info {
@@ -38,9 +39,6 @@ struct ChangePasswordRequest;
 struct ChangePasswordResponce;
 }  // namespace events_info
 }  // namespace proxy
-}  // namespace fastonosql
-
-namespace fastonosql {
 namespace gui {
 
 class ChangePasswordServerDialog : public QDialog {

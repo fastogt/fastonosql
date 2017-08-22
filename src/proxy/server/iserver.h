@@ -18,23 +18,11 @@
 
 #pragma once
 
-#include <memory>  // for enable_shared_from_this
-#include <string>  // for string
-#include <vector>  // for vector
-
-#include <common/value.h>  // for ValueSPtr
-
-#include "core/connection_types.h"     // for core::connectionTypes
-#include "core/db_key.h"               // for NKey (ptr only), etc
 #include "core/icommand_translator.h"  // for translator_t
-#include "proxy/proxy_fwd.h"           // for IDatabaseSPtr
 
-#include "core/database/idatabase_info.h"  // for IDataBaseInfoSPtr
-#include "core/server/iserver_info.h"      // for IServerInfoSPtr, etc
-#include "proxy/events/events.h"           // for BackupResponceEvent, etc
-#include "proxy/server/iserver_base.h"     // for IServerBase
-
-#include "core/global.h"  // for FastoObject (ptr only), etc
+#include "proxy/events/events.h"        // for BackupResponceEvent, etc
+#include "proxy/proxy_fwd.h"            // for IDatabaseSPtr
+#include "proxy/server/iserver_base.h"  // for IServerBase
 
 namespace fastonosql {
 namespace proxy {
@@ -66,8 +54,8 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   database_t CurrentDatabaseInfo() const;
   core::IServerInfoSPtr CurrentServerInfo() const;
 
-  std::string Delimiter() const;
-  std::string NsSeparator() const;
+  std::string GetDelimiter() const;
+  std::string GetNsSeparator() const;
   IDatabaseSPtr CreateDatabaseByInfo(core::IDataBaseInfoSPtr inf);
   database_t FindDatabase(core::IDataBaseInfoSPtr inf) const;
 

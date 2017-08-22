@@ -26,7 +26,7 @@ namespace fastonosql {
 namespace proxy {
 
 IDriverLocal::IDriverLocal(IConnectionSettingsBaseSPtr settings) : IDriver(settings) {
-  DCHECK(IsLocalType(Type()));
+  CHECK(IsLocalType(GetType()));
 }
 
 }  // namespace proxy

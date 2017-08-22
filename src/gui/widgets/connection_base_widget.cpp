@@ -160,7 +160,7 @@ void ConnectionBaseWidget::syncControls(proxy::IConnectionSettingsBase* connecti
   if (connection) {
     proxy::connection_path_t path = connection->Path();
     QString qname;
-    if (common::ConvertFromString(path.Name(), &qname)) {
+    if (common::ConvertFromString(path.GetName(), &qname)) {
       setConnectionName(qname);
     }
 
@@ -174,7 +174,7 @@ void ConnectionBaseWidget::syncControls(proxy::IConnectionSettingsBase* connecti
     delimiter_->setCurrentText(qdelemitr);
 
     QString qdir;
-    common::ConvertFromString(path.Directory(), &qdir);
+    common::ConvertFromString(path.GetDirectory(), &qdir);
 
     setUIFolderText(qdir);
     setLogging(connection->IsHistoryEnabled());

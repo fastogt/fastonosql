@@ -27,8 +27,7 @@
 namespace fastonosql {
 namespace proxy {
 
-class ConnectionSettingsFactory
-    : public common::patterns::LazySingleton<ConnectionSettingsFactory> {
+class ConnectionSettingsFactory : public common::patterns::LazySingleton<ConnectionSettingsFactory> {
  public:
   friend class common::patterns::LazySingleton<ConnectionSettingsFactory>;
 

@@ -18,10 +18,6 @@
 
 #include "proxy/types.h"
 
-#include <stddef.h>  // for size_t
-
-#include <common/convert2string.h>
-#include <common/macros.h>  // for SIZEOFMASS
 #include <common/string_util.h>
 
 namespace fastonosql {

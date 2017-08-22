@@ -76,7 +76,7 @@ common::Error ApiTraits<CDBConnection>::Help(internal::CommandHandler* handler,
   }
 
   common::StringValue* val = common::Value::CreateStringValue(answer);
-  FastoObject* child = new FastoObject(out, val, cdb->Delimiter());
+  FastoObject* child = new FastoObject(out, val, cdb->GetDelimiter());
   out->AddChildren(child);
   return common::Error();
 }
@@ -116,9 +116,9 @@ common::Error ApiTraits<CDBConnection>::Scan(internal::CommandHandler* handler,
   std::string rep_out = common::ConvertToString(cursor_out);  // string representing
   common::StringValue* val = common::Value::CreateStringValue(rep_out);
   mar->Append(val);
-  FastoObjectArray* child = new FastoObjectArray(out, mar, cdb->Delimiter());
+  FastoObjectArray* child = new FastoObjectArray(out, mar, cdb->GetDelimiter());
   out->AddChildren(child);
-  FastoObjectArray* keys_arr = new FastoObjectArray(child, ar, cdb->Delimiter());
+  FastoObjectArray* keys_arr = new FastoObjectArray(child, ar, cdb->GetDelimiter());
   child->AddChildren(keys_arr);
   return common::Error();
 }
@@ -145,7 +145,7 @@ common::Error ApiTraits<CDBConnection>::Keys(internal::CommandHandler* handler,
     common::StringValue* val = common::Value::CreateStringValue(keysout[i]);
     ar->Append(val);
   }
-  FastoObjectArray* child = new FastoObjectArray(out, ar, cdb->Delimiter());
+  FastoObjectArray* child = new FastoObjectArray(out, ar, cdb->GetDelimiter());
   out->AddChildren(child);
   return common::Error();
 }
@@ -165,7 +165,7 @@ common::Error ApiTraits<CDBConnection>::DBkcount(internal::CommandHandler* handl
   }
 
   common::FundamentalValue* val = common::Value::CreateUIntegerValue(dbkcount);
-  FastoObject* child = new FastoObject(out, val, cdb->Delimiter());
+  FastoObject* child = new FastoObject(out, val, cdb->GetDelimiter());
   out->AddChildren(child);
   return common::Error();
 }
@@ -183,7 +183,7 @@ common::Error ApiTraits<CDBConnection>::FlushDB(internal::CommandHandler* handle
   }
 
   common::StringValue* val = common::Value::CreateStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, cdb->Delimiter());
+  FastoObject* child = new FastoObject(out, val, cdb->GetDelimiter());
   out->AddChildren(child);
   return common::Error();
 }
@@ -197,7 +197,7 @@ common::Error ApiTraits<CDBConnection>::Select(CommandHandler* handler, commands
   }
 
   common::StringValue* val = common::Value::CreateStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, cdb->Delimiter());
+  FastoObject* child = new FastoObject(out, val, cdb->GetDelimiter());
   out->AddChildren(child);
   return common::Error();
 }
@@ -218,7 +218,7 @@ common::Error ApiTraits<CDBConnection>::Set(internal::CommandHandler* handler, c
   }
 
   common::StringValue* val = common::Value::CreateStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, cdb->Delimiter());
+  FastoObject* child = new FastoObject(out, val, cdb->GetDelimiter());
   out->AddChildren(child);
   return common::Error();
 }
@@ -237,7 +237,7 @@ common::Error ApiTraits<CDBConnection>::Get(internal::CommandHandler* handler, c
 
   NValue val = key_loaded.GetValue();
   common::Value* copy = val->DeepCopy();
-  FastoObject* child = new FastoObject(out, copy, cdb->Delimiter());
+  FastoObject* child = new FastoObject(out, copy, cdb->GetDelimiter());
   out->AddChildren(child);
   return common::Error();
 }
@@ -261,7 +261,7 @@ common::Error ApiTraits<CDBConnection>::Delete(internal::CommandHandler* handler
   }
 
   common::FundamentalValue* val = common::Value::CreateUIntegerValue(keys_deleted.size());
-  FastoObject* child = new FastoObject(out, val, cdb->Delimiter());
+  FastoObject* child = new FastoObject(out, val, cdb->GetDelimiter());
   out->AddChildren(child);
   return common::Error();
 }
@@ -280,7 +280,7 @@ common::Error ApiTraits<CDBConnection>::Rename(internal::CommandHandler* handler
   }
 
   common::StringValue* val = common::Value::CreateStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, cdb->Delimiter());
+  FastoObject* child = new FastoObject(out, val, cdb->GetDelimiter());
   out->AddChildren(child);
   return common::Error();
 }
@@ -306,7 +306,7 @@ common::Error ApiTraits<CDBConnection>::SetTTL(internal::CommandHandler* handler
   }
 
   common::StringValue* val = common::Value::CreateStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, cdb->Delimiter());
+  FastoObject* child = new FastoObject(out, val, cdb->GetDelimiter());
   out->AddChildren(child);
   return common::Error();
 }
@@ -328,7 +328,7 @@ common::Error ApiTraits<CDBConnection>::GetTTL(internal::CommandHandler* handler
   }
 
   common::FundamentalValue* val = common::Value::CreateIntegerValue(ttl);
-  FastoObject* child = new FastoObject(out, val, cdb->Delimiter());
+  FastoObject* child = new FastoObject(out, val, cdb->GetDelimiter());
   out->AddChildren(child);
   return common::Error();
 }
@@ -346,7 +346,7 @@ common::Error ApiTraits<CDBConnection>::Quit(internal::CommandHandler* handler,
   }
 
   common::StringValue* val = common::Value::CreateStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, cdb->Delimiter());
+  FastoObject* child = new FastoObject(out, val, cdb->GetDelimiter());
   out->AddChildren(child);
   return common::Error();
 }

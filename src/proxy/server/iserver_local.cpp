@@ -24,7 +24,7 @@ namespace fastonosql {
 namespace proxy {
 
 IServerLocal::IServerLocal(IDriver* drv) : IServer(drv) {
-  DCHECK(!IsCanRemote());
+  CHECK(!IsCanRemote());
 }
 
 }  // namespace proxy

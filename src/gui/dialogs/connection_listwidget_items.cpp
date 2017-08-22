@@ -28,13 +28,13 @@ namespace fastonosql {
 namespace gui {
 
 DirectoryListWidgetItem::DirectoryListWidgetItem(const proxy::connection_path_t& path) : path_(path) {
-  std::string dir_name = path.Name();
+  std::string dir_name = path.GetName();
   QString qdir_name;
   if (common::ConvertFromString(dir_name, &qdir_name)) {
     setText(0, qdir_name);
   }
   setIcon(0, GuiFactory::GetInstance().directoryIcon());
-  if (common::ConvertFromString(path_.Directory(), &qdir_name)) {
+  if (common::ConvertFromString(path_.GetDirectory(), &qdir_name)) {
     setText(1, qdir_name);
   }
 }
@@ -64,10 +64,10 @@ void ConnectionListWidgetItem::setConnection(proxy::IConnectionSettingsBaseSPtr 
 
   proxy::connection_path_t path = cons->Path();
   QString conName;
-  if (common::ConvertFromString(path.Name(), &conName)) {
+  if (common::ConvertFromString(path.GetName(), &conName)) {
     setText(0, conName);
   }
-  core::connectionTypes conType = cons->Type();
+  core::connectionTypes conType = cons->GetType();
   setIcon(0, GuiFactory::GetInstance().icon(conType));
   if (common::ConvertFromString(cons->FullAddress(), &conName)) {
     setText(1, conName);

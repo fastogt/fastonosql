@@ -18,8 +18,6 @@
 
 #pragma once
 
-#include <string>  // for string
-
 #include "proxy/server/iserver.h"  // for IServer
 
 namespace fastonosql {
@@ -34,7 +32,7 @@ namespace proxy {
 class IServerLocal : public IServer {
   Q_OBJECT
  public:
-  virtual std::string Path() const = 0;
+  virtual std::string GetPath() const = 0;
 
  protected:
   explicit IServerLocal(IDriver* drv);

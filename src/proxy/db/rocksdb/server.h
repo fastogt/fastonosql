@@ -34,7 +34,7 @@ class Server : public IServerLocal {
   Q_OBJECT
  public:
   explicit Server(IConnectionSettingsBaseSPtr settings);
-  virtual std::string Path() const override;
+  virtual std::string GetPath() const override;
 
  private:
   virtual IDatabaseSPtr CreateDatabase(core::IDataBaseInfoSPtr info) override;

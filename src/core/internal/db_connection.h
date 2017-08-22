@@ -41,7 +41,7 @@ class DBConnection {
 
   DBConnection() : connection_(), interrupted_(false) {}
 
-  static connectionTypes ConnectionType() { return connection_t; }
+  static connectionTypes GetConnectionType() { return connection_t; }
 
   common::Error Connect(const config_t& config) { return connection_.Connect(config); }
 
@@ -53,9 +53,9 @@ class DBConnection {
 
   bool IsInterrupted() const { return interrupted_; }
 
-  std::string Delimiter() const { return connection_.config_.delimiter; }
+  std::string GetDelimiter() const { return connection_.config_.delimiter; }
 
-  std::string NsSeparator() const { return connection_.config_.ns_separator; }
+  std::string GetNsSeparator() const { return connection_.config_.ns_separator; }
 
   config_t config() const { return connection_.config_; }
 

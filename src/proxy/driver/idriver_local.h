@@ -18,10 +18,7 @@
 
 #pragma once
 
-#include <string>  // for string
-
-#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
-#include "proxy/driver/idriver.h"                            // for IDriver
+#include "proxy/driver/idriver.h"  // for IDriver
 
 namespace fastonosql {
 namespace proxy {
@@ -29,7 +26,7 @@ namespace proxy {
 class IDriverLocal : public IDriver {
   Q_OBJECT
  public:
-  virtual std::string Path() const = 0;
+  virtual std::string GetPath() const = 0;
 
  protected:
   explicit IDriverLocal(IConnectionSettingsBaseSPtr settings);

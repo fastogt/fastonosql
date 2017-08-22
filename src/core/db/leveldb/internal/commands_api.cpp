@@ -33,7 +33,7 @@ common::Error CommandsApi::Info(internal::CommandHandler* handler, commands_args
 
   ServerInfo linf(statsout);
   common::StringValue* val = common::Value::CreateStringValue(linf.ToString());
-  FastoObject* child = new FastoObject(out, val, level->Delimiter());
+  FastoObject* child = new FastoObject(out, val, level->GetDelimiter());
   out->AddChildren(child);
   return common::Error();
 }

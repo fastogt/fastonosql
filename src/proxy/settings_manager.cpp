@@ -18,16 +18,8 @@
 
 #include "proxy/settings_manager.h"
 
-#include <algorithm>  // for find, remove
-#include <memory>     // for shared_ptr, operator==, etc
-#include <string>     // for string, char_traits
-
-#include <QFont>
 #include <QSettings>
 
-#include <common/convert2string.h>     // for ConvertFromString
-#include <common/file_system.h>        // for prepare_path, get_dir_path
-#include <common/macros.h>             // for DCHECK
 #include <common/qt/convert2string.h>  // for ConvertToString
 #include <common/utils.h>              // for decode64, encode64
 

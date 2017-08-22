@@ -43,7 +43,7 @@ common::Error CommandsApi::Info(internal::CommandHandler* handler, commands_args
   }
 
   common::StringValue* val = common::Value::CreateStringValue(ServerInfo(statsout).ToString());
-  FastoObject* child = new FastoObject(out, val, rocks->Delimiter());
+  FastoObject* child = new FastoObject(out, val, rocks->GetDelimiter());
   out->AddChildren(child);
   return common::Error();
 }
@@ -66,7 +66,7 @@ common::Error CommandsApi::Mget(internal::CommandHandler* handler, commands_args
     common::StringValue* val = common::Value::CreateStringValue(keysout[i]);
     ar->Append(val);
   }
-  FastoObjectArray* child = new FastoObjectArray(out, ar, rocks->Delimiter());
+  FastoObjectArray* child = new FastoObjectArray(out, ar, rocks->GetDelimiter());
   out->AddChildren(child);
   return common::Error();
 }
@@ -79,7 +79,7 @@ common::Error CommandsApi::Merge(internal::CommandHandler* handler, commands_arg
   }
 
   common::StringValue* val = common::Value::CreateStringValue("OK");
-  FastoObject* child = new FastoObject(out, val, rocks->Delimiter());
+  FastoObject* child = new FastoObject(out, val, rocks->GetDelimiter());
   out->AddChildren(child);
   return common::Error();
 }

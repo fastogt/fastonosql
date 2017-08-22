@@ -26,7 +26,7 @@ namespace fastonosql {
 namespace proxy {
 
 IDriverRemote::IDriverRemote(IConnectionSettingsBaseSPtr settings) : IDriver(settings) {
-  DCHECK(IsRemoteType(Type()));
+  CHECK(IsRemoteType(GetType()));
 }
 
 }  // namespace proxy

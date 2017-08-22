@@ -19,13 +19,8 @@
 #include "proxy/connection_settings/iconnection_settings.h"
 
 #include <inttypes.h>  // for PRIu32
-#include <sstream>     // for stringstream, basic_ostream, etc
-#include <string>      // for string, allocator, etc
 
 #include <common/convert2string.h>  // for ConvertFromString, etc
-#include <common/macros.h>          // for NOTREACHED, CHECK, etc
-#include <common/sprintf.h>         // for MemSPrintf
-#include <common/types.h>           // for buffer_t
 #include <common/utils.h>           // for decode64, encode64, crc64
 
 #include <common/qt/convert2string.h>  // for ConvertToString
@@ -73,11 +68,11 @@ bool ConnectionSettingsPath::Equals(const ConnectionSettingsPath& path) const {
   return path_.Equals(path.path_);
 }
 
-std::string ConnectionSettingsPath::Name() const {
+std::string ConnectionSettingsPath::GetName() const {
   return path_.GetFileName();
 }
 
-std::string ConnectionSettingsPath::Directory() const {
+std::string ConnectionSettingsPath::GetDirectory() const {
   return path_.GetDirectory();
 }
 
@@ -103,7 +98,7 @@ connection_path_t IConnectionSettings::Path() const {
   return connection_path_;
 }
 
-core::connectionTypes IConnectionSettings::Type() const {
+core::connectionTypes IConnectionSettings::GetType() const {
   return type_;
 }
 
@@ -199,10 +194,7 @@ std::string IConnectionSettingsBase::LoggingPath() const {
 }
 
 std::string IConnectionSettingsBase::ToString() const {
-  std::stringstream str;
-  str << IConnectionSettings::ToString() << ',' << CommandLine();
-  std::string res = str.str();
-  return res;
+  return IConnectionSettings::ToString() + ',' + CommandLine();
 }
 
 }  // namespace proxy

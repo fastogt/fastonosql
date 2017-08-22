@@ -58,10 +58,10 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   static void Reply(QObject* reciver, QEvent* ev);
 
   // sync methods
-  core::connectionTypes Type() const;
+  core::connectionTypes GetType() const;
   connection_path_t ConnectionPath() const;
 
-  virtual core::translator_t Translator() const = 0;
+  virtual core::translator_t GetTranslator() const = 0;
 
   void Start();
   void Stop();
@@ -74,8 +74,8 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   virtual bool IsConnected() const = 0;
   virtual bool IsAuthenticated() const = 0;
 
-  virtual std::string Delimiter() const = 0;
-  virtual std::string NsSeparator() const = 0;
+  virtual std::string GetDelimiter() const = 0;
+  virtual std::string GetNsSeparator() const = 0;
 
  Q_SIGNALS:
   void ChildAdded(core::FastoObjectIPtr child);

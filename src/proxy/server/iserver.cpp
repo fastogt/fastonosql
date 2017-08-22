@@ -18,20 +18,11 @@
 
 #include "proxy/server/iserver.h"
 
-#include <stddef.h>  // for size_t
-#include <string>    // for string, operator==, etc
-
 #include <QApplication>
 
-#include <common/error.h>        // for Error
-#include <common/macros.h>       // for VERIFY, CHECK, DNOTREACHED
-#include <common/qt/logger.h>    // for LOG_ERROR
-#include <common/qt/utils_qt.h>  // for Event<>::value_type
-#include <common/value.h>        // for ErrorValue
+#include <common/qt/logger.h>  // for LOG_ERROR
 
-#include "proxy/connection_settings/iconnection_settings.h"
-#include "proxy/driver/idriver.h"      // for IDriver
-#include "proxy/events/events_info.h"  // for LoadDatabaseContentResponce, etc
+#include "proxy/driver/idriver.h"  // for IDriver
 
 namespace fastonosql {
 namespace proxy {
@@ -89,16 +80,16 @@ bool IServer::IsSupportTTLKeys() const {
 }
 
 core::translator_t IServer::GetTranslator() const {
-  return drv_->Translator();
+  return drv_->GetTranslator();
 }
 
 core::connectionTypes IServer::GetType() const {
-  return drv_->Type();
+  return drv_->GetType();
 }
 
 std::string IServer::GetName() const {
   connection_path_t path = drv_->ConnectionPath();
-  return path.Name();
+  return path.GetName();
 }
 
 core::IServerInfoSPtr IServer::CurrentServerInfo() const {
@@ -117,12 +108,12 @@ IServer::database_t IServer::CurrentDatabaseInfo() const {
   return database_t();
 }
 
-std::string IServer::Delimiter() const {
-  return drv_->Delimiter();
+std::string IServer::GetDelimiter() const {
+  return drv_->GetDelimiter();
 }
 
-std::string IServer::NsSeparator() const {
-  return drv_->NsSeparator();
+std::string IServer::GetNsSeparator() const {
+  return drv_->GetNsSeparator();
 }
 
 IDatabaseSPtr IServer::CreateDatabaseByInfo(core::IDataBaseInfoSPtr inf) {

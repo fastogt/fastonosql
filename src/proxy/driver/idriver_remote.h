@@ -25,13 +25,15 @@
 
 namespace fastonosql {
 namespace proxy {
+
 class IDriverRemote : public IDriver {
   Q_OBJECT
  public:
-  virtual common::net::HostAndPort Host() const = 0;
+  virtual common::net::HostAndPort GetHost() const = 0;
 
  protected:
   explicit IDriverRemote(IConnectionSettingsBaseSPtr settings);
 };
+
 }  // namespace proxy
 }  // namespace fastonosql

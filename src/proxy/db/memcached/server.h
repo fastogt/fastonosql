@@ -38,7 +38,7 @@ class Server : public IServerRemote {
   virtual core::serverTypes Role() const override;
   virtual core::serverMode Mode() const override;
   virtual core::serverState State() const override;
-  virtual common::net::HostAndPort Host() const override;
+  virtual common::net::HostAndPort GetHost() const override;
 
  private:
   virtual IDatabaseSPtr CreateDatabase(core::IDataBaseInfoSPtr info) override;

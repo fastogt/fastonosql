@@ -18,14 +18,6 @@
 
 #include "proxy/servers_manager.h"
 
-#include <stddef.h>  // for size_t
-
-#include <algorithm>  // for remove
-#include <memory>     // for __shared_ptr, shared_ptr, etc
-
-#include <common/value.h>  // for ErrorValue, etc
-
-#include "core/connection_types.h"  // for core::connectionTypes, etc
 #include "proxy/cluster/icluster.h"
 #include "proxy/sentinel/isentinel.h"  // for Sentinel
 
@@ -96,7 +88,7 @@ ServersManager::server_t ServersManager::CreateServer(IConnectionSettingsBaseSPt
     return server_t();
   }
 
-  core::connectionTypes conT = settings->Type();
+  core::connectionTypes conT = settings->GetType();
   server_t server;
 #ifdef BUILD_WITH_REDIS
   if (conT == core::REDIS) {
@@ -155,7 +147,7 @@ ServersManager::sentinel_t ServersManager::CreateSentinel(ISentinelSettingsBaseS
     return sentinel_t();
   }
 
-  core::connectionTypes conT = settings->Type();
+  core::connectionTypes conT = settings->GetType();
 #ifdef BUILD_WITH_REDIS
   if (conT == core::REDIS) {
     sentinel_t sent = std::make_shared<redis::Sentinel>(settings->Path().ToString());
@@ -186,7 +178,7 @@ ServersManager::cluster_t ServersManager::CreateCluster(IClusterSettingsBaseSPtr
     return cluster_t();
   }
 
-  core::connectionTypes conT = settings->Type();
+  core::connectionTypes conT = settings->GetType();
 #ifdef BUILD_WITH_REDIS
   if (conT == core::REDIS) {
     cluster_t cl = std::make_shared<redis::Cluster>(settings->Path().ToString());
@@ -209,7 +201,7 @@ common::Error ServersManager::TestConnection(IConnectionSettingsBaseSPtr connect
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  core::connectionTypes type = connection->Type();
+  core::connectionTypes type = connection->GetType();
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
     redis::ConnectionSettings* settings = static_cast<redis::ConnectionSettings*>(connection.get());
@@ -276,7 +268,7 @@ common::Error ServersManager::DiscoveryClusterConnection(IConnectionSettingsBase
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  core::connectionTypes type = connection->Type();
+  core::connectionTypes type = connection->GetType();
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
     redis::ConnectionSettings* settings = static_cast<redis::ConnectionSettings*>(connection.get());
@@ -335,7 +327,7 @@ common::Error ServersManager::DiscoverySentinelConnection(IConnectionSettingsBas
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  core::connectionTypes type = connection->Type();
+  core::connectionTypes type = connection->GetType();
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
     redis::ConnectionSettings* settings = static_cast<redis::ConnectionSettings*>(connection.get());

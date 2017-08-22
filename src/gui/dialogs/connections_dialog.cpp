@@ -437,7 +437,7 @@ void ConnectionsDialog::retranslateUi() {
 
 void ConnectionsDialog::addConnection(proxy::IConnectionSettingsBaseSPtr con) {
   proxy::connection_path_t path = con->Path();
-  proxy::connection_path_t dir(path.Directory());
+  proxy::connection_path_t dir(path.GetDirectory());
   if (dir == proxy::connection_path_t::Root()) {
     ConnectionListWidgetItem* item = new ConnectionListWidgetItem(nullptr);
     item->setConnection(con);
@@ -457,7 +457,7 @@ void ConnectionsDialog::addConnection(proxy::IConnectionSettingsBaseSPtr con) {
 
 void ConnectionsDialog::addCluster(proxy::IClusterSettingsBaseSPtr con) {
   proxy::connection_path_t path = con->Path();
-  proxy::connection_path_t dir(path.Directory());
+  proxy::connection_path_t dir(path.GetDirectory());
   if (dir == proxy::connection_path_t::Root()) {
     ClusterConnectionListWidgetItemContainer* item = new ClusterConnectionListWidgetItemContainer(con, nullptr);
     listWidget_->addTopLevelItem(item);
@@ -475,7 +475,7 @@ void ConnectionsDialog::addCluster(proxy::IClusterSettingsBaseSPtr con) {
 
 void ConnectionsDialog::addSentinel(proxy::ISentinelSettingsBaseSPtr con) {
   proxy::connection_path_t path = con->Path();
-  proxy::connection_path_t dir(path.Directory());
+  proxy::connection_path_t dir(path.GetDirectory());
   if (dir == proxy::connection_path_t::Root()) {
     SentinelConnectionListWidgetItemContainer* item = new SentinelConnectionListWidgetItemContainer(con, nullptr);
     listWidget_->addTopLevelItem(item);

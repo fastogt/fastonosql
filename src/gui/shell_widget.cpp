@@ -485,10 +485,10 @@ void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
   std::string server_label;
   if (server_->IsCanRemote()) {
     proxy::IServerRemote* rserver = dynamic_cast<proxy::IServerRemote*>(server_.get());  // +
-    server_label = common::ConvertToString(rserver->Host());
+    server_label = common::ConvertToString(rserver->GetHost());
   } else {
     proxy::IServerLocal* lserver = dynamic_cast<proxy::IServerLocal*>(server_.get());  // +
-    server_label = lserver->Path();
+    server_label = lserver->GetPath();
   }
   QString qserver_label;
   common::ConvertFromString(server_label, &qserver_label);

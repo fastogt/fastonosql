@@ -91,13 +91,13 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
         QString mtype;
         common::ConvertFromString(common::ConvertToString(rserver->Mode()), &mtype);
         QString shost;
-        common::ConvertFromString(common::ConvertToString(rserver->Host()), &shost);
+        common::ConvertFromString(common::ConvertToString(rserver->GetHost()), &shost);
         return trRemoteServerToolTipTemplate_4S.arg(sname, stype, mtype, shost);
       } else {
         proxy::IServerLocal* lserver = dynamic_cast<proxy::IServerLocal*>(server.get());  // +
         CHECK(lserver);
         QString spath;
-        common::ConvertFromString(lserver->Path(), &spath);
+        common::ConvertFromString(lserver->GetPath(), &spath);
         return trLocalServerToolTipTemplate_2S.arg(sname, spath);
       }
     } else if (type == IExplorerTreeItem::eDatabase) {

@@ -71,8 +71,8 @@ SentinelDialog::SentinelDialog(QWidget* parent, proxy::ISentinelSettingsBase* co
 
   if (sentinel_connection_) {
     proxy::connection_path_t path = sentinel_connection_->Path();
-    common::ConvertFromString(path.Name(), &conName);
-    common::ConvertFromString(path.Directory(), &conFolder);
+    common::ConvertFromString(path.GetName(), &conName);
+    common::ConvertFromString(path.GetDirectory(), &conFolder);
   }
   connectionName_->setText(conName);
   connectionFolder_->setText(conFolder);
@@ -89,7 +89,7 @@ SentinelDialog::SentinelDialog(QWidget* parent, proxy::ISentinelSettingsBase* co
   }
 
   if (sentinel_connection_) {
-    typeConnection_->setCurrentIndex(sentinel_connection_->Type());
+    typeConnection_->setCurrentIndex(sentinel_connection_->GetType());
   }
 
   typedef void (QComboBox::*qind)(int);

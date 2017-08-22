@@ -41,7 +41,7 @@ namespace gui {
 ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(QWidget* parent, proxy::IConnectionSettingsBaseSPtr connection)
     : QDialog(parent) {
   setWindowTitle(translations::trConnectionDiagnostic);
-  setWindowIcon(GuiFactory::GetInstance().icon(connection->Type()));
+  setWindowIcon(GuiFactory::GetInstance().icon(connection->GetType()));
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 

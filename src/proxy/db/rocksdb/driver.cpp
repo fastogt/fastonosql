@@ -53,7 +53,7 @@ Driver::Driver(IConnectionSettingsBaseSPtr settings)
     : IDriverLocal(settings), impl_(new core::rocksdb::DBConnection(this)) {
   COMPILE_ASSERT(core::rocksdb::DBConnection::connection_t == core::ROCKSDB,
                  "DBConnection must be the same type as Driver!");
-  CHECK(Type() == core::ROCKSDB);
+  CHECK(GetType() == core::ROCKSDB);
 }
 
 Driver::~Driver() {
@@ -68,7 +68,7 @@ void Driver::SetInterrupted(bool interrupted) {
   return impl_->SetInterrupted(interrupted);
 }
 
-core::translator_t Driver::Translator() const {
+core::translator_t Driver::GetTranslator() const {
   return impl_->Translator();
 }
 
@@ -80,17 +80,17 @@ bool Driver::IsAuthenticated() const {
   return impl_->IsConnected();
 }
 
-std::string Driver::Path() const {
+std::string Driver::GetPath() const {
   core::rocksdb::Config conf = impl_->config();
   return conf.db_path;
 }
 
-std::string Driver::NsSeparator() const {
-  return impl_->NsSeparator();
+std::string Driver::GetNsSeparator() const {
+  return impl_->GetNsSeparator();
 }
 
-std::string Driver::Delimiter() const {
-  return impl_->Delimiter();
+std::string Driver::GetDelimiter() const {
+  return impl_->GetDelimiter();
 }
 
 void Driver::InitImpl() {}

@@ -54,7 +54,7 @@ Driver::Driver(IConnectionSettingsBaseSPtr settings)
     : IDriverRemote(settings), impl_(new core::memcached::DBConnection(this)) {
   COMPILE_ASSERT(core::memcached::DBConnection::connection_t == core::MEMCACHED,
                  "DBConnection must be the same type as Driver!");
-  CHECK(Type() == core::MEMCACHED);
+  CHECK(GetType() == core::MEMCACHED);
 }
 
 Driver::~Driver() {
@@ -69,7 +69,7 @@ void Driver::SetInterrupted(bool interrupted) {
   return impl_->SetInterrupted(interrupted);
 }
 
-core::translator_t Driver::Translator() const {
+core::translator_t Driver::GetTranslator() const {
   return impl_->Translator();
 }
 
@@ -81,17 +81,17 @@ bool Driver::IsAuthenticated() const {
   return impl_->IsConnected();
 }
 
-common::net::HostAndPort Driver::Host() const {
+common::net::HostAndPort Driver::GetHost() const {
   core::memcached::Config conf = impl_->config();
   return conf.host;
 }
 
-std::string Driver::NsSeparator() const {
-  return impl_->NsSeparator();
+std::string Driver::GetNsSeparator() const {
+  return impl_->GetNsSeparator();
 }
 
-std::string Driver::Delimiter() const {
-  return impl_->Delimiter();
+std::string Driver::GetDelimiter() const {
+  return impl_->GetDelimiter();
 }
 
 void Driver::InitImpl() {}

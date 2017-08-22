@@ -75,10 +75,10 @@ ClusterDialog::ClusterDialog(QWidget* parent, proxy::IClusterSettingsBase* conne
   if (cluster_connection_) {
     proxy::connection_path_t path = cluster_connection_->Path();
     QString qstr;
-    if (common::ConvertFromString(path.Name(), &qstr)) {
+    if (common::ConvertFromString(path.GetName(), &qstr)) {
       conName = qstr;
     }
-    if (common::ConvertFromString(path.Directory(), &qstr)) {
+    if (common::ConvertFromString(path.GetDirectory(), &qstr)) {
       conFolder = qstr;
     }
   }
@@ -97,7 +97,7 @@ ClusterDialog::ClusterDialog(QWidget* parent, proxy::IClusterSettingsBase* conne
   }
 
   if (cluster_connection_) {
-    typeConnection_->setCurrentIndex(cluster_connection_->Type());
+    typeConnection_->setCurrentIndex(cluster_connection_->GetType());
   }
 
   typedef void (QComboBox::*qind)(int);

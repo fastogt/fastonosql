@@ -18,21 +18,13 @@
 
 #pragma once
 
-#include <string>  // for string
-
-#include <common/types.h>  // for time64_t
-
 #include "core/global.h"  // for FastoObjectIPtr, etc
 
 class QObject;
-namespace fastonosql {
-namespace proxy {
-class IDriver;
-}
-}  // namespace fastonosql
 
 namespace fastonosql {
 namespace proxy {
+class IDriver;
 
 class RootLocker : core::FastoObject::IFastoObjectObserver {
  public:

@@ -20,8 +20,6 @@
 
 #include <common/time.h>  // for current_mstime
 
-#include "proxy/types.h"
-
 namespace fastonosql {
 namespace proxy {
 namespace events_info {

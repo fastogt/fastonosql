@@ -18,8 +18,6 @@
 
 #include "proxy/sentinel/isentinel.h"
 
-#include <string>
-
 namespace fastonosql {
 namespace proxy {
 

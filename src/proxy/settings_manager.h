@@ -18,15 +18,9 @@
 
 #pragma once
 
-#include <stdint.h>  // for uint32_t
-
-#include <string>  // for string
-#include <vector>  // for vector
-
 #include <QFont>
 #include <QStringList>
 
-#include <common/net/types.h>
 #include <common/patterns/singleton_pattern.h>  // for LazySingleton
 
 #include "proxy/connection_settings/icluster_connection_settings.h"

@@ -47,6 +47,7 @@ void CheckSetGet(core::internal::CDBConnection<NConnection, Config, ContType>* d
   ASSERT_TRUE(db->IsConnected());
 }
 
+#ifdef BUILD_WITH_LEVELDB
 TEST(Connection, leveldb) {
   core::leveldb::DBConnection db(nullptr);
   core::leveldb::Config lcfg;
@@ -73,7 +74,9 @@ TEST(Connection, leveldb) {
   err = common::file_system::remove_directory(lcfg.db_path, true);
   ASSERT_TRUE(!err);
 }
+#endif
 
+#ifdef BUILD_WITH_ROCKSDB
 TEST(Connection, rocksdb) {
   core::rocksdb::DBConnection db(nullptr);
   core::rocksdb::Config lcfg;
@@ -100,7 +103,9 @@ TEST(Connection, rocksdb) {
   err = common::file_system::remove_directory(lcfg.db_path, true);
   ASSERT_TRUE(!err);
 }
+#endif
 
+#ifdef BUILD_WITH_LMDB
 TEST(Connection, lmdb) {
   core::lmdb::DBConnection db(nullptr);
   core::lmdb::Config lcfg;
@@ -127,7 +132,9 @@ TEST(Connection, lmdb) {
   err = common::file_system::remove_directory(lcfg.db_path, true);
   ASSERT_TRUE(!err);
 }
+#endif
 
+#ifdef BUILD_WITH_UNQLITE
 TEST(Connection, unqlite) {
   core::unqlite::DBConnection db(nullptr);
   core::unqlite::Config lcfg;
@@ -145,7 +152,9 @@ TEST(Connection, unqlite) {
   err = common::file_system::remove_file(lcfg.db_path);
   ASSERT_TRUE(!err);
 }
+#endif
 
+#ifdef BUILD_WITH_UPSCALEDB
 TEST(Connection, upscaledb) {
   core::upscaledb::DBConnection db(nullptr);
   core::upscaledb::Config lcfg;
@@ -163,7 +172,9 @@ TEST(Connection, upscaledb) {
   err = common::file_system::remove_file(lcfg.db_path);
   ASSERT_TRUE(!err);
 }
+#endif
 
+#ifdef BUILD_WITH_FORESTDB
 TEST(Connection, forestdb) {
   core::forestdb::DBConnection db(nullptr);
   core::forestdb::Config lcfg;
@@ -180,3 +191,4 @@ TEST(Connection, forestdb) {
   err = common::file_system::remove_file(lcfg.db_path);
   ASSERT_TRUE(!err);
 }
+#endif

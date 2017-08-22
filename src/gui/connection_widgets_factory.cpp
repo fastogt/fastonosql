@@ -107,7 +107,7 @@ ConnectionBaseWidget* ConnectionWidgetsFactory::createWidget(proxy::IConnectionS
     return nullptr;
   }
 
-  core::connectionTypes type = connection->Type();
+  core::connectionTypes type = connection->GetType();
   ConnectionBaseWidget* widget = createWidgetImpl(type, parent);
   widget->syncControls(connection);
   widget->retranslateUi();

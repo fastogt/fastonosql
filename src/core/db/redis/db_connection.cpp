@@ -1003,7 +1003,7 @@ common::Error DBConnection::CliFormatReplyRaw(FastoObjectArray* ar, redisReply* 
     }
     case REDIS_REPLY_ARRAY: {
       common::ArrayValue* arv = common::Value::CreateArrayValue();
-      FastoObjectArray* child = new FastoObjectArray(ar, arv, Delimiter());
+      FastoObjectArray* child = new FastoObjectArray(ar, arv, GetDelimiter());
       ar->AddChildren(child);
 
       for (size_t i = 0; i < r->elements; ++i) {
@@ -1034,7 +1034,7 @@ common::Error DBConnection::CliFormatReplyRaw(FastoObject* out, redisReply* r) {
   switch (r->type) {
     case REDIS_REPLY_NIL: {
       common::Value* val = common::Value::CreateNullValue();
-      obj = new FastoObject(out, val, Delimiter());
+      obj = new FastoObject(out, val, GetDelimiter());
       out->AddChildren(obj);
       break;
     }
@@ -1050,19 +1050,19 @@ common::Error DBConnection::CliFormatReplyRaw(FastoObject* out, redisReply* r) {
     case REDIS_REPLY_STRING: {
       std::string str(r->str, r->len);
       common::StringValue* val = common::Value::CreateStringValue(str);
-      obj = new FastoObject(out, val, Delimiter());
+      obj = new FastoObject(out, val, GetDelimiter());
       out->AddChildren(obj);
       break;
     }
     case REDIS_REPLY_INTEGER: {
       common::FundamentalValue* val = common::Value::CreateLongLongIntegerValue(r->integer);
-      obj = new FastoObject(out, val, Delimiter());
+      obj = new FastoObject(out, val, GetDelimiter());
       out->AddChildren(obj);
       break;
     }
     case REDIS_REPLY_ARRAY: {
       common::ArrayValue* arv = common::Value::CreateArrayValue();
-      FastoObjectArray* child = new FastoObjectArray(out, arv, Delimiter());
+      FastoObjectArray* child = new FastoObjectArray(out, arv, GetDelimiter());
       out->AddChildren(child);
 
       for (size_t i = 0; i < r->elements; ++i) {

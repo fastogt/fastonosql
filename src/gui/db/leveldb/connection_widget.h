@@ -18,8 +18,6 @@
 
 #pragma once
 
-#include <QWidget>
-
 #include "gui/widgets/connection_local_widget.h"
 
 namespace fastonosql {

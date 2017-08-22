@@ -32,7 +32,7 @@ namespace proxy {
 class IServerRemote : public IServer {
   Q_OBJECT
  public:
-  virtual common::net::HostAndPort Host() const = 0;
+  virtual common::net::HostAndPort GetHost() const = 0;
   virtual core::serverMode Mode() const = 0;
   virtual core::serverTypes Role() const = 0;
   virtual core::serverState State() const = 0;

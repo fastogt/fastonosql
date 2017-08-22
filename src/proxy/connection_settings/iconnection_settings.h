@@ -18,10 +18,7 @@
 
 #pragma once
 
-#include <stdint.h>  // for uint32_t
-
 #include <memory>  // for shared_ptr
-#include <string>  // for string
 
 #include <common/file_system.h>  // for ascii_string_path, etc
 #include <common/types.h>        // for ClonableBase
@@ -38,8 +35,8 @@ class ConnectionSettingsPath {
   ConnectionSettingsPath();
   explicit ConnectionSettingsPath(const std::string& path);
 
-  std::string Name() const;
-  std::string Directory() const;
+  std::string GetName() const;
+  std::string GetDirectory() const;
   bool Equals(const ConnectionSettingsPath& path) const;
   std::string ToString() const;
   static ConnectionSettingsPath Root();
@@ -62,7 +59,7 @@ class IConnectionSettings : public common::ClonableBase<IConnectionSettings> {
   connection_path_t Path() const;
   void SetPath(const connection_path_t& path);
 
-  core::connectionTypes Type() const;
+  core::connectionTypes GetType() const;
 
   bool IsHistoryEnabled() const;
 

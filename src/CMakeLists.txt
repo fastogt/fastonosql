@@ -193,7 +193,7 @@ SET(HEADERS_PROXY
   ${CMAKE_SOURCE_DIR}/src/proxy/settings_manager.h
   ${CMAKE_SOURCE_DIR}/src/proxy/cluster_connection_settings_factory.h
   ${CMAKE_SOURCE_DIR}/src/proxy/sentinel_connection_settings_factory.h
-  ${CMAKE_SOURCE_DIR}/src/proxy/sentinel_connection_settings_factory.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings_factory.h
 )
 
 SET(SOURCES_PROXY
@@ -433,7 +433,7 @@ ELSEIF(OS_MACOSX)
 ELSEIF(OS_LINUX)
   SET(PLATFORM_HDRS)
   SET(PLATFORM_SRCS)
-  SET(PLATFORM_LIBRARIES pthread)
+  SET(PLATFORM_LIBRARIES pthread dl)
 ELSEIF(OS_FREEBSD)
   SET(PLATFORM_HDRS)
   SET(PLATFORM_SRCS)
@@ -1204,7 +1204,7 @@ IF(DEVELOPER_ENABLE_TESTS)
     ${CMAKE_SOURCE_DIR}/tests/unit_tests/test_command_holder.cpp
   )
 
-  TARGET_LINK_LIBRARIES(unit_tests gtest gtest_main ${PROJECT_CORE_ENGINE_LIBRARY} ${COMMON_LIBRARIES} ${JSONC_LIBRARIES} pthread)
+  TARGET_LINK_LIBRARIES(unit_tests gtest gtest_main ${PROJECT_CORE_ENGINE_LIBRARY} ${COMMON_LIBRARIES} ${JSONC_LIBRARIES} ${PLATFORM_LIBRARIES})
   ADD_TEST_TARGET(unit_tests)
   SET_PROPERTY(TARGET unit_tests PROPERTY FOLDER "Unit tests")
 
@@ -1212,7 +1212,7 @@ IF(DEVELOPER_ENABLE_TESTS)
   ADD_EXECUTABLE(mock_tests
     ${CMAKE_SOURCE_DIR}/tests/mock_tests/test_connections.cpp
   )
-  TARGET_LINK_LIBRARIES(mock_tests gmock gmock_main ${PROJECT_CORE_ENGINE_LIBRARY} ${COMMON_LIBRARIES} pthread)
+  TARGET_LINK_LIBRARIES(mock_tests gmock gmock_main ${PROJECT_CORE_ENGINE_LIBRARY} ${COMMON_LIBRARIES} ${PLATFORM_LIBRARIES})
   ADD_TEST_TARGET(mock_tests)
   SET_PROPERTY(TARGET mock_tests PROPERTY FOLDER "Mock tests")
 ENDIF(DEVELOPER_ENABLE_TESTS)

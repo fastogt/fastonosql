@@ -58,9 +58,9 @@ core::serverState Server::State() const {
   return core::SUP;
 }
 
-common::net::HostAndPort Server::Host() const {
+common::net::HostAndPort Server::GetHost() const {
   Driver* const rdrv = static_cast<Driver* const>(drv_);
-  return rdrv->Host();
+  return rdrv->GetHost();
 }
 
 IDatabaseSPtr Server::CreateDatabase(core::IDataBaseInfoSPtr info) {
