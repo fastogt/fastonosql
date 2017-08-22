@@ -1,9 +1,6 @@
 [submodule "cmake"]
 	path = cmake
 	url = https://github.com/fastogt/cmake.git
-[submodule "src/third-party/lmdb/src"]
-	path = src/third-party/lmdb/src
-	url = https://github.com/fastogt/lmdb.git
 [submodule "build/pybuild_utils"]
 	path = build/pybuild_utils
 	url = https://github.com/fastogt/pybuild_utils.git
