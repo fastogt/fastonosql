@@ -191,7 +191,7 @@ class BuildRequest(object):
 
             os.chdir('libraries/liblmdb')
             make_lmdb = list(build_external_system_args)
-            make_lmdb.append('install')
+            make_lmdb.append('install_static_lib')
             make_lmdb.append('prefix={0}'.format(prefix_path))
             make_policy = run_command.CommonPolicy(print_message)
             run_command.run_command_cb(make_lmdb, make_policy)
