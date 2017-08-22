@@ -18,25 +18,13 @@
 
 #pragma once
 
-#include <string>  // for string
-
 #include <QObject>
 
-#include <common/error.h>   // for Error
-#include <common/macros.h>  // for WARN_UNUSED_RESULT
-#include <common/value.h>   // for Value, Value::CommandLogging...
+#include "core/icommand_translator.h"             // for translator_t
+#include "core/internal/cdb_connection_client.h"  // for CDBConnectionClient
 
-#include "core/connection_types.h"     // for core::connectionTypes
-#include "core/db_key.h"               // for NKey (ptr only), NDbKValue (...
-#include "core/icommand_translator.h"  // for translator_t
-
-#include "core/database/idatabase_info.h"                    // for IDataBaseInfoSPtr, etc
-#include "core/internal/cdb_connection_client.h"             // for CDBConnectionClient
-#include "core/server/iserver_info.h"                        // for IServerInfoSPtr, etc
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "proxy/events/events.h"                             // for BackupRequestEvent, ChangeMa...
-
-#include "core/global.h"  // for FastoObject (ptr only), etc
 
 class QEvent;
 class QThread;  // lines 37-37

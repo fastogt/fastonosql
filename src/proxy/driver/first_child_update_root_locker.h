@@ -18,12 +18,7 @@
 
 #pragma once
 
-#include <string>  // for string
-#include <vector>  // for vector
-
 #include "proxy/driver/root_locker.h"  // for RootLocker
-
-#include "core/global.h"  // for FastoObjectIPtr, etc
 
 class QObject;
 namespace fastonosql {

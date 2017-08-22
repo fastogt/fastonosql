@@ -18,20 +18,11 @@
 
 #include "core/db/memcached/config.h"
 
-#include <stddef.h>  // for size_t
-#include <stdint.h>  // for uint16_t
-#include <string.h>  // for strcmp
-
-#include <string>  // for string, basic_string
-#include <vector>  // for vector
-
 extern "C" {
 #include "sds.h"
 }
 
 #include <common/convert2string.h>  // for ConvertFromString
-#include <common/log_levels.h>      // for LEVEL_LOG::L_WARNING
-#include <common/net/types.h>       // for HostAndPort
 #include <common/sprintf.h>         // for MemSPrintf
 
 #include "core/logger.h"

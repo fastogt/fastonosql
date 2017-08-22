@@ -24,28 +24,15 @@
 #include <signal.h>
 #endif
 
-#include <memory>  // for __shared_ptr
-#include <string>  // for allocator, string, etc
-#include <vector>  // for vector
-
 #include <QApplication>
 #include <QThread>
 
 #include <common/convert2string.h>  // for ConvertToString, etc
-#include <common/file_system.h>     // for File, ascii_string_path, etc
-#include <common/intrusive_ptr.h>   // for intrusive_ptr
-#include <common/log_levels.h>      // for LEVEL_LOG::L_WARNING
-#include <common/qt/utils_qt.h>     // for Event<>::value_type
-#include <common/sprintf.h>         // for MemSPrintf
-#include <common/string_util.h>     // for Tokenize
 #include <common/time.h>            // for current_mstime
-#include <common/types.h>           // for buffer_t, time64_t, etc
 #include <common/utils.h>           // for c_strornull, msleep
 
 #include "proxy/command/command_logger.h"  // for LOG_COMMAND
 #include "proxy/driver/first_child_update_root_locker.h"
-#include "proxy/driver/root_locker.h"  // for RootLocker
-#include "proxy/events/events_info.h"
 
 namespace {
 #ifdef OS_WIN

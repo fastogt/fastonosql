@@ -18,10 +18,6 @@
 
 #pragma once
 
-#include <stdint.h>  // for uint16_t
-
-#include <string>
-
 #include "core/config/config.h"
 
 namespace fastonosql {

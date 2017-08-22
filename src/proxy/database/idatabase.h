@@ -18,30 +18,17 @@
 
 #pragma once
 
-#include <string>
-
-#include "core/connection_types.h"  // for core::connectionTypes
 #include "core/database/idatabase_info.h"
 
 #include "proxy/proxy_fwd.h"
 
 namespace fastonosql {
 namespace proxy {
+
 namespace events_info {
 struct ExecuteInfoRequest;
-}
-}  // namespace proxy
-}  // namespace fastonosql
-namespace fastonosql {
-namespace proxy {
-namespace events_info {
 struct LoadDatabaseContentRequest;
-}
-}  // namespace proxy
-}  // namespace fastonosql
-
-namespace fastonosql {
-namespace proxy {
+}  // namespace events_info
 
 class IDatabase {
  public:

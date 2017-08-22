@@ -34,7 +34,7 @@ namespace redis {
 ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
     : IConnectionSettingsRemoteSSH(connectionName, core::REDIS), info_() {}
 
-std::string ConnectionSettings::Delimiter() const {
+std::string ConnectionSettings::GetDelimiter() const {
   return info_.delimiter;
 }
 
@@ -42,7 +42,7 @@ void ConnectionSettings::SetDelimiter(const std::string& delimiter) {
   info_.delimiter = delimiter;
 }
 
-std::string ConnectionSettings::NsSeparator() const {
+std::string ConnectionSettings::GetNsSeparator() const {
   return info_.ns_separator;
 }
 
@@ -69,7 +69,7 @@ std::string ConnectionSettings::CommandLine() const {
   return common::ConvertToString(info_);
 }
 
-core::redis::Config ConnectionSettings::Info() const {
+core::redis::Config ConnectionSettings::GetInfo() const {
   return info_;
 }
 

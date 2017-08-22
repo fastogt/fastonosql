@@ -44,7 +44,7 @@ common::Value::Type FastoObject::Type() const {
 }
 
 std::string FastoObject::ToString() const {
-  return ConvertToString(value_.get(), Delimiter());
+  return ConvertToString(value_.get(), GetDelimiter());
 }
 
 FastoObject* FastoObject::CreateRoot(const command_buffer_t& text, IFastoObjectObserver* observer) {
@@ -70,7 +70,7 @@ void FastoObject::AddChildren(child_t child) {
   }
 }
 
-FastoObject* FastoObject::Parent() const {
+FastoObject* FastoObject::GetParent() const {
   return parent_;
 }
 
@@ -78,7 +78,7 @@ void FastoObject::Clear() {
   childrens_.clear();
 }
 
-std::string FastoObject::Delimiter() const {
+std::string FastoObject::GetDelimiter() const {
   return delimiter_;
 }
 
@@ -171,7 +171,7 @@ void FastoObjectArray::Append(common::Value* in_value) {
 
 std::string FastoObjectArray::ToString() const {
   common::ArrayValue* ar = Array();
-  return ConvertToString(ar, Delimiter());
+  return ConvertToString(ar, GetDelimiter());
 }
 
 common::ArrayValue* FastoObjectArray::Array() const {
@@ -191,7 +191,7 @@ std::string ConvertToString(fastonosql::core::FastoObject* obj) {
   std::string result;
   std::string str = obj->ToString();
   if (!str.empty()) {
-    result += str + obj->Delimiter();
+    result += str + obj->GetDelimiter();
   }
 
   auto childrens = obj->Childrens();

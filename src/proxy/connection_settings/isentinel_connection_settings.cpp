@@ -18,9 +18,6 @@
 
 #include "proxy/connection_settings/isentinel_connection_settings.h"
 
-#include <stddef.h>  // for size_t
-#include <stdint.h>  // for uint32_t, uint8_t
-
 #include <sstream>
 
 #include <common/utils.h>

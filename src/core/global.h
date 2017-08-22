@@ -18,11 +18,6 @@
 
 #pragma once
 
-#include <memory>   // for shared_ptr
-#include <string>   // for string
-#include <utility>  // for pair
-#include <vector>   // for vector
-
 #include <common/intrusive_ptr.h>  // for intrusive_ptr, etc
 #include <common/value.h>          // for ArrayValue (ptr only), etc
 
@@ -68,9 +63,9 @@ class FastoObject : public common::intrusive_ptr_base<FastoObject> {
 
   childs_t Childrens() const;
   void AddChildren(child_t child);
-  FastoObject* Parent() const;
+  FastoObject* GetParent() const;
   void Clear();
-  std::string Delimiter() const;
+  std::string GetDelimiter() const;
 
   value_t Value() const;
   void SetValue(value_t val);

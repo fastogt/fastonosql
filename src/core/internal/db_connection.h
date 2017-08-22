@@ -18,10 +18,6 @@
 
 #pragma once
 
-#include <string>  // for string
-
-#include <common/error.h>  // for Error
-
 #include "core/connection_types.h"  // for connectionTypes
 
 #include "core/internal/connection.h"  // for Connection, ConnectionAllocatorTr...
@@ -63,6 +59,7 @@ class DBConnection {
   dbconnection_t connection_;
   bool interrupted_;
 };
+
 }  // namespace internal
 }  // namespace core
 }  // namespace fastonosql

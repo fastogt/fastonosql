@@ -18,11 +18,6 @@
 
 #pragma once
 
-#include <memory>  // for shared_ptr
-#include <string>  // for string
-#include <vector>  // for vector
-
-#include "core/connection_types.h"                           // for core::connectionTypes
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
 
 namespace fastonosql {

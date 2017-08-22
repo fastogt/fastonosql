@@ -51,7 +51,7 @@ FastoCommonItem* createItem(common::qt::gui::TreeItem* parent,
   core::NValue value = item->Value();
   core::key_t raw_key(key);
   core::NDbKValue nkey(core::NKey(raw_key), value);
-  return new FastoCommonItem(nkey, item->Delimiter(), readOnly, parent, item);
+  return new FastoCommonItem(nkey, item->GetDelimiter(), readOnly, parent, item);
 }
 
 FastoCommonItem* createRootItem(core::FastoObject* item) {
@@ -59,7 +59,7 @@ FastoCommonItem* createRootItem(core::FastoObject* item) {
   core::key_t raw_key;
   core::NKey nk(raw_key);
   core::NDbKValue nkey(nk, value);
-  return new FastoCommonItem(nkey, item->Delimiter(), true, nullptr, item);
+  return new FastoCommonItem(nkey, item->GetDelimiter(), true, nullptr, item);
 }
 
 }  // namespace
@@ -161,16 +161,16 @@ void OutputWidget::finishExecuteCommand(const proxy::events_info::ExecuteInfoRes
 }
 
 void OutputWidget::addChild(core::FastoObjectIPtr child) {
-  DCHECK(child->Parent());
+  DCHECK(child->GetParent());
 
   core::FastoObjectCommand* command = dynamic_cast<core::FastoObjectCommand*>(child.get());  // +
   if (command) {
     return;
   }
 
-  command = dynamic_cast<core::FastoObjectCommand*>(child->Parent());  // +
+  command = dynamic_cast<core::FastoObjectCommand*>(child->GetParent());  // +
   if (command) {
-    void* parentinner = command->Parent();
+    void* parentinner = command->GetParent();
 
     QModelIndex parent;
     bool isFound = commonModel_->findItem(parentinner, &parent);
@@ -201,7 +201,7 @@ void OutputWidget::addChild(core::FastoObjectIPtr child) {
     }
     commonModel_->insertItem(parent, comChild);
   } else {
-    core::FastoObjectArray* arr = dynamic_cast<core::FastoObjectArray*>(child->Parent());  // +
+    core::FastoObjectArray* arr = dynamic_cast<core::FastoObjectArray*>(child->GetParent());  // +
     CHECK(arr);
 
     QModelIndex parent;

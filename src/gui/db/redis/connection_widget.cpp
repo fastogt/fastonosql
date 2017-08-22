@@ -117,7 +117,7 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(paren
 void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
   proxy::redis::ConnectionSettings* redis = static_cast<proxy::redis::ConnectionSettings*>(connection);
   if (redis) {
-    core::redis::Config config = redis->Info();
+    core::redis::Config config = redis->GetInfo();
     bool is_remote = config.hostsocket.empty();
     if (is_remote) {
       hostWidget_->setHost(config.host);
@@ -140,7 +140,7 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
       passwordBox_->clear();
     }
     defaultDBNum_->setValue(config.dbnum);
-    core::SSHInfo ssh_info = redis->SSHInfo();
+    core::SSHInfo ssh_info = redis->GetSSHInfo();
     sshWidget_->setInfo(ssh_info);
   }
   ConnectionBaseWidget::syncControls(redis);
@@ -212,7 +212,7 @@ bool ConnectionWidget::isValidCredential() const {
 
 proxy::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(const proxy::connection_path_t& path) const {
   proxy::redis::ConnectionSettings* conn = new proxy::redis::ConnectionSettings(path);
-  core::redis::Config config = conn->Info();
+  core::redis::Config config = conn->GetInfo();
   bool is_remote = remote_->isChecked();
   if (is_remote) {
     config.host = hostWidget_->host();

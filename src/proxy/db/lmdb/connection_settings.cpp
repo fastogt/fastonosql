@@ -39,7 +39,7 @@ void ConnectionSettings::SetInfo(const core::lmdb::Config& info) {
   info_ = info;
 }
 
-std::string ConnectionSettings::Delimiter() const {
+std::string ConnectionSettings::GetDelimiter() const {
   return info_.delimiter;
 }
 
@@ -47,7 +47,7 @@ void ConnectionSettings::SetDelimiter(const std::string& delimiter) {
   info_.delimiter = delimiter;
 }
 
-std::string ConnectionSettings::NsSeparator() const {
+std::string ConnectionSettings::GetNsSeparator() const {
   return info_.ns_separator;
 }
 

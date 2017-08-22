@@ -18,9 +18,6 @@
 
 #include "core/config/config.h"
 
-#include <stddef.h>  // for size_t
-#include <string>
-
 extern "C" {
 #include "sds.h"
 }

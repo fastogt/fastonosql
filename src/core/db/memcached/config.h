@@ -18,8 +18,6 @@
 
 #pragma once
 
-#include <string>
-
 #include "core/config/config.h"
 
 namespace fastonosql {

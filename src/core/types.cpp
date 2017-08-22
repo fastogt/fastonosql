@@ -20,8 +20,6 @@
 
 #include <common/string_util.h>
 
-#include <string>  // for string
-
 namespace fastonosql {
 namespace core {
 

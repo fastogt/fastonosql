@@ -18,8 +18,6 @@
 
 #include "proxy/connection_settings/iconnection_settings_remote.h"
 
-#include <common/macros.h>  // for CHECK
-
 namespace fastonosql {
 namespace proxy {
 

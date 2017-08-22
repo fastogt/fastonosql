@@ -205,7 +205,7 @@ common::Error ServersManager::TestConnection(IConnectionSettingsBaseSPtr connect
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
     redis::ConnectionSettings* settings = static_cast<redis::ConnectionSettings*>(connection.get());
-    core::redis::RConfig rconfig(settings->Info(), settings->SSHInfo());
+    core::redis::RConfig rconfig(settings->GetInfo(), settings->GetSSHInfo());
     return core::redis::TestConnection(rconfig);
   }
 #endif
@@ -272,7 +272,7 @@ common::Error ServersManager::DiscoveryClusterConnection(IConnectionSettingsBase
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
     redis::ConnectionSettings* settings = static_cast<redis::ConnectionSettings*>(connection.get());
-    core::redis::RConfig rconfig(settings->Info(), settings->SSHInfo());
+    core::redis::RConfig rconfig(settings->GetInfo(), settings->GetSSHInfo());
     return core::redis::DiscoveryClusterConnection(rconfig, inf);
   }
 #endif
@@ -331,7 +331,7 @@ common::Error ServersManager::DiscoverySentinelConnection(IConnectionSettingsBas
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
     redis::ConnectionSettings* settings = static_cast<redis::ConnectionSettings*>(connection.get());
-    core::redis::RConfig rconfig(settings->Info(), settings->SSHInfo());
+    core::redis::RConfig rconfig(settings->GetInfo(), settings->GetSSHInfo());
     return core::redis::DiscoverySentinelConnection(rconfig, inf);
   }
 #endif

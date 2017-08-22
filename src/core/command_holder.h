@@ -26,18 +26,9 @@
 namespace fastonosql {
 namespace core {
 class FastoObject;
-}
-}  // namespace fastonosql
-namespace fastonosql {
-namespace core {
 namespace internal {
 class CommandHandler;
 }
-}  // namespace core
-}  // namespace fastonosql
-
-namespace fastonosql {
-namespace core {
 
 common::Error TestArgsInRange(const CommandInfo& cmd, commands_args_t argv);
 common::Error TestArgsModule2Equal1(const CommandInfo& cmd, commands_args_t argv);

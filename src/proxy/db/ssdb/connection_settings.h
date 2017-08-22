@@ -37,10 +37,10 @@ class ConnectionSettings : public IConnectionSettingsRemote {
   core::ssdb::Config Info() const;
   void SetInfo(const core::ssdb::Config& info);
 
-  virtual std::string Delimiter() const override;
+  virtual std::string GetDelimiter() const override;
   virtual void SetDelimiter(const std::string& delimiter) override;
 
-  virtual std::string NsSeparator() const override;
+  virtual std::string GetNsSeparator() const override;
   virtual void SetNsSeparator(const std::string& ns) override;
 
   virtual common::net::HostAndPort Host() const override;

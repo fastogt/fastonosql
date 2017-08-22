@@ -18,10 +18,7 @@
 
 #pragma once
 
-#include <memory>  // for shared_ptr
-
 #include <common/file_system.h>  // for ascii_string_path, etc
-#include <common/types.h>        // for ClonableBase
 
 #include "core/connection_types.h"  // for core::connectionTypes
 
@@ -87,10 +84,10 @@ class IConnectionSettingsBase : public IConnectionSettings {
 
   void SetConnectionPathAndUpdateHash(const connection_path_t& name);
 
-  virtual std::string Delimiter() const = 0;
+  virtual std::string GetDelimiter() const = 0;
   virtual void SetDelimiter(const std::string& delimiter) = 0;
 
-  virtual std::string NsSeparator() const = 0;
+  virtual std::string GetNsSeparator() const = 0;
   virtual void SetNsSeparator(const std::string& ns) = 0;
 
   virtual std::string CommandLine() const = 0;

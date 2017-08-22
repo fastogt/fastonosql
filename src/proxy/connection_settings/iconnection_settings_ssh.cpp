@@ -18,8 +18,6 @@
 
 #include "proxy/connection_settings/iconnection_settings_ssh.h"
 
-#include <sstream>
-
 namespace fastonosql {
 namespace proxy {
 
@@ -28,13 +26,10 @@ IConnectionSettingsRemoteSSH::IConnectionSettingsRemoteSSH(const connection_path
     : IConnectionSettingsRemote(connectionName, type), ssh_info_() {}
 
 std::string IConnectionSettingsRemoteSSH::ToString() const {
-  std::stringstream str;
-  str << IConnectionSettingsBase::ToString() << ',' << common::ConvertToString(ssh_info_);
-  std::string res = str.str();
-  return res;
+  return IConnectionSettingsBase::ToString() + ',' + common::ConvertToString(ssh_info_);
 }
 
-core::SSHInfo IConnectionSettingsRemoteSSH::SSHInfo() const {
+core::SSHInfo IConnectionSettingsRemoteSSH::GetSSHInfo() const {
   return ssh_info_;
 }
 

@@ -18,18 +18,10 @@
 
 #pragma once
 
-#include <memory>  // for shared_ptr
-#include <string>  // for string
-#include <vector>  // for vector
+#include <common/net/types.h>
 
 #include "core/connection_types.h"  // for core::connectionTypes
 #include "proxy/connection_settings/iconnection_settings.h"
-
-namespace common {
-namespace net {
-struct HostAndPort;
-}
-}  // namespace common
 
 namespace fastonosql {
 namespace proxy {

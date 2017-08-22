@@ -164,8 +164,8 @@ void ConnectionBaseWidget::syncControls(proxy::IConnectionSettingsBase* connecti
       setConnectionName(qname);
     }
 
-    std::string ns_separator = connection->NsSeparator();
-    std::string delemitr = connection->Delimiter();
+    std::string ns_separator = connection->GetNsSeparator();
+    std::string delemitr = connection->GetDelimiter();
     QString qns_separator;
     common::ConvertFromString(ns_separator, &qns_separator);
     namespaceSeparator_->setCurrentText(StableCommandLine(qns_separator));

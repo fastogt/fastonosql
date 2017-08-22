@@ -18,20 +18,11 @@
 
 #include "core/db/redis/config.h"
 
-#include <stdint.h>  // for uint16_t
-#include <stdlib.h>  // for atof, strtoll
-#include <string.h>  // for strcmp
-
-#include <string>  // for string, basic_string
-#include <vector>  // for vector
-
 extern "C" {
 #include "sds.h"
 }
 
 #include <common/convert2string.h>  // for ConvertToString, etc
-#include <common/log_levels.h>      // for LEVEL_LOG::L_WARNING
-#include <common/net/types.h>       // for HostAndPort
 #include <common/sprintf.h>         // for MemSPrintf
 
 #include "core/logger.h"

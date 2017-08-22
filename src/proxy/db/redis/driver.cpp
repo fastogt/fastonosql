@@ -156,7 +156,7 @@ core::FastoObjectCommandIPtr Driver::CreateCommandFast(const core::command_buffe
 common::Error Driver::SyncConnect() {
   ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
   CHECK(set);
-  core::redis::RConfig rconf(set->Info(), set->SSHInfo());
+  core::redis::RConfig rconf(set->GetInfo(), set->GetSSHInfo());
   return impl_->Connect(rconf);
 }
 

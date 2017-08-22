@@ -18,28 +18,10 @@
 
 #pragma once
 
-#include <stddef.h>  // for size_t
-#include <stdint.h>  // for uint32_t, uint64_t
-#include <memory>    // for __shared_ptr
-#include <string>    // for string
-#include <vector>    // for vector
-
 #include <common/convert2string.h>
-#include <common/error.h>
-#include <common/macros.h>  // for UNUSED
-#include <common/value.h>   // for Value, ErrorValue, etc
 
-#include "core/db_key.h"  // for NKey, NDbKValue, NKeys, etc
 #include "core/global.h"
 #include "core/internal/cdb_connection.h"
-
-namespace fastonosql {
-namespace core {
-namespace internal {
-class CommandHandler;
-}
-}  // namespace core
-}  // namespace fastonosql
 
 namespace fastonosql {
 namespace core {

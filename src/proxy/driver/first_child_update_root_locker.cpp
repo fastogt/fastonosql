@@ -18,10 +18,6 @@
 
 #include "proxy/driver/first_child_update_root_locker.h"
 
-#include <common/intrusive_ptr.h>  // for intrusive_ptr, operator==
-#include <common/macros.h>         // for NOTREACHED
-#include <common/value.h>          // for Value, etc
-
 namespace fastonosql {
 namespace proxy {
 
@@ -59,7 +55,7 @@ void FirstChildUpdateRootLocker::ChildrenAdded(core::FastoObjectIPtr child) {
 }
 
 core::FastoObjectIPtr FirstChildUpdateRootLocker::FindCmdChildNode(core::FastoObjectIPtr child) const {
-  core::FastoObject* parent = child->Parent();
+  core::FastoObject* parent = child->GetParent();
   core::FastoObjectCommand* cmd = dynamic_cast<core::FastoObjectCommand*>(parent);
   if (!cmd) {
     NOTREACHED();

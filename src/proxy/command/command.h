@@ -18,13 +18,7 @@
 
 #pragma once
 
-#include <string>  // for string
-
-#include <common/macros.h>  // for NOTREACHED
-#include <common/value.h>   // for Value, CommandValue (ptr only), Value::Co...
-
 #include "core/global.h"  // for FastoObjectCommandIPtr, FastoObject (ptr ...
-#include "core/types.h"
 
 namespace fastonosql {
 namespace proxy {
@@ -45,7 +39,7 @@ core::FastoObjectCommandIPtr CreateCommand(core::FastoObject* parent,
   }
 
   common::StringValue* cmd = common::Value::CreateStringValue(stable_input);
-  core::FastoObjectCommandIPtr fs = new Command(parent, cmd, ct, parent->Delimiter());
+  core::FastoObjectCommandIPtr fs = new Command(parent, cmd, ct, parent->GetDelimiter());
   parent->AddChildren(fs);
   return fs;
 }

@@ -31,7 +31,7 @@ namespace ssdb {
 ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
     : IConnectionSettingsRemote(connectionName, core::SSDB), info_() {}
 
-std::string ConnectionSettings::Delimiter() const {
+std::string ConnectionSettings::GetDelimiter() const {
   return info_.delimiter;
 }
 
@@ -39,7 +39,7 @@ void ConnectionSettings::SetDelimiter(const std::string& delimiter) {
   info_.delimiter = delimiter;
 }
 
-std::string ConnectionSettings::NsSeparator() const {
+std::string ConnectionSettings::GetNsSeparator() const {
   return info_.ns_separator;
 }
 

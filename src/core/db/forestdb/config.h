@@ -18,8 +18,6 @@
 
 #pragma once
 
-#include <string>
-
 #include "core/config/config.h"
 
 #define LMDB_DEFAULT_ENV_FLAGS \

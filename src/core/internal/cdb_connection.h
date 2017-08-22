@@ -18,23 +18,6 @@
 
 #pragma once
 
-#include <inttypes.h>
-#include <stddef.h>  // for size_t
-#include <stdint.h>  // for uint64_t, UINT64_MAX
-#include <vector>    // for vector
-
-#include <common/error.h>   // for Error, make_error_value
-#include <common/macros.h>  // for DNOTREACHED, etc
-#include <common/sprintf.h>
-#include <common/value.h>  // for ErrorValue, etc
-
-#include "core/command_info.h"
-#include "core/connection_types.h"     // for connectionTypes
-#include "core/db_key.h"               // for NDbKValue, NKey, etc
-#include "core/icommand_translator.h"  // for translator_t, etc
-
-#include "core/database/idatabase_info.h"
-
 #include "core/internal/cdb_connection_client.h"
 #include "core/internal/command_handler.h"  // for CommandHandler, etc
 #include "core/internal/db_connection.h"    // for DBConnection
@@ -46,11 +29,6 @@
 namespace fastonosql {
 namespace core {
 class CommandHolder;
-}
-}  // namespace fastonosql
-
-namespace fastonosql {
-namespace core {
 namespace internal {
 
 class ConstantCommandsArray : public std::vector<CommandHolder> {

@@ -35,10 +35,10 @@ class ConnectionSettings : public IConnectionSettingsLocal {
   core::rocksdb::Config Info() const;
   void SetInfo(const core::rocksdb::Config& info);
 
-  virtual std::string Delimiter() const override;
+  virtual std::string GetDelimiter() const override;
   virtual void SetDelimiter(const std::string& delimiter) override;
 
-  virtual std::string NsSeparator() const override;
+  virtual std::string GetNsSeparator() const override;
   virtual void SetNsSeparator(const std::string& ns) override;
 
   virtual std::string DBPath() const override;

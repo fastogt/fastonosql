@@ -18,10 +18,6 @@
 
 #include "proxy/driver/idriver_local.h"
 
-#include <common/macros.h>  // for CHECK
-
-#include "core/connection_types.h"  // for IsLocalType
-
 namespace fastonosql {
 namespace proxy {
 

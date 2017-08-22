@@ -18,8 +18,6 @@
 
 #pragma once
 
-#include <string>  // for string
-
 #include "core/config/config.h"
 
 #define UNQLITE_DEFAULT_ENV_FLAGS \

@@ -18,9 +18,6 @@
 
 #pragma once
 
-#include <string>  // for string
-
-#include "core/connection_types.h"  // for core::connectionTypes
 #include "proxy/connection_settings/iconnection_settings.h"
 
 namespace fastonosql {
@@ -30,10 +27,10 @@ class IConnectionSettingsLocal : public IConnectionSettingsBase {
  public:
   virtual std::string FullAddress() const override;
 
-  virtual std::string Delimiter() const override = 0;
+  virtual std::string GetDelimiter() const override = 0;
   virtual void SetDelimiter(const std::string& delimiter) override = 0;
 
-  virtual std::string NsSeparator() const override = 0;
+  virtual std::string GetNsSeparator() const override = 0;
   virtual void SetNsSeparator(const std::string& ns) override = 0;
 
   virtual std::string DBPath() const = 0;
