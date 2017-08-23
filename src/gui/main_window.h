@@ -38,12 +38,8 @@ class QTapAndHoldGesture;
 
 namespace fastonosql {
 namespace gui {
-class ExplorerTreeWidget;
-}
-}  // namespace fastonosql
 
-namespace fastonosql {
-namespace gui {
+class ExplorerTreeWidget;
 
 class MainWindow : public QMainWindow {
   Q_OBJECT

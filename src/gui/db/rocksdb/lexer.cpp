@@ -31,7 +31,7 @@ Lexer::Lexer(QObject* parent) : BaseQsciLexerCommandHolder(core::rocksdb::DBConn
 }
 
 const char* Lexer::language() const {
-  return core::rocksdb::DBConnection::GeDBName();
+  return core::rocksdb::DBConnection::GetDBName();
 }
 
 const char* Lexer::version() const {

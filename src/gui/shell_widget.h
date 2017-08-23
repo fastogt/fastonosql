@@ -40,98 +40,27 @@ class IconLabel;
 }
 }  // namespace qt
 }  // namespace common
+
 namespace fastonosql {
 namespace proxy {
 namespace events_info {
 struct ConnectInfoRequest;
-}
-}  // namespace proxy
-}  // namespace fastonosql
-namespace fastonosql {
-namespace proxy {
-namespace events_info {
 struct ConnectInfoResponce;
-}
-}  // namespace proxy
-}  // namespace fastonosql
-namespace fastonosql {
-namespace proxy {
-namespace events_info {
 struct DisConnectInfoRequest;
-}
-}  // namespace proxy
-}  // namespace fastonosql
-namespace fastonosql {
-namespace proxy {
-namespace events_info {
 struct DisConnectInfoResponce;
-}
-}  // namespace proxy
-}  // namespace fastonosql
-namespace fastonosql {
-namespace proxy {
-namespace events_info {
 struct DiscoveryInfoRequest;
-}
-}  // namespace proxy
-}  // namespace fastonosql
-namespace fastonosql {
-namespace proxy {
-namespace events_info {
 struct DiscoveryInfoResponce;
-}
-}  // namespace proxy
-}  // namespace fastonosql
-namespace fastonosql {
-namespace proxy {
-namespace events_info {
 struct ExecuteInfoRequest;
-}
-}  // namespace proxy
-}  // namespace fastonosql
-namespace fastonosql {
-namespace proxy {
-namespace events_info {
 struct ExecuteInfoResponce;
-}
-}  // namespace proxy
-}  // namespace fastonosql
-namespace fastonosql {
-namespace proxy {
-namespace events_info {
 struct EnterModeInfo;
-}
-}  // namespace proxy
-}  // namespace fastonosql
-namespace fastonosql {
-namespace proxy {
-namespace events_info {
 struct LeaveModeInfo;
-}
-}  // namespace proxy
-}  // namespace fastonosql
-namespace fastonosql {
-namespace proxy {
-namespace events_info {
 struct ProgressInfoResponce;
-}
-}  // namespace proxy
-}  // namespace fastonosql
-namespace fastonosql {
-namespace proxy {
-namespace events_info {
 struct SetDefaultDatabaseRequest;
-}
+}  // namespace events_info
 }  // namespace proxy
-}  // namespace fastonosql
-namespace fastonosql {
 namespace gui {
-class BaseShell;
-}
-}  // namespace fastonosql
 
-namespace fastonosql {
-namespace gui {
+class BaseShell;
 
 class BaseShellWidget : public QWidget {
   Q_OBJECT

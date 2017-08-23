@@ -48,7 +48,7 @@ namespace ssdb {
 CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands) : ICommandTranslatorBase(commands) {}
 
 const char* CommandTranslator::GetDBName() const {
-  return ConnectionTraits<SSDB>::GeDBName();
+  return ConnectionTraits<SSDB>::GetDBName();
 }
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, command_buffer_t* cmdstring) const {

@@ -34,7 +34,7 @@
 #define MARKER "\r\n"
 
 namespace {
-const std::string sshMethods[] = {"0", "1", "2"};
+const std::string g_ssh_methods[] = {"0", "1", "2"};
 }
 
 namespace common {
@@ -56,7 +56,7 @@ bool ConvertFromString(const std::string& from, fastonosql::core::SSHInfo* out) 
 }
 
 std::string ConvertToString(fastonosql::core::SSHInfo::SupportedAuthenticationMetods method) {
-  return sshMethods[method];
+  return g_ssh_methods[method];
 }
 
 bool ConvertFromString(const std::string& from, fastonosql::core::SSHInfo::SupportedAuthenticationMetods* out) {
@@ -64,8 +64,8 @@ bool ConvertFromString(const std::string& from, fastonosql::core::SSHInfo::Suppo
     return false;
   }
 
-  for (size_t i = 0; i < SIZEOFMASS(sshMethods); ++i) {
-    if (from == sshMethods[i]) {
+  for (size_t i = 0; i < SIZEOFMASS(g_ssh_methods); ++i) {
+    if (from == g_ssh_methods[i]) {
       *out = static_cast<fastonosql::core::SSHInfo::SupportedAuthenticationMetods>(i);
       return true;
     }

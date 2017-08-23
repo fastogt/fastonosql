@@ -364,6 +364,7 @@ SET(HEADERS_GUI_TO_MOC
   ${CMAKE_SOURCE_DIR}/src/gui/main_tab_bar.h
   ${CMAKE_SOURCE_DIR}/src/gui/fasto_text_view.h
   ${CMAKE_SOURCE_DIR}/src/gui/keys_table_model.h
+  ${CMAKE_SOURCE_DIR}/src/gui/key_table_item.h
   ${CMAKE_SOURCE_DIR}/src/gui/channels_table_model.h
   ${CMAKE_SOURCE_DIR}/src/gui/fasto_tree_view.h
   ${CMAKE_SOURCE_DIR}/src/gui/fasto_common_model.h
@@ -403,6 +404,7 @@ SET(SOURCES_GUI
   ${CMAKE_SOURCE_DIR}/src/gui/main_tab_bar.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/fasto_text_view.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/keys_table_model.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/key_table_item.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/channels_table_model.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/fasto_tree_view.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/fasto_common_model.cpp

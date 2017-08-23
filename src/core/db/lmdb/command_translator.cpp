@@ -34,7 +34,7 @@ namespace lmdb {
 CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands) : ICommandTranslatorBase(commands) {}
 
 const char* CommandTranslator::GetDBName() const {
-  return ConnectionTraits<LMDB>::GeDBName();
+  return ConnectionTraits<LMDB>::GetDBName();
 }
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, command_buffer_t* cmdstring) const {

@@ -31,7 +31,7 @@ Lexer::Lexer(QObject* parent) : BaseQsciLexerCommandHolder(core::leveldb::DBConn
 }
 
 const char* Lexer::language() const {
-  return core::leveldb::DBConnection::GeDBName();
+  return core::leveldb::DBConnection::GetDBName();
 }
 
 const char* Lexer::version() const {

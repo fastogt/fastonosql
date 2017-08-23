@@ -34,7 +34,7 @@ namespace rocksdb {
 CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands) : ICommandTranslatorBase(commands) {}
 
 const char* CommandTranslator::GetDBName() const {
-  return ConnectionTraits<ROCKSDB>::GeDBName();
+  return ConnectionTraits<ROCKSDB>::GetDBName();
 }
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, command_buffer_t* cmdstring) const {

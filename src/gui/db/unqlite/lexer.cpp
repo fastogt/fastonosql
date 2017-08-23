@@ -31,7 +31,7 @@ Lexer::Lexer(QObject* parent) : BaseQsciLexerCommandHolder(core::unqlite::DBConn
 }
 
 const char* Lexer::language() const {
-  return core::unqlite::DBConnection::GeDBName();
+  return core::unqlite::DBConnection::GetDBName();
 }
 
 const char* Lexer::version() const {

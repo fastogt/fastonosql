@@ -73,7 +73,7 @@ void Driver::SetInterrupted(bool interrupted) {
 }
 
 core::translator_t Driver::GetTranslator() const {
-  return impl_->Translator();
+  return impl_->GetTranslator();
 }
 
 bool Driver::IsConnected() const {

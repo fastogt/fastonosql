@@ -55,6 +55,7 @@ const QString trAdvancedOptions = QObject::tr("Advanced options");
 const QString trCalculating = QObject::tr("Calculate...");
 const QString trIntervalMsec = QObject::tr("Interval msec:");
 const QString trRepeat = QObject::tr("Repeat:");
+
 }  // namespace
 
 namespace fastonosql {

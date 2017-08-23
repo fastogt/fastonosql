@@ -32,7 +32,7 @@ Lexer::Lexer(QObject* parent) : BaseQsciLexerCommandHolder(core::upscaledb::DBCo
 }
 
 const char* Lexer::language() const {
-  return core::upscaledb::DBConnection::GeDBName();
+  return core::upscaledb::DBConnection::GetDBName();
 }
 
 const char* Lexer::version() const {

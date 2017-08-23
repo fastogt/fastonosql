@@ -18,7 +18,6 @@
 
 #include "gui/update_checker.h"
 
-#include <common/error.h>           // for ErrnoError, ErrnoErrorValue
 #include <common/net/socket_tcp.h>  // for ClientSocketTcp
 
 #include "server_config_daemon/server_config.h"

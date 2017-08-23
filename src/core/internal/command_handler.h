@@ -18,23 +18,12 @@
 
 #pragma once
 
-#include <string>  // for string
-#include <vector>  // for vector
-
-#include <common/error.h>   // for Error
-#include <common/macros.h>  // for WARN_UNUSED_RESULT
-
 #include "core/command_holder.h"  // for CommandHolder
 #include "core/icommand_translator.h"
 
 namespace fastonosql {
 namespace core {
 class FastoObject;
-}
-}  // namespace fastonosql
-
-namespace fastonosql {
-namespace core {
 namespace internal {
 
 class CommandHandler {
@@ -46,7 +35,7 @@ class CommandHandler {
   common::Error Execute(const command_buffer_t& command, FastoObject* out) WARN_UNUSED_RESULT;
   common::Error Execute(commands_args_t argv, FastoObject* out) WARN_UNUSED_RESULT;
 
-  translator_t Translator() const { return translator_; }
+  translator_t GetTranslator() const { return translator_; }
 
  private:
   translator_t translator_;

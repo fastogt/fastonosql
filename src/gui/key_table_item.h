@@ -18,31 +18,34 @@
 
 #pragma once
 
-#include <common/qt/gui/base/table_model.h>  // for TableModel
+#include <common/qt/gui/base/table_item.h>   // for TableItem
+
+#include <QString>
 
 #include "core/db_key.h"  // for NDbKValue, ttl_t
 
 namespace fastonosql {
 namespace gui {
 
-class KeysTableModel : public common::qt::gui::TableModel {
-  Q_OBJECT
+class KeyTableItem : public common::qt::gui::TableItem {
  public:
-  explicit KeysTableModel(QObject* parent = 0);
-  virtual ~KeysTableModel();
+  enum eColumn { kKey = 0, kType = 1, kTTL = 2, kCountColumns = 3 };
 
-  virtual QVariant data(const QModelIndex& index, int role) const override;
-  virtual bool setData(const QModelIndex& index, const QVariant& value, int role) override;
-  virtual Qt::ItemFlags flags(const QModelIndex& index) const override;
-  virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+  explicit KeyTableItem(const core::NDbKValue& dbv);
 
-  virtual int columnCount(const QModelIndex& parent) const override;
-  void clear();
+  QString keyString() const;
+  QString typeText() const;
+  core::ttl_t ttl() const;
+  common::Value::Type type() const;
 
-  void updateKey(const core::NKey& key);
+  core::NDbKValue dbv() const;
+  void setDbv(const core::NDbKValue& val);
 
- Q_SIGNALS:
-  void changedTTL(const core::NDbKValue& value, int ttl);
+  core::NKey key() const;
+  void setKey(const core::NKey& key);
+
+ private:
+  core::NDbKValue dbv_;
 };
 
 }  // namespace gui

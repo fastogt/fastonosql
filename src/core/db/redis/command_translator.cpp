@@ -50,7 +50,7 @@ namespace redis {
 CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands) : ICommandTranslator(commands) {}
 
 const char* CommandTranslator::GetDBName() const {
-  return ConnectionTraits<REDIS>::GeDBName();
+  return ConnectionTraits<REDIS>::GetDBName();
 }
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, command_buffer_t* cmdstring) const {
@@ -146,7 +146,7 @@ bool CommandTranslator::IsLoadKeyCommandImpl(const CommandInfo& cmd) const {
 common::Error CommandTranslator::PublishCommandImpl(const NDbPSChannel& channel,
                                                     const std::string& message,
                                                     command_buffer_t* cmdstring) const {
-  std::string channel_str = channel.Name();
+  std::string channel_str = channel.GetName();
   command_buffer_writer_t wr;
   wr << REDIS_PUBLISH_COMMAND << " " << channel_str << " " << message;
   *cmdstring = wr.str();
@@ -154,7 +154,7 @@ common::Error CommandTranslator::PublishCommandImpl(const NDbPSChannel& channel,
 }
 
 common::Error CommandTranslator::SubscribeCommandImpl(const NDbPSChannel& channel, command_buffer_t* cmdstring) const {
-  std::string channel_str = channel.Name();
+  std::string channel_str = channel.GetName();
   command_buffer_writer_t wr;
   wr << REDIS_SUBSCRIBE_COMMAND << " " << channel_str;
   *cmdstring = wr.str();

@@ -24,6 +24,7 @@
 #include <QStyledItemDelegate>
 
 #include "gui/keys_table_model.h"  // for KeysTableModel, etc
+#include "gui/key_table_item.h"
 
 namespace {
 class NumericDelegate : public QStyledItemDelegate {

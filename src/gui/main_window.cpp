@@ -19,12 +19,12 @@
 #include "gui/main_window.h"
 
 #include <QAction>
-#include <QDesktopServices>
-#include <QDockWidget>
-#include <QFileDialog>
 #include <QMenuBar>
-#include <QMessageBox>
+#include <QDockWidget>
 #include <QThread>
+#include <QDesktopServices>
+#include <QFileDialog>
+#include <QMessageBox>
 #include <QToolBar>
 #include <QUrl>
 

@@ -25,7 +25,7 @@ NDbPSChannel::NDbPSChannel() {}
 
 NDbPSChannel::NDbPSChannel(const std::string& name, uint32_t nos) : name_(name), number_of_subscribers_(nos) {}
 
-std::string NDbPSChannel::Name() const {
+std::string NDbPSChannel::GetName() const {
   return name_;
 }
 

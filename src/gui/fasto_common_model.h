@@ -20,16 +20,10 @@
 
 #include <common/qt/gui/base/tree_model.h>  // for TreeModel
 
-class QModelIndex;
-class QObject;
-
 namespace fastonosql {
 namespace core {
 class NDbKValue;
 }
-}  // namespace fastonosql
-
-namespace fastonosql {
 namespace gui {
 
 class FastoCommonModel : public common::qt::gui::TreeModel {

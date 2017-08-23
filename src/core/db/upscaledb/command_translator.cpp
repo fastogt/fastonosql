@@ -34,7 +34,7 @@ namespace upscaledb {
 CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands) : ICommandTranslatorBase(commands) {}
 
 const char* CommandTranslator::GetDBName() const {
-  return ConnectionTraits<UPSCALEDB>::GeDBName();
+  return ConnectionTraits<UPSCALEDB>::GetDBName();
 }
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, command_buffer_t* cmdstring) const {

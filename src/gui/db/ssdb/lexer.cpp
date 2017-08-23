@@ -31,7 +31,7 @@ Lexer::Lexer(QObject* parent) : BaseQsciLexerCommandHolder(core::ssdb::DBConnect
 }
 
 const char* Lexer::language() const {
-  return core::ssdb::DBConnection::GeDBName();
+  return core::ssdb::DBConnection::GetDBName();
 }
 
 const char* Lexer::version() const {

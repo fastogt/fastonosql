@@ -38,7 +38,7 @@ core::NDbPSChannel ChannelTableItem::channel() const {
 
 QString ChannelTableItem::name() const {
   QString qname;
-  common::ConvertFromString(channel_.Name(), &qname);
+  common::ConvertFromString(channel_.GetName(), &qname);
   return qname;
 }
 

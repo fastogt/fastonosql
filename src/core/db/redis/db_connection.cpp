@@ -771,7 +771,7 @@ common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** 
   }
 
   command_buffer_t select_cmd;
-  translator_t tran = Translator();
+  translator_t tran = GetTranslator();
   common::Error err = tran->SelectDBCommand(common::ConvertToString(num), &select_cmd);
   if (err && err->IsError()) {
     return err;
@@ -803,7 +803,7 @@ common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     NKey key = keys[i];
     command_buffer_t del_cmd;
-    translator_t tran = Translator();
+    translator_t tran = GetTranslator();
     common::Error err = tran->DeleteKeyCommand(key, &del_cmd);
     if (err && err->IsError()) {
       return err;
@@ -825,7 +825,7 @@ common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
 
 common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) {
   command_buffer_t set_cmd;
-  translator_t tran = Translator();
+  translator_t tran = GetTranslator();
   common::Error err = tran->CreateKeyCommand(key, &set_cmd);
   if (err && err->IsError()) {
     return err;
@@ -849,7 +849,7 @@ common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) 
 
 common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
   command_buffer_t get_cmd;
-  translator_t tran = Translator();
+  translator_t tran = GetTranslator();
   common::Error err = tran->LoadKeyCommand(key, common::Value::TYPE_STRING, &get_cmd);
   if (err && err->IsError()) {
     return err;
@@ -878,7 +878,7 @@ common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
 }
 
 common::Error DBConnection::RenameImpl(const NKey& key, string_key_t new_key) {
-  translator_t tran = Translator();
+  translator_t tran = GetTranslator();
   command_buffer_t rename_cmd;
   common::Error err = tran->RenameKeyCommand(key, key_t(new_key), &rename_cmd);
   if (err && err->IsError()) {
@@ -902,7 +902,7 @@ common::Error DBConnection::RenameImpl(const NKey& key, string_key_t new_key) {
 
 common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
   key_t key_str = key.GetKey();
-  translator_t tran = Translator();
+  translator_t tran = GetTranslator();
   command_buffer_t ttl_cmd;
   common::Error err = tran->ChangeKeyTTLCommand(key, ttl, &ttl_cmd);
   if (err && err->IsError()) {
@@ -932,7 +932,7 @@ common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
 }
 
 common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
-  translator_t tran = Translator();
+  translator_t tran = GetTranslator();
   command_buffer_t ttl_cmd;
   common::Error err = tran->LoadKeyTTLCommand(key, &ttl_cmd);
   if (err && err->IsError()) {
@@ -1364,7 +1364,7 @@ common::Error DBConnection::Lpush(const NKey& key, NValue arr, long long* list_l
   }
 
   NDbKValue rarr(key, arr);
-  translator_t tran = Translator();
+  translator_t tran = GetTranslator();
   command_buffer_t lpush_cmd;
   common::Error err = tran->CreateKeyCommand(rarr, &lpush_cmd);
   if (err && err->IsError()) {
@@ -1446,7 +1446,7 @@ common::Error DBConnection::Sadd(const NKey& key, NValue set, long long* added) 
   }
 
   NDbKValue rset(key, set);
-  translator_t tran = Translator();
+  translator_t tran = GetTranslator();
   command_buffer_t sadd_cmd;
   common::Error err = tran->CreateKeyCommand(rset, &sadd_cmd);
   if (err && err->IsError()) {
@@ -1548,7 +1548,7 @@ common::Error DBConnection::Zadd(const NKey& key, NValue scores, long long* adde
   }
 
   NDbKValue rzset(key, scores);
-  translator_t tran = Translator();
+  translator_t tran = GetTranslator();
   command_buffer_t zadd_cmd;
   common::Error err = tran->CreateKeyCommand(rzset, &zadd_cmd);
   if (err && err->IsError()) {
@@ -1663,7 +1663,7 @@ common::Error DBConnection::Hmset(const NKey& key, NValue hash) {
   }
 
   NDbKValue rhash(key, hash);
-  translator_t tran = Translator();
+  translator_t tran = GetTranslator();
   command_buffer_t hmset_cmd;
   common::Error err = tran->CreateKeyCommand(rhash, &hmset_cmd);
   if (err && err->IsError()) {

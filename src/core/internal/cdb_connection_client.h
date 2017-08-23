@@ -18,18 +18,12 @@
 
 #pragma once
 
-#include <string>  // for string
-
 #include "core/db_key.h"  // for NDbKValue, NKey, NKeys, ttl_t
 
 namespace fastonosql {
 namespace core {
-class IDataBaseInfo;
-}
-}  // namespace fastonosql
 
-namespace fastonosql {
-namespace core {
+class IDataBaseInfo;
 
 class CDBConnectionClient {
  public:

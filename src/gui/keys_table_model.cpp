@@ -18,58 +18,18 @@
 
 #include "gui/keys_table_model.h"
 
+#include <QColor>
 #include <QIcon>
 
-#include <common/qt/convert2string.h>  // for ConvertFromString
-#include <common/qt/utils_qt.h>        // for item
+#include <common/qt/utils_qt.h>
 
-#include "gui/gui_factory.h"  // for GuiFactory
+#include "translations/global.h"
 
-#include "translations/global.h"  // for trKey, trTTL, trType
+#include "gui/key_table_item.h"
+#include "gui/gui_factory.h"
 
 namespace fastonosql {
 namespace gui {
-
-KeyTableItem::KeyTableItem(const core::NDbKValue& dbv) : dbv_(dbv) {}
-
-QString KeyTableItem::keyString() const {
-  QString qkey;
-  const core::NKey key = dbv_.GetKey();
-  const core::key_t raw_key = key.GetKey();
-  common::ConvertFromString(raw_key.ToString(), &qkey);
-  return qkey;
-}
-
-QString KeyTableItem::typeText() const {
-  QString qtype;
-  common::ConvertFromString(common::Value::GetTypeName(dbv_.GetType()), &qtype);
-  return qtype;
-}
-
-core::ttl_t KeyTableItem::ttl() const {
-  core::NKey key = dbv_.GetKey();
-  return key.GetTTL();
-}
-
-common::Value::Type KeyTableItem::type() const {
-  return dbv_.GetType();
-}
-
-core::NDbKValue KeyTableItem::dbv() const {
-  return dbv_;
-}
-
-void KeyTableItem::setDbv(const core::NDbKValue& val) {
-  dbv_ = val;
-}
-
-core::NKey KeyTableItem::key() const {
-  return dbv_.GetKey();
-}
-
-void KeyTableItem::setKey(const core::NKey& key) {
-  dbv_.SetKey(key);
-}
 
 KeysTableModel::KeysTableModel(QObject* parent) : TableModel(parent) {}
 

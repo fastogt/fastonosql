@@ -19,17 +19,12 @@
 #pragma once
 
 #include <string>   // for string
-#include <utility>  // for pair
 #include <vector>   // for vector
 
 namespace fastonosql {
 namespace core {
-class FastoObjectArray;
-}
-}  // namespace fastonosql
 
-namespace fastonosql {
-namespace core {
+class FastoObjectArray;
 
 typedef std::pair<std::string, std::string> property_t;
 

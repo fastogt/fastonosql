@@ -34,7 +34,7 @@ namespace unqlite {
 CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands) : ICommandTranslatorBase(commands) {}
 
 const char* CommandTranslator::GetDBName() const {
-  return ConnectionTraits<UNQLITE>::GeDBName();
+  return ConnectionTraits<UNQLITE>::GetDBName();
 }
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, command_buffer_t* cmdstring) const {

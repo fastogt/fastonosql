@@ -18,7 +18,6 @@
 
 #include "gui/statistic_sender.h"
 
-#include <common/error.h>                    // for ErrnoError, ErrnoErrorValue
 #include <common/net/socket_tcp.h>           // for ClientSocketTcp
 #include <common/system_info/system_info.h>  // for SystemInfo, etc
 

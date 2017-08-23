@@ -135,8 +135,8 @@ common::Error CDBConnection<NConnection, Config, ContType>::Help(commands_args_t
     return common::Error();
   }
 
-  translator_t tran = Translator();
-  if (argc == 1 && std::string(argv[0]) == ALL_COMMANDS) {
+  translator_t tran = GetTranslator();
+  if (argc == 1 && argv[0] == ALL_COMMANDS) {
     std::vector<CommandInfo> cmds = tran->Commands();
     for (CommandInfo cmd : cmds) {
       *answer += cmd.name;

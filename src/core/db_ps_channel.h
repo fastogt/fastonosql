@@ -18,8 +18,6 @@
 
 #pragma once
 
-#include <stdint.h>  // for int32_t
-
 #include <string>  // for string
 
 namespace fastonosql {
@@ -30,7 +28,7 @@ class NDbPSChannel {
   NDbPSChannel();
   NDbPSChannel(const std::string& name, uint32_t nos);
 
-  std::string Name() const;
+  std::string GetName() const;
   void SetName(const std::string& name);
 
   uint32_t NumberOfSubscribers() const;
