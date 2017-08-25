@@ -95,12 +95,10 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
   common::Error ExecuteAsPipeline(const std::vector<FastoObjectCommandIPtr>& cmds,
                                   void (*log_command_cb)(FastoObjectCommandIPtr)) WARN_UNUSED_RESULT;
 
-  common::Error CommonExec(commands_args_t argv, FastoObject* out) WARN_UNUSED_RESULT;
+  common::Error CommonExec(const commands_args_t& argv, FastoObject* out) WARN_UNUSED_RESULT;
   common::Error Auth(const std::string& password) WARN_UNUSED_RESULT;
-  common::Error Monitor(commands_args_t argv,
-                        FastoObject* out) WARN_UNUSED_RESULT;  // interrupt
-  common::Error Subscribe(commands_args_t argv,
-                          FastoObject* out) WARN_UNUSED_RESULT;  // interrupt
+  common::Error Monitor(const commands_args_t& argv, FastoObject* out) WARN_UNUSED_RESULT;  // interrupt
+  common::Error Subscribe(const commands_args_t &argv, FastoObject* out) WARN_UNUSED_RESULT;       // interrupt
 
   common::Error SetEx(const NDbKValue& key, ttl_t ttl);
   common::Error SetNX(const NDbKValue& key, long long* result);

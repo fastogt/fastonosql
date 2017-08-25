@@ -27,17 +27,7 @@
 #include <sys/socket.h>  // for setsockopt, SOL_SOCKET, etc
 #endif
 
-#include <limits.h>  // for LONG_MIN
-#include <stdarg.h>  // for va_end, va_list, va_start
-#include <stdint.h>  // for uint64_t, uint16_t, int64_t
-#include <stdio.h>   // for vsnprintf
-#include <stdlib.h>  // for free, malloc, realloc, etc
-#include <string.h>  // for strcasecmp, NULL, strcmp, etc
-
-#include <memory>  // for __shared_ptr
 #include <sstream>
-#include <string>
-#include <vector>
 
 extern "C" {
 #include "sds.h"
@@ -242,37 +232,6 @@ ConstantCommandsArray CDBConnection<redis::NativeConnection, redis::RConfig, RED
 namespace redis {
 namespace {
 
-redisReply* ExecRedisCommand(redisContext* c, command_buffer_t command) {
-  if (command.empty()) {
-    return NULL;
-  }
-
-  int argc = 0;
-  sds* argv = sdssplitargslong(command.data(), &argc);
-  if (!argv) {
-    return NULL;
-  }
-
-  size_t* argvlen = reinterpret_cast<size_t*>(malloc(argc * sizeof(size_t)));
-  for (int i = 0; i < argc; ++i) {
-    argvlen[i] = sdslen(argv[i]);
-  }
-
-  int res = redisAppendCommandArgv(c, argc, const_cast<const char**>(argv), argvlen);
-  sdsfreesplitres(argv, argc);
-  free(argvlen);
-  if (res == REDIS_ERR) {
-    return NULL;
-  }
-
-  void* reply = NULL;
-  res = redisGetReply(c, &reply);
-  if (res == REDIS_ERR) {
-    return NULL;
-  }
-  return static_cast<redisReply*>(reply);
-}
-
 common::Error valueFromReplay(redisReply* r, common::Value** out) {
   if (!out) {
     DNOTREACHED();
@@ -324,34 +283,118 @@ common::Error valueFromReplay(redisReply* r, common::Value** out) {
   return common::Error();
 }
 
-common::Error cliPrintContextError(redisContext* context) {
+common::Error PrintRedisContextError(redisContext* context) {
   if (!context) {
     DNOTREACHED();
     return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  std::string buff = common::MemSPrintf("Error: %s", context->errstr);
-  return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  return common::make_error_value(common::MemSPrintf("Error: %s", context->errstr), common::ErrorValue::E_ERROR);
 }
 
-common::Error authContext(const char* auth_str, redisContext* context) {
-  if (!auth_str) {
-    return common::Error();
+common::Error ExecRedisCommand(redisContext* c,
+                               int argc,
+                               const char** argv,
+                               const size_t* argvlen,
+                               redisReply** out_reply) {
+  if (!c) {
+    DNOTREACHED();
+    return common::make_error_value("Not connected", common::Value::E_ERROR);
   }
 
-  redisReply* reply = static_cast<redisReply*>(redisCommand(context, "AUTH %s", auth_str));
-  if (reply) {
-    if (reply->type == REDIS_REPLY_ERROR) {
-      std::string buff = common::MemSPrintf("Authentification error: %s", reply->str);
-      freeReplyObject(reply);
-      return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+  if (argc <= 0 || !argv || !out_reply) {
+    DNOTREACHED();
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+  }
+
+  int res = redisAppendCommandArgv(c, argc, argv, argvlen);
+  if (res == REDIS_ERR) {
+    DNOTREACHED();
+    return PrintRedisContextError(c);
+  }
+
+  void* reply = NULL;
+  res = redisGetReply(c, &reply);
+  if (res == REDIS_ERR) {
+    /* Filter cases where we should reconnect */
+    if (c->err == REDIS_ERR_IO && errno == ECONNRESET) {
+      return common::make_error_value("Needed reconnect.", common::ErrorValue::E_ERROR);
+    }
+    if (c->err == REDIS_ERR_EOF) {
+      return common::make_error_value("Needed reconnect.", common::ErrorValue::E_ERROR);
     }
 
-    freeReplyObject(reply);
+    return PrintRedisContextError(c);
+  }
+
+  redisReply* rreply = static_cast<redisReply*>(reply);
+  if (rreply->type == REDIS_REPLY_ERROR) {
+    std::string str(rreply->str, rreply->len);
+    freeReplyObject(rreply);
+    return common::make_error_value(str, common::ErrorValue::E_ERROR);
+  }
+
+  *out_reply = rreply;
+  return common::Error();
+}
+
+common::Error ExecRedisCommand(redisContext* c, command_buffer_t command, redisReply** out_reply) {
+  if (command.empty() || !out_reply) {
+    DNOTREACHED();
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+  }
+
+  int argc = 0;
+  sds* argv = sdssplitargslong(command.data(), &argc);
+  if (!argv) {
+    DNOTREACHED();
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+  }
+
+  size_t* argvlen = reinterpret_cast<size_t*>(malloc(argc * sizeof(size_t)));
+  for (int i = 0; i < argc; ++i) {
+    argvlen[i] = sdslen(argv[i]);
+  }
+
+  common::Error err = ExecRedisCommand(c, argc, const_cast<const char**>(argv), argvlen, out_reply);
+  sdsfreesplitres(argv, argc);
+  free(argvlen);
+  return err;
+}
+
+common::Error ExecRedisCommand(redisContext* c, const commands_args_t& argv, redisReply** out_reply) {
+  if (argv.empty() || !out_reply) {
+    DNOTREACHED();
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+  }
+
+  const char** argvc = static_cast<const char**>(calloc(sizeof(const char*), argv.size()));
+  int argcc = 0;
+  size_t* argvlen = reinterpret_cast<size_t*>(malloc(argv.size() * sizeof(size_t)));
+  for (size_t i = 0; i < argv.size(); ++i) {
+    argvc[i] = argv[i].data();
+    argvlen[i] = argv[i].size();
+    argcc++;
+  }
+
+  common::Error err = ExecRedisCommand(c, argcc, argvc, argvlen, out_reply);
+  free(argvlen);
+  free(argvc);
+  return err;
+}
+
+common::Error AuthContext(redisContext* context, const std::string& auth_str) {
+  if (auth_str.empty()) {
     return common::Error();
   }
 
-  return cliPrintContextError(context);
+  redisReply* reply = NULL;
+  common::Error err = ExecRedisCommand(context, {"AUTH", auth_str}, &reply);
+  if (err && err->IsError()) {
+    return err;
+  }
+  freeReplyObject(reply);
+  return common::Error();
 }
 
 }  // namespace
@@ -422,8 +465,7 @@ common::Error TestConnection(const RConfig& rconfig) {
     return err;
   }
 
-  const char* auth_str = common::utils::c_strornull(rconfig.auth);
-  err = authContext(auth_str, context);
+  err = AuthContext(context, rconfig.auth);
   if (err && err->IsError()) {
     redisFree(context);
     return err;
@@ -444,8 +486,7 @@ common::Error DiscoveryClusterConnection(const RConfig& rconfig, std::vector<Ser
     return err;
   }
 
-  const char* auth_str = common::utils::c_strornull(rconfig.auth);
-  err = authContext(auth_str, context);
+  err = AuthContext(context, rconfig.auth);
   if (err && err->IsError()) {
     redisFree(context);
     return err;
@@ -483,8 +524,7 @@ common::Error DiscoverySentinelConnection(const RConfig& rconfig, std::vector<Se
     return err;
   }
 
-  const char* auth_str = common::utils::c_strornull(rconfig.auth);
-  err = authContext(auth_str, context);
+  err = AuthContext(context, rconfig.auth);
   if (err && err->IsError()) {
     redisFree(context);
     return err;
@@ -683,13 +723,19 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
                                      std::vector<std::string>* keys_out,
                                      uint64_t* cursor_out) {
   const command_buffer_t pattern_result = core::internal::GetKeysPattern(cursor_in, pattern, count_keys);
-  redisReply* reply = ExecRedisCommand(connection_.handle_, pattern_result);
-  if (!reply || reply->type != REDIS_REPLY_ARRAY) {
+  redisReply* reply = NULL;
+  common::Error err = ExecRedisCommand(connection_.handle_, pattern_result, &reply);
+  if (err && err->IsError()) {
+    return err;
+  }
+
+  if (reply->type != REDIS_REPLY_ARRAY) {
+    freeReplyObject(reply);
     return common::make_error_value("I/O error", common::ErrorValue::E_ERROR);
   }
 
   common::Value* val = nullptr;
-  common::Error err = valueFromReplay(reply, &val);
+  err = valueFromReplay(reply, &val);
   if (err && err->IsError()) {
     delete val;
     freeReplyObject(reply);
@@ -757,7 +803,7 @@ common::Error DBConnection::DBkcountImpl(size_t* size) {
 common::Error DBConnection::FlushDBImpl() {
   redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "FLUSHDB"));
   if (!reply) {
-    return cliPrintContextError(connection_.handle_);
+    return PrintRedisContextError(connection_.handle_);
   }
 
   freeReplyObject(reply);
@@ -777,15 +823,10 @@ common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** 
     return err;
   }
 
-  redisReply* reply = ExecRedisCommand(connection_.handle_, select_cmd);
-  if (!reply) {
-    return cliPrintContextError(connection_.handle_);
-  }
-
-  if (reply->type == REDIS_REPLY_ERROR) {
-    std::string str(reply->str, reply->len);
-    freeReplyObject(reply);
-    return common::make_error_value(str, common::ErrorValue::E_ERROR);
+  redisReply* reply = NULL;
+  err = ExecRedisCommand(connection_.handle_, select_cmd, &reply);
+  if (err && err->IsError()) {
+    return err;
   }
 
   connection_.config_.dbnum = num;
@@ -809,9 +850,10 @@ common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
       return err;
     }
 
-    redisReply* reply = ExecRedisCommand(connection_.handle_, del_cmd);
-    if (!reply) {
-      return cliPrintContextError(connection_.handle_);
+    redisReply* reply = NULL;
+    err = ExecRedisCommand(connection_.handle_, del_cmd, &reply);
+    if (err && err->IsError()) {
+      return err;
     }
 
     if (reply->type == REDIS_REPLY_INTEGER && reply->integer == 1) {
@@ -831,15 +873,10 @@ common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) 
     return err;
   }
 
-  redisReply* reply = ExecRedisCommand(connection_.handle_, set_cmd);
-  if (!reply) {
-    return cliPrintContextError(connection_.handle_);
-  }
-
-  if (reply->type == REDIS_REPLY_ERROR) {
-    std::string str(reply->str, reply->len);
-    freeReplyObject(reply);
-    return common::make_error_value(str, common::ErrorValue::E_ERROR);
+  redisReply* reply = NULL;
+  err = ExecRedisCommand(connection_.handle_, set_cmd, &reply);
+  if (err && err->IsError()) {
+    return err;
   }
 
   *added_key = key;
@@ -855,9 +892,10 @@ common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
     return err;
   }
 
-  redisReply* reply = ExecRedisCommand(connection_.handle_, get_cmd);
-  if (!reply) {
-    return cliPrintContextError(connection_.handle_);
+  redisReply* reply = NULL;
+  err = ExecRedisCommand(connection_.handle_, get_cmd, &reply);
+  if (err && err->IsError()) {
+    return err;
   }
 
   common::Value* val = nullptr;
@@ -865,10 +903,6 @@ common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
     val = common::Value::CreateStringValue(reply->str);
   } else if (reply->type == REDIS_REPLY_NIL) {
     val = common::Value::CreateNullValue();
-  } else if (reply->type == REDIS_REPLY_ERROR) {
-    common::Error err = common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
-    freeReplyObject(reply);
-    return err;
   } else {
     NOTREACHED();
   }
@@ -885,15 +919,10 @@ common::Error DBConnection::RenameImpl(const NKey& key, string_key_t new_key) {
     return err;
   }
 
-  redisReply* reply = ExecRedisCommand(connection_.handle_, rename_cmd);
-  if (!reply) {
-    return cliPrintContextError(connection_.handle_);
-  }
-
-  if (reply->type == REDIS_REPLY_ERROR) {
-    std::string str(reply->str, reply->len);
-    freeReplyObject(reply);
-    return common::make_error_value(str, common::ErrorValue::E_ERROR);
+  redisReply* reply = NULL;
+  err = ExecRedisCommand(connection_.handle_, rename_cmd, &reply);
+  if (err && err->IsError()) {
+    return err;
   }
 
   freeReplyObject(reply);
@@ -909,21 +938,16 @@ common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
     return err;
   }
 
-  redisReply* reply = ExecRedisCommand(connection_.handle_, ttl_cmd);
-  if (!reply) {
-    return cliPrintContextError(connection_.handle_);
-  }
-
-  if (reply->type == REDIS_REPLY_ERROR) {
-    std::string str(reply->str, reply->len);
-    freeReplyObject(reply);
-    return common::make_error_value(str, common::ErrorValue::E_ERROR);
+  redisReply* reply = NULL;
+  err = ExecRedisCommand(connection_.handle_, ttl_cmd, &reply);
+  if (err && err->IsError()) {
+    return err;
   }
 
   if (reply->integer == 0) {
     command_buffer_writer_t wr;
     wr << key_str.ToString() << " does not exist or the timeout could not be set.";
-    std::string err_str = common::ConvertToString(wr.str());
+    std::string err_str = wr.str();
     return common::make_error_value(err_str, common::ErrorValue::E_ERROR);
   }
 
@@ -939,15 +963,10 @@ common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
     return err;
   }
 
-  redisReply* reply = ExecRedisCommand(connection_.handle_, ttl_cmd);
-  if (!reply) {
-    return cliPrintContextError(connection_.handle_);
-  }
-
-  if (reply->type == REDIS_REPLY_ERROR) {
-    std::string str(reply->str, reply->len);
-    freeReplyObject(reply);
-    return common::make_error_value(str, common::ErrorValue::E_ERROR);
+  redisReply* reply = NULL;
+  err = ExecRedisCommand(connection_.handle_, ttl_cmd, &reply);
+  if (err && err->IsError()) {
+    return err;
   }
 
   if (reply->type != REDIS_REPLY_INTEGER) {
@@ -963,7 +982,7 @@ common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
 common::Error DBConnection::QuitImpl() {
   redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "QUIT"));
   if (!reply) {
-    return cliPrintContextError(connection_.handle_);
+    return PrintRedisContextError(connection_.handle_);
   }
 
   freeReplyObject(reply);
@@ -1025,7 +1044,7 @@ common::Error DBConnection::CliFormatReplyRaw(FastoObjectArray* ar, redisReply* 
 }
 
 common::Error DBConnection::CliFormatReplyRaw(FastoObject* out, redisReply* r) {
-  if (!out) {
+  if (!out || !r) {
     DNOTREACHED();
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
@@ -1102,7 +1121,7 @@ common::Error DBConnection::CliReadReply(FastoObject* out) {
       return common::make_error_value("Needed reconnect.", common::ErrorValue::E_ERROR);
     }
 
-    return cliPrintContextError(connection_.handle_); /* avoid compiler warning */
+    return PrintRedisContextError(connection_.handle_); /* avoid compiler warning */
   }
 
   redisReply* reply = static_cast<redisReply*>(_reply);
@@ -1153,9 +1172,9 @@ common::Error DBConnection::ExecuteAsPipeline(const std::vector<FastoObjectComma
 
   for (size_t i = 0; i < valid_cmds.size(); ++i) {
     FastoObjectCommandIPtr cmd = cmds[i];
-    common::Error er = CliReadReply(cmd.get());
-    if (er && er->IsError()) {
-      return er;
+    common::Error err = CliReadReply(cmd.get());
+    if (err && err->IsError()) {
+      return err;
     }
   }
   // end piplene
@@ -1163,45 +1182,25 @@ common::Error DBConnection::ExecuteAsPipeline(const std::vector<FastoObjectComma
   return common::Error();
 }
 
-common::Error DBConnection::CommonExec(commands_args_t argv, FastoObject* out) {
+common::Error DBConnection::CommonExec(const commands_args_t& argv, FastoObject* out) {
   if (!out || argv.empty()) {
     DNOTREACHED();
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
-  const char** argvc = static_cast<const char**>(calloc(sizeof(const char*), argv.size()));
-  int argcc = 0;
-  size_t* argvlen = reinterpret_cast<size_t*>(malloc(argv.size() * sizeof(size_t)));
-  for (size_t i = 0; i < argv.size(); ++i) {
-    argvc[i] = argv[i].c_str();
-    argvlen[i] = argv[i].size();
-    argcc++;
-  }
-
-  redisAppendCommandArgv(connection_.handle_, argcc, argvc, argvlen);
-  free(argvlen);
-  free(argvc);
-
-  common::Error err = CliReadReply(out);
+  redisReply* reply = NULL;
+  common::Error err = ExecRedisCommand(connection_.handle_, argv, &reply);
   if (err && err->IsError()) {
     return err;
   }
 
-  return common::Error();
+  err = CliFormatReplyRaw(out, reply);
+  freeReplyObject(reply);
+  return err;
 }
 
 common::Error DBConnection::Auth(const std::string& password) {
-  if (!IsConnected()) {
-    DNOTREACHED();
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
-  const char* auth_str = common::utils::c_strornull(password);
-  common::Error err = authContext(auth_str, connection_.handle_);
+  common::Error err = AuthContext(connection_.handle_, password);
   if (err && err->IsError()) {
     isAuth_ = false;
     return err;
@@ -1212,84 +1211,62 @@ common::Error DBConnection::Auth(const std::string& password) {
   return common::Error();
 }
 
-common::Error DBConnection::Monitor(commands_args_t argv, FastoObject* out) {
+common::Error DBConnection::Monitor(const commands_args_t& argv, FastoObject* out) {
   if (!out || argv.empty()) {
     DNOTREACHED();
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
-  const char** argvc = static_cast<const char**>(calloc(sizeof(const char*), argv.size()));
-  int argcc = 0;
-  size_t* argvlen = reinterpret_cast<size_t*>(malloc(argv.size() * sizeof(size_t)));
-  for (size_t i = 0; i < argv.size(); ++i) {
-    argvc[i] = argv[i].c_str();
-    argvlen[i] = argv[i].size();
-    argcc++;
-  }
-
-  redisAppendCommandArgv(connection_.handle_, argcc, argvc, argvlen);
-  free(argvlen);
-  free(argvc);
-
-  common::Error err = CliReadReply(out);
+  redisReply* reply = NULL;
+  common::Error err = ExecRedisCommand(connection_.handle_, argv, &reply);
   if (err && err->IsError()) {
     return err;
   }
 
-  while (true) {
-    common::Error er = CliReadReply(out);
-    if (er && er->IsError()) {
-      return er;
-    }
+  err = CliFormatReplyRaw(out, reply);
+  freeReplyObject(reply);
+  reply = NULL;
+  if (err && err->IsError()) {
+    return err;
+  }
 
-    if (IsInterrupted()) {
-      return common::make_error_value("Interrupted.", common::ErrorValue::E_INTERRUPTED);
+  while (!IsInterrupted()) {  // listen loop
+    err = CliReadReply(out);
+    if (err && err->IsError()) {
+      return err;
     }
   }
+
+  return common::make_error_value("Interrupted.", common::ErrorValue::E_INTERRUPTED);
 }
 
-common::Error DBConnection::Subscribe(commands_args_t argv, FastoObject* out) {
+common::Error DBConnection::Subscribe(const commands_args_t& argv, FastoObject* out) {
   if (!out || argv.empty()) {
     DNOTREACHED();
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
-  const char** argvc = static_cast<const char**>(calloc(sizeof(const char*), argv.size()));
-  int argcc = 0;
-  size_t* argvlen = reinterpret_cast<size_t*>(malloc(argv.size() * sizeof(size_t)));
-  for (size_t i = 0; i < argv.size(); ++i) {
-    argvc[i] = argv[i].c_str();
-    argvlen[i] = argv[i].size();
-    argcc++;
-  }
-
-  redisAppendCommandArgv(connection_.handle_, argcc, argvc, argvlen);
-  free(argvlen);
-  free(argvc);
-
-  common::Error err = CliReadReply(out);
+  redisReply* reply = NULL;
+  common::Error err = ExecRedisCommand(connection_.handle_, argv, &reply);
   if (err && err->IsError()) {
     return err;
   }
 
-  while (true) {
-    common::Error er = CliReadReply(out);
-    if (er && er->IsError()) {
-      return er;
-    }
+  err = CliFormatReplyRaw(out, reply);
+  freeReplyObject(reply);
+  reply = NULL;
+  if (err && err->IsError()) {
+    return err;
+  }
 
-    if (IsInterrupted()) {
-      return common::make_error_value("Interrupted.", common::ErrorValue::E_INTERRUPTED);
+  while (!IsInterrupted()) {  // listen loop
+    err = CliReadReply(out);
+    if (err && err->IsError()) {
+      return err;
     }
   }
+
+  return common::make_error_value("Interrupted.", common::ErrorValue::E_INTERRUPTED);
 }
 
 common::Error DBConnection::SetEx(const NDbKValue& key, ttl_t ttl) {
@@ -1300,15 +1277,10 @@ common::Error DBConnection::SetEx(const NDbKValue& key, ttl_t ttl) {
   wr << "SETEX " << key_str.GetKeyData() << " " << ttl << " " << value_str;
   const command_buffer_t setex_cmd = wr.str();
 
-  redisReply* reply = ExecRedisCommand(connection_.handle_, setex_cmd);
-  if (!reply) {
-    return cliPrintContextError(connection_.handle_);
-  }
-
-  if (reply->type == REDIS_REPLY_ERROR) {
-    std::string str(reply->str, reply->len);
-    freeReplyObject(reply);
-    return common::make_error_value(str, common::ErrorValue::E_ERROR);
+  redisReply* reply = NULL;
+  common::Error err = ExecRedisCommand(connection_.handle_, setex_cmd, &reply);
+  if (err && err->IsError()) {
+    return err;
   }
 
   if (client_) {
@@ -1329,9 +1301,10 @@ common::Error DBConnection::SetNX(const NDbKValue& key, long long* result) {
   wr << "SETNX " << key_str.GetKeyData() << " " << value_str;
   const command_buffer_t setnx_cmd = wr.str();
 
-  redisReply* reply = ExecRedisCommand(connection_.handle_, setnx_cmd);
-  if (!reply) {
-    return cliPrintContextError(connection_.handle_);
+  redisReply* reply = NULL;
+  common::Error err = ExecRedisCommand(connection_.handle_, setnx_cmd, &reply);
+  if (err && err->IsError()) {
+    return err;
   }
 
   if (reply->type == REDIS_REPLY_INTEGER) {
@@ -1342,10 +1315,6 @@ common::Error DBConnection::SetNX(const NDbKValue& key, long long* result) {
     *result = reply->integer;
     freeReplyObject(reply);
     return common::Error();
-  } else if (reply->type == REDIS_REPLY_ERROR) {
-    common::Error err = common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
-    freeReplyObject(reply);
-    return err;
   }
 
   NOTREACHED();
@@ -1358,11 +1327,6 @@ common::Error DBConnection::Lpush(const NKey& key, NValue arr, long long* list_l
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  if (!IsConnected()) {
-    DNOTREACHED();
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
   NDbKValue rarr(key, arr);
   translator_t tran = GetTranslator();
   command_buffer_t lpush_cmd;
@@ -1371,9 +1335,10 @@ common::Error DBConnection::Lpush(const NKey& key, NValue arr, long long* list_l
     return err;
   }
 
-  redisReply* reply = ExecRedisCommand(connection_.handle_, lpush_cmd);
-  if (!reply) {
-    return cliPrintContextError(connection_.handle_);
+  redisReply* reply = NULL;
+  err = ExecRedisCommand(connection_.handle_, lpush_cmd, &reply);
+  if (err && err->IsError()) {
+    return err;
   }
 
   if (reply->type == REDIS_REPLY_INTEGER) {
@@ -1383,10 +1348,6 @@ common::Error DBConnection::Lpush(const NKey& key, NValue arr, long long* list_l
     *list_len = reply->integer;
     freeReplyObject(reply);
     return common::Error();
-  } else if (reply->type == REDIS_REPLY_ERROR) {
-    common::Error err = common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
-    freeReplyObject(reply);
-    return err;
   }
 
   NOTREACHED();
@@ -1394,19 +1355,15 @@ common::Error DBConnection::Lpush(const NKey& key, NValue arr, long long* list_l
 }
 
 common::Error DBConnection::Lrange(const NKey& key, int start, int stop, NDbKValue* loaded_key) {
-  if (!IsConnected()) {
-    DNOTREACHED();
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
-  wr << "LRANGE " << key_str.GetKeyData() << " " << start << " " << common::ConvertToString(stop);
+  wr << "LRANGE " << key_str.GetKeyData() << " " << start << " " << stop;
   const command_buffer_t lrange_cmd = wr.str();
 
-  redisReply* reply = ExecRedisCommand(connection_.handle_, lrange_cmd);
-  if (!reply) {
-    return cliPrintContextError(connection_.handle_);
+  redisReply* reply = NULL;
+  common::Error err = ExecRedisCommand(connection_.handle_, lrange_cmd, &reply);
+  if (err && err->IsError()) {
+    return err;
   }
 
   if (reply->type == REDIS_REPLY_ARRAY) {
@@ -1424,10 +1381,6 @@ common::Error DBConnection::Lrange(const NKey& key, int start, int stop, NDbKVal
     }
     freeReplyObject(reply);
     return common::Error();
-  } else if (reply->type == REDIS_REPLY_ERROR) {
-    common::Error err = common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
-    freeReplyObject(reply);
-    return err;
   }
 
   NOTREACHED();
@@ -1440,11 +1393,6 @@ common::Error DBConnection::Sadd(const NKey& key, NValue set, long long* added) 
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  if (!IsConnected()) {
-    DNOTREACHED();
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
   NDbKValue rset(key, set);
   translator_t tran = GetTranslator();
   command_buffer_t sadd_cmd;
@@ -1453,9 +1401,10 @@ common::Error DBConnection::Sadd(const NKey& key, NValue set, long long* added) 
     return err;
   }
 
-  redisReply* reply = ExecRedisCommand(connection_.handle_, sadd_cmd);
-  if (!reply) {
-    return cliPrintContextError(connection_.handle_);
+  redisReply* reply = NULL;
+  err = ExecRedisCommand(connection_.handle_, sadd_cmd, &reply);
+  if (err && err->IsError()) {
+    return err;
   }
 
   if (reply->type == REDIS_REPLY_INTEGER) {
@@ -1465,10 +1414,6 @@ common::Error DBConnection::Sadd(const NKey& key, NValue set, long long* added) 
     *added = reply->integer;
     freeReplyObject(reply);
     return common::Error();
-  } else if (reply->type == REDIS_REPLY_ERROR) {
-    common::Error err = common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
-    freeReplyObject(reply);
-    return err;
   }
 
   NOTREACHED();
@@ -1481,18 +1426,15 @@ common::Error DBConnection::Smembers(const NKey& key, NDbKValue* loaded_key) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
   wr << "SMEMBERS " << key_str.GetKeyData();
   const command_buffer_t smembers_cmd = wr.str();
 
-  redisReply* reply = ExecRedisCommand(connection_.handle_, smembers_cmd);
-  if (!reply) {
-    return cliPrintContextError(connection_.handle_);
+  redisReply* reply = NULL;
+  common::Error err = ExecRedisCommand(connection_.handle_, smembers_cmd, &reply);
+  if (err && err->IsError()) {
+    return err;
   }
 
   if (reply->type == REDIS_REPLY_ARRAY) {
@@ -1526,10 +1468,6 @@ common::Error DBConnection::Smembers(const NKey& key, NDbKValue* loaded_key) {
     }
     freeReplyObject(reply);
     return common::Error();
-  } else if (reply->type == REDIS_REPLY_ERROR) {
-    common::Error err = common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
-    freeReplyObject(reply);
-    return err;
   }
 
   NOTREACHED();
@@ -1542,11 +1480,6 @@ common::Error DBConnection::Zadd(const NKey& key, NValue scores, long long* adde
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  if (!IsConnected()) {
-    DNOTREACHED();
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
   NDbKValue rzset(key, scores);
   translator_t tran = GetTranslator();
   command_buffer_t zadd_cmd;
@@ -1555,9 +1488,10 @@ common::Error DBConnection::Zadd(const NKey& key, NValue scores, long long* adde
     return err;
   }
 
-  redisReply* reply = ExecRedisCommand(connection_.handle_, zadd_cmd);
-  if (!reply) {
-    return cliPrintContextError(connection_.handle_);
+  redisReply* reply = NULL;
+  err = ExecRedisCommand(connection_.handle_, zadd_cmd, &reply);
+  if (err && err->IsError()) {
+    return err;
   }
 
   if (reply->type == REDIS_REPLY_INTEGER) {
@@ -1567,10 +1501,6 @@ common::Error DBConnection::Zadd(const NKey& key, NValue scores, long long* adde
     *added = reply->integer;
     freeReplyObject(reply);
     return common::Error();
-  } else if (reply->type == REDIS_REPLY_ERROR) {
-    common::Error err = common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
-    freeReplyObject(reply);
-    return err;
   }
 
   NOTREACHED();
@@ -1583,10 +1513,6 @@ common::Error DBConnection::Zrange(const NKey& key, int start, int stop, bool wi
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
   wr << "ZRANGE " << key_str.GetKeyData() << " " << start << " " << stop;
@@ -1595,9 +1521,10 @@ common::Error DBConnection::Zrange(const NKey& key, int start, int stop, bool wi
   }
   const command_buffer_t line = wr.str();
 
-  redisReply* reply = ExecRedisCommand(connection_.handle_, line);
-  if (!reply) {
-    return cliPrintContextError(connection_.handle_);
+  redisReply* reply = NULL;
+  common::Error err = ExecRedisCommand(connection_.handle_, line, &reply);
+  if (err && err->IsError()) {
+    return err;
   }
 
   if (reply->type == REDIS_REPLY_ARRAY) {
@@ -1641,10 +1568,6 @@ common::Error DBConnection::Zrange(const NKey& key, int start, int stop, bool wi
     }
     freeReplyObject(reply);
     return common::Error();
-  } else if (reply->type == REDIS_REPLY_ERROR) {
-    common::Error err = common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
-    freeReplyObject(reply);
-    return err;
   }
 
   NOTREACHED();
@@ -1657,11 +1580,6 @@ common::Error DBConnection::Hmset(const NKey& key, NValue hash) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  if (!IsConnected()) {
-    DNOTREACHED();
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
   NDbKValue rhash(key, hash);
   translator_t tran = GetTranslator();
   command_buffer_t hmset_cmd;
@@ -1670,9 +1588,10 @@ common::Error DBConnection::Hmset(const NKey& key, NValue hash) {
     return err;
   }
 
-  redisReply* reply = ExecRedisCommand(connection_.handle_, hmset_cmd);
-  if (!reply) {
-    return cliPrintContextError(connection_.handle_);
+  redisReply* reply = NULL;
+  err = ExecRedisCommand(connection_.handle_, hmset_cmd, &reply);
+  if (err && err->IsError()) {
+    return err;
   }
 
   if (reply->type == REDIS_REPLY_STATUS) {
@@ -1681,10 +1600,6 @@ common::Error DBConnection::Hmset(const NKey& key, NValue hash) {
     }
     freeReplyObject(reply);
     return common::Error();
-  } else if (reply->type == REDIS_REPLY_ERROR) {
-    common::Error err = common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
-    freeReplyObject(reply);
-    return err;
   }
 
   NOTREACHED();
@@ -1697,18 +1612,15 @@ common::Error DBConnection::Hgetall(const NKey& key, NDbKValue* loaded_key) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
   wr << "HGETALL " << key_str.GetKeyData();
   const command_buffer_t hgetall_cmd = wr.str();
 
-  redisReply* reply = ExecRedisCommand(connection_.handle_, hgetall_cmd);
-  if (!reply) {
-    return cliPrintContextError(connection_.handle_);
+  redisReply* reply = NULL;
+  common::Error err = ExecRedisCommand(connection_.handle_, hgetall_cmd, &reply);
+  if (err && err->IsError()) {
+    return err;
   }
 
   if (reply->type == REDIS_REPLY_ARRAY) {
@@ -1743,10 +1655,6 @@ common::Error DBConnection::Hgetall(const NKey& key, NDbKValue* loaded_key) {
     }
     freeReplyObject(reply);
     return common::Error();
-  } else if (reply->type == REDIS_REPLY_ERROR) {
-    common::Error err = common::make_error_value(std::string(reply->str, reply->len), common::Value::E_ERROR);
-    freeReplyObject(reply);
-    return err;
   }
 
   NOTREACHED();
@@ -1759,18 +1667,15 @@ common::Error DBConnection::Decr(const NKey& key, long long* decr) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
   wr << "DECR " << key_str.GetKeyData();
   const command_buffer_t decr_cmd = wr.str();
 
-  redisReply* reply = ExecRedisCommand(connection_.handle_, decr_cmd);
-  if (!reply) {
-    return cliPrintContextError(connection_.handle_);
+  redisReply* reply = NULL;
+  common::Error err = ExecRedisCommand(connection_.handle_, decr_cmd, &reply);
+  if (err && err->IsError()) {
+    return err;
   }
 
   if (reply->type == REDIS_REPLY_INTEGER) {
@@ -1781,10 +1686,6 @@ common::Error DBConnection::Decr(const NKey& key, long long* decr) {
     *decr = reply->integer;
     freeReplyObject(reply);
     return common::Error();
-  } else if (reply->type == REDIS_REPLY_ERROR) {
-    std::string str(reply->str, reply->len);
-    freeReplyObject(reply);
-    return common::make_error_value(str, common::ErrorValue::E_ERROR);
   }
 
   NOTREACHED();
@@ -1797,18 +1698,15 @@ common::Error DBConnection::DecrBy(const NKey& key, int dec, long long* decr) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
   wr << "DECRBY " << key_str.GetKeyData() << " " << dec;
   const command_buffer_t decrby_cmd = wr.str();
 
-  redisReply* reply = ExecRedisCommand(connection_.handle_, decrby_cmd);
-  if (!reply) {
-    return cliPrintContextError(connection_.handle_);
+  redisReply* reply = NULL;
+  common::Error err = ExecRedisCommand(connection_.handle_, decrby_cmd, &reply);
+  if (err && err->IsError()) {
+    return err;
   }
 
   if (reply->type == REDIS_REPLY_INTEGER) {
@@ -1819,10 +1717,6 @@ common::Error DBConnection::DecrBy(const NKey& key, int dec, long long* decr) {
     *decr = reply->integer;
     freeReplyObject(reply);
     return common::Error();
-  } else if (reply->type == REDIS_REPLY_ERROR) {
-    std::string str(reply->str, reply->len);
-    freeReplyObject(reply);
-    return common::make_error_value(str, common::ErrorValue::E_ERROR);
   }
 
   NOTREACHED();
@@ -1835,18 +1729,15 @@ common::Error DBConnection::Incr(const NKey& key, long long* incr) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
   wr << "INCR " << key_str.GetKeyData();
   const command_buffer_t incr_cmd = wr.str();
 
-  redisReply* reply = ExecRedisCommand(connection_.handle_, incr_cmd);
-  if (!reply) {
-    return cliPrintContextError(connection_.handle_);
+  redisReply* reply = NULL;
+  common::Error err = ExecRedisCommand(connection_.handle_, incr_cmd, &reply);
+  if (err && err->IsError()) {
+    return err;
   }
 
   if (reply->type == REDIS_REPLY_INTEGER) {
@@ -1857,10 +1748,6 @@ common::Error DBConnection::Incr(const NKey& key, long long* incr) {
     *incr = reply->integer;
     freeReplyObject(reply);
     return common::Error();
-  } else if (reply->type == REDIS_REPLY_ERROR) {
-    std::string str(reply->str, reply->len);
-    freeReplyObject(reply);
-    return common::make_error_value(str, common::ErrorValue::E_ERROR);
   }
 
   NOTREACHED();
@@ -1873,18 +1760,15 @@ common::Error DBConnection::IncrBy(const NKey& key, int inc, long long* incr) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
   wr << "INCRBY " << key_str.GetKeyData() << " " << inc;
   const command_buffer_t incrby_cmd = wr.str();
 
-  redisReply* reply = ExecRedisCommand(connection_.handle_, incrby_cmd);
-  if (!reply) {
-    return cliPrintContextError(connection_.handle_);
+  redisReply* reply = NULL;
+  common::Error err = ExecRedisCommand(connection_.handle_, incrby_cmd, &reply);
+  if (err && err->IsError()) {
+    return err;
   }
 
   if (reply->type == REDIS_REPLY_INTEGER) {
@@ -1895,10 +1779,6 @@ common::Error DBConnection::IncrBy(const NKey& key, int inc, long long* incr) {
     *incr = reply->integer;
     freeReplyObject(reply);
     return common::Error();
-  } else if (reply->type == REDIS_REPLY_ERROR) {
-    std::string str(reply->str, reply->len);
-    freeReplyObject(reply);
-    return common::make_error_value(str, common::ErrorValue::E_ERROR);
   }
 
   NOTREACHED();
@@ -1911,18 +1791,15 @@ common::Error DBConnection::IncrByFloat(const NKey& key, double inc, std::string
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
-  }
-
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
   wr << "INCRBYFLOAT " << key_str.GetKeyData() << " " << inc;
   const command_buffer_t incrfloat_cmd = wr.str();
 
-  redisReply* reply = ExecRedisCommand(connection_.handle_, incrfloat_cmd);
-  if (!reply) {
-    return cliPrintContextError(connection_.handle_);
+  redisReply* reply = NULL;
+  common::Error err = ExecRedisCommand(connection_.handle_, incrfloat_cmd, &reply);
+  if (err && err->IsError()) {
+    return err;
   }
 
   if (reply->type == REDIS_REPLY_STRING) {
@@ -1934,10 +1811,6 @@ common::Error DBConnection::IncrByFloat(const NKey& key, double inc, std::string
     *str_incr = str;
     freeReplyObject(reply);
     return common::Error();
-  } else if (reply->type == REDIS_REPLY_ERROR) {
-    std::string str(reply->str, reply->len);
-    freeReplyObject(reply);
-    return common::make_error_value(str, common::ErrorValue::E_ERROR);
   }
 
   NOTREACHED();
