@@ -27,8 +27,6 @@
 #include <sys/socket.h>  // for setsockopt, SOL_SOCKET, etc
 #endif
 
-#include <sstream>
-
 extern "C" {
 #include "sds.h"
 }
@@ -36,16 +34,7 @@ extern "C" {
 #include <hiredis/hiredis.h>
 #include <libssh2.h>  // for libssh2_exit, etc
 
-#include <common/convert2string.h>  // for ConvertFromString, etc
-#include <common/intrusive_ptr.h>   // for intrusive_ptr
-#include <common/log_levels.h>      // for LEVEL_LOG::L_INFO, etc
-#include <common/macros.h>          // for INVALID_DESCRIPTOR
-#include <common/net/types.h>       // for HostAndPort, etc
-#include <common/sprintf.h>         // for MemSPrintf, SNPrintf
-#include <common/time.h>            // for current_mstime
-#include <common/types.h>           // for time64_t
-#include <common/utils.h>           // for c_strornull, usleep, etc
-#include <common/value.h>           // for ErrorValue, etc
+#include <common/utils.h>  // for c_strornull, usleep, etc
 
 #include "core/icommand_translator.h"  // for translator_t, etc
 
@@ -817,7 +806,7 @@ common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** 
   }
 
   command_buffer_t select_cmd;
-  translator_t tran = GetTranslator();
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
   common::Error err = tran->SelectDBCommand(common::ConvertToString(num), &select_cmd);
   if (err && err->IsError()) {
     return err;
@@ -844,7 +833,7 @@ common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     NKey key = keys[i];
     command_buffer_t del_cmd;
-    translator_t tran = GetTranslator();
+    redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
     common::Error err = tran->DeleteKeyCommand(key, &del_cmd);
     if (err && err->IsError()) {
       return err;
@@ -867,7 +856,7 @@ common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
 
 common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) {
   command_buffer_t set_cmd;
-  translator_t tran = GetTranslator();
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
   common::Error err = tran->CreateKeyCommand(key, &set_cmd);
   if (err && err->IsError()) {
     return err;
@@ -886,7 +875,7 @@ common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) 
 
 common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
   command_buffer_t get_cmd;
-  translator_t tran = GetTranslator();
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
   common::Error err = tran->LoadKeyCommand(key, common::Value::TYPE_STRING, &get_cmd);
   if (err && err->IsError()) {
     return err;
@@ -912,7 +901,7 @@ common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
 }
 
 common::Error DBConnection::RenameImpl(const NKey& key, string_key_t new_key) {
-  translator_t tran = GetTranslator();
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
   command_buffer_t rename_cmd;
   common::Error err = tran->RenameKeyCommand(key, key_t(new_key), &rename_cmd);
   if (err && err->IsError()) {
@@ -931,7 +920,7 @@ common::Error DBConnection::RenameImpl(const NKey& key, string_key_t new_key) {
 
 common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
   key_t key_str = key.GetKey();
-  translator_t tran = GetTranslator();
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
   command_buffer_t ttl_cmd;
   common::Error err = tran->ChangeKeyTTLCommand(key, ttl, &ttl_cmd);
   if (err && err->IsError()) {
@@ -945,9 +934,7 @@ common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
   }
 
   if (reply->integer == 0) {
-    command_buffer_writer_t wr;
-    wr << key_str.ToString() << " does not exist or the timeout could not be set.";
-    std::string err_str = wr.str();
+    const std::string err_str = key_str.ToString() + " does not exist or the timeout could not be set.";
     return common::make_error_value(err_str, common::ErrorValue::E_ERROR);
   }
 
@@ -956,7 +943,7 @@ common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
 }
 
 common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
-  translator_t tran = GetTranslator();
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
   command_buffer_t ttl_cmd;
   common::Error err = tran->LoadKeyTTLCommand(key, &ttl_cmd);
   if (err && err->IsError()) {
@@ -1270,15 +1257,15 @@ common::Error DBConnection::Subscribe(const commands_args_t& argv, FastoObject* 
 }
 
 common::Error DBConnection::SetEx(const NDbKValue& key, ttl_t ttl) {
-  const NKey cur = key.GetKey();
-  key_t key_str = cur.GetKey();
-  std::string value_str = key.ValueString();
-  command_buffer_writer_t wr;
-  wr << "SETEX " << key_str.GetKeyData() << " " << ttl << " " << value_str;
-  const command_buffer_t setex_cmd = wr.str();
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
+  command_buffer_t setex_cmd;
+  common::Error err = tran->SetEx(key, ttl, &setex_cmd);
+  if (err && err->IsError()) {
+    return err;
+  }
 
   redisReply* reply = NULL;
-  common::Error err = ExecRedisCommand(connection_.handle_, setex_cmd, &reply);
+  err = ExecRedisCommand(connection_.handle_, setex_cmd, &reply);
   if (err && err->IsError()) {
     return err;
   }
@@ -1294,15 +1281,15 @@ common::Error DBConnection::SetEx(const NDbKValue& key, ttl_t ttl) {
 }
 
 common::Error DBConnection::SetNX(const NDbKValue& key, long long* result) {
-  const NKey cur = key.GetKey();
-  key_t key_str = cur.GetKey();
-  std::string value_str = key.ValueString();
-  command_buffer_writer_t wr;
-  wr << "SETNX " << key_str.GetKeyData() << " " << value_str;
-  const command_buffer_t setnx_cmd = wr.str();
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
+  command_buffer_t setnx_cmd;
+  common::Error err = tran->SetNX(key, &setnx_cmd);
+  if (err && err->IsError()) {
+    return err;
+  }
 
   redisReply* reply = NULL;
-  common::Error err = ExecRedisCommand(connection_.handle_, setnx_cmd, &reply);
+  err = ExecRedisCommand(connection_.handle_, setnx_cmd, &reply);
   if (err && err->IsError()) {
     return err;
   }
@@ -1328,7 +1315,7 @@ common::Error DBConnection::Lpush(const NKey& key, NValue arr, long long* list_l
   }
 
   NDbKValue rarr(key, arr);
-  translator_t tran = GetTranslator();
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
   command_buffer_t lpush_cmd;
   common::Error err = tran->CreateKeyCommand(rarr, &lpush_cmd);
   if (err && err->IsError()) {
@@ -1355,13 +1342,20 @@ common::Error DBConnection::Lpush(const NKey& key, NValue arr, long long* list_l
 }
 
 common::Error DBConnection::Lrange(const NKey& key, int start, int stop, NDbKValue* loaded_key) {
-  key_t key_str = key.GetKey();
-  command_buffer_writer_t wr;
-  wr << "LRANGE " << key_str.GetKeyData() << " " << start << " " << stop;
-  const command_buffer_t lrange_cmd = wr.str();
+  if (!loaded_key) {
+    DNOTREACHED();
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+  }
+
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
+  command_buffer_t lrange_cmd;
+  common::Error err = tran->Lrange(key, start, stop, &lrange_cmd);
+  if (err && err->IsError()) {
+    return err;
+  }
 
   redisReply* reply = NULL;
-  common::Error err = ExecRedisCommand(connection_.handle_, lrange_cmd, &reply);
+  err = ExecRedisCommand(connection_.handle_, lrange_cmd, &reply);
   if (err && err->IsError()) {
     return err;
   }
@@ -1394,7 +1388,7 @@ common::Error DBConnection::Sadd(const NKey& key, NValue set, long long* added) 
   }
 
   NDbKValue rset(key, set);
-  translator_t tran = GetTranslator();
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
   command_buffer_t sadd_cmd;
   common::Error err = tran->CreateKeyCommand(rset, &sadd_cmd);
   if (err && err->IsError()) {
@@ -1426,13 +1420,15 @@ common::Error DBConnection::Smembers(const NKey& key, NDbKValue* loaded_key) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  key_t key_str = key.GetKey();
-  command_buffer_writer_t wr;
-  wr << "SMEMBERS " << key_str.GetKeyData();
-  const command_buffer_t smembers_cmd = wr.str();
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
+  command_buffer_t smembers_cmd;
+  common::Error err = tran->Smembers(key, &smembers_cmd);
+  if (err && err->IsError()) {
+    return err;
+  }
 
   redisReply* reply = NULL;
-  common::Error err = ExecRedisCommand(connection_.handle_, smembers_cmd, &reply);
+  err = ExecRedisCommand(connection_.handle_, smembers_cmd, &reply);
   if (err && err->IsError()) {
     return err;
   }
@@ -1481,7 +1477,7 @@ common::Error DBConnection::Zadd(const NKey& key, NValue scores, long long* adde
   }
 
   NDbKValue rzset(key, scores);
-  translator_t tran = GetTranslator();
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
   command_buffer_t zadd_cmd;
   common::Error err = tran->CreateKeyCommand(rzset, &zadd_cmd);
   if (err && err->IsError()) {
@@ -1513,16 +1509,15 @@ common::Error DBConnection::Zrange(const NKey& key, int start, int stop, bool wi
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  key_t key_str = key.GetKey();
-  command_buffer_writer_t wr;
-  wr << "ZRANGE " << key_str.GetKeyData() << " " << start << " " << stop;
-  if (withscores) {
-    wr << " WITHSCORES";
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
+  command_buffer_t zrange;
+  common::Error err = tran->Zrange(key, start, stop, withscores, &zrange);
+  if (err && err->IsError()) {
+    return err;
   }
-  const command_buffer_t line = wr.str();
 
   redisReply* reply = NULL;
-  common::Error err = ExecRedisCommand(connection_.handle_, line, &reply);
+  err = ExecRedisCommand(connection_.handle_, zrange, &reply);
   if (err && err->IsError()) {
     return err;
   }
@@ -1581,7 +1576,7 @@ common::Error DBConnection::Hmset(const NKey& key, NValue hash) {
   }
 
   NDbKValue rhash(key, hash);
-  translator_t tran = GetTranslator();
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
   command_buffer_t hmset_cmd;
   common::Error err = tran->CreateKeyCommand(rhash, &hmset_cmd);
   if (err && err->IsError()) {
@@ -1612,13 +1607,15 @@ common::Error DBConnection::Hgetall(const NKey& key, NDbKValue* loaded_key) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  key_t key_str = key.GetKey();
-  command_buffer_writer_t wr;
-  wr << "HGETALL " << key_str.GetKeyData();
-  const command_buffer_t hgetall_cmd = wr.str();
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
+  command_buffer_t hgetall_cmd;
+  common::Error err = tran->Hgetall(key, &hgetall_cmd);
+  if (err && err->IsError()) {
+    return err;
+  }
 
   redisReply* reply = NULL;
-  common::Error err = ExecRedisCommand(connection_.handle_, hgetall_cmd, &reply);
+  err = ExecRedisCommand(connection_.handle_, hgetall_cmd, &reply);
   if (err && err->IsError()) {
     return err;
   }
@@ -1667,13 +1664,15 @@ common::Error DBConnection::Decr(const NKey& key, long long* decr) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  key_t key_str = key.GetKey();
-  command_buffer_writer_t wr;
-  wr << "DECR " << key_str.GetKeyData();
-  const command_buffer_t decr_cmd = wr.str();
+  std::string decr_cmd;
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
+  common::Error err = tran->Decr(key, &decr_cmd);
+  if (err && err->IsError()) {
+    return err;
+  }
 
   redisReply* reply = NULL;
-  common::Error err = ExecRedisCommand(connection_.handle_, decr_cmd, &reply);
+  err = ExecRedisCommand(connection_.handle_, decr_cmd, &reply);
   if (err && err->IsError()) {
     return err;
   }
@@ -1698,13 +1697,15 @@ common::Error DBConnection::DecrBy(const NKey& key, int dec, long long* decr) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  key_t key_str = key.GetKey();
-  command_buffer_writer_t wr;
-  wr << "DECRBY " << key_str.GetKeyData() << " " << dec;
-  const command_buffer_t decrby_cmd = wr.str();
+  std::string decrby_cmd;
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
+  common::Error err = tran->DecrBy(key, dec, &decrby_cmd);
+  if (err && err->IsError()) {
+    return err;
+  }
 
   redisReply* reply = NULL;
-  common::Error err = ExecRedisCommand(connection_.handle_, decrby_cmd, &reply);
+  err = ExecRedisCommand(connection_.handle_, decrby_cmd, &reply);
   if (err && err->IsError()) {
     return err;
   }
@@ -1729,13 +1730,15 @@ common::Error DBConnection::Incr(const NKey& key, long long* incr) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  key_t key_str = key.GetKey();
-  command_buffer_writer_t wr;
-  wr << "INCR " << key_str.GetKeyData();
-  const command_buffer_t incr_cmd = wr.str();
+  std::string incr_cmd;
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
+  common::Error err = tran->Incr(key, &incr_cmd);
+  if (err && err->IsError()) {
+    return err;
+  }
 
   redisReply* reply = NULL;
-  common::Error err = ExecRedisCommand(connection_.handle_, incr_cmd, &reply);
+  err = ExecRedisCommand(connection_.handle_, incr_cmd, &reply);
   if (err && err->IsError()) {
     return err;
   }
@@ -1760,13 +1763,15 @@ common::Error DBConnection::IncrBy(const NKey& key, int inc, long long* incr) {
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  key_t key_str = key.GetKey();
-  command_buffer_writer_t wr;
-  wr << "INCRBY " << key_str.GetKeyData() << " " << inc;
-  const command_buffer_t incrby_cmd = wr.str();
+  std::string incrby_cmd;
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
+  common::Error err = tran->IncrBy(key, inc, &incrby_cmd);
+  if (err && err->IsError()) {
+    return err;
+  }
 
   redisReply* reply = NULL;
-  common::Error err = ExecRedisCommand(connection_.handle_, incrby_cmd, &reply);
+  err = ExecRedisCommand(connection_.handle_, incrby_cmd, &reply);
   if (err && err->IsError()) {
     return err;
   }
@@ -1791,13 +1796,15 @@ common::Error DBConnection::IncrByFloat(const NKey& key, double inc, std::string
     return common::make_inval_error_value(common::ErrorValue::E_ERROR);
   }
 
-  key_t key_str = key.GetKey();
-  command_buffer_writer_t wr;
-  wr << "INCRBYFLOAT " << key_str.GetKeyData() << " " << inc;
-  const command_buffer_t incrfloat_cmd = wr.str();
+  std::string incrfloat_cmd;
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
+  common::Error err = tran->IncrByFloat(key, inc, &incrfloat_cmd);
+  if (err && err->IsError()) {
+    return err;
+  }
 
   redisReply* reply = NULL;
-  common::Error err = ExecRedisCommand(connection_.handle_, incrfloat_cmd, &reply);
+  err = ExecRedisCommand(connection_.handle_, incrfloat_cmd, &reply);
   if (err && err->IsError()) {
     return err;
   }

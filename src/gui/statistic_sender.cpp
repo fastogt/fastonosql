@@ -48,9 +48,9 @@ void StatisticSender::routine() {
   common::system_info::SystemInfo inf = common::system_info::currentSystemInfo();
 
   json_object* os_json = json_object_new_object();
-  json_object_object_add(os_json, FIELD_OS_NAME, json_object_new_string(inf.name().c_str()));
-  json_object_object_add(os_json, FIELD_OS_VERSION, json_object_new_string(inf.version().c_str()));
-  json_object_object_add(os_json, FILED_OS_ARCH, json_object_new_string(inf.arch().c_str()));
+  json_object_object_add(os_json, FIELD_OS_NAME, json_object_new_string(inf.GetName().c_str()));
+  json_object_object_add(os_json, FIELD_OS_VERSION, json_object_new_string(inf.GetVersion().c_str()));
+  json_object_object_add(os_json, FILED_OS_ARCH, json_object_new_string(inf.GetArch().c_str()));
   json_object_object_add(stats_json, FIELD_OS, os_json);
 
   json_object* project_json = json_object_new_object();

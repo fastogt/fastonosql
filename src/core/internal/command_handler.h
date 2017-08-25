@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <memory>
+
 #include "core/command_holder.h"  // for CommandHolder
 #include "core/icommand_translator.h"
 
@@ -36,6 +38,12 @@ class CommandHandler {
   common::Error Execute(commands_args_t argv, FastoObject* out) WARN_UNUSED_RESULT;
 
   translator_t GetTranslator() const { return translator_; }
+
+ protected:
+  template <typename T>
+  std::shared_ptr<T> GetSpecificTranslator() const {
+    return std::static_pointer_cast<T>(translator_);
+  }
 
  private:
   translator_t translator_;

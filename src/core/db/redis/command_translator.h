@@ -18,12 +18,6 @@
 
 #pragma once
 
-#include <string>  // for string
-
-#include <common/error.h>  // for Error
-#include <common/value.h>  // for Value, Value::Type
-
-#include "core/db_key.h"               // for NDbKValue, NKey, ttl_t
 #include "core/icommand_translator.h"  // for ICommandTranslator
 
 namespace fastonosql {
@@ -34,6 +28,25 @@ class CommandTranslator : public ICommandTranslator {
  public:
   explicit CommandTranslator(const std::vector<CommandHolder>& commands);
   virtual const char* GetDBName() const override;
+
+  common::Error Zrange(const NKey& key, int start, int stop, bool withscores, command_buffer_t* cmdstring)
+      WARN_UNUSED_RESULT;
+
+  common::Error Hgetall(const NKey& key, command_buffer_t* cmdstring) WARN_UNUSED_RESULT;
+
+  common::Error Smembers(const NKey& key, command_buffer_t* cmdstring) WARN_UNUSED_RESULT;
+
+  common::Error Lrange(const NKey& key, int start, int stop, command_buffer_t* cmdstring) WARN_UNUSED_RESULT;
+
+  common::Error SetEx(const NDbKValue& key, ttl_t ttl, command_buffer_t* cmdstring) WARN_UNUSED_RESULT;
+  common::Error SetNX(const NDbKValue& key, command_buffer_t* cmdstring) WARN_UNUSED_RESULT;
+
+  common::Error Decr(const NKey& key, command_buffer_t* cmdstring) WARN_UNUSED_RESULT;
+  common::Error DecrBy(const NKey& key, int inc, command_buffer_t* cmdstring) WARN_UNUSED_RESULT;
+
+  common::Error Incr(const NKey& key, command_buffer_t* cmdstring) WARN_UNUSED_RESULT;
+  common::Error IncrBy(const NKey& key, int inc, command_buffer_t* cmdstring) WARN_UNUSED_RESULT;
+  common::Error IncrByFloat(const NKey& key, double inc, command_buffer_t* cmdstring) WARN_UNUSED_RESULT;
 
  private:
   virtual common::Error CreateKeyCommandImpl(const NDbKValue& key, command_buffer_t* cmdstring) const override;
@@ -54,6 +67,8 @@ class CommandTranslator : public ICommandTranslator {
                                            command_buffer_t* cmdstring) const override;
   virtual common::Error SubscribeCommandImpl(const NDbPSChannel& channel, command_buffer_t* cmdstring) const override;
 };
+
+typedef std::shared_ptr<CommandTranslator> redis_translator_t;
 
 }  // namespace redis
 }  // namespace core

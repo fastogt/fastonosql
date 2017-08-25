@@ -43,6 +43,24 @@
 #define REDIS_PUBLISH_COMMAND "PUBLISH"
 #define REDIS_SUBSCRIBE_COMMAND "SUBSCRIBE"
 
+#define REDIS_ZRANGE "ZRANGE"
+
+#define REDIS_HGETALL "HGETALL"
+
+#define REDIS_SMEMBERS "SMEMBERS"
+
+#define REDIS_LRANGE "LRANGE"
+
+#define REDIS_SETEX "SETEX"
+#define REDIS_SETNX "SETNX"
+
+#define REDIS_DECR "DECR"
+#define REDIS_DECRBY "DECRBY"
+
+#define REDIS_INCR "INCR"
+#define REDIS_INCRBY "INCRBY"
+#define REDIS_INCRBYFLOAT "INCRBYFLOAT"
+
 namespace fastonosql {
 namespace core {
 namespace redis {
@@ -51,6 +69,146 @@ CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands)
 
 const char* CommandTranslator::GetDBName() const {
   return ConnectionTraits<REDIS>::GetDBName();
+}
+
+common::Error CommandTranslator::Zrange(const NKey& key,
+                                        int start,
+                                        int stop,
+                                        bool withscores,
+                                        command_buffer_t* cmdstring) {
+  key_t key_str = key.GetKey();
+  command_buffer_writer_t wr;
+  wr << REDIS_ZRANGE << " " << key_str.GetKeyData() << " " << start << " " << stop;
+  if (withscores) {
+    wr << " WITHSCORES";
+  }
+
+  *cmdstring = wr.str();
+  return common::Error();
+}
+
+common::Error CommandTranslator::Hgetall(const NKey& key, command_buffer_t* cmdstring) {
+  if (!cmdstring) {
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+  }
+
+  key_t key_str = key.GetKey();
+  command_buffer_writer_t wr;
+  wr << REDIS_HGETALL << " " << key_str.GetKeyData();
+  *cmdstring = wr.str();
+  return common::Error();
+}
+
+common::Error CommandTranslator::Smembers(const NKey& key, command_buffer_t* cmdstring) {
+  if (!cmdstring) {
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+  }
+
+  key_t key_str = key.GetKey();
+  command_buffer_writer_t wr;
+  wr << REDIS_SMEMBERS << " " << key_str.GetKeyData();
+  *cmdstring = wr.str();
+  return common::Error();
+}
+
+common::Error CommandTranslator::Lrange(const NKey& key, int start, int stop, command_buffer_t* cmdstring) {
+  if (!cmdstring) {
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+  }
+
+  key_t key_str = key.GetKey();
+  command_buffer_writer_t wr;
+  wr << REDIS_LRANGE << " " << key_str.GetKeyData() << " " << start << " " << stop;
+  *cmdstring = wr.str();
+  return common::Error();
+}
+
+common::Error CommandTranslator::SetEx(const NDbKValue& key, ttl_t ttl, command_buffer_t* cmdstring) {
+  if (!cmdstring) {
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+  }
+
+  const NKey cur = key.GetKey();
+  key_t key_str = cur.GetKey();
+  std::string value_str = key.ValueString();
+  command_buffer_writer_t wr;
+  wr << REDIS_SETEX << " " << key_str.GetKeyData() << " " << ttl << " " << value_str;
+  *cmdstring = wr.str();
+  return common::Error();
+}
+
+common::Error CommandTranslator::SetNX(const NDbKValue& key, command_buffer_t* cmdstring) {
+  if (!cmdstring) {
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+  }
+
+  const NKey cur = key.GetKey();
+  key_t key_str = cur.GetKey();
+  std::string value_str = key.ValueString();
+  command_buffer_writer_t wr;
+  wr << REDIS_SETNX << " " << key_str.GetKeyData() << " " << value_str;
+  *cmdstring = wr.str();
+  return common::Error();
+}
+
+common::Error CommandTranslator::Decr(const NKey& key, command_buffer_t* cmdstring) {
+  if (!cmdstring) {
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+  }
+
+  key_t key_str = key.GetKey();
+  command_buffer_writer_t wr;
+  wr << REDIS_INCR << " " << key_str.GetKeyData();
+  *cmdstring = wr.str();
+  return common::Error();
+}
+
+common::Error CommandTranslator::DecrBy(const NKey& key, int inc, command_buffer_t* cmdstring) {
+  if (!cmdstring) {
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+  }
+
+  key_t key_str = key.GetKey();
+  command_buffer_writer_t wr;
+  wr << REDIS_INCRBY << " " << key_str.GetKeyData() << " " << inc;
+  *cmdstring = wr.str();
+  return common::Error();
+}
+
+common::Error CommandTranslator::Incr(const NKey& key, command_buffer_t* cmdstring) {
+  if (!cmdstring) {
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+  }
+
+  key_t key_str = key.GetKey();
+  command_buffer_writer_t wr;
+  wr << REDIS_INCR << " " << key_str.GetKeyData();
+  *cmdstring = wr.str();
+  return common::Error();
+}
+
+common::Error CommandTranslator::IncrBy(const NKey& key, int inc, command_buffer_t* cmdstring) {
+  if (!cmdstring) {
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+  }
+
+  key_t key_str = key.GetKey();
+  command_buffer_writer_t wr;
+  wr << REDIS_INCRBY << " " << key_str.GetKeyData() << " " << inc;
+  *cmdstring = wr.str();
+  return common::Error();
+}
+
+common::Error CommandTranslator::IncrByFloat(const NKey& key, double inc, command_buffer_t* cmdstring) {
+  if (!cmdstring) {
+    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+  }
+
+  key_t key_str = key.GetKey();
+  command_buffer_writer_t wr;
+  wr << REDIS_INCRBYFLOAT << " " << key_str.GetKeyData() << " " << inc;
+  *cmdstring = wr.str();
+  return common::Error();
 }
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, command_buffer_t* cmdstring) const {
