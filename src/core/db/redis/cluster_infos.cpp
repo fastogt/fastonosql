@@ -147,8 +147,8 @@ common::Error makeDiscoveryClusterInfo(const common::net::HostAndPort& parentHos
     if (lerr && lerr->IsError()) {
       continue;
     }
-    if (common::net::IsLocalHost(inf.host.host)) {  // for direct connection
-      inf.host.host = parentHost.host;
+    if (inf.host.IsLocalHost()) {  // for direct connection
+      inf.host.SetHost(parentHost.GetHost());
     }
 
     ServerDiscoveryClusterInfoSPtr ser(new DiscoveryClusterInfo(inf, self));

@@ -50,9 +50,9 @@ common::net::HostAndPort HostPortWidget::host() const {
 
 void HostPortWidget::setHost(const common::net::HostAndPort& host) {
   QString qhost;
-  common::ConvertFromString(host.host, &qhost);
+  common::ConvertFromString(host.GetHost(), &qhost);
   hostName_->setText(qhost);
-  hostPort_->setText(QString::number(host.port));
+  hostPort_->setText(QString::number(host.GetPort()));
 }
 
 bool HostPortWidget::isValidHost() const {

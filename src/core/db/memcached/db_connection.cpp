@@ -231,8 +231,9 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
     }
   }
 
-  const char* host = common::utils::c_strornull(config.host.host);
-  uint16_t hostport = config.host.port;
+  std::string host_str = config.host.GetHost();
+  const char* host = common::utils::c_strornull(host_str);
+  uint16_t hostport = config.host.GetPort();
 
   rc = memcached_server_add(memc, host, hostport);
 
@@ -256,8 +257,9 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
 common::Error TestConnection(const Config& config) {
   const char* user = common::utils::c_strornull(config.user);
   const char* passwd = common::utils::c_strornull(config.password);
-  const char* host = common::utils::c_strornull(config.host.host);
-  uint16_t hostport = config.host.port;
+  std::string host_str = config.host.GetHost();
+  const char* host = common::utils::c_strornull(host_str);
+  uint16_t hostport = config.host.GetPort();
 
   memcached_return rc;
   if (user && passwd) {

@@ -57,9 +57,9 @@ config_args_t RemoteConfig::Args() const {
 
   if (host.IsValid()) {
     argv.push_back("-h");
-    argv.push_back(host.host);
+    argv.push_back(host.GetHost());
     argv.push_back("-p");
-    argv.push_back(common::ConvertToString(host.port));
+    argv.push_back(common::ConvertToString(host.GetPort()));
   }
 
   if (!delimiter.empty()) {

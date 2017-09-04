@@ -91,7 +91,7 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   }
 
   DCHECK(*context == nullptr);
-  ::ssdb::Client* lcontext = ::ssdb::Client::connect(config.host.host, config.host.port);
+  ::ssdb::Client* lcontext = ::ssdb::Client::connect(config.host.GetHost(), config.host.GetPort());
   if (!lcontext) {
     return common::make_error_value("Fail connect to server!", common::ErrorValue::E_ERROR);
   }

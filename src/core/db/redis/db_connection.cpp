@@ -405,13 +405,15 @@ common::Error CreateConnection(const RConfig& config, NativeConnection** context
     lcontext = redisConnectUnix(hostsocket);
   } else {
     SSHInfo sinfo = config.ssh_info;
-    const char* host = common::utils::c_strornull(config.host.host);
-    uint16_t port = config.host.port;
+    std::string host_str = config.host.GetHost();
+    const char* host = common::utils::c_strornull(host_str);
+    uint16_t port = config.host.GetPort();
     const char* username = common::utils::c_strornull(sinfo.user_name);
     const char* password = common::utils::c_strornull(sinfo.password);
     common::net::HostAndPort ssh_host = sinfo.host;
-    const char* ssh_address = common::utils::c_strornull(ssh_host.host);
-    int ssh_port = ssh_host.port;
+    std::string ssh_host_str = ssh_host.GetHost();
+    const char* ssh_address = common::utils::c_strornull(ssh_host_str);
+    int ssh_port = ssh_host.GetPort();
     int curM = sinfo.current_method;
     const char* public_key = common::utils::c_strornull(sinfo.public_key);
     const char* private_key = common::utils::c_strornull(sinfo.private_key);

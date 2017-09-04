@@ -41,11 +41,11 @@ Config parseOptions(int argc, char** argv) {
     const bool lastarg = i == argc - 1;
 
     if (!strcmp(argv[i], "-h") && !lastarg) {
-      cfg.host.host = argv[++i];
+      cfg.host.SetHost(argv[++i]);
     } else if (!strcmp(argv[i], "-p") && !lastarg) {
       uint16_t lport;
       if (common::ConvertFromString(argv[++i], &lport)) {
-        cfg.host.port = lport;
+        cfg.host.SetPort(lport);
       }
     } else if (!strcmp(argv[i], "-u") && !lastarg) {
       cfg.user = argv[++i];
