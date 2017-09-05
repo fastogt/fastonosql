@@ -364,7 +364,6 @@ SET(HEADERS_GUI_TO_MOC
   ${CMAKE_SOURCE_DIR}/src/gui/main_tab_bar.h
   ${CMAKE_SOURCE_DIR}/src/gui/fasto_text_view.h
   ${CMAKE_SOURCE_DIR}/src/gui/keys_table_model.h
-  ${CMAKE_SOURCE_DIR}/src/gui/key_table_item.h
   ${CMAKE_SOURCE_DIR}/src/gui/channels_table_model.h
   ${CMAKE_SOURCE_DIR}/src/gui/fasto_tree_view.h
   ${CMAKE_SOURCE_DIR}/src/gui/fasto_common_model.h
@@ -387,6 +386,7 @@ SET(HEADERS_GUI
   ${CMAKE_SOURCE_DIR}/src/gui/shortcuts.h
   ${CMAKE_SOURCE_DIR}/src/gui/connection_widgets_factory.h
   ${CMAKE_SOURCE_DIR}/src/gui/key_value_table_item.h
+  ${CMAKE_SOURCE_DIR}/src/gui/key_table_item.h
   ${CMAKE_SOURCE_DIR}/src/gui/utils.h
 )
 SET(SOURCES_GUI

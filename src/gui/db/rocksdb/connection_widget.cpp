@@ -36,7 +36,7 @@ ConnectionWidget::ConnectionWidget(QWidget* parent)
 
   QHBoxLayout* type_comp_layout = new QHBoxLayout;
   typeComparators_ = new QComboBox;
-  for (uint32_t i = 0; i < SIZEOFMASS(core::rocksdb::g_comparator_types); ++i) {
+  for (uint32_t i = 0; i < core::rocksdb::g_comparator_types.size(); ++i) {
     const char* ct = core::rocksdb::g_comparator_types[i];
     typeComparators_->addItem(ct, i);
   }

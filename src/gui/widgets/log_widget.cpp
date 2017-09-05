@@ -44,9 +44,9 @@ LogWidget::LogWidget(QWidget* parent) : QWidget(parent), logTextEdit_(new QTextE
   retranslateUi();
 }
 
-void LogWidget::addLogMessage(const QString& message, common::logging::LEVEL_LOG level) {
+void LogWidget::addLogMessage(const QString& message, common::logging::LOG_LEVEL level) {
   QTime time = QTime::currentTime();
-  logTextEdit_->setTextColor(level == common::logging::L_CRIT ? QColor(Qt::red) : QColor(Qt::black));
+  logTextEdit_->setTextColor(level == common::logging::LOG_LEVEL_CRIT ? QColor(Qt::red) : QColor(Qt::black));
   logTextEdit_->append(time.toString("hh:mm:ss.zzz: %1").arg(message));
   QScrollBar* sb = logTextEdit_->verticalScrollBar();
   sb->setValue(sb->maximum());

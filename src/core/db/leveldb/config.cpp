@@ -33,6 +33,8 @@ namespace fastonosql {
 namespace core {
 namespace leveldb {
 
+const std::vector<const char*> g_comparator_types = {"BYTEWISE", "INDEXED_DB"};
+
 namespace {
 
 Config parseOptions(int argc, char** argv) {
@@ -59,7 +61,7 @@ Config parseOptions(int argc, char** argv) {
             "Unrecognized option or bad number of args "
             "for: '%s'",
             argv[i]);
-        LOG_CORE_MSG(buff, common::logging::L_WARNING, true);
+        LOG_CORE_MSG(buff, common::logging::LOG_LEVEL_WARNING, true);
         break;
       } else {
         /* Likely the command name, stop here. */
@@ -120,7 +122,7 @@ bool ConvertFromString(const std::string& from, fastonosql::core::leveldb::Compa
     return false;
   }
 
-  for (size_t i = 0; i < SIZEOFMASS(fastonosql::core::leveldb::g_comparator_types); ++i) {
+  for (size_t i = 0; i < fastonosql::core::leveldb::g_comparator_types.size(); ++i) {
     if (from == fastonosql::core::leveldb::g_comparator_types[i]) {
       *out = static_cast<fastonosql::core::leveldb::ComparatorType>(i);
       return true;

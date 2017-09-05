@@ -25,7 +25,7 @@ namespace core {
 namespace rocksdb {
 
 enum ComparatorType { COMP_BYTEWISE, COMP_REVERSE_BYTEWISE };
-static const char* g_comparator_types[] = {"BYTEWISE", "REVERSE_BYTEWISE"};
+extern const std::vector<const char*> g_comparator_types;
 
 struct Config : public LocalConfig {
   Config();

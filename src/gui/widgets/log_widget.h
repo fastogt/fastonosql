@@ -20,7 +20,7 @@
 
 #include <QWidget>
 
-#include <common/log_levels.h>  // for LEVEL_LOG
+#include <common/log_levels.h>  // for LOG_LEVEL
 
 class QAction;  // lines 24-24
 class QEvent;
@@ -36,7 +36,7 @@ class LogWidget : public QWidget {
   explicit LogWidget(QWidget* parent = 0);
 
  public Q_SLOTS:
-  void addLogMessage(const QString& message, common::logging::LEVEL_LOG level);
+  void addLogMessage(const QString& message, common::logging::LOG_LEVEL level);
 
  private Q_SLOTS:
   void showContextMenu(const QPoint& pt);

@@ -23,6 +23,8 @@
 namespace fastonosql {
 namespace proxy {
 
+const std::vector<const char*> supported_views_text = {"Tree", "Table", "Text"};
+
 KeyInfo::KeyInfo(const splited_namespaces_t& splited_namespaces_and_key, std::string ns_separator)
     : splited_namespaces_and_key_(splited_namespaces_and_key), ns_separator_(ns_separator) {}
 
@@ -80,7 +82,7 @@ bool ConvertFromString(const std::string& from, fastonosql::proxy::supportedView
     return false;
   }
 
-  for (size_t i = 0; i < SIZEOFMASS(fastonosql::proxy::supported_views_text); ++i) {
+  for (size_t i = 0; i < fastonosql::proxy::supported_views_text.size(); ++i) {
     if (from == fastonosql::proxy::supported_views_text[i]) {
       *out = static_cast<fastonosql::proxy::supportedViews>(i);
       return true;

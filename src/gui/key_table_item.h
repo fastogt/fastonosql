@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <common/qt/gui/base/table_item.h>   // for TableItem
+#include <common/qt/gui/base/table_item.h>  // for TableItem
 
 #include <QString>
 

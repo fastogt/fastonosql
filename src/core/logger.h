@@ -24,14 +24,14 @@
 namespace fastonosql {
 namespace core {
 
-typedef void LogWatcher(common::logging::LEVEL_LOG level, const std::string& message, bool notify);
+typedef void LogWatcher(common::logging::LOG_LEVEL level, const std::string& message, bool notify);
 
 class Logger : public common::patterns::LazySingleton<Logger> {
   friend class common::patterns::LazySingleton<Logger>;
 
  public:
-  void print(const char* mess, common::logging::LEVEL_LOG level, bool notify);
-  void print(const std::string& mess, common::logging::LEVEL_LOG level, bool notify);
+  void print(const char* mess, common::logging::LOG_LEVEL level, bool notify);
+  void print(const std::string& mess, common::logging::LOG_LEVEL level, bool notify);
 
  private:
   Logger();
@@ -43,6 +43,6 @@ class Logger : public common::patterns::LazySingleton<Logger> {
 void SET_LOG_WATCHER(fastonosql::core::LogWatcher* watcher);
 
 template <typename T>
-inline void LOG_CORE_MSG(T mess, common::logging::LEVEL_LOG level, bool notify) {
+inline void LOG_CORE_MSG(T mess, common::logging::LOG_LEVEL level, bool notify) {
   return fastonosql::core::Logger::GetInstance().print(mess, level, notify);
 }

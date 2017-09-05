@@ -360,7 +360,7 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
     for (size_t i = 0; i < commands.size(); ++i) {
       if (IsInterrupted()) {
         res.setErrorInfo(common::make_error_value("Interrupted exec.", common::ErrorValue::E_INTERRUPTED,
-                                                  common::logging::L_WARNING));
+                                                  common::logging::LOG_LEVEL_WARNING));
         goto done;
       }
 

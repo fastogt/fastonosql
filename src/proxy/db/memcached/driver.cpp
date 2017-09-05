@@ -24,7 +24,7 @@
 #include <string>  // for string
 
 #include <common/convert2string.h>
-#include <common/log_levels.h>   // for LEVEL_LOG::L_WARNING
+#include <common/log_levels.h>   // for LOG_LEVEL::L_WARNING
 #include <common/qt/utils_qt.h>  // for Event<>::value_type
 #include <common/value.h>        // for ErrorValue, etc
 

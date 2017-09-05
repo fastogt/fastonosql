@@ -29,11 +29,11 @@ namespace core {
 
 Logger::Logger() {}
 
-void Logger::print(const char* mess, common::logging::LEVEL_LOG level, bool notify) {
+void Logger::print(const char* mess, common::logging::LOG_LEVEL level, bool notify) {
   print(std::string(mess), level, notify);
 }
 
-void Logger::print(const std::string& mess, common::logging::LEVEL_LOG level, bool notify) {
+void Logger::print(const std::string& mess, common::logging::LOG_LEVEL level, bool notify) {
   RUNTIME_LOG(level) << mess;
   if (g_watcher) {
     g_watcher(level, mess, notify);

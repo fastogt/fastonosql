@@ -22,6 +22,8 @@
 #include "core/internal/command_handler.h"  // for CommandHandler, etc
 #include "core/internal/db_connection.h"    // for DBConnection
 
+#include "core/database/idatabase_info.h"
+
 #define ALL_COMMANDS "*"
 #define ALL_KEYS_PATTERNS "*"
 #define NO_KEYS_LIMIT UINT64_MAX

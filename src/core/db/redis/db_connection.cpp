@@ -994,7 +994,7 @@ common::Error DBConnection::CliFormatReplyRaw(FastoObjectArray* ar, redisReply* 
     case REDIS_REPLY_ERROR: {
       std::string str(r->str, r->len);
       common::ErrorValue* val =
-          common::Value::CreateErrorValue(str, common::ErrorValue::E_NONE, common::logging::L_WARNING);
+          common::Value::CreateErrorValue(str, common::ErrorValue::E_NONE, common::logging::LOG_LEVEL_WARNING);
       ar->Append(val);
       break;
     }
@@ -1023,8 +1023,9 @@ common::Error DBConnection::CliFormatReplyRaw(FastoObjectArray* ar, redisReply* 
       break;
     }
     default: {
-      common::ErrorValue* val = common::Value::CreateErrorValue(common::MemSPrintf("Unknown reply type: %d", r->type),
-                                                                common::ErrorValue::E_NONE, common::logging::L_WARNING);
+      common::ErrorValue* val =
+          common::Value::CreateErrorValue(common::MemSPrintf("Unknown reply type: %d", r->type),
+                                          common::ErrorValue::E_NONE, common::logging::LOG_LEVEL_WARNING);
       ar->Append(val);
     }
   }

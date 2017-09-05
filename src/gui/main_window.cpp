@@ -19,12 +19,12 @@
 #include "gui/main_window.h"
 
 #include <QAction>
-#include <QMenuBar>
-#include <QDockWidget>
-#include <QThread>
 #include <QDesktopServices>
+#include <QDockWidget>
 #include <QFileDialog>
+#include <QMenuBar>
 #include <QMessageBox>
+#include <QThread>
 #include <QToolBar>
 #include <QUrl>
 
@@ -80,7 +80,7 @@ bool isNeededUpdate(const std::string& sversion) {
 const QKeySequence logsKeySequence = Qt::CTRL + Qt::Key_L;
 const QKeySequence explorerKeySequence = Qt::CTRL + Qt::Key_T;
 
-void LogWatcherRedirect(common::logging::LEVEL_LOG level, const std::string& message, bool notify) {
+void LogWatcherRedirect(common::logging::LOG_LEVEL level, const std::string& message, bool notify) {
   LOG_MSG(message, level, notify);
 }
 

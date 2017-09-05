@@ -25,7 +25,7 @@ namespace proxy {
 
 enum supportedViews { Tree = 0, Table, Text };
 
-static const char* supported_views_text[] = {"Tree", "Table", "Text"};
+extern const std::vector<const char*> supported_views_text;
 
 class KeyInfo {
  public:

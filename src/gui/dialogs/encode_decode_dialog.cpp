@@ -55,8 +55,8 @@ EncodeDecodeDialog::EncodeDecodeDialog(QWidget* parent) : QDialog(parent) {
   VERIFY(connect(decode, &QToolButton::clicked, this, &EncodeDecodeDialog::decodeOrEncode));
 
   decoders_ = new QComboBox;
-  for (size_t i = 0; i < SIZEOFMASS(common::EDecoderTypes); ++i) {
-    std::string estr = common::EDecoderTypes[i];
+  for (size_t i = 0; i < common::g_edecoder_types.size(); ++i) {
+    std::string estr = common::g_edecoder_types[i];
     common::EDTypes etype;
     QString qestr;
     if (common::ConvertFromString(estr, &etype) && common::ConvertFromString(estr, &qestr)) {

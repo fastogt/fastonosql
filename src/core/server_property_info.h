@@ -18,8 +18,8 @@
 
 #pragma once
 
-#include <string>   // for string
-#include <vector>   // for vector
+#include <string>  // for string
+#include <vector>  // for vector
 
 namespace fastonosql {
 namespace core {

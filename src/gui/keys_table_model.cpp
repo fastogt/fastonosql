@@ -25,8 +25,8 @@
 
 #include "translations/global.h"
 
-#include "gui/key_table_item.h"
 #include "gui/gui_factory.h"
+#include "gui/key_table_item.h"
 
 namespace fastonosql {
 namespace gui {

@@ -56,7 +56,7 @@ Config parseOptions(int argc, char** argv) {
             "Unrecognized option or bad number of args "
             "for: '%s'",
             argv[i]);
-        LOG_CORE_MSG(buff, common::logging::L_WARNING, true);
+        LOG_CORE_MSG(buff, common::logging::LOG_LEVEL_WARNING, true);
         break;
       } else {
         /* Likely the command name, stop here. */

@@ -41,7 +41,7 @@ class LogTabWidget : public QTabWidget {
   explicit LogTabWidget(QWidget* parent = 0);
 
  public Q_SLOTS:
-  void addLogMessage(const QString& message, common::logging::LEVEL_LOG level);
+  void addLogMessage(const QString& message, common::logging::LOG_LEVEL level);
   void addCommand(core::FastoObjectCommandIPtr command);
 
  protected:

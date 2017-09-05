@@ -25,7 +25,7 @@ namespace core {
 namespace leveldb {
 
 enum ComparatorType { COMP_BYTEWISE = 0, COMP_INDEXED_DB };
-static const char* g_comparator_types[] = {"BYTEWISE", "INDEXED_DB"};
+extern const std::vector<const char*> g_comparator_types;
 
 struct Config : public LocalConfig {
   Config();

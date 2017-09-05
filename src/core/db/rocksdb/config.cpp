@@ -31,6 +31,8 @@ namespace fastonosql {
 namespace core {
 namespace rocksdb {
 
+const std::vector<const char*> g_comparator_types = {"BYTEWISE", "REVERSE_BYTEWISE"};
+
 namespace {
 
 Config parseOptions(int argc, char** argv) {
@@ -57,7 +59,7 @@ Config parseOptions(int argc, char** argv) {
             "Unrecognized option or bad number of args "
             "for: '%s'",
             argv[i]);
-        LOG_CORE_MSG(buff, common::logging::L_WARNING, true);
+        LOG_CORE_MSG(buff, common::logging::LOG_LEVEL_WARNING, true);
         break;
       } else {
         /* Likely the command name, stop here. */
@@ -118,7 +120,7 @@ bool ConvertFromString(const std::string& from, fastonosql::core::rocksdb::Compa
     return false;
   }
 
-  for (size_t i = 0; i < SIZEOFMASS(fastonosql::core::rocksdb::g_comparator_types); ++i) {
+  for (size_t i = 0; i < fastonosql::core::rocksdb::g_comparator_types.size(); ++i) {
     if (from == fastonosql::core::rocksdb::g_comparator_types[i]) {
       *out = static_cast<fastonosql::core::rocksdb::ComparatorType>(i);
       return true;

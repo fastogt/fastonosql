@@ -46,7 +46,7 @@ LogTabWidget::LogTabWidget(QWidget* parent) : QTabWidget(parent) {
   retranslateUi();
 }
 
-void LogTabWidget::addLogMessage(const QString& message, common::logging::LEVEL_LOG level) {
+void LogTabWidget::addLogMessage(const QString& message, common::logging::LOG_LEVEL level) {
   log_->addLogMessage(message, level);
 }
 
