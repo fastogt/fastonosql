@@ -55,12 +55,11 @@ EncodeDecodeDialog::EncodeDecodeDialog(QWidget* parent) : QDialog(parent) {
   VERIFY(connect(decode, &QToolButton::clicked, this, &EncodeDecodeDialog::decodeOrEncode));
 
   decoders_ = new QComboBox;
-  for (size_t i = 0; i < common::g_edecoder_types.size(); ++i) {
-    std::string estr = common::g_edecoder_types[i];
-    common::EDTypes etype;
-    QString qestr;
-    if (common::ConvertFromString(estr, &etype) && common::ConvertFromString(estr, &qestr)) {
-      decoders_->addItem(qestr, etype);
+  for (size_t i = 0; i < common::ENCODER_DECODER_NUM_TYPES; ++i) {
+    const char* estr = common::edecoder_types[i];
+    common::EDType etype;
+    if (common::ConvertFromString(estr, &etype)) {
+      decoders_->addItem(estr, etype);
     }
   }
 
@@ -104,7 +103,7 @@ void EncodeDecodeDialog::decodeOrEncode() {
 
   output_->clear();
   QVariant var = decoders_->currentData();
-  common::EDTypes currentType = static_cast<common::EDTypes>(qvariant_cast<unsigned char>(var));
+  common::EDType currentType = static_cast<common::EDType>(qvariant_cast<unsigned char>(var));
   common::IEDcoder* dec = common::CreateEDCoder(currentType);
   if (!dec) {
     return;

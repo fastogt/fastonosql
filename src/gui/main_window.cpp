@@ -415,7 +415,7 @@ void MainWindow::importConnection() {
     return;
   }
 
-  common::IEDcoder* hexEnc = common::CreateEDCoder(common::Hex);
+  common::IEDcoder* hexEnc = common::CreateEDCoder(common::ED_HEX);
   if (!hexEnc) {
     readFile.Close();
     writeFile.Close();
@@ -494,7 +494,7 @@ void MainWindow::exportConnection() {
     return;
   }
 
-  common::IEDcoder* hexEnc = common::CreateEDCoder(common::Hex);
+  common::IEDcoder* hexEnc = common::CreateEDCoder(common::ED_HEX);
   if (!hexEnc) {
     readFile.Close();
     writeFile.Close();
