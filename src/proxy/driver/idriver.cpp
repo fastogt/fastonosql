@@ -29,7 +29,7 @@
 
 #include <common/convert2string.h>  // for ConvertToString, etc
 #include <common/time.h>            // for current_mstime
-#include <common/utils.h>           // for c_strornull, msleep
+#include <common/threads/platform_thread.h>
 
 #include "proxy/command/command_logger.h"  // for LOG_COMMAND
 #include "proxy/driver/first_child_update_root_locker.h"
@@ -381,7 +381,7 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
     common::time64_t diff = finished_ts - start_ts;
     if (msec_repeat_interval > diff) {
       common::time64_t sleep_time = msec_repeat_interval - diff;
-      common::utils::msleep(sleep_time);
+      common::threads::PlatformThread::Sleep(sleep_time);
     }
   }
 
