@@ -149,8 +149,8 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   NativeConnection* lcontext = NULL;
   fdb_config fconfig = fdb_get_default_config();
   // fconfig.flags = FDB_OPEN_FLAG_CREATE;
-  const char* db_path = common::utils::c_strornull(config.db_path);  // start point must be file
-  const char* db_name = common::utils::c_strornull(config.db_name);
+  const char* db_path = config.db_path.empty() ? NULL : config.db_path.c_str();  // start point must be file
+  const char* db_name = config.db_name.empty() ? NULL : config.db_name.c_str();
   fdb_status st = forestdb_open(&lcontext, db_path, db_name, &fconfig);
   if (st != FDB_RESULT_SUCCESS) {
     std::string buff = common::MemSPrintf("Fail open database: %s", fdb_error_msg(st));

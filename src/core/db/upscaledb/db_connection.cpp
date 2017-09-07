@@ -171,7 +171,7 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
     return common::make_error_value(common::MemSPrintf("Invalid input path(%s)", db_path), common::ErrorValue::E_ERROR);
   }
 
-  const char* dbname = common::utils::c_strornull(db_path);
+  const char* dbname = db_path.empty() ? NULL : db_path.c_str();
   int st = upscaledb_open(&lcontext, dbname, config.dbnum, config.create_if_missing);
   if (st != UPS_SUCCESS) {
     std::string buff = common::MemSPrintf("Fail open database: %s", ups_strerror(st));

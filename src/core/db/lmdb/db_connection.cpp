@@ -173,7 +173,7 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
     return common::make_error_value(common::MemSPrintf("Invalid input path(%s)", folder), common::ErrorValue::E_ERROR);
   }
 
-  const char* db_path = common::utils::c_strornull(folder);
+  const char* db_path = folder.c_str();
   int env_flags = config.env_flags;
   int st = lmdb_open(&lcontext, db_path, NULL, env_flags, lmdb_db_flag_from_env_flags(env_flags));
   if (st != LMDB_OK) {

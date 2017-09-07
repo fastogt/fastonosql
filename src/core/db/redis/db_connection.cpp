@@ -401,23 +401,23 @@ common::Error CreateConnection(const RConfig& config, NativeConnection** context
   bool is_local = !config.hostsocket.empty();
 
   if (is_local) {
-    const char* hostsocket = common::utils::c_strornull(config.hostsocket);
+    const char* hostsocket = config.hostsocket.empty() ? NULL : config.hostsocket.c_str();
     lcontext = redisConnectUnix(hostsocket);
   } else {
     SSHInfo sinfo = config.ssh_info;
     std::string host_str = config.host.GetHost();
-    const char* host = common::utils::c_strornull(host_str);
+    const char* host = host_str.empty() ? NULL : host_str.c_str();
     uint16_t port = config.host.GetPort();
-    const char* username = common::utils::c_strornull(sinfo.user_name);
-    const char* password = common::utils::c_strornull(sinfo.password);
+    const char* username = sinfo.user_name.empty() ? NULL : sinfo.user_name.c_str();
+    const char* password = sinfo.password.empty() ? NULL : sinfo.password.c_str();
     common::net::HostAndPort ssh_host = sinfo.host;
     std::string ssh_host_str = ssh_host.GetHost();
-    const char* ssh_address = common::utils::c_strornull(ssh_host_str);
+    const char* ssh_address = ssh_host_str.empty() ? NULL : ssh_host_str.c_str();
     int ssh_port = ssh_host.GetPort();
     int curM = sinfo.current_method;
-    const char* public_key = common::utils::c_strornull(sinfo.public_key);
-    const char* private_key = common::utils::c_strornull(sinfo.private_key);
-    const char* passphrase = common::utils::c_strornull(sinfo.passphrase);
+    const char* public_key = sinfo.public_key.empty() ? NULL : sinfo.public_key.c_str();
+    const char* private_key = sinfo.private_key.empty() ? NULL : sinfo.private_key.c_str();
+    const char* passphrase = sinfo.passphrase.empty() ? NULL : sinfo.passphrase.c_str();
     lcontext =
         redisConnect(host, port, ssh_address, ssh_port, username, password, public_key, private_key, passphrase, curM);
   }

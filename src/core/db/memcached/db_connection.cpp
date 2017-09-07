@@ -221,8 +221,8 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
 
   memcached_return rc;
   if (!config.user.empty() && !config.password.empty()) {
-    const char* user = common::utils::c_strornull(config.user);
-    const char* passwd = common::utils::c_strornull(config.password);
+    const char* user = config.user.c_str();
+    const char* passwd = config.password.c_str();
     rc = memcached_set_sasl_auth_data(memc, user, passwd);
     if (rc != MEMCACHED_SUCCESS) {
       memcached_free(memc);
@@ -232,7 +232,7 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   }
 
   std::string host_str = config.host.GetHost();
-  const char* host = common::utils::c_strornull(host_str);
+  const char* host = host_str.empty() ? NULL : host_str.c_str();
   uint16_t hostport = config.host.GetPort();
 
   rc = memcached_server_add(memc, host, hostport);
@@ -255,14 +255,14 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
 }
 
 common::Error TestConnection(const Config& config) {
-  const char* user = common::utils::c_strornull(config.user);
-  const char* passwd = common::utils::c_strornull(config.password);
   std::string host_str = config.host.GetHost();
-  const char* host = common::utils::c_strornull(host_str);
+  const char* host = host_str.empty() ? NULL : config.password.c_str();
   uint16_t hostport = config.host.GetPort();
 
   memcached_return rc;
-  if (user && passwd) {
+  if (!config.user.empty() && !config.password.empty()) {
+    const char* user = config.user.c_str();
+    const char* passwd = config.password.c_str();
     libmemcached_util_ping2(host, hostport, user, passwd, &rc);
     if (rc != MEMCACHED_SUCCESS) {
       return common::make_error_value(common::MemSPrintf("Couldn't ping server: %s", memcached_strerror(NULL, rc)),

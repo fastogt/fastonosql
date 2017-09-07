@@ -174,7 +174,7 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
     return common::make_error_value(common::MemSPrintf("Invalid input path(%s)", db_path), common::ErrorValue::E_ERROR);
   }
 
-  const char* dbname = common::utils::c_strornull(db_path);
+  const char* dbname = db_path.c_str();
   int env_flags = config.env_flags;
   int st = unqlite_open(&lcontext, dbname, env_flags);
   if (st != UNQLITE_OK) {
