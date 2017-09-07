@@ -53,7 +53,7 @@ common::Error ApiTraits<CDBConnection>::Help(internal::CommandHandler* handler,
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
   std::string answer;
   common::Error err = cdb->Help(argv, &answer);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -69,14 +69,14 @@ common::Error ApiTraits<CDBConnection>::Scan(internal::CommandHandler* handler,
                                              FastoObject* out) {
   uint32_t cursor_in;
   if (!common::ConvertFromString(argv[0], &cursor_in)) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   const size_t argc = argv.size();
   std::string pattern = argc >= 3 ? argv[2] : ALL_KEYS_PATTERNS;
   uint64_t count_keys = NO_KEYS_LIMIT;
   if (argc >= 5 && !common::ConvertFromString(argv[4], &count_keys)) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   uint64_t cursor_out = 0;
@@ -84,7 +84,7 @@ common::Error ApiTraits<CDBConnection>::Scan(internal::CommandHandler* handler,
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
 
   common::Error err = cdb->Scan(cursor_in, pattern, count_keys, &keys_out, &cursor_out);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -113,12 +113,12 @@ common::Error ApiTraits<CDBConnection>::Keys(internal::CommandHandler* handler,
 
   uint64_t limit;
   if (!common::ConvertFromString(argv[2], &limit)) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   std::vector<std::string> keysout;
   common::Error err = cdb->Keys(argv[0], argv[1], limit, &keysout);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -142,7 +142,7 @@ common::Error ApiTraits<CDBConnection>::DBkcount(internal::CommandHandler* handl
 
   size_t dbkcount = 0;
   common::Error err = cdb->DBkcount(&dbkcount);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -160,7 +160,7 @@ common::Error ApiTraits<CDBConnection>::FlushDB(internal::CommandHandler* handle
 
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
   common::Error err = cdb->FlushDB();
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -174,7 +174,7 @@ template <class CDBConnection>
 common::Error ApiTraits<CDBConnection>::Select(CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
   common::Error err = cdb->Select(argv[0], nullptr);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -195,7 +195,7 @@ common::Error ApiTraits<CDBConnection>::Set(internal::CommandHandler* handler, c
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
   NDbKValue key_added;
   common::Error err = cdb->Set(kv, &key_added);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -213,7 +213,7 @@ common::Error ApiTraits<CDBConnection>::Get(internal::CommandHandler* handler, c
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
   NDbKValue key_loaded;
   common::Error err = cdb->Get(key, &key_loaded);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -238,7 +238,7 @@ common::Error ApiTraits<CDBConnection>::Delete(internal::CommandHandler* handler
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
   NKeys keys_deleted;
   common::Error err = cdb->Delete(keysdel, &keys_deleted);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -257,7 +257,7 @@ common::Error ApiTraits<CDBConnection>::Rename(internal::CommandHandler* handler
 
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
   common::Error err = cdb->Rename(key, argv[1]);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -279,11 +279,11 @@ common::Error ApiTraits<CDBConnection>::SetTTL(internal::CommandHandler* handler
 
   ttl_t ttl;
   if (!common::ConvertFromString(argv[1], &ttl)) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   common::Error err = cdb->SetTTL(key, ttl);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -305,7 +305,7 @@ common::Error ApiTraits<CDBConnection>::GetTTL(internal::CommandHandler* handler
 
   ttl_t ttl;
   common::Error err = cdb->GetTTL(key, &ttl);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -323,7 +323,7 @@ common::Error ApiTraits<CDBConnection>::Quit(internal::CommandHandler* handler,
 
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
   common::Error err = cdb->Quit();
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 

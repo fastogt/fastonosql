@@ -248,7 +248,7 @@ void OutputWidget::createKey(const core::NDbKValue& dbv) {
   core::translator_t tran = server_->GetTranslator();
   core::command_buffer_t cmd_text;
   common::Error err = tran->CreateKeyCommand(dbv, &cmd_text);
-  if (err && err->IsError()) {
+  if (err) {
     LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
     return;
   }

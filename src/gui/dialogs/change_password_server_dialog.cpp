@@ -105,7 +105,7 @@ void ChangePasswordServerDialog::startChangePassword(const proxy::events_info::C
 void ChangePasswordServerDialog::finishChangePassword(const proxy::events_info::ChangePasswordResponce& res) {
   glassWidget_->stop();
   common::Error err = res.errorInfo();
-  if (err && err->IsError()) {
+  if (err) {
     LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
     return;
   }

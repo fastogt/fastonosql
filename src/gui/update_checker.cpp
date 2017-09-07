@@ -36,7 +36,7 @@ void UpdateChecker::routine() {
 #error please specify url and port of version information
 #endif
   common::ErrnoError err = client.Connect();
-  if (err && err->IsError()) {
+  if (err) {
     emit versionAvailibled(false, QString());
     return;
   }
@@ -49,7 +49,7 @@ void UpdateChecker::routine() {
 #else
 #error please specify request to get version information
 #endif
-  if (err && err->IsError()) {
+  if (err) {
     emit versionAvailibled(false, QString());
     DCHECK(!client.Close());
     return;
@@ -58,7 +58,7 @@ void UpdateChecker::routine() {
   char version[128] = {0};
   size_t nread = 0;
   err = client.Read(version, sizeof(version), &nread);
-  if (err && err->IsError()) {
+  if (err) {
     emit versionAvailibled(false, QString());
     DCHECK(!client.Close());
     return;

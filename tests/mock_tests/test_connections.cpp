@@ -19,7 +19,7 @@ void CheckSetGet(core::internal::CDBConnection<NConnection, Config, ContType>* d
   core::NKey key(key_str);
   core::NDbKValue res1;
   common::Error err = db->Get(key, &res1);
-  ASSERT_TRUE(err && err->IsError());
+  ASSERT_TRUE(err);
 
   core::NDbKValue kv(key, val);
   core::NDbKValue res;
@@ -43,7 +43,7 @@ void CheckSetGet(core::internal::CDBConnection<NConnection, Config, ContType>* d
   ASSERT_TRUE(!err);
   core::NDbKValue res3;
   err = db->Get(key, &res3);
-  ASSERT_TRUE(err && err->IsError());
+  ASSERT_TRUE(err);
   ASSERT_TRUE(db->IsConnected());
 }
 
@@ -52,12 +52,12 @@ TEST(Connection, leveldb) {
   core::leveldb::DBConnection db(nullptr);
   core::leveldb::Config lcfg;
   common::Error err = db.Connect(lcfg);
-  ASSERT_TRUE(err && err->IsError());
+  ASSERT_TRUE(err);
   ASSERT_TRUE(!db.IsConnected());
-  err = common::file_system::create_directory(lcfg.db_path, false);
-  ASSERT_TRUE(!err);
+  common::ErrnoError errn = common::file_system::create_directory(lcfg.db_path, false);
+  ASSERT_TRUE(!errn);
   err = db.Connect(lcfg);
-  ASSERT_TRUE(err && err->IsError());
+  ASSERT_TRUE(err);
   ASSERT_TRUE(!db.IsConnected());
 
   lcfg.create_if_missing = true;
@@ -71,8 +71,8 @@ TEST(Connection, leveldb) {
   ASSERT_TRUE(!err);
   ASSERT_TRUE(!db.IsConnected());
 
-  err = common::file_system::remove_directory(lcfg.db_path, true);
-  ASSERT_TRUE(!err);
+  errn = common::file_system::remove_directory(lcfg.db_path, true);
+  ASSERT_TRUE(!errn);
 }
 #endif
 
@@ -81,12 +81,12 @@ TEST(Connection, rocksdb) {
   core::rocksdb::DBConnection db(nullptr);
   core::rocksdb::Config lcfg;
   common::Error err = db.Connect(lcfg);
-  ASSERT_TRUE(err && err->IsError());
+  ASSERT_TRUE(err);
   ASSERT_TRUE(!db.IsConnected());
-  err = common::file_system::create_directory(lcfg.db_path, false);
-  ASSERT_TRUE(!err);
+  common::ErrnoError errn = common::file_system::create_directory(lcfg.db_path, false);
+  ASSERT_TRUE(!errn);
   err = db.Connect(lcfg);
-  ASSERT_TRUE(err && err->IsError());
+  ASSERT_TRUE(err);
   ASSERT_TRUE(!db.IsConnected());
 
   lcfg.create_if_missing = true;
@@ -100,8 +100,8 @@ TEST(Connection, rocksdb) {
   ASSERT_TRUE(!err);
   ASSERT_TRUE(!db.IsConnected());
 
-  err = common::file_system::remove_directory(lcfg.db_path, true);
-  ASSERT_TRUE(!err);
+  errn = common::file_system::remove_directory(lcfg.db_path, true);
+  ASSERT_TRUE(!errn);
 }
 #endif
 
@@ -110,12 +110,12 @@ TEST(Connection, lmdb) {
   core::lmdb::DBConnection db(nullptr);
   core::lmdb::Config lcfg;
   common::Error err = db.Connect(lcfg);
-  ASSERT_TRUE(err && err->IsError());
+  ASSERT_TRUE(err);
   ASSERT_TRUE(!db.IsConnected());
-  err = common::file_system::create_directory(lcfg.db_path, false);
-  ASSERT_TRUE(!err);
+  common::ErrnoError errn = common::file_system::create_directory(lcfg.db_path, false);
+  ASSERT_TRUE(!errn);
   err = db.Connect(lcfg);
-  ASSERT_TRUE(err && err->IsError());
+  ASSERT_TRUE(err);
   ASSERT_TRUE(!db.IsConnected());
 
   lcfg.SetReadOnlyDB(false);
@@ -129,8 +129,8 @@ TEST(Connection, lmdb) {
   ASSERT_TRUE(!err);
   ASSERT_TRUE(!db.IsConnected());
 
-  err = common::file_system::remove_directory(lcfg.db_path, true);
-  ASSERT_TRUE(!err);
+  errn = common::file_system::remove_directory(lcfg.db_path, true);
+  ASSERT_TRUE(!errn);
 }
 #endif
 
@@ -149,8 +149,8 @@ TEST(Connection, unqlite) {
   ASSERT_TRUE(!err);
   ASSERT_TRUE(!db.IsConnected());
 
-  err = common::file_system::remove_file(lcfg.db_path);
-  ASSERT_TRUE(!err);
+  common::ErrnoError errn = common::file_system::remove_file(lcfg.db_path);
+  ASSERT_TRUE(!errn);
 }
 #endif
 
@@ -169,8 +169,8 @@ TEST(Connection, upscaledb) {
   ASSERT_TRUE(!err);
   ASSERT_TRUE(!db.IsConnected());
 
-  err = common::file_system::remove_file(lcfg.db_path);
-  ASSERT_TRUE(!err);
+  common::ErrnoError errn = common::file_system::remove_file(lcfg.db_path);
+  ASSERT_TRUE(!errn);
 }
 #endif
 
@@ -188,7 +188,7 @@ TEST(Connection, forestdb) {
   ASSERT_TRUE(!err);
   ASSERT_TRUE(!db.IsConnected());
 
-  err = common::file_system::remove_file(lcfg.db_path);
-  ASSERT_TRUE(!err);
+  common::ErrnoError errn = common::file_system::remove_file(lcfg.db_path);
+  ASSERT_TRUE(!errn);
 }
 #endif

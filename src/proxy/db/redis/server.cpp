@@ -70,7 +70,7 @@ IDatabaseSPtr Server::CreateDatabase(core::IDataBaseInfoSPtr info) {
 void Server::HandleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev) {
   const events_info::DiscoveryInfoResponce v = ev->value();
   common::Error err = v.errorInfo();
-  if (err && err->IsError()) {
+  if (err) {
     IServer::HandleDiscoveryInfoResponceEvent(ev);
     return;
   }

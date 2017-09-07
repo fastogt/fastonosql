@@ -45,7 +45,7 @@ class Connection {
 
   ~Connection() {
     common::Error err = Disconnect();
-    if (err && err->IsError()) {
+    if (err) {
       DNOTREACHED();
     }
   }
@@ -59,7 +59,7 @@ class Connection {
 
     handle_t* handle = nullptr;
     common::Error err = traits_t::Connect(config, &handle);
-    if (err && err->IsError()) {
+    if (err) {
       return err;
     }
 
@@ -74,7 +74,7 @@ class Connection {
     }
 
     common::Error err = traits_t::Disconnect(&handle_);
-    if (err && err->IsError()) {
+    if (err) {
       return err;
     }
 

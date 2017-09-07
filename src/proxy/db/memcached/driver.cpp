@@ -127,7 +127,7 @@ common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
   LOG_COMMAND(cmd);
   core::memcached::ServerInfo::Stats cm;
   common::Error err = impl_->Info(std::string(), &cm);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -138,7 +138,7 @@ common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
 common::Error Driver::CurrentDataBaseInfo(core::IDataBaseInfo** info) {
   if (!info) {
     DNOTREACHED();
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   return impl_->Select(impl_->CurrentDBName(), info);
@@ -152,9 +152,9 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
       core::internal::GetKeysPattern(res.cursor_in, res.pattern, res.count_keys);
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(pattern_result, core::C_INNER);
   NotifyProgress(sender, 50);
-  common::Error er = Execute(cmd);
-  if (er && er->IsError()) {
-    res.setErrorInfo(er);
+  common::Error err = Execute(cmd);
+  if (err) {
+    res.setErrorInfo(err);
   } else {
     core::FastoObject::childs_t rchildrens = cmd->Childrens();
     if (rchildrens.size()) {
@@ -207,7 +207,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
           LOG_COMMAND(cmd_ttl);
           core::ttl_t ttl = NO_TTL;
           common::Error err = impl_->TTL(key, &ttl);
-          if (err && err->IsError()) {
+          if (err) {
             k.SetTTL(NO_TTL);
           } else {
             k.SetTTL(ttl);

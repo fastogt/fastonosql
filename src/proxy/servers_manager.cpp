@@ -198,7 +198,7 @@ ServersManager::cluster_t ServersManager::CreateCluster(IClusterSettingsBaseSPtr
 
 common::Error ServersManager::TestConnection(IConnectionSettingsBaseSPtr connection) {
   if (!connection) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   core::connectionTypes type = connection->GetType();
@@ -259,13 +259,13 @@ common::Error ServersManager::TestConnection(IConnectionSettingsBaseSPtr connect
 #endif
 
   NOTREACHED();
-  return common::make_error_value("Invalid setting type", common::ERROR_TYPE);
+  return common::make_error("Invalid setting type", common::ERROR_TYPE);
 }
 
 common::Error ServersManager::DiscoveryClusterConnection(IConnectionSettingsBaseSPtr connection,
                                                          std::vector<core::ServerDiscoveryClusterInfoSPtr>* inf) {
   if (!connection || !inf) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   core::connectionTypes type = connection->GetType();
@@ -278,53 +278,53 @@ common::Error ServersManager::DiscoveryClusterConnection(IConnectionSettingsBase
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == core::MEMCACHED) {
-    return common::make_error_value("Not supported setting type", common::ERROR_TYPE);
+    return common::make_error("Not supported setting type", common::ERROR_TYPE);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type == core::SSDB) {
-    return common::make_error_value("Not supported setting type", common::ERROR_TYPE);
+    return common::make_error("Not supported setting type", common::ERROR_TYPE);
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type == core::LEVELDB) {
-    return common::make_error_value("Not supported setting type", common::ERROR_TYPE);
+    return common::make_error("Not supported setting type", common::ERROR_TYPE);
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == core::ROCKSDB) {
-    return common::make_error_value("Not supported setting type", common::ERROR_TYPE);
+    return common::make_error("Not supported setting type", common::ERROR_TYPE);
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (type == core::UNQLITE) {
-    return common::make_error_value("Not supported setting type", common::ERROR_TYPE);
+    return common::make_error("Not supported setting type", common::ERROR_TYPE);
   }
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type == core::LMDB) {
-    return common::make_error_value("Not supported setting type", common::ERROR_TYPE);
+    return common::make_error("Not supported setting type", common::ERROR_TYPE);
   }
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
   if (type == core::UPSCALEDB) {
-    return common::make_error_value("Not supported setting type", common::ERROR_TYPE);
+    return common::make_error("Not supported setting type", common::ERROR_TYPE);
   }
 #endif
 #ifdef BUILD_WITH_FORESTDB
   if (type == core::FORESTDB) {
-    return common::make_error_value("Not supported setting type", common::ERROR_TYPE);
+    return common::make_error("Not supported setting type", common::ERROR_TYPE);
   }
 #endif
 
   NOTREACHED();
-  return common::make_error_value("Invalid setting type", common::ERROR_TYPE);
+  return common::make_error("Invalid setting type", common::ERROR_TYPE);
 }
 
 common::Error ServersManager::DiscoverySentinelConnection(IConnectionSettingsBaseSPtr connection,
                                                           std::vector<core::ServerDiscoverySentinelInfoSPtr>* inf) {
   if (!connection || !inf) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   core::connectionTypes type = connection->GetType();
@@ -337,47 +337,47 @@ common::Error ServersManager::DiscoverySentinelConnection(IConnectionSettingsBas
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == core::MEMCACHED) {
-    return common::make_error_value("Not supported setting type", common::ERROR_TYPE);
+    return common::make_error("Not supported setting type", common::ERROR_TYPE);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type == core::SSDB) {
-    return common::make_error_value("Not supported setting type", common::ERROR_TYPE);
+    return common::make_error("Not supported setting type", common::ERROR_TYPE);
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type == core::LEVELDB) {
-    return common::make_error_value("Not supported setting type", common::ERROR_TYPE);
+    return common::make_error("Not supported setting type", common::ERROR_TYPE);
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == core::ROCKSDB) {
-    return common::make_error_value("Not supported setting type", common::ERROR_TYPE);
+    return common::make_error("Not supported setting type", common::ERROR_TYPE);
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (type == core::UNQLITE) {
-    return common::make_error_value("Not supported setting type", common::ERROR_TYPE);
+    return common::make_error("Not supported setting type", common::ERROR_TYPE);
   }
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type == core::LMDB) {
-    return common::make_error_value("Not supported setting type", common::ERROR_TYPE);
+    return common::make_error("Not supported setting type", common::ERROR_TYPE);
   }
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
   if (type == core::UPSCALEDB) {
-    return common::make_error_value("Not supported setting type", common::ERROR_TYPE);
+    return common::make_error("Not supported setting type", common::ERROR_TYPE);
   }
 #endif
 #ifdef BUILD_WITH_FORESTDB
   if (type == core::FORESTDB) {
-    return common::make_error_value("Not supported setting type", common::ERROR_TYPE);
+    return common::make_error("Not supported setting type", common::ERROR_TYPE);
   }
 #endif
 
   NOTREACHED();
-  return common::make_error_value("Invalid setting type", common::ERROR_TYPE);
+  return common::make_error("Invalid setting type", common::ERROR_TYPE);
 }
 
 void ServersManager::Clear() {

@@ -28,8 +28,8 @@
 #include <QThread>
 
 #include <common/convert2string.h>  // for ConvertToString, etc
-#include <common/time.h>            // for current_mstime
 #include <common/threads/platform_thread.h>
+#include <common/time.h>  // for current_mstime
 
 #include "proxy/command/command_logger.h"  // for LOG_COMMAND
 #include "proxy/driver/first_child_update_root_locker.h"
@@ -112,7 +112,7 @@ void replyNotImplementedYet(IDriver* sender, event_request_type* ev, const char*
 
   std::string patternResult =
       common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported %s command.", eventCommandText);
-  common::Error er = common::make_error_value(patternResult, common::ERROR_TYPE);
+  common::Error er = common::make_error(patternResult, common::ERROR_TYPE);
   res.setErrorInfo(er);
   event_responce_type* resp = new event_responce_type(sender, res);
   IDriver::Reply(esender, resp);
@@ -140,7 +140,7 @@ IDriver::~IDriver() {
 common::Error IDriver::Execute(core::FastoObjectCommandIPtr cmd) {
   if (!cmd) {
     DNOTREACHED();
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   LOG_COMMAND(cmd);
@@ -188,7 +188,7 @@ void IDriver::Clear() {
     timer_info_id_ = 0;
   }
   common::Error err = SyncDisconnect();
-  if (err && err->IsError()) {
+  if (err) {
     DNOTREACHED();
   }
   ClearImpl();
@@ -260,8 +260,8 @@ void IDriver::timerEvent(QTimerEvent* event) {
     if (!log_file_) {
       std::string path = settings_->LoggingPath();
       std::string dir = common::file_system::get_dir_path(path);
-      common::Error err = common::file_system::create_directory(dir, true);
-      if (err && err->IsError()) {
+      common::ErrnoError err = common::file_system::create_directory(dir, true);
+      if (err) {
       }
       if (common::file_system::is_directory(dir) == common::SUCCESS) {
         common::file_system::ascii_string_path p(path);
@@ -270,8 +270,8 @@ void IDriver::timerEvent(QTimerEvent* event) {
     }
 
     if (log_file_ && !log_file_->IsOpened()) {
-      common::Error err = log_file_->Open("ab+");
-      if (err && err->IsError()) {
+      common::ErrnoError err = log_file_->Open("ab+");
+      if (err) {
         DNOTREACHED();
       }
     }
@@ -280,8 +280,8 @@ void IDriver::timerEvent(QTimerEvent* event) {
       common::time64_t time = common::time::current_mstime();
       std::string stamp = createStamp(time);
       core::IServerInfo* info = nullptr;
-      common::Error er = CurrentServerInfo(&info);
-      if (er && er->IsError()) {
+      common::Error err = CurrentServerInfo(&info);
+      if (err) {
         QObject::timerEvent(event);
         return;
       }
@@ -306,9 +306,9 @@ void IDriver::HandleConnectEvent(events::ConnectRequestEvent* ev) {
   NotifyProgress(sender, 0);
   events::ConnectResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 25);
-  common::Error er = SyncConnect();
-  if (er && er->IsError()) {
-    res.setErrorInfo(er);
+  common::Error err = SyncConnect();
+  if (err) {
+    res.setErrorInfo(err);
   }
   NotifyProgress(sender, 75);
   Reply(sender, new events::ConnectResponceEvent(this, res));
@@ -321,9 +321,9 @@ void IDriver::HandleDisconnectEvent(events::DisconnectRequestEvent* ev) {
   events::DisconnectResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 50);
 
-  common::Error er = SyncDisconnect();
-  if (er && er->IsError()) {
-    res.setErrorInfo(er);
+  common::Error err = SyncDisconnect();
+  if (err) {
+    res.setErrorInfo(err);
   }
 
   Reply(sender, new events::DisconnectResponceEvent(this, res));
@@ -338,7 +338,7 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
   const core::command_buffer_t input_line = res.text;
   std::vector<core::command_buffer_t> commands;
   common::Error err = core::ParseCommands(input_line, &commands);
-  if (err && err->IsError()) {
+  if (err) {
     res.setErrorInfo(err);
     Reply(sender, new events::ExecuteResponceEvent(this, res));
     NotifyProgress(sender, 100);
@@ -359,7 +359,7 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
     common::time64_t start_ts = common::time::current_mstime();
     for (size_t i = 0; i < commands.size(); ++i) {
       if (IsInterrupted()) {
-        res.setErrorInfo(common::make_error_value("Interrupted exec.", common::INTERRUPTED_TYPE));
+        res.setErrorInfo(common::make_error("Interrupted exec.", common::INTERRUPTED_TYPE));
         goto done;
       }
 
@@ -370,7 +370,7 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
       core::FastoObjectCommandIPtr cmd =
           silence ? CreateCommandFast(command, log_type) : CreateCommand(obj.get(), command, log_type);  //
       common::Error err = Execute(cmd);
-      if (err && err->IsError()) {
+      if (err) {
         res.setErrorInfo(err);
         goto done;
       }
@@ -434,7 +434,7 @@ void IDriver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent
   NotifyProgress(sender, 50);
   core::IDataBaseInfo* info = nullptr;
   common::Error err = CurrentDataBaseInfo(&info);
-  if (err && err->IsError()) {
+  if (err) {
     res.setErrorInfo(err);
   } else {
     res.databases.push_back(core::IDataBaseInfoSPtr(info));
@@ -450,7 +450,7 @@ void IDriver::HandleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
   NotifyProgress(sender, 50);
   core::IServerInfo* info = nullptr;
   common::Error err = CurrentServerInfo(&info);
-  if (err && err->IsError()) {
+  if (err) {
     res.setErrorInfo(err);
   } else {
     core::IServerInfoSPtr mem(info);
@@ -501,7 +501,7 @@ void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
     res.setInfos(tmpInfos);
     readFile.Close();
   } else {
-    res.setErrorInfo(common::make_error_value("History file not found", common::ERROR_TYPE));
+    res.setErrorInfo(common::make_error("History file not found", common::ERROR_TYPE));
   }
 
   Reply(sender, new events::ServerInfoHistoryResponceEvent(this, res));
@@ -518,8 +518,8 @@ void IDriver::HandleClearServerHistoryEvent(events::ClearServerHistoryRequestEve
   } else {
     std::string path = settings_->LoggingPath();
     if (common::file_system::is_file_exist(path)) {
-      common::Error err = common::file_system::remove_file(path);
-      if (err && err->IsError()) {
+      common::ErrnoError err = common::file_system::remove_file(path);
+      if (err) {
         ret = false;
       } else {
         ret = true;
@@ -530,7 +530,7 @@ void IDriver::HandleClearServerHistoryEvent(events::ClearServerHistoryRequestEve
   }
 
   if (!ret) {
-    res.setErrorInfo(common::make_error_value("Clear file error!", common::ERROR_TYPE));
+    res.setErrorInfo(common::make_error("Clear file error!", common::ERROR_TYPE));
   }
 
   Reply(sender, new events::ClearServerHistoryResponceEvent(this, res));
@@ -546,7 +546,7 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
     core::IServerInfo* info = nullptr;
     core::IDataBaseInfo* db = nullptr;
     common::Error err = ServerDiscoveryInfo(&info, &db);
-    if (err && err->IsError()) {
+    if (err) {
       res.setErrorInfo(err);
     } else {
       DCHECK(info);
@@ -560,7 +560,7 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
     }
   } else {
     res.setErrorInfo(
-        common::make_error_value("Not connected to server, impossible to get discovery info!", common::ERROR_TYPE));
+        common::make_error("Not connected to server, impossible to get discovery info!", common::ERROR_TYPE));
   }
 
   NotifyProgress(sender, 75);
@@ -570,21 +570,21 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
 
 common::Error IDriver::ServerDiscoveryInfo(core::IServerInfo** sinfo, core::IDataBaseInfo** dbinfo) {
   core::IServerInfo* lsinfo = nullptr;
-  common::Error er = CurrentServerInfo(&lsinfo);
-  if (er && er->IsError()) {
-    return er;
+  common::Error err = CurrentServerInfo(&lsinfo);
+  if (err) {
+    return err;
   }
 
   core::IDataBaseInfo* ldbinfo = nullptr;
-  er = CurrentDataBaseInfo(&ldbinfo);
-  if (er && er->IsError()) {
+  err = CurrentDataBaseInfo(&ldbinfo);
+  if (err) {
     delete lsinfo;
-    return er;
+    return err;
   }
 
   *sinfo = lsinfo;
   *dbinfo = ldbinfo;
-  return er;
+  return err;
 }
 
 void IDriver::OnFlushedCurrentDB() {

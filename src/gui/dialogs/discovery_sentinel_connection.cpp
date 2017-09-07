@@ -42,11 +42,10 @@ void DiscoverySentinelConnection::routine() {
     return;
   }
 
-  common::Error er = proxy::ServersManager::GetInstance().DiscoverySentinelConnection(connection_, &inf);
-
-  if (er && er->IsError()) {
+  common::Error err = proxy::ServersManager::GetInstance().DiscoverySentinelConnection(connection_, &inf);
+  if (err) {
     QString qdesc;
-    common::ConvertFromString(er->GetDescription(), &qdesc);
+    common::ConvertFromString(err->GetDescription(), &qdesc);
     emit connectionResult(false, common::time::current_mstime() - startTime_, qdesc, inf);
   } else {
     emit connectionResult(true, common::time::current_mstime() - startTime_, translations::trSuccess, inf);

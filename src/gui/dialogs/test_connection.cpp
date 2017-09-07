@@ -38,7 +38,7 @@ void TestConnection::routine() {
   }
 
   common::Error err = proxy::ServersManager::GetInstance().TestConnection(connection_);
-  if (err && err->IsError()) {
+  if (err) {
     QString qdesc;
     common::ConvertFromString(err->GetDescription(), &qdesc);
     emit connectionResult(false, common::time::current_mstime() - start_time_, qdesc);

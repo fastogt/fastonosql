@@ -109,8 +109,8 @@ void ServerHistoryDialog::startLoadServerHistoryInfo(const proxy::events_info::S
 
 void ServerHistoryDialog::finishLoadServerHistoryInfo(const proxy::events_info::ServerInfoHistoryResponce& res) {
   glassWidget_->stop();
-  common::Error er = res.errorInfo();
-  if (er && er->IsError()) {
+  common::Error err = res.errorInfo();
+  if (err) {
     return;
   }
 
@@ -123,8 +123,8 @@ void ServerHistoryDialog::startClearServerHistory(const proxy::events_info::Clea
 }
 
 void ServerHistoryDialog::finishClearServerHistory(const proxy::events_info::ClearServerHistoryResponce& res) {
-  common::Error er = res.errorInfo();
-  if (er && er->IsError()) {
+  common::Error err = res.errorInfo();
+  if (err) {
     return;
   }
 

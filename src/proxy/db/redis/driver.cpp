@@ -171,7 +171,7 @@ common::Error Driver::ExecuteImpl(const core::command_buffer_t& command, core::F
 common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(INFO_REQUEST, core::C_INNER);
   common::Error err = Execute(cmd.get());
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -179,7 +179,7 @@ common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
   *info = core::redis::MakeRedisServerInfo(content);
 
   if (!*info) {
-    return common::make_error_value("Invalid " INFO_REQUEST " command output", common::ERROR_TYPE);
+    return common::make_error("Invalid " INFO_REQUEST " command output", common::ERROR_TYPE);
   }
   return common::Error();
 }
@@ -187,7 +187,7 @@ common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
 common::Error Driver::CurrentDataBaseInfo(core::IDataBaseInfo** info) {
   if (!info) {
     DNOTREACHED();
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   return impl_->Select(impl_->CurrentDBName(), info);
@@ -199,9 +199,9 @@ void Driver::HandleShutdownEvent(events::ShutDownRequestEvent* ev) {
   events::ShutDownResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 25);
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(REDIS_SHUTDOWN_COMMAND, core::C_INNER);
-  common::Error er = Execute(cmd);
-  if (er && er->IsError()) {
-    res.setErrorInfo(er);
+  common::Error err = Execute(cmd);
+  if (err) {
+    res.setErrorInfo(err);
   }
   NotifyProgress(sender, 75);
   Reply(sender, new events::ShutDownResponceEvent(this, res));
@@ -214,13 +214,13 @@ void Driver::HandleBackupEvent(events::BackupRequestEvent* ev) {
   events::BackupResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 25);
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(REDIS_BACKUP_COMMAND, core::C_INNER);
-  common::Error er = Execute(cmd);
-  if (er && er->IsError()) {
-    res.setErrorInfo(er);
+  common::Error err = Execute(cmd);
+  if (err) {
+    res.setErrorInfo(err);
   } else {
-    common::Error err = common::file_system::copy_file(BACKUP_DEFAULT_PATH, res.path);
-    if (err && err->IsError()) {
-      res.setErrorInfo(err);
+    common::ErrnoError err = common::file_system::copy_file(BACKUP_DEFAULT_PATH, res.path);
+    if (err) {
+      res.setErrorInfo(common::make_error_from_errno(err));
     }
   }
   NotifyProgress(sender, 75);
@@ -233,9 +233,9 @@ void Driver::HandleExportEvent(events::ExportRequestEvent* ev) {
   NotifyProgress(sender, 0);
   events::ExportResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 25);
-  common::Error err = common::file_system::copy_file(res.path, EXPORT_DEFAULT_PATH);
-  if (err && err->IsError()) {
-    res.setErrorInfo(err);
+  common::ErrnoError err = common::file_system::copy_file(res.path, EXPORT_DEFAULT_PATH);
+  if (err) {
+    res.setErrorInfo(common::make_error_from_errno(err));
   }
   NotifyProgress(sender, 75);
   Reply(sender, new events::ExportResponceEvent(this, res));
@@ -251,9 +251,9 @@ void Driver::HandleChangePasswordEvent(events::ChangePasswordRequestEvent* ev) {
   wr << REDIS_SET_PASSWORD_COMMAND << " " << res.new_password;
   core::command_buffer_t pattern_result = wr.str();
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(pattern_result, core::C_INNER);
-  common::Error er = Execute(cmd);
-  if (er && er->IsError()) {
-    res.setErrorInfo(er);
+  common::Error err = Execute(cmd);
+  if (err) {
+    res.setErrorInfo(err);
   }
 
   NotifyProgress(sender, 75);
@@ -270,9 +270,9 @@ void Driver::HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEv
   wr << REDIS_SET_MAX_CONNECTIONS_COMMAND << " " << res.max_connection;
   core::command_buffer_t pattern_result = wr.str();
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(pattern_result, core::C_INNER);
-  common::Error er = Execute(cmd);
-  if (er && er->IsError()) {
-    res.setErrorInfo(er);
+  common::Error err = Execute(cmd);
+  if (err) {
+    res.setErrorInfo(err);
   }
 
   NotifyProgress(sender, 75);
@@ -289,7 +289,7 @@ void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
 
   core::IDataBaseInfo* info = nullptr;
   common::Error err = CurrentDataBaseInfo(&info);
-  if (err && err->IsError()) {
+  if (err) {
     res.setErrorInfo(err);
     NotifyProgress(sender, 75);
     Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
@@ -298,7 +298,7 @@ void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
   }
 
   err = Execute(cmd.get());
-  if (err && err->IsError()) {
+  if (err) {
     res.setErrorInfo(err);
     NotifyProgress(sender, 75);
     Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
@@ -344,7 +344,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(pattern_result, core::C_INNER);
   NotifyProgress(sender, 50);
   common::Error err = Execute(cmd);
-  if (err && err->IsError()) {
+  if (err) {
     res.setErrorInfo(err);
   } else {
     core::FastoObject::childs_t rchildrens = cmd->Childrens();
@@ -408,7 +408,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
       }
 
       err = impl_->ExecuteAsPipeline(cmds, &LOG_COMMAND);
-      if (err && err->IsError()) {
+      if (err) {
         goto done;
       }
 
@@ -457,9 +457,9 @@ void Driver::HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEven
   events::ServerPropertyInfoResponceEvent::value_type res(ev->value());
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(REDIS_GET_PROPERTY_SERVER_COMMAND, core::C_INNER);
   NotifyProgress(sender, 50);
-  common::Error er = Execute(cmd);
-  if (er && er->IsError()) {
-    res.setErrorInfo(er);
+  common::Error err = Execute(cmd);
+  if (err) {
+    res.setErrorInfo(err);
   } else {
     core::FastoObject::childs_t ch = cmd->Childrens();
     if (ch.size()) {
@@ -485,9 +485,9 @@ void Driver::HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoReq
   wr << "CONFIG SET " << res.new_item.first << " " << res.new_item.second;
   core::command_buffer_t change_request = wr.str();
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(change_request, core::C_INNER);
-  common::Error er = Execute(cmd);
-  if (er && er->IsError()) {
-    res.setErrorInfo(er);
+  common::Error err = Execute(cmd);
+  if (err) {
+    res.setErrorInfo(err);
   } else {
     res.is_change = true;
   }
@@ -507,7 +507,7 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
   const core::command_buffer_t load_channels_request = wr.str();
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(load_channels_request, core::C_INNER);
   common::Error err = Execute(cmd);
-  if (err && err->IsError()) {
+  if (err) {
     res.setErrorInfo(err);
     goto done;
   } else {
@@ -539,7 +539,7 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
       }
 
       err = impl_->ExecuteAsPipeline(cmds, &LOG_COMMAND);
-      if (err && err->IsError()) {
+      if (err) {
         res.setErrorInfo(err);
         goto done;
       }

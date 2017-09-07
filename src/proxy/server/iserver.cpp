@@ -331,90 +331,90 @@ void IServer::Notify(QEvent* ev) {
 
 void IServer::HandleConnectEvent(events::ConnectResponceEvent* ev) {
   auto v = ev->value();
-  common::Error er(v.errorInfo());
-  if (er && er->IsError()) {
-    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
+  common::Error err(v.errorInfo());
+  if (err) {
+    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
   }
   emit ConnectFinished(v);
 }
 
 void IServer::HandleDisconnectEvent(events::DisconnectResponceEvent* ev) {
   auto v = ev->value();
-  common::Error er(v.errorInfo());
-  if (er && er->IsError()) {
-    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
+  common::Error err(v.errorInfo());
+  if (err) {
+    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
   }
   emit DisconnectFinished(v);
 }
 
 void IServer::HandleLoadServerInfoEvent(events::ServerInfoResponceEvent* ev) {
   auto v = ev->value();
-  common::Error er(v.errorInfo());
-  if (er && er->IsError()) {
-    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
+  common::Error err(v.errorInfo());
+  if (err) {
+    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
   }
   emit LoadServerInfoFinished(v);
 }
 
 void IServer::HandleLoadServerPropertyEvent(events::ServerPropertyInfoResponceEvent* ev) {
   auto v = ev->value();
-  common::Error er(v.errorInfo());
-  if (er && er->IsError()) {
-    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
+  common::Error err(v.errorInfo());
+  if (err) {
+    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
   }
   emit LoadServerPropertyFinished(v);
 }
 
 void IServer::HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoResponceEvent* ev) {
   auto v = ev->value();
-  common::Error er(v.errorInfo());
-  if (er && er->IsError()) {
-    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
+  common::Error err(v.errorInfo());
+  if (err) {
+    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
   }
   emit ChangeServerPropertyFinished(v);
 }
 
 void IServer::HandleLoadServerChannelsEvent(events::LoadServerChannelsResponceEvent* ev) {
   auto v = ev->value();
-  common::Error er(v.errorInfo());
-  if (er && er->IsError()) {
-    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
+  common::Error err(v.errorInfo());
+  if (err) {
+    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
   }
   emit LoadServerChannelsFinished(v);
 }
 
 void IServer::HandleShutdownEvent(events::ShutDownResponceEvent* ev) {
   auto v = ev->value();
-  common::Error er(v.errorInfo());
-  if (er && er->IsError()) {
-    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
+  common::Error err(v.errorInfo());
+  if (err) {
+    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
   }
   emit ShutdownFinished(v);
 }
 
 void IServer::HandleBackupEvent(events::BackupResponceEvent* ev) {
   auto v = ev->value();
-  common::Error er(v.errorInfo());
-  if (er && er->IsError()) {
-    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
+  common::Error err(v.errorInfo());
+  if (err) {
+    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
   }
   emit BackupFinished(v);
 }
 
 void IServer::HandleExportEvent(events::ExportResponceEvent* ev) {
   auto v = ev->value();
-  common::Error er(v.errorInfo());
-  if (er && er->IsError()) {
-    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
+  common::Error err(v.errorInfo());
+  if (err) {
+    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
   }
   emit ExportFinished(v);
 }
 
 void IServer::HandleChangePasswordEvent(events::ChangePasswordResponceEvent* ev) {
   auto v = ev->value();
-  common::Error er(v.errorInfo());
-  if (er && er->IsError()) {
-    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
+  common::Error err(v.errorInfo());
+  if (err) {
+    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
   }
 
   emit ChangePasswordFinished(v);
@@ -422,9 +422,9 @@ void IServer::HandleChangePasswordEvent(events::ChangePasswordResponceEvent* ev)
 
 void IServer::HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionResponceEvent* ev) {
   auto v = ev->value();
-  common::Error er(v.errorInfo());
-  if (er && er->IsError()) {
-    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
+  common::Error err(v.errorInfo());
+  if (err) {
+    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
   }
 
   emit ChangeMaxConnectionFinished(v);
@@ -432,10 +432,11 @@ void IServer::HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionResponce
 
 void IServer::HandleExecuteEvent(events::ExecuteResponceEvent* ev) {
   auto v = ev->value();
-  common::Error er(v.errorInfo());
-  if (er && er->IsError()) {
-    LOG_ERROR(er, er->GetErrorType() == common::INTERRUPTED_TYPE ? common::logging::LOG_LEVEL_WARNING
-                                                                 : common::logging::LOG_LEVEL_ERR,
+  common::Error err(v.errorInfo());
+  if (err) {
+    LOG_ERROR(err,
+              err->GetErrorType() == common::INTERRUPTED_TYPE ? common::logging::LOG_LEVEL_WARNING
+                                                              : common::logging::LOG_LEVEL_ERR,
               true);
   }
 
@@ -444,9 +445,9 @@ void IServer::HandleExecuteEvent(events::ExecuteResponceEvent* ev) {
 
 void IServer::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoResponceEvent* ev) {
   auto v = ev->value();
-  common::Error er(v.errorInfo());
-  if (er && er->IsError()) {
-    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
+  common::Error err(v.errorInfo());
+  if (err) {
+    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
   } else {
     events_info::LoadDatabasesInfoResponce::database_info_cont_type dbs = v.databases;
     events_info::LoadDatabasesInfoResponce::database_info_cont_type tmp;
@@ -467,9 +468,9 @@ void IServer::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoResponceEven
 
 void IServer::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentResponceEvent* ev) {
   auto v = ev->value();
-  common::Error er(v.errorInfo());
-  if (er && er->IsError()) {
-    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
+  common::Error err(v.errorInfo());
+  if (err) {
+    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
   } else {
     database_t dbs = FindDatabase(v.inf);
     if (dbs) {
@@ -620,7 +621,7 @@ void IServer::HandleCheckDBKeys(core::IDataBaseInfoSPtr db, core::ttl_t expired_
         core::translator_t trans = GetTranslator();
         core::command_buffer_t load_ttl_cmd;
         common::Error err = trans->LoadKeyTTLCommand(nkey, &load_ttl_cmd);
-        if (err && err->IsError()) {
+        if (err) {
           return;
         }
         proxy::events_info::ExecuteInfoRequest req(this, load_ttl_cmd, 0, 0, true, true, core::C_INNER);
@@ -636,9 +637,9 @@ void IServer::HandleCheckDBKeys(core::IDataBaseInfoSPtr db, core::ttl_t expired_
 
 void IServer::HandleEnterModeEvent(events::EnterModeEvent* ev) {
   auto v = ev->value();
-  common::Error er(v.errorInfo());
-  if (er && er->IsError()) {
-    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
+  common::Error err(v.errorInfo());
+  if (err) {
+    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
   }
 
   emit ModeEntered(v);
@@ -646,9 +647,9 @@ void IServer::HandleEnterModeEvent(events::EnterModeEvent* ev) {
 
 void IServer::HandleLeaveModeEvent(events::LeaveModeEvent* ev) {
   auto v = ev->value();
-  common::Error er(v.errorInfo());
-  if (er && er->IsError()) {
-    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
+  common::Error err(v.errorInfo());
+  if (err) {
+    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
   }
 
   emit ModeLeaved(v);
@@ -656,9 +657,9 @@ void IServer::HandleLeaveModeEvent(events::LeaveModeEvent* ev) {
 
 void IServer::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryResponceEvent* ev) {
   auto v = ev->value();
-  common::Error er = v.errorInfo();
-  if (er && er->IsError()) {
-    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
+  common::Error err = v.errorInfo();
+  if (err) {
+    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
   }
 
   emit LoadServerHistoryInfoFinished(v);
@@ -666,9 +667,9 @@ void IServer::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryResponce
 
 void IServer::HandleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev) {
   auto v = ev->value();
-  common::Error er = v.errorInfo();
-  if (er && er->IsError()) {
-    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
+  common::Error err = v.errorInfo();
+  if (err) {
+    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
   } else {
     server_info_ = v.sinfo;
     database_t dbs = FindDatabase(v.dbinfo);
@@ -682,9 +683,9 @@ void IServer::HandleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEven
 
 void IServer::HandleClearServerHistoryResponceEvent(events::ClearServerHistoryResponceEvent* ev) {
   auto v = ev->value();
-  common::Error er = v.errorInfo();
-  if (er && er->IsError()) {
-    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
+  common::Error err = v.errorInfo();
+  if (err) {
+    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
   }
 
   emit ClearServerHistoryFinished(v);

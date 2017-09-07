@@ -118,15 +118,15 @@ TEST(CommandHolder, execute) {
   ghand = hand;
   const core::commands_args_t cmd_valid_set = {SET, "alex", "palec"};
   common::Error err = hand->Execute(cmd_valid_set, NULL);
-  ASSERT_FALSE(err && err->IsError());
+  ASSERT_FALSE(err);
 
   const core::commands_args_t cmd_invalid_set = {SET, "alex"};
   err = hand->Execute(cmd_invalid_set, NULL);
-  ASSERT_TRUE(err && err->IsError());
+  ASSERT_TRUE(err);
 
   const core::commands_args_t cmd_not_exists = {GET, "alex"};
   err = hand->Execute(cmd_not_exists, NULL);
-  ASSERT_TRUE(err && err->IsError());
+  ASSERT_TRUE(err);
 
   const core::commands_args_t cmd_get_config = {GET, CONFIG, "alex"};
   err = hand->Execute(cmd_get_config, NULL);
@@ -134,7 +134,7 @@ TEST(CommandHolder, execute) {
 
   const core::commands_args_t cmd_get_config_invalid = {GET_CONFIG_INVALID, "alex"};
   err = hand->Execute(cmd_get_config_invalid, NULL);
-  ASSERT_TRUE(err && err->IsError());
+  ASSERT_TRUE(err);
 
   const core::commands_args_t cmd_get2 = {GET2, "alex"};
   err = hand->Execute(cmd_get2, NULL);
@@ -142,7 +142,7 @@ TEST(CommandHolder, execute) {
 
   const core::commands_args_t cmd_get_config_many_args = {GET, CONFIG, "last", "alex"};
   err = hand->Execute(cmd_get_config_many_args, NULL);
-  ASSERT_TRUE(err && err->IsError());
+  ASSERT_TRUE(err);
 
   delete hand;
 }

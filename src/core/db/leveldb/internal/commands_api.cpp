@@ -27,7 +27,7 @@ common::Error CommandsApi::Info(internal::CommandHandler* handler, commands_args
 
   ServerInfo::Stats statsout;
   common::Error err = level->Info(argv.size() == 1 ? argv[0] : std::string(), &statsout);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 

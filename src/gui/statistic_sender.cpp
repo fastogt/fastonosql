@@ -39,7 +39,7 @@ void StatisticSender::routine() {
 #error please specify url and port to send statistic information
 #endif
   common::ErrnoError err = client.Connect();
-  if (err && err->IsError()) {
+  if (err) {
     emit statisticSended(false);
     return;
   }
@@ -64,7 +64,7 @@ void StatisticSender::routine() {
   size_t nwrite = 0;
   err = client.Write(stats_json_string, strlen(stats_json_string), &nwrite);
   json_object_put(stats_json);
-  if (err && err->IsError()) {
+  if (err) {
     emit statisticSended(false);
     DCHECK(!client.Close());
     return;

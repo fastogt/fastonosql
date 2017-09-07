@@ -74,9 +74,9 @@ common::Error ConnectionAllocatorTraits<rocksdb::NativeConnection, rocksdb::Conf
     const rocksdb::Config& config,
     rocksdb::NativeConnection** hout) {
   rocksdb::NativeConnection* context = nullptr;
-  common::Error er = rocksdb::CreateConnection(config, &context);
-  if (er && er->IsError()) {
-    return er;
+  common::Error err = rocksdb::CreateConnection(config, &context);
+  if (err) {
+    return err;
   }
 
   *hout = context;
@@ -109,7 +109,7 @@ namespace rocksdb {
 
 common::Error CreateConnection(const Config& config, NativeConnection** context) {
   if (!context) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   DCHECK(*context == nullptr);
@@ -117,7 +117,7 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   std::string folder = config.db_path;  // start point must be folder
   common::tribool is_dir = common::file_system::is_directory(folder);
   if (is_dir != common::SUCCESS) {
-    return common::make_error_value(common::MemSPrintf("Invalid input path(%s)", folder), common::ERROR_TYPE);
+    return common::make_error(common::MemSPrintf("Invalid input path(%s)", folder), common::ERROR_TYPE);
   }
 
   ::rocksdb::Options rs;
@@ -130,7 +130,7 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   auto st = ::rocksdb::DB::Open(rs, folder, &lcontext);
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("Fail open database: %s!", st.ToString());
-    return common::make_error_value(buff, common::ERROR_TYPE);
+    return common::make_error(buff, common::ERROR_TYPE);
   }
 
   *context = lcontext;
@@ -139,9 +139,9 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
 
 common::Error TestConnection(const Config& config) {
   ::rocksdb::DB* ldb = nullptr;
-  common::Error er = CreateConnection(config, &ldb);
-  if (er && er->IsError()) {
-    return er;
+  common::Error err = CreateConnection(config, &ldb);
+  if (err) {
+    return err;
   }
 
   delete ldb;
@@ -155,17 +155,17 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
   UNUSED(args);
   if (!statsout) {
     DNOTREACHED();
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected", common::ERROR_TYPE);
   }
 
   std::string rets;
   bool isok = connection_.handle_->GetProperty("rocksdb.stats", &rets);
   if (!isok) {
-    return common::make_error_value("info function failed", common::ERROR_TYPE);
+    return common::make_error("info function failed", common::ERROR_TYPE);
   }
 
   ServerInfo::Stats lstatsout;
@@ -232,7 +232,7 @@ std::string DBConnection::CurrentDBName() const {
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected", common::ERROR_TYPE);
   }
 
   ::rocksdb::ReadOptions ro;
@@ -241,7 +241,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   auto st = connection_.handle_->Get(ro, key_slice, ret_val);
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("get function error: %s", st.ToString());
-    return common::make_error_value(buff, common::ERROR_TYPE);
+    return common::make_error(buff, common::ERROR_TYPE);
   }
 
   return common::Error();
@@ -249,7 +249,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
 
 common::Error DBConnection::Mget(const std::vector<std::string>& keys, std::vector<std::string>* ret) {
   if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected", common::ERROR_TYPE);
   }
 
   std::vector< ::rocksdb::Slice> rslice;
@@ -265,19 +265,19 @@ common::Error DBConnection::Mget(const std::vector<std::string>& keys, std::vect
     }
   }
 
-  return common::make_error_value("mget function unknown error", common::ERROR_TYPE);
+  return common::make_error("mget function unknown error", common::ERROR_TYPE);
 }
 
 common::Error DBConnection::Merge(const std::string& key, const std::string& value) {
   if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected", common::ERROR_TYPE);
   }
 
   ::rocksdb::WriteOptions wo;
   auto st = connection_.handle_->Merge(wo, key, value);
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("merge function error: %s", st.ToString());
-    return common::make_error_value(buff, common::ERROR_TYPE);
+    return common::make_error(buff, common::ERROR_TYPE);
   }
 
   return common::Error();
@@ -285,7 +285,7 @@ common::Error DBConnection::Merge(const std::string& key, const std::string& val
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected", common::ERROR_TYPE);
   }
 
   ::rocksdb::WriteOptions wo;
@@ -294,7 +294,7 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   auto st = connection_.handle_->Put(wo, key_slice, value);
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("set function error: %s", st.ToString());
-    return common::make_error_value(buff, common::ERROR_TYPE);
+    return common::make_error(buff, common::ERROR_TYPE);
   }
 
   return common::Error();
@@ -302,12 +302,12 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
 
 common::Error DBConnection::DelInner(key_t key) {
   if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected", common::ERROR_TYPE);
   }
 
   std::string exist_key;
   common::Error err = GetInner(key, &exist_key);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -317,7 +317,7 @@ common::Error DBConnection::DelInner(key_t key) {
   auto st = connection_.handle_->Delete(wo, key_slice);
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("del function error: %s", st.ToString());
-    return common::make_error_value(buff, common::ERROR_TYPE);
+    return common::make_error(buff, common::ERROR_TYPE);
   }
   return common::Error();
 }
@@ -353,7 +353,7 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
 
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("Keys function error: %s", st.ToString());
-    return common::make_error_value(buff, common::ERROR_TYPE);
+    return common::make_error(buff, common::ERROR_TYPE);
   }
 
   *keys_out = lkeys_out;
@@ -383,7 +383,7 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
 
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("Keys function error: %s", st.ToString());
-    return common::make_error_value(buff, common::ERROR_TYPE);
+    return common::make_error(buff, common::ERROR_TYPE);
   }
   return common::Error();
 }
@@ -401,7 +401,7 @@ common::Error DBConnection::DBkcountImpl(size_t* size) {
 
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("Couldn't determine DBKCOUNT error: %s", st.ToString());
-    return common::make_error_value(buff, common::ERROR_TYPE);
+    return common::make_error(buff, common::ERROR_TYPE);
   }
 
   *size = sz;
@@ -418,7 +418,7 @@ common::Error DBConnection::FlushDBImpl() {
     if (!st.ok()) {
       delete it;
       std::string buff = common::MemSPrintf("del function error: %s", st.ToString());
-      return common::make_error_value(buff, common::ERROR_TYPE);
+      return common::make_error(buff, common::ERROR_TYPE);
     }
   }
 
@@ -427,7 +427,7 @@ common::Error DBConnection::FlushDBImpl() {
 
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("Keys function error: %s", st.ToString());
-    return common::make_error_value(buff, common::ERROR_TYPE);
+    return common::make_error(buff, common::ERROR_TYPE);
   }
   return common::Error();
 }
@@ -449,7 +449,7 @@ common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) 
   key_t key_str = cur.GetKey();
   std::string value_str = key.ValueString();
   common::Error err = SetInner(key_str, value_str);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -461,7 +461,7 @@ common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
   key_t key_str = key.GetKey();
   std::string value_str;
   common::Error err = GetInner(key_str, &value_str);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -475,7 +475,7 @@ common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
     NKey key = keys[i];
     key_t key_str = key.GetKey();
     common::Error err = DelInner(key_str);
-    if (err && err->IsError()) {
+    if (err) {
       continue;
     }
 
@@ -489,17 +489,17 @@ common::Error DBConnection::RenameImpl(const NKey& key, string_key_t new_key) {
   key_t key_str = key.GetKey();
   std::string value_str;
   common::Error err = GetInner(key_str, &value_str);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
   err = DelInner(key_str);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
   err = SetInner(key_t(new_key), value_str);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -509,20 +509,20 @@ common::Error DBConnection::RenameImpl(const NKey& key, string_key_t new_key) {
 common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
   UNUSED(key);
   UNUSED(ttl);
-  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE " for RocksDB not supported TTL commands.",
-                                  common::ERROR_TYPE);
+  return common::make_error("Sorry, but now " PROJECT_NAME_TITLE " for RocksDB not supported TTL commands.",
+                            common::ERROR_TYPE);
 }
 
 common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
   UNUSED(key);
   UNUSED(ttl);
-  return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE " for RocksDB not supported TTL commands.",
-                                  common::ERROR_TYPE);
+  return common::make_error("Sorry, but now " PROJECT_NAME_TITLE " for RocksDB not supported TTL commands.",
+                            common::ERROR_TYPE);
 }
 
 common::Error DBConnection::QuitImpl() {
   common::Error err = Disconnect();
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 

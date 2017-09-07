@@ -37,7 +37,7 @@ namespace redis {
 common::Error CommandsApi::Auth(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
   common::Error err = red->Auth(argv[0]);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -58,7 +58,7 @@ common::Error CommandsApi::Lpush(internal::CommandHandler* handler, commands_arg
   DBConnection* redis = static_cast<DBConnection*>(handler);
   long long list_len = 0;
   common::Error err = redis->Lpush(key, NValue(arr), &list_len);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -73,17 +73,17 @@ common::Error CommandsApi::Lrange(internal::CommandHandler* handler, commands_ar
   NKey key(key_str);
   int start;
   if (!common::ConvertFromString(argv[1], &start)) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   int stop;
   if (!common::ConvertFromString(argv[2], &stop)) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
   DBConnection* redis = static_cast<DBConnection*>(handler);
   NDbKValue key_loaded;
   common::Error err = redis->Lrange(key, start, stop, &key_loaded);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -1235,14 +1235,14 @@ common::Error CommandsApi::SetEx(internal::CommandHandler* handler, commands_arg
   NKey key(key_str);
   ttl_t ttl;
   if (!common::ConvertFromString(argv[1], &ttl)) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
   NValue string_val(common::Value::CreateStringValue(argv[2]));
   NDbKValue kv(key, string_val);
 
   DBConnection* redis = static_cast<DBConnection*>(handler);
   common::Error err = redis->SetEx(kv, ttl);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -1260,7 +1260,7 @@ common::Error CommandsApi::SetNX(internal::CommandHandler* handler, commands_arg
   DBConnection* redis = static_cast<DBConnection*>(handler);
   long long result = 0;
   common::Error err = redis->SetNX(kv, &result);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -1281,7 +1281,7 @@ common::Error CommandsApi::Sadd(internal::CommandHandler* handler, commands_args
   DBConnection* redis = static_cast<DBConnection*>(handler);
   long long added_items = 0;
   common::Error err = redis->Sadd(key, NValue(set), &added_items);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -1297,7 +1297,7 @@ common::Error CommandsApi::Smembers(internal::CommandHandler* handler, commands_
   DBConnection* redis = static_cast<DBConnection*>(handler);
   NDbKValue key_loaded;
   common::Error err = redis->Smembers(key, &key_loaded);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -1321,7 +1321,7 @@ common::Error CommandsApi::Zadd(internal::CommandHandler* handler, commands_args
   DBConnection* redis = static_cast<DBConnection*>(handler);
   long long added_items = 0;
   common::Error err = redis->Zadd(key, NValue(zset), &added_items);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -1336,18 +1336,18 @@ common::Error CommandsApi::Zrange(internal::CommandHandler* handler, commands_ar
   NKey key(key_str);
   int start;
   if (!common::ConvertFromString(argv[1], &start)) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   int stop;
   if (!common::ConvertFromString(argv[2], &stop)) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
   bool ws = argv.size() == 4 && strncmp(argv[3].c_str(), "WITHSCORES", 10) == 0;
   DBConnection* redis = static_cast<DBConnection*>(handler);
   NDbKValue key_loaded;
   common::Error err = redis->Zrange(key, start, stop, ws, &key_loaded);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -1370,7 +1370,7 @@ common::Error CommandsApi::Hmset(internal::CommandHandler* handler, commands_arg
 
   DBConnection* redis = static_cast<DBConnection*>(handler);
   common::Error err = redis->Hmset(key, NValue(hmset));
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -1386,7 +1386,7 @@ common::Error CommandsApi::Hgetall(internal::CommandHandler* handler, commands_a
   DBConnection* redis = static_cast<DBConnection*>(handler);
   NDbKValue key_loaded;
   common::Error err = redis->Hgetall(key, &key_loaded);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -1403,7 +1403,7 @@ common::Error CommandsApi::Decr(internal::CommandHandler* handler, commands_args
   DBConnection* redis = static_cast<DBConnection*>(handler);
   long long result = 0;
   common::Error err = redis->Decr(key, &result);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -1418,12 +1418,12 @@ common::Error CommandsApi::DecrBy(internal::CommandHandler* handler, commands_ar
   NKey key(key_str);
   int incr;
   if (!common::ConvertFromString(argv[1], &incr)) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
   DBConnection* redis = static_cast<DBConnection*>(handler);
   long long result = 0;
   common::Error err = redis->DecrBy(key, incr, &result);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -1439,7 +1439,7 @@ common::Error CommandsApi::Incr(internal::CommandHandler* handler, commands_args
   DBConnection* redis = static_cast<DBConnection*>(handler);
   long long result = 0;
   common::Error err = redis->Incr(key, &result);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -1454,12 +1454,12 @@ common::Error CommandsApi::IncrBy(internal::CommandHandler* handler, commands_ar
   NKey key(key_str);
   int incr;
   if (!common::ConvertFromString(argv[1], &incr)) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
   DBConnection* redis = static_cast<DBConnection*>(handler);
   long long result = 0;
   common::Error err = redis->IncrBy(key, incr, &result);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -1474,13 +1474,13 @@ common::Error CommandsApi::IncrByFloat(internal::CommandHandler* handler, comman
   NKey key(key_str);
   double incr;
   if (!common::ConvertFromString(argv[1], &incr)) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   DBConnection* redis = static_cast<DBConnection*>(handler);
   std::string result;
   common::Error err = redis->IncrByFloat(key, incr, &result);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -1495,7 +1495,7 @@ common::Error CommandsApi::Persist(internal::CommandHandler* handler, commands_a
   NKey key(key_str);
   DBConnection* red = static_cast<DBConnection*>(handler);
   common::Error err = red->SetTTL(key, NO_TTL);
-  if (err && err->IsError()) {
+  if (err) {
     common::FundamentalValue* val = common::Value::CreateUIntegerValue(0);
     FastoObject* child = new FastoObject(out, val, red->GetDelimiter());
     out->AddChildren(child);
@@ -1513,12 +1513,12 @@ common::Error CommandsApi::ExpireRedis(internal::CommandHandler* handler, comman
   NKey key(key_str);
   ttl_t ttl;
   if (!common::ConvertFromString(argv[1], &ttl)) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   DBConnection* red = static_cast<DBConnection*>(handler);
   common::Error err = red->SetTTL(key, ttl);
-  if (err && err->IsError()) {
+  if (err) {
     common::FundamentalValue* val = common::Value::CreateUIntegerValue(0);
     FastoObject* child = new FastoObject(out, val, red->GetDelimiter());
     out->AddChildren(child);

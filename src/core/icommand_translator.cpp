@@ -31,13 +31,13 @@ namespace core {
 
 common::Error ParseCommands(const command_buffer_t& cmd, std::vector<command_buffer_t>* cmds) {
   if (cmd.empty()) {
-    return common::make_error_value("Empty command line.", common::ERROR_TYPE);
+    return common::make_error("Empty command line.", common::ERROR_TYPE);
   }
 
   std::vector<command_buffer_t> commands;
   size_t commands_count = common::Tokenize(cmd, {'\n'}, &commands);
   if (!commands_count) {
-    return common::make_error_value("Invaid command line.", common::ERROR_TYPE);
+    return common::make_error("Invaid command line.", common::ERROR_TYPE);
   }
 
   std::vector<command_buffer_t> stable_commands;
@@ -59,7 +59,7 @@ ICommandTranslator::~ICommandTranslator() {}
 
 common::Error ICommandTranslator::SelectDBCommand(const std::string& name, command_buffer_t* cmdstring) const {
   if (!cmdstring) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   command_buffer_writer_t wr;
@@ -70,7 +70,7 @@ common::Error ICommandTranslator::SelectDBCommand(const std::string& name, comma
 
 common::Error ICommandTranslator::FlushDBCommand(command_buffer_t* cmdstring) const {
   if (!cmdstring) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   *cmdstring = DB_FLUSHDB_COMMAND;
@@ -79,7 +79,7 @@ common::Error ICommandTranslator::FlushDBCommand(command_buffer_t* cmdstring) co
 
 common::Error ICommandTranslator::DeleteKeyCommand(const NKey& key, command_buffer_t* cmdstring) const {
   if (!cmdstring) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   return DeleteKeyCommandImpl(key, cmdstring);
@@ -89,7 +89,7 @@ common::Error ICommandTranslator::RenameKeyCommand(const NKey& key,
                                                    const key_t& new_name,
                                                    command_buffer_t* cmdstring) const {
   if (!cmdstring) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   return RenameKeyCommandImpl(key, new_name, cmdstring);
@@ -97,7 +97,7 @@ common::Error ICommandTranslator::RenameKeyCommand(const NKey& key,
 
 common::Error ICommandTranslator::CreateKeyCommand(const NDbKValue& key, command_buffer_t* cmdstring) const {
   if (!cmdstring) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   return CreateKeyCommandImpl(key, cmdstring);
@@ -107,7 +107,7 @@ common::Error ICommandTranslator::LoadKeyCommand(const NKey& key,
                                                  common::Value::Type type,
                                                  command_buffer_t* cmdstring) const {
   if (!cmdstring) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   return LoadKeyCommandImpl(key, type, cmdstring);
@@ -115,7 +115,7 @@ common::Error ICommandTranslator::LoadKeyCommand(const NKey& key,
 
 common::Error ICommandTranslator::ChangeKeyTTLCommand(const NKey& key, ttl_t ttl, command_buffer_t* cmdstring) const {
   if (!cmdstring) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   return ChangeKeyTTLCommandImpl(key, ttl, cmdstring);
@@ -123,7 +123,7 @@ common::Error ICommandTranslator::ChangeKeyTTLCommand(const NKey& key, ttl_t ttl
 
 common::Error ICommandTranslator::LoadKeyTTLCommand(const NKey& key, command_buffer_t* cmdstring) const {
   if (!cmdstring) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   return LoadKeyTTLCommandImpl(key, cmdstring);
@@ -153,7 +153,7 @@ bool ICommandTranslator::IsLoadKeyCommand(const command_buffer_t& cmd, string_ke
   const CommandHolder* cmdh = nullptr;
   size_t off = 0;
   common::Error err = TestCommandLineArgs(standart_argv, &cmdh, &off);
-  if (err && err->IsError()) {
+  if (err) {
     sdsfreesplitres(argv, argc);
     return false;
   }
@@ -172,7 +172,7 @@ common::Error ICommandTranslator::PublishCommand(const NDbPSChannel& channel,
                                                  const std::string& message,
                                                  command_buffer_t* cmdstring) const {
   if (!cmdstring || message.empty()) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   return PublishCommandImpl(channel, message, cmdstring);
@@ -180,7 +180,7 @@ common::Error ICommandTranslator::PublishCommand(const NDbPSChannel& channel,
 
 common::Error ICommandTranslator::SubscribeCommand(const NDbPSChannel& channel, command_buffer_t* cmdstring) const {
   if (!cmdstring) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   return SubscribeCommandImpl(channel, cmdstring);
@@ -188,12 +188,12 @@ common::Error ICommandTranslator::SubscribeCommand(const NDbPSChannel& channel, 
 
 common::Error ICommandTranslator::InvalidInputArguments(const std::string& cmd) {
   std::string buff = common::MemSPrintf("Invalid input argument(s) for command: %s.", cmd);
-  return common::make_error_value(buff, common::ERROR_TYPE);
+  return common::make_error(buff, common::ERROR_TYPE);
 }
 
 common::Error ICommandTranslator::NotSupported(const std::string& cmd) {
   std::string buff = common::MemSPrintf("Not supported command: %s.", cmd);
-  return common::make_error_value(buff, common::ERROR_TYPE);
+  return common::make_error(buff, common::ERROR_TYPE);
 }
 
 common::Error ICommandTranslator::UnknownSequence(commands_args_t argv) {
@@ -205,7 +205,7 @@ common::Error ICommandTranslator::UnknownSequence(commands_args_t argv) {
     }
   }
   std::string buff = common::MemSPrintf("Unknown sequence: '%s'.", result);
-  return common::make_error_value(buff, common::ERROR_TYPE);
+  return common::make_error(buff, common::ERROR_TYPE);
 }
 
 std::vector<CommandInfo> ICommandTranslator::Commands() const {
@@ -219,7 +219,7 @@ std::vector<CommandInfo> ICommandTranslator::Commands() const {
 
 common::Error ICommandTranslator::FindCommand(commands_args_t argv, const CommandHolder** info, size_t* off) const {
   if (!info || !off) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   for (size_t i = 0; i < commands_.size(); ++i) {
@@ -237,7 +237,7 @@ common::Error ICommandTranslator::FindCommand(commands_args_t argv, const Comman
 
 common::Error ICommandTranslator::TestCommandArgs(const CommandHolder* cmd, commands_args_t argv) const {
   if (!cmd) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   return cmd->TestArgs(argv);
@@ -246,13 +246,13 @@ common::Error ICommandTranslator::TestCommandArgs(const CommandHolder* cmd, comm
 common::Error ICommandTranslator::TestCommandLine(const command_buffer_t& cmd) const {
   command_buffer_t stabled_command = StableCommand(cmd);
   if (stabled_command.empty()) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   int argc;
   sds* argv = sdssplitargslong(stabled_command.data(), &argc);
   if (!argv) {
-    return common::make_inval_error_value(common::ERROR_TYPE);
+    return common::make_error_inval(common::ERROR_TYPE);
   }
 
   commands_args_t standart_argv;
@@ -262,7 +262,7 @@ common::Error ICommandTranslator::TestCommandLine(const command_buffer_t& cmd) c
   const CommandHolder* cmdh = nullptr;
   size_t loff = 0;
   common::Error err = TestCommandLineArgs(standart_argv, &cmdh, &loff);
-  if (err && err->IsError()) {
+  if (err) {
     sdsfreesplitres(argv, argc);
     return err;
   }
@@ -276,7 +276,7 @@ common::Error ICommandTranslator::TestCommandLineArgs(commands_args_t argv,
   const CommandHolder* cmd = nullptr;
   size_t loff = 0;
   common::Error err = FindCommand(argv, &cmd, &loff);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
@@ -285,7 +285,7 @@ common::Error ICommandTranslator::TestCommandLineArgs(commands_args_t argv,
     stabled.push_back(argv[i]);
   }
   err = TestCommandArgs(cmd, stabled);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 

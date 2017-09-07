@@ -258,13 +258,13 @@ common::Error BaseShellWidget::validate(const QString& text) {
   std::vector<core::command_buffer_t> cmds;
   core::command_buffer_t text_cmd = common::ConvertToString(text);
   common::Error err = core::ParseCommands(text_cmd, &cmds);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
   for (auto cmd : cmds) {
     err = tran->TestCommandLine(cmd);
-    if (err && err->IsError()) {
+    if (err) {
       return err;
     }
   }
@@ -312,8 +312,8 @@ bool BaseShellWidget::loadFromFile(const QString& path) {
   QString filepath = QFileDialog::getOpenFileName(this, path, QString(), translations::trfilterForScripts);
   if (!filepath.isEmpty()) {
     QString out;
-    common::Error err = common::qt::LoadFromFileText(filepath, &out);
-    if (err && err->IsError()) {
+    common::qt::QtFileError err = common::qt::LoadFromFileText(filepath, &out);
+    if (err) {
       QString qdesc;
       common::ConvertFromString(err->GetDescription(), &qdesc);
       QMessageBox::critical(this, translations::trError, trCantReadTemplate_2S.arg(filepath, qdesc));
@@ -334,8 +334,8 @@ void BaseShellWidget::saveToFileAs() {
     return;
   }
 
-  common::Error err = common::qt::SaveToFileText(filepath, text());
-  if (err && err->IsError()) {
+  common::qt::QtFileError err = common::qt::SaveToFileText(filepath, text());
+  if (err) {
     QString qdesc;
     common::ConvertFromString(err->GetDescription(), &qdesc);
     QMessageBox::critical(this, translations::trError, trCantSaveTemplate_2S.arg(filepath, qdesc));
@@ -359,8 +359,8 @@ void BaseShellWidget::saveToFile() {
   if (filePath_.isEmpty()) {
     saveToFileAs();
   } else {
-    common::Error err = common::qt::SaveToFileText(filePath_, text());
-    if (err && err->IsError()) {
+    common::qt::QtFileError err = common::qt::SaveToFileText(filePath_, text());
+    if (err) {
       QString qdesc;
       common::ConvertFromString(err->GetDescription(), &qdesc);
       QMessageBox::critical(this, translations::trError, trCantSaveTemplate_2S.arg(filePath_, qdesc));
@@ -371,7 +371,7 @@ void BaseShellWidget::saveToFile() {
 void BaseShellWidget::validateClick() {
   QString text = input_->text();
   common::Error err = validate(text);
-  if (err && err->IsError()) {
+  if (err) {
     LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
   }
 }
@@ -383,7 +383,7 @@ void BaseShellWidget::helpClick() {
 void BaseShellWidget::inputTextChanged() {
   QString text = input_->text();
   common::Error err = validate(text);
-  if (err && err->IsError()) {
+  if (err) {
     validateAction_->setIcon(gui::GuiFactory::GetInstance().failIcon());
   } else {
     validateAction_->setIcon(gui::GuiFactory::GetInstance().successIcon());
@@ -437,7 +437,7 @@ void BaseShellWidget::startLoadDiscoveryInfo(const proxy::events_info::Discovery
 
 void BaseShellWidget::finishLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponce& res) {
   common::Error err = res.errorInfo();
-  if (err && err->IsError()) {
+  if (err) {
     return;
   }
 

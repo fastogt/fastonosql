@@ -26,7 +26,7 @@ common::Error CommandsApi::Info(internal::CommandHandler* handler, commands_args
   DBConnection* mdb = static_cast<DBConnection*>(handler);
   ServerInfo::Stats statsout;
   common::Error err = mdb->Info(argv.size() == 1 ? argv[0] : std::string(), &statsout);
-  if (err && err->IsError()) {
+  if (err) {
     return err;
   }
 
