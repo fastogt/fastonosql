@@ -179,7 +179,7 @@ common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
   *info = core::redis::MakeRedisServerInfo(content);
 
   if (!*info) {
-    return common::make_error_value("Invalid " INFO_REQUEST " command output", common::ErrorValue::E_ERROR);
+    return common::make_error_value("Invalid " INFO_REQUEST " command output", common::ERROR_TYPE);
   }
   return common::Error();
 }
@@ -187,7 +187,7 @@ common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
 common::Error Driver::CurrentDataBaseInfo(core::IDataBaseInfo** info) {
   if (!info) {
     DNOTREACHED();
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
   }
 
   return impl_->Select(impl_->CurrentDBName(), info);

@@ -35,7 +35,7 @@ common::Error ICommandTranslatorBase::ChangeKeyTTLCommandImpl(const NKey& key,
 
   const std::string error_msg =
       common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported change ttl command for %s.", GetDBName());
-  return common::make_error_value(error_msg, common::ErrorValue::E_ERROR);
+  return common::make_error_value(error_msg, common::ERROR_TYPE);
 }
 
 common::Error ICommandTranslatorBase::LoadKeyTTLCommandImpl(const NKey& key, command_buffer_t* cmdstring) const {
@@ -44,7 +44,7 @@ common::Error ICommandTranslatorBase::LoadKeyTTLCommandImpl(const NKey& key, com
 
   const std::string error_msg =
       common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported get ttl command for %s.", GetDBName());
-  return common::make_error_value(error_msg, common::ErrorValue::E_ERROR);
+  return common::make_error_value(error_msg, common::ERROR_TYPE);
 }
 
 common::Error ICommandTranslatorBase::PublishCommandImpl(const NDbPSChannel& channel,
@@ -56,7 +56,7 @@ common::Error ICommandTranslatorBase::PublishCommandImpl(const NDbPSChannel& cha
 
   const std::string error_msg =
       common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported publish command for %s.", GetDBName());
-  return common::make_error_value(error_msg, common::ErrorValue::E_ERROR);
+  return common::make_error_value(error_msg, common::ERROR_TYPE);
 }
 
 common::Error ICommandTranslatorBase::SubscribeCommandImpl(const NDbPSChannel& channel,
@@ -66,7 +66,7 @@ common::Error ICommandTranslatorBase::SubscribeCommandImpl(const NDbPSChannel& c
 
   const std::string error_msg =
       common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported subscribe command for %s.", GetDBName());
-  return common::make_error_value(error_msg, common::ErrorValue::E_ERROR);
+  return common::make_error_value(error_msg, common::ERROR_TYPE);
 }
 
 }  // namespace core

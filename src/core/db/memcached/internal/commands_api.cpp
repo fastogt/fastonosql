@@ -63,12 +63,12 @@ common::Error CommandsApi::Add(internal::CommandHandler* handler, commands_args_
   DBConnection* mem = static_cast<DBConnection*>(handler);
   time_t expiration;
   if (!common::ConvertFromString(argv[2], &expiration)) {
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
   }
 
   uint32_t flags;
   if (!common::ConvertFromString(argv[1], &flags)) {
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
   }
 
   common::Error err = mem->AddIfNotExist(key, argv[3], expiration, flags);
@@ -88,12 +88,12 @@ common::Error CommandsApi::Replace(internal::CommandHandler* handler, commands_a
   DBConnection* mem = static_cast<DBConnection*>(handler);
   time_t expiration;
   if (!common::ConvertFromString(argv[2], &expiration)) {
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
   }
 
   uint32_t flags;
   if (!common::ConvertFromString(argv[1], &flags)) {
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
   }
 
   common::Error err = mem->Replace(key, argv[3], expiration, flags);
@@ -113,12 +113,12 @@ common::Error CommandsApi::Append(internal::CommandHandler* handler, commands_ar
   DBConnection* mem = static_cast<DBConnection*>(handler);
   time_t expiration;
   if (!common::ConvertFromString(argv[2], &expiration)) {
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
   }
 
   uint32_t flags;
   if (!common::ConvertFromString(argv[1], &flags)) {
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
   }
   common::Error err = mem->Append(key, argv[3], expiration, flags);
   if (err && err->IsError()) {
@@ -137,12 +137,12 @@ common::Error CommandsApi::Prepend(internal::CommandHandler* handler, commands_a
   DBConnection* mem = static_cast<DBConnection*>(handler);
   time_t expiration;
   if (!common::ConvertFromString(argv[2], &expiration)) {
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
   }
 
   uint32_t flags;
   if (!common::ConvertFromString(argv[1], &flags)) {
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
   }
   common::Error err = mem->Prepend(key, argv[3], expiration, flags);
   if (err && err->IsError()) {
@@ -161,7 +161,7 @@ common::Error CommandsApi::Incr(internal::CommandHandler* handler, commands_args
   DBConnection* mem = static_cast<DBConnection*>(handler);
   uint32_t value;
   if (!common::ConvertFromString(argv[1], &value)) {
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
   }
   uint64_t result = 0;
   common::Error err = mem->Incr(key, value, &result);
@@ -181,7 +181,7 @@ common::Error CommandsApi::Decr(internal::CommandHandler* handler, commands_args
   DBConnection* mem = static_cast<DBConnection*>(handler);
   uint32_t value;
   if (!common::ConvertFromString(argv[1], &value)) {
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
   }
   uint64_t result = 0;
   common::Error err = mem->Decr(key, value, &result);

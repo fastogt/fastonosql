@@ -216,14 +216,11 @@ const QIcon& GuiFactory::icon(common::Value::Type type) const {
     case common::Value::TYPE_DOUBLE:
       static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/integer.png");
       return i;
-    case common::Value::TYPE_ERROR:
-      static QIcon er(":" PROJECT_NAME_LOWERCASE "/images/64x64/error.png");
-      return er;
-    default:
-      static QIcon err(":" PROJECT_NAME_LOWERCASE "/images/64x64/error.png");
-      DNOTREACHED();
-      return err;
   }
+
+  static QIcon err(":" PROJECT_NAME_LOWERCASE "/images/64x64/error.png");
+  DNOTREACHED();
+  return err;
 }
 
 const QIcon& GuiFactory::importIcon() const {

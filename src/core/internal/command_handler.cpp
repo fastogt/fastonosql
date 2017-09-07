@@ -39,13 +39,13 @@ CommandHandler::CommandHandler(ICommandTranslator* translator) : translator_(tra
 common::Error CommandHandler::Execute(const command_buffer_t& command, FastoObject* out) {
   command_buffer_t stabled_command = StableCommand(command);
   if (stabled_command.empty()) {
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
   }
 
   int argc;
   sds* argv = sdssplitargslong(stabled_command.data(), &argc);
   if (!argv) {
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
   }
 
   commands_args_t argvv;

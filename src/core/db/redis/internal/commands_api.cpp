@@ -73,12 +73,12 @@ common::Error CommandsApi::Lrange(internal::CommandHandler* handler, commands_ar
   NKey key(key_str);
   int start;
   if (!common::ConvertFromString(argv[1], &start)) {
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
   }
 
   int stop;
   if (!common::ConvertFromString(argv[2], &stop)) {
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
   }
   DBConnection* redis = static_cast<DBConnection*>(handler);
   NDbKValue key_loaded;
@@ -1235,7 +1235,7 @@ common::Error CommandsApi::SetEx(internal::CommandHandler* handler, commands_arg
   NKey key(key_str);
   ttl_t ttl;
   if (!common::ConvertFromString(argv[1], &ttl)) {
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
   }
   NValue string_val(common::Value::CreateStringValue(argv[2]));
   NDbKValue kv(key, string_val);
@@ -1336,12 +1336,12 @@ common::Error CommandsApi::Zrange(internal::CommandHandler* handler, commands_ar
   NKey key(key_str);
   int start;
   if (!common::ConvertFromString(argv[1], &start)) {
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
   }
 
   int stop;
   if (!common::ConvertFromString(argv[2], &stop)) {
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
   }
   bool ws = argv.size() == 4 && strncmp(argv[3].c_str(), "WITHSCORES", 10) == 0;
   DBConnection* redis = static_cast<DBConnection*>(handler);
@@ -1418,7 +1418,7 @@ common::Error CommandsApi::DecrBy(internal::CommandHandler* handler, commands_ar
   NKey key(key_str);
   int incr;
   if (!common::ConvertFromString(argv[1], &incr)) {
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
   }
   DBConnection* redis = static_cast<DBConnection*>(handler);
   long long result = 0;
@@ -1454,7 +1454,7 @@ common::Error CommandsApi::IncrBy(internal::CommandHandler* handler, commands_ar
   NKey key(key_str);
   int incr;
   if (!common::ConvertFromString(argv[1], &incr)) {
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
   }
   DBConnection* redis = static_cast<DBConnection*>(handler);
   long long result = 0;
@@ -1474,7 +1474,7 @@ common::Error CommandsApi::IncrByFloat(internal::CommandHandler* handler, comman
   NKey key(key_str);
   double incr;
   if (!common::ConvertFromString(argv[1], &incr)) {
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
   }
 
   DBConnection* redis = static_cast<DBConnection*>(handler);
@@ -1513,7 +1513,7 @@ common::Error CommandsApi::ExpireRedis(internal::CommandHandler* handler, comman
   NKey key(key_str);
   ttl_t ttl;
   if (!common::ConvertFromString(argv[1], &ttl)) {
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
   }
 
   DBConnection* red = static_cast<DBConnection*>(handler);

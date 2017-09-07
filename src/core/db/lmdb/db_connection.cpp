@@ -162,7 +162,7 @@ namespace lmdb {
 
 common::Error CreateConnection(const Config& config, NativeConnection** context) {
   if (!context) {
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
   }
 
   DCHECK(*context == NULL);
@@ -170,7 +170,7 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   std::string folder = config.db_path;  // start point must be folder
   common::tribool is_dir = common::file_system::is_directory(folder);
   if (is_dir != common::SUCCESS) {
-    return common::make_error_value(common::MemSPrintf("Invalid input path(%s)", folder), common::ErrorValue::E_ERROR);
+    return common::make_error_value(common::MemSPrintf("Invalid input path(%s)", folder), common::ERROR_TYPE);
   }
 
   const char* db_path = folder.c_str();
@@ -178,7 +178,7 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   int st = lmdb_open(&lcontext, db_path, NULL, env_flags, lmdb_db_flag_from_env_flags(env_flags));
   if (st != LMDB_OK) {
     std::string buff = common::MemSPrintf("Fail open database: %s", mdb_strerror(st));
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+    return common::make_error_value(buff, common::ERROR_TYPE);
   }
 
   *context = lcontext;
@@ -212,11 +212,11 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
   UNUSED(args);
   if (!statsout) {
     DNOTREACHED();
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
   }
 
   if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
+    return common::make_error_value("Not connected", common::ERROR_TYPE);
   }
 
   ServerInfo::Stats linfo;
@@ -229,7 +229,7 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
+    return common::make_error_value("Not connected", common::ERROR_TYPE);
   }
 
   const string_key_t key_str = key.ToBytes();
@@ -252,7 +252,7 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
 
   if (rc != LMDB_OK) {
     std::string buff = common::MemSPrintf("set function error: %s", mdb_strerror(rc));
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+    return common::make_error_value(buff, common::ERROR_TYPE);
   }
 
   return common::Error();
@@ -260,7 +260,7 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
+    return common::make_error_value("Not connected", common::ERROR_TYPE);
   }
 
   const string_key_t key_str = key.ToBytes();
@@ -276,7 +276,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
 
   if (rc != LMDB_OK) {
     const std::string buff = common::MemSPrintf("Get function error: %s", mdb_strerror(rc));
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+    return common::make_error_value(buff, common::ERROR_TYPE);
   }
 
   ret_val->assign(reinterpret_cast<const char*>(mval.mv_data), mval.mv_size);
@@ -285,7 +285,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
 
 common::Error DBConnection::DelInner(key_t key) {
   if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
+    return common::make_error_value("Not connected", common::ERROR_TYPE);
   }
 
   const string_key_t key_str = key.ToBytes();
@@ -306,7 +306,7 @@ common::Error DBConnection::DelInner(key_t key) {
   if (rc != LMDB_OK) {
     char* res = mdb_strerror(rc);
     std::string buff = common::MemSPrintf("Delete function error: %s", res);
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+    return common::make_error_value(buff, common::ERROR_TYPE);
   }
 
   return common::Error();
@@ -327,7 +327,7 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
   if (rc != LMDB_OK) {
     mdb_txn_abort(txn);
     std::string buff = common::MemSPrintf("Keys function error: %s", mdb_strerror(rc));
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+    return common::make_error_value(buff, common::ERROR_TYPE);
   }
 
   MDB_val key;
@@ -372,7 +372,7 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
   if (rc != LMDB_OK) {
     mdb_txn_abort(txn);
     std::string buff = common::MemSPrintf("Keys function error: %s", mdb_strerror(rc));
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+    return common::make_error_value(buff, common::ERROR_TYPE);
   }
 
   MDB_val key;
@@ -400,7 +400,7 @@ common::Error DBConnection::DBkcountImpl(size_t* size) {
   if (rc != LMDB_OK) {
     mdb_txn_abort(txn);
     std::string buff = common::MemSPrintf("DBKCOUNT function error: %s", mdb_strerror(rc));
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+    return common::make_error_value(buff, common::ERROR_TYPE);
   }
 
   MDB_val key;
@@ -428,7 +428,7 @@ common::Error DBConnection::FlushDBImpl() {
   if (rc != LMDB_OK) {
     mdb_txn_abort(txn);
     std::string buff = common::MemSPrintf("flushdb function error: %s", mdb_strerror(rc));
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+    return common::make_error_value(buff, common::ERROR_TYPE);
   }
 
   MDB_val key;
@@ -441,7 +441,7 @@ common::Error DBConnection::FlushDBImpl() {
       mdb_cursor_close(cursor);
       mdb_txn_abort(txn);
       std::string buff = common::MemSPrintf("del function error: %s", mdb_strerror(rc));
-      return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+      return common::make_error_value(buff, common::ERROR_TYPE);
     }
   }
 
@@ -450,7 +450,7 @@ common::Error DBConnection::FlushDBImpl() {
     rc = mdb_txn_commit(txn);
     if (rc != LMDB_OK) {
       std::string buff = common::MemSPrintf("commit function error: %s", mdb_strerror(rc));
-      return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+      return common::make_error_value(buff, common::ERROR_TYPE);
     }
     return common::Error();
   }
@@ -537,14 +537,14 @@ common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
   UNUSED(key);
   UNUSED(ttl);
   return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE " for LMDB not supported TTL commands.",
-                                  common::ErrorValue::E_ERROR);
+                                  common::ERROR_TYPE);
 }
 
 common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
   UNUSED(key);
   UNUSED(ttl);
   return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE " for LMDB not supported TTL commands.",
-                                  common::ErrorValue::E_ERROR);
+                                  common::ERROR_TYPE);
 }
 
 common::Error DBConnection::QuitImpl() {

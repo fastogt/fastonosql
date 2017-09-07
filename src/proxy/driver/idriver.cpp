@@ -112,7 +112,7 @@ void replyNotImplementedYet(IDriver* sender, event_request_type* ev, const char*
 
   std::string patternResult =
       common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported %s command.", eventCommandText);
-  common::Error er = common::make_error_value(patternResult, common::ErrorValue::E_ERROR);
+  common::Error er = common::make_error_value(patternResult, common::ERROR_TYPE);
   res.setErrorInfo(er);
   event_responce_type* resp = new event_responce_type(sender, res);
   IDriver::Reply(esender, resp);
@@ -140,7 +140,7 @@ IDriver::~IDriver() {
 common::Error IDriver::Execute(core::FastoObjectCommandIPtr cmd) {
   if (!cmd) {
     DNOTREACHED();
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
   }
 
   LOG_COMMAND(cmd);
@@ -359,7 +359,7 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
     common::time64_t start_ts = common::time::current_mstime();
     for (size_t i = 0; i < commands.size(); ++i) {
       if (IsInterrupted()) {
-        res.setErrorInfo(common::make_error_value("Interrupted exec.", common::ErrorValue::E_INTERRUPTED,
+        res.setErrorInfo(common::make_error_value("Interrupted exec.", common::INTERRUPTED_TYPE,
                                                   common::logging::LOG_LEVEL_WARNING));
         goto done;
       }
@@ -502,7 +502,7 @@ void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
     res.setInfos(tmpInfos);
     readFile.Close();
   } else {
-    res.setErrorInfo(common::make_error_value("History file not found", common::ErrorValue::E_ERROR));
+    res.setErrorInfo(common::make_error_value("History file not found", common::ERROR_TYPE));
   }
 
   Reply(sender, new events::ServerInfoHistoryResponceEvent(this, res));
@@ -531,7 +531,7 @@ void IDriver::HandleClearServerHistoryEvent(events::ClearServerHistoryRequestEve
   }
 
   if (!ret) {
-    res.setErrorInfo(common::make_error_value("Clear file error!", common::ErrorValue::E_ERROR));
+    res.setErrorInfo(common::make_error_value("Clear file error!", common::ERROR_TYPE));
   }
 
   Reply(sender, new events::ClearServerHistoryResponceEvent(this, res));
@@ -561,7 +561,7 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
     }
   } else {
     res.setErrorInfo(
-        common::make_error_value("Not connected to server, impossible to get discovery info!", common::Value::E_ERROR));
+        common::make_error_value("Not connected to server, impossible to get discovery info!", common::ERROR_TYPE));
   }
 
   NotifyProgress(sender, 75);

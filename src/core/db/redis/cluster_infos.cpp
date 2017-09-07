@@ -42,7 +42,7 @@ namespace {
 
 common::Error MakeServerCommonInfoFromLine(const std::string& line, ServerCommonInfo* info, bool* self) {
   if (line.empty() || !info || !self) {
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
   }
 
   ServerCommonInfo linfo;
@@ -131,7 +131,7 @@ common::Error makeDiscoveryClusterInfo(const common::net::HostAndPort& parentHos
                                        const std::string& text,
                                        std::vector<ServerDiscoveryClusterInfoSPtr>* infos) {
   if (text.empty() || !infos) {
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
     ;
   }
 

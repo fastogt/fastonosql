@@ -159,7 +159,7 @@ ConstantCommandsArray CDBConnection<upscaledb::NativeConnection, upscaledb::Conf
 namespace upscaledb {
 common::Error CreateConnection(const Config& config, NativeConnection** context) {
   if (!context) {
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
   }
 
   DCHECK(*context == NULL);
@@ -168,14 +168,14 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   std::string folder = common::file_system::get_dir_path(db_path);
   common::tribool is_dir = common::file_system::is_directory(folder);
   if (is_dir != common::SUCCESS) {
-    return common::make_error_value(common::MemSPrintf("Invalid input path(%s)", db_path), common::ErrorValue::E_ERROR);
+    return common::make_error_value(common::MemSPrintf("Invalid input path(%s)", db_path), common::ERROR_TYPE);
   }
 
   const char* dbname = db_path.empty() ? NULL : db_path.c_str();
   int st = upscaledb_open(&lcontext, dbname, config.dbnum, config.create_if_missing);
   if (st != UPS_SUCCESS) {
     std::string buff = common::MemSPrintf("Fail open database: %s", ups_strerror(st));
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+    return common::make_error_value(buff, common::ERROR_TYPE);
   }
 
   *context = lcontext;
@@ -223,11 +223,11 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
   UNUSED(args);
   if (!statsout) {
     DNOTREACHED();
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
   }
 
   if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
+    return common::make_error_value("Not connected", common::ERROR_TYPE);
   }
 
   ServerInfo::Stats linfo;
@@ -240,7 +240,7 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
+    return common::make_error_value("Not connected", common::ERROR_TYPE);
   }
 
   const string_key_t key_str = key.ToBytes();
@@ -254,14 +254,14 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   ups_status_t st = ups_db_insert(connection_.handle_->db, 0, &key_slice, &rec, UPS_OVERWRITE);
   if (st != UPS_SUCCESS) {
     std::string buff = common::MemSPrintf("SET function error: %s", ups_strerror(st));
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+    return common::make_error_value(buff, common::ERROR_TYPE);
   }
   return common::Error();
 }
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
+    return common::make_error_value("Not connected", common::ERROR_TYPE);
   }
 
   const string_key_t key_str = key.ToBytes();
@@ -273,7 +273,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   ups_status_t st = ups_db_find(connection_.handle_->db, NULL, &key_slice, &rec, 0);
   if (st != UPS_SUCCESS) {
     std::string buff = common::MemSPrintf("GET function error: %s", ups_strerror(st));
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+    return common::make_error_value(buff, common::ERROR_TYPE);
   }
 
   *ret_val = std::string(reinterpret_cast<const char*>(rec.data), rec.size);
@@ -282,7 +282,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
 
 common::Error DBConnection::DelInner(key_t key) {
   if (!IsConnected()) {
-    return common::make_error_value("Not connected", common::Value::E_ERROR);
+    return common::make_error_value("Not connected", common::ERROR_TYPE);
   }
 
   const string_key_t key_str = key.ToBytes();
@@ -291,7 +291,7 @@ common::Error DBConnection::DelInner(key_t key) {
   ups_status_t st = ups_db_erase(connection_.handle_->db, 0, &key_slice, 0);
   if (st != UPS_SUCCESS) {
     std::string buff = common::MemSPrintf("DEL function error: %s", ups_strerror(st));
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+    return common::make_error_value(buff, common::ERROR_TYPE);
   }
 
   return common::Error();
@@ -313,7 +313,7 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
   ups_status_t st = ups_cursor_create(&cursor, connection_.handle_->db, 0, 0);
   if (st != UPS_SUCCESS) {
     std::string buff = common::MemSPrintf("KEYS function error: %s", ups_strerror(st));
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+    return common::make_error_value(buff, common::ERROR_TYPE);
   }
 
   uint64_t offset_pos = cursor_in;
@@ -336,7 +336,7 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
       } else if (st && st != UPS_KEY_NOT_FOUND) {
         ups_cursor_close(cursor);
         std::string buff = common::MemSPrintf("SCAN function error: %s", ups_strerror(st));
-        return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+        return common::make_error_value(buff, common::ERROR_TYPE);
       }
     } else {
       lcursor_out = cursor_in + count_keys;
@@ -365,7 +365,7 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
   ups_status_t st = ups_cursor_create(&cursor, connection_.handle_->db, 0, 0);
   if (st != UPS_SUCCESS) {
     std::string buff = common::MemSPrintf("KEYS function error: %s", ups_strerror(st));
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+    return common::make_error_value(buff, common::ERROR_TYPE);
   }
 
   do {
@@ -378,7 +378,7 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
     } else if (st && st != UPS_KEY_NOT_FOUND) {
       ups_cursor_close(cursor);
       std::string buff = common::MemSPrintf("SCAN function error: %s", ups_strerror(st));
-      return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+      return common::make_error_value(buff, common::ERROR_TYPE);
     }
   } while (st == UPS_SUCCESS && limit > ret->size());
 
@@ -391,7 +391,7 @@ common::Error DBConnection::DBkcountImpl(size_t* size) {
   ups_status_t st = ups_db_count(connection_.handle_->db, NULL, UPS_SKIP_DUPLICATES, &sz);
   if (st != UPS_SUCCESS) {
     std::string buff = common::MemSPrintf("DBKCOUNT function error: %s", ups_strerror(st));
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+    return common::make_error_value(buff, common::ERROR_TYPE);
   }
 
   *size = sz;
@@ -410,7 +410,7 @@ common::Error DBConnection::FlushDBImpl() {
   ups_status_t st = ups_cursor_create(&cursor, connection_.handle_->db, 0, 0);
   if (st != UPS_SUCCESS) {
     std::string buff = common::MemSPrintf("FLUSHDB function error: %s", ups_strerror(st));
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+    return common::make_error_value(buff, common::ERROR_TYPE);
   }
 
   do {
@@ -422,7 +422,7 @@ common::Error DBConnection::FlushDBImpl() {
     } else if (st && st != UPS_KEY_NOT_FOUND) {
       ups_cursor_close(cursor);
       std::string buff = common::MemSPrintf("FLUSHDB function error: %s", ups_strerror(st));
-      return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+      return common::make_error_value(buff, common::ERROR_TYPE);
     }
   } while (st == UPS_SUCCESS);
 
@@ -433,13 +433,13 @@ common::Error DBConnection::FlushDBImpl() {
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
   uint16_t num;
   if (!common::ConvertFromString(name, &num)) {
-    return common::make_inval_error_value(common::ErrorValue::E_ERROR);
+    return common::make_inval_error_value(common::ERROR_TYPE);
   }
   ups_db_t* db = NULL;
   ups_status_t st = ups_env_open_db(connection_.handle_->env, &db, num, 0, NULL);
   if (st != UPS_SUCCESS && st != UPS_DATABASE_ALREADY_OPEN) {
     std::string buff = common::MemSPrintf("SELECT function error: %s", ups_strerror(st));
-    return common::make_error_value(buff, common::ErrorValue::E_ERROR);
+    return common::make_error_value(buff, common::ERROR_TYPE);
   }
 
   if (st == UPS_SUCCESS) {  // if ready to change
@@ -523,14 +523,14 @@ common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
   UNUSED(key);
   UNUSED(ttl);
   return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE " for UPSCALEDB not supported TTL commands.",
-                                  common::ErrorValue::E_ERROR);
+                                  common::ERROR_TYPE);
 }
 
 common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
   UNUSED(key);
   UNUSED(ttl);
   return common::make_error_value("Sorry, but now " PROJECT_NAME_TITLE " for UPSCALEDB not supported TTL commands.",
-                                  common::ErrorValue::E_ERROR);
+                                  common::ERROR_TYPE);
 }
 
 common::Error DBConnection::QuitImpl() {
