@@ -372,7 +372,7 @@ void BaseShellWidget::validateClick() {
   QString text = input_->text();
   common::Error err = validate(text);
   if (err && err->IsError()) {
-    LOG_ERROR(err, true);
+    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
   }
 }
 

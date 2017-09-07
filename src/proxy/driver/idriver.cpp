@@ -359,8 +359,7 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
     common::time64_t start_ts = common::time::current_mstime();
     for (size_t i = 0; i < commands.size(); ++i) {
       if (IsInterrupted()) {
-        res.setErrorInfo(common::make_error_value("Interrupted exec.", common::INTERRUPTED_TYPE,
-                                                  common::logging::LOG_LEVEL_WARNING));
+        res.setErrorInfo(common::make_error_value("Interrupted exec.", common::INTERRUPTED_TYPE));
         goto done;
       }
 

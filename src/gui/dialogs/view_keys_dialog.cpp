@@ -174,7 +174,7 @@ void ViewKeysDialog::changeTTL(const core::NDbKValue& value, core::ttl_t ttl) {
   core::command_buffer_t cmd_str;
   common::Error err = tran->ChangeKeyTTLCommand(value.GetKey(), ttl, &cmd_str);
   if (err && err->IsError()) {
-    LOG_ERROR(err, true);
+    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
     return;
   }
 

@@ -333,7 +333,7 @@ void IServer::HandleConnectEvent(events::ConnectResponceEvent* ev) {
   auto v = ev->value();
   common::Error er(v.errorInfo());
   if (er && er->IsError()) {
-    LOG_ERROR(er, true);
+    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
   }
   emit ConnectFinished(v);
 }
@@ -342,7 +342,7 @@ void IServer::HandleDisconnectEvent(events::DisconnectResponceEvent* ev) {
   auto v = ev->value();
   common::Error er(v.errorInfo());
   if (er && er->IsError()) {
-    LOG_ERROR(er, true);
+    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
   }
   emit DisconnectFinished(v);
 }
@@ -351,7 +351,7 @@ void IServer::HandleLoadServerInfoEvent(events::ServerInfoResponceEvent* ev) {
   auto v = ev->value();
   common::Error er(v.errorInfo());
   if (er && er->IsError()) {
-    LOG_ERROR(er, true);
+    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
   }
   emit LoadServerInfoFinished(v);
 }
@@ -360,7 +360,7 @@ void IServer::HandleLoadServerPropertyEvent(events::ServerPropertyInfoResponceEv
   auto v = ev->value();
   common::Error er(v.errorInfo());
   if (er && er->IsError()) {
-    LOG_ERROR(er, true);
+    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
   }
   emit LoadServerPropertyFinished(v);
 }
@@ -369,7 +369,7 @@ void IServer::HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRe
   auto v = ev->value();
   common::Error er(v.errorInfo());
   if (er && er->IsError()) {
-    LOG_ERROR(er, true);
+    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
   }
   emit ChangeServerPropertyFinished(v);
 }
@@ -378,7 +378,7 @@ void IServer::HandleLoadServerChannelsEvent(events::LoadServerChannelsResponceEv
   auto v = ev->value();
   common::Error er(v.errorInfo());
   if (er && er->IsError()) {
-    LOG_ERROR(er, true);
+    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
   }
   emit LoadServerChannelsFinished(v);
 }
@@ -387,7 +387,7 @@ void IServer::HandleShutdownEvent(events::ShutDownResponceEvent* ev) {
   auto v = ev->value();
   common::Error er(v.errorInfo());
   if (er && er->IsError()) {
-    LOG_ERROR(er, true);
+    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
   }
   emit ShutdownFinished(v);
 }
@@ -396,7 +396,7 @@ void IServer::HandleBackupEvent(events::BackupResponceEvent* ev) {
   auto v = ev->value();
   common::Error er(v.errorInfo());
   if (er && er->IsError()) {
-    LOG_ERROR(er, true);
+    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
   }
   emit BackupFinished(v);
 }
@@ -405,7 +405,7 @@ void IServer::HandleExportEvent(events::ExportResponceEvent* ev) {
   auto v = ev->value();
   common::Error er(v.errorInfo());
   if (er && er->IsError()) {
-    LOG_ERROR(er, true);
+    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
   }
   emit ExportFinished(v);
 }
@@ -414,7 +414,7 @@ void IServer::HandleChangePasswordEvent(events::ChangePasswordResponceEvent* ev)
   auto v = ev->value();
   common::Error er(v.errorInfo());
   if (er && er->IsError()) {
-    LOG_ERROR(er, true);
+    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
   }
 
   emit ChangePasswordFinished(v);
@@ -424,7 +424,7 @@ void IServer::HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionResponce
   auto v = ev->value();
   common::Error er(v.errorInfo());
   if (er && er->IsError()) {
-    LOG_ERROR(er, true);
+    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
   }
 
   emit ChangeMaxConnectionFinished(v);
@@ -434,7 +434,9 @@ void IServer::HandleExecuteEvent(events::ExecuteResponceEvent* ev) {
   auto v = ev->value();
   common::Error er(v.errorInfo());
   if (er && er->IsError()) {
-    LOG_ERROR(er, true);
+    LOG_ERROR(er, er->GetErrorType() == common::INTERRUPTED_TYPE ? common::logging::LOG_LEVEL_WARNING
+                                                                 : common::logging::LOG_LEVEL_ERR,
+              true);
   }
 
   emit ExecuteFinished(v);
@@ -444,7 +446,7 @@ void IServer::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoResponceEven
   auto v = ev->value();
   common::Error er(v.errorInfo());
   if (er && er->IsError()) {
-    LOG_ERROR(er, true);
+    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
   } else {
     events_info::LoadDatabasesInfoResponce::database_info_cont_type dbs = v.databases;
     events_info::LoadDatabasesInfoResponce::database_info_cont_type tmp;
@@ -467,7 +469,7 @@ void IServer::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentResponce
   auto v = ev->value();
   common::Error er(v.errorInfo());
   if (er && er->IsError()) {
-    LOG_ERROR(er, true);
+    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
   } else {
     database_t dbs = FindDatabase(v.inf);
     if (dbs) {
@@ -636,7 +638,7 @@ void IServer::HandleEnterModeEvent(events::EnterModeEvent* ev) {
   auto v = ev->value();
   common::Error er(v.errorInfo());
   if (er && er->IsError()) {
-    LOG_ERROR(er, true);
+    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
   }
 
   emit ModeEntered(v);
@@ -646,7 +648,7 @@ void IServer::HandleLeaveModeEvent(events::LeaveModeEvent* ev) {
   auto v = ev->value();
   common::Error er(v.errorInfo());
   if (er && er->IsError()) {
-    LOG_ERROR(er, true);
+    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
   }
 
   emit ModeLeaved(v);
@@ -656,7 +658,7 @@ void IServer::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryResponce
   auto v = ev->value();
   common::Error er = v.errorInfo();
   if (er && er->IsError()) {
-    LOG_ERROR(er, true);
+    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
   }
 
   emit LoadServerHistoryInfoFinished(v);
@@ -666,7 +668,7 @@ void IServer::HandleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEven
   auto v = ev->value();
   common::Error er = v.errorInfo();
   if (er && er->IsError()) {
-    LOG_ERROR(er, true);
+    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
   } else {
     server_info_ = v.sinfo;
     database_t dbs = FindDatabase(v.dbinfo);
@@ -682,7 +684,7 @@ void IServer::HandleClearServerHistoryResponceEvent(events::ClearServerHistoryRe
   auto v = ev->value();
   common::Error er = v.errorInfo();
   if (er && er->IsError()) {
-    LOG_ERROR(er, true);
+    LOG_ERROR(er, common::logging::LOG_LEVEL_ERR, true);
   }
 
   emit ClearServerHistoryFinished(v);

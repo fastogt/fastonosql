@@ -186,7 +186,7 @@ void PubSubDialog::publish() {
     core::command_buffer_t cmd_str;
     common::Error err = trans->PublishCommand(node->channel(), common::ConvertToString(publish_text), &cmd_str);
     if (err && err->IsError()) {
-      LOG_ERROR(err, true);
+      LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
       return;
     }
 
@@ -211,7 +211,7 @@ void PubSubDialog::subscribeInNewConsole() {
   core::command_buffer_t cmd_str;
   common::Error err = trans->SubscribeCommand(node->channel(), &cmd_str);
   if (err && err->IsError()) {
-    LOG_ERROR(err, true);
+    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
     return;
   }
 
