@@ -57,7 +57,7 @@ common::Error CommandsApi::ScanSSDB(internal::CommandHandler* handler, commands_
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   uint64_t limit;
   if (!common::ConvertFromString(argv[2], &limit)) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
   std::vector<std::string> keysout;
   common::Error err = ssdb->ScanSsdb(argv[0], argv[1], limit, &keysout);
@@ -108,7 +108,7 @@ common::Error CommandsApi::Setx(internal::CommandHandler* handler, commands_args
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   ttl_t ttl;
   if (!common::ConvertFromString(argv[2], &ttl)) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
   common::Error err = ssdb->Setx(argv[0], argv[1], ttl);
   if (err) {
@@ -125,7 +125,7 @@ common::Error CommandsApi::Incr(internal::CommandHandler* handler, commands_args
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t incrby;
   if (!common::ConvertFromString(argv[1], &incrby)) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
   int64_t ret = 0;
   common::Error err = ssdb->Incr(argv[0], incrby, &ret);
@@ -143,7 +143,7 @@ common::Error CommandsApi::Rscan(internal::CommandHandler* handler, commands_arg
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   uint64_t limit;
   if (!common::ConvertFromString(argv[2], &limit)) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
   std::vector<std::string> keysout;
   common::Error err = ssdb->Rscan(argv[0], argv[1], limit, &keysout);
@@ -282,7 +282,7 @@ common::Error CommandsApi::Hincr(internal::CommandHandler* handler, commands_arg
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t incrby;
   if (!common::ConvertFromString(argv[2], &incrby)) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
   int64_t res = 0;
   common::Error err = ssdb->Hincr(argv[0], argv[1], incrby, &res);
@@ -328,7 +328,7 @@ common::Error CommandsApi::Hkeys(internal::CommandHandler* handler, commands_arg
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   uint64_t limit;
   if (!common::ConvertFromString(argv[3], &limit)) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
   std::vector<std::string> keysout;
   common::Error err = ssdb->Hkeys(argv[0], argv[1], argv[2], limit, &keysout);
@@ -350,7 +350,7 @@ common::Error CommandsApi::Hscan(internal::CommandHandler* handler, commands_arg
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   uint64_t limit;
   if (!common::ConvertFromString(argv[3], &limit)) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
   std::vector<std::string> keysout;
   common::Error err = ssdb->Hscan(argv[0], argv[1], argv[2], limit, &keysout);
@@ -372,7 +372,7 @@ common::Error CommandsApi::Hrscan(internal::CommandHandler* handler, commands_ar
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   uint64_t limit;
   if (!common::ConvertFromString(argv[3], &limit)) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
   std::vector<std::string> keysout;
   common::Error err = ssdb->Hrscan(argv[0], argv[1], argv[2], limit, &keysout);
@@ -449,7 +449,7 @@ common::Error CommandsApi::Zset(internal::CommandHandler* handler, commands_args
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t score;
   if (!common::ConvertFromString(argv[2], &score)) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   common::Error err = ssdb->Zset(argv[0], argv[1], score);
@@ -480,7 +480,7 @@ common::Error CommandsApi::Zincr(internal::CommandHandler* handler, commands_arg
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t incrby;
   if (!common::ConvertFromString(argv[2], &incrby)) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   int64_t ret = 0;
@@ -555,12 +555,12 @@ common::Error CommandsApi::Zrange(internal::CommandHandler* handler, commands_ar
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   uint64_t offset;
   if (!common::ConvertFromString(argv[1], &offset)) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   uint64_t limit;
   if (!common::ConvertFromString(argv[2], &limit)) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   std::vector<std::string> res;
@@ -583,12 +583,12 @@ common::Error CommandsApi::Zrrange(internal::CommandHandler* handler, commands_a
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   uint64_t offset;
   if (!common::ConvertFromString(argv[1], &offset)) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   uint64_t limit;
   if (!common::ConvertFromString(argv[2], &limit)) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   std::vector<std::string> res;
@@ -612,17 +612,17 @@ common::Error CommandsApi::Zkeys(internal::CommandHandler* handler, commands_arg
   std::vector<std::string> res;
   int64_t st;
   if (!common::ConvertFromString(argv[2], &st)) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   int64_t end;
   if (!common::ConvertFromString(argv[3], &end)) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   uint64_t limit;
   if (!common::ConvertFromString(argv[4], &limit)) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   common::Error err = ssdb->Zkeys(argv[0], argv[1], &st, &end, limit, &res);
@@ -645,17 +645,17 @@ common::Error CommandsApi::Zscan(internal::CommandHandler* handler, commands_arg
   std::vector<std::string> res;
   int64_t st;
   if (!common::ConvertFromString(argv[2], &st)) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   int64_t end;
   if (!common::ConvertFromString(argv[3], &end)) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   uint64_t limit;
   if (!common::ConvertFromString(argv[4], &limit)) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
   common::Error err = ssdb->Zscan(argv[0], argv[1], &st, &end, limit, &res);
   if (err) {
@@ -677,17 +677,17 @@ common::Error CommandsApi::Zrscan(internal::CommandHandler* handler, commands_ar
   std::vector<std::string> res;
   int64_t st;
   if (!common::ConvertFromString(argv[2], &st)) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   int64_t end;
   if (!common::ConvertFromString(argv[3], &end)) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   uint64_t limit;
   if (!common::ConvertFromString(argv[4], &limit)) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
   common::Error err = ssdb->Zrscan(argv[0], argv[1], &st, &end, limit, &res);
   if (err) {
@@ -797,12 +797,12 @@ common::Error CommandsApi::Qslice(internal::CommandHandler* handler, commands_ar
   DBConnection* ssdb = static_cast<DBConnection*>(handler);
   int64_t begin;
   if (!common::ConvertFromString(argv[1], &begin)) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   int64_t end;
   if (!common::ConvertFromString(argv[2], &end)) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   std::vector<std::string> keysout;

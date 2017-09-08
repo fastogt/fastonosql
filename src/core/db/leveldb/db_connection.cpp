@@ -91,7 +91,7 @@ namespace leveldb {
 
 common::Error CreateConnection(const Config& config, NativeConnection** context) {
   if (!context) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   DCHECK(*context == nullptr);
@@ -99,7 +99,7 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   std::string folder = config.db_path;  // start point must be folder
   common::tribool is_dir = common::file_system::is_directory(folder);
   if (is_dir != common::SUCCESS) {
-    return common::make_error(common::MemSPrintf("Invalid input path(%s)", folder), common::ERROR_TYPE);
+    return common::make_error(common::MemSPrintf("Invalid input path(%s)", folder));
   }
 
   ::leveldb::Options lv;
@@ -112,7 +112,7 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   auto st = ::leveldb::DB::Open(lv, folder, &lcontext);
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("Fail connect to server: %s!", st.ToString());
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
 
   *context = lcontext;
@@ -138,17 +138,17 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
 
   if (!statsout) {
     DNOTREACHED();
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   if (!IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   std::string rets;
   bool isok = connection_.handle_->GetProperty("leveldb.stats", &rets);
   if (!isok) {
-    return common::make_error("info function failed", common::ERROR_TYPE);
+    return common::make_error("info function failed");
   }
 
   ServerInfo::Stats lstats;
@@ -206,7 +206,7 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
 
 common::Error DBConnection::DelInner(key_t key) {
   if (!IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   std::string exist_key;
@@ -221,14 +221,14 @@ common::Error DBConnection::DelInner(key_t key) {
   auto st = connection_.handle_->Delete(wo, key_slice);
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("del function error: %s", st.ToString());
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
   return common::Error();
 }
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   if (!IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   const string_key_t key_str = key.ToBytes();
@@ -237,7 +237,7 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   auto st = connection_.handle_->Put(wo, key_slice, value);
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("set function error: %s", st.ToString());
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
 
   return common::Error();
@@ -245,7 +245,7 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   if (!IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   const string_key_t key_str = key.ToBytes();
@@ -254,7 +254,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   auto st = connection_.handle_->Get(ro, key_slice, ret_val);
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("get function error: %s", st.ToString());
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
 
   return common::Error();
@@ -291,7 +291,7 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
 
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("SCAN function error: %s", st.ToString());
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
 
   *keys_out = lkeys_out;
@@ -324,7 +324,7 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
 
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("Keys function error: %s", st.ToString());
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
   return common::Error();
 }
@@ -342,7 +342,7 @@ common::Error DBConnection::DBkcountImpl(size_t* size) {
 
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("Couldn't determine DBKCOUNT error: %s", st.ToString());
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
 
   *size = sz;
@@ -359,7 +359,7 @@ common::Error DBConnection::FlushDBImpl() {
     if (!st.ok()) {
       delete it;
       std::string buff = common::MemSPrintf("del function error: %s", st.ToString());
-      return common::make_error(buff, common::ERROR_TYPE);
+      return common::make_error(buff);
     }
   }
 
@@ -368,7 +368,7 @@ common::Error DBConnection::FlushDBImpl() {
 
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("Keys function error: %s", st.ToString());
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
   return common::Error();
 }
@@ -450,15 +450,13 @@ common::Error DBConnection::RenameImpl(const NKey& key, string_key_t new_key) {
 common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
   UNUSED(key);
   UNUSED(ttl);
-  return common::make_error("Sorry, but now " PROJECT_NAME_TITLE " for LevelDB not supported TTL commands.",
-                            common::ERROR_TYPE);
+  return common::make_error("Sorry, but now " PROJECT_NAME_TITLE " for LevelDB not supported TTL commands.");
 }
 
 common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
   UNUSED(key);
   UNUSED(ttl);
-  return common::make_error("Sorry, but now " PROJECT_NAME_TITLE " for LevelDB not supported TTL commands.",
-                            common::ERROR_TYPE);
+  return common::make_error("Sorry, but now " PROJECT_NAME_TITLE " for LevelDB not supported TTL commands.");
 }
 
 common::Error DBConnection::QuitImpl() {

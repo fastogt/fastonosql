@@ -89,7 +89,7 @@ common::Error CommandTranslator::Zrange(const NKey& key,
 
 common::Error CommandTranslator::Hgetall(const NKey& key, command_buffer_t* cmdstring) {
   if (!cmdstring) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   key_t key_str = key.GetKey();
@@ -101,7 +101,7 @@ common::Error CommandTranslator::Hgetall(const NKey& key, command_buffer_t* cmds
 
 common::Error CommandTranslator::Smembers(const NKey& key, command_buffer_t* cmdstring) {
   if (!cmdstring) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   key_t key_str = key.GetKey();
@@ -113,7 +113,7 @@ common::Error CommandTranslator::Smembers(const NKey& key, command_buffer_t* cmd
 
 common::Error CommandTranslator::Lrange(const NKey& key, int start, int stop, command_buffer_t* cmdstring) {
   if (!cmdstring) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   key_t key_str = key.GetKey();
@@ -125,7 +125,7 @@ common::Error CommandTranslator::Lrange(const NKey& key, int start, int stop, co
 
 common::Error CommandTranslator::SetEx(const NDbKValue& key, ttl_t ttl, command_buffer_t* cmdstring) {
   if (!cmdstring) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   const NKey cur = key.GetKey();
@@ -139,7 +139,7 @@ common::Error CommandTranslator::SetEx(const NDbKValue& key, ttl_t ttl, command_
 
 common::Error CommandTranslator::SetNX(const NDbKValue& key, command_buffer_t* cmdstring) {
   if (!cmdstring) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   const NKey cur = key.GetKey();
@@ -153,7 +153,7 @@ common::Error CommandTranslator::SetNX(const NDbKValue& key, command_buffer_t* c
 
 common::Error CommandTranslator::Decr(const NKey& key, command_buffer_t* cmdstring) {
   if (!cmdstring) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   key_t key_str = key.GetKey();
@@ -165,7 +165,7 @@ common::Error CommandTranslator::Decr(const NKey& key, command_buffer_t* cmdstri
 
 common::Error CommandTranslator::DecrBy(const NKey& key, int inc, command_buffer_t* cmdstring) {
   if (!cmdstring) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   key_t key_str = key.GetKey();
@@ -177,7 +177,7 @@ common::Error CommandTranslator::DecrBy(const NKey& key, int inc, command_buffer
 
 common::Error CommandTranslator::Incr(const NKey& key, command_buffer_t* cmdstring) {
   if (!cmdstring) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   key_t key_str = key.GetKey();
@@ -189,7 +189,7 @@ common::Error CommandTranslator::Incr(const NKey& key, command_buffer_t* cmdstri
 
 common::Error CommandTranslator::IncrBy(const NKey& key, int inc, command_buffer_t* cmdstring) {
   if (!cmdstring) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   key_t key_str = key.GetKey();
@@ -201,7 +201,7 @@ common::Error CommandTranslator::IncrBy(const NKey& key, int inc, command_buffer
 
 common::Error CommandTranslator::IncrByFloat(const NKey& key, double inc, command_buffer_t* cmdstring) {
   if (!cmdstring) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   key_t key_str = key.GetKey();

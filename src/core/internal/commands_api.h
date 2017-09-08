@@ -69,14 +69,14 @@ common::Error ApiTraits<CDBConnection>::Scan(internal::CommandHandler* handler,
                                              FastoObject* out) {
   uint32_t cursor_in;
   if (!common::ConvertFromString(argv[0], &cursor_in)) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   const size_t argc = argv.size();
   std::string pattern = argc >= 3 ? argv[2] : ALL_KEYS_PATTERNS;
   uint64_t count_keys = NO_KEYS_LIMIT;
   if (argc >= 5 && !common::ConvertFromString(argv[4], &count_keys)) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   uint64_t cursor_out = 0;
@@ -113,7 +113,7 @@ common::Error ApiTraits<CDBConnection>::Keys(internal::CommandHandler* handler,
 
   uint64_t limit;
   if (!common::ConvertFromString(argv[2], &limit)) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   std::vector<std::string> keysout;
@@ -279,7 +279,7 @@ common::Error ApiTraits<CDBConnection>::SetTTL(internal::CommandHandler* handler
 
   ttl_t ttl;
   if (!common::ConvertFromString(argv[1], &ttl)) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   common::Error err = cdb->SetTTL(key, ttl);

@@ -210,13 +210,13 @@ namespace memcached {
 
 common::Error CreateConnection(const Config& config, NativeConnection** context) {
   if (!context) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   DCHECK(*context == nullptr);
   memcached_st* memc = ::memcached(NULL, 0);
   if (!memc) {
-    return common::make_error("Init error", common::ERROR_TYPE);
+    return common::make_error("Init error");
   }
 
   memcached_return rc;
@@ -226,8 +226,7 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
     rc = memcached_set_sasl_auth_data(memc, user, passwd);
     if (rc != MEMCACHED_SUCCESS) {
       memcached_free(memc);
-      return common::make_error(common::MemSPrintf("Couldn't setup SASL auth: %s", memcached_strerror(memc, rc)),
-                                common::ERROR_TYPE);
+      return common::make_error(common::MemSPrintf("Couldn't setup SASL auth: %s", memcached_strerror(memc, rc)));
     }
   }
 
@@ -239,15 +238,13 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
 
   if (rc != MEMCACHED_SUCCESS) {
     memcached_free(memc);
-    return common::make_error(common::MemSPrintf("Couldn't add server: %s", memcached_strerror(memc, rc)),
-                              common::ERROR_TYPE);
+    return common::make_error(common::MemSPrintf("Couldn't add server: %s", memcached_strerror(memc, rc)));
   }
 
   memcached_return_t error = memcached_version(memc);
   if (error != MEMCACHED_SUCCESS) {
     memcached_free(memc);
-    return common::make_error(common::MemSPrintf("Connect to server error: %s", memcached_strerror(memc, error)),
-                              common::ERROR_TYPE);
+    return common::make_error(common::MemSPrintf("Connect to server error: %s", memcached_strerror(memc, error)));
   }
 
   *context = memc;
@@ -265,14 +262,12 @@ common::Error TestConnection(const Config& config) {
     const char* passwd = config.password.c_str();
     libmemcached_util_ping2(host, hostport, user, passwd, &rc);
     if (rc != MEMCACHED_SUCCESS) {
-      return common::make_error(common::MemSPrintf("Couldn't ping server: %s", memcached_strerror(NULL, rc)),
-                                common::ERROR_TYPE);
+      return common::make_error(common::MemSPrintf("Couldn't ping server: %s", memcached_strerror(NULL, rc)));
     }
   } else {
     libmemcached_util_ping(host, hostport, &rc);
     if (rc != MEMCACHED_SUCCESS) {
-      return common::make_error(common::MemSPrintf("Couldn't ping server: %s", memcached_strerror(NULL, rc)),
-                                common::ERROR_TYPE);
+      return common::make_error(common::MemSPrintf("Couldn't ping server: %s", memcached_strerror(NULL, rc)));
     }
   }
 
@@ -285,18 +280,18 @@ DBConnection::DBConnection(CDBConnectionClient* client)
 common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* statsout) {
   if (!statsout) {
     DNOTREACHED();
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   if (!IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   memcached_return_t error;
   memcached_stat_st* st = memcached_stat(connection_.handle_, const_cast<char*>(args.c_str()), &error);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("Stats function error: %s", memcached_strerror(connection_.handle_, error));
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
 
   ServerInfo::Stats lstatsout;
@@ -334,7 +329,7 @@ common::Error DBConnection::AddIfNotExist(const NKey& key,
                                           time_t expiration,
                                           uint32_t flags) {
   if (!IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   const key_t key_str = key.GetKey();
@@ -344,7 +339,7 @@ common::Error DBConnection::AddIfNotExist(const NKey& key,
                                            value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("Add function error: %s", memcached_strerror(connection_.handle_, error));
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
 
   if (client_) {
@@ -355,7 +350,7 @@ common::Error DBConnection::AddIfNotExist(const NKey& key,
 
 common::Error DBConnection::Replace(const NKey& key, const std::string& value, time_t expiration, uint32_t flags) {
   if (!IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   const key_t key_str = key.GetKey();
@@ -365,7 +360,7 @@ common::Error DBConnection::Replace(const NKey& key, const std::string& value, t
                                                value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("Replace function error: %s", memcached_strerror(connection_.handle_, error));
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
 
   if (client_) {
@@ -376,7 +371,7 @@ common::Error DBConnection::Replace(const NKey& key, const std::string& value, t
 
 common::Error DBConnection::Append(const NKey& key, const std::string& value, time_t expiration, uint32_t flags) {
   if (!IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   const key_t key_str = key.GetKey();
@@ -386,7 +381,7 @@ common::Error DBConnection::Append(const NKey& key, const std::string& value, ti
                                               value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("Append function error: %s", memcached_strerror(connection_.handle_, error));
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
 
   if (client_) {
@@ -397,7 +392,7 @@ common::Error DBConnection::Append(const NKey& key, const std::string& value, ti
 
 common::Error DBConnection::Prepend(const NKey& key, const std::string& value, time_t expiration, uint32_t flags) {
   if (!IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   const key_t key_str = key.GetKey();
@@ -407,7 +402,7 @@ common::Error DBConnection::Prepend(const NKey& key, const std::string& value, t
                                                value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("Prepend function error: %s", memcached_strerror(connection_.handle_, error));
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
 
   if (client_) {
@@ -419,11 +414,11 @@ common::Error DBConnection::Prepend(const NKey& key, const std::string& value, t
 common::Error DBConnection::Incr(const NKey& key, uint32_t value, uint64_t* result) {
   if (!result) {
     DNOTREACHED();
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   if (!IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   const key_t key_str = key.GetKey();
@@ -434,7 +429,7 @@ common::Error DBConnection::Incr(const NKey& key, uint32_t value, uint64_t* resu
       memcached_increment(connection_.handle_, key_slice_ptr, key_slice.size(), value, &local_value);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("Incr function error: %s", memcached_strerror(connection_.handle_, error));
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
 
   if (client_) {
@@ -448,11 +443,11 @@ common::Error DBConnection::Incr(const NKey& key, uint32_t value, uint64_t* resu
 common::Error DBConnection::Decr(const NKey& key, uint32_t value, uint64_t* result) {
   if (!result) {
     DNOTREACHED();
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   if (!IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   const key_t key_str = key.GetKey();
@@ -463,7 +458,7 @@ common::Error DBConnection::Decr(const NKey& key, uint32_t value, uint64_t* resu
       memcached_decrement(connection_.handle_, key_slice_ptr, key_slice.size(), value, &local_value);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("Decr function error: %s", memcached_strerror(connection_.handle_, error));
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
 
   if (client_) {
@@ -476,7 +471,7 @@ common::Error DBConnection::Decr(const NKey& key, uint32_t value, uint64_t* resu
 
 common::Error DBConnection::DelInner(key_t key, time_t expiration) {
   if (!IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   const string_key_t key_slice = key.ToBytes();
@@ -484,7 +479,7 @@ common::Error DBConnection::DelInner(key_t key, time_t expiration) {
   memcached_return_t error = memcached_delete(connection_.handle_, key_slice_ptr, key_slice.size(), expiration);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("Delete function error: %s", memcached_strerror(connection_.handle_, error));
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
 
   return common::Error();
@@ -492,7 +487,7 @@ common::Error DBConnection::DelInner(key_t key, time_t expiration) {
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value, time_t expiration, uint32_t flags) {
   if (!IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   const string_key_t key_slice = key.ToBytes();
@@ -501,7 +496,7 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value, time_t
                                            value.length(), expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("Set function error: %s", memcached_strerror(connection_.handle_, error));
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
 
   return common::Error();
@@ -510,11 +505,11 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value, time_t
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   if (!ret_val) {
     DNOTREACHED();
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   if (!IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   uint32_t flags = 0;
@@ -526,7 +521,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   char* value = memcached_get(connection_.handle_, key_slice_ptr, key_slice.size(), &value_length, &flags, &error);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("Get function error: %s", memcached_strerror(connection_.handle_, error));
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
 
   CHECK(value);
@@ -537,7 +532,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
 
 common::Error DBConnection::ExpireInner(key_t key, ttl_t expiration) {
   if (!IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   uint32_t flags = 0;
@@ -549,13 +544,13 @@ common::Error DBConnection::ExpireInner(key_t key, ttl_t expiration) {
   char* value = memcached_get(connection_.handle_, key_slice_ptr, key_slice.size(), &value_length, &flags, &error);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("EXPIRE function error: %s", memcached_strerror(connection_.handle_, error));
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
 
   error = memcached_set(connection_.handle_, key_slice_ptr, key_slice.size(), value, value_length, expiration, flags);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("EXPIRE function error: %s", memcached_strerror(connection_.handle_, error));
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
 
   return common::Error();
@@ -563,7 +558,7 @@ common::Error DBConnection::ExpireInner(key_t key, ttl_t expiration) {
 
 common::Error DBConnection::TTL(key_t key, ttl_t* expiration) {
   if (!IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   time_t exp;
@@ -573,7 +568,7 @@ common::Error DBConnection::TTL(key_t key, ttl_t* expiration) {
   memcached_return_t result = memcached_dump(connection_.handle_, func, &hld, SIZEOFMASS(func));
   if (result != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("TTL function error: %s", memcached_strerror(connection_.handle_, result));
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
 
   time_t cur_t = time(NULL);
@@ -592,14 +587,14 @@ common::Error DBConnection::TTL(key_t key, ttl_t* expiration) {
 
 common::Error DBConnection::VersionServer() const {
   if (!IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   memcached_return_t error = memcached_version(connection_.handle_);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff =
         common::MemSPrintf("Get server version error: %s", memcached_strerror(connection_.handle_, error));
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
 
   return common::Error();
@@ -616,7 +611,7 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
   memcached_return_t result = memcached_dump(connection_.handle_, func, &hld, SIZEOFMASS(func));
   if (result != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("SCAN function error: %s", memcached_strerror(connection_.handle_, result));
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
 
   *keys_out = hld.r;
@@ -634,7 +629,7 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
   memcached_return_t result = memcached_dump(connection_.handle_, func, &hld, SIZEOFMASS(func));
   if (result != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("KEYS function error: %s", memcached_strerror(connection_.handle_, result));
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
 
   return common::Error();
@@ -645,7 +640,7 @@ common::Error DBConnection::DBkcountImpl(size_t* size) {
   common::Error err = Keys("a", "z", UINT64_MAX, &ret);
   if (err) {
     std::string buff = common::MemSPrintf("Couldn't determine DBKCOUNT error: %s", err->GetDescription());
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
 
   *size = ret.size();
@@ -656,7 +651,7 @@ common::Error DBConnection::FlushDBImpl() {
   memcached_return_t error = memcached_flush(connection_.handle_, 0);
   if (error != MEMCACHED_SUCCESS) {
     std::string buff = common::MemSPrintf("Flushdb function error: %s", memcached_strerror(connection_.handle_, error));
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
 
   return common::Error();

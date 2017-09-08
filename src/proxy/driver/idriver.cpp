@@ -112,7 +112,7 @@ void replyNotImplementedYet(IDriver* sender, event_request_type* ev, const char*
 
   std::string patternResult =
       common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported %s command.", eventCommandText);
-  common::Error er = common::make_error(patternResult, common::ERROR_TYPE);
+  common::Error er = common::make_error(patternResult);
   res.setErrorInfo(er);
   event_responce_type* resp = new event_responce_type(sender, res);
   IDriver::Reply(esender, resp);
@@ -140,7 +140,7 @@ IDriver::~IDriver() {
 common::Error IDriver::Execute(core::FastoObjectCommandIPtr cmd) {
   if (!cmd) {
     DNOTREACHED();
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   LOG_COMMAND(cmd);
@@ -359,7 +359,7 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
     common::time64_t start_ts = common::time::current_mstime();
     for (size_t i = 0; i < commands.size(); ++i) {
       if (IsInterrupted()) {
-        res.setErrorInfo(common::make_error("Interrupted exec.", common::INTERRUPTED_TYPE));
+        res.setErrorInfo(common::ErrorValue(common::COMMON_EINTR));
         goto done;
       }
 
@@ -501,7 +501,7 @@ void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
     res.setInfos(tmpInfos);
     readFile.Close();
   } else {
-    res.setErrorInfo(common::make_error("History file not found", common::ERROR_TYPE));
+    res.setErrorInfo(common::make_error("History file not found"));
   }
 
   Reply(sender, new events::ServerInfoHistoryResponceEvent(this, res));
@@ -530,7 +530,7 @@ void IDriver::HandleClearServerHistoryEvent(events::ClearServerHistoryRequestEve
   }
 
   if (!ret) {
-    res.setErrorInfo(common::make_error("Clear file error!", common::ERROR_TYPE));
+    res.setErrorInfo(common::make_error("Clear file error!"));
   }
 
   Reply(sender, new events::ClearServerHistoryResponceEvent(this, res));
@@ -559,8 +559,7 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
       res.dbinfo = current_database_info;
     }
   } else {
-    res.setErrorInfo(
-        common::make_error("Not connected to server, impossible to get discovery info!", common::ERROR_TYPE));
+    res.setErrorInfo(common::make_error("Not connected to server, impossible to get discovery info!"));
   }
 
   NotifyProgress(sender, 75);

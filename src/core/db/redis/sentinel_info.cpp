@@ -37,7 +37,7 @@ DiscoverySentinelInfo::DiscoverySentinelInfo(const ServerCommonInfo& args) : Ser
 
 common::Error MakeServerCommonInfo(struct redisReply* repl_info, ServerCommonInfo* info) {
   if (!repl_info || !info) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   ServerCommonInfo linf;

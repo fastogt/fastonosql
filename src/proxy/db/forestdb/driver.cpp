@@ -139,7 +139,7 @@ common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
 common::Error Driver::CurrentDataBaseInfo(core::IDataBaseInfo** info) {
   if (!info) {
     DNOTREACHED();
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   return impl_->Select(impl_->CurrentDBName(), info);

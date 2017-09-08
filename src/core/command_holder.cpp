@@ -35,7 +35,7 @@ common::Error TestArgsInRange(const CommandInfo& cmd, commands_args_t argv) {
     std::string buff =
         common::MemSPrintf("Invalid input argument for command: '%s', passed %d arguments, must be in range %u - %u.",
                            cmd.name, argc, min, max);
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
 
   return common::Error();
@@ -46,7 +46,7 @@ common::Error TestArgsModule2Equal1(const CommandInfo& cmd, commands_args_t argv
   if (argc % 2 != 1) {
     std::string buff = common::MemSPrintf(
         "Invalid input argument for command: '%s', passed %d arguments, must be 1 by module 2.", cmd.name, argv.size());
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
 
   return common::Error();

@@ -124,7 +124,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::Help(commands_args_t
   size_t argc = argv.size();
   if (!answer) {
     DNOTREACHED();
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   if (argc == 0) {
@@ -173,11 +173,11 @@ common::Error CDBConnection<NConnection, Config, ContType>::Scan(uint64_t cursor
                                                                  uint64_t* cursor_out) {
   if (!keys_out || !cursor_out) {
     DNOTREACHED();
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   common::Error err = ScanImpl(cursor_in, pattern, count_keys, keys_out, cursor_out);
@@ -195,11 +195,11 @@ common::Error CDBConnection<NConnection, Config, ContType>::Keys(const std::stri
                                                                  std::vector<std::string>* ret) {
   if (!ret) {
     DNOTREACHED();
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   common::Error err = KeysImpl(key_start, key_end, limit, ret);
@@ -214,11 +214,11 @@ template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::DBkcount(size_t* size) {
   if (!size) {
     DNOTREACHED();
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   common::Error err = DBkcountImpl(size);
@@ -232,7 +232,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::DBkcount(size_t* siz
 template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::FlushDB() {
   if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   common::Error err = FlushDBImpl();
@@ -250,7 +250,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::FlushDB() {
 template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::Select(const std::string& name, IDataBaseInfo** info) {
   if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   IDataBaseInfo* linfo = nullptr;
@@ -276,11 +276,11 @@ template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::Delete(const NKeys& keys, NKeys* deleted_keys) {
   if (!deleted_keys) {
     DNOTREACHED();
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   common::Error err = DeleteImpl(keys, deleted_keys);
@@ -299,11 +299,11 @@ template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::Set(const NDbKValue& key, NDbKValue* added_key) {
   if (!added_key) {
     DNOTREACHED();
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   common::Error err = SetImpl(key, added_key);
@@ -322,11 +322,11 @@ template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::Get(const NKey& key, NDbKValue* loaded_key) {
   if (!loaded_key) {
     DNOTREACHED();
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   common::Error err = GetImpl(key, loaded_key);
@@ -344,7 +344,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::Get(const NKey& key,
 template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::Rename(const NKey& key, const string_key_t& new_key) {
   if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   common::Error err = RenameImpl(key, new_key);
@@ -362,7 +362,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::Rename(const NKey& k
 template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::SetTTL(const NKey& key, ttl_t ttl) {
   if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   common::Error err = SetTTLImpl(key, ttl);
@@ -380,11 +380,11 @@ template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::GetTTL(const NKey& key, ttl_t* ttl) {
   if (!ttl) {
     DNOTREACHED();
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   common::Error err = GetTTLImpl(key, ttl);
@@ -402,7 +402,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::GetTTL(const NKey& k
 template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::Quit() {
   if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   common::Error err = QuitImpl();

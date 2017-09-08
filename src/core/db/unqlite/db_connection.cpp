@@ -162,7 +162,7 @@ namespace unqlite {
 
 common::Error CreateConnection(const Config& config, NativeConnection** context) {
   if (!context) {
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   DCHECK(*context == NULL);
@@ -171,7 +171,7 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   std::string folder = common::file_system::get_dir_path(db_path);
   common::tribool is_dir = common::file_system::is_directory(folder);
   if (is_dir != common::SUCCESS) {
-    return common::make_error(common::MemSPrintf("Invalid input path(%s)", db_path), common::ERROR_TYPE);
+    return common::make_error(common::MemSPrintf("Invalid input path(%s)", db_path));
   }
 
   const char* dbname = db_path.c_str();
@@ -179,7 +179,7 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   int st = unqlite_open(&lcontext, dbname, env_flags);
   if (st != UNQLITE_OK) {
     std::string buff = common::MemSPrintf("Fail open database: %s!", unqlite_strerror(st));
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
 
   *context = lcontext;
@@ -204,11 +204,11 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
   UNUSED(args);
   if (!statsout) {
     DNOTREACHED();
-    return common::make_error_inval(common::ERROR_TYPE);
+    return common::make_error_inval();
   }
 
   if (!IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   ServerInfo::Stats linfo;
@@ -220,14 +220,14 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   if (!IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   const string_key_t key_slice = key.ToBytes();
   int rc = unqlite_kv_store(connection_.handle_, key_slice.data(), key_slice.size(), value.c_str(), value.length());
   if (rc != UNQLITE_OK) {
     std::string buff = common::MemSPrintf("set function error: %s", unqlite_strerror(rc));
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
 
   return common::Error();
@@ -235,14 +235,14 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
 
 common::Error DBConnection::DelInner(key_t key) {
   if (!IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   const string_key_t key_slice = key.ToBytes();
   int rc = unqlite_kv_delete(connection_.handle_, key_slice.data(), key_slice.size());
   if (rc != UNQLITE_OK) {
     std::string buff = common::MemSPrintf("delete function error: %s", unqlite_strerror(rc));
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
 
   return common::Error();
@@ -250,7 +250,7 @@ common::Error DBConnection::DelInner(key_t key) {
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   if (!IsConnected()) {
-    return common::make_error("Not connected", common::ERROR_TYPE);
+    return common::make_error("Not connected");
   }
 
   const string_key_t key_slice = key.ToBytes();
@@ -258,7 +258,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
                                      ret_val);
   if (rc != UNQLITE_OK) {
     std::string buff = common::MemSPrintf("get function error: %s", unqlite_strerror(rc));
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
 
   return common::Error();
@@ -273,7 +273,7 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
   int rc = unqlite_kv_cursor_init(connection_.handle_, &pCur);
   if (rc != UNQLITE_OK) {
     std::string buff = common::MemSPrintf("Keys function error: %s", unqlite_strerror(rc));
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
   /* Point to the first record */
   unqlite_kv_cursor_first_entry(pCur);
@@ -317,7 +317,7 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
   int rc = unqlite_kv_cursor_init(connection_.handle_, &pCur);
   if (rc != UNQLITE_OK) {
     std::string buff = common::MemSPrintf("Keys function error: %s", unqlite_strerror(rc));
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
   /* Point to the first record */
   unqlite_kv_cursor_first_entry(pCur);
@@ -345,7 +345,7 @@ common::Error DBConnection::DBkcountImpl(size_t* size) {
   int rc = unqlite_kv_cursor_init(connection_.handle_, &pCur);
   if (rc != UNQLITE_OK) {
     std::string buff = common::MemSPrintf("DBKCOUNT function error: %s", unqlite_strerror(rc));
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
   /* Point to the first record */
   unqlite_kv_cursor_first_entry(pCur);
@@ -369,7 +369,7 @@ common::Error DBConnection::FlushDBImpl() {
   int rc = unqlite_kv_cursor_init(connection_.handle_, &pCur);
   if (rc != UNQLITE_OK) {
     std::string buff = common::MemSPrintf("FlushDB function error: %s", unqlite_strerror(rc));
-    return common::make_error(buff, common::ERROR_TYPE);
+    return common::make_error(buff);
   }
   /* Point to the first record */
   unqlite_kv_cursor_first_entry(pCur);
@@ -453,15 +453,13 @@ common::Error DBConnection::RenameImpl(const NKey& key, string_key_t new_key) {
 common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
   UNUSED(key);
   UNUSED(ttl);
-  return common::make_error("Sorry, but now " PROJECT_NAME_TITLE " for UnqLite not supported TTL commands.",
-                            common::ERROR_TYPE);
+  return common::make_error("Sorry, but now " PROJECT_NAME_TITLE " for UnqLite not supported TTL commands.");
 }
 
 common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
   UNUSED(key);
   UNUSED(ttl);
-  return common::make_error("Sorry, but now " PROJECT_NAME_TITLE " for Unqlite not supported TTL commands.",
-                            common::ERROR_TYPE);
+  return common::make_error("Sorry, but now " PROJECT_NAME_TITLE " for Unqlite not supported TTL commands.");
 }
 
 common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
