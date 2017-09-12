@@ -30,6 +30,7 @@ struct Config : public RemoteConfig {
   std::string hostsocket;
   int dbnum;
   std::string auth;
+  bool is_ssl;
 };
 
 }  // namespace redis

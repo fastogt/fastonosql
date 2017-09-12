@@ -435,6 +435,14 @@ static int _redisContextConnectTcp(redisContext *c, const char *addr, int port,
 
         c->flags |= REDIS_CONNECTED;
         return REDIS_OK;
+    } else if (c->ssl) {
+        if (SSL_connect(c->ssl) != 1) {
+          __redisSetError(c, REDIS_ERR_OTHER, "Error: Could not build a SSL session.");
+          return REDIS_ERR;
+        }
+
+        c->flags |= REDIS_CONNECTED;
+        return REDIS_OK;
     }
 #endif
     int s, rv, n;

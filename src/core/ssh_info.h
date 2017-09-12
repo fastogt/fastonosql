@@ -28,9 +28,9 @@ struct SSHInfo {
 
   SSHInfo();
   SSHInfo(const common::net::HostAndPort& host,
-          const std::string& userName,
+          const std::string& user_name,
           const std::string& password,
-          const std::string& publicKey,
+          const std::string& public_key,
           const std::string& privateKey,
           const std::string& passphrase,
           SupportedAuthenticationMetods method);
@@ -52,7 +52,8 @@ struct SSHInfo {
 
 inline bool operator==(const SSHInfo& r, const SSHInfo& l) {
   return r.host == l.host && r.password == l.password && r.public_key == l.public_key &&
-         r.private_key == l.private_key && r.passphrase == l.passphrase && r.user_name == l.user_name;
+         r.private_key == l.private_key && r.passphrase == l.passphrase && r.user_name == l.user_name &&
+         r.current_method == l.current_method;
 }
 
 }  // namespace core

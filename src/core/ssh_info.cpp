@@ -89,16 +89,16 @@ SSHInfo::SSHInfo()
       current_method(UNKNOWN) {}
 
 SSHInfo::SSHInfo(const common::net::HostAndPort& host,
-                 const std::string& userName,
+                 const std::string& user_name,
                  const std::string& password,
-                 const std::string& publicKey,
+                 const std::string& public_key,
                  const std::string& privateKey,
                  const std::string& passphrase,
                  SupportedAuthenticationMetods method)
     : host(host),
-      user_name(userName),
+      user_name(user_name),
       password(password),
-      public_key(publicKey),
+      public_key(public_key),
       private_key(privateKey),
       passphrase(passphrase),
       current_method(method) {}

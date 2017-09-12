@@ -404,6 +404,7 @@ common::Error CreateConnection(const RConfig& config, NativeConnection** context
     SSHInfo sinfo = config.ssh_info;
     std::string host_str = config.host.GetHost();
     const char* host = host_str.empty() ? NULL : host_str.c_str();
+    bool is_ssl = config.is_ssl;
     uint16_t port = config.host.GetPort();
     const char* username = sinfo.user_name.empty() ? NULL : sinfo.user_name.c_str();
     const char* password = sinfo.password.empty() ? NULL : sinfo.password.c_str();
@@ -415,8 +416,8 @@ common::Error CreateConnection(const RConfig& config, NativeConnection** context
     const char* public_key = sinfo.public_key.empty() ? NULL : sinfo.public_key.c_str();
     const char* private_key = sinfo.private_key.empty() ? NULL : sinfo.private_key.c_str();
     const char* passphrase = sinfo.passphrase.empty() ? NULL : sinfo.passphrase.c_str();
-    lcontext =
-        redisConnect(host, port, ssh_address, ssh_port, username, password, public_key, private_key, passphrase, curM);
+    lcontext = redisConnect(host, port, ssh_address, ssh_port, username, password, public_key, private_key, passphrase,
+                            is_ssl, curM);
   }
 
   if (!lcontext) {

@@ -44,6 +44,12 @@
 #include "sds.h"
 
 #ifdef FASTO
+static void init_openssl_library(void) {
+  SSL_library_init();
+  SSL_load_error_strings();
+  /* ERR_load_crypto_strings(); */
+  OPENSSL_config(NULL);
+}
 #ifdef OS_WIN
 #define F_EINTR 0
 #else
@@ -622,6 +628,8 @@ static redisContext *redisContextInit(void) {
         return NULL;
     }
 #ifdef FASTO
+    c->ssl = NULL;
+    c->ssl_ctx = NULL;
     c->session = NULL;
     c->channel = NULL;
 #endif
@@ -634,6 +642,14 @@ void redisFree(redisContext *c) {
         return;
 
 #ifdef FASTO
+    if (c->ssl) {
+      SSL_free(c->ssl);
+      c->ssl = NULL;
+    }
+    if (c->ssl_ctx) {
+      SSL_CTX_free(c->ssl_ctx);
+      c->ssl_ctx = NULL;
+    }
     if(c->channel != NULL){
         libssh2_channel_free(c->channel);
     }
@@ -737,15 +753,59 @@ void **abstract)
 }
 
 redisContext *redisConnect(const char *ip, int port, const char *ssh_address, int ssh_port, const char *username, const char *password,
-                           const char *public_key, const char *private_key, const char *passphrase, int curMethod) {
+                           const char *public_key, const char *private_key, const char *passphrase, int is_ssl, int curMethod) {
 
   redisContext *c = redisContextInit();
   if (c == NULL) {
     return NULL;
   }
 
+  SSL_CTX *ssl_ctx = NULL;
+  SSL *ssl = NULL;
   LIBSSH2_SESSION *session = NULL;
-  if(ssh_address && curMethod != SSH_UNKNOWN){
+  if (is_ssl) {
+    struct hostent* host = gethostbyname(ip);
+    if(!host){
+      __redisSetError(c, REDIS_ERR_OTHER, "Failed to resolve ssh address.");
+      return c;
+    }
+
+    struct sockaddr_in sin;
+    /* Connect to SSH server */
+    int server_sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+    sin.sin_family = AF_INET;
+    sin.sin_addr = *(struct in_addr *)host->h_addr;
+    sin.sin_port = htons(port);
+    if (connect(server_sock, (struct sockaddr*)(&sin),
+                sizeof(struct sockaddr_in)) != 0) {
+      __redisSetError(c, REDIS_ERR_OTHER, "Failed to connect (ssh_address).");
+      return c;
+    }
+
+    init_openssl_library();
+
+    const SSL_METHOD *method = SSLv23_client_method();
+    if ((ssl_ctx = SSL_CTX_new(method)) == NULL) {
+      close(server_sock);
+      __redisSetError(c, REDIS_ERR_OTHER, "Unable to create a new SSL context structure.");
+      return c;
+    }
+
+    /* ---------------------------------------------------------- *
+     * Disabling SSLv2 will leave v3 and TSLv1 for negotiation    *
+     * ---------------------------------------------------------- */
+    SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_SSLv2);
+
+    /* ---------------------------------------------------------- *
+     * Create new SSL connection state object                     *
+     * ---------------------------------------------------------- */
+    ssl = SSL_new(ssl_ctx);
+
+    /* ---------------------------------------------------------- *
+     * Attach the SSL session to the socket descriptor            *
+     * ---------------------------------------------------------- */
+    SSL_set_fd(ssl, server_sock);
+  } else if(ssh_address && curMethod != SSH_UNKNOWN){
     if (curMethod == SSH_PUBLICKEY && !private_key) {
       __redisSetError(c, REDIS_ERR_OTHER, "Invalid input argument(private key)");
       return c;
@@ -836,6 +896,8 @@ redisContext *redisConnect(const char *ip, int port, const char *ssh_address, in
     }
   }
 
+  c->ssl = ssl;
+  c->ssl_ctx = ssl_ctx;
   c->session = session;
   c->flags |= REDIS_BLOCK;
   redisContextConnectTcp(c,ip,port,NULL);
@@ -973,7 +1035,9 @@ int redisBufferRead(redisContext *c) {
 
 #ifdef FASTO
 
-    if(c->channel){
+    if (c->ssl) {
+        nread = SSL_read(c->ssl, buf, sizeof(buf));
+    } else if(c->channel) {
         nread = libssh2_channel_read(c->channel, buf, sizeof(buf));
     }
     else{
@@ -1041,7 +1105,9 @@ int redisBufferWrite(redisContext *c, int *done) {
 
     if (sdslen(c->obuf) > 0) {
 #ifdef FASTO
-    if(c->channel){
+    if (c->ssl) {
+        nwritten = SSL_write(c->ssl, c->obuf, sdslen(c->obuf));
+    } else if(c->channel){
         nwritten = libssh2_channel_write(c->channel, c->obuf, sdslen(c->obuf));
     }
     else{
@@ -1099,7 +1165,9 @@ int redisReadToBuffer(redisContext *c, char* buf, int size, ssize_t *nread)
         return REDIS_ERR;
     }
 
-    if(c->channel){
+    if (c->ssl) {
+        *nread = SSL_read(c->ssl, buf, size);
+    } else if(c->channel){
         *nread = libssh2_channel_read(c->channel, buf, size);
     }
     else{

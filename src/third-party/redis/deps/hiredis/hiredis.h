@@ -41,6 +41,7 @@
 
 #ifdef FASTO
 #include <libssh2.h>
+#include <openssl/ssl.h>
 #endif
 
 #define HIREDIS_MAJOR 0
@@ -170,12 +171,15 @@ typedef struct redisContext {
 #ifdef FASTO
     LIBSSH2_SESSION *session;
     LIBSSH2_CHANNEL *channel;
+
+    SSL_CTX *ssl_ctx;
+    SSL *ssl;
 #endif
 } redisContext;
 
 #ifdef FASTO
 redisContext *redisConnect(const char *ip, int port, const char *ssh_address, int ssh_port, const char *username, const char *password,
-                           const char *public_key, const char *private_key, const char *passphrase, int curMethod);
+                           const char *public_key, const char *private_key, const char *passphrase, int is_ssl, int curMethod);
 #else
 redisContext *redisConnect(const char *ip, int port);
 #endif

@@ -59,6 +59,8 @@ Config parseOptions(int argc, char** argv) {
       cfg.delimiter = argv[++i];
     } else if (!strcmp(argv[i], "-ns") && !lastarg) {
       cfg.ns_separator = argv[++i];
+    } else if (!strcmp(argv[i], "-ssl")) {
+      cfg.is_ssl = true;
     } else {
       if (argv[i][0] == '-') {
         const std::string buff = common::MemSPrintf(
@@ -83,7 +85,8 @@ Config::Config()
     : RemoteConfig(common::net::HostAndPort::CreateLocalHost(DEFAULT_REDIS_SERVER_PORT)),
       hostsocket(),
       dbnum(0),
-      auth() {}
+      auth(),
+      is_ssl(false) {}
 
 }  // namespace redis
 }  // namespace core
@@ -106,6 +109,10 @@ std::string ConvertToString(const fastonosql::core::redis::Config& conf) {
   if (!conf.auth.empty()) {
     argv.push_back("-a");
     argv.push_back(conf.auth);
+  }
+
+  if (conf.is_ssl) {
+    argv.push_back("-ssl");
   }
 
   return fastonosql::core::ConvertToStringConfigArgs(argv);
