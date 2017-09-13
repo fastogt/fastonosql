@@ -45,6 +45,7 @@ class ConnectionWidget : public ConnectionBaseWidget {
  private Q_SLOTS:
   void togglePasswordEchoMode();
   void authStateChange(int state);
+  void sslStateChange(int state);
   void selectRemoteDBPath(bool checked);
   void selectLocalDBPath(bool checked);
 
@@ -55,6 +56,7 @@ class ConnectionWidget : public ConnectionBaseWidget {
   QRadioButton* local_;
 
   HostPortWidget* hostWidget_;
+  QCheckBox* isSSLConnection_;
   PathWidget* pathWidget_;
 
   QCheckBox* useAuth_;

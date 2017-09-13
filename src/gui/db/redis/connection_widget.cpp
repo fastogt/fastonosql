@@ -48,6 +48,7 @@ const QString trFilter = QObject::tr("Database files (*.*)");
 const QString trDBPath = QObject::tr("DB path");
 const QString trRemote = QObject::tr("Remote");
 const QString trLocal = QObject::tr("Local");
+const QString trSSL = QObject::tr("SSL");
 const QString trDefaultDb = QObject::tr("Default database:");
 }  // namespace
 
@@ -63,10 +64,17 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(paren
   VERIFY(connect(remote_, &QRadioButton::toggled, this, &ConnectionWidget::selectRemoteDBPath));
   VERIFY(connect(local_, &QRadioButton::toggled, this, &ConnectionWidget::selectLocalDBPath));
 
+  isSSLConnection_ = new QCheckBox;
+  VERIFY(connect(isSSLConnection_, &QCheckBox::stateChanged, this, &ConnectionWidget::sslStateChange));
+
+  QHBoxLayout* hbox = new QHBoxLayout;
+  hbox->addWidget(remote_);
+  hbox->addWidget(isSSLConnection_);
+
   hostWidget_ = new HostPortWidget;
   QLayout* host_layout = hostWidget_->layout();
   host_layout->setContentsMargins(0, 0, 0, 0);
-  vbox->addWidget(remote_);
+  vbox->addLayout(hbox);
   vbox->addWidget(hostWidget_);
 
   pathWidget_ = new PathWidget(false, trUnixPath, trFilter, trCaption);
@@ -122,6 +130,7 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
     if (is_remote) {
       hostWidget_->setHost(config.host);
       remote_->setChecked(true);
+      isSSLConnection_->setChecked(config.is_ssl);
     } else {
       QString qhostsocket;
       common::ConvertFromString(config.hostsocket, &qhostsocket);
@@ -149,6 +158,7 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
 void ConnectionWidget::retranslateUi() {
   groupBox_->setTitle(trDBPath);
   remote_->setText(trRemote);
+  isSSLConnection_->setText(trSSL);
   local_->setText(trLocal);
   useAuth_->setText(tr("Use AUTH"));
   defaultDBLabel_->setText(trDefaultDb);
@@ -166,18 +176,26 @@ void ConnectionWidget::authStateChange(int state) {
   passwordEchoModeButton_->setEnabled(state);
 }
 
+void ConnectionWidget::sslStateChange(int state) {
+  sshWidget_->setEnabled(!state);
+}
+
 void ConnectionWidget::selectRemoteDBPath(bool checked) {
   hostWidget_->setEnabled(checked);
   pathWidget_->setEnabled(!checked);
+  isSSLConnection_->setEnabled(checked);
+  sshWidget_->setEnabled(checked);
 }
 
 void ConnectionWidget::selectLocalDBPath(bool checked) {
   hostWidget_->setEnabled(!checked);
   pathWidget_->setEnabled(checked);
+  isSSLConnection_->setEnabled(!checked);
+  sshWidget_->setEnabled(!checked);
 }
 
 bool ConnectionWidget::validated() const {
-  if (sshWidget_->isSSHChecked()) {
+  if (sshWidget_->isEnabled() && sshWidget_->isSSHChecked()) {
     if (!sshWidget_->isValidSSHInfo()) {
       return false;
     }
@@ -216,6 +234,7 @@ proxy::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(const pro
   bool is_remote = remote_->isChecked();
   if (is_remote) {
     config.host = hostWidget_->host();
+    config.is_ssl = isSSLConnection_->isChecked();
   } else {
     config.hostsocket = common::ConvertToString(pathWidget_->path());
   }
@@ -227,7 +246,7 @@ proxy::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(const pro
   conn->SetInfo(config);
 
   core::SSHInfo info;
-  if (sshWidget_->isSSHChecked()) {
+  if (sshWidget_->isEnabled() && sshWidget_->isSSHChecked()) {
     info = sshWidget_->info();
   }
   conn->SetSSHInfo(info);

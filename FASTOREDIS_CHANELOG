@@ -1,5 +1,6 @@
 1.8.0 /
 [Alexandr Topilski]
+- [Redis] SSL connection (Azure service)
 
 1.7.1 / August 17, 2017
 [Alexandr Topilski]
