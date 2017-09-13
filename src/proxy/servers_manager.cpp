@@ -150,7 +150,7 @@ ServersManager::sentinel_t ServersManager::CreateSentinel(ISentinelSettingsBaseS
   core::connectionTypes conT = settings->GetType();
 #ifdef BUILD_WITH_REDIS
   if (conT == core::REDIS) {
-    sentinel_t sent = std::make_shared<redis::Sentinel>(settings->Path().ToString());
+    sentinel_t sent = std::make_shared<redis::Sentinel>(settings->GetPath().ToString());
     auto nodes = settings->Sentinels();
     for (size_t i = 0; i < nodes.size(); ++i) {
       SentinelSettings nd = nodes[i];
@@ -181,7 +181,7 @@ ServersManager::cluster_t ServersManager::CreateCluster(IClusterSettingsBaseSPtr
   core::connectionTypes conT = settings->GetType();
 #ifdef BUILD_WITH_REDIS
   if (conT == core::REDIS) {
-    cluster_t cl = std::make_shared<redis::Cluster>(settings->Path().ToString());
+    cluster_t cl = std::make_shared<redis::Cluster>(settings->GetPath().ToString());
     auto nodes = settings->Nodes();
     for (size_t i = 0; i < nodes.size(); ++i) {
       IConnectionSettingsBaseSPtr nd = nodes[i];

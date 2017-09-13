@@ -62,7 +62,7 @@ void ConnectionListWidgetItem::setConnection(proxy::IConnectionSettingsBaseSPtr 
     return;
   }
 
-  proxy::connection_path_t path = cons->Path();
+  proxy::connection_path_t path = cons->GetPath();
   QString conName;
   if (common::ConvertFromString(path.GetName(), &conName)) {
     setText(0, conName);
@@ -135,7 +135,7 @@ void SentinelConnectionListWidgetItemContainer::setConnection(proxy::ISentinelSe
   }
 
   connection_ = cons;
-  std::string path = connection_->Path().ToString();
+  std::string path = connection_->GetPath().ToString();
   QString qpath;
   if (common::ConvertFromString(path, &qpath)) {
     setText(0, qpath);
@@ -168,7 +168,7 @@ void ClusterConnectionListWidgetItemContainer::setConnection(proxy::IClusterSett
   }
 
   connection_ = cons;
-  std::string path = connection_->Path().ToString();
+  std::string path = connection_->GetPath().ToString();
   QString qpath;
   if (common::ConvertFromString(path, &qpath)) {
     setText(0, qpath);

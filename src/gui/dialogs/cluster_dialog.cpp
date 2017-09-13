@@ -73,7 +73,7 @@ ClusterDialog::ClusterDialog(QWidget* parent, proxy::IClusterSettingsBase* conne
   QString conName = defaultNameConnection;
 
   if (cluster_connection_) {
-    proxy::connection_path_t path = cluster_connection_->Path();
+    proxy::connection_path_t path = cluster_connection_->GetPath();
     QString qstr;
     if (common::ConvertFromString(path.GetName(), &qstr)) {
       conName = qstr;

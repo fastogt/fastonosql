@@ -70,7 +70,7 @@ SentinelDialog::SentinelDialog(QWidget* parent, proxy::ISentinelSettingsBase* co
   QString conName = defaultNameConnection;
 
   if (sentinel_connection_) {
-    proxy::connection_path_t path = sentinel_connection_->Path();
+    proxy::connection_path_t path = sentinel_connection_->GetPath();
     common::ConvertFromString(path.GetName(), &conName);
     common::ConvertFromString(path.GetDirectory(), &conFolder);
   }

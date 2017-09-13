@@ -53,7 +53,7 @@ class IConnectionSettings : public common::ClonableBase<IConnectionSettings> {
  public:
   virtual ~IConnectionSettings();
 
-  connection_path_t Path() const;
+  connection_path_t GetPath() const;
   void SetPath(const connection_path_t& path);
 
   core::connectionTypes GetType() const;

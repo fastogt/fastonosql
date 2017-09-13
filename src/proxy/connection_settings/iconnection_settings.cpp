@@ -69,7 +69,8 @@ bool ConnectionSettingsPath::Equals(const ConnectionSettingsPath& path) const {
 }
 
 std::string ConnectionSettingsPath::GetName() const {
-  return path_.GetFileName();
+  std::string path = path_.GetPath();
+  return common::file_system::get_file_name(path);
 }
 
 std::string ConnectionSettingsPath::GetDirectory() const {
@@ -94,7 +95,7 @@ void IConnectionSettings::SetPath(const connection_path_t& path) {
   connection_path_ = path;
 }
 
-connection_path_t IConnectionSettings::Path() const {
+connection_path_t IConnectionSettings::GetPath() const {
   return connection_path_;
 }
 

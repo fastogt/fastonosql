@@ -158,7 +158,7 @@ void ConnectionBaseWidget::setConnectionName(const QString& name) {
 
 void ConnectionBaseWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
   if (connection) {
-    proxy::connection_path_t path = connection->Path();
+    proxy::connection_path_t path = connection->GetPath();
     QString qname;
     if (common::ConvertFromString(path.GetName(), &qname)) {
       setConnectionName(qname);

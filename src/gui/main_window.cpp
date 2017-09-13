@@ -362,7 +362,7 @@ void MainWindow::openRecentConnection() {
   auto conns = proxy::SettingsManager::GetInstance().Connections();
   for (auto it = conns.begin(); it != conns.end(); ++it) {
     proxy::IConnectionSettingsBaseSPtr con = *it;
-    if (con && con->Path() == path) {
+    if (con && con->GetPath() == path) {
       createServer(con);
       return;
     }
@@ -731,7 +731,7 @@ void MainWindow::clearRecentConnectionsMenu() {
 void MainWindow::createServer(proxy::IConnectionSettingsBaseSPtr settings) {
   CHECK(settings);
 
-  std::string path = settings->Path().ToString();
+  std::string path = settings->GetPath().ToString();
   QString rcon;
   common::ConvertFromString(path, &rcon);
   proxy::SettingsManager::GetInstance().RemoveRConnection(rcon);
