@@ -491,7 +491,7 @@ common::Error DiscoveryClusterConnection(const RConfig& rconfig, std::vector<Ser
   } else if (reply->type == REDIS_REPLY_ERROR) {
     err = common::make_error(std::string(reply->str, reply->len));
   } else {
-    NOTREACHED();
+    DNOTREACHED();
   }
 
   freeReplyObject(reply);
@@ -560,7 +560,7 @@ common::Error DiscoverySentinelConnection(const RConfig& rconfig, std::vector<Se
       redisFree(context);
       return common::make_error(std::string(reply->str, reply->len));
     } else {
-      NOTREACHED();
+      DNOTREACHED();
     }
     freeReplyObject(reply);
   }
@@ -890,7 +890,7 @@ common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
   } else if (reply->type == REDIS_REPLY_NIL) {
     val = common::Value::CreateNullValue();
   } else {
-    NOTREACHED();
+    DNOTREACHED();
   }
   *loaded_key = NDbKValue(key, NValue(val));
   freeReplyObject(reply);
@@ -1291,7 +1291,7 @@ common::Error DBConnection::SetNX(const NDbKValue& key, long long* result) {
     return common::Error();
   }
 
-  NOTREACHED();
+  DNOTREACHED();
   return common::Error();
 }
 
@@ -1364,7 +1364,7 @@ common::Error DBConnection::Lrange(const NKey& key, int start, int stop, NDbKVal
     return common::Error();
   }
 
-  NOTREACHED();
+  DNOTREACHED();
   return common::Error();
 }
 
@@ -1397,7 +1397,7 @@ common::Error DBConnection::Sadd(const NKey& key, NValue set, long long* added) 
     return common::Error();
   }
 
-  NOTREACHED();
+  DNOTREACHED();
   return common::Error();
 }
 
@@ -1453,7 +1453,7 @@ common::Error DBConnection::Smembers(const NKey& key, NDbKValue* loaded_key) {
     return common::Error();
   }
 
-  NOTREACHED();
+  DNOTREACHED();
   return common::Error();
 }
 
@@ -1486,7 +1486,7 @@ common::Error DBConnection::Zadd(const NKey& key, NValue scores, long long* adde
     return common::Error();
   }
 
-  NOTREACHED();
+  DNOTREACHED();
   return common::Error();
 }
 
@@ -1552,7 +1552,7 @@ common::Error DBConnection::Zrange(const NKey& key, int start, int stop, bool wi
     return common::Error();
   }
 
-  NOTREACHED();
+  DNOTREACHED();
   return common::Error();
 }
 
@@ -1674,7 +1674,7 @@ common::Error DBConnection::Decr(const NKey& key, long long* decr) {
     return common::Error();
   }
 
-  NOTREACHED();
+  DNOTREACHED();
   return common::Error();
 }
 
@@ -1707,7 +1707,7 @@ common::Error DBConnection::DecrBy(const NKey& key, int dec, long long* decr) {
     return common::Error();
   }
 
-  NOTREACHED();
+  DNOTREACHED();
   return common::Error();
 }
 
@@ -1740,7 +1740,7 @@ common::Error DBConnection::Incr(const NKey& key, long long* incr) {
     return common::Error();
   }
 
-  NOTREACHED();
+  DNOTREACHED();
   return common::Error();
 }
 
@@ -1773,7 +1773,7 @@ common::Error DBConnection::IncrBy(const NKey& key, int inc, long long* incr) {
     return common::Error();
   }
 
-  NOTREACHED();
+  DNOTREACHED();
   return common::Error();
 }
 
@@ -1807,7 +1807,7 @@ common::Error DBConnection::IncrByFloat(const NKey& key, double inc, std::string
     return common::Error();
   }
 
-  NOTREACHED();
+  DNOTREACHED();
   return common::Error();
 }
 
