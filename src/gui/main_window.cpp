@@ -32,7 +32,9 @@
 #include <QGestureEvent>
 #endif
 
-#include <common/convert2string.h>                  // for ConvertFromString, etc
+#include <common/convert2string.h>  // for ConvertFromString, etc
+#include <common/file_system/file.h>
+#include <common/file_system/file_system.h>
 #include <common/text_decoders/iedcoder_factory.h>  // for IEDcoder, EDTypes::Hex
 
 #include <common/qt/convert2string.h>             // for ConvertToString

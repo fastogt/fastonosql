@@ -18,7 +18,7 @@
 
 #include "core/ssh_info.h"
 
-#include <common/file_system.h>  // for prepare_path
+#include <common/file_system/types.h>  // for prepare_path
 
 #define DEFAULT_SSH_PORT 22
 #define DEFAULT_PUB_KEY_PATH "~/.ssh/id_rsa.pub"

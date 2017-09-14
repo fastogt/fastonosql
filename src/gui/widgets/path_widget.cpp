@@ -25,7 +25,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 
-#include <common/file_system.h>
+#include <common/file_system/types.h>
 #include <common/qt/convert2string.h>
 
 namespace fastonosql {

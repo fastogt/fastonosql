@@ -31,7 +31,7 @@ class QThread;  // lines 37-37
 class QTimerEvent;
 namespace common {
 namespace file_system {
-class File;
+class ANSIFile;
 }
 }  // namespace common
 

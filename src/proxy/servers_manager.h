@@ -20,6 +20,8 @@
 
 #include <common/patterns/singleton_pattern.h>  // for LazySingleton
 
+#include <common/error.h>
+
 #include "proxy/connection_settings/icluster_connection_settings.h"
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
 #include "proxy/connection_settings/isentinel_connection_settings.h"

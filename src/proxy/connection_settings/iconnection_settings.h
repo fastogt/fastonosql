@@ -18,7 +18,9 @@
 
 #pragma once
 
-#include <common/file_system.h>  // for ascii_string_path, etc
+#include <memory>
+
+#include <common/file_system/path.h>
 
 #include "core/connection_types.h"  // for core::connectionTypes
 

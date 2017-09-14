@@ -28,6 +28,9 @@
 #include <QThread>
 
 #include <common/convert2string.h>  // for ConvertToString, etc
+#include <common/file_system/file.h>
+#include <common/file_system/file_system.h>
+#include <common/file_system/string_path_utils.h>
 #include <common/threads/platform_thread.h>
 #include <common/time.h>  // for current_mstime
 
@@ -514,7 +517,8 @@ void IDriver::HandleClearServerHistoryEvent(events::ClearServerHistoryRequestEve
   bool ret = false;
 
   if (log_file_ && log_file_->IsOpened()) {
-    ret = log_file_->Truncate(0);
+    common::ErrnoError err = log_file_->Truncate(0);
+    ret = err ? false : true;
   } else {
     std::string path = settings_->LoggingPath();
     if (common::file_system::is_file_exist(path)) {

@@ -22,6 +22,7 @@
 
 #include <common/convert2string.h>  // for ConvertFromString, etc
 #include <common/utils.h>           // for decode64, encode64, crc64
+#include <common/sprintf.h>
 
 #include <common/qt/convert2string.h>  // for ConvertToString
 

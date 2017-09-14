@@ -26,7 +26,7 @@
 #include <ups/upscaledb.h>
 
 #include <common/convert2string.h>
-#include <common/file_system.h>  // for get_dir_path, is_directory, etc
+#include <common/file_system/string_path_utils.h>
 #include <common/sprintf.h>      // for MemSPrintf
 #include <common/string_util.h>  // for MatchPattern
 #include <common/types.h>        // for tribool, tribool::SUCCESS

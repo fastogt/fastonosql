@@ -27,7 +27,7 @@ extern "C" {
 }
 
 #include <common/convert2string.h>
-#include <common/file_system.h>
+#include <common/file_system/string_path_utils.h>
 #include <common/sprintf.h>  // for MemSPrintf
 #include <common/utils.h>    // for c_strornull
 #include <common/value.h>    // for Value::ErrorsType::E_ERROR, etc

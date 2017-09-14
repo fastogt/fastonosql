@@ -25,7 +25,7 @@
 #include <string>    // for string
 
 #include <common/convert2string.h>
-#include <common/file_system.h>
+#include <common/file_system/string_path_utils.h>
 #include <common/utils.h>  // for c_strornull
 #include <common/value.h>  // for StringValue (ptr only)
 

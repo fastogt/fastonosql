@@ -25,11 +25,11 @@
 #include <sstream>
 #include <vector>  // for vector
 
-#include <common/convert2string.h>  // for ConvertFromString, etc
-#include <common/file_system.h>     // for copy_file
-#include <common/intrusive_ptr.h>   // for intrusive_ptr
-#include <common/qt/utils_qt.h>     // for Event<>::value_type
-#include <common/value.h>           // for Value, ErrorValue, etc
+#include <common/convert2string.h>           // for ConvertFromString, etc
+#include <common/file_system/file_system.h>  // for copy_file
+#include <common/intrusive_ptr.h>            // for intrusive_ptr
+#include <common/qt/utils_qt.h>              // for Event<>::value_type
+#include <common/value.h>                    // for Value, ErrorValue, etc
 
 #include "core/connection_types.h"
 #include "core/database/idatabase_info.h"  // for IDataBaseInfoSPtr, etc

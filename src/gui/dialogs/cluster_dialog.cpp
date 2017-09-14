@@ -32,7 +32,7 @@
 #include <QSpinBox>
 #include <QToolBar>
 
-#include <common/file_system.h>        // for stable_dir_path
+#include <common/types.h>
 #include <common/qt/convert2string.h>  // for ConvertToString
 
 #include "core/connection_types.h"  // for connectionTypes, etc

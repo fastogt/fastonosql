@@ -22,7 +22,7 @@ extern "C" {
 #include "sds.h"
 }
 
-#include <common/file_system.h>  // for prepare_path
+#include <common/file_system/types.h>  // for prepare_path
 #include <common/sprintf.h>      // for MemSPrintf
 
 #include "core/logger.h"
