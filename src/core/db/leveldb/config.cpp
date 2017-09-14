@@ -23,7 +23,7 @@ extern "C" {
 }
 
 #include <common/file_system/types.h>  // for prepare_path
-#include <common/sprintf.h>      // for MemSPrintf
+#include <common/sprintf.h>            // for MemSPrintf
 
 #include "leveldb/options.h"  // for Options
 

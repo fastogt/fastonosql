@@ -32,8 +32,8 @@
 #include <QSpinBox>
 #include <QToolBar>
 
-#include <common/types.h>
 #include <common/qt/convert2string.h>  // for ConvertToString
+#include <common/types.h>
 
 #include "core/connection_types.h"  // for connectionTypes, etc
 #include "proxy/cluster_connection_settings_factory.h"

@@ -18,6 +18,8 @@
 
 #include "core/icommand_translator_base.h"
 
+#include <common/sprintf.h>
+
 namespace fastonosql {
 namespace core {
 

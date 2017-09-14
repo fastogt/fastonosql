@@ -18,6 +18,10 @@
 
 #include "core/command_holder.h"
 
+#include <algorithm>
+
+#include <common/sprintf.h>
+
 namespace {
 auto count_space(const std::string& data) -> std::string::difference_type {
   return std::count_if(data.begin(), data.end(), [](char c) { return std::isspace(c); });

@@ -31,6 +31,7 @@
 #include <common/file_system/file.h>
 #include <common/file_system/file_system.h>
 #include <common/file_system/string_path_utils.h>
+#include <common/sprintf.h>
 #include <common/threads/platform_thread.h>
 #include <common/time.h>  // for current_mstime
 

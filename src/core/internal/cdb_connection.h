@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <common/sprintf.h>
+
 #include "core/internal/cdb_connection_client.h"
 #include "core/internal/command_handler.h"  // for CommandHandler, etc
 #include "core/internal/db_connection.h"    // for DBConnection

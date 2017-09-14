@@ -21,6 +21,7 @@
 #include <hiredis/hiredis.h>  // for redisReply
 
 #include <common/convert2string.h>
+#include <common/string_util.h>
 
 #undef SetPort
 

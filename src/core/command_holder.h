@@ -18,6 +18,9 @@
 
 #pragma once
 
+#include <functional>
+#include <vector>
+
 #include <common/error.h>  // for Error
 
 #include "core/command_info.h"  // for CommandInfo
