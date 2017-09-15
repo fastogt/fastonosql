@@ -1,6 +1,7 @@
 1.8.0 / September 15, 2015
 [Alexandr Topilski]
 - [Redis] SSL connection (Azure service)
+- [Redis] Crash on ubuntu 16.04 when running transaction on Redis #42
 
 1.7.1 / August 17, 2017
 [Alexandr Topilski]
