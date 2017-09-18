@@ -18,15 +18,7 @@
 
 #pragma once
 
-#include <stdint.h>  // for uint32_t
-
-#include <iosfwd>  // for ostream
-#include <string>  // for string, basic_string
-
-#include <common/value.h>  // for Value
-
 #include "core/server/iserver_info.h"
-#include "core/types.h"
 
 #define SSDB_COMMON_LABEL "# Common"
 

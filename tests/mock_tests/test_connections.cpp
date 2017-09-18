@@ -1,6 +1,6 @@
 #include <gmock/gmock.h>
 
-#include <common/file_system.h>
+#include <common/file_system/file_system.h>
 
 #include "core/db/leveldb/db_connection.h"
 #include "core/db/rocksdb/db_connection.h"

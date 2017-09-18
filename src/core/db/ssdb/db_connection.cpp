@@ -35,12 +35,12 @@
 namespace fastonosql {
 namespace core {
 template <>
-const char* ConnectionTraits<SSDB>::BasedOn() {
+const char* ConnectionTraits<SSDB>::GetBasedOn() {
   return "ssdb";
 }
 
 template <>
-const char* ConnectionTraits<SSDB>::VersionApi() {
+const char* ConnectionTraits<SSDB>::GetVersionApi() {
   return "1.9.4";
 }
 namespace {
@@ -79,7 +79,7 @@ bool ConnectionAllocatorTraits<ssdb::NativeConnection, ssdb::Config>::IsConnecte
 }
 
 template <>
-ConstantCommandsArray CDBConnection<ssdb::NativeConnection, ssdb::Config, SSDB>::Commands() {
+const ConstantCommandsArray& CDBConnection<ssdb::NativeConnection, ssdb::Config, SSDB>::GetCommands() {
   return ssdb::g_commands;
 }
 }  // namespace internal
@@ -112,7 +112,7 @@ common::Error TestConnection(const Config& config) {
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(client, new CommandTranslator(base_class::Commands())) {}
+    : base_class(client, new CommandTranslator(base_class::GetCommands())) {}
 
 common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* statsout) {
   if (!statsout) {

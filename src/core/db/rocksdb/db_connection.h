@@ -18,19 +18,7 @@
 
 #pragma once
 
-#include <stddef.h>  // for size_t
-#include <stdint.h>  // for uint64_t
-
-#include <string>  // for string
-#include <vector>  // for vector
-
-#include <common/error.h>   // for Error
-#include <common/macros.h>  // for WARN_UNUSED_RESULT
-
 #include "core/internal/cdb_connection.h"
-
-#include "core/connection_types.h"  // for connectionTypes::ROCKSDB
-#include "core/db_key.h"            // for NKey (ptr only), etc
 
 #include "core/db/rocksdb/config.h"
 #include "core/db/rocksdb/server_info.h"

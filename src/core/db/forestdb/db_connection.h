@@ -18,50 +18,16 @@
 
 #pragma once
 
-#include <stdint.h>  // for uint64_t
-#include <string>    // for string
-
-#include <common/error.h>   // for Error
-#include <common/macros.h>  // for WARN_UNUSED_RESULT
-
-#include "core/command_info.h"             // for UNDEFINED_EXAMPLE_STR, UNDEFINED_...
-#include "core/connection_types.h"         // for connectionTypes::FORESTDB
-#include "core/db_key.h"                   // for NDbKValue, NKey, NKeys
 #include "core/internal/cdb_connection.h"  // for CDBConnection
 
 #include "core/db/forestdb/config.h"
 #include "core/db/forestdb/server_info.h"  // for ServerInfo
 
 namespace fastonosql {
-class FastoObject;
-}
-namespace fastonosql {
-namespace core {
-class CDBConnectionClient;
-}
-}  // namespace fastonosql
-namespace fastonosql {
-namespace core {
-class CommandHandler;
-}
-}  // namespace fastonosql
-namespace fastonosql {
-namespace core {
-class IDataBaseInfo;
-}
-}  // namespace fastonosql
-namespace fastonosql {
 namespace core {
 namespace forestdb {
+
 struct fdb;
-}
-}  // namespace core
-}  // namespace fastonosql
-
-namespace fastonosql {
-namespace core {
-namespace forestdb {
-
 typedef fdb NativeConnection;
 
 common::Error CreateConnection(const Config& config, NativeConnection** context);

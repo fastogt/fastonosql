@@ -18,8 +18,6 @@
 
 #include "core/db/memcached/database_info.h"
 
-#include "core/connection_types.h"  // for connectionTypes::MEMCACHED
-
 namespace fastonosql {
 namespace core {
 namespace memcached {

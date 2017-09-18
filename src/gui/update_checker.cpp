@@ -51,7 +51,7 @@ void UpdateChecker::routine() {
 #endif
   if (err) {
     emit versionAvailibled(false, QString());
-    DCHECK(!client.Close());
+    client.Close();
     return;
   }
 
@@ -60,12 +60,12 @@ void UpdateChecker::routine() {
   err = client.Read(version, sizeof(version), &nread);
   if (err) {
     emit versionAvailibled(false, QString());
-    DCHECK(!client.Close());
+    client.Close();
     return;
   }
 
   emit versionAvailibled(true, version);
-  DCHECK(!client.Close());
+  client.Close();
   return;
 }
 

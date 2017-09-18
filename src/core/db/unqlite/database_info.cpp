@@ -18,8 +18,6 @@
 
 #include "core/db/unqlite/database_info.h"
 
-#include "core/connection_types.h"  // for connectionTypes::UNQLITE
-
 namespace fastonosql {
 namespace core {
 namespace unqlite {

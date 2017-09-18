@@ -18,15 +18,6 @@
 
 #pragma once
 
-#include <stddef.h>  // for size_t
-#include <stdint.h>  // for uint64_t
-
-#include <string>  // for string
-#include <vector>  // for vector
-
-#include <common/error.h>   // for Error
-#include <common/macros.h>  // for WARN_UNUSED_RESULT
-
 #include "core/internal/cdb_connection.h"
 
 #include "core/db/unqlite/config.h"

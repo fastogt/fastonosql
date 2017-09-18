@@ -18,8 +18,6 @@
 
 #include "core/db/leveldb/database_info.h"
 
-#include "core/connection_types.h"  // for connectionTypes::LEVELDB
-
 namespace fastonosql {
 namespace core {
 namespace leveldb {

@@ -24,9 +24,9 @@ namespace fastonosql {
 namespace gui {
 namespace lmdb {
 
-LmdbApi::LmdbApi(QsciLexer* lexer) : BaseQsciApiCommandHolder(core::lmdb::DBConnection::Commands(), lexer) {}
+LmdbApi::LmdbApi(QsciLexer* lexer) : BaseQsciApiCommandHolder(core::lmdb::DBConnection::GetCommands(), lexer) {}
 
-Lexer::Lexer(QObject* parent) : BaseQsciLexerCommandHolder(core::lmdb::DBConnection::Commands(), parent) {
+Lexer::Lexer(QObject* parent) : BaseQsciLexerCommandHolder(core::lmdb::DBConnection::GetCommands(), parent) {
   setAPIs(new LmdbApi(this));
 }
 
@@ -35,11 +35,11 @@ const char* Lexer::language() const {
 }
 
 const char* Lexer::version() const {
-  return core::lmdb::DBConnection::VersionApi();
+  return core::lmdb::DBConnection::GetVersionApi();
 }
 
 const char* Lexer::basedOn() const {
-  return core::lmdb::DBConnection::BasedOn();
+  return core::lmdb::DBConnection::GetBasedOn();
 }
 
 }  // namespace lmdb

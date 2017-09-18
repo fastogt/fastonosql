@@ -18,8 +18,6 @@
 
 #include "core/db/upscaledb/database_info.h"
 
-#include "core/connection_types.h"  // for connectionTypes::UPSCALEDB
-
 namespace fastonosql {
 namespace core {
 namespace upscaledb {

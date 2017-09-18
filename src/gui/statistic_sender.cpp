@@ -66,12 +66,12 @@ void StatisticSender::routine() {
   json_object_put(stats_json);
   if (err) {
     emit statisticSended(false);
-    DCHECK(!client.Close());
+    client.Close();
     return;
   }
 
   emit statisticSended(true);
-  DCHECK(!client.Close());
+  client.Close();
   return;
 }
 

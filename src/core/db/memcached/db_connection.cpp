@@ -38,8 +38,6 @@
 #include "core/db/memcached/database_info.h"
 #include "core/db/memcached/internal/commands_api.h"
 
-#include "core/global.h"  // for FastoObject, etc
-
 namespace {
 
 struct KeysHolder {
@@ -152,12 +150,12 @@ memcached_return_t memcached_dump_ttl_callback(const memcached_st* ptr,
 namespace fastonosql {
 namespace core {
 template <>
-const char* ConnectionTraits<MEMCACHED>::BasedOn() {
+const char* ConnectionTraits<MEMCACHED>::GetBasedOn() {
   return "libmemcached";
 }
 
 template <>
-const char* ConnectionTraits<MEMCACHED>::VersionApi() {
+const char* ConnectionTraits<MEMCACHED>::GetVersionApi() {
   return memcached_lib_version();
 }
 namespace internal {
@@ -202,8 +200,8 @@ bool ConnectionAllocatorTraits<memcached::NativeConnection, memcached::Config>::
 }
 
 template <>
-ConstantCommandsArray CDBConnection<memcached::NativeConnection, memcached::Config, MEMCACHED>::Commands() {
-  return memcached::memcachedCommands;
+const ConstantCommandsArray& CDBConnection<memcached::NativeConnection, memcached::Config, MEMCACHED>::GetCommands() {
+  return memcached::g_commands;
 }
 }  // namespace internal
 namespace memcached {
@@ -275,7 +273,7 @@ common::Error TestConnection(const Config& config) {
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(client, new CommandTranslator(base_class::Commands())), current_info_() {}
+    : base_class(client, new CommandTranslator(base_class::GetCommands())), current_info_() {}
 
 common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* statsout) {
   if (!statsout) {

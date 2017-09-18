@@ -21,6 +21,7 @@
 #include <common/convert2string.h>
 
 #include "core/global.h"
+
 #include "core/internal/cdb_connection.h"
 
 namespace fastonosql {

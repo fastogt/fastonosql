@@ -18,22 +18,10 @@
 
 #pragma once
 
-#include <stddef.h>  // for size_t
-#include <stdint.h>  // for int64_t, uint64_t
-
-#include <map>     // for map
-#include <string>  // for string
-#include <vector>  // for vector
-
-#include <common/error.h>   // for Error
-#include <common/macros.h>  // for WARN_UNUSED_RESULT
-
-#include "core/connection_types.h"  // for connectionTypes::SSDB
 #include "core/internal/cdb_connection.h"
 
 #include "core/db/ssdb/config.h"
 #include "core/db/ssdb/server_info.h"
-#include "core/db_key.h"  // for ttl_t, NKey (ptr only), etc
 
 namespace ssdb {
 class Client;

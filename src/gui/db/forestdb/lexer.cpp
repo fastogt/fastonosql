@@ -25,9 +25,9 @@ namespace gui {
 namespace forestdb {
 
 ForestDBApi::ForestDBApi(QsciLexer* lexer)
-    : BaseQsciApiCommandHolder(core::forestdb::DBConnection::Commands(), lexer) {}
+    : BaseQsciApiCommandHolder(core::forestdb::DBConnection::GetCommands(), lexer) {}
 
-Lexer::Lexer(QObject* parent) : BaseQsciLexerCommandHolder(core::forestdb::DBConnection::Commands(), parent) {
+Lexer::Lexer(QObject* parent) : BaseQsciLexerCommandHolder(core::forestdb::DBConnection::GetCommands(), parent) {
   setAPIs(new ForestDBApi(this));
 }
 
@@ -36,11 +36,11 @@ const char* Lexer::language() const {
 }
 
 const char* Lexer::version() const {
-  return core::forestdb::DBConnection::VersionApi();
+  return core::forestdb::DBConnection::GetVersionApi();
 }
 
 const char* Lexer::basedOn() const {
-  return core::forestdb::DBConnection::BasedOn();
+  return core::forestdb::DBConnection::GetBasedOn();
 }
 
 }  // namespace forestdb

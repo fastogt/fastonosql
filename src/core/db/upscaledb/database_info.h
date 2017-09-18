@@ -18,9 +18,6 @@
 
 #pragma once
 
-#include <stddef.h>  // for size_t
-#include <string>    // for string
-
 #include "core/database/idatabase_info.h"
 
 namespace fastonosql {

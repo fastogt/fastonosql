@@ -39,11 +39,11 @@ CommandInfo::CommandInfo(const std::string& name,
       required_arguments_count(required_arguments_count),
       optional_arguments_count(optional_arguments_count) {}
 
-uint16_t CommandInfo::MaxArgumentsCount() const {
+uint16_t CommandInfo::GetMaxArgumentsCount() const {
   return required_arguments_count + optional_arguments_count;
 }
 
-uint8_t CommandInfo::MinArgumentsCount() const {
+uint8_t CommandInfo::GetMinArgumentsCount() const {
   return required_arguments_count;
 }
 

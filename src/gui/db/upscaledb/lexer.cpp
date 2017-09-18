@@ -25,9 +25,9 @@ namespace gui {
 namespace upscaledb {
 
 UpscaleDBApi::UpscaleDBApi(QsciLexer* lexer)
-    : BaseQsciApiCommandHolder(core::upscaledb::DBConnection::Commands(), lexer) {}
+    : BaseQsciApiCommandHolder(core::upscaledb::DBConnection::GetCommands(), lexer) {}
 
-Lexer::Lexer(QObject* parent) : BaseQsciLexerCommandHolder(core::upscaledb::DBConnection::Commands(), parent) {
+Lexer::Lexer(QObject* parent) : BaseQsciLexerCommandHolder(core::upscaledb::DBConnection::GetCommands(), parent) {
   setAPIs(new UpscaleDBApi(this));
 }
 
@@ -36,11 +36,11 @@ const char* Lexer::language() const {
 }
 
 const char* Lexer::version() const {
-  return core::upscaledb::DBConnection::VersionApi();
+  return core::upscaledb::DBConnection::GetVersionApi();
 }
 
 const char* Lexer::basedOn() const {
-  return core::upscaledb::DBConnection::BasedOn();
+  return core::upscaledb::DBConnection::GetBasedOn();
 }
 
 }  // namespace upscaledb

@@ -18,17 +18,6 @@
 
 #pragma once
 
-#include <stddef.h>  // for size_t
-#include <stdint.h>  // for uint64_t
-
-#include <string>  // for string
-#include <vector>  // for vector
-
-#include <common/error.h>   // for Error
-#include <common/macros.h>  // for WARN_UNUSED_RESULT
-
-#include "core/connection_types.h"         // for connectionTypes::UPSCALEDB
-#include "core/db_key.h"                   // for NDbKValue, NKey, NKeys
 #include "core/internal/cdb_connection.h"  // for CDBConnection
 
 #include "core/db/upscaledb/config.h"
@@ -36,26 +25,9 @@
 
 namespace fastonosql {
 namespace core {
-class CDBConnectionClient;
-}
-}  // namespace fastonosql
-namespace fastonosql {
-namespace core {
-class IDataBaseInfo;
-}
-}  // namespace fastonosql
-namespace fastonosql {
-namespace core {
 namespace upscaledb {
+
 struct upscaledb;
-}
-}  // namespace core
-}  // namespace fastonosql
-
-namespace fastonosql {
-namespace core {
-namespace upscaledb {
-
 typedef upscaledb NativeConnection;
 
 common::Error CreateConnection(const Config& config, NativeConnection** context);

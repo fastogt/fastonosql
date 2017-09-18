@@ -18,8 +18,6 @@
 
 #include "core/db/rocksdb/database_info.h"
 
-#include "core/connection_types.h"  // for connectionTypes::ROCKSDB
-
 namespace fastonosql {
 namespace core {
 namespace rocksdb {

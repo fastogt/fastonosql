@@ -37,8 +37,6 @@ extern "C" {
 #include "core/db/unqlite/database_info.h"
 #include "core/db/unqlite/internal/commands_api.h"
 
-#include "core/global.h"  // for FastoObject, etc
-
 namespace {
 
 std::string unqlite_constext_strerror(unqlite* context) {
@@ -114,12 +112,12 @@ int unqlite_data_callback(const void* pData, unsigned int nDatalen, void* str) {
 namespace fastonosql {
 namespace core {
 template <>
-const char* ConnectionTraits<UNQLITE>::BasedOn() {
+const char* ConnectionTraits<UNQLITE>::GetBasedOn() {
   return "unqlite";
 }
 
 template <>
-const char* ConnectionTraits<UNQLITE>::VersionApi() {
+const char* ConnectionTraits<UNQLITE>::GetVersionApi() {
   return UNQLITE_VERSION;
 }
 namespace internal {
@@ -154,7 +152,7 @@ bool ConnectionAllocatorTraits<unqlite::NativeConnection, unqlite::Config>::IsCo
 }
 
 template <>
-ConstantCommandsArray CDBConnection<unqlite::NativeConnection, unqlite::Config, UNQLITE>::Commands() {
+const ConstantCommandsArray& CDBConnection<unqlite::NativeConnection, unqlite::Config, UNQLITE>::GetCommands() {
   return unqlite::g_commands;
 }
 }  // namespace internal
@@ -198,7 +196,7 @@ common::Error TestConnection(const Config& config) {
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(client, new CommandTranslator(base_class::Commands())) {}
+    : base_class(client, new CommandTranslator(base_class::GetCommands())) {}
 
 common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* statsout) {
   UNUSED(args);

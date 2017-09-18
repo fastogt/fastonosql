@@ -31,8 +31,6 @@
 #include "core/db/leveldb/database_info.h"
 #include "core/db/leveldb/internal/commands_api.h"
 
-#include "core/global.h"  // for FastoObject, etc
-
 #define LEVELDB_HEADER_STATS                             \
   "                               Compactions\n"         \
   "Level  Files Size(MB) Time(sec) Read(MB) Write(MB)\n" \
@@ -41,12 +39,12 @@
 namespace fastonosql {
 namespace core {
 template <>
-const char* ConnectionTraits<LEVELDB>::BasedOn() {
+const char* ConnectionTraits<LEVELDB>::GetBasedOn() {
   return "libleveldb";
 }
 
 template <>
-const char* ConnectionTraits<LEVELDB>::VersionApi() {
+const char* ConnectionTraits<LEVELDB>::GetVersionApi() {
   static std::string leveldb_version = common::MemSPrintf("%d.%d", leveldb_major_version(), leveldb_minor_version());
   return leveldb_version.c_str();
 }
@@ -83,7 +81,7 @@ bool ConnectionAllocatorTraits<leveldb::NativeConnection, leveldb::Config>::IsCo
 }
 
 template <>
-ConstantCommandsArray CDBConnection<leveldb::NativeConnection, leveldb::Config, LEVELDB>::Commands() {
+const ConstantCommandsArray& CDBConnection<leveldb::NativeConnection, leveldb::Config, LEVELDB>::GetCommands() {
   return leveldb::g_commands;
 }
 }  // namespace internal
@@ -131,7 +129,7 @@ common::Error TestConnection(const Config& config) {
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(client, new CommandTranslator(base_class::Commands())) {}
+    : base_class(client, new CommandTranslator(base_class::GetCommands())) {}
 
 common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* statsout) {
   UNUSED(args);

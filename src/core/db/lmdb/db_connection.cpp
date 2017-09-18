@@ -34,19 +34,17 @@
 #include "core/db/lmdb/database_info.h"
 #include "core/db/lmdb/internal/commands_api.h"
 
-#include "core/global.h"  // for FastoObject, etc
-
 #define LMDB_OK 0
 
 namespace fastonosql {
 namespace core {
 template <>
-const char* ConnectionTraits<LMDB>::BasedOn() {
+const char* ConnectionTraits<LMDB>::GetBasedOn() {
   return "liblmdb";
 }
 
 template <>
-const char* ConnectionTraits<LMDB>::VersionApi() {
+const char* ConnectionTraits<LMDB>::GetVersionApi() {
   return STRINGIZE(MDB_VERSION_MAJOR) "." STRINGIZE(MDB_VERSION_MINOR) "." STRINGIZE(MDB_VERSION_PATCH);
 }
 
@@ -152,7 +150,7 @@ bool ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::IsConnecte
 }
 
 template <>
-ConstantCommandsArray CDBConnection<lmdb::NativeConnection, lmdb::Config, LMDB>::Commands() {
+const ConstantCommandsArray& CDBConnection<lmdb::NativeConnection, lmdb::Config, LMDB>::GetCommands() {
   return lmdb::g_commands;
 }
 
@@ -197,7 +195,7 @@ common::Error TestConnection(const Config& config) {
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(client, new CommandTranslator(base_class::Commands())) {}
+    : base_class(client, new CommandTranslator(base_class::GetCommands())) {}
 
 std::string DBConnection::CurrentDBName() const {
   if (connection_.handle_) {

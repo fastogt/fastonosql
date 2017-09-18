@@ -18,15 +18,7 @@
 
 #pragma once
 
-#include <stdint.h>  // for uint32_t
-
-#include <iosfwd>  // for ostream
-#include <string>  // for string
-
-#include <common/value.h>  // for Value
-
 #include "core/server/iserver_info.h"
-#include "core/types.h"
 
 #define LEVELDB_STATS_LABEL "# Stats"
 
@@ -35,10 +27,6 @@
 #define LEVELDB_TIME_SEC_LABEL "time_sec"
 #define LEVELDB_READ_MB_LABEL "read_mb"
 #define LEVELDB_WRITE_MB_LABEL "write_mb"
-
-namespace common {
-class Value;
-}
 
 namespace fastonosql {
 namespace core {

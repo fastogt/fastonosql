@@ -125,42 +125,45 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
   dblist_widget->setHeaderLabels(dbcolums);
 #ifdef BUILD_WITH_REDIS
   typedef core::ConnectionTraits<core::REDIS> redis_traits_t;
-  addDBItem(dblist_widget, redis_traits_t::GetDBName(), redis_traits_t::BasedOn(), redis_traits_t::VersionApi());
+  addDBItem(dblist_widget, redis_traits_t::GetDBName(), redis_traits_t::GetBasedOn(), redis_traits_t::GetVersionApi());
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   typedef core::ConnectionTraits<core::MEMCACHED> memcached_traits_t;
-  addDBItem(dblist_widget, memcached_traits_t::GetDBName(), memcached_traits_t::BasedOn(),
-            memcached_traits_t::VersionApi());
+  addDBItem(dblist_widget, memcached_traits_t::GetDBName(), memcached_traits_t::GetBasedOn(),
+            memcached_traits_t::GetVersionApi());
 #endif
 #ifdef BUILD_WITH_SSDB
   typedef core::ConnectionTraits<core::SSDB> ssdb_traits_t;
-  addDBItem(dblist_widget, ssdb_traits_t::GetDBName(), ssdb_traits_t::BasedOn(), ssdb_traits_t::VersionApi());
+  addDBItem(dblist_widget, ssdb_traits_t::GetDBName(), ssdb_traits_t::GetBasedOn(), ssdb_traits_t::GetVersionApi());
 #endif
 #ifdef BUILD_WITH_LEVELDB
   typedef core::ConnectionTraits<core::LEVELDB> leveldb_traits_t;
-  addDBItem(dblist_widget, leveldb_traits_t::GetDBName(), leveldb_traits_t::BasedOn(), leveldb_traits_t::VersionApi());
+  addDBItem(dblist_widget, leveldb_traits_t::GetDBName(), leveldb_traits_t::GetBasedOn(),
+            leveldb_traits_t::GetVersionApi());
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   typedef core::ConnectionTraits<core::ROCKSDB> rocksdb_traits_t;
-  addDBItem(dblist_widget, rocksdb_traits_t::GetDBName(), rocksdb_traits_t::BasedOn(), rocksdb_traits_t::VersionApi());
+  addDBItem(dblist_widget, rocksdb_traits_t::GetDBName(), rocksdb_traits_t::GetBasedOn(),
+            rocksdb_traits_t::GetVersionApi());
 #endif
 #ifdef BUILD_WITH_UNQLITE
   typedef core::ConnectionTraits<core::UNQLITE> unqlite_traits_t;
-  addDBItem(dblist_widget, unqlite_traits_t::GetDBName(), unqlite_traits_t::BasedOn(), unqlite_traits_t::VersionApi());
+  addDBItem(dblist_widget, unqlite_traits_t::GetDBName(), unqlite_traits_t::GetBasedOn(),
+            unqlite_traits_t::GetVersionApi());
 #endif
 #ifdef BUILD_WITH_LMDB
   typedef core::ConnectionTraits<core::LMDB> lmdb_traits_t;
-  addDBItem(dblist_widget, lmdb_traits_t::GetDBName(), lmdb_traits_t::BasedOn(), lmdb_traits_t::VersionApi());
+  addDBItem(dblist_widget, lmdb_traits_t::GetDBName(), lmdb_traits_t::GetBasedOn(), lmdb_traits_t::GetVersionApi());
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
   typedef core::ConnectionTraits<core::UPSCALEDB> upscaledb_traits_t;
-  addDBItem(dblist_widget, upscaledb_traits_t::GetDBName(), upscaledb_traits_t::BasedOn(),
-            upscaledb_traits_t::VersionApi());
+  addDBItem(dblist_widget, upscaledb_traits_t::GetDBName(), upscaledb_traits_t::GetBasedOn(),
+            upscaledb_traits_t::GetVersionApi());
 #endif
 #ifdef BUILD_WITH_FORESTDB
   typedef core::ConnectionTraits<core::FORESTDB> forestdb_traits_t;
-  addDBItem(dblist_widget, forestdb_traits_t::GetDBName(), forestdb_traits_t::BasedOn(),
-            forestdb_traits_t::VersionApi());
+  addDBItem(dblist_widget, forestdb_traits_t::GetDBName(), forestdb_traits_t::GetBasedOn(),
+            forestdb_traits_t::GetVersionApi());
 #endif
   main_tab->addTab(dblist_widget, QObject::tr("Availible databases"));
 

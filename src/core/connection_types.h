@@ -80,8 +80,8 @@ const char* ConnectionTypeToString(connectionTypes t);
 template <connectionTypes ContType>
 struct ConnectionTraits {
   static const char* GetDBName() { return ConnectionTypeToString(ContType); }
-  static const char* BasedOn();
-  static const char* VersionApi();
+  static const char* GetBasedOn();
+  static const char* GetVersionApi();
 };
 
 }  // namespace core

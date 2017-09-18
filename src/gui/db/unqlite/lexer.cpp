@@ -24,9 +24,10 @@ namespace fastonosql {
 namespace gui {
 namespace unqlite {
 
-UnqliteApi::UnqliteApi(QsciLexer* lexer) : BaseQsciApiCommandHolder(core::unqlite::DBConnection::Commands(), lexer) {}
+UnqliteApi::UnqliteApi(QsciLexer* lexer)
+    : BaseQsciApiCommandHolder(core::unqlite::DBConnection::GetCommands(), lexer) {}
 
-Lexer::Lexer(QObject* parent) : BaseQsciLexerCommandHolder(core::unqlite::DBConnection::Commands(), parent) {
+Lexer::Lexer(QObject* parent) : BaseQsciLexerCommandHolder(core::unqlite::DBConnection::GetCommands(), parent) {
   setAPIs(new UnqliteApi(this));
 }
 
@@ -35,11 +36,11 @@ const char* Lexer::language() const {
 }
 
 const char* Lexer::version() const {
-  return core::unqlite::DBConnection::VersionApi();
+  return core::unqlite::DBConnection::GetVersionApi();
 }
 
 const char* Lexer::basedOn() const {
-  return core::unqlite::DBConnection::BasedOn();
+  return core::unqlite::DBConnection::GetBasedOn();
 }
 
 }  // namespace unqlite

@@ -18,15 +18,7 @@
 
 #pragma once
 
-#include <stdint.h>  // for uint32_t
-
-#include <iosfwd>  // for ostream
-#include <string>  // for string
-
-#include <common/value.h>  // for Value
-
 #include "core/server/iserver_info.h"
-#include "core/types.h"
 
 #define ROCKSDB_STATS_LABEL "# Stats"
 

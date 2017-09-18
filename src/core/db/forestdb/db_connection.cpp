@@ -35,17 +35,15 @@
 #include "core/db/forestdb/database_info.h"
 #include "core/db/forestdb/internal/commands_api.h"
 
-#include "core/global.h"  // for FastoObject, etc
-
 namespace fastonosql {
 namespace core {
 template <>
-const char* ConnectionTraits<FORESTDB>::BasedOn() {
+const char* ConnectionTraits<FORESTDB>::GetBasedOn() {
   return "libforestdb";
 }
 
 template <>
-const char* ConnectionTraits<FORESTDB>::VersionApi() {
+const char* ConnectionTraits<FORESTDB>::GetVersionApi() {
   return fdb_get_lib_version();
 }
 namespace forestdb {
@@ -132,7 +130,7 @@ bool ConnectionAllocatorTraits<forestdb::NativeConnection, forestdb::Config>::Is
 }
 
 template <>
-ConstantCommandsArray CDBConnection<forestdb::NativeConnection, forestdb::Config, FORESTDB>::Commands() {
+const ConstantCommandsArray& CDBConnection<forestdb::NativeConnection, forestdb::Config, FORESTDB>::GetCommands() {
   return forestdb::g_commands;
 }
 
@@ -173,7 +171,7 @@ common::Error TestConnection(const Config& config) {
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(client, new CommandTranslator(base_class::Commands())) {}
+    : base_class(client, new CommandTranslator(base_class::GetCommands())) {}
 
 std::string DBConnection::CurrentDBName() const {
   if (connection_.handle_) {

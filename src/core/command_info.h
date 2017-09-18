@@ -38,8 +38,8 @@ struct CommandInfo {
               uint8_t required_arguments_count,
               uint8_t optional_arguments_count);
 
-  uint16_t MaxArgumentsCount() const;
-  uint8_t MinArgumentsCount() const;
+  uint16_t GetMaxArgumentsCount() const;
+  uint8_t GetMinArgumentsCount() const;
 
   bool IsEqualName(const std::string& cmd_name) const;
 

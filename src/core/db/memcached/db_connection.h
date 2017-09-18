@@ -18,40 +18,10 @@
 
 #pragma once
 
-#include <stdint.h>  // for uint32_t, uint64_t
-#include <time.h>    // for time_t
-#include <string>    // for string
-
-#include <common/error.h>   // for Error
-#include <common/macros.h>  // for WARN_UNUSED_RESULT
-
-#include "core/command_info.h"      // for UNDEFINED_EXAMPLE_STR, UNDEF...
-#include "core/connection_types.h"  // for connectionTypes::MEMCACHED
-#include "core/db/memcached/config.h"
-#include "core/db/memcached/server_info.h"
-#include "core/db_key.h"                   // for NDbKValue, NKey, NKeys
 #include "core/internal/cdb_connection.h"  // for CDBConnection
 
-namespace fastonosql {
-namespace core {
-class FastoObject;
-}
-}  // namespace fastonosql
-namespace fastonosql {
-namespace core {
-class CDBConnectionClient;
-}
-}  // namespace fastonosql
-namespace fastonosql {
-namespace core {
-class CommandHandler;
-}
-}  // namespace fastonosql
-namespace fastonosql {
-namespace core {
-class IDataBaseInfo;
-}
-}  // namespace fastonosql
+#include "core/db/memcached/config.h"
+#include "core/db/memcached/server_info.h"
 
 struct memcached_st;  // lines 37-37
 

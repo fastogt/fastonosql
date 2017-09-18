@@ -18,9 +18,6 @@
 
 #pragma once
 
-#include <stddef.h>  // for size_t
-#include <string>    // for string
-
 #include "core/database/idatabase_info.h"
 
 namespace fastonosql {
@@ -32,6 +29,7 @@ class DataBaseInfo : public IDataBaseInfo {
   DataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_container_t& keys = keys_container_t());
   virtual DataBaseInfo* Clone() const override;
 };
+
 }  // namespace ssdb
 }  // namespace core
 }  // namespace fastonosql

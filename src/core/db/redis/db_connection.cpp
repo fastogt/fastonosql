@@ -168,12 +168,12 @@ bool isPipeLineCommand(const char* command) {
 namespace fastonosql {
 namespace core {
 template <>
-const char* ConnectionTraits<REDIS>::BasedOn() {
+const char* ConnectionTraits<REDIS>::GetBasedOn() {
   return "hiredis";
 }
 
 template <>
-const char* ConnectionTraits<REDIS>::VersionApi() {
+const char* ConnectionTraits<REDIS>::GetVersionApi() {
   return HIREDIS_VERSION;
 }
 namespace internal {
@@ -213,7 +213,7 @@ bool ConnectionAllocatorTraits<redis::NativeConnection, redis::RConfig>::IsConne
 }
 
 template <>
-ConstantCommandsArray CDBConnection<redis::NativeConnection, redis::RConfig, REDIS>::Commands() {
+const ConstantCommandsArray& CDBConnection<redis::NativeConnection, redis::RConfig, REDIS>::GetCommands() {
   return redis::g_commands;
 }
 }  // namespace internal
@@ -571,7 +571,7 @@ common::Error DiscoverySentinelConnection(const RConfig& rconfig, std::vector<Se
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(client, new CommandTranslator(base_class::Commands())), isAuth_(false), cur_db_(-1) {}
+    : base_class(client, new CommandTranslator(base_class::GetCommands())), isAuth_(false), cur_db_(-1) {}
 
 bool DBConnection::IsAuthenticated() const {
   if (!IsConnected()) {

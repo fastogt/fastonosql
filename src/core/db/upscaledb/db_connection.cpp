@@ -43,12 +43,12 @@
 namespace fastonosql {
 namespace core {
 template <>
-const char* ConnectionTraits<UPSCALEDB>::BasedOn() {
+const char* ConnectionTraits<UPSCALEDB>::GetBasedOn() {
   return "libupscaledb";
 }
 
 template <>
-const char* ConnectionTraits<UPSCALEDB>::VersionApi() {
+const char* ConnectionTraits<UPSCALEDB>::GetVersionApi() {
   return STRINGIZE(UPS_VERSION_MAJ) "." STRINGIZE(UPS_VERSION_MIN) "." STRINGIZE(UPS_VERSION_REV);
 }
 namespace {
@@ -152,7 +152,7 @@ bool ConnectionAllocatorTraits<upscaledb::NativeConnection, upscaledb::Config>::
 }
 
 template <>
-ConstantCommandsArray CDBConnection<upscaledb::NativeConnection, upscaledb::Config, UPSCALEDB>::Commands() {
+const ConstantCommandsArray& CDBConnection<upscaledb::NativeConnection, upscaledb::Config, UPSCALEDB>::GetCommands() {
   return upscaledb::g_commands;
 }
 }  // namespace internal
@@ -194,7 +194,7 @@ common::Error TestConnection(const Config& config) {
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(client, new CommandTranslator(base_class::Commands())) {}
+    : base_class(client, new CommandTranslator(base_class::GetCommands())) {}
 
 std::string DBConnection::CurrentDBName() const {
   if (connection_.handle_) {

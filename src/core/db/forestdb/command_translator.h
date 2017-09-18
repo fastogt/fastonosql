@@ -18,12 +18,6 @@
 
 #pragma once
 
-#include <string>  // for string
-
-#include <common/error.h>  // for Error
-#include <common/value.h>  // for Value, Value::Type
-
-#include "core/db_key.h"  // for NDbKValue, NKey, ttl_t
 #include "core/icommand_translator_base.h"
 
 namespace fastonosql {

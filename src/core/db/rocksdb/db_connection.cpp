@@ -59,12 +59,12 @@ namespace fastonosql {
 namespace core {
 
 template <>
-const char* ConnectionTraits<ROCKSDB>::BasedOn() {
+const char* ConnectionTraits<ROCKSDB>::GetBasedOn() {
   return "librocksdb";
 }
 
 template <>
-const char* ConnectionTraits<ROCKSDB>::VersionApi() {
+const char* ConnectionTraits<ROCKSDB>::GetVersionApi() {
   return STRINGIZE(ROCKSDB_MAJOR) "." STRINGIZE(ROCKSDB_MINOR) "." STRINGIZE(ROCKSDB_PATCH);
 }
 
@@ -101,7 +101,7 @@ bool ConnectionAllocatorTraits<rocksdb::NativeConnection, rocksdb::Config>::IsCo
 }
 
 template <>
-ConstantCommandsArray CDBConnection<rocksdb::NativeConnection, rocksdb::Config, ROCKSDB>::Commands() {
+const ConstantCommandsArray& CDBConnection<rocksdb::NativeConnection, rocksdb::Config, ROCKSDB>::GetCommands() {
   return rocksdb::g_commands;
 }
 }  // namespace internal
@@ -149,7 +149,7 @@ common::Error TestConnection(const Config& config) {
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(client, new CommandTranslator(base_class::Commands())) {}
+    : base_class(client, new CommandTranslator(base_class::GetCommands())) {}
 
 common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* statsout) {
   UNUSED(args);

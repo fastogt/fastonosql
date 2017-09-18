@@ -18,8 +18,6 @@
 
 #include "core/db/lmdb/database_info.h"
 
-#include "core/connection_types.h"  // for connectionTypes::LMDB
-
 namespace fastonosql {
 namespace core {
 namespace lmdb {

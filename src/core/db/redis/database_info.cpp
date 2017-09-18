@@ -18,8 +18,6 @@
 
 #include "core/db/redis/database_info.h"
 
-#include "core/connection_types.h"  // for connectionTypes::REDIS
-
 namespace fastonosql {
 namespace core {
 namespace redis {

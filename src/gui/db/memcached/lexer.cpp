@@ -25,9 +25,9 @@ namespace gui {
 namespace memcached {
 
 MemcachedApi::MemcachedApi(QsciLexer* lexer)
-    : BaseQsciApiCommandHolder(core::memcached::DBConnection::Commands(), lexer) {}
+    : BaseQsciApiCommandHolder(core::memcached::DBConnection::GetCommands(), lexer) {}
 
-Lexer::Lexer(QObject* parent) : BaseQsciLexerCommandHolder(core::memcached::DBConnection::Commands(), parent) {
+Lexer::Lexer(QObject* parent) : BaseQsciLexerCommandHolder(core::memcached::DBConnection::GetCommands(), parent) {
   setAPIs(new MemcachedApi(this));
 }
 
@@ -36,11 +36,11 @@ const char* Lexer::language() const {
 }
 
 const char* Lexer::version() const {
-  return core::memcached::DBConnection::VersionApi();
+  return core::memcached::DBConnection::GetVersionApi();
 }
 
 const char* Lexer::basedOn() const {
-  return core::memcached::DBConnection::BasedOn();
+  return core::memcached::DBConnection::GetBasedOn();
 }
 
 }  // namespace memcached

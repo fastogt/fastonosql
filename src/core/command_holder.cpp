@@ -23,7 +23,7 @@
 #include <common/sprintf.h>
 
 namespace {
-auto count_space(const std::string& data) -> std::string::difference_type {
+inline size_t count_space(const std::string& data) {
   return std::count_if(data.begin(), data.end(), [](char c) { return std::isspace(c); });
 }
 }  // namespace
@@ -33,8 +33,8 @@ namespace core {
 
 common::Error TestArgsInRange(const CommandInfo& cmd, commands_args_t argv) {
   const size_t argc = argv.size();
-  const uint16_t max = cmd.MaxArgumentsCount();
-  const uint16_t min = cmd.MinArgumentsCount();
+  const uint16_t max = cmd.GetMaxArgumentsCount();
+  const uint8_t min = cmd.GetMinArgumentsCount();
   if (argc > max || argc < min) {
     std::string buff =
         common::MemSPrintf("Invalid input argument for command: '%s', passed %d arguments, must be in range %u - %u.",

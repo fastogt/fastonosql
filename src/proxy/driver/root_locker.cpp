@@ -34,7 +34,7 @@ RootLocker::RootLocker(IDriver* parent, QObject* receiver, const core::command_b
       receiver_(receiver),
       tstart_(common::time::current_mstime()),
       silence_(silence) {
-  DCHECK(parent_);
+  CHECK(parent_);
 
   root_ = core::FastoObject::CreateRoot(text, this);
   if (!silence_) {

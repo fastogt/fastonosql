@@ -66,7 +66,7 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>,
       : db_base_class(), CommandHandler(translator), client_(client) {}
   virtual ~CDBConnection() {}
 
-  static ConstantCommandsArray Commands();
+  static const ConstantCommandsArray& GetCommands();
 
   std::string CurrentDBName() const;                                                 //
   common::Error Help(commands_args_t argv, std::string* answer) WARN_UNUSED_RESULT;  //
@@ -134,7 +134,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::Help(commands_args_t
                                  " based on %s %s \r\n"
                                  "Type: \"help <command>\" for help on <command>\r\n"
                                  "\"help " ALL_COMMANDS "\" show all supported commands\r\n",
-                                 connection_traits_class::BasedOn(), connection_traits_class::VersionApi());
+                                 connection_traits_class::GetBasedOn(), connection_traits_class::GetVersionApi());
 
     return common::Error();
   }

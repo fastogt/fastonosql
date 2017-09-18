@@ -18,36 +18,13 @@
 
 #pragma once
 
-#include <stddef.h>  // for size_t
-#include <stdint.h>  // for uint64_t
-
-#include <string>  // for string
-#include <vector>  // for vector
-
-#include <common/error.h>   // for Error
-#include <common/macros.h>  // for PROJECT_VERSION_GENERATE, etc
-
-#include "core/connection_types.h"         // for connectionTypes::REDIS
-#include "core/db/redis/config.h"          // for Config
-#include "core/db_key.h"                   // for NDbKValue, NKey, etc
-#include "core/global.h"                   // for FastoObject (ptr only), etc
 #include "core/internal/cdb_connection.h"  // for CDBConnection
-#include "core/internal/db_connection.h"   // for DBConnection<>::config_t
-#include "core/server/iserver_info.h"
-#include "core/ssh_info.h"  // for SSHInfo
 
-namespace fastonosql {
-namespace core {
-class CDBConnectionClient;
-}
-}  // namespace fastonosql
-namespace fastonosql {
-namespace core {
-class IDataBaseInfo;
-}
-}  // namespace fastonosql
-struct redisContext;  // lines 49-49
-struct redisReply;    // lines 50-50
+#include "core/db/redis/config.h"
+#include "core/db/redis/server_info.h"  // for ServerInfo
+
+#include "core/global.h"
+#include "core/ssh_info.h"
 
 #define INFO_REQUEST "INFO"
 #define GET_SERVER_TYPE "CLUSTER NODES"
@@ -60,6 +37,9 @@ struct redisReply;    // lines 50-50
 #define FIND_BIG_KEYS_REQUEST "FIND_BIG_KEYS"
 #define STAT_MODE_REQUEST "STAT"
 #define SCAN_MODE_REQUEST "SCAN"
+
+struct redisContext;  // lines 49-49
+struct redisReply;    // lines 50-50
 
 namespace fastonosql {
 namespace core {
