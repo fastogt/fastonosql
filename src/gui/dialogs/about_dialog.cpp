@@ -54,7 +54,7 @@ const QString trDescription = QObject::tr(
     "href=" PROJECT_GITHUB_ISSUES
     ">submit</a> issues/proposals on GitHub.  <br/>"
     "<br/>"
-    "Copyright 2014-2016 <a "
+    "Copyright 2014-2017 <a "
     "href=\"" PROJECT_COMPANYNAME_DOMAIN "\">" PROJECT_COMPANYNAME
     "</a>. All rights reserved.<br/>"
     "<br/>"
