@@ -59,7 +59,7 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionRemoteWidget(par
 void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
   proxy::memcached::ConnectionSettings* memc = static_cast<proxy::memcached::ConnectionSettings*>(connection);
   if (memc) {
-    core::memcached::Config config = memc->Info();
+    core::memcached::Config config = memc->GetInfo();
     std::string uname = config.user;
     std::string pass = config.password;
     bool is_valid_cred = !uname.empty() && !pass.empty();
@@ -103,7 +103,7 @@ bool ConnectionWidget::isValidCredential() const {
 proxy::IConnectionSettingsRemote* ConnectionWidget::createConnectionRemoteImpl(
     const proxy::connection_path_t& path) const {
   proxy::memcached::ConnectionSettings* conn = new proxy::memcached::ConnectionSettings(path);
-  core::memcached::Config config = conn->Info();
+  core::memcached::Config config = conn->GetInfo();
   if (useSasl_->isChecked() && isValidCredential()) {
     config.user = common::ConvertToString(userPasswordWidget_->userName());
     config.password = common::ConvertToString(userPasswordWidget_->password());

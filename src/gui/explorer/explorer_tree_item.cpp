@@ -67,7 +67,7 @@ void ExplorerServerItem::loadDatabases() {
 
 ExplorerSentinelItem::ExplorerSentinelItem(proxy::ISentinelSPtr sentinel, TreeItem* parent)
     : IExplorerTreeItem(parent), sentinel_(sentinel) {
-  proxy::ISentinel::sentinels_t nodes = sentinel->Sentinels();
+  proxy::ISentinel::sentinels_t nodes = sentinel->GetSentinels();
   for (size_t i = 0; i < nodes.size(); ++i) {
     proxy::Sentinel sent = nodes[i];
     ExplorerServerItem* rser = new ExplorerServerItem(sent.sentinel, this);
@@ -96,7 +96,7 @@ proxy::ISentinelSPtr ExplorerSentinelItem::sentinel() const {
 
 ExplorerClusterItem::ExplorerClusterItem(proxy::IClusterSPtr cluster, TreeItem* parent)
     : IExplorerTreeItem(parent), cluster_(cluster) {
-  auto nodes = cluster_->Nodes();
+  auto nodes = cluster_->GetNodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
     ExplorerServerItem* ser = new ExplorerServerItem(nodes[i], this);
     addChildren(ser);

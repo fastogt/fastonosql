@@ -18,12 +18,6 @@
 
 #include "proxy/db/ssdb/connection_settings.h"
 
-#include <string>  // for string
-
-#include <common/convert2string.h>  // for ConvertFromString
-
-#include "core/connection_types.h"  // for core::connectionTypes::SSDB
-
 namespace fastonosql {
 namespace proxy {
 namespace ssdb {
@@ -47,7 +41,7 @@ void ConnectionSettings::SetNsSeparator(const std::string& ns) {
   info_.ns_separator = ns;
 }
 
-common::net::HostAndPort ConnectionSettings::Host() const {
+common::net::HostAndPort ConnectionSettings::GetHost() const {
   return info_.host;
 }
 
@@ -55,7 +49,7 @@ void ConnectionSettings::SetHost(const common::net::HostAndPort& host) {
   info_.host = host;
 }
 
-std::string ConnectionSettings::CommandLine() const {
+std::string ConnectionSettings::GetCommandLine() const {
   return common::ConvertToString(info_);
 }
 
@@ -66,7 +60,7 @@ void ConnectionSettings::SetCommandLine(const std::string& line) {
   }
 }
 
-core::ssdb::Config ConnectionSettings::Info() const {
+core::ssdb::Config ConnectionSettings::GetInfo() const {
   return info_;
 }
 

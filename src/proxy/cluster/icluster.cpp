@@ -37,7 +37,7 @@ std::string ICluster::GetName() const {
   return name_;
 }
 
-ICluster::nodes_t ICluster::Nodes() const {
+ICluster::nodes_t ICluster::GetNodes() const {
   return nodes_;
 }
 

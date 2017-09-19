@@ -151,7 +151,7 @@ ServersManager::sentinel_t ServersManager::CreateSentinel(ISentinelSettingsBaseS
 #ifdef BUILD_WITH_REDIS
   if (conT == core::REDIS) {
     sentinel_t sent = std::make_shared<redis::Sentinel>(settings->GetPath().ToString());
-    auto nodes = settings->Sentinels();
+    auto nodes = settings->GetSentinels();
     for (size_t i = 0; i < nodes.size(); ++i) {
       SentinelSettings nd = nodes[i];
       Sentinel sentt;
@@ -182,7 +182,7 @@ ServersManager::cluster_t ServersManager::CreateCluster(IClusterSettingsBaseSPtr
 #ifdef BUILD_WITH_REDIS
   if (conT == core::REDIS) {
     cluster_t cl = std::make_shared<redis::Cluster>(settings->GetPath().ToString());
-    auto nodes = settings->Nodes();
+    auto nodes = settings->GetNodes();
     for (size_t i = 0; i < nodes.size(); ++i) {
       IConnectionSettingsBaseSPtr nd = nodes[i];
       IServerSPtr serv = CreateServer(nd);
@@ -212,49 +212,49 @@ common::Error ServersManager::TestConnection(IConnectionSettingsBaseSPtr connect
 #ifdef BUILD_WITH_MEMCACHED
   if (type == core::MEMCACHED) {
     memcached::ConnectionSettings* settings = static_cast<memcached::ConnectionSettings*>(connection.get());
-    return fastonosql::core::memcached::TestConnection(settings->Info());
+    return fastonosql::core::memcached::TestConnection(settings->GetInfo());
   }
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type == core::SSDB) {
     ssdb::ConnectionSettings* settings = static_cast<ssdb::ConnectionSettings*>(connection.get());
-    return fastonosql::core::ssdb::TestConnection(settings->Info());
+    return fastonosql::core::ssdb::TestConnection(settings->GetInfo());
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type == core::LEVELDB) {
     leveldb::ConnectionSettings* settings = static_cast<leveldb::ConnectionSettings*>(connection.get());
-    return fastonosql::core::leveldb::TestConnection(settings->Info());
+    return fastonosql::core::leveldb::TestConnection(settings->GetInfo());
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == core::ROCKSDB) {
     rocksdb::ConnectionSettings* settings = static_cast<rocksdb::ConnectionSettings*>(connection.get());
-    return fastonosql::core::rocksdb::TestConnection(settings->Info());
+    return fastonosql::core::rocksdb::TestConnection(settings->GetInfo());
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (type == core::UNQLITE) {
     unqlite::ConnectionSettings* settings = static_cast<unqlite::ConnectionSettings*>(connection.get());
-    return fastonosql::core::unqlite::TestConnection(settings->Info());
+    return fastonosql::core::unqlite::TestConnection(settings->GetInfo());
   }
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type == core::LMDB) {
     lmdb::ConnectionSettings* settings = static_cast<lmdb::ConnectionSettings*>(connection.get());
-    return fastonosql::core::lmdb::TestConnection(settings->Info());
+    return fastonosql::core::lmdb::TestConnection(settings->GetInfo());
   }
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
   if (type == core::UPSCALEDB) {
     upscaledb::ConnectionSettings* settings = static_cast<upscaledb::ConnectionSettings*>(connection.get());
-    return fastonosql::core::upscaledb::TestConnection(settings->Info());
+    return fastonosql::core::upscaledb::TestConnection(settings->GetInfo());
   }
 #endif
 #ifdef BUILD_WITH_FORESTDB
   if (type == core::FORESTDB) {
     forestdb::ConnectionSettings* settings = static_cast<forestdb::ConnectionSettings*>(connection.get());
-    return fastonosql::core::forestdb::TestConnection(settings->Info());
+    return fastonosql::core::forestdb::TestConnection(settings->GetInfo());
   }
 #endif
 
@@ -389,14 +389,14 @@ void ServersManager::CloseServer(server_t server) {
 }
 
 void ServersManager::CloseCluster(cluster_t cluster) {
-  auto nodes = cluster->Nodes();
+  auto nodes = cluster->GetNodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
     CloseServer(nodes[i]);
   }
 }
 
 void ServersManager::CloseSentinel(sentinel_t sentinel) {
-  auto nodes = sentinel->Sentinels();
+  auto nodes = sentinel->GetSentinels();
   for (auto node : nodes) {
     auto sent_nodes = node.sentinels_nodes;
     for (auto sent : sent_nodes) {

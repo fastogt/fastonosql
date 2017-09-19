@@ -18,12 +18,6 @@
 
 #include "proxy/db/upscaledb/connection_settings.h"
 
-#include <string>  // for string
-
-#include <common/convert2string.h>  // for ConvertFromString
-
-#include "core/connection_types.h"  // for core::connectionTypes::UPSCALEDB
-
 namespace fastonosql {
 namespace proxy {
 namespace upscaledb {
@@ -31,7 +25,7 @@ namespace upscaledb {
 ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
     : IConnectionSettingsLocal(connectionName, core::UPSCALEDB), info_() {}
 
-core::upscaledb::Config ConnectionSettings::Info() const {
+core::upscaledb::Config ConnectionSettings::GetInfo() const {
   return info_;
 }
 
@@ -55,7 +49,7 @@ void ConnectionSettings::SetNsSeparator(const std::string& ns) {
   info_.ns_separator = ns;
 }
 
-std::string ConnectionSettings::DBPath() const {
+std::string ConnectionSettings::GetDBPath() const {
   return info_.db_path;
 }
 
@@ -63,7 +57,7 @@ void ConnectionSettings::SetDBPath(const std::string& db_path) {
   info_.db_path = db_path;
 }
 
-std::string ConnectionSettings::CommandLine() const {
+std::string ConnectionSettings::GetCommandLine() const {
   return common::ConvertToString(info_);
 }
 

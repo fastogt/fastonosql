@@ -104,7 +104,7 @@ SentinelDialog::SentinelDialog(QWidget* parent, proxy::ISentinelSettingsBase* co
 
   if (sentinel_connection_) {
     logging_->setChecked(sentinel_connection_->IsHistoryEnabled());
-    loggingMsec_->setValue(sentinel_connection_->LoggingMsTimeInterval());
+    loggingMsec_->setValue(sentinel_connection_->GetLoggingMsTimeInterval());
   } else {
     logging_->setChecked(false);
   }
@@ -127,7 +127,7 @@ SentinelDialog::SentinelDialog(QWidget* parent, proxy::ISentinelSettingsBase* co
   listWidget_->setSelectionBehavior(QAbstractItemView::SelectRows);
 
   if (sentinel_connection_) {
-    auto sentinels = sentinel_connection_->Sentinels();
+    auto sentinels = sentinel_connection_->GetSentinels();
     for (const auto& sentinel : sentinels) {
       addSentinel(sentinel);
     }

@@ -18,15 +18,6 @@
 
 #include "proxy/db/redis/connection_settings.h"
 
-#include <string>  // for string
-
-#include <common/convert2string.h>
-#include <common/net/types.h>  // for HostAndPort
-
-#include "proxy/connection_settings/iconnection_settings_ssh.h"
-
-#include "core/db/redis/config.h"  // for Config
-
 namespace fastonosql {
 namespace proxy {
 namespace redis {
@@ -50,7 +41,7 @@ void ConnectionSettings::SetNsSeparator(const std::string& ns) {
   info_.ns_separator = ns;
 }
 
-common::net::HostAndPort ConnectionSettings::Host() const {
+common::net::HostAndPort ConnectionSettings::GetHost() const {
   return info_.host;
 }
 
@@ -65,7 +56,7 @@ void ConnectionSettings::SetCommandLine(const std::string& line) {
   }
 }
 
-std::string ConnectionSettings::CommandLine() const {
+std::string ConnectionSettings::GetCommandLine() const {
   return common::ConvertToString(info_);
 }
 

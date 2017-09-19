@@ -41,7 +41,7 @@ void ConnectionRemoteWidget::syncControls(proxy::IConnectionSettingsBase* connec
   proxy::IConnectionSettingsRemote* remote = static_cast<proxy::IConnectionSettingsRemote*>(connection);
 
   if (remote) {
-    common::net::HostAndPort host = remote->Host();
+    common::net::HostAndPort host = remote->GetHost();
     hostWidget_->setHost(host);
   }
   ConnectionBaseWidget::syncControls(remote);

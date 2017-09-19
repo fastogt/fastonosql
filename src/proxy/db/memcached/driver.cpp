@@ -18,30 +18,16 @@
 
 #include "proxy/db/memcached/driver.h"
 
-#include <stddef.h>  // for size_t
-#include <memory>    // for __shared_ptr
 #include <sstream>
-#include <string>  // for string
 
 #include <common/convert2string.h>
-#include <common/log_levels.h>   // for LOG_LEVEL::L_WARNING
-#include <common/qt/utils_qt.h>  // for Event<>::value_type
-#include <common/value.h>        // for ErrorValue, etc
 
-#include "core/connection_types.h"
-#include "core/db_key.h"                   // for NDbKValue, NValue, NKey
-#include "proxy/command/command.h"         // for CreateCommand, etc
-#include "proxy/command/command_logger.h"  // for LOG_COMMAND
-#include "proxy/events/events_info.h"
+#include "core/db/memcached/db_connection.h"  // for DBConnection
 
-#include "core/db/memcached/config.h"                // for Config
-#include "core/db/memcached/db_connection.h"         // for DBConnection
-#include "core/db/memcached/server_info.h"           // for ServerInfo, etc
+#include "proxy/command/command.h"                   // for CreateCommand, etc
+#include "proxy/command/command_logger.h"            // for LOG_COMMAND
 #include "proxy/db/memcached/command.h"              // for Command
 #include "proxy/db/memcached/connection_settings.h"  // for ConnectionSettings
-#include "proxy/db/memcached/database.h"             // for DataBaseInfo
-
-#include "core/global.h"  // for FastoObject::childs_t, etc
 
 #define MEMCACHED_INFO_REQUEST "STATS"
 #define MEMCACHED_GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
@@ -111,7 +97,7 @@ core::FastoObjectCommandIPtr Driver::CreateCommandFast(const core::command_buffe
 common::Error Driver::SyncConnect() {
   ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
   CHECK(set);
-  return impl_->Connect(set->Info());
+  return impl_->Connect(set->GetInfo());
 }
 
 common::Error Driver::SyncDisconnect() {

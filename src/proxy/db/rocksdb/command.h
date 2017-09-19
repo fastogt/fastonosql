@@ -18,8 +18,6 @@
 
 #pragma once
 
-#include <string>  // for string
-
 #include "core/global.h"  // for FastoObject (ptr only), etc
 
 namespace fastonosql {

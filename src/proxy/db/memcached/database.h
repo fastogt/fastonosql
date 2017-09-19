@@ -18,11 +18,7 @@
 
 #pragma once
 
-#include <stddef.h>  // for size_t
-#include <string>    // for string
-
 #include "proxy/database/idatabase.h"  // for IDatabase"
-#include "proxy/proxy_fwd.h"           // for IServerSPtr
 
 namespace fastonosql {
 namespace proxy {

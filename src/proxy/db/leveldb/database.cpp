@@ -18,10 +18,6 @@
 
 #include "proxy/db/leveldb/database.h"
 
-#include <common/macros.h>  // for DCHECK
-
-#include "core/connection_types.h"  // for core::connectionTypes::LEVELDB
-
 namespace fastonosql {
 namespace proxy {
 namespace leveldb {

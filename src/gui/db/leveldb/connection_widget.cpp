@@ -50,7 +50,7 @@ ConnectionWidget::ConnectionWidget(QWidget* parent)
 void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
   proxy::leveldb::ConnectionSettings* lev = static_cast<proxy::leveldb::ConnectionSettings*>(connection);
   if (lev) {
-    core::leveldb::Config config = lev->Info();
+    core::leveldb::Config config = lev->GetInfo();
     createDBIfMissing_->setChecked(config.create_if_missing);
     typeComparators_->setCurrentIndex(config.comparator);
   }
@@ -66,7 +66,7 @@ void ConnectionWidget::retranslateUi() {
 proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
     const proxy::connection_path_t& path) const {
   proxy::leveldb::ConnectionSettings* conn = new proxy::leveldb::ConnectionSettings(path);
-  core::leveldb::Config config = conn->Info();
+  core::leveldb::Config config = conn->GetInfo();
   config.create_if_missing = createDBIfMissing_->isChecked();
   config.comparator = static_cast<core::leveldb::ComparatorType>(typeComparators_->currentIndex());
   conn->SetInfo(config);

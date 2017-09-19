@@ -18,25 +18,7 @@
 
 #pragma once
 
-#include <string>  // for string
-
-#include <common/error.h>   // for Error
-#include <common/macros.h>  // for WARN_UNUSED_RESULT
-#include <common/value.h>   // for Value, etc
-
-#include "core/icommand_translator.h"                        // for translator_t
-#include "core/server/iserver_info.h"                        // for IServerInfo (ptr only), etc
-#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
-#include "proxy/driver/idriver_local.h"                      // for IDriverLocal
-#include "proxy/events/events.h"                             // for ClearDatabaseRequestEvent, etc
-
-#include "core/global.h"  // for FastoObject (ptr only), etc
-
-namespace fastonosql {
-namespace proxy {
-class IDataBaseInfo;
-}
-}  // namespace fastonosql
+#include "proxy/driver/idriver_local.h"  // for IDriverLocal
 
 namespace fastonosql {
 namespace core {
@@ -49,8 +31,6 @@ class DBConnection;
 namespace fastonosql {
 namespace proxy {
 namespace unqlite {
-
-class DBConnection;
 
 class Driver : public IDriverLocal {
   Q_OBJECT

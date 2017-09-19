@@ -69,7 +69,7 @@ void ConnectionListWidgetItem::setConnection(proxy::IConnectionSettingsBaseSPtr 
   }
   core::connectionTypes conType = cons->GetType();
   setIcon(0, GuiFactory::GetInstance().icon(conType));
-  if (common::ConvertFromString(cons->FullAddress(), &conName)) {
+  if (common::ConvertFromString(cons->GetFullAddress(), &conName)) {
     setText(1, conName);
   }
   IConnectionListWidgetItem::setConnection(cons);
@@ -114,7 +114,7 @@ SentinelConnectionListWidgetItemContainer::SentinelConnectionListWidgetItemConta
     : QTreeWidgetItem(parent), connection_() {
   setConnection(connection);
 
-  proxy::ISentinelSettingsBase::sentinel_connections_t sentinels = connection_->Sentinels();
+  proxy::ISentinelSettingsBase::sentinel_connections_t sentinels = connection_->GetSentinels();
   for (size_t i = 0; i < sentinels.size(); ++i) {
     proxy::SentinelSettings sent = sentinels[i];
     SentinelConnectionWidgetItem* item = new SentinelConnectionWidgetItem(core::ServerCommonInfo(), this);
@@ -153,7 +153,7 @@ ClusterConnectionListWidgetItemContainer::ClusterConnectionListWidgetItemContain
     : QTreeWidgetItem(parent), connection_() {
   setConnection(connection);
 
-  auto nodes = connection_->Nodes();
+  auto nodes = connection_->GetNodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
     proxy::IConnectionSettingsBaseSPtr con = nodes[i];
     ConnectionListWidgetItem* item = new ConnectionListWidgetItem(this);

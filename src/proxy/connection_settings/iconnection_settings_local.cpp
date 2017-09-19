@@ -26,8 +26,8 @@ IConnectionSettingsLocal::IConnectionSettingsLocal(const connection_path_t& conn
   CHECK(IsLocalType(type));
 }
 
-std::string IConnectionSettingsLocal::FullAddress() const {
-  return DBPath();
+std::string IConnectionSettingsLocal::GetFullAddress() const {
+  return GetDBPath();
 }
 
 }  // namespace proxy

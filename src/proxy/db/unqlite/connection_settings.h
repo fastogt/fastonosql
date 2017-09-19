@@ -18,8 +18,6 @@
 
 #pragma once
 
-#include <string>
-
 #include "proxy/connection_settings/iconnection_settings_local.h"
 
 #include "core/db/unqlite/config.h"
@@ -32,7 +30,7 @@ class ConnectionSettings : public IConnectionSettingsLocal {
  public:
   explicit ConnectionSettings(const connection_path_t& connectionName);
 
-  core::unqlite::Config Info() const;
+  core::unqlite::Config GetInfo() const;
   void SetInfo(const core::unqlite::Config& info);
 
   virtual std::string GetDelimiter() const override;
@@ -41,10 +39,10 @@ class ConnectionSettings : public IConnectionSettingsLocal {
   virtual std::string GetNsSeparator() const override;
   virtual void SetNsSeparator(const std::string& ns) override;
 
-  virtual std::string DBPath() const override;
+  virtual std::string GetDBPath() const override;
   virtual void SetDBPath(const std::string& db_path) override;
 
-  virtual std::string CommandLine() const override;
+  virtual std::string GetCommandLine() const override;
   virtual void SetCommandLine(const std::string& line) override;
 
   virtual ConnectionSettings* Clone() const override;

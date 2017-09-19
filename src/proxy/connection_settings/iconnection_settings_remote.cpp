@@ -27,8 +27,8 @@ IConnectionSettingsRemote::IConnectionSettingsRemote(const connection_path_t& co
   CHECK(IsRemoteType(type));
 }
 
-std::string IConnectionSettingsRemote::FullAddress() const {
-  common::net::HostAndPort host = Host();
+std::string IConnectionSettingsRemote::GetFullAddress() const {
+  common::net::HostAndPort host = GetHost();
   return common::ConvertToString(host);
 }
 

@@ -50,7 +50,7 @@ ConnectionWidget::ConnectionWidget(QWidget* parent)
 void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
   proxy::rocksdb::ConnectionSettings* rock = static_cast<proxy::rocksdb::ConnectionSettings*>(connection);
   if (rock) {
-    core::rocksdb::Config config = rock->Info();
+    core::rocksdb::Config config = rock->GetInfo();
     createDBIfMissing_->setChecked(config.create_if_missing);
     typeComparators_->setCurrentIndex(config.comparator);
   }
@@ -66,7 +66,7 @@ void ConnectionWidget::retranslateUi() {
 proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
     const proxy::connection_path_t& path) const {
   proxy::rocksdb::ConnectionSettings* conn = new proxy::rocksdb::ConnectionSettings(path);
-  core::rocksdb::Config config = conn->Info();
+  core::rocksdb::Config config = conn->GetInfo();
   config.create_if_missing = createDBIfMissing_->isChecked();
   config.comparator = static_cast<core::rocksdb::ComparatorType>(typeComparators_->currentIndex());
   conn->SetInfo(config);

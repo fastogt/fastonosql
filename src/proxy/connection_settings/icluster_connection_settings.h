@@ -30,7 +30,7 @@ class IClusterSettingsBase : public IConnectionSettings {
  public:
   typedef IConnectionSettingsBaseSPtr cluster_node_t;
   typedef std::vector<cluster_node_t> cluster_nodes_t;
-  cluster_nodes_t Nodes() const;
+  cluster_nodes_t GetNodes() const;
 
   void AddNode(IConnectionSettingsBaseSPtr node);
 

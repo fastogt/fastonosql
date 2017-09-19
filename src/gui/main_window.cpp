@@ -764,7 +764,7 @@ void MainWindow::createSentinel(proxy::ISentinelSettingsBaseSPtr settings) {
     return;
   }
 
-  auto sentinels = sent->Sentinels();
+  auto sentinels = sent->GetSentinels();
   if (sentinels.empty()) {
     return;
   }

@@ -108,7 +108,7 @@ bool IConnectionSettings::IsHistoryEnabled() const {
   return msinterval_ != 0;
 }
 
-int IConnectionSettings::LoggingMsTimeInterval() const {
+int IConnectionSettings::GetLoggingMsTimeInterval() const {
   return msinterval_;
 }
 
@@ -138,13 +138,13 @@ void IConnectionSettingsBase::SetConnectionPathAndUpdateHash(const connection_pa
   }
 }
 
-std::string IConnectionSettingsBase::Hash() const {
+std::string IConnectionSettingsBase::GetHash() const {
   return hash_;
 }
 
-std::string IConnectionSettingsBase::LoggingPath() const {
+std::string IConnectionSettingsBase::GetLoggingPath() const {
   const std::string logDir = common::ConvertToString(SettingsManager::GetInstance().LoggingDirectory());
-  const std::string prefix = logDir + Hash();
+  const std::string prefix = logDir + GetHash();
 #ifdef BUILD_WITH_REDIS
   if (type_ == core::REDIS) {
     return prefix + LOGGING_REDIS_FILE_EXTENSION;
@@ -196,7 +196,7 @@ std::string IConnectionSettingsBase::LoggingPath() const {
 }
 
 std::string IConnectionSettingsBase::ToString() const {
-  return IConnectionSettings::ToString() + ',' + CommandLine();
+  return IConnectionSettings::ToString() + ',' + GetCommandLine();
 }
 
 }  // namespace proxy

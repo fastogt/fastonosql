@@ -47,7 +47,7 @@ ConnectionWidget::ConnectionWidget(QWidget* parent)
 void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
   proxy::forestdb::ConnectionSettings* forestdb = static_cast<proxy::forestdb::ConnectionSettings*>(connection);
   if (forestdb) {
-    core::forestdb::Config config = forestdb->Info();
+    core::forestdb::Config config = forestdb->GetInfo();
     QString qdb_name;
     if (common::ConvertFromString(config.db_name, &qdb_name)) {
       nameEdit_->setText(qdb_name);
@@ -64,7 +64,7 @@ void ConnectionWidget::retranslateUi() {
 proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
     const proxy::connection_path_t& path) const {
   proxy::forestdb::ConnectionSettings* conn = new proxy::forestdb::ConnectionSettings(path);
-  core::forestdb::Config config = conn->Info();
+  core::forestdb::Config config = conn->GetInfo();
   config.db_name = common::ConvertToString(nameEdit_->text());
   conn->SetInfo(config);
   return conn;

@@ -18,9 +18,6 @@
 
 #pragma once
 
-#include <string>  // for string
-#include <vector>  // for vector
-
 #include "proxy/proxy_fwd.h"  // for IServerSPtr
 #include "proxy/server/iserver_base.h"
 
@@ -33,7 +30,7 @@ class ICluster : public IServerBase {
   typedef std::vector<node_t> nodes_t;
 
   virtual std::string GetName() const override;
-  nodes_t Nodes() const;
+  nodes_t GetNodes() const;
   void AddServer(node_t serv);
 
   node_t Root() const;

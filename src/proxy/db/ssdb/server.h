@@ -18,12 +18,6 @@
 
 #pragma once
 
-#include <common/net/types.h>  // for HostAndPort
-
-#include "proxy/proxy_fwd.h"  // for IDatabaseSPtr
-
-#include "core/connection_types.h"                           // for serverMode, serverState, etc
-#include "core/database/idatabase_info.h"                    // for IDataBaseInfoSPtr
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "proxy/server/iserver_remote.h"                     // for IServerRemote
 

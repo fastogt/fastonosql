@@ -18,31 +18,16 @@
 
 #include "proxy/db/ssdb/driver.h"
 
-#include <stddef.h>  // for size_t
-
-#include <memory>  // for __shared_ptr
-#include <sstream>
-#include <string>  // for string
-
 #include <common/convert2string.h>
-#include <common/intrusive_ptr.h>  // for intrusive_ptr
-#include <common/qt/utils_qt.h>    // for Event<>::value_type
-#include <common/value.h>          // for ErrorValue, Value, etc
 
-#include "core/connection_types.h"
-#include "core/db/ssdb/config.h"         // for Config
+#include <sstream>
+
 #include "core/db/ssdb/db_connection.h"  // for DBConnection
-#include "core/db/ssdb/server_info.h"    // for ServerInfo, etc
-#include "core/db_key.h"                 // for NDbKValue, NValue, NKey
-#include "core/internal/db_connection.h"
 
 #include "proxy/command/command.h"              // for CreateCommand, etc
 #include "proxy/command/command_logger.h"       // for LOG_COMMAND
 #include "proxy/db/ssdb/command.h"              // for Command
 #include "proxy/db/ssdb/connection_settings.h"  // for ConnectionSettings
-#include "proxy/events/events_info.h"
-
-#include "core/global.h"  // for FastoObject::childs_t, etc
 
 #define SSDB_INFO_REQUEST "INFO"
 
@@ -110,7 +95,7 @@ core::FastoObjectCommandIPtr Driver::CreateCommandFast(const core::command_buffe
 common::Error Driver::SyncConnect() {
   ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
   CHECK(set);
-  return impl_->Connect(set->Info());
+  return impl_->Connect(set->GetInfo());
 }
 
 common::Error Driver::SyncDisconnect() {

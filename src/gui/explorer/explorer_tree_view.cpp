@@ -121,7 +121,7 @@ void ExplorerTreeView::addSentinel(proxy::ISentinelSPtr sentinel) {
     return;
   }
 
-  proxy::ISentinel::sentinels_t nodes = sentinel->Sentinels();
+  proxy::ISentinel::sentinels_t nodes = sentinel->GetSentinels();
   for (size_t i = 0; i < nodes.size(); ++i) {
     proxy::Sentinel sent = nodes[i];
     syncWithServer(sent.sentinel.get());
@@ -139,7 +139,7 @@ void ExplorerTreeView::removeSentinel(proxy::ISentinelSPtr sentinel) {
     return;
   }
 
-  proxy::ISentinel::sentinels_t nodes = sentinel->Sentinels();
+  proxy::ISentinel::sentinels_t nodes = sentinel->GetSentinels();
   for (size_t i = 0; i < nodes.size(); ++i) {
     proxy::Sentinel sent = nodes[i];
     unsyncWithServer(sent.sentinel.get());
@@ -158,7 +158,7 @@ void ExplorerTreeView::addCluster(proxy::IClusterSPtr cluster) {
     return;
   }
 
-  auto nodes = cluster->Nodes();
+  auto nodes = cluster->GetNodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
     syncWithServer(nodes[i].get());
   }
@@ -172,7 +172,7 @@ void ExplorerTreeView::removeCluster(proxy::IClusterSPtr cluster) {
     return;
   }
 
-  auto nodes = cluster->Nodes();
+  auto nodes = cluster->GetNodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
     unsyncWithServer(nodes[i].get());
   }

@@ -39,7 +39,7 @@ class ISentinelSettingsBase : public IConnectionSettings {
   typedef SentinelSettings sentinel_connection_t;
   typedef std::vector<sentinel_connection_t> sentinel_connections_t;
 
-  sentinel_connections_t Sentinels() const;
+  sentinel_connections_t GetSentinels() const;
   void AddSentinel(sentinel_connection_t sent);
 
   virtual std::string ToString() const override;

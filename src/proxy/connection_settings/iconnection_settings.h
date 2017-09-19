@@ -62,7 +62,7 @@ class IConnectionSettings : public common::ClonableBase<IConnectionSettings> {
 
   bool IsHistoryEnabled() const;
 
-  int LoggingMsTimeInterval() const;
+  int GetLoggingMsTimeInterval() const;
   void SetLoggingMsTimeInterval(int mstime);
 
   virtual std::string ToString() const;
@@ -80,9 +80,9 @@ class IConnectionSettings : public common::ClonableBase<IConnectionSettings> {
 class IConnectionSettingsBase : public IConnectionSettings {
  public:
   virtual ~IConnectionSettingsBase();
-  std::string Hash() const;
+  std::string GetHash() const;
 
-  std::string LoggingPath() const;
+  std::string GetLoggingPath() const;
 
   void SetConnectionPathAndUpdateHash(const connection_path_t& name);
 
@@ -92,10 +92,10 @@ class IConnectionSettingsBase : public IConnectionSettings {
   virtual std::string GetNsSeparator() const = 0;
   virtual void SetNsSeparator(const std::string& ns) = 0;
 
-  virtual std::string CommandLine() const = 0;
+  virtual std::string GetCommandLine() const = 0;
   virtual void SetCommandLine(const std::string& line) = 0;
 
-  virtual std::string FullAddress() const = 0;
+  virtual std::string GetFullAddress() const = 0;
 
   virtual std::string ToString() const override;
   virtual IConnectionSettingsBase* Clone() const override = 0;

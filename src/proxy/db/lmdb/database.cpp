@@ -18,12 +18,6 @@
 
 #include "proxy/db/lmdb/database.h"
 
-#include <memory>  // for __shared_ptr
-
-#include <common/macros.h>  // for DCHECK
-
-#include "core/connection_types.h"  // for core::connectionTypes::LMDB
-
 namespace fastonosql {
 namespace proxy {
 namespace lmdb {

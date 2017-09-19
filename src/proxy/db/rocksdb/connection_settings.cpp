@@ -18,12 +18,6 @@
 
 #include "proxy/db/rocksdb/connection_settings.h"
 
-#include <string>  // for string
-
-#include <common/convert2string.h>
-
-#include "core/db/rocksdb/config.h"  // for Config
-
 namespace fastonosql {
 namespace proxy {
 namespace rocksdb {
@@ -31,7 +25,7 @@ namespace rocksdb {
 ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
     : IConnectionSettingsLocal(connectionName, core::ROCKSDB), info_() {}
 
-core::rocksdb::Config ConnectionSettings::Info() const {
+core::rocksdb::Config ConnectionSettings::GetInfo() const {
   return info_;
 }
 
@@ -55,7 +49,7 @@ void ConnectionSettings::SetNsSeparator(const std::string& ns) {
   info_.ns_separator = ns;
 }
 
-std::string ConnectionSettings::DBPath() const {
+std::string ConnectionSettings::GetDBPath() const {
   return info_.db_path;
 }
 
@@ -63,7 +57,7 @@ void ConnectionSettings::SetDBPath(const std::string& db_path) {
   info_.db_path = db_path;
 }
 
-std::string ConnectionSettings::CommandLine() const {
+std::string ConnectionSettings::GetCommandLine() const {
   return common::ConvertToString(info_);
 }
 

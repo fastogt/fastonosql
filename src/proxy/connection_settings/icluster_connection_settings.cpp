@@ -32,7 +32,7 @@ namespace proxy {
 IClusterSettingsBase::IClusterSettingsBase(const connection_path_t& connectionPath, core::connectionTypes type)
     : IConnectionSettings(connectionPath, type) {}
 
-IClusterSettingsBase::cluster_nodes_t IClusterSettingsBase::Nodes() const {
+IClusterSettingsBase::cluster_nodes_t IClusterSettingsBase::GetNodes() const {
   return clusters_nodes_;
 }
 
@@ -63,7 +63,7 @@ IConnectionSettingsBaseSPtr IClusterSettingsBase::FindSettingsByHost(const commo
   for (size_t i = 0; i < clusters_nodes_.size(); ++i) {
     IConnectionSettingsBaseSPtr cur = clusters_nodes_[i];
     IConnectionSettingsRemote* remote = dynamic_cast<IConnectionSettingsRemote*>(cur.get());  // +
-    common::net::HostAndPort hs = remote->Host();
+    common::net::HostAndPort hs = remote->GetHost();
     if (hs == host) {
       return cur;
     }

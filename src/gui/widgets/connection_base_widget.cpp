@@ -178,7 +178,7 @@ void ConnectionBaseWidget::syncControls(proxy::IConnectionSettingsBase* connecti
 
     setUIFolderText(qdir);
     setLogging(connection->IsHistoryEnabled());
-    setLoggingInterval(connection->LoggingMsTimeInterval());
+    setLoggingInterval(connection->GetLoggingMsTimeInterval());
   }
 }
 

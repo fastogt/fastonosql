@@ -18,30 +18,14 @@
 
 #include "proxy/db/rocksdb/driver.h"
 
-#include <stddef.h>  // for size_t
-
-#include <memory>  // for __shared_ptr
-#include <string>  // for string
-
 #include <common/convert2string.h>
-#include <common/intrusive_ptr.h>  // for intrusive_ptr
-#include <common/qt/utils_qt.h>    // for Event<>::value_type
-#include <common/value.h>          // for ErrorValue, etc
+
+#include "core/db/rocksdb/db_connection.h"  // for DBConnection
 
 #include "proxy/command/command.h"                 // for CreateCommand, etc
 #include "proxy/command/command_logger.h"          // for LOG_COMMAND
 #include "proxy/db/rocksdb/command.h"              // for Command
 #include "proxy/db/rocksdb/connection_settings.h"  // for ConnectionSettings
-#include "proxy/events/events_info.h"
-
-#include "core/connection_types.h"
-#include "core/db_key.h"  // for NDbKValue, NValue, NKey
-#include "core/global.h"  // for FastoObject::childs_t, etc
-
-#include "core/db/rocksdb/config.h"         // for Config
-#include "core/db/rocksdb/db_connection.h"  // for DBConnection
-#include "core/db/rocksdb/server_info.h"    // for ServerInfo, etc
-#include "core/internal/db_connection.h"
 
 #define ROCKSDB_INFO_REQUEST "INFO"
 
@@ -110,7 +94,7 @@ core::FastoObjectCommandIPtr Driver::CreateCommandFast(const core::command_buffe
 common::Error Driver::SyncConnect() {
   ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
   CHECK(set);
-  return impl_->Connect(set->Info());
+  return impl_->Connect(set->GetInfo());
 }
 
 common::Error Driver::SyncDisconnect() {

@@ -18,8 +18,6 @@
 
 #include "proxy/server/iserver_remote.h"
 
-#include <common/macros.h>  // for DCHECK
-
 namespace fastonosql {
 namespace proxy {
 

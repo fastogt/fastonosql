@@ -18,12 +18,6 @@
 
 #include "proxy/driver/idriver.h"
 
-#ifdef OS_WIN
-#include <winsock2.h>
-#else
-#include <signal.h>
-#endif
-
 #include <QApplication>
 #include <QThread>
 
@@ -39,21 +33,6 @@
 #include "proxy/driver/first_child_update_root_locker.h"
 
 namespace {
-#ifdef OS_WIN
-struct WinsockInit {
-  WinsockInit() {
-    WSADATA d;
-    if (WSAStartup(MAKEWORD(2, 2), &d) != 0) {
-      _exit(1);
-    }
-  }
-  ~WinsockInit() { WSACleanup(); }
-} winsock_init;
-#else
-struct SigIgnInit {
-  SigIgnInit() { signal(SIGPIPE, SIG_IGN); }
-} sig_init;
-#endif
 
 const char magicNumber = 0x1E;
 std::string createStamp(common::time64_t time) {
@@ -179,7 +158,7 @@ void IDriver::Interrupt() {
 
 void IDriver::Init() {
   if (settings_->IsHistoryEnabled()) {
-    int interval = settings_->LoggingMsTimeInterval();
+    int interval = settings_->GetLoggingMsTimeInterval();
     timer_info_id_ = startTimer(interval);
     DCHECK(timer_info_id_ != 0);
   }
@@ -262,7 +241,7 @@ void IDriver::customEvent(QEvent* event) {
 void IDriver::timerEvent(QTimerEvent* event) {
   if (timer_info_id_ == event->timerId() && settings_->IsHistoryEnabled() && IsConnected()) {
     if (!log_file_) {
-      std::string path = settings_->LoggingPath();
+      std::string path = settings_->GetLoggingPath();
       std::string dir = common::file_system::get_dir_path(path);
       common::ErrnoError err = common::file_system::create_directory(dir, true);
       if (err) {
@@ -469,7 +448,7 @@ void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
   QObject* sender = ev->sender();
   events::ServerInfoHistoryResponceEvent::value_type res(ev->value());
 
-  std::string path = settings_->LoggingPath();
+  std::string path = settings_->GetLoggingPath();
   common::file_system::ascii_string_path p(path);
   common::file_system::ANSIFile readFile(p);
   if (readFile.Open("rb")) {
@@ -521,7 +500,7 @@ void IDriver::HandleClearServerHistoryEvent(events::ClearServerHistoryRequestEve
     common::ErrnoError err = log_file_->Truncate(0);
     ret = err ? false : true;
   } else {
-    std::string path = settings_->LoggingPath();
+    std::string path = settings_->GetLoggingPath();
     if (common::file_system::is_file_exist(path)) {
       common::ErrnoError err = common::file_system::remove_file(path);
       if (err) {

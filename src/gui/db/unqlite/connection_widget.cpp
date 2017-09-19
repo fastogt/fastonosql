@@ -41,7 +41,7 @@ ConnectionWidget::ConnectionWidget(QWidget* parent)
 void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
   proxy::unqlite::ConnectionSettings* unq = static_cast<proxy::unqlite::ConnectionSettings*>(connection);
   if (unq) {
-    core::unqlite::Config config = unq->Info();
+    core::unqlite::Config config = unq->GetInfo();
     createDBIfMissing_->setChecked(config.CreateIfMissingDB());
     readOnlyDB_->setChecked(config.ReadOnlyDB());
   }
@@ -65,7 +65,7 @@ void ConnectionWidget::readOnlyDBStateChange(int state) {
 proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
     const proxy::connection_path_t& path) const {
   proxy::unqlite::ConnectionSettings* conn = new proxy::unqlite::ConnectionSettings(path);
-  core::unqlite::Config config = conn->Info();
+  core::unqlite::Config config = conn->GetInfo();
   config.SetCreateIfMissingDB(createDBIfMissing_->isChecked());
   config.SetReadOnlyDB(readOnlyDB_->isChecked());
   conn->SetInfo(config);

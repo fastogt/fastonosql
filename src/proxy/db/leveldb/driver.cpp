@@ -18,30 +18,15 @@
 
 #include "proxy/db/leveldb/driver.h"
 
-#include <inttypes.h>
-#include <stddef.h>  // for size_t
-#include <memory>    // for __shared_ptr
-#include <string>    // for string
-
 #include <common/convert2string.h>
-#include <common/log_levels.h>   // for LOG_LEVEL::L_WARNING
-#include <common/qt/utils_qt.h>  // for Event<>::value_type
-#include <common/value.h>        // for ErrorValue, etc
 
-#include "core/connection_types.h"
-#include "core/db_key.h"                   // for NDbKValue, NValue, NKey
-#include "proxy/command/command.h"         // for CreateCommand, etc
-#include "proxy/command/command_logger.h"  // for LOG_COMMAND
-#include "proxy/events/events_info.h"
+#include "core/db/leveldb/db_connection.h"  // for DBConnection
 
-#include "core/db/leveldb/config.h"                // for Config
-#include "core/db/leveldb/db_connection.h"         // for DBConnection
-#include "core/db/leveldb/server_info.h"           // for ServerInfo, etc
+#include "proxy/command/command.h"                 // for CreateCommand, etc
+#include "proxy/command/command_logger.h"          // for LOG_COMMAND
 #include "proxy/db/leveldb/command.h"              // for Command
 #include "proxy/db/leveldb/connection_settings.h"  // for ConnectionSettings
 #include "proxy/db/leveldb/database.h"             // for DataBaseInfo
-
-#include "core/global.h"  // for FastoObject::childs_t, etc
 
 #define LEVELDB_INFO_REQUEST "INFO"
 
@@ -110,7 +95,7 @@ core::FastoObjectCommandIPtr Driver::CreateCommandFast(const core::command_buffe
 common::Error Driver::SyncConnect() {
   ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
   CHECK(set);
-  return impl_->Connect(set->Info());
+  return impl_->Connect(set->GetInfo());
 }
 
 common::Error Driver::SyncDisconnect() {

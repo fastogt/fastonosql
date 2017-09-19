@@ -16,17 +16,39 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifdef OS_WIN
+#include <winsock2.h>
+#else
+#include <signal.h>
+#endif
+
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QFile>
 
-#include "gui/main_window.h"
 #include "gui/gui_factory.h"
+#include "gui/main_window.h"
 
-#include <common/qt/translations/translations.h>
 #include <common/logger.h>
+#include <common/qt/translations/translations.h>
 
 namespace {
+#ifdef OS_WIN
+struct WinsockInit {
+  WinsockInit() {
+    WSADATA d;
+    if (WSAStartup(MAKEWORD(2, 2), &d) != 0) {
+      _exit(1);
+    }
+  }
+  ~WinsockInit() { WSACleanup(); }
+} winsock_init;
+#else
+struct SigIgnInit {
+  SigIgnInit() { signal(SIGPIPE, SIG_IGN); }
+} sig_init;
+#endif
+
 const QSize preferedSize = QSize(1024, 768);
 }
 

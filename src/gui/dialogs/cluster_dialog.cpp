@@ -112,7 +112,7 @@ ClusterDialog::ClusterDialog(QWidget* parent, proxy::IClusterSettingsBase* conne
 
   if (cluster_connection_) {
     logging_->setChecked(cluster_connection_->IsHistoryEnabled());
-    loggingMsec_->setValue(cluster_connection_->LoggingMsTimeInterval());
+    loggingMsec_->setValue(cluster_connection_->GetLoggingMsTimeInterval());
   } else {
     logging_->setChecked(false);
   }
@@ -138,7 +138,7 @@ ClusterDialog::ClusterDialog(QWidget* parent, proxy::IClusterSettingsBase* conne
   VERIFY(connect(listWidget_, &QTreeWidget::customContextMenuRequested, this, &ClusterDialog::showContextMenu));
 
   if (cluster_connection_) {
-    auto nodes = cluster_connection_->Nodes();
+    auto nodes = cluster_connection_->GetNodes();
     for (const auto& node : nodes) {
       addConnection(node);
     }

@@ -18,12 +18,6 @@
 
 #include "proxy/db/memcached/connection_settings.h"
 
-#include <string>
-
-#include <common/convert2string.h>  // for ConvertFromString
-
-#include "core/connection_types.h"  // for core::connectionTypes::MEMCACHED
-
 namespace fastonosql {
 namespace proxy {
 namespace memcached {
@@ -31,7 +25,7 @@ namespace memcached {
 ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
     : IConnectionSettingsRemote(connectionName, core::MEMCACHED), info_() {}
 
-core::memcached::Config ConnectionSettings::Info() const {
+core::memcached::Config ConnectionSettings::GetInfo() const {
   return info_;
 }
 
@@ -55,7 +49,7 @@ void ConnectionSettings::SetNsSeparator(const std::string& ns) {
   info_.ns_separator = ns;
 }
 
-common::net::HostAndPort ConnectionSettings::Host() const {
+common::net::HostAndPort ConnectionSettings::GetHost() const {
   return info_.host;
 }
 
@@ -63,7 +57,7 @@ void ConnectionSettings::SetHost(const common::net::HostAndPort& host) {
   info_.host = host;
 }
 
-std::string ConnectionSettings::CommandLine() const {
+std::string ConnectionSettings::GetCommandLine() const {
   return common::ConvertToString(info_);
 }
 

@@ -18,34 +18,14 @@
 
 #include "proxy/db/unqlite/driver.h"
 
-#include <stddef.h>  // for size_t
-#include <stdint.h>  // for uint64_t
-
-#include <memory>  // for __shared_ptr
-#include <string>  // for string
-
 #include <common/convert2string.h>
-#include <common/intrusive_ptr.h>  // for intrusive_ptr
-#include <common/qt/utils_qt.h>    // for Event<>::value_type
-#include <common/value.h>          // for ErrorValue, etc
 
-#include "core/connection_types.h"
-#include "core/db_key.h"                   // for NDbKValue, NValue, NKey
-#include "proxy/command/command.h"         // for CreateCommand, etc
-#include "proxy/command/command_logger.h"  // for LOG_COMMAND
+#include "core/db/unqlite/db_connection.h"  // for DBConnection
 
-#include "proxy/events/events_info.h"
-
-#include "core/internal/cdb_connection.h"
-#include "core/internal/db_connection.h"
-
-#include "core/db/unqlite/config.h"                // for Config
-#include "core/db/unqlite/db_connection.h"         // for DBConnection
-#include "core/db/unqlite/server_info.h"           // for ServerInfo, etc
+#include "proxy/command/command.h"                 // for CreateCommand, etc
+#include "proxy/command/command_logger.h"          // for LOG_COMMAND
 #include "proxy/db/unqlite/command.h"              // for Command
 #include "proxy/db/unqlite/connection_settings.h"  // for ConnectionSettings
-
-#include "core/global.h"  // for FastoObject::childs_t, etc
 
 #define UNQLITE_INFO_REQUEST "INFO"
 
@@ -114,7 +94,7 @@ core::FastoObjectCommandIPtr Driver::CreateCommandFast(const core::command_buffe
 common::Error Driver::SyncConnect() {
   ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
   CHECK(set);
-  return impl_->Connect(set->Info());
+  return impl_->Connect(set->GetInfo());
 }
 
 common::Error Driver::SyncDisconnect() {

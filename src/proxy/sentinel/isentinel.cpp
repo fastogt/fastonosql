@@ -31,7 +31,7 @@ void ISentinel::AddSentinel(sentinel_t serv) {
   sentinels_.push_back(serv);
 }
 
-ISentinel::sentinels_t ISentinel::Sentinels() const {
+ISentinel::sentinels_t ISentinel::GetSentinels() const {
   return sentinels_;
 }
 

@@ -32,10 +32,10 @@ class IConnectionSettingsRemoteSSH : public IConnectionSettingsRemote {
   virtual std::string GetNsSeparator() const override = 0;
   virtual void SetNsSeparator(const std::string& ns) override = 0;
 
-  virtual common::net::HostAndPort Host() const override = 0;
+  virtual common::net::HostAndPort GetHost() const override = 0;
   virtual void SetHost(const common::net::HostAndPort& host) override = 0;
 
-  virtual std::string CommandLine() const override = 0;
+  virtual std::string GetCommandLine() const override = 0;
   virtual void SetCommandLine(const std::string& line) override = 0;
 
   struct core::SSHInfo GetSSHInfo() const;

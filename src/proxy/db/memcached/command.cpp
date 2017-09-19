@@ -18,8 +18,6 @@
 
 #include "proxy/db/memcached/command.h"
 
-#include <algorithm>  // for transform
-
 namespace fastonosql {
 namespace proxy {
 namespace memcached {

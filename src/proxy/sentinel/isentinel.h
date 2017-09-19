@@ -39,7 +39,7 @@ class ISentinel : public IServerBase {
   virtual std::string GetName() const override;
 
   void AddSentinel(sentinel_t root);
-  sentinels_t Sentinels() const;
+  sentinels_t GetSentinels() const;
 
  protected:
   explicit ISentinel(const std::string& name);

@@ -18,12 +18,6 @@
 
 #include "proxy/db/ssdb/database.h"
 
-#include <memory>  // for __shared_p
-
-#include <common/macros.h>  // for DCHECK
-
-#include "core/connection_types.h"  // for core::connectionTypes::SSDB
-
 namespace fastonosql {
 namespace proxy {
 namespace ssdb {

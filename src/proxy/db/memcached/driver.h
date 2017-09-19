@@ -18,15 +18,7 @@
 
 #pragma once
 
-#include <string>  // for string
-
-#include <common/error.h>      // for Error
-#include <common/macros.h>     // for WARN_UNUSED_RESULT
-#include <common/net/types.h>  // for HostAndPort
-
-#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
-#include "proxy/driver/idriver_remote.h"                     // for IDriverRemote
-#include "proxy/events/events.h"                             // for CommandRequestEvent, etc
+#include "proxy/driver/idriver_remote.h"  // for IDriverRemote
 
 namespace fastonosql {
 namespace core {

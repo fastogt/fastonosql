@@ -18,10 +18,6 @@
 
 #include "proxy/db/memcached/database.h"
 
-#include <common/macros.h>  // for DCHECK
-
-#include "core/connection_types.h"  // for core::connectionTypes::MEMCACHED
-
 namespace fastonosql {
 namespace proxy {
 namespace memcached {

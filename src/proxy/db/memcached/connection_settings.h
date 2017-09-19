@@ -18,10 +18,6 @@
 
 #pragma once
 
-#include <string>  // for string
-
-#include <common/net/types.h>  // for HostAndPort
-
 #include "proxy/connection_settings/iconnection_settings_remote.h"
 
 #include "core/db/memcached/config.h"  // for Config
@@ -34,7 +30,7 @@ class ConnectionSettings : public IConnectionSettingsRemote {
  public:
   explicit ConnectionSettings(const connection_path_t& connectionName);
 
-  core::memcached::Config Info() const;
+  core::memcached::Config GetInfo() const;
   void SetInfo(const core::memcached::Config& info);
 
   virtual std::string GetDelimiter() const override;
@@ -43,10 +39,10 @@ class ConnectionSettings : public IConnectionSettingsRemote {
   virtual std::string GetNsSeparator() const override;
   virtual void SetNsSeparator(const std::string& ns) override;
 
-  virtual common::net::HostAndPort Host() const override;
+  virtual common::net::HostAndPort GetHost() const override;
   virtual void SetHost(const common::net::HostAndPort& host) override;
 
-  virtual std::string CommandLine() const override;
+  virtual std::string GetCommandLine() const override;
   virtual void SetCommandLine(const std::string& line) override;
 
   virtual ConnectionSettings* Clone() const override;

@@ -35,7 +35,7 @@ ConnectionWidget::ConnectionWidget(QWidget* parent)
 void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
   proxy::lmdb::ConnectionSettings* lmdb = static_cast<proxy::lmdb::ConnectionSettings*>(connection);
   if (lmdb) {
-    core::lmdb::Config config = lmdb->Info();
+    core::lmdb::Config config = lmdb->GetInfo();
     readOnlyDB_->setChecked(config.ReadOnlyDB());
   }
   ConnectionLocalWidget::syncControls(lmdb);
@@ -49,7 +49,7 @@ void ConnectionWidget::retranslateUi() {
 proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
     const proxy::connection_path_t& path) const {
   proxy::lmdb::ConnectionSettings* conn = new proxy::lmdb::ConnectionSettings(path);
-  core::lmdb::Config config = conn->Info();
+  core::lmdb::Config config = conn->GetInfo();
   config.SetReadOnlyDB(readOnlyDB_->isChecked());
   conn->SetInfo(config);
   return conn;
