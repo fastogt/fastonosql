@@ -88,7 +88,7 @@ class ServerDiscoveryClusterInfo : public ServerDiscoveryInfoBase {
 typedef std::shared_ptr<ServerDiscoveryClusterInfo> ServerDiscoveryClusterInfoSPtr;
 
 struct IStateField {
-  virtual common::Value* ValueByIndex(unsigned char index) const = 0;
+  virtual common::Value* GetValueByIndex(unsigned char index) const = 0;
   virtual ~IStateField();
 };
 
@@ -97,10 +97,10 @@ class IServerInfo {
   explicit IServerInfo(connectionTypes type);
   virtual ~IServerInfo();
 
-  connectionTypes Type() const;
+  connectionTypes GetType() const;
   virtual std::string ToString() const = 0;
-  virtual uint32_t Version() const = 0;
-  virtual common::Value* ValueByIndexes(unsigned char property, unsigned char field) const = 0;
+  virtual uint32_t GetVersion() const = 0;
+  virtual common::Value* GetValueByIndexes(unsigned char property, unsigned char field) const = 0;
 
  private:
   const connectionTypes type_;

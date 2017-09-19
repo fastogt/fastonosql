@@ -601,13 +601,13 @@ common::Error DBConnection::Connect(const config_t& config) {
   return common::Error();
 }
 
-std::string DBConnection::CurrentDBName() const {
+std::string DBConnection::GetCurrentDBName() const {
   if (cur_db_ != -1) {
     return common::ConvertToString(cur_db_);
   }
 
   DNOTREACHED();
-  return base_class::CurrentDBName();
+  return base_class::GetCurrentDBName();
 }
 
 /* Sends SYNC and reads the number of bytes in the payload.
@@ -1119,7 +1119,7 @@ common::Error DBConnection::ExecuteAsPipeline(const std::vector<FastoObjectComma
   std::vector<FastoObjectCommandIPtr> valid_cmds;
   for (size_t i = 0; i < cmds.size(); ++i) {
     FastoObjectCommandIPtr cmd = cmds[i];
-    command_buffer_t command = cmd->InputCommand();
+    command_buffer_t command = cmd->GetInputCommand();
     if (command.empty()) {
       continue;
     }

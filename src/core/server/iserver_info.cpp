@@ -71,7 +71,7 @@ IStateField::~IStateField() {}
 
 IServerInfo::~IServerInfo() {}
 
-connectionTypes IServerInfo::Type() const {
+connectionTypes IServerInfo::GetType() const {
   return type_;
 }
 

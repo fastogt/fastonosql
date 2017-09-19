@@ -44,7 +44,7 @@ const char* CommandTranslator::GetDBName() const {
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, command_buffer_t* cmdstring) const {
   const NKey cur = key.GetKey();
   key_t key_str = cur.GetKey();
-  std::string value_str = key.ValueString();
+  std::string value_str = key.GetValueString();
   command_buffer_writer_t wr;
   wr << MEMCACHED_SET_KEY_COMMAND << " " << key_str.GetKeyData() << " " << value_str;
   *cmdstring = wr.str();

@@ -176,7 +176,7 @@ void ServerHistoryDialog::refreshGraph(int index) {
       continue;
     }
 
-    common::Value* value = val.info->ValueByIndexes(serverIndex, indexIn);  // allocate
+    common::Value* value = val.info->GetValueByIndexes(serverIndex, indexIn);  // allocate
     if (value) {
       qreal graphY = 0.0f;
       if (value->GetAsDouble(&graphY)) {

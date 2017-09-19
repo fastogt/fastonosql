@@ -40,7 +40,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
 
   common::Error Connect(const config_t& config);
 
-  std::string CurrentDBName() const;
+  std::string GetCurrentDBName() const;
   common::Error Info(const std::string& args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
 
  private:

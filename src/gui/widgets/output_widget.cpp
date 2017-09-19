@@ -48,14 +48,14 @@ FastoCommonItem* createItem(common::qt::gui::TreeItem* parent,
                             core::string_key_t key,
                             bool readOnly,
                             core::FastoObject* item) {
-  core::NValue value = item->Value();
+  core::NValue value = item->GetValue();
   core::key_t raw_key(key);
   core::NDbKValue nkey(core::NKey(raw_key), value);
   return new FastoCommonItem(nkey, item->GetDelimiter(), readOnly, parent, item);
 }
 
 FastoCommonItem* createRootItem(core::FastoObject* item) {
-  core::NValue value = item->Value();
+  core::NValue value = item->GetValue();
   core::key_t raw_key;
   core::NKey nk(raw_key);
   core::NDbKValue nkey(nk, value);
@@ -192,7 +192,7 @@ void OutputWidget::addChild(core::FastoObjectIPtr child) {
 
     fastonosql::gui::FastoCommonItem* comChild = nullptr;
     core::translator_t tr = server_->GetTranslator();
-    core::command_buffer_t input_cmd = command->InputCommand();
+    core::command_buffer_t input_cmd = command->GetInputCommand();
     core::string_key_t key;
     if (tr->IsLoadKeyCommand(input_cmd, &key)) {
       comChild = createItem(par, key, false, child.get());

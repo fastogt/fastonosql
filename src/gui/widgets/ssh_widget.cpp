@@ -153,7 +153,7 @@ void SSHWidget::setInfo(const core::SSHInfo& info) {
   QString quser_name;
   common::ConvertFromString(info.user_name, &quser_name);
   userName_->setText(quser_name);
-  if (info.AuthMethod() == core::SSHInfo::PUBLICKEY) {
+  if (info.GetAuthMethod() == core::SSHInfo::PUBLICKEY) {
     security_->setCurrentText(translations::trPublicPrivateKey);
   } else {
     security_->setCurrentText(translations::trPassword);

@@ -38,23 +38,24 @@ namespace fastonosql {
 namespace core {
 namespace {
 
-const std::vector<Field> rockCommonFields = {Field(ROCKSDB_CAMPACTIONS_LEVEL_LABEL, common::Value::TYPE_UINTEGER),
-                                             Field(ROCKSDB_FILE_SIZE_MB_LABEL, common::Value::TYPE_UINTEGER),
-                                             Field(ROCKSDB_TIME_SEC_LABEL, common::Value::TYPE_UINTEGER),
-                                             Field(ROCKSDB_READ_MB_LABEL, common::Value::TYPE_UINTEGER),
-                                             Field(ROCKSDB_WRITE_MB_LABEL, common::Value::TYPE_UINTEGER)};
+const std::vector<Field> g_rocksdb_common_fields = {
+    Field(ROCKSDB_CAMPACTIONS_LEVEL_LABEL, common::Value::TYPE_UINTEGER),
+    Field(ROCKSDB_FILE_SIZE_MB_LABEL, common::Value::TYPE_UINTEGER),
+    Field(ROCKSDB_TIME_SEC_LABEL, common::Value::TYPE_UINTEGER),
+    Field(ROCKSDB_READ_MB_LABEL, common::Value::TYPE_UINTEGER),
+    Field(ROCKSDB_WRITE_MB_LABEL, common::Value::TYPE_UINTEGER)};
 
 }  // namespace
 
 template <>
-std::vector<common::Value::Type> DBTraits<ROCKSDB>::SupportedTypes() {
+std::vector<common::Value::Type> DBTraits<ROCKSDB>::GetSupportedTypes() {
   return {common::Value::TYPE_BOOLEAN, common::Value::TYPE_INTEGER, common::Value::TYPE_UINTEGER,
           common::Value::TYPE_DOUBLE, common::Value::TYPE_STRING};
 }
 
 template <>
-std::vector<info_field_t> DBTraits<ROCKSDB>::InfoFields() {
-  return {std::make_pair(ROCKSDB_STATS_LABEL, rockCommonFields)};
+std::vector<info_field_t> DBTraits<ROCKSDB>::GetInfoFields() {
+  return {std::make_pair(ROCKSDB_STATS_LABEL, g_rocksdb_common_fields)};
 }
 
 namespace rocksdb {
@@ -100,7 +101,7 @@ ServerInfo::Stats::Stats(const std::string& common_text) {
   }
 }
 
-common::Value* ServerInfo::Stats::ValueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Stats::GetValueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::FundamentalValue(compactions_level);
@@ -124,10 +125,10 @@ ServerInfo::ServerInfo() : IServerInfo(ROCKSDB) {}
 
 ServerInfo::ServerInfo(const Stats& stats) : IServerInfo(ROCKSDB), stats_(stats) {}
 
-common::Value* ServerInfo::ValueByIndexes(unsigned char property, unsigned char field) const {
+common::Value* ServerInfo::GetValueByIndexes(unsigned char property, unsigned char field) const {
   switch (property) {
     case 0:
-      return stats_.ValueByIndex(field);
+      return stats_.GetValueByIndex(field);
     default:
       break;
   }
@@ -153,7 +154,7 @@ ServerInfo* MakeRocksdbServerInfo(const std::string& content) {
   }
 
   ServerInfo* result = new ServerInfo;
-  static const std::vector<info_field_t> fields = DBTraits<ROCKSDB>::InfoFields();
+  static const std::vector<info_field_t> fields = DBTraits<ROCKSDB>::GetInfoFields();
   std::string word;
   DCHECK_EQ(fields.size(), 1);
 
@@ -175,7 +176,7 @@ std::string ServerInfo::ToString() const {
   return str.str();
 }
 
-uint32_t ServerInfo::Version() const {
+uint32_t ServerInfo::GetVersion() const {
   return 0;
 }
 

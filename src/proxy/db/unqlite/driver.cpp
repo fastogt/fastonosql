@@ -143,7 +143,7 @@ common::Error Driver::CurrentDataBaseInfo(core::IDataBaseInfo** info) {
     return common::make_error_inval();
   }
 
-  return impl_->Select(impl_->CurrentDBName(), info);
+  return impl_->Select(impl_->GetCurrentDBName(), info);
 }
 
 void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {
@@ -158,7 +158,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   if (err) {
     res.setErrorInfo(err);
   } else {
-    core::FastoObject::childs_t rchildrens = cmd->Childrens();
+    core::FastoObject::childs_t rchildrens = cmd->GetChildrens();
     if (rchildrens.size()) {
       CHECK_EQ(rchildrens.size(), 1);
       core::FastoObjectArray* array = dynamic_cast<core::FastoObjectArray*>(rchildrens[0].get());  // +
@@ -166,7 +166,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         goto done;
       }
 
-      common::ArrayValue* arm = array->Array();
+      common::ArrayValue* arm = array->GetArray();
       if (!arm->GetSize()) {
         goto done;
       }
@@ -182,7 +182,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         res.cursor_out = lcursor;
       }
 
-      rchildrens = array->Childrens();
+      rchildrens = array->GetChildrens();
       if (!rchildrens.size()) {
         goto done;
       }
@@ -193,7 +193,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         goto done;
       }
 
-      common::ArrayValue* ar = arr->Array();
+      common::ArrayValue* ar = arr->GetArray();
       if (ar->IsEmpty()) {
         goto done;
       }

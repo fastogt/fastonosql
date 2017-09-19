@@ -148,7 +148,7 @@ common::Error IDriver::Execute(core::FastoObjectCommandIPtr cmd) {
   }
 
   LOG_COMMAND(cmd);
-  common::Error err = ExecuteImpl(cmd->InputCommand(), cmd.get());
+  common::Error err = ExecuteImpl(cmd->GetInputCommand(), cmd.get());
   return err;
 }
 

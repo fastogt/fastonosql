@@ -36,19 +36,19 @@ namespace fastonosql {
 namespace core {
 namespace {
 
-const std::vector<Field> lmdbCommonFields = {Field(UPSCALEDB_FILE_NAME_LABEL, common::Value::TYPE_STRING)};
+const std::vector<Field> g_upscaledb_common_fields = {Field(UPSCALEDB_FILE_NAME_LABEL, common::Value::TYPE_STRING)};
 
 }  // namespace
 
 template <>
-std::vector<common::Value::Type> DBTraits<UPSCALEDB>::SupportedTypes() {
+std::vector<common::Value::Type> DBTraits<UPSCALEDB>::GetSupportedTypes() {
   return {common::Value::TYPE_BOOLEAN, common::Value::TYPE_INTEGER, common::Value::TYPE_UINTEGER,
           common::Value::TYPE_DOUBLE, common::Value::TYPE_STRING};
 }
 
 template <>
-std::vector<info_field_t> DBTraits<UPSCALEDB>::InfoFields() {
-  return {std::make_pair(UPSCALEDB_STATS_LABEL, lmdbCommonFields)};
+std::vector<info_field_t> DBTraits<UPSCALEDB>::GetInfoFields() {
+  return {std::make_pair(UPSCALEDB_STATS_LABEL, g_upscaledb_common_fields)};
 }
 namespace upscaledb {
 
@@ -70,7 +70,7 @@ ServerInfo::Stats::Stats(const std::string& common_text) {
   }
 }
 
-common::Value* ServerInfo::Stats::ValueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Stats::GetValueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::StringValue(db_path);
@@ -86,10 +86,10 @@ ServerInfo::ServerInfo() : IServerInfo(UPSCALEDB) {}
 
 ServerInfo::ServerInfo(const Stats& stats) : IServerInfo(UPSCALEDB), stats_(stats) {}
 
-common::Value* ServerInfo::ValueByIndexes(unsigned char property, unsigned char field) const {
+common::Value* ServerInfo::GetValueByIndexes(unsigned char property, unsigned char field) const {
   switch (property) {
     case 0:
-      return stats_.ValueByIndex(field);
+      return stats_.GetValueByIndex(field);
     default:
       break;
   }
@@ -112,7 +112,7 @@ ServerInfo* MakeUpscaleDBServerInfo(const std::string& content) {
   }
 
   ServerInfo* result = new ServerInfo;
-  static const std::vector<info_field_t> fields = DBTraits<UPSCALEDB>::InfoFields();
+  static const std::vector<info_field_t> fields = DBTraits<UPSCALEDB>::GetInfoFields();
   std::string word;
   DCHECK_EQ(fields.size(), 1);
 
@@ -134,7 +134,7 @@ std::string ServerInfo::ToString() const {
   return str.str();
 }
 
-uint32_t ServerInfo::Version() const {
+uint32_t ServerInfo::GetVersion() const {
   return 0;
 }
 

@@ -31,14 +31,14 @@ struct SSHInfo {
           const std::string& user_name,
           const std::string& password,
           const std::string& public_key,
-          const std::string& privateKey,
+          const std::string& private_key,
           const std::string& passphrase,
           SupportedAuthenticationMetods method);
 
   explicit SSHInfo(const std::string& text);
 
   bool IsValid() const;
-  SupportedAuthenticationMetods AuthMethod() const;
+  SupportedAuthenticationMetods GetAuthMethod() const;
 
   common::net::HostAndPort host;
   std::string user_name;
@@ -60,6 +60,7 @@ inline bool operator==(const SSHInfo& r, const SSHInfo& l) {
 }  // namespace fastonosql
 
 namespace common {
+
 std::string ConvertToString(const fastonosql::core::SSHInfo& ssh_info);
 bool ConvertFromString(const std::string& from, fastonosql::core::SSHInfo* out);
 

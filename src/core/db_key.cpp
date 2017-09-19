@@ -151,7 +151,7 @@ void NDbKValue::SetValue(NValue value) {
   value_ = value;
 }
 
-std::string NDbKValue::ValueString() const {
+std::string NDbKValue::GetValueString() const {
   return common::ConvertToString(value_.get(), " ");
 }
 

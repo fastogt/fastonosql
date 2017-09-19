@@ -38,7 +38,7 @@ namespace fastonosql {
 namespace core {
 namespace {
 
-const std::vector<Field> SsdbCommonFields = {
+const std::vector<Field> g_ssdb_common_fields = {
     Field(SSDB_VERSION_LABEL, common::Value::TYPE_STRING), Field(SSDB_LINKS_LABEL, common::Value::TYPE_UINTEGER),
     Field(SSDB_TOTAL_CALLS_LABEL, common::Value::TYPE_UINTEGER), Field(SSDB_DBSIZE_LABEL, common::Value::TYPE_UINTEGER),
     Field(SSDB_BINLOGS_LABEL, common::Value::TYPE_STRING)};
@@ -46,15 +46,15 @@ const std::vector<Field> SsdbCommonFields = {
 }  // namespace
 
 template <>
-std::vector<common::Value::Type> DBTraits<SSDB>::SupportedTypes() {
+std::vector<common::Value::Type> DBTraits<SSDB>::GetSupportedTypes() {
   return {common::Value::TYPE_BOOLEAN, common::Value::TYPE_INTEGER, common::Value::TYPE_UINTEGER,
           common::Value::TYPE_DOUBLE,  common::Value::TYPE_STRING,  common::Value::TYPE_ARRAY,
           common::Value::TYPE_SET,     common::Value::TYPE_ZSET,    common::Value::TYPE_HASH};
 }
 
 template <>
-std::vector<info_field_t> DBTraits<SSDB>::InfoFields() {
-  return {std::make_pair(SSDB_COMMON_LABEL, SsdbCommonFields)};
+std::vector<info_field_t> DBTraits<SSDB>::GetInfoFields() {
+  return {std::make_pair(SSDB_COMMON_LABEL, g_ssdb_common_fields)};
 }
 
 namespace ssdb {
@@ -94,7 +94,7 @@ ServerInfo::Stats::Stats(const std::string& common_text) {
   }
 }
 
-common::Value* ServerInfo::Stats::ValueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Stats::GetValueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::StringValue(version);
@@ -118,10 +118,10 @@ ServerInfo::ServerInfo() : IServerInfo(SSDB) {}
 
 ServerInfo::ServerInfo(const Stats& common) : IServerInfo(SSDB), stats_(common) {}
 
-common::Value* ServerInfo::ValueByIndexes(unsigned char property, unsigned char field) const {
+common::Value* ServerInfo::GetValueByIndexes(unsigned char property, unsigned char field) const {
   switch (property) {
     case 0:
-      return stats_.ValueByIndex(field);
+      return stats_.GetValueByIndex(field);
     default:
       break;
   }
@@ -146,7 +146,7 @@ ServerInfo* MakeSsdbServerInfo(const std::string& content) {
   }
 
   ServerInfo* result = new ServerInfo;
-  static const std::vector<info_field_t> fields = DBTraits<SSDB>::InfoFields();
+  static const std::vector<info_field_t> fields = DBTraits<SSDB>::GetInfoFields();
   std::string word;
   DCHECK_EQ(fields.size(), 1);
 
@@ -168,7 +168,7 @@ std::string ServerInfo::ToString() const {
   return str.str();
 }
 
-uint32_t ServerInfo::Version() const {
+uint32_t ServerInfo::GetVersion() const {
   return common::ConvertVersionNumberFromString(stats_.version);
 }
 

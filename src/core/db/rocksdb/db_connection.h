@@ -41,7 +41,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   typedef core::internal::CDBConnection<NativeConnection, Config, ROCKSDB> base_class;
   explicit DBConnection(CDBConnectionClient* client);
 
-  std::string CurrentDBName() const;
+  std::string GetCurrentDBName() const;
 
   common::Error Info(const std::string& args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
   common::Error Mget(const std::vector<std::string>& keys, std::vector<std::string>* ret);

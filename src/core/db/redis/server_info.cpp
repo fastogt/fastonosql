@@ -36,39 +36,40 @@ namespace fastonosql {
 namespace core {
 namespace {
 
-const std::vector<Field> redisServerFields = {Field(REDIS_VERSION_LABEL, common::Value::TYPE_STRING),
-                                              Field(REDIS_GIT_SHA1_LABEL, common::Value::TYPE_STRING),
-                                              Field(REDIS_GIT_DIRTY_LABEL, common::Value::TYPE_STRING),
-                                              Field(REDIS_BUILD_ID_LABEL, common::Value::TYPE_STRING),
-                                              Field(REDIS_MODE_LABEL, common::Value::TYPE_STRING),
-                                              Field(REDIS_OS_LABEL, common::Value::TYPE_STRING),
-                                              Field(REDIS_ARCH_BITS_LABEL, common::Value::TYPE_UINTEGER),
-                                              Field(REDIS_MULTIPLEXING_API_LABEL, common::Value::TYPE_STRING),
-                                              Field(REDIS_GCC_VERSION_LABEL, common::Value::TYPE_STRING),
-                                              Field(REDIS_PROCESS_ID_LABEL, common::Value::TYPE_UINTEGER),
-                                              Field(REDIS_RUN_ID_LABEL, common::Value::TYPE_STRING),
-                                              Field(REDIS_TCP_PORT_LABEL, common::Value::TYPE_UINTEGER),
-                                              Field(REDIS_UPTIME_IN_SECONDS_LABEL, common::Value::TYPE_UINTEGER),
-                                              Field(REDIS_UPTIME_IN_DAYS_LABEL, common::Value::TYPE_UINTEGER),
-                                              Field(REDIS_HZ_LABEL, common::Value::TYPE_UINTEGER),
-                                              Field(REDIS_LRU_CLOCK_LABEL, common::Value::TYPE_UINTEGER)};
+const std::vector<Field> g_redis_server_fields = {Field(REDIS_VERSION_LABEL, common::Value::TYPE_STRING),
+                                                  Field(REDIS_GIT_SHA1_LABEL, common::Value::TYPE_STRING),
+                                                  Field(REDIS_GIT_DIRTY_LABEL, common::Value::TYPE_STRING),
+                                                  Field(REDIS_BUILD_ID_LABEL, common::Value::TYPE_STRING),
+                                                  Field(REDIS_MODE_LABEL, common::Value::TYPE_STRING),
+                                                  Field(REDIS_OS_LABEL, common::Value::TYPE_STRING),
+                                                  Field(REDIS_ARCH_BITS_LABEL, common::Value::TYPE_UINTEGER),
+                                                  Field(REDIS_MULTIPLEXING_API_LABEL, common::Value::TYPE_STRING),
+                                                  Field(REDIS_GCC_VERSION_LABEL, common::Value::TYPE_STRING),
+                                                  Field(REDIS_PROCESS_ID_LABEL, common::Value::TYPE_UINTEGER),
+                                                  Field(REDIS_RUN_ID_LABEL, common::Value::TYPE_STRING),
+                                                  Field(REDIS_TCP_PORT_LABEL, common::Value::TYPE_UINTEGER),
+                                                  Field(REDIS_UPTIME_IN_SECONDS_LABEL, common::Value::TYPE_UINTEGER),
+                                                  Field(REDIS_UPTIME_IN_DAYS_LABEL, common::Value::TYPE_UINTEGER),
+                                                  Field(REDIS_HZ_LABEL, common::Value::TYPE_UINTEGER),
+                                                  Field(REDIS_LRU_CLOCK_LABEL, common::Value::TYPE_UINTEGER)};
 
-const std::vector<Field> redisClientFields = {
+const std::vector<Field> g_redis_client_fields = {
     Field(REDIS_CONNECTED_CLIENTS_LABEL, common::Value::TYPE_UINTEGER),
     Field(REDIS_CLIENT_LONGEST_OUTPUT_LIST_LABEL, common::Value::TYPE_UINTEGER),
     Field(REDIS_CLIENT_BIGGEST_INPUT_BUF_LABEL, common::Value::TYPE_UINTEGER),
     Field(REDIS_BLOCKED_CLIENTS_LABEL, common::Value::TYPE_UINTEGER)};
 
-const std::vector<Field> redisMemoryFields = {Field(REDIS_USED_MEMORY_LABEL, common::Value::TYPE_UINTEGER),
-                                              Field(REDIS_USED_MEMORY_HUMAN_LABEL, common::Value::TYPE_STRING),
-                                              Field(REDIS_USED_MEMORY_RSS_LABEL, common::Value::TYPE_UINTEGER),
-                                              Field(REDIS_USED_MEMORY_PEAK_LABEL, common::Value::TYPE_UINTEGER),
-                                              Field(REDIS_USED_MEMORY_PEAK_HUMAN_LABEL, common::Value::TYPE_STRING),
-                                              Field(REDIS_USED_MEMORY_LUA_LABEL, common::Value::TYPE_UINTEGER),
-                                              Field(REDIS_MEM_FRAGMENTATION_RATIO_LABEL, common::Value::TYPE_DOUBLE),
-                                              Field(REDIS_MEM_ALLOCATOR_LABEL, common::Value::TYPE_STRING)};
+const std::vector<Field> g_redis_memory_fields = {
+    Field(REDIS_USED_MEMORY_LABEL, common::Value::TYPE_UINTEGER),
+    Field(REDIS_USED_MEMORY_HUMAN_LABEL, common::Value::TYPE_STRING),
+    Field(REDIS_USED_MEMORY_RSS_LABEL, common::Value::TYPE_UINTEGER),
+    Field(REDIS_USED_MEMORY_PEAK_LABEL, common::Value::TYPE_UINTEGER),
+    Field(REDIS_USED_MEMORY_PEAK_HUMAN_LABEL, common::Value::TYPE_STRING),
+    Field(REDIS_USED_MEMORY_LUA_LABEL, common::Value::TYPE_UINTEGER),
+    Field(REDIS_MEM_FRAGMENTATION_RATIO_LABEL, common::Value::TYPE_DOUBLE),
+    Field(REDIS_MEM_ALLOCATOR_LABEL, common::Value::TYPE_STRING)};
 
-const std::vector<Field> redisPersistenceFields = {
+const std::vector<Field> g_redis_persistence_fields = {
     Field(REDIS_LOADING_LABEL, common::Value::TYPE_UINTEGER),
     Field(REDIS_RDB_CHANGES_SINCE_LAST_SAVE_LABEL, common::Value::TYPE_UINTEGER),
     Field(REDIS_RDB_DGSAVE_IN_PROGRESS_LABEL, common::Value::TYPE_UINTEGER),
@@ -84,7 +85,7 @@ const std::vector<Field> redisPersistenceFields = {
     Field(REDIS_AOF_LAST_DGREWRITE_STATUS_LABEL, common::Value::TYPE_STRING),
     Field(REDIS_AOF_LAST_WRITE_STATUS_LABEL, common::Value::TYPE_STRING)};
 
-const std::vector<Field> redisStatsFields = {
+const std::vector<Field> g_redis_stats_fields = {
     Field(REDIS_TOTAL_CONNECTIONS_RECEIVED_LABEL, common::Value::TYPE_UINTEGER),
     Field(REDIS_TOTAL_COMMANDS_PROCESSED_LABEL, common::Value::TYPE_UINTEGER),
     Field(REDIS_INSTANTANEOUS_OPS_PER_SEC_LABEL, common::Value::TYPE_UINTEGER),
@@ -100,7 +101,7 @@ const std::vector<Field> redisStatsFields = {
     Field(REDIS_PUBSUB_PATTERNS_LABEL, common::Value::TYPE_UINTEGER),
     Field(REDIS_LATEST_FORK_USEC_LABEL, common::Value::TYPE_UINTEGER)};
 
-const std::vector<Field> redisReplicationFields = {
+const std::vector<Field> g_redis_replication_fields = {
     Field(REDIS_ROLE_LABEL, common::Value::TYPE_STRING),
     Field(REDIS_CONNECTED_SLAVES_LABEL, common::Value::TYPE_UINTEGER),
     Field(REDIS_MASTER_REPL_OFFSET_LABEL, common::Value::TYPE_UINTEGER),
@@ -109,17 +110,17 @@ const std::vector<Field> redisReplicationFields = {
     Field(REDIS_BACKLOG_FIRST_BYTE_OFFSET_LABEL, common::Value::TYPE_UINTEGER),
     Field(REDIS_BACKLOG_HISTEN_LABEL, common::Value::TYPE_UINTEGER)};
 
-const std::vector<Field> redisCpuFields = {Field(REDIS_USED_CPU_SYS_LABEL, common::Value::TYPE_UINTEGER),
-                                           Field(REDIS_USED_CPU_USER_LABEL, common::Value::TYPE_UINTEGER),
-                                           Field(REDIS_USED_CPU_SYS_CHILDREN_LABEL, common::Value::TYPE_UINTEGER),
-                                           Field(REDIS_USED_CPU_USER_CHILDREN_LABEL, common::Value::TYPE_UINTEGER)};
+const std::vector<Field> g_redis_cpu_fields = {Field(REDIS_USED_CPU_SYS_LABEL, common::Value::TYPE_UINTEGER),
+                                               Field(REDIS_USED_CPU_USER_LABEL, common::Value::TYPE_UINTEGER),
+                                               Field(REDIS_USED_CPU_SYS_CHILDREN_LABEL, common::Value::TYPE_UINTEGER),
+                                               Field(REDIS_USED_CPU_USER_CHILDREN_LABEL, common::Value::TYPE_UINTEGER)};
 
-const std::vector<Field> redisKeySpaceFields = {};
+const std::vector<Field> g_redis_keyspace_fields = {};
 
 }  // namespace
 
 template <>
-std::vector<common::Value::Type> DBTraits<REDIS>::SupportedTypes() {
+std::vector<common::Value::Type> DBTraits<REDIS>::GetSupportedTypes() {
   return {common::Value::TYPE_BOOLEAN, common::Value::TYPE_INTEGER, common::Value::TYPE_UINTEGER,
           common::Value::TYPE_DOUBLE,  common::Value::TYPE_STRING,
 
@@ -128,15 +129,15 @@ std::vector<common::Value::Type> DBTraits<REDIS>::SupportedTypes() {
 }
 
 template <>
-std::vector<info_field_t> DBTraits<REDIS>::InfoFields() {
-  return {std::make_pair(REDIS_SERVER_LABEL, redisServerFields),
-          std::make_pair(REDIS_CLIENTS_LABEL, redisClientFields),
-          std::make_pair(REDIS_MEMORY_LABEL, redisMemoryFields),
-          std::make_pair(REDIS_PERSISTENCE_LABEL, redisPersistenceFields),
-          std::make_pair(REDIS_STATS_LABEL, redisStatsFields),
-          std::make_pair(REDIS_REPLICATION_LABEL, redisReplicationFields),
-          std::make_pair(REDIS_CPU_LABEL, redisCpuFields),
-          std::make_pair(REDIS_KEYSPACE_LABEL, redisKeySpaceFields)};
+std::vector<info_field_t> DBTraits<REDIS>::GetInfoFields() {
+  return {std::make_pair(REDIS_SERVER_LABEL, g_redis_server_fields),
+          std::make_pair(REDIS_CLIENTS_LABEL, g_redis_client_fields),
+          std::make_pair(REDIS_MEMORY_LABEL, g_redis_memory_fields),
+          std::make_pair(REDIS_PERSISTENCE_LABEL, g_redis_persistence_fields),
+          std::make_pair(REDIS_STATS_LABEL, g_redis_stats_fields),
+          std::make_pair(REDIS_REPLICATION_LABEL, g_redis_replication_fields),
+          std::make_pair(REDIS_CPU_LABEL, g_redis_cpu_fields),
+          std::make_pair(REDIS_KEYSPACE_LABEL, g_redis_keyspace_fields)};
 }
 
 namespace redis {
@@ -237,7 +238,7 @@ ServerInfo::Server::Server(const std::string& server_text)
   }
 }
 
-common::Value* ServerInfo::Server::ValueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Server::GetValueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::StringValue(redis_version_);
@@ -316,7 +317,7 @@ ServerInfo::Clients::Clients(const std::string& client_text)
   }
 }
 
-common::Value* ServerInfo::Clients::ValueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Clients::GetValueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::FundamentalValue(connected_clients_);
@@ -396,7 +397,7 @@ ServerInfo::Memory::Memory(const std::string& memory_text)
   }
 }
 
-common::Value* ServerInfo::Memory::ValueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Memory::GetValueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::FundamentalValue(used_memory_);
@@ -526,7 +527,7 @@ ServerInfo::Persistence::Persistence(const std::string& persistence_text)
   }
 }
 
-common::Value* ServerInfo::Persistence::ValueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Persistence::GetValueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::FundamentalValue(loading_);
@@ -677,7 +678,7 @@ ServerInfo::Stats::Stats(const std::string& stats_text)
   }
 }
 
-common::Value* ServerInfo::Stats::ValueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Stats::GetValueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::FundamentalValue(total_connections_received_);
@@ -777,7 +778,7 @@ ServerInfo::Replication::Replication(const std::string& replication_text)
   }
 }
 
-common::Value* ServerInfo::Replication::ValueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Replication::GetValueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::StringValue(role_);
@@ -837,7 +838,7 @@ ServerInfo::Cpu::Cpu(const std::string& cpu_text)
   }
 }
 
-common::Value* ServerInfo::Cpu::ValueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Cpu::GetValueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::FundamentalValue(used_cpu_sys_);
@@ -855,7 +856,7 @@ common::Value* ServerInfo::Cpu::ValueByIndex(unsigned char index) const {
   return nullptr;
 }
 
-common::Value* ServerInfo::Keyspace::ValueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Keyspace::GetValueByIndex(unsigned char index) const {
   UNUSED(index);
 
   return nullptr;
@@ -881,24 +882,24 @@ ServerInfo::ServerInfo(const Server& serv,
       cpu_(cpu),
       keySp_(key) {}
 
-common::Value* ServerInfo::ValueByIndexes(unsigned char property, unsigned char field) const {
+common::Value* ServerInfo::GetValueByIndexes(unsigned char property, unsigned char field) const {
   switch (property) {
     case 0:
-      return server_.ValueByIndex(field);
+      return server_.GetValueByIndex(field);
     case 1:
-      return clients_.ValueByIndex(field);
+      return clients_.GetValueByIndex(field);
     case 2:
-      return memory_.ValueByIndex(field);
+      return memory_.GetValueByIndex(field);
     case 3:
-      return persistence_.ValueByIndex(field);
+      return persistence_.GetValueByIndex(field);
     case 4:
-      return stats_.ValueByIndex(field);
+      return stats_.GetValueByIndex(field);
     case 5:
-      return replication_.ValueByIndex(field);
+      return replication_.GetValueByIndex(field);
     case 6:
-      return cpu_.ValueByIndex(field);
+      return cpu_.GetValueByIndex(field);
     case 7:
-      return keySp_.ValueByIndex(field);
+      return keySp_.GetValueByIndex(field);
     default:
       break;
   }
@@ -997,7 +998,7 @@ std::string ServerInfo::ToString() const {
   return str.str();
 }
 
-uint32_t ServerInfo::Version() const {
+uint32_t ServerInfo::GetVersion() const {
   return common::ConvertVersionNumberFromString(server_.redis_version_);
 }
 
@@ -1018,7 +1019,7 @@ ServerInfo* MakeRedisServerInfo(const std::string& content) {
   size_t j = 0;
   std::string word;
   size_t pos = 0;
-  static const std::vector<core::info_field_t> fields = DBTraits<REDIS>::InfoFields();
+  static const std::vector<core::info_field_t> fields = DBTraits<REDIS>::GetInfoFields();
   for (size_t i = 0; i < content.size(); ++i) {
     char ch = content[i];
     word += ch;

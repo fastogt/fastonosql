@@ -108,7 +108,7 @@ class NDbKValue {
   void SetKey(const NKey& key);
   void SetValue(NValue value);
 
-  std::string ValueString() const;
+  std::string GetValueString() const;
 
   bool Equals(const NDbKValue& other) const;
 

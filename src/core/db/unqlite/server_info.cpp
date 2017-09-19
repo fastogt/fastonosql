@@ -37,19 +37,19 @@ namespace fastonosql {
 namespace core {
 namespace {
 
-const std::vector<Field> unqliteCommonFields = {Field(UNQLITE_FILE_NAME_LABEL, common::Value::TYPE_STRING)};
+const std::vector<Field> g_unqlite_common_fields = {Field(UNQLITE_FILE_NAME_LABEL, common::Value::TYPE_STRING)};
 
 }  // namespace
 
 template <>
-std::vector<common::Value::Type> DBTraits<UNQLITE>::SupportedTypes() {
+std::vector<common::Value::Type> DBTraits<UNQLITE>::GetSupportedTypes() {
   return {common::Value::TYPE_BOOLEAN, common::Value::TYPE_INTEGER, common::Value::TYPE_UINTEGER,
           common::Value::TYPE_DOUBLE, common::Value::TYPE_STRING};
 }
 
 template <>
-std::vector<info_field_t> DBTraits<UNQLITE>::InfoFields() {
-  return {std::make_pair(UNQLITE_STATS_LABEL, unqliteCommonFields)};
+std::vector<info_field_t> DBTraits<UNQLITE>::GetInfoFields() {
+  return {std::make_pair(UNQLITE_STATS_LABEL, g_unqlite_common_fields)};
 }
 
 namespace unqlite {
@@ -72,7 +72,7 @@ ServerInfo::Stats::Stats(const std::string& common_text) {
   }
 }
 
-common::Value* ServerInfo::Stats::ValueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Stats::GetValueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::StringValue(file_name);
@@ -88,10 +88,10 @@ ServerInfo::ServerInfo() : IServerInfo(UNQLITE) {}
 
 ServerInfo::ServerInfo(const Stats& stats) : IServerInfo(UNQLITE), stats_(stats) {}
 
-common::Value* ServerInfo::ValueByIndexes(unsigned char property, unsigned char field) const {
+common::Value* ServerInfo::GetValueByIndexes(unsigned char property, unsigned char field) const {
   switch (property) {
     case 0:
-      return stats_.ValueByIndex(field);
+      return stats_.GetValueByIndex(field);
     default:
       break;
   }
@@ -115,7 +115,7 @@ ServerInfo* MakeUnqliteServerInfo(const std::string& content) {
 
   ServerInfo* result = new ServerInfo;
 
-  static const std::vector<info_field_t> fields = DBTraits<UNQLITE>::InfoFields();
+  static const std::vector<info_field_t> fields = DBTraits<UNQLITE>::GetInfoFields();
   std::string word;
   DCHECK_EQ(fields.size(), 1);
 
@@ -137,7 +137,7 @@ std::string ServerInfo::ToString() const {
   return str.str();
 }
 
-uint32_t ServerInfo::Version() const {
+uint32_t ServerInfo::GetVersion() const {
   return 0;
 }
 

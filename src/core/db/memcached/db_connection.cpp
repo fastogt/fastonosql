@@ -656,7 +656,7 @@ common::Error DBConnection::FlushDBImpl() {
 }
 
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
-  if (name != CurrentDBName()) {
+  if (name != GetCurrentDBName()) {
     return ICommandTranslator::InvalidInputArguments(DB_SELECTDB_COMMAND);
   }
 
@@ -698,7 +698,7 @@ common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
 common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) {
   const NKey cur = key.GetKey();
   key_t key_str = cur.GetKey();
-  std::string value_str = key.ValueString();
+  std::string value_str = key.GetValueString();
   common::Error err = SetInner(key_str, value_str, 0, 0);
   if (err) {
     return err;

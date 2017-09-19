@@ -39,23 +39,24 @@ namespace core {
 
 namespace {
 
-const std::vector<Field> LeveldbCommonFields = {Field(LEVELDB_CAMPACTIONS_LEVEL_LABEL, common::Value::TYPE_UINTEGER),
-                                                Field(LEVELDB_FILE_SIZE_MB_LABEL, common::Value::TYPE_UINTEGER),
-                                                Field(LEVELDB_TIME_SEC_LABEL, common::Value::TYPE_UINTEGER),
-                                                Field(LEVELDB_READ_MB_LABEL, common::Value::TYPE_UINTEGER),
-                                                Field(LEVELDB_WRITE_MB_LABEL, common::Value::TYPE_UINTEGER)};
+const std::vector<Field> g_leveldb_common_fields = {
+    Field(LEVELDB_CAMPACTIONS_LEVEL_LABEL, common::Value::TYPE_UINTEGER),
+    Field(LEVELDB_FILE_SIZE_MB_LABEL, common::Value::TYPE_UINTEGER),
+    Field(LEVELDB_TIME_SEC_LABEL, common::Value::TYPE_UINTEGER),
+    Field(LEVELDB_READ_MB_LABEL, common::Value::TYPE_UINTEGER),
+    Field(LEVELDB_WRITE_MB_LABEL, common::Value::TYPE_UINTEGER)};
 
 }  // namespace
 
 template <>
-std::vector<common::Value::Type> DBTraits<LEVELDB>::SupportedTypes() {
+std::vector<common::Value::Type> DBTraits<LEVELDB>::GetSupportedTypes() {
   return {common::Value::TYPE_BOOLEAN, common::Value::TYPE_INTEGER, common::Value::TYPE_UINTEGER,
           common::Value::TYPE_DOUBLE, common::Value::TYPE_STRING};
 }
 
 template <>
-std::vector<info_field_t> DBTraits<LEVELDB>::InfoFields() {
-  return {std::make_pair(LEVELDB_STATS_LABEL, LeveldbCommonFields)};
+std::vector<info_field_t> DBTraits<LEVELDB>::GetInfoFields() {
+  return {std::make_pair(LEVELDB_STATS_LABEL, g_leveldb_common_fields)};
 }
 
 namespace leveldb {
@@ -101,7 +102,7 @@ ServerInfo::Stats::Stats(const std::string& common_text) {
   }
 }
 
-common::Value* ServerInfo::Stats::ValueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Stats::GetValueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::FundamentalValue(compactions_level);
@@ -125,10 +126,10 @@ ServerInfo::ServerInfo() : IServerInfo(LEVELDB) {}
 
 ServerInfo::ServerInfo(const Stats& stats) : IServerInfo(LEVELDB), stats_(stats) {}
 
-common::Value* ServerInfo::ValueByIndexes(unsigned char property, unsigned char field) const {
+common::Value* ServerInfo::GetValueByIndexes(unsigned char property, unsigned char field) const {
   switch (property) {
     case 0:
-      return stats_.ValueByIndex(field);
+      return stats_.GetValueByIndex(field);
     default:
       break;
   }
@@ -154,7 +155,7 @@ ServerInfo* MakeLeveldbServerInfo(const std::string& content) {
   }
 
   ServerInfo* result = new ServerInfo;
-  static const std::vector<info_field_t> fields = DBTraits<LEVELDB>::InfoFields();
+  static const std::vector<info_field_t> fields = DBTraits<LEVELDB>::GetInfoFields();
   std::string word;
   DCHECK_EQ(fields.size(), 1);
 
@@ -176,7 +177,7 @@ std::string ServerInfo::ToString() const {
   return str.str();
 }
 
-uint32_t ServerInfo::Version() const {
+uint32_t ServerInfo::GetVersion() const {
   return 0;
 }
 

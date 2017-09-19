@@ -190,7 +190,7 @@ common::Error Driver::CurrentDataBaseInfo(core::IDataBaseInfo** info) {
     return common::make_error_inval();
   }
 
-  return impl_->Select(impl_->CurrentDBName(), info);
+  return impl_->Select(impl_->GetCurrentDBName(), info);
 }
 
 void Driver::HandleShutdownEvent(events::ShutDownRequestEvent* ev) {
@@ -306,11 +306,11 @@ void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
     return;
   }
 
-  core::FastoObject::childs_t rchildrens = cmd->Childrens();
+  core::FastoObject::childs_t rchildrens = cmd->GetChildrens();
   CHECK_EQ(rchildrens.size(), 1);
   core::FastoObjectArray* array = dynamic_cast<core::FastoObjectArray*>(rchildrens[0].get());  // +
   CHECK(array);
-  common::ArrayValue* ar = array->Array();
+  common::ArrayValue* ar = array->GetArray();
   CHECK(ar);
 
   core::IDataBaseInfoSPtr curdb(info);
@@ -347,7 +347,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   if (err) {
     res.setErrorInfo(err);
   } else {
-    core::FastoObject::childs_t rchildrens = cmd->Childrens();
+    core::FastoObject::childs_t rchildrens = cmd->GetChildrens();
     if (rchildrens.size()) {
       CHECK_EQ(rchildrens.size(), 1);
       core::FastoObjectArray* array = dynamic_cast<core::FastoObjectArray*>(rchildrens[0].get());  // +
@@ -355,7 +355,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         goto done;
       }
 
-      common::ArrayValue* arm = array->Array();
+      common::ArrayValue* arm = array->GetArray();
       if (!arm->GetSize()) {
         goto done;
       }
@@ -371,7 +371,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         res.cursor_out = lcursor;
       }
 
-      rchildrens = array->Childrens();
+      rchildrens = array->GetChildrens();
       if (!rchildrens.size()) {
         goto done;
       }
@@ -382,7 +382,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         goto done;
       }
 
-      common::ArrayValue* ar = arr->Array();
+      common::ArrayValue* ar = arr->GetArray();
       if (ar->IsEmpty()) {
         goto done;
       }
@@ -414,7 +414,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
 
       for (size_t i = 0; i < res.keys.size(); ++i) {
         core::FastoObjectIPtr cmdType = cmds[i * 2];
-        core::FastoObject::childs_t tchildrens = cmdType->Childrens();
+        core::FastoObject::childs_t tchildrens = cmdType->GetChildrens();
         if (tchildrens.size()) {
           DCHECK_EQ(tchildrens.size(), 1);
           if (tchildrens.size() == 1) {
@@ -426,11 +426,11 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         }
 
         core::FastoObjectIPtr cmdType2 = cmds[i * 2 + 1];
-        tchildrens = cmdType2->Childrens();
+        tchildrens = cmdType2->GetChildrens();
         if (tchildrens.size()) {
           DCHECK_EQ(tchildrens.size(), 1);
           if (tchildrens.size() == 1) {
-            auto vttl = tchildrens[0]->Value();
+            auto vttl = tchildrens[0]->GetValue();
             core::ttl_t ttl = 0;
             if (vttl->GetAsLongLongInteger(&ttl)) {
               core::NKey key = res.keys[i].GetKey();
@@ -461,7 +461,7 @@ void Driver::HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEven
   if (err) {
     res.setErrorInfo(err);
   } else {
-    core::FastoObject::childs_t ch = cmd->Childrens();
+    core::FastoObject::childs_t ch = cmd->GetChildrens();
     if (ch.size()) {
       CHECK_EQ(ch.size(), 1);
       core::FastoObjectArray* array = dynamic_cast<core::FastoObjectArray*>(ch[0].get());  // +
@@ -511,7 +511,7 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
     res.setErrorInfo(err);
     goto done;
   } else {
-    core::FastoObject::childs_t rchildrens = cmd->Childrens();
+    core::FastoObject::childs_t rchildrens = cmd->GetChildrens();
     if (rchildrens.size()) {
       CHECK_EQ(rchildrens.size(), 1);
       core::FastoObjectArray* array = dynamic_cast<core::FastoObjectArray*>(rchildrens[0].get());  // +
@@ -519,7 +519,7 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
         goto done;
       }
 
-      common::ArrayValue* arm = array->Array();
+      common::ArrayValue* arm = array->GetArray();
       if (!arm->GetSize()) {
         goto done;
       }
@@ -546,13 +546,13 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
 
       for (size_t i = 0; i < res.channels.size(); ++i) {
         core::FastoObjectIPtr subCount = cmds[i];
-        core::FastoObject::childs_t tchildrens = subCount->Childrens();
+        core::FastoObject::childs_t tchildrens = subCount->GetChildrens();
         if (tchildrens.size()) {
           DCHECK_EQ(tchildrens.size(), 1);
           if (tchildrens.size() == 1) {
             core::FastoObjectArray* array_sub = dynamic_cast<core::FastoObjectArray*>(tchildrens[0].get());  // +
             if (array_sub) {
-              common::ArrayValue* array_sub_inner = array_sub->Array();
+              common::ArrayValue* array_sub_inner = array_sub->GetArray();
               common::Value* fund_sub = nullptr;
               if (array_sub_inner->Get(1, &fund_sub)) {
                 std::string lsub_str;

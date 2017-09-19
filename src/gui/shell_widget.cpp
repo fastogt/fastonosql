@@ -495,7 +495,7 @@ void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
   common::ConvertFromString(server_label, &qserver_label);
   serverName_->setText(qserver_label);
 
-  uint32_t serv_vers = inf->Version();
+  uint32_t serv_vers = inf->GetVersion();
   if (serv_vers == UNDEFINED_SINCE) {
     return;
   }

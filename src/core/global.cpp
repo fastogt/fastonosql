@@ -35,7 +35,7 @@ FastoObject::~FastoObject() {
   Clear();
 }
 
-common::Value::Type FastoObject::Type() const {
+common::Value::Type FastoObject::GetType() const {
   if (!value_) {
     return common::Value::TYPE_NULL;
   }
@@ -53,7 +53,7 @@ FastoObject* FastoObject::CreateRoot(const command_buffer_t& text, IFastoObjectO
   return root;
 }
 
-FastoObject::childs_t FastoObject::Childrens() const {
+FastoObject::childs_t FastoObject::GetChildrens() const {
   return childrens_;
 }
 
@@ -82,7 +82,7 @@ std::string FastoObject::GetDelimiter() const {
   return delimiter_;
 }
 
-FastoObject::value_t FastoObject::Value() const {
+FastoObject::value_t FastoObject::GetValue() const {
   return value_;
 }
 
@@ -106,31 +106,11 @@ std::string FastoObjectCommand::ToString() const {
   return std::string();
 }
 
-command_buffer_t FastoObjectCommand::InputCmd() const {
-  command_buffer_t input_cmd;
-  if (value_->GetAsString(&input_cmd)) {
-    std::pair<command_buffer_t, command_buffer_t> kv = GetKeyValueFromLine(input_cmd);
-    return kv.first;
-  }
-
-  return command_buffer_t();
-}
-
-command_buffer_t FastoObjectCommand::InputArgs() const {
-  command_buffer_t input_cmd;
-  if (value_->GetAsString(&input_cmd)) {
-    std::pair<command_buffer_t, command_buffer_t> kv = GetKeyValueFromLine(input_cmd);
-    return kv.second;
-  }
-
-  return command_buffer_t();
-}
-
-core::connectionTypes FastoObjectCommand::ConnectionType() const {
+core::connectionTypes FastoObjectCommand::GetConnectionType() const {
   return type_;
 }
 
-command_buffer_t FastoObjectCommand::InputCommand() const {
+command_buffer_t FastoObjectCommand::GetInputCommand() const {
   command_buffer_t input_cmd;
   if (value_->GetAsString(&input_cmd)) {
     return input_cmd;
@@ -139,26 +119,8 @@ command_buffer_t FastoObjectCommand::InputCommand() const {
   return command_buffer_t();
 }
 
-CmdLoggingType FastoObjectCommand::CommandLoggingType() const {
+CmdLoggingType FastoObjectCommand::GetCommandLoggingType() const {
   return ct_;
-}
-
-std::pair<command_buffer_t, command_buffer_t> GetKeyValueFromLine(const command_buffer_t& input) {
-  if (input.empty()) {
-    return std::pair<command_buffer_t, command_buffer_t>();
-  }
-
-  size_t pos = input.find_first_of(' ');
-  command_buffer_t key = input;
-  command_buffer_t value;
-  if (pos != command_buffer_t::npos) {
-    key = input.substr(0, pos);
-    value = input.substr(pos + 1);
-  }
-
-  command_buffer_t trimed;
-  common::TrimWhitespaceASCII(value, common::TRIM_ALL, &trimed);
-  return std::make_pair(key, trimed);
 }
 
 FastoObjectArray::FastoObjectArray(FastoObject* parent, common::ArrayValue* ar, const std::string& delimiter)
@@ -170,11 +132,11 @@ void FastoObjectArray::Append(common::Value* in_value) {
 }
 
 std::string FastoObjectArray::ToString() const {
-  common::ArrayValue* ar = Array();
+  common::ArrayValue* ar = GetArray();
   return ConvertToString(ar, GetDelimiter());
 }
 
-common::ArrayValue* FastoObjectArray::Array() const {
+common::ArrayValue* FastoObjectArray::GetArray() const {
   return static_cast<common::ArrayValue*>(value_.get());
 }
 
@@ -194,7 +156,7 @@ std::string ConvertToString(fastonosql::core::FastoObject* obj) {
     result += str + obj->GetDelimiter();
   }
 
-  auto childrens = obj->Childrens();
+  auto childrens = obj->GetChildrens();
   for (auto it = childrens.begin(); it != childrens.end(); ++it) {
     result += ConvertToString((*it).get());
   }
@@ -354,6 +316,10 @@ std::string ConvertToString(common::HashValue* hash, const std::string& delimite
 
 std::string ConvertToString(FundamentalValue* value, const std::string& delimiter) {
   UNUSED(delimiter);
+  if (!value) {
+    return std::string();
+  }
+
   const Value::Type t = value->GetType();
   if (t == Value::TYPE_BOOLEAN) {
     bool res;
@@ -409,6 +375,10 @@ std::string ConvertToString(FundamentalValue* value, const std::string& delimite
 
 std::string ConvertToString(StringValue* value, const std::string& delimiter) {
   UNUSED(delimiter);
+  if (!value) {
+    return std::string();
+  }
+
   std::string res;
   if (!value->GetAsString(&res)) {
     return std::string();
@@ -419,6 +389,10 @@ std::string ConvertToString(StringValue* value, const std::string& delimiter) {
 
 std::string ConvertToString(ByteArrayValue* value, const std::string& delimiter) {
   UNUSED(delimiter);
+  if (!value) {
+    return std::string();
+  }
+
   byte_array_t res;
   if (!value->GetAsByteArray(&res)) {
     return std::string();

@@ -55,7 +55,7 @@ common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, comm
   command_buffer_writer_t wr;
   const NKey cur = key.GetKey();
   key_t key_str = cur.GetKey();
-  std::string value_str = key.ValueString();
+  std::string value_str = key.GetValueString();
   common::Value::Type type = key.GetType();
   if (type == common::Value::TYPE_ARRAY) {
     wr << SSDB_SET_KEY_ARRAY_COMMAND << " " << key_str.GetKeyData() << " " << value_str;

@@ -173,13 +173,13 @@ common::Error TestConnection(const Config& config) {
 DBConnection::DBConnection(CDBConnectionClient* client)
     : base_class(client, new CommandTranslator(base_class::GetCommands())) {}
 
-std::string DBConnection::CurrentDBName() const {
+std::string DBConnection::GetCurrentDBName() const {
   if (connection_.handle_) {
     return connection_.handle_->db_name;
   }
 
   DNOTREACHED();
-  return base_class::CurrentDBName();
+  return base_class::GetCurrentDBName();
 }
 
 common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* statsout) {
@@ -395,8 +395,8 @@ common::Error DBConnection::FlushDBImpl() {
 }
 
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
-  if (name != CurrentDBName()) {
-    return ICommandTranslator::InvalidInputArguments("SELECT");
+  if (name != GetCurrentDBName()) {
+    return ICommandTranslator::InvalidInputArguments(DB_SELECTDB_COMMAND);
   }
 
   size_t kcount = 0;
@@ -409,7 +409,7 @@ common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** 
 common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) {
   const NKey cur = key.GetKey();
   key_t key_str = cur.GetKey();
-  std::string value_str = key.ValueString();
+  std::string value_str = key.GetValueString();
   common::Error err = SetInner(key_str, value_str);
   if (err) {
     return err;

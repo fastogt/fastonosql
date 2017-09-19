@@ -56,7 +56,12 @@ bool ConvertFromString(const std::string& from, fastonosql::core::SSHInfo* out) 
 }
 
 std::string ConvertToString(fastonosql::core::SSHInfo::SupportedAuthenticationMetods method) {
-  return g_ssh_methods[method];
+  if (method >= 0 && method < SIZEOFMASS(g_ssh_methods)) {
+    return g_ssh_methods[method];
+  }
+
+  DNOTREACHED();
+  return g_ssh_methods[0];
 }
 
 bool ConvertFromString(const std::string& from, fastonosql::core::SSHInfo::SupportedAuthenticationMetods* out) {
@@ -71,7 +76,7 @@ bool ConvertFromString(const std::string& from, fastonosql::core::SSHInfo::Suppo
     }
   }
 
-  NOTREACHED();
+  DNOTREACHED();
   return false;
 }
 
@@ -92,14 +97,14 @@ SSHInfo::SSHInfo(const common::net::HostAndPort& host,
                  const std::string& user_name,
                  const std::string& password,
                  const std::string& public_key,
-                 const std::string& privateKey,
+                 const std::string& private_key,
                  const std::string& passphrase,
                  SupportedAuthenticationMetods method)
     : host(host),
       user_name(user_name),
       password(password),
       public_key(public_key),
-      private_key(privateKey),
+      private_key(private_key),
       passphrase(passphrase),
       current_method(method) {}
 
@@ -150,12 +155,12 @@ bool SSHInfo::IsValid() const {
     return host.IsValid() && !user_name.empty() && !password.empty();
   } else if (current_method == PUBLICKEY) {
     return host.IsValid() && !user_name.empty() && !private_key.empty();
-  } else {
-    return false;
   }
+
+  return false;
 }
 
-SSHInfo::SupportedAuthenticationMetods SSHInfo::AuthMethod() const {
+SSHInfo::SupportedAuthenticationMetods SSHInfo::GetAuthMethod() const {
   return current_method;
 }
 

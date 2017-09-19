@@ -37,7 +37,7 @@ namespace fastonosql {
 namespace core {
 
 namespace {
-const std::vector<Field> memcachedCommonFields = {
+const std::vector<Field> g_memcached_common_fields = {
     Field(MEMCACHED_PID_LABEL, common::Value::TYPE_UINTEGER),
     Field(MEMCACHED_UPTIME_LABEL, common::Value::TYPE_UINTEGER),
     Field(MEMCACHED_TIME_LABEL, common::Value::TYPE_UINTEGER),
@@ -63,14 +63,14 @@ const std::vector<Field> memcachedCommonFields = {
 }  // namespace
 
 template <>
-std::vector<common::Value::Type> DBTraits<MEMCACHED>::SupportedTypes() {
+std::vector<common::Value::Type> DBTraits<MEMCACHED>::GetSupportedTypes() {
   return {common::Value::TYPE_BOOLEAN, common::Value::TYPE_INTEGER, common::Value::TYPE_UINTEGER,
           common::Value::TYPE_DOUBLE, common::Value::TYPE_STRING};
 }
 
 template <>
-std::vector<info_field_t> DBTraits<MEMCACHED>::InfoFields() {
-  return {std::make_pair(MEMCACHED_COMMON_LABEL, memcachedCommonFields)};
+std::vector<info_field_t> DBTraits<MEMCACHED>::GetInfoFields() {
+  return {std::make_pair(MEMCACHED_COMMON_LABEL, g_memcached_common_fields)};
 }
 
 namespace memcached {
@@ -198,7 +198,7 @@ ServerInfo::Stats::Stats(const std::string& common_text) {
   }
 }
 
-common::Value* ServerInfo::Stats::ValueByIndex(unsigned char index) const {
+common::Value* ServerInfo::Stats::GetValueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::FundamentalValue(pid);
@@ -256,10 +256,10 @@ ServerInfo::ServerInfo() : IServerInfo(MEMCACHED) {}
 
 ServerInfo::ServerInfo(const Stats& common) : IServerInfo(MEMCACHED), stats_(common) {}
 
-common::Value* ServerInfo::ValueByIndexes(unsigned char property, unsigned char field) const {
+common::Value* ServerInfo::GetValueByIndexes(unsigned char property, unsigned char field) const {
   switch (property) {
     case 0:
-      return stats_.ValueByIndex(field);
+      return stats_.GetValueByIndex(field);
     default:
       break;
   }
@@ -299,7 +299,7 @@ ServerInfo* MakeMemcachedServerInfo(const std::string& content) {
   size_t j = 0;
   std::string word;
   size_t pos = 0;
-  static const std::vector<info_field_t> fields = DBTraits<MEMCACHED>::InfoFields();
+  static const std::vector<info_field_t> fields = DBTraits<MEMCACHED>::GetInfoFields();
   for (size_t i = 0; i < content.size(); ++i) {
     char ch = content[i];
     word += ch;
@@ -335,7 +335,7 @@ std::string ServerInfo::ToString() const {
   return str.str();
 }
 
-uint32_t ServerInfo::Version() const {
+uint32_t ServerInfo::GetVersion() const {
   return common::ConvertVersionNumberFromString(stats_.version);
 }
 

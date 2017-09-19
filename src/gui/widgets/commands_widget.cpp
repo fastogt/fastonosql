@@ -48,10 +48,10 @@ CommandsWidget::CommandsWidget(QWidget* parent) : QWidget(parent), logTextEdit_(
 
 void CommandsWidget::addCommand(core::FastoObjectCommandIPtr command) {
   QTime time = QTime::currentTime();
-  logTextEdit_->setTextColor(command->CommandLoggingType() == core::C_INNER ? QColor(Qt::gray) : QColor(Qt::black));
+  logTextEdit_->setTextColor(command->GetCommandLoggingType() == core::C_INNER ? QColor(Qt::gray) : QColor(Qt::black));
   QString mess;
-  common::ConvertFromString(command->InputCommand(), &mess);
-  std::string stype = common::ConvertToString(command->ConnectionType());
+  common::ConvertFromString(command->GetInputCommand(), &mess);
+  std::string stype = common::ConvertToString(command->GetConnectionType());
   QString qstype;
   common::ConvertFromString(stype, &qstype);
   logTextEdit_->append(time.toString("[%1] hh:mm:ss.zzz: %2").arg(qstype.toUpper(), mess));

@@ -68,7 +68,7 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>,
 
   static const ConstantCommandsArray& GetCommands();
 
-  std::string CurrentDBName() const;                                                 //
+  std::string GetCurrentDBName() const;                                              //
   common::Error Help(commands_args_t argv, std::string* answer) WARN_UNUSED_RESULT;  //
 
   common::Error Scan(uint64_t cursor_in,
@@ -117,7 +117,7 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>,
 };
 
 template <typename NConnection, typename Config, connectionTypes ContType>
-std::string CDBConnection<NConnection, Config, ContType>::CurrentDBName() const {
+std::string CDBConnection<NConnection, Config, ContType>::GetCurrentDBName() const {
   return "default";
 }
 

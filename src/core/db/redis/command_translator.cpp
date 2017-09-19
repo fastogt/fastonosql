@@ -130,7 +130,7 @@ common::Error CommandTranslator::SetEx(const NDbKValue& key, ttl_t ttl, command_
 
   const NKey cur = key.GetKey();
   key_t key_str = cur.GetKey();
-  std::string value_str = key.ValueString();
+  std::string value_str = key.GetValueString();
   command_buffer_writer_t wr;
   wr << REDIS_SETEX << " " << key_str.GetKeyData() << " " << ttl << " " << value_str;
   *cmdstring = wr.str();
@@ -144,7 +144,7 @@ common::Error CommandTranslator::SetNX(const NDbKValue& key, command_buffer_t* c
 
   const NKey cur = key.GetKey();
   key_t key_str = cur.GetKey();
-  std::string value_str = key.ValueString();
+  std::string value_str = key.GetValueString();
   command_buffer_writer_t wr;
   wr << REDIS_SETNX << " " << key_str.GetKeyData() << " " << value_str;
   *cmdstring = wr.str();
@@ -214,7 +214,7 @@ common::Error CommandTranslator::IncrByFloat(const NKey& key, double inc, comman
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, command_buffer_t* cmdstring) const {
   const NKey cur = key.GetKey();
   key_t key_str = cur.GetKey();
-  std::string value_str = key.ValueString();
+  std::string value_str = key.GetValueString();
   command_buffer_writer_t wr;
   common::Value::Type type = key.GetType();
   if (type == common::Value::TYPE_ARRAY) {

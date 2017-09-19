@@ -35,16 +35,16 @@ class ServerInfo : public IServerInfo {
   struct Stats : IStateField {
     Stats();
     explicit Stats(const std::string& common_text);
-    common::Value* ValueByIndex(unsigned char index) const override;
+    common::Value* GetValueByIndex(unsigned char index) const override;
     std::string file_name;
   } stats_;
 
   ServerInfo();
   explicit ServerInfo(const Stats& stats);
 
-  virtual common::Value* ValueByIndexes(unsigned char property, unsigned char field) const override;
+  virtual common::Value* GetValueByIndexes(unsigned char property, unsigned char field) const override;
   virtual std::string ToString() const override;
-  virtual uint32_t Version() const override;
+  virtual uint32_t GetVersion() const override;
 };
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo& value);

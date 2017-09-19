@@ -196,13 +196,13 @@ common::Error TestConnection(const Config& config) {
 DBConnection::DBConnection(CDBConnectionClient* client)
     : base_class(client, new CommandTranslator(base_class::GetCommands())) {}
 
-std::string DBConnection::CurrentDBName() const {
+std::string DBConnection::GetCurrentDBName() const {
   if (connection_.handle_) {
     return common::ConvertToString(connection_.handle_->cur_db);
   }
 
   DNOTREACHED();
-  return base_class::CurrentDBName();
+  return base_class::GetCurrentDBName();
 }
 
 common::Error DBConnection::Connect(const config_t& config) {
@@ -460,7 +460,7 @@ common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** 
 common::Error DBConnection::SetImpl(const NDbKValue& key, NDbKValue* added_key) {
   const NKey cur = key.GetKey();
   key_t key_str = cur.GetKey();
-  std::string value_str = key.ValueString();
+  std::string value_str = key.GetValueString();
   common::Error err = SetInner(key_str, value_str);
   if (err) {
     return err;

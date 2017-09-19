@@ -36,8 +36,8 @@ struct Field {
 typedef std::pair<std::string, std::vector<Field>> info_field_t;
 template <connectionTypes ct>
 struct DBTraits {
-  static std::vector<common::Value::Type> SupportedTypes();
-  static std::vector<info_field_t> InfoFields();
+  static std::vector<common::Value::Type> GetSupportedTypes();
+  static std::vector<info_field_t> GetInfoFields();
 };
 
 std::vector<common::Value::Type> SupportedTypesFromType(connectionTypes type);
