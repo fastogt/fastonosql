@@ -23,15 +23,8 @@
 #include <common/net/types.h>  // for ConvertToString
 
 #include <common/qt/convert2string.h>
-#include <common/qt/gui/base/tree_item.h>   // for TreeItem, findItemRecursive, etc
-#include <common/qt/gui/base/tree_model.h>  // for TreeModel
-#include <common/qt/logger.h>
 #include <common/qt/utils_qt.h>  // for item
 
-#include "proxy/cluster/icluster.h"       // for ICluster
-#include "proxy/database/idatabase.h"     // for IDatabase
-#include "proxy/events/events_info.h"     // for CommandRequest, etc
-#include "proxy/sentinel/isentinel.h"     // for ISentinel, Sentinel, etc
 #include "proxy/server/iserver_local.h"   // for IServer, IServerRemote, etc
 #include "proxy/server/iserver_remote.h"  // for IServer, IServerRemote, etc
 

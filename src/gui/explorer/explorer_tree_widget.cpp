@@ -29,6 +29,7 @@
 
 namespace fastonosql {
 namespace gui {
+
 ExplorerTreeWidget::ExplorerTreeWidget(QWidget* parent) : QWidget(parent) {
   QVBoxLayout* main_layout = new QVBoxLayout;
 
@@ -88,5 +89,6 @@ void ExplorerTreeWidget::changeEvent(QEvent* e) {
 void ExplorerTreeWidget::retranslateUi() {
   filter_edit_->setPlaceholderText(translations::trSearching);
 }
+
 }  // namespace gui
 }  // namespace fastonosql

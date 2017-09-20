@@ -23,17 +23,11 @@
 #include <common/qt/gui/base/tree_item.h>  // for TreeItem
 
 #include "core/database/idatabase_info.h"
-#include "core/db_key.h"      // for NDbKValue, etc
 #include "proxy/proxy_fwd.h"  // for IServerSPtr, IClusterSPtr, etc
 
 namespace fastonosql {
-namespace proxy {
-class IServer;
-}
-}  // namespace fastonosql
-
-namespace fastonosql {
 namespace gui {
+
 class IExplorerTreeItem : public common::qt::gui::TreeItem {
  public:
   enum eColumn { eName = 0, eCountColumns };
@@ -159,5 +153,6 @@ class ExplorerKeyItem : public IExplorerTreeItem {
  private:
   core::NDbKValue dbv_;
 };
+
 }  // namespace gui
 }  // namespace fastonosql
