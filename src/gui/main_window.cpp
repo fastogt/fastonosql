@@ -250,7 +250,6 @@ MainWindow::MainWindow() : QMainWindow(), isCheckedInSession_(false) {
   addDockWidget(Qt::BottomDockWidgetArea, logDock_);
 
   setMinimumSize(QSize(min_width, min_height));
-  createToolBar();
   createStatusBar();
   retranslateUi();
 }
@@ -628,50 +627,6 @@ void MainWindow::tapAndHoldTriggered(QTapAndHoldGesture* tapEvent) {
 }
 #endif
 
-void MainWindow::createToolBar() {
-  QToolBar* toolBar = new QToolBar(tr("Share toolbar"));
-
-  facebookAction_ = new QAction(this);
-  facebookAction_->setIcon(GuiFactory::GetInstance().facebookIcon());
-  VERIFY(connect(facebookAction_, &QAction::triggered, this, &MainWindow::openFacebookLink));
-
-  twitterAction_ = new QAction(this);
-  twitterAction_->setIcon(GuiFactory::GetInstance().twitterIcon());
-  VERIFY(connect(twitterAction_, &QAction::triggered, this, &MainWindow::openTwitterLink));
-
-  githubAction_ = new QAction(this);
-  githubAction_->setIcon(GuiFactory::GetInstance().githubIcon());
-  VERIFY(connect(githubAction_, &QAction::triggered, this, &MainWindow::openGithubLink));
-
-  homePageAction_ = new QAction(this);
-  homePageAction_->setIcon(GuiFactory::GetInstance().homePageIcon());
-  VERIFY(connect(homePageAction_, &QAction::triggered, this, &MainWindow::openHomePageLink));
-
-  toolBar->addAction(homePageAction_);
-  toolBar->addAction(facebookAction_);
-  toolBar->addAction(twitterAction_);
-  toolBar->addAction(githubAction_);
-
-  toolBar->setMovable(false);
-  addToolBar(Qt::TopToolBarArea, toolBar);
-}
-
-void MainWindow::openHomePageLink() {
-  QDesktopServices::openUrl(QUrl(PROJECT_HOMEPAGE_LINK));
-}
-
-void MainWindow::openFacebookLink() {
-  QDesktopServices::openUrl(QUrl(PROJECT_FACEBOOK_LINK));
-}
-
-void MainWindow::openTwitterLink() {
-  QDesktopServices::openUrl(QUrl(PROJECT_TWITTER_LINK));
-}
-
-void MainWindow::openGithubLink() {
-  QDesktopServices::openUrl(QUrl(PROJECT_GITHUB_LINK));
-}
-
 void MainWindow::createStatusBar() {}
 
 void MainWindow::retranslateUi() {
@@ -695,11 +650,6 @@ void MainWindow::retranslateUi() {
   logsAction_->setText(translations::trLogs);
   recentConnections_->setText(translations::trRecentConnections);
   clearMenu_->setText(translations::trClearMenu);
-
-  homePageAction_->setText(tr("%1 home page").arg(PROJECT_NAME_TITLE));
-  facebookAction_->setText(tr("Facebook %1 link").arg(PROJECT_NAME_TITLE));
-  twitterAction_->setText(tr("Twitter %1 link").arg(PROJECT_NAME_TITLE));
-  githubAction_->setText(tr("Github %1 link").arg(PROJECT_NAME_TITLE));
 
   expDock_->setWindowTitle(translations::trExpTree);
   logDock_->setWindowTitle(translations::trLogs);

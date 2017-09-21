@@ -68,11 +68,6 @@ class MainWindow : public QMainWindow {
   void importConnection();
   void exportConnection();
 
-  void openHomePageLink();
-  void openFacebookLink();
-  void openTwitterLink();
-  void openGithubLink();
-
   void versionAvailible(bool succesResult, const QString& version);
   void statitsticSent(bool succesResult);
 
@@ -89,7 +84,6 @@ class MainWindow : public QMainWindow {
 #endif
 
  private:
-  void createToolBar();
   void createStatusBar();
   void retranslateUi();
   void updateRecentConnectionActions();
@@ -119,11 +113,6 @@ class MainWindow : public QMainWindow {
   QAction* recentConnections_;
   QAction* clearMenu_;
   QAction* recentConnectionsActs_[max_recent_connections];
-
-  QAction* homePageAction_;
-  QAction* facebookAction_;
-  QAction* twitterAction_;
-  QAction* githubAction_;
 
   ExplorerTreeWidget* exp_;
   QDockWidget* expDock_;
