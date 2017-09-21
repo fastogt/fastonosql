@@ -18,15 +18,7 @@
 
 #include "core/db/rocksdb/internal/commands_api.h"
 
-#include <stddef.h>  // for size_t
-#include <memory>    // for __shared_ptr
-#include <string>    // for string
-
-#include <common/macros.h>  // for UNUSED
-#include <common/value.h>   // for Value, ErrorValue, etc
-
 #include "core/db/rocksdb/db_connection.h"
-#include "core/db/rocksdb/server_info.h"  // for ServerInfo, etc
 
 namespace fastonosql {
 namespace core {

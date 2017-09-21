@@ -27,8 +27,6 @@
 #include "proxy/db/lmdb/command.h"              // for Command
 #include "proxy/db/lmdb/connection_settings.h"  // for ConnectionSettings
 
-#define LMDB_INFO_REQUEST "INFO"
-
 #define LMDB_GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
 
 namespace fastonosql {
@@ -107,7 +105,7 @@ common::Error Driver::ExecuteImpl(const core::command_buffer_t& command, core::F
 }
 
 common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
-  core::FastoObjectCommandIPtr cmd = CreateCommandFast(LMDB_INFO_REQUEST, core::C_INNER);
+  core::FastoObjectCommandIPtr cmd = CreateCommandFast(DB_INFO_COMMAND, core::C_INNER);
   LOG_COMMAND(cmd);
   core::lmdb::ServerInfo::Stats cm;
   common::Error err = impl_->Info(std::string(), &cm);

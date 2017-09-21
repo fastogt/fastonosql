@@ -18,17 +18,9 @@
 
 #include "core/db/ssdb/db_connection.h"
 
-#include <memory>  // for __shared_ptr
-
 #include <SSDB.h>  // for Status, Client
 
-#include <common/convert2string.h>  // for ConvertFromString
-#include <common/net/types.h>       // for HostAndPort
-#include <common/sprintf.h>         // for MemSPrintf
-#include <common/value.h>           // for Value, etc
-
 #include "core/db/ssdb/command_translator.h"
-#include "core/db/ssdb/config.h"  // for Config
 #include "core/db/ssdb/database_info.h"
 #include "core/db/ssdb/internal/commands_api.h"
 

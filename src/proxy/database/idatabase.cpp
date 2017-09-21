@@ -26,17 +26,12 @@ namespace proxy {
 IDatabase::IDatabase(IServerSPtr server, core::IDataBaseInfoSPtr info) : info_(info), server_(server) {
   CHECK(server);
   CHECK(info);
-  CHECK(server->GetType() == info->GetType());
 }
 
 IDatabase::~IDatabase() {}
 
 IServerSPtr IDatabase::GetServer() const {
   return server_;
-}
-
-core::connectionTypes IDatabase::GetType() const {
-  return info_->GetType();
 }
 
 bool IDatabase::IsDefault() const {

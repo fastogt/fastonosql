@@ -23,7 +23,7 @@ namespace core {
 namespace memcached {
 
 DataBaseInfo::DataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_container_t& keys)
-    : IDataBaseInfo(name, isDefault, MEMCACHED, size, keys) {}
+    : IDataBaseInfo(name, isDefault, size, keys) {}
 
 DataBaseInfo* DataBaseInfo::Clone() const {
   return new DataBaseInfo(*this);

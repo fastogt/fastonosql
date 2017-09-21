@@ -26,7 +26,6 @@
 #include "core/global.h"
 #include "core/ssh_info.h"
 
-#define INFO_REQUEST "INFO"
 #define GET_SERVER_TYPE "CLUSTER NODES"
 #define GET_SENTINEL_MASTERS "SENTINEL MASTERS"
 #define GET_SENTINEL_SLAVES_PATTERN_1ARGS_S "SENTINEL SLAVES %s"

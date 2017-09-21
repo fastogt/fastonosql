@@ -269,7 +269,7 @@ void IDriver::timerEvent(QTimerEvent* event) {
         return;
       }
 
-      struct core::ServerInfoSnapShoot shot(time, core::IServerInfoSPtr(info));
+      core::ServerInfoSnapShoot shot(time, core::IServerInfoSPtr(info));
       emit ServerInfoSnapShoot(shot);
 
       log_file_->Write(stamp);
@@ -462,7 +462,7 @@ void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
       bool res = readFile.ReadLine(&data);
       if (!res || readFile.IsEOF()) {
         if (curStamp) {
-          struct core::ServerInfoSnapShoot shoot(curStamp, MakeServerInfoFromString(common::ConvertToString(dataInfo)));
+          core::ServerInfoSnapShoot shoot(curStamp, MakeServerInfoFromString(common::ConvertToString(dataInfo)));
           tmpInfos.push_back(shoot);
         }
         break;
@@ -472,7 +472,7 @@ void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
       bool isSt = getStamp(data, &tmpStamp);
       if (isSt) {
         if (curStamp) {
-          struct core::ServerInfoSnapShoot shoot(curStamp, MakeServerInfoFromString(common::ConvertToString(dataInfo)));
+          core::ServerInfoSnapShoot shoot(curStamp, MakeServerInfoFromString(common::ConvertToString(dataInfo)));
           tmpInfos.push_back(shoot);
         }
         curStamp = tmpStamp;

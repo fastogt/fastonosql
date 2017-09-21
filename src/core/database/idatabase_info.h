@@ -20,8 +20,7 @@
 
 #include <common/types.h>  // for ClonableBase
 
-#include "core/connection_types.h"  // for connectionTypes
-#include "core/db_key.h"            // for NDbKValue
+#include "core/db_key.h"  // for NDbKValue
 
 namespace fastonosql {
 namespace core {
@@ -29,7 +28,6 @@ namespace core {
 class IDataBaseInfo : public common::ClonableBase<IDataBaseInfo> {
  public:
   typedef std::vector<NDbKValue> keys_container_t;
-  connectionTypes GetType() const;
   std::string GetName() const;
   size_t GetDBKeysCount() const;
   void SetDBKeysCount(size_t size);
@@ -52,19 +50,13 @@ class IDataBaseInfo : public common::ClonableBase<IDataBaseInfo> {
   virtual IDataBaseInfo* Clone() const override = 0;
 
  protected:
-  IDataBaseInfo(const std::string& name,
-                bool isDefault,
-                connectionTypes type,
-                size_t dbkcount,
-                const keys_container_t& keys);
+  IDataBaseInfo(const std::string& name, bool isDefault, size_t dbkcount, const keys_container_t& keys);
 
  private:
   const std::string name_;
   bool is_default_;
   size_t db_kcount_;
   keys_container_t keys_;
-
-  const connectionTypes type_;
 };
 
 typedef std::shared_ptr<IDataBaseInfo> IDataBaseInfoSPtr;

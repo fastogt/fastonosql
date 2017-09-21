@@ -18,27 +18,13 @@
 
 #include "core/db/upscaledb/db_connection.h"
 
-#include <stdlib.h>  // for NULL, free, calloc
-#include <string.h>  // for memset
-#include <memory>    // for __shared_ptr
-#include <string>    // for string
-
 #include <ups/upscaledb.h>
 
-#include <common/convert2string.h>
 #include <common/file_system/string_path_utils.h>
-#include <common/sprintf.h>      // for MemSPrintf
-#include <common/string_util.h>  // for MatchPattern
-#include <common/types.h>        // for tribool, tribool::SUCCESS
-#include <common/utils.h>        // for c_strornull
-#include <common/value.h>        // for StringValue (ptr only)
 
-#include "core/command_holder.h"  // for CommandHolder
 #include "core/db/upscaledb/command_translator.h"
-#include "core/db/upscaledb/config.h"  // for Config
 #include "core/db/upscaledb/database_info.h"
 #include "core/db/upscaledb/internal/commands_api.h"
-#include "core/internal/connection.h"  // for Connection<>::handle_t, etc
 
 namespace fastonosql {
 namespace core {

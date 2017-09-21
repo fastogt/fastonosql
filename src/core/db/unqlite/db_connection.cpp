@@ -18,22 +18,13 @@
 
 #include "core/db/unqlite/db_connection.h"
 
-#include <memory>  // for __shared_ptr
-#include <string>  // for string, operator<, etc
-#include <vector>  // for vector
-
 extern "C" {
 #include <unqlite.h>
 }
 
-#include <common/convert2string.h>
 #include <common/file_system/string_path_utils.h>
-#include <common/sprintf.h>  // for MemSPrintf
-#include <common/utils.h>    // for c_strornull
-#include <common/value.h>    // for Value::ErrorsType::E_ERROR, etc
 
 #include "core/db/unqlite/command_translator.h"
-#include "core/db/unqlite/config.h"  // for Config
 #include "core/db/unqlite/database_info.h"
 #include "core/db/unqlite/internal/commands_api.h"
 

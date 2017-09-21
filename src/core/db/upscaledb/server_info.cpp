@@ -18,16 +18,8 @@
 
 #include "core/db/upscaledb/server_info.h"
 
-#include <stddef.h>  // for size_t
-#include <sstream>   // for operator<<, ostream, etc
-#include <string>    // for string, operator<<, etc
-#include <utility>   // for make_pair
-#include <vector>    // for vector
+#include <sstream>  // for operator<<, ostream, etc
 
-#include <common/macros.h>  // for NOTREACHED, DCHECK_EQ
-#include <common/value.h>   // for Value, Value::Type, etc
-
-#include "core/connection_types.h"  // for connectionTypes::UPSCALEDB
 #include "core/db_traits.h"
 
 #define MARKER "\r\n"

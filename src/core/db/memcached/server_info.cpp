@@ -18,17 +18,10 @@
 
 #include "core/db/memcached/server_info.h"
 
-#include <stddef.h>  // for size_t
-#include <sstream>   // for operator<<, basic_ostream, etc
-#include <string>    // for operator==, char_traits, etc
-#include <utility>   // for make_pair
-#include <vector>    // for vector
+#include <sstream>  // for operator<<, ostream, etc
 
-#include <common/convert2string.h>  // for ConvertFromString, etc
-#include <common/macros.h>          // for NOTREACHED
-#include <common/value.h>           // for FundamentalValue, Value, etc
+#include <common/convert2string.h>
 
-#include "core/connection_types.h"  // for connectionTypes::MEMCACHED
 #include "core/db_traits.h"
 
 #define MARKER "\r\n"

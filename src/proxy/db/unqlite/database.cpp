@@ -25,7 +25,6 @@ namespace unqlite {
 Database::Database(IServerSPtr server, core::IDataBaseInfoSPtr info) : IDatabase(server, info) {
   CHECK(server);
   CHECK(info);
-  CHECK(info->GetType() == core::UNQLITE);
 }
 
 }  // namespace unqlite

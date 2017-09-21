@@ -18,30 +18,12 @@
 
 #include "core/db/redis/db_connection.h"
 
-#include <errno.h>
-#include <fcntl.h>
-#include <unistd.h>
-#ifdef OS_POSIX
-#include <netinet/in.h>
-#include <netinet/tcp.h>
-#include <sys/socket.h>  // for setsockopt, SOL_SOCKET, etc
-#endif
-
 extern "C" {
 #include "sds.h"
 }
 
 #include <hiredis/hiredis.h>
 #include <libssh2.h>  // for libssh2_exit, etc
-
-#include <common/utils.h>  // for c_strornull, usleep, etc
-
-#include "core/icommand_translator.h"  // for translator_t, etc
-
-#include "core/command_holder.h"  // for CommandHolder
-
-#include "core/internal/cdb_connection_client.h"
-#include "core/internal/connection.h"  // for Connection<>::config_t, etc
 
 #include "core/db/redis/cluster_infos.h"  // for makeDiscoveryClusterInfo
 #include "core/db/redis/command_translator.h"
@@ -52,9 +34,6 @@ extern "C" {
 #define HIREDIS_VERSION    \
   STRINGIZE(HIREDIS_MAJOR) \
   "." STRINGIZE(HIREDIS_MINOR) "." STRINGIZE(HIREDIS_PATCH)
-#define REDIS_CLI_KEEPALIVE_INTERVAL 15 /* seconds */
-#define CLI_HELP_COMMAND 1
-#define CLI_HELP_GROUP 2
 
 #define DBSIZE "DBSIZE"
 
@@ -75,73 +54,6 @@ extern "C" {
 #define ANET_ERR_LEN 256
 
 namespace {
-
-void anetSetError(char* err, const char* fmt, ...) {
-  va_list ap;
-
-  if (!err) {
-    return;
-  }
-  va_start(ap, fmt);
-  vsnprintf(err, ANET_ERR_LEN, fmt, ap);
-  va_end(ap);
-}
-
-/* Set TCP keep alive option to detect dead peers. The
- * interval option
- * is only used for Linux as we are using Linux-specific
- * APIs to set
- * the probe send time, interval, and count. */
-int anetKeepAlive(char* err, int fd, int interval) {
-  int val = 1;
-  const char* cval = reinterpret_cast<const char*>(&val);
-  if (setsockopt(fd, SOL_SOCKET, SO_KEEPALIVE, cval, sizeof(val)) == -1) {
-    anetSetError(err, "setsockopt SO_KEEPALIVE: %s", strerror(errno));
-    return ANET_ERR;
-  }
-
-#ifdef __linux__
-  /* Default settings are more or less garbage, with the
-   * keepalive time
-   * set to 7200 by default on Linux. Modify settings to
-   * make the feature
-   * actually useful. */
-
-  /* Send first probe after interval. */
-  val = interval;
-  if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPIDLE, &val, sizeof(val)) < 0) {
-    anetSetError(err, "setsockopt TCP_KEEPIDLE: %s\n", strerror(errno));
-    return ANET_ERR;
-  }
-
-  /* Send next probes after the specified interval. Note
-   * that we set the
-   * delay as interval / 3, as we send three probes before
-   * detecting
-   * an error (see the next setsockopt call). */
-  val = interval / 3;
-  if (val == 0) {
-    val = 1;
-  }
-  if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPINTVL, &val, sizeof(val)) < 0) {
-    anetSetError(err, "setsockopt TCP_KEEPINTVL: %s\n", strerror(errno));
-    return ANET_ERR;
-  }
-
-  /* Consider the socket in error state after three we send
-   * three ACK
-   * probes without getting a reply. */
-  val = 3;
-  if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPCNT, &val, sizeof(val)) < 0) {
-    anetSetError(err, "setsockopt TCP_KEEPCNT: %s\n", strerror(errno));
-    return ANET_ERR;
-  }
-#else
-  UNUSED(interval);
-#endif
-
-  return ANET_OK;
-}
 
 const struct RedisInit {
   RedisInit() { libssh2_init(0); }
@@ -188,7 +100,7 @@ common::Error ConnectionAllocatorTraits<redis::NativeConnection, redis::RConfig>
   }
 
   *hout = context;
-  anetKeepAlive(NULL, context->fd, REDIS_CLI_KEEPALIVE_INTERVAL);
+  // redisEnableKeepAlive(context);
   return common::Error();
 }
 

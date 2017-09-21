@@ -18,10 +18,7 @@
 
 #include "core/db/memcached/internal/commands_api.h"
 
-#include <common/convert2string.h>
-
 #include "core/db/memcached/db_connection.h"
-#include "core/db_key.h"
 
 namespace fastonosql {
 namespace core {

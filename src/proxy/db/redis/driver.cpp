@@ -148,18 +148,20 @@ common::Error Driver::ExecuteImpl(const core::command_buffer_t& command, core::F
 }
 
 common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
-  core::FastoObjectCommandIPtr cmd = CreateCommandFast(INFO_REQUEST, core::C_INNER);
+  core::FastoObjectCommandIPtr cmd = CreateCommandFast(DB_INFO_COMMAND, core::C_INNER);
   common::Error err = Execute(cmd.get());
   if (err) {
     return err;
   }
 
   std::string content = common::ConvertToString(cmd.get());
-  *info = core::redis::MakeRedisServerInfo(content);
+  core::IServerInfo* linfo = core::redis::MakeRedisServerInfo(content);
 
-  if (!*info) {
-    return common::make_error("Invalid " INFO_REQUEST " command output");
+  if (!linfo) {
+    return common::make_error("Invalid " DB_INFO_COMMAND " command output");
   }
+
+  *info = linfo;
   return common::Error();
 }
 

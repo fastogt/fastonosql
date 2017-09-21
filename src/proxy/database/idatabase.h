@@ -37,7 +37,6 @@ class IDatabase {
   IServerSPtr GetServer() const;
   core::IDataBaseInfoSPtr GetInfo() const;
 
-  core::connectionTypes GetType() const;
   bool IsDefault() const;
   std::string GetName() const;
 

@@ -18,14 +18,6 @@
 
 #include "core/db/redis/internal/commands_api.h"
 
-#include <string.h>  // for strncmp
-#include <memory>    // for __shared_ptr
-
-#include <common/convert2string.h>
-#include <common/value.h>  // for Value, ErrorValue, etc
-
-#include "core/db_key.h"
-
 #include "core/db/redis/db_connection.h"
 
 namespace fastonosql {

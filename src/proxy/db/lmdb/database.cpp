@@ -25,7 +25,6 @@ namespace lmdb {
 Database::Database(IServerSPtr server, core::IDataBaseInfoSPtr info) : IDatabase(server, info) {
   CHECK(server);
   CHECK(info);
-  CHECK(info->GetType() == core::LMDB);
 }
 
 }  // namespace lmdb

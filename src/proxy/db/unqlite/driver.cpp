@@ -27,8 +27,6 @@
 #include "proxy/db/unqlite/command.h"              // for Command
 #include "proxy/db/unqlite/connection_settings.h"  // for ConnectionSettings
 
-#define UNQLITE_INFO_REQUEST "INFO"
-
 namespace fastonosql {
 namespace proxy {
 namespace unqlite {
@@ -106,7 +104,7 @@ common::Error Driver::ExecuteImpl(const core::command_buffer_t& command, core::F
 }
 
 common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
-  core::FastoObjectCommandIPtr cmd = CreateCommandFast(UNQLITE_INFO_REQUEST, core::C_INNER);
+  core::FastoObjectCommandIPtr cmd = CreateCommandFast(DB_INFO_COMMAND, core::C_INNER);
   LOG_COMMAND(cmd);
   core::unqlite::ServerInfo::Stats cm;
   common::Error err = impl_->Info(std::string(), &cm);

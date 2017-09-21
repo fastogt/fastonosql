@@ -127,7 +127,6 @@ proxy::IServer::database_t IServer::FindDatabase(core::IDataBaseInfoSPtr inf) co
     return database_t();
   }
 
-  CHECK(GetType() == inf->GetType());
   for (database_t db : databases_) {
     if (db->GetName() == inf->GetName()) {
       return db;

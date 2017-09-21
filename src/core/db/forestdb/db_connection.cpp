@@ -18,20 +18,12 @@
 
 #include "core/db/forestdb/db_connection.h"
 
-#include <errno.h>   // for EACCES
-#include <stdlib.h>  // for NULL, free, calloc
-#include <time.h>    // for time_t
-#include <string>    // for string
-
 #include <libforestdb/forestdb.h>
 
-#include <common/convert2string.h>
 #include <common/file_system/string_path_utils.h>
 #include <common/utils.h>  // for c_strornull
-#include <common/value.h>  // for StringValue (ptr only)
 
 #include "core/db/forestdb/command_translator.h"
-#include "core/db/forestdb/config.h"  // for Config
 #include "core/db/forestdb/database_info.h"
 #include "core/db/forestdb/internal/commands_api.h"
 

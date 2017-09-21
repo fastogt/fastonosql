@@ -18,18 +18,10 @@
 
 #include "core/db/ssdb/server_info.h"
 
-#include <stddef.h>  // for size_t
+#include <sstream>  // for operator<<, ostream, etc
 
-#include <sstream>  // for operator<<, basic_ostream, etc
-#include <string>   // for string, operator==, etc
-#include <utility>  // for make_pair
-#include <vector>   // for vector
+#include <common/convert2string.h>
 
-#include <common/convert2string.h>  // for ConvertFromString, etc
-#include <common/macros.h>          // for NOTREACHED, DCHECK_EQ
-#include <common/value.h>           // for Value, FundamentalValue, etc
-
-#include "core/connection_types.h"  // for connectionTypes::SSDB
 #include "core/db_traits.h"
 
 #define MARKER "\r\n"

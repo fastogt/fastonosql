@@ -20,11 +20,8 @@
 
 #include <leveldb/c.h>  // for leveldb_major_version, etc
 #include <leveldb/db.h>
-#include <leveldb/options.h>  // for ReadOptions, WriteOptions
 
-#include <common/convert2string.h>  // for ConvertFromString
 #include <common/file_system/string_path_utils.h>
-#include <common/sprintf.h>
 
 #include "core/db/leveldb/command_translator.h"
 #include "core/db/leveldb/comparators/indexed_db.h"

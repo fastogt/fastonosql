@@ -28,8 +28,6 @@
 #include "proxy/db/leveldb/connection_settings.h"  // for ConnectionSettings
 #include "proxy/db/leveldb/database.h"             // for DataBaseInfo
 
-#define LEVELDB_INFO_REQUEST "INFO"
-
 namespace fastonosql {
 namespace proxy {
 namespace leveldb {
@@ -107,7 +105,7 @@ common::Error Driver::ExecuteImpl(const core::command_buffer_t& command, core::F
 }
 
 common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
-  core::FastoObjectCommandIPtr cmd = CreateCommandFast(LEVELDB_INFO_REQUEST, core::C_INNER);
+  core::FastoObjectCommandIPtr cmd = CreateCommandFast(DB_INFO_COMMAND, core::C_INNER);
   LOG_COMMAND(cmd);
   core::leveldb::ServerInfo::Stats cm;
   common::Error err = impl_->Info(std::string(), &cm);
