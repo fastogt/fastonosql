@@ -16,6 +16,8 @@ def print_usage():
           "[optional] argv[1] platform\n"
           "[optional] argv[2] architecture\n")
 
+def gen_routing_key(platform, arch) -> str:
+    return platform + '_' + arch
 
 class BuildRpcServer(object):
     EXCHANGE = 'build_servers_excange'
@@ -28,7 +30,7 @@ class BuildRpcServer(object):
         self.consumer_tag_ = None
         self.platform_ = platform
         self.arch_bit_ = arch_bit
-        self.routing_key_ = system_info.gen_routing_key(platform, arch_bit)
+        self.routing_key_ = gen_routing_key(platform, arch_bit)
         print("Build server for %s inited!" % platform)
 
     def connect(self):
