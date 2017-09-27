@@ -100,7 +100,7 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   ::rocksdb::DB* lcontext = nullptr;
   std::string folder = config.db_path;  // start point must be folder
   common::tribool is_dir = common::file_system::is_directory(folder);
-  if (is_dir != common::SUCCESS) {
+  if (is_dir != common::SUCCESS && !config.create_if_missing) {
     return common::make_error(common::MemSPrintf("Invalid input path(%s)", folder));
   }
 

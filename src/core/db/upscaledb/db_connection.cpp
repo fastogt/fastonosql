@@ -153,6 +153,10 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   std::string db_path = config.db_path;  // start point must be folder
   std::string folder = common::file_system::get_dir_path(db_path);
   common::tribool is_dir = common::file_system::is_directory(folder);
+  if (is_dir == common::INDETERMINATE) {
+    return common::make_error(common::MemSPrintf("Invalid input path(%s)", folder));
+  }
+
   if (is_dir != common::SUCCESS) {
     return common::make_error(common::MemSPrintf("Invalid input path(%s)", db_path));
   }

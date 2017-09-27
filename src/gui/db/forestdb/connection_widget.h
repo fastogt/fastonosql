@@ -24,7 +24,7 @@ namespace fastonosql {
 namespace gui {
 namespace forestdb {
 
-class ConnectionWidget : public ConnectionLocalWidget {
+class ConnectionWidget : public ConnectionLocalWidgetDirectoryPath {
   Q_OBJECT
  public:
   explicit ConnectionWidget(QWidget* parent = 0);

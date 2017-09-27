@@ -30,7 +30,7 @@ namespace gui {
 namespace leveldb {
 
 ConnectionWidget::ConnectionWidget(QWidget* parent)
-    : ConnectionLocalWidget(true, trDBFolderPath, trCaption, trFilter, parent) {
+    : ConnectionLocalWidgetDirectoryPath(trDBPath, trCaption, parent) {
   createDBIfMissing_ = new QCheckBox;
   addWidget(createDBIfMissing_);
 

@@ -28,7 +28,7 @@ namespace fastonosql {
 namespace gui {
 class SSHWidget;
 class HostPortWidget;
-class PathWidget;
+class IPathWidget;
 
 namespace redis {
 
@@ -57,7 +57,7 @@ class ConnectionWidget : public ConnectionBaseWidget {
 
   HostPortWidget* hostWidget_;
   QCheckBox* isSSLConnection_;
-  PathWidget* pathWidget_;
+  IPathWidget* pathWidget_;
 
   QCheckBox* useAuth_;
   QLineEdit* passwordBox_;

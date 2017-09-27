@@ -24,7 +24,7 @@ namespace fastonosql {
 namespace gui {
 namespace unqlite {
 
-class ConnectionWidget : public ConnectionLocalWidget {
+class ConnectionWidget : public ConnectionLocalWidgetFilePath {
   Q_OBJECT
  public:
   explicit ConnectionWidget(QWidget* parent = 0);

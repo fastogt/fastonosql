@@ -33,7 +33,7 @@ namespace fastonosql {
 namespace gui {
 
 class HostPortWidget;
-class PathWidget;
+class IPathWidget;
 
 class SSHWidget : public QWidget {
   Q_OBJECT
@@ -69,8 +69,8 @@ class SSHWidget : public QWidget {
   QWidget* useSshWidget_;
 
   HostPortWidget* sshHostWidget_;
-  PathWidget* publicKeyWidget_;
-  PathWidget* privateKeyWidget_;
+  IPathWidget* publicKeyWidget_;
+  IPathWidget* privateKeyWidget_;
 
   QLabel* sshAddressLabel_;
   QLabel* sshPassphraseLabel_;

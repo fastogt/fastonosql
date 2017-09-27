@@ -53,11 +53,11 @@ SSHWidget::SSHWidget(QWidget* parent) : QWidget(parent) {
   QLayout* host_layout = sshHostWidget_->layout();
   host_layout->setContentsMargins(0, 0, 0, 0);
 
-  privateKeyWidget_ = new PathWidget(false, trPrivateKey, trPrivateKeyFiles, trSelectPrivateKey);
+  privateKeyWidget_ = new FilePathWidget(trPrivateKey, trPrivateKeyFiles, trSelectPrivateKey);
   QLayout* pub_layout = privateKeyWidget_->layout();
   pub_layout->setContentsMargins(0, 0, 0, 0);
 
-  publicKeyWidget_ = new PathWidget(false, trPublicKey, trPublicKeyFiles, trSelectPublicKey);
+  publicKeyWidget_ = new FilePathWidget(trPublicKey, trPublicKeyFiles, trSelectPublicKey);
   QLayout* priv_layout = publicKeyWidget_->layout();
   priv_layout->setContentsMargins(0, 0, 0, 0);
 

@@ -20,19 +20,35 @@
 
 #include "gui/widgets/connection_local_widget.h"
 
+#include "gui/widgets/path_widget.h"
+
 namespace fastonosql {
 namespace gui {
 namespace lmdb {
 
+class FileDirPathWidget : public IPathWidget {
+ public:
+  typedef IPathWidget base_class;
+  FileDirPathWidget(QWidget* parent = 0);
+
+  virtual int GetMode() const override;
+
+ private:
+  bool is_folder_;
+};
+
 class ConnectionWidget : public ConnectionLocalWidget {
   Q_OBJECT
  public:
+  typedef ConnectionLocalWidget base_class;
   explicit ConnectionWidget(QWidget* parent = 0);
 
   virtual void syncControls(proxy::IConnectionSettingsBase* connection) override;
   virtual void retranslateUi() override;
 
  private:
+  class ConnectionLocalWidgetImpl;
+
   virtual proxy::IConnectionSettingsLocal* createConnectionLocalImpl(
       const proxy::connection_path_t& path) const override;
 

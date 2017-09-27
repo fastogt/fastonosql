@@ -22,23 +22,22 @@
 
 class QLineEdit;
 class QLabel;
+class QCheckBox;
 
 namespace fastonosql {
 namespace gui {
 
-class PathWidget : public QWidget {
+class IPathWidget : public QWidget {
   Q_OBJECT
  public:
-  PathWidget(bool isFolderSelectOnly,
-             const QString& pathTitle,
-             const QString& filter,
-             const QString& caption,
-             QWidget* parent = 0);
+  IPathWidget(const QString& pathTitle, const QString& filter, const QString& caption, QWidget* parent = 0);
 
   QString path() const;
   void setPath(const QString& path);
 
   bool isValidPath() const;
+
+  virtual int GetMode() const = 0;
 
  private Q_SLOTS:
   void selectPathDialog();
@@ -47,6 +46,7 @@ class PathWidget : public QWidget {
   virtual void changeEvent(QEvent* ev) override;
 
  private:
+  void selectPathDialogRoutine(const QString& caption, const QString& filter, int mode);
   void retranslateUi();
 
   QLabel* pathLabel_;
@@ -55,7 +55,20 @@ class PathWidget : public QWidget {
   QString pathTitle_;
   QString filter_;
   QString caption_;
-  bool isFolderSelectOnly_;
+};
+
+class FilePathWidget : public IPathWidget {
+ public:
+  FilePathWidget(const QString& pathTitle, const QString& filter, const QString& caption, QWidget* parent = 0);
+
+  virtual int GetMode() const override;
+};
+
+class DirectoryPathWidget : public IPathWidget {
+ public:
+  DirectoryPathWidget(const QString& pathTitle, const QString& caption, QWidget* parent = 0);
+
+  virtual int GetMode() const override;
 };
 
 }  // namespace gui

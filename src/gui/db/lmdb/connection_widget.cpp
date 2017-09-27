@@ -19,6 +19,7 @@
 #include "gui/db/lmdb/connection_widget.h"
 
 #include <QCheckBox>
+#include <QFileDialog>
 
 #include "proxy/db/lmdb/connection_settings.h"
 
@@ -26,8 +27,14 @@ namespace fastonosql {
 namespace gui {
 namespace lmdb {
 
-ConnectionWidget::ConnectionWidget(QWidget* parent)
-    : ConnectionLocalWidget(true, trDBFolderPath, trCaption, trFilter, parent) {
+FileDirPathWidget::FileDirPathWidget(QWidget* parent)
+    : base_class(trDBPath, trFilter, trCaption, parent), is_folder_(true) {}
+
+int FileDirPathWidget::GetMode() const {
+  return is_folder_ ? QFileDialog::DirectoryOnly : QFileDialog::ExistingFile;
+}
+
+ConnectionWidget::ConnectionWidget(QWidget* parent) : base_class(new FileDirPathWidget, parent) {
   readOnlyDB_ = new QCheckBox;
   addWidget(readOnlyDB_);
 }
@@ -38,12 +45,12 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
     core::lmdb::Config config = lmdb->GetInfo();
     readOnlyDB_->setChecked(config.ReadOnlyDB());
   }
-  ConnectionLocalWidget::syncControls(lmdb);
+  base_class::syncControls(lmdb);
 }
 
 void ConnectionWidget::retranslateUi() {
   readOnlyDB_->setText(trReadOnlyDB);
-  ConnectionLocalWidget::retranslateUi();
+  base_class::retranslateUi();
 }
 
 proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(

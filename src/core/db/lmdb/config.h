@@ -34,6 +34,9 @@ struct Config : public LocalConfig {
   bool ReadOnlyDB() const;
   void SetReadOnlyDB(bool ro);
 
+  bool IsSingleFileDB() const;
+  void SetSingleFileDB(bool single);
+
   int env_flags;
 };
 

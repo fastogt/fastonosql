@@ -18,6 +18,7 @@
 
 #include "gui/widgets/path_widget.h"
 
+#include <QCheckBox>
 #include <QFileDialog>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -32,22 +33,14 @@
 namespace fastonosql {
 namespace gui {
 
-PathWidget::PathWidget(bool isFolderSelectOnly,
-                       const QString& pathTitle,
-                       const QString& filter,
-                       const QString& caption,
-                       QWidget* parent)
-    : QWidget(parent),
-      pathTitle_(pathTitle),
-      filter_(filter),
-      caption_(caption),
-      isFolderSelectOnly_(isFolderSelectOnly) {
+IPathWidget::IPathWidget(const QString& pathTitle, const QString& filter, const QString& caption, QWidget* parent)
+    : QWidget(parent), pathTitle_(pathTitle), filter_(filter), caption_(caption) {
   QHBoxLayout* dbNameLayout = new QHBoxLayout;
   pathLabel_ = new QLabel;
   pathEdit_ = new QLineEdit;
   QPushButton* selectPathButton = new QPushButton("...");
   selectPathButton->setFixedSize(26, 26);
-  VERIFY(connect(selectPathButton, &QPushButton::clicked, this, &PathWidget::selectPathDialog));
+  VERIFY(connect(selectPathButton, &QPushButton::clicked, this, &IPathWidget::selectPathDialog));
   dbNameLayout->addWidget(pathLabel_);
   dbNameLayout->addWidget(pathEdit_);
   dbNameLayout->addWidget(selectPathButton);
@@ -56,9 +49,13 @@ PathWidget::PathWidget(bool isFolderSelectOnly,
   retranslateUi();
 }
 
-void PathWidget::selectPathDialog() {
-  QFileDialog dialog(this, caption_, pathEdit_->text(), filter_);
-  dialog.setFileMode(isFolderSelectOnly_ ? QFileDialog::DirectoryOnly : QFileDialog::ExistingFile);
+void IPathWidget::selectPathDialog() {
+  selectPathDialogRoutine(caption_, filter_, GetMode());
+}
+
+void IPathWidget::selectPathDialogRoutine(const QString& caption, const QString& filter, int mode) {
+  QFileDialog dialog(this, caption, path(), filter);
+  dialog.setFileMode(static_cast<QFileDialog::FileMode>(mode));
   dialog.setFilter(QDir::AllDirs | QDir::AllEntries | QDir::Hidden | QDir::System);
   int res = dialog.exec();
   if (res != QFileDialog::ExistingFile) {
@@ -69,29 +66,43 @@ void PathWidget::selectPathDialog() {
   setPath(files[0]);
 }
 
-QString PathWidget::path() const {
+QString IPathWidget::path() const {
   return pathEdit_->text();
 }
 
-void PathWidget::setPath(const QString& path) {
+void IPathWidget::setPath(const QString& path) {
   pathEdit_->setText(path);
 }
 
-bool PathWidget::isValidPath() const {
-  std::string path_str = common::ConvertToString(path());
+bool IPathWidget::isValidPath() const {
+  const std::string path_str = common::ConvertToString(path());
   return common::file_system::is_valid_path(path_str);
 }
 
-void PathWidget::retranslateUi() {
+void IPathWidget::retranslateUi() {
   pathLabel_->setText(pathTitle_);
 }
 
-void PathWidget::changeEvent(QEvent* ev) {
+void IPathWidget::changeEvent(QEvent* ev) {
   if (ev->type() == QEvent::LanguageChange) {
     retranslateUi();
   }
 
   QWidget::changeEvent(ev);
+}
+
+FilePathWidget::FilePathWidget(const QString& pathTitle, const QString& filter, const QString& caption, QWidget* parent)
+    : IPathWidget(pathTitle, filter, caption, parent) {}
+
+int FilePathWidget::GetMode() const {
+  return QFileDialog::ExistingFile;
+}
+
+DirectoryPathWidget::DirectoryPathWidget(const QString& pathTitle, const QString& caption, QWidget* parent)
+    : IPathWidget(pathTitle, QString(), caption, parent) {}
+
+int DirectoryPathWidget::GetMode() const {
+  return QFileDialog::DirectoryOnly;
 }
 
 }  // namespace gui

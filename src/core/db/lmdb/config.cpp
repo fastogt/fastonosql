@@ -77,6 +77,18 @@ bool Config::ReadOnlyDB() const {
   return env_flags & MDB_RDONLY;
 }
 
+bool Config::IsSingleFileDB() const {
+  return env_flags & MDB_NOSUBDIR;
+}
+
+void Config::SetSingleFileDB(bool single) {
+  if (single) {
+    env_flags |= MDB_NOSUBDIR;
+  } else {
+    env_flags &= ~MDB_NOSUBDIR;
+  }
+}
+
 void Config::SetReadOnlyDB(bool ro) {
   if (ro) {
     env_flags |= MDB_RDONLY;

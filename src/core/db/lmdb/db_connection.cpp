@@ -165,9 +165,15 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
 
   DCHECK(*context == NULL);
   struct lmdb* lcontext = NULL;
-  std::string folder = config.db_path;  // start point must be folder
+  std::string folder = config.db_path;
   common::tribool is_dir = common::file_system::is_directory(folder);
-  if (is_dir != common::SUCCESS) {
+  if (is_dir == common::INDETERMINATE) {
+    return common::make_error(common::MemSPrintf("Invalid input path(%s)", folder));
+  }
+
+  if (is_dir == common::SUCCESS && config.IsSingleFileDB()) {  // if dir but want single file
+    return common::make_error(common::MemSPrintf("Invalid input path(%s)", folder));
+  } else if (is_dir == common::FAIL && !config.IsSingleFileDB()) {  // if file but want dir
     return common::make_error(common::MemSPrintf("Invalid input path(%s)", folder));
   }
 

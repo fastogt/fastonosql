@@ -28,6 +28,10 @@ class QComboBox;
 class QCheckBox;
 class QSpinBox;
 
+namespace {
+const QString trDBPath = QObject::tr("Database path:");
+}
+
 namespace fastonosql {
 namespace gui {
 

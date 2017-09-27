@@ -27,13 +27,9 @@
 namespace fastonosql {
 namespace gui {
 
-ConnectionLocalWidget::ConnectionLocalWidget(bool isFolderSelectOnly,
-                                             const QString& pathTitle,
-                                             const QString& caption,
-                                             const QString& filter,
-                                             QWidget* parent)
-    : ConnectionBaseWidget(parent) {
-  pathWidget_ = new PathWidget(isFolderSelectOnly, pathTitle, filter, caption);
+ConnectionLocalWidget::ConnectionLocalWidget(IPathWidget* path_widget, QWidget* parent)
+    : ConnectionBaseWidget(parent), pathWidget_(path_widget) {
+  CHECK(path_widget);
   QLayout* path_layout = pathWidget_->layout();
   path_layout->setContentsMargins(0, 0, 0, 0);
   addWidget(pathWidget_);
@@ -67,6 +63,17 @@ proxy::IConnectionSettingsBase* ConnectionLocalWidget::createConnectionImpl(
   local->SetDBPath(common::ConvertToString(pathWidget_->path()));
   return local;
 }
+
+ConnectionLocalWidgetDirectoryPath::ConnectionLocalWidgetDirectoryPath(const QString& path_title,
+                                                                       const QString& caption,
+                                                                       QWidget* parent)
+    : ConnectionLocalWidget(new DirectoryPathWidget(path_title, caption), parent) {}
+
+ConnectionLocalWidgetFilePath::ConnectionLocalWidgetFilePath(const QString& path_title,
+                                                             const QString& filter,
+                                                             const QString& caption,
+                                                             QWidget* parent)
+    : ConnectionLocalWidget(new FilePathWidget(path_title, filter, caption), parent) {}
 
 }  // namespace gui
 }  // namespace fastonosql

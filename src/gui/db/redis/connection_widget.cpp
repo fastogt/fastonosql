@@ -45,7 +45,6 @@ namespace {
 const QString trUnixPath = QObject::tr("Unix socket path:");
 const QString trCaption = QObject::tr("Select Database path");
 const QString trFilter = QObject::tr("Database files (*.*)");
-const QString trDBPath = QObject::tr("DB path");
 const QString trRemote = QObject::tr("Remote");
 const QString trLocal = QObject::tr("Local");
 const QString trSSL = QObject::tr("SSL");
@@ -77,7 +76,7 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(paren
   vbox->addLayout(hbox);
   vbox->addWidget(hostWidget_);
 
-  pathWidget_ = new PathWidget(false, trUnixPath, trFilter, trCaption);
+  pathWidget_ = new FilePathWidget(trUnixPath, trFilter, trCaption);
   QLayout* path_layout = pathWidget_->layout();
   path_layout->setContentsMargins(0, 0, 0, 0);
   vbox->addWidget(local_);
