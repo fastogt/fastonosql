@@ -1,6 +1,9 @@
-1.9.0 /
+1.8.2 /
 [Alexandr Topilski]
 - Move web links into "Help" menu #69
+- [Windows] Processor featuring BMI2 extensions required #45
+- FastoNoSQL silently fails to launch, because it mistakenly assumes my CPU supports AVX #29
+- The Windows Error Reporting GUI fails to appear when FastoNoSQL crashes #28
 
 1.8.1 / September 19, 2017
 [Alexandr Topilski]
