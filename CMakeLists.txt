@@ -119,7 +119,6 @@ ENDIF(BUILD_WITH_UPSCALEDB)
 
 OPTION(LOG_TO_FILE "Logging to file" OFF)
 OPTION(GENERATE_TRANSLATIONS "Generate ts-files for ${PROJECT_NAME}" OFF)
-OPTION(USE_CXX_STANDART "Enable c++0x/11 standart for ${PROJECT_NAME} project" ON)
 OPTION(QT_ENABLED "Enable Qt support" ON)
 OPTION(CPACK_SUPPORT "Enable package support" ON)
 OPTION(IS_PUBLIC_BUILD "Public version of ${PROJECT_NAME} project" ON)

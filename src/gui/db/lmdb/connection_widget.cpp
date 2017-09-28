@@ -18,8 +18,15 @@
 
 #include "gui/db/lmdb/connection_widget.h"
 
+#include <QLayout>
 #include <QCheckBox>
-#include <QFileDialog>
+#include <QGroupBox>
+#include <QRadioButton>
+
+#include <common/qt/convert2string.h>
+
+#include "translations/global.h"
+#include "gui/widgets/path_widget.h"
 
 #include "proxy/db/lmdb/connection_settings.h"
 
@@ -27,37 +34,96 @@ namespace fastonosql {
 namespace gui {
 namespace lmdb {
 
-FileDirPathWidget::FileDirPathWidget(QWidget* parent)
-    : base_class(trDBPath, trFilter, trCaption, parent), is_folder_(true) {}
+ConnectionWidget::ConnectionWidget(QWidget* parent) : base_class(parent) {
+  QVBoxLayout* vbox = new QVBoxLayout;
+  group_box_ = new QGroupBox;
+  file_path_selection_ = new QRadioButton;
+  directory_path_selection_ = new QRadioButton;
+  VERIFY(connect(file_path_selection_, &QRadioButton::toggled, this, &ConnectionWidget::selectFilePathDB));
+  VERIFY(connect(directory_path_selection_, &QRadioButton::toggled, this, &ConnectionWidget::selectDirectoryPathDB));
 
-int FileDirPathWidget::GetMode() const {
-  return is_folder_ ? QFileDialog::DirectoryOnly : QFileDialog::ExistingFile;
-}
+  file_path_widget_ = new FilePathWidget(trDBPath, trFilter, trCaption);
+  QLayout* path_layout = file_path_widget_->layout();
+  path_layout->setContentsMargins(0, 0, 0, 0);
+  vbox->addWidget(file_path_selection_);
+  vbox->addWidget(file_path_widget_);
 
-ConnectionWidget::ConnectionWidget(QWidget* parent) : base_class(new FileDirPathWidget, parent) {
-  readOnlyDB_ = new QCheckBox;
-  addWidget(readOnlyDB_);
+  directory_path_widget_ = new DirectoryPathWidget(trDBPath, trCaption);
+  path_layout = directory_path_widget_->layout();
+  path_layout->setContentsMargins(0, 0, 0, 0);
+  vbox->addWidget(directory_path_selection_);
+  vbox->addWidget(directory_path_widget_);
+
+  group_box_->setLayout(vbox);
+  addWidget(group_box_);
+
+  read_only_db_ = new QCheckBox;
+  addWidget(read_only_db_);
 }
 
 void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
   proxy::lmdb::ConnectionSettings* lmdb = static_cast<proxy::lmdb::ConnectionSettings*>(connection);
   if (lmdb) {
     core::lmdb::Config config = lmdb->GetInfo();
-    readOnlyDB_->setChecked(config.ReadOnlyDB());
+    read_only_db_->setChecked(config.ReadOnlyDB());
+    bool is_file_path = config.IsSingleFileDB();
+    QString db_path;
+    common::ConvertFromString(lmdb->GetDBPath(), &db_path);
+    if (is_file_path) {
+      file_path_widget_->setPath(db_path);
+      file_path_selection_->setChecked(true);
+    } else {
+      directory_path_widget_->setPath(db_path);
+      directory_path_selection_->setChecked(true);
+    }
   }
   base_class::syncControls(lmdb);
 }
 
 void ConnectionWidget::retranslateUi() {
-  readOnlyDB_->setText(trReadOnlyDB);
+  group_box_->setTitle(trDBPath);
+  file_path_selection_->setText(translations::trFile);
+  directory_path_selection_->setText(translations::trDirectory);
+  read_only_db_->setText(trReadOnlyDB);
   base_class::retranslateUi();
 }
 
-proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
-    const proxy::connection_path_t& path) const {
+bool ConnectionWidget::validated() const {
+  bool is_file_path = file_path_selection_->isChecked();
+  if (is_file_path) {
+    if (!file_path_widget_->isValidPath()) {
+      return false;
+    }
+  } else {
+    if (!directory_path_widget_->isValidPath()) {
+      return false;
+    }
+  }
+
+  return ConnectionBaseWidget::validated();
+}
+
+void ConnectionWidget::selectFilePathDB(bool checked) {
+  file_path_widget_->setEnabled(checked);
+  directory_path_widget_->setEnabled(!checked);
+}
+
+void ConnectionWidget::selectDirectoryPathDB(bool checked) {
+  directory_path_widget_->setEnabled(checked);
+  file_path_widget_->setEnabled(!checked);
+}
+
+proxy::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(const proxy::connection_path_t& path) const {
   proxy::lmdb::ConnectionSettings* conn = new proxy::lmdb::ConnectionSettings(path);
   core::lmdb::Config config = conn->GetInfo();
-  config.SetReadOnlyDB(readOnlyDB_->isChecked());
+  config.SetReadOnlyDB(read_only_db_->isChecked());
+  bool is_file_path = file_path_selection_->isChecked();
+  if (is_file_path) {
+    config.db_path = common::ConvertToString(file_path_widget_->path());
+  } else {
+    config.db_path = common::ConvertToString(directory_path_widget_->path());
+  }
+  config.SetSingleFileDB(is_file_path);
   conn->SetInfo(config);
   return conn;
 }

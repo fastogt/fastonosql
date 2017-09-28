@@ -48,6 +48,7 @@ const QString trViews = QObject::tr("Views");
 const QString trHistory = QObject::tr("History");
 const QString trClearHistory = QObject::tr("Clear history");
 const QString trFile = QObject::tr("File");
+const QString trDirectory = QObject::tr("Directory");
 const QString trInfo = QObject::tr("Info");
 const QString trTools = QObject::tr("Tools");
 const QString trLoadFromFile = QObject::tr("Load from file...");

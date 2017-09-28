@@ -18,41 +18,40 @@
 
 #pragma once
 
-#include "gui/widgets/connection_local_widget.h"
+#include "gui/widgets/connection_base_widget.h"
 
-#include "gui/widgets/path_widget.h"
+class QGroupBox;
+class QRadioButton;
 
 namespace fastonosql {
 namespace gui {
+class IPathWidget;
 namespace lmdb {
 
-class FileDirPathWidget : public IPathWidget {
- public:
-  typedef IPathWidget base_class;
-  FileDirPathWidget(QWidget* parent = 0);
-
-  virtual int GetMode() const override;
-
- private:
-  bool is_folder_;
-};
-
-class ConnectionWidget : public ConnectionLocalWidget {
+class ConnectionWidget : public ConnectionBaseWidget {
   Q_OBJECT
  public:
-  typedef ConnectionLocalWidget base_class;
+  typedef ConnectionBaseWidget base_class;
   explicit ConnectionWidget(QWidget* parent = 0);
 
   virtual void syncControls(proxy::IConnectionSettingsBase* connection) override;
   virtual void retranslateUi() override;
+  virtual bool validated() const override;
+
+ private Q_SLOTS:
+  void selectFilePathDB(bool checked);
+  void selectDirectoryPathDB(bool checked);
 
  private:
-  class ConnectionLocalWidgetImpl;
+  virtual proxy::IConnectionSettingsBase* createConnectionImpl(const proxy::connection_path_t& path) const override;
 
-  virtual proxy::IConnectionSettingsLocal* createConnectionLocalImpl(
-      const proxy::connection_path_t& path) const override;
+  QCheckBox* read_only_db_;
+  QGroupBox* group_box_;
+  QRadioButton* file_path_selection_;
+  QRadioButton* directory_path_selection_;
 
-  QCheckBox* readOnlyDB_;
+  IPathWidget* file_path_widget_;
+  IPathWidget* directory_path_widget_;
 };
 
 }  // namespace lmdb

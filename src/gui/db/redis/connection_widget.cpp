@@ -43,8 +43,6 @@
 
 namespace {
 const QString trUnixPath = QObject::tr("Unix socket path:");
-const QString trCaption = QObject::tr("Select Database path");
-const QString trFilter = QObject::tr("Database files (*.*)");
 const QString trRemote = QObject::tr("Remote");
 const QString trLocal = QObject::tr("Local");
 const QString trSSL = QObject::tr("SSL");
