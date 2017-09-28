@@ -65,7 +65,8 @@ Config parseOptions(int argc, char** argv) {
 
 }  // namespace
 
-Config::Config() : LocalConfig(common::file_system::prepare_path("~/test.forestdb")), db_name("default") {}
+const std::string Config::default_db_name = "default";
+Config::Config() : LocalConfig(common::file_system::prepare_path("~/test.forestdb")), db_name(default_db_name) {}
 
 }  // namespace forestdb
 }  // namespace core

@@ -52,6 +52,9 @@ class ConnectionWidget : public ConnectionBaseWidget {
 
   IPathWidget* file_path_widget_;
   IPathWidget* directory_path_widget_;
+
+  QLabel* db_name_label_;
+  QLineEdit* db_name_edit_;
 };
 
 }  // namespace lmdb

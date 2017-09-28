@@ -60,6 +60,7 @@ namespace lmdb {
 struct lmdb {
   MDB_env* env;
   MDB_dbi dbir;
+  const char* db_name;
 };
 
 namespace {
@@ -68,9 +69,15 @@ unsigned int lmdb_db_flag_from_env_flags(int env_flags) {
   return (env_flags & MDB_RDONLY) ? MDB_RDONLY : 0;
 }
 
-int lmdb_open(lmdb** context, const char* db_path, const char* db_name, int env_flags, unsigned int db_env_flags) {
+int lmdb_open(lmdb** context, const char* db_path, const char* db_name, int env_flags) {
   lmdb* lcontext = reinterpret_cast<lmdb*>(calloc(1, sizeof(lmdb)));
   int rc = mdb_env_create(&lcontext->env);
+  if (rc != LMDB_OK) {
+    free(lcontext);
+    return rc;
+  }
+
+  rc = mdb_env_set_maxdbs(lcontext->env, 1024);
   if (rc != LMDB_OK) {
     free(lcontext);
     return rc;
@@ -83,19 +90,23 @@ int lmdb_open(lmdb** context, const char* db_path, const char* db_name, int env_
   }
 
   MDB_txn* txn = NULL;
-  rc = mdb_txn_begin(lcontext->env, NULL, db_env_flags, &txn);
+  rc = mdb_txn_begin(lcontext->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn);
   if (rc != LMDB_OK) {
     free(lcontext);
     return rc;
   }
 
-  rc = mdb_dbi_open(txn, db_name, 0, &lcontext->dbir);
-  mdb_txn_abort(txn);
+  MDB_dbi ldbi = 0;
+  rc = mdb_dbi_open(txn, db_name, MDB_CREATE, &ldbi);
   if (rc != LMDB_OK) {
+    mdb_txn_abort(txn);
     free(lcontext);
     return rc;
   }
 
+  mdb_txn_commit(txn);
+  lcontext->dbir = ldbi;
+  lcontext->db_name = common::utils::strdupornull(db_name);
   *context = lcontext;
   return rc;
 }
@@ -165,21 +176,19 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
 
   DCHECK(*context == NULL);
   struct lmdb* lcontext = NULL;
-  std::string folder = config.db_path;
-  common::tribool is_dir = common::file_system::is_directory(folder);
-  if (is_dir == common::INDETERMINATE) {
-    return common::make_error(common::MemSPrintf("Invalid input path(%s)", folder));
+  std::string path = config.db_path;
+  bool is_single_file = config.IsSingleFileDB();
+  common::tribool is_dir = common::file_system::is_directory(path);
+  if (is_dir == common::SUCCESS && is_single_file) {  // if dir but want single file
+    return common::make_error(common::MemSPrintf("Invalid input path(%s)", path));
+  } else if (is_dir == common::FAIL && !is_single_file) {  // if file but want dir
+    return common::make_error(common::MemSPrintf("Invalid input path(%s)", path));
   }
 
-  if (is_dir == common::SUCCESS && config.IsSingleFileDB()) {  // if dir but want single file
-    return common::make_error(common::MemSPrintf("Invalid input path(%s)", folder));
-  } else if (is_dir == common::FAIL && !config.IsSingleFileDB()) {  // if file but want dir
-    return common::make_error(common::MemSPrintf("Invalid input path(%s)", folder));
-  }
-
-  const char* db_path = folder.c_str();
+  const char* db_name = config.db_name == Config::default_db_name ? NULL : config.db_name.c_str();
+  const char* db_path = path.c_str();
   int env_flags = config.env_flags;
-  int st = lmdb_open(&lcontext, db_path, NULL, env_flags, lmdb_db_flag_from_env_flags(env_flags));
+  int st = lmdb_open(&lcontext, db_path, db_name, env_flags);
   if (st != LMDB_OK) {
     std::string buff = common::MemSPrintf("Fail open database: %s", mdb_strerror(st));
     return common::make_error(buff);
@@ -205,10 +214,10 @@ DBConnection::DBConnection(CDBConnectionClient* client)
 
 std::string DBConnection::GetCurrentDBName() const {
   if (connection_.handle_) {
-    return common::ConvertToString(connection_.handle_->dbir);
+    return connection_.handle_->db_name ? connection_.handle_->db_name : Config::default_db_name;
   }
 
-  DNOTREACHED();
+  DNOTREACHED() << "GetCurrentDBName failed!";
   return base_class::GetCurrentDBName();
 }
 
@@ -470,7 +479,7 @@ common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** 
 
   size_t kcount = 0;
   common::Error err = DBkcount(&kcount);
-  DCHECK(!err);
+  DCHECK(!err) << "DBkcount failed!";
   *info = new DataBaseInfo(name, true, kcount);
   return common::Error();
 }

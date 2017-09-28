@@ -36,8 +36,8 @@ class ConnectionWidget : public ConnectionLocalWidgetDirectoryPath {
   virtual proxy::IConnectionSettingsLocal* createConnectionLocalImpl(
       const proxy::connection_path_t& path) const override;
 
-  QLabel* nameLabel_;
-  QLineEdit* nameEdit_;
+  QLabel* db_name_label_;
+  QLineEdit* db_name_edit_;
 };
 
 }  // namespace forestdb

@@ -29,6 +29,7 @@ namespace core {
 namespace forestdb {
 
 struct Config : public LocalConfig {
+  static const std::string default_db_name;
   Config();
 
   std::string db_name;

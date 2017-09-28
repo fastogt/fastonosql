@@ -26,20 +26,16 @@
 
 #include "proxy/db/forestdb/connection_settings.h"
 
-namespace {
-const QString trDBName = QObject::tr("Database name:");
-}
-
 namespace fastonosql {
 namespace gui {
 namespace forestdb {
 
 ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionLocalWidgetDirectoryPath(trDBPath, trFilter, parent) {
   QHBoxLayout* name_layout = new QHBoxLayout;
-  nameLabel_ = new QLabel;
-  name_layout->addWidget(nameLabel_);
-  nameEdit_ = new QLineEdit;
-  name_layout->addWidget(nameEdit_);
+  db_name_label_ = new QLabel;
+  name_layout->addWidget(db_name_label_);
+  db_name_edit_ = new QLineEdit;
+  name_layout->addWidget(db_name_edit_);
   addLayout(name_layout);
 }
 
@@ -49,14 +45,14 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
     core::forestdb::Config config = forestdb->GetInfo();
     QString qdb_name;
     if (common::ConvertFromString(config.db_name, &qdb_name)) {
-      nameEdit_->setText(qdb_name);
+      db_name_edit_->setText(qdb_name);
     }
   }
   ConnectionLocalWidget::syncControls(forestdb);
 }
 
 void ConnectionWidget::retranslateUi() {
-  nameLabel_->setText(trDBName);
+  db_name_label_->setText(trDBName);
   ConnectionLocalWidget::retranslateUi();
 }
 
@@ -64,7 +60,7 @@ proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
     const proxy::connection_path_t& path) const {
   proxy::forestdb::ConnectionSettings* conn = new proxy::forestdb::ConnectionSettings(path);
   core::forestdb::Config config = conn->GetInfo();
-  config.db_name = common::ConvertToString(nameEdit_->text());
+  config.db_name = common::ConvertToString(db_name_edit_->text());
   conn->SetInfo(config);
   return conn;
 }

@@ -22,6 +22,8 @@
 #include <QGroupBox>
 #include <QLayout>
 #include <QRadioButton>
+#include <QLabel>
+#include <QLineEdit>
 
 #include <common/qt/convert2string.h>
 
@@ -59,6 +61,13 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : base_class(parent) {
 
   read_only_db_ = new QCheckBox;
   addWidget(read_only_db_);
+
+  QHBoxLayout* name_layout = new QHBoxLayout;
+  db_name_label_ = new QLabel;
+  name_layout->addWidget(db_name_label_);
+  db_name_edit_ = new QLineEdit;
+  name_layout->addWidget(db_name_edit_);
+  addLayout(name_layout);
 }
 
 void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
@@ -76,6 +85,11 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
       directory_path_widget_->setPath(db_path);
       directory_path_selection_->setChecked(true);
     }
+
+    QString qdb_name;
+    if (common::ConvertFromString(config.db_name, &qdb_name)) {
+      db_name_edit_->setText(qdb_name);
+    }
   }
   base_class::syncControls(lmdb);
 }
@@ -85,6 +99,7 @@ void ConnectionWidget::retranslateUi() {
   file_path_selection_->setText(translations::trFile);
   directory_path_selection_->setText(translations::trDirectory);
   read_only_db_->setText(trReadOnlyDB);
+  db_name_label_->setText(trDBName);
   base_class::retranslateUi();
 }
 
@@ -123,6 +138,7 @@ proxy::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(const pro
   } else {
     config.db_path = common::ConvertToString(directory_path_widget_->path());
   }
+  config.db_name = common::ConvertToString(db_name_edit_->text());
   config.SetSingleFileDB(is_file_path);
   conn->SetInfo(config);
   return conn;

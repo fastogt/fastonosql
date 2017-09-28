@@ -47,6 +47,8 @@ Config parseOptions(int argc, char** argv) {
       cfg.ns_separator = argv[++i];
     } else if (!strcmp(argv[i], "-f") && !lastarg) {
       cfg.db_path = argv[++i];
+    } else if (!strcmp(argv[i], "-n") && !lastarg) {
+      cfg.db_name = argv[++i];
     } else if (!strcmp(argv[i], "-e") && !lastarg) {
       int env_flags;
       if (common::ConvertFromString(argv[++i], &env_flags)) {
@@ -71,7 +73,12 @@ Config parseOptions(int argc, char** argv) {
 
 }  // namespace
 
-Config::Config() : LocalConfig(common::file_system::prepare_path("~/test.lmdb")), env_flags(LMDB_DEFAULT_ENV_FLAGS) {}
+const std::string Config::default_db_name = "default";
+
+Config::Config()
+    : LocalConfig(common::file_system::prepare_path("~/test.lmdb")),
+      env_flags(LMDB_DEFAULT_ENV_FLAGS),
+      db_name(default_db_name) {}
 
 bool Config::ReadOnlyDB() const {
   return env_flags & MDB_RDONLY;
@@ -109,6 +116,11 @@ std::string ConvertToString(const fastonosql::core::lmdb::Config& conf) {
   if (conf.env_flags != LMDB_DEFAULT_ENV_FLAGS) {
     argv.push_back("-e");
     argv.push_back(common::ConvertToString(conf.env_flags));
+  }
+
+  if (!conf.db_name.empty()) {
+    argv.push_back("-n");
+    argv.push_back(conf.db_name);
   }
 
   return fastonosql::core::ConvertToStringConfigArgs(argv);

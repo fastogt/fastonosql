@@ -29,6 +29,7 @@ namespace core {
 namespace lmdb {
 
 struct Config : public LocalConfig {
+  static const std::string default_db_name;
   Config();
 
   bool ReadOnlyDB() const;
@@ -38,6 +39,7 @@ struct Config : public LocalConfig {
   void SetSingleFileDB(bool single);
 
   int env_flags;
+  std::string db_name;
 };
 
 }  // namespace lmdb
