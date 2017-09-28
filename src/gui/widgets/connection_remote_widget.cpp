@@ -30,11 +30,11 @@
 namespace fastonosql {
 namespace gui {
 
-ConnectionRemoteWidget::ConnectionRemoteWidget(QWidget* parent) : ConnectionBaseWidget(parent), hostWidget_(nullptr) {
-  hostWidget_ = new HostPortWidget;
-  QLayout* host_layout = hostWidget_->layout();
+ConnectionRemoteWidget::ConnectionRemoteWidget(QWidget* parent) : ConnectionBaseWidget(parent), host_widget_(nullptr) {
+  host_widget_ = new HostPortWidget;
+  QLayout* host_layout = host_widget_->layout();
   host_layout->setContentsMargins(0, 0, 0, 0);
-  addWidget(hostWidget_);
+  addWidget(host_widget_);
 }
 
 void ConnectionRemoteWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
@@ -42,7 +42,7 @@ void ConnectionRemoteWidget::syncControls(proxy::IConnectionSettingsBase* connec
 
   if (remote) {
     common::net::HostAndPort host = remote->GetHost();
-    hostWidget_->setHost(host);
+    host_widget_->setHost(host);
   }
   ConnectionBaseWidget::syncControls(remote);
 }
@@ -52,7 +52,7 @@ void ConnectionRemoteWidget::retranslateUi() {
 }
 
 bool ConnectionRemoteWidget::validated() const {
-  if (!hostWidget_->isValidHost()) {
+  if (!host_widget_->isValidHost()) {
     return false;
   }
 
@@ -62,7 +62,7 @@ bool ConnectionRemoteWidget::validated() const {
 proxy::IConnectionSettingsBase* ConnectionRemoteWidget::createConnectionImpl(
     const proxy::connection_path_t& path) const {
   proxy::IConnectionSettingsRemote* remote = createConnectionRemoteImpl(path);
-  remote->SetHost(hostWidget_->host());
+  remote->SetHost(host_widget_->host());
   return remote;
 }
 

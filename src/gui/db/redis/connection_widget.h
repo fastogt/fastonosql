@@ -55,7 +55,7 @@ class ConnectionWidget : public ConnectionBaseWidget {
   QRadioButton* remote_;
   QRadioButton* local_;
 
-  HostPortWidget* hostWidget_;
+  HostPortWidget* host_widget_;
   QCheckBox* isSSLConnection_;
   IPathWidget* pathWidget_;
 
@@ -63,8 +63,8 @@ class ConnectionWidget : public ConnectionBaseWidget {
   QLineEdit* passwordBox_;
   QPushButton* passwordEchoModeButton_;
 
-  QLabel* defaultDBLabel_;
-  QSpinBox* defaultDBNum_;
+  QLabel* default_db_label_;
+  QSpinBox* default_db_num_;
 
   SSHWidget* sshWidget_;
 };

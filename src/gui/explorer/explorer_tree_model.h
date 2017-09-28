@@ -42,11 +42,6 @@ class ExplorerDatabaseItem;
 class ExplorerKeyItem;
 class ExplorerNSItem;
 class IExplorerTreeItem;
-}  // namespace gui
-}  // namespace fastonosql
-
-namespace fastonosql {
-namespace gui {
 
 class ExplorerTreeModel : public common::qt::gui::TreeModel {
   Q_OBJECT

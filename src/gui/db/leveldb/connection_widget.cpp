@@ -29,10 +29,9 @@ namespace fastonosql {
 namespace gui {
 namespace leveldb {
 
-ConnectionWidget::ConnectionWidget(QWidget* parent)
-    : ConnectionLocalWidgetDirectoryPath(trDBPath, trCaption, parent) {
-  createDBIfMissing_ = new QCheckBox;
-  addWidget(createDBIfMissing_);
+ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionLocalWidgetDirectoryPath(trDBPath, trCaption, parent) {
+  create_db_if_missing_ = new QCheckBox;
+  addWidget(create_db_if_missing_);
 
   QHBoxLayout* type_comp_layout = new QHBoxLayout;
   typeComparators_ = new QComboBox;
@@ -51,14 +50,14 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
   proxy::leveldb::ConnectionSettings* lev = static_cast<proxy::leveldb::ConnectionSettings*>(connection);
   if (lev) {
     core::leveldb::Config config = lev->GetInfo();
-    createDBIfMissing_->setChecked(config.create_if_missing);
+    create_db_if_missing_->setChecked(config.create_if_missing);
     typeComparators_->setCurrentIndex(config.comparator);
   }
   ConnectionLocalWidget::syncControls(lev);
 }
 
 void ConnectionWidget::retranslateUi() {
-  createDBIfMissing_->setText(trCreateDBIfMissing);
+  create_db_if_missing_->setText(trCreateDBIfMissing);
   compLabel_->setText(trComparator);
   ConnectionLocalWidget::retranslateUi();
 }
@@ -67,7 +66,7 @@ proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
     const proxy::connection_path_t& path) const {
   proxy::leveldb::ConnectionSettings* conn = new proxy::leveldb::ConnectionSettings(path);
   core::leveldb::Config config = conn->GetInfo();
-  config.create_if_missing = createDBIfMissing_->isChecked();
+  config.create_if_missing = create_db_if_missing_->isChecked();
   config.comparator = static_cast<core::leveldb::ComparatorType>(typeComparators_->currentIndex());
   conn->SetInfo(config);
   return conn;

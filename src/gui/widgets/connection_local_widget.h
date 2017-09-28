@@ -42,18 +42,21 @@ class ConnectionLocalWidget : public ConnectionBaseWidget {
  protected:
   explicit ConnectionLocalWidget(IPathWidget* path_widget, QWidget* parent = 0);
 
-  virtual proxy::IConnectionSettingsBase* createConnectionImpl(
-      const proxy::connection_path_t& path) const override final;
-
   virtual proxy::IConnectionSettingsLocal* createConnectionLocalImpl(const proxy::connection_path_t& path) const = 0;
 
  private:
+  virtual proxy::IConnectionSettingsBase* createConnectionImpl(
+      const proxy::connection_path_t& path) const override final;
   IPathWidget* const pathWidget_;
 };
 
 class ConnectionLocalWidgetDirectoryPath : public ConnectionLocalWidget {
  public:
   ConnectionLocalWidgetDirectoryPath(const QString& path_title, const QString& caption, QWidget* parent = 0);
+
+ protected:
+  virtual proxy::IConnectionSettingsLocal* createConnectionLocalImpl(
+      const proxy::connection_path_t& path) const override = 0;
 };
 
 class ConnectionLocalWidgetFilePath : public ConnectionLocalWidget {
@@ -62,6 +65,10 @@ class ConnectionLocalWidgetFilePath : public ConnectionLocalWidget {
                                 const QString& filter,
                                 const QString& caption,
                                 QWidget* parent = 0);
+
+ protected:
+  virtual proxy::IConnectionSettingsLocal* createConnectionLocalImpl(
+      const proxy::connection_path_t& path) const override = 0;
 };
 
 }  // namespace gui

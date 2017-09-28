@@ -26,16 +26,8 @@
 namespace fastonosql {
 namespace gui {
 class OutputWidget;
-}
-}  // namespace fastonosql
-namespace fastonosql {
-namespace gui {
 class BaseShellWidget;
-}
-}  // namespace fastonosql
 
-namespace fastonosql {
-namespace gui {
 class QueryWidget : public QWidget {
   Q_OBJECT
  public:
@@ -56,5 +48,6 @@ class QueryWidget : public QWidget {
   OutputWidget* outputWidget_;
   const proxy::IServerSPtr server_;
 };
+
 }  // namespace gui
 }  // namespace fastonosql

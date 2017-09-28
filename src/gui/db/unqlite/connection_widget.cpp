@@ -30,44 +30,44 @@ namespace unqlite {
 
 ConnectionWidget::ConnectionWidget(QWidget* parent)
     : ConnectionLocalWidgetFilePath(trDBPath, trCaption, trFilter, parent) {
-  createDBIfMissing_ = new QCheckBox;
-  VERIFY(connect(createDBIfMissing_, &QCheckBox::stateChanged, this, &ConnectionWidget::createDBStateChange));
-  addWidget(createDBIfMissing_);
-  readOnlyDB_ = new QCheckBox;
-  VERIFY(connect(readOnlyDB_, &QCheckBox::stateChanged, this, &ConnectionWidget::readOnlyDBStateChange));
-  addWidget(readOnlyDB_);
+  create_db_if_missing_ = new QCheckBox;
+  VERIFY(connect(create_db_if_missing_, &QCheckBox::stateChanged, this, &ConnectionWidget::createDBStateChange));
+  addWidget(create_db_if_missing_);
+  read_only_db_ = new QCheckBox;
+  VERIFY(connect(read_only_db_, &QCheckBox::stateChanged, this, &ConnectionWidget::readOnlyDBStateChange));
+  addWidget(read_only_db_);
 }
 
 void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
   proxy::unqlite::ConnectionSettings* unq = static_cast<proxy::unqlite::ConnectionSettings*>(connection);
   if (unq) {
     core::unqlite::Config config = unq->GetInfo();
-    createDBIfMissing_->setChecked(config.CreateIfMissingDB());
-    readOnlyDB_->setChecked(config.ReadOnlyDB());
+    create_db_if_missing_->setChecked(config.CreateIfMissingDB());
+    read_only_db_->setChecked(config.ReadOnlyDB());
   }
   ConnectionLocalWidget::syncControls(unq);
 }
 
 void ConnectionWidget::retranslateUi() {
-  createDBIfMissing_->setText(trCreateDBIfMissing);
-  readOnlyDB_->setText(trReadOnlyDB);
+  create_db_if_missing_->setText(trCreateDBIfMissing);
+  read_only_db_->setText(trReadOnlyDB);
   ConnectionLocalWidget::retranslateUi();
 }
 
 void ConnectionWidget::createDBStateChange(int state) {
-  readOnlyDB_->setEnabled(!state);
+  read_only_db_->setEnabled(!state);
 }
 
 void ConnectionWidget::readOnlyDBStateChange(int state) {
-  createDBIfMissing_->setEnabled(!state);
+  create_db_if_missing_->setEnabled(!state);
 }
 
 proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
     const proxy::connection_path_t& path) const {
   proxy::unqlite::ConnectionSettings* conn = new proxy::unqlite::ConnectionSettings(path);
   core::unqlite::Config config = conn->GetInfo();
-  config.SetCreateIfMissingDB(createDBIfMissing_->isChecked());
-  config.SetReadOnlyDB(readOnlyDB_->isChecked());
+  config.SetCreateIfMissingDB(create_db_if_missing_->isChecked());
+  config.SetReadOnlyDB(read_only_db_->isChecked());
   conn->SetInfo(config);
   return conn;
 }

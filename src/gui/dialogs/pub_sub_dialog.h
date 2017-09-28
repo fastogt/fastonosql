@@ -36,16 +36,9 @@ struct LoadServerChannelsRequest;
 struct LoadServerChannelsResponce;
 }  // namespace events_info
 }  // namespace proxy
-}  // namespace fastonosql
-namespace fastonosql {
 namespace gui {
 class FastoTableView;
 class ChannelsTableModel;
-}  // namespace gui
-}  // namespace fastonosql
-
-namespace fastonosql {
-namespace gui {
 
 class PubSubDialog : public QDialog {
   Q_OBJECT

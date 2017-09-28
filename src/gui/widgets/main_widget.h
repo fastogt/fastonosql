@@ -23,15 +23,10 @@
 #include "proxy/proxy_fwd.h"  // for IServerSPtr
 
 class QWidget;
+
 namespace fastonosql {
 namespace gui {
 class QueryWidget;
-}
-}  // namespace fastonosql
-
-namespace fastonosql {
-namespace gui {
-
 class MainWidget : public QTabWidget {
   Q_OBJECT
  public:

@@ -18,15 +18,15 @@
 
 #include "gui/db/lmdb/connection_widget.h"
 
-#include <QLayout>
 #include <QCheckBox>
 #include <QGroupBox>
+#include <QLayout>
 #include <QRadioButton>
 
 #include <common/qt/convert2string.h>
 
-#include "translations/global.h"
 #include "gui/widgets/path_widget.h"
+#include "translations/global.h"
 
 #include "proxy/db/lmdb/connection_settings.h"
 

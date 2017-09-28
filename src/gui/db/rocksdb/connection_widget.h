@@ -36,9 +36,9 @@ class ConnectionWidget : public ConnectionLocalWidgetDirectoryPath {
   virtual proxy::IConnectionSettingsLocal* createConnectionLocalImpl(
       const proxy::connection_path_t& path) const override;
 
-  QCheckBox* createDBIfMissing_;
-  QLabel* compLabel_;
-  QComboBox* typeComparators_;
+  QCheckBox* create_db_if_missing_;
+  QLabel* comparator_label_;
+  QComboBox* type_comparators_;
 };
 
 }  // namespace rocksdb

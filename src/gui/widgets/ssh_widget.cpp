@@ -49,8 +49,8 @@ SSHWidget::SSHWidget(QWidget* parent) : QWidget(parent) {
   useSsh_ = new QCheckBox;
   userName_ = new QLineEdit;
 
-  sshHostWidget_ = new HostPortWidget;
-  QLayout* host_layout = sshHostWidget_->layout();
+  sshhost_widget_ = new HostPortWidget;
+  QLayout* host_layout = sshhost_widget_->layout();
   host_layout->setContentsMargins(0, 0, 0, 0);
 
   privateKeyWidget_ = new FilePathWidget(trPrivateKey, trPrivateKeyFiles, trSelectPrivateKey);
@@ -88,7 +88,7 @@ SSHWidget::SSHWidget(QWidget* parent) : QWidget(parent) {
 
   QGridLayout* sshWidgetLayout = new QGridLayout;
   sshWidgetLayout->addWidget(sshAddressLabel_, 1, 0);
-  sshWidgetLayout->addWidget(sshHostWidget_, 1, 1, 1, 2);
+  sshWidgetLayout->addWidget(sshhost_widget_, 1, 1, 1, 2);
   sshWidgetLayout->addWidget(sshUserNameLabel_, 2, 0);
   sshWidgetLayout->addWidget(userName_, 2, 1, 1, 2);
   sshWidgetLayout->addWidget(sshAuthMethodLabel_, 3, 0);
@@ -134,7 +134,7 @@ void SSHWidget::setSSHEnabled(bool enabled) {
 
 core::SSHInfo SSHWidget::info() const {
   core::SSHInfo info;
-  info.host = sshHostWidget_->host();
+  info.host = sshhost_widget_->host();
   info.user_name = common::ConvertToString(userName_->text());
   info.password = common::ConvertToString(passwordBox_->text());
   info.public_key = common::ConvertToString(publicKeyWidget_->path());
@@ -149,7 +149,7 @@ void SSHWidget::setInfo(const core::SSHInfo& info) {
   bool checked = info.IsValid();
   useSsh_->setChecked(checked);
   common::net::HostAndPort host = info.host;
-  sshHostWidget_->setHost(host);
+  sshhost_widget_->setHost(host);
   QString quser_name;
   common::ConvertFromString(info.user_name, &quser_name);
   userName_->setText(quser_name);

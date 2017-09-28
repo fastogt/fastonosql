@@ -33,11 +33,6 @@ class QSortFilterProxyModel;
 namespace fastonosql {
 namespace gui {
 class ExplorerTreeModel;
-}
-}  // namespace fastonosql
-
-namespace fastonosql {
-namespace gui {
 
 class ExplorerTreeView : public QTreeView {
   Q_OBJECT

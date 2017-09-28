@@ -24,6 +24,7 @@ class QComboBox;  // lines 23-23
 class QEvent;
 class QRadioButton;  // lines 24-24
 class QWidget;
+
 namespace fastonosql {
 namespace gui {
 class FastoEditor;

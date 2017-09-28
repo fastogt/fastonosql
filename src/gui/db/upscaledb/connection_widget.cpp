@@ -37,16 +37,16 @@ namespace upscaledb {
 
 ConnectionWidget::ConnectionWidget(QWidget* parent)
     : ConnectionLocalWidgetFilePath(trDBPath, trFilter, trCaption, parent) {
-  createDBIfMissing_ = new QCheckBox;
-  addWidget(createDBIfMissing_);
+  create_db_if_missing_ = new QCheckBox;
+  addWidget(create_db_if_missing_);
 
   QHBoxLayout* def_layout = new QHBoxLayout;
-  defaultDBLabel_ = new QLabel;
+  default_db_label_ = new QLabel;
 
-  defaultDBNum_ = new QSpinBox;
-  defaultDBNum_->setRange(1, INT16_MAX);
-  def_layout->addWidget(defaultDBLabel_);
-  def_layout->addWidget(defaultDBNum_);
+  default_db_num_ = new QSpinBox;
+  default_db_num_->setRange(1, INT16_MAX);
+  def_layout->addWidget(default_db_label_);
+  def_layout->addWidget(default_db_num_);
   addLayout(def_layout);
 }
 
@@ -54,15 +54,15 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
   proxy::upscaledb::ConnectionSettings* ups = static_cast<proxy::upscaledb::ConnectionSettings*>(connection);
   if (ups) {
     core::upscaledb::Config config = ups->GetInfo();
-    createDBIfMissing_->setChecked(config.create_if_missing);
-    defaultDBNum_->setValue(config.dbnum);
+    create_db_if_missing_->setChecked(config.create_if_missing);
+    default_db_num_->setValue(config.dbnum);
   }
   ConnectionLocalWidget::syncControls(ups);
 }
 
 void ConnectionWidget::retranslateUi() {
-  createDBIfMissing_->setText(trCreateDBIfMissing);
-  defaultDBLabel_->setText(trDefaultDb);
+  create_db_if_missing_->setText(trCreateDBIfMissing);
+  default_db_label_->setText(trDefaultDb);
   ConnectionLocalWidget::retranslateUi();
 }
 
@@ -70,8 +70,8 @@ proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
     const proxy::connection_path_t& path) const {
   proxy::upscaledb::ConnectionSettings* conn = new proxy::upscaledb::ConnectionSettings(path);
   core::upscaledb::Config config = conn->GetInfo();
-  config.create_if_missing = createDBIfMissing_->isChecked();
-  config.dbnum = defaultDBNum_->value();
+  config.create_if_missing = create_db_if_missing_->isChecked();
+  config.dbnum = default_db_num_->value();
   conn->SetInfo(config);
   return conn;
 }

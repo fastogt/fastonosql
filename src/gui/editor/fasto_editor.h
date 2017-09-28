@@ -37,11 +37,6 @@ class QsciLexer;    // lines 36-36
 namespace fastonosql {
 namespace gui {
 class FastoScintilla;
-}
-}  // namespace fastonosql
-
-namespace fastonosql {
-namespace gui {
 
 class FastoEditor : public QWidget {
   Q_OBJECT

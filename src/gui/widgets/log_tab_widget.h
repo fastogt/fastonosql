@@ -29,11 +29,6 @@ namespace fastonosql {
 namespace gui {
 class CommandsWidget;
 class LogWidget;
-}  // namespace gui
-}  // namespace fastonosql
-
-namespace fastonosql {
-namespace gui {
 
 class LogTabWidget : public QTabWidget {
   Q_OBJECT

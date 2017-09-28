@@ -31,73 +31,33 @@ class GlassWidget;
 }
 }  // namespace qt
 }  // namespace common
-namespace fastonosql {
-namespace proxy {
-namespace events_info {
-class ServerInfoResponce;
-struct ServerInfoRequest;
-}  // namespace events_info
-}  // namespace proxy
-}  // namespace fastonosql
 
 namespace fastonosql {
 namespace core {
 namespace leveldb {
 class ServerInfo;
 }
-}  // namespace core
-}  // namespace fastonosql
-namespace fastonosql {
-namespace core {
 namespace lmdb {
 class ServerInfo;
 }
-}  // namespace core
-}  // namespace fastonosql
-namespace fastonosql {
-namespace core {
 namespace memcached {
 class ServerInfo;
 }
-}  // namespace core
-}  // namespace fastonosql
-namespace fastonosql {
-namespace core {
 namespace redis {
 struct ServerInfo;
 }
-}  // namespace core
-}  // namespace fastonosql
-namespace fastonosql {
-namespace core {
 namespace rocksdb {
 class ServerInfo;
 }
-}  // namespace core
-}  // namespace fastonosql
-namespace fastonosql {
-namespace core {
 namespace ssdb {
 class ServerInfo;
 }
-}  // namespace core
-}  // namespace fastonosql
-namespace fastonosql {
-namespace core {
 namespace unqlite {
 class ServerInfo;
 }
-}  // namespace core
-}  // namespace fastonosql
-namespace fastonosql {
-namespace core {
 namespace upscaledb {
 class ServerInfo;
 }
-}  // namespace core
-}  // namespace fastonosql
-namespace fastonosql {
-namespace core {
 namespace forestdb {
 class ServerInfo;
 }
@@ -105,6 +65,12 @@ class ServerInfo;
 }  // namespace fastonosql
 
 namespace fastonosql {
+namespace proxy {
+namespace events_info {
+class ServerInfoResponce;
+struct ServerInfoRequest;
+}  // namespace events_info
+}  // namespace proxy
 namespace gui {
 
 class InfoServerDialog : public QDialog {

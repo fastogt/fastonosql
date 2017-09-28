@@ -31,11 +31,6 @@
 namespace fastonosql {
 namespace gui {
 class FastoHexEdit;
-}
-}  // namespace fastonosql
-
-namespace fastonosql {
-namespace gui {
 
 class FastoEditorOutput : public QWidget {
   Q_OBJECT

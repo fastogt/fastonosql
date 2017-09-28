@@ -68,11 +68,11 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(paren
   hbox->addWidget(remote_);
   hbox->addWidget(isSSLConnection_);
 
-  hostWidget_ = new HostPortWidget;
-  QLayout* host_layout = hostWidget_->layout();
+  host_widget_ = new HostPortWidget;
+  QLayout* host_layout = host_widget_->layout();
   host_layout->setContentsMargins(0, 0, 0, 0);
   vbox->addLayout(hbox);
-  vbox->addWidget(hostWidget_);
+  vbox->addWidget(host_widget_);
 
   pathWidget_ = new FilePathWidget(trUnixPath, trFilter, trCaption);
   QLayout* path_layout = pathWidget_->layout();
@@ -97,12 +97,12 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(paren
   addLayout(passwordLayout);
 
   QHBoxLayout* def_layout = new QHBoxLayout;
-  defaultDBLabel_ = new QLabel;
+  default_db_label_ = new QLabel;
 
-  defaultDBNum_ = new QSpinBox;
-  defaultDBNum_->setRange(0, INT32_MAX);
-  def_layout->addWidget(defaultDBLabel_);
-  def_layout->addWidget(defaultDBNum_);
+  default_db_num_ = new QSpinBox;
+  default_db_num_->setRange(0, INT32_MAX);
+  def_layout->addWidget(default_db_label_);
+  def_layout->addWidget(default_db_num_);
   addLayout(def_layout);
 
   // ssh
@@ -125,7 +125,7 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
     core::redis::Config config = redis->GetInfo();
     bool is_remote = config.hostsocket.empty();
     if (is_remote) {
-      hostWidget_->setHost(config.host);
+      host_widget_->setHost(config.host);
       remote_->setChecked(true);
       isSSLConnection_->setChecked(config.is_ssl);
     } else {
@@ -145,7 +145,7 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
       useAuth_->setChecked(false);
       passwordBox_->clear();
     }
-    defaultDBNum_->setValue(config.dbnum);
+    default_db_num_->setValue(config.dbnum);
     core::SSHInfo ssh_info = redis->GetSSHInfo();
     sshWidget_->setInfo(ssh_info);
   }
@@ -158,7 +158,7 @@ void ConnectionWidget::retranslateUi() {
   isSSLConnection_->setText(trSSL);
   local_->setText(trLocal);
   useAuth_->setText(tr("Use AUTH"));
-  defaultDBLabel_->setText(trDefaultDb);
+  default_db_label_->setText(trDefaultDb);
   ConnectionBaseWidget::retranslateUi();
 }
 
@@ -178,14 +178,14 @@ void ConnectionWidget::sslStateChange(int state) {
 }
 
 void ConnectionWidget::selectRemoteDBPath(bool checked) {
-  hostWidget_->setEnabled(checked);
+  host_widget_->setEnabled(checked);
   pathWidget_->setEnabled(!checked);
   isSSLConnection_->setEnabled(checked);
   sshWidget_->setEnabled(checked);
 }
 
 void ConnectionWidget::selectLocalDBPath(bool checked) {
-  hostWidget_->setEnabled(!checked);
+  host_widget_->setEnabled(!checked);
   pathWidget_->setEnabled(checked);
   isSSLConnection_->setEnabled(!checked);
   sshWidget_->setEnabled(!checked);
@@ -204,7 +204,7 @@ bool ConnectionWidget::validated() const {
 
   bool is_remote = remote_->isChecked();
   if (is_remote) {
-    if (!hostWidget_->isValidHost()) {
+    if (!host_widget_->isValidHost()) {
       return false;
     }
   } else {
@@ -230,7 +230,7 @@ proxy::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(const pro
   core::redis::Config config = conn->GetInfo();
   bool is_remote = remote_->isChecked();
   if (is_remote) {
-    config.host = hostWidget_->host();
+    config.host = host_widget_->host();
     config.is_ssl = isSSLConnection_->isChecked();
   } else {
     config.hostsocket = common::ConvertToString(pathWidget_->path());
@@ -239,7 +239,7 @@ proxy::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(const pro
   if (useAuth_->isChecked() && isValidCredential()) {
     config.auth = common::ConvertToString(passwordBox_->text());
   }
-  config.dbnum = defaultDBNum_->value();
+  config.dbnum = default_db_num_->value();
   conn->SetInfo(config);
 
   core::SSHInfo info;

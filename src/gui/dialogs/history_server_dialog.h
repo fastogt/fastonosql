@@ -33,14 +33,8 @@ namespace common {
 namespace qt {
 namespace gui {
 class GlassWidget;
-}
-}  // namespace qt
-}  // namespace common
-namespace common {
-namespace qt {
-namespace gui {
 class GraphWidget;
-}
+}  // namespace gui
 }  // namespace qt
 }  // namespace common
 

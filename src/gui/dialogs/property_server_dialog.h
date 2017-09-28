@@ -35,6 +35,7 @@ class GlassWidget;
 }
 }  // namespace qt
 }  // namespace common
+
 namespace fastonosql {
 namespace proxy {
 namespace events_info {
@@ -44,9 +45,6 @@ struct ServerPropertyInfoResponce;
 struct ChangeServerPropertyInfoResponce;
 }  // namespace events_info
 }  // namespace proxy
-}  // namespace fastonosql
-
-namespace fastonosql {
 namespace gui {
 
 class PropertyServerDialog : public QDialog {

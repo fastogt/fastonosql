@@ -35,14 +35,10 @@ class GlassWidget;
 }
 }  // namespace qt
 }  // namespace common
-namespace fastonosql {
-namespace gui {
-class ConnectionListWidgetItemDiscovered;
-}
-}  // namespace fastonosql
 
 namespace fastonosql {
 namespace gui {
+class ConnectionListWidgetItemDiscovered;
 
 class DiscoverySentinelDiagnosticDialog : public QDialog {
   Q_OBJECT

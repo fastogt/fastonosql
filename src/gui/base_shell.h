@@ -24,12 +24,8 @@
 
 namespace fastonosql {
 namespace gui {
-class BaseQsciLexer;
-}
-}  // namespace fastonosql
 
-namespace fastonosql {
-namespace gui {
+class BaseQsciLexer;
 
 class BaseShell : public gui::FastoEditorShell {
   Q_OBJECT

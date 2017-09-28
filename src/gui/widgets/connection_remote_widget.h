@@ -38,12 +38,12 @@ class ConnectionRemoteWidget : public ConnectionBaseWidget {
   virtual bool validated() const override;
 
  protected:
-  virtual proxy::IConnectionSettingsBase* createConnectionImpl(
-      const proxy::connection_path_t& path) const override final;
   virtual proxy::IConnectionSettingsRemote* createConnectionRemoteImpl(const proxy::connection_path_t& path) const = 0;
 
  private:
-  HostPortWidget* hostWidget_;
+  virtual proxy::IConnectionSettingsBase* createConnectionImpl(
+      const proxy::connection_path_t& path) const override final;
+  HostPortWidget* host_widget_;
 };
 
 }  // namespace gui

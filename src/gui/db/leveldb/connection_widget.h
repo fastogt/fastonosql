@@ -36,7 +36,7 @@ class ConnectionWidget : public ConnectionLocalWidgetDirectoryPath {
   virtual proxy::IConnectionSettingsLocal* createConnectionLocalImpl(
       const proxy::connection_path_t& path) const override;
 
-  QCheckBox* createDBIfMissing_;
+  QCheckBox* create_db_if_missing_;
   QLabel* compLabel_;
   QComboBox* typeComparators_;
 };

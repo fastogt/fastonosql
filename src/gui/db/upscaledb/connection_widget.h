@@ -36,10 +36,10 @@ class ConnectionWidget : public ConnectionLocalWidgetFilePath {
   virtual proxy::IConnectionSettingsLocal* createConnectionLocalImpl(
       const proxy::connection_path_t& path) const override;
 
-  QCheckBox* createDBIfMissing_;
+  QCheckBox* create_db_if_missing_;
 
-  QLabel* defaultDBLabel_;
-  QSpinBox* defaultDBNum_;
+  QLabel* default_db_label_;
+  QSpinBox* default_db_num_;
 };
 
 }  // namespace upscaledb

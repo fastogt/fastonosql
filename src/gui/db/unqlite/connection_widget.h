@@ -40,8 +40,8 @@ class ConnectionWidget : public ConnectionLocalWidgetFilePath {
   virtual proxy::IConnectionSettingsLocal* createConnectionLocalImpl(
       const proxy::connection_path_t& path) const override;
 
-  QCheckBox* createDBIfMissing_;
-  QCheckBox* readOnlyDB_;
+  QCheckBox* create_db_if_missing_;
+  QCheckBox* read_only_db_;
 };
 
 }  // namespace unqlite

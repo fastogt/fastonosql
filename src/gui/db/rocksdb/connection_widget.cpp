@@ -29,21 +29,20 @@ namespace fastonosql {
 namespace gui {
 namespace rocksdb {
 
-ConnectionWidget::ConnectionWidget(QWidget* parent)
-    : ConnectionLocalWidgetDirectoryPath(trDBPath, trCaption, parent) {
-  createDBIfMissing_ = new QCheckBox;
-  addWidget(createDBIfMissing_);
+ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionLocalWidgetDirectoryPath(trDBPath, trCaption, parent) {
+  create_db_if_missing_ = new QCheckBox;
+  addWidget(create_db_if_missing_);
 
   QHBoxLayout* type_comp_layout = new QHBoxLayout;
-  typeComparators_ = new QComboBox;
+  type_comparators_ = new QComboBox;
   for (uint32_t i = 0; i < core::rocksdb::g_comparator_types.size(); ++i) {
     const char* ct = core::rocksdb::g_comparator_types[i];
-    typeComparators_->addItem(ct, i);
+    type_comparators_->addItem(ct, i);
   }
 
-  compLabel_ = new QLabel;
-  type_comp_layout->addWidget(compLabel_);
-  type_comp_layout->addWidget(typeComparators_);
+  comparator_label_ = new QLabel;
+  type_comp_layout->addWidget(comparator_label_);
+  type_comp_layout->addWidget(type_comparators_);
   addLayout(type_comp_layout);
 }
 
@@ -51,15 +50,15 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
   proxy::rocksdb::ConnectionSettings* rock = static_cast<proxy::rocksdb::ConnectionSettings*>(connection);
   if (rock) {
     core::rocksdb::Config config = rock->GetInfo();
-    createDBIfMissing_->setChecked(config.create_if_missing);
-    typeComparators_->setCurrentIndex(config.comparator);
+    create_db_if_missing_->setChecked(config.create_if_missing);
+    type_comparators_->setCurrentIndex(config.comparator);
   }
   ConnectionLocalWidget::syncControls(rock);
 }
 
 void ConnectionWidget::retranslateUi() {
-  createDBIfMissing_->setText(trCreateDBIfMissing);
-  compLabel_->setText(trComparator);
+  create_db_if_missing_->setText(trCreateDBIfMissing);
+  comparator_label_->setText(trComparator);
   ConnectionLocalWidget::retranslateUi();
 }
 
@@ -67,8 +66,8 @@ proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
     const proxy::connection_path_t& path) const {
   proxy::rocksdb::ConnectionSettings* conn = new proxy::rocksdb::ConnectionSettings(path);
   core::rocksdb::Config config = conn->GetInfo();
-  config.create_if_missing = createDBIfMissing_->isChecked();
-  config.comparator = static_cast<core::rocksdb::ComparatorType>(typeComparators_->currentIndex());
+  config.create_if_missing = create_db_if_missing_->isChecked();
+  config.comparator = static_cast<core::rocksdb::ComparatorType>(type_comparators_->currentIndex());
   conn->SetInfo(config);
   return conn;
 }

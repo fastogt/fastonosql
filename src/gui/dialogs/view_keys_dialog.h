@@ -39,16 +39,8 @@ struct LoadDatabaseContentRequest;
 struct LoadDatabaseContentResponce;
 }  // namespace events_info
 }  // namespace proxy
-}  // namespace fastonosql
-namespace fastonosql {
 namespace gui {
 class KeysTableView;
-}
-}  // namespace fastonosql
-
-namespace fastonosql {
-namespace gui {
-
 class ViewKeysDialog : public QDialog {
   Q_OBJECT
  public:

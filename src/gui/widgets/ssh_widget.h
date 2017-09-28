@@ -68,7 +68,7 @@ class SSHWidget : public QWidget {
   QCheckBox* useSsh_;
   QWidget* useSshWidget_;
 
-  HostPortWidget* sshHostWidget_;
+  HostPortWidget* sshhost_widget_;
   IPathWidget* publicKeyWidget_;
   IPathWidget* privateKeyWidget_;
 
