@@ -20,9 +20,8 @@
 
 #include "core/config/config.h"
 
-#define LMDB_DEFAULT_ENV_FLAGS \
-  0x20000  // mdb_env Environment Flags
-           // MDB_RDONLY  0x20000
+#define LMDB_DEFAULT_ENV_FLAGS 0x20000  // mdb_env Environment Flags
+                                        // MDB_RDONLY  0x20000
 
 namespace fastonosql {
 namespace core {
@@ -30,6 +29,7 @@ namespace lmdb {
 
 struct Config : public LocalConfig {
   static const std::string default_db_name;
+  enum { default_dbs_count = 1024 };
   Config();
 
   bool ReadOnlyDB() const;
@@ -40,6 +40,7 @@ struct Config : public LocalConfig {
 
   int env_flags;
   std::string db_name;
+  unsigned int max_dbs;
 };
 
 }  // namespace lmdb

@@ -40,6 +40,14 @@ const internal::ConstantCommandsArray g_commands = {CommandHolder("HELP",
                                                                   0,
                                                                   1,
                                                                   &CommandsApi::Info),
+                                                    CommandHolder("CONFIG GET",
+                                                                  "<parameter>",
+                                                                  "Get the value of a configuration parameter",
+                                                                  PROJECT_VERSION_GENERATE(2, 0, 0),
+                                                                  UNDEFINED_EXAMPLE_STR,
+                                                                  1,
+                                                                  0,
+                                                                  &CommandsApi::ConfigGet),
                                                     CommandHolder("SCAN",
                                                                   "<cursor> [MATCH pattern] [COUNT count]",
                                                                   "Incrementally iterate the keys space",
@@ -148,6 +156,19 @@ common::Error CommandsApi::Info(internal::CommandHandler* handler, commands_args
   }
 
   common::StringValue* val = common::Value::CreateStringValue(ServerInfo(statsout).ToString());
+  FastoObject* child = new FastoObject(out, val, mdb->GetDelimiter());
+  out->AddChildren(child);
+  return common::Error();
+}
+
+common::Error CommandsApi::ConfigGet(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* mdb = static_cast<DBConnection*>(handler);
+  common::Value* val = nullptr;
+  common::Error err = mdb->ConfigGet(argv[0], &val);
+  if (err) {
+    return err;
+  }
+
   FastoObject* child = new FastoObject(out, val, mdb->GetDelimiter());
   out->AddChildren(child);
   return common::Error();

@@ -55,6 +55,9 @@ class ConnectionWidget : public ConnectionBaseWidget {
 
   QLabel* db_name_label_;
   QLineEdit* db_name_edit_;
+
+  QLabel* max_dbs_count_label_;
+  QSpinBox* max_dbs_count_edit_;
 };
 
 }  // namespace lmdb

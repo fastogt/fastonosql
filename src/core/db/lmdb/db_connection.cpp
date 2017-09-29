@@ -60,7 +60,7 @@ namespace lmdb {
 struct lmdb {
   MDB_env* env;
   MDB_dbi dbir;
-  const char* db_name;
+  char* db_name;
 };
 
 namespace {
@@ -69,7 +69,44 @@ unsigned int lmdb_db_flag_from_env_flags(int env_flags) {
   return (env_flags & MDB_RDONLY) ? MDB_RDONLY : 0;
 }
 
-int lmdb_open(lmdb** context, const char* db_path, const char* db_name, int env_flags) {
+int lmdb_select(lmdb* context, const char* db_name, int env_flags) {
+  if (!context || !db_name) {  // only for named dbs
+    return EINVAL;
+  }
+
+  if (context->db_name && strcmp(db_name, context->db_name) == 0) {  // lazy select
+    return LMDB_OK;
+  }
+
+  MDB_txn* txn = NULL;
+  int rc = mdb_txn_begin(context->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn);
+  if (rc != LMDB_OK) {
+    return rc;
+  }
+
+  MDB_dbi ldbi = 0;
+  unsigned int flg = env_flags & MDB_RDONLY ? 0 : MDB_CREATE;
+  rc = mdb_dbi_open(txn, db_name, flg, &ldbi);
+  if (rc != LMDB_OK) {
+    mdb_txn_abort(txn);
+    return rc;
+  }
+
+  mdb_txn_commit(txn);
+
+  // cleanup old ref
+  common::utils::freeifnotnull(context->db_name);
+  context->db_name = NULL;
+  mdb_dbi_close(context->env, context->dbir);
+  context->dbir = 0;
+
+  // assigne new
+  context->dbir = ldbi;
+  context->db_name = common::utils::strdupornull(db_name);
+  return rc;
+}
+
+int lmdb_open(lmdb** context, const char* db_path, int env_flags, MDB_dbi max_dbs) {
   lmdb* lcontext = reinterpret_cast<lmdb*>(calloc(1, sizeof(lmdb)));
   int rc = mdb_env_create(&lcontext->env);
   if (rc != LMDB_OK) {
@@ -77,7 +114,7 @@ int lmdb_open(lmdb** context, const char* db_path, const char* db_name, int env_
     return rc;
   }
 
-  rc = mdb_env_set_maxdbs(lcontext->env, 1024);
+  rc = mdb_env_set_maxdbs(lcontext->env, max_dbs);
   if (rc != LMDB_OK) {
     free(lcontext);
     return rc;
@@ -89,24 +126,6 @@ int lmdb_open(lmdb** context, const char* db_path, const char* db_name, int env_
     return rc;
   }
 
-  MDB_txn* txn = NULL;
-  rc = mdb_txn_begin(lcontext->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn);
-  if (rc != LMDB_OK) {
-    free(lcontext);
-    return rc;
-  }
-
-  MDB_dbi ldbi = 0;
-  rc = mdb_dbi_open(txn, db_name, MDB_CREATE, &ldbi);
-  if (rc != LMDB_OK) {
-    mdb_txn_abort(txn);
-    free(lcontext);
-    return rc;
-  }
-
-  mdb_txn_commit(txn);
-  lcontext->dbir = ldbi;
-  lcontext->db_name = common::utils::strdupornull(db_name);
   *context = lcontext;
   return rc;
 }
@@ -121,8 +140,12 @@ void lmdb_close(lmdb** context) {
     return;
   }
 
+  common::utils::freeifnotnull(lcontext->db_name);
+  lcontext->db_name = NULL;
   mdb_dbi_close(lcontext->env, lcontext->dbir);
+  lcontext->dbir = 0;
   mdb_env_close(lcontext->env);
+  lcontext->env = NULL;
   free(lcontext);
   *context = NULL;
 }
@@ -185,10 +208,10 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
     return common::make_error(common::MemSPrintf("Invalid input path(%s)", path));
   }
 
-  const char* db_name = config.db_name == Config::default_db_name ? NULL : config.db_name.c_str();
   const char* db_path = path.c_str();
   int env_flags = config.env_flags;
-  int st = lmdb_open(&lcontext, db_path, db_name, env_flags);
+  unsigned int max_dbs = config.max_dbs;
+  int st = lmdb_open(&lcontext, db_path, env_flags, max_dbs);
   if (st != LMDB_OK) {
     std::string buff = common::MemSPrintf("Fail open database: %s", mdb_strerror(st));
     return common::make_error(buff);
@@ -214,7 +237,7 @@ DBConnection::DBConnection(CDBConnectionClient* client)
 
 std::string DBConnection::GetCurrentDBName() const {
   if (connection_.handle_) {
-    return connection_.handle_->db_name ? connection_.handle_->db_name : Config::default_db_name;
+    return connection_.handle_->db_name ? connection_.handle_->db_name : connection_.config_.db_name;
   }
 
   DNOTREACHED() << "GetCurrentDBName failed!";
@@ -238,6 +261,71 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
 
   *statsout = linfo;
   return common::Error();
+}
+
+common::Error DBConnection::ConfigGet(const std::string& field, common::Value** result) {
+  if (!IsConnected()) {
+    return common::make_error("Not connected");
+  }
+
+  if (field.empty()) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
+  if (field == "databases") {
+    MDB_dbi ldbi = 0;
+    {
+      MDB_txn* txn = NULL;
+      int rc = mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn);
+      if (rc != LMDB_OK) {
+        std::string buff = common::MemSPrintf("ConfigGet error: %s", mdb_strerror(rc));
+        return common::make_error(buff);
+      }
+
+      rc = mdb_dbi_open(txn, NULL, 0, &ldbi);
+      mdb_txn_abort(txn);
+      if (rc != LMDB_OK) {
+        std::string buff = common::MemSPrintf("ConfigGet error: %s", mdb_strerror(rc));
+        return common::make_error(buff);
+      }
+    }
+
+    MDB_cursor* cursor = NULL;
+    MDB_txn* txn_dbs = NULL;
+    int rc = mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn_dbs);
+    if (rc != LMDB_OK) {
+      mdb_dbi_close(connection_.handle_->env, ldbi);
+      std::string buff = common::MemSPrintf("ConfigGet error: %s", mdb_strerror(rc));
+      return common::make_error(buff);
+    }
+    rc = mdb_cursor_open(txn_dbs, ldbi, &cursor);
+    if (rc != LMDB_OK) {
+      mdb_txn_abort(txn_dbs);
+      mdb_dbi_close(connection_.handle_->env, ldbi);
+      std::string buff = common::MemSPrintf("ConfigGet error: %s", mdb_strerror(rc));
+      return common::make_error(buff);
+    }
+
+    common::ArrayValue* arr = new common::ArrayValue;
+    MDB_val key;
+    MDB_val data;
+    std::vector<std::string> lkeys_out;
+    while ((mdb_cursor_get(cursor, &key, &data, MDB_NEXT) == LMDB_OK)) {
+      std::string skey(reinterpret_cast<const char*>(key.mv_data), key.mv_size);
+      // std::string sdata(reinterpret_cast<const char*>(data.mv_data), data.mv_size);
+      arr->AppendString(skey);
+    }
+
+    mdb_cursor_close(cursor);
+    mdb_txn_abort(txn_dbs);
+    mdb_dbi_close(connection_.handle_->env, ldbi);
+    *result = arr;
+    return common::Error();
+  }
+
+  DNOTREACHED();
+  return common::make_error_inval();
 }
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
@@ -473,8 +561,11 @@ common::Error DBConnection::FlushDBImpl() {
 }
 
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
-  if (name != GetCurrentDBName()) {
-    return ICommandTranslator::InvalidInputArguments(DB_SELECTDB_COMMAND);
+  int env_flags = connection_.config_.env_flags;
+  int rc = lmdb_select(connection_.handle_, name.c_str(), env_flags);
+  if (rc != LMDB_OK) {
+    std::string buff = common::MemSPrintf("commit function error: %s", mdb_strerror(rc));
+    return common::make_error(buff);
   }
 
   size_t kcount = 0;

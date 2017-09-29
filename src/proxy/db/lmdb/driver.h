@@ -66,6 +66,7 @@ class Driver : public IDriverLocal {
   virtual common::Error CurrentServerInfo(core::IServerInfo** info) override;
   virtual common::Error CurrentDataBaseInfo(core::IDataBaseInfo** info) override;
 
+  virtual void HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) override;
   virtual void HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) override;
 
   virtual core::IServerInfoSPtr MakeServerInfoFromString(const std::string& val) override;

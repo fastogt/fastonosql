@@ -24,6 +24,7 @@
 #include <QRadioButton>
 #include <QLabel>
 #include <QLineEdit>
+#include <QSpinBox>
 
 #include <common/qt/convert2string.h>
 
@@ -31,6 +32,10 @@
 #include "translations/global.h"
 
 #include "proxy/db/lmdb/connection_settings.h"
+
+namespace {
+const QString trMaxDBSCount = QObject::tr("Max database count:");
+}
 
 namespace fastonosql {
 namespace gui {
@@ -59,15 +64,23 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : base_class(parent) {
   group_box_->setLayout(vbox);
   addWidget(group_box_);
 
-  read_only_db_ = new QCheckBox;
-  addWidget(read_only_db_);
-
   QHBoxLayout* name_layout = new QHBoxLayout;
   db_name_label_ = new QLabel;
   name_layout->addWidget(db_name_label_);
   db_name_edit_ = new QLineEdit;
   name_layout->addWidget(db_name_edit_);
   addLayout(name_layout);
+
+  QHBoxLayout* max_dbs_layout = new QHBoxLayout;
+  max_dbs_count_label_ = new QLabel;
+  max_dbs_layout->addWidget(max_dbs_count_label_);
+  max_dbs_count_edit_ = new QSpinBox;
+  max_dbs_count_edit_->setRange(1, INT32_MAX);
+  max_dbs_layout->addWidget(max_dbs_count_edit_);
+  addLayout(max_dbs_layout);
+
+  read_only_db_ = new QCheckBox;
+  addWidget(read_only_db_);
 }
 
 void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
@@ -90,6 +103,7 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
     if (common::ConvertFromString(config.db_name, &qdb_name)) {
       db_name_edit_->setText(qdb_name);
     }
+    max_dbs_count_edit_->setValue(config.max_dbs);
   }
   base_class::syncControls(lmdb);
 }
@@ -100,6 +114,7 @@ void ConnectionWidget::retranslateUi() {
   directory_path_selection_->setText(translations::trDirectory);
   read_only_db_->setText(trReadOnlyDB);
   db_name_label_->setText(trDBName);
+  max_dbs_count_label_->setText(trMaxDBSCount);
   base_class::retranslateUi();
 }
 
@@ -140,6 +155,7 @@ proxy::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(const pro
   }
   config.db_name = common::ConvertToString(db_name_edit_->text());
   config.SetSingleFileDB(is_file_path);
+  config.max_dbs = max_dbs_count_edit_->value();
   conn->SetInfo(config);
   return conn;
 }

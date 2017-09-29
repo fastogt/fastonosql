@@ -21,6 +21,7 @@
 #include <common/convert2string.h>  // for ConvertToString
 
 #include "core/db/lmdb/db_connection.h"  // for DBConnection
+#include "core/db/lmdb/database_info.h"
 
 #include "proxy/command/command.h"              // for CreateCommand, etc
 #include "proxy/command/command_logger.h"       // for LOG_COMMAND
@@ -28,6 +29,7 @@
 #include "proxy/db/lmdb/connection_settings.h"  // for ConnectionSettings
 
 #define LMDB_GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
+#define LMDB_GET_DATABASES_COMMAND "CONFIG GET databases"
 
 namespace fastonosql {
 namespace proxy {
@@ -124,6 +126,59 @@ common::Error Driver::CurrentDataBaseInfo(core::IDataBaseInfo** info) {
   }
 
   return impl_->Select(impl_->GetCurrentDBName(), info);
+}
+
+void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) {
+  QObject* sender = ev->sender();
+  NotifyProgress(sender, 0);
+  events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
+  core::FastoObjectCommandIPtr cmd = CreateCommandFast(LMDB_GET_DATABASES_COMMAND, core::C_INNER);
+  NotifyProgress(sender, 50);
+
+  core::IDataBaseInfo* info = nullptr;
+  common::Error err = CurrentDataBaseInfo(&info);
+  if (err) {
+    res.setErrorInfo(err);
+    NotifyProgress(sender, 75);
+    Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
+    NotifyProgress(sender, 100);
+    return;
+  }
+
+  err = Execute(cmd.get());
+  if (err) {
+    res.setErrorInfo(err);
+    NotifyProgress(sender, 75);
+    Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
+    NotifyProgress(sender, 100);
+    return;
+  }
+
+  core::FastoObject::childs_t rchildrens = cmd->GetChildrens();
+  CHECK_EQ(rchildrens.size(), 1);
+  auto ar = std::static_pointer_cast<common::ArrayValue>(rchildrens[0]->GetValue());
+  CHECK(ar);
+
+  core::IDataBaseInfoSPtr curdb(info);
+  std::string scountDb;
+  if (!ar->IsEmpty()) {
+    for (size_t i = 0; i < ar->GetSize(); ++i) {
+      std::string name;
+      if (ar->GetString(i, &name)) {
+        core::IDataBaseInfoSPtr dbInf(new core::lmdb::DataBaseInfo(name, false, 0));
+        if (dbInf->GetName() == curdb->GetName()) {
+          res.databases.push_back(curdb);
+        } else {
+          res.databases.push_back(dbInf);
+        }
+      }
+    }
+  } else {
+    res.databases.push_back(curdb);
+  }
+  NotifyProgress(sender, 75);
+  Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
+  NotifyProgress(sender, 100);
 }
 
 void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {
