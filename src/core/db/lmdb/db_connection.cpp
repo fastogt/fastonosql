@@ -263,69 +263,61 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
   return common::Error();
 }
 
-common::Error DBConnection::ConfigGet(const std::string& field, common::Value** result) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
-  }
-
-  if (field.empty()) {
+common::Error DBConnection::ConfigGetDatabases(std::vector<std::string>* dbs) {
+  if (!dbs) {
     DNOTREACHED();
     return common::make_error_inval();
   }
 
-  if (field == "databases") {
-    MDB_dbi ldbi = 0;
-    {
-      MDB_txn* txn = NULL;
-      int rc = mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn);
-      if (rc != LMDB_OK) {
-        std::string buff = common::MemSPrintf("ConfigGet error: %s", mdb_strerror(rc));
-        return common::make_error(buff);
-      }
-
-      rc = mdb_dbi_open(txn, NULL, 0, &ldbi);
-      mdb_txn_abort(txn);
-      if (rc != LMDB_OK) {
-        std::string buff = common::MemSPrintf("ConfigGet error: %s", mdb_strerror(rc));
-        return common::make_error(buff);
-      }
-    }
-
-    MDB_cursor* cursor = NULL;
-    MDB_txn* txn_dbs = NULL;
-    int rc = mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn_dbs);
-    if (rc != LMDB_OK) {
-      mdb_dbi_close(connection_.handle_->env, ldbi);
-      std::string buff = common::MemSPrintf("ConfigGet error: %s", mdb_strerror(rc));
-      return common::make_error(buff);
-    }
-    rc = mdb_cursor_open(txn_dbs, ldbi, &cursor);
-    if (rc != LMDB_OK) {
-      mdb_txn_abort(txn_dbs);
-      mdb_dbi_close(connection_.handle_->env, ldbi);
-      std::string buff = common::MemSPrintf("ConfigGet error: %s", mdb_strerror(rc));
-      return common::make_error(buff);
-    }
-
-    common::ArrayValue* arr = new common::ArrayValue;
-    MDB_val key;
-    MDB_val data;
-    std::vector<std::string> lkeys_out;
-    while ((mdb_cursor_get(cursor, &key, &data, MDB_NEXT) == LMDB_OK)) {
-      std::string skey(reinterpret_cast<const char*>(key.mv_data), key.mv_size);
-      // std::string sdata(reinterpret_cast<const char*>(data.mv_data), data.mv_size);
-      arr->AppendString(skey);
-    }
-
-    mdb_cursor_close(cursor);
-    mdb_txn_abort(txn_dbs);
-    mdb_dbi_close(connection_.handle_->env, ldbi);
-    *result = arr;
-    return common::Error();
+  if (!IsConnected()) {
+    return common::make_error("Not connected");
   }
 
-  DNOTREACHED();
-  return common::make_error_inval();
+  MDB_dbi ldbi = 0;
+  {
+    MDB_txn* txn = NULL;
+    int rc = mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn);
+    if (rc != LMDB_OK) {
+      std::string buff = common::MemSPrintf("ConfigGet error: %s", mdb_strerror(rc));
+      return common::make_error(buff);
+    }
+
+    rc = mdb_dbi_open(txn, NULL, 0, &ldbi);
+    mdb_txn_abort(txn);
+    if (rc != LMDB_OK) {
+      std::string buff = common::MemSPrintf("ConfigGet error: %s", mdb_strerror(rc));
+      return common::make_error(buff);
+    }
+  }
+
+  MDB_cursor* cursor = NULL;
+  MDB_txn* txn_dbs = NULL;
+  int rc = mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn_dbs);
+  if (rc != LMDB_OK) {
+    mdb_dbi_close(connection_.handle_->env, ldbi);
+    std::string buff = common::MemSPrintf("ConfigGet error: %s", mdb_strerror(rc));
+    return common::make_error(buff);
+  }
+  rc = mdb_cursor_open(txn_dbs, ldbi, &cursor);
+  if (rc != LMDB_OK) {
+    mdb_txn_abort(txn_dbs);
+    mdb_dbi_close(connection_.handle_->env, ldbi);
+    std::string buff = common::MemSPrintf("ConfigGet error: %s", mdb_strerror(rc));
+    return common::make_error(buff);
+  }
+
+  MDB_val key;
+  MDB_val data;
+  while ((mdb_cursor_get(cursor, &key, &data, MDB_NEXT) == LMDB_OK)) {
+    std::string skey(reinterpret_cast<const char*>(key.mv_data), key.mv_size);
+    // std::string sdata(reinterpret_cast<const char*>(data.mv_data), data.mv_size);
+    dbs->push_back(skey);
+  }
+
+  mdb_cursor_close(cursor);
+  mdb_txn_abort(txn_dbs);
+  mdb_dbi_close(connection_.handle_->env, ldbi);
+  return common::Error();
 }
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {

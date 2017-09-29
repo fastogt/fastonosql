@@ -214,6 +214,7 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
     QMenu menu(this);
     QAction* closeSentinelAction = new QAction(translations::trClose, this);
     VERIFY(connect(closeSentinelAction, &QAction::triggered, this, &ExplorerTreeView::closeSentinelConnection));
+    menu.addAction(closeSentinelAction);
     menu.exec(menuPoint);
   } else if (node->type() == IExplorerTreeItem::eServer) {
     ExplorerServerItem* server_node = static_cast<ExplorerServerItem*>(node);

@@ -18,36 +18,24 @@
 
 #include "core/server_property_info.h"
 
-#include <common/value.h>  // for ArrayValue
-
-#include "core/global.h"  // for FastoObjectArray
-
 namespace fastonosql {
 namespace core {
 
-ServerPropertiesInfo MakeServerProperty(const FastoObjectArray* array) {
+ServerPropertiesInfo MakeServerProperty(const common::ArrayValue* array) {
   if (!array) {
     DNOTREACHED();
     return ServerPropertiesInfo();
   }
 
-  common::ArrayValue* arr = array->GetArray();
-  if (!arr) {
-    DNOTREACHED();
-    return ServerPropertiesInfo();
-  }
-
   std::vector<property_t> properties;
-  for (size_t i = 0; i < arr->GetSize(); i += 2) {
+  for (size_t i = 0; i < array->GetSize(); i += 2) {
     std::string key, value;
-    if (arr->GetString(i, &key) && arr->GetString(i + 1, &value)) {
+    if (array->GetString(i, &key) && array->GetString(i + 1, &value)) {
       properties.push_back(std::make_pair(key, value));
     }
   }
 
-  ServerPropertiesInfo inf;
-  inf.properties = properties;
-  return inf;
+  return {properties};
 }
 
 }  // namespace core

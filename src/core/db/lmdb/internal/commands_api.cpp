@@ -163,13 +163,19 @@ common::Error CommandsApi::Info(internal::CommandHandler* handler, commands_args
 
 common::Error CommandsApi::ConfigGet(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* mdb = static_cast<DBConnection*>(handler);
-  common::Value* val = nullptr;
-  common::Error err = mdb->ConfigGet(argv[0], &val);
+  if (argv[0] != "databases") {
+    return common::make_error_inval();
+  }
+
+  std::vector<std::string> dbs;
+  common::Error err = mdb->ConfigGetDatabases(&dbs);
   if (err) {
     return err;
   }
 
-  FastoObject* child = new FastoObject(out, val, mdb->GetDelimiter());
+  common::ArrayValue* arr = new common::ArrayValue;
+  arr->AppendStrings(dbs);
+  FastoObject* child = new FastoObject(out, arr, mdb->GetDelimiter());
   out->AddChildren(child);
   return common::Error();
 }

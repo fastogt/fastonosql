@@ -447,7 +447,7 @@ void Driver::HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEven
       CHECK_EQ(ch.size(), 1);
       core::FastoObjectArray* array = dynamic_cast<core::FastoObjectArray*>(ch[0].get());  // +
       if (array) {
-        res.info = core::MakeServerProperty(array);
+        res.info = core::MakeServerProperty(array->GetArray());
       }
     }
   }

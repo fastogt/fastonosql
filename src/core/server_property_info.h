@@ -18,13 +18,10 @@
 
 #pragma once
 
-#include <string>  // for string
-#include <vector>  // for vector
+#include <common/value.h>  // for ArrayValue
 
 namespace fastonosql {
 namespace core {
-
-class FastoObjectArray;
 
 typedef std::pair<std::string, std::string> property_t;
 
@@ -32,7 +29,7 @@ struct ServerPropertiesInfo {
   std::vector<property_t> properties;
 };
 
-ServerPropertiesInfo MakeServerProperty(const FastoObjectArray* array);
+ServerPropertiesInfo MakeServerProperty(const common::ArrayValue* array);
 
 }  // namespace core
 }  // namespace fastonosql
