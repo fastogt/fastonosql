@@ -52,7 +52,6 @@ const QString trCommandsVersion = QObject::tr("Command version:");
 const QString trCantReadTemplate_2S = QObject::tr(PROJECT_NAME_TITLE " can't read from %1:\n%2.");
 const QString trCantSaveTemplate_2S = QObject::tr(PROJECT_NAME_TITLE " can't save to %1:\n%2.");
 const QString trAdvancedOptions = QObject::tr("Advanced options");
-const QString trCalculating = QObject::tr("Calculate...");
 const QString trIntervalMsec = QObject::tr("Interval msec:");
 const QString trRepeat = QObject::tr("Repeat:");
 
@@ -191,10 +190,12 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server, const QString& fileP
 
   QHBoxLayout* hlayout2 = new QHBoxLayout;
   core::connectionTypes ct = server_->GetType();
-  serverName_ = new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().icon(ct), trCalculating, iconSize);
+  serverName_ =
+      new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().icon(ct), translations::trCalculating, iconSize);
   serverName_->setElideMode(Qt::ElideRight);
   hlayout2->addWidget(serverName_);
-  dbName_ = new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().databaseIcon(), trCalculating, iconSize);
+  dbName_ = new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().databaseIcon(), translations::trCalculating,
+                                           iconSize);
   hlayout2->addWidget(dbName_);
   hlayout2->addWidget(new QSplitter(Qt::Horizontal));
   hlayout2->addWidget(advancedOptions_);
@@ -476,7 +477,7 @@ void BaseShellWidget::serverDisconnect() {
 
 void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
   if (!inf) {
-    serverName_->setText(trCalculating);
+    serverName_->setText(translations::trCalculating);
     for (int i = 0; i < commandsVersionApi_->count(); ++i) {
       commandsVersionApi_->setItemIcon(i, gui::GuiFactory::GetInstance().unknownIcon());
     }
@@ -525,7 +526,7 @@ void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
 
 void BaseShellWidget::updateDefaultDatabase(core::IDataBaseInfoSPtr dbs) {
   if (!dbs) {
-    dbName_->setText(trCalculating);
+    dbName_->setText(translations::trCalculating);
     return;
   }
 

@@ -84,7 +84,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
         common::ConvertFromString(common::ConvertToString(rserver->Role()), &stype);
         QString mtype;
         common::ConvertFromString(common::ConvertToString(rserver->Mode()), &mtype);
-        QString shost = "Unknown";
+        QString shost = translations::trCalculating;
         if (is_connected) {
           common::ConvertFromString(common::ConvertToString(rserver->GetHost()), &shost);
         }
@@ -92,7 +92,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
       } else {
         proxy::IServerLocal* lserver = dynamic_cast<proxy::IServerLocal*>(server.get());  // +
         CHECK(lserver);
-        QString spath = "Unknown";
+        QString spath = translations::trCalculating;
         if (is_connected) {
           common::ConvertFromString(lserver->GetPath(), &spath);
         }

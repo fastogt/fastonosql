@@ -93,9 +93,7 @@ class DBConnection {
 
   config_t GetConfig() const {
     config_t conf = connection_.config_;
-    if (!conf) {
-      DNOTREACHED() << "Why you ask config in disconnected state?";
-    }
+    DCHECK(conf) << "Why you ask config in disconnected state?";
     return conf;
   }
 

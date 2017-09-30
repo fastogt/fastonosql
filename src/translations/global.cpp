@@ -95,6 +95,7 @@ const QString trCommands = QObject::tr("Commands");
 const QString trCommand = QObject::tr("Command");
 const QString trResult = QObject::tr("Result");
 const QString trErrors = QObject::tr("Errors");
+const QString trCalculating = QObject::tr("Calculate...");
 const QString trName = QObject::tr("Name");
 const QString trNumberOfSubscribers = QObject::tr("Number of subscribers");
 const QString trAddress = QObject::tr("Address");
