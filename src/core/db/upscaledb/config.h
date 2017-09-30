@@ -25,6 +25,7 @@ namespace core {
 namespace upscaledb {
 
 struct Config : public LocalConfig {
+  enum { default_db_num = 1 };
   Config();
 
   bool create_if_missing;

@@ -201,12 +201,17 @@ common::Error DBConnection::Connect(const config_t& config) {
     return err;
   }
 
-  err = Select(common::ConvertToString(connection_.config_.dbnum), NULL);
+  err = Select(common::ConvertToString(config->dbnum), NULL);
   if (err) {
     return err;
   }
 
   return common::Error();
+}
+
+common::Error DBConnection::Disconnect() {
+  connection_.handle_->cur_db = 0;
+  return base_class::Disconnect();
 }
 
 common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* statsout) {
@@ -221,8 +226,8 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
   }
 
   ServerInfo::Stats linfo;
-  Config conf = config();
-  linfo.db_path = conf.db_path;
+  auto conf = GetConfig();
+  linfo.db_path = conf->db_path;
 
   *statsout = linfo;
   return common::Error();
@@ -436,7 +441,6 @@ common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** 
     st = ups_db_close(connection_.handle_->db, 0);
     DCHECK(st == UPS_SUCCESS);
     connection_.handle_->db = db;
-    connection_.config_.dbnum = num;
     connection_.handle_->cur_db = num;
   }
 

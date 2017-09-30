@@ -86,8 +86,8 @@ Driver::~Driver() {
 }
 
 common::net::HostAndPort Driver::GetHost() const {
-  core::redis::Config conf = impl_->config();
-  return conf.host;
+  auto conf = impl_->GetConfig();
+  return conf->host;
 }
 
 std::string Driver::GetNsSeparator() const {

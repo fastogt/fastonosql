@@ -34,7 +34,7 @@ namespace core {
 namespace redis {
 namespace {
 
-Config parseOptions(int argc, char** argv) {
+Config ParseOptions(int argc, char** argv) {
   Config cfg;
   for (int i = 0; i < argc; i++) {
     const bool lastarg = i == argc - 1;
@@ -51,7 +51,7 @@ Config parseOptions(int argc, char** argv) {
     } else if (!strcmp(argv[i], "-n") && !lastarg) {
       int ldbnum;
       if (common::ConvertFromString(std::string(argv[++i]), &ldbnum)) {
-        cfg.dbnum = ldbnum;
+        cfg.db_num = ldbnum;
       }
     } else if (!strcmp(argv[i], "-a") && !lastarg) {
       cfg.auth = argv[++i];
@@ -84,7 +84,7 @@ Config parseOptions(int argc, char** argv) {
 Config::Config()
     : RemoteConfig(common::net::HostAndPort::CreateLocalHost(DEFAULT_REDIS_SERVER_PORT)),
       hostsocket(),
-      dbnum(0),
+      db_num(db_num_default),
       auth(),
       is_ssl(false) {}
 
@@ -101,10 +101,8 @@ std::string ConvertToString(const fastonosql::core::redis::Config& conf) {
     argv.push_back("-s");
     argv.push_back(conf.hostsocket);
   }
-  if (conf.dbnum) {
-    argv.push_back("-n");
-    argv.push_back(ConvertToString(conf.dbnum));
-  }
+  argv.push_back("-n");
+  argv.push_back(ConvertToString(conf.db_num));
 
   if (!conf.auth.empty()) {
     argv.push_back("-a");
@@ -119,14 +117,14 @@ std::string ConvertToString(const fastonosql::core::redis::Config& conf) {
 }
 
 bool ConvertFromString(const std::string& from, fastonosql::core::redis::Config* out) {
-  if (!out) {
+  if (!out || from.empty()) {
     return false;
   }
 
   int argc = 0;
   sds* argv = sdssplitargslong(from.c_str(), &argc);
   if (argv) {
-    *out = fastonosql::core::redis::parseOptions(argc, argv);
+    *out = fastonosql::core::redis::ParseOptions(argc, argv);
     sdsfreesplitres(argv, argc);
     return true;
   }

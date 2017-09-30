@@ -98,9 +98,7 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget
   tableView_->horizontalHeader()->setStretchLastSection(false);
   tableView_->setItemDelegateForColumn(FastoCommonItem::eValue, new TypeDelegate(this));
 
-  QString delimiter;
-  common::ConvertFromString(server_->GetDelimiter(), &delimiter);
-  textView_ = new FastoTextView(delimiter);
+  textView_ = new FastoTextView;
   textView_->setModel(commonModel_);
 
   timeLabel_ = new common::qt::gui::IconLabel(GuiFactory::GetInstance().timeIcon(), "0", QSize(32, 32));

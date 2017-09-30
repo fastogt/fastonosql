@@ -63,9 +63,10 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
   typedef core::internal::CDBConnection<NativeConnection, RConfig, REDIS> base_class;
   explicit DBConnection(CDBConnectionClient* client);
 
-  bool IsAuthenticated() const;
+  virtual bool IsAuthenticated() const override;
 
-  common::Error Connect(const config_t& config);
+  virtual common::Error Connect(const config_t& config) override WARN_UNUSED_RESULT;
+  virtual common::Error Disconnect() override WARN_UNUSED_RESULT;
 
   std::string GetCurrentDBName() const;
 
@@ -128,7 +129,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
   common::Error CliFormatReplyRaw(FastoObject* out, redisReply* r) WARN_UNUSED_RESULT;
   common::Error CliReadReply(FastoObject* out) WARN_UNUSED_RESULT;
 
-  bool isAuth_;
+  bool is_auth_;
   int cur_db_;
 };
 

@@ -37,10 +37,10 @@ Q_DECLARE_METATYPE(fastonosql::core::NValue)
 namespace fastonosql {
 namespace gui {
 
-FastoTextView::FastoTextView(const QString& delimiter, QWidget* parent) : QWidget(parent) {
+FastoTextView::FastoTextView(QWidget* parent) : QWidget(parent) {
   QVBoxLayout* mainL = new QVBoxLayout;
 
-  editor_ = new FastoEditorOutput(delimiter);
+  editor_ = new FastoEditorOutput;
 
   jsonRadioButton_ = new QRadioButton;
   csvRadioButton_ = new QRadioButton;

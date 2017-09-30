@@ -34,7 +34,7 @@ namespace upscaledb {
 
 namespace {
 
-Config parseOptions(int argc, char** argv) {
+Config ParseOptions(int argc, char** argv) {
   Config cfg;
   for (int i = 0; i < argc; i++) {
     const bool lastarg = i == argc - 1;
@@ -72,7 +72,9 @@ Config parseOptions(int argc, char** argv) {
 }  // namespace
 
 Config::Config()
-    : LocalConfig(common::file_system::prepare_path("~/test.upscaledb")), create_if_missing(false), dbnum(1) {}
+    : LocalConfig(common::file_system::prepare_path("~/test.upscaledb")),
+      create_if_missing(false),
+      dbnum(default_db_num) {}
 
 }  // namespace upscaledb
 }  // namespace core
@@ -96,13 +98,14 @@ std::string ConvertToString(const fastonosql::core::upscaledb::Config& conf) {
 }
 
 bool ConvertFromString(const std::string& from, fastonosql::core::upscaledb::Config* out) {
-  if (!out) {
+  if (!out || from.empty()) {
     return false;
   }
+
   int argc = 0;
   sds* argv = sdssplitargslong(from.c_str(), &argc);
   if (argv) {
-    *out = fastonosql::core::upscaledb::parseOptions(argc, argv);
+    *out = fastonosql::core::upscaledb::ParseOptions(argc, argv);
     sdsfreesplitres(argv, argc);
     return true;
   }

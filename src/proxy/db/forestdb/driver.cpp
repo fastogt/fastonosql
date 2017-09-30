@@ -61,12 +61,12 @@ bool Driver::IsConnected() const {
 }
 
 bool Driver::IsAuthenticated() const {
-  return impl_->IsConnected();
+  return impl_->IsAuthenticated();
 }
 
 std::string Driver::GetPath() const {
-  core::forestdb::Config config = impl_->config();
-  return config.db_path;
+  auto config = impl_->GetConfig();
+  return config->db_path;
 }
 
 std::string Driver::GetNsSeparator() const {

@@ -38,27 +38,26 @@ template <typename ConnectionAllocatorTraits>
 class Connection {
  public:
   typedef ConnectionAllocatorTraits traits_t;
-  typedef typename traits_t::config_t config_t;
+  typedef typename common::Optional<typename traits_t::config_t> config_t;
   typedef typename traits_t::handle_t handle_t;
 
   Connection() : config_(), handle_(nullptr) {}
 
   ~Connection() {
-    common::Error err = Disconnect();
-    if (err) {
-      DNOTREACHED();
-    }
+    DCHECK(!IsConnected()) << "Need to be disconnected here!";
+    DCHECK(!config_) << "Config should be cleared!";
+    DCHECK(!handle_) << "Handle should be cleared!";
   }
 
   bool IsConnected() const { return traits_t::IsConnected(handle_); }
 
   common::Error Connect(const config_t& config) WARN_UNUSED_RESULT {
-    if (IsConnected()) {
+    if (IsConnected() || !config) {
       return common::Error();
     }
 
     handle_t* handle = nullptr;
-    common::Error err = traits_t::Connect(config, &handle);
+    common::Error err = traits_t::Connect(*config, &handle);
     if (err) {
       return err;
     }

@@ -35,7 +35,7 @@ class FastoHexEdit;
 class FastoEditorOutput : public QWidget {
   Q_OBJECT
  public:
-  explicit FastoEditorOutput(const QString& delimiter, QWidget* parent = 0);
+  explicit FastoEditorOutput(QWidget* parent = 0);
   virtual ~FastoEditorOutput();
 
   void setModel(QAbstractItemModel* model);
@@ -79,7 +79,6 @@ class FastoEditorOutput : public QWidget {
 
   QAbstractItemModel* model_;
   int view_method_;
-  const QString delimiter_;
 };
 
 }  // namespace gui

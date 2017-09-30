@@ -27,6 +27,7 @@ namespace ssdb {
 struct Config : public RemoteConfig {
   Config();
 };
+
 }  // namespace ssdb
 }  // namespace core
 }  // namespace fastonosql

@@ -145,7 +145,7 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
       useAuth_->setChecked(false);
       passwordBox_->clear();
     }
-    default_db_num_->setValue(config.dbnum);
+    default_db_num_->setValue(config.db_num);
     core::SSHInfo ssh_info = redis->GetSSHInfo();
     sshWidget_->setInfo(ssh_info);
   }
@@ -239,7 +239,7 @@ proxy::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(const pro
   if (useAuth_->isChecked() && isValidCredential()) {
     config.auth = common::ConvertToString(passwordBox_->text());
   }
-  config.dbnum = default_db_num_->value();
+  config.db_num = default_db_num_->value();
   conn->SetInfo(config);
 
   core::SSHInfo info;

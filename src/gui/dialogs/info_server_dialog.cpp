@@ -607,7 +607,7 @@ void InfoServerDialog::updateText(const core::rocksdb::ServerInfo& serv) {
 void InfoServerDialog::updateText(const core::unqlite::ServerInfo& serv) {
   core::unqlite::ServerInfo::Stats stats = serv.stats_;
   QString qfile_name;
-  common::ConvertFromString(stats.file_name, &qfile_name);
+  common::ConvertFromString(stats.db_path, &qfile_name);
 
   QString textServ = trUnqliteTextServerTemplate.arg(qfile_name);
   serverTextInfo_->setText(textServ);

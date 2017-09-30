@@ -36,24 +36,68 @@ class DBConnection {
   static constexpr connectionTypes connection_t = ContType;
 
   DBConnection() : connection_(), interrupted_(false) {}
+  virtual ~DBConnection() {}
 
   static connectionTypes GetConnectionType() { return connection_t; }
 
-  common::Error Connect(const config_t& config) { return connection_.Connect(config); }
+  virtual common::Error Connect(const config_t& config) WARN_UNUSED_RESULT { return connection_.Connect(config); }
+  virtual common::Error Disconnect() WARN_UNUSED_RESULT { return connection_.Disconnect(); }
 
-  common::Error Disconnect() { return connection_.Disconnect(); }
+  virtual bool IsAuthenticated() const { return IsConnected(); }
+  virtual bool IsConnected() const { return connection_.IsConnected(); }
 
-  bool IsConnected() const { return connection_.IsConnected(); }
+  common::Error TestIsConnected() const {
+    if (!IsConnected()) {
+      return common::make_error("Not connected");
+    }
+
+    return common::Error();
+  }
+
+  common::Error TestIsAuthenticated() const {
+    common::Error err = TestIsConnected();
+    if (err) {
+      return err;
+    }
+
+    if (!IsAuthenticated()) {
+      return common::make_error("Not autentificated");
+    }
+
+    return common::Error();
+  }
 
   void SetInterrupted(bool interrupted) { interrupted_ = interrupted; }
 
   bool IsInterrupted() const { return interrupted_; }
 
-  std::string GetDelimiter() const { return connection_.config_.delimiter; }
+  std::string GetDelimiter() const {
+    config_t conf = GetConfig();
+    if (conf) {
+      return conf->delimiter;
+    }
 
-  std::string GetNsSeparator() const { return connection_.config_.ns_separator; }
+    DNOTREACHED() << "Why you ask delimiter in disconnected state?";
+    return Config::default_delimiter;
+  }
 
-  config_t config() const { return connection_.config_; }
+  std::string GetNsSeparator() const {
+    config_t conf = GetConfig();
+    if (conf) {
+      return conf->ns_separator;
+    }
+
+    DNOTREACHED() << "Why you ask ns_separator in disconnected state?";
+    return Config::default_ns_separator;
+  }
+
+  config_t GetConfig() const {
+    config_t conf = connection_.config_;
+    if (!conf) {
+      DNOTREACHED() << "Why you ask config in disconnected state?";
+    }
+    return conf;
+  }
 
  protected:
   dbconnection_t connection_;

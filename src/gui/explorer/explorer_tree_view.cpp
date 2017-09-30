@@ -270,13 +270,15 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       pubSubAction->setEnabled(is_connected);
       menu.addAction(pubSubAction);
 
-      bool is_can_remote = server->IsCanRemote();
       bool is_local = true;
-      if (is_can_remote) {
-        proxy::IServerRemote* rserver = dynamic_cast<proxy::IServerRemote*>(server.get());  // +
-        CHECK(rserver);
-        common::net::HostAndPort host = rserver->GetHost();
-        is_local = host.IsLocalHost();
+      bool is_can_remote = server->IsCanRemote();
+      if (is_connected) {
+        if (is_can_remote) {
+          proxy::IServerRemote* rserver = dynamic_cast<proxy::IServerRemote*>(server.get());  // +
+          CHECK(rserver);
+          common::net::HostAndPort host = rserver->GetHost();
+          is_local = host.IsLocalHost();
+        }
       }
 
       QAction* importAction = new QAction(translations::trImport, this);
@@ -656,11 +658,15 @@ void ExplorerTreeView::backupServer() {
       DNOTREACHED();
       continue;
     }
-
     proxy::IServerSPtr server = node->server();
+    if (!server) {
+      DNOTREACHED();
+      break;
+    }
+
     QString filepath =
         QFileDialog::getOpenFileName(this, translations::trBackup, QString(), translations::trfilterForRdb);
-    if (!filepath.isEmpty() && server) {
+    if (!filepath.isEmpty()) {
       proxy::events_info::BackupInfoRequest req(this, common::ConvertToString(filepath));
       server->BackupToPath(req);
     }
@@ -677,9 +683,14 @@ void ExplorerTreeView::importServer() {
     }
 
     proxy::IServerSPtr server = node->server();
+    if (!server) {
+      DNOTREACHED();
+      break;
+    }
+
     QString filepath =
         QFileDialog::getOpenFileName(this, translations::trImport, QString(), translations::trfilterForRdb);
-    if (filepath.isEmpty() && server) {
+    if (!filepath.isEmpty()) {
       proxy::events_info::ExportInfoRequest req(this, common::ConvertToString(filepath));
       server->ExportFromPath(req);
     }

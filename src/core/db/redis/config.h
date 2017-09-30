@@ -25,10 +25,11 @@ namespace core {
 namespace redis {
 
 struct Config : public RemoteConfig {
+  enum { db_num_default = 0 };
   Config();
 
   std::string hostsocket;
-  int dbnum;
+  int db_num;
   std::string auth;
   bool is_ssl;
 };

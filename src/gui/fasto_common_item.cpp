@@ -67,6 +67,10 @@ core::NDbKValue FastoCommonItem::dbv() const {
   return key_;
 }
 
+const char* FastoCommonItem::delimiter() const {
+  return delimiter_.c_str();
+}
+
 common::Value::Type FastoCommonItem::type() const {
   return key_.GetType();
 }
@@ -148,18 +152,19 @@ QString toHex(FastoCommonItem* item) {
   return value;
 }
 
-QString toCsv(FastoCommonItem* item, const QString& delimiter) {
+QString toCsv(FastoCommonItem* item) {
   if (!item) {
     return QString();
   }
 
   if (!item->childrenCount()) {
-    return item->value().replace(delimiter, ",");
+    QString val = item->value();
+    return val.replace(item->delimiter(), ",");
   }
 
   QString value;
   for (size_t i = 0; i < item->childrenCount(); ++i) {
-    value += toCsv(dynamic_cast<FastoCommonItem*>(item->child(i)), delimiter);  // +
+    value += toCsv(dynamic_cast<FastoCommonItem*>(item->child(i)));  // +
     if (i != item->childrenCount() - 1) {
       value += ",";
     }

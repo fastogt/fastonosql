@@ -43,6 +43,7 @@ class FastoCommonItem : public common::qt::gui::TreeItem {
   common::Value::Type type() const;
   core::NValue nvalue() const;
   core::NDbKValue dbv() const;
+  const char* delimiter() const;
 
   bool isReadOnly() const;
   void setValue(core::NValue val);
@@ -56,7 +57,7 @@ class FastoCommonItem : public common::qt::gui::TreeItem {
 QString toJson(FastoCommonItem* item);
 QString toRaw(FastoCommonItem* item);
 QString toHex(FastoCommonItem* item);
-QString toCsv(FastoCommonItem* item, const QString& delimiter);
+QString toCsv(FastoCommonItem* item);
 
 QString fromGzip(FastoCommonItem* item);
 QString fromSnappy(FastoCommonItem* item);

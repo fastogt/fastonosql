@@ -60,12 +60,12 @@ bool Driver::IsConnected() const {
 }
 
 bool Driver::IsAuthenticated() const {
-  return impl_->IsConnected();
+  return impl_->IsAuthenticated();
 }
 
 common::net::HostAndPort Driver::GetHost() const {
-  core::ssdb::Config conf = impl_->config();
-  return conf.host;
+  auto conf = impl_->GetConfig();
+  return conf->host;
 }
 
 std::string Driver::GetNsSeparator() const {

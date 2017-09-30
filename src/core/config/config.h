@@ -29,7 +29,9 @@ typedef std::vector<std::string> config_args_t;
 
 // -d -ns
 struct BaseConfig {
-  BaseConfig() : delimiter("\n"), ns_separator(":") {}
+  static const char default_delimiter[];
+  static const char default_ns_separator[];
+  BaseConfig();
 
   std::string delimiter;
   std::string ns_separator;

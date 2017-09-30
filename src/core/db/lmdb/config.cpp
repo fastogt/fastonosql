@@ -36,7 +36,7 @@ namespace lmdb {
 
 namespace {
 
-Config parseOptions(int argc, char** argv) {
+Config ParseOptions(int argc, char** argv) {
   Config cfg;
   for (int i = 0; i < argc; i++) {
     const bool lastarg = i == argc - 1;
@@ -136,14 +136,14 @@ std::string ConvertToString(const fastonosql::core::lmdb::Config& conf) {
 }
 
 bool ConvertFromString(const std::string& from, fastonosql::core::lmdb::Config* out) {
-  if (!out) {
+  if (!out || from.empty()) {
     return false;
   }
 
   int argc = 0;
   sds* argv = sdssplitargslong(from.c_str(), &argc);
   if (argv) {
-    *out = fastonosql::core::lmdb::parseOptions(argc, argv);
+    *out = fastonosql::core::lmdb::ParseOptions(argc, argv);
     sdsfreesplitres(argv, argc);
     return true;
   }

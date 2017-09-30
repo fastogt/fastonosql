@@ -28,7 +28,7 @@ namespace fastonosql {
 namespace core {
 namespace {
 
-const std::vector<Field> g_unqlite_common_fields = {Field(UNQLITE_FILE_NAME_LABEL, common::Value::TYPE_STRING)};
+const std::vector<Field> g_unqlite_common_fields = {Field(UNQLITE_DB_PATH_LABEL, common::Value::TYPE_STRING)};
 
 }  // namespace
 
@@ -45,7 +45,7 @@ std::vector<info_field_t> DBTraits<UNQLITE>::GetInfoFields() {
 
 namespace unqlite {
 
-ServerInfo::Stats::Stats() : file_name() {}
+ServerInfo::Stats::Stats() : db_path() {}
 
 ServerInfo::Stats::Stats(const std::string& common_text) {
   size_t pos = 0;
@@ -56,8 +56,8 @@ ServerInfo::Stats::Stats(const std::string& common_text) {
     size_t delem = line.find_first_of(':');
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
-    if (field == UNQLITE_FILE_NAME_LABEL) {
-      file_name = value;
+    if (field == UNQLITE_DB_PATH_LABEL) {
+      db_path = value;
     }
     start = pos + 2;
   }
@@ -66,7 +66,7 @@ ServerInfo::Stats::Stats(const std::string& common_text) {
 common::Value* ServerInfo::Stats::GetValueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
-      return new common::StringValue(file_name);
+      return new common::StringValue(db_path);
     default:
       break;
   }
@@ -92,7 +92,7 @@ common::Value* ServerInfo::GetValueByIndexes(unsigned char property, unsigned ch
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo::Stats& value) {
-  return out << UNQLITE_FILE_NAME_LABEL ":" << value.file_name << MARKER;
+  return out << UNQLITE_DB_PATH_LABEL ":" << value.db_path << MARKER;
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {

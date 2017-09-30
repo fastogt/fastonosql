@@ -483,14 +483,14 @@ common::Error DiscoverySentinelConnection(const RConfig& rconfig, std::vector<Se
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(client, new CommandTranslator(base_class::GetCommands())), isAuth_(false), cur_db_(-1) {}
+    : base_class(client, new CommandTranslator(base_class::GetCommands())), is_auth_(false), cur_db_(-1) {}
 
 bool DBConnection::IsAuthenticated() const {
-  if (!IsConnected()) {
+  if (!base_class::IsAuthenticated()) {
     return false;
   }
 
-  return isAuth_;
+  return is_auth_;
 }
 
 common::Error DBConnection::Connect(const config_t& config) {
@@ -500,12 +500,13 @@ common::Error DBConnection::Connect(const config_t& config) {
   }
 
   /* Do AUTH and select the right DB. */
-  err = Auth(connection_.config_.auth);
+  err = Auth(config->auth);
   if (err) {
     return err;
   }
 
-  err = Select(common::ConvertToString(connection_.config_.dbnum), NULL);
+  int db_num = config->db_num;
+  err = Select(common::ConvertToString(db_num), NULL);
   if (err) {
     return err;
   }
@@ -513,8 +514,13 @@ common::Error DBConnection::Connect(const config_t& config) {
   return common::Error();
 }
 
+common::Error DBConnection::Disconnect() {
+  cur_db_ = -1;
+  return base_class::Disconnect();
+}
+
 std::string DBConnection::GetCurrentDBName() const {
-  if (cur_db_ != -1) {
+  if (IsAuthenticated()) {
     return common::ConvertToString(cur_db_);
   }
 
@@ -582,12 +588,13 @@ common::Error DBConnection::SlaveMode(FastoObject* out) {
     return common::make_error_inval();
   }
 
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   unsigned long long payload = 0;
-  common::Error err = SendSync(&payload);
+  err = SendSync(&payload);
   if (err) {
     return err;
   }
@@ -727,7 +734,6 @@ common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** 
     return err;
   }
 
-  connection_.config_.dbnum = num;
   cur_db_ = num;
   size_t sz = 0;
   err = DBkcount(&sz);
@@ -949,7 +955,7 @@ common::Error DBConnection::CliFormatReplyRaw(FastoObject* out, redisReply* r) {
     case REDIS_REPLY_ERROR: {
       if (common::strcasestr(r->str, "NOAUTH")) {  //"NOAUTH Authentication
                                                    // required."
-        isAuth_ = false;
+        is_auth_ = false;
       }
       std::string str(r->str, r->len);
       return common::make_error(str);
@@ -1088,12 +1094,11 @@ common::Error DBConnection::CommonExec(const commands_args_t& argv, FastoObject*
 common::Error DBConnection::Auth(const std::string& password) {
   common::Error err = AuthContext(connection_.handle_, password);
   if (err) {
-    isAuth_ = false;
+    is_auth_ = false;
     return err;
   }
 
-  connection_.config_.auth = password;
-  isAuth_ = true;
+  is_auth_ = true;
   return common::Error();
 }
 

@@ -236,8 +236,9 @@ DBConnection::DBConnection(CDBConnectionClient* client)
     : base_class(client, new CommandTranslator(base_class::GetCommands())) {}
 
 std::string DBConnection::GetCurrentDBName() const {
-  if (connection_.handle_) {
-    return connection_.handle_->db_name ? connection_.handle_->db_name : connection_.config_.db_name;
+  if (connection_.handle_) {  // if connected
+    auto conf = GetConfig();
+    return connection_.handle_->db_name ? connection_.handle_->db_name : conf->db_name;
   }
 
   DNOTREACHED() << "GetCurrentDBName failed!";
@@ -256,8 +257,8 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
   }
 
   ServerInfo::Stats linfo;
-  Config conf = config();
-  linfo.db_path = conf.db_path;
+  auto conf = GetConfig();
+  linfo.db_path = conf->db_path;
 
   *statsout = linfo;
   return common::Error();
@@ -332,7 +333,8 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   mval.mv_data = const_cast<char*>(value.c_str());
 
   MDB_txn* txn = NULL;
-  int env_flags = connection_.config_.env_flags;
+  auto conf = GetConfig();
+  int env_flags = conf->env_flags;
   int rc = mdb_txn_begin(connection_.handle_->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn);
   if (rc == LMDB_OK) {
     rc = mdb_put(txn, connection_.handle_->dbir, &key_slice, &mval, 0);
@@ -385,7 +387,8 @@ common::Error DBConnection::DelInner(key_t key) {
   MDB_val key_slice = ConvertToLMDBSlice(key_str);
 
   MDB_txn* txn = NULL;
-  int env_flags = connection_.config_.env_flags;
+  auto conf = GetConfig();
+  int env_flags = conf->env_flags;
   int rc = mdb_txn_begin(connection_.handle_->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn);
   if (rc == LMDB_OK) {
     rc = mdb_del(txn, connection_.handle_->dbir, &key_slice, NULL);
@@ -512,7 +515,8 @@ common::Error DBConnection::DBkcountImpl(size_t* size) {
 common::Error DBConnection::FlushDBImpl() {
   MDB_cursor* cursor = NULL;
   MDB_txn* txn = NULL;
-  int env_flags = connection_.config_.env_flags;
+  auto conf = GetConfig();
+  int env_flags = conf->env_flags;
   int rc = mdb_txn_begin(connection_.handle_->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn);
   if (rc == LMDB_OK) {
     rc = mdb_cursor_open(txn, connection_.handle_->dbir, &cursor);
@@ -553,7 +557,8 @@ common::Error DBConnection::FlushDBImpl() {
 }
 
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
-  int env_flags = connection_.config_.env_flags;
+  auto conf = GetConfig();
+  int env_flags = conf->env_flags;
   int rc = lmdb_select(connection_.handle_, name.c_str(), env_flags);
   if (rc != LMDB_OK) {
     std::string buff = common::MemSPrintf("commit function error: %s", mdb_strerror(rc));

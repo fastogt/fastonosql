@@ -37,7 +37,7 @@ const std::vector<const char*> g_comparator_types = {"BYTEWISE", "INDEXED_DB"};
 
 namespace {
 
-Config parseOptions(int argc, char** argv) {
+Config ParseOptions(int argc, char** argv) {
   Config cfg;
   for (int i = 0; i < argc; i++) {
     bool lastarg = i == argc - 1;
@@ -105,7 +105,7 @@ bool ConvertFromString(const std::string& from, fastonosql::core::leveldb::Confi
   int argc = 0;
   sds* argv = sdssplitargslong(from.c_str(), &argc);
   if (argv) {
-    *out = fastonosql::core::leveldb::parseOptions(argc, argv);
+    *out = fastonosql::core::leveldb::ParseOptions(argc, argv);
     sdsfreesplitres(argv, argc);
     return true;
   }
@@ -118,7 +118,7 @@ std::string ConvertToString(fastonosql::core::leveldb::ComparatorType comp) {
 }
 
 bool ConvertFromString(const std::string& from, fastonosql::core::leveldb::ComparatorType* out) {
-  if (!out) {
+  if (!out || from.empty()) {
     return false;
   }
 

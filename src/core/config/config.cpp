@@ -27,6 +27,11 @@ extern "C" {
 namespace fastonosql {
 namespace core {
 
+const char BaseConfig::default_delimiter[] = "\n";
+const char BaseConfig::default_ns_separator[] = ":";
+
+BaseConfig::BaseConfig() : delimiter(default_delimiter), ns_separator(default_ns_separator) {}
+
 LocalConfig::LocalConfig(const std::string& db_path) : BaseConfig(), db_path(db_path) {}
 
 config_args_t LocalConfig::Args() const {

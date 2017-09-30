@@ -34,7 +34,7 @@ namespace core {
 namespace unqlite {
 namespace {
 
-Config parseOptions(int argc, char** argv) {
+Config ParseOptions(int argc, char** argv) {
   Config cfg;
   for (int i = 0; i < argc; i++) {
     const bool lastarg = i == argc - 1;
@@ -130,14 +130,14 @@ std::string ConvertToString(const fastonosql::core::unqlite::Config& conf) {
 }
 
 bool ConvertFromString(const std::string& from, fastonosql::core::unqlite::Config* out) {
-  if (!out) {
+  if (!out || from.empty()) {
     return false;
   }
 
   int argc = 0;
   sds* argv = sdssplitargslong(from.c_str(), &argc);
   if (argv) {
-    *out = fastonosql::core::unqlite::parseOptions(argc, argv);
+    *out = fastonosql::core::unqlite::ParseOptions(argc, argv);
     sdsfreesplitres(argv, argc);
     return true;
   }

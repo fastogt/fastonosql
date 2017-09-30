@@ -22,7 +22,7 @@
 
 #define UNQLITE_STATS_LABEL "# Stats"
 
-#define UNQLITE_FILE_NAME_LABEL "file_name"
+#define UNQLITE_DB_PATH_LABEL "file_name"
 
 namespace fastonosql {
 namespace core {
@@ -36,7 +36,7 @@ class ServerInfo : public IServerInfo {
     Stats();
     explicit Stats(const std::string& common_text);
     common::Value* GetValueByIndex(unsigned char index) const override;
-    std::string file_name;
+    std::string db_path;
   } stats_;
 
   ServerInfo();

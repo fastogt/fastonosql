@@ -186,8 +186,8 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
   }
 
   ServerInfo::Stats linfo;
-  Config conf = config();
-  linfo.db_path = conf.db_path;
+  auto conf = GetConfig();
+  linfo.db_path = conf->db_path;
 
   *statsout = linfo;
   return common::Error();

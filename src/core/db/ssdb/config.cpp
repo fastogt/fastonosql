@@ -34,7 +34,7 @@ namespace core {
 namespace ssdb {
 namespace {
 
-Config parseOptions(int argc, char** argv) {
+Config ParseOptions(int argc, char** argv) {
   Config cfg;
   for (int i = 0; i < argc; i++) {
     const bool lastarg = i == argc - 1;
@@ -85,14 +85,14 @@ std::string ConvertToString(const fastonosql::core::ssdb::Config& conf) {
 }
 
 bool ConvertFromString(const std::string& from, fastonosql::core::ssdb::Config* out) {
-  if (!out) {
+  if (!out || from.empty()) {
     return false;
   }
 
   int argc = 0;
   sds* argv = sdssplitargslong(from.c_str(), &argc);
   if (argv) {
-    *out = fastonosql::core::ssdb::parseOptions(argc, argv);
+    *out = fastonosql::core::ssdb::ParseOptions(argc, argv);
     sdsfreesplitres(argv, argc);
     return true;
   }

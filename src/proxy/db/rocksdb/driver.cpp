@@ -59,12 +59,12 @@ bool Driver::IsConnected() const {
 }
 
 bool Driver::IsAuthenticated() const {
-  return impl_->IsConnected();
+  return impl_->IsAuthenticated();
 }
 
 std::string Driver::GetPath() const {
-  core::rocksdb::Config conf = impl_->config();
-  return conf.db_path;
+  auto conf = impl_->GetConfig();
+  return conf->db_path;
 }
 
 std::string Driver::GetNsSeparator() const {
