@@ -166,7 +166,7 @@ DBConnection::DBConnection(CDBConnectionClient* client)
     : base_class(client, new CommandTranslator(base_class::GetCommands())) {}
 
 std::string DBConnection::GetCurrentDBName() const {
-  if (connection_.handle_) {
+  if (IsConnected()) {
     return connection_.handle_->db_name;
   }
 
@@ -181,8 +181,9 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
     return common::make_error_inval();
   }
 
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   ServerInfo::Stats linfo;
@@ -194,10 +195,6 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
 }
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
-  }
-
   const string_key_t key_slice = key.ToBytes();
   fdb_status rc = fdb_set_kv(connection_.handle_->kvs, key_slice.data(), key_slice.size(), value.c_str(), value.size());
   if (rc != FDB_RESULT_SUCCESS) {
@@ -209,10 +206,6 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
 }
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
-  }
-
   const string_key_t key_slice = key.ToBytes();
   void* value_out = NULL;
   size_t valuelen_out = 0;
@@ -227,10 +220,6 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
 }
 
 common::Error DBConnection::DelInner(key_t key) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
-  }
-
   std::string exist_key;
   common::Error err = GetInner(key, &exist_key);
   if (err) {

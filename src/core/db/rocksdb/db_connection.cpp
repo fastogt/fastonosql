@@ -142,8 +142,9 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
     return common::make_error_inval();
   }
 
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   std::string rets;
@@ -206,19 +207,18 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
 }
 
 std::string DBConnection::GetCurrentDBName() const {
-  ::rocksdb::ColumnFamilyHandle* fam = connection_.handle_->DefaultColumnFamily();
-  if (fam) {
-    return fam->GetName();
+  if (IsConnected()) {
+    ::rocksdb::ColumnFamilyHandle* fam = connection_.handle_->DefaultColumnFamily();
+    if (fam) {
+      return fam->GetName();
+    }
   }
 
+  DNOTREACHED();
   return base_class::GetCurrentDBName();
 }
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
-  }
-
   ::rocksdb::ReadOptions ro;
   const string_key_t key_str = key.ToBytes();
   const ::rocksdb::Slice key_slice(reinterpret_cast<const char*>(key_str.data()), key_str.size());
@@ -232,8 +232,9 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
 }
 
 common::Error DBConnection::Mget(const std::vector<std::string>& keys, std::vector<std::string>* ret) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   std::vector< ::rocksdb::Slice> rslice;
@@ -253,8 +254,9 @@ common::Error DBConnection::Mget(const std::vector<std::string>& keys, std::vect
 }
 
 common::Error DBConnection::Merge(const std::string& key, const std::string& value) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   ::rocksdb::WriteOptions wo;
@@ -268,10 +270,6 @@ common::Error DBConnection::Merge(const std::string& key, const std::string& val
 }
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
-  }
-
   ::rocksdb::WriteOptions wo;
   const string_key_t key_str = key.ToBytes();
   const ::rocksdb::Slice key_slice(reinterpret_cast<const char*>(key_str.data()), key_str.size());
@@ -285,10 +283,6 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
 }
 
 common::Error DBConnection::DelInner(key_t key) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
-  }
-
   std::string exist_key;
   common::Error err = GetInner(key, &exist_key);
   if (err) {

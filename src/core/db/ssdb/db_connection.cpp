@@ -112,8 +112,9 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
     return common::make_error_inval();
   }
 
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   std::vector<std::string> ret;
@@ -157,8 +158,9 @@ common::Error DBConnection::DBsize(int64_t* size) {
     return common::make_error_inval();
   }
 
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   int64_t ret;
@@ -186,8 +188,9 @@ common::Error DBConnection::Auth(const std::string& password) {
 }
 
 common::Error DBConnection::Setx(const std::string& key, const std::string& value, ttl_t ttl) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->setx(key, value, static_cast<int>(ttl));
@@ -199,10 +202,6 @@ common::Error DBConnection::Setx(const std::string& key, const std::string& valu
 }
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
-  }
-
   const std::string key_slice = ConvertToSSDBSlice(key);
   auto st = connection_.handle_->set(key_slice, value);
   if (st.error()) {
@@ -213,10 +212,6 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
 }
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
-  }
-
   const std::string key_slice = ConvertToSSDBSlice(key);
   auto st = connection_.handle_->get(key_slice, ret_val);
   if (st.error()) {
@@ -227,10 +222,6 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
 }
 
 common::Error DBConnection::DelInner(key_t key) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
-  }
-
   const std::string key_slice = ConvertToSSDBSlice(key);
   auto st = connection_.handle_->del(key_slice);
   if (st.error()) {
@@ -241,8 +232,9 @@ common::Error DBConnection::DelInner(key_t key) {
 }
 
 common::Error DBConnection::Incr(const std::string& key, int64_t incrby, int64_t* ret) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->incr(key, incrby, ret);
@@ -257,8 +249,9 @@ common::Error DBConnection::ScanSsdb(const std::string& key_start,
                                      const std::string& key_end,
                                      uint64_t limit,
                                      std::vector<std::string>* ret) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->scan(key_start, key_end, limit, ret);
@@ -273,8 +266,9 @@ common::Error DBConnection::Rscan(const std::string& key_start,
                                   const std::string& key_end,
                                   uint64_t limit,
                                   std::vector<std::string>* ret) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->rscan(key_start, key_end, limit, ret);
@@ -286,8 +280,9 @@ common::Error DBConnection::Rscan(const std::string& key_start,
 }
 
 common::Error DBConnection::MultiGet(const std::vector<std::string>& keys, std::vector<std::string>* ret) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->multi_get(keys, ret);
@@ -299,8 +294,9 @@ common::Error DBConnection::MultiGet(const std::vector<std::string>& keys, std::
 }
 
 common::Error DBConnection::MultiSet(const std::map<std::string, std::string>& kvs) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->multi_set(kvs);
@@ -312,8 +308,9 @@ common::Error DBConnection::MultiSet(const std::map<std::string, std::string>& k
 }
 
 common::Error DBConnection::MultiDel(const std::vector<std::string>& keys) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->multi_del(keys);
@@ -325,8 +322,9 @@ common::Error DBConnection::MultiDel(const std::vector<std::string>& keys) {
 }
 
 common::Error DBConnection::Hget(const std::string& name, const std::string& key, std::string* val) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->hget(name, key, val);
@@ -338,10 +336,10 @@ common::Error DBConnection::Hget(const std::string& name, const std::string& key
 }
 
 common::Error DBConnection::Hgetall(const std::string& name, std::vector<std::string>* ret) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
-
   auto st = connection_.handle_->hgetall(name, ret);
   if (st.error()) {
     std::string buff = common::MemSPrintf("hgetall function error: %s", st.code());
@@ -351,8 +349,9 @@ common::Error DBConnection::Hgetall(const std::string& name, std::vector<std::st
 }
 
 common::Error DBConnection::Hset(const std::string& name, const std::string& key, const std::string& val) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->hset(name, key, val);
@@ -365,8 +364,9 @@ common::Error DBConnection::Hset(const std::string& name, const std::string& key
 }
 
 common::Error DBConnection::Hdel(const std::string& name, const std::string& key) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->hdel(name, key);
@@ -378,8 +378,9 @@ common::Error DBConnection::Hdel(const std::string& name, const std::string& key
 }
 
 common::Error DBConnection::Hincr(const std::string& name, const std::string& key, int64_t incrby, int64_t* ret) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->hincr(name, key, incrby, ret);
@@ -391,8 +392,9 @@ common::Error DBConnection::Hincr(const std::string& name, const std::string& ke
 }
 
 common::Error DBConnection::Hsize(const std::string& name, int64_t* ret) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->hsize(name, ret);
@@ -404,8 +406,9 @@ common::Error DBConnection::Hsize(const std::string& name, int64_t* ret) {
 }
 
 common::Error DBConnection::Hclear(const std::string& name, int64_t* ret) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->hclear(name, ret);
@@ -421,8 +424,9 @@ common::Error DBConnection::Hkeys(const std::string& name,
                                   const std::string& key_end,
                                   uint64_t limit,
                                   std::vector<std::string>* ret) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->hkeys(name, key_start, key_end, limit, ret);
@@ -438,8 +442,9 @@ common::Error DBConnection::Hscan(const std::string& name,
                                   const std::string& key_end,
                                   uint64_t limit,
                                   std::vector<std::string>* ret) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->hscan(name, key_start, key_end, limit, ret);
@@ -455,8 +460,9 @@ common::Error DBConnection::Hrscan(const std::string& name,
                                    const std::string& key_end,
                                    uint64_t limit,
                                    std::vector<std::string>* ret) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->hrscan(name, key_start, key_end, limit, ret);
@@ -470,8 +476,9 @@ common::Error DBConnection::Hrscan(const std::string& name,
 common::Error DBConnection::MultiHget(const std::string& name,
                                       const std::vector<std::string>& keys,
                                       std::vector<std::string>* ret) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->multi_hget(name, keys, ret);
@@ -483,8 +490,9 @@ common::Error DBConnection::MultiHget(const std::string& name,
 }
 
 common::Error DBConnection::MultiHset(const std::string& name, const std::map<std::string, std::string>& keys) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->multi_hset(name, keys);
@@ -496,8 +504,9 @@ common::Error DBConnection::MultiHset(const std::string& name, const std::map<st
 }
 
 common::Error DBConnection::Zget(const std::string& name, const std::string& key, int64_t* ret) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->zget(name, key, ret);
@@ -509,8 +518,9 @@ common::Error DBConnection::Zget(const std::string& name, const std::string& key
 }
 
 common::Error DBConnection::Zset(const std::string& name, const std::string& key, int64_t score) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->zset(name, key, score);
@@ -522,8 +532,9 @@ common::Error DBConnection::Zset(const std::string& name, const std::string& key
 }
 
 common::Error DBConnection::Zdel(const std::string& name, const std::string& key) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->zdel(name, key);
@@ -535,8 +546,9 @@ common::Error DBConnection::Zdel(const std::string& name, const std::string& key
 }
 
 common::Error DBConnection::Zincr(const std::string& name, const std::string& key, int64_t incrby, int64_t* ret) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->zincr(name, key, incrby, ret);
@@ -548,8 +560,9 @@ common::Error DBConnection::Zincr(const std::string& name, const std::string& ke
 }
 
 common::Error DBConnection::Zsize(const std::string& name, int64_t* ret) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->zsize(name, ret);
@@ -561,8 +574,9 @@ common::Error DBConnection::Zsize(const std::string& name, int64_t* ret) {
 }
 
 common::Error DBConnection::Zclear(const std::string& name, int64_t* ret) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->zclear(name, ret);
@@ -574,8 +588,9 @@ common::Error DBConnection::Zclear(const std::string& name, int64_t* ret) {
 }
 
 common::Error DBConnection::Zrank(const std::string& name, const std::string& key, int64_t* ret) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->zrank(name, key, ret);
@@ -587,8 +602,9 @@ common::Error DBConnection::Zrank(const std::string& name, const std::string& ke
 }
 
 common::Error DBConnection::Zrrank(const std::string& name, const std::string& key, int64_t* ret) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->zrrank(name, key, ret);
@@ -603,8 +619,9 @@ common::Error DBConnection::Zrange(const std::string& name,
                                    uint64_t offset,
                                    uint64_t limit,
                                    std::vector<std::string>* ret) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->zrange(name, offset, limit, ret);
@@ -619,8 +636,9 @@ common::Error DBConnection::Zrrange(const std::string& name,
                                     uint64_t offset,
                                     uint64_t limit,
                                     std::vector<std::string>* ret) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->zrrange(name, offset, limit, ret);
@@ -637,8 +655,9 @@ common::Error DBConnection::Zkeys(const std::string& name,
                                   int64_t* score_end,
                                   uint64_t limit,
                                   std::vector<std::string>* ret) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->zkeys(name, key_start, score_start, score_end, limit, ret);
@@ -655,8 +674,9 @@ common::Error DBConnection::Zscan(const std::string& name,
                                   int64_t* score_end,
                                   uint64_t limit,
                                   std::vector<std::string>* ret) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->zscan(name, key_start, score_start, score_end, limit, ret);
@@ -673,8 +693,9 @@ common::Error DBConnection::Zrscan(const std::string& name,
                                    int64_t* score_end,
                                    uint64_t limit,
                                    std::vector<std::string>* ret) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->zrscan(name, key_start, score_start, score_end, limit, ret);
@@ -688,8 +709,9 @@ common::Error DBConnection::Zrscan(const std::string& name,
 common::Error DBConnection::MultiZget(const std::string& name,
                                       const std::vector<std::string>& keys,
                                       std::vector<std::string>* ret) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->multi_zget(name, keys, ret);
@@ -701,8 +723,9 @@ common::Error DBConnection::MultiZget(const std::string& name,
 }
 
 common::Error DBConnection::MultiZset(const std::string& name, const std::map<std::string, int64_t>& kss) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->multi_zset(name, kss);
@@ -714,8 +737,9 @@ common::Error DBConnection::MultiZset(const std::string& name, const std::map<st
 }
 
 common::Error DBConnection::MultiZdel(const std::string& name, const std::vector<std::string>& keys) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->multi_zdel(name, keys);
@@ -727,8 +751,9 @@ common::Error DBConnection::MultiZdel(const std::string& name, const std::vector
 }
 
 common::Error DBConnection::Qpush(const std::string& name, const std::string& item) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->qpush(name, item);
@@ -740,8 +765,9 @@ common::Error DBConnection::Qpush(const std::string& name, const std::string& it
 }
 
 common::Error DBConnection::Qpop(const std::string& name, std::string* item) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->qpop(name, item);
@@ -753,8 +779,9 @@ common::Error DBConnection::Qpop(const std::string& name, std::string* item) {
 }
 
 common::Error DBConnection::Qslice(const std::string& name, int64_t begin, int64_t end, std::vector<std::string>* ret) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->qslice(name, begin, end, ret);
@@ -766,8 +793,9 @@ common::Error DBConnection::Qslice(const std::string& name, int64_t begin, int64
 }
 
 common::Error DBConnection::Qclear(const std::string& name, int64_t* ret) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   auto st = connection_.handle_->qclear(name, ret);
@@ -779,8 +807,9 @@ common::Error DBConnection::Qclear(const std::string& name, int64_t* ret) {
 }
 
 common::Error DBConnection::Expire(key_t key, ttl_t ttl) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   const std::string key_slice = ConvertToSSDBSlice(key);
@@ -793,8 +822,9 @@ common::Error DBConnection::Expire(key_t key, ttl_t ttl) {
 }
 
 common::Error DBConnection::TTL(key_t key, ttl_t* ttl) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   int lttl = 0;

@@ -136,8 +136,9 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
     return common::make_error_inval();
   }
 
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   std::string rets;
@@ -200,10 +201,6 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
 }
 
 common::Error DBConnection::DelInner(key_t key) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
-  }
-
   std::string exist_key;
   common::Error err = GetInner(key, &exist_key);
   if (err) {
@@ -222,10 +219,6 @@ common::Error DBConnection::DelInner(key_t key) {
 }
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
-  }
-
   const string_key_t key_str = key.ToBytes();
   const ::leveldb::Slice key_slice(reinterpret_cast<const char*>(key_str.data()), key_str.size());
   ::leveldb::WriteOptions wo;
@@ -239,10 +232,6 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
 }
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
-  }
-
   const string_key_t key_str = key.ToBytes();
   const ::leveldb::Slice key_slice(key_str.data(), key_str.size());
   ::leveldb::ReadOptions ro;

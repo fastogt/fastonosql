@@ -221,8 +221,9 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
     return common::make_error_inval();
   }
 
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   ServerInfo::Stats linfo;
@@ -234,10 +235,6 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
 }
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
-  }
-
   const string_key_t key_str = key.ToBytes();
   ups_key_t key_slice = ConvertToUpscaleDBSlice(key_str);
 
@@ -255,10 +252,6 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
 }
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
-  }
-
   const string_key_t key_str = key.ToBytes();
   ups_key_t key_slice = ConvertToUpscaleDBSlice(key_str);
 
@@ -276,10 +269,6 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
 }
 
 common::Error DBConnection::DelInner(key_t key) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
-  }
-
   const string_key_t key_str = key.ToBytes();
   ups_key_t key_slice = ConvertToUpscaleDBSlice(key_str);
 
@@ -442,6 +431,7 @@ common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** 
     DCHECK(st == UPS_SUCCESS);
     connection_.handle_->db = db;
     connection_.handle_->cur_db = num;
+    connection_.config_->dbnum = num;
   }
 
   size_t kcount = 0;

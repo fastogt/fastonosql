@@ -734,6 +734,7 @@ common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** 
     return err;
   }
 
+  connection_.config_->db_num = num;
   cur_db_ = num;
   size_t sz = 0;
   err = DBkcount(&sz);
@@ -999,8 +1000,9 @@ common::Error DBConnection::CliReadReply(FastoObject* out) {
     return common::make_error_inval();
   }
 
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsConnected();
+  if (err) {
+    return err;
   }
 
   void* _reply = NULL;
@@ -1029,8 +1031,9 @@ common::Error DBConnection::ExecuteAsPipeline(const std::vector<FastoObjectComma
     return common::make_error("Invalid input command");
   }
 
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   // start piplene mode
@@ -1080,8 +1083,13 @@ common::Error DBConnection::CommonExec(const commands_args_t& argv, FastoObject*
     return common::make_error_inval();
   }
 
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
   redisReply* reply = NULL;
-  common::Error err = ExecRedisCommand(connection_.handle_, argv, &reply);
+  err = ExecRedisCommand(connection_.handle_, argv, &reply);
   if (err) {
     return err;
   }
@@ -1092,7 +1100,12 @@ common::Error DBConnection::CommonExec(const commands_args_t& argv, FastoObject*
 }
 
 common::Error DBConnection::Auth(const std::string& password) {
-  common::Error err = AuthContext(connection_.handle_, password);
+  common::Error err = TestIsConnected();
+  if (err) {
+    return err;
+  }
+
+  err = AuthContext(connection_.handle_, password);
   if (err) {
     is_auth_ = false;
     return err;
@@ -1108,8 +1121,13 @@ common::Error DBConnection::Monitor(const commands_args_t& argv, FastoObject* ou
     return common::make_error_inval();
   }
 
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
   redisReply* reply = NULL;
-  common::Error err = ExecRedisCommand(connection_.handle_, argv, &reply);
+  err = ExecRedisCommand(connection_.handle_, argv, &reply);
   if (err) {
     return err;
   }
@@ -1137,8 +1155,13 @@ common::Error DBConnection::Subscribe(const commands_args_t& argv, FastoObject* 
     return common::make_error_inval();
   }
 
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
   redisReply* reply = NULL;
-  common::Error err = ExecRedisCommand(connection_.handle_, argv, &reply);
+  err = ExecRedisCommand(connection_.handle_, argv, &reply);
   if (err) {
     return err;
   }
@@ -1161,9 +1184,14 @@ common::Error DBConnection::Subscribe(const commands_args_t& argv, FastoObject* 
 }
 
 common::Error DBConnection::SetEx(const NDbKValue& key, ttl_t ttl) {
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
   redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
   command_buffer_t setex_cmd;
-  common::Error err = tran->SetEx(key, ttl, &setex_cmd);
+  err = tran->SetEx(key, ttl, &setex_cmd);
   if (err) {
     return err;
   }
@@ -1185,9 +1213,14 @@ common::Error DBConnection::SetEx(const NDbKValue& key, ttl_t ttl) {
 }
 
 common::Error DBConnection::SetNX(const NDbKValue& key, long long* result) {
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
   redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
   command_buffer_t setnx_cmd;
-  common::Error err = tran->SetNX(key, &setnx_cmd);
+  err = tran->SetNX(key, &setnx_cmd);
   if (err) {
     return err;
   }
@@ -1218,10 +1251,15 @@ common::Error DBConnection::Lpush(const NKey& key, NValue arr, long long* list_l
     return common::make_error_inval();
   }
 
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
   NDbKValue rarr(key, arr);
   redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
   command_buffer_t lpush_cmd;
-  common::Error err = tran->CreateKeyCommand(rarr, &lpush_cmd);
+  err = tran->CreateKeyCommand(rarr, &lpush_cmd);
   if (err) {
     return err;
   }
@@ -1251,9 +1289,14 @@ common::Error DBConnection::Lrange(const NKey& key, int start, int stop, NDbKVal
     return common::make_error_inval();
   }
 
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
   redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
   command_buffer_t lrange_cmd;
-  common::Error err = tran->Lrange(key, start, stop, &lrange_cmd);
+  err = tran->Lrange(key, start, stop, &lrange_cmd);
   if (err) {
     return err;
   }
@@ -1291,10 +1334,15 @@ common::Error DBConnection::Sadd(const NKey& key, NValue set, long long* added) 
     return common::make_error_inval();
   }
 
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
   NDbKValue rset(key, set);
   redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
   command_buffer_t sadd_cmd;
-  common::Error err = tran->CreateKeyCommand(rset, &sadd_cmd);
+  err = tran->CreateKeyCommand(rset, &sadd_cmd);
   if (err) {
     return err;
   }
@@ -1324,9 +1372,14 @@ common::Error DBConnection::Smembers(const NKey& key, NDbKValue* loaded_key) {
     return common::make_error_inval();
   }
 
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
   redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
   command_buffer_t smembers_cmd;
-  common::Error err = tran->Smembers(key, &smembers_cmd);
+  err = tran->Smembers(key, &smembers_cmd);
   if (err) {
     return err;
   }
@@ -1380,10 +1433,15 @@ common::Error DBConnection::Zadd(const NKey& key, NValue scores, long long* adde
     return common::make_error_inval();
   }
 
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
   NDbKValue rzset(key, scores);
   redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
   command_buffer_t zadd_cmd;
-  common::Error err = tran->CreateKeyCommand(rzset, &zadd_cmd);
+  err = tran->CreateKeyCommand(rzset, &zadd_cmd);
   if (err) {
     return err;
   }
@@ -1413,9 +1471,14 @@ common::Error DBConnection::Zrange(const NKey& key, int start, int stop, bool wi
     return common::make_error_inval();
   }
 
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
   redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
   command_buffer_t zrange;
-  common::Error err = tran->Zrange(key, start, stop, withscores, &zrange);
+  err = tran->Zrange(key, start, stop, withscores, &zrange);
   if (err) {
     return err;
   }
@@ -1479,10 +1542,15 @@ common::Error DBConnection::Hmset(const NKey& key, NValue hash) {
     return common::make_error_inval();
   }
 
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
   NDbKValue rhash(key, hash);
   redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
   command_buffer_t hmset_cmd;
-  common::Error err = tran->CreateKeyCommand(rhash, &hmset_cmd);
+  err = tran->CreateKeyCommand(rhash, &hmset_cmd);
   if (err) {
     return err;
   }
@@ -1511,9 +1579,14 @@ common::Error DBConnection::Hgetall(const NKey& key, NDbKValue* loaded_key) {
     return common::make_error_inval();
   }
 
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
   redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
   command_buffer_t hgetall_cmd;
-  common::Error err = tran->Hgetall(key, &hgetall_cmd);
+  err = tran->Hgetall(key, &hgetall_cmd);
   if (err) {
     return err;
   }
@@ -1568,9 +1641,14 @@ common::Error DBConnection::Decr(const NKey& key, long long* decr) {
     return common::make_error_inval();
   }
 
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
   std::string decr_cmd;
   redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
-  common::Error err = tran->Decr(key, &decr_cmd);
+  err = tran->Decr(key, &decr_cmd);
   if (err) {
     return err;
   }
@@ -1601,9 +1679,14 @@ common::Error DBConnection::DecrBy(const NKey& key, int dec, long long* decr) {
     return common::make_error_inval();
   }
 
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
   std::string decrby_cmd;
   redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
-  common::Error err = tran->DecrBy(key, dec, &decrby_cmd);
+  err = tran->DecrBy(key, dec, &decrby_cmd);
   if (err) {
     return err;
   }
@@ -1634,9 +1717,14 @@ common::Error DBConnection::Incr(const NKey& key, long long* incr) {
     return common::make_error_inval();
   }
 
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
   std::string incr_cmd;
   redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
-  common::Error err = tran->Incr(key, &incr_cmd);
+  err = tran->Incr(key, &incr_cmd);
   if (err) {
     return err;
   }
@@ -1667,9 +1755,14 @@ common::Error DBConnection::IncrBy(const NKey& key, int inc, long long* incr) {
     return common::make_error_inval();
   }
 
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
   std::string incrby_cmd;
   redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
-  common::Error err = tran->IncrBy(key, inc, &incrby_cmd);
+  err = tran->IncrBy(key, inc, &incrby_cmd);
   if (err) {
     return err;
   }
@@ -1700,9 +1793,14 @@ common::Error DBConnection::IncrByFloat(const NKey& key, double inc, std::string
     return common::make_error_inval();
   }
 
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
   std::string incrfloat_cmd;
   redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
-  common::Error err = tran->IncrByFloat(key, inc, &incrfloat_cmd);
+  err = tran->IncrByFloat(key, inc, &incrfloat_cmd);
   if (err) {
     return err;
   }

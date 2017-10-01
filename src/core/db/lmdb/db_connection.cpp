@@ -236,7 +236,7 @@ DBConnection::DBConnection(CDBConnectionClient* client)
     : base_class(client, new CommandTranslator(base_class::GetCommands())) {}
 
 std::string DBConnection::GetCurrentDBName() const {
-  if (connection_.handle_) {  // if connected
+  if (IsConnected()) {  // if connected
     auto conf = GetConfig();
     return connection_.handle_->db_name ? connection_.handle_->db_name : conf->db_name;
   }
@@ -252,8 +252,9 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
     return common::make_error_inval();
   }
 
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   ServerInfo::Stats linfo;
@@ -270,8 +271,9 @@ common::Error DBConnection::ConfigGetDatabases(std::vector<std::string>* dbs) {
     return common::make_error_inval();
   }
 
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   MDB_dbi ldbi = 0;
@@ -322,10 +324,6 @@ common::Error DBConnection::ConfigGetDatabases(std::vector<std::string>* dbs) {
 }
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
-  }
-
   const string_key_t key_str = key.ToBytes();
   MDB_val key_slice = ConvertToLMDBSlice(key_str);
   MDB_val mval;
@@ -354,10 +352,6 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
 }
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
-  }
-
   const string_key_t key_str = key.ToBytes();
   MDB_val key_slice = ConvertToLMDBSlice(key_str);
   MDB_val mval;
@@ -379,10 +373,6 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
 }
 
 common::Error DBConnection::DelInner(key_t key) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
-  }
-
   const string_key_t key_str = key.ToBytes();
   MDB_val key_slice = ConvertToLMDBSlice(key_str);
 
@@ -565,6 +555,7 @@ common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** 
     return common::make_error(buff);
   }
 
+  connection_.config_->db_name = name;
   size_t kcount = 0;
   common::Error err = DBkcount(&kcount);
   DCHECK(!err) << "DBkcount failed!";

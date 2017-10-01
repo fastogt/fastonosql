@@ -281,8 +281,9 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
     return common::make_error_inval();
   }
 
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   memcached_return_t error;
@@ -326,8 +327,9 @@ common::Error DBConnection::AddIfNotExist(const NKey& key,
                                           const std::string& value,
                                           time_t expiration,
                                           uint32_t flags) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   const key_t key_str = key.GetKey();
@@ -347,8 +349,9 @@ common::Error DBConnection::AddIfNotExist(const NKey& key,
 }
 
 common::Error DBConnection::Replace(const NKey& key, const std::string& value, time_t expiration, uint32_t flags) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   const key_t key_str = key.GetKey();
@@ -368,8 +371,9 @@ common::Error DBConnection::Replace(const NKey& key, const std::string& value, t
 }
 
 common::Error DBConnection::Append(const NKey& key, const std::string& value, time_t expiration, uint32_t flags) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   const key_t key_str = key.GetKey();
@@ -389,8 +393,9 @@ common::Error DBConnection::Append(const NKey& key, const std::string& value, ti
 }
 
 common::Error DBConnection::Prepend(const NKey& key, const std::string& value, time_t expiration, uint32_t flags) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   const key_t key_str = key.GetKey();
@@ -415,8 +420,9 @@ common::Error DBConnection::Incr(const NKey& key, uint32_t value, uint64_t* resu
     return common::make_error_inval();
   }
 
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   const key_t key_str = key.GetKey();
@@ -444,8 +450,9 @@ common::Error DBConnection::Decr(const NKey& key, uint32_t value, uint64_t* resu
     return common::make_error_inval();
   }
 
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   const key_t key_str = key.GetKey();
@@ -468,10 +475,6 @@ common::Error DBConnection::Decr(const NKey& key, uint32_t value, uint64_t* resu
 }
 
 common::Error DBConnection::DelInner(key_t key, time_t expiration) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
-  }
-
   const string_key_t key_slice = key.ToBytes();
   const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());
   memcached_return_t error = memcached_delete(connection_.handle_, key_slice_ptr, key_slice.size(), expiration);
@@ -484,10 +487,6 @@ common::Error DBConnection::DelInner(key_t key, time_t expiration) {
 }
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value, time_t expiration, uint32_t flags) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
-  }
-
   const string_key_t key_slice = key.ToBytes();
   const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());
   memcached_return_t error = memcached_set(connection_.handle_, key_slice_ptr, key_slice.size(), value.c_str(),
@@ -504,10 +503,6 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   if (!ret_val) {
     DNOTREACHED();
     return common::make_error_inval();
-  }
-
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
   }
 
   uint32_t flags = 0;
@@ -529,10 +524,6 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
 }
 
 common::Error DBConnection::ExpireInner(key_t key, ttl_t expiration) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
-  }
-
   uint32_t flags = 0;
   memcached_return error;
   size_t value_length = 0;
@@ -555,8 +546,9 @@ common::Error DBConnection::ExpireInner(key_t key, ttl_t expiration) {
 }
 
 common::Error DBConnection::TTL(key_t key, ttl_t* expiration) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   time_t exp;
@@ -584,8 +576,9 @@ common::Error DBConnection::TTL(key_t key, ttl_t* expiration) {
 }
 
 common::Error DBConnection::VersionServer() const {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   memcached_return_t error = memcached_version(connection_.handle_);

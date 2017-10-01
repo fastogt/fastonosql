@@ -165,11 +165,12 @@ common::Error CDBConnection<NConnection, Config, ContType>::Scan(uint64_t cursor
     return common::make_error_inval();
   }
 
-  if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = CDBConnection<NConnection, Config, ContType>::TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
-  common::Error err = ScanImpl(cursor_in, pattern, count_keys, keys_out, cursor_out);
+  err = ScanImpl(cursor_in, pattern, count_keys, keys_out, cursor_out);
   if (err) {
     return err;
   }
@@ -187,11 +188,12 @@ common::Error CDBConnection<NConnection, Config, ContType>::Keys(const std::stri
     return common::make_error_inval();
   }
 
-  if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = CDBConnection<NConnection, Config, ContType>::TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
-  common::Error err = KeysImpl(key_start, key_end, limit, ret);
+  err = KeysImpl(key_start, key_end, limit, ret);
   if (err) {
     return err;
   }
@@ -206,11 +208,12 @@ common::Error CDBConnection<NConnection, Config, ContType>::DBkcount(size_t* siz
     return common::make_error_inval();
   }
 
-  if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = CDBConnection<NConnection, Config, ContType>::TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
-  common::Error err = DBkcountImpl(size);
+  err = DBkcountImpl(size);
   if (err) {
     return err;
   }
@@ -220,11 +223,12 @@ common::Error CDBConnection<NConnection, Config, ContType>::DBkcount(size_t* siz
 
 template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::FlushDB() {
-  if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = CDBConnection<NConnection, Config, ContType>::TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
-  common::Error err = FlushDBImpl();
+  err = FlushDBImpl();
   if (err) {
     return err;
   }
@@ -238,12 +242,13 @@ common::Error CDBConnection<NConnection, Config, ContType>::FlushDB() {
 
 template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::Select(const std::string& name, IDataBaseInfo** info) {
-  if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = CDBConnection<NConnection, Config, ContType>::TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
   IDataBaseInfo* linfo = nullptr;
-  common::Error err = SelectImpl(name, &linfo);
+  err = SelectImpl(name, &linfo);
   if (err) {
     return err;
   }
@@ -268,11 +273,12 @@ common::Error CDBConnection<NConnection, Config, ContType>::Delete(const NKeys& 
     return common::make_error_inval();
   }
 
-  if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = CDBConnection<NConnection, Config, ContType>::TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
-  common::Error err = DeleteImpl(keys, deleted_keys);
+  err = DeleteImpl(keys, deleted_keys);
   if (err) {
     return err;
   }
@@ -291,11 +297,12 @@ common::Error CDBConnection<NConnection, Config, ContType>::Set(const NDbKValue&
     return common::make_error_inval();
   }
 
-  if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = CDBConnection<NConnection, Config, ContType>::TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
-  common::Error err = SetImpl(key, added_key);
+  err = SetImpl(key, added_key);
   if (err) {
     return err;
   }
@@ -314,11 +321,12 @@ common::Error CDBConnection<NConnection, Config, ContType>::Get(const NKey& key,
     return common::make_error_inval();
   }
 
-  if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = CDBConnection<NConnection, Config, ContType>::TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
-  common::Error err = GetImpl(key, loaded_key);
+  err = GetImpl(key, loaded_key);
   if (err) {
     return err;
   }
@@ -332,11 +340,12 @@ common::Error CDBConnection<NConnection, Config, ContType>::Get(const NKey& key,
 
 template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::Rename(const NKey& key, const string_key_t& new_key) {
-  if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = CDBConnection<NConnection, Config, ContType>::TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
-  common::Error err = RenameImpl(key, new_key);
+  err = RenameImpl(key, new_key);
   if (err) {
     return err;
   }
@@ -350,11 +359,12 @@ common::Error CDBConnection<NConnection, Config, ContType>::Rename(const NKey& k
 
 template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::SetTTL(const NKey& key, ttl_t ttl) {
-  if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = CDBConnection<NConnection, Config, ContType>::TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
-  common::Error err = SetTTLImpl(key, ttl);
+  err = SetTTLImpl(key, ttl);
   if (err) {
     return err;
   }
@@ -365,6 +375,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::SetTTL(const NKey& k
 
   return common::Error();
 }
+
 template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::GetTTL(const NKey& key, ttl_t* ttl) {
   if (!ttl) {
@@ -372,11 +383,12 @@ common::Error CDBConnection<NConnection, Config, ContType>::GetTTL(const NKey& k
     return common::make_error_inval();
   }
 
-  if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = CDBConnection<NConnection, Config, ContType>::TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
-  common::Error err = GetTTLImpl(key, ttl);
+  err = GetTTLImpl(key, ttl);
   if (err) {
     return err;
   }
@@ -390,11 +402,12 @@ common::Error CDBConnection<NConnection, Config, ContType>::GetTTL(const NKey& k
 
 template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::Quit() {
-  if (!CDBConnection<NConnection, Config, ContType>::IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = CDBConnection<NConnection, Config, ContType>::TestIsAuthenticated();
+  if (err) {
+    return err;
   }
 
-  common::Error err = QuitImpl();
+  err = QuitImpl();
   if (err) {
     return err;
   }
@@ -405,6 +418,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::Quit() {
 
   return common::Error();
 }
+
 }  // namespace internal
 }  // namespace core
 }  // namespace fastonosql

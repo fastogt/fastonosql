@@ -30,13 +30,6 @@ extern "C" {
 
 namespace {
 
-std::string unqlite_constext_strerror(unqlite* context) {
-  const char* zErr = NULL;
-  int iLen = 0;
-  unqlite_config(context, UNQLITE_CONFIG_ERR_LOG, &zErr, &iLen);
-  return std::string(zErr, iLen);
-}
-
 std::string unqlite_strerror(int unqlite_error) {
   if (unqlite_error == UNQLITE_OK) {
     return std::string();
@@ -200,9 +193,11 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
     return common::make_error_inval();
   }
 
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
   }
+
 
   ServerInfo::Stats linfo;
   auto conf = GetConfig();
@@ -212,10 +207,6 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
 }
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
-  }
-
   const string_key_t key_slice = key.ToBytes();
   int rc = unqlite_kv_store(connection_.handle_, key_slice.data(), key_slice.size(), value.c_str(), value.length());
   if (rc != UNQLITE_OK) {
@@ -227,10 +218,6 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
 }
 
 common::Error DBConnection::DelInner(key_t key) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
-  }
-
   const string_key_t key_slice = key.ToBytes();
   int rc = unqlite_kv_delete(connection_.handle_, key_slice.data(), key_slice.size());
   if (rc != UNQLITE_OK) {
@@ -242,10 +229,6 @@ common::Error DBConnection::DelInner(key_t key) {
 }
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
-  }
-
   const string_key_t key_slice = key.ToBytes();
   int rc = unqlite_kv_fetch_callback(connection_.handle_, key_slice.data(), key_slice.size(), unqlite_data_callback,
                                      ret_val);
