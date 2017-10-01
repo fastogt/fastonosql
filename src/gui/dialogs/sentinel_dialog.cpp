@@ -29,6 +29,7 @@
 #include <QPushButton>
 #include <QSpinBox>
 #include <QToolBar>
+#include <QAction>
 
 #include <common/qt/convert2string.h>  // for ConvertToString
 

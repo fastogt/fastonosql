@@ -28,6 +28,7 @@
 #include <QSplitter>
 #include <QToolBar>
 #include <QVBoxLayout>
+#include <QAction>
 
 #include <common/qt/convert2string.h>  // for ConvertToString
 #include <common/qt/gui/icon_label.h>  // for IconLabel
