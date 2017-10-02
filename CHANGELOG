@@ -1,6 +1,7 @@
-1.9.0 /
+1.9.0 / October 2, 2017
 [Alexandr Topilski]
 - [LMDB] Support single file db
+- Ui improvements
 
 1.8.2 / September 27, 2017
 [Alexandr Topilski]
