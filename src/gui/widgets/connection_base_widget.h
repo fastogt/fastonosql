@@ -34,6 +34,7 @@ const QString trCaption = QObject::tr("Select Database path");
 const QString trFilter = QObject::tr("Database files (*.*)");
 const QString trReadOnlyDB = QObject::tr("Read only database");
 const QString trDBName = QObject::tr("Database name:");
+const QString trUseAuth = QObject::tr("Use AUTH");
 }  // namespace
 
 namespace fastonosql {

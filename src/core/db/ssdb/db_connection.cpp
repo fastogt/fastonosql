@@ -76,7 +76,19 @@ const ConstantCommandsArray& CDBConnection<ssdb::NativeConnection, ssdb::Config,
 }
 }  // namespace internal
 namespace ssdb {
+namespace {
+common::Error AuthContext(::ssdb::Client* context, const std::string& password) {
+  if (password.empty()) {  // handle in checkresult
+    return common::Error();
+  }
 
+  auto st = context->auth(password);
+  if (st.error()) {
+    return common::make_error("AUTH function error: need authentification!");
+  }
+  return common::Error();
+}
+}  // namespace
 common::Error CreateConnection(const Config& config, NativeConnection** context) {
   if (!context) {
     return common::make_error_inval();
@@ -99,12 +111,45 @@ common::Error TestConnection(const Config& config) {
     return err;
   }
 
+  err = AuthContext(ssdb, config.auth);
+  if (err) {
+    delete ssdb;
+    return err;
+  }
+
   delete ssdb;
   return common::Error();
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(client, new CommandTranslator(base_class::GetCommands())) {}
+    : base_class(client, new CommandTranslator(base_class::GetCommands())), is_auth_(false) {}
+
+bool DBConnection::IsAuthenticated() const {
+  if (!base_class::IsAuthenticated()) {
+    return false;
+  }
+
+  return is_auth_;
+}
+
+common::Error DBConnection::Connect(const config_t& config) {
+  common::Error err = base_class::Connect(config);
+  if (err) {
+    return err;
+  }
+
+  err = Auth(config->auth);
+  if (err) {
+    return err;
+  }
+
+  return common::Error();
+}
+
+common::Error DBConnection::Disconnect() {
+  is_auth_ = false;
+  return base_class::Disconnect();
+}
 
 common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* statsout) {
   if (!statsout) {
@@ -118,10 +163,9 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
   }
 
   std::vector<std::string> ret;
-  auto st = connection_.handle_->info(args, &ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("info function error: %s", st.code());
-    return common::make_error(buff);
+  err = CheckResultCommand("INFO", connection_.handle_->info(args, &ret));
+  if (err) {
+    return err;
   }
 
   ServerInfo::Stats lstatsout;
@@ -164,10 +208,9 @@ common::Error DBConnection::DBsize(int64_t* size) {
   }
 
   int64_t ret;
-  auto st = connection_.handle_->dbsize(&ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("Couldn't determine DBSIZE error: %s", st.code());
-    return common::make_error(buff);
+  err = CheckResultCommand("DBSIZE", connection_.handle_->dbsize(&ret));
+  if (err) {
+    return err;
   }
 
   *size = ret;
@@ -175,248 +218,236 @@ common::Error DBConnection::DBsize(int64_t* size) {
 }
 
 common::Error DBConnection::Auth(const std::string& password) {
-  if (!IsConnected()) {
-    return common::make_error("Not connected");
+  common::Error err = TestIsConnected();
+  if (err) {
+    return err;
   }
 
-  auto st = connection_.handle_->auth(password);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("password function error: %s", st.code());
-    return common::make_error(buff);
+  err = AuthContext(connection_.handle_, password);
+  if (err) {
+    is_auth_ = false;
+    return err;
   }
+
+  is_auth_ = true;
   return common::Error();
 }
 
 common::Error DBConnection::Setx(const std::string& key, const std::string& value, ttl_t ttl) {
+  if (key.empty() || value.empty()) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->setx(key, value, static_cast<int>(ttl));
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("setx function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("SETX", connection_.handle_->setx(key, value, static_cast<int>(ttl)));
 }
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   const std::string key_slice = ConvertToSSDBSlice(key);
-  auto st = connection_.handle_->set(key_slice, value);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("SET function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("SET", connection_.handle_->set(key_slice, value));
 }
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   const std::string key_slice = ConvertToSSDBSlice(key);
-  auto st = connection_.handle_->get(key_slice, ret_val);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("GET function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("GET", connection_.handle_->get(key_slice, ret_val));
 }
 
 common::Error DBConnection::DelInner(key_t key) {
   const std::string key_slice = ConvertToSSDBSlice(key);
-  auto st = connection_.handle_->del(key_slice);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("del function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("DEL", connection_.handle_->del(key_slice));
 }
 
 common::Error DBConnection::Incr(const std::string& key, int64_t incrby, int64_t* ret) {
+  if (key.empty() || !ret) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->incr(key, incrby, ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("Incr function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("INCR", connection_.handle_->incr(key, incrby, ret));
 }
 
 common::Error DBConnection::ScanSsdb(const std::string& key_start,
                                      const std::string& key_end,
                                      uint64_t limit,
                                      std::vector<std::string>* ret) {
+  if (!ret) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->scan(key_start, key_end, limit, ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("scan function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("SCAN", connection_.handle_->scan(key_start, key_end, limit, ret));
 }
 
 common::Error DBConnection::Rscan(const std::string& key_start,
                                   const std::string& key_end,
                                   uint64_t limit,
                                   std::vector<std::string>* ret) {
+  if (!ret) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->rscan(key_start, key_end, limit, ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("rscan function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("RSCAN", connection_.handle_->rscan(key_start, key_end, limit, ret));
 }
 
 common::Error DBConnection::MultiGet(const std::vector<std::string>& keys, std::vector<std::string>* ret) {
+  if (keys.empty() || !ret) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->multi_get(keys, ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("multi_get function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("MULTIGET", connection_.handle_->multi_get(keys, ret));
 }
 
 common::Error DBConnection::MultiSet(const std::map<std::string, std::string>& kvs) {
+  if (kvs.empty()) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->multi_set(kvs);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("multi_set function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("MULTISET", connection_.handle_->multi_set(kvs));
 }
 
 common::Error DBConnection::MultiDel(const std::vector<std::string>& keys) {
+  if (keys.empty()) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->multi_del(keys);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("multi_del function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("MULTIDEL", connection_.handle_->multi_del(keys));
 }
 
 common::Error DBConnection::Hget(const std::string& name, const std::string& key, std::string* val) {
+  if (name.empty() || key.empty() || !val) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->hget(name, key, val);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("hget function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("HGET", connection_.handle_->hget(name, key, val));
 }
 
 common::Error DBConnection::Hgetall(const std::string& name, std::vector<std::string>* ret) {
+  if (name.empty() || !ret) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
-  auto st = connection_.handle_->hgetall(name, ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("hgetall function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+
+  return CheckResultCommand("HGETALL", connection_.handle_->hgetall(name, ret));
 }
 
 common::Error DBConnection::Hset(const std::string& name, const std::string& key, const std::string& val) {
+  if (name.empty() || key.empty() || val.empty()) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->hset(name, key, val);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("hset function error: %s", st.code());
-    return common::make_error(buff);
-  }
-
-  return common::Error();
+  return CheckResultCommand("HSET", connection_.handle_->hset(name, key, val));
 }
 
 common::Error DBConnection::Hdel(const std::string& name, const std::string& key) {
+  if (name.empty() || key.empty()) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->hdel(name, key);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("hdel function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("HDEL", connection_.handle_->hdel(name, key));
 }
 
 common::Error DBConnection::Hincr(const std::string& name, const std::string& key, int64_t incrby, int64_t* ret) {
+  if (name.empty() || key.empty() || !ret) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->hincr(name, key, incrby, ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("hincr function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("HINCR", connection_.handle_->hincr(name, key, incrby, ret));
 }
 
 common::Error DBConnection::Hsize(const std::string& name, int64_t* ret) {
+  if (name.empty() || !ret) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->hsize(name, ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("hset function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("HSIZE", connection_.handle_->hsize(name, ret));
 }
 
 common::Error DBConnection::Hclear(const std::string& name, int64_t* ret) {
+  if (name.empty() || !ret) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->hclear(name, ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("hclear function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("HCLEAR", connection_.handle_->hclear(name, ret));
 }
 
 common::Error DBConnection::Hkeys(const std::string& name,
@@ -424,17 +455,17 @@ common::Error DBConnection::Hkeys(const std::string& name,
                                   const std::string& key_end,
                                   uint64_t limit,
                                   std::vector<std::string>* ret) {
+  if (name.empty() || !ret) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->hkeys(name, key_start, key_end, limit, ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("hkeys function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("HKEYS", connection_.handle_->hkeys(name, key_start, key_end, limit, ret));
 }
 
 common::Error DBConnection::Hscan(const std::string& name,
@@ -442,17 +473,17 @@ common::Error DBConnection::Hscan(const std::string& name,
                                   const std::string& key_end,
                                   uint64_t limit,
                                   std::vector<std::string>* ret) {
+  if (name.empty() || !ret) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->hscan(name, key_start, key_end, limit, ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("hscan function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("HSCAN", connection_.handle_->hscan(name, key_start, key_end, limit, ret));
 }
 
 common::Error DBConnection::Hrscan(const std::string& name,
@@ -460,193 +491,193 @@ common::Error DBConnection::Hrscan(const std::string& name,
                                    const std::string& key_end,
                                    uint64_t limit,
                                    std::vector<std::string>* ret) {
+  if (name.empty() || !ret) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->hrscan(name, key_start, key_end, limit, ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("hrscan function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("HRSCAN", connection_.handle_->hrscan(name, key_start, key_end, limit, ret));
 }
 
 common::Error DBConnection::MultiHget(const std::string& name,
                                       const std::vector<std::string>& keys,
                                       std::vector<std::string>* ret) {
+  if (name.empty() || !ret) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->multi_hget(name, keys, ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("hrscan function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("MULTIHGET", connection_.handle_->multi_hget(name, keys, ret));
 }
 
 common::Error DBConnection::MultiHset(const std::string& name, const std::map<std::string, std::string>& keys) {
+  if (name.empty()) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->multi_hset(name, keys);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("multi_hset function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("MULTIHSET", connection_.handle_->multi_hset(name, keys));
 }
 
 common::Error DBConnection::Zget(const std::string& name, const std::string& key, int64_t* ret) {
+  if (name.empty() || key.empty() || !ret) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->zget(name, key, ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("zget function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("ZGET", connection_.handle_->zget(name, key, ret));
 }
 
 common::Error DBConnection::Zset(const std::string& name, const std::string& key, int64_t score) {
+  if (name.empty() || key.empty()) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->zset(name, key, score);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("zset function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("ZSET", connection_.handle_->zset(name, key, score));
 }
 
 common::Error DBConnection::Zdel(const std::string& name, const std::string& key) {
+  if (name.empty() || key.empty()) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->zdel(name, key);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("Zdel function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("ZDEL", connection_.handle_->zdel(name, key));
 }
 
 common::Error DBConnection::Zincr(const std::string& name, const std::string& key, int64_t incrby, int64_t* ret) {
+  if (name.empty() || key.empty() || !ret) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->zincr(name, key, incrby, ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("Zincr function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("ZINCR", connection_.handle_->zincr(name, key, incrby, ret));
 }
 
 common::Error DBConnection::Zsize(const std::string& name, int64_t* ret) {
+  if (name.empty() || !ret) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->zsize(name, ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("zsize function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("ZSIZE", connection_.handle_->zsize(name, ret));
 }
 
 common::Error DBConnection::Zclear(const std::string& name, int64_t* ret) {
+  if (name.empty() || !ret) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->zclear(name, ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("zclear function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("ZCLEAR", connection_.handle_->zclear(name, ret));
 }
 
 common::Error DBConnection::Zrank(const std::string& name, const std::string& key, int64_t* ret) {
+  if (name.empty() || key.empty() || !ret) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->zrank(name, key, ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("zrank function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("ZRANK", connection_.handle_->zrank(name, key, ret));
 }
 
 common::Error DBConnection::Zrrank(const std::string& name, const std::string& key, int64_t* ret) {
+  if (name.empty() || key.empty() || !ret) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->zrrank(name, key, ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("zrrank function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("ZRRANK", connection_.handle_->zrrank(name, key, ret));
 }
 
 common::Error DBConnection::Zrange(const std::string& name,
                                    uint64_t offset,
                                    uint64_t limit,
                                    std::vector<std::string>* ret) {
+  if (name.empty() || !ret) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->zrange(name, offset, limit, ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("zrange function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("ZRANGE", connection_.handle_->zrange(name, offset, limit, ret));
 }
 
 common::Error DBConnection::Zrrange(const std::string& name,
                                     uint64_t offset,
                                     uint64_t limit,
                                     std::vector<std::string>* ret) {
+  if (name.empty() || !ret) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->zrrange(name, offset, limit, ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("zrrange function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("ZRRANGE", connection_.handle_->zrrange(name, offset, limit, ret));
 }
 
 common::Error DBConnection::Zkeys(const std::string& name,
@@ -655,17 +686,17 @@ common::Error DBConnection::Zkeys(const std::string& name,
                                   int64_t* score_end,
                                   uint64_t limit,
                                   std::vector<std::string>* ret) {
+  if (name.empty() || !score_start || !score_end || !ret) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->zkeys(name, key_start, score_start, score_end, limit, ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("zkeys function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("ZKEYS", connection_.handle_->zkeys(name, key_start, score_start, score_end, limit, ret));
 }
 
 common::Error DBConnection::Zscan(const std::string& name,
@@ -674,17 +705,17 @@ common::Error DBConnection::Zscan(const std::string& name,
                                   int64_t* score_end,
                                   uint64_t limit,
                                   std::vector<std::string>* ret) {
+  if (name.empty() || !score_start || !score_end || !ret) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->zscan(name, key_start, score_start, score_end, limit, ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("zscan function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("ZSCAN", connection_.handle_->zscan(name, key_start, score_start, score_end, limit, ret));
 }
 
 common::Error DBConnection::Zrscan(const std::string& name,
@@ -693,117 +724,117 @@ common::Error DBConnection::Zrscan(const std::string& name,
                                    int64_t* score_end,
                                    uint64_t limit,
                                    std::vector<std::string>* ret) {
+  if (name.empty() || !score_start || !score_end || !ret) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->zrscan(name, key_start, score_start, score_end, limit, ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("zrscan function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("ZRSCAN", connection_.handle_->zrscan(name, key_start, score_start, score_end, limit, ret));
 }
 
 common::Error DBConnection::MultiZget(const std::string& name,
                                       const std::vector<std::string>& keys,
                                       std::vector<std::string>* ret) {
+  if (name.empty() || keys.empty() || !ret) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->multi_zget(name, keys, ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("multi_zget function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("MULTIZGET", connection_.handle_->multi_zget(name, keys, ret));
 }
 
 common::Error DBConnection::MultiZset(const std::string& name, const std::map<std::string, int64_t>& kss) {
+  if (name.empty() || kss.empty()) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->multi_zset(name, kss);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("multi_zset function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("MULTIZSET", connection_.handle_->multi_zset(name, kss));
 }
 
 common::Error DBConnection::MultiZdel(const std::string& name, const std::vector<std::string>& keys) {
+  if (name.empty() || keys.empty()) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->multi_zdel(name, keys);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("multi_zdel function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("MULTIZDEL", connection_.handle_->multi_zdel(name, keys));
 }
 
 common::Error DBConnection::Qpush(const std::string& name, const std::string& item) {
+  if (name.empty() || item.empty()) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->qpush(name, item);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("qpush function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("QPUSH", connection_.handle_->qpush(name, item));
 }
 
 common::Error DBConnection::Qpop(const std::string& name, std::string* item) {
+  if (name.empty() || !item) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->qpop(name, item);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("qpop function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("QPOP", connection_.handle_->qpop(name, item));
 }
 
 common::Error DBConnection::Qslice(const std::string& name, int64_t begin, int64_t end, std::vector<std::string>* ret) {
+  if (name.empty() || !ret) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->qslice(name, begin, end, ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("qslice function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("QSLICE", connection_.handle_->qslice(name, begin, end, ret));
 }
 
 common::Error DBConnection::Qclear(const std::string& name, int64_t* ret) {
+  if (name.empty() || !ret) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
   }
 
-  auto st = connection_.handle_->qclear(name, ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("qclear function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("QCLEAR", connection_.handle_->qclear(name, ret));
 }
 
 common::Error DBConnection::Expire(key_t key, ttl_t ttl) {
@@ -813,15 +844,15 @@ common::Error DBConnection::Expire(key_t key, ttl_t ttl) {
   }
 
   const std::string key_slice = ConvertToSSDBSlice(key);
-  auto st = connection_.handle_->expire(key_slice, static_cast<int>(ttl));
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("EXPIRE function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("EXPIRE", connection_.handle_->expire(key_slice, static_cast<int>(ttl)));
 }
 
 common::Error DBConnection::TTL(key_t key, ttl_t* ttl) {
+  if (!ttl) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
@@ -829,10 +860,9 @@ common::Error DBConnection::TTL(key_t key, ttl_t* ttl) {
 
   int lttl = 0;
   const std::string key_slice = ConvertToSSDBSlice(key);
-  auto st = connection_.handle_->ttl(key_slice, &lttl);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("TTL function error: %s", st.code());
-    return common::make_error(buff);
+  err = CheckResultCommand("TTL", connection_.handle_->ttl(key_slice, &lttl));
+  if (err) {
+    return err;
   }
   *ttl = lttl;
   return common::Error();
@@ -844,10 +874,10 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
                                      std::vector<std::string>* keys_out,
                                      uint64_t* cursor_out) {
   std::vector<std::string> ret;
-  auto st = connection_.handle_->keys(std::string(), std::string(), count_keys, &ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("Scan function error: %s", st.code());
-    return common::make_error(buff);
+  common::Error err =
+      CheckResultCommand("SCAN", connection_.handle_->keys(std::string(), std::string(), count_keys, &ret));
+  if (err) {
+    return err;
   }
 
   uint64_t offset_pos = cursor_in;
@@ -878,20 +908,15 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
                                      const std::string& key_end,
                                      uint64_t limit,
                                      std::vector<std::string>* ret) {
-  auto st = connection_.handle_->keys(key_start, key_end, limit, ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("Keys function error: %s", st.code());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("KEYS", connection_.handle_->keys(key_start, key_end, limit, ret));
 }
 
 common::Error DBConnection::DBkcountImpl(size_t* size) {
   std::vector<std::string> ret;
-  auto st = connection_.handle_->keys(std::string(), std::string(), UINT64_MAX, &ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("Couldn't determine DBKCOUNT error: %s", st.code());
-    return common::make_error(buff);
+  common::Error err =
+      CheckResultCommand("DBKCOUNT", connection_.handle_->keys(std::string(), std::string(), UINT64_MAX, &ret));
+  if (err) {
+    return err;
   }
 
   *size = ret.size();
@@ -900,10 +925,9 @@ common::Error DBConnection::DBkcountImpl(size_t* size) {
 
 common::Error DBConnection::FlushDBImpl() {
   std::vector<std::string> ret;
-  auto st = connection_.handle_->keys(std::string(), std::string(), 0, &ret);
-  if (st.error()) {
-    std::string buff = common::MemSPrintf("Flushdb function error: %s", st.code());
-    return common::make_error(buff);
+  common::Error err = CheckResultCommand("FLUSHDB", connection_.handle_->keys(std::string(), std::string(), 0, &ret));
+  if (err) {
+    return err;
   }
 
   for (size_t i = 0; i < ret.size(); ++i) {
@@ -1015,6 +1039,18 @@ common::Error DBConnection::QuitImpl() {
   common::Error err = Disconnect();
   if (err) {
     return err;
+  }
+
+  return common::Error();
+}
+
+common::Error DBConnection::CheckResultCommand(const std::string& cmd, const ::ssdb::Status& err) {
+  if (err.error()) {
+    if (err.code() == "noauth") {
+      is_auth_ = false;
+    }
+    std::string buff = common::MemSPrintf("%s function error: %s", cmd, err.code());
+    return common::make_error(buff);
   }
 
   return common::Error();

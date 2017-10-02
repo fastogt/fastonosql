@@ -516,6 +516,7 @@ common::Error DBConnection::Connect(const config_t& config) {
 
 common::Error DBConnection::Disconnect() {
   cur_db_ = -1;
+  is_auth_ = false;
   return base_class::Disconnect();
 }
 

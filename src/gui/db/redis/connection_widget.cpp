@@ -157,7 +157,7 @@ void ConnectionWidget::retranslateUi() {
   remote_->setText(trRemote);
   isSSLConnection_->setText(trSSL);
   local_->setText(trLocal);
-  useAuth_->setText(tr("Use AUTH"));
+  useAuth_->setText(trUseAuth);
   default_db_label_->setText(trDefaultDb);
   ConnectionBaseWidget::retranslateUi();
 }

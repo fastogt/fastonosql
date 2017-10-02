@@ -25,7 +25,8 @@
 
 namespace ssdb {
 class Client;
-}
+class Status;
+}  // namespace ssdb
 
 namespace fastonosql {
 namespace core {
@@ -40,6 +41,11 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
  public:
   typedef core::internal::CDBConnection<NativeConnection, Config, SSDB> base_class;
   explicit DBConnection(CDBConnectionClient* client);
+
+  virtual bool IsAuthenticated() const override;
+
+  virtual common::Error Connect(const config_t& config) override WARN_UNUSED_RESULT;
+  virtual common::Error Disconnect() override WARN_UNUSED_RESULT;
 
   common::Error Info(const std::string& args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
   common::Error Auth(const std::string& password) WARN_UNUSED_RESULT;
@@ -151,6 +157,10 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   virtual common::Error SetTTLImpl(const NKey& key, ttl_t ttl) override;
   virtual common::Error GetTTLImpl(const NKey& key, ttl_t* ttl) override;
   virtual common::Error QuitImpl() override;
+
+ private:
+  common::Error CheckResultCommand(const std::string& cmd, const ::ssdb::Status& err) WARN_UNUSED_RESULT;
+  bool is_auth_;
 };
 
 }  // namespace ssdb

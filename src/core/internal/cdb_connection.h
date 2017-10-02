@@ -41,6 +41,11 @@ class ConstantCommandsArray : public std::vector<CommandHolder> {
 
 command_buffer_t GetKeysPattern(uint64_t cursor_in, const std::string& pattern, uint64_t count_keys);  // for SCAN
 
+// for all commands:
+// 1) test input
+// 2) test connection state
+// 3) exec inner api command, return value via CheckResultCommand
+
 template <typename NConnection, typename Config, connectionTypes ContType>
 class CDBConnection : public DBConnection<NConnection, Config, ContType>,
                       public CommandHandler,

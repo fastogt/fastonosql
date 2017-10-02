@@ -26,6 +26,8 @@ namespace ssdb {
 
 struct Config : public RemoteConfig {
   Config();
+
+  std::string auth;
 };
 
 }  // namespace ssdb
