@@ -74,7 +74,7 @@ Config ParseOptions(int argc, char** argv) {
 
 Config::Config()
     : LocalConfig(common::file_system::prepare_path("~/test.rocksdb")),
-      create_if_missing(false),
+      create_if_missing(true),
       comparator(COMP_BYTEWISE) {}
 
 }  // namespace rocksdb

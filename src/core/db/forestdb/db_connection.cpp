@@ -196,23 +196,18 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   const string_key_t key_slice = key.ToBytes();
-  fdb_status rc = fdb_set_kv(connection_.handle_->kvs, key_slice.data(), key_slice.size(), value.c_str(), value.size());
-  if (rc != FDB_RESULT_SUCCESS) {
-    std::string buff = common::MemSPrintf("set function error: %s", fdb_error_msg(rc));
-    return common::make_error(buff);
-  }
-
-  return common::Error();
+  return CheckResultCommand(
+      "GET", fdb_set_kv(connection_.handle_->kvs, key_slice.data(), key_slice.size(), value.c_str(), value.size()));
 }
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   const string_key_t key_slice = key.ToBytes();
   void* value_out = NULL;
   size_t valuelen_out = 0;
-  fdb_status rc = fdb_get_kv(connection_.handle_->kvs, key_slice.data(), key_slice.size(), &value_out, &valuelen_out);
-  if (rc != FDB_RESULT_SUCCESS) {
-    std::string buff = common::MemSPrintf("get function error: %s", fdb_error_msg(rc));
-    return common::make_error(buff);
+  common::Error err = CheckResultCommand(
+      "GET", fdb_get_kv(connection_.handle_->kvs, key_slice.data(), key_slice.size(), &value_out, &valuelen_out));
+  if (err) {
+    return err;
   }
 
   ret_val->assign(reinterpret_cast<const char*>(value_out), valuelen_out);
@@ -227,13 +222,7 @@ common::Error DBConnection::DelInner(key_t key) {
   }
 
   const string_key_t key_slice = key.ToBytes();
-  fdb_status rc = fdb_del_kv(connection_.handle_->kvs, key_slice.data(), key_slice.size());
-  if (rc != FDB_RESULT_SUCCESS) {
-    std::string buff = common::MemSPrintf("delete function error: %s", fdb_error_msg(rc));
-    return common::make_error(buff);
-  }
-
-  return common::Error();
+  return CheckResultCommand("DEL", fdb_del_kv(connection_.handle_->kvs, key_slice.data(), key_slice.size()));
 }
 
 common::Error DBConnection::ScanImpl(uint64_t cursor_in,
@@ -244,10 +233,10 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
   fdb_iterator* it = NULL;
   fdb_iterator_opt_t opt = FDB_ITR_NONE;
 
-  fdb_status rc = fdb_iterator_init(connection_.handle_->kvs, &it, NULL, 0, NULL, 0, opt);
-  if (rc != FDB_RESULT_SUCCESS) {
-    std::string buff = common::MemSPrintf("Keys function error: %s", fdb_error_msg(rc));
-    return common::make_error(buff);
+  common::Error err =
+      CheckResultCommand("KEYS", fdb_iterator_init(connection_.handle_->kvs, &it, NULL, 0, NULL, 0, opt));
+  if (err) {
+    return err;
   }
 
   fdb_doc* doc = NULL;
@@ -255,7 +244,7 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
   uint64_t lcursor_out = 0;
   std::vector<std::string> lkeys_out;
   do {
-    rc = fdb_iterator_get(it, &doc);
+    fdb_status rc = fdb_iterator_get(it, &doc);
     if (rc != FDB_RESULT_SUCCESS) {
       break;
     }
@@ -288,17 +277,16 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
                                      std::vector<std::string>* ret) {
   fdb_iterator* it = NULL;
   fdb_iterator_opt_t opt = FDB_ITR_NONE;
-  fdb_status rc = fdb_iterator_init(connection_.handle_->kvs, &it, key_start.c_str(), key_start.size(), key_end.c_str(),
-                                    key_end.size(), opt);
-
-  if (rc != FDB_RESULT_SUCCESS) {
-    std::string buff = common::MemSPrintf("Keys function error: %s", fdb_error_msg(rc));
-    return common::make_error(buff);
+  common::Error err =
+      CheckResultCommand("KEYS", fdb_iterator_init(connection_.handle_->kvs, &it, key_start.c_str(), key_start.size(),
+                                                   key_end.c_str(), key_end.size(), opt));
+  if (err) {
+    return err;
   }
 
   fdb_doc* doc = NULL;
   do {
-    rc = fdb_iterator_get(it, &doc);
+    fdb_status rc = fdb_iterator_get(it, &doc);
     if (rc != FDB_RESULT_SUCCESS) {
       break;
     }
@@ -321,16 +309,16 @@ common::Error DBConnection::DBkcountImpl(size_t* size) {
   fdb_iterator* it = NULL;
   fdb_iterator_opt_t opt = FDB_ITR_NONE;
 
-  fdb_status rc = fdb_iterator_init(connection_.handle_->kvs, &it, NULL, 0, NULL, 0, opt);
-  if (rc != FDB_RESULT_SUCCESS) {
-    std::string buff = common::MemSPrintf("Keys function error: %s", fdb_error_msg(rc));
-    return common::make_error(buff);
+  common::Error err =
+      CheckResultCommand("DBKCOUNT", fdb_iterator_init(connection_.handle_->kvs, &it, NULL, 0, NULL, 0, opt));
+  if (err) {
+    return err;
   }
 
   size_t sz = 0;
   fdb_doc* doc = NULL;
   do {
-    rc = fdb_iterator_get(it, &doc);
+    fdb_status rc = fdb_iterator_get(it, &doc);
     if (rc != FDB_RESULT_SUCCESS) {
       break;
     }
@@ -348,25 +336,24 @@ common::Error DBConnection::FlushDBImpl() {
   fdb_iterator* it = NULL;
   fdb_iterator_opt_t opt = FDB_ITR_NONE;
 
-  fdb_status rc = fdb_iterator_init(connection_.handle_->kvs, &it, NULL, 0, NULL, 0, opt);
-  if (rc != FDB_RESULT_SUCCESS) {
-    std::string buff = common::MemSPrintf("Keys function error: %s", fdb_error_msg(rc));
-    return common::make_error(buff);
+  common::Error err =
+      CheckResultCommand("FLUSHDB", fdb_iterator_init(connection_.handle_->kvs, &it, NULL, 0, NULL, 0, opt));
+  if (err) {
+    return err;
   }
 
   fdb_doc* doc = NULL;
   do {
-    rc = fdb_iterator_get(it, &doc);
+    fdb_status rc = fdb_iterator_get(it, &doc);
     if (rc != FDB_RESULT_SUCCESS) {
       break;
     }
 
     std::string key;
-    rc = fdb_del_kv(connection_.handle_->kvs, key.c_str(), key.size());
-    if (rc != FDB_RESULT_SUCCESS) {
+    err = CheckResultCommand("FLUSHDB", fdb_del_kv(connection_.handle_->kvs, key.c_str(), key.size()));
+    if (err) {
       fdb_iterator_close(it);
-      std::string buff = common::MemSPrintf("del function error: %s", fdb_error_msg(rc));
-      return common::make_error(buff);
+      return err;
     }
     fdb_doc_free(doc);
   } while (fdb_iterator_next(it) != FDB_RESULT_ITERATOR_FAIL);
@@ -465,6 +452,15 @@ common::Error DBConnection::QuitImpl() {
   common::Error err = Disconnect();
   if (err) {
     return err;
+  }
+
+  return common::Error();
+}
+
+common::Error DBConnection::CheckResultCommand(const std::string& cmd, fdb_status err) {
+  if (err != FDB_RESULT_SUCCESS) {
+    std::string buff = common::MemSPrintf("%s function error: %s", cmd, fdb_error_msg(err));
+    return common::make_error(buff);
   }
 
   return common::Error();

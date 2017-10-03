@@ -279,34 +279,32 @@ common::Error DBConnection::ConfigGetDatabases(std::vector<std::string>* dbs) {
   MDB_dbi ldbi = 0;
   {
     MDB_txn* txn = NULL;
-    int rc = mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn);
-    if (rc != LMDB_OK) {
-      std::string buff = common::MemSPrintf("ConfigGet error: %s", mdb_strerror(rc));
-      return common::make_error(buff);
+    common::Error err =
+        CheckResultCommand("CONFIG GET DATABASES", mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn));
+    if (err) {
+      return err;
     }
 
-    rc = mdb_dbi_open(txn, NULL, 0, &ldbi);
+    err = CheckResultCommand("CONFIG GET DATABASES", mdb_dbi_open(txn, NULL, 0, &ldbi));
     mdb_txn_abort(txn);
-    if (rc != LMDB_OK) {
-      std::string buff = common::MemSPrintf("ConfigGet error: %s", mdb_strerror(rc));
-      return common::make_error(buff);
+    if (err) {
+      return err;
     }
   }
 
   MDB_cursor* cursor = NULL;
   MDB_txn* txn_dbs = NULL;
-  int rc = mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn_dbs);
-  if (rc != LMDB_OK) {
+  err = CheckResultCommand("CONFIG GET DATABASES", mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn_dbs));
+  if (err) {
     mdb_dbi_close(connection_.handle_->env, ldbi);
-    std::string buff = common::MemSPrintf("ConfigGet error: %s", mdb_strerror(rc));
-    return common::make_error(buff);
+    return err;
   }
-  rc = mdb_cursor_open(txn_dbs, ldbi, &cursor);
-  if (rc != LMDB_OK) {
+
+  err = CheckResultCommand("CONFIG GET DATABASES", mdb_cursor_open(txn_dbs, ldbi, &cursor));
+  if (err) {
     mdb_txn_abort(txn_dbs);
     mdb_dbi_close(connection_.handle_->env, ldbi);
-    std::string buff = common::MemSPrintf("ConfigGet error: %s", mdb_strerror(rc));
-    return common::make_error(buff);
+    return err;
   }
 
   MDB_val key;
@@ -333,22 +331,18 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   MDB_txn* txn = NULL;
   auto conf = GetConfig();
   int env_flags = conf->env_flags;
-  int rc = mdb_txn_begin(connection_.handle_->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn);
-  if (rc == LMDB_OK) {
-    rc = mdb_put(txn, connection_.handle_->dbir, &key_slice, &mval, 0);
-    if (rc == LMDB_OK) {
-      rc = mdb_txn_commit(txn);
-    } else {
-      mdb_txn_abort(txn);
-    }
+  common::Error err = CheckResultCommand(
+      "SET", mdb_txn_begin(connection_.handle_->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn));
+  if (err) {
+    return err;
+  }
+  err = CheckResultCommand("SET", mdb_put(txn, connection_.handle_->dbir, &key_slice, &mval, 0));
+  if (err) {
+    mdb_txn_abort(txn);
+    return err;
   }
 
-  if (rc != LMDB_OK) {
-    std::string buff = common::MemSPrintf("set function error: %s", mdb_strerror(rc));
-    return common::make_error(buff);
-  }
-
-  return common::Error();
+  return CheckResultCommand("SET", mdb_txn_commit(txn));
 }
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
@@ -357,15 +351,15 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   MDB_val mval;
 
   MDB_txn* txn = NULL;
-  int rc = mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn);
-  if (rc == LMDB_OK) {
-    rc = mdb_get(txn, connection_.handle_->dbir, &key_slice, &mval);
+  common::Error err = CheckResultCommand("GET", mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn));
+  if (err) {
+    return err;
   }
-  mdb_txn_abort(txn);
 
-  if (rc != LMDB_OK) {
-    const std::string buff = common::MemSPrintf("Get function error: %s", mdb_strerror(rc));
-    return common::make_error(buff);
+  err = CheckResultCommand("GET", mdb_get(txn, connection_.handle_->dbir, &key_slice, &mval));
+  mdb_txn_abort(txn);
+  if (err) {
+    return err;
   }
 
   ret_val->assign(reinterpret_cast<const char*>(mval.mv_data), mval.mv_size);
@@ -379,23 +373,19 @@ common::Error DBConnection::DelInner(key_t key) {
   MDB_txn* txn = NULL;
   auto conf = GetConfig();
   int env_flags = conf->env_flags;
-  int rc = mdb_txn_begin(connection_.handle_->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn);
-  if (rc == LMDB_OK) {
-    rc = mdb_del(txn, connection_.handle_->dbir, &key_slice, NULL);
-    if (rc == LMDB_OK) {
-      rc = mdb_txn_commit(txn);
-    } else {
-      mdb_txn_abort(txn);
-    }
+  common::Error err = CheckResultCommand(
+      "DEL", mdb_txn_begin(connection_.handle_->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn));
+  if (err) {
+    return err;
   }
 
-  if (rc != LMDB_OK) {
-    char* res = mdb_strerror(rc);
-    std::string buff = common::MemSPrintf("Delete function error: %s", res);
-    return common::make_error(buff);
+  err = CheckResultCommand("DEL", mdb_del(txn, connection_.handle_->dbir, &key_slice, NULL));
+  if (err) {
+    mdb_txn_abort(txn);
+    return err;
   }
 
-  return common::Error();
+  return CheckResultCommand("DEL", mdb_txn_commit(txn));
 }
 
 common::Error DBConnection::ScanImpl(uint64_t cursor_in,
@@ -405,15 +395,15 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
                                      uint64_t* cursor_out) {
   MDB_cursor* cursor = NULL;
   MDB_txn* txn = NULL;
-  int rc = mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn);
-  if (rc == LMDB_OK) {
-    rc = mdb_cursor_open(txn, connection_.handle_->dbir, &cursor);
+  common::Error err = CheckResultCommand("SCAN", mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn));
+  if (err) {
+    return err;
   }
 
-  if (rc != LMDB_OK) {
+  err = CheckResultCommand("SCAN", mdb_cursor_open(txn, connection_.handle_->dbir, &cursor));
+  if (err) {
     mdb_txn_abort(txn);
-    std::string buff = common::MemSPrintf("Keys function error: %s", mdb_strerror(rc));
-    return common::make_error(buff);
+    return err;
   }
 
   MDB_val key;
@@ -450,15 +440,15 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
                                      std::vector<std::string>* ret) {
   MDB_cursor* cursor = NULL;
   MDB_txn* txn = NULL;
-  int rc = mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn);
-  if (rc == LMDB_OK) {
-    rc = mdb_cursor_open(txn, connection_.handle_->dbir, &cursor);
+  common::Error err = CheckResultCommand("KEYS", mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn));
+  if (err) {
+    return err;
   }
 
-  if (rc != LMDB_OK) {
+  err = CheckResultCommand("KEYS", mdb_cursor_open(txn, connection_.handle_->dbir, &cursor));
+  if (err) {
     mdb_txn_abort(txn);
-    std::string buff = common::MemSPrintf("Keys function error: %s", mdb_strerror(rc));
-    return common::make_error(buff);
+    return err;
   }
 
   MDB_val key;
@@ -478,15 +468,15 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
 common::Error DBConnection::DBkcountImpl(size_t* size) {
   MDB_cursor* cursor = NULL;
   MDB_txn* txn = NULL;
-  int rc = mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn);
-  if (rc == LMDB_OK) {
-    rc = mdb_cursor_open(txn, connection_.handle_->dbir, &cursor);
+  common::Error err = CheckResultCommand("DBKCOUNT", mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn));
+  if (err) {
+    return err;
   }
 
-  if (rc != LMDB_OK) {
+  err = CheckResultCommand("DBKCOUNT", mdb_cursor_open(txn, connection_.handle_->dbir, &cursor));
+  if (err) {
     mdb_txn_abort(txn);
-    std::string buff = common::MemSPrintf("DBKCOUNT function error: %s", mdb_strerror(rc));
-    return common::make_error(buff);
+    return err;
   }
 
   MDB_val key;
@@ -507,15 +497,16 @@ common::Error DBConnection::FlushDBImpl() {
   MDB_txn* txn = NULL;
   auto conf = GetConfig();
   int env_flags = conf->env_flags;
-  int rc = mdb_txn_begin(connection_.handle_->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn);
-  if (rc == LMDB_OK) {
-    rc = mdb_cursor_open(txn, connection_.handle_->dbir, &cursor);
+  common::Error err = CheckResultCommand(
+      "FLUSHDB", mdb_txn_begin(connection_.handle_->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn));
+  if (err) {
+    return err;
   }
 
-  if (rc != LMDB_OK) {
+  err = CheckResultCommand("FLUSHDB", mdb_cursor_open(txn, connection_.handle_->dbir, &cursor));
+  if (err) {
     mdb_txn_abort(txn);
-    std::string buff = common::MemSPrintf("flushdb function error: %s", mdb_strerror(rc));
-    return common::make_error(buff);
+    return err;
   }
 
   MDB_val key;
@@ -523,23 +514,17 @@ common::Error DBConnection::FlushDBImpl() {
   size_t sz = 0;
   while (mdb_cursor_get(cursor, &key, &data, MDB_NEXT) == LMDB_OK) {
     sz++;
-    rc = mdb_del(txn, connection_.handle_->dbir, &key, NULL);
-    if (rc != LMDB_OK) {
+    err = CheckResultCommand("FLUSHDB", mdb_del(txn, connection_.handle_->dbir, &key, NULL));
+    if (err) {
       mdb_cursor_close(cursor);
       mdb_txn_abort(txn);
-      std::string buff = common::MemSPrintf("del function error: %s", mdb_strerror(rc));
-      return common::make_error(buff);
+      return err;
     }
   }
 
   mdb_cursor_close(cursor);
   if (sz != 0) {
-    rc = mdb_txn_commit(txn);
-    if (rc != LMDB_OK) {
-      std::string buff = common::MemSPrintf("commit function error: %s", mdb_strerror(rc));
-      return common::make_error(buff);
-    }
-    return common::Error();
+    return CheckResultCommand("FLUSHDB", mdb_txn_commit(txn));
   }
 
   mdb_txn_abort(txn);
@@ -549,15 +534,14 @@ common::Error DBConnection::FlushDBImpl() {
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
   auto conf = GetConfig();
   int env_flags = conf->env_flags;
-  int rc = lmdb_select(connection_.handle_, name.c_str(), env_flags);
-  if (rc != LMDB_OK) {
-    std::string buff = common::MemSPrintf("commit function error: %s", mdb_strerror(rc));
-    return common::make_error(buff);
+  common::Error err = CheckResultCommand("SELECT", lmdb_select(connection_.handle_, name.c_str(), env_flags));
+  if (err) {
+    return err;
   }
 
   connection_.config_->db_name = name;
   size_t kcount = 0;
-  common::Error err = DBkcount(&kcount);
+  err = DBkcount(&kcount);
   DCHECK(!err) << "DBkcount failed!";
   *info = new DataBaseInfo(name, true, kcount);
   return common::Error();
@@ -641,6 +625,15 @@ common::Error DBConnection::QuitImpl() {
   common::Error err = Disconnect();
   if (err) {
     return err;
+  }
+
+  return common::Error();
+}
+
+common::Error DBConnection::CheckResultCommand(const std::string& cmd, int err) {
+  if (err != LMDB_OK) {
+    std::string buff = common::MemSPrintf("%s function error: %s", cmd, mdb_strerror(err));
+    return common::make_error(buff);
   }
 
   return common::Error();

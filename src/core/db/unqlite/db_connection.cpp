@@ -198,7 +198,6 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
     return err;
   }
 
-
   ServerInfo::Stats linfo;
   auto conf = GetConfig();
   linfo.db_path = conf->db_path;
@@ -208,36 +207,19 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   const string_key_t key_slice = key.ToBytes();
-  int rc = unqlite_kv_store(connection_.handle_, key_slice.data(), key_slice.size(), value.c_str(), value.length());
-  if (rc != UNQLITE_OK) {
-    std::string buff = common::MemSPrintf("set function error: %s", unqlite_strerror(rc));
-    return common::make_error(buff);
-  }
-
-  return common::Error();
+  return CheckResultCommand(
+      "SET", unqlite_kv_store(connection_.handle_, key_slice.data(), key_slice.size(), value.c_str(), value.length()));
 }
 
 common::Error DBConnection::DelInner(key_t key) {
   const string_key_t key_slice = key.ToBytes();
-  int rc = unqlite_kv_delete(connection_.handle_, key_slice.data(), key_slice.size());
-  if (rc != UNQLITE_OK) {
-    std::string buff = common::MemSPrintf("delete function error: %s", unqlite_strerror(rc));
-    return common::make_error(buff);
-  }
-
-  return common::Error();
+  return CheckResultCommand("DEL", unqlite_kv_delete(connection_.handle_, key_slice.data(), key_slice.size()));
 }
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   const string_key_t key_slice = key.ToBytes();
-  int rc = unqlite_kv_fetch_callback(connection_.handle_, key_slice.data(), key_slice.size(), unqlite_data_callback,
-                                     ret_val);
-  if (rc != UNQLITE_OK) {
-    std::string buff = common::MemSPrintf("get function error: %s", unqlite_strerror(rc));
-    return common::make_error(buff);
-  }
-
-  return common::Error();
+  return CheckResultCommand("GET", unqlite_kv_fetch_callback(connection_.handle_, key_slice.data(), key_slice.size(),
+                                                             unqlite_data_callback, ret_val));
 }
 
 common::Error DBConnection::ScanImpl(uint64_t cursor_in,
@@ -246,10 +228,9 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
                                      std::vector<std::string>* keys_out,
                                      uint64_t* cursor_out) {
   unqlite_kv_cursor* pCur; /* Cursor handle */
-  int rc = unqlite_kv_cursor_init(connection_.handle_, &pCur);
-  if (rc != UNQLITE_OK) {
-    std::string buff = common::MemSPrintf("Keys function error: %s", unqlite_strerror(rc));
-    return common::make_error(buff);
+  common::Error err = CheckResultCommand("SCAN", unqlite_kv_cursor_init(connection_.handle_, &pCur));
+  if (err) {
+    return err;
   }
   /* Point to the first record */
   unqlite_kv_cursor_first_entry(pCur);
@@ -290,10 +271,9 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
                                      uint64_t limit,
                                      std::vector<std::string>* ret) { /* Allocate a new cursor instance */
   unqlite_kv_cursor* pCur;                                            /* Cursor handle */
-  int rc = unqlite_kv_cursor_init(connection_.handle_, &pCur);
-  if (rc != UNQLITE_OK) {
-    std::string buff = common::MemSPrintf("Keys function error: %s", unqlite_strerror(rc));
-    return common::make_error(buff);
+  common::Error err = CheckResultCommand("KEYS", unqlite_kv_cursor_init(connection_.handle_, &pCur));
+  if (err) {
+    return err;
   }
   /* Point to the first record */
   unqlite_kv_cursor_first_entry(pCur);
@@ -318,10 +298,9 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
 common::Error DBConnection::DBkcountImpl(size_t* size) {
   /* Allocate a new cursor instance */
   unqlite_kv_cursor* pCur; /* Cursor handle */
-  int rc = unqlite_kv_cursor_init(connection_.handle_, &pCur);
-  if (rc != UNQLITE_OK) {
-    std::string buff = common::MemSPrintf("DBKCOUNT function error: %s", unqlite_strerror(rc));
-    return common::make_error(buff);
+  common::Error err = CheckResultCommand("DBCKOUNT", unqlite_kv_cursor_init(connection_.handle_, &pCur));
+  if (err) {
+    return err;
   }
   /* Point to the first record */
   unqlite_kv_cursor_first_entry(pCur);
@@ -342,10 +321,9 @@ common::Error DBConnection::DBkcountImpl(size_t* size) {
 
 common::Error DBConnection::FlushDBImpl() {
   unqlite_kv_cursor* pCur; /* Cursor handle */
-  int rc = unqlite_kv_cursor_init(connection_.handle_, &pCur);
-  if (rc != UNQLITE_OK) {
-    std::string buff = common::MemSPrintf("FlushDB function error: %s", unqlite_strerror(rc));
-    return common::make_error(buff);
+  common::Error err = CheckResultCommand("FLUSHDB", unqlite_kv_cursor_init(connection_.handle_, &pCur));
+  if (err) {
+    return err;
   }
   /* Point to the first record */
   unqlite_kv_cursor_first_entry(pCur);
@@ -457,6 +435,15 @@ common::Error DBConnection::QuitImpl() {
   common::Error err = Disconnect();
   if (err) {
     return err;
+  }
+
+  return common::Error();
+}
+
+common::Error DBConnection::CheckResultCommand(const std::string& cmd, int err) {
+  if (err != UNQLITE_OK) {
+    std::string buff = common::MemSPrintf("%s function error: %s", cmd, unqlite_strerror(err));
+    return common::make_error(buff);
   }
 
   return common::Error();

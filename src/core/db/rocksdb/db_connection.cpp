@@ -222,13 +222,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   ::rocksdb::ReadOptions ro;
   const string_key_t key_str = key.ToBytes();
   const ::rocksdb::Slice key_slice(reinterpret_cast<const char*>(key_str.data()), key_str.size());
-  auto st = connection_.handle_->Get(ro, key_slice, ret_val);
-  if (!st.ok()) {
-    std::string buff = common::MemSPrintf("get function error: %s", st.ToString());
-    return common::make_error(buff);
-  }
-
-  return common::Error();
+  return CheckResultCommand("GET", connection_.handle_->Get(ro, key_slice, ret_val));
 }
 
 common::Error DBConnection::Mget(const std::vector<std::string>& keys, std::vector<std::string>* ret) {
@@ -244,13 +238,13 @@ common::Error DBConnection::Mget(const std::vector<std::string>& keys, std::vect
   ::rocksdb::ReadOptions ro;
   auto sts = connection_.handle_->MultiGet(ro, rslice, ret);
   for (size_t i = 0; i < sts.size(); ++i) {
-    auto st = sts[i];
-    if (st.ok()) {
-      return common::Error();
+    common::Error err = CheckResultCommand("MGET", sts[i]);
+    if (err) {
+      return err;
     }
   }
 
-  return common::make_error("mget function unknown error");
+  return common::Error();
 }
 
 common::Error DBConnection::Merge(const std::string& key, const std::string& value) {
@@ -260,26 +254,14 @@ common::Error DBConnection::Merge(const std::string& key, const std::string& val
   }
 
   ::rocksdb::WriteOptions wo;
-  auto st = connection_.handle_->Merge(wo, key, value);
-  if (!st.ok()) {
-    std::string buff = common::MemSPrintf("merge function error: %s", st.ToString());
-    return common::make_error(buff);
-  }
-
-  return common::Error();
+  return CheckResultCommand("MERGE", connection_.handle_->Merge(wo, key, value));
 }
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   ::rocksdb::WriteOptions wo;
   const string_key_t key_str = key.ToBytes();
   const ::rocksdb::Slice key_slice(reinterpret_cast<const char*>(key_str.data()), key_str.size());
-  auto st = connection_.handle_->Put(wo, key_slice, value);
-  if (!st.ok()) {
-    std::string buff = common::MemSPrintf("set function error: %s", st.ToString());
-    return common::make_error(buff);
-  }
-
-  return common::Error();
+  return CheckResultCommand("SET", connection_.handle_->Put(wo, key_slice, value));
 }
 
 common::Error DBConnection::DelInner(key_t key) {
@@ -292,12 +274,7 @@ common::Error DBConnection::DelInner(key_t key) {
   ::rocksdb::WriteOptions wo;
   const string_key_t key_str = key.ToBytes();
   const ::rocksdb::Slice key_slice(reinterpret_cast<const char*>(key_str.data()), key_str.size());
-  auto st = connection_.handle_->Delete(wo, key_slice);
-  if (!st.ok()) {
-    std::string buff = common::MemSPrintf("del function error: %s", st.ToString());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("DEL", connection_.handle_->Delete(wo, key_slice));
 }
 
 common::Error DBConnection::ScanImpl(uint64_t cursor_in,
@@ -329,9 +306,9 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
   auto st = it->status();
   delete it;
 
-  if (!st.ok()) {
-    std::string buff = common::MemSPrintf("Keys function error: %s", st.ToString());
-    return common::make_error(buff);
+  common::Error err = CheckResultCommand("SCAN", st);
+  if (err) {
+    return err;
   }
 
   *keys_out = lkeys_out;
@@ -359,11 +336,7 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
   auto st = it->status();
   delete it;
 
-  if (!st.ok()) {
-    std::string buff = common::MemSPrintf("Keys function error: %s", st.ToString());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("KEYS", st);
 }
 
 common::Error DBConnection::DBkcountImpl(size_t* size) {
@@ -377,9 +350,9 @@ common::Error DBConnection::DBkcountImpl(size_t* size) {
   auto st = it->status();
   delete it;
 
-  if (!st.ok()) {
-    std::string buff = common::MemSPrintf("Couldn't determine DBKCOUNT error: %s", st.ToString());
-    return common::make_error(buff);
+  common::Error err = CheckResultCommand("DBKCOUNT", st);
+  if (err) {
+    return err;
   }
 
   *size = sz;
@@ -392,22 +365,17 @@ common::Error DBConnection::FlushDBImpl() {
   ::rocksdb::Iterator* it = connection_.handle_->NewIterator(ro);
   for (it->SeekToFirst(); it->Valid(); it->Next()) {
     std::string key = it->key().ToString();
-    auto st = connection_.handle_->Delete(wo, key);
-    if (!st.ok()) {
+    common::Error err = CheckResultCommand("FLUSHDB", connection_.handle_->Delete(wo, key));
+    if (err) {
       delete it;
-      std::string buff = common::MemSPrintf("del function error: %s", st.ToString());
-      return common::make_error(buff);
+      return err;
     }
   }
 
   auto st = it->status();
   delete it;
 
-  if (!st.ok()) {
-    std::string buff = common::MemSPrintf("Keys function error: %s", st.ToString());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("FLUSHDB", st);
 }
 
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
@@ -500,6 +468,15 @@ common::Error DBConnection::QuitImpl() {
   common::Error err = Disconnect();
   if (err) {
     return err;
+  }
+
+  return common::Error();
+}
+
+common::Error DBConnection::CheckResultCommand(const std::string& cmd, const ::rocksdb::Status& err) {
+  if (!err.ok()) {
+    std::string buff = common::MemSPrintf("%s function error: %s", cmd, err.ToString());
+    return common::make_error(buff);
   }
 
   return common::Error();

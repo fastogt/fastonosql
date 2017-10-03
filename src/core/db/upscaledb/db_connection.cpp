@@ -242,13 +242,7 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   memset(&rec, 0, sizeof(rec));
   rec.data = const_cast<char*>(value.c_str());
   rec.size = value.size();
-
-  ups_status_t st = ups_db_insert(connection_.handle_->db, 0, &key_slice, &rec, UPS_OVERWRITE);
-  if (st != UPS_SUCCESS) {
-    std::string buff = common::MemSPrintf("SET function error: %s", ups_strerror(st));
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("SET", ups_db_insert(connection_.handle_->db, 0, &key_slice, &rec, UPS_OVERWRITE));
 }
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
@@ -258,10 +252,9 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   ups_record_t rec;
   memset(&rec, 0, sizeof(rec));
 
-  ups_status_t st = ups_db_find(connection_.handle_->db, NULL, &key_slice, &rec, 0);
-  if (st != UPS_SUCCESS) {
-    std::string buff = common::MemSPrintf("GET function error: %s", ups_strerror(st));
-    return common::make_error(buff);
+  common::Error err = CheckResultCommand("GET", ups_db_find(connection_.handle_->db, NULL, &key_slice, &rec, 0));
+  if (err) {
+    return err;
   }
 
   *ret_val = std::string(reinterpret_cast<const char*>(rec.data), rec.size);
@@ -271,14 +264,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
 common::Error DBConnection::DelInner(key_t key) {
   const string_key_t key_str = key.ToBytes();
   ups_key_t key_slice = ConvertToUpscaleDBSlice(key_str);
-
-  ups_status_t st = ups_db_erase(connection_.handle_->db, 0, &key_slice, 0);
-  if (st != UPS_SUCCESS) {
-    std::string buff = common::MemSPrintf("DEL function error: %s", ups_strerror(st));
-    return common::make_error(buff);
-  }
-
-  return common::Error();
+  return CheckResultCommand("DEL", ups_db_erase(connection_.handle_->db, 0, &key_slice, 0));
 }
 
 common::Error DBConnection::ScanImpl(uint64_t cursor_in,
@@ -294,12 +280,12 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
   memset(&rec, 0, sizeof(rec));
 
   /* create a new cursor */
-  ups_status_t st = ups_cursor_create(&cursor, connection_.handle_->db, 0, 0);
-  if (st != UPS_SUCCESS) {
-    std::string buff = common::MemSPrintf("KEYS function error: %s", ups_strerror(st));
-    return common::make_error(buff);
+  common::Error err = CheckResultCommand("SCAN", ups_cursor_create(&cursor, connection_.handle_->db, 0, 0));
+  if (err) {
+    return err;
   }
 
+  ups_status_t st = UPS_SUCCESS;
   uint64_t offset_pos = cursor_in;
   uint64_t lcursor_out = 0;
   std::vector<std::string> lkeys_out;
@@ -317,7 +303,7 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
             offset_pos--;
           }
         }
-      } else if (st && st != UPS_KEY_NOT_FOUND) {
+      } else if (st != UPS_KEY_NOT_FOUND) {
         ups_cursor_close(cursor);
         std::string buff = common::MemSPrintf("SCAN function error: %s", ups_strerror(st));
         return common::make_error(buff);
@@ -346,12 +332,12 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
   memset(&rec, 0, sizeof(rec));
 
   /* create a new cursor */
-  ups_status_t st = ups_cursor_create(&cursor, connection_.handle_->db, 0, 0);
-  if (st != UPS_SUCCESS) {
-    std::string buff = common::MemSPrintf("KEYS function error: %s", ups_strerror(st));
-    return common::make_error(buff);
+  common::Error err = CheckResultCommand("KEYS", ups_cursor_create(&cursor, connection_.handle_->db, 0, 0));
+  if (err) {
+    return err;
   }
 
+  ups_status_t st;
   do {
     st = ups_cursor_move(cursor, &key, &rec, UPS_CURSOR_NEXT | UPS_SKIP_DUPLICATES);
     if (st == UPS_SUCCESS) {
@@ -359,9 +345,9 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
       if (key_start < skey && key_end > skey) {
         ret->push_back(skey);
       }
-    } else if (st && st != UPS_KEY_NOT_FOUND) {
+    } else if (st != UPS_KEY_NOT_FOUND) {
       ups_cursor_close(cursor);
-      std::string buff = common::MemSPrintf("SCAN function error: %s", ups_strerror(st));
+      std::string buff = common::MemSPrintf("KEYS function error: %s", ups_strerror(st));
       return common::make_error(buff);
     }
   } while (st == UPS_SUCCESS && limit > ret->size());
@@ -372,10 +358,10 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
 
 common::Error DBConnection::DBkcountImpl(size_t* size) {
   uint64_t sz = 0;
-  ups_status_t st = ups_db_count(connection_.handle_->db, NULL, UPS_SKIP_DUPLICATES, &sz);
-  if (st != UPS_SUCCESS) {
-    std::string buff = common::MemSPrintf("DBKCOUNT function error: %s", ups_strerror(st));
-    return common::make_error(buff);
+  common::Error err =
+      CheckResultCommand("DBKCOUNT", ups_db_count(connection_.handle_->db, NULL, UPS_SKIP_DUPLICATES, &sz));
+  if (err) {
+    return err;
   }
 
   *size = sz;
@@ -391,12 +377,12 @@ common::Error DBConnection::FlushDBImpl() {
   memset(&rec, 0, sizeof(rec));
 
   /* create a new cursor */
-  ups_status_t st = ups_cursor_create(&cursor, connection_.handle_->db, 0, 0);
-  if (st != UPS_SUCCESS) {
-    std::string buff = common::MemSPrintf("FLUSHDB function error: %s", ups_strerror(st));
-    return common::make_error(buff);
+  common::Error err = CheckResultCommand("FLUSHDB", ups_cursor_create(&cursor, connection_.handle_->db, 0, 0));
+  if (err) {
+    return err;
   }
 
+  ups_status_t st;
   do {
     /* fetch the next item, and repeat till we've reached the end
      * of the database */
@@ -519,6 +505,15 @@ common::Error DBConnection::QuitImpl() {
   common::Error err = Disconnect();
   if (err) {
     return err;
+  }
+
+  return common::Error();
+}
+
+common::Error DBConnection::CheckResultCommand(const std::string& cmd, ups_status_t err) {
+  if (err != UPS_SUCCESS) {
+    std::string buff = common::MemSPrintf("%s function error: %s", cmd, ups_strerror(err));
+    return common::make_error(buff);
   }
 
   return common::Error();

@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <ups/types.h>
+
 #include "core/internal/cdb_connection.h"  // for CDBConnection
 
 #include "core/db/upscaledb/config.h"
@@ -45,6 +47,8 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   common::Error Info(const std::string& args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
 
  private:
+  common::Error CheckResultCommand(const std::string& cmd, ups_status_t err) WARN_UNUSED_RESULT;
+
   common::Error SetInner(key_t key, const std::string& value) WARN_UNUSED_RESULT;
   common::Error GetInner(key_t key, std::string* ret_val) WARN_UNUSED_RESULT;
   common::Error DelInner(key_t key) WARN_UNUSED_RESULT;

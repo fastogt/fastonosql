@@ -50,11 +50,13 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
       WARN_UNUSED_RESULT;
   common::Error Incr(const NKey& key, uint32_t value, uint64_t* result) WARN_UNUSED_RESULT;
   common::Error Decr(const NKey& key, uint32_t value, uint64_t* result) WARN_UNUSED_RESULT;
-  common::Error VersionServer() const WARN_UNUSED_RESULT;
+  common::Error VersionServer() WARN_UNUSED_RESULT;
 
   common::Error TTL(key_t key, ttl_t* expiration) WARN_UNUSED_RESULT;
 
  private:
+  common::Error CheckResultCommand(const std::string& cmd, int err) WARN_UNUSED_RESULT;
+
   common::Error DelInner(key_t key, time_t expiration) WARN_UNUSED_RESULT;
   common::Error GetInner(key_t key, std::string* ret_val) WARN_UNUSED_RESULT;
   common::Error SetInner(key_t key, const std::string& value, time_t expiration, uint32_t flags) WARN_UNUSED_RESULT;

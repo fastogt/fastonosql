@@ -210,35 +210,23 @@ common::Error DBConnection::DelInner(key_t key) {
   const string_key_t key_str = key.ToBytes();
   const ::leveldb::Slice key_slice(reinterpret_cast<const char*>(key_str.data()), key_str.size());
   ::leveldb::WriteOptions wo;
-  auto st = connection_.handle_->Delete(wo, key_slice);
-  if (!st.ok()) {
-    std::string buff = common::MemSPrintf("del function error: %s", st.ToString());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("DEL", connection_.handle_->Delete(wo, key_slice));
 }
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   const string_key_t key_str = key.ToBytes();
   const ::leveldb::Slice key_slice(reinterpret_cast<const char*>(key_str.data()), key_str.size());
   ::leveldb::WriteOptions wo;
-  auto st = connection_.handle_->Put(wo, key_slice, value);
-  if (!st.ok()) {
-    std::string buff = common::MemSPrintf("set function error: %s", st.ToString());
-    return common::make_error(buff);
-  }
-
-  return common::Error();
+  return CheckResultCommand("SET", connection_.handle_->Put(wo, key_slice, value));
 }
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   const string_key_t key_str = key.ToBytes();
   const ::leveldb::Slice key_slice(key_str.data(), key_str.size());
   ::leveldb::ReadOptions ro;
-  auto st = connection_.handle_->Get(ro, key_slice, ret_val);
-  if (!st.ok()) {
-    std::string buff = common::MemSPrintf("get function error: %s", st.ToString());
-    return common::make_error(buff);
+  common::Error err = CheckResultCommand("GET", connection_.handle_->Get(ro, key_slice, ret_val));
+  if (err) {
+    return err;
   }
 
   return common::Error();
@@ -273,9 +261,9 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
   auto st = it->status();
   delete it;
 
-  if (!st.ok()) {
-    std::string buff = common::MemSPrintf("SCAN function error: %s", st.ToString());
-    return common::make_error(buff);
+  common::Error err = CheckResultCommand("SCAN", st);
+  if (err) {
+    return err;
   }
 
   *keys_out = lkeys_out;
@@ -306,11 +294,7 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
   auto st = it->status();
   delete it;
 
-  if (!st.ok()) {
-    std::string buff = common::MemSPrintf("Keys function error: %s", st.ToString());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("KEYS", st);
 }
 
 common::Error DBConnection::DBkcountImpl(size_t* size) {
@@ -324,9 +308,9 @@ common::Error DBConnection::DBkcountImpl(size_t* size) {
   auto st = it->status();
   delete it;
 
-  if (!st.ok()) {
-    std::string buff = common::MemSPrintf("Couldn't determine DBKCOUNT error: %s", st.ToString());
-    return common::make_error(buff);
+  common::Error err = CheckResultCommand("DBKCOUNT", st);
+  if (err) {
+    return err;
   }
 
   *size = sz;
@@ -339,22 +323,17 @@ common::Error DBConnection::FlushDBImpl() {
   ::leveldb::Iterator* it = connection_.handle_->NewIterator(ro);
   for (it->SeekToFirst(); it->Valid(); it->Next()) {
     std::string key = it->key().ToString();
-    auto st = connection_.handle_->Delete(wo, key);
-    if (!st.ok()) {
+    common::Error err = CheckResultCommand("DEL", connection_.handle_->Delete(wo, key));
+    if (err) {
       delete it;
-      std::string buff = common::MemSPrintf("del function error: %s", st.ToString());
-      return common::make_error(buff);
+      return err;
     }
   }
 
   auto st = it->status();
   delete it;
 
-  if (!st.ok()) {
-    std::string buff = common::MemSPrintf("Keys function error: %s", st.ToString());
-    return common::make_error(buff);
-  }
-  return common::Error();
+  return CheckResultCommand("FLUSHDB", st);
 }
 
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
@@ -447,6 +426,15 @@ common::Error DBConnection::QuitImpl() {
   common::Error err = Disconnect();
   if (err) {
     return err;
+  }
+
+  return common::Error();
+}
+
+common::Error DBConnection::CheckResultCommand(const std::string& cmd, const ::leveldb::Status& err) {
+  if (!err.ok()) {
+    std::string buff = common::MemSPrintf("%s function error: %s", cmd, err.ToString());
+    return common::make_error(buff);
   }
 
   return common::Error();
