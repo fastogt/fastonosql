@@ -327,6 +327,10 @@ common::Error DBConnection::AddIfNotExist(const NKey& key,
                                           const std::string& value,
                                           time_t expiration,
                                           uint32_t flags) {
+  if (value.empty()) {
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
@@ -348,6 +352,10 @@ common::Error DBConnection::AddIfNotExist(const NKey& key,
 }
 
 common::Error DBConnection::Replace(const NKey& key, const std::string& value, time_t expiration, uint32_t flags) {
+  if (value.empty()) {
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
@@ -369,6 +377,10 @@ common::Error DBConnection::Replace(const NKey& key, const std::string& value, t
 }
 
 common::Error DBConnection::Append(const NKey& key, const std::string& value, time_t expiration, uint32_t flags) {
+  if (value.empty()) {
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
@@ -390,6 +402,10 @@ common::Error DBConnection::Append(const NKey& key, const std::string& value, ti
 }
 
 common::Error DBConnection::Prepend(const NKey& key, const std::string& value, time_t expiration, uint32_t flags) {
+  if (value.empty()) {
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;

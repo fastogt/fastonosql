@@ -226,6 +226,10 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
 }
 
 common::Error DBConnection::Mget(const std::vector<std::string>& keys, std::vector<std::string>* ret) {
+  if (keys.empty() || !ret) {
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;
@@ -248,6 +252,10 @@ common::Error DBConnection::Mget(const std::vector<std::string>& keys, std::vect
 }
 
 common::Error DBConnection::Merge(const std::string& key, const std::string& value) {
+  if (key.empty() || value.empty()) {
+    return common::make_error_inval();
+  }
+
   common::Error err = TestIsAuthenticated();
   if (err) {
     return err;

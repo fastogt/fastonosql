@@ -2,12 +2,12 @@
 
 #include <common/file_system/file_system.h>
 
+#include "core/db/forestdb/db_connection.h"
 #include "core/db/leveldb/db_connection.h"
-#include "core/db/rocksdb/db_connection.h"
 #include "core/db/lmdb/db_connection.h"
+#include "core/db/rocksdb/db_connection.h"
 #include "core/db/unqlite/db_connection.h"
 #include "core/db/upscaledb/db_connection.h"
-#include "core/db/forestdb/db_connection.h"
 
 using namespace fastonosql;
 
@@ -51,6 +51,7 @@ void CheckSetGet(core::internal::CDBConnection<NConnection, Config, ContType>* d
 TEST(Connection, leveldb) {
   core::leveldb::DBConnection db(nullptr);
   core::leveldb::Config lcfg;
+  lcfg.create_if_missing = false;
   common::Error err = db.Connect(lcfg);
   ASSERT_TRUE(err);
   ASSERT_TRUE(!db.IsConnected());
@@ -80,6 +81,7 @@ TEST(Connection, leveldb) {
 TEST(Connection, rocksdb) {
   core::rocksdb::DBConnection db(nullptr);
   core::rocksdb::Config lcfg;
+  lcfg.create_if_missing = false;
   common::Error err = db.Connect(lcfg);
   ASSERT_TRUE(err);
   ASSERT_TRUE(!db.IsConnected());
@@ -110,13 +112,8 @@ TEST(Connection, lmdb) {
   core::lmdb::DBConnection db(nullptr);
   core::lmdb::Config lcfg;
   common::Error err = db.Connect(lcfg);
-  ASSERT_TRUE(err);
-  ASSERT_TRUE(!db.IsConnected());
-  common::ErrnoError errn = common::file_system::create_directory(lcfg.db_path, false);
-  ASSERT_TRUE(!errn);
-  err = db.Connect(lcfg);
-  ASSERT_TRUE(err);
-  ASSERT_TRUE(!db.IsConnected());
+  ASSERT_TRUE(!err);
+  ASSERT_TRUE(db.IsConnected());
 
   lcfg.SetReadOnlyDB(false);
   err = db.Connect(lcfg);
@@ -129,7 +126,7 @@ TEST(Connection, lmdb) {
   ASSERT_TRUE(!err);
   ASSERT_TRUE(!db.IsConnected());
 
-  errn = common::file_system::remove_directory(lcfg.db_path, true);
+  common::ErrnoError errn  = common::file_system::remove_directory(lcfg.db_path, true);
   ASSERT_TRUE(!errn);
 }
 #endif
