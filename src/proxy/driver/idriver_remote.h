@@ -29,7 +29,15 @@ namespace proxy {
 class IDriverRemote : public IDriver {
   Q_OBJECT
  public:
-  virtual common::net::HostAndPort GetHost() const = 0;
+  common::net::HostAndPort GetHost() const;
+
+  virtual core::translator_t GetTranslator() const override = 0;
+
+  virtual bool IsInterrupted() const override = 0;
+  virtual void SetInterrupted(bool interrupted) override = 0;
+
+  virtual bool IsConnected() const override = 0;
+  virtual bool IsAuthenticated() const override = 0;
 
  protected:
   explicit IDriverRemote(IConnectionSettingsBaseSPtr settings);

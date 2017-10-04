@@ -18,11 +18,18 @@
 
 #include "proxy/driver/idriver_remote.h"
 
+#include "proxy/connection_settings/iconnection_settings_remote.h"
+
 namespace fastonosql {
 namespace proxy {
 
 IDriverRemote::IDriverRemote(IConnectionSettingsBaseSPtr settings) : IDriver(settings) {
   CHECK(IsRemoteType(GetType()));
+}
+
+common::net::HostAndPort IDriverRemote::GetHost() const {
+  auto remote_settings = GetSpecificSettings<IConnectionSettingsRemote>();
+  return remote_settings->GetHost();
 }
 
 }  // namespace proxy

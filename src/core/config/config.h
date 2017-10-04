@@ -34,7 +34,7 @@ struct BaseConfig {
   BaseConfig();
 
   std::string delimiter;
-  std::string ns_separator;
+  std::string ns_separator;  // FIXME: only for gui => move to settings
 };
 
 // -f -d -ns

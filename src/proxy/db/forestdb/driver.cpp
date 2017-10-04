@@ -64,19 +64,6 @@ bool Driver::IsAuthenticated() const {
   return impl_->IsAuthenticated();
 }
 
-std::string Driver::GetPath() const {
-  auto config = impl_->GetConfig();
-  return config->db_path;
-}
-
-std::string Driver::GetNsSeparator() const {
-  return impl_->GetNsSeparator();
-}
-
-std::string Driver::GetDelimiter() const {
-  return impl_->GetDelimiter();
-}
-
 void Driver::InitImpl() {}
 
 void Driver::ClearImpl() {}
@@ -92,9 +79,8 @@ core::FastoObjectCommandIPtr Driver::CreateCommandFast(const core::command_buffe
 }
 
 common::Error Driver::SyncConnect() {
-  ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
-  CHECK(set);
-  return impl_->Connect(set->GetInfo());
+  auto forestdb_settings = GetSpecificSettings<ConnectionSettings>();
+  return impl_->Connect(forestdb_settings->GetInfo());
 }
 
 common::Error Driver::SyncDisconnect() {

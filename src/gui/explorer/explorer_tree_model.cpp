@@ -76,7 +76,6 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
       QString sname;
       common::ConvertFromString(server->GetName(), &sname);
       bool is_can_remote = server->IsCanRemote();
-      bool is_connected = server->IsConnected();
       if (is_can_remote) {
         proxy::IServerRemote* rserver = dynamic_cast<proxy::IServerRemote*>(server.get());  // +
         CHECK(rserver);
@@ -85,17 +84,13 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
         QString mtype;
         common::ConvertFromString(common::ConvertToString(rserver->Mode()), &mtype);
         QString shost = translations::trCalculating;
-        if (is_connected) {
-          common::ConvertFromString(common::ConvertToString(rserver->GetHost()), &shost);
-        }
+        common::ConvertFromString(common::ConvertToString(rserver->GetHost()), &shost);
         return trRemoteServerToolTipTemplate_4S.arg(sname, stype, mtype, shost);
       } else {
         proxy::IServerLocal* lserver = dynamic_cast<proxy::IServerLocal*>(server.get());  // +
         CHECK(lserver);
         QString spath = translations::trCalculating;
-        if (is_connected) {
-          common::ConvertFromString(lserver->GetPath(), &spath);
-        }
+        common::ConvertFromString(lserver->GetPath(), &spath);
         return trLocalServerToolTipTemplate_2S.arg(sname, spath);
       }
     } else if (type == IExplorerTreeItem::eDatabase) {

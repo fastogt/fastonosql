@@ -198,7 +198,9 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server, const QString& fileP
   dbName_ = new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().databaseIcon(), translations::trCalculating,
                                            iconSize);
   hlayout2->addWidget(dbName_);
-  hlayout2->addWidget(new QSplitter(Qt::Horizontal));
+  QSplitter* spliter_info_and_options = new QSplitter(Qt::Horizontal);
+  spliter_info_and_options->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+  hlayout2->addWidget(spliter_info_and_options);
   hlayout2->addWidget(advancedOptions_);
   mainlayout->addLayout(hlayout2);
 
@@ -478,7 +480,7 @@ void BaseShellWidget::serverDisconnect() {
 
 void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
   if (!inf) {
-    serverName_->setText(translations::trCalculating);
+    updateServerLabel(translations::trCalculating);
     for (int i = 0; i < commandsVersionApi_->count(); ++i) {
       commandsVersionApi_->setItemIcon(i, gui::GuiFactory::GetInstance().unknownIcon());
     }
@@ -495,7 +497,7 @@ void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
   }
   QString qserver_label;
   common::ConvertFromString(server_label, &qserver_label);
-  serverName_->setText(qserver_label);
+  updateServerLabel(qserver_label);
 
   uint32_t serv_vers = inf->GetVersion();
   if (serv_vers == UNDEFINED_SINCE) {
@@ -527,14 +529,24 @@ void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
 
 void BaseShellWidget::updateDefaultDatabase(core::IDataBaseInfoSPtr dbs) {
   if (!dbs) {
-    dbName_->setText(translations::trCalculating);
+    updateDBLabel(translations::trCalculating);
     return;
   }
 
   std::string name = dbs->GetName();
   QString qname;
   common::ConvertFromString(name, &qname);
-  dbName_->setText(qname);
+  updateDBLabel(qname);
+}
+
+void BaseShellWidget::updateServerLabel(const QString& text) {
+  serverName_->setText(text);
+  serverName_->setToolTip(text);
+}
+
+void BaseShellWidget::updateDBLabel(const QString& text) {
+  dbName_->setText(text);
+  dbName_->setToolTip(text);
 }
 
 void BaseShellWidget::syncConnectionActions() {

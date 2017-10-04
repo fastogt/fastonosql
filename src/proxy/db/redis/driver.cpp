@@ -85,19 +85,6 @@ Driver::~Driver() {
   delete impl_;
 }
 
-common::net::HostAndPort Driver::GetHost() const {
-  auto conf = impl_->GetConfig();
-  return conf->host;
-}
-
-std::string Driver::GetNsSeparator() const {
-  return impl_->GetNsSeparator();
-}
-
-std::string Driver::GetDelimiter() const {
-  return impl_->GetDelimiter();
-}
-
 bool Driver::IsInterrupted() const {
   return impl_->IsInterrupted();
 }
@@ -133,9 +120,8 @@ core::FastoObjectCommandIPtr Driver::CreateCommandFast(const core::command_buffe
 }
 
 common::Error Driver::SyncConnect() {
-  ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
-  CHECK(set);
-  core::redis::RConfig rconf(set->GetInfo(), set->GetSSHInfo());
+  auto redis_settings = GetSpecificSettings<ConnectionSettings>();
+  core::redis::RConfig rconf(redis_settings->GetInfo(), redis_settings->GetSSHInfo());
   return impl_->Connect(rconf);
 }
 
@@ -189,10 +175,10 @@ void Driver::HandleShutdownEvent(events::ShutDownRequestEvent* ev) {
   NotifyProgress(sender, 100);
 }
 
-void Driver::HandleBackupEvent(events::BackupRequestEvent* ev) {
+void Driver::HandleImportEvent(events::ImportRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
-  events::BackupResponceEvent::value_type res(ev->value());
+  events::ImportResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 25);
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(REDIS_BACKUP_COMMAND, core::C_INNER);
   common::Error err = Execute(cmd);
@@ -205,7 +191,7 @@ void Driver::HandleBackupEvent(events::BackupRequestEvent* ev) {
     }
   }
   NotifyProgress(sender, 75);
-  Reply(sender, new events::BackupResponceEvent(this, res));
+  Reply(sender, new events::ImportResponceEvent(this, res));
   NotifyProgress(sender, 100);
 }
 

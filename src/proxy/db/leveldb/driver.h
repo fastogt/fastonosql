@@ -45,9 +45,6 @@ class Driver : public IDriverLocal {
 
   virtual bool IsConnected() const override;
   virtual bool IsAuthenticated() const override;
-  virtual std::string GetPath() const override;
-  virtual std::string GetNsSeparator() const override;
-  virtual std::string GetDelimiter() const override;
 
  private:
   virtual void InitImpl() override;

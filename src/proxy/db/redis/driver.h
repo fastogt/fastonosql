@@ -45,9 +45,6 @@ class Driver : public IDriverRemote {
 
   virtual bool IsConnected() const override;
   virtual bool IsAuthenticated() const override;
-  virtual common::net::HostAndPort GetHost() const override;
-  virtual std::string GetNsSeparator() const override;
-  virtual std::string GetDelimiter() const override;
 
  private:
   virtual void InitImpl() override;
@@ -73,7 +70,7 @@ class Driver : public IDriverRemote {
   virtual void HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev) override;
   virtual void HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequestEvent* ev) override;
   virtual void HandleShutdownEvent(events::ShutDownRequestEvent* ev) override;
-  virtual void HandleBackupEvent(events::BackupRequestEvent* ev) override;
+  virtual void HandleImportEvent(events::ImportRequestEvent* ev) override;
   virtual void HandleExportEvent(events::ExportRequestEvent* ev) override;
   virtual void HandleChangePasswordEvent(events::ChangePasswordRequestEvent* ev) override;
   virtual void HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev) override;

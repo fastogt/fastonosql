@@ -115,6 +115,7 @@ extern const QString trCannotConvertPattern1ArgsS;
 extern const QString trSearch;
 extern const QString trSearching;
 extern const QString trBackup;
+extern const QString trRestore;
 extern const QString trShutdown;
 extern const QString trNext;
 extern const QString trPrevious;

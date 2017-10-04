@@ -24,7 +24,7 @@
 #include "core/internal/cdb_connection_client.h"  // for CDBConnectionClient
 
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
-#include "proxy/events/events.h"                             // for BackupRequestEvent, ChangeMa...
+#include "proxy/events/events.h"                             // for ImportRequestEvent, ChangeMa...
 
 class QEvent;
 class QThread;  // lines 37-37
@@ -48,6 +48,8 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   // sync methods
   core::connectionTypes GetType() const;
   connection_path_t ConnectionPath() const;
+  std::string GetDelimiter() const;
+  std::string GetNsSeparator() const;
 
   virtual core::translator_t GetTranslator() const = 0;
 
@@ -61,9 +63,6 @@ class IDriver : public QObject, public core::CDBConnectionClient {
 
   virtual bool IsConnected() const = 0;
   virtual bool IsAuthenticated() const = 0;
-
-  virtual std::string GetDelimiter() const = 0;
-  virtual std::string GetNsSeparator() const = 0;
 
  Q_SIGNALS:
   void ChildAdded(core::FastoObjectIPtr child);
@@ -105,13 +104,16 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   virtual void HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev);
   virtual void HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequestEvent* ev);
   virtual void HandleShutdownEvent(events::ShutDownRequestEvent* ev);
-  virtual void HandleBackupEvent(events::BackupRequestEvent* ev);
+  virtual void HandleImportEvent(events::ImportRequestEvent* ev);
   virtual void HandleExportEvent(events::ExportRequestEvent* ev);
   virtual void HandleChangePasswordEvent(events::ChangePasswordRequestEvent* ev);
   virtual void HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev);
   virtual void HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev);
 
-  const IConnectionSettingsBaseSPtr settings_;
+  template <typename T>
+  inline std::shared_ptr<T> GetSpecificSettings() const {
+    return std::static_pointer_cast<T>(settings_);
+  }
 
   common::Error Execute(core::FastoObjectCommandIPtr cmd) WARN_UNUSED_RESULT;
   virtual core::FastoObjectCommandIPtr CreateCommand(core::FastoObject* parent,
@@ -150,6 +152,7 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   virtual void ClearImpl() = 0;
 
  private:
+  const IConnectionSettingsBaseSPtr settings_;
   QThread* thread_;
   int timer_info_id_;
   common::file_system::ANSIFile* log_file_;

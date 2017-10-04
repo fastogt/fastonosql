@@ -18,11 +18,18 @@
 
 #include "proxy/driver/idriver_local.h"
 
+#include "proxy/connection_settings/iconnection_settings_local.h"
+
 namespace fastonosql {
 namespace proxy {
 
 IDriverLocal::IDriverLocal(IConnectionSettingsBaseSPtr settings) : IDriver(settings) {
   CHECK(IsLocalType(GetType()));
+}
+
+std::string IDriverLocal::GetPath() const {
+  auto local_settings = GetSpecificSettings<IConnectionSettingsLocal>();
+  return local_settings->GetDBPath();
 }
 
 }  // namespace proxy

@@ -67,19 +67,6 @@ bool Driver::IsAuthenticated() const {
   return impl_->IsAuthenticated();
 }
 
-common::net::HostAndPort Driver::GetHost() const {
-  auto conf = impl_->GetConfig();
-  return conf->host;
-}
-
-std::string Driver::GetNsSeparator() const {
-  return impl_->GetNsSeparator();
-}
-
-std::string Driver::GetDelimiter() const {
-  return impl_->GetDelimiter();
-}
-
 void Driver::InitImpl() {}
 
 void Driver::ClearImpl() {}
@@ -95,9 +82,8 @@ core::FastoObjectCommandIPtr Driver::CreateCommandFast(const core::command_buffe
 }
 
 common::Error Driver::SyncConnect() {
-  ConnectionSettings* set = dynamic_cast<ConnectionSettings*>(settings_.get());  // +
-  CHECK(set);
-  return impl_->Connect(set->GetInfo());
+  auto memcached_settings = GetSpecificSettings<ConnectionSettings>();
+  return impl_->Connect(memcached_settings->GetInfo());
 }
 
 common::Error Driver::SyncDisconnect() {

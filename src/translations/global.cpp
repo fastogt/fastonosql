@@ -115,6 +115,7 @@ const QString trCannotConvertPattern1ArgsS = QObject::tr("Cannot convert to '%1'
 const QString trSearch = QObject::tr("Search");
 const QString trSearching = QObject::tr("Search...");
 const QString trBackup = QObject::tr("Backup");
+const QString trRestore = QObject::tr("Restore");
 const QString trShutdown = QObject::tr("Shutdown");
 const QString trNext = QObject::tr("Next");
 const QString trPrevious = QObject::tr("Previous");

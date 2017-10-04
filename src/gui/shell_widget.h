@@ -117,6 +117,9 @@ class BaseShellWidget : public QWidget {
   void updateServerInfo(core::IServerInfoSPtr inf);
   void updateDefaultDatabase(core::IDataBaseInfoSPtr dbs);
 
+  void updateServerLabel(const QString& text);
+  void updateDBLabel(const QString& text);
+
   const proxy::IServerSPtr server_;
   QAction* executeAction_;
   QAction* stopAction_;

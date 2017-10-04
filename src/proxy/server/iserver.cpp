@@ -173,9 +173,9 @@ void IServer::ShutDown(const events_info::ShutDownInfoRequest& req) {
   Notify(ev);
 }
 
-void IServer::BackupToPath(const events_info::BackupInfoRequest& req) {
+void IServer::ImportToPath(const events_info::BackupInfoRequest& req) {
   emit BackupStarted(req);
-  QEvent* ev = new events::BackupRequestEvent(this, req);
+  QEvent* ev = new events::ImportRequestEvent(this, req);
   Notify(ev);
 }
 
@@ -284,9 +284,9 @@ void IServer::customEvent(QEvent* event) {
   } else if (type == static_cast<QEvent::Type>(events::LoadServerChannelsResponceEvent::EventType)) {
     events::LoadServerChannelsResponceEvent* ev = static_cast<events::LoadServerChannelsResponceEvent*>(event);
     HandleLoadServerChannelsEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::BackupResponceEvent::EventType)) {
-    events::BackupResponceEvent* ev = static_cast<events::BackupResponceEvent*>(event);
-    HandleBackupEvent(ev);
+  } else if (type == static_cast<QEvent::Type>(events::ImportResponceEvent::EventType)) {
+    events::ImportResponceEvent* ev = static_cast<events::ImportResponceEvent*>(event);
+    HandleImportEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::ExportResponceEvent::EventType)) {
     events::ExportResponceEvent* ev = static_cast<events::ExportResponceEvent*>(event);
     HandleExportEvent(ev);
@@ -391,7 +391,7 @@ void IServer::HandleShutdownEvent(events::ShutDownResponceEvent* ev) {
   emit ShutdownFinished(v);
 }
 
-void IServer::HandleBackupEvent(events::BackupResponceEvent* ev) {
+void IServer::HandleImportEvent(events::ImportResponceEvent* ev) {
   auto v = ev->value();
   common::Error err(v.errorInfo());
   if (err) {

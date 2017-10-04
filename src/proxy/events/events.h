@@ -65,8 +65,8 @@ typedef common::qt::Event<events_info::ChangeServerPropertyInfoResponce, QEvent:
 typedef common::qt::Event<events_info::LoadServerChannelsRequest, QEvent::User + 25> LoadServerChannelsRequestEvent;
 typedef common::qt::Event<events_info::LoadServerChannelsResponce, QEvent::User + 26> LoadServerChannelsResponceEvent;
 
-typedef common::qt::Event<events_info::BackupInfoRequest, QEvent::User + 27> BackupRequestEvent;
-typedef common::qt::Event<events_info::BackupInfoResponce, QEvent::User + 28> BackupResponceEvent;
+typedef common::qt::Event<events_info::BackupInfoRequest, QEvent::User + 27> ImportRequestEvent;
+typedef common::qt::Event<events_info::BackupInfoResponce, QEvent::User + 28> ImportResponceEvent;
 
 typedef common::qt::Event<events_info::ExportInfoRequest, QEvent::User + 29> ExportRequestEvent;
 typedef common::qt::Event<events_info::ExportInfoResponce, QEvent::User + 30> ExportResponceEvent;

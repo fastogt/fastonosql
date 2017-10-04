@@ -81,23 +81,13 @@ class DBConnection {
     return Config::default_delimiter;
   }
 
-  std::string GetNsSeparator() const {
-    config_t conf = GetConfig();
-    if (conf) {
-      return conf->ns_separator;
-    }
-
-    DNOTREACHED() << "Why you ask ns_separator in disconnected state?";
-    return Config::default_ns_separator;
-  }
-
+ protected:
   config_t GetConfig() const {
     config_t conf = connection_.config_;
     DCHECK(conf) << "Why you ask config in disconnected state?";
     return conf;
   }
 
- protected:
   dbconnection_t connection_;
   bool interrupted_;
 };

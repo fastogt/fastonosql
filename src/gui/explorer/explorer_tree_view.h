@@ -73,8 +73,8 @@ class ExplorerTreeView : public QTreeView {
   void closeClusterConnection();
   void closeSentinelConnection();
 
-  void backupServer();
   void importServer();
+  void exportServer();
   void shutdownServer();
 
   void loadContentDb();

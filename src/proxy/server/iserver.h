@@ -20,7 +20,7 @@
 
 #include "core/icommand_translator.h"  // for translator_t
 
-#include "proxy/events/events.h"        // for BackupResponceEvent, etc
+#include "proxy/events/events.h"        // for ImportResponceEvent, etc
 #include "proxy/proxy_fwd.h"            // for IDatabaseSPtr
 #include "proxy/server/iserver_base.h"  // for IServerBase
 
@@ -146,7 +146,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
 
   void ShutDown(const events_info::ShutDownInfoRequest& req);                 // signals: ShutdownStarted,
                                                                               // ShutdownFinished
-  void BackupToPath(const events_info::BackupInfoRequest& req);               // signals: BackupStarted, BackupFinished
+  void ImportToPath(const events_info::BackupInfoRequest& req);               // signals: BackupStarted, BackupFinished
   void ExportFromPath(const events_info::ExportInfoRequest& req);             // signals: ExportStarted, ExportFinished
   void ChangePassword(const events_info::ChangePasswordRequest& req);         // signals: ChangePasswordStarted,
                                                                               // ChangePasswordFinished
@@ -188,7 +188,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   virtual void HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoResponceEvent* ev);
   virtual void HandleLoadServerChannelsEvent(events::LoadServerChannelsResponceEvent* ev);
   virtual void HandleShutdownEvent(events::ShutDownResponceEvent* ev);
-  virtual void HandleBackupEvent(events::BackupResponceEvent* ev);
+  virtual void HandleImportEvent(events::ImportResponceEvent* ev);
   virtual void HandleExportEvent(events::ExportResponceEvent* ev);
   virtual void HandleChangePasswordEvent(events::ChangePasswordResponceEvent* ev);
   virtual void HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionResponceEvent* ev);

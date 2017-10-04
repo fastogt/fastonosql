@@ -70,7 +70,7 @@ const QString trIntervalValue = QObject::tr("Interval msec:");
 const QString trSetTTL = QObject::tr("Set TTL");
 const QString trRenameKey = QObject::tr("Rename key");
 const QString trRenameKeyLabel = QObject::tr("New key name:");
-const QString trChangePasswordTemplate_1S = QObject::tr("Change password for %1 server");
+const QString trChangePasswordTemplate_1S = QObject::tr("Change password(AUTH command in connection) for %1 server");
 }  // namespace
 
 namespace fastonosql {
@@ -272,28 +272,26 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
 
       bool is_local = true;
       bool is_can_remote = server->IsCanRemote();
-      if (is_connected) {
-        if (is_can_remote) {
-          proxy::IServerRemote* rserver = dynamic_cast<proxy::IServerRemote*>(server.get());  // +
-          CHECK(rserver);
-          common::net::HostAndPort host = rserver->GetHost();
-          is_local = host.IsLocalHost();
-        }
+      if (is_can_remote) {
+        proxy::IServerRemote* rserver = dynamic_cast<proxy::IServerRemote*>(server.get());  // +
+        CHECK(rserver);
+        common::net::HostAndPort host = rserver->GetHost();
+        is_local = host.IsLocalHost();  // failed if ssh connection
       }
 
-      QAction* importAction = new QAction(translations::trImport, this);
-      VERIFY(connect(importAction, &QAction::triggered, this, &ExplorerTreeView::importServer));
+      QAction* exportAction = new QAction(translations::trBackup, this);
+      VERIFY(connect(exportAction, &QAction::triggered, this, &ExplorerTreeView::exportServer));
 
-      QAction* backupAction = new QAction(translations::trBackup, this);
-      VERIFY(connect(backupAction, &QAction::triggered, this, &ExplorerTreeView::backupServer));
+      QAction* importAction = new QAction(translations::trRestore, this);
+      VERIFY(connect(importAction, &QAction::triggered, this, &ExplorerTreeView::importServer));
 
       QAction* shutdownAction = new QAction(translations::trShutdown, this);
       VERIFY(connect(shutdownAction, &QAction::triggered, this, &ExplorerTreeView::shutdownServer));
 
-      importAction->setEnabled(!is_connected && is_local);
+      exportAction->setEnabled(!is_connected && is_local);
+      menu.addAction(exportAction);
+      importAction->setEnabled(is_connected && is_local);
       menu.addAction(importAction);
-      backupAction->setEnabled(is_connected && is_local);
-      menu.addAction(backupAction);
       shutdownAction->setEnabled(is_connected);
       menu.addAction(shutdownAction);
     }
@@ -650,7 +648,7 @@ void ExplorerTreeView::viewPubSub() {
   }
 }
 
-void ExplorerTreeView::backupServer() {
+void ExplorerTreeView::importServer() {
   QModelIndexList selected = selectedEqualTypeIndexes();
   for (QModelIndex ind : selected) {
     ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(ind);
@@ -668,12 +666,12 @@ void ExplorerTreeView::backupServer() {
         QFileDialog::getOpenFileName(this, translations::trBackup, QString(), translations::trfilterForRdb);
     if (!filepath.isEmpty()) {
       proxy::events_info::BackupInfoRequest req(this, common::ConvertToString(filepath));
-      server->BackupToPath(req);
+      server->ImportToPath(req);
     }
   }
 }
 
-void ExplorerTreeView::importServer() {
+void ExplorerTreeView::exportServer() {
   QModelIndexList selected = selectedEqualTypeIndexes();
   for (QModelIndex ind : selected) {
     ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(ind);

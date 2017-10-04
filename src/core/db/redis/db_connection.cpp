@@ -249,14 +249,15 @@ common::Error ExecRedisCommand(redisContext* c, command_buffer_t command, redisR
     return common::make_error_inval();
   }
 
-  size_t* argvlen = reinterpret_cast<size_t*>(malloc(argc * sizeof(size_t)));
+  void* raw_argvlen_ptr = malloc(static_cast<size_t>(argc) * sizeof(size_t));
+  size_t* argvlen = reinterpret_cast<size_t*>(raw_argvlen_ptr);
   for (int i = 0; i < argc; ++i) {
     argvlen[i] = sdslen(argv[i]);
   }
 
   common::Error err = ExecRedisCommand(c, argc, const_cast<const char**>(argv), argvlen, out_reply);
   sdsfreesplitres(argv, argc);
-  free(argvlen);
+  free(raw_argvlen_ptr);
   return err;
 }
 
@@ -890,7 +891,8 @@ common::Error DBConnection::QuitImpl() {
   }
 
   freeReplyObject(reply);
-  base_class::Disconnect();
+  common::Error err = Disconnect();
+  UNUSED(err);
   return common::Error();
 }
 
@@ -1055,12 +1057,13 @@ common::Error DBConnection::ExecuteAsPipeline(const std::vector<FastoObjectComma
     if (argv) {
       if (isPipeLineCommand(argv[0])) {
         valid_cmds.push_back(cmd);
-        size_t* argvlen = reinterpret_cast<size_t*>(malloc(argc * sizeof(size_t)));
+        void* raw_argvlen_ptr = malloc(static_cast<size_t>(argc) * sizeof(size_t));
+        size_t* argvlen = reinterpret_cast<size_t*>(raw_argvlen_ptr);
         for (int i = 0; i < argc; ++i) {
           argvlen[i] = sdslen(argv[i]);
         }
         redisAppendCommandArgv(connection_.handle_, argc, const_cast<const char**>(argv), argvlen);
-        free(argvlen);
+        free(raw_argvlen_ptr);
       }
       sdsfreesplitres(argv, argc);
     }
@@ -1662,7 +1665,7 @@ common::Error DBConnection::Decr(const NKey& key, long long* decr) {
 
   if (reply->type == REDIS_REPLY_INTEGER) {
     if (client_) {
-      NValue val(common::Value::CreateIntegerValue(reply->integer));
+      NValue val(common::Value::CreateLongLongIntegerValue(reply->integer));
       client_->OnKeyAdded(NDbKValue(key, val));
     }
     *decr = reply->integer;
@@ -1738,7 +1741,7 @@ common::Error DBConnection::Incr(const NKey& key, long long* incr) {
 
   if (reply->type == REDIS_REPLY_INTEGER) {
     if (client_) {
-      NValue val(common::Value::CreateIntegerValue(reply->integer));
+      NValue val(common::Value::CreateLongLongIntegerValue(reply->integer));
       client_->OnKeyAdded(NDbKValue(key, val));
     }
     *incr = reply->integer;

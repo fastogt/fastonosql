@@ -143,6 +143,14 @@ connection_path_t IDriver::ConnectionPath() const {
   return settings_->GetPath();
 }
 
+std::string IDriver::GetDelimiter() const {
+  return settings_->GetDelimiter();
+}
+
+std::string IDriver::GetNsSeparator() const {
+  return settings_->GetNsSeparator();
+}
+
 void IDriver::Start() {
   thread_->start();
 }
@@ -215,9 +223,9 @@ void IDriver::customEvent(QEvent* event) {
   } else if (type == static_cast<QEvent::Type>(events::LoadServerChannelsRequestEvent::EventType)) {
     events::LoadServerChannelsRequestEvent* ev = static_cast<events::LoadServerChannelsRequestEvent*>(event);
     HandleLoadServerChannelsRequestEvent(ev);  // ni
-  } else if (type == static_cast<QEvent::Type>(events::BackupRequestEvent::EventType)) {
-    events::BackupRequestEvent* ev = static_cast<events::BackupRequestEvent*>(event);
-    HandleBackupEvent(ev);  // ni
+  } else if (type == static_cast<QEvent::Type>(events::ImportRequestEvent::EventType)) {
+    events::ImportRequestEvent* ev = static_cast<events::ImportRequestEvent*>(event);
+    HandleImportEvent(ev);  // ni
   } else if (type == static_cast<QEvent::Type>(events::ExportRequestEvent::EventType)) {
     events::ExportRequestEvent* ev = static_cast<events::ExportRequestEvent*>(event);
     HandleExportEvent(ev);  // ni
@@ -392,8 +400,8 @@ void IDriver::HandleShutdownEvent(events::ShutDownRequestEvent* ev) {
   replyNotImplementedYet<events::ShutDownRequestEvent, events::ShutDownResponceEvent>(this, ev, "shutdown");
 }
 
-void IDriver::HandleBackupEvent(events::BackupRequestEvent* ev) {
-  replyNotImplementedYet<events::BackupRequestEvent, events::BackupResponceEvent>(this, ev, "backup server");
+void IDriver::HandleImportEvent(events::ImportRequestEvent* ev) {
+  replyNotImplementedYet<events::ImportRequestEvent, events::ImportResponceEvent>(this, ev, "backup server");
 }
 
 void IDriver::HandleExportEvent(events::ExportRequestEvent* ev) {

@@ -45,9 +45,6 @@ class Driver : public IDriverRemote {
 
   virtual bool IsConnected() const override;
   virtual bool IsAuthenticated() const override;
-  virtual common::net::HostAndPort GetHost() const override;
-  virtual std::string GetNsSeparator() const override;
-  virtual std::string GetDelimiter() const override;
 
  private:
   virtual void InitImpl() override;

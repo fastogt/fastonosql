@@ -26,7 +26,15 @@ namespace proxy {
 class IDriverLocal : public IDriver {
   Q_OBJECT
  public:
-  virtual std::string GetPath() const = 0;
+  std::string GetPath() const;
+
+  virtual core::translator_t GetTranslator() const override = 0;
+
+  virtual bool IsInterrupted() const override = 0;
+  virtual void SetInterrupted(bool interrupted) override = 0;
+
+  virtual bool IsConnected() const override = 0;
+  virtual bool IsAuthenticated() const override = 0;
 
  protected:
   explicit IDriverLocal(IConnectionSettingsBaseSPtr settings);
