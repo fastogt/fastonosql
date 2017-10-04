@@ -199,7 +199,7 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server, const QString& fileP
                                            iconSize);
   hlayout2->addWidget(dbName_);
   QSplitter* spliter_info_and_options = new QSplitter(Qt::Horizontal);
-  spliter_info_and_options->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+  spliter_info_and_options->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
   hlayout2->addWidget(spliter_info_and_options);
   hlayout2->addWidget(advancedOptions_);
   mainlayout->addLayout(hlayout2);
