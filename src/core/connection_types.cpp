@@ -48,6 +48,10 @@ bool IsCanSSHConnection(connectionTypes type) {
   return type == REDIS;
 }
 
+bool IsCanCreateDatabase(connectionTypes type) {
+  return type == LMDB;
+}
+
 const char* ConnectionTypeToString(connectionTypes t) {
   return connnectionType[t];
 }

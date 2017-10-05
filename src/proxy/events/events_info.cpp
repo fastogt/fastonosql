@@ -113,6 +113,11 @@ LoadDatabasesInfoRequest::LoadDatabasesInfoRequest(initiator_type sender, error_
 
 LoadDatabasesInfoResponce::LoadDatabasesInfoResponce(const base_class& request) : base_class(request) {}
 
+CreateDatabaseInfoRequest::CreateDatabaseInfoRequest(initiator_type sender, const std::string& name, error_type er)
+    : base_class(sender, er), name(name) {}
+
+CreateDatabaseResponce::CreateDatabaseResponce(const base_class& request) : base_class(request) {}
+
 LoadDatabaseContentRequest::LoadDatabaseContentRequest(initiator_type sender,
                                                        core::IDataBaseInfoSPtr inf,
                                                        const std::string& pattern,

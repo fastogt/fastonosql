@@ -63,6 +63,7 @@ class ExplorerTreeView : public QTreeView {
   void connectDisconnectToServer();
   void openConsole();
   void loadDatabases();
+  void createDatabase();
   void openInfoServerDialog();
   void openPropertyServerDialog();
   void openSetPasswordServerDialog();

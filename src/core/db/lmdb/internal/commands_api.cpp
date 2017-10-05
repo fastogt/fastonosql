@@ -43,11 +43,19 @@ const internal::ConstantCommandsArray g_commands = {CommandHolder("HELP",
                                                     CommandHolder("CONFIG GET",
                                                                   "<parameter>",
                                                                   "Get the value of a configuration parameter",
-                                                                  PROJECT_VERSION_GENERATE(2, 0, 0),
+                                                                  UNDEFINED_SINCE,
                                                                   UNDEFINED_EXAMPLE_STR,
                                                                   1,
                                                                   0,
                                                                   &CommandsApi::ConfigGet),
+                                                    CommandHolder(DB_CREATE_COMMAND,
+                                                                  "<name>",
+                                                                  "Create database",
+                                                                  UNDEFINED_SINCE,
+                                                                  UNDEFINED_EXAMPLE_STR,
+                                                                  1,
+                                                                  0,
+                                                                  &CommandsApi::CreateDatabase),
                                                     CommandHolder("SCAN",
                                                                   "<cursor> [MATCH pattern] [COUNT count]",
                                                                   "Incrementally iterate the keys space",
@@ -176,6 +184,19 @@ common::Error CommandsApi::ConfigGet(internal::CommandHandler* handler, commands
   common::ArrayValue* arr = new common::ArrayValue;
   arr->AppendStrings(dbs);
   FastoObject* child = new FastoObject(out, arr, mdb->GetDelimiter());
+  out->AddChildren(child);
+  return common::Error();
+}
+
+common::Error CommandsApi::CreateDatabase(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* mdb = static_cast<DBConnection*>(handler);
+  common::Error err = mdb->CreateDatabase(argv[0]);
+  if (err) {
+    return err;
+  }
+
+  common::StringValue* db = common::Value::CreateStringValue(argv[0]);
+  FastoObject* child = new FastoObject(out, db, mdb->GetDelimiter());
   out->AddChildren(child);
   return common::Error();
 }

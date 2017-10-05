@@ -54,6 +54,11 @@ void ExplorerServerItem::loadDatabases() {
   return server_->LoadDatabases(req);
 }
 
+void ExplorerServerItem::createDatabase(const QString& name) {
+  proxy::events_info::CreateDatabaseInfoRequest req(this, common::ConvertToString(name));
+  return server_->CreateDatabase(req);
+}
+
 ExplorerSentinelItem::ExplorerSentinelItem(proxy::ISentinelSPtr sentinel, TreeItem* parent)
     : IExplorerTreeItem(parent), sentinel_(sentinel) {
   proxy::ISentinel::sentinels_t nodes = sentinel->GetSentinels();

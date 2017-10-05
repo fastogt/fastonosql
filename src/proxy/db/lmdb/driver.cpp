@@ -240,6 +240,27 @@ done:
   NotifyProgress(sender, 100);
 }
 
+void Driver::HandleCreateDatabaseRequestEvent(events::CreateDatabaseRequestEvent* ev) {
+  QObject* sender = ev->sender();
+  NotifyProgress(sender, 0);
+  events::CreateDatabaseResponceEvent::value_type res(ev->value());
+  core::FastoObjectCommandIPtr cmd = CreateCommandFast(DB_CREATE_COMMAND, core::C_INNER);
+  NotifyProgress(sender, 50);
+
+  common::Error err = Execute(cmd.get());
+  if (err) {
+    res.setErrorInfo(err);
+    NotifyProgress(sender, 75);
+    Reply(sender, new events::CreateDatabaseResponceEvent(this, res));
+    NotifyProgress(sender, 100);
+    return;
+  }
+
+  NotifyProgress(sender, 75);
+  Reply(sender, new events::CreateDatabaseResponceEvent(this, res));
+  NotifyProgress(sender, 100);
+}
+
 core::IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
   core::IServerInfoSPtr res(core::lmdb::MakeLmdbServerInfo(val));
   return res;

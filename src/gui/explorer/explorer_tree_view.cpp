@@ -71,6 +71,7 @@ const QString trSetTTL = QObject::tr("Set TTL");
 const QString trRenameKey = QObject::tr("Rename key");
 const QString trRenameKeyLabel = QObject::tr("New key name:");
 const QString trChangePasswordTemplate_1S = QObject::tr("Change password(AUTH command in connection) for %1 server");
+const QString trCreateDatabase_1S = QObject::tr("Create database on %1 server");
 }  // namespace
 
 namespace fastonosql {
@@ -242,6 +243,14 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
 
     loadDatabaseAction->setEnabled(is_connected);
     menu.addAction(loadDatabaseAction);
+
+    if (server->IsCanCreateDatabase()) {
+      QAction* createDatabaseAction = new QAction(translations::trCreateDatabase, this);
+      VERIFY(connect(createDatabaseAction, &QAction::triggered, this, &ExplorerTreeView::createDatabase));
+      createDatabaseAction->setEnabled(is_connected);
+      menu.addAction(createDatabaseAction);
+    }
+
     infoServerAction->setEnabled(is_connected);
     menu.addAction(infoServerAction);
 
@@ -454,6 +463,23 @@ void ExplorerTreeView::loadDatabases() {
     }
 
     node->loadDatabases();
+  }
+}
+
+void ExplorerTreeView::createDatabase() {
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
+    bool ok;
+    QString name = QInputDialog::getText(this, trCreateDatabase_1S.arg(node->name()), translations::trName + ":",
+                                         QLineEdit::Normal, QString(), &ok);
+    if (ok && !name.isEmpty()) {
+      node->createDatabase(name);
+    }
   }
 }
 

@@ -49,6 +49,7 @@ class ExplorerServerItem : public IExplorerTreeItem {
   virtual eType type() const override;
 
   void loadDatabases();
+  void createDatabase(const QString& name);
 
  private:
   const proxy::IServerSPtr server_;

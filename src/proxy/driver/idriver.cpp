@@ -204,6 +204,9 @@ void IDriver::customEvent(QEvent* event) {
   } else if (type == static_cast<QEvent::Type>(events::LoadDatabasesInfoRequestEvent::EventType)) {
     events::LoadDatabasesInfoRequestEvent* ev = static_cast<events::LoadDatabasesInfoRequestEvent*>(event);
     HandleLoadDatabaseInfosEvent(ev);  //
+  } else if (type == static_cast<QEvent::Type>(events::CreateDatabaseRequestEvent::EventType)) {
+    events::CreateDatabaseRequestEvent* ev = static_cast<events::CreateDatabaseRequestEvent*>(event);
+    HandleCreateDatabaseRequestEvent(ev);  // ni
   } else if (type == static_cast<QEvent::Type>(events::ServerInfoRequestEvent::EventType)) {
     events::ServerInfoRequestEvent* ev = static_cast<events::ServerInfoRequestEvent*>(event);
     HandleLoadServerInfoEvent(ev);  //
@@ -432,6 +435,11 @@ void IDriver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent
   }
   Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
   NotifyProgress(sender, 100);
+}
+
+void IDriver::HandleCreateDatabaseRequestEvent(events::CreateDatabaseRequestEvent* ev) {
+  replyNotImplementedYet<events::CreateDatabaseRequestEvent, events::CreateDatabaseResponceEvent>(this, ev,
+                                                                                                  "create database");
 }
 
 void IDriver::HandleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {

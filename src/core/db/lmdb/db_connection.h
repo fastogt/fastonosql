@@ -41,6 +41,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   std::string GetCurrentDBName() const;
   common::Error Info(const std::string& args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
   common::Error ConfigGetDatabases(std::vector<std::string>* dbs) WARN_UNUSED_RESULT;
+  common::Error CreateDatabase(const std::string& name) WARN_UNUSED_RESULT;
 
  private:
   common::Error CheckResultCommand(const std::string& cmd, int err) WARN_UNUSED_RESULT;

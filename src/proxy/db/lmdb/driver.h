@@ -65,6 +65,7 @@ class Driver : public IDriverLocal {
 
   virtual void HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) override;
   virtual void HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) override;
+  virtual void HandleCreateDatabaseRequestEvent(events::CreateDatabaseRequestEvent* ev) override;
 
   virtual core::IServerInfoSPtr MakeServerInfoFromString(const std::string& val) override;
 

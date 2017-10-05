@@ -106,7 +106,7 @@ int lmdb_select(lmdb* context, const char* db_name, int env_flags) {
   return rc;
 }
 
-int lmdb_open(lmdb** context, const char* db_path, int env_flags, MDB_dbi max_dbs) {
+int lmdb_open(lmdb** context, const char* db_path, const char* db_name, int env_flags, MDB_dbi max_dbs) {
   lmdb* lcontext = reinterpret_cast<lmdb*>(calloc(1, sizeof(lmdb)));
   int rc = mdb_env_create(&lcontext->env);
   if (rc != LMDB_OK) {
@@ -121,6 +121,12 @@ int lmdb_open(lmdb** context, const char* db_path, int env_flags, MDB_dbi max_db
   }
 
   rc = mdb_env_open(lcontext->env, db_path, env_flags, 0664);
+  if (rc != LMDB_OK) {
+    free(lcontext);
+    return rc;
+  }
+
+  rc = lmdb_select(lcontext, db_name, env_flags);
   if (rc != LMDB_OK) {
     free(lcontext);
     return rc;
@@ -193,7 +199,7 @@ const ConstantCommandsArray& CDBConnection<lmdb::NativeConnection, lmdb::Config,
 namespace lmdb {
 
 common::Error CreateConnection(const Config& config, NativeConnection** context) {
-  if (!context) {
+  if (!context || config.db_name.empty()) {  // only named dbs
     return common::make_error_inval();
   }
 
@@ -211,7 +217,8 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   const char* db_path = path.c_str();
   int env_flags = config.env_flags;
   unsigned int max_dbs = config.max_dbs;
-  int st = lmdb_open(&lcontext, db_path, env_flags, max_dbs);
+  const char* db_name = config.db_name.c_str();
+  int st = lmdb_open(&lcontext, db_path, db_name, env_flags, max_dbs);
   if (st != LMDB_OK) {
     std::string buff = common::MemSPrintf("Fail open database: %s", mdb_strerror(st));
     return common::make_error(buff);
@@ -318,6 +325,15 @@ common::Error DBConnection::ConfigGetDatabases(std::vector<std::string>* dbs) {
   mdb_cursor_close(cursor);
   mdb_txn_abort(txn_dbs);
   mdb_dbi_close(connection_.handle_->env, ldbi);
+  return common::Error();
+}
+
+common::Error DBConnection::CreateDatabase(const std::string& name) {
+  if (name.empty()) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
   return common::Error();
 }
 

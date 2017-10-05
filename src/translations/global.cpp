@@ -136,6 +136,7 @@ const QString trOpenConsole = QObject::tr("Open console");
 const QString trSetDefault = QObject::tr("Set default");
 const QString trSetAsStartNode = QObject::tr("Set as start node");
 const QString trLoadDataBases = QObject::tr("Load databases");
+const QString trCreateDatabase = QObject::tr("Create database");
 const QString trExpTree = QObject::tr("Explorer tree");
 const QString trRecentConnections = QObject::tr("Recent Connections");
 const QString trCheckVersion = QObject::tr("Check version");

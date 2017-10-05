@@ -79,6 +79,10 @@ bool IServer::IsSupportTTLKeys() const {
   return fastonosql::core::IsSupportTTLKeys(GetType());
 }
 
+bool IServer::IsCanCreateDatabase() const {
+  return fastonosql::core::IsCanCreateDatabase(GetType());
+}
+
 core::translator_t IServer::GetTranslator() const {
   return drv_->GetTranslator();
 }
@@ -152,6 +156,12 @@ void IServer::Disconnect(const events_info::DisConnectInfoRequest& req) {
 void IServer::LoadDatabases(const events_info::LoadDatabasesInfoRequest& req) {
   emit LoadDatabasesStarted(req);
   QEvent* ev = new events::LoadDatabasesInfoRequestEvent(this, req);
+  Notify(ev);
+}
+
+void IServer::CreateDatabase(const events_info::CreateDatabaseInfoRequest& req) {
+  emit CreateDatabaseStarted(req);
+  QEvent* ev = new events::CreateDatabaseRequestEvent(this, req);
   Notify(ev);
 }
 
@@ -265,6 +275,9 @@ void IServer::customEvent(QEvent* event) {
   } else if (type == static_cast<QEvent::Type>(events::LoadDatabasesInfoResponceEvent::EventType)) {
     events::LoadDatabasesInfoResponceEvent* ev = static_cast<events::LoadDatabasesInfoResponceEvent*>(event);
     HandleLoadDatabaseInfosEvent(ev);
+  } else if (type == static_cast<QEvent::Type>(events::CreateDatabaseResponceEvent::EventType)) {
+    events::CreateDatabaseResponceEvent* ev = static_cast<events::CreateDatabaseResponceEvent*>(event);
+    HandleCreateDatabaseResponceEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::ServerInfoResponceEvent::EventType)) {
     events::ServerInfoResponceEvent* ev = static_cast<events::ServerInfoResponceEvent*>(event);
     HandleLoadServerInfoEvent(ev);
@@ -433,9 +446,8 @@ void IServer::HandleExecuteEvent(events::ExecuteResponceEvent* ev) {
   auto v = ev->value();
   common::Error err(v.errorInfo());
   if (err) {
-    LOG_ERROR(err,
-              err->GetErrorCode() == common::COMMON_EINTR ? common::logging::LOG_LEVEL_WARNING
-                                                          : common::logging::LOG_LEVEL_ERR,
+    LOG_ERROR(err, err->GetErrorCode() == common::COMMON_EINTR ? common::logging::LOG_LEVEL_WARNING
+                                                               : common::logging::LOG_LEVEL_ERR,
               true);
   }
 
@@ -463,6 +475,17 @@ void IServer::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoResponceEven
   }
 
   emit LoadDatabasesFinished(v);
+}
+
+void IServer::HandleCreateDatabaseResponceEvent(events::CreateDatabaseResponceEvent* ev) {
+  auto v = ev->value();
+  common::Error err(v.errorInfo());
+  if (err) {
+    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
+  } else {
+  }
+
+  emit CreateDatabaseFinished(v);
 }
 
 void IServer::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentResponceEvent* ev) {

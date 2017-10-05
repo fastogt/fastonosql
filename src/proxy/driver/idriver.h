@@ -109,6 +109,7 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   virtual void HandleChangePasswordEvent(events::ChangePasswordRequestEvent* ev);
   virtual void HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev);
   virtual void HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev);
+  virtual void HandleCreateDatabaseRequestEvent(events::CreateDatabaseRequestEvent* ev);
 
   template <typename T>
   inline std::shared_ptr<T> GetSpecificSettings() const {
