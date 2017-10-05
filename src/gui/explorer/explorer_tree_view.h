@@ -96,6 +96,9 @@ class ExplorerTreeView : public QTreeView {
   void startLoadDatabases(const proxy::events_info::LoadDatabasesInfoRequest& req);
   void finishLoadDatabases(const proxy::events_info::LoadDatabasesInfoResponce& res);
 
+  void startCreateDatabase(const proxy::events_info::CreateDatabaseInfoRequest& req);
+  void finishCreateDatabase(const proxy::events_info::CreateDatabaseResponce& res);
+
   void startLoadDatabaseContent(const proxy::events_info::LoadDatabaseContentRequest& req);
   void finishLoadDatabaseContent(const proxy::events_info::LoadDatabaseContentResponce& res);
 

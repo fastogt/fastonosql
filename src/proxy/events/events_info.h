@@ -211,6 +211,8 @@ struct CreateDatabaseInfoRequest : public EventInfoBase {
 struct CreateDatabaseResponce : CreateDatabaseInfoRequest {
   typedef CreateDatabaseInfoRequest base_class;
   explicit CreateDatabaseResponce(const base_class& request);
+
+  core::IDataBaseInfoSPtr db;
 };
 
 struct LoadDatabaseContentRequest : public EventInfoBase {

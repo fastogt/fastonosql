@@ -69,6 +69,30 @@ unsigned int lmdb_db_flag_from_env_flags(int env_flags) {
   return (env_flags & MDB_RDONLY) ? MDB_RDONLY : 0;
 }
 
+int lmdb_create_db(lmdb* context, const char* db_name, int env_flags) {
+  if (!context || !db_name) {
+    return EINVAL;
+  }
+
+  MDB_txn* txn = NULL;
+  int rc = mdb_txn_begin(context->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn);
+  if (rc != LMDB_OK) {
+    return rc;
+  }
+
+  MDB_dbi ldbi = 0;
+  unsigned int flg = env_flags & MDB_RDONLY ? 0 : MDB_CREATE;
+  rc = mdb_dbi_open(txn, db_name, flg, &ldbi);
+  if (rc != LMDB_OK) {
+    mdb_txn_abort(txn);
+    return rc;
+  }
+
+  mdb_txn_commit(txn);
+  mdb_dbi_close(context->env, ldbi);
+  return LMDB_OK;
+}
+
 int lmdb_select(lmdb* context, const char* db_name, int env_flags) {
   if (!context || !db_name) {  // only for named dbs
     return EINVAL;
@@ -78,6 +102,7 @@ int lmdb_select(lmdb* context, const char* db_name, int env_flags) {
     return LMDB_OK;
   }
 
+  // open db
   MDB_txn* txn = NULL;
   int rc = mdb_txn_begin(context->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn);
   if (rc != LMDB_OK) {
@@ -103,7 +128,7 @@ int lmdb_select(lmdb* context, const char* db_name, int env_flags) {
   // assigne new
   context->dbir = ldbi;
   context->db_name = common::utils::strdupornull(db_name);
-  return rc;
+  return LMDB_OK;
 }
 
 int lmdb_open(lmdb** context, const char* db_path, const char* db_name, int env_flags, MDB_dbi max_dbs) {
@@ -334,7 +359,15 @@ common::Error DBConnection::CreateDatabase(const std::string& name) {
     return common::make_error_inval();
   }
 
-  return common::Error();
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
+  auto conf = GetConfig();
+  int env_flags = conf->env_flags;
+  const char* db_name = name.c_str();
+  return CheckResultCommand(DB_CREATE_COMMAND, lmdb_create_db(connection_.handle_, db_name, env_flags));
 }
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {

@@ -988,6 +988,23 @@ void ExplorerTreeView::finishLoadDatabases(const proxy::events_info::LoadDatabas
   }
 }
 
+void ExplorerTreeView::startCreateDatabase(const proxy::events_info::CreateDatabaseInfoRequest& req) {
+  UNUSED(req);
+}
+
+void ExplorerTreeView::finishCreateDatabase(const proxy::events_info::CreateDatabaseResponce& res) {
+  common::Error err = res.errorInfo();
+  if (err) {
+    return;
+  }
+
+  proxy::IServer* serv = qobject_cast<proxy::IServer*>(sender());
+  CHECK(serv);
+
+  core::IDataBaseInfoSPtr db = res.db;
+  source_model_->addDatabase(serv, db);
+}
+
 void ExplorerTreeView::startLoadDatabaseContent(const proxy::events_info::LoadDatabaseContentRequest& req) {
   UNUSED(req);
 }
@@ -1098,6 +1115,8 @@ void ExplorerTreeView::syncWithServer(proxy::IServer* server) {
 
   VERIFY(connect(server, &proxy::IServer::LoadDatabasesStarted, this, &ExplorerTreeView::startLoadDatabases));
   VERIFY(connect(server, &proxy::IServer::LoadDatabasesFinished, this, &ExplorerTreeView::finishLoadDatabases));
+  VERIFY(connect(server, &proxy::IServer::CreateDatabaseStarted, this, &ExplorerTreeView::startCreateDatabase));
+  VERIFY(connect(server, &proxy::IServer::CreateDatabaseFinished, this, &ExplorerTreeView::finishCreateDatabase));
   VERIFY(
       connect(server, &proxy::IServer::LoadDataBaseContentStarted, this, &ExplorerTreeView::startLoadDatabaseContent));
   VERIFY(connect(server, &proxy::IServer::LoadDatabaseContentFinished, this,

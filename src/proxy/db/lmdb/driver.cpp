@@ -18,10 +18,12 @@
 
 #include "proxy/db/lmdb/driver.h"
 
+#include <sstream>
+
 #include <common/convert2string.h>  // for ConvertToString
 
-#include "core/db/lmdb/db_connection.h"  // for DBConnection
 #include "core/db/lmdb/database_info.h"
+#include "core/db/lmdb/db_connection.h"  // for DBConnection
 
 #include "proxy/command/command.h"              // for CreateCommand, etc
 #include "proxy/command/command_logger.h"       // for LOG_COMMAND
@@ -244,7 +246,10 @@ void Driver::HandleCreateDatabaseRequestEvent(events::CreateDatabaseRequestEvent
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
   events::CreateDatabaseResponceEvent::value_type res(ev->value());
-  core::FastoObjectCommandIPtr cmd = CreateCommandFast(DB_CREATE_COMMAND, core::C_INNER);
+  core::command_buffer_writer_t wr;
+  wr << DB_CREATE_COMMAND << " " << res.name;
+  const std::string create_db_cmd = wr.str();
+  core::FastoObjectCommandIPtr cmd = CreateCommandFast(create_db_cmd, core::C_INNER);
   NotifyProgress(sender, 50);
 
   common::Error err = Execute(cmd.get());
@@ -255,6 +260,15 @@ void Driver::HandleCreateDatabaseRequestEvent(events::CreateDatabaseRequestEvent
     NotifyProgress(sender, 100);
     return;
   }
+
+  core::FastoObject::childs_t rchildrens = cmd->GetChildrens();
+  CHECK_EQ(rchildrens.size(), 1);
+  auto db_name = std::static_pointer_cast<common::StringValue>(rchildrens[0]->GetValue());
+  CHECK(db_name);
+  std::string created_name;
+  if (db_name->GetAsString(&created_name)) {
+  }
+  res.db = std::make_shared<core::lmdb::DataBaseInfo>(created_name, false, 0);
 
   NotifyProgress(sender, 75);
   Reply(sender, new events::CreateDatabaseResponceEvent(this, res));
