@@ -498,6 +498,9 @@ void IServer::CreateDB(core::IDataBaseInfoSPtr db) {
 }
 
 void IServer::RemoveDB(core::IDataBaseInfoSPtr db) {
+  databases_.erase(std::remove_if(databases_.begin(), databases_.end(), [db](database_t edb) {
+    return db->GetName() == edb->GetName();
+  }));
   emit RemovedDatabase(db);
 }
 

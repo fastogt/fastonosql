@@ -69,7 +69,7 @@ bool getStamp(common::buffer_t stamp, common::time64_t* time_out) {
 namespace fastonosql {
 namespace proxy {
 namespace {
-struct RegisterTypes {
+const struct RegisterTypes {
   RegisterTypes() {
     qRegisterMetaType<common::ValueSPtr>("common::ValueSPtr");
     qRegisterMetaType<core::FastoObjectIPtr>("core::FastoObjectIPtr");
@@ -83,14 +83,14 @@ struct RegisterTypes {
   }
 } reg_type;
 
-void notifyProgressImpl(IDriver* sender, QObject* reciver, int value) {
+void NotifyProgressImpl(IDriver* sender, QObject* reciver, int value) {
   IDriver::Reply(reciver, new events::ProgressResponceEvent(sender, events::ProgressResponceEvent::value_type(value)));
 }
 
 template <typename event_request_type, typename event_responce_type>
-void replyNotImplementedYet(IDriver* sender, event_request_type* ev, const char* eventCommandText) {
+void ReplyNotImplementedYet(IDriver* sender, event_request_type* ev, const char* eventCommandText) {
   QObject* esender = ev->sender();
-  notifyProgressImpl(sender, esender, 0);
+  NotifyProgressImpl(sender, esender, 0);
   typename event_responce_type::value_type res(ev->value());
 
   std::string patternResult =
@@ -99,7 +99,7 @@ void replyNotImplementedYet(IDriver* sender, event_request_type* ev, const char*
   res.setErrorInfo(er);
   event_responce_type* resp = new event_responce_type(sender, res);
   IDriver::Reply(esender, resp);
-  notifyProgressImpl(sender, esender, 100);
+  NotifyProgressImpl(sender, esender, 100);
 }
 
 }  // namespace
@@ -289,7 +289,7 @@ void IDriver::timerEvent(QTimerEvent* event) {
 }
 
 void IDriver::NotifyProgress(QObject* reciver, int value) {
-  notifyProgressImpl(this, reciver, value);
+  NotifyProgressImpl(this, reciver, value);
 }
 
 void IDriver::HandleConnectEvent(events::ConnectRequestEvent* ev) {
@@ -382,39 +382,39 @@ done:
 }
 
 void IDriver::HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev) {
-  replyNotImplementedYet<events::ServerPropertyInfoRequestEvent, events::ServerPropertyInfoResponceEvent>(
+  ReplyNotImplementedYet<events::ServerPropertyInfoRequestEvent, events::ServerPropertyInfoResponceEvent>(
       this, ev, "server property");
 }
 
 void IDriver::HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev) {
-  replyNotImplementedYet<events::ChangeServerPropertyInfoRequestEvent, events::ChangeServerPropertyInfoResponceEvent>(
+  ReplyNotImplementedYet<events::ChangeServerPropertyInfoRequestEvent, events::ChangeServerPropertyInfoResponceEvent>(
       this, ev, "change server property");
 }
 
 void IDriver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequestEvent* ev) {
-  replyNotImplementedYet<events::LoadServerChannelsRequestEvent, events::LoadServerChannelsResponceEvent>(
+  ReplyNotImplementedYet<events::LoadServerChannelsRequestEvent, events::LoadServerChannelsResponceEvent>(
       this, ev, "load server channels");
 }
 
 void IDriver::HandleShutdownEvent(events::ShutDownRequestEvent* ev) {
-  replyNotImplementedYet<events::ShutDownRequestEvent, events::ShutDownResponceEvent>(this, ev, "shutdown");
+  ReplyNotImplementedYet<events::ShutDownRequestEvent, events::ShutDownResponceEvent>(this, ev, "shutdown");
 }
 
 void IDriver::HandleImportEvent(events::ImportRequestEvent* ev) {
-  replyNotImplementedYet<events::ImportRequestEvent, events::ImportResponceEvent>(this, ev, "backup server");
+  ReplyNotImplementedYet<events::ImportRequestEvent, events::ImportResponceEvent>(this, ev, "backup server");
 }
 
 void IDriver::HandleExportEvent(events::ExportRequestEvent* ev) {
-  replyNotImplementedYet<events::ExportRequestEvent, events::ExportResponceEvent>(this, ev, "export server");
+  ReplyNotImplementedYet<events::ExportRequestEvent, events::ExportResponceEvent>(this, ev, "export server");
 }
 
 void IDriver::HandleChangePasswordEvent(events::ChangePasswordRequestEvent* ev) {
-  replyNotImplementedYet<events::ChangePasswordRequestEvent, events::ChangePasswordResponceEvent>(this, ev,
+  ReplyNotImplementedYet<events::ChangePasswordRequestEvent, events::ChangePasswordResponceEvent>(this, ev,
                                                                                                   "change password");
 }
 
 void IDriver::HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev) {
-  replyNotImplementedYet<events::ChangeMaxConnectionRequestEvent, events::ChangeMaxConnectionResponceEvent>(
+  ReplyNotImplementedYet<events::ChangeMaxConnectionRequestEvent, events::ChangeMaxConnectionResponceEvent>(
       this, ev, "change maximum connection");
 }
 

@@ -49,17 +49,17 @@ const char* ConnectionTraits<LMDB>::GetVersionApi() {
 }
 
 namespace {
-MDB_val ConvertToLMDBSlice(const string_key_t& key) {
+MDB_val ConvertToLMDBSlice(const char* key, size_t len) {
   MDB_val mkey;
-  mkey.mv_size = key.size();
-  mkey.mv_data = const_cast<command_buffer_char_t*>(key.data());
+  mkey.mv_size = len;
+  mkey.mv_data = const_cast<command_buffer_char_t*>(key);
   return mkey;
 }
 }  // namespace
 namespace lmdb {
 struct lmdb {
   MDB_env* env;
-  MDB_dbi dbir;
+  MDB_dbi dbi;
   char* db_name;
 };
 
@@ -98,21 +98,27 @@ int lmdb_remove_db(lmdb* context, const char* db_name, int env_flags) {
     return EINVAL;
   }
 
+  const unsigned int flg = lmdb_db_flag_from_env_flags(env_flags);
+  MDB_dbi ldbi = 0;
   MDB_txn* txn = NULL;
-  int rc = mdb_txn_begin(context->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn);
+  int rc = mdb_txn_begin(context->env, NULL, flg, &txn);
   if (rc != LMDB_OK) {
     return rc;
   }
 
-  MDB_val db_slice = ConvertToLMDBSlice(db_name);
-  rc = mdb_del(txn, NULL, &db_slice, NULL);
+  rc = mdb_dbi_open(txn, db_name, flg, &ldbi);
   if (rc != LMDB_OK) {
     mdb_txn_abort(txn);
     return rc;
   }
 
-  mdb_txn_commit(txn);
-  return LMDB_OK;
+  rc = mdb_drop(txn, ldbi, 1);
+  if (rc != LMDB_OK) {
+    mdb_txn_abort(txn);
+    return rc;
+  }
+
+  return mdb_txn_commit(txn);
 }
 
 int lmdb_select(lmdb* context, const char* db_name, int env_flags) {
@@ -132,23 +138,26 @@ int lmdb_select(lmdb* context, const char* db_name, int env_flags) {
   }
 
   MDB_dbi ldbi = 0;
-  unsigned int flg = env_flags & MDB_RDONLY ? 0 : MDB_CREATE;
+  const unsigned int flg = env_flags & MDB_RDONLY ? 0 : MDB_CREATE;
   rc = mdb_dbi_open(txn, db_name, flg, &ldbi);
   if (rc != LMDB_OK) {
     mdb_txn_abort(txn);
     return rc;
   }
 
-  mdb_txn_commit(txn);
+  rc = mdb_txn_commit(txn);
+  if (rc != LMDB_OK) {
+    return rc;
+  }
 
   // cleanup old ref
   common::utils::freeifnotnull(context->db_name);
   context->db_name = NULL;
-  mdb_dbi_close(context->env, context->dbir);
-  context->dbir = 0;
+  mdb_dbi_close(context->env, context->dbi);
+  context->dbi = 0;
 
   // assigne new
-  context->dbir = ldbi;
+  context->dbi = ldbi;
   context->db_name = common::utils::strdupornull(db_name);
   return LMDB_OK;
 }
@@ -195,8 +204,8 @@ void lmdb_close(lmdb** context) {
 
   common::utils::freeifnotnull(lcontext->db_name);
   lcontext->db_name = NULL;
-  mdb_dbi_close(lcontext->env, lcontext->dbir);
-  lcontext->dbir = 0;
+  mdb_dbi_close(lcontext->env, lcontext->dbi);
+  lcontext->dbi = 0;
   mdb_env_close(lcontext->env);
   lcontext->env = NULL;
   free(lcontext);
@@ -377,7 +386,7 @@ common::Error DBConnection::ConfigGetDatabases(std::vector<std::string>* dbs) {
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   const string_key_t key_str = key.ToBytes();
-  MDB_val key_slice = ConvertToLMDBSlice(key_str);
+  MDB_val key_slice = ConvertToLMDBSlice(key_str.data(), key_str.size());
   MDB_val mval;
   mval.mv_size = value.size();
   mval.mv_data = const_cast<char*>(value.c_str());
@@ -390,7 +399,7 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   if (err) {
     return err;
   }
-  err = CheckResultCommand("SET", mdb_put(txn, connection_.handle_->dbir, &key_slice, &mval, 0));
+  err = CheckResultCommand("SET", mdb_put(txn, connection_.handle_->dbi, &key_slice, &mval, 0));
   if (err) {
     mdb_txn_abort(txn);
     return err;
@@ -401,7 +410,7 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   const string_key_t key_str = key.ToBytes();
-  MDB_val key_slice = ConvertToLMDBSlice(key_str);
+  MDB_val key_slice = ConvertToLMDBSlice(key_str.data(), key_str.size());
   MDB_val mval;
 
   MDB_txn* txn = NULL;
@@ -410,7 +419,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
     return err;
   }
 
-  err = CheckResultCommand("GET", mdb_get(txn, connection_.handle_->dbir, &key_slice, &mval));
+  err = CheckResultCommand("GET", mdb_get(txn, connection_.handle_->dbi, &key_slice, &mval));
   mdb_txn_abort(txn);
   if (err) {
     return err;
@@ -422,7 +431,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
 
 common::Error DBConnection::DelInner(key_t key) {
   const string_key_t key_str = key.ToBytes();
-  MDB_val key_slice = ConvertToLMDBSlice(key_str);
+  MDB_val key_slice = ConvertToLMDBSlice(key_str.data(), key_str.size());
 
   MDB_txn* txn = NULL;
   auto conf = GetConfig();
@@ -433,7 +442,7 @@ common::Error DBConnection::DelInner(key_t key) {
     return err;
   }
 
-  err = CheckResultCommand("DEL", mdb_del(txn, connection_.handle_->dbir, &key_slice, NULL));
+  err = CheckResultCommand("DEL", mdb_del(txn, connection_.handle_->dbi, &key_slice, NULL));
   if (err) {
     mdb_txn_abort(txn);
     return err;
@@ -454,7 +463,7 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
     return err;
   }
 
-  err = CheckResultCommand("SCAN", mdb_cursor_open(txn, connection_.handle_->dbir, &cursor));
+  err = CheckResultCommand("SCAN", mdb_cursor_open(txn, connection_.handle_->dbi, &cursor));
   if (err) {
     mdb_txn_abort(txn);
     return err;
@@ -499,7 +508,7 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
     return err;
   }
 
-  err = CheckResultCommand("KEYS", mdb_cursor_open(txn, connection_.handle_->dbir, &cursor));
+  err = CheckResultCommand("KEYS", mdb_cursor_open(txn, connection_.handle_->dbi, &cursor));
   if (err) {
     mdb_txn_abort(txn);
     return err;
@@ -527,7 +536,7 @@ common::Error DBConnection::DBkcountImpl(size_t* size) {
     return err;
   }
 
-  err = CheckResultCommand("DBKCOUNT", mdb_cursor_open(txn, connection_.handle_->dbir, &cursor));
+  err = CheckResultCommand("DBKCOUNT", mdb_cursor_open(txn, connection_.handle_->dbi, &cursor));
   if (err) {
     mdb_txn_abort(txn);
     return err;
@@ -573,7 +582,6 @@ common::Error DBConnection::RemoveDBImpl(const std::string& name, IDataBaseInfo*
 }
 
 common::Error DBConnection::FlushDBImpl() {
-  MDB_cursor* cursor = NULL;
   MDB_txn* txn = NULL;
   auto conf = GetConfig();
   int env_flags = conf->env_flags;
@@ -583,32 +591,13 @@ common::Error DBConnection::FlushDBImpl() {
     return err;
   }
 
-  err = CheckResultCommand("FLUSHDB", mdb_cursor_open(txn, connection_.handle_->dbir, &cursor));
+  err = CheckResultCommand("FLUSHDB", mdb_drop(txn, connection_.handle_->dbi, 1));
   if (err) {
     mdb_txn_abort(txn);
     return err;
   }
 
-  MDB_val key;
-  MDB_val data;
-  size_t sz = 0;
-  while (mdb_cursor_get(cursor, &key, &data, MDB_NEXT) == LMDB_OK) {
-    sz++;
-    err = CheckResultCommand("FLUSHDB", mdb_del(txn, connection_.handle_->dbir, &key, NULL));
-    if (err) {
-      mdb_cursor_close(cursor);
-      mdb_txn_abort(txn);
-      return err;
-    }
-  }
-
-  mdb_cursor_close(cursor);
-  if (sz != 0) {
-    return CheckResultCommand("FLUSHDB", mdb_txn_commit(txn));
-  }
-
-  mdb_txn_abort(txn);
-  return common::Error();
+  return CheckResultCommand("FLUSHDB", mdb_txn_commit(txn));
 }
 
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
