@@ -69,8 +69,10 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   void ItemUpdated(core::FastoObject* item, common::ValueSPtr val);
   void ServerInfoSnapShoot(core::ServerInfoSnapShoot shot);
 
+  void RemovedDatabase(core::IDataBaseInfoSPtr db);
   void FlushedDB();
-  void CurrentDataBaseChanged(core::IDataBaseInfoSPtr db);
+  void CurrentDatabaseChanged(core::IDataBaseInfoSPtr db);
+
   void KeyRemoved(core::NKey key);
   void KeyAdded(core::NDbKValue key);
   void KeyRenamed(core::NKey key, core::string_key_t new_name);
@@ -135,7 +137,8 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   virtual common::Error ExecuteImpl(const core::command_buffer_t& command, core::FastoObject* out) = 0;
 
   virtual void OnFlushedCurrentDB() override;
-  virtual void OnCurrentDataBaseChanged(core::IDataBaseInfo* info) override;
+  virtual void OnRemovedDB(core::IDataBaseInfo* info) override;
+  virtual void OnCurrentDatabaseChanged(core::IDataBaseInfo* info) override;
   virtual void OnKeysRemoved(const core::NKeys& keys) override;
   virtual void OnKeyAdded(const core::NDbKValue& key) override;
   virtual void OnKeyLoaded(const core::NDbKValue& key) override;

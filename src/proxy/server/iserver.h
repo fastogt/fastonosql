@@ -128,6 +128,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void ItemUpdated(core::FastoObject* item, common::ValueSPtr val);
   void ServerInfoSnapShoot(core::ServerInfoSnapShoot shot);
 
+  void RemovedDatabase(core::IDataBaseInfoSPtr db);
   void FlushedDB(core::IDataBaseInfoSPtr db);
   void CurrentDataBaseChanged(core::IDataBaseInfoSPtr db);
   void KeyRemoved(core::IDataBaseInfoSPtr db, core::NKey key);
@@ -212,8 +213,9 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   databases_t databases_;
 
  private Q_SLOTS:
+  void RemoveDatabase(core::IDataBaseInfoSPtr db);
   void FlushDB();
-  void CurrentDataBaseChange(core::IDataBaseInfoSPtr db);
+  void CurrentDatabaseChange(core::IDataBaseInfoSPtr db);
 
   void KeyRemove(core::NKey key);
   void KeyAdd(core::NDbKValue key);

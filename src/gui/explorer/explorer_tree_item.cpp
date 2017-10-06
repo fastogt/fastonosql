@@ -183,6 +183,23 @@ void ExplorerDatabaseItem::setDefault() {
   dbs->Execute(req);
 }
 
+void ExplorerDatabaseItem::removeDb() {
+  proxy::IDatabaseSPtr dbs = db();
+  CHECK(dbs);
+
+  proxy::IServerSPtr server = dbs->GetServer();
+  core::translator_t tran = server->GetTranslator();
+  core::command_buffer_t cmd_str;
+  common::Error err = tran->RemoveDBCommand(dbs->GetName(), &cmd_str);
+  if (err) {
+    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
+    return;
+  }
+
+  proxy::events_info::ExecuteInfoRequest req(this, cmd_str);
+  dbs->Execute(req);
+}
+
 core::IDataBaseInfoSPtr ExplorerDatabaseItem::info() const {
   return db_->GetInfo();
 }

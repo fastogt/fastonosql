@@ -96,6 +96,7 @@ class ExplorerDatabaseItem : public IExplorerTreeItem {
 
   void loadContent(const std::string& pattern, uint32_t countKeys);
   void setDefault();
+  void removeDb();
 
   core::IDataBaseInfoSPtr info() const;
 

@@ -26,6 +26,7 @@
 #define DB_SELECTDB_COMMAND "SELECT"
 #define DB_INFO_COMMAND "INFO"
 #define DB_CREATE_COMMAND "CREATEDB"
+#define DB_REMOVE_COMMAND "REMOVEDB"
 
 #define DB_GET_KEY_COMMAND "GET"
 #define DB_SET_KEY_COMMAND "SET"
@@ -44,6 +45,7 @@ class ICommandTranslator {
 
   virtual const char* GetDBName() const = 0;
 
+  common::Error RemoveDBCommand(const std::string& name, command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
   common::Error SelectDBCommand(const std::string& name, command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
   common::Error FlushDBCommand(command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
   common::Error CreateKeyCommand(const NDbKValue& key, command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;

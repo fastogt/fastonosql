@@ -28,7 +28,8 @@ class IDataBaseInfo;
 class CDBConnectionClient {
  public:
   virtual void OnFlushedCurrentDB() = 0;
-  virtual void OnCurrentDataBaseChanged(IDataBaseInfo* info) = 0;
+  virtual void OnRemovedDB(IDataBaseInfo* info) = 0;
+  virtual void OnCurrentDatabaseChanged(IDataBaseInfo* info) = 0;
   virtual void OnKeysRemoved(const NKeys& keys) = 0;
   virtual void OnKeyAdded(const NDbKValue& key) = 0;
   virtual void OnKeyLoaded(const NDbKValue& key) = 0;

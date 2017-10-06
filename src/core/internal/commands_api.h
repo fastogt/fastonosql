@@ -36,6 +36,7 @@ struct ApiTraits {
   static common::Error Scan(CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error Keys(CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error DBkcount(CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error RemoveDatabase(CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error FlushDB(CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error Select(CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error Set(CommandHandler* handler, commands_args_t argv, FastoObject* out);
@@ -148,6 +149,22 @@ common::Error ApiTraits<CDBConnection>::DBkcount(internal::CommandHandler* handl
   }
 
   common::FundamentalValue* val = common::Value::CreateUIntegerValue(dbkcount);
+  FastoObject* child = new FastoObject(out, val, cdb->GetDelimiter());
+  out->AddChildren(child);
+  return common::Error();
+}
+
+template <class CDBConnection>
+common::Error ApiTraits<CDBConnection>::RemoveDatabase(CommandHandler* handler,
+                                                       commands_args_t argv,
+                                                       FastoObject* out) {
+  CDBConnection* cdb = static_cast<CDBConnection*>(handler);
+  common::Error err = cdb->RemoveDB(argv[0]);
+  if (err) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::CreateStringValue("OK");
   FastoObject* child = new FastoObject(out, val, cdb->GetDelimiter());
   out->AddChildren(child);
   return common::Error();

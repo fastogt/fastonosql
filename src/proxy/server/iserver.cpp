@@ -32,8 +32,10 @@ IServer::IServer(IDriver* drv) : drv_(drv), server_info_(), current_database_inf
   VERIFY(QObject::connect(drv_, &IDriver::ItemUpdated, this, &IServer::ItemUpdated));
   VERIFY(QObject::connect(drv_, &IDriver::ServerInfoSnapShoot, this, &IServer::ServerInfoSnapShoot));
 
+  VERIFY(QObject::connect(drv_, &IDriver::RemovedDatabase, this, &IServer::RemoveDatabase));
   VERIFY(QObject::connect(drv_, &IDriver::FlushedDB, this, &IServer::FlushDB));
-  VERIFY(QObject::connect(drv_, &IDriver::CurrentDataBaseChanged, this, &IServer::CurrentDataBaseChange));
+  VERIFY(QObject::connect(drv_, &IDriver::CurrentDatabaseChanged, this, &IServer::CurrentDatabaseChange));
+
   VERIFY(QObject::connect(drv_, &IDriver::KeyRemoved, this, &IServer::KeyRemove));
   VERIFY(QObject::connect(drv_, &IDriver::KeyAdded, this, &IServer::KeyAdd));
   VERIFY(QObject::connect(drv_, &IDriver::KeyLoaded, this, &IServer::KeyLoad));
@@ -446,9 +448,8 @@ void IServer::HandleExecuteEvent(events::ExecuteResponceEvent* ev) {
   auto v = ev->value();
   common::Error err(v.errorInfo());
   if (err) {
-    LOG_ERROR(err,
-              err->GetErrorCode() == common::COMMON_EINTR ? common::logging::LOG_LEVEL_WARNING
-                                                          : common::logging::LOG_LEVEL_ERR,
+    LOG_ERROR(err, err->GetErrorCode() == common::COMMON_EINTR ? common::logging::LOG_LEVEL_WARNING
+                                                               : common::logging::LOG_LEVEL_ERR,
               true);
   }
 
@@ -510,6 +511,10 @@ void IServer::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentResponce
   emit LoadDatabaseContentFinished(v);
 }
 
+void IServer::RemoveDatabase(core::IDataBaseInfoSPtr db) {
+  emit RemovedDatabase(db);
+}
+
 void IServer::FlushDB() {
   database_t cdb = CurrentDatabaseInfo();
   if (!cdb) {
@@ -521,7 +526,7 @@ void IServer::FlushDB() {
   emit FlushedDB(cdb);
 }
 
-void IServer::CurrentDataBaseChange(core::IDataBaseInfoSPtr db) {
+void IServer::CurrentDatabaseChange(core::IDataBaseInfoSPtr db) {
   database_t cdb = CurrentDatabaseInfo();
   if (cdb) {
     if (db->GetName() == cdb->GetName()) {

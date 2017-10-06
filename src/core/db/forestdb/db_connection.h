@@ -66,8 +66,6 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   virtual common::Error GetImpl(const NKey& key, NDbKValue* loaded_key) override;
   virtual common::Error DeleteImpl(const NKeys& keys, NKeys* deleted_keys) override;
   virtual common::Error RenameImpl(const NKey& key, string_key_t new_key) override;
-  virtual common::Error SetTTLImpl(const NKey& key, ttl_t ttl) override;
-  virtual common::Error GetTTLImpl(const NKey& key, ttl_t* ttl) override;
   virtual common::Error QuitImpl() override;
 };
 

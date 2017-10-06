@@ -58,6 +58,7 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>,
       : db_base_class(), CommandHandler(translator), client_(client) {}
   virtual ~CDBConnection() {}
 
+  static const char* GetDBName() { return ConnectionTraits<ContType>::GetDBName(); }
   static const ConstantCommandsArray& GetCommands();
 
   std::string GetCurrentDBName() const;                                              //
@@ -75,6 +76,7 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>,
   common::Error DBkcount(size_t* size) WARN_UNUSED_RESULT;                                 // nvi
   common::Error FlushDB() WARN_UNUSED_RESULT;                                              // nvi
   common::Error Select(const std::string& name, IDataBaseInfo** info) WARN_UNUSED_RESULT;  // nvi
+  common::Error RemoveDB(const std::string& name) WARN_UNUSED_RESULT;                      // nvi
   common::Error Delete(const NKeys& keys, NKeys* deleted_keys) WARN_UNUSED_RESULT;         // nvi
   common::Error Set(const NDbKValue& key, NDbKValue* added_key) WARN_UNUSED_RESULT;        // nvi
   common::Error Get(const NKey& key, NDbKValue* loaded_key) WARN_UNUSED_RESULT;            // nvi
@@ -99,12 +101,13 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>,
   virtual common::Error DBkcountImpl(size_t* size) = 0;
   virtual common::Error FlushDBImpl() = 0;
   virtual common::Error SelectImpl(const std::string& name, IDataBaseInfo** info) = 0;
+  virtual common::Error RemoveDBImpl(const std::string& name, IDataBaseInfo** info);  // optional
   virtual common::Error DeleteImpl(const NKeys& keys, NKeys* deleted_keys) = 0;
   virtual common::Error SetImpl(const NDbKValue& key, NDbKValue* added_key) = 0;
   virtual common::Error GetImpl(const NKey& key, NDbKValue* loaded_key) = 0;
   virtual common::Error RenameImpl(const NKey& key, string_key_t new_key) = 0;
-  virtual common::Error SetTTLImpl(const NKey& key, ttl_t ttl) = 0;
-  virtual common::Error GetTTLImpl(const NKey& key, ttl_t* ttl) = 0;
+  virtual common::Error SetTTLImpl(const NKey& key, ttl_t ttl);   // optional
+  virtual common::Error GetTTLImpl(const NKey& key, ttl_t* ttl);  // optional
   virtual common::Error QuitImpl() = 0;
 };
 
@@ -246,6 +249,37 @@ common::Error CDBConnection<NConnection, Config, ContType>::FlushDB() {
 }
 
 template <typename NConnection, typename Config, connectionTypes ContType>
+common::Error CDBConnection<NConnection, Config, ContType>::RemoveDB(const std::string& name) {
+  if (name.empty()) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
+  if (name == GetCurrentDBName()) {
+    DNOTREACHED();
+    return common::make_error("Sorry we can't remove selected database.");
+  }
+
+  common::Error err = CDBConnection<NConnection, Config, ContType>::TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
+  IDataBaseInfo* linfo = nullptr;
+  err = RemoveDBImpl(name, &linfo);
+  if (err) {
+    return err;
+  }
+
+  if (client_) {
+    client_->OnRemovedDB(linfo);
+  }
+
+  delete linfo;
+  return common::Error();
+}
+
+template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::Select(const std::string& name, IDataBaseInfo** info) {
   common::Error err = CDBConnection<NConnection, Config, ContType>::TestIsAuthenticated();
   if (err) {
@@ -259,7 +293,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::Select(const std::st
   }
 
   if (client_) {
-    client_->OnCurrentDataBaseChanged(linfo);
+    client_->OnCurrentDatabaseChanged(linfo);
   }
 
   if (info) {
@@ -422,6 +456,34 @@ common::Error CDBConnection<NConnection, Config, ContType>::Quit() {
   }
 
   return common::Error();
+}
+
+template <typename NConnection, typename Config, connectionTypes ContType>
+common::Error CDBConnection<NConnection, Config, ContType>::SetTTLImpl(const NKey& key, ttl_t ttl) {
+  UNUSED(key);
+  UNUSED(ttl);
+  const std::string error_msg =
+      common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " for %s not supported TTL commands.", GetDBName());
+  return common::make_error(error_msg);
+}
+
+template <typename NConnection, typename Config, connectionTypes ContType>
+common::Error CDBConnection<NConnection, Config, ContType>::GetTTLImpl(const NKey& key, ttl_t* ttl) {
+  UNUSED(key);
+  UNUSED(ttl);
+  const std::string error_msg =
+      common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " for %s not supported TTL commands.", GetDBName());
+  return common::make_error(error_msg);
+}
+
+template <typename NConnection, typename Config, connectionTypes ContType>
+common::Error CDBConnection<NConnection, Config, ContType>::RemoveDBImpl(const std::string& name,
+                                                                         IDataBaseInfo** info) {
+  UNUSED(name);
+  UNUSED(info);
+  const std::string error_msg = common::MemSPrintf(
+      "Sorry, but now " PROJECT_NAME_TITLE " for %s not supported " DB_REMOVE_COMMAND " commands.", GetDBName());
+  return common::make_error(error_msg);
 }
 
 }  // namespace internal

@@ -93,6 +93,28 @@ int lmdb_create_db(lmdb* context, const char* db_name, int env_flags) {
   return LMDB_OK;
 }
 
+int lmdb_remove_db(lmdb* context, const char* db_name, int env_flags) {
+  if (!context || !db_name) {
+    return EINVAL;
+  }
+
+  MDB_txn* txn = NULL;
+  int rc = mdb_txn_begin(context->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn);
+  if (rc != LMDB_OK) {
+    return rc;
+  }
+
+  MDB_val db_slice = ConvertToLMDBSlice(db_name);
+  rc = mdb_del(txn, NULL, &db_slice, NULL);
+  if (rc != LMDB_OK) {
+    mdb_txn_abort(txn);
+    return rc;
+  }
+
+  mdb_txn_commit(txn);
+  return LMDB_OK;
+}
+
 int lmdb_select(lmdb* context, const char* db_name, int env_flags) {
   if (!context || !db_name) {  // only for named dbs
     return EINVAL;
@@ -541,6 +563,19 @@ common::Error DBConnection::DBkcountImpl(size_t* size) {
   return common::Error();
 }
 
+common::Error DBConnection::RemoveDBImpl(const std::string& name, IDataBaseInfo** info) {
+  auto conf = GetConfig();
+  int env_flags = conf->env_flags;
+  const char* db_name = name.c_str();
+  common::Error err = CheckResultCommand(DB_REMOVE_COMMAND, lmdb_remove_db(connection_.handle_, db_name, env_flags));
+  if (err) {
+    return err;
+  }
+
+  *info = new DataBaseInfo(name, false, 0);
+  return common::Error();
+}
+
 common::Error DBConnection::FlushDBImpl() {
   MDB_cursor* cursor = NULL;
   MDB_txn* txn = NULL;
@@ -656,18 +691,6 @@ common::Error DBConnection::RenameImpl(const NKey& key, string_key_t new_key) {
   }
 
   return common::Error();
-}
-
-common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
-  UNUSED(key);
-  UNUSED(ttl);
-  return common::make_error("Sorry, but now " PROJECT_NAME_TITLE " for LMDB not supported TTL commands.");
-}
-
-common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
-  UNUSED(key);
-  UNUSED(ttl);
-  return common::make_error("Sorry, but now " PROJECT_NAME_TITLE " for LMDB not supported TTL commands.");
 }
 
 common::Error DBConnection::QuitImpl() {

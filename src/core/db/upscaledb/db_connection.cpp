@@ -56,6 +56,28 @@ struct upscaledb {
 
 namespace {
 
+int upscaledb_select(upscaledb* context, uint16_t num) {
+  if (!context) {
+    return EINVAL;
+  }
+
+  if (context->cur_db == num) {  // lazy select
+    return UPS_SUCCESS;
+  }
+
+  ups_db_t* db = NULL;
+  ups_status_t st = ups_env_open_db(context->env, &db, num, 0, NULL);
+  if (st != UPS_SUCCESS) {
+    return st;
+  }
+
+  st = ups_db_close(context->db, 0);
+  DCHECK(st == UPS_SUCCESS);
+  context->db = db;
+  context->cur_db = num;
+  return UPS_SUCCESS;
+}
+
 ups_status_t upscaledb_open(upscaledb** context, const char* dbpath, uint16_t db, bool create_if_missing) {
   upscaledb* lcontext = reinterpret_cast<upscaledb*>(calloc(1, sizeof(upscaledb)));
   bool need_to_create = false;
@@ -405,19 +427,11 @@ common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** 
   if (!common::ConvertFromString(name, &num)) {
     return common::make_error_inval();
   }
-  ups_db_t* db = NULL;
-  ups_status_t st = ups_env_open_db(connection_.handle_->env, &db, num, 0, NULL);
-  if (st != UPS_SUCCESS && st != UPS_DATABASE_ALREADY_OPEN) {
+
+  ups_status_t st = upscaledb_select(connection_.handle_, num);
+  if (st != UPS_SUCCESS) {
     std::string buff = common::MemSPrintf("SELECT function error: %s", ups_strerror(st));
     return common::make_error(buff);
-  }
-
-  if (st == UPS_SUCCESS) {  // if ready to change
-    st = ups_db_close(connection_.handle_->db, 0);
-    DCHECK(st == UPS_SUCCESS);
-    connection_.handle_->db = db;
-    connection_.handle_->cur_db = num;
-    connection_.config_->dbnum = num;
   }
 
   size_t kcount = 0;
@@ -487,18 +501,6 @@ common::Error DBConnection::RenameImpl(const NKey& key, string_key_t new_key) {
   }
 
   return common::Error();
-}
-
-common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
-  UNUSED(key);
-  UNUSED(ttl);
-  return common::make_error("Sorry, but now " PROJECT_NAME_TITLE " for UPSCALEDB not supported TTL commands.");
-}
-
-common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
-  UNUSED(key);
-  UNUSED(ttl);
-  return common::make_error("Sorry, but now " PROJECT_NAME_TITLE " for UPSCALEDB not supported TTL commands.");
 }
 
 common::Error DBConnection::QuitImpl() {

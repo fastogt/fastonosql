@@ -357,6 +357,13 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
 
     menu.addAction(setDefaultDbAction);
     setDefaultDbAction->setEnabled(!is_default && is_connected);
+
+    if (server->IsCanCreateDatabase()) {
+      QAction* removeDatabaseAction = new QAction(translations::trDelete, this);
+      VERIFY(connect(removeDatabaseAction, &QAction::triggered, this, &ExplorerTreeView::removeDb));
+      removeDatabaseAction->setEnabled(!is_default && is_connected);
+      menu.addAction(removeDatabaseAction);
+    }
     menu.exec(menuPoint);
   } else if (node->type() == IExplorerTreeItem::eNamespace) {
     ExplorerNSItem* ns = static_cast<ExplorerNSItem*>(node);
@@ -818,6 +825,19 @@ void ExplorerTreeView::setDefaultDb() {
   }
 }
 
+void ExplorerTreeView::removeDb() {
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerDatabaseItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerDatabaseItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
+
+    node->removeDb();
+  }
+}
+
 void ExplorerTreeView::createKey() {
   QModelIndexList selected = selectedEqualTypeIndexes();
   for (QModelIndex ind : selected) {
@@ -1036,6 +1056,13 @@ void ExplorerTreeView::finishExecuteCommand(const proxy::events_info::ExecuteInf
   UNUSED(res);
 }
 
+void ExplorerTreeView::removeDatabase(core::IDataBaseInfoSPtr db) {
+  proxy::IServer* serv = qobject_cast<proxy::IServer*>(sender());
+  CHECK(serv);
+
+  source_model_->removeDatabase(serv, db);
+}
+
 void ExplorerTreeView::flushDB(core::IDataBaseInfoSPtr db) {
   proxy::IServer* serv = qobject_cast<proxy::IServer*>(sender());
   CHECK(serv);
@@ -1124,6 +1151,7 @@ void ExplorerTreeView::syncWithServer(proxy::IServer* server) {
   VERIFY(connect(server, &proxy::IServer::ExecuteStarted, this, &ExplorerTreeView::startExecuteCommand));
   VERIFY(connect(server, &proxy::IServer::ExecuteFinished, this, &ExplorerTreeView::finishExecuteCommand));
 
+  VERIFY(connect(server, &proxy::IServer::RemovedDatabase, this, &ExplorerTreeView::removeDatabase));
   VERIFY(connect(server, &proxy::IServer::FlushedDB, this, &ExplorerTreeView::flushDB));
   VERIFY(connect(server, &proxy::IServer::CurrentDataBaseChanged, this, &ExplorerTreeView::currentDataBaseChange));
   VERIFY(connect(server, &proxy::IServer::KeyRemoved, this, &ExplorerTreeView::removeKey, Qt::DirectConnection));

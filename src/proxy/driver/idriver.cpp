@@ -590,9 +590,14 @@ void IDriver::OnFlushedCurrentDB() {
   emit FlushedDB();
 }
 
-void IDriver::OnCurrentDataBaseChanged(core::IDataBaseInfo* info) {
+void IDriver::OnRemovedDB(core::IDataBaseInfo* info) {
   core::IDataBaseInfoSPtr curdb(info->Clone());
-  emit CurrentDataBaseChanged(curdb);
+  emit CurrentDatabaseChanged(curdb);
+}
+
+void IDriver::OnCurrentDatabaseChanged(core::IDataBaseInfo* info) {
+  core::IDataBaseInfoSPtr curdb(info->Clone());
+  emit CurrentDatabaseChanged(curdb);
 }
 
 void IDriver::OnKeysRemoved(const core::NKeys& keys) {

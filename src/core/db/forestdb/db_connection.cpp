@@ -436,18 +436,6 @@ common::Error DBConnection::RenameImpl(const NKey& key, string_key_t new_key) {
   return common::Error();
 }
 
-common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
-  UNUSED(key);
-  UNUSED(ttl);
-  return common::make_error("Sorry, but now " PROJECT_NAME_TITLE " for ForestDB not supported TTL commands.");
-}
-
-common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
-  UNUSED(key);
-  UNUSED(ttl);
-  return common::make_error("Sorry, but now " PROJECT_NAME_TITLE " for ForestDB not supported TTL commands.");
-}
-
 common::Error DBConnection::QuitImpl() {
   common::Error err = Disconnect();
   if (err) {

@@ -82,6 +82,7 @@ class ExplorerTreeView : public QTreeView {
   void removeAllKeys();
   void removeBranch();
   void setDefaultDb();
+  void removeDb();
   void createKey();
   void editKey();
   void viewKeys();
@@ -105,6 +106,7 @@ class ExplorerTreeView : public QTreeView {
   void startExecuteCommand(const proxy::events_info::ExecuteInfoRequest& req);
   void finishExecuteCommand(const proxy::events_info::ExecuteInfoResponce& res);
 
+  void removeDatabase(core::IDataBaseInfoSPtr db);
   void flushDB(core::IDataBaseInfoSPtr db);
   void currentDataBaseChange(core::IDataBaseInfoSPtr db);
   void removeKey(core::IDataBaseInfoSPtr db, core::NKey key);

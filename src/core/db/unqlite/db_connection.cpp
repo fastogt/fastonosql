@@ -404,18 +404,6 @@ common::Error DBConnection::RenameImpl(const NKey& key, string_key_t new_key) {
   return common::Error();
 }
 
-common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
-  UNUSED(key);
-  UNUSED(ttl);
-  return common::make_error("Sorry, but now " PROJECT_NAME_TITLE " for UnqLite not supported TTL commands.");
-}
-
-common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
-  UNUSED(key);
-  UNUSED(ttl);
-  return common::make_error("Sorry, but now " PROJECT_NAME_TITLE " for Unqlite not supported TTL commands.");
-}
-
 common::Error DBConnection::DeleteImpl(const NKeys& keys, NKeys* deleted_keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     NKey key = keys[i];
