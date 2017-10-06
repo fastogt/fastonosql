@@ -88,9 +88,6 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void LoadDatabasesStarted(const events_info::LoadDatabasesInfoRequest& req);
   void LoadDatabasesFinished(const events_info::LoadDatabasesInfoResponce& res);
 
-  void CreateDatabaseStarted(const events_info::CreateDatabaseInfoRequest& req);
-  void CreateDatabaseFinished(const events_info::CreateDatabaseResponce& res);
-
   void LoadServerInfoStarted(const events_info::ServerInfoRequest& req);
   void LoadServerInfoFinished(const events_info::ServerInfoResponce& res);
 
@@ -128,7 +125,9 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void ItemUpdated(core::FastoObject* item, common::ValueSPtr val);
   void ServerInfoSnapShoot(core::ServerInfoSnapShoot shot);
 
+  void CreatedDatabase(core::IDataBaseInfoSPtr db);
   void RemovedDatabase(core::IDataBaseInfoSPtr db);
+
   void FlushedDB(core::IDataBaseInfoSPtr db);
   void CurrentDataBaseChanged(core::IDataBaseInfoSPtr db);
   void KeyRemoved(core::IDataBaseInfoSPtr db, core::NKey key);
@@ -140,13 +139,11 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
 
  public:
   // async methods
-  void Connect(const events_info::ConnectInfoRequest& req);                // signals: ConnectStarted, ConnectFinished
-  void Disconnect(const events_info::DisConnectInfoRequest& req);          // signals: DisconnectStarted,
-                                                                           // DisconnectFinished
-  void LoadDatabases(const events_info::LoadDatabasesInfoRequest& req);    // signals: LoadDatabasesStarted,
-                                                                           // LoadDatabasesFinished
-  void CreateDatabase(const events_info::CreateDatabaseInfoRequest& req);  // signals: CreateDatabaseStarted,
-                                                                           // CreateDatabaseFinished
+  void Connect(const events_info::ConnectInfoRequest& req);              // signals: ConnectStarted, ConnectFinished
+  void Disconnect(const events_info::DisConnectInfoRequest& req);        // signals: DisconnectStarted,
+                                                                         // DisconnectFinished
+  void LoadDatabases(const events_info::LoadDatabasesInfoRequest& req);  // signals: LoadDatabasesStarted,
+                                                                         // LoadDatabasesFinished
   void LoadDatabaseContent(const events_info::LoadDatabaseContentRequest& req);  // signals: LoadDataBaseContentStarted,
                                                                                  // LoadDatabaseContentFinished
   void Execute(const events_info::ExecuteInfoRequest& req);                      // signals: ExecuteStarted
@@ -203,7 +200,6 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
 
   // handle database events
   virtual void HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoResponceEvent* ev);
-  virtual void HandleCreateDatabaseResponceEvent(events::CreateDatabaseResponceEvent* ev);
   virtual void HandleLoadDatabaseContentEvent(events::LoadDatabaseContentResponceEvent* ev);
 
   // handle command events
@@ -213,7 +209,8 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   databases_t databases_;
 
  private Q_SLOTS:
-  void RemoveDatabase(core::IDataBaseInfoSPtr db);
+  void CreateDB(core::IDataBaseInfoSPtr db);
+  void RemoveDB(core::IDataBaseInfoSPtr db);
   void FlushDB();
   void CurrentDatabaseChange(core::IDataBaseInfoSPtr db);
 

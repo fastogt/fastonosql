@@ -196,19 +196,6 @@ common::Error CommandsApi::ConfigGet(internal::CommandHandler* handler, commands
   return common::Error();
 }
 
-common::Error CommandsApi::CreateDatabase(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
-  DBConnection* mdb = static_cast<DBConnection*>(handler);
-  common::Error err = mdb->CreateDatabase(argv[0]);
-  if (err) {
-    return err;
-  }
-
-  common::StringValue* db = common::Value::CreateStringValue(argv[0]);
-  FastoObject* child = new FastoObject(out, db, mdb->GetDelimiter());
-  out->AddChildren(child);
-  return common::Error();
-}
-
 }  // namespace lmdb
 }  // namespace core
 }  // namespace fastonosql

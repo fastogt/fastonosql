@@ -20,10 +20,10 @@
 
 #include <QCheckBox>
 #include <QGroupBox>
-#include <QLayout>
-#include <QRadioButton>
 #include <QLabel>
+#include <QLayout>
 #include <QLineEdit>
+#include <QRadioButton>
 #include <QSpinBox>
 
 #include <common/qt/convert2string.h>

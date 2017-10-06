@@ -30,8 +30,9 @@ extern "C" {
 
 #include "core/logger.h"
 
-#define LMDB_DEFAULT_ENV_FLAGS 0x0  // mdb_env Environment Flags
-                                    // MDB_RDONLY  0x20000
+#define LMDB_DEFAULT_ENV_FLAGS \
+  0x0  // mdb_env Environment Flags
+       // MDB_RDONLY  0x20000
 
 namespace fastonosql {
 namespace core {

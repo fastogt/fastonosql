@@ -55,8 +55,17 @@ void ExplorerServerItem::loadDatabases() {
 }
 
 void ExplorerServerItem::createDatabase(const QString& name) {
-  proxy::events_info::CreateDatabaseInfoRequest req(this, common::ConvertToString(name));
-  return server_->CreateDatabase(req);
+  core::translator_t tran = server_->GetTranslator();
+  core::command_buffer_t cmd_str;
+  core::string_key_t name_str = common::ConvertToString(name);
+  common::Error err = tran->CreateDBCommand(name_str, &cmd_str);
+  if (err) {
+    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
+    return;
+  }
+
+  proxy::events_info::ExecuteInfoRequest req(this, cmd_str);
+  server_->Execute(req);
 }
 
 ExplorerSentinelItem::ExplorerSentinelItem(proxy::ISentinelSPtr sentinel, TreeItem* parent)

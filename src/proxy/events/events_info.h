@@ -201,20 +201,6 @@ struct LoadDatabasesInfoResponce : LoadDatabasesInfoRequest {
   database_info_cont_type databases;
 };
 
-struct CreateDatabaseInfoRequest : public EventInfoBase {
-  typedef EventInfoBase base_class;
-  explicit CreateDatabaseInfoRequest(initiator_type sender, const std::string& name, error_type er = error_type());
-
-  const std::string name;
-};
-
-struct CreateDatabaseResponce : CreateDatabaseInfoRequest {
-  typedef CreateDatabaseInfoRequest base_class;
-  explicit CreateDatabaseResponce(const base_class& request);
-
-  core::IDataBaseInfoSPtr db;
-};
-
 struct LoadDatabaseContentRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
   LoadDatabaseContentRequest(initiator_type sender,

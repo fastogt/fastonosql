@@ -18,6 +18,7 @@
 
 #include "gui/dialogs/sentinel_dialog.h"
 
+#include <QAction>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDialogButtonBox>
@@ -29,7 +30,6 @@
 #include <QPushButton>
 #include <QSpinBox>
 #include <QToolBar>
-#include <QAction>
 
 #include <common/qt/convert2string.h>  // for ConvertToString
 

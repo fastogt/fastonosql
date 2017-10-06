@@ -70,6 +70,7 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   void ServerInfoSnapShoot(core::ServerInfoSnapShoot shot);
 
   void RemovedDatabase(core::IDataBaseInfoSPtr db);
+  void CreatedDatabase(core::IDataBaseInfoSPtr db);
   void FlushedDB();
   void CurrentDatabaseChanged(core::IDataBaseInfoSPtr db);
 
@@ -111,7 +112,6 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   virtual void HandleChangePasswordEvent(events::ChangePasswordRequestEvent* ev);
   virtual void HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev);
   virtual void HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev);
-  virtual void HandleCreateDatabaseRequestEvent(events::CreateDatabaseRequestEvent* ev);
 
   template <typename T>
   inline std::shared_ptr<T> GetSpecificSettings() const {
@@ -136,9 +136,12 @@ class IDriver : public QObject, public core::CDBConnectionClient {
 
   virtual common::Error ExecuteImpl(const core::command_buffer_t& command, core::FastoObject* out) = 0;
 
-  virtual void OnFlushedCurrentDB() override;
+  virtual void OnCreateDB(core::IDataBaseInfo* info) override;
   virtual void OnRemovedDB(core::IDataBaseInfo* info) override;
+
+  virtual void OnFlushedCurrentDB() override;
   virtual void OnCurrentDatabaseChanged(core::IDataBaseInfo* info) override;
+
   virtual void OnKeysRemoved(const core::NKeys& keys) override;
   virtual void OnKeyAdded(const core::NDbKValue& key) override;
   virtual void OnKeyLoaded(const core::NDbKValue& key) override;

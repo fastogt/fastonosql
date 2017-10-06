@@ -33,8 +33,7 @@
 namespace fastonosql {
 namespace gui {
 
-FastoEditorOutput::FastoEditorOutput(QWidget* parent)
-    : QWidget(parent), model_(nullptr), view_method_(JSON) {
+FastoEditorOutput::FastoEditorOutput(QWidget* parent) : QWidget(parent), model_(nullptr), view_method_(JSON) {
   editor_ = new FastoHexEdit;
   VERIFY(connect(editor_, &FastoHexEdit::textChanged, this, &FastoEditorOutput::textChanged));
   VERIFY(connect(editor_, &FastoHexEdit::readOnlyChanged, this, &FastoEditorOutput::readOnlyChanged));

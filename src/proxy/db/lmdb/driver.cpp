@@ -242,39 +242,6 @@ done:
   NotifyProgress(sender, 100);
 }
 
-void Driver::HandleCreateDatabaseRequestEvent(events::CreateDatabaseRequestEvent* ev) {
-  QObject* sender = ev->sender();
-  NotifyProgress(sender, 0);
-  events::CreateDatabaseResponceEvent::value_type res(ev->value());
-  core::command_buffer_writer_t wr;
-  wr << DB_CREATE_COMMAND << " " << res.name;
-  const std::string create_db_cmd = wr.str();
-  core::FastoObjectCommandIPtr cmd = CreateCommandFast(create_db_cmd, core::C_INNER);
-  NotifyProgress(sender, 50);
-
-  common::Error err = Execute(cmd.get());
-  if (err) {
-    res.setErrorInfo(err);
-    NotifyProgress(sender, 75);
-    Reply(sender, new events::CreateDatabaseResponceEvent(this, res));
-    NotifyProgress(sender, 100);
-    return;
-  }
-
-  core::FastoObject::childs_t rchildrens = cmd->GetChildrens();
-  CHECK_EQ(rchildrens.size(), 1);
-  auto db_name = std::static_pointer_cast<common::StringValue>(rchildrens[0]->GetValue());
-  CHECK(db_name);
-  std::string created_name;
-  if (db_name->GetAsString(&created_name)) {
-  }
-  res.db = std::make_shared<core::lmdb::DataBaseInfo>(created_name, false, 0);
-
-  NotifyProgress(sender, 75);
-  Reply(sender, new events::CreateDatabaseResponceEvent(this, res));
-  NotifyProgress(sender, 100);
-}
-
 core::IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
   core::IServerInfoSPtr res(core::lmdb::MakeLmdbServerInfo(val));
   return res;

@@ -32,7 +32,8 @@ IServer::IServer(IDriver* drv) : drv_(drv), server_info_(), current_database_inf
   VERIFY(QObject::connect(drv_, &IDriver::ItemUpdated, this, &IServer::ItemUpdated));
   VERIFY(QObject::connect(drv_, &IDriver::ServerInfoSnapShoot, this, &IServer::ServerInfoSnapShoot));
 
-  VERIFY(QObject::connect(drv_, &IDriver::RemovedDatabase, this, &IServer::RemoveDatabase));
+  VERIFY(QObject::connect(drv_, &IDriver::CreatedDatabase, this, &IServer::CreateDB));
+  VERIFY(QObject::connect(drv_, &IDriver::RemovedDatabase, this, &IServer::RemoveDB));
   VERIFY(QObject::connect(drv_, &IDriver::FlushedDB, this, &IServer::FlushDB));
   VERIFY(QObject::connect(drv_, &IDriver::CurrentDatabaseChanged, this, &IServer::CurrentDatabaseChange));
 
@@ -161,12 +162,6 @@ void IServer::LoadDatabases(const events_info::LoadDatabasesInfoRequest& req) {
   Notify(ev);
 }
 
-void IServer::CreateDatabase(const events_info::CreateDatabaseInfoRequest& req) {
-  emit CreateDatabaseStarted(req);
-  QEvent* ev = new events::CreateDatabaseRequestEvent(this, req);
-  Notify(ev);
-}
-
 void IServer::LoadDatabaseContent(const events_info::LoadDatabaseContentRequest& req) {
   emit LoadDataBaseContentStarted(req);
   QEvent* ev = new events::LoadDatabaseContentRequestEvent(this, req);
@@ -277,9 +272,6 @@ void IServer::customEvent(QEvent* event) {
   } else if (type == static_cast<QEvent::Type>(events::LoadDatabasesInfoResponceEvent::EventType)) {
     events::LoadDatabasesInfoResponceEvent* ev = static_cast<events::LoadDatabasesInfoResponceEvent*>(event);
     HandleLoadDatabaseInfosEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::CreateDatabaseResponceEvent::EventType)) {
-    events::CreateDatabaseResponceEvent* ev = static_cast<events::CreateDatabaseResponceEvent*>(event);
-    HandleCreateDatabaseResponceEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::ServerInfoResponceEvent::EventType)) {
     events::ServerInfoResponceEvent* ev = static_cast<events::ServerInfoResponceEvent*>(event);
     HandleLoadServerInfoEvent(ev);
@@ -448,8 +440,9 @@ void IServer::HandleExecuteEvent(events::ExecuteResponceEvent* ev) {
   auto v = ev->value();
   common::Error err(v.errorInfo());
   if (err) {
-    LOG_ERROR(err, err->GetErrorCode() == common::COMMON_EINTR ? common::logging::LOG_LEVEL_WARNING
-                                                               : common::logging::LOG_LEVEL_ERR,
+    LOG_ERROR(err,
+              err->GetErrorCode() == common::COMMON_EINTR ? common::logging::LOG_LEVEL_WARNING
+                                                          : common::logging::LOG_LEVEL_ERR,
               true);
   }
 
@@ -479,21 +472,6 @@ void IServer::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoResponceEven
   emit LoadDatabasesFinished(v);
 }
 
-void IServer::HandleCreateDatabaseResponceEvent(events::CreateDatabaseResponceEvent* ev) {
-  auto v = ev->value();
-  common::Error err(v.errorInfo());
-  if (err) {
-    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
-  } else {
-    database_t dbs = FindDatabase(v.db);
-    if (!dbs) {
-      databases_.push_back(v.db);
-    }
-  }
-
-  emit CreateDatabaseFinished(v);
-}
-
 void IServer::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentResponceEvent* ev) {
   auto v = ev->value();
   common::Error err(v.errorInfo());
@@ -511,7 +489,15 @@ void IServer::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentResponce
   emit LoadDatabaseContentFinished(v);
 }
 
-void IServer::RemoveDatabase(core::IDataBaseInfoSPtr db) {
+void IServer::CreateDB(core::IDataBaseInfoSPtr db) {
+  database_t dbs = FindDatabase(db);
+  if (!dbs) {
+    databases_.push_back(db);
+  }
+  emit CreatedDatabase(db);
+}
+
+void IServer::RemoveDB(core::IDataBaseInfoSPtr db) {
   emit RemovedDatabase(db);
 }
 

@@ -375,23 +375,6 @@ common::Error DBConnection::ConfigGetDatabases(std::vector<std::string>* dbs) {
   return common::Error();
 }
 
-common::Error DBConnection::CreateDatabase(const std::string& name) {
-  if (name.empty()) {
-    DNOTREACHED();
-    return common::make_error_inval();
-  }
-
-  common::Error err = TestIsAuthenticated();
-  if (err) {
-    return err;
-  }
-
-  auto conf = GetConfig();
-  int env_flags = conf->env_flags;
-  const char* db_name = name.c_str();
-  return CheckResultCommand(DB_CREATE_COMMAND, lmdb_create_db(connection_.handle_, db_name, env_flags));
-}
-
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   const string_key_t key_str = key.ToBytes();
   MDB_val key_slice = ConvertToLMDBSlice(key_str);
@@ -560,6 +543,19 @@ common::Error DBConnection::DBkcountImpl(size_t* size) {
   mdb_txn_abort(txn);
 
   *size = sz;
+  return common::Error();
+}
+
+common::Error DBConnection::CreateDBImpl(const std::string& name, IDataBaseInfo** info) {
+  auto conf = GetConfig();
+  int env_flags = conf->env_flags;
+  const char* db_name = name.c_str();
+  common::Error err = CheckResultCommand(DB_CREATE_COMMAND, lmdb_create_db(connection_.handle_, db_name, env_flags));
+  if (err) {
+    return err;
+  }
+
+  *info = new DataBaseInfo(name, false, 0);
   return common::Error();
 }
 

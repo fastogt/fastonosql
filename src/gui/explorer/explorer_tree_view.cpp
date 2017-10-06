@@ -246,7 +246,7 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
 
     if (server->IsCanCreateDatabase()) {
       QAction* createDatabaseAction = new QAction(translations::trCreateDatabase, this);
-      VERIFY(connect(createDatabaseAction, &QAction::triggered, this, &ExplorerTreeView::createDatabase));
+      VERIFY(connect(createDatabaseAction, &QAction::triggered, this, &ExplorerTreeView::createDb));
       createDatabaseAction->setEnabled(is_connected);
       menu.addAction(createDatabaseAction);
     }
@@ -473,7 +473,7 @@ void ExplorerTreeView::loadDatabases() {
   }
 }
 
-void ExplorerTreeView::createDatabase() {
+void ExplorerTreeView::createDb() {
   QModelIndexList selected = selectedEqualTypeIndexes();
   for (QModelIndex ind : selected) {
     ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(ind);
@@ -1008,23 +1008,6 @@ void ExplorerTreeView::finishLoadDatabases(const proxy::events_info::LoadDatabas
   }
 }
 
-void ExplorerTreeView::startCreateDatabase(const proxy::events_info::CreateDatabaseInfoRequest& req) {
-  UNUSED(req);
-}
-
-void ExplorerTreeView::finishCreateDatabase(const proxy::events_info::CreateDatabaseResponce& res) {
-  common::Error err = res.errorInfo();
-  if (err) {
-    return;
-  }
-
-  proxy::IServer* serv = qobject_cast<proxy::IServer*>(sender());
-  CHECK(serv);
-
-  core::IDataBaseInfoSPtr db = res.db;
-  source_model_->addDatabase(serv, db);
-}
-
 void ExplorerTreeView::startLoadDatabaseContent(const proxy::events_info::LoadDatabaseContentRequest& req) {
   UNUSED(req);
 }
@@ -1054,6 +1037,12 @@ void ExplorerTreeView::startExecuteCommand(const proxy::events_info::ExecuteInfo
 
 void ExplorerTreeView::finishExecuteCommand(const proxy::events_info::ExecuteInfoResponce& res) {
   UNUSED(res);
+}
+void ExplorerTreeView::createDatabase(core::IDataBaseInfoSPtr db) {
+  proxy::IServer* serv = qobject_cast<proxy::IServer*>(sender());
+  CHECK(serv);
+
+  source_model_->addDatabase(serv, db);
 }
 
 void ExplorerTreeView::removeDatabase(core::IDataBaseInfoSPtr db) {
@@ -1142,8 +1131,6 @@ void ExplorerTreeView::syncWithServer(proxy::IServer* server) {
 
   VERIFY(connect(server, &proxy::IServer::LoadDatabasesStarted, this, &ExplorerTreeView::startLoadDatabases));
   VERIFY(connect(server, &proxy::IServer::LoadDatabasesFinished, this, &ExplorerTreeView::finishLoadDatabases));
-  VERIFY(connect(server, &proxy::IServer::CreateDatabaseStarted, this, &ExplorerTreeView::startCreateDatabase));
-  VERIFY(connect(server, &proxy::IServer::CreateDatabaseFinished, this, &ExplorerTreeView::finishCreateDatabase));
   VERIFY(
       connect(server, &proxy::IServer::LoadDataBaseContentStarted, this, &ExplorerTreeView::startLoadDatabaseContent));
   VERIFY(connect(server, &proxy::IServer::LoadDatabaseContentFinished, this,
@@ -1152,6 +1139,8 @@ void ExplorerTreeView::syncWithServer(proxy::IServer* server) {
   VERIFY(connect(server, &proxy::IServer::ExecuteFinished, this, &ExplorerTreeView::finishExecuteCommand));
 
   VERIFY(connect(server, &proxy::IServer::RemovedDatabase, this, &ExplorerTreeView::removeDatabase));
+  VERIFY(connect(server, &proxy::IServer::CreatedDatabase, this, &ExplorerTreeView::createDatabase));
+
   VERIFY(connect(server, &proxy::IServer::FlushedDB, this, &ExplorerTreeView::flushDB));
   VERIFY(connect(server, &proxy::IServer::CurrentDataBaseChanged, this, &ExplorerTreeView::currentDataBaseChange));
   VERIFY(connect(server, &proxy::IServer::KeyRemoved, this, &ExplorerTreeView::removeKey, Qt::DirectConnection));

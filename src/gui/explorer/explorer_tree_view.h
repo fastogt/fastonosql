@@ -63,7 +63,7 @@ class ExplorerTreeView : public QTreeView {
   void connectDisconnectToServer();
   void openConsole();
   void loadDatabases();
-  void createDatabase();
+  void createDb();
   void openInfoServerDialog();
   void openPropertyServerDialog();
   void openSetPasswordServerDialog();
@@ -97,16 +97,15 @@ class ExplorerTreeView : public QTreeView {
   void startLoadDatabases(const proxy::events_info::LoadDatabasesInfoRequest& req);
   void finishLoadDatabases(const proxy::events_info::LoadDatabasesInfoResponce& res);
 
-  void startCreateDatabase(const proxy::events_info::CreateDatabaseInfoRequest& req);
-  void finishCreateDatabase(const proxy::events_info::CreateDatabaseResponce& res);
-
   void startLoadDatabaseContent(const proxy::events_info::LoadDatabaseContentRequest& req);
   void finishLoadDatabaseContent(const proxy::events_info::LoadDatabaseContentResponce& res);
 
   void startExecuteCommand(const proxy::events_info::ExecuteInfoRequest& req);
   void finishExecuteCommand(const proxy::events_info::ExecuteInfoResponce& res);
 
+  void createDatabase(core::IDataBaseInfoSPtr db);
   void removeDatabase(core::IDataBaseInfoSPtr db);
+
   void flushDB(core::IDataBaseInfoSPtr db);
   void currentDataBaseChange(core::IDataBaseInfoSPtr db);
   void removeKey(core::IDataBaseInfoSPtr db, core::NKey key);

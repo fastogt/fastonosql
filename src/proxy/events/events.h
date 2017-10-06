@@ -71,20 +71,17 @@ typedef common::qt::Event<events_info::BackupInfoResponce, QEvent::User + 28> Im
 typedef common::qt::Event<events_info::ExportInfoRequest, QEvent::User + 29> ExportRequestEvent;
 typedef common::qt::Event<events_info::ExportInfoResponce, QEvent::User + 30> ExportResponceEvent;
 
-typedef common::qt::Event<events_info::CreateDatabaseInfoRequest, QEvent::User + 31> CreateDatabaseRequestEvent;
-typedef common::qt::Event<events_info::CreateDatabaseResponce, QEvent::User + 32> CreateDatabaseResponceEvent;
+typedef common::qt::Event<events_info::LoadDatabaseContentRequest, QEvent::User + 31> LoadDatabaseContentRequestEvent;
+typedef common::qt::Event<events_info::LoadDatabaseContentResponce, QEvent::User + 32> LoadDatabaseContentResponceEvent;
 
-typedef common::qt::Event<events_info::LoadDatabaseContentRequest, QEvent::User + 35> LoadDatabaseContentRequestEvent;
-typedef common::qt::Event<events_info::LoadDatabaseContentResponce, QEvent::User + 36> LoadDatabaseContentResponceEvent;
+typedef common::qt::Event<events_info::DiscoveryInfoRequest, QEvent::User + 33> DiscoveryInfoRequestEvent;
+typedef common::qt::Event<events_info::DiscoveryInfoResponce, QEvent::User + 34> DiscoveryInfoResponceEvent;
 
-typedef common::qt::Event<events_info::DiscoveryInfoRequest, QEvent::User + 37> DiscoveryInfoRequestEvent;
-typedef common::qt::Event<events_info::DiscoveryInfoResponce, QEvent::User + 38> DiscoveryInfoResponceEvent;
+typedef common::qt::Event<events_info::ChangePasswordRequest, QEvent::User + 35> ChangePasswordRequestEvent;
+typedef common::qt::Event<events_info::ChangePasswordResponce, QEvent::User + 36> ChangePasswordResponceEvent;
 
-typedef common::qt::Event<events_info::ChangePasswordRequest, QEvent::User + 39> ChangePasswordRequestEvent;
-typedef common::qt::Event<events_info::ChangePasswordResponce, QEvent::User + 40> ChangePasswordResponceEvent;
-
-typedef common::qt::Event<events_info::ChangeMaxConnectionRequest, QEvent::User + 41> ChangeMaxConnectionRequestEvent;
-typedef common::qt::Event<events_info::ChangeMaxConnectionResponce, QEvent::User + 42> ChangeMaxConnectionResponceEvent;
+typedef common::qt::Event<events_info::ChangeMaxConnectionRequest, QEvent::User + 37> ChangeMaxConnectionRequestEvent;
+typedef common::qt::Event<events_info::ChangeMaxConnectionResponce, QEvent::User + 38> ChangeMaxConnectionResponceEvent;
 
 typedef common::qt::Event<events_info::ProgressInfoResponce, QEvent::User + 100> ProgressResponceEvent;
 

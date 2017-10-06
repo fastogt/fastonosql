@@ -26,7 +26,7 @@
 namespace rocksdb {
 class DB;
 class Status;
-}
+}  // namespace rocksdb
 
 namespace fastonosql {
 namespace core {

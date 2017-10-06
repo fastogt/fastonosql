@@ -76,6 +76,7 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>,
   common::Error DBkcount(size_t* size) WARN_UNUSED_RESULT;                                 // nvi
   common::Error FlushDB() WARN_UNUSED_RESULT;                                              // nvi
   common::Error Select(const std::string& name, IDataBaseInfo** info) WARN_UNUSED_RESULT;  // nvi
+  common::Error CreateDB(const std::string& name) WARN_UNUSED_RESULT;                      // nvi
   common::Error RemoveDB(const std::string& name) WARN_UNUSED_RESULT;                      // nvi
   common::Error Delete(const NKeys& keys, NKeys* deleted_keys) WARN_UNUSED_RESULT;         // nvi
   common::Error Set(const NDbKValue& key, NDbKValue* added_key) WARN_UNUSED_RESULT;        // nvi
@@ -100,8 +101,11 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>,
                                  std::vector<std::string>* ret) = 0;
   virtual common::Error DBkcountImpl(size_t* size) = 0;
   virtual common::Error FlushDBImpl() = 0;
+
   virtual common::Error SelectImpl(const std::string& name, IDataBaseInfo** info) = 0;
+  virtual common::Error CreateDBImpl(const std::string& name, IDataBaseInfo** info);  // optional
   virtual common::Error RemoveDBImpl(const std::string& name, IDataBaseInfo** info);  // optional
+
   virtual common::Error DeleteImpl(const NKeys& keys, NKeys* deleted_keys) = 0;
   virtual common::Error SetImpl(const NDbKValue& key, NDbKValue* added_key) = 0;
   virtual common::Error GetImpl(const NKey& key, NDbKValue* loaded_key) = 0;
@@ -245,6 +249,37 @@ common::Error CDBConnection<NConnection, Config, ContType>::FlushDB() {
     client_->OnFlushedCurrentDB();
   }
 
+  return common::Error();
+}
+
+template <typename NConnection, typename Config, connectionTypes ContType>
+common::Error CDBConnection<NConnection, Config, ContType>::CreateDB(const std::string& name) {
+  if (name.empty()) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
+  if (name == GetCurrentDBName()) {
+    DNOTREACHED();
+    return common::make_error("Sorry we can't create selected database.");
+  }
+
+  common::Error err = CDBConnection<NConnection, Config, ContType>::TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
+  IDataBaseInfo* linfo = nullptr;
+  err = CreateDBImpl(name, &linfo);
+  if (err) {
+    return err;
+  }
+
+  if (client_) {
+    client_->OnCreateDB(linfo);
+  }
+
+  delete linfo;
   return common::Error();
 }
 
@@ -483,6 +518,16 @@ common::Error CDBConnection<NConnection, Config, ContType>::RemoveDBImpl(const s
   UNUSED(info);
   const std::string error_msg = common::MemSPrintf(
       "Sorry, but now " PROJECT_NAME_TITLE " for %s not supported " DB_REMOVE_COMMAND " commands.", GetDBName());
+  return common::make_error(error_msg);
+}
+
+template <typename NConnection, typename Config, connectionTypes ContType>
+common::Error CDBConnection<NConnection, Config, ContType>::CreateDBImpl(const std::string& name,
+                                                                         IDataBaseInfo** info) {
+  UNUSED(name);
+  UNUSED(info);
+  const std::string error_msg = common::MemSPrintf(
+      "Sorry, but now " PROJECT_NAME_TITLE " for %s not supported " DB_CREATE_COMMAND " commands.", GetDBName());
   return common::make_error(error_msg);
 }
 
