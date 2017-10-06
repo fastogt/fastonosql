@@ -399,7 +399,7 @@ common::Error DBConnection::FlushDBImpl() {
   memset(&rec, 0, sizeof(rec));
 
   /* create a new cursor */
-  common::Error err = CheckResultCommand("FLUSHDB", ups_cursor_create(&cursor, connection_.handle_->db, 0, 0));
+  common::Error err = CheckResultCommand(DB_FLUSHDB_COMMAND, ups_cursor_create(&cursor, connection_.handle_->db, 0, 0));
   if (err) {
     return err;
   }

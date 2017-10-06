@@ -617,7 +617,7 @@ common::Error DBConnection::DBkcountImpl(size_t* size) {
 }
 
 common::Error DBConnection::FlushDBImpl() {
-  return CheckResultCommand("FLUSHDB", memcached_flush(connection_.handle_, 0));
+  return CheckResultCommand(DB_FLUSHDB_COMMAND, memcached_flush(connection_.handle_, 0));
 }
 
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {

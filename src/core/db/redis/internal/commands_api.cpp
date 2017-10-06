@@ -539,7 +539,7 @@ const internal::ConstantCommandsArray g_commands = {
                   0,
                   0,
                   &CommandsApi::FlushALL),
-    CommandHolder("FLUSHDB",
+    CommandHolder(DB_FLUSHDB_COMMAND,
                   "-",
                   "Remove all keys from the current database",
                   PROJECT_VERSION_GENERATE(1, 0, 0),
@@ -1278,7 +1278,7 @@ const internal::ConstantCommandsArray g_commands = {
                   2,
                   INFINITE_COMMAND_ARGS,
                   &CommandsApi::SdiffStore),
-    CommandHolder("SELECT",
+    CommandHolder(DB_SELECTDB_COMMAND,
                   "<index>",
                   "Change the selected database for the "
                   "current connection",

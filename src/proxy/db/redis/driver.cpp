@@ -41,7 +41,6 @@
 #define REDIS_PUBSUB_NUMSUB_COMMAND "PUBSUB NUMSUB"
 
 #define REDIS_SET_DEFAULT_DATABASE_COMMAND_1ARGS_S "SELECT %s"
-#define REDIS_FLUSHDB_COMMAND "FLUSHDB"
 
 #define BACKUP_DEFAULT_PATH "/var/lib/redis/dump.rdb"
 #define EXPORT_DEFAULT_PATH "/var/lib/redis/dump.rdb"

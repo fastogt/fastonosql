@@ -22,8 +22,8 @@
 #include "core/db_key.h"  // for NKey, NDbKValue, ttl_t
 #include "core/db_ps_channel.h"
 
-#define DB_FLUSHDB_COMMAND "FLUSHDB"
-#define DB_SELECTDB_COMMAND "SELECT"
+#define DB_FLUSHDB_COMMAND "FLUSHDB"  // exist for all
+#define DB_SELECTDB_COMMAND "SELECT"  // exist for all
 #define DB_INFO_COMMAND "INFO"
 #define DB_CREATE_COMMAND "CREATEDB"
 #define DB_REMOVE_COMMAND "REMOVEDB"

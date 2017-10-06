@@ -708,7 +708,7 @@ common::Error DBConnection::DBkcountImpl(size_t* size) {
 }
 
 common::Error DBConnection::FlushDBImpl() {
-  redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "FLUSHDB"));
+  redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, DB_FLUSHDB_COMMAND));
   if (!reply) {
     return PrintRedisContextError(connection_.handle_);
   }

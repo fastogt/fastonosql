@@ -373,7 +373,7 @@ common::Error DBConnection::FlushDBImpl() {
   ::rocksdb::Iterator* it = connection_.handle_->NewIterator(ro);
   for (it->SeekToFirst(); it->Valid(); it->Next()) {
     std::string key = it->key().ToString();
-    common::Error err = CheckResultCommand("FLUSHDB", connection_.handle_->Delete(wo, key));
+    common::Error err = CheckResultCommand(DB_FLUSHDB_COMMAND, connection_.handle_->Delete(wo, key));
     if (err) {
       delete it;
       return err;
@@ -383,7 +383,7 @@ common::Error DBConnection::FlushDBImpl() {
   auto st = it->status();
   delete it;
 
-  return CheckResultCommand("FLUSHDB", st);
+  return CheckResultCommand(DB_FLUSHDB_COMMAND, st);
 }
 
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {

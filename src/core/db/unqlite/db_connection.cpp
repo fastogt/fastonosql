@@ -321,7 +321,7 @@ common::Error DBConnection::DBkcountImpl(size_t* size) {
 
 common::Error DBConnection::FlushDBImpl() {
   unqlite_kv_cursor* pCur; /* Cursor handle */
-  common::Error err = CheckResultCommand("FLUSHDB", unqlite_kv_cursor_init(connection_.handle_, &pCur));
+  common::Error err = CheckResultCommand(DB_FLUSHDB_COMMAND, unqlite_kv_cursor_init(connection_.handle_, &pCur));
   if (err) {
     return err;
   }

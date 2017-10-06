@@ -586,24 +586,24 @@ common::Error DBConnection::FlushDBImpl() {
   auto conf = GetConfig();
   int env_flags = conf->env_flags;
   common::Error err = CheckResultCommand(
-      "FLUSHDB", mdb_txn_begin(connection_.handle_->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn));
+      DB_FLUSHDB_COMMAND, mdb_txn_begin(connection_.handle_->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn));
   if (err) {
     return err;
   }
 
-  err = CheckResultCommand("FLUSHDB", mdb_drop(txn, connection_.handle_->dbi, 1));
+  err = CheckResultCommand(DB_FLUSHDB_COMMAND, mdb_drop(txn, connection_.handle_->dbi, 1));
   if (err) {
     mdb_txn_abort(txn);
     return err;
   }
 
-  return CheckResultCommand("FLUSHDB", mdb_txn_commit(txn));
+  return CheckResultCommand(DB_FLUSHDB_COMMAND, mdb_txn_commit(txn));
 }
 
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
   auto conf = GetConfig();
   int env_flags = conf->env_flags;
-  common::Error err = CheckResultCommand("SELECT", lmdb_select(connection_.handle_, name.c_str(), env_flags));
+  common::Error err = CheckResultCommand(DB_SELECTDB_COMMAND, lmdb_select(connection_.handle_, name.c_str(), env_flags));
   if (err) {
     return err;
   }

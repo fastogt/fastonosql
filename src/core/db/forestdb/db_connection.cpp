@@ -337,7 +337,7 @@ common::Error DBConnection::FlushDBImpl() {
   fdb_iterator_opt_t opt = FDB_ITR_NONE;
 
   common::Error err =
-      CheckResultCommand("FLUSHDB", fdb_iterator_init(connection_.handle_->kvs, &it, NULL, 0, NULL, 0, opt));
+      CheckResultCommand(DB_FLUSHDB_COMMAND, fdb_iterator_init(connection_.handle_->kvs, &it, NULL, 0, NULL, 0, opt));
   if (err) {
     return err;
   }
@@ -350,7 +350,7 @@ common::Error DBConnection::FlushDBImpl() {
     }
 
     std::string key;
-    err = CheckResultCommand("FLUSHDB", fdb_del_kv(connection_.handle_->kvs, key.c_str(), key.size()));
+    err = CheckResultCommand(DB_FLUSHDB_COMMAND, fdb_del_kv(connection_.handle_->kvs, key.c_str(), key.size()));
     if (err) {
       fdb_iterator_close(it);
       return err;
