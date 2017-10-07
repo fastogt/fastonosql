@@ -778,7 +778,7 @@ redisContext *redisConnect(const char *ip, int port, const char *ssh_address, in
     sin.sin_port = htons(port);
     if (connect(server_sock, (struct sockaddr*)(&sin),
                 sizeof(struct sockaddr_in)) != 0) {
-      __redisSetError(c, REDIS_ERR_OTHER, "Failed to connect (ssh_address).");
+      __redisSetError(c, REDIS_ERR_OTHER, "Failed to connect (ssl_address).");
       return c;
     }
 

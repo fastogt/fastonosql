@@ -698,7 +698,7 @@ common::Error DBConnection::DBkcountImpl(size_t* size) {
   redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, DBSIZE));
 
   if (!reply || reply->type != REDIS_REPLY_INTEGER) {
-    return common::make_error("Couldn't determine DBSIZE!");
+    return common::make_error("Couldn't determine " DB_DBKCOUNT_COMMAND "!");
   }
 
   /* Grab the number of keys and free our reply */
@@ -885,7 +885,7 @@ common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
 }
 
 common::Error DBConnection::QuitImpl() {
-  redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, "QUIT"));
+  redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, DB_QUIT_COMMAND));
   if (!reply) {
     return PrintRedisContextError(connection_.handle_);
   }

@@ -381,7 +381,7 @@ void BaseShellWidget::validateClick() {
 }
 
 void BaseShellWidget::helpClick() {
-  executeArgs("HELP", 0, 0, false);
+  executeArgs(DB_HELP_COMMAND, 0, 0, false);
 }
 
 void BaseShellWidget::inputTextChanged() {

@@ -288,7 +288,7 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
 
   memcached_return_t error;
   memcached_stat_st* st = memcached_stat(connection_.handle_, const_cast<char*>(args.c_str()), &error);
-  err = CheckResultCommand("INFO", error);
+  err = CheckResultCommand(DB_INFO_COMMAND, error);
   if (err) {
     return err;
   }
@@ -487,14 +487,15 @@ common::Error DBConnection::Decr(const NKey& key, uint32_t value, uint64_t* resu
 common::Error DBConnection::DelInner(key_t key, time_t expiration) {
   const string_key_t key_slice = key.ToBytes();
   const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());
-  return CheckResultCommand("DEL", memcached_delete(connection_.handle_, key_slice_ptr, key_slice.size(), expiration));
+  return CheckResultCommand(DB_DELETE_KEY_COMMAND,
+                            memcached_delete(connection_.handle_, key_slice_ptr, key_slice.size(), expiration));
 }
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value, time_t expiration, uint32_t flags) {
   const string_key_t key_slice = key.ToBytes();
   const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());
-  return CheckResultCommand("SET", memcached_set(connection_.handle_, key_slice_ptr, key_slice.size(), value.c_str(),
-                                                 value.length(), expiration, flags));
+  return CheckResultCommand(DB_SET_KEY_COMMAND, memcached_set(connection_.handle_, key_slice_ptr, key_slice.size(),
+                                                              value.c_str(), value.length(), expiration, flags));
 }
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
@@ -510,7 +511,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   const string_key_t key_slice = key.ToBytes();
   const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());
   char* value = memcached_get(connection_.handle_, key_slice_ptr, key_slice.size(), &value_length, &flags, &error);
-  common::Error err = CheckResultCommand("GET", error);
+  common::Error err = CheckResultCommand(DB_GET_KEY_COMMAND, error);
   if (err) {
     return err;
   }
@@ -529,13 +530,13 @@ common::Error DBConnection::ExpireInner(key_t key, ttl_t expiration) {
   const string_key_t key_slice = key.ToBytes();
   const char* key_slice_ptr = reinterpret_cast<const char*>(key_slice.data());
   char* value = memcached_get(connection_.handle_, key_slice_ptr, key_slice.size(), &value_length, &flags, &error);
-  common::Error err = CheckResultCommand("EXPIRE", error);
+  common::Error err = CheckResultCommand(DB_SET_TTL_COMMAND, error);
   if (err) {
     return err;
   }
 
-  return CheckResultCommand("EXPIRE", memcached_set(connection_.handle_, key_slice_ptr, key_slice.size(), value,
-                                                    value_length, expiration, flags));
+  return CheckResultCommand(DB_SET_TTL_COMMAND, memcached_set(connection_.handle_, key_slice_ptr, key_slice.size(),
+                                                              value, value_length, expiration, flags));
 }
 
 common::Error DBConnection::TTL(key_t key, ttl_t* expiration) {
@@ -548,7 +549,7 @@ common::Error DBConnection::TTL(key_t key, ttl_t* expiration) {
   TTLHolder hld(key, &exp);
   memcached_dump_fn func[1] = {0};
   func[0] = memcached_dump_ttl_callback;
-  err = CheckResultCommand("TTL", memcached_dump(connection_.handle_, func, &hld, SIZEOFMASS(func)));
+  err = CheckResultCommand(DB_GET_TTL_COMMAND, memcached_dump(connection_.handle_, func, &hld, SIZEOFMASS(func)));
   if (err) {
     return err;
   }
@@ -606,10 +607,13 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
 
 common::Error DBConnection::DBkcountImpl(size_t* size) {
   std::vector<std::string> ret;
-  common::Error err = Keys("a", "z", UINT64_MAX, &ret);
+  KeysHolder hld("a", "z", UINT64_MAX, &ret);
+  memcached_dump_fn func[1] = {0};
+  func[0] = memcached_dump_keys_callback;
+  common::Error err =
+      CheckResultCommand(DB_DBKCOUNT_COMMAND, memcached_dump(connection_.handle_, func, &hld, SIZEOFMASS(func)));
   if (err) {
-    std::string buff = common::MemSPrintf("Couldn't determine DBKCOUNT error: %s", err->GetDescription());
-    return common::make_error(buff);
+    return err;
   }
 
   *size = ret.size();

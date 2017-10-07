@@ -196,16 +196,16 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   const string_key_t key_slice = key.ToBytes();
-  return CheckResultCommand(
-      "GET", fdb_set_kv(connection_.handle_->kvs, key_slice.data(), key_slice.size(), value.c_str(), value.size()));
+  return CheckResultCommand(DB_SET_KEY_COMMAND, fdb_set_kv(connection_.handle_->kvs, key_slice.data(), key_slice.size(),
+                                                           value.c_str(), value.size()));
 }
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   const string_key_t key_slice = key.ToBytes();
   void* value_out = NULL;
   size_t valuelen_out = 0;
-  common::Error err = CheckResultCommand(
-      "GET", fdb_get_kv(connection_.handle_->kvs, key_slice.data(), key_slice.size(), &value_out, &valuelen_out));
+  common::Error err = CheckResultCommand(DB_GET_KEY_COMMAND, fdb_get_kv(connection_.handle_->kvs, key_slice.data(),
+                                                                        key_slice.size(), &value_out, &valuelen_out));
   if (err) {
     return err;
   }
@@ -222,7 +222,7 @@ common::Error DBConnection::DelInner(key_t key) {
   }
 
   const string_key_t key_slice = key.ToBytes();
-  return CheckResultCommand("DEL", fdb_del_kv(connection_.handle_->kvs, key_slice.data(), key_slice.size()));
+  return CheckResultCommand(DB_DELETE_KEY_COMMAND, fdb_del_kv(connection_.handle_->kvs, key_slice.data(), key_slice.size()));
 }
 
 common::Error DBConnection::ScanImpl(uint64_t cursor_in,
@@ -310,7 +310,7 @@ common::Error DBConnection::DBkcountImpl(size_t* size) {
   fdb_iterator_opt_t opt = FDB_ITR_NONE;
 
   common::Error err =
-      CheckResultCommand("DBKCOUNT", fdb_iterator_init(connection_.handle_->kvs, &it, NULL, 0, NULL, 0, opt));
+      CheckResultCommand(DB_DBKCOUNT_COMMAND, fdb_iterator_init(connection_.handle_->kvs, &it, NULL, 0, NULL, 0, opt));
   if (err) {
     return err;
   }

@@ -90,7 +90,6 @@ const QString trReload = QObject::tr("Reload");
 const QString trDuplicate = QObject::tr("Duplicate");
 const QString trType = QObject::tr("Type");
 const QString trState = QObject::tr("State");
-const QString trTTL = QObject::tr("TTL");
 const QString trCommands = QObject::tr("Commands");
 const QString trCommand = QObject::tr("Command");
 const QString trResult = QObject::tr("Result");

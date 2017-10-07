@@ -517,7 +517,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::RemoveDBImpl(const s
   UNUSED(name);
   UNUSED(info);
   const std::string error_msg = common::MemSPrintf(
-      "Sorry, but now " PROJECT_NAME_TITLE " for %s not supported " DB_REMOVE_COMMAND " commands.", GetDBName());
+      "Sorry, but now " PROJECT_NAME_TITLE " for %s not supported " DB_REMOVEDB_COMMAND " commands.", GetDBName());
   return common::make_error(error_msg);
 }
 
@@ -527,7 +527,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::CreateDBImpl(const s
   UNUSED(name);
   UNUSED(info);
   const std::string error_msg = common::MemSPrintf(
-      "Sorry, but now " PROJECT_NAME_TITLE " for %s not supported " DB_CREATE_COMMAND " commands.", GetDBName());
+      "Sorry, but now " PROJECT_NAME_TITLE " for %s not supported " DB_CREATEDB_COMMAND " commands.", GetDBName());
   return common::make_error(error_msg);
 }
 

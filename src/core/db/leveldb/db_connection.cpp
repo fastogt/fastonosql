@@ -210,21 +210,21 @@ common::Error DBConnection::DelInner(key_t key) {
   const string_key_t key_str = key.ToBytes();
   const ::leveldb::Slice key_slice(reinterpret_cast<const char*>(key_str.data()), key_str.size());
   ::leveldb::WriteOptions wo;
-  return CheckResultCommand("DEL", connection_.handle_->Delete(wo, key_slice));
+  return CheckResultCommand(DB_DELETE_KEY_COMMAND, connection_.handle_->Delete(wo, key_slice));
 }
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   const string_key_t key_str = key.ToBytes();
   const ::leveldb::Slice key_slice(reinterpret_cast<const char*>(key_str.data()), key_str.size());
   ::leveldb::WriteOptions wo;
-  return CheckResultCommand("SET", connection_.handle_->Put(wo, key_slice, value));
+  return CheckResultCommand(DB_SET_KEY_COMMAND, connection_.handle_->Put(wo, key_slice, value));
 }
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   const string_key_t key_str = key.ToBytes();
   const ::leveldb::Slice key_slice(key_str.data(), key_str.size());
   ::leveldb::ReadOptions ro;
-  common::Error err = CheckResultCommand("GET", connection_.handle_->Get(ro, key_slice, ret_val));
+  common::Error err = CheckResultCommand(DB_GET_KEY_COMMAND, connection_.handle_->Get(ro, key_slice, ret_val));
   if (err) {
     return err;
   }
@@ -308,7 +308,7 @@ common::Error DBConnection::DBkcountImpl(size_t* size) {
   auto st = it->status();
   delete it;
 
-  common::Error err = CheckResultCommand("DBKCOUNT", st);
+  common::Error err = CheckResultCommand(DB_DBKCOUNT_COMMAND, st);
   if (err) {
     return err;
   }

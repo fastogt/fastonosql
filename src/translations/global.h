@@ -91,7 +91,6 @@ extern const QString trSuccess;
 extern const QString trReload;
 extern const QString trDuplicate;
 extern const QString trState;
-extern const QString trTTL;
 extern const QString trCommands;
 extern const QString trCommand;
 extern const QString trResult;

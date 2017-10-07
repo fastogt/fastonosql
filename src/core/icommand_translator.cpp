@@ -64,7 +64,7 @@ common::Error ICommandTranslator::RemoveDBCommand(const std::string& name, comma
   }
 
   command_buffer_writer_t wr;
-  wr << DB_REMOVE_COMMAND << " " << name;
+  wr << DB_REMOVEDB_COMMAND << " " << name;
   *cmdstring = wr.str();
   return common::Error();
 }
@@ -75,7 +75,7 @@ common::Error ICommandTranslator::CreateDBCommand(const std::string& name, comma
   }
 
   command_buffer_writer_t wr;
-  wr << DB_CREATE_COMMAND << " " << name;
+  wr << DB_CREATEDB_COMMAND << " " << name;
   *cmdstring = wr.str();
   return common::Error();
 }

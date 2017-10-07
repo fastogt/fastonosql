@@ -22,16 +22,23 @@
 #include "core/db_key.h"  // for NKey, NDbKValue, ttl_t
 #include "core/db_ps_channel.h"
 
-#define DB_FLUSHDB_COMMAND "FLUSHDB"  // exist for all
-#define DB_SELECTDB_COMMAND "SELECT"  // exist for all
-#define DB_INFO_COMMAND "INFO"
-#define DB_CREATE_COMMAND "CREATEDB"
-#define DB_REMOVE_COMMAND "REMOVEDB"
+#define DB_FLUSHDB_COMMAND "FLUSHDB"    // exist for all
+#define DB_SELECTDB_COMMAND "SELECT"    // exist for all
+#define DB_INFO_COMMAND "INFO"          // exist for all
+#define DB_HELP_COMMAND "HELP"          // exist for all
+#define DB_DBKCOUNT_COMMAND "DBKCOUNT"  // exist for all
+#define DB_QUIT_COMMAND "QUIT"          // exist for all
 
-#define DB_GET_KEY_COMMAND "GET"
-#define DB_SET_KEY_COMMAND "SET"
-#define DB_DELETE_KEY_COMMAND "DEL"
-#define DB_RENAME_KEY_COMMAND "RENAME"
+#define DB_SET_TTL_COMMAND "EXPIRE"
+#define DB_GET_TTL_COMMAND "TTL"
+
+#define DB_CREATEDB_COMMAND "CREATEDB"
+#define DB_REMOVEDB_COMMAND "REMOVEDB"
+
+#define DB_GET_KEY_COMMAND "GET"        // exist for all
+#define DB_SET_KEY_COMMAND "SET"        // exist for all
+#define DB_DELETE_KEY_COMMAND "DEL"     // exist for all
+#define DB_RENAME_KEY_COMMAND "RENAME"  // exist for all
 
 namespace fastonosql {
 namespace core {

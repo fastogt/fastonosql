@@ -25,7 +25,7 @@
 
 #include "gui/gui_factory.h"  // for GuiFactory
 
-#include "translations/global.h"  // for trKey, trTTL, trType
+#include "translations/global.h"  // for trKey, trType
 
 namespace fastonosql {
 namespace gui {

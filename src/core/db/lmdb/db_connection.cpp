@@ -395,17 +395,17 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   auto conf = GetConfig();
   int env_flags = conf->env_flags;
   common::Error err = CheckResultCommand(
-      "SET", mdb_txn_begin(connection_.handle_->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn));
+      DB_SET_KEY_COMMAND, mdb_txn_begin(connection_.handle_->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn));
   if (err) {
     return err;
   }
-  err = CheckResultCommand("SET", mdb_put(txn, connection_.handle_->dbi, &key_slice, &mval, 0));
+  err = CheckResultCommand(DB_SET_KEY_COMMAND, mdb_put(txn, connection_.handle_->dbi, &key_slice, &mval, 0));
   if (err) {
     mdb_txn_abort(txn);
     return err;
   }
 
-  return CheckResultCommand("SET", mdb_txn_commit(txn));
+  return CheckResultCommand(DB_SET_KEY_COMMAND, mdb_txn_commit(txn));
 }
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
@@ -414,12 +414,13 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   MDB_val mval;
 
   MDB_txn* txn = NULL;
-  common::Error err = CheckResultCommand("GET", mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn));
+  common::Error err =
+      CheckResultCommand(DB_GET_KEY_COMMAND, mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn));
   if (err) {
     return err;
   }
 
-  err = CheckResultCommand("GET", mdb_get(txn, connection_.handle_->dbi, &key_slice, &mval));
+  err = CheckResultCommand(DB_GET_KEY_COMMAND, mdb_get(txn, connection_.handle_->dbi, &key_slice, &mval));
   mdb_txn_abort(txn);
   if (err) {
     return err;
@@ -436,19 +437,20 @@ common::Error DBConnection::DelInner(key_t key) {
   MDB_txn* txn = NULL;
   auto conf = GetConfig();
   int env_flags = conf->env_flags;
-  common::Error err = CheckResultCommand(
-      "DEL", mdb_txn_begin(connection_.handle_->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn));
+  common::Error err =
+      CheckResultCommand(DB_DELETE_KEY_COMMAND,
+                         mdb_txn_begin(connection_.handle_->env, NULL, lmdb_db_flag_from_env_flags(env_flags), &txn));
   if (err) {
     return err;
   }
 
-  err = CheckResultCommand("DEL", mdb_del(txn, connection_.handle_->dbi, &key_slice, NULL));
+  err = CheckResultCommand(DB_DELETE_KEY_COMMAND, mdb_del(txn, connection_.handle_->dbi, &key_slice, NULL));
   if (err) {
     mdb_txn_abort(txn);
     return err;
   }
 
-  return CheckResultCommand("DEL", mdb_txn_commit(txn));
+  return CheckResultCommand(DB_DELETE_KEY_COMMAND, mdb_txn_commit(txn));
 }
 
 common::Error DBConnection::ScanImpl(uint64_t cursor_in,
@@ -531,12 +533,12 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
 common::Error DBConnection::DBkcountImpl(size_t* size) {
   MDB_cursor* cursor = NULL;
   MDB_txn* txn = NULL;
-  common::Error err = CheckResultCommand("DBKCOUNT", mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn));
+  common::Error err = CheckResultCommand(DB_DBKCOUNT_COMMAND, mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn));
   if (err) {
     return err;
   }
 
-  err = CheckResultCommand("DBKCOUNT", mdb_cursor_open(txn, connection_.handle_->dbi, &cursor));
+  err = CheckResultCommand(DB_DBKCOUNT_COMMAND, mdb_cursor_open(txn, connection_.handle_->dbi, &cursor));
   if (err) {
     mdb_txn_abort(txn);
     return err;
@@ -559,7 +561,7 @@ common::Error DBConnection::CreateDBImpl(const std::string& name, IDataBaseInfo*
   auto conf = GetConfig();
   int env_flags = conf->env_flags;
   const char* db_name = name.c_str();
-  common::Error err = CheckResultCommand(DB_CREATE_COMMAND, lmdb_create_db(connection_.handle_, db_name, env_flags));
+  common::Error err = CheckResultCommand(DB_CREATEDB_COMMAND, lmdb_create_db(connection_.handle_, db_name, env_flags));
   if (err) {
     return err;
   }
@@ -572,7 +574,7 @@ common::Error DBConnection::RemoveDBImpl(const std::string& name, IDataBaseInfo*
   auto conf = GetConfig();
   int env_flags = conf->env_flags;
   const char* db_name = name.c_str();
-  common::Error err = CheckResultCommand(DB_REMOVE_COMMAND, lmdb_remove_db(connection_.handle_, db_name, env_flags));
+  common::Error err = CheckResultCommand(DB_REMOVEDB_COMMAND, lmdb_remove_db(connection_.handle_, db_name, env_flags));
   if (err) {
     return err;
   }
@@ -603,7 +605,8 @@ common::Error DBConnection::FlushDBImpl() {
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
   auto conf = GetConfig();
   int env_flags = conf->env_flags;
-  common::Error err = CheckResultCommand(DB_SELECTDB_COMMAND, lmdb_select(connection_.handle_, name.c_str(), env_flags));
+  common::Error err =
+      CheckResultCommand(DB_SELECTDB_COMMAND, lmdb_select(connection_.handle_, name.c_str(), env_flags));
   if (err) {
     return err;
   }

@@ -264,7 +264,8 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   memset(&rec, 0, sizeof(rec));
   rec.data = const_cast<char*>(value.c_str());
   rec.size = value.size();
-  return CheckResultCommand("SET", ups_db_insert(connection_.handle_->db, 0, &key_slice, &rec, UPS_OVERWRITE));
+  return CheckResultCommand(DB_SET_KEY_COMMAND,
+                            ups_db_insert(connection_.handle_->db, 0, &key_slice, &rec, UPS_OVERWRITE));
 }
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
@@ -274,7 +275,8 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   ups_record_t rec;
   memset(&rec, 0, sizeof(rec));
 
-  common::Error err = CheckResultCommand("GET", ups_db_find(connection_.handle_->db, NULL, &key_slice, &rec, 0));
+  common::Error err =
+      CheckResultCommand(DB_GET_KEY_COMMAND, ups_db_find(connection_.handle_->db, NULL, &key_slice, &rec, 0));
   if (err) {
     return err;
   }
@@ -286,7 +288,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
 common::Error DBConnection::DelInner(key_t key) {
   const string_key_t key_str = key.ToBytes();
   ups_key_t key_slice = ConvertToUpscaleDBSlice(key_str);
-  return CheckResultCommand("DEL", ups_db_erase(connection_.handle_->db, 0, &key_slice, 0));
+  return CheckResultCommand(DB_DELETE_KEY_COMMAND, ups_db_erase(connection_.handle_->db, 0, &key_slice, 0));
 }
 
 common::Error DBConnection::ScanImpl(uint64_t cursor_in,
@@ -381,7 +383,7 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
 common::Error DBConnection::DBkcountImpl(size_t* size) {
   uint64_t sz = 0;
   common::Error err =
-      CheckResultCommand("DBKCOUNT", ups_db_count(connection_.handle_->db, NULL, UPS_SKIP_DUPLICATES, &sz));
+      CheckResultCommand(DB_DBKCOUNT_COMMAND, ups_db_count(connection_.handle_->db, NULL, UPS_SKIP_DUPLICATES, &sz));
   if (err) {
     return err;
   }

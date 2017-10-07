@@ -117,7 +117,7 @@ QVariant KeysTableModel::headerData(int section, Qt::Orientation orientation, in
     } else if (section == KeyTableItem::kType) {
       return translations::trType;
     } else if (section == KeyTableItem::kTTL) {
-      return translations::trTTL;
+      return "TTL";
     }
   }
 

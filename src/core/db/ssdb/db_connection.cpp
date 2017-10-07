@@ -163,7 +163,7 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
   }
 
   std::vector<std::string> ret;
-  err = CheckResultCommand("INFO", connection_.handle_->info(args, &ret));
+  err = CheckResultCommand(DB_INFO_COMMAND, connection_.handle_->info(args, &ret));
   if (err) {
     return err;
   }
@@ -249,17 +249,17 @@ common::Error DBConnection::Setx(const std::string& key, const std::string& valu
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   const std::string key_slice = ConvertToSSDBSlice(key);
-  return CheckResultCommand("SET", connection_.handle_->set(key_slice, value));
+  return CheckResultCommand(DB_SET_KEY_COMMAND, connection_.handle_->set(key_slice, value));
 }
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   const std::string key_slice = ConvertToSSDBSlice(key);
-  return CheckResultCommand("GET", connection_.handle_->get(key_slice, ret_val));
+  return CheckResultCommand(DB_GET_KEY_COMMAND, connection_.handle_->get(key_slice, ret_val));
 }
 
 common::Error DBConnection::DelInner(key_t key) {
   const std::string key_slice = ConvertToSSDBSlice(key);
-  return CheckResultCommand("DEL", connection_.handle_->del(key_slice));
+  return CheckResultCommand(DB_DELETE_KEY_COMMAND, connection_.handle_->del(key_slice));
 }
 
 common::Error DBConnection::Incr(const std::string& key, int64_t incrby, int64_t* ret) {
@@ -844,7 +844,7 @@ common::Error DBConnection::Expire(key_t key, ttl_t ttl) {
   }
 
   const std::string key_slice = ConvertToSSDBSlice(key);
-  return CheckResultCommand("EXPIRE", connection_.handle_->expire(key_slice, static_cast<int>(ttl)));
+  return CheckResultCommand(DB_SET_TTL_COMMAND, connection_.handle_->expire(key_slice, static_cast<int>(ttl)));
 }
 
 common::Error DBConnection::TTL(key_t key, ttl_t* ttl) {
@@ -860,7 +860,7 @@ common::Error DBConnection::TTL(key_t key, ttl_t* ttl) {
 
   int lttl = 0;
   const std::string key_slice = ConvertToSSDBSlice(key);
-  err = CheckResultCommand("TTL", connection_.handle_->ttl(key_slice, &lttl));
+  err = CheckResultCommand(DB_GET_TTL_COMMAND, connection_.handle_->ttl(key_slice, &lttl));
   if (err) {
     return err;
   }
@@ -914,7 +914,7 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
 common::Error DBConnection::DBkcountImpl(size_t* size) {
   std::vector<std::string> ret;
   common::Error err =
-      CheckResultCommand("DBKCOUNT", connection_.handle_->keys(std::string(), std::string(), UINT64_MAX, &ret));
+      CheckResultCommand(DB_DBKCOUNT_COMMAND, connection_.handle_->keys(std::string(), std::string(), UINT64_MAX, &ret));
   if (err) {
     return err;
   }

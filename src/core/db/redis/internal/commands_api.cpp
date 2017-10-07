@@ -31,7 +31,7 @@ inline commands_args_t ExpandCommand(std::initializer_list<command_buffer_t> lis
 namespace redis {
 
 const internal::ConstantCommandsArray g_commands = {
-    CommandHolder("HELP",
+    CommandHolder(DB_HELP_COMMAND,
                   "[command]",
                   "Return how to use command",
                   UNDEFINED_SINCE,
@@ -406,6 +406,15 @@ const internal::ConstantCommandsArray g_commands = {
                   0,
                   &CommandsApi::ConfigSet),
 
+    CommandHolder(DB_DBKCOUNT_COMMAND,
+                  "-",
+                  "Return the number of keys in the "
+                  "selected database",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  0,
+                  0,
+                  &CommandsApi::DBkcount),
     CommandHolder("DBSIZE",
                   "-",
                   "Return the number of keys in the "
@@ -450,7 +459,7 @@ const internal::ConstantCommandsArray g_commands = {
                   2,
                   0,
                   &CommandsApi::DecrBy),
-    CommandHolder("DEL",
+    CommandHolder(DB_DELETE_KEY_COMMAND,
                   "<key> [key ...]",
                   "Delete a key",
                   PROJECT_VERSION_GENERATE(1, 0, 0),
@@ -515,7 +524,7 @@ const internal::ConstantCommandsArray g_commands = {
                   1,
                   INFINITE_COMMAND_ARGS,
                   &CommandsApi::Exists),
-    CommandHolder("EXPIRE",
+    CommandHolder(DB_SET_TTL_COMMAND,
                   "<key> <seconds>",
                   "Set a key's time to live in seconds",
                   PROJECT_VERSION_GENERATE(1, 0, 0),
@@ -613,7 +622,7 @@ const internal::ConstantCommandsArray g_commands = {
                   4,
                   6,
                   &CommandsApi::GeoRadiusByMember),
-    CommandHolder("GET",
+    CommandHolder(DB_GET_KEY_COMMAND,
                   "<key>",
                   "Gecommon_exect the value of a key",
                   PROJECT_VERSION_GENERATE(1, 0, 0),
@@ -798,7 +807,7 @@ const internal::ConstantCommandsArray g_commands = {
                   2,
                   0,
                   &CommandsApi::IncrByFloat),
-    CommandHolder("INFO",
+    CommandHolder(DB_INFO_COMMAND,
                   "[section]",
                   "Get information and statistics about the server",
                   PROJECT_VERSION_GENERATE(1, 0, 0),
@@ -1086,7 +1095,7 @@ const internal::ConstantCommandsArray g_commands = {
                   0,
                   INFINITE_COMMAND_ARGS,
                   &CommandsApi::PunSubscribe),
-    CommandHolder("QUIT",
+    CommandHolder(DB_QUIT_COMMAND,
                   "-",
                   "Close the connection",
                   PROJECT_VERSION_GENERATE(1, 0, 0),
@@ -1120,7 +1129,7 @@ const internal::ConstantCommandsArray g_commands = {
                   0,
                   0,
                   &CommandsApi::ReadWrite),
-    CommandHolder("RENAME",
+    CommandHolder(DB_RENAME_KEY_COMMAND,
                   "<key> <newkey>",
                   "Rename a key",
                   PROJECT_VERSION_GENERATE(1, 0, 0),
@@ -1287,7 +1296,7 @@ const internal::ConstantCommandsArray g_commands = {
                   1,
                   0,
                   &CommandsApi::Select),
-    CommandHolder("SET",
+    CommandHolder(DB_SET_KEY_COMMAND,
                   "<key> <value> [EX seconds] [PX milliseconds] [NX|XX]",
                   "Set the string value of a key",
                   PROJECT_VERSION_GENERATE(1, 0, 0),
@@ -1498,7 +1507,7 @@ const internal::ConstantCommandsArray g_commands = {
                   0,
                   0,
                   &CommandsApi::Time),
-    CommandHolder("TTL",
+    CommandHolder(DB_GET_TTL_COMMAND,
                   "<key>",
                   "Get the time to live for a key",
                   PROJECT_VERSION_GENERATE(1, 0, 0),
@@ -1992,7 +2001,7 @@ common::Error CommandsApi::Lrange(internal::CommandHandler* handler, commands_ar
 
 common::Error CommandsApi::Info(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
-  return red->CommonExec(ExpandCommand({"INFO"}, argv), out);
+  return red->CommonExec(ExpandCommand({DB_INFO_COMMAND}, argv), out);
 }
 
 common::Error CommandsApi::Append(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {

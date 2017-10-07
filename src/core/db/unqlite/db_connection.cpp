@@ -207,19 +207,21 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   const string_key_t key_slice = key.ToBytes();
-  return CheckResultCommand(
-      "SET", unqlite_kv_store(connection_.handle_, key_slice.data(), key_slice.size(), value.c_str(), value.length()));
+  return CheckResultCommand(DB_SET_KEY_COMMAND, unqlite_kv_store(connection_.handle_, key_slice.data(),
+                                                                 key_slice.size(), value.c_str(), value.length()));
 }
 
 common::Error DBConnection::DelInner(key_t key) {
   const string_key_t key_slice = key.ToBytes();
-  return CheckResultCommand("DEL", unqlite_kv_delete(connection_.handle_, key_slice.data(), key_slice.size()));
+  return CheckResultCommand(DB_DELETE_KEY_COMMAND,
+                            unqlite_kv_delete(connection_.handle_, key_slice.data(), key_slice.size()));
 }
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   const string_key_t key_slice = key.ToBytes();
-  return CheckResultCommand("GET", unqlite_kv_fetch_callback(connection_.handle_, key_slice.data(), key_slice.size(),
-                                                             unqlite_data_callback, ret_val));
+  return CheckResultCommand(DB_GET_KEY_COMMAND,
+                            unqlite_kv_fetch_callback(connection_.handle_, key_slice.data(), key_slice.size(),
+                                                      unqlite_data_callback, ret_val));
 }
 
 common::Error DBConnection::ScanImpl(uint64_t cursor_in,
@@ -298,7 +300,7 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
 common::Error DBConnection::DBkcountImpl(size_t* size) {
   /* Allocate a new cursor instance */
   unqlite_kv_cursor* pCur; /* Cursor handle */
-  common::Error err = CheckResultCommand("DBCKOUNT", unqlite_kv_cursor_init(connection_.handle_, &pCur));
+  common::Error err = CheckResultCommand(DB_DBKCOUNT_COMMAND, unqlite_kv_cursor_init(connection_.handle_, &pCur));
   if (err) {
     return err;
   }

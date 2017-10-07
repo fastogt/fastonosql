@@ -222,7 +222,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   ::rocksdb::ReadOptions ro;
   const string_key_t key_str = key.ToBytes();
   const ::rocksdb::Slice key_slice(reinterpret_cast<const char*>(key_str.data()), key_str.size());
-  return CheckResultCommand("GET", connection_.handle_->Get(ro, key_slice, ret_val));
+  return CheckResultCommand(DB_GET_KEY_COMMAND, connection_.handle_->Get(ro, key_slice, ret_val));
 }
 
 common::Error DBConnection::Mget(const std::vector<std::string>& keys, std::vector<std::string>* ret) {
@@ -269,7 +269,7 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   ::rocksdb::WriteOptions wo;
   const string_key_t key_str = key.ToBytes();
   const ::rocksdb::Slice key_slice(reinterpret_cast<const char*>(key_str.data()), key_str.size());
-  return CheckResultCommand("SET", connection_.handle_->Put(wo, key_slice, value));
+  return CheckResultCommand(DB_SET_KEY_COMMAND, connection_.handle_->Put(wo, key_slice, value));
 }
 
 common::Error DBConnection::DelInner(key_t key) {
@@ -282,7 +282,7 @@ common::Error DBConnection::DelInner(key_t key) {
   ::rocksdb::WriteOptions wo;
   const string_key_t key_str = key.ToBytes();
   const ::rocksdb::Slice key_slice(reinterpret_cast<const char*>(key_str.data()), key_str.size());
-  return CheckResultCommand("DEL", connection_.handle_->Delete(wo, key_slice));
+  return CheckResultCommand(DB_DELETE_KEY_COMMAND, connection_.handle_->Delete(wo, key_slice));
 }
 
 common::Error DBConnection::ScanImpl(uint64_t cursor_in,
@@ -358,7 +358,7 @@ common::Error DBConnection::DBkcountImpl(size_t* size) {
   auto st = it->status();
   delete it;
 
-  common::Error err = CheckResultCommand("DBKCOUNT", st);
+  common::Error err = CheckResultCommand(DB_DBKCOUNT_COMMAND, st);
   if (err) {
     return err;
   }
