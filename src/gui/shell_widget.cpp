@@ -92,8 +92,7 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server, const QString& fileP
   VERIFY(connect(server_.get(), &proxy::IServer::ExecuteFinished, this, &BaseShellWidget::finishExecute,
                  Qt::DirectConnection));
 
-  VERIFY(
-      connect(server_.get(), &proxy::IServer::CurrentDataBaseChanged, this, &BaseShellWidget::updateDefaultDatabase));
+  VERIFY(connect(server_.get(), &proxy::IServer::DatabaseChanged, this, &BaseShellWidget::updateDefaultDatabase));
   VERIFY(connect(server_.get(), &proxy::IServer::Disconnected, this, &BaseShellWidget::serverDisconnect));
 
   QVBoxLayout* mainlayout = new QVBoxLayout;
@@ -234,8 +233,8 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server, const QString& fileP
   setLayout(mainlayout);
 
   syncConnectionActions();
-  updateServerInfo(server_->CurrentServerInfo());
-  updateDefaultDatabase(server_->CurrentDatabaseInfo());
+  updateServerInfo(server_->GetCurrentServerInfo());
+  updateDefaultDatabase(server_->GetCurrentDatabaseInfo());
 }
 
 void BaseShellWidget::advancedOptionsChange(int state) {

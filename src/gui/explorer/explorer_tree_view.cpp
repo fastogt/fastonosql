@@ -1138,11 +1138,11 @@ void ExplorerTreeView::syncWithServer(proxy::IServer* server) {
   VERIFY(connect(server, &proxy::IServer::ExecuteStarted, this, &ExplorerTreeView::startExecuteCommand));
   VERIFY(connect(server, &proxy::IServer::ExecuteFinished, this, &ExplorerTreeView::finishExecuteCommand));
 
-  VERIFY(connect(server, &proxy::IServer::RemovedDatabase, this, &ExplorerTreeView::removeDatabase));
-  VERIFY(connect(server, &proxy::IServer::CreatedDatabase, this, &ExplorerTreeView::createDatabase));
+  VERIFY(connect(server, &proxy::IServer::DatabaseRemoved, this, &ExplorerTreeView::removeDatabase));
+  VERIFY(connect(server, &proxy::IServer::DatabaseCreated, this, &ExplorerTreeView::createDatabase));
+  VERIFY(connect(server, &proxy::IServer::DatabaseFlushed, this, &ExplorerTreeView::flushDB));
+  VERIFY(connect(server, &proxy::IServer::DatabaseChanged, this, &ExplorerTreeView::currentDataBaseChange));
 
-  VERIFY(connect(server, &proxy::IServer::FlushedDB, this, &ExplorerTreeView::flushDB));
-  VERIFY(connect(server, &proxy::IServer::CurrentDataBaseChanged, this, &ExplorerTreeView::currentDataBaseChange));
   VERIFY(connect(server, &proxy::IServer::KeyRemoved, this, &ExplorerTreeView::removeKey, Qt::DirectConnection));
   VERIFY(connect(server, &proxy::IServer::KeyAdded, this, &ExplorerTreeView::addKey, Qt::DirectConnection));
   VERIFY(connect(server, &proxy::IServer::KeyRenamed, this, &ExplorerTreeView::renameKey, Qt::DirectConnection));
@@ -1164,8 +1164,11 @@ void ExplorerTreeView::unsyncWithServer(proxy::IServer* server) {
   VERIFY(disconnect(server, &proxy::IServer::ExecuteStarted, this, &ExplorerTreeView::startExecuteCommand));
   VERIFY(disconnect(server, &proxy::IServer::ExecuteFinished, this, &ExplorerTreeView::finishExecuteCommand));
 
-  VERIFY(disconnect(server, &proxy::IServer::FlushedDB, this, &ExplorerTreeView::flushDB));
-  VERIFY(disconnect(server, &proxy::IServer::CurrentDataBaseChanged, this, &ExplorerTreeView::currentDataBaseChange));
+  VERIFY(disconnect(server, &proxy::IServer::DatabaseRemoved, this, &ExplorerTreeView::removeDatabase));
+  VERIFY(disconnect(server, &proxy::IServer::DatabaseCreated, this, &ExplorerTreeView::createDatabase));
+  VERIFY(disconnect(server, &proxy::IServer::DatabaseFlushed, this, &ExplorerTreeView::flushDB));
+  VERIFY(disconnect(server, &proxy::IServer::DatabaseChanged, this, &ExplorerTreeView::currentDataBaseChange));
+
   VERIFY(disconnect(server, &proxy::IServer::KeyRemoved, this, &ExplorerTreeView::removeKey));
   VERIFY(disconnect(server, &proxy::IServer::KeyAdded, this, &ExplorerTreeView::addKey));
   VERIFY(disconnect(server, &proxy::IServer::KeyRenamed, this, &ExplorerTreeView::renameKey));

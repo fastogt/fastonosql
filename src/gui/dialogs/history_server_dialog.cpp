@@ -97,7 +97,7 @@ ServerHistoryDialog::ServerHistoryDialog(proxy::IServerSPtr server, QWidget* par
                  &ServerHistoryDialog::startClearServerHistory));
   VERIFY(connect(server.get(), &proxy::IServer::ClearServerHistoryFinished, this,
                  &ServerHistoryDialog::finishClearServerHistory));
-  VERIFY(connect(server.get(), &proxy::IServer::ServerInfoSnapShoot, this, &ServerHistoryDialog::snapShotAdd));
+  VERIFY(connect(server.get(), &proxy::IServer::ServerInfoSnapShooted, this, &ServerHistoryDialog::snapShotAdd));
   retranslateUi();
 }
 

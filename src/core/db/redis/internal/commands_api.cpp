@@ -1069,7 +1069,7 @@ const internal::ConstantCommandsArray g_commands = {
                   1,
                   0,
                   &CommandsApi::Pttl),
-    CommandHolder("PUBLISH",
+    CommandHolder(DB_PUBLISH_COMMAND,
                   "<channel> <message>",
                   "Post a message to a channel",
                   PROJECT_VERSION_GENERATE(2, 0, 0),
@@ -1457,7 +1457,7 @@ const internal::ConstantCommandsArray g_commands = {
                   1,
                   0,
                   &CommandsApi::StrLen),
-    CommandHolder("SUBSCRIBE",
+    CommandHolder(DB_PUBLISH_COMMAND,
                   "<channel> [channel ...]",
                   "Listen for messages published to the "
                   "given channels",
@@ -2524,7 +2524,7 @@ common::Error CommandsApi::Pttl(internal::CommandHandler* handler, commands_args
 
 common::Error CommandsApi::Publish(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
-  return red->CommonExec(ExpandCommand({"PUBLISH"}, argv), out);
+  return red->CommonExec(ExpandCommand({DB_PUBLISH_COMMAND}, argv), out);
 }
 
 common::Error CommandsApi::PubSub(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
@@ -3217,7 +3217,7 @@ common::Error CommandsApi::Monitor(internal::CommandHandler* handler, commands_a
 
 common::Error CommandsApi::Subscribe(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
-  argv.push_front("SUBSCRIBE");
+  argv.push_front(DB_PUBLISH_COMMAND);
   return red->Subscribe(argv, out);
 }
 

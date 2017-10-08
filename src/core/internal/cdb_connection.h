@@ -46,6 +46,9 @@ command_buffer_t GetKeysPattern(uint64_t cursor_in, const std::string& pattern, 
 // 2) test connection state
 // 3) exec inner api command, return value via CheckResultCommand
 
+// methods naming
+// voi CreateDB() => void OnCreatedDB()
+
 template <typename NConnection, typename Config, connectionTypes ContType>
 class CDBConnection : public DBConnection<NConnection, Config, ContType>,
                       public CommandHandler,
@@ -276,7 +279,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::CreateDB(const std::
   }
 
   if (client_) {
-    client_->OnCreateDB(linfo);
+    client_->OnCreatedDB(linfo);
   }
 
   delete linfo;
@@ -328,7 +331,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::Select(const std::st
   }
 
   if (client_) {
-    client_->OnCurrentDatabaseChanged(linfo);
+    client_->OnChangedCurrentDB(linfo);
   }
 
   if (info) {
@@ -358,7 +361,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::Delete(const NKeys& 
   }
 
   if (client_) {
-    client_->OnKeysRemoved(*deleted_keys);
+    client_->OnRemovedKeys(*deleted_keys);
   }
 
   return common::Error();
@@ -382,7 +385,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::Set(const NDbKValue&
   }
 
   if (client_) {
-    client_->OnKeyAdded(*added_key);
+    client_->OnAddedKey(*added_key);
   }
 
   return common::Error();
@@ -406,7 +409,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::Get(const NKey& key,
   }
 
   if (client_) {
-    client_->OnKeyLoaded(*loaded_key);
+    client_->OnLoadedKey(*loaded_key);
   }
 
   return common::Error();
@@ -425,7 +428,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::Rename(const NKey& k
   }
 
   if (client_) {
-    client_->OnKeyRenamed(key, new_key);
+    client_->OnRenamedKey(key, new_key);
   }
 
   return common::Error();
@@ -444,7 +447,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::SetTTL(const NKey& k
   }
 
   if (client_) {
-    client_->OnKeyTTLChanged(key, ttl);
+    client_->OnChangedKeyTTL(key, ttl);
   }
 
   return common::Error();
@@ -468,7 +471,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::GetTTL(const NKey& k
   }
 
   if (client_) {
-    client_->OnKeyTTLLoaded(key, *ttl);
+    client_->OnLoadedKeyTTL(key, *ttl);
   }
 
   return common::Error();

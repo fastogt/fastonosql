@@ -1207,10 +1207,10 @@ common::Error DBConnection::SetEx(const NDbKValue& key, ttl_t ttl) {
   }
 
   if (client_) {
-    client_->OnKeyAdded(key);
+    client_->OnAddedKey(key);
   }
   if (client_) {
-    client_->OnKeyTTLChanged(key.GetKey(), ttl);
+    client_->OnChangedKeyTTL(key.GetKey(), ttl);
   }
   freeReplyObject(reply);
   return common::Error();
@@ -1237,7 +1237,7 @@ common::Error DBConnection::SetNX(const NDbKValue& key, long long* result) {
 
   if (reply->type == REDIS_REPLY_INTEGER) {
     if (client_ && reply->integer) {
-      client_->OnKeyAdded(key);
+      client_->OnAddedKey(key);
     }
 
     *result = reply->integer;
@@ -1276,7 +1276,7 @@ common::Error DBConnection::Lpush(const NKey& key, NValue arr, long long* list_l
 
   if (reply->type == REDIS_REPLY_INTEGER) {
     if (client_) {
-      client_->OnKeyAdded(rarr);
+      client_->OnAddedKey(rarr);
     }
     *list_len = reply->integer;
     freeReplyObject(reply);
@@ -1322,7 +1322,7 @@ common::Error DBConnection::Lrange(const NKey& key, int start, int stop, NDbKVal
 
     *loaded_key = NDbKValue(key, NValue(val));
     if (client_) {
-      client_->OnKeyLoaded(*loaded_key);
+      client_->OnLoadedKey(*loaded_key);
     }
     freeReplyObject(reply);
     return common::Error();
@@ -1359,7 +1359,7 @@ common::Error DBConnection::Sadd(const NKey& key, NValue set, long long* added) 
 
   if (reply->type == REDIS_REPLY_INTEGER) {
     if (client_) {
-      client_->OnKeyAdded(rset);
+      client_->OnAddedKey(rset);
     }
     *added = reply->integer;
     freeReplyObject(reply);
@@ -1421,7 +1421,7 @@ common::Error DBConnection::Smembers(const NKey& key, NDbKValue* loaded_key) {
     delete val;
     *loaded_key = NDbKValue(key, NValue(set));
     if (client_) {
-      client_->OnKeyLoaded(*loaded_key);
+      client_->OnLoadedKey(*loaded_key);
     }
     freeReplyObject(reply);
     return common::Error();
@@ -1458,7 +1458,7 @@ common::Error DBConnection::Zadd(const NKey& key, NValue scores, long long* adde
 
   if (reply->type == REDIS_REPLY_INTEGER) {
     if (client_) {
-      client_->OnKeyAdded(rzset);
+      client_->OnAddedKey(rzset);
     }
     *added = reply->integer;
     freeReplyObject(reply);
@@ -1505,7 +1505,7 @@ common::Error DBConnection::Zrange(const NKey& key, int start, int stop, bool wi
     if (!withscores) {
       *loaded_key = NDbKValue(key, NValue(val));
       if (client_) {
-        client_->OnKeyLoaded(*loaded_key);
+        client_->OnLoadedKey(*loaded_key);
       }
       freeReplyObject(reply);
       return common::Error();
@@ -1530,7 +1530,7 @@ common::Error DBConnection::Zrange(const NKey& key, int start, int stop, bool wi
     delete val;
     *loaded_key = NDbKValue(key, NValue(zset));
     if (client_) {
-      client_->OnKeyLoaded(*loaded_key);
+      client_->OnLoadedKey(*loaded_key);
     }
     freeReplyObject(reply);
     return common::Error();
@@ -1567,7 +1567,7 @@ common::Error DBConnection::Hmset(const NKey& key, NValue hash) {
 
   if (reply->type == REDIS_REPLY_STATUS) {
     if (client_) {
-      client_->OnKeyAdded(rhash);
+      client_->OnAddedKey(rhash);
     }
     freeReplyObject(reply);
     return common::Error();
@@ -1629,7 +1629,7 @@ common::Error DBConnection::Hgetall(const NKey& key, NDbKValue* loaded_key) {
     delete val;
     *loaded_key = NDbKValue(key, NValue(hash));
     if (client_) {
-      client_->OnKeyLoaded(*loaded_key);
+      client_->OnLoadedKey(*loaded_key);
     }
     freeReplyObject(reply);
     return common::Error();
@@ -1666,7 +1666,7 @@ common::Error DBConnection::Decr(const NKey& key, long long* decr) {
   if (reply->type == REDIS_REPLY_INTEGER) {
     if (client_) {
       NValue val(common::Value::CreateLongLongIntegerValue(reply->integer));
-      client_->OnKeyAdded(NDbKValue(key, val));
+      client_->OnAddedKey(NDbKValue(key, val));
     }
     *decr = reply->integer;
     freeReplyObject(reply);
@@ -1704,7 +1704,7 @@ common::Error DBConnection::DecrBy(const NKey& key, int dec, long long* decr) {
   if (reply->type == REDIS_REPLY_INTEGER) {
     if (client_) {
       NValue val(common::Value::CreateLongLongIntegerValue(reply->integer));
-      client_->OnKeyAdded(NDbKValue(key, val));
+      client_->OnAddedKey(NDbKValue(key, val));
     }
     *decr = reply->integer;
     freeReplyObject(reply);
@@ -1742,7 +1742,7 @@ common::Error DBConnection::Incr(const NKey& key, long long* incr) {
   if (reply->type == REDIS_REPLY_INTEGER) {
     if (client_) {
       NValue val(common::Value::CreateLongLongIntegerValue(reply->integer));
-      client_->OnKeyAdded(NDbKValue(key, val));
+      client_->OnAddedKey(NDbKValue(key, val));
     }
     *incr = reply->integer;
     freeReplyObject(reply);
@@ -1780,7 +1780,7 @@ common::Error DBConnection::IncrBy(const NKey& key, int inc, long long* incr) {
   if (reply->type == REDIS_REPLY_INTEGER) {
     if (client_) {
       NValue val(common::Value::CreateLongLongIntegerValue(reply->integer));
-      client_->OnKeyAdded(NDbKValue(key, val));
+      client_->OnAddedKey(NDbKValue(key, val));
     }
     *incr = reply->integer;
     freeReplyObject(reply);
@@ -1819,7 +1819,7 @@ common::Error DBConnection::IncrByFloat(const NKey& key, double inc, std::string
     std::string str(reply->str, reply->len);
     if (client_) {
       NValue val(common::Value::CreateStringValue(str));
-      client_->OnKeyAdded(NDbKValue(key, val));
+      client_->OnAddedKey(NDbKValue(key, val));
     }
     *str_incr = str;
     freeReplyObject(reply);

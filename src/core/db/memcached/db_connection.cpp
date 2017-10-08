@@ -346,7 +346,7 @@ common::Error DBConnection::AddIfNotExist(const NKey& key,
   }
 
   if (client_) {
-    client_->OnKeyAdded(NDbKValue(key, NValue(common::Value::CreateStringValue(value))));
+    client_->OnAddedKey(NDbKValue(key, NValue(common::Value::CreateStringValue(value))));
   }
   return common::Error();
 }
@@ -371,7 +371,7 @@ common::Error DBConnection::Replace(const NKey& key, const std::string& value, t
   }
 
   if (client_) {
-    client_->OnKeyLoaded(NDbKValue(key, NValue(common::Value::CreateStringValue(value))));
+    client_->OnLoadedKey(NDbKValue(key, NValue(common::Value::CreateStringValue(value))));
   }
   return common::Error();
 }
@@ -396,7 +396,7 @@ common::Error DBConnection::Append(const NKey& key, const std::string& value, ti
   }
 
   if (client_) {
-    client_->OnKeyAdded(NDbKValue(key, NValue(common::Value::CreateStringValue(value))));
+    client_->OnAddedKey(NDbKValue(key, NValue(common::Value::CreateStringValue(value))));
   }
   return common::Error();
 }
@@ -421,7 +421,7 @@ common::Error DBConnection::Prepend(const NKey& key, const std::string& value, t
   }
 
   if (client_) {
-    client_->OnKeyAdded(NDbKValue(key, NValue(common::Value::CreateStringValue(value))));
+    client_->OnAddedKey(NDbKValue(key, NValue(common::Value::CreateStringValue(value))));
   }
   return common::Error();
 }
@@ -449,7 +449,7 @@ common::Error DBConnection::Incr(const NKey& key, uint32_t value, uint64_t* resu
 
   if (client_) {
     NValue val(common::Value::CreateULongLongIntegerValue(local_value));
-    client_->OnKeyAdded(NDbKValue(key, val));
+    client_->OnAddedKey(NDbKValue(key, val));
   }
   *result = local_value;
   return common::Error();
@@ -478,7 +478,7 @@ common::Error DBConnection::Decr(const NKey& key, uint32_t value, uint64_t* resu
 
   if (client_) {
     NValue val(common::Value::CreateULongLongIntegerValue(local_value));
-    client_->OnKeyAdded(NDbKValue(key, val));
+    client_->OnAddedKey(NDbKValue(key, val));
   }
   *result = local_value;
   return common::Error();

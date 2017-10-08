@@ -27,18 +27,18 @@ class IDataBaseInfo;
 
 class CDBConnectionClient {
  public:
-  virtual void OnCreateDB(IDataBaseInfo* info) = 0;
+  virtual void OnCreatedDB(IDataBaseInfo* info) = 0;
   virtual void OnRemovedDB(IDataBaseInfo* info) = 0;
 
   virtual void OnFlushedCurrentDB() = 0;
-  virtual void OnCurrentDatabaseChanged(IDataBaseInfo* info) = 0;
+  virtual void OnChangedCurrentDB(IDataBaseInfo* info) = 0;
 
-  virtual void OnKeysRemoved(const NKeys& keys) = 0;
-  virtual void OnKeyAdded(const NDbKValue& key) = 0;
-  virtual void OnKeyLoaded(const NDbKValue& key) = 0;
-  virtual void OnKeyRenamed(const NKey& key, const string_key_t& new_key) = 0;
-  virtual void OnKeyTTLChanged(const NKey& key, ttl_t ttl) = 0;
-  virtual void OnKeyTTLLoaded(const NKey& key, ttl_t ttl) = 0;
+  virtual void OnRemovedKeys(const NKeys& keys) = 0;
+  virtual void OnAddedKey(const NDbKValue& key) = 0;
+  virtual void OnLoadedKey(const NDbKValue& key) = 0;
+  virtual void OnRenamedKey(const NKey& key, const string_key_t& new_key) = 0;
+  virtual void OnChangedKeyTTL(const NKey& key, ttl_t ttl) = 0;
+  virtual void OnLoadedKeyTTL(const NKey& key, ttl_t ttl) = 0;
 
   virtual void OnQuited() = 0;
 

@@ -113,7 +113,9 @@ common::Error CommandTranslator::RenameKeyCommandImpl(const NKey& key,
 }
 
 bool CommandTranslator::IsLoadKeyCommandImpl(const CommandInfo& cmd) const {
-  return cmd.IsEqualName(SSDB_GET_KEY_COMMAND);
+  return cmd.IsEqualName(SSDB_GET_KEY_COMMAND) || cmd.IsEqualName(SSDB_GET_KEY_ARRAY_COMMAND) ||
+         cmd.IsEqualName(SSDB_GET_KEY_SET_COMMAND) || cmd.IsEqualName(SSDB_GET_KEY_ZSET_COMMAND) ||
+         cmd.IsEqualName(SSDB_GET_KEY_HASH_COMMAND);
 }
 
 common::Error CommandTranslator::ChangeKeyTTLCommandImpl(const NKey& key,

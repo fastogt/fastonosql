@@ -18,17 +18,11 @@
 
 #include "core/internal/command_handler.h"
 
-#include <stddef.h>  // for size_t
-#include <stdint.h>  // for uint16_t
-
-#include <string>  // for string
-
 extern "C" {
 #include "sds.h"
 }
 
-#include <common/utils.h>
-#include <common/value.h>  // for ErrorValue, etc
+#include "core/command_holder.h"  // for CommandHolder
 
 namespace fastonosql {
 namespace core {
@@ -59,7 +53,7 @@ common::Error CommandHandler::Execute(const command_buffer_t& command, FastoObje
 }
 
 common::Error CommandHandler::Execute(commands_args_t argv, FastoObject* out) {
-  const command_t* cmd = nullptr;
+  const CommandHolder* cmd = nullptr;
   size_t off = 0;
   common::Error err = translator_->TestCommandLineArgs(argv, &cmd, &off);
   if (err) {

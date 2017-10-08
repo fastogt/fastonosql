@@ -38,6 +38,9 @@ class ANSIFile;
 namespace fastonosql {
 namespace proxy {
 
+// slot signal naming
+// updateValue => valueUpdated
+
 class IDriver : public QObject, public core::CDBConnectionClient {
   Q_OBJECT
  public:
@@ -67,12 +70,12 @@ class IDriver : public QObject, public core::CDBConnectionClient {
  Q_SIGNALS:
   void ChildAdded(core::FastoObjectIPtr child);
   void ItemUpdated(core::FastoObject* item, common::ValueSPtr val);
-  void ServerInfoSnapShoot(core::ServerInfoSnapShoot shot);
+  void ServerInfoSnapShooted(core::ServerInfoSnapShoot shot);
 
-  void RemovedDatabase(core::IDataBaseInfoSPtr db);
-  void CreatedDatabase(core::IDataBaseInfoSPtr db);
-  void FlushedDB();
-  void CurrentDatabaseChanged(core::IDataBaseInfoSPtr db);
+  void DBRemoved(core::IDataBaseInfoSPtr db);
+  void DBCreated(core::IDataBaseInfoSPtr db);
+  void DBFlushed();
+  void DBChanged(core::IDataBaseInfoSPtr db);
 
   void KeyRemoved(core::NKey key);
   void KeyAdded(core::NDbKValue key);
@@ -136,18 +139,18 @@ class IDriver : public QObject, public core::CDBConnectionClient {
 
   virtual common::Error ExecuteImpl(const core::command_buffer_t& command, core::FastoObject* out) = 0;
 
-  virtual void OnCreateDB(core::IDataBaseInfo* info) override;
+  virtual void OnCreatedDB(core::IDataBaseInfo* info) override;
   virtual void OnRemovedDB(core::IDataBaseInfo* info) override;
 
   virtual void OnFlushedCurrentDB() override;
-  virtual void OnCurrentDatabaseChanged(core::IDataBaseInfo* info) override;
+  virtual void OnChangedCurrentDB(core::IDataBaseInfo* info) override;
 
-  virtual void OnKeysRemoved(const core::NKeys& keys) override;
-  virtual void OnKeyAdded(const core::NDbKValue& key) override;
-  virtual void OnKeyLoaded(const core::NDbKValue& key) override;
-  virtual void OnKeyRenamed(const core::NKey& key, const core::string_key_t& new_key) override;
-  virtual void OnKeyTTLChanged(const core::NKey& key, core::ttl_t ttl) override;
-  virtual void OnKeyTTLLoaded(const core::NKey& key, core::ttl_t ttl) override;
+  virtual void OnRemovedKeys(const core::NKeys& keys) override;
+  virtual void OnAddedKey(const core::NDbKValue& key) override;
+  virtual void OnLoadedKey(const core::NDbKValue& key) override;
+  virtual void OnRenamedKey(const core::NKey& key, const core::string_key_t& new_key) override;
+  virtual void OnChangedKeyTTL(const core::NKey& key, core::ttl_t ttl) override;
+  virtual void OnLoadedKeyTTL(const core::NKey& key, core::ttl_t ttl) override;
   virtual void OnQuited() override;
 
   // internal methods

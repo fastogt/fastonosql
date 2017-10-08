@@ -30,19 +30,19 @@ namespace proxy {
 IServer::IServer(IDriver* drv) : drv_(drv), server_info_(), current_database_info_(), timer_check_key_exists_id_(0) {
   VERIFY(QObject::connect(drv_, &IDriver::ChildAdded, this, &IServer::ChildAdded));
   VERIFY(QObject::connect(drv_, &IDriver::ItemUpdated, this, &IServer::ItemUpdated));
-  VERIFY(QObject::connect(drv_, &IDriver::ServerInfoSnapShoot, this, &IServer::ServerInfoSnapShoot));
+  VERIFY(QObject::connect(drv_, &IDriver::ServerInfoSnapShooted, this, &IServer::ServerInfoSnapShooted));
 
-  VERIFY(QObject::connect(drv_, &IDriver::CreatedDatabase, this, &IServer::CreateDB));
-  VERIFY(QObject::connect(drv_, &IDriver::RemovedDatabase, this, &IServer::RemoveDB));
-  VERIFY(QObject::connect(drv_, &IDriver::FlushedDB, this, &IServer::FlushDB));
-  VERIFY(QObject::connect(drv_, &IDriver::CurrentDatabaseChanged, this, &IServer::CurrentDatabaseChange));
+  VERIFY(QObject::connect(drv_, &IDriver::DBCreated, this, &IServer::CreateDatabase));
+  VERIFY(QObject::connect(drv_, &IDriver::DBRemoved, this, &IServer::RemoveDatabase));
+  VERIFY(QObject::connect(drv_, &IDriver::DBFlushed, this, &IServer::FlushCurrentDatabase));
+  VERIFY(QObject::connect(drv_, &IDriver::DBChanged, this, &IServer::ChangeCurrentDatabase));
 
-  VERIFY(QObject::connect(drv_, &IDriver::KeyRemoved, this, &IServer::KeyRemove));
-  VERIFY(QObject::connect(drv_, &IDriver::KeyAdded, this, &IServer::KeyAdd));
-  VERIFY(QObject::connect(drv_, &IDriver::KeyLoaded, this, &IServer::KeyLoad));
-  VERIFY(QObject::connect(drv_, &IDriver::KeyRenamed, this, &IServer::KeyRename));
-  VERIFY(QObject::connect(drv_, &IDriver::KeyTTLChanged, this, &IServer::KeyTTLChange));
-  VERIFY(QObject::connect(drv_, &IDriver::KeyTTLLoaded, this, &IServer::KeyTTLLoad));
+  VERIFY(QObject::connect(drv_, &IDriver::KeyRemoved, this, &IServer::RemoveKey));
+  VERIFY(QObject::connect(drv_, &IDriver::KeyAdded, this, &IServer::AddKey));
+  VERIFY(QObject::connect(drv_, &IDriver::KeyLoaded, this, &IServer::LoadKey));
+  VERIFY(QObject::connect(drv_, &IDriver::KeyRenamed, this, &IServer::RenameKey));
+  VERIFY(QObject::connect(drv_, &IDriver::KeyTTLChanged, this, &IServer::ChangeKeyTTL));
+  VERIFY(QObject::connect(drv_, &IDriver::KeyTTLLoaded, this, &IServer::LoadKeyTTL));
   VERIFY(QObject::connect(drv_, &IDriver::Disconnected, this, &IServer::Disconnected));
 
   drv_->Start();
@@ -99,7 +99,7 @@ std::string IServer::GetName() const {
   return path.GetName();
 }
 
-core::IServerInfoSPtr IServer::CurrentServerInfo() const {
+core::IServerInfoSPtr IServer::GetCurrentServerInfo() const {
   if (IsConnected()) {
     return server_info_;
   }
@@ -107,7 +107,7 @@ core::IServerInfoSPtr IServer::CurrentServerInfo() const {
   return core::IServerInfoSPtr();
 }
 
-IServer::database_t IServer::CurrentDatabaseInfo() const {
+IServer::database_t IServer::GetCurrentDatabaseInfo() const {
   if (IsConnected()) {
     return current_database_info_;
   }
@@ -323,7 +323,7 @@ void IServer::customEvent(QEvent* event) {
 
 void IServer::timerEvent(QTimerEvent* event) {
   if (timer_check_key_exists_id_ == event->timerId() && IsConnected()) {
-    database_t cdb = CurrentDatabaseInfo();
+    database_t cdb = GetCurrentDatabaseInfo();
     HandleCheckDBKeys(cdb, 1);
   }
   QObject::timerEvent(event);
@@ -440,9 +440,8 @@ void IServer::HandleExecuteEvent(events::ExecuteResponceEvent* ev) {
   auto v = ev->value();
   common::Error err(v.errorInfo());
   if (err) {
-    LOG_ERROR(err,
-              err->GetErrorCode() == common::COMMON_EINTR ? common::logging::LOG_LEVEL_WARNING
-                                                          : common::logging::LOG_LEVEL_ERR,
+    LOG_ERROR(err, err->GetErrorCode() == common::COMMON_EINTR ? common::logging::LOG_LEVEL_WARNING
+                                                               : common::logging::LOG_LEVEL_ERR,
               true);
   }
 
@@ -494,29 +493,28 @@ void IServer::CreateDB(core::IDataBaseInfoSPtr db) {
   if (!dbs) {
     databases_.push_back(db);
   }
-  emit CreatedDatabase(db);
+  emit DatabaseCreated(db);
 }
 
-void IServer::RemoveDB(core::IDataBaseInfoSPtr db) {
-  databases_.erase(std::remove_if(databases_.begin(), databases_.end(), [db](database_t edb) {
-    return db->GetName() == edb->GetName();
-  }));
-  emit RemovedDatabase(db);
+void IServer::RemoveDatabase(core::IDataBaseInfoSPtr db) {
+  databases_.erase(std::remove_if(databases_.begin(), databases_.end(),
+                                  [db](database_t edb) { return db->GetName() == edb->GetName(); }));
+  emit DatabaseRemoved(db);
 }
 
-void IServer::FlushDB() {
-  database_t cdb = CurrentDatabaseInfo();
+void IServer::FlushCurrentDatabase() {
+  database_t cdb = GetCurrentDatabaseInfo();
   if (!cdb) {
     return;
   }
 
   cdb->ClearKeys();
   cdb->SetDBKeysCount(0);
-  emit FlushedDB(cdb);
+  emit DatabaseFlushed(cdb);
 }
 
-void IServer::CurrentDatabaseChange(core::IDataBaseInfoSPtr db) {
-  database_t cdb = CurrentDatabaseInfo();
+void IServer::ChangeCurrentDatabase(core::IDataBaseInfoSPtr db) {
+  database_t cdb = GetCurrentDatabaseInfo();
   if (cdb) {
     if (db->GetName() == cdb->GetName()) {
       return;
@@ -542,11 +540,11 @@ void IServer::CurrentDatabaseChange(core::IDataBaseInfoSPtr db) {
   }
 
   DCHECK(founded->IsDefault());
-  emit CurrentDataBaseChanged(founded);
+  emit DatabaseChanged(founded);
 }
 
-void IServer::KeyRemove(core::NKey key) {
-  database_t cdb = CurrentDatabaseInfo();
+void IServer::RemoveKey(core::NKey key) {
+  database_t cdb = GetCurrentDatabaseInfo();
   if (!cdb) {
     return;
   }
@@ -556,8 +554,8 @@ void IServer::KeyRemove(core::NKey key) {
   }
 }
 
-void IServer::KeyAdd(core::NDbKValue key) {
-  database_t cdb = CurrentDatabaseInfo();
+void IServer::AddKey(core::NDbKValue key) {
+  database_t cdb = GetCurrentDatabaseInfo();
   if (!cdb) {
     return;
   }
@@ -569,8 +567,8 @@ void IServer::KeyAdd(core::NDbKValue key) {
   }
 }
 
-void IServer::KeyLoad(core::NDbKValue key) {
-  database_t cdb = CurrentDatabaseInfo();
+void IServer::LoadKey(core::NDbKValue key) {
+  database_t cdb = GetCurrentDatabaseInfo();
   if (!cdb) {
     return;
   }
@@ -582,8 +580,8 @@ void IServer::KeyLoad(core::NDbKValue key) {
   }
 }
 
-void IServer::KeyRename(core::NKey key, core::string_key_t new_name) {
-  database_t cdb = CurrentDatabaseInfo();
+void IServer::RenameKey(core::NKey key, core::string_key_t new_name) {
+  database_t cdb = GetCurrentDatabaseInfo();
   if (!cdb) {
     return;
   }
@@ -593,8 +591,8 @@ void IServer::KeyRename(core::NKey key, core::string_key_t new_name) {
   }
 }
 
-void IServer::KeyTTLChange(core::NKey key, core::ttl_t ttl) {
-  database_t cdb = CurrentDatabaseInfo();
+void IServer::ChangeKeyTTL(core::NKey key, core::ttl_t ttl) {
+  database_t cdb = GetCurrentDatabaseInfo();
   if (!cdb) {
     return;
   }
@@ -604,8 +602,8 @@ void IServer::KeyTTLChange(core::NKey key, core::ttl_t ttl) {
   }
 }
 
-void IServer::KeyTTLLoad(core::NKey key, core::ttl_t ttl) {
-  database_t cdb = CurrentDatabaseInfo();
+void IServer::LoadKeyTTL(core::NKey key, core::ttl_t ttl) {
+  database_t cdb = GetCurrentDatabaseInfo();
   if (!cdb) {
     return;
   }

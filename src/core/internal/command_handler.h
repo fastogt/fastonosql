@@ -20,7 +20,6 @@
 
 #include <memory>
 
-#include "core/command_holder.h"  // for CommandHolder
 #include "core/icommand_translator.h"
 
 namespace fastonosql {
@@ -30,9 +29,6 @@ namespace internal {
 
 class CommandHandler {
  public:
-  typedef fastonosql::core::CommandHolder command_t;
-  typedef std::vector<command_t> commands_t;
-
   explicit CommandHandler(ICommandTranslator* translator);  // take ownerships
   common::Error Execute(const command_buffer_t& command, FastoObject* out) WARN_UNUSED_RESULT;
   common::Error Execute(commands_args_t argv, FastoObject* out) WARN_UNUSED_RESULT;

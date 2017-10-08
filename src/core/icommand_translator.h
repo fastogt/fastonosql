@@ -35,6 +35,9 @@
 #define DB_CREATEDB_COMMAND "CREATEDB"
 #define DB_REMOVEDB_COMMAND "REMOVEDB"
 
+#define DB_PUBLISH_COMMAND "PUBLISH"
+#define DB_SUBSCRIBE_COMMAND "SUBSCRIBE"
+
 #define DB_GET_KEY_COMMAND "GET"        // exist for all
 #define DB_SET_KEY_COMMAND "SET"        // exist for all
 #define DB_DELETE_KEY_COMMAND "DEL"     // exist for all

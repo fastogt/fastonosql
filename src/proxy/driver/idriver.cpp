@@ -278,7 +278,7 @@ void IDriver::timerEvent(QTimerEvent* event) {
       }
 
       core::ServerInfoSnapShoot shot(time, core::IServerInfoSPtr(info));
-      emit ServerInfoSnapShoot(shot);
+      emit ServerInfoSnapShooted(shot);
 
       log_file_->Write(stamp);
       log_file_->Write(info->ToString());
@@ -579,47 +579,47 @@ common::Error IDriver::ServerDiscoveryInfo(core::IServerInfo** sinfo, core::IDat
 }
 
 void IDriver::OnFlushedCurrentDB() {
-  emit FlushedDB();
+  emit DBFlushed();
 }
 
-void IDriver::OnCreateDB(core::IDataBaseInfo* info) {
+void IDriver::OnCreatedDB(core::IDataBaseInfo* info) {
   core::IDataBaseInfoSPtr curdb(info->Clone());
-  emit CreatedDatabase(curdb);
+  emit DBCreated(curdb);
 }
 
 void IDriver::OnRemovedDB(core::IDataBaseInfo* info) {
   core::IDataBaseInfoSPtr curdb(info->Clone());
-  emit RemovedDatabase(curdb);
+  emit DBRemoved(curdb);
 }
 
-void IDriver::OnCurrentDatabaseChanged(core::IDataBaseInfo* info) {
+void IDriver::OnChangedCurrentDB(core::IDataBaseInfo* info) {
   core::IDataBaseInfoSPtr curdb(info->Clone());
-  emit CurrentDatabaseChanged(curdb);
+  emit DBChanged(curdb);
 }
 
-void IDriver::OnKeysRemoved(const core::NKeys& keys) {
+void IDriver::OnRemovedKeys(const core::NKeys& keys) {
   for (size_t i = 0; i < keys.size(); ++i) {
     emit KeyRemoved(keys[i]);
   }
 }
 
-void IDriver::OnKeyAdded(const core::NDbKValue& key) {
+void IDriver::OnAddedKey(const core::NDbKValue& key) {
   emit KeyAdded(key);
 }
 
-void IDriver::OnKeyLoaded(const core::NDbKValue& key) {
+void IDriver::OnLoadedKey(const core::NDbKValue& key) {
   emit KeyLoaded(key);
 }
 
-void IDriver::OnKeyRenamed(const core::NKey& key, const core::string_key_t& new_key) {
+void IDriver::OnRenamedKey(const core::NKey& key, const core::string_key_t& new_key) {
   emit KeyRenamed(key, new_key);
 }
 
-void IDriver::OnKeyTTLChanged(const core::NKey& key, core::ttl_t ttl) {
+void IDriver::OnChangedKeyTTL(const core::NKey& key, core::ttl_t ttl) {
   emit KeyTTLChanged(key, ttl);
 }
 
-void IDriver::OnKeyTTLLoaded(const core::NKey& key, core::ttl_t ttl) {
+void IDriver::OnLoadedKeyTTL(const core::NKey& key, core::ttl_t ttl) {
   emit KeyTTLLoaded(key, ttl);
 }
 

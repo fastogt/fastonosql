@@ -52,8 +52,8 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   core::connectionTypes GetType() const;
   virtual std::string GetName() const override;
 
-  database_t CurrentDatabaseInfo() const;
-  core::IServerInfoSPtr CurrentServerInfo() const;
+  database_t GetCurrentDatabaseInfo() const;
+  core::IServerInfoSPtr GetCurrentServerInfo() const;
 
   std::string GetDelimiter() const;
   std::string GetNsSeparator() const;
@@ -123,13 +123,13 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
  Q_SIGNALS:
   void ChildAdded(core::FastoObjectIPtr child);
   void ItemUpdated(core::FastoObject* item, common::ValueSPtr val);
-  void ServerInfoSnapShoot(core::ServerInfoSnapShoot shot);
+  void ServerInfoSnapShooted(core::ServerInfoSnapShoot shot);
 
-  void CreatedDatabase(core::IDataBaseInfoSPtr db);
-  void RemovedDatabase(core::IDataBaseInfoSPtr db);
+  void DatabaseCreated(core::IDataBaseInfoSPtr db);
+  void DatabaseRemoved(core::IDataBaseInfoSPtr db);
+  void DatabaseFlushed(core::IDataBaseInfoSPtr db);
+  void DatabaseChanged(core::IDataBaseInfoSPtr db);
 
-  void FlushedDB(core::IDataBaseInfoSPtr db);
-  void CurrentDataBaseChanged(core::IDataBaseInfoSPtr db);
   void KeyRemoved(core::IDataBaseInfoSPtr db, core::NKey key);
   void KeyAdded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
   void KeyLoaded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
@@ -210,16 +210,16 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
 
  private Q_SLOTS:
   void CreateDB(core::IDataBaseInfoSPtr db);
-  void RemoveDB(core::IDataBaseInfoSPtr db);
-  void FlushDB();
-  void CurrentDatabaseChange(core::IDataBaseInfoSPtr db);
+  void RemoveDatabase(core::IDataBaseInfoSPtr db);
+  void FlushCurrentDatabase();
+  void ChangeCurrentDatabase(core::IDataBaseInfoSPtr db);
 
-  void KeyRemove(core::NKey key);
-  void KeyAdd(core::NDbKValue key);
-  void KeyLoad(core::NDbKValue key);
-  void KeyRename(core::NKey key, core::string_key_t new_name);
-  void KeyTTLChange(core::NKey key, core::ttl_t ttl);
-  void KeyTTLLoad(core::NKey key, core::ttl_t ttl);
+  void RemoveKey(core::NKey key);
+  void AddKey(core::NDbKValue key);
+  void LoadKey(core::NDbKValue key);
+  void RenameKey(core::NKey key, core::string_key_t new_name);
+  void ChangeKeyTTL(core::NKey key, core::ttl_t ttl);
+  void LoadKeyTTL(core::NKey key, core::ttl_t ttl);
 
  private:
   void HandleCheckDBKeys(core::IDataBaseInfoSPtr db, core::ttl_t expired_time);
