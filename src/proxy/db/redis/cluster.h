@@ -18,8 +18,6 @@
 
 #pragma once
 
-#include <string>
-
 #include "proxy/cluster/icluster.h"
 
 namespace fastonosql {

@@ -26,9 +26,6 @@ namespace forestdb {
 class DBConnection;
 }
 }  // namespace core
-}  // namespace fastonosql
-
-namespace fastonosql {
 namespace proxy {
 namespace forestdb {
 

@@ -1049,8 +1049,7 @@ common::Error DBConnection::CheckResultCommand(const std::string& cmd, const ::s
     if (err.code() == "noauth") {
       is_auth_ = false;
     }
-    std::string buff = common::MemSPrintf("%s function error: %s", cmd, err.code());
-    return common::make_error(buff);
+    return GenerateError(cmd, err.code());
   }
 
   return common::Error();

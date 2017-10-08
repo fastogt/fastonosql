@@ -741,7 +741,7 @@ void MainWindow::createCluster(proxy::IClusterSettingsBaseSPtr settings) {
     return;
   }
 
-  proxy::IServerSPtr root = cl->Root();
+  proxy::IServerSPtr root = cl->GetRoot();
   if (!root) {
     return;
   }

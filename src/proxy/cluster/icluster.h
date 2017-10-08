@@ -33,7 +33,7 @@ class ICluster : public IServerBase {
   nodes_t GetNodes() const;
   void AddServer(node_t serv);
 
-  node_t Root() const;
+  node_t GetRoot() const;
 
  protected:
   explicit ICluster(const std::string& name);

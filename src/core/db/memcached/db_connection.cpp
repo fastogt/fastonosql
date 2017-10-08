@@ -718,9 +718,7 @@ common::Error DBConnection::QuitImpl() {
 common::Error DBConnection::CheckResultCommand(const std::string& cmd, int err) {
   memcached_return_t mem_err = static_cast<memcached_return_t>(err);
   if (mem_err != MEMCACHED_SUCCESS) {
-    std::string buff =
-        common::MemSPrintf("%s function error: %s", cmd, memcached_strerror(connection_.handle_, mem_err));
-    return common::make_error(buff);
+    return GenerateError(cmd, memcached_strerror(connection_.handle_, mem_err));
   }
 
   return common::Error();

@@ -471,8 +471,7 @@ common::Error DBConnection::QuitImpl() {
 
 common::Error DBConnection::CheckResultCommand(const std::string& cmd, const ::rocksdb::Status& err) {
   if (!err.ok()) {
-    std::string buff = common::MemSPrintf("%s function error: %s", cmd, err.ToString());
-    return common::make_error(buff);
+    return GenerateError(cmd, err.ToString());
   }
 
   return common::Error();

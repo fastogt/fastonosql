@@ -805,14 +805,13 @@ common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
     return err;
   }
 
-  common::Value* val = nullptr;
-  if (reply->type == REDIS_REPLY_STRING) {
-    val = common::Value::CreateStringValue(reply->str);
-  } else if (reply->type == REDIS_REPLY_NIL) {
-    val = common::Value::CreateNullValue();
-  } else {
-    DNOTREACHED();
+  if (reply->type == REDIS_REPLY_NIL) {
+    key_t key_str = key.GetKey();
+    return GenerateError(DB_GET_KEY_COMMAND, "key not found.");
   }
+
+  CHECK(reply->type == REDIS_REPLY_STRING) << "Unexpected replay type: " << reply->type;
+  common::Value* val = common::Value::CreateStringValue(reply->str);
   *loaded_key = NDbKValue(key, NValue(val));
   freeReplyObject(reply);
   return common::Error();
@@ -852,8 +851,7 @@ common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
   }
 
   if (reply->integer == 0) {
-    const std::string err_str = key_str.ToString() + " does not exist or the timeout could not be set.";
-    return common::make_error(err_str);
+    return GenerateError(DB_SET_TTL_COMMAND, "key does not exist or the timeout could not be set.");
   }
 
   freeReplyObject(reply);

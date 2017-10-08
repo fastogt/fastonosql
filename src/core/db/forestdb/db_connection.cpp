@@ -447,8 +447,7 @@ common::Error DBConnection::QuitImpl() {
 
 common::Error DBConnection::CheckResultCommand(const std::string& cmd, fdb_status err) {
   if (err != FDB_RESULT_SUCCESS) {
-    std::string buff = common::MemSPrintf("%s function error: %s", cmd, fdb_error_msg(err));
-    return common::make_error(buff);
+    return GenerateError(cmd, fdb_error_msg(err));
   }
 
   return common::Error();

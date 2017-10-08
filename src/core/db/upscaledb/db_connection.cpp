@@ -516,8 +516,7 @@ common::Error DBConnection::QuitImpl() {
 
 common::Error DBConnection::CheckResultCommand(const std::string& cmd, ups_status_t err) {
   if (err != UPS_SUCCESS) {
-    std::string buff = common::MemSPrintf("%s function error: %s", cmd, ups_strerror(err));
-    return common::make_error(buff);
+    return GenerateError(cmd, ups_strerror(err));
   }
 
   return common::Error();

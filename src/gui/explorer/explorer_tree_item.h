@@ -98,8 +98,6 @@ class ExplorerDatabaseItem : public IExplorerTreeItem {
   void setDefault();
   void removeDb();
 
-  core::IDataBaseInfoSPtr info() const;
-
   void renameKey(const core::NKey& key, const QString& newName);
   void removeKey(const core::NKey& key);
   void loadValue(const core::NDbKValue& key);
@@ -122,7 +120,7 @@ class ExplorerNSItem : public IExplorerTreeItem {
   virtual QString name() const override;
   proxy::IServerSPtr server() const;
   virtual eType type() const override;
-  size_t keyCount() const;
+  size_t keysCount() const;
 
   void removeBranch();
 

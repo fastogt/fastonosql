@@ -18,8 +18,6 @@
 
 #pragma once
 
-#include <string>  // for string
-
 #include "proxy/sentinel/isentinel.h"  // for ISentinel
 
 namespace fastonosql {

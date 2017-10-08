@@ -136,11 +136,11 @@ ExplorerDatabaseItem::eType ExplorerDatabaseItem::type() const {
 }
 
 bool ExplorerDatabaseItem::isDefault() const {
-  return info()->IsDefault();
+  return db_->IsDefault();
 }
 
 size_t ExplorerDatabaseItem::totalKeysCount() const {
-  core::IDataBaseInfoSPtr inf = info();
+  core::IDataBaseInfoSPtr inf = db_->GetInfo();
   return inf->GetDBKeysCount();
 }
 
@@ -159,12 +159,10 @@ size_t ExplorerDatabaseItem::loadedKeysCount() const {
 }
 
 proxy::IServerSPtr ExplorerDatabaseItem::server() const {
-  CHECK(db_);
   return db_->GetServer();
 }
 
 proxy::IDatabaseSPtr ExplorerDatabaseItem::db() const {
-  CHECK(db_);
   return db_;
 }
 
@@ -207,10 +205,6 @@ void ExplorerDatabaseItem::removeDb() {
 
   proxy::events_info::ExecuteInfoRequest req(this, cmd_str);
   dbs->Execute(req);
-}
-
-core::IDataBaseInfoSPtr ExplorerDatabaseItem::info() const {
-  return db_->GetInfo();
 }
 
 void ExplorerDatabaseItem::renameKey(const core::NKey& key, const QString& newName) {
@@ -474,7 +468,7 @@ ExplorerNSItem::eType ExplorerNSItem::type() const {
   return eNamespace;
 }
 
-size_t ExplorerNSItem::keyCount() const {
+size_t ExplorerNSItem::keysCount() const {
   size_t sz = 0;
   common::qt::gui::forEachRecursive(this, [&sz](const common::qt::gui::TreeItem* item) {
     const ExplorerKeyItem* key_item = dynamic_cast<const ExplorerKeyItem*>(item);  // +

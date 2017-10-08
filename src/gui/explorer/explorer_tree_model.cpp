@@ -80,9 +80,9 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
         proxy::IServerRemote* rserver = dynamic_cast<proxy::IServerRemote*>(server.get());  // +
         CHECK(rserver);
         QString stype;
-        common::ConvertFromString(common::ConvertToString(rserver->Role()), &stype);
+        common::ConvertFromString(common::ConvertToString(rserver->GetRole()), &stype);
         QString mtype;
-        common::ConvertFromString(common::ConvertToString(rserver->Mode()), &mtype);
+        common::ConvertFromString(common::ConvertToString(rserver->GetMode()), &mtype);
         QString shost = translations::trCalculating;
         common::ConvertFromString(common::ConvertToString(rserver->GetHost()), &shost);
         return trRemoteServerToolTipTemplate_4S.arg(sname, stype, mtype, shost);
@@ -100,7 +100,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
       }
     } else if (type == IExplorerTreeItem::eNamespace) {
       ExplorerNSItem* ns = static_cast<ExplorerNSItem*>(node);
-      return trNamespace_1S.arg(ns->keyCount());
+      return trNamespace_1S.arg(ns->keysCount());
     } else if (type == IExplorerTreeItem::eKey) {
       ExplorerKeyItem* key = static_cast<ExplorerKeyItem*>(node);
       core::NKey nkey = key->key();
@@ -146,7 +146,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
         return QString("%1 (%2/%3)").arg(node->name()).arg(db->loadedKeysCount()).arg(db->totalKeysCount());  // db
       } else if (type == IExplorerTreeItem::eNamespace) {
         ExplorerNSItem* ns = static_cast<ExplorerNSItem*>(node);
-        return QString("%1 (%2)").arg(node->name()).arg(ns->keyCount());  // db
+        return QString("%1 (%2)").arg(node->name()).arg(ns->keysCount());  // db
       } else {
         return QString("%1 (%2)").arg(node->name()).arg(node->childrenCount());  // server, cluster
       }

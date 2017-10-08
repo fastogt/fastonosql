@@ -27,9 +27,10 @@ class IServerRemote : public IServer {
   Q_OBJECT
  public:
   virtual common::net::HostAndPort GetHost() const = 0;
-  virtual core::serverMode Mode() const = 0;
-  virtual core::serverTypes Role() const = 0;
-  virtual core::serverState State() const = 0;
+  virtual core::serverMode GetMode() const = 0;
+  virtual core::serverTypes GetRole() const = 0;
+  virtual core::serverState GetState() const = 0;
+  virtual IDatabaseSPtr CreateDatabase(core::IDataBaseInfoSPtr info) override = 0;
 
  protected:
   explicit IServerRemote(IDriver* drv);

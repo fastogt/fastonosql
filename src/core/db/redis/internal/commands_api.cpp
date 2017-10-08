@@ -1457,7 +1457,7 @@ const internal::ConstantCommandsArray g_commands = {
                   1,
                   0,
                   &CommandsApi::StrLen),
-    CommandHolder(DB_PUBLISH_COMMAND,
+    CommandHolder(DB_SUBSCRIBE_COMMAND,
                   "<channel> [channel ...]",
                   "Listen for messages published to the "
                   "given channels",
@@ -3217,7 +3217,7 @@ common::Error CommandsApi::Monitor(internal::CommandHandler* handler, commands_a
 
 common::Error CommandsApi::Subscribe(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
-  argv.push_front(DB_PUBLISH_COMMAND);
+  argv.push_front(DB_SUBSCRIBE_COMMAND);
   return red->Subscribe(argv, out);
 }
 

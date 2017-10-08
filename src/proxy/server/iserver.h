@@ -26,13 +26,8 @@
 
 namespace fastonosql {
 namespace proxy {
+
 class IDriver;
-}
-}  // namespace fastonosql
-
-namespace fastonosql {
-namespace proxy {
-
 class IServer : public IServerBase, public std::enable_shared_from_this<IServer> {
   Q_OBJECT
  public:
@@ -130,8 +125,8 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void DatabaseFlushed(core::IDataBaseInfoSPtr db);
   void DatabaseChanged(core::IDataBaseInfoSPtr db);
 
-  void KeyRemoved(core::IDataBaseInfoSPtr db, core::NKey key);
   void KeyAdded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
+  void KeyRemoved(core::IDataBaseInfoSPtr db, core::NKey key);
   void KeyLoaded(core::IDataBaseInfoSPtr db, core::NDbKValue key);
   void KeyRenamed(core::IDataBaseInfoSPtr db, core::NKey key, core::string_key_t new_name);
   void KeyTTLChanged(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl);
@@ -182,7 +177,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   virtual void timerEvent(QTimerEvent* event) override;
 
   virtual IDatabaseSPtr CreateDatabase(core::IDataBaseInfoSPtr info) = 0;
-  void Notify(QEvent* ev);
+  void NotifyStartEvent(QEvent* ev);
 
   // handle server events
   virtual void HandleConnectEvent(events::ConnectResponceEvent* ev);

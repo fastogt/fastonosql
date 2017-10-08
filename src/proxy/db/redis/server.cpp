@@ -36,15 +36,15 @@ Server::~Server() {
   StopCheckKeyExistTimer();
 }
 
-core::serverTypes Server::Role() const {
+core::serverTypes Server::GetRole() const {
   return role_;
 }
 
-core::serverMode Server::Mode() const {
+core::serverMode Server::GetMode() const {
   return mode_;
 }
 
-core::serverState Server::State() const {
+core::serverState Server::GetState() const {
   return core::SUP;
 }
 

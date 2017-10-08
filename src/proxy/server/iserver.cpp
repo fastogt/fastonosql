@@ -146,98 +146,98 @@ proxy::IServer::database_t IServer::FindDatabase(core::IDataBaseInfoSPtr inf) co
 void IServer::Connect(const events_info::ConnectInfoRequest& req) {
   emit ConnectStarted(req);
   QEvent* ev = new events::ConnectRequestEvent(this, req);
-  Notify(ev);
+  NotifyStartEvent(ev);
 }
 
 void IServer::Disconnect(const events_info::DisConnectInfoRequest& req) {
   StopCurrentEvent();
   emit DisconnectStarted(req);
   QEvent* ev = new events::DisconnectRequestEvent(this, req);
-  Notify(ev);
+  NotifyStartEvent(ev);
 }
 
 void IServer::LoadDatabases(const events_info::LoadDatabasesInfoRequest& req) {
   emit LoadDatabasesStarted(req);
   QEvent* ev = new events::LoadDatabasesInfoRequestEvent(this, req);
-  Notify(ev);
+  NotifyStartEvent(ev);
 }
 
 void IServer::LoadDatabaseContent(const events_info::LoadDatabaseContentRequest& req) {
   emit LoadDataBaseContentStarted(req);
   QEvent* ev = new events::LoadDatabaseContentRequestEvent(this, req);
-  Notify(ev);
+  NotifyStartEvent(ev);
 }
 
 void IServer::Execute(const events_info::ExecuteInfoRequest& req) {
   emit ExecuteStarted(req);
   QEvent* ev = new events::ExecuteRequestEvent(this, req);
-  Notify(ev);
+  NotifyStartEvent(ev);
 }
 
 void IServer::ShutDown(const events_info::ShutDownInfoRequest& req) {
   emit ShutdownStarted(req);
   QEvent* ev = new events::ShutDownRequestEvent(this, req);
-  Notify(ev);
+  NotifyStartEvent(ev);
 }
 
 void IServer::ImportToPath(const events_info::BackupInfoRequest& req) {
   emit BackupStarted(req);
   QEvent* ev = new events::ImportRequestEvent(this, req);
-  Notify(ev);
+  NotifyStartEvent(ev);
 }
 
 void IServer::ExportFromPath(const events_info::ExportInfoRequest& req) {
   emit ExportStarted(req);
   QEvent* ev = new events::ExportRequestEvent(this, req);
-  Notify(ev);
+  NotifyStartEvent(ev);
 }
 
 void IServer::ChangePassword(const events_info::ChangePasswordRequest& req) {
   emit ChangePasswordStarted(req);
   QEvent* ev = new events::ChangePasswordRequestEvent(this, req);
-  Notify(ev);
+  NotifyStartEvent(ev);
 }
 
 void IServer::SetMaxConnection(const events_info::ChangeMaxConnectionRequest& req) {
   emit ChangeMaxConnectionStarted(req);
   QEvent* ev = new events::ChangeMaxConnectionRequestEvent(this, req);
-  Notify(ev);
+  NotifyStartEvent(ev);
 }
 
 void IServer::LoadServerInfo(const events_info::ServerInfoRequest& req) {
   emit LoadServerInfoStarted(req);
   QEvent* ev = new events::ServerInfoRequestEvent(this, req);
-  Notify(ev);
+  NotifyStartEvent(ev);
 }
 
 void IServer::ServerProperty(const events_info::ServerPropertyInfoRequest& req) {
   emit LoadServerPropertyStarted(req);
   QEvent* ev = new events::ServerPropertyInfoRequestEvent(this, req);
-  Notify(ev);
+  NotifyStartEvent(ev);
 }
 
 void IServer::RequestHistoryInfo(const events_info::ServerInfoHistoryRequest& req) {
   emit LoadServerHistoryInfoStarted(req);
   QEvent* ev = new events::ServerInfoHistoryRequestEvent(this, req);
-  Notify(ev);
+  NotifyStartEvent(ev);
 }
 
 void IServer::ClearHistory(const events_info::ClearServerHistoryRequest& req) {
   emit ClearServerHistoryStarted(req);
   QEvent* ev = new events::ClearServerHistoryRequestEvent(this, req);
-  Notify(ev);
+  NotifyStartEvent(ev);
 }
 
 void IServer::ChangeProperty(const events_info::ChangeServerPropertyInfoRequest& req) {
   emit ChangeServerPropertyStarted(req);
   QEvent* ev = new events::ChangeServerPropertyInfoRequestEvent(this, req);
-  Notify(ev);
+  NotifyStartEvent(ev);
 }
 
 void IServer::LoadChannels(const events_info::LoadServerChannelsRequest& req) {
   emit LoadServerChannelsStarted(req);
   QEvent* ev = new events::LoadServerChannelsRequestEvent(this, req);
-  Notify(ev);
+  NotifyStartEvent(ev);
 }
 
 void IServer::customEvent(QEvent* event) {
@@ -329,7 +329,7 @@ void IServer::timerEvent(QTimerEvent* event) {
   QObject::timerEvent(event);
 }
 
-void IServer::Notify(QEvent* ev) {
+void IServer::NotifyStartEvent(QEvent* ev) {
   events_info::ProgressInfoResponce resp(0);
   emit ProgressChanged(resp);
   qApp->postEvent(drv_, ev);
@@ -713,7 +713,7 @@ void IServer::HandleClearServerHistoryResponceEvent(events::ClearServerHistoryRe
 void IServer::ProcessDiscoveryInfo(const events_info::DiscoveryInfoRequest& req) {
   emit LoadDiscoveryInfoStarted(req);
   QEvent* ev = new events::DiscoveryInfoRequestEvent(this, req);
-  Notify(ev);
+  NotifyStartEvent(ev);
 }
 
 }  // namespace proxy

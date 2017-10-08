@@ -90,6 +90,10 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>,
   common::Error Quit() WARN_UNUSED_RESULT;                                                 // nvi
 
  protected:
+  common::Error GenerateError(const std::string& cmd, const std::string& descr) WARN_UNUSED_RESULT {
+    const std::string buff = common::MemSPrintf("%s function error: %s", cmd, descr);
+    return common::make_error(buff);
+  }
   CDBConnectionClient* client_;
 
  private:

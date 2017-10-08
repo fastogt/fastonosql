@@ -692,8 +692,7 @@ common::Error DBConnection::QuitImpl() {
 
 common::Error DBConnection::CheckResultCommand(const std::string& cmd, int err) {
   if (err != LMDB_OK) {
-    std::string buff = common::MemSPrintf("%s function error: %s", cmd, mdb_strerror(err));
-    return common::make_error(buff);
+    return GenerateError(cmd, mdb_strerror(err));
   }
 
   return common::Error();

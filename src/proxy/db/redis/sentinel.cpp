@@ -18,8 +18,6 @@
 
 #include "proxy/db/redis/sentinel.h"
 
-#include <string>
-
 namespace fastonosql {
 namespace proxy {
 namespace redis {
