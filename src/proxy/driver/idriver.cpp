@@ -350,12 +350,12 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
     common::time64_t start_ts = common::time::current_mstime();
     for (size_t i = 0; i < commands.size(); ++i) {
       if (IsInterrupted()) {
-        res.setErrorInfo(common::ErrorValue(common::COMMON_EINTR));
+        res.setErrorInfo(common::make_error(common::COMMON_EINTR));
         goto done;
       }
 
       cur_progress += step;
-      NotifyProgress(sender, cur_progress);
+      NotifyProgress(sender, static_cast<int>(cur_progress));
 
       core::command_buffer_t command = commands[i];
       core::FastoObjectCommandIPtr cmd =

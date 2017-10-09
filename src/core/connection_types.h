@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <vector>
 #include <string>  // for string
 
 namespace fastonosql {
@@ -39,35 +40,7 @@ enum serverState { SUP = 0, SDOWN };
 enum serverConnectState { SCONNECTED = 0, SDISCONNECTED };
 enum serverMode { STANDALONE = 0, SENTINEL, CLUSTER };
 
-static const connectionTypes compiled_types[] = {
-#ifdef BUILD_WITH_REDIS
-    REDIS,
-#endif
-#ifdef BUILD_WITH_MEMCACHED
-    MEMCACHED,
-#endif
-#ifdef BUILD_WITH_SSDB
-    SSDB,
-#endif
-#ifdef BUILD_WITH_LEVELDB
-    LEVELDB,
-#endif
-#ifdef BUILD_WITH_ROCKSDB
-    ROCKSDB,
-#endif
-#ifdef BUILD_WITH_UNQLITE
-    UNQLITE,
-#endif
-#ifdef BUILD_WITH_LMDB
-    LMDB,
-#endif
-#ifdef BUILD_WITH_UPSCALEDB
-    UPSCALEDB,
-#endif
-#ifdef BUILD_WITH_FORESTDB
-    FORESTDB
-#endif
-};
+extern const std::vector<connectionTypes> g_compiled_types;
 
 enum ConnectionMode { InteractiveMode };
 

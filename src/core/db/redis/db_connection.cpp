@@ -621,7 +621,7 @@ common::Error DBConnection::SlaveMode(FastoObject* out) {
     }
   }
 
-  return common::ErrorValue(common::COMMON_EINTR);
+  return common::make_error(common::COMMON_EINTR);
 }
 
 common::Error DBConnection::ScanImpl(uint64_t cursor_in,
@@ -1148,7 +1148,7 @@ common::Error DBConnection::Monitor(const commands_args_t& argv, FastoObject* ou
     }
   }
 
-  return common::ErrorValue(common::COMMON_EINTR);
+  return common::make_error(common::COMMON_EINTR);
 }
 
 common::Error DBConnection::Subscribe(const commands_args_t& argv, FastoObject* out) {
@@ -1182,7 +1182,7 @@ common::Error DBConnection::Subscribe(const commands_args_t& argv, FastoObject* 
     }
   }
 
-  return common::ErrorValue(common::COMMON_EINTR);
+  return common::make_error(common::COMMON_EINTR);
 }
 
 common::Error DBConnection::SetEx(const NDbKValue& key, ttl_t ttl) {

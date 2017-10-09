@@ -66,7 +66,7 @@ inline bool operator==(const KeyString& r, const KeyString& l) {
 }
 
 inline bool operator!=(const KeyString& r, const KeyString& l) {
-  return !r.Equals(l);
+  return !(r == l);
 }
 
 typedef KeyString key_t;
@@ -91,6 +91,10 @@ class NKey {
 
 inline bool operator==(const NKey& r, const NKey& l) {
   return r.Equals(l);
+}
+
+inline bool operator!=(const NKey& r, const NKey& l) {
+  return !(r == l);
 }
 
 typedef std::vector<NKey> NKeys;
@@ -119,6 +123,10 @@ class NDbKValue {
 
 inline bool operator==(const NDbKValue& r, const NDbKValue& l) {
   return r.Equals(l);
+}
+
+inline bool operator!=(const NDbKValue& r, const NDbKValue& l) {
+  return !(r == l);
 }
 
 typedef std::vector<NDbKValue> NDbKValues;

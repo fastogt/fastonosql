@@ -87,8 +87,8 @@ ClusterDialog::ClusterDialog(QWidget* parent, proxy::IClusterSettingsBase* conne
 
   typeConnection_ = new QComboBox;
 
-  for (size_t i = 0; i < SIZEOFMASS(core::compiled_types); ++i) {
-    core::connectionTypes ct = core::compiled_types[i];
+  for (size_t i = 0; i < core::g_compiled_types.size(); ++i) {
+    core::connectionTypes ct = core::g_compiled_types[i];
     std::string str = common::ConvertToString(ct);
     QString qstr;
     if (common::ConvertFromString(str, &qstr)) {

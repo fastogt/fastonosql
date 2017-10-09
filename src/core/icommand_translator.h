@@ -46,6 +46,8 @@
 namespace fastonosql {
 namespace core {
 
+// GET alex\nSET alex
+// should return vector of 2 commands {{"GET","alex"}, {"SET", "alex"}}
 common::Error ParseCommands(const command_buffer_t& cmd, std::vector<command_buffer_t>* cmds);
 
 class ICommandTranslator {

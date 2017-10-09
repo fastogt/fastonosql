@@ -56,6 +56,10 @@ inline bool operator==(const SSHInfo& r, const SSHInfo& l) {
          r.current_method == l.current_method;
 }
 
+inline bool operator!=(const SSHInfo& r, const SSHInfo& l) {
+  return !(r == l);
+}
+
 }  // namespace core
 }  // namespace fastonosql
 
