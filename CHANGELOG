@@ -1,7 +1,8 @@
-1.9.1 /
+1.9.1 / October 10, 2017
 [Alexandr Topilski]
 - [SSDB] Auth command
 - [LMDB] Create/Remove database
+- Bug fixes
 
 1.9.0 / October 2, 2017
 [Alexandr Topilski]
