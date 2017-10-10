@@ -51,7 +51,7 @@
 
 namespace {
 
-const std::string iniPath("~/.config/" PROJECT_NAME "/conf.ini");
+const std::string iniPath("~/.config/" PROJECT_NAME "/config.ini");
 
 QFont default_font() {
   /*#if defined(OS_MACOSX) || defined(OS_FREEBSD)

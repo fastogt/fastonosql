@@ -36,9 +36,6 @@ class ConnectionSettings : public IConnectionSettingsRemote {
   virtual std::string GetDelimiter() const override;
   virtual void SetDelimiter(const std::string& delimiter) override;
 
-  virtual std::string GetNsSeparator() const override;
-  virtual void SetNsSeparator(const std::string& ns) override;
-
   virtual common::net::HostAndPort GetHost() const override;
   virtual void SetHost(const common::net::HostAndPort& host) override;
 

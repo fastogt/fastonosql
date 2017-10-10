@@ -913,8 +913,8 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
 
 common::Error DBConnection::DBkcountImpl(size_t* size) {
   std::vector<std::string> ret;
-  common::Error err =
-      CheckResultCommand(DB_DBKCOUNT_COMMAND, connection_.handle_->keys(std::string(), std::string(), UINT64_MAX, &ret));
+  common::Error err = CheckResultCommand(DB_DBKCOUNT_COMMAND,
+                                         connection_.handle_->keys(std::string(), std::string(), UINT64_MAX, &ret));
   if (err) {
     return err;
   }
@@ -925,7 +925,8 @@ common::Error DBConnection::DBkcountImpl(size_t* size) {
 
 common::Error DBConnection::FlushDBImpl() {
   std::vector<std::string> ret;
-  common::Error err = CheckResultCommand(DB_FLUSHDB_COMMAND, connection_.handle_->keys(std::string(), std::string(), 0, &ret));
+  common::Error err =
+      CheckResultCommand(DB_FLUSHDB_COMMAND, connection_.handle_->keys(std::string(), std::string(), 0, &ret));
   if (err) {
     return err;
   }

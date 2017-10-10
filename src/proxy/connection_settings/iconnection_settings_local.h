@@ -30,9 +30,6 @@ class IConnectionSettingsLocal : public IConnectionSettingsBase {
   virtual std::string GetDelimiter() const override = 0;
   virtual void SetDelimiter(const std::string& delimiter) override = 0;
 
-  virtual std::string GetNsSeparator() const override = 0;
-  virtual void SetNsSeparator(const std::string& ns) override = 0;
-
   virtual std::string GetDBPath() const = 0;
   virtual void SetDBPath(const std::string& db_path) = 0;
 

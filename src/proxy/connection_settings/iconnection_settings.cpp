@@ -18,6 +18,8 @@
 
 #include "proxy/connection_settings/iconnection_settings.h"
 
+#include <sstream>
+
 #include <inttypes.h>  // for PRIu32
 
 #include <common/convert2string.h>  // for ConvertFromString, etc
@@ -87,8 +89,10 @@ ConnectionSettingsPath ConnectionSettingsPath::Root() {
   return ConnectionSettingsPath(root);
 }
 
+const char IConnectionSettings::default_ns_separator[] = ":";
+
 IConnectionSettings::IConnectionSettings(const connection_path_t& connectionPath, core::connectionTypes type)
-    : connection_path_(connectionPath), type_(type), msinterval_(0) {}
+    : connection_path_(connectionPath), type_(type), msinterval_(0), ns_separator_(default_ns_separator) {}
 
 IConnectionSettings::~IConnectionSettings() {}
 
@@ -116,9 +120,19 @@ void IConnectionSettings::SetLoggingMsTimeInterval(int mstime) {
   msinterval_ = mstime;
 }
 
+std::string IConnectionSettings::GetNsSeparator() const {
+  return ns_separator_;
+}
+
+void IConnectionSettings::SetNsSeparator(const std::string& ns) {
+  ns_separator_ = ns;
+}
+
 std::string IConnectionSettings::ToString() const {
-  return common::MemSPrintf("%u,%s,%" PRIu32, static_cast<unsigned char>(type_), connection_path_.ToString(),
-                            msinterval_);
+  std::basic_stringstream<char> wr;
+  wr << type_ << setting_value_delemitr << connection_path_.ToString() << setting_value_delemitr << msinterval_
+     << setting_value_delemitr << ns_separator_;
+  return wr.str();
 }
 
 IConnectionSettingsBase::IConnectionSettingsBase(const connection_path_t& connectionPath, core::connectionTypes type)
@@ -196,7 +210,7 @@ std::string IConnectionSettingsBase::GetLoggingPath() const {
 }
 
 std::string IConnectionSettingsBase::ToString() const {
-  return IConnectionSettings::ToString() + ',' + GetCommandLine();
+  return IConnectionSettings::ToString() + setting_value_delemitr + GetCommandLine();
 }
 
 }  // namespace proxy

@@ -222,7 +222,8 @@ common::Error DBConnection::DelInner(key_t key) {
   }
 
   const string_key_t key_slice = key.ToBytes();
-  return CheckResultCommand(DB_DELETE_KEY_COMMAND, fdb_del_kv(connection_.handle_->kvs, key_slice.data(), key_slice.size()));
+  return CheckResultCommand(DB_DELETE_KEY_COMMAND,
+                            fdb_del_kv(connection_.handle_->kvs, key_slice.data(), key_slice.size()));
 }
 
 common::Error DBConnection::ScanImpl(uint64_t cursor_in,

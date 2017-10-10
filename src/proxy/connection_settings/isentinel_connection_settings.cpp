@@ -32,13 +32,13 @@ SentinelSettings::SentinelSettings() : sentinel(), sentinel_nodes() {}
 std::string SentinelSettingsToString(const SentinelSettings& sent) {
   std::stringstream str;
   std::string sent_raw = sent.sentinel->ToString();
-  str << common::utils::base64::encode64(sent_raw) << ',';
+  str << common::utils::base64::encode64(sent_raw) << setting_value_delemitr;
 
   std::string sents_raw;
   for (size_t i = 0; i < sent.sentinel_nodes.size(); ++i) {
     IConnectionSettingsBaseSPtr serv = sent.sentinel_nodes[i];
     if (serv) {
-      sents_raw += magicNumber;
+      sents_raw += magic_number;
       sents_raw += serv->ToString();
     }
   }
@@ -75,7 +75,7 @@ bool SentinelSettingsfromString(const std::string& text, SentinelSettings* sent)
         len = raw_sent.length();
         for (size_t j = 0; j < len; ++j) {
           ch = raw_sent[j];
-          if (ch == magicNumber || j == len - 1) {
+          if (ch == magic_number || j == len - 1) {
             IConnectionSettingsBaseSPtr ser(ConnectionSettingsFactory::GetInstance().CreateFromString(serText));
             if (ser) {
               result.sentinel_nodes.push_back(ser);
@@ -113,10 +113,10 @@ void ISentinelSettingsBase::AddSentinel(sentinel_connection_t sent) {
 
 std::string ISentinelSettingsBase::ToString() const {
   std::stringstream str;
-  str << IConnectionSettings::ToString() << ',';
+  str << IConnectionSettings::ToString() << setting_value_delemitr;
   for (size_t i = 0; i < sentinel_nodes_.size(); ++i) {
     sentinel_connection_t sent = sentinel_nodes_[i];
-    str << magicNumber << SentinelSettingsToString(sent);
+    str << magic_number << SentinelSettingsToString(sent);
   }
 
   std::string res = str.str();

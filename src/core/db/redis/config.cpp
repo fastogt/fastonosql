@@ -57,8 +57,6 @@ Config ParseOptions(int argc, char** argv) {
       cfg.auth = argv[++i];
     } else if (!strcmp(argv[i], "-d") && !lastarg) {
       cfg.delimiter = argv[++i];
-    } else if (!strcmp(argv[i], "-ns") && !lastarg) {
-      cfg.ns_separator = argv[++i];
     } else if (!strcmp(argv[i], "-ssl")) {
       cfg.is_ssl = true;
     } else {

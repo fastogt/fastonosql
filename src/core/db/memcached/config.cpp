@@ -53,8 +53,6 @@ Config ParseOptions(int argc, char** argv) {
       cfg.password = argv[++i];
     } else if (!strcmp(argv[i], "-d") && !lastarg) {
       cfg.delimiter = argv[++i];
-    } else if (!strcmp(argv[i], "-ns") && !lastarg) {
-      cfg.ns_separator = argv[++i];
     } else {
       if (argv[i][0] == '-') {
         const std::string buff = common::MemSPrintf(

@@ -70,7 +70,7 @@ IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromString(const s
         std::string serText;
         for (size_t j = i + 2; j < len; ++j) {
           ch = val[j];
-          if (ch == magicNumber || j == len - 1) {
+          if (ch == magic_number || j == len - 1) {
             IConnectionSettingsBaseSPtr ser(ConnectionSettingsFactory::GetInstance().CreateFromString(serText));
             result->AddNode(ser);
             serText.clear();

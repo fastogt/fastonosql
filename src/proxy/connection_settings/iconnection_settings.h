@@ -27,7 +27,8 @@
 namespace fastonosql {
 namespace proxy {
 
-static const char magicNumber = 0x1E;
+static const char magic_number = 0x1E;
+static const char setting_value_delemitr = 0x1F;
 
 class ConnectionSettingsPath {
  public:
@@ -53,6 +54,8 @@ typedef ConnectionSettingsPath connection_path_t;
 
 class IConnectionSettings : public common::ClonableBase<IConnectionSettings> {
  public:
+  static const char default_ns_separator[];
+
   virtual ~IConnectionSettings();
 
   connection_path_t GetPath() const;
@@ -65,6 +68,9 @@ class IConnectionSettings : public common::ClonableBase<IConnectionSettings> {
   int GetLoggingMsTimeInterval() const;
   void SetLoggingMsTimeInterval(int mstime);
 
+  std::string GetNsSeparator() const;
+  void SetNsSeparator(const std::string& ns);
+
   virtual std::string ToString() const;
   virtual IConnectionSettings* Clone() const override = 0;
 
@@ -75,6 +81,7 @@ class IConnectionSettings : public common::ClonableBase<IConnectionSettings> {
 
  private:
   int msinterval_;
+  std::string ns_separator_;
 };
 
 class IConnectionSettingsBase : public IConnectionSettings {
@@ -88,9 +95,6 @@ class IConnectionSettingsBase : public IConnectionSettings {
 
   virtual std::string GetDelimiter() const = 0;
   virtual void SetDelimiter(const std::string& delimiter) = 0;
-
-  virtual std::string GetNsSeparator() const = 0;
-  virtual void SetNsSeparator(const std::string& ns) = 0;
 
   virtual std::string GetCommandLine() const = 0;
   virtual void SetCommandLine(const std::string& line) = 0;

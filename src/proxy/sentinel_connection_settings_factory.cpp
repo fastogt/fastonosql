@@ -69,7 +69,7 @@ ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromString(const
         std::string serText;
         for (size_t j = i + 2; j < len; ++j) {
           ch = val[j];
-          if (ch == magicNumber || j == len - 1) {
+          if (ch == magic_number || j == len - 1) {
             SentinelSettings sent;
             bool res = SentinelSettingsfromString(serText, &sent);
             if (res) {

@@ -47,11 +47,11 @@ void IClusterSettingsBase::AddNode(IConnectionSettingsBaseSPtr node) {
 
 std::string IClusterSettingsBase::ToString() const {
   std::stringstream str;
-  str << IConnectionSettings::ToString() << ',';
+  str << IConnectionSettings::ToString() << setting_value_delemitr;
   for (size_t i = 0; i < clusters_nodes_.size(); ++i) {
     IConnectionSettingsBaseSPtr serv = clusters_nodes_[i];
     if (serv) {
-      str << magicNumber << serv->ToString();
+      str << magic_number << serv->ToString();
     }
   }
 

@@ -440,8 +440,9 @@ void IServer::HandleExecuteEvent(events::ExecuteResponceEvent* ev) {
   auto v = ev->value();
   common::Error err(v.errorInfo());
   if (err) {
-    LOG_ERROR(err, err->GetErrorCode() == common::COMMON_EINTR ? common::logging::LOG_LEVEL_WARNING
-                                                               : common::logging::LOG_LEVEL_ERR,
+    LOG_ERROR(err,
+              err->GetErrorCode() == common::COMMON_EINTR ? common::logging::LOG_LEVEL_WARNING
+                                                          : common::logging::LOG_LEVEL_ERR,
               true);
   }
 

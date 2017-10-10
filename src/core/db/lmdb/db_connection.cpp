@@ -533,7 +533,8 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
 common::Error DBConnection::DBkcountImpl(size_t* size) {
   MDB_cursor* cursor = NULL;
   MDB_txn* txn = NULL;
-  common::Error err = CheckResultCommand(DB_DBKCOUNT_COMMAND, mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn));
+  common::Error err =
+      CheckResultCommand(DB_DBKCOUNT_COMMAND, mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn));
   if (err) {
     return err;
   }

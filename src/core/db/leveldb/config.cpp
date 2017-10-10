@@ -44,8 +44,6 @@ Config ParseOptions(int argc, char** argv) {
 
     if (!strcmp(argv[i], "-d") && !lastarg) {
       cfg.delimiter = argv[++i];
-    } else if (!strcmp(argv[i], "-ns") && !lastarg) {
-      cfg.ns_separator = argv[++i];
     } else if (!strcmp(argv[i], "-f") && !lastarg) {
       cfg.db_path = argv[++i];
     } else if (!strcmp(argv[i], "-c")) {

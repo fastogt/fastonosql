@@ -33,14 +33,6 @@ void ConnectionSettings::SetDelimiter(const std::string& delimiter) {
   info_.delimiter = delimiter;
 }
 
-std::string ConnectionSettings::GetNsSeparator() const {
-  return info_.ns_separator;
-}
-
-void ConnectionSettings::SetNsSeparator(const std::string& ns) {
-  info_.ns_separator = ns;
-}
-
 common::net::HostAndPort ConnectionSettings::GetHost() const {
   return info_.host;
 }

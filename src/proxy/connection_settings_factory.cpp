@@ -122,7 +122,7 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateFromString(const std::
 
   for (size_t i = 0; i < len; ++i) {
     char ch = val[i];
-    if (ch == ',') {
+    if (ch == setting_value_delemitr) {
       if (commaCount == 0) {
         core::connectionTypes crT = static_cast<core::connectionTypes>(elText[0] - 48);
         result = CreateFromType(crT, connection_path_t());
@@ -137,6 +137,8 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateFromString(const std::
         if (common::ConvertFromString(elText, &msTime)) {
           result->SetLoggingMsTimeInterval(msTime);
         }
+      } else if (commaCount == 3) {
+        result->SetNsSeparator(elText);
         if (!IsCanSSHConnection(result->GetType())) {
           result->SetCommandLine(val.substr(i + 1));
           break;

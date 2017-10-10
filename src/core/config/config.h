@@ -27,17 +27,15 @@ namespace core {
 
 typedef std::vector<std::string> config_args_t;
 
-// -d -ns
+// -d
 struct BaseConfig {
   static const char default_delimiter[];
-  static const char default_ns_separator[];
   BaseConfig();
 
   std::string delimiter;
-  std::string ns_separator;  // FIXME: only for gui => move to settings
 };
 
-// -f -d -ns
+// -f -d
 struct LocalConfig : public BaseConfig {
   explicit LocalConfig(const std::string& db_path);
 
@@ -46,7 +44,7 @@ struct LocalConfig : public BaseConfig {
   std::string db_path;
 };
 
-// -h -p -d -ns
+// -h -p -d
 struct RemoteConfig : public BaseConfig {
   explicit RemoteConfig(const common::net::HostAndPort& host);
 
