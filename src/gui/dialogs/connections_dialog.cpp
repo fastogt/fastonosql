@@ -438,57 +438,60 @@ void ConnectionsDialog::retranslateUi() {
 void ConnectionsDialog::addConnection(proxy::IConnectionSettingsBaseSPtr con) {
   proxy::connection_path_t path = con->GetPath();
   proxy::connection_path_t dir(path.GetDirectory());
-  if (dir == proxy::connection_path_t::Root()) {
+  if (dir == proxy::connection_path_t::GetRoot()) {
     ConnectionListWidgetItem* item = new ConnectionListWidgetItem(nullptr);
     item->setConnection(con);
     listWidget_->addTopLevelItem(item);
-  } else {
-    DirectoryListWidgetItem* dirItem = findFolderByPath(dir);
-    if (!dirItem) {
-      dirItem = new DirectoryListWidgetItem(dir);
-    }
-
-    ConnectionListWidgetItem* item = new ConnectionListWidgetItem(dirItem);
-    item->setConnection(con);
-    dirItem->addChild(item);
-    listWidget_->addTopLevelItem(dirItem);
+    return;
   }
+
+  DirectoryListWidgetItem* dirItem = findFolderByPath(dir);
+  if (!dirItem) {
+    dirItem = new DirectoryListWidgetItem(dir);
+  }
+
+  ConnectionListWidgetItem* item = new ConnectionListWidgetItem(dirItem);
+  item->setConnection(con);
+  dirItem->addChild(item);
+  listWidget_->addTopLevelItem(dirItem);
 }
 
 void ConnectionsDialog::addCluster(proxy::IClusterSettingsBaseSPtr con) {
   proxy::connection_path_t path = con->GetPath();
   proxy::connection_path_t dir(path.GetDirectory());
-  if (dir == proxy::connection_path_t::Root()) {
+  if (dir == proxy::connection_path_t::GetRoot()) {
     ClusterConnectionListWidgetItemContainer* item = new ClusterConnectionListWidgetItemContainer(con, nullptr);
     listWidget_->addTopLevelItem(item);
-  } else {
-    DirectoryListWidgetItem* dirItem = findFolderByPath(dir);
-    if (!dirItem) {
-      dirItem = new DirectoryListWidgetItem(dir);
-    }
-
-    ClusterConnectionListWidgetItemContainer* item = new ClusterConnectionListWidgetItemContainer(con, dirItem);
-    dirItem->addChild(item);
-    listWidget_->addTopLevelItem(dirItem);
+    return;
   }
+
+  DirectoryListWidgetItem* dirItem = findFolderByPath(dir);
+  if (!dirItem) {
+    dirItem = new DirectoryListWidgetItem(dir);
+  }
+
+  ClusterConnectionListWidgetItemContainer* item = new ClusterConnectionListWidgetItemContainer(con, dirItem);
+  dirItem->addChild(item);
+  listWidget_->addTopLevelItem(dirItem);
 }
 
 void ConnectionsDialog::addSentinel(proxy::ISentinelSettingsBaseSPtr con) {
   proxy::connection_path_t path = con->GetPath();
   proxy::connection_path_t dir(path.GetDirectory());
-  if (dir == proxy::connection_path_t::Root()) {
+  if (dir == proxy::connection_path_t::GetRoot()) {
     SentinelConnectionListWidgetItemContainer* item = new SentinelConnectionListWidgetItemContainer(con, nullptr);
     listWidget_->addTopLevelItem(item);
-  } else {
-    DirectoryListWidgetItem* dirItem = findFolderByPath(dir);
-    if (!dirItem) {
-      dirItem = new DirectoryListWidgetItem(dir);
-    }
-
-    SentinelConnectionListWidgetItemContainer* item = new SentinelConnectionListWidgetItemContainer(con, dirItem);
-    dirItem->addChild(item);
-    listWidget_->addTopLevelItem(dirItem);
+    return;
   }
+
+  DirectoryListWidgetItem* dirItem = findFolderByPath(dir);
+  if (!dirItem) {
+    dirItem = new DirectoryListWidgetItem(dir);
+  }
+
+  SentinelConnectionListWidgetItemContainer* item = new SentinelConnectionListWidgetItemContainer(con, dirItem);
+  dirItem->addChild(item);
+  listWidget_->addTopLevelItem(dirItem);
 }
 
 DirectoryListWidgetItem* ConnectionsDialog::findFolderByPath(const proxy::connection_path_t& path) const {

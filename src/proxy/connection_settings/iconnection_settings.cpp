@@ -84,7 +84,7 @@ std::string ConnectionSettingsPath::ToString() const {
   return common::ConvertToString(path_);
 }
 
-ConnectionSettingsPath ConnectionSettingsPath::Root() {
+ConnectionSettingsPath ConnectionSettingsPath::GetRoot() {
   static common::file_system::ascii_string_path root(common::file_system::get_separator_string<char>());
   return ConnectionSettingsPath(root);
 }

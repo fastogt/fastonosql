@@ -44,7 +44,7 @@ QString toRawCommandLine(QString input) {
   return input.replace("\\n", "\n").replace("\\r", "\r");
 }
 
-const QStringList separators = {":", ";", ","};
+const QStringList separators = {":", ";", ",", "[", "]"};
 const QStringList delimiters = {"\\n", "\\r\\n"};
 }  // namespace
 
@@ -143,7 +143,7 @@ proxy::IConnectionSettingsBase* ConnectionBaseWidget::createConnection() const {
 
   proxy::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
   proxy::IConnectionSettingsBase* conn = createConnectionImpl(path);
-  conn->SetNsSeparator(common::ConvertToString(toRawCommandLine(namespaceSeparator_->currentText())));
+  conn->SetNsSeparator(common::ConvertToString(namespaceSeparator_->currentText()));
   conn->SetDelimiter(common::ConvertToString(toRawCommandLine(delimiter_->currentText())));
   if (isLogging()) {
     conn->SetLoggingMsTimeInterval(loggingInterval());
@@ -168,7 +168,7 @@ void ConnectionBaseWidget::syncControls(proxy::IConnectionSettingsBase* connecti
     std::string delemitr = connection->GetDelimiter();
     QString qns_separator;
     common::ConvertFromString(ns_separator, &qns_separator);
-    namespaceSeparator_->setCurrentText(StableCommandLine(qns_separator));
+    namespaceSeparator_->setCurrentText(qns_separator);
     QString qdelemitr;
     common::ConvertFromString(delemitr, &qdelemitr);
     delimiter_->setCurrentText(qdelemitr);

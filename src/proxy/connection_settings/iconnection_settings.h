@@ -39,7 +39,7 @@ class ConnectionSettingsPath {
   std::string GetDirectory() const;
   bool Equals(const ConnectionSettingsPath& path) const;
   std::string ToString() const;
-  static ConnectionSettingsPath Root();
+  static ConnectionSettingsPath GetRoot();
 
  private:
   explicit ConnectionSettingsPath(const common::file_system::ascii_string_path& path);
