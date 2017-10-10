@@ -286,8 +286,9 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
     return err;
   }
 
+  const char* stabled_args = args.empty() ? NULL : args.c_str();
   memcached_return_t error;
-  memcached_stat_st* st = memcached_stat(connection_.handle_, const_cast<char*>(args.c_str()), &error);
+  memcached_stat_st* st = memcached_stat(connection_.handle_, const_cast<char*>(stabled_args), &error);
   err = CheckResultCommand(DB_INFO_COMMAND, error);
   if (err) {
     return err;
