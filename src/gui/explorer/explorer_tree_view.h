@@ -66,8 +66,6 @@ class ExplorerTreeView : public QTreeView {
   void createDb();
   void openInfoServerDialog();
   void openPropertyServerDialog();
-  void openSetPasswordServerDialog();
-  void openMaxClientSetDialog();
   void openHistoryServerDialog();
   void clearHistory();
   void closeServerConnection();
@@ -76,7 +74,6 @@ class ExplorerTreeView : public QTreeView {
 
   void importServer();
   void exportServer();
-  void shutdownServer();
 
   void loadContentDb();
   void removeAllKeys();

@@ -243,7 +243,6 @@ SET(HEADERS_GUI_DIALOGS_TO_MOC
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/dbkey_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/view_keys_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/pub_sub_dialog.h
-  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/change_password_server_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_connection.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_sentinel_connection.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/test_connection.h
@@ -274,7 +273,6 @@ SET(SOURCES_GUI_DIALOGS
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/dbkey_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/view_keys_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/pub_sub_dialog.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/change_password_server_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_connection.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_sentinel_connection.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/test_connection.cpp

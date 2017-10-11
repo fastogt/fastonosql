@@ -38,10 +38,6 @@ ConnectInfoRequest::ConnectInfoRequest(initiator_type sender, error_type er) : b
 
 ConnectInfoResponce::ConnectInfoResponce(const base_class& request) : base_class(request) {}
 
-ShutDownInfoRequest::ShutDownInfoRequest(initiator_type sender, error_type er) : base_class(sender, er) {}
-
-ShutDownInfoResponce::ShutDownInfoResponce(const base_class& request) : base_class(request) {}
-
 BackupInfoRequest::BackupInfoRequest(initiator_type sender, const std::string& path, error_type er)
     : base_class(sender, er), path(path) {}
 
@@ -51,19 +47,6 @@ ExportInfoRequest::ExportInfoRequest(initiator_type sender, const std::string& p
     : base_class(sender, er), path(path) {}
 
 ExportInfoResponce::ExportInfoResponce(const base_class& request) : base_class(request) {}
-
-ChangePasswordRequest::ChangePasswordRequest(initiator_type sender,
-                                             const std::string& oldPassword,
-                                             const std::string& newPassword,
-                                             error_type er)
-    : base_class(sender, er), old_password(oldPassword), new_password(newPassword) {}
-
-ChangePasswordResponce::ChangePasswordResponce(const base_class& request) : base_class(request) {}
-
-ChangeMaxConnectionRequest::ChangeMaxConnectionRequest(initiator_type sender, int maxConnection, error_type er)
-    : base_class(sender, er), max_connection(maxConnection) {}
-
-ChangeMaxConnectionResponce::ChangeMaxConnectionResponce(const base_class& request) : base_class(request) {}
 
 DiscoveryInfoRequest::DiscoveryInfoRequest(initiator_type sender, error_type er) : base_class(sender, er) {}
 

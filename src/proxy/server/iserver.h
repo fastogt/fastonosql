@@ -62,20 +62,11 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void DisconnectStarted(const events_info::DisConnectInfoRequest& req);
   void DisconnectFinished(const events_info::DisConnectInfoResponce& res);
 
-  void ShutdownStarted(const events_info::ShutDownInfoRequest& req);
-  void ShutdownFinished(const events_info::ShutDownInfoResponce& res);
-
   void BackupStarted(const events_info::BackupInfoRequest& req);
   void BackupFinished(const events_info::BackupInfoResponce& res);
 
   void ExportStarted(const events_info::ExportInfoRequest& req);
   void ExportFinished(const events_info::ExportInfoResponce& res);
-
-  void ChangePasswordStarted(const events_info::ChangePasswordRequest& req);
-  void ChangePasswordFinished(const events_info::ChangePasswordResponce& res);
-
-  void ChangeMaxConnectionStarted(const events_info::ChangeMaxConnectionRequest& req);
-  void ChangeMaxConnectionFinished(const events_info::ChangeMaxConnectionResponce& res);
 
   void ExecuteStarted(const events_info::ExecuteInfoRequest& req);
   void ExecuteFinished(const events_info::ExecuteInfoResponce& res);
@@ -143,15 +134,10 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
                                                                                  // LoadDatabaseContentFinished
   void Execute(const events_info::ExecuteInfoRequest& req);                      // signals: ExecuteStarted
 
-  void ShutDown(const events_info::ShutDownInfoRequest& req);                 // signals: ShutdownStarted,
-                                                                              // ShutdownFinished
-  void ImportToPath(const events_info::BackupInfoRequest& req);               // signals: BackupStarted, BackupFinished
-  void ExportFromPath(const events_info::ExportInfoRequest& req);             // signals: ExportStarted, ExportFinished
-  void ChangePassword(const events_info::ChangePasswordRequest& req);         // signals: ChangePasswordStarted,
-                                                                              // ChangePasswordFinished
-  void SetMaxConnection(const events_info::ChangeMaxConnectionRequest& req);  // signals: ChangeMaxConnectionStarted,
-                                                                              // ChangeMaxConnectionFinished
-  void LoadServerInfo(const events_info::ServerInfoRequest& req);             // signals:
+  void ImportToPath(const events_info::BackupInfoRequest& req);    // signals: BackupStarted, BackupFinished
+  void ExportFromPath(const events_info::ExportInfoRequest& req);  // signals: ExportStarted, ExportFinished
+
+  void LoadServerInfo(const events_info::ServerInfoRequest& req);  // signals:
   // LoadServerInfoStarted,
   // LoadServerInfoFinished
   void ServerProperty(const events_info::ServerPropertyInfoRequest& req);     // signals: LoadServerPropertyStarted,
@@ -186,11 +172,8 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   virtual void HandleLoadServerPropertyEvent(events::ServerPropertyInfoResponceEvent* ev);
   virtual void HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoResponceEvent* ev);
   virtual void HandleLoadServerChannelsEvent(events::LoadServerChannelsResponceEvent* ev);
-  virtual void HandleShutdownEvent(events::ShutDownResponceEvent* ev);
   virtual void HandleImportEvent(events::ImportResponceEvent* ev);
   virtual void HandleExportEvent(events::ExportResponceEvent* ev);
-  virtual void HandleChangePasswordEvent(events::ChangePasswordResponceEvent* ev);
-  virtual void HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionResponceEvent* ev);
   virtual void HandleExecuteEvent(events::ExecuteResponceEvent* ev);
 
   // handle database events

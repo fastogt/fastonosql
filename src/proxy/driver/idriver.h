@@ -109,11 +109,8 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   virtual void HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev);
   virtual void HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev);
   virtual void HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequestEvent* ev);
-  virtual void HandleShutdownEvent(events::ShutDownRequestEvent* ev);
   virtual void HandleImportEvent(events::ImportRequestEvent* ev);
   virtual void HandleExportEvent(events::ExportRequestEvent* ev);
-  virtual void HandleChangePasswordEvent(events::ChangePasswordRequestEvent* ev);
-  virtual void HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev);
   virtual void HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev);
 
   template <typename T>

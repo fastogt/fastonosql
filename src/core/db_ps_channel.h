@@ -26,17 +26,17 @@ namespace core {
 class NDbPSChannel {
  public:
   NDbPSChannel();
-  NDbPSChannel(const std::string& name, uint32_t nos);
+  NDbPSChannel(const std::string& name, size_t nos);
 
   std::string GetName() const;
   void SetName(const std::string& name);
 
-  uint32_t NumberOfSubscribers() const;
-  void SetNumberOfSubscribers(uint32_t nos);
+  size_t GetNumberOfSubscribers() const;
+  void SetNumberOfSubscribers(size_t nos);
 
  private:
   std::string name_;
-  uint32_t number_of_subscribers_;
+  size_t number_of_subscribers_;
 };
 
 }  // namespace core

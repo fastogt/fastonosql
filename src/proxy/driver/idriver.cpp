@@ -192,9 +192,6 @@ void IDriver::customEvent(QEvent* event) {
   if (type == static_cast<QEvent::Type>(events::ConnectRequestEvent::EventType)) {
     events::ConnectRequestEvent* ev = static_cast<events::ConnectRequestEvent*>(event);
     HandleConnectEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::ShutDownRequestEvent::EventType)) {
-    events::ShutDownRequestEvent* ev = static_cast<events::ShutDownRequestEvent*>(event);
-    HandleShutdownEvent(ev);  // ni
   } else if (type == static_cast<QEvent::Type>(events::DisconnectRequestEvent::EventType)) {
     events::DisconnectRequestEvent* ev = static_cast<events::DisconnectRequestEvent*>(event);
     HandleDisconnectEvent(ev);
@@ -229,12 +226,6 @@ void IDriver::customEvent(QEvent* event) {
   } else if (type == static_cast<QEvent::Type>(events::ExportRequestEvent::EventType)) {
     events::ExportRequestEvent* ev = static_cast<events::ExportRequestEvent*>(event);
     HandleExportEvent(ev);  // ni
-  } else if (type == static_cast<QEvent::Type>(events::ChangePasswordRequestEvent::EventType)) {
-    events::ChangePasswordRequestEvent* ev = static_cast<events::ChangePasswordRequestEvent*>(event);
-    HandleChangePasswordEvent(ev);  // ni
-  } else if (type == static_cast<QEvent::Type>(events::ChangeMaxConnectionRequestEvent::EventType)) {
-    events::ChangeMaxConnectionRequestEvent* ev = static_cast<events::ChangeMaxConnectionRequestEvent*>(event);
-    HandleChangeMaxConnectionEvent(ev);  // ni
   } else if (type == static_cast<QEvent::Type>(events::LoadDatabaseContentRequestEvent::EventType)) {
     events::LoadDatabaseContentRequestEvent* ev = static_cast<events::LoadDatabaseContentRequestEvent*>(event);
     HandleLoadDatabaseContentEvent(ev);
@@ -396,26 +387,12 @@ void IDriver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsReq
       this, ev, "load server channels");
 }
 
-void IDriver::HandleShutdownEvent(events::ShutDownRequestEvent* ev) {
-  ReplyNotImplementedYet<events::ShutDownRequestEvent, events::ShutDownResponceEvent>(this, ev, "shutdown");
-}
-
 void IDriver::HandleImportEvent(events::ImportRequestEvent* ev) {
   ReplyNotImplementedYet<events::ImportRequestEvent, events::ImportResponceEvent>(this, ev, "backup server");
 }
 
 void IDriver::HandleExportEvent(events::ExportRequestEvent* ev) {
   ReplyNotImplementedYet<events::ExportRequestEvent, events::ExportResponceEvent>(this, ev, "export server");
-}
-
-void IDriver::HandleChangePasswordEvent(events::ChangePasswordRequestEvent* ev) {
-  ReplyNotImplementedYet<events::ChangePasswordRequestEvent, events::ChangePasswordResponceEvent>(this, ev,
-                                                                                                  "change password");
-}
-
-void IDriver::HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev) {
-  ReplyNotImplementedYet<events::ChangeMaxConnectionRequestEvent, events::ChangeMaxConnectionResponceEvent>(
-      this, ev, "change maximum connection");
 }
 
 void IDriver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) {

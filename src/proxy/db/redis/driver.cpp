@@ -159,21 +159,6 @@ common::Error Driver::CurrentDataBaseInfo(core::IDataBaseInfo** info) {
   return impl_->Select(impl_->GetCurrentDBName(), info);
 }
 
-void Driver::HandleShutdownEvent(events::ShutDownRequestEvent* ev) {
-  QObject* sender = ev->sender();
-  NotifyProgress(sender, 0);
-  events::ShutDownResponceEvent::value_type res(ev->value());
-  NotifyProgress(sender, 25);
-  core::FastoObjectCommandIPtr cmd = CreateCommandFast(REDIS_SHUTDOWN_COMMAND, core::C_INNER);
-  common::Error err = Execute(cmd);
-  if (err) {
-    res.setErrorInfo(err);
-  }
-  NotifyProgress(sender, 75);
-  Reply(sender, new events::ShutDownResponceEvent(this, res));
-  NotifyProgress(sender, 100);
-}
-
 void Driver::HandleImportEvent(events::ImportRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
@@ -205,44 +190,6 @@ void Driver::HandleExportEvent(events::ExportRequestEvent* ev) {
   }
   NotifyProgress(sender, 75);
   Reply(sender, new events::ExportResponceEvent(this, res));
-  NotifyProgress(sender, 100);
-}
-
-void Driver::HandleChangePasswordEvent(events::ChangePasswordRequestEvent* ev) {
-  QObject* sender = ev->sender();
-  NotifyProgress(sender, 0);
-  events::ChangePasswordResponceEvent::value_type res(ev->value());
-  NotifyProgress(sender, 25);
-  core::command_buffer_writer_t wr;
-  wr << REDIS_SET_PASSWORD_COMMAND << " " << res.new_password;
-  core::command_buffer_t pattern_result = wr.str();
-  core::FastoObjectCommandIPtr cmd = CreateCommandFast(pattern_result, core::C_INNER);
-  common::Error err = Execute(cmd);
-  if (err) {
-    res.setErrorInfo(err);
-  }
-
-  NotifyProgress(sender, 75);
-  Reply(sender, new events::ChangePasswordResponceEvent(this, res));
-  NotifyProgress(sender, 100);
-}
-
-void Driver::HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionRequestEvent* ev) {
-  QObject* sender = ev->sender();
-  NotifyProgress(sender, 0);
-  events::ChangeMaxConnectionResponceEvent::value_type res(ev->value());
-  NotifyProgress(sender, 25);
-  core::command_buffer_writer_t wr;
-  wr << REDIS_SET_MAX_CONNECTIONS_COMMAND << " " << res.max_connection;
-  core::command_buffer_t pattern_result = wr.str();
-  core::FastoObjectCommandIPtr cmd = CreateCommandFast(pattern_result, core::C_INNER);
-  common::Error err = Execute(cmd);
-  if (err) {
-    res.setErrorInfo(err);
-  }
-
-  NotifyProgress(sender, 75);
-  Reply(sender, new events::ChangeMaxConnectionResponceEvent(this, res));
   NotifyProgress(sender, 100);
 }
 

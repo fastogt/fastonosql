@@ -53,16 +53,6 @@ struct ConnectInfoResponce : ConnectInfoRequest {
   explicit ConnectInfoResponce(const base_class& request);
 };
 
-struct ShutDownInfoRequest : public EventInfoBase {
-  typedef EventInfoBase base_class;
-  explicit ShutDownInfoRequest(initiator_type sender, error_type er = error_type());
-};
-
-struct ShutDownInfoResponce : ShutDownInfoRequest {
-  typedef ShutDownInfoRequest base_class;
-  explicit ShutDownInfoResponce(const base_class& request);
-};
-
 struct BackupInfoRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
   BackupInfoRequest(initiator_type sender, const std::string& path, error_type er = error_type());
@@ -83,32 +73,6 @@ struct ExportInfoRequest : public EventInfoBase {
 struct ExportInfoResponce : ExportInfoRequest {
   typedef ExportInfoRequest base_class;
   explicit ExportInfoResponce(const base_class& request);
-};
-
-struct ChangePasswordRequest : public EventInfoBase {
-  typedef EventInfoBase base_class;
-  ChangePasswordRequest(initiator_type sender,
-                        const std::string& oldPassword,
-                        const std::string& newPassword,
-                        error_type er = error_type());
-  std::string old_password;
-  std::string new_password;
-};
-
-struct ChangePasswordResponce : ChangePasswordRequest {
-  typedef ChangePasswordRequest base_class;
-  explicit ChangePasswordResponce(const base_class& request);
-};
-
-struct ChangeMaxConnectionRequest : public EventInfoBase {
-  typedef EventInfoBase base_class;
-  ChangeMaxConnectionRequest(initiator_type sender, int maxConnection, error_type er = error_type());
-  int max_connection;
-};
-
-struct ChangeMaxConnectionResponce : ChangeMaxConnectionRequest {
-  typedef ChangeMaxConnectionRequest base_class;
-  explicit ChangeMaxConnectionResponce(const base_class& request);
 };
 
 struct DiscoveryInfoRequest : public EventInfoBase {

@@ -34,7 +34,6 @@
 #include "proxy/server/iserver_remote.h"  // for IServer, IServerRemote
 #include "proxy/settings_manager.h"       // for SettingsManager
 
-#include "gui/dialogs/change_password_server_dialog.h"
 #include "gui/dialogs/dbkey_dialog.h"           // for DbKeyDialog
 #include "gui/dialogs/history_server_dialog.h"  // for ServerHistoryDialog
 #include "gui/dialogs/info_server_dialog.h"     // for InfoServerDialog
@@ -60,9 +59,7 @@ const QString trConnectDisconnect = QObject::tr("Connect/Disconnect");
 const QString trClearDb = QObject::tr("Clear database");
 const QString trRealyRemoveAllKeysTemplate_1S = QObject::tr("Really remove all keys from %1 database?");
 const QString trLoadContentTemplate_1S = QObject::tr("Load %1 content");
-const QString trReallyShutdownTemplate_1S = QObject::tr("Really shutdown \"%1\" server?");
 const QString trSetMaxConnectionOnServerTemplate_1S = QObject::tr("Set max connection on %1 server");
-const QString trMaximumConnectionTemplate = QObject::tr("Maximum connection:");
 const QString trSetTTLOnKeyTemplate_1S = QObject::tr("Set ttl for %1 key");
 const QString trTTLValue = QObject::tr("New TTL:");
 const QString trSetIntervalOnKeyTemplate_1S = QObject::tr("Set watch interval for %1 key");
@@ -70,7 +67,6 @@ const QString trIntervalValue = QObject::tr("Interval msec:");
 const QString trSetTTL = QObject::tr("Set TTL");
 const QString trRenameKey = QObject::tr("Rename key");
 const QString trRenameKeyLabel = QObject::tr("New key name:");
-const QString trChangePasswordTemplate_1S = QObject::tr("Change password(AUTH command in connection) for %1 server");
 const QString trCreateDatabase_1S = QObject::tr("Create database on %1 server");
 }  // namespace
 
@@ -258,23 +254,11 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       QAction* propertyServerAction = new QAction(translations::trProperty, this);
       VERIFY(connect(propertyServerAction, &QAction::triggered, this, &ExplorerTreeView::openPropertyServerDialog));
 
-      QAction* setServerPassword = new QAction(translations::trSetPassword, this);
-      VERIFY(connect(setServerPassword, &QAction::triggered, this, &ExplorerTreeView::openSetPasswordServerDialog));
-
-      QAction* setMaxClientConnection = new QAction(translations::trSetMaxNumberOfClients, this);
-      VERIFY(connect(setMaxClientConnection, &QAction::triggered, this, &ExplorerTreeView::openMaxClientSetDialog));
-
       QAction* pubSubAction = new QAction(translations::trPubSubDialog, this);
       VERIFY(connect(pubSubAction, &QAction::triggered, this, &ExplorerTreeView::viewPubSub));
 
       propertyServerAction->setEnabled(is_connected);
       menu.addAction(propertyServerAction);
-
-      setServerPassword->setEnabled(is_connected);
-      menu.addAction(setServerPassword);
-
-      setMaxClientConnection->setEnabled(is_connected);
-      menu.addAction(setMaxClientConnection);
 
       pubSubAction->setEnabled(is_connected);
       menu.addAction(pubSubAction);
@@ -294,15 +278,10 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       QAction* importAction = new QAction(translations::trRestore, this);
       VERIFY(connect(importAction, &QAction::triggered, this, &ExplorerTreeView::importServer));
 
-      QAction* shutdownAction = new QAction(translations::trShutdown, this);
-      VERIFY(connect(shutdownAction, &QAction::triggered, this, &ExplorerTreeView::shutdownServer));
-
       exportAction->setEnabled(!is_connected && is_local);
       menu.addAction(exportAction);
       importAction->setEnabled(is_connected && is_local);
       menu.addAction(importAction);
-      shutdownAction->setEnabled(is_connected);
-      menu.addAction(shutdownAction);
     }
 
     QAction* historyServerAction = new QAction(translations::trHistory, this);
@@ -528,51 +507,6 @@ void ExplorerTreeView::openPropertyServerDialog() {
   }
 }
 
-void ExplorerTreeView::openSetPasswordServerDialog() {
-  QModelIndexList selected = selectedEqualTypeIndexes();
-  for (QModelIndex ind : selected) {
-    ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(ind);
-    if (!node) {
-      DNOTREACHED();
-      continue;
-    }
-
-    proxy::IServerSPtr server = node->server();
-    if (!server) {
-      continue;
-    }
-
-    ChangePasswordServerDialog pass(trChangePasswordTemplate_1S.arg(node->name()), server, this);
-    pass.exec();
-  }
-}
-
-void ExplorerTreeView::openMaxClientSetDialog() {
-  QModelIndexList selected = selectedEqualTypeIndexes();
-  for (QModelIndex ind : selected) {
-    ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(ind);
-    if (!node) {
-      DNOTREACHED();
-      continue;
-    }
-
-    proxy::IServerSPtr server = node->server();
-    if (!server) {
-      continue;
-    }
-
-    bool ok;
-    QString name;
-    common::ConvertFromString(server->GetName(), &name);
-    int maxcl = QInputDialog::getInt(this, trSetMaxConnectionOnServerTemplate_1S.arg(name), trMaximumConnectionTemplate,
-                                     10000, 1, INT32_MAX, 100, &ok);
-    if (ok) {
-      proxy::events_info::ChangeMaxConnectionRequest req(this, maxcl);
-      server->SetMaxConnection(req);
-    }
-  }
-}
-
 void ExplorerTreeView::openHistoryServerDialog() {
   QModelIndexList selected = selectedEqualTypeIndexes();
   for (QModelIndex ind : selected) {
@@ -724,33 +658,6 @@ void ExplorerTreeView::exportServer() {
     if (!filepath.isEmpty()) {
       proxy::events_info::ExportInfoRequest req(this, common::ConvertToString(filepath));
       server->ExportFromPath(req);
-    }
-  }
-}
-
-void ExplorerTreeView::shutdownServer() {
-  QModelIndexList selected = selectedEqualTypeIndexes();
-  for (QModelIndex ind : selected) {
-    ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(ind);
-    if (!node) {
-      DNOTREACHED();
-      continue;
-    }
-
-    proxy::IServerSPtr server = node->server();
-    if (server && server->IsConnected()) {
-      // Ask user
-      QString name;
-      common::ConvertFromString(server->GetName(), &name);
-      int answer = QMessageBox::question(this, translations::trShutdown, trReallyShutdownTemplate_1S.arg(name),
-                                         QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
-
-      if (answer != QMessageBox::Yes) {
-        continue;
-      }
-
-      proxy::events_info::ShutDownInfoRequest req(this);
-      server->ShutDown(req);
     }
   }
 }

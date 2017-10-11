@@ -36,7 +36,7 @@ class ChannelTableItem : public common::qt::gui::TableItem {
 
   core::NDbPSChannel channel() const;
   QString name() const;
-  uint32_t numberOfSubscribers() const;
+  size_t numberOfSubscribers() const;
 
  private:
   core::NDbPSChannel channel_;

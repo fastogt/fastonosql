@@ -42,8 +42,8 @@ QString ChannelTableItem::name() const {
   return qname;
 }
 
-uint32_t ChannelTableItem::numberOfSubscribers() const {
-  return channel_.NumberOfSubscribers();
+size_t ChannelTableItem::numberOfSubscribers() const {
+  return channel_.GetNumberOfSubscribers();
 }
 
 ChannelsTableModel::ChannelsTableModel(QObject* parent) : TableModel(parent) {}
@@ -70,7 +70,7 @@ QVariant ChannelsTableModel::data(const QModelIndex& index, int role) const {
     if (col == ChannelTableItem::kName) {
       result = node->name();
     } else if (col == ChannelTableItem::kNOS) {
-      result = node->numberOfSubscribers();
+      result.setValue(node->numberOfSubscribers());
     }
   }
 

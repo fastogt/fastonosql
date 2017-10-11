@@ -174,12 +174,6 @@ void IServer::Execute(const events_info::ExecuteInfoRequest& req) {
   NotifyStartEvent(ev);
 }
 
-void IServer::ShutDown(const events_info::ShutDownInfoRequest& req) {
-  emit ShutdownStarted(req);
-  QEvent* ev = new events::ShutDownRequestEvent(this, req);
-  NotifyStartEvent(ev);
-}
-
 void IServer::ImportToPath(const events_info::BackupInfoRequest& req) {
   emit BackupStarted(req);
   QEvent* ev = new events::ImportRequestEvent(this, req);
@@ -189,18 +183,6 @@ void IServer::ImportToPath(const events_info::BackupInfoRequest& req) {
 void IServer::ExportFromPath(const events_info::ExportInfoRequest& req) {
   emit ExportStarted(req);
   QEvent* ev = new events::ExportRequestEvent(this, req);
-  NotifyStartEvent(ev);
-}
-
-void IServer::ChangePassword(const events_info::ChangePasswordRequest& req) {
-  emit ChangePasswordStarted(req);
-  QEvent* ev = new events::ChangePasswordRequestEvent(this, req);
-  NotifyStartEvent(ev);
-}
-
-void IServer::SetMaxConnection(const events_info::ChangeMaxConnectionRequest& req) {
-  emit ChangeMaxConnectionStarted(req);
-  QEvent* ev = new events::ChangeMaxConnectionRequestEvent(this, req);
   NotifyStartEvent(ev);
 }
 
@@ -297,12 +279,6 @@ void IServer::customEvent(QEvent* event) {
   } else if (type == static_cast<QEvent::Type>(events::ExportResponceEvent::EventType)) {
     events::ExportResponceEvent* ev = static_cast<events::ExportResponceEvent*>(event);
     HandleExportEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::ChangePasswordResponceEvent::EventType)) {
-    events::ChangePasswordResponceEvent* ev = static_cast<events::ChangePasswordResponceEvent*>(event);
-    HandleChangePasswordEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::ChangeMaxConnectionResponceEvent::EventType)) {
-    events::ChangeMaxConnectionResponceEvent* ev = static_cast<events::ChangeMaxConnectionResponceEvent*>(event);
-    HandleChangeMaxConnectionEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::LoadDatabaseContentResponceEvent::EventType)) {
     events::LoadDatabaseContentResponceEvent* ev = static_cast<events::LoadDatabaseContentResponceEvent*>(event);
     HandleLoadDatabaseContentEvent(ev);
@@ -389,15 +365,6 @@ void IServer::HandleLoadServerChannelsEvent(events::LoadServerChannelsResponceEv
   emit LoadServerChannelsFinished(v);
 }
 
-void IServer::HandleShutdownEvent(events::ShutDownResponceEvent* ev) {
-  auto v = ev->value();
-  common::Error err(v.errorInfo());
-  if (err) {
-    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
-  }
-  emit ShutdownFinished(v);
-}
-
 void IServer::HandleImportEvent(events::ImportResponceEvent* ev) {
   auto v = ev->value();
   common::Error err(v.errorInfo());
@@ -414,26 +381,6 @@ void IServer::HandleExportEvent(events::ExportResponceEvent* ev) {
     LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
   }
   emit ExportFinished(v);
-}
-
-void IServer::HandleChangePasswordEvent(events::ChangePasswordResponceEvent* ev) {
-  auto v = ev->value();
-  common::Error err(v.errorInfo());
-  if (err) {
-    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
-  }
-
-  emit ChangePasswordFinished(v);
-}
-
-void IServer::HandleChangeMaxConnectionEvent(events::ChangeMaxConnectionResponceEvent* ev) {
-  auto v = ev->value();
-  common::Error err(v.errorInfo());
-  if (err) {
-    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
-  }
-
-  emit ChangeMaxConnectionFinished(v);
 }
 
 void IServer::HandleExecuteEvent(events::ExecuteResponceEvent* ev) {
