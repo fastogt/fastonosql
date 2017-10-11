@@ -26,7 +26,7 @@ IConnectionSettingsRemoteSSH::IConnectionSettingsRemoteSSH(const connection_path
     : IConnectionSettingsRemote(connectionName, type), ssh_info_() {}
 
 std::string IConnectionSettingsRemoteSSH::ToString() const {
-  return IConnectionSettingsBase::ToString() + ',' + common::ConvertToString(ssh_info_);
+  return IConnectionSettingsBase::ToString() + setting_value_delemitr + common::ConvertToString(ssh_info_);
 }
 
 core::SSHInfo IConnectionSettingsRemoteSSH::GetSSHInfo() const {

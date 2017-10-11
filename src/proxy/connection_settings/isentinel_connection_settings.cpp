@@ -60,7 +60,7 @@ bool SentinelSettingsfromString(const std::string& text, SentinelSettings* sent)
   std::string elText;
   for (size_t i = 0; i < len; ++i) {
     char ch = text[i];
-    if (ch == ',' || i == len - 1) {
+    if (ch == setting_value_delemitr || i == len - 1) {
       if (commaCount == 0) {
         std::string sent_raw = common::utils::base64::decode64(elText);
         IConnectionSettingsBaseSPtr sent(ConnectionSettingsFactory::GetInstance().CreateFromString(sent_raw));

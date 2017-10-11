@@ -50,7 +50,7 @@ ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromString(const
 
   for (size_t i = 0; i < len; ++i) {
     char ch = val[i];
-    if (ch == ',') {
+    if (ch == setting_value_delemitr) {
       if (commaCount == 0) {
         int crT = elText[0] - 48;
         result = CreateFromType(static_cast<core::connectionTypes>(crT), connection_path_t());
