@@ -9,16 +9,12 @@
 -DBUILD_WITH_FORESTDB=OFF
 -DBRANDING_PROJECT_BUILD_TYPE_VERSION:STRING=release
 -DBRANDING_PROJECT_NAME:STRING=FastoRedis
--DBRANDING_PROJECT_VERSION:STRING=1.8.5.0
+-DBRANDING_PROJECT_VERSION:STRING=1.8.6.0
 -DBRANDING_PROJECT_DOMAIN:STRING=http://www.fastoredis.com
 -DBRANDING_PROJECT_DOWNLOAD_LINK:STRING=http://www.fastoredis.com/download.html
 -DBRANDING_PROJECT_COMPANYNAME_DOMAIN:STRING=http://www.fastogt.com
 -DBRANDING_PROJECT_GITHUB_FORK:STRING=https://www.github.com/fastogt/fastoredis
 -DBRANDING_PROJECT_GITHUB_ISSUES:STRING=https://www.github.com/fastogt/fastoredis/issues
--DBRANDING_PROJECT_HOMEPAGE_LINK:STRING=http://www.fastoredis.com
--DBRANDING_PROJECT_FACEBOOK_LINK:STRING=https://www.facebook.com/profile.php?id=100004938436506
--DBRANDING_PROJECT_TWITTER_LINK:STRING=https://www.twitter.com/FastoRedis
--DBRANDING_PROJECT_GITHUB_LINK:STRING=https://www.github.com/fastogt/fastoredis
 -DBRANDING_PROJECT_CHANGELOG_FILE:STRING=FASTOREDIS_CHANELOG
 -DBRANDING_PROJECT_SUMMARY:STRING=Cross-platform open source Redis GUI management tool.
 -DBRANDING_PROJECT_DESCRIPTION:STRING=FastoRedis (fork of FastoNoSQL) — is a cross-platform open source Redis management tool (i.e. Admin GUI). It put the same engine that powers Redis's redis-cli shell. Everything you can write in redis-cli shell — you can write in Fastoredis! Our program works on the most amount of Linux systems, also on Windows, Mac OS X, FreeBSD and Android platforms.

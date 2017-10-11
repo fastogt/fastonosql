@@ -524,14 +524,13 @@ ExplorerDatabaseItem* ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* se
 
 ExplorerKeyItem* ExplorerTreeModel::findKeyItem(IExplorerTreeItem* db_or_ns, const core::NKey& key) const {
   return static_cast<ExplorerKeyItem*>(
-      common::qt::gui::findItemRecursive(db_or_ns, [key](common::qt::gui::TreeItem* item) -> bool {
+      common::qt::gui::findItemRecursive(db_or_ns, [&key](common::qt::gui::TreeItem* item) -> bool {
         ExplorerKeyItem* key_item = static_cast<ExplorerKeyItem*>(item);
         if (key_item->type() != IExplorerTreeItem::eKey) {
           return false;
         }
 
-        core::NKey ckey = key_item->key();
-        return ckey.GetKey() == key.GetKey();
+        return key_item->equalsKey(key);
       }));
 }
 

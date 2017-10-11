@@ -115,6 +115,10 @@ void NKey::SetTTL(ttl_t ttl) {
   ttl_ = ttl;
 }
 
+bool NKey::EqualsKey(const NKey& key) const {
+  return key_ == key.key_;
+}
+
 bool NKey::Equals(const NKey& other) const {
   if (key_ != other.key_) {
     return false;
@@ -153,6 +157,10 @@ void NDbKValue::SetValue(NValue value) {
 
 std::string NDbKValue::GetValueString() const {
   return common::ConvertToString(value_.get(), " ");
+}
+
+bool NDbKValue::EqualsKey(const NKey& key) const {
+  return key_.EqualsKey(key);
 }
 
 bool NDbKValue::Equals(const NDbKValue& other) const {

@@ -134,6 +134,8 @@ class ExplorerKeyItem : public IExplorerTreeItem {
   core::NDbKValue dbv() const;
   void setDbv(const core::NDbKValue& key);
 
+  bool equalsKey(const core::NKey& key) const;
+
   core::NKey key() const;
   void setKey(const core::NKey& key);
 

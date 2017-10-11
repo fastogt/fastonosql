@@ -351,6 +351,10 @@ void ExplorerKeyItem::setDbv(const core::NDbKValue& key) {
   dbv_ = key;
 }
 
+bool ExplorerKeyItem::equalsKey(const core::NKey& key) const {
+  return dbv_.EqualsKey(key);
+}
+
 core::NKey ExplorerKeyItem::key() const {
   return dbv_.GetKey();
 }
