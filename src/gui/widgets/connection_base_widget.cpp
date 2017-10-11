@@ -36,9 +36,6 @@
 namespace {
 const char* defaultNameConnectionFolder = "/";
 const QString trLoggingToolTip = QObject::tr("INFO command timeout in msec for history statistic.");
-QString StableCommandLine(QString input) {
-  return input.replace('\n', "\\n").replace("\\r", "\r");
-}
 
 QString toRawCommandLine(QString input) {
   return input.replace("\\n", "\n").replace("\\r", "\r");
@@ -46,6 +43,28 @@ QString toRawCommandLine(QString input) {
 
 const QStringList separators = {":", ";", ",", "[", "]"};
 const QStringList delimiters = {"\\n", "\\r\\n"};
+
+class UniqueCharValidator : public QValidator {
+ public:
+  explicit UniqueCharValidator(QObject* parent = Q_NULLPTR) : QValidator(parent) {}
+
+  virtual State validate(QString& val, int& pos) const override {
+    UNUSED(pos);
+    if (val.isEmpty()) {
+      return Invalid;
+    }
+
+    for (int i = 0; i < val.length(); i++) {
+      for (int j = i + 1; j < val.length(); j++) {
+        if (val[i] == val[j]) {
+          return Invalid;
+        }
+      }
+    }
+
+    return Acceptable;
+  }
+};
 }  // namespace
 
 namespace fastonosql {
@@ -66,6 +85,8 @@ ConnectionBaseWidget::ConnectionBaseWidget(QWidget* parent) : QWidget(parent) {
   namespaceSeparatorLabel_ = new QLabel;
   namespaceSeparator_ = new QComboBox;
   namespaceSeparator_->addItems(separators);
+  namespaceSeparator_->setEditable(true);
+  namespaceSeparator_->setValidator(new UniqueCharValidator(this));
   namespaceSeparatorLayout->addWidget(namespaceSeparatorLabel_);
   namespaceSeparatorLayout->addWidget(namespaceSeparator_);
   namespaceDelimiterLayout->addLayout(namespaceSeparatorLayout);

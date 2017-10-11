@@ -1,5 +1,9 @@
-1.9.2/
+1.9.2 / October 11, 2017
 [Alexandr Topilski]
+- [Memcached] fixed invalid INFO command execution
+- UI settings layout changed, without backward compatibility
+- Changed displaying of namespace
+- Complex namespace separator
 
 1.9.1 / October 10, 2017
 [Alexandr Topilski]

@@ -1,5 +1,8 @@
-1.8.5 /
+1.8.5 / October 11, 2017
 [Alexandr Topilski]
+- UI settings layout changed, without backward compatibility
+- Changed displaying of namespace
+- Complex namespace separator
 
 1.8.4 / October 10, 2017
 [Alexandr Topilski]

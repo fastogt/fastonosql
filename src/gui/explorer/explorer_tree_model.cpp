@@ -77,8 +77,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
       common::ConvertFromString(server->GetName(), &sname);
       bool is_can_remote = server->IsCanRemote();
       if (is_can_remote) {
-        proxy::IServerRemote* rserver = dynamic_cast<proxy::IServerRemote*>(server.get());  // +
-        CHECK(rserver);
+        proxy::IServerRemote* rserver = static_cast<proxy::IServerRemote*>(server.get());
         QString stype;
         common::ConvertFromString(common::ConvertToString(rserver->GetRole()), &stype);
         QString mtype;
@@ -87,8 +86,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
         common::ConvertFromString(common::ConvertToString(rserver->GetHost()), &shost);
         return trRemoteServerToolTipTemplate_4S.arg(sname, stype, mtype, shost);
       } else {
-        proxy::IServerLocal* lserver = dynamic_cast<proxy::IServerLocal*>(server.get());  // +
-        CHECK(lserver);
+        proxy::IServerLocal* lserver = static_cast<proxy::IServerLocal*>(server.get());
         QString spath = translations::trCalculating;
         common::ConvertFromString(lserver->GetPath(), &spath);
         return trLocalServerToolTipTemplate_2S.arg(sname, spath);
@@ -359,7 +357,7 @@ void ExplorerTreeModel::addKey(proxy::IServer* server,
   ExplorerKeyItem* keyit = findKeyItem(dbs, key);
   if (!keyit) {
     IExplorerTreeItem* nitem = dbs;
-    proxy::KeyInfo kinf = proxy::MakeKeyInfo(key.GetKey(), ns_separator);
+    proxy::KeyInfo kinf(key.GetKey(), ns_separator);
     if (kinf.HasNamespace()) {
       nitem = findOrCreateNSItem(dbs, kinf);
     }
@@ -459,9 +457,13 @@ ExplorerClusterItem* ExplorerTreeModel::findClusterItem(proxy::IClusterSPtr cl) 
   }
 
   for (size_t i = 0; i < parent->childrenCount(); ++i) {
-    ExplorerClusterItem* item = dynamic_cast<ExplorerClusterItem*>(parent->child(i));  // +
-    if (item && item->cluster() == cl) {
-      return item;
+    ExplorerClusterItem* cluster_item = static_cast<ExplorerClusterItem*>(parent->child(i));
+    if (cluster_item->type() != IExplorerTreeItem::eCluster) {
+      continue;
+    }
+
+    if (cluster_item && cluster_item->cluster() == cl) {
+      return cluster_item;
     }
   }
   return nullptr;
@@ -474,9 +476,13 @@ ExplorerSentinelItem* ExplorerTreeModel::findSentinelItem(proxy::ISentinelSPtr s
   }
 
   for (size_t i = 0; i < parent->childrenCount(); ++i) {
-    ExplorerSentinelItem* item = dynamic_cast<ExplorerSentinelItem*>(parent->child(i));  // +
-    if (item && item->sentinel() == sentinel) {
-      return item;
+    ExplorerSentinelItem* sentinel_item = static_cast<ExplorerSentinelItem*>(parent->child(i));
+    if (sentinel_item->type() != IExplorerTreeItem::eSentinel) {
+      continue;
+    }
+
+    if (sentinel_item && sentinel_item->sentinel() == sentinel) {
+      return sentinel_item;
     }
   }
   return nullptr;
@@ -485,8 +491,8 @@ ExplorerSentinelItem* ExplorerTreeModel::findSentinelItem(proxy::ISentinelSPtr s
 ExplorerServerItem* ExplorerTreeModel::findServerItem(proxy::IServer* server) const {
   return static_cast<ExplorerServerItem*>(
       common::qt::gui::findItemRecursive(root_, [server](common::qt::gui::TreeItem* item) -> bool {
-        ExplorerServerItem* server_item = dynamic_cast<ExplorerServerItem*>(item);  // +
-        if (!server_item) {
+        ExplorerServerItem* server_item = static_cast<ExplorerServerItem*>(item);
+        if (server_item->type() != IExplorerTreeItem::eServer) {
           return false;
         }
 
@@ -502,14 +508,14 @@ ExplorerDatabaseItem* ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* se
   }
 
   for (size_t i = 0; i < server->childrenCount(); ++i) {
-    ExplorerDatabaseItem* item = dynamic_cast<ExplorerDatabaseItem*>(server->child(i));  // +
-    if (!item) {
+    ExplorerDatabaseItem* db_item = static_cast<ExplorerDatabaseItem*>(server->child(i));
+    if (db_item->type() != IExplorerTreeItem::eDatabase) {
       continue;
     }
 
-    proxy::IDatabaseSPtr inf = item->db();
+    proxy::IDatabaseSPtr inf = db_item->db();
     if (inf && inf->GetName() == db->GetName()) {
-      return item;
+      return db_item;
     }
   }
 
@@ -519,8 +525,8 @@ ExplorerDatabaseItem* ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* se
 ExplorerKeyItem* ExplorerTreeModel::findKeyItem(IExplorerTreeItem* db_or_ns, const core::NKey& key) const {
   return static_cast<ExplorerKeyItem*>(
       common::qt::gui::findItemRecursive(db_or_ns, [key](common::qt::gui::TreeItem* item) -> bool {
-        ExplorerKeyItem* key_item = dynamic_cast<ExplorerKeyItem*>(item);  // +
-        if (!key_item) {
+        ExplorerKeyItem* key_item = static_cast<ExplorerKeyItem*>(item);
+        if (key_item->type() != IExplorerTreeItem::eKey) {
           return false;
         }
 
@@ -529,36 +535,19 @@ ExplorerKeyItem* ExplorerTreeModel::findKeyItem(IExplorerTreeItem* db_or_ns, con
       }));
 }
 
-ExplorerNSItem* ExplorerTreeModel::findNSItem(IExplorerTreeItem* db_or_ns, const QString& name) const {
-  return static_cast<ExplorerNSItem*>(
-      common::qt::gui::findItemRecursive(db_or_ns, [name](common::qt::gui::TreeItem* item) -> bool {
-        ExplorerNSItem* ns_item = dynamic_cast<ExplorerNSItem*>(item);  // +
-        if (!ns_item) {
-          return false;
-        }
-
-        return ns_item->name() == name;
-      }));
-}
-
 ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_ns, const proxy::KeyInfo& kinf) {
-  std::string nspace = kinf.GetNspace();
-  QString qnspace;
-  common::ConvertFromString(nspace, &qnspace);
-  ExplorerNSItem* founded_item = findNSItem(db_or_ns, qnspace);
-  if (founded_item) {
-    return founded_item;
-  }
-
-  size_t sz = kinf.GetNspaceSize();
+  auto nspaces = kinf.GetNamespaces();
   IExplorerTreeItem* par = db_or_ns;
-  for (size_t i = 0; i < sz; ++i) {
+  ExplorerNSItem* founded_item = nullptr;
+  for (size_t i = 0; i < nspaces.size(); ++i) {
     ExplorerNSItem* item = nullptr;
-    nspace = kinf.JoinNamespace(i);
-    common::ConvertFromString(nspace, &qnspace);
+    std::string cur_ns = nspaces[i];
+    QString qnspace;
+    common::ConvertFromString(cur_ns, &qnspace);
+
     for (size_t j = 0; j < par->childrenCount(); ++j) {
-      ExplorerNSItem* ns_item = dynamic_cast<ExplorerNSItem*>(par->child(j));  // +
-      if (!ns_item) {
+      ExplorerNSItem* ns_item = static_cast<ExplorerNSItem*>(par->child(j));
+      if (ns_item->type() != IExplorerTreeItem::eNamespace) {
         continue;
       }
 
@@ -578,6 +567,7 @@ ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_n
     founded_item = item;
   }
 
+  CHECK(founded_item);
   return founded_item;
 }
 }  // namespace gui

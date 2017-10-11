@@ -30,20 +30,18 @@ extern const std::vector<const char*> supported_views_text;
 class KeyInfo {
  public:
   typedef std::vector<std::string> splited_namespaces_t;
-  KeyInfo(const splited_namespaces_t& splited_namespaces_and_key, std::string ns_separator);
+  KeyInfo(const core::key_t& key, std::string ns_separator);
 
   std::string GetKey() const;
   bool HasNamespace() const;
-  std::string GetNspace() const;
-  std::string JoinNamespace(size_t pos) const;
   size_t GetNspaceSize() const;
+  splited_namespaces_t GetNamespaces() const;
 
  private:
-  splited_namespaces_t splited_namespaces_and_key_;
+  core::key_t key_;
+  splited_namespaces_t splited_namespaces_;
   std::string ns_separator_;
 };
-
-KeyInfo MakeKeyInfo(const core::key_t& key, const std::string& ns_separator);
 
 }  // namespace proxy
 }  // namespace fastonosql

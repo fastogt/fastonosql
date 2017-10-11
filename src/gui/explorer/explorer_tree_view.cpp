@@ -1022,7 +1022,7 @@ void ExplorerTreeView::finishLoadDatabaseContent(const proxy::events_info::LoadD
   CHECK(serv);
 
   proxy::events_info::LoadDatabaseContentResponce::keys_container_t keys = res.keys;
-  std::string ns = serv->GetNsSeparator();
+  const std::string ns = serv->GetNsSeparator();
   for (size_t i = 0; i < keys.size(); ++i) {
     core::NDbKValue key = keys[i];
     source_model_->addKey(serv, res.inf, key, ns);
@@ -1078,7 +1078,7 @@ void ExplorerTreeView::addKey(core::IDataBaseInfoSPtr db, core::NDbKValue key) {
   proxy::IServer* serv = qobject_cast<proxy::IServer*>(sender());
   CHECK(serv);
 
-  std::string ns = serv->GetNsSeparator();
+  const std::string ns = serv->GetNsSeparator();
   source_model_->addKey(serv, db, key, ns);
 }
 

@@ -25,11 +25,14 @@ namespace proxy {
 
 const std::vector<const char*> supported_views_text = {"Tree", "Table", "Text"};
 
-KeyInfo::KeyInfo(const splited_namespaces_t& splited_namespaces_and_key, std::string ns_separator)
-    : splited_namespaces_and_key_(splited_namespaces_and_key), ns_separator_(ns_separator) {}
+KeyInfo::KeyInfo(const core::key_t& key, std::string ns_separator)
+    : key_(key), splited_namespaces_(), ns_separator_(ns_separator) {
+  common::Tokenize(key.ToString(), ns_separator, &splited_namespaces_);
+  splited_namespaces_.pop_back();
+}
 
 std::string KeyInfo::GetKey() const {
-  return common::JoinString(splited_namespaces_and_key_, ns_separator_);
+  return key_.ToString();
 }
 
 bool KeyInfo::HasNamespace() const {
@@ -37,35 +40,12 @@ bool KeyInfo::HasNamespace() const {
   return ns_size > 0;
 }
 
-std::string KeyInfo::GetNspace() const {
-  return JoinNamespace(splited_namespaces_and_key_.size() - 1);
-}
-
 size_t KeyInfo::GetNspaceSize() const {
-  if (splited_namespaces_and_key_.empty()) {
-    return 0;
-  }
-
-  return splited_namespaces_and_key_.size() - 1;
+  return splited_namespaces_.size();
 }
 
-std::string KeyInfo::JoinNamespace(size_t pos) const {
-  size_t ns_size = GetNspaceSize();
-  if (ns_size > pos) {
-    std::vector<std::string> copy;
-    for (size_t i = 0; i <= pos; ++i) {
-      copy.push_back(splited_namespaces_and_key_[i]);
-    }
-    return common::JoinString(copy, ns_separator_);
-  }
-
-  return std::string();
-}
-
-KeyInfo MakeKeyInfo(const core::key_t& key, const std::string& ns_separator) {
-  KeyInfo::splited_namespaces_t tokens;
-  common::Tokenize(key.ToString(), ns_separator, &tokens);
-  return KeyInfo(tokens, ns_separator);
+KeyInfo::splited_namespaces_t KeyInfo::GetNamespaces() const {
+  return splited_namespaces_;
 }
 
 }  // namespace proxy

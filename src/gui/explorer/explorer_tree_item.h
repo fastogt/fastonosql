@@ -34,10 +34,13 @@ class IExplorerTreeItem : public common::qt::gui::TreeItem {
 
   enum eType { eCluster, eSentinel, eServer, eDatabase, eNamespace, eKey };
 
-  explicit IExplorerTreeItem(TreeItem* parent);
+  IExplorerTreeItem(TreeItem* parent, eType type);
 
   virtual QString name() const = 0;
-  virtual eType type() const = 0;
+  eType type() const;
+
+ private:
+  const eType type_;
 };
 
 class ExplorerServerItem : public IExplorerTreeItem {
@@ -46,7 +49,6 @@ class ExplorerServerItem : public IExplorerTreeItem {
 
   virtual QString name() const override;
   proxy::IServerSPtr server() const;
-  virtual eType type() const override;
 
   void loadDatabases();
   void createDatabase(const QString& name);
@@ -60,7 +62,6 @@ class ExplorerSentinelItem : public IExplorerTreeItem {
   ExplorerSentinelItem(proxy::ISentinelSPtr sentinel, TreeItem* parent);
 
   virtual QString name() const override;
-  virtual eType type() const override;
 
   proxy::ISentinelSPtr sentinel() const;
 
@@ -73,7 +74,6 @@ class ExplorerClusterItem : public IExplorerTreeItem {
   ExplorerClusterItem(proxy::IClusterSPtr cluster, TreeItem* parent);
 
   virtual QString name() const override;
-  virtual eType type() const override;
 
   proxy::IClusterSPtr cluster() const;
 
@@ -86,7 +86,6 @@ class ExplorerDatabaseItem : public IExplorerTreeItem {
   ExplorerDatabaseItem(proxy::IDatabaseSPtr db, ExplorerServerItem* parent);
 
   virtual QString name() const override;
-  virtual eType type() const override;
   bool isDefault() const;
   size_t totalKeysCount() const;
   size_t loadedKeysCount() const;
@@ -119,7 +118,6 @@ class ExplorerNSItem : public IExplorerTreeItem {
 
   virtual QString name() const override;
   proxy::IServerSPtr server() const;
-  virtual eType type() const override;
   size_t keysCount() const;
 
   void removeBranch();
@@ -141,7 +139,6 @@ class ExplorerKeyItem : public IExplorerTreeItem {
 
   virtual QString name() const override;
   proxy::IServerSPtr server() const;
-  virtual eType type() const override;
 
   void renameKey(const QString& newName);
   void editKey(const core::NValue& value);

@@ -30,10 +30,14 @@
 namespace fastonosql {
 namespace gui {
 
-IExplorerTreeItem::IExplorerTreeItem(TreeItem* parent) : TreeItem(parent, nullptr) {}
+IExplorerTreeItem::IExplorerTreeItem(TreeItem* parent, eType type) : TreeItem(parent, nullptr), type_(type) {}
+
+ExplorerServerItem::eType IExplorerTreeItem::type() const {
+  return type_;
+}
 
 ExplorerServerItem::ExplorerServerItem(proxy::IServerSPtr server, TreeItem* parent)
-    : IExplorerTreeItem(parent), server_(server) {}
+    : IExplorerTreeItem(parent, eServer), server_(server) {}
 
 QString ExplorerServerItem::name() const {
   QString qname;
@@ -43,10 +47,6 @@ QString ExplorerServerItem::name() const {
 
 proxy::IServerSPtr ExplorerServerItem::server() const {
   return server_;
-}
-
-ExplorerServerItem::eType ExplorerServerItem::type() const {
-  return eServer;
 }
 
 void ExplorerServerItem::loadDatabases() {
@@ -69,7 +69,7 @@ void ExplorerServerItem::createDatabase(const QString& name) {
 }
 
 ExplorerSentinelItem::ExplorerSentinelItem(proxy::ISentinelSPtr sentinel, TreeItem* parent)
-    : IExplorerTreeItem(parent), sentinel_(sentinel) {
+    : IExplorerTreeItem(parent, eSentinel), sentinel_(sentinel) {
   proxy::ISentinel::sentinels_t nodes = sentinel->GetSentinels();
   for (size_t i = 0; i < nodes.size(); ++i) {
     proxy::Sentinel sent = nodes[i];
@@ -89,16 +89,12 @@ QString ExplorerSentinelItem::name() const {
   return qname;
 }
 
-ExplorerSentinelItem::eType ExplorerSentinelItem::type() const {
-  return eSentinel;
-}
-
 proxy::ISentinelSPtr ExplorerSentinelItem::sentinel() const {
   return sentinel_;
 }
 
 ExplorerClusterItem::ExplorerClusterItem(proxy::IClusterSPtr cluster, TreeItem* parent)
-    : IExplorerTreeItem(parent), cluster_(cluster) {
+    : IExplorerTreeItem(parent, eCluster), cluster_(cluster) {
   auto nodes = cluster_->GetNodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
     ExplorerServerItem* ser = new ExplorerServerItem(nodes[i], this);
@@ -112,16 +108,12 @@ QString ExplorerClusterItem::name() const {
   return qname;
 }
 
-ExplorerClusterItem::eType ExplorerClusterItem::type() const {
-  return eCluster;
-}
-
 proxy::IClusterSPtr ExplorerClusterItem::cluster() const {
   return cluster_;
 }
 
 ExplorerDatabaseItem::ExplorerDatabaseItem(proxy::IDatabaseSPtr db, ExplorerServerItem* parent)
-    : IExplorerTreeItem(parent), db_(db) {
+    : IExplorerTreeItem(parent, eDatabase), db_(db) {
   DCHECK(db_);
 }
 
@@ -129,10 +121,6 @@ QString ExplorerDatabaseItem::name() const {
   QString qname;
   common::ConvertFromString(db_->GetName(), &qname);
   return qname;
-}
-
-ExplorerDatabaseItem::eType ExplorerDatabaseItem::type() const {
-  return eDatabase;
 }
 
 bool ExplorerDatabaseItem::isDefault() const {
@@ -147,8 +135,8 @@ size_t ExplorerDatabaseItem::totalKeysCount() const {
 size_t ExplorerDatabaseItem::loadedKeysCount() const {
   size_t sz = 0;
   common::qt::gui::forEachRecursive(this, [&sz](const common::qt::gui::TreeItem* item) {
-    const ExplorerKeyItem* key_item = dynamic_cast<const ExplorerKeyItem*>(item);  // +
-    if (!key_item) {
+    const ExplorerKeyItem* key_item = static_cast<const ExplorerKeyItem*>(item);
+    if (key_item->type() != eKey) {
       return;
     }
 
@@ -339,7 +327,7 @@ void ExplorerDatabaseItem::removeAllKeys() {
 }
 
 ExplorerKeyItem::ExplorerKeyItem(const core::NDbKValue& dbv, IExplorerTreeItem* parent)
-    : IExplorerTreeItem(parent), dbv_(dbv) {}
+    : IExplorerTreeItem(parent, eKey), dbv_(dbv) {}
 
 ExplorerDatabaseItem* ExplorerKeyItem::db() const {
   TreeItem* par = parent();
@@ -388,10 +376,6 @@ proxy::IServerSPtr ExplorerKeyItem::server() const {
   return proxy::IServerSPtr();
 }
 
-IExplorerTreeItem::eType ExplorerKeyItem::type() const {
-  return eKey;
-}
-
 void ExplorerKeyItem::renameKey(const QString& newName) {
   ExplorerDatabaseItem* par = db();
   if (par) {
@@ -435,7 +419,7 @@ void ExplorerKeyItem::setTTL(core::ttl_t ttl) {
 }
 
 ExplorerNSItem::ExplorerNSItem(const QString& name, IExplorerTreeItem* parent)
-    : IExplorerTreeItem(parent), name_(name) {}
+    : IExplorerTreeItem(parent, eNamespace), name_(name) {}
 
 QString ExplorerNSItem::name() const {
   return name_;
@@ -464,15 +448,11 @@ proxy::IServerSPtr ExplorerNSItem::server() const {
   return proxy::IServerSPtr();
 }
 
-ExplorerNSItem::eType ExplorerNSItem::type() const {
-  return eNamespace;
-}
-
 size_t ExplorerNSItem::keysCount() const {
   size_t sz = 0;
   common::qt::gui::forEachRecursive(this, [&sz](const common::qt::gui::TreeItem* item) {
-    const ExplorerKeyItem* key_item = dynamic_cast<const ExplorerKeyItem*>(item);  // +
-    if (!key_item) {
+    const ExplorerKeyItem* key_item = static_cast<const ExplorerKeyItem*>(item);
+    if (key_item->type() != eKey) {
       return;
     }
 
@@ -486,8 +466,8 @@ void ExplorerNSItem::removeBranch() {
   ExplorerDatabaseItem* par = db();
   CHECK(par);
   common::qt::gui::forEachRecursive(this, [par](common::qt::gui::TreeItem* item) {
-    ExplorerKeyItem* key_item = dynamic_cast<ExplorerKeyItem*>(item);  // +
-    if (!key_item) {
+    const ExplorerKeyItem* key_item = static_cast<const ExplorerKeyItem*>(item);
+    if (key_item->type() != eKey) {
       return;
     }
 
