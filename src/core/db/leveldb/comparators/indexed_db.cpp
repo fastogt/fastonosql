@@ -487,6 +487,7 @@ class ObjectStoreNamesKey {
 
 template <typename KeyType>
 int Compare(const common::StringPiece& a, const common::StringPiece& b, bool only_compare_index_keys, bool* ok) {
+  UNUSED(only_compare_index_keys);
   KeyType key_a;
   KeyType key_b;
 
@@ -667,6 +668,7 @@ int CompareSuffix<ExistsEntryKey>(common::StringPiece* slice_a,
                                   common::StringPiece* slice_b,
                                   bool only_compare_index_keys,
                                   bool* ok) {
+  UNUSED(only_compare_index_keys);
   DCHECK(!slice_a->empty());
   DCHECK(!slice_b->empty());
   return CompareEncodedIDBKeys(slice_a, slice_b, ok);
@@ -677,6 +679,7 @@ int CompareSuffix<ObjectStoreDataKey>(common::StringPiece* slice_a,
                                       common::StringPiece* slice_b,
                                       bool only_compare_index_keys,
                                       bool* ok) {
+  UNUSED(only_compare_index_keys);
   return CompareEncodedIDBKeys(slice_a, slice_b, ok);
 }
 
@@ -685,6 +688,7 @@ int CompareSuffix<BlobEntryKey>(common::StringPiece* slice_a,
                                 common::StringPiece* slice_b,
                                 bool only_compare_index_keys,
                                 bool* ok) {
+  UNUSED(only_compare_index_keys);
   return CompareEncodedIDBKeys(slice_a, slice_b, ok);
 }
 

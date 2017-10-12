@@ -83,7 +83,7 @@ string_key_t KeyString::GetKeyData() const {
     return wr.str();
   }
 
-  return key_;
+  return "\"" + key_ + "\"";
 }
 
 void KeyString::SetKeyData(const string_key_t& key_data) {

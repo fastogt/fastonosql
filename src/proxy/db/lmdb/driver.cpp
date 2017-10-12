@@ -148,7 +148,6 @@ void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
   CHECK(ar);
 
   core::IDataBaseInfoSPtr curdb(info);
-  std::string scountDb;
   if (!ar->IsEmpty()) {
     for (size_t i = 0; i < ar->GetSize(); ++i) {
       std::string name;

@@ -78,6 +78,10 @@ const ConstantCommandsArray& CDBConnection<ssdb::NativeConnection, ssdb::Config,
 namespace ssdb {
 namespace {
 common::Error AuthContext(::ssdb::Client* context, const std::string& password) {
+  if (!context) {
+    return common::make_error_inval();
+  }
+
   if (password.empty()) {  // handle in checkresult
     return common::Error();
   }

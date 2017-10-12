@@ -134,7 +134,7 @@ ServerInfo::Stats::Stats(const std::string& common_text) {
     } else if (field == MEMCACHED_TOTAL_CONNECTIONS_LABEL) {
       uint32_t ltotal_connections;
       if (common::ConvertFromString(value, &ltotal_connections)) {
-        curr_connections = ltotal_connections;
+        total_connections = ltotal_connections;
       }
     } else if (field == MEMCACHED_CONNECTION_STRUCTURES_LABEL) {
       uint32_t lconnection_structures;
