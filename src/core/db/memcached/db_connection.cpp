@@ -23,9 +23,10 @@
 #include <memory>  // for __shared_ptr
 #include <string>  // for string, operator<, etc
 
+#include <string.h>
+
 #include <libmemcached/memcached.h>
 #include <libmemcached/util.h>
-#include <libmemcached/instance.hpp>  // for memcached_instance_st
 
 #include <common/convert2string.h>  // for ConvertFromString
 #include <common/net/types.h>       // for HostAndPort
@@ -37,6 +38,56 @@
 #include "core/db/memcached/config.h"  // for Config
 #include "core/db/memcached/database_info.h"
 #include "core/db/memcached/internal/commands_api.h"
+
+// hacked
+struct hacked_memcached_instance_st {
+  struct {
+    bool is_allocated;
+    bool is_initialized;
+    bool is_shutting_down;
+    bool is_dead;
+    bool ready;
+  } options;
+
+  short _events;
+  short _revents;
+
+  uint32_t cursor_active_;
+  in_port_t port_;
+  memcached_socket_t fd;
+  uint32_t io_bytes_sent; /* # bytes sent since last read */
+  uint32_t request_id;
+  uint32_t server_failure_counter;
+  uint64_t server_failure_counter_query_id;
+  uint32_t server_timeout_counter;
+  uint32_t server_timeout_counter_query_id;
+  uint32_t weight;
+  uint32_t version;
+  enum memcached_server_state_t state;
+  struct {
+    uint32_t read;
+    uint32_t write;
+    uint32_t timeouts;
+    size_t _bytes_read;
+  } io_wait_count;
+  uint8_t major_version;  // Default definition of UINT8_MAX means that it has not been set.
+  uint8_t micro_version;  // ditto, and note that this is the third, not second version bit
+  uint8_t minor_version;  // ditto
+  memcached_connection_t type;
+  char* read_ptr;
+  size_t read_buffer_length;
+  size_t read_data_length;
+  size_t write_buffer_offset;
+  struct addrinfo* address_info;
+  struct addrinfo* address_info_next;
+  time_t next_retry;
+  struct memcached_st* root;
+  uint64_t limit_maxbytes;
+  struct memcached_error_t* error_messages;
+  char read_buffer[MEMCACHED_MAX_BUFFER];
+  char write_buffer[MEMCACHED_MAX_BUFFER];
+  char _hostname[MEMCACHED_NI_MAXHOST];
+};
 
 namespace {
 
@@ -191,7 +242,7 @@ bool ConnectionAllocatorTraits<memcached::NativeConnection, memcached::Config>::
     return false;
   }
 
-  memcached_instance_st* servers = handle->servers;
+  hacked_memcached_instance_st* servers = reinterpret_cast<hacked_memcached_instance_st*>(handle->servers);
   if (!servers) {
     return false;
   }
