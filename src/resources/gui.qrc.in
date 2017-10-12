@@ -1,10 +1,6 @@
 <RCC>
     <qresource prefix="/">
     <file>@PROJECT_NAME_LOWERCASE@/default.qss</file>
-    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/facebook.png</file>
-    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/twitter.png</file>
-    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/github.png</file>
-    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/homepage.png</file>
 
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/open.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/add.png</file>
