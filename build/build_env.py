@@ -170,6 +170,24 @@ class BuildRequest(object):
             raise ex
 
         try:
+            cloned_dir = utils.git_clone('https://github.com/fastogt/libmemcached.git', abs_dir_path)
+            os.chdir(cloned_dir)
+
+            configure_libmemcached = ['./configure', '--prefix={0}'.format(prefix_path), '--disable-shared',
+                                      '--enable-static', '--enable-sasl']
+            configure_policy = run_command.CommonPolicy(print_message)
+            run_command.run_command_cb(configure_libmemcached, configure_policy)
+
+            make_install_libmemcached = list(build_external_system_args)
+            make_install_libmemcached.append('install')
+            make_policy = run_command.CommonPolicy(print_message)
+            run_command.run_command_cb(make_install_libmemcached, make_policy)
+            os.chdir(abs_dir_path)
+        except Exception as ex:
+            os.chdir(pwd)
+            raise ex
+
+        try:
             cloned_dir = utils.git_clone('https://github.com/fastogt/unqlite.git', abs_dir_path)
             os.chdir(cloned_dir)
 
