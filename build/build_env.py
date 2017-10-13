@@ -173,6 +173,10 @@ class BuildRequest(object):
             cloned_dir = utils.git_clone('https://github.com/fastogt/libmemcached.git', abs_dir_path)
             os.chdir(cloned_dir)
 
+            bootstrap_policy = run_command.CommonPolicy(print_message)
+            bootstrap_libmemcached = ['sh', 'bootstrap.sh']
+            run_command.run_command_cb(bootstrap_libmemcached, bootstrap_policy)
+
             configure_libmemcached = ['./configure', '--prefix={0}'.format(prefix_path), '--disable-shared',
                                       '--enable-static', '--enable-sasl']
             configure_policy = run_command.CommonPolicy(print_message)
