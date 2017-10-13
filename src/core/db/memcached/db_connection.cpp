@@ -302,7 +302,7 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
 
 common::Error TestConnection(const Config& config) {
   std::string host_str = config.host.GetHost();
-  const char* host = host_str.empty() ? NULL : config.password.c_str();
+  const char* host = host_str.empty() ? NULL : host_str.c_str();
   uint16_t hostport = config.host.GetPort();
 
   memcached_return rc;
@@ -683,7 +683,7 @@ common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** 
 
   size_t kcount = 0;
   common::Error err = DBkcount(&kcount);
-  DCHECK(!err);
+  //DCHECK(!err);
   *info = new DataBaseInfo(name, true, kcount);
   return common::Error();
 }
