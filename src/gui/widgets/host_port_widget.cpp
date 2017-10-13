@@ -23,6 +23,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QRegExpValidator>
+#include <QSpinBox>
 
 #include <common/qt/convert2string.h>
 
@@ -32,27 +33,26 @@ namespace gui {
 HostPortWidget::HostPortWidget(QWidget* parent) : QWidget(parent) {
   QHBoxLayout* hostAndPasswordLayout = new QHBoxLayout;
   hostName_ = new QLineEdit;
-  hostPort_ = new QLineEdit;
-  hostPort_->setFixedWidth(80);
-  QRegExp rx("\\d+");  // (0-65554)
-  hostPort_->setValidator(new QRegExpValidator(rx, this));
+  port_ = new QSpinBox;
+  port_->setRange(0, UINT16_MAX);
+  port_->setFixedWidth(80);
   hostAndPasswordLayout->addWidget(hostName_);
   hostAndPasswordLayout->addWidget(new QLabel(":"));
-  hostAndPasswordLayout->addWidget(hostPort_);
+  hostAndPasswordLayout->addWidget(port_);
   setLayout(hostAndPasswordLayout);
 
   retranslateUi();
 }
 
 common::net::HostAndPort HostPortWidget::host() const {
-  return common::net::HostAndPort(common::ConvertToString(hostName_->text()), hostPort_->text().toInt());
+  return common::net::HostAndPort(common::ConvertToString(hostName_->text()), port_->value());
 }
 
 void HostPortWidget::setHost(const common::net::HostAndPort& host) {
   QString qhost;
   common::ConvertFromString(host.GetHost(), &qhost);
   hostName_->setText(qhost);
-  hostPort_->setText(QString::number(host.GetPort()));
+  port_->setValue(host.GetPort());
 }
 
 bool HostPortWidget::isValidHost() const {

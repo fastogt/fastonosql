@@ -23,6 +23,7 @@
 #include <common/net/net.h>
 
 class QLineEdit;
+class QSpinBox;
 
 namespace fastonosql {
 namespace gui {
@@ -44,7 +45,7 @@ class HostPortWidget : public QWidget {
   void retranslateUi();
 
   QLineEdit* hostName_;
-  QLineEdit* hostPort_;
+  QSpinBox* port_;
 };
 
 }  // namespace gui
