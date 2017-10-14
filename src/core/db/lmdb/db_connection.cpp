@@ -426,7 +426,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
     return err;
   }
 
-  ret_val->assign(reinterpret_cast<const char*>(mval.mv_data), mval.mv_size);
+  *ret_val = std::string(reinterpret_cast<const char*>(mval.mv_data), mval.mv_size);
   return common::Error();
 }
 

@@ -23,7 +23,7 @@
 #include <common/convert2string.h>
 #include <common/string_util.h>  // for JoinString, Tokenize
 
-#include "core/global.h"
+#include "core/value.h"
 
 namespace fastonosql {
 namespace core {
@@ -156,7 +156,11 @@ void NDbKValue::SetValue(NValue value) {
 }
 
 std::string NDbKValue::GetValueString() const {
-  return common::ConvertToString(value_.get(), " ");
+  return ConvertToHumanReadable(value_.get(), " ");
+}
+
+std::string NDbKValue::GetValueForCommandLine() const {
+  return ConvertValue(value_.get(), " ", true);
 }
 
 bool NDbKValue::EqualsKey(const NKey& key) const {

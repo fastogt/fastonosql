@@ -36,7 +36,7 @@ CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands)
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, command_buffer_t* cmdstring) const {
   const NKey cur = key.GetKey();
   key_t key_str = cur.GetKey();
-  std::string value_str = key.GetValueString();
+  std::string value_str = key.GetValueForCommandLine();
   command_buffer_writer_t wr;
   wr << FORESTDB_SET_KEY_COMMAND << " " << key_str.GetKeyData() << " " << value_str;
   *cmdstring = wr.str();

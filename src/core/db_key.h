@@ -51,7 +51,7 @@ class KeyString {
 
   std::string ToBytes() const;      // for direct bytes call
   std::string ToString() const;     // for diplaying
-  string_key_t GetKeyData() const;  // escape if hex, or not changed if text
+  string_key_t GetKeyData() const;  // escape if hex, or double quoted if text
   void SetKeyData(const string_key_t& key_data);
 
   bool Equals(const KeyString& other) const;
@@ -114,6 +114,7 @@ class NDbKValue {
   void SetValue(NValue value);
 
   std::string GetValueString() const;
+  std::string GetValueForCommandLine() const;
 
   bool EqualsKey(const NKey& key) const;
   bool Equals(const NDbKValue& other) const;

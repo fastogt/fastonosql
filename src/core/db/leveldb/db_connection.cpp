@@ -224,12 +224,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   const string_key_t key_str = key.ToBytes();
   const ::leveldb::Slice key_slice(key_str.data(), key_str.size());
   ::leveldb::ReadOptions ro;
-  common::Error err = CheckResultCommand(DB_GET_KEY_COMMAND, connection_.handle_->Get(ro, key_slice, ret_val));
-  if (err) {
-    return err;
-  }
-
-  return common::Error();
+  return CheckResultCommand(DB_GET_KEY_COMMAND, connection_.handle_->Get(ro, key_slice, ret_val));
 }
 
 common::Error DBConnection::ScanImpl(uint64_t cursor_in,

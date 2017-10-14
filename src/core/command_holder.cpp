@@ -23,7 +23,7 @@
 #include <common/sprintf.h>
 
 namespace {
-inline size_t count_space(const std::string& data) {
+size_t count_space(const std::string& data) {
   return std::count_if(data.begin(), data.end(), [](char c) { return std::isspace(c); });
 }
 }  // namespace

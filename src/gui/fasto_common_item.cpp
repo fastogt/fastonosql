@@ -26,7 +26,7 @@
 
 #include <json-c/json_tokener.h>
 
-#include "core/global.h"  // for ConvertToString
+#include "core/value.h"  // for ConvertToString
 
 namespace fastonosql {
 namespace gui {
@@ -49,7 +49,7 @@ QString FastoCommonItem::key() const {
 QString FastoCommonItem::value() const {
   core::NValue nval = key_.GetValue();
   common::Value* val = nval.get();
-  std::string valstr = common::ConvertToString(val, delimiter_);
+  std::string valstr = core::ConvertToHumanReadable(val, delimiter_);
   QString qvalstr;
   common::ConvertFromString(valstr, &qvalstr);
   return qvalstr;

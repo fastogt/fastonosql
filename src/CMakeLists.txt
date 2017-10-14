@@ -56,6 +56,7 @@ SET(HEADERS_CORE
   ${CMAKE_SOURCE_DIR}/src/core/server_property_info.h
   ${CMAKE_SOURCE_DIR}/src/core/ssh_info.h
   ${CMAKE_SOURCE_DIR}/src/core/logger.h
+  ${CMAKE_SOURCE_DIR}/src/core/value.h
   ${CMAKE_SOURCE_DIR}/src/core/global.h
 )
 
@@ -78,6 +79,7 @@ SET(SOURCES_CORE
   ${CMAKE_SOURCE_DIR}/src/core/server_property_info.cpp
   ${CMAKE_SOURCE_DIR}/src/core/ssh_info.cpp
   ${CMAKE_SOURCE_DIR}/src/core/logger.cpp
+  ${CMAKE_SOURCE_DIR}/src/core/value.cpp
   ${CMAKE_SOURCE_DIR}/src/core/global.cpp
 )
 

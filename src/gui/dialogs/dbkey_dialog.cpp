@@ -30,7 +30,7 @@
 #include <common/qt/convert2string.h>  // for ConvertToString
 
 #include "core/db_traits.h"
-#include "core/global.h"
+#include "core/value.h"
 
 #include "gui/widgets/hash_type_widget.h"
 #include "gui/widgets/list_type_widget.h"
@@ -208,7 +208,7 @@ void DbKeyDialog::syncControls(common::Value* item) {
     common::ArrayValue* arr = nullptr;
     if (item->GetAsList(&arr)) {
       for (auto it = arr->begin(); it != arr->end(); ++it) {
-        std::string val = common::ConvertToString(*it, "");
+        std::string val = core::ConvertToHumanReadable(*it);
         if (val.empty()) {
           continue;
         }
@@ -223,7 +223,7 @@ void DbKeyDialog::syncControls(common::Value* item) {
     common::SetValue* set = nullptr;
     if (item->GetAsSet(&set)) {
       for (auto it = set->begin(); it != set->end(); ++it) {
-        std::string val = common::ConvertToString(*it, "");
+        std::string val = core::ConvertToHumanReadable(*it);
         if (val.empty()) {
           continue;
         }
@@ -240,13 +240,13 @@ void DbKeyDialog::syncControls(common::Value* item) {
       for (auto it = zset->begin(); it != zset->end(); ++it) {
         auto element = (*it);
         common::Value* key = element.first;
-        std::string key_str = common::ConvertToString(key, "");
+        std::string key_str = core::ConvertToHumanReadable(key);
         if (key_str.empty()) {
           continue;
         }
 
         common::Value* value = element.second;
-        std::string value_str = common::ConvertToString(value, "");
+        std::string value_str = core::ConvertToHumanReadable(value);
         if (value_str.empty()) {
           continue;
         }
@@ -264,13 +264,13 @@ void DbKeyDialog::syncControls(common::Value* item) {
       for (auto it = hash->begin(); it != hash->end(); ++it) {
         auto element = (*it);
         common::Value* key = element.first;
-        std::string key_str = common::ConvertToString(key, "");
+        std::string key_str = core::ConvertToHumanReadable(key);
         if (key_str.empty()) {
           continue;
         }
 
         common::Value* value = element.second;
-        std::string value_str = common::ConvertToString(value, "");
+        std::string value_str = core::ConvertToHumanReadable(value);
         if (value_str.empty()) {
           continue;
         }

@@ -26,7 +26,7 @@
 #include <common/qt/convert2string.h>
 #include <common/qt/utils_qt.h>
 
-#include "core/global.h"
+#include "core/value.h"
 
 #include "gui/widgets/hash_type_widget.h"
 #include "gui/widgets/list_type_widget.h"
@@ -122,7 +122,7 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
     if (val->GetAsList(&arr)) {
       ListTypeWidget* listwidget = static_cast<ListTypeWidget*>(editor);
       for (auto it = arr->begin(); it != arr->end(); ++it) {
-        std::string val = common::ConvertToString((*it), "");
+        std::string val = core::ConvertToHumanReadable((*it));
         if (val.empty()) {
           continue;
         }
@@ -137,7 +137,7 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
     if (val->GetAsSet(&set)) {
       ListTypeWidget* listwidget = static_cast<ListTypeWidget*>(editor);
       for (auto it = set->begin(); it != set->end(); ++it) {
-        std::string val = common::ConvertToString((*it), "");
+        std::string val = core::ConvertToHumanReadable((*it));
         if (val.empty()) {
           continue;
         }
@@ -154,13 +154,13 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
       for (auto it = zset->begin(); it != zset->end(); ++it) {
         auto element = (*it);
         common::Value* key = element.first;
-        std::string key_str = common::ConvertToString(key, "");
+        std::string key_str = core::ConvertToHumanReadable(key);
         if (key_str.empty()) {
           continue;
         }
 
         common::Value* value = element.second;
-        std::string value_str = common::ConvertToString(value, "");
+        std::string value_str = core::ConvertToHumanReadable(value);
         if (value_str.empty()) {
           continue;
         }
@@ -179,13 +179,13 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
       for (auto it = hash->begin(); it != hash->end(); ++it) {
         auto element = (*it);
         common::Value* key = element.first;
-        std::string key_str = common::ConvertToString(key, "");
+        std::string key_str = core::ConvertToHumanReadable(key);
         if (key_str.empty()) {
           continue;
         }
 
         common::Value* value = element.second;
-        std::string value_str = common::ConvertToString(value, "");
+        std::string value_str = core::ConvertToHumanReadable(value);
         if (value_str.empty()) {
           continue;
         }
