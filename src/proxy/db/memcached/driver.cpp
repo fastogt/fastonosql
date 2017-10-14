@@ -174,7 +174,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
           core::key_t key(key_str);
           core::NKey k(key);
           core::command_buffer_writer_t wr;
-          wr << "TTL " << key.ToString();
+          wr << DB_GET_TTL_COMMAND << " " << key.GetHumanReadable();
           core::FastoObjectCommandIPtr cmd_ttl = CreateCommandFast(wr.str(), core::C_INNER);
           LOG_COMMAND(cmd_ttl);
           core::ttl_t ttl = NO_TTL;

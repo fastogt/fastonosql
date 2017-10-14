@@ -207,21 +207,21 @@ common::Error DBConnection::DelInner(key_t key) {
     return err;
   }
 
-  const string_key_t key_str = key.ToBytes();
+  const string_key_t key_str = key.GetKeyData();
   const ::leveldb::Slice key_slice(reinterpret_cast<const char*>(key_str.data()), key_str.size());
   ::leveldb::WriteOptions wo;
   return CheckResultCommand(DB_DELETE_KEY_COMMAND, connection_.handle_->Delete(wo, key_slice));
 }
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
-  const string_key_t key_str = key.ToBytes();
+  const string_key_t key_str = key.GetKeyData();
   const ::leveldb::Slice key_slice(reinterpret_cast<const char*>(key_str.data()), key_str.size());
   ::leveldb::WriteOptions wo;
   return CheckResultCommand(DB_SET_KEY_COMMAND, connection_.handle_->Put(wo, key_slice, value));
 }
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
-  const string_key_t key_str = key.ToBytes();
+  const string_key_t key_str = key.GetKeyData();
   const ::leveldb::Slice key_slice(key_str.data(), key_str.size());
   ::leveldb::ReadOptions ro;
   return CheckResultCommand(DB_GET_KEY_COMMAND, connection_.handle_->Get(ro, key_slice, ret_val));

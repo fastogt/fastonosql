@@ -385,7 +385,7 @@ common::Error DBConnection::ConfigGetDatabases(std::vector<std::string>* dbs) {
 }
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
-  const string_key_t key_str = key.ToBytes();
+  const string_key_t key_str = key.GetKeyData();
   MDB_val key_slice = ConvertToLMDBSlice(key_str.data(), key_str.size());
   MDB_val mval;
   mval.mv_size = value.size();
@@ -409,7 +409,7 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
 }
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
-  const string_key_t key_str = key.ToBytes();
+  const string_key_t key_str = key.GetKeyData();
   MDB_val key_slice = ConvertToLMDBSlice(key_str.data(), key_str.size());
   MDB_val mval;
 
@@ -431,7 +431,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
 }
 
 common::Error DBConnection::DelInner(key_t key) {
-  const string_key_t key_str = key.ToBytes();
+  const string_key_t key_str = key.GetKeyData();
   MDB_val key_slice = ConvertToLMDBSlice(key_str.data(), key_str.size());
 
   MDB_txn* txn = NULL;

@@ -206,19 +206,19 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
 }
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
-  const string_key_t key_slice = key.ToBytes();
+  const string_key_t key_slice = key.GetKeyData();
   return CheckResultCommand(DB_SET_KEY_COMMAND, unqlite_kv_store(connection_.handle_, key_slice.data(),
                                                                  key_slice.size(), value.c_str(), value.length()));
 }
 
 common::Error DBConnection::DelInner(key_t key) {
-  const string_key_t key_slice = key.ToBytes();
+  const string_key_t key_slice = key.GetKeyData();
   return CheckResultCommand(DB_DELETE_KEY_COMMAND,
                             unqlite_kv_delete(connection_.handle_, key_slice.data(), key_slice.size()));
 }
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
-  const string_key_t key_slice = key.ToBytes();
+  const string_key_t key_slice = key.GetKeyData();
   return CheckResultCommand(DB_GET_KEY_COMMAND,
                             unqlite_kv_fetch_callback(connection_.handle_, key_slice.data(), key_slice.size(),
                                                       unqlite_data_callback, ret_val));

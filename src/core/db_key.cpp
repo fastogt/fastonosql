@@ -48,11 +48,11 @@ KeyString::KeyType KeyString::GetType() const {
   return type_;
 }
 
-std::string KeyString::ToBytes() const {
+std::string KeyString::GetKeyData() const {
   return key_;
 }
 
-std::string KeyString::ToString() const {
+std::string KeyString::GetHumanReadable() const {
   if (type_ == BINARY_KEY) {
     command_buffer_writer_t wr;
     string_key_t hexed = common::utils::hex::encode(key_, false);
@@ -68,7 +68,7 @@ std::string KeyString::ToString() const {
   return key_;
 }
 
-string_key_t KeyString::GetKeyData() const {
+string_key_t KeyString::GetKeyForCommandLine() const {
   if (type_ == BINARY_KEY) {
     command_buffer_writer_t wr;
     wr << "\"";
@@ -83,7 +83,11 @@ string_key_t KeyString::GetKeyData() const {
     return wr.str();
   }
 
-  return "\"" + key_ + "\"";
+  if (detail::have_space(key_)) {
+    return "\"" + key_ + "\"";
+  }
+
+  return key_;
 }
 
 void KeyString::SetKeyData(const string_key_t& key_data) {

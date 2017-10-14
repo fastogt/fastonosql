@@ -27,12 +27,12 @@ const std::vector<const char*> supported_views_text = {"Tree", "Table", "Text"};
 
 KeyInfo::KeyInfo(const core::key_t& key, std::string ns_separator)
     : key_(key), splited_namespaces_(), ns_separator_(ns_separator) {
-  common::Tokenize(key.ToString(), ns_separator, &splited_namespaces_);
+  common::Tokenize(key.GetHumanReadable(), ns_separator, &splited_namespaces_);
   splited_namespaces_.pop_back();
 }
 
 std::string KeyInfo::GetKey() const {
-  return key_.ToString();
+  return key_.GetHumanReadable();
 }
 
 bool KeyInfo::HasNamespace() const {

@@ -257,7 +257,7 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
 }
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
-  const string_key_t key_str = key.ToBytes();
+  const string_key_t key_str = key.GetKeyData();
   ups_key_t key_slice = ConvertToUpscaleDBSlice(key_str);
 
   ups_record_t rec;
@@ -269,7 +269,7 @@ common::Error DBConnection::SetInner(key_t key, const std::string& value) {
 }
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
-  const string_key_t key_str = key.ToBytes();
+  const string_key_t key_str = key.GetKeyData();
   ups_key_t key_slice = ConvertToUpscaleDBSlice(key_str);
 
   ups_record_t rec;
@@ -286,7 +286,7 @@ common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
 }
 
 common::Error DBConnection::DelInner(key_t key) {
-  const string_key_t key_str = key.ToBytes();
+  const string_key_t key_str = key.GetKeyData();
   ups_key_t key_slice = ConvertToUpscaleDBSlice(key_str);
   return CheckResultCommand(DB_DELETE_KEY_COMMAND, ups_db_erase(connection_.handle_->db, 0, &key_slice, 0));
 }

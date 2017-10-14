@@ -24,16 +24,14 @@
 #include <common/convert2string.h>
 #include <common/utils.h>
 
-namespace {
+namespace fastonosql {
+namespace core {
+namespace detail {
 bool have_space(const std::string& data) {
   auto it = std::find_if(data.begin(), data.end(), [](char c) { return std::isspace(c); });
   return it != data.end();
 }
-
-}  // namespace
-
-namespace fastonosql {
-namespace core {
+}
 
 std::string ConvertValue(common::Value* value, const std::string& delimiter, bool for_cmd) {
   if (!value) {
@@ -245,7 +243,7 @@ std::string ConvertValue(common::StringValue* value, const std::string& delimite
     return res;
   }
 
-  if (have_space(res)) {
+  if (detail::have_space(res)) {
     return "\"" + res + "\"";
   }
 

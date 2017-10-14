@@ -130,7 +130,7 @@ DbKeyDialog::DbKeyDialog(const QString& title, core::connectionTypes type, const
     QString qkey;
     core::NKey key = key_.GetKey();
     core::key_t raw_key = key.GetKey();
-    if (common::ConvertFromString(raw_key.ToString(), &qkey)) {
+    if (common::ConvertFromString(raw_key.GetHumanReadable(), &qkey)) {
       keyEdit_->setText(qkey);
     }
     keyEdit_->setEnabled(false);

@@ -49,9 +49,9 @@ class KeyString {
 
   KeyType GetType() const;
 
-  std::string ToBytes() const;      // for direct bytes call
-  std::string ToString() const;     // for diplaying
-  string_key_t GetKeyData() const;  // escape if hex, or double quoted if text
+  std::string GetKeyData() const;                // for direct bytes call
+  std::string GetHumanReadable() const;       // for diplaying
+  string_key_t GetKeyForCommandLine() const;  // escape if hex, or double quoted if text with space
   void SetKeyData(const string_key_t& key_data);
 
   bool Equals(const KeyString& other) const;

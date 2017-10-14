@@ -31,6 +31,7 @@
 #include "proxy/db/redis/command.h"              // for Command
 #include "proxy/db/redis/connection_settings.h"  // for ConnectionSettings
 
+#define REDIS_TYPE_COMMAND "TYPE"
 #define REDIS_SHUTDOWN_COMMAND "SHUTDOWN"
 #define REDIS_BACKUP_COMMAND "SAVE"
 #define REDIS_SET_PASSWORD_COMMAND "CONFIG SET requirepass"
@@ -310,11 +311,11 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
           core::NKey k(key_str);
           core::NDbKValue dbv(k, core::NValue());
           core::command_buffer_writer_t wr_type;
-          wr_type << "TYPE " << key_str.GetKeyData();
+          wr_type << REDIS_TYPE_COMMAND << " " << key_str.GetKeyForCommandLine();
           cmds.push_back(CreateCommandFast(wr_type.str(), core::C_INNER));
 
           core::command_buffer_writer_t wr_ttl;
-          wr_ttl << "TTL " << key_str.GetKeyData();
+          wr_ttl << DB_GET_TTL_COMMAND " " << key_str.GetKeyForCommandLine();
           cmds.push_back(CreateCommandFast(wr_ttl.str(), core::C_INNER));
           res.keys.push_back(dbv);
         }

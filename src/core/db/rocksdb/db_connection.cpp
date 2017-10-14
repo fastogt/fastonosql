@@ -220,7 +220,7 @@ std::string DBConnection::GetCurrentDBName() const {
 
 common::Error DBConnection::GetInner(key_t key, std::string* ret_val) {
   ::rocksdb::ReadOptions ro;
-  const string_key_t key_str = key.ToBytes();
+  const string_key_t key_str = key.GetKeyData();
   const ::rocksdb::Slice key_slice(reinterpret_cast<const char*>(key_str.data()), key_str.size());
   return CheckResultCommand(DB_GET_KEY_COMMAND, connection_.handle_->Get(ro, key_slice, ret_val));
 }
@@ -267,7 +267,7 @@ common::Error DBConnection::Merge(const std::string& key, const std::string& val
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   ::rocksdb::WriteOptions wo;
-  const string_key_t key_str = key.ToBytes();
+  const string_key_t key_str = key.GetKeyData();
   const ::rocksdb::Slice key_slice(reinterpret_cast<const char*>(key_str.data()), key_str.size());
   return CheckResultCommand(DB_SET_KEY_COMMAND, connection_.handle_->Put(wo, key_slice, value));
 }
@@ -280,7 +280,7 @@ common::Error DBConnection::DelInner(key_t key) {
   }
 
   ::rocksdb::WriteOptions wo;
-  const string_key_t key_str = key.ToBytes();
+  const string_key_t key_str = key.GetKeyData();
   const ::rocksdb::Slice key_slice(reinterpret_cast<const char*>(key_str.data()), key_str.size());
   return CheckResultCommand(DB_DELETE_KEY_COMMAND, connection_.handle_->Delete(wo, key_slice));
 }
