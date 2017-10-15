@@ -50,29 +50,32 @@ class PreferencesDialog : public QDialog {
  private:
   void retranslateUi();
 #ifndef IS_PUBLIC_BUILD
-  QGroupBox* profileBox_;
-  QLabel* loginLabel_;
-  QLineEdit* loginText_;
+  // controls in profile_box
+  QGroupBox* profile_box_;
+  QLabel* login_label_;
+  QLineEdit* login_text_;
 #endif
 
-  QGroupBox* generalBox_;
-  QCheckBox* autoCheckUpdates_;
-  QCheckBox* autoComletionEnable_;
-  QLabel* langLabel_;
-  QComboBox* languagesComboBox_;
+  // controls in general_box
+  QGroupBox* general_box_;
+  QCheckBox* send_statitsic_;
+  QCheckBox* auto_check_updates_;
+  QCheckBox* auto_comletion_;
+  QLabel* languages_label_;
+  QComboBox* languages_combo_box_;
 
-  QLabel* stylesLabel_;
-  QComboBox* stylesComboBox_;
-  QLabel* fontLabel_;
-  QFontComboBox* fontComboBox_;
-  QSpinBox* fontSizeSpinBox_;
-  QLabel* defaultViewLabel_;
-  QComboBox* defaultViewComboBox_;
-  QLabel* logDirLabel_;
-  QLineEdit* logDirPath_;
-  QCheckBox* autoOpenConsole_;
-  QCheckBox* autoConnectDB_;
-  QCheckBox* fastViewKeys_;
+  QLabel* styles_label_;
+  QComboBox* styles_combo_box_;
+  QLabel* font_label_;
+  QFontComboBox* font_combo_box_;
+  QSpinBox* font_size_spin_box_;
+  QLabel* default_view_label_;
+  QComboBox* default_view_combo_box_;
+  QLabel* log_dir_label_;
+  QLineEdit* log_dir_path_;
+  QCheckBox* auto_open_console_;
+  QCheckBox* auto_connect_db_;
+  QCheckBox* fast_view_keys_;
 };
 }  // namespace gui
 }  // namespace fastonosql

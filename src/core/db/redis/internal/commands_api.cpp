@@ -1832,11 +1832,11 @@ const internal::ConstantCommandsArray g_commands = {
                   "Force a failover as if the master was not "
                   "reachable, "
                   "and without asking for agreement to other "
-                  "Sentinels "
+                  "GetSentinels "
                   "(however a new version of the configuration will "
                   "be "
                   "published so that the other "
-                  "Sentinels will update their configurations).",
+                  "GetSentinels will update their configurations).",
                   UNDEFINED_SINCE,
                   UNDEFINED_EXAMPLE_STR,
                   1,

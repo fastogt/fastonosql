@@ -28,6 +28,7 @@
 #include <QLineEdit>
 
 #include <common/qt/convert2string.h>  // for ConvertToString
+#include <common/convert2string.h>
 
 #include "core/db_traits.h"
 #include "core/value.h"
@@ -42,9 +43,6 @@
 #include "translations/global.h"  // for trAddItem, trRemoveItem, etc
 
 namespace {
-const QString trType = QObject::tr("Type:");
-const QString trKey = QObject::tr("Key:");
-const QString trValue = QObject::tr("Value:");
 const QString trInput = QObject::tr("Key/Value input");
 }  // namespace
 
@@ -52,15 +50,16 @@ namespace fastonosql {
 namespace gui {
 
 DbKeyDialog::DbKeyDialog(const QString& title, core::connectionTypes type, const core::NDbKValue& key, QWidget* parent)
-    : QDialog(parent), type_(type), key_(key) {
+    : QDialog(parent), key_(key) {
   bool is_edit = !key.Equals(core::NDbKValue());
   setWindowIcon(GuiFactory::GetInstance().icon(type));
   setWindowTitle(title);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
   QGridLayout* kvLayout = new QGridLayout;
-  kvLayout->addWidget(new QLabel(trType), 0, 0);
-  typesCombo_ = new QComboBox;
+  type_label_ = new QLabel;
+  kvLayout->addWidget(type_label_, 0, 0);
+  types_combo_box_ = new QComboBox;
   std::vector<common::Value::Type> types = SupportedTypesFromType(type);
   common::Value::Type kt = common::Value::TYPE_STRING;
   if (is_edit) {
@@ -70,55 +69,57 @@ DbKeyDialog::DbKeyDialog(const QString& title, core::connectionTypes type, const
   for (size_t i = 0; i < types.size(); ++i) {
     common::Value::Type t = types[i];
     if (kt == t) {
-      current_index = i;
+      current_index = static_cast<int>(i);
     }
     QString type;
     if (common::ConvertFromString(common::Value::GetTypeName(t), &type)) {
-      typesCombo_->addItem(GuiFactory::GetInstance().icon(t), type, t);
+      types_combo_box_->addItem(GuiFactory::GetInstance().icon(t), type, t);
     }
   }
 
   typedef void (QComboBox::*ind)(int);
-  VERIFY(connect(typesCombo_, static_cast<ind>(&QComboBox::currentIndexChanged), this, &DbKeyDialog::typeChanged));
-  kvLayout->addWidget(typesCombo_, 0, 1);
+  VERIFY(connect(types_combo_box_, static_cast<ind>(&QComboBox::currentIndexChanged), this, &DbKeyDialog::typeChanged));
+  kvLayout->addWidget(types_combo_box_, 0, 1);
 
   // key layout
-  kvLayout->addWidget(new QLabel(trKey), 1, 0);
-  keyEdit_ = new QLineEdit;
-  keyEdit_->setPlaceholderText("[key]");
-  kvLayout->addWidget(keyEdit_, 1, 1);
+  key_label_ = new QLabel;
+  kvLayout->addWidget(key_label_, 1, 0);
+  key_edit_ = new QLineEdit;
+  key_edit_->setPlaceholderText("[key]");
+  kvLayout->addWidget(key_edit_, 1, 1);
 
   // value layout
-  kvLayout->addWidget(new QLabel(trValue), 2, 0);
-  valueEdit_ = new QLineEdit;
-  valueEdit_->setPlaceholderText("[value]");
-  kvLayout->addWidget(valueEdit_, 2, 1);
-  valueEdit_->setVisible(true);
+  value_label_ = new QLabel;
+  kvLayout->addWidget(value_label_, 2, 0);
+  value_edit_ = new QLineEdit;
+  value_edit_->setPlaceholderText("[value]");
+  kvLayout->addWidget(value_edit_, 2, 1);
+  value_edit_->setVisible(true);
 
-  boolValueEdit_ = new QComboBox;
-  boolValueEdit_->addItem("true");
-  boolValueEdit_->addItem("false");
-  kvLayout->addWidget(boolValueEdit_, 2, 1);
-  boolValueEdit_->setVisible(false);
+  bool_value_edit_ = new QComboBox;
+  bool_value_edit_->addItem("true");
+  bool_value_edit_->addItem("false");
+  kvLayout->addWidget(bool_value_edit_, 2, 1);
+  bool_value_edit_->setVisible(false);
 
-  valueListEdit_ = new ListTypeWidget;
-  valueListEdit_->horizontalHeader()->hide();
-  valueListEdit_->verticalHeader()->hide();
-  kvLayout->addWidget(valueListEdit_, 2, 1);
-  valueListEdit_->setVisible(false);
+  value_list_edit_ = new ListTypeWidget;
+  value_list_edit_->horizontalHeader()->hide();
+  value_list_edit_->verticalHeader()->hide();
+  kvLayout->addWidget(value_list_edit_, 2, 1);
+  value_list_edit_->setVisible(false);
 
-  valueTableEdit_ = new HashTypeWidget;
-  valueTableEdit_->horizontalHeader()->hide();
-  valueTableEdit_->verticalHeader()->hide();
-  kvLayout->addWidget(valueTableEdit_, 2, 1);
-  valueTableEdit_->setVisible(false);
+  value_table_edit_ = new HashTypeWidget;
+  value_table_edit_->horizontalHeader()->hide();
+  value_table_edit_->verticalHeader()->hide();
+  kvLayout->addWidget(value_table_edit_, 2, 1);
+  value_table_edit_->setVisible(false);
 
-  generalBox_ = new QGroupBox(this);
-  generalBox_->setLayout(kvLayout);
+  general_box_ = new QGroupBox(this);
+  general_box_->setLayout(kvLayout);
 
   // main layout
   QVBoxLayout* layout = new QVBoxLayout;
-  layout->addWidget(generalBox_);
+  layout->addWidget(general_box_);
 
   QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
@@ -131,11 +132,11 @@ DbKeyDialog::DbKeyDialog(const QString& title, core::connectionTypes type, const
     core::NKey key = key_.GetKey();
     core::key_t raw_key = key.GetKey();
     if (common::ConvertFromString(raw_key.GetHumanReadable(), &qkey)) {
-      keyEdit_->setText(qkey);
+      key_edit_->setText(qkey);
     }
-    keyEdit_->setEnabled(false);
+    key_edit_->setEnabled(false);
   }
-  typesCombo_->setCurrentIndex(current_index);
+  types_combo_box_->setCurrentIndex(current_index);
   core::NValue val = key_.GetValue();
   syncControls(val.get());
 
@@ -155,38 +156,40 @@ void DbKeyDialog::accept() {
 }
 
 void DbKeyDialog::typeChanged(int index) {
-  QVariant var = typesCombo_->itemData(index);
+  QVariant var = types_combo_box_->itemData(index);
   common::Value::Type type = static_cast<common::Value::Type>(qvariant_cast<unsigned char>(var));
 
-  valueEdit_->clear();
-  valueTableEdit_->clear();
-  valueListEdit_->clear();
+  value_edit_->clear();
+  value_table_edit_->clear();
+  value_list_edit_->clear();
 
   if (type == common::Value::TYPE_ARRAY || type == common::Value::TYPE_SET) {
-    valueListEdit_->setVisible(true);
-    valueEdit_->setVisible(false);
-    boolValueEdit_->setVisible(false);
-    valueTableEdit_->setVisible(false);
+    value_list_edit_->setVisible(true);
+    value_edit_->setVisible(false);
+    bool_value_edit_->setVisible(false);
+    value_table_edit_->setVisible(false);
   } else if (type == common::Value::TYPE_ZSET || type == common::Value::TYPE_HASH) {
-    valueTableEdit_->setVisible(true);
-    valueEdit_->setVisible(false);
-    boolValueEdit_->setVisible(false);
-    valueListEdit_->setVisible(false);
+    value_table_edit_->setVisible(true);
+    value_edit_->setVisible(false);
+    bool_value_edit_->setVisible(false);
+    value_list_edit_->setVisible(false);
+  } else if (type == common::Value::TYPE_BOOLEAN) {
+    value_table_edit_->setVisible(false);
+    value_edit_->setVisible(false);
+    bool_value_edit_->setVisible(true);
+    value_list_edit_->setVisible(false);
   } else {
-    valueEdit_->setVisible(true);
-    boolValueEdit_->setVisible(false);
-    valueListEdit_->setVisible(false);
-    valueTableEdit_->setVisible(false);
+    value_edit_->setVisible(true);
+    bool_value_edit_->setVisible(false);
+    value_list_edit_->setVisible(false);
+    value_table_edit_->setVisible(false);
     if (type == common::Value::TYPE_INTEGER || type == common::Value::TYPE_UINTEGER) {
-      valueEdit_->setValidator(new QIntValidator(this));
-    } else if (type == common::Value::TYPE_BOOLEAN) {
-      boolValueEdit_->setVisible(true);
-      valueEdit_->setVisible(false);
+      value_edit_->setValidator(new QIntValidator(this));
     } else if (type == common::Value::TYPE_DOUBLE) {
-      valueEdit_->setValidator(new QDoubleValidator(this));
+      value_edit_->setValidator(new QDoubleValidator(this));
     } else {
       QRegExp rx(".*");
-      valueEdit_->setValidator(new QRegExpValidator(rx, this));
+      value_edit_->setValidator(new QRegExpValidator(rx, this));
     }
   }
 }
@@ -215,7 +218,7 @@ void DbKeyDialog::syncControls(common::Value* item) {
 
         QString qval;
         if (common::ConvertFromString(val, &qval)) {
-          valueListEdit_->insertRow(qval);
+          value_list_edit_->insertRow(qval);
         }
       }
     }
@@ -230,7 +233,7 @@ void DbKeyDialog::syncControls(common::Value* item) {
 
         QString qval;
         if (common::ConvertFromString(val, &qval)) {
-          valueListEdit_->insertRow(qval);
+          value_list_edit_->insertRow(qval);
         }
       }
     }
@@ -254,7 +257,7 @@ void DbKeyDialog::syncControls(common::Value* item) {
         QString ftext;
         QString stext;
         if (common::ConvertFromString(key_str, &ftext) && common::ConvertFromString(value_str, &stext)) {
-          valueTableEdit_->insertRow(ftext, stext);
+          value_table_edit_->insertRow(ftext, stext);
         }
       }
     }
@@ -278,28 +281,28 @@ void DbKeyDialog::syncControls(common::Value* item) {
         QString ftext;
         QString stext;
         if (common::ConvertFromString(key_str, &ftext) && common::ConvertFromString(value_str, &stext)) {
-          valueTableEdit_->insertRow(ftext, stext);
+          value_table_edit_->insertRow(ftext, stext);
         }
       }
     }
   } else if (t == common::Value::TYPE_BOOLEAN) {
     bool val;
     if (item->GetAsBoolean(&val)) {
-      boolValueEdit_->setCurrentIndex(val ? 0 : 1);
+      bool_value_edit_->setCurrentIndex(val ? 0 : 1);
     }
-  } else {
-    std::string text;
-    if (item->GetAsString(&text)) {
-      QString qval;
-      if (common::ConvertFromString(text, &qval)) {
-        valueEdit_->setText(qval);
-      }
+  }
+
+  std::string text;
+  if (item->GetAsString(&text)) {
+    QString qval;
+    if (common::ConvertFromString(text, &qval)) {
+      value_edit_->setText(qval);
     }
   }
 }
 
 bool DbKeyDialog::validateAndApply() {
-  if (keyEdit_->text().isEmpty()) {
+  if (key_edit_->text().isEmpty()) {
     return false;
   }
 
@@ -308,7 +311,7 @@ bool DbKeyDialog::validateAndApply() {
     return false;
   }
 
-  std::string key_str = common::ConvertToString(keyEdit_->text());
+  std::string key_str = common::ConvertToString(key_edit_->text());
   core::key_t ks(key_str);
   core::NKey key(ks);
   key_ = core::NDbKValue(key, core::NValue(obj));
@@ -316,36 +319,62 @@ bool DbKeyDialog::validateAndApply() {
 }
 
 void DbKeyDialog::retranslateUi() {
-  generalBox_->setTitle(trInput);
+  value_label_->setText(translations::trValue + ":");
+  key_label_->setText(translations::trKey + ":");
+  type_label_->setText(translations::trType + ":");
+  general_box_->setTitle(trInput);
 }
 
 common::Value* DbKeyDialog::item() const {
-  int index = typesCombo_->currentIndex();
-  QVariant var = typesCombo_->itemData(index);
-  common::Value::Type t = static_cast<common::Value::Type>(qvariant_cast<unsigned char>(var));
-  if (t == common::Value::TYPE_ARRAY) {
-    return valueListEdit_->arrayValue();
-  } else if (t == common::Value::TYPE_SET) {
-    return valueListEdit_->setValue();
-  } else if (t == common::Value::TYPE_ZSET) {
-    return valueTableEdit_->zsetValue();
-  } else if (t == common::Value::TYPE_HASH) {
-    return valueTableEdit_->hashValue();
-  } else if (t == common::Value::TYPE_BOOLEAN) {
-    int index = boolValueEdit_->currentIndex();
-    if (index == -1) {
-      return nullptr;
-    }
-
+  int index = types_combo_box_->currentIndex();
+  QVariant var = types_combo_box_->itemData(index);
+  common::Value::Type type = static_cast<common::Value::Type>(qvariant_cast<unsigned char>(var));
+  if (type == common::Value::TYPE_ARRAY) {
+    return value_list_edit_->arrayValue();
+  } else if (type == common::Value::TYPE_SET) {
+    return value_list_edit_->setValue();
+  } else if (type == common::Value::TYPE_ZSET) {
+    return value_table_edit_->zsetValue();
+  } else if (type == common::Value::TYPE_HASH) {
+    return value_table_edit_->hashValue();
+  } else if (type == common::Value::TYPE_BOOLEAN) {
+    int index = bool_value_edit_->currentIndex();
     return common::Value::CreateBooleanValue(index == 0);
-  } else {
-    QString text = valueEdit_->text();
-    if (text.isEmpty()) {
+  }
+
+  const std::string text_str = common::ConvertToString(value_edit_->text());
+  if (text_str.empty()) {
+    DNOTREACHED() << "Invalid user input.";
+    return nullptr;
+  }
+
+  if (type == common::Value::TYPE_INTEGER) {
+    int res;
+    bool is_ok = common::ConvertFromString(text_str, &res);
+    if (!is_ok) {
+      DNOTREACHED() << "Conversion to int failed, text: " << text_str;
       return nullptr;
     }
-
-    return common::Value::CreateStringValue(common::ConvertToString(text));
+    return common::Value::CreateIntegerValue(res);
+  } else if (type == common::Value::TYPE_UINTEGER) {
+    unsigned int res;
+    bool is_ok = common::ConvertFromString(text_str, &res);
+    if (!is_ok) {
+      DNOTREACHED() << "Conversion to unsigned int failed, text: " << text_str;
+      return nullptr;
+    }
+    return common::Value::CreateUIntegerValue(res);
+  } else if (type == common::Value::TYPE_DOUBLE) {
+    double res;
+    bool is_ok = common::ConvertFromString(text_str, &res);
+    if (!is_ok) {
+      DNOTREACHED() << "Conversion to double failed, text: " << text_str;
+      return nullptr;
+    }
+    return common::Value::CreateDoubleValue(res);
   }
+
+  return common::Value::CreateStringValue(text_str);
 }
 
 }  // namespace gui

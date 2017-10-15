@@ -33,7 +33,7 @@
 #define PREFIX "settings/"
 
 #define LANGUAGE PREFIX "language"
-#define SENDED_STATISTIC PREFIX "sended_statistic"
+#define SEND_STATISTIC PREFIX "send_statistic"
 #define STYLE PREFIX "style"
 #define FONT PREFIX "font"
 #define CONNECTIONS PREFIX "connections"
@@ -71,7 +71,7 @@ namespace proxy {
 
 SettingsManager::SettingsManager()
     : config_version_(),
-      sended_statistic_(),
+      send_statistic_(),
       views_(),
       cur_style_(),
       cur_font_(),
@@ -81,7 +81,7 @@ SettingsManager::SettingsManager()
       clusters_(),
       recent_connections_(),
       logging_dir_(),
-      auto_check_update_(),
+      auto_check_updates_(),
       auto_completion_(),
       auto_open_console_(),
       fast_view_keys_() {
@@ -104,14 +104,14 @@ uint32_t SettingsManager::ConfigVersion() const {
   return config_version_;
 }
 
-bool SettingsManager::IsSendedStatistic() const {
-  return sended_statistic_;
+bool SettingsManager::GetSendStatistic() const {
+  return send_statistic_;
 }
-void SettingsManager::SetIsSendedStatistic(bool val) {
-  sended_statistic_ = val;
+void SettingsManager::SetSendStatistic(bool val) {
+  send_statistic_ = val;
 }
 
-supportedViews SettingsManager::DefaultView() const {
+supportedViews SettingsManager::GetDefaultView() const {
   return views_;
 }
 
@@ -119,7 +119,7 @@ void SettingsManager::SetDefaultView(supportedViews view) {
   views_ = view;
 }
 
-QString SettingsManager::CurrentStyle() const {
+QString SettingsManager::GetCurrentStyle() const {
   return cur_style_;
 }
 
@@ -127,7 +127,7 @@ void SettingsManager::SetCurrentStyle(const QString& st) {
   cur_style_ = st;
 }
 
-QFont SettingsManager::CurrentFont() const {
+QFont SettingsManager::GetCurrentFont() const {
   return cur_font_;
 }
 
@@ -135,7 +135,7 @@ void SettingsManager::SetCurrentFont(const QFont& font) {
   cur_font_ = font;
 }
 
-QString SettingsManager::CurrentLanguage() const {
+QString SettingsManager::GetCurrentLanguage() const {
   return cur_language_;
 }
 
@@ -162,7 +162,7 @@ void SettingsManager::RemoveConnection(IConnectionSettingsBaseSPtr connection) {
   connections_.erase(std::remove(connections_.begin(), connections_.end(), connection));
 }
 
-SettingsManager::connection_settings_t SettingsManager::Connections() const {
+SettingsManager::connection_settings_t SettingsManager::GetConnections() const {
   return connections_;
 }
 
@@ -185,7 +185,7 @@ void SettingsManager::RemoveSentinel(ISentinelSettingsBaseSPtr sentinel) {
   sentinels_.erase(std::remove(sentinels_.begin(), sentinels_.end(), sentinel));
 }
 
-SettingsManager::sentinel_settings_t SettingsManager::Sentinels() const {
+SettingsManager::sentinel_settings_t SettingsManager::GetSentinels() const {
   return sentinels_;
 }
 
@@ -208,7 +208,7 @@ void SettingsManager::RemoveCluster(IClusterSettingsBaseSPtr cluster) {
   clusters_.erase(std::remove(clusters_.begin(), clusters_.end(), cluster));
 }
 
-SettingsManager::cluster_settings_t SettingsManager::Clusters() const {
+SettingsManager::cluster_settings_t SettingsManager::GetClusters() const {
   return clusters_;
 }
 
@@ -230,7 +230,7 @@ void SettingsManager::RemoveRConnection(const QString& connection) {
   }
 }
 
-QStringList SettingsManager::RecentConnections() const {
+QStringList SettingsManager::GetRecentConnections() const {
   return recent_connections_;
 }
 
@@ -238,7 +238,7 @@ void SettingsManager::ClearRConnections() {
   recent_connections_.clear();
 }
 
-QString SettingsManager::LoggingDirectory() const {
+QString SettingsManager::GetLoggingDirectory() const {
   return logging_dir_;
 }
 
@@ -246,15 +246,15 @@ void SettingsManager::SetLoggingDirectory(const QString& dir) {
   logging_dir_ = dir;
 }
 
-bool SettingsManager::AutoCheckUpdates() const {
-  return auto_check_update_;
+bool SettingsManager::GetAutoCheckUpdates() const {
+  return auto_check_updates_;
 }
 
 void SettingsManager::SetAutoCheckUpdates(bool check) {
-  auto_check_update_ = check;
+  auto_check_updates_ = check;
 }
 
-bool SettingsManager::AutoCompletion() const {
+bool SettingsManager::GetAutoCompletion() const {
   return auto_completion_;
 }
 
@@ -270,7 +270,7 @@ void SettingsManager::SetAutoOpenConsole(bool open_console) {
   auto_open_console_ = open_console;
 }
 
-bool SettingsManager::AutoConnectDB() const {
+bool SettingsManager::GetAutoConnectDB() const {
   return auto_connect_db_;
 }
 
@@ -278,7 +278,7 @@ void SettingsManager::SetAutoConnectDB(bool open_db) {
   auto_connect_db_ = open_db;
 }
 
-bool SettingsManager::FastViewKeys() const {
+bool SettingsManager::GetFastViewKeys() const {
   return fast_view_keys_;
 }
 
@@ -303,7 +303,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
   DCHECK(settings.status() == QSettings::NoError);
 
   cur_style_ = settings.value(STYLE, common::qt::gui::defStyle).toString();
-  sended_statistic_ = settings.value(SENDED_STATISTIC, false).toBool();
+  send_statistic_ = settings.value(SEND_STATISTIC, true).toBool();
   QFont font = default_font();
   cur_font_ = settings.value(FONT, font).value<QFont>();
   cur_language_ = settings.value(LANGUAGE, common::qt::translations::defLanguage).toString();
@@ -362,7 +362,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
   QString qdir;
   common::ConvertFromString(dir_path, &qdir);
   logging_dir_ = settings.value(LOGGINGDIR, qdir).toString();
-  auto_check_update_ = settings.value(CHECKUPDATES, true).toBool();
+  auto_check_updates_ = settings.value(CHECKUPDATES, true).toBool();
   auto_completion_ = settings.value(AUTOCOMPLETION, true).toBool();
   auto_open_console_ = settings.value(AUTOOPENCONSOLE, true).toBool();
   auto_connect_db_ = settings.value(AUTOCONNECTDB, true).toBool();
@@ -383,7 +383,7 @@ void SettingsManager::Save() {
 
   settings.setValue(STYLE, cur_style_);
   settings.setValue(FONT, cur_font_);
-  settings.setValue(SENDED_STATISTIC, sended_statistic_);
+  settings.setValue(SEND_STATISTIC, send_statistic_);
   settings.setValue(LANGUAGE, cur_language_);
   settings.setValue(VIEW, views_);
 
@@ -436,7 +436,7 @@ void SettingsManager::Save() {
   settings.setValue(RCONNECTIONS, rconnections);
 
   settings.setValue(LOGGINGDIR, logging_dir_);
-  settings.setValue(CHECKUPDATES, auto_check_update_);
+  settings.setValue(CHECKUPDATES, auto_check_updates_);
   settings.setValue(AUTOCOMPLETION, auto_completion_);
   settings.setValue(AUTOOPENCONSOLE, auto_open_console_);
   settings.setValue(AUTOCONNECTDB, auto_connect_db_);

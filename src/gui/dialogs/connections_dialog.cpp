@@ -116,19 +116,19 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent) : QDialog(parent) {
   mainLayout->addLayout(firstColumnLayout, 1);
 
   // Populate list with connections
-  auto connections = proxy::SettingsManager::GetInstance().Connections();
+  auto connections = proxy::SettingsManager::GetInstance().GetConnections();
   for (auto it = connections.begin(); it != connections.end(); ++it) {
     proxy::IConnectionSettingsBaseSPtr connectionModel = (*it);
     addConnection(connectionModel);
   }
 
-  auto sentinels = proxy::SettingsManager::GetInstance().Sentinels();
+  auto sentinels = proxy::SettingsManager::GetInstance().GetSentinels();
   for (auto it = sentinels.begin(); it != sentinels.end(); ++it) {
     proxy::ISentinelSettingsBaseSPtr connectionModel = (*it);
     addSentinel(connectionModel);
   }
 
-  auto clusters = proxy::SettingsManager::GetInstance().Clusters();
+  auto clusters = proxy::SettingsManager::GetInstance().GetClusters();
   for (auto it = clusters.begin(); it != clusters.end(); ++it) {
     proxy::IClusterSettingsBaseSPtr connectionModel = (*it);
     addCluster(connectionModel);

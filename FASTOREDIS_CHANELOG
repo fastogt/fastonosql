@@ -1,3 +1,8 @@
+1.9.0 /
+[Alexandr Topilski]
+- Decrement becomes self increment #74
+- Send statistic
+
 1.8.6 / October 12, 2017
 [Alexandr Topilski]
 - Optimization in key inserting routine

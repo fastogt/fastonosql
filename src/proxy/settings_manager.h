@@ -44,60 +44,60 @@ class SettingsManager : public common::patterns::LazySingleton<SettingsManager> 
 
   uint32_t ConfigVersion() const;
 
-  bool IsSendedStatistic() const;
-  void SetIsSendedStatistic(bool val);
+  bool GetSendStatistic() const;
+  void SetSendStatistic(bool val);
 
   void SetDefaultView(supportedViews view);
-  supportedViews DefaultView() const;
+  supportedViews GetDefaultView() const;
 
-  QString CurrentStyle() const;
+  QString GetCurrentStyle() const;
   void SetCurrentStyle(const QString& style);
 
-  QFont CurrentFont() const;
+  QFont GetCurrentFont() const;
   void SetCurrentFont(const QFont& font);
 
-  QString CurrentLanguage() const;
+  QString GetCurrentLanguage() const;
   void SetCurrentLanguage(const QString& lang);
 
   // connections
   void AddConnection(IConnectionSettingsBaseSPtr connection);
   void RemoveConnection(IConnectionSettingsBaseSPtr connection);
 
-  connection_settings_t Connections() const;
+  connection_settings_t GetConnections() const;
 
   // sentinels
   void AddSentinel(ISentinelSettingsBaseSPtr sentinel);
   void RemoveSentinel(ISentinelSettingsBaseSPtr sentinel);
 
-  sentinel_settings_t Sentinels() const;
+  sentinel_settings_t GetSentinels() const;
 
   // clusters
   void AddCluster(IClusterSettingsBaseSPtr cluster);
   void RemoveCluster(IClusterSettingsBaseSPtr cluster);
 
-  cluster_settings_t Clusters() const;
+  cluster_settings_t GetClusters() const;
 
   void AddRConnection(const QString& connection);
   void RemoveRConnection(const QString& connection);
-  QStringList RecentConnections() const;
+  QStringList GetRecentConnections() const;
   void ClearRConnections();
 
   void SetLoggingDirectory(const QString& dir);
-  QString LoggingDirectory() const;
+  QString GetLoggingDirectory() const;
 
-  bool AutoCheckUpdates() const;
+  bool GetAutoCheckUpdates() const;
   void SetAutoCheckUpdates(bool check);
 
-  bool AutoCompletion() const;
+  bool GetAutoCompletion() const;
   void SetAutoCompletion(bool completion);
 
   bool AutoOpenConsole() const;
   void SetAutoOpenConsole(bool open_console);
 
-  bool AutoConnectDB() const;
+  bool GetAutoConnectDB() const;
   void SetAutoConnectDB(bool open_db);
 
-  bool FastViewKeys() const;
+  bool GetFastViewKeys() const;
   void SetFastViewKeys(bool fast_view);
 
   void ReloadFromPath(const std::string& path, bool merge);
@@ -110,7 +110,7 @@ class SettingsManager : public common::patterns::LazySingleton<SettingsManager> 
   ~SettingsManager();
 
   uint32_t config_version_;
-  bool sended_statistic_;
+  bool send_statistic_;
   supportedViews views_;
   QString cur_style_;
   QFont cur_font_;
@@ -120,7 +120,7 @@ class SettingsManager : public common::patterns::LazySingleton<SettingsManager> 
   cluster_settings_t clusters_;
   QStringList recent_connections_;
   QString logging_dir_;
-  bool auto_check_update_;
+  bool auto_check_updates_;
   bool auto_completion_;
   bool auto_open_console_;
   bool auto_connect_db_;
