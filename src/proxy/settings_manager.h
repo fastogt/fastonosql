@@ -32,12 +32,12 @@
 namespace fastonosql {
 namespace proxy {
 
-class SettingsManager : public common::patterns::LazySingleton<SettingsManager> {
+class SettingsManager : public common::patterns::Singleton<SettingsManager> {
  public:
   typedef std::vector<IConnectionSettingsBaseSPtr> connection_settings_t;
   typedef std::vector<IClusterSettingsBaseSPtr> cluster_settings_t;
   typedef std::vector<ISentinelSettingsBaseSPtr> sentinel_settings_t;
-  friend class common::patterns::LazySingleton<SettingsManager>;
+  friend class common::patterns::Singleton<SettingsManager>;
 
   static std::string SettingsDirPath();
   static std::string SettingsFilePath();
@@ -102,10 +102,10 @@ class SettingsManager : public common::patterns::LazySingleton<SettingsManager> 
 
   void ReloadFromPath(const std::string& path, bool merge);
 
- private:
   void Load();
   void Save();
 
+ private:
   SettingsManager();
   ~SettingsManager();
 

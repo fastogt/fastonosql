@@ -274,7 +274,7 @@ void OutputWidget::setTextView() {
 }
 
 void OutputWidget::syncWithSettings() {
-  proxy::supportedViews curV = proxy::SettingsManager::GetInstance().GetDefaultView();
+  proxy::supportedViews curV = proxy::SettingsManager::GetInstance()->GetDefaultView();
   if (curV == proxy::Tree) {
     setTreeView();
   } else if (curV == proxy::Table) {

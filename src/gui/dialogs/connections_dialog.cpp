@@ -116,19 +116,19 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent) : QDialog(parent) {
   mainLayout->addLayout(firstColumnLayout, 1);
 
   // Populate list with connections
-  auto connections = proxy::SettingsManager::GetInstance().GetConnections();
+  auto connections = proxy::SettingsManager::GetInstance()->GetConnections();
   for (auto it = connections.begin(); it != connections.end(); ++it) {
     proxy::IConnectionSettingsBaseSPtr connectionModel = (*it);
     addConnection(connectionModel);
   }
 
-  auto sentinels = proxy::SettingsManager::GetInstance().GetSentinels();
+  auto sentinels = proxy::SettingsManager::GetInstance()->GetSentinels();
   for (auto it = sentinels.begin(); it != sentinels.end(); ++it) {
     proxy::ISentinelSettingsBaseSPtr connectionModel = (*it);
     addSentinel(connectionModel);
   }
 
-  auto clusters = proxy::SettingsManager::GetInstance().GetClusters();
+  auto clusters = proxy::SettingsManager::GetInstance()->GetClusters();
   for (auto it = clusters.begin(); it != clusters.end(); ++it) {
     proxy::IClusterSettingsBaseSPtr connectionModel = (*it);
     addCluster(connectionModel);
@@ -183,7 +183,7 @@ void ConnectionsDialog::add() {
   result = dlg.exec();
   proxy::IConnectionSettingsBaseSPtr p = dlg.connection();
   if (result == QDialog::Accepted && p) {
-    proxy::SettingsManager::GetInstance().AddConnection(p);
+    proxy::SettingsManager::GetInstance()->AddConnection(p);
     addConnection(p);
   }
 }
@@ -193,7 +193,7 @@ void ConnectionsDialog::addCls() {
   int result = dlg.exec();
   proxy::IClusterSettingsBaseSPtr p = dlg.connection();
   if (result == QDialog::Accepted && p) {
-    proxy::SettingsManager::GetInstance().AddCluster(p);
+    proxy::SettingsManager::GetInstance()->AddCluster(p);
     addCluster(p);
   }
 }
@@ -203,7 +203,7 @@ void ConnectionsDialog::addSent() {
   int result = dlg.exec();
   proxy::ISentinelSettingsBaseSPtr p = dlg.connection();
   if (result == QDialog::Accepted && p) {
-    proxy::SettingsManager::GetInstance().AddSentinel(p);
+    proxy::SettingsManager::GetInstance()->AddSentinel(p);
     addSentinel(p);
   }
 }
@@ -314,8 +314,8 @@ void ConnectionsDialog::editConnection(ConnectionListWidgetItem* connectionItem)
   int result = dlg.exec();
   proxy::IConnectionSettingsBaseSPtr newConnection = dlg.connection();
   if (result == QDialog::Accepted && newConnection) {
-    proxy::SettingsManager::GetInstance().RemoveConnection(con);
-    proxy::SettingsManager::GetInstance().AddConnection(newConnection);
+    proxy::SettingsManager::GetInstance()->RemoveConnection(con);
+    proxy::SettingsManager::GetInstance()->AddConnection(newConnection);
 
     delete connectionItem;
     addConnection(newConnection);
@@ -330,8 +330,8 @@ void ConnectionsDialog::editCluster(ClusterConnectionListWidgetItemContainer* cl
   int result = dlg.exec();
   proxy::IClusterSettingsBaseSPtr newConnection = dlg.connection();
   if (result == QDialog::Accepted && newConnection) {
-    proxy::SettingsManager::GetInstance().RemoveCluster(con);
-    proxy::SettingsManager::GetInstance().AddCluster(newConnection);
+    proxy::SettingsManager::GetInstance()->RemoveCluster(con);
+    proxy::SettingsManager::GetInstance()->AddCluster(newConnection);
 
     delete clusterItem;
     addCluster(newConnection);
@@ -346,8 +346,8 @@ void ConnectionsDialog::editSentinel(SentinelConnectionListWidgetItemContainer* 
   int result = dlg.exec();
   proxy::ISentinelSettingsBaseSPtr newConnection = dlg.connection();
   if (result == QDialog::Accepted && newConnection) {
-    proxy::SettingsManager::GetInstance().RemoveSentinel(con);
-    proxy::SettingsManager::GetInstance().AddSentinel(newConnection);
+    proxy::SettingsManager::GetInstance()->RemoveSentinel(con);
+    proxy::SettingsManager::GetInstance()->AddSentinel(newConnection);
 
     delete sentinelItem;
     addSentinel(newConnection);
@@ -368,7 +368,7 @@ void ConnectionsDialog::removeConnection(ConnectionListWidgetItem* connectionIte
 
   proxy::IConnectionSettingsBaseSPtr connection = connectionItem->connection();
   delete connectionItem;
-  proxy::SettingsManager::GetInstance().RemoveConnection(connection);
+  proxy::SettingsManager::GetInstance()->RemoveConnection(connection);
 }
 
 void ConnectionsDialog::removeCluster(ClusterConnectionListWidgetItemContainer* clusterItem) {
@@ -385,7 +385,7 @@ void ConnectionsDialog::removeCluster(ClusterConnectionListWidgetItemContainer* 
 
   proxy::IClusterSettingsBaseSPtr connection = clusterItem->connection();
   delete clusterItem;
-  proxy::SettingsManager::GetInstance().RemoveCluster(connection);
+  proxy::SettingsManager::GetInstance()->RemoveCluster(connection);
 }
 
 void ConnectionsDialog::removeSentinel(SentinelConnectionListWidgetItemContainer* sentinelItem) {
@@ -402,7 +402,7 @@ void ConnectionsDialog::removeSentinel(SentinelConnectionListWidgetItemContainer
 
   proxy::ISentinelSettingsBaseSPtr connection = sentinelItem->connection();
   delete sentinelItem;
-  proxy::SettingsManager::GetInstance().RemoveSentinel(connection);
+  proxy::SettingsManager::GetInstance()->RemoveSentinel(connection);
 }
 
 /**

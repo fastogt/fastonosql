@@ -103,11 +103,11 @@ MainWindow::MainWindow() : QMainWindow(), isCheckedInSession_(false) {
 // grabGesture(Qt::PanGesture);  // drag and drop
 // grabGesture(Qt::PinchGesture);  // zoom
 #endif
-  QString lang = proxy::SettingsManager::GetInstance().GetCurrentLanguage();
+  QString lang = proxy::SettingsManager::GetInstance()->GetCurrentLanguage();
   QString newLang = common::qt::translations::applyLanguage(lang);
-  proxy::SettingsManager::GetInstance().SetCurrentLanguage(newLang);
+  proxy::SettingsManager::GetInstance()->SetCurrentLanguage(newLang);
 
-  QString style = proxy::SettingsManager::GetInstance().GetCurrentStyle();
+  QString style = proxy::SettingsManager::GetInstance()->GetCurrentStyle();
   common::qt::gui::applyStyle(style);
 
   common::qt::gui::applyFont(gui::GuiFactory::GetInstance().font());
@@ -268,13 +268,13 @@ void MainWindow::changeEvent(QEvent* ev) {
 
 void MainWindow::showEvent(QShowEvent* ev) {
   QMainWindow::showEvent(ev);
-  bool check_updates = proxy::SettingsManager::GetInstance().GetAutoCheckUpdates();
+  bool check_updates = proxy::SettingsManager::GetInstance()->GetAutoCheckUpdates();
   if (check_updates && !isCheckedInSession_) {
     isCheckedInSession_ = true;
     checkUpdate();
   }
 
-  bool send_statistic = proxy::SettingsManager::GetInstance().GetSendStatistic();
+  bool send_statistic = proxy::SettingsManager::GetInstance()->GetSendStatistic();
   if (send_statistic) {
     sendStatistic();
   }
@@ -360,7 +360,7 @@ void MainWindow::openRecentConnection() {
   QString rcon = action->text();
   std::string srcon = common::ConvertToString(rcon);
   proxy::ConnectionSettingsPath path(srcon);
-  auto conns = proxy::SettingsManager::GetInstance().GetConnections();
+  auto conns = proxy::SettingsManager::GetInstance()->GetConnections();
   for (auto it = conns.begin(); it != conns.end(); ++it) {
     proxy::IConnectionSettingsBaseSPtr con = *it;
     if (con && con->GetPath() == path) {
@@ -379,7 +379,7 @@ void MainWindow::loadConnection() {
     return;
   }
 
-  proxy::SettingsManager::GetInstance().ReloadFromPath(common::ConvertToString(filepathR), false);
+  proxy::SettingsManager::GetInstance()->ReloadFromPath(common::ConvertToString(filepathR), false);
   QMessageBox::information(this, translations::trInfo, trSettingsLoadedS);
 }
 
@@ -457,7 +457,7 @@ void MainWindow::importConnection() {
 
   readFile.Close();
   writeFile.Close();
-  proxy::SettingsManager::GetInstance().ReloadFromPath(tmp, false);
+  proxy::SettingsManager::GetInstance()->ReloadFromPath(tmp, false);
   err = common::file_system::remove_file(tmp);
   if (err) {
     DNOTREACHED();
@@ -566,7 +566,7 @@ void MainWindow::versionAvailible(bool succesResult, const QString& version) {
 
 void MainWindow::statitsticSent(bool succesResult) {
   if (succesResult) {
-    proxy::SettingsManager::GetInstance().SetSendStatistic(true);
+    proxy::SettingsManager::GetInstance()->SetSendStatistic(true);
   }
 }
 
@@ -656,7 +656,7 @@ void MainWindow::retranslateUi() {
 }
 
 void MainWindow::updateRecentConnectionActions() {
-  QStringList connections = proxy::SettingsManager::GetInstance().GetRecentConnections();
+  QStringList connections = proxy::SettingsManager::GetInstance()->GetRecentConnections();
 
   int num_recent_files = qMin(connections.size(), static_cast<int>(max_recent_connections));
 
@@ -676,7 +676,7 @@ void MainWindow::updateRecentConnectionActions() {
 }
 
 void MainWindow::clearRecentConnectionsMenu() {
-  proxy::SettingsManager::GetInstance().ClearRConnections();
+  proxy::SettingsManager::GetInstance()->ClearRConnections();
   updateRecentConnectionActions();
 }
 
@@ -686,17 +686,17 @@ void MainWindow::createServer(proxy::IConnectionSettingsBaseSPtr settings) {
   std::string path = settings->GetPath().ToString();
   QString rcon;
   common::ConvertFromString(path, &rcon);
-  proxy::SettingsManager::GetInstance().RemoveRConnection(rcon);
+  proxy::SettingsManager::GetInstance()->RemoveRConnection(rcon);
   proxy::IServerSPtr server = proxy::ServersManager::GetInstance().CreateServer(settings);
   exp_->addServer(server);
-  proxy::SettingsManager::GetInstance().AddRConnection(rcon);
+  proxy::SettingsManager::GetInstance()->AddRConnection(rcon);
   updateRecentConnectionActions();
-  if (proxy::SettingsManager::GetInstance().GetAutoConnectDB()) {
+  if (proxy::SettingsManager::GetInstance()->GetAutoConnectDB()) {
     proxy::events_info::ConnectInfoRequest req(this);
     server->Connect(req);
   }
 
-  if (!proxy::SettingsManager::GetInstance().AutoOpenConsole()) {
+  if (!proxy::SettingsManager::GetInstance()->AutoOpenConsole()) {
     return;
   }
 
@@ -720,7 +720,7 @@ void MainWindow::createSentinel(proxy::ISentinelSettingsBaseSPtr settings) {
   }
 
   exp_->addSentinel(sent);
-  if (!proxy::SettingsManager::GetInstance().AutoOpenConsole()) {
+  if (!proxy::SettingsManager::GetInstance()->AutoOpenConsole()) {
     return;
   }
 
@@ -747,7 +747,7 @@ void MainWindow::createCluster(proxy::IClusterSettingsBaseSPtr settings) {
   }
 
   exp_->addCluster(cl);
-  if (!proxy::SettingsManager::GetInstance().AutoOpenConsole()) {
+  if (!proxy::SettingsManager::GetInstance()->AutoOpenConsole()) {
     return;
   }
 

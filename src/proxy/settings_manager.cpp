@@ -84,13 +84,9 @@ SettingsManager::SettingsManager()
       auto_check_updates_(),
       auto_completion_(),
       auto_open_console_(),
-      fast_view_keys_() {
-  Load();
-}
+      fast_view_keys_() {}
 
-SettingsManager::~SettingsManager() {
-  Save();
-}
+SettingsManager::~SettingsManager() {}
 
 std::string SettingsManager::SettingsDirPath() {
   return common::file_system::get_dir_path(iniPath);

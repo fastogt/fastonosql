@@ -31,6 +31,7 @@
 
 #include <common/logger.h>
 #include <common/qt/translations/translations.h>
+#include <proxy/settings_manager.h>
 
 namespace {
 #ifdef OS_WIN
@@ -54,6 +55,7 @@ const QSize preferedSize = QSize(1024, 768);
 
 int main(int argc, char* argv[]) {
   QApplication app(argc, argv);
+  fastonosql::proxy::SettingsManager::GetInstance()->Load();
   app.setOrganizationName(PROJECT_COMPANYNAME);
   app.setOrganizationDomain(PROJECT_COMPANYNAME_DOMAIN);
   app.setApplicationName(PROJECT_NAME);
@@ -100,5 +102,8 @@ int main(int argc, char* argv[]) {
 #endif
 
   win.show();
-  return app.exec();
+  int res = app.exec();
+  fastonosql::proxy::SettingsManager::GetInstance()->Save();
+  fastonosql::proxy::SettingsManager::GetInstance()->FreeInstance();
+  return res;
 }
