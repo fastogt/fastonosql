@@ -81,6 +81,7 @@ bool FastoCommonItem::isReadOnly() const {
 
 QString toJson(FastoCommonItem* item) {
   if (!item) {
+    DNOTREACHED() << "Invalid input.";
     return QString();
   }
 
@@ -108,6 +109,7 @@ QString toJson(FastoCommonItem* item) {
 
 QString toRaw(FastoCommonItem* item) {
   if (!item) {
+    DNOTREACHED() << "Invalid input.";
     return QString();
   }
 
@@ -125,6 +127,7 @@ QString toRaw(FastoCommonItem* item) {
 
 QString toHex(FastoCommonItem* item) {
   if (!item) {
+    DNOTREACHED() << "Invalid input.";
     return QString();
   }
 
@@ -154,6 +157,7 @@ QString toHex(FastoCommonItem* item) {
 
 QString toCsv(FastoCommonItem* item) {
   if (!item) {
+    DNOTREACHED() << "Invalid input.";
     return QString();
   }
 
@@ -175,6 +179,7 @@ QString toCsv(FastoCommonItem* item) {
 
 QString fromSnappy(FastoCommonItem* item) {
   if (!item) {
+    DNOTREACHED() << "Invalid input.";
     return QString();
   }
 
@@ -203,6 +208,7 @@ QString fromSnappy(FastoCommonItem* item) {
 
 QString fromGzip(FastoCommonItem* item) {
   if (!item) {
+    DNOTREACHED() << "Invalid input.";
     return QString();
   }
 
@@ -231,6 +237,7 @@ QString fromGzip(FastoCommonItem* item) {
 
 QString fromHexMsgPack(FastoCommonItem* item) {
   if (!item) {
+    DNOTREACHED() << "Invalid input.";
     return QString();
   }
 

@@ -137,9 +137,9 @@ common::Error CDBConnection<NConnection, Config, ContType>::Help(commands_args_t
 
   if (argc == 0) {
     *answer = common::MemSPrintf(PROJECT_NAME_TITLE
-                                 " based on %s %s \r\n"
-                                 "Type: \"help <command>\" for help on <command>\r\n"
-                                 "\"help " ALL_COMMANDS "\" show all supported commands\r\n",
+                                 " based on %s %s \n"
+                                 "Type: \"help <command>\" for help on <command>\n"
+                                 "\"help " ALL_COMMANDS "\" show all supported commands",
                                  connection_traits_class::GetBasedOn(), connection_traits_class::GetVersionApi());
 
     return common::Error();
@@ -148,11 +148,12 @@ common::Error CDBConnection<NConnection, Config, ContType>::Help(commands_args_t
   translator_t tran = GetTranslator();
   if (argc == 1 && argv[0] == ALL_COMMANDS) {
     std::vector<CommandInfo> cmds = tran->Commands();
-    for (CommandInfo cmd : cmds) {
-      *answer += cmd.name;
-      *answer += "\n";
+    for (size_t i = 0; i < cmds.size(); ++i) {
+      *answer += cmds[i].name;
+      if (i != cmds.size() - 1) {
+        *answer += "\n";
+      }
     }
-    *answer += "\r\n";
     return common::Error();
   }
 
@@ -168,7 +169,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::Help(commands_args_t
       "summary: %s\n"
       "params: %s\n"
       "since: %s\n"
-      "example: %s\r\n",
+      "example: %s",
       cmd->name, cmd->summary, cmd->params, ConvertVersionNumberToReadableString(cmd->since), cmd->example);
   return common::Error();
 }
