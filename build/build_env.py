@@ -7,6 +7,11 @@ from pybuild_utils.base import run_command
 from pybuild_utils.base import system_info
 from pybuild_utils.base import utils
 
+OPENSSL_SRC_ROOT = "https://www.openssl.org/source/"
+ARCH_OPENSSL_COMP = "gz"
+ARCH_OPENSSL_EXT = "tar." + ARCH_OPENSSL_COMP
+
+g_script_path = os.path.realpath(sys.argv[0])
 
 def print_usage():
     print("Usage:\n"
@@ -125,6 +130,15 @@ class BuildRequest(object):
             run_command.run_command_cb(qscintilla_cmake_line, cmake_policy)
             run_command.run_command_cb(make_install, make_policy)
             os.chdir(abs_dir_path)
+        except Exception as ex:
+            os.chdir(pwd)
+            raise ex
+
+        try:
+            openssl_default_version = '1.0.2l'
+            compiler_flags = utils.CompileInfo([], [])
+            url = '{0}openssl-{1}.{2}'.format(OPENSSL_SRC_ROOT, openssl_default_version, ARCH_OPENSSL_EXT)
+            utils.build_from_sources(url, compiler_flags, g_script_path, prefix_path, './config')
         except Exception as ex:
             os.chdir(pwd)
             raise ex
