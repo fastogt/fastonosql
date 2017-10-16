@@ -174,15 +174,15 @@ void IServer::Execute(const events_info::ExecuteInfoRequest& req) {
   NotifyStartEvent(ev);
 }
 
-void IServer::ImportToPath(const events_info::BackupInfoRequest& req) {
+void IServer::BackupToPath(const events_info::BackupInfoRequest& req) {
   emit BackupStarted(req);
-  QEvent* ev = new events::ImportRequestEvent(this, req);
+  QEvent* ev = new events::BackupRequestEvent(this, req);
   NotifyStartEvent(ev);
 }
 
-void IServer::ExportFromPath(const events_info::ExportInfoRequest& req) {
+void IServer::RestoreFromPath(const events_info::RestoreInfoRequest& req) {
   emit ExportStarted(req);
-  QEvent* ev = new events::ExportRequestEvent(this, req);
+  QEvent* ev = new events::RestoreRequestEvent(this, req);
   NotifyStartEvent(ev);
 }
 
@@ -273,12 +273,12 @@ void IServer::customEvent(QEvent* event) {
   } else if (type == static_cast<QEvent::Type>(events::LoadServerChannelsResponceEvent::EventType)) {
     events::LoadServerChannelsResponceEvent* ev = static_cast<events::LoadServerChannelsResponceEvent*>(event);
     HandleLoadServerChannelsEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::ImportResponceEvent::EventType)) {
-    events::ImportResponceEvent* ev = static_cast<events::ImportResponceEvent*>(event);
-    HandleImportEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::ExportResponceEvent::EventType)) {
-    events::ExportResponceEvent* ev = static_cast<events::ExportResponceEvent*>(event);
-    HandleExportEvent(ev);
+  } else if (type == static_cast<QEvent::Type>(events::BackupResponceEvent::EventType)) {
+    events::BackupResponceEvent* ev = static_cast<events::BackupResponceEvent*>(event);
+    HandleBackupEvent(ev);
+  } else if (type == static_cast<QEvent::Type>(events::RestoreResponceEvent::EventType)) {
+    events::RestoreResponceEvent* ev = static_cast<events::RestoreResponceEvent*>(event);
+    HandleRestoreEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::LoadDatabaseContentResponceEvent::EventType)) {
     events::LoadDatabaseContentResponceEvent* ev = static_cast<events::LoadDatabaseContentResponceEvent*>(event);
     HandleLoadDatabaseContentEvent(ev);
@@ -365,7 +365,7 @@ void IServer::HandleLoadServerChannelsEvent(events::LoadServerChannelsResponceEv
   emit LoadServerChannelsFinished(v);
 }
 
-void IServer::HandleImportEvent(events::ImportResponceEvent* ev) {
+void IServer::HandleBackupEvent(events::BackupResponceEvent* ev) {
   auto v = ev->value();
   common::Error err(v.errorInfo());
   if (err) {
@@ -374,7 +374,7 @@ void IServer::HandleImportEvent(events::ImportResponceEvent* ev) {
   emit BackupFinished(v);
 }
 
-void IServer::HandleExportEvent(events::ExportResponceEvent* ev) {
+void IServer::HandleRestoreEvent(events::RestoreResponceEvent* ev) {
   auto v = ev->value();
   common::Error err(v.errorInfo());
   if (err) {

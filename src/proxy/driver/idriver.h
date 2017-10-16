@@ -24,7 +24,7 @@
 #include "core/internal/cdb_connection_client.h"  // for CDBConnectionClient
 
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
-#include "proxy/events/events.h"                             // for ImportRequestEvent, ChangeMa...
+#include "proxy/events/events.h"                             // for BackupRequestEvent, ChangeMa...
 
 class QEvent;
 class QThread;  // lines 37-37
@@ -109,8 +109,8 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   virtual void HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev);
   virtual void HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev);
   virtual void HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequestEvent* ev);
-  virtual void HandleImportEvent(events::ImportRequestEvent* ev);
-  virtual void HandleExportEvent(events::ExportRequestEvent* ev);
+  virtual void HandleBackupEvent(events::BackupRequestEvent* ev);
+  virtual void HandleRestoreEvent(events::RestoreRequestEvent* ev);
   virtual void HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev);
 
   template <typename T>

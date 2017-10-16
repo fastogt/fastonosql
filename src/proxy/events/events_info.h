@@ -64,15 +64,15 @@ struct BackupInfoResponce : BackupInfoRequest {
   explicit BackupInfoResponce(const base_class& request);
 };
 
-struct ExportInfoRequest : public EventInfoBase {
+struct RestoreInfoRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
-  ExportInfoRequest(initiator_type sender, const std::string& path, error_type er = error_type());
+  RestoreInfoRequest(initiator_type sender, const std::string& path, error_type er = error_type());
   std::string path;
 };
 
-struct ExportInfoResponce : ExportInfoRequest {
-  typedef ExportInfoRequest base_class;
-  explicit ExportInfoResponce(const base_class& request);
+struct RestoreInfoResponce : RestoreInfoRequest {
+  typedef RestoreInfoRequest base_class;
+  explicit RestoreInfoResponce(const base_class& request);
 };
 
 struct DiscoveryInfoRequest : public EventInfoBase {

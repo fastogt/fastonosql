@@ -220,12 +220,12 @@ void IDriver::customEvent(QEvent* event) {
   } else if (type == static_cast<QEvent::Type>(events::LoadServerChannelsRequestEvent::EventType)) {
     events::LoadServerChannelsRequestEvent* ev = static_cast<events::LoadServerChannelsRequestEvent*>(event);
     HandleLoadServerChannelsRequestEvent(ev);  // ni
-  } else if (type == static_cast<QEvent::Type>(events::ImportRequestEvent::EventType)) {
-    events::ImportRequestEvent* ev = static_cast<events::ImportRequestEvent*>(event);
-    HandleImportEvent(ev);  // ni
-  } else if (type == static_cast<QEvent::Type>(events::ExportRequestEvent::EventType)) {
-    events::ExportRequestEvent* ev = static_cast<events::ExportRequestEvent*>(event);
-    HandleExportEvent(ev);  // ni
+  } else if (type == static_cast<QEvent::Type>(events::BackupRequestEvent::EventType)) {
+    events::BackupRequestEvent* ev = static_cast<events::BackupRequestEvent*>(event);
+    HandleBackupEvent(ev);  // ni
+  } else if (type == static_cast<QEvent::Type>(events::RestoreRequestEvent::EventType)) {
+    events::RestoreRequestEvent* ev = static_cast<events::RestoreRequestEvent*>(event);
+    HandleRestoreEvent(ev);  // ni
   } else if (type == static_cast<QEvent::Type>(events::LoadDatabaseContentRequestEvent::EventType)) {
     events::LoadDatabaseContentRequestEvent* ev = static_cast<events::LoadDatabaseContentRequestEvent*>(event);
     HandleLoadDatabaseContentEvent(ev);
@@ -387,12 +387,12 @@ void IDriver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsReq
       this, ev, "load server channels");
 }
 
-void IDriver::HandleImportEvent(events::ImportRequestEvent* ev) {
-  ReplyNotImplementedYet<events::ImportRequestEvent, events::ImportResponceEvent>(this, ev, "backup server");
+void IDriver::HandleBackupEvent(events::BackupRequestEvent* ev) {
+  ReplyNotImplementedYet<events::BackupRequestEvent, events::BackupResponceEvent>(this, ev, "backup server");
 }
 
-void IDriver::HandleExportEvent(events::ExportRequestEvent* ev) {
-  ReplyNotImplementedYet<events::ExportRequestEvent, events::ExportResponceEvent>(this, ev, "export server");
+void IDriver::HandleRestoreEvent(events::RestoreRequestEvent* ev) {
+  ReplyNotImplementedYet<events::RestoreRequestEvent, events::RestoreResponceEvent>(this, ev, "export server");
 }
 
 void IDriver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) {

@@ -633,7 +633,7 @@ void ExplorerTreeView::importServer() {
         QFileDialog::getOpenFileName(this, translations::trBackup, QString(), translations::trfilterForRdb);
     if (!filepath.isEmpty()) {
       proxy::events_info::BackupInfoRequest req(this, common::ConvertToString(filepath));
-      server->ImportToPath(req);
+      server->BackupToPath(req);
     }
   }
 }
@@ -656,8 +656,8 @@ void ExplorerTreeView::exportServer() {
     QString filepath =
         QFileDialog::getOpenFileName(this, translations::trImport, QString(), translations::trfilterForRdb);
     if (!filepath.isEmpty()) {
-      proxy::events_info::ExportInfoRequest req(this, common::ConvertToString(filepath));
-      server->ExportFromPath(req);
+      proxy::events_info::RestoreInfoRequest req(this, common::ConvertToString(filepath));
+      server->RestoreFromPath(req);
     }
   }
 }

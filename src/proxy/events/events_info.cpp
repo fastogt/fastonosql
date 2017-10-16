@@ -43,10 +43,10 @@ BackupInfoRequest::BackupInfoRequest(initiator_type sender, const std::string& p
 
 BackupInfoResponce::BackupInfoResponce(const base_class& request) : base_class(request) {}
 
-ExportInfoRequest::ExportInfoRequest(initiator_type sender, const std::string& path, error_type er)
+RestoreInfoRequest::RestoreInfoRequest(initiator_type sender, const std::string& path, error_type er)
     : base_class(sender, er), path(path) {}
 
-ExportInfoResponce::ExportInfoResponce(const base_class& request) : base_class(request) {}
+RestoreInfoResponce::RestoreInfoResponce(const base_class& request) : base_class(request) {}
 
 DiscoveryInfoRequest::DiscoveryInfoRequest(initiator_type sender, error_type er) : base_class(sender, er) {}
 

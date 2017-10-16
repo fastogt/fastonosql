@@ -20,7 +20,7 @@
 
 #include "core/icommand_translator.h"  // for translator_t
 
-#include "proxy/events/events.h"        // for ImportResponceEvent, etc
+#include "proxy/events/events.h"        // for BackupResponceEvent, etc
 #include "proxy/proxy_fwd.h"            // for IDatabaseSPtr
 #include "proxy/server/iserver_base.h"  // for IServerBase
 
@@ -65,8 +65,8 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void BackupStarted(const events_info::BackupInfoRequest& req);
   void BackupFinished(const events_info::BackupInfoResponce& res);
 
-  void ExportStarted(const events_info::ExportInfoRequest& req);
-  void ExportFinished(const events_info::ExportInfoResponce& res);
+  void ExportStarted(const events_info::RestoreInfoRequest& req);
+  void ExportFinished(const events_info::RestoreInfoResponce& res);
 
   void ExecuteStarted(const events_info::ExecuteInfoRequest& req);
   void ExecuteFinished(const events_info::ExecuteInfoResponce& res);
@@ -134,8 +134,8 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
                                                                                  // LoadDatabaseContentFinished
   void Execute(const events_info::ExecuteInfoRequest& req);                      // signals: ExecuteStarted
 
-  void ImportToPath(const events_info::BackupInfoRequest& req);    // signals: BackupStarted, BackupFinished
-  void ExportFromPath(const events_info::ExportInfoRequest& req);  // signals: ExportStarted, ExportFinished
+  void BackupToPath(const events_info::BackupInfoRequest& req);    // signals: BackupStarted, BackupFinished
+  void RestoreFromPath(const events_info::RestoreInfoRequest& req);  // signals: ExportStarted, ExportFinished
 
   void LoadServerInfo(const events_info::ServerInfoRequest& req);  // signals:
   // LoadServerInfoStarted,
@@ -172,8 +172,8 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   virtual void HandleLoadServerPropertyEvent(events::ServerPropertyInfoResponceEvent* ev);
   virtual void HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoResponceEvent* ev);
   virtual void HandleLoadServerChannelsEvent(events::LoadServerChannelsResponceEvent* ev);
-  virtual void HandleImportEvent(events::ImportResponceEvent* ev);
-  virtual void HandleExportEvent(events::ExportResponceEvent* ev);
+  virtual void HandleBackupEvent(events::BackupResponceEvent* ev);
+  virtual void HandleRestoreEvent(events::RestoreResponceEvent* ev);
   virtual void HandleExecuteEvent(events::ExecuteResponceEvent* ev);
 
   // handle database events

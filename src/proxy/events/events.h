@@ -62,11 +62,11 @@ typedef common::qt::Event<events_info::ChangeServerPropertyInfoResponce, QEvent:
 typedef common::qt::Event<events_info::LoadServerChannelsRequest, QEvent::User + 23> LoadServerChannelsRequestEvent;
 typedef common::qt::Event<events_info::LoadServerChannelsResponce, QEvent::User + 24> LoadServerChannelsResponceEvent;
 
-typedef common::qt::Event<events_info::BackupInfoRequest, QEvent::User + 25> ImportRequestEvent;
-typedef common::qt::Event<events_info::BackupInfoResponce, QEvent::User + 26> ImportResponceEvent;
+typedef common::qt::Event<events_info::BackupInfoRequest, QEvent::User + 25> BackupRequestEvent;
+typedef common::qt::Event<events_info::BackupInfoResponce, QEvent::User + 26> BackupResponceEvent;
 
-typedef common::qt::Event<events_info::ExportInfoRequest, QEvent::User + 27> ExportRequestEvent;
-typedef common::qt::Event<events_info::ExportInfoResponce, QEvent::User + 28> ExportResponceEvent;
+typedef common::qt::Event<events_info::RestoreInfoRequest, QEvent::User + 27> RestoreRequestEvent;
+typedef common::qt::Event<events_info::RestoreInfoResponce, QEvent::User + 28> RestoreResponceEvent;
 
 typedef common::qt::Event<events_info::LoadDatabaseContentRequest, QEvent::User + 29> LoadDatabaseContentRequestEvent;
 typedef common::qt::Event<events_info::LoadDatabaseContentResponce, QEvent::User + 30> LoadDatabaseContentResponceEvent;

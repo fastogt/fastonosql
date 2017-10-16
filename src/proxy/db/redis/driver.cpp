@@ -160,10 +160,10 @@ common::Error Driver::CurrentDataBaseInfo(core::IDataBaseInfo** info) {
   return impl_->Select(impl_->GetCurrentDBName(), info);
 }
 
-void Driver::HandleImportEvent(events::ImportRequestEvent* ev) {
+void Driver::HandleBackupEvent(events::BackupRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
-  events::ImportResponceEvent::value_type res(ev->value());
+  events::BackupResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 25);
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(REDIS_BACKUP_COMMAND, core::C_INNER);
   common::Error err = Execute(cmd);
@@ -176,21 +176,21 @@ void Driver::HandleImportEvent(events::ImportRequestEvent* ev) {
     }
   }
   NotifyProgress(sender, 75);
-  Reply(sender, new events::ImportResponceEvent(this, res));
+  Reply(sender, new events::BackupResponceEvent(this, res));
   NotifyProgress(sender, 100);
 }
 
-void Driver::HandleExportEvent(events::ExportRequestEvent* ev) {
+void Driver::HandleRestoreEvent(events::RestoreRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
-  events::ExportResponceEvent::value_type res(ev->value());
+  events::RestoreResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 25);
   common::ErrnoError err = common::file_system::copy_file(res.path, EXPORT_DEFAULT_PATH);
   if (err) {
     res.setErrorInfo(common::make_error_from_errno(err));
   }
   NotifyProgress(sender, 75);
-  Reply(sender, new events::ExportResponceEvent(this, res));
+  Reply(sender, new events::RestoreResponceEvent(this, res));
   NotifyProgress(sender, 100);
 }
 
