@@ -7,10 +7,10 @@
 #include <syslog.h>
 #include <string.h>
 #include <stdarg.h>
-
 #include <errno.h>
 #include <sys/socket.h>
 #include <time.h>
+#include <sys/time.h>
 #include <poll.h>
 #include <netinet/in.h>
 
@@ -262,7 +262,7 @@ int main(int argc, char* argv[]) {
           if (stats) {
             statistic_responce++;
             char* ret = NULL;
-            vasprintf(&ret, "%u) statistic: %s", statistic_responce, stats);
+            vasprintf(&ret, "%u) statistic: %s", statistic_responce, json_object_get_string(stats));
             print_to_file(out, ret);
             free(ret);
             json_object_put(stats);
