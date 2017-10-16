@@ -64,7 +64,7 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>,
   static const char* GetDBName() { return ConnectionTraits<ContType>::GetDBName(); }
   static const ConstantCommandsArray& GetCommands();
 
-  std::string GetCurrentDBName() const;                                              //
+  virtual std::string GetCurrentDBName() const;                                      //
   common::Error Help(commands_args_t argv, std::string* answer) WARN_UNUSED_RESULT;  //
 
   common::Error Scan(uint64_t cursor_in,
@@ -293,13 +293,14 @@ common::Error CDBConnection<NConnection, Config, ContType>::CreateDB(const std::
 template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::RemoveDB(const std::string& name) {
   if (name.empty()) {
-    DNOTREACHED();
+    DNOTREACHED() << "Invalid database name.";
     return common::make_error_inval();
   }
 
   if (name == GetCurrentDBName()) {
-    DNOTREACHED();
-    return common::make_error("Sorry we can't remove selected database.");
+    const std::string error_str = "Sorry we can't remove selected database.";
+    DNOTREACHED() << error_str;
+    return common::make_error(error_str);
   }
 
   common::Error err = CDBConnection<NConnection, Config, ContType>::TestIsAuthenticated();

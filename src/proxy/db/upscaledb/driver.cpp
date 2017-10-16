@@ -27,8 +27,6 @@
 #include "proxy/db/upscaledb/command.h"              // for Command
 #include "proxy/db/upscaledb/connection_settings.h"  // for ConnectionSettings
 
-#define UPSCALEDB_GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
-
 namespace fastonosql {
 namespace proxy {
 namespace upscaledb {

@@ -1,6 +1,7 @@
 1.10.0 /
 [Alexandr Topilski]
 - [Redis] Decrement becomes self increment #74
+- [ForestDB] Create/Remove database
 - Send statistic
 - Cant save config and restore #73
 

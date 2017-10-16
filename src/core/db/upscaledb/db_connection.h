@@ -43,7 +43,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   virtual common::Error Connect(const config_t& config) override WARN_UNUSED_RESULT;
   virtual common::Error Disconnect() override WARN_UNUSED_RESULT;
 
-  std::string GetCurrentDBName() const;
+  virtual std::string GetCurrentDBName() const override;
   common::Error Info(const std::string& args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
 
  private:

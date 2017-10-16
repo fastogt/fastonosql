@@ -47,6 +47,72 @@ struct fdb {
 
 namespace {
 
+fdb_status forestdb_create_db(fdb* context, const char* db_name) {
+  if (!context || !db_name) {
+    return FDB_RESULT_INVALID_ARGS;
+  }
+
+  fdb_kvs_config kvs_config = fdb_get_default_kvs_config();
+  kvs_config.create_if_missing = true;
+  fdb_kvs_handle* kvs = NULL;
+  fdb_status rc = fdb_kvs_open(context->handle, &kvs, db_name, &kvs_config);
+  if (rc != FDB_RESULT_SUCCESS) {
+    return rc;
+  }
+
+  fdb_commit_opt_t opt = FDB_COMMIT_NORMAL;
+  fdb_commit(context->handle, opt);
+  fdb_kvs_close(kvs);
+  return FDB_RESULT_SUCCESS;
+}
+
+fdb_status forestdb_remove_db(fdb* context, const char* db_name) {
+  if (!context || !db_name) {
+    return FDB_RESULT_INVALID_ARGS;
+  }
+
+  fdb_status rc = fdb_kvs_remove(context->handle, db_name);
+  if (rc != FDB_RESULT_SUCCESS) {
+    return rc;
+  }
+
+  fdb_commit_opt_t opt = FDB_COMMIT_NORMAL;
+  fdb_commit(context->handle, opt);
+  return FDB_RESULT_SUCCESS;
+}
+
+fdb_status forestdb_select(fdb* context, const char* db_name) {
+  if (!context || !db_name) {  // only for named dbs
+    return FDB_RESULT_INVALID_ARGS;
+  }
+
+  if (context->db_name && strcmp(db_name, context->db_name) == 0) {  // lazy select
+    return FDB_RESULT_SUCCESS;
+  }
+
+  // open db
+  fdb_kvs_config kvs_config = fdb_get_default_kvs_config();
+  kvs_config.create_if_missing = false;
+  fdb_kvs_handle* kvs = NULL;
+  fdb_status rc = fdb_kvs_open(context->handle, &kvs, db_name, &kvs_config);
+  if (rc != FDB_RESULT_SUCCESS) {
+    return rc;
+  }
+
+  // cleanup old ref
+  fdb_commit_opt_t opt = FDB_COMMIT_NORMAL;
+  fdb_commit(context->handle, opt);
+  common::utils::freeifnotnull(context->db_name);
+  context->db_name = NULL;
+  fdb_kvs_close(context->kvs);
+  context->kvs = NULL;
+
+  // assigne new
+  context->kvs = kvs;
+  context->db_name = common::utils::strdupornull(db_name);
+  return FDB_RESULT_SUCCESS;
+}
+
 fdb_status forestdb_open(fdb** context, const char* db_path, const char* db_name, fdb_config* fconfig) {
   fdb* lcontext = reinterpret_cast<fdb*>(calloc(1, sizeof(fdb)));
   fdb_status rc = fdb_open(&lcontext->handle, db_path, fconfig);
@@ -166,11 +232,12 @@ DBConnection::DBConnection(CDBConnectionClient* client)
     : base_class(client, new CommandTranslator(base_class::GetCommands())) {}
 
 std::string DBConnection::GetCurrentDBName() const {
-  if (IsConnected()) {
-    return connection_.handle_->db_name;
+  if (IsConnected()) {  // if connected
+    auto conf = GetConfig();
+    return connection_.handle_->db_name ? connection_.handle_->db_name : conf->db_name;
   }
 
-  DNOTREACHED();
+  DNOTREACHED() << "GetCurrentDBName failed!";
   return base_class::GetCurrentDBName();
 }
 
@@ -191,6 +258,34 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
   linfo.db_path = conf->db_path;
 
   *statsout = linfo;
+  return common::Error();
+}
+
+common::Error DBConnection::ConfigGetDatabases(std::vector<std::string>* dbs) {
+  if (!dbs) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
+  fdb_kvs_name_list forestdb_dbs;
+  err = CheckResultCommand("CONFIG GET DATABASES", fdb_get_kvs_name_list(connection_.handle_->handle, &forestdb_dbs));
+  if (err) {
+    return err;
+  }
+
+  for (size_t i = 0; i < forestdb_dbs.num_kvs_names; ++i) {
+    dbs->push_back(forestdb_dbs.kvs_names[i]);
+  }
+
+  err = CheckResultCommand("CONFIG GET DATABASES", fdb_free_kvs_name_list(&forestdb_dbs));
+  if (err) {
+    return err;
+  }
   return common::Error();
 }
 
@@ -363,14 +458,41 @@ common::Error DBConnection::FlushDBImpl() {
   return common::Error();
 }
 
-common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
-  if (name != GetCurrentDBName()) {
-    return ICommandTranslator::InvalidInputArguments(DB_SELECTDB_COMMAND);
+common::Error DBConnection::CreateDBImpl(const std::string& name, IDataBaseInfo** info) {
+  auto conf = GetConfig();
+  const char* db_name = name.c_str();
+  common::Error err = CheckResultCommand(DB_CREATEDB_COMMAND, forestdb_create_db(connection_.handle_, db_name));
+  if (err) {
+    return err;
   }
 
+  *info = new DataBaseInfo(name, false, 0);
+  return common::Error();
+}
+
+common::Error DBConnection::RemoveDBImpl(const std::string& name, IDataBaseInfo** info) {
+  auto conf = GetConfig();
+  const char* db_name = name.c_str();
+  common::Error err = CheckResultCommand(DB_REMOVEDB_COMMAND, forestdb_remove_db(connection_.handle_, db_name));
+  if (err) {
+    return err;
+  }
+
+  *info = new DataBaseInfo(name, false, 0);
+  return common::Error();
+}
+
+common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
+  auto conf = GetConfig();
+  common::Error err = CheckResultCommand(DB_SELECTDB_COMMAND, forestdb_select(connection_.handle_, name.c_str()));
+  if (err) {
+    return err;
+  }
+
+  connection_.config_->db_name = name;
   size_t kcount = 0;
-  common::Error err = DBkcount(&kcount);
-  DCHECK(!err);
+  err = DBkcount(&kcount);
+  DCHECK(!err) << "DBkcount failed!";
   *info = new DataBaseInfo(name, true, kcount);
   return common::Error();
 }

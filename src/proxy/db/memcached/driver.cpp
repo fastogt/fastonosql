@@ -30,7 +30,6 @@
 #include "proxy/db/memcached/connection_settings.h"  // for ConnectionSettings
 
 #define MEMCACHED_INFO_REQUEST "STATS"
-#define MEMCACHED_GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
 
 namespace fastonosql {
 namespace proxy {

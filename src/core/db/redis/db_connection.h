@@ -68,7 +68,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
   virtual common::Error Connect(const config_t& config) override WARN_UNUSED_RESULT;
   virtual common::Error Disconnect() override WARN_UNUSED_RESULT;
 
-  std::string GetCurrentDBName() const;
+  virtual std::string GetCurrentDBName() const override;
 
   common::Error SlaveMode(FastoObject* out) WARN_UNUSED_RESULT;
 

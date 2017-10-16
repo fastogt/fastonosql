@@ -79,7 +79,7 @@ bool IsCanSSHConnection(connectionTypes type) {
 }
 
 bool IsCanCreateDatabase(connectionTypes type) {
-  return type == LMDB;
+  return type == LMDB || type == FORESTDB;
 }
 
 const char* ConnectionTypeToString(connectionTypes t) {

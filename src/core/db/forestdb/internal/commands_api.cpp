@@ -40,6 +40,30 @@ const internal::ConstantCommandsArray g_commands = {CommandHolder(DB_HELP_COMMAN
                                                                   0,
                                                                   1,
                                                                   &CommandsApi::Info),
+                                                    CommandHolder("CONFIG GET",
+                                                                  "<parameter>",
+                                                                  "Get the value of a configuration parameter",
+                                                                  UNDEFINED_SINCE,
+                                                                  UNDEFINED_EXAMPLE_STR,
+                                                                  1,
+                                                                  0,
+                                                                  &CommandsApi::ConfigGet),
+                                                    CommandHolder(DB_CREATEDB_COMMAND,
+                                                                  "<name>",
+                                                                  "Create database",
+                                                                  UNDEFINED_SINCE,
+                                                                  UNDEFINED_EXAMPLE_STR,
+                                                                  1,
+                                                                  0,
+                                                                  &CommandsApi::CreateDatabase),
+                                                    CommandHolder(DB_REMOVEDB_COMMAND,
+                                                                  "<name>",
+                                                                  "Remove database",
+                                                                  UNDEFINED_SINCE,
+                                                                  UNDEFINED_EXAMPLE_STR,
+                                                                  1,
+                                                                  0,
+                                                                  &CommandsApi::RemoveDatabase),
                                                     CommandHolder("SCAN",
                                                                   "<cursor> [MATCH pattern] [COUNT count]",
                                                                   "Incrementally iterate the keys space",
@@ -133,6 +157,25 @@ common::Error CommandsApi::Info(internal::CommandHandler* handler, commands_args
 
   common::StringValue* val = common::Value::CreateStringValue(ServerInfo(statsout).ToString());
   FastoObject* child = new FastoObject(out, val, mdb->GetDelimiter());
+  out->AddChildren(child);
+  return common::Error();
+}
+
+common::Error CommandsApi::ConfigGet(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* mdb = static_cast<DBConnection*>(handler);
+  if (argv[0] != "databases") {
+    return common::make_error_inval();
+  }
+
+  std::vector<std::string> dbs;
+  common::Error err = mdb->ConfigGetDatabases(&dbs);
+  if (err) {
+    return err;
+  }
+
+  common::ArrayValue* arr = new common::ArrayValue;
+  arr->AppendStrings(dbs);
+  FastoObject* child = new FastoObject(out, arr, mdb->GetDelimiter());
   out->AddChildren(child);
   return common::Error();
 }

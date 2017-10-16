@@ -30,7 +30,6 @@
 #include "proxy/db/lmdb/command.h"              // for Command
 #include "proxy/db/lmdb/connection_settings.h"  // for ConnectionSettings
 
-#define LMDB_GET_KEYS_PATTERN_1ARGS_I "KEYS a z %d"
 #define LMDB_GET_DATABASES_COMMAND "CONFIG GET databases"
 
 namespace fastonosql {
