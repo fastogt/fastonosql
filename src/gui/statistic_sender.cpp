@@ -28,7 +28,7 @@
 namespace fastonosql {
 namespace gui {
 
-StatisticSender::StatisticSender(QObject* parent) : QObject(parent) {}
+StatisticSender::StatisticSender(int64_t exec_count, QObject* parent) : QObject(parent), exec_count_(exec_count) {}
 
 void StatisticSender::routine() {
 #if defined(FASTONOSQL)
@@ -57,6 +57,7 @@ void StatisticSender::routine() {
   json_object_object_add(project_json, FIELD_PROJECT_NAME, json_object_new_string(PROJECT_NAME));
   json_object_object_add(project_json, FIELD_PROJECT_VERSION, json_object_new_string(PROJECT_VERSION));
   json_object_object_add(project_json, FILED_PROJECT_ARCH, json_object_new_string(PROJECT_ARCH));
+  json_object_object_add(project_json, FIELD_PROJECT_EXEC_COUNT, json_object_new_int64(exec_count_));
   json_object_object_add(stats_json, FIELD_PROJECT, project_json);
 
   const char* stats_json_string = json_object_get_string(stats_json);
@@ -64,15 +65,10 @@ void StatisticSender::routine() {
   size_t nwrite = 0;
   err = client.Write(stats_json_string, strlen(stats_json_string), &nwrite);
   json_object_put(stats_json);
-  if (err) {
-    emit statisticSended(false);
-    client.Close();
-    return;
-  }
 
-  emit statisticSended(true);
-  client.Close();
-  return;
+  emit statisticSended(err ? false : true);
+  err = client.Close();
+  DCHECK(!err) << "Close client error: " << err->GetDescription();
 }
 
 }  // namespace gui

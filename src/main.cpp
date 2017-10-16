@@ -38,7 +38,7 @@ namespace {
 struct WinsockInit {
   WinsockInit() {
     WSADATA d;
-    if (WSAStartup(MAKEWORD(2, 2), &d) != 0) {
+    if (WSAStartup(0x202, &d) != 0) {
       _exit(1);
     }
   }

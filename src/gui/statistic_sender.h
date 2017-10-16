@@ -26,13 +26,16 @@ namespace gui {
 class StatisticSender : public QObject {
   Q_OBJECT
  public:
-  explicit StatisticSender(QObject* parent = 0);
+  explicit StatisticSender(int64_t exec_count, QObject* parent = 0);
 
  Q_SIGNALS:
   void statisticSended(bool succesResult);
 
  public Q_SLOTS:
   void routine();
+
+ private:
+  int64_t exec_count_;
 };
 
 }  // namespace gui

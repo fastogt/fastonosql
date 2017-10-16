@@ -66,7 +66,6 @@ void UpdateChecker::routine() {
 
   emit versionAvailibled(true, version);
   client.Close();
-  return;
 }
 
 }  // namespace gui

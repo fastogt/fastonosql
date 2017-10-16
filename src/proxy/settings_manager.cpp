@@ -48,6 +48,7 @@
 #define AUTOCONNECTDB "auto_connect_db"
 #define FASTVIEWKEYS PREFIX "fast_view_keys"
 #define CONFIG_VERSION PREFIX "version"
+#define EXEC_COUNT PREFIX "exec_count"
 
 namespace {
 
@@ -105,6 +106,10 @@ bool SettingsManager::GetSendStatistic() const {
 }
 void SettingsManager::SetSendStatistic(bool val) {
   send_statistic_ = val;
+}
+
+int64_t SettingsManager::GetExecCount() const {
+  return exec_count_;
 }
 
 supportedViews SettingsManager::GetDefaultView() const {
@@ -363,6 +368,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
   auto_open_console_ = settings.value(AUTOOPENCONSOLE, true).toBool();
   auto_connect_db_ = settings.value(AUTOCONNECTDB, true).toBool();
   fast_view_keys_ = settings.value(FASTVIEWKEYS, true).toBool();
+  exec_count_ = settings.value(EXEC_COUNT, 1).toLongLong();
   config_version_ = settings.value(CONFIG_VERSION, PROJECT_VERSION_NUMBER).toUInt();
   Save();
 }
@@ -437,6 +443,7 @@ void SettingsManager::Save() {
   settings.setValue(AUTOOPENCONSOLE, auto_open_console_);
   settings.setValue(AUTOCONNECTDB, auto_connect_db_);
   settings.setValue(FASTVIEWKEYS, fast_view_keys_);
+  settings.setValue(EXEC_COUNT, exec_count_ + 1);
   settings.setValue(CONFIG_VERSION, config_version_);
 }
 

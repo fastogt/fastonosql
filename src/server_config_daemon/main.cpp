@@ -21,12 +21,16 @@
 
 #define MAXLINE 1024
 #define SBUF_SIZE 256
-#define SAVE_FREE(x) if(x) { free(x); x = NULL; }
+#define SAVE_FREE(x) \
+  if (x) {           \
+    free(x);         \
+    x = NULL;        \
+  }
 #define UNKNOWN "Unknown"
 
 sig_atomic_t is_stop = 0;
 
-inline int vasprintf(char ** s, const char *format, ...) {
+inline int vasprintf(char** s, const char* format, ...) {
   va_list ap;
 
   va_start(ap, format);
@@ -37,17 +41,17 @@ inline int vasprintf(char ** s, const char *format, ...) {
 }
 
 void skeleton_daemon();
-void read_config_file(const char *configFilename);
+void read_config_file(const char* configFilename);
 void signal_handler(int sig);
 
 struct setting {
-  char* key;          /* key */
-  char* value;          /* value */
-  UT_hash_handle hh;         /* makes this structure hashable */
+  char* key;         /* key */
+  char* value;       /* value */
+  UT_hash_handle hh; /* makes this structure hashable */
 };
 
-struct setting * alloc_setting(const char *key, const char *value) {
-  struct setting * st = (struct setting*)malloc(sizeof(struct setting));
+struct setting* alloc_setting(const char* key, const char* value) {
+  struct setting* st = (struct setting*)malloc(sizeof(struct setting));
   if (!st) {
     return NULL;
   }
@@ -57,8 +61,8 @@ struct setting * alloc_setting(const char *key, const char *value) {
   return st;
 }
 
-void free_setting(struct setting *st) {
-  if(!st){
+void free_setting(struct setting* st) {
+  if (!st) {
     return;
   }
 
@@ -69,27 +73,27 @@ void free_setting(struct setting *st) {
 
 struct setting* settings = NULL;
 
-void add_setting(const char *key, const char *value) {
-  struct setting *s = NULL;
+void add_setting(const char* key, const char* value) {
+  struct setting* s = NULL;
 
-  HASH_FIND_STR(settings, key, s);  /* key already in the hash? */
+  HASH_FIND_STR(settings, key, s); /* key already in the hash? */
   if (s == NULL) {
-    struct setting * s = alloc_setting(key, value);
-    HASH_ADD_STR(settings, key, s);  /* key: value of key field */
+    struct setting* s = alloc_setting(key, value);
+    HASH_ADD_STR(settings, key, s); /* key: value of key field */
   } else {
     SAVE_FREE(s->value);
     s->value = strdup(value);
   }
 }
 
-struct setting* find_setting(const char *key) {
-  struct setting *s;
-  HASH_FIND_STR(settings, key, s);  /* s: output pointer */
+struct setting* find_setting(const char* key) {
+  struct setting* s;
+  HASH_FIND_STR(settings, key, s); /* s: output pointer */
   return s;
 }
 
-void delete_setting(struct setting *st) {
-  HASH_DEL(settings, st);  /* st: pointer to deletee */
+void delete_setting(struct setting* st) {
+  HASH_DEL(settings, st); /* st: pointer to deletee */
   free_setting(st);
 }
 
@@ -97,30 +101,29 @@ void delete_all_setting() {
   struct setting *current_setting, *tmp;
 
   HASH_ITER(hh, settings, current_setting, tmp) {
-    HASH_DEL(settings,current_setting);  /* delete it (users advances to next) */
+    HASH_DEL(settings, current_setting); /* delete it (users advances to next) */
     free_setting(current_setting);
   }
 }
 
-void printToFile(FILE* out, const char* message) {
+void print_to_file(FILE* out, const char* message) {
   if (!out) {
     return;
   }
 
-  char buf[64] = {0};
-  struct timespec spec;
-  clock_gettime(CLOCK_REALTIME, &spec);
-  long ms = spec.tv_nsec / 1.0e6; // Convert nanoseconds to milliseconds
+  char date[64] = {0};
+  struct timeval tv;
+  gettimeofday(&tv, NULL);
   struct tm info;
-  localtime_r(&spec.tv_sec, &info);
-  strftime(buf, sizeof(buf), "%H:%M:%S", &info);
+  localtime_r(&tv.tv_sec, &info);
+  size_t sz = strftime(date, sizeof(date), "%d-%m-%y.%T", &info);
+  sprintf(date + sz, ".%06ld", tv.tv_usec);
 
-  fprintf(out, "%s.%03ld " PROJECT_NAME " %s\n", buf, ms, message);
+  fprintf(out, "%s " PROJECT_NAME " %s\n", date, message);
   fflush(out);  // Needed on MSVC.
 }
 
-
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   int opt;
   int daemon_mode = 0;
   unsigned int clients_requests = 0;
@@ -142,7 +145,7 @@ int main(int argc, char *argv[]) {
       default: /* '?' */
         fprintf(stderr, "Usage: %s [-c config path] %s [-f statistic output path] [-d daemon mode]\n", argv[0]);
         exit(EXIT_FAILURE);
-      }
+    }
   }
 
   if (daemon_mode) {
@@ -162,62 +165,62 @@ int main(int argc, char *argv[]) {
   }
 
   const int max_fd = sysconf(_SC_OPEN_MAX);
-  struct pollfd           client[max_fd];
+  struct pollfd client[max_fd];
 
-  struct sockaddr_in      servaddr;
+  struct sockaddr_in servaddr;
   memset(&servaddr, 0, sizeof(servaddr));
-  servaddr.sin_family      = AF_INET;
+  servaddr.sin_family = AF_INET;
   servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-  servaddr.sin_port        = htons(SERV_VERSION_PORT);
+  servaddr.sin_port = htons(SERV_VERSION_PORT);
   int res = 0;
 
   int listenfd = socket(AF_INET, SOCK_STREAM, 0);
   if (listenfd < 0) {
-    syslog(LOG_NOTICE, PROJECT_NAME" socket errno: %d", errno);
+    syslog(LOG_NOTICE, PROJECT_NAME " socket errno: %d", errno);
     return_code = EXIT_FAILURE;
     goto exit;
   }
 
-  res = bind(listenfd, (struct sockaddr *)&servaddr, sizeof( servaddr ));
+  res = bind(listenfd, (struct sockaddr*)&servaddr, sizeof(servaddr));
   if (res < 0) {
-    syslog(LOG_NOTICE, PROJECT_NAME" bind errno: %d", errno);
+    syslog(LOG_NOTICE, PROJECT_NAME " bind errno: %d", errno);
     return_code = EXIT_FAILURE;
     goto exit;
   }
 
   res = listen(listenfd, 1024);
   if (res < 0) {
-    syslog(LOG_NOTICE, PROJECT_NAME" listen errno: %d", errno);
+    syslog(LOG_NOTICE, PROJECT_NAME " listen errno: %d", errno);
     return_code = EXIT_FAILURE;
     goto exit;
   }
 
   client[0].fd = listenfd;
   client[0].events = POLLRDNORM;
-  int i, maxi , connfd , sockfd;
+  int i, maxi, connfd, sockfd;
   int nready;
 
-  for(i = 1; i < max_fd; i++){
+  for (i = 1; i < max_fd; i++) {
     client[i].fd = -1;
   }
   maxi = 0;
 
   while (!is_stop) {
-    nready = poll(client, maxi + 1 , -1);
+    nready = poll(client, maxi + 1, -1);
     if (client[0].revents & POLLRDNORM) {
       struct sockaddr_in cliaddr;
       socklen_t clilen = sizeof(cliaddr);
-      connfd = accept(listenfd, (struct sockaddr *)&cliaddr , &clilen);
+      connfd = accept(listenfd, (struct sockaddr*)&cliaddr, &clilen);
 
-      for (i = 1; i < max_fd; i ++) {
-        if (client[i].fd < 0 ) {
+      for (i = 1; i < max_fd; i++) {
+        if (client[i].fd < 0) {
           client[i].fd = connfd;
           break;
         }
       }
 
-      if (i == max_fd){
-        syslog(LOG_NOTICE, PROJECT_NAME" too many clients!");
+      if (i == max_fd) {
+        syslog(LOG_NOTICE, PROJECT_NAME " too many clients!");
         goto exit;
       }
 
@@ -232,7 +235,7 @@ int main(int argc, char *argv[]) {
     }
 
     for (i = 1; i <= maxi; i++) {
-      if (( sockfd = client[i].fd ) < 0) {
+      if ((sockfd = client[i].fd) < 0) {
         continue;
       }
 
@@ -241,14 +244,14 @@ int main(int argc, char *argv[]) {
         ssize_t n = 0;
         if ((n = read(sockfd, buf, sizeof(buf))) < 0) {
           if (errno == ECONNRESET) {
-            syslog(LOG_NOTICE, PROJECT_NAME" client[%d] aborted connection", i);
+            syslog(LOG_NOTICE, PROJECT_NAME " client[%d] aborted connection", i);
             close(sockfd);
             client[i].fd = -1;
           } else {
-            syslog(LOG_NOTICE, PROJECT_NAME" read error");
+            syslog(LOG_NOTICE, PROJECT_NAME " read error");
           }
         } else if (n == 0) {
-          syslog(LOG_NOTICE, PROJECT_NAME" client[%d] closed connection", i);
+          syslog(LOG_NOTICE, PROJECT_NAME " client[%d] closed connection", i);
           close(sockfd);
           client[i].fd = -1;
         } else {
@@ -257,62 +260,17 @@ int main(int argc, char *argv[]) {
 
           json_object* stats = json_tokener_parse(buf);
           if (stats) {
-            json_object* jos = NULL;
-            json_object_object_get_ex(stats, FIELD_OS, &jos);
-            const char* os_name = UNKNOWN;
-            const char* os_version = UNKNOWN;
-            const char* os_arch = UNKNOWN;
-            if (jos) {
-              json_object* jos_name = NULL;
-              json_object_object_get_ex(jos, FIELD_OS_NAME, &jos_name);
-              if (jos_name) {
-                os_name = json_object_get_string(jos_name);
-              }
-              json_object* jos_version = NULL;
-              json_object_object_get_ex(jos, FIELD_OS_VERSION, &jos_version);
-              if (jos_version) {
-                os_version = json_object_get_string(jos_version);
-              }
-              json_object* jos_arch = NULL;
-              json_object_object_get_ex(jos, FILED_OS_ARCH, &jos_arch);
-              if (jos_arch) {
-                os_arch = json_object_get_string(jos_arch);
-              }
-            }
-
-            json_object* jproj = NULL;
-            json_object_object_get_ex(stats, FIELD_PROJECT, &jproj);
-            const char* proj_name = UNKNOWN;
-            const char* proj_version = UNKNOWN;
-            const char* proj_arch = UNKNOWN;
-            if (jproj) {
-              json_object* jporj_name = NULL;
-              json_object_object_get_ex(jproj, FIELD_PROJECT_NAME, &jporj_name);
-              if (jporj_name) {
-                proj_name = json_object_get_string(jporj_name);
-              }
-              json_object* jporj_version = NULL;
-              json_object_object_get_ex(jproj, FIELD_PROJECT_VERSION, &jporj_version);
-              if (jporj_version) {
-                proj_version = json_object_get_string(jporj_version);
-              }
-              json_object* jporj_arch = NULL;
-              json_object_object_get_ex(jproj, FILED_PROJECT_ARCH, &jporj_arch);
-              if (jporj_arch) {
-                proj_arch = json_object_get_string(jporj_arch);
-              }
-            }
             statistic_responce++;
             char* ret = NULL;
-            vasprintf(&ret, "%u) os: %s, version: %s, arch: %s, project: %s, version: %s, arch: %s", statistic_responce, os_name, os_version, os_arch, proj_name, proj_version, proj_arch);
-            printToFile(out, ret);
+            vasprintf(&ret, "%u) statistic: %s", statistic_responce, stats);
+            print_to_file(out, ret);
             free(ret);
             json_object_put(stats);
-          } else { // old version
+          } else {  // old version
             clients_requests++;
             char* ret = NULL;
             vasprintf(&ret, "%u) request: %s", clients_requests, buf);
-            printToFile(out, ret);
+            print_to_file(out, ret);
             free(ret);
             struct setting* setting = find_setting(buf);
             if (setting) {
@@ -324,8 +282,8 @@ int main(int argc, char *argv[]) {
           client[i].fd = -1;
         }
 
-        if(--nready <= 0) {
-          break;        
+        if (--nready <= 0) {
+          break;
         }
       }
     }
@@ -333,7 +291,7 @@ int main(int argc, char *argv[]) {
 
 exit:
   delete_all_setting();
-  syslog(LOG_NOTICE, PROJECT_NAME" terminated.");
+  syslog(LOG_NOTICE, PROJECT_NAME " terminated.");
   closelog();
   if (outf) {
     fclose(outf);
@@ -342,8 +300,7 @@ exit:
   return return_code;
 }
 
-
-void read_config_file(const char *configFilename) {
+void read_config_file(const char* configFilename) {
   delete_all_setting();
   FILE* configfp = fopen(configFilename, "r");
   if (!configfp) {
@@ -353,16 +310,16 @@ void read_config_file(const char *configFilename) {
 
   while (!feof(configfp)) {
     char buff[SBUF_SIZE] = {0};
-    if (fgets(buff, sizeof(buff), configfp) != NULL){
+    if (fgets(buff, sizeof(buff), configfp) != NULL) {
       syslog(LOG_NOTICE, "Readed line from file is: %s", buff);
       size_t spos = strcspn(buff, "\r\n");
       buff[spos] = 0;
-      char *pch = strchr(buff, '=');
+      char* pch = strchr(buff, '=');
       if (pch) {
         int pos = pch - buff;
         buff[pos] = 0;
-        char *key = buff;
-        char *value = buff + pos + 1;
+        char* key = buff;
+        char* value = buff + pos + 1;
         add_setting(key, value);
       }
     }
@@ -374,7 +331,7 @@ void read_config_file(const char *configFilename) {
 void signal_handler(int sig) {
   if (sig == SIGHUP) {
     read_config_file(CONFIG_FILE_PATH);
-  } else if(sig == SIGINT) {
+  } else if (sig == SIGINT) {
     is_stop = 1;
   }
 }
@@ -395,7 +352,7 @@ void skeleton_daemon() {
     exit(EXIT_FAILURE);
 
   /* Catch, ignore and handle signals */
-  //TODO: Implement a working signal handler */
+  // TODO: Implement a working signal handler */
   signal(SIGHUP, signal_handler);
   signal(SIGINT, signal_handler);
 
@@ -420,6 +377,6 @@ void skeleton_daemon() {
   /* Close all open file descriptors */
   int x;
   for (x = sysconf(_SC_OPEN_MAX); x > 0; x--) {
-    close (x);
+    close(x);
   }
 }

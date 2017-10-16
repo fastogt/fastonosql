@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <common/patterns/singleton_pattern.h>  // for LazySingleton
+#include <common/patterns/singleton_pattern.h>
 
 #include "proxy/connection_settings/iconnection_settings.h"
 #include "proxy/connection_settings/iconnection_settings_remote.h"

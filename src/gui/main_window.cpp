@@ -322,7 +322,8 @@ void MainWindow::checkUpdate() {
 
 void MainWindow::sendStatistic() {
   QThread* th = new QThread;
-  StatisticSender* sender = new StatisticSender;
+  int64_t exec_count = proxy::SettingsManager::GetInstance()->GetExecCount();
+  StatisticSender* sender = new StatisticSender(exec_count);
   sender->moveToThread(th);
   VERIFY(connect(th, &QThread::started, sender, &StatisticSender::routine));
   VERIFY(connect(sender, &StatisticSender::statisticSended, this, &MainWindow::statitsticSent));

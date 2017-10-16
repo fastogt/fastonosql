@@ -21,7 +21,7 @@
 #include <QFont>
 #include <QStringList>
 
-#include <common/patterns/singleton_pattern.h>  // for LazySingleton
+#include <common/patterns/singleton_pattern.h>
 
 #include "proxy/connection_settings/icluster_connection_settings.h"
 #include "proxy/connection_settings/iconnection_settings.h"  // for IClusterSettingsBaseSPtr, etc
@@ -46,6 +46,8 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
 
   bool GetSendStatistic() const;
   void SetSendStatistic(bool val);
+
+  int64_t GetExecCount() const;
 
   void SetDefaultView(supportedViews view);
   supportedViews GetDefaultView() const;
@@ -125,6 +127,7 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
   bool auto_open_console_;
   bool auto_connect_db_;
   bool fast_view_keys_;
+  int64_t exec_count_;
 };
 
 }  // namespace proxy
