@@ -18,4 +18,5 @@
 #define FIELD_PROJECT_NAME "name"
 #define FIELD_PROJECT_VERSION "version"
 #define FILED_PROJECT_ARCH "arch"
+#define FIELD_OWNER "owner"
 #define FIELD_PROJECT_EXEC_COUNT "exec_count"

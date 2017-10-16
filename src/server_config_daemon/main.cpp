@@ -26,9 +26,9 @@
     free(x);         \
     x = NULL;        \
   }
-#define UNKNOWN "Unknown"
 
-sig_atomic_t is_stop = 0;
+static sig_atomic_t is_stop = 0;
+static struct setting* settings = NULL;
 
 inline int vasprintf(char** s, const char* format, ...) {
   va_list ap;
@@ -70,8 +70,6 @@ void free_setting(struct setting* st) {
   SAVE_FREE(st->value);
   SAVE_FREE(st);
 }
-
-struct setting* settings = NULL;
 
 void add_setting(const char* key, const char* value) {
   struct setting* s = NULL;
@@ -259,14 +257,14 @@ int main(int argc, char* argv[]) {
           buf[spos] = 0;
 
           json_object* stats = json_tokener_parse(buf);
-          if (stats) {
+          if (stats) {  // statistic
             statistic_responce++;
             char* ret = NULL;
             vasprintf(&ret, "%u) statistic: %s", statistic_responce, json_object_get_string(stats));
             print_to_file(out, ret);
             free(ret);
             json_object_put(stats);
-          } else {  // old version
+          } else {  // version
             clients_requests++;
             char* ret = NULL;
             vasprintf(&ret, "%u) request: %s", clients_requests, buf);
@@ -340,16 +338,19 @@ void skeleton_daemon() {
   pid_t pid = fork();
 
   /* An error occurred */
-  if (pid < 0)
+  if (pid < 0) {
     exit(EXIT_FAILURE);
+  }
 
   /* Success: Let the parent terminate */
-  if (pid > 0)
+  if (pid > 0) {
     exit(EXIT_SUCCESS);
+  }
 
   /* On success: The child process becomes session leader */
-  if (setsid() < 0)
+  if (setsid() < 0) {
     exit(EXIT_FAILURE);
+  }
 
   /* Catch, ignore and handle signals */
   // TODO: Implement a working signal handler */
@@ -360,12 +361,14 @@ void skeleton_daemon() {
   pid = fork();
 
   /* An error occurred */
-  if (pid < 0)
+  if (pid < 0) {
     exit(EXIT_FAILURE);
+  }
 
   /* Success: Let the parent terminate */
-  if (pid > 0)
+  if (pid > 0) {
     exit(EXIT_SUCCESS);
+  }
 
   /* Set new file permissions */
   umask(0);

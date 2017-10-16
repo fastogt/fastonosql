@@ -52,7 +52,7 @@
 
 namespace {
 
-const std::string iniPath("~/.config/" PROJECT_NAME "/config.ini");
+const std::string ini_path("~/.config/" PROJECT_NAME "/config.ini");
 
 QFont default_font() {
   /*#if defined(OS_MACOSX) || defined(OS_FREEBSD)
@@ -90,11 +90,11 @@ SettingsManager::SettingsManager()
 SettingsManager::~SettingsManager() {}
 
 std::string SettingsManager::SettingsDirPath() {
-  return common::file_system::get_dir_path(iniPath);
+  return common::file_system::get_dir_path(ini_path);
 }
 
 std::string SettingsManager::SettingsFilePath() {
-  return common::file_system::prepare_path(iniPath);
+  return common::file_system::prepare_path(ini_path);
 }
 
 uint32_t SettingsManager::ConfigVersion() const {
@@ -374,7 +374,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
 }
 
 void SettingsManager::Load() {
-  ReloadFromPath(iniPath, false);
+  ReloadFromPath(ini_path, false);
 }
 
 void SettingsManager::Save() {

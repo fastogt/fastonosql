@@ -57,6 +57,9 @@ void StatisticSender::routine() {
   json_object_object_add(project_json, FIELD_PROJECT_NAME, json_object_new_string(PROJECT_NAME));
   json_object_object_add(project_json, FIELD_PROJECT_VERSION, json_object_new_string(PROJECT_VERSION));
   json_object_object_add(project_json, FILED_PROJECT_ARCH, json_object_new_string(PROJECT_ARCH));
+#ifndef IS_PUBLIC_BUILD
+  json_object_object_add(project_json, FIELD_OWNER, json_object_new_string(USER_SPECIFIC_ID));
+#endif
   json_object_object_add(project_json, FIELD_PROJECT_EXEC_COUNT, json_object_new_int64(exec_count_));
   json_object_object_add(stats_json, FIELD_PROJECT, project_json);
 
