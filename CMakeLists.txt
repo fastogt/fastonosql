@@ -410,7 +410,7 @@ IF(CPACK_SUPPORT)
       OUTPUT createApkFromAndroidDeployQtRelease
       DEPENDS ${PACKAGE_SOURCE_ANDROID}/AndroidManifest.xml
       COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/install/${PROJECT_NAME_LOWERCASE}/android/res ${PACKAGE_SOURCE_ANDROID}/res
-      COMMAND ${ANDROID_DEPLOY_QT} --output ${PACKAGE_OUTPUT_ANDROID}/ --input ${PACKAGE_SOURCE_ANDROID}/configAndroid.json --release
+      COMMAND ${ANDROID_DEPLOY_QT} --output ${PACKAGE_OUTPUT_ANDROID}/ --input ${PACKAGE_SOURCE_ANDROID}/configAndroid.json --gradle --release
       COMMAND ${CMAKE_COMMAND} -E rename ${PACKAGE_OUTPUT_ANDROID}/bin/QtApp-release-unsigned.apk ${PACKAGE_OUTPUT_ANDROID}/${ANDROID_PACKAGE_RELEASE_NAME}
     )
 
