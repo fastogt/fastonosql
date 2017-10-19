@@ -108,11 +108,11 @@ OPTION(BUILD_WITH_REDIS "Build with Redis support" ON)
 OPTION(BUILD_WITH_MEMCACHED "Build with Memcached support" ON)
 OPTION(BUILD_WITH_SSDB "Build with SSDB support" ON)
 OPTION(BUILD_WITH_LEVELDB "Build with LevelDB support" ON)
-OPTION(BUILD_WITH_ROCKSDB "Build with RocksDB support" OFF)
+OPTION(BUILD_WITH_ROCKSDB "Build with RocksDB support" ON) #for android off
 OPTION(BUILD_WITH_UNQLITE "Build with Unqlite support" ON)
 OPTION(BUILD_WITH_LMDB "Build with LMDB support" ON)
-OPTION(BUILD_WITH_UPSCALEDB "Build with Upscaledb support" OFF)
-OPTION(BUILD_WITH_FORESTDB "Build with ForestDB support" OFF)
+OPTION(BUILD_WITH_UPSCALEDB "Build with Upscaledb support" ON) #for android off
+OPTION(BUILD_WITH_FORESTDB "Build with ForestDB support" ON) #for android off
 IF(BUILD_WITH_UPSCALEDB)
   OPTION(USE_BOOST "Enable Boost support" ON)
 ENDIF(BUILD_WITH_UPSCALEDB)
