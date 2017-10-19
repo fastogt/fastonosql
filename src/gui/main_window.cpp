@@ -29,6 +29,7 @@
 #include <QUrl>
 
 #ifdef OS_ANDROID
+#include <QApplication>
 #include <QGestureEvent>
 #endif
 

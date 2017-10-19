@@ -18,6 +18,8 @@
 
 #include "core/db/redis/db_connection.h"
 
+#include <errno.h>
+
 extern "C" {
 #include "sds.h"
 }
