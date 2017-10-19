@@ -121,9 +121,9 @@ class BuildRequest(object):
 
         # project static options
         log_to_file_args = '-DLOG_TO_FILE=ON'
-        openssl_args = '-DOPENSSL_USE_STATIC=ON'
-        zlib_args = '-DZLIB_USE_STATIC=ON'
-        bzip2_args = '-DBZIP2_USE_STATIC=ON'
+        openssl_args = '-DOPENSSL_USE_STATIC=OFF'
+        zlib_args = '-DZLIB_USE_STATIC=OFF'
+        bzip2_args = '-DBZIP2_USE_STATIC=OFF'
         snappy_args = '-DSNAPPY_USE_STATIC=ON'
         jsonc_args = '-DJSONC_USE_STATIC=ON'
 
@@ -185,7 +185,7 @@ class BuildRequest(object):
                 os.chdir(pwd)
                 raise ex
             make_apk_signed = build_system_args
-            make_apk_signed.append('apk_signed')
+            make_apk_signed.append('apk_aligned')
             try:
                 common_policy = run_command.CommonPolicy(store)
                 run_command.run_command_cb(make_apk_signed, common_policy)
@@ -193,7 +193,7 @@ class BuildRequest(object):
                 os.chdir(pwd)
                 raise ex
             make_apk_signed_aligned = build_system_args
-            make_apk_signed_aligned.append('apk_signed_aligned')
+            make_apk_signed_aligned.append('apk_signed')
             try:
                 common_policy = run_command.CommonPolicy(store)
                 run_command.run_command_cb(make_apk_signed_aligned, common_policy)
