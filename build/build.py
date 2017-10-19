@@ -121,9 +121,14 @@ class BuildRequest(object):
 
         # project static options
         log_to_file_args = '-DLOG_TO_FILE=ON'
-        openssl_args = '-DOPENSSL_USE_STATIC=OFF'
-        zlib_args = '-DZLIB_USE_STATIC=OFF'
-        bzip2_args = '-DBZIP2_USE_STATIC=OFF'
+        if is_android:
+            openssl_args = '-DOPENSSL_USE_STATIC=OFF'
+            zlib_args = '-DZLIB_USE_STATIC=OFF'
+            bzip2_args = '-DBZIP2_USE_STATIC=OFF'
+        else:
+            openssl_args = '-DOPENSSL_USE_STATIC=ON'
+            zlib_args = '-DZLIB_USE_STATIC=ON'
+            bzip2_args = '-DBZIP2_USE_STATIC=ON'
         snappy_args = '-DSNAPPY_USE_STATIC=ON'
         jsonc_args = '-DJSONC_USE_STATIC=ON'
 

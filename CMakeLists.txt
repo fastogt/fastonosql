@@ -108,11 +108,11 @@ OPTION(BUILD_WITH_REDIS "Build with Redis support" ON)
 OPTION(BUILD_WITH_MEMCACHED "Build with Memcached support" ON)
 OPTION(BUILD_WITH_SSDB "Build with SSDB support" ON)
 OPTION(BUILD_WITH_LEVELDB "Build with LevelDB support" ON)
-OPTION(BUILD_WITH_ROCKSDB "Build with RocksDB support" OFF) #for android off
+OPTION(BUILD_WITH_ROCKSDB "Build with RocksDB support" ON) #for android off
 OPTION(BUILD_WITH_UNQLITE "Build with Unqlite support" ON)
 OPTION(BUILD_WITH_LMDB "Build with LMDB support" ON)
-OPTION(BUILD_WITH_UPSCALEDB "Build with Upscaledb support" OFF) #for android off
-OPTION(BUILD_WITH_FORESTDB "Build with ForestDB support" OFF) #for android off
+OPTION(BUILD_WITH_UPSCALEDB "Build with Upscaledb support" ON) #for android off
+OPTION(BUILD_WITH_FORESTDB "Build with ForestDB support" ON) #for android off
 IF(BUILD_WITH_UPSCALEDB)
   OPTION(USE_BOOST "Enable Boost support" ON)
 ENDIF(BUILD_WITH_UPSCALEDB)
@@ -393,8 +393,10 @@ IF(CPACK_SUPPORT)
     # set android package source for androiddeployqt json file
     SET(PACKAGE_SOURCE_ANDROID ${CMAKE_CURRENT_BINARY_DIR}/android)
     SET(PACKAGE_OUTPUT_ANDROID ${CMAKE_INSTALL_PREFIX})
-    CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/install/${PROJECT_NAME_LOWERCASE}/android/strings.xml.in ${PACKAGE_SOURCE_ANDROID}/strings.xml @ONLY)
-    CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/install/${PROJECT_NAME_LOWERCASE}/android/AndroidManifest.xml.in ${PACKAGE_SOURCE_ANDROID}/AndroidManifest.xml @ONLY)
+    CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/install/${PROJECT_NAME_LOWERCASE}/android/strings.xml.in
+      ${PACKAGE_SOURCE_ANDROID}/strings.xml @ONLY)
+    CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/install/${PROJECT_NAME_LOWERCASE}/android/AndroidManifest.xml.in
+      ${PACKAGE_SOURCE_ANDROID}/AndroidManifest.xml @ONLY)
 
     # create json file parsed by the androiddeployqt
     SET(ANDROID_SDK $ENV{ANDROID_SDK})
@@ -402,21 +404,28 @@ IF(CPACK_SUPPORT)
     SET(ANDROID_TARGET_ARCH ${ANDROID_NDK_ABI_NAME})
     #SET(ANDROID_TARGET_ARCH $ENV{ANDROID_TARGET_ARCH})
     SET(ANDROID_BUILD_TOOLS_REVISION $ENV{ANDROID_BUILD_TOOLS_REVISION})
-    CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/install/${PROJECT_NAME_LOWERCASE}/android/configAndroid.json.in ${PACKAGE_SOURCE_ANDROID}/configAndroid.json @ONLY)
+    CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/install/${PROJECT_NAME_LOWERCASE}/android/configAndroid.json.in
+      ${PACKAGE_SOURCE_ANDROID}/configAndroid.json @ONLY)
 
     SET(ANDROID_PACKAGE_RELEASE_NAME ${CPACK_PACKAGE_FILE_NAME}.apk)
 
     ADD_CUSTOM_COMMAND (
-      OUTPUT createApkFromAndroidDeployQtRelease
+      OUTPUT apk_release_command
       DEPENDS ${PACKAGE_SOURCE_ANDROID}/AndroidManifest.xml
-      COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/install/${PROJECT_NAME_LOWERCASE}/android/res ${PACKAGE_SOURCE_ANDROID}/res
-      COMMAND ${ANDROID_DEPLOY_QT} --output ${PACKAGE_OUTPUT_ANDROID} --input ${PACKAGE_SOURCE_ANDROID}/configAndroid.json --gradle --release
-      COMMAND ${CMAKE_COMMAND} -E rename ${PACKAGE_OUTPUT_ANDROID}/build/outputs/apk/install-release-unsigned.apk ${PACKAGE_OUTPUT_ANDROID}/${ANDROID_PACKAGE_RELEASE_NAME}
+      COMMAND ${CMAKE_COMMAND} -E copy_directory
+              ${CMAKE_SOURCE_DIR}/install/${PROJECT_NAME_LOWERCASE}/android/res
+              ${PACKAGE_SOURCE_ANDROID}/res
+      COMMAND ${ANDROID_DEPLOY_QT} --gradle --release
+              --output ${PACKAGE_OUTPUT_ANDROID}
+              --input ${PACKAGE_SOURCE_ANDROID}/configAndroid.json
+      COMMAND ${CMAKE_COMMAND} -E rename
+              ${PACKAGE_OUTPUT_ANDROID}/build/outputs/apk/install-release-unsigned.apk
+              ${PACKAGE_OUTPUT_ANDROID}/${ANDROID_PACKAGE_RELEASE_NAME}
     )
 
     SET(ANDROID_PACKAGE_RELEASE_ALIGNED_NAME ${CPACK_PACKAGE_FILE_NAME}_aligned.apk)
     ADD_CUSTOM_COMMAND (
-      OUTPUT createApkAlignedFromAndroidDeployQtRelease
+      OUTPUT apk_aligned_command
       DEPENDS ${PACKAGE_OUTPUT_ANDROID}/${ANDROID_PACKAGE_RELEASE_NAME}
       COMMAND ${ANDROID_SDK}/build-tools/${ANDROID_BUILD_TOOLS_REVISION}/zipalign
               -v 4 ${PACKAGE_OUTPUT_ANDROID}/${ANDROID_PACKAGE_RELEASE_NAME}
@@ -425,7 +434,7 @@ IF(CPACK_SUPPORT)
 
     SET(ANDROID_PACKAGE_RELEASE_SIGNED_NAME ${CPACK_PACKAGE_FILE_NAME}_signed.apk)
     ADD_CUSTOM_COMMAND (
-      OUTPUT createApkSignedFromAndroidDeployQtRelease
+      OUTPUT apk_signed_command
       DEPENDS ${PACKAGE_OUTPUT_ANDROID}/${ANDROID_PACKAGE_RELEASE_ALIGNED_NAME}
       COMMAND apksigner sign
               --ks ~/$ENV{ANDROID_KEYSTORE}
@@ -437,29 +446,30 @@ IF(CPACK_SUPPORT)
     )
 
     ADD_CUSTOM_COMMAND (
-      OUTPUT apkInstall
+      OUTPUT apk_install_to_device_command
       DEPENDS ${PACKAGE_OUTPUT_ANDROID}/${ANDROID_PACKAGE_RELEASE_SIGNED_NAME}
-      COMMAND ${ANDROID_SDK}/platform-tools/adb install -r ${PACKAGE_OUTPUT_ANDROID}/${ANDROID_PACKAGE_RELEASE_SIGNED_NAME}
+      COMMAND ${ANDROID_SDK}/platform-tools/adb install -r
+              ${PACKAGE_OUTPUT_ANDROID}/${ANDROID_PACKAGE_RELEASE_SIGNED_NAME}
     )
 
     # Command to create apk from Makefile
     ADD_CUSTOM_TARGET(apk_release
-      DEPENDS createApkFromAndroidDeployQtRelease
+      DEPENDS apk_release_command
     )
 
     # Command to create aligned apk from Makefile
     ADD_CUSTOM_TARGET(apk_aligned
-      DEPENDS createApkAlignedFromAndroidDeployQtRelease
+      DEPENDS apk_aligned_command
     )
 
     # Command to create signed apk from Makefile
     ADD_CUSTOM_TARGET(apk_signed
-      DEPENDS createApkSignedFromAndroidDeployQtRelease
+      DEPENDS apk_signed_command
     )
 
-    # Command to install the signed aligned apk through adb from Makefile
-    ADD_CUSTOM_TARGET(apk_install
-      DEPENDS apkInstall
+    # Command to install the aligned signed apk through adb from Makefile
+    ADD_CUSTOM_TARGET(apk_install_to_device
+      DEPENDS apk_install_to_device_command
     )
   ENDIF(OS_WINDOWS)
   INCLUDE(CPack)
