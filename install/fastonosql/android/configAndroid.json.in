@@ -2,6 +2,7 @@
  "description": "@CPACK_PACKAGE_DESCRIPTION_SUMMARY@",
  "qt": "@_qt5Core_install_prefix@",
  "sdk": "@ANDROID_SDK@",
+ "sdkBuildToolsRevision": "@ANDROID_BUILD_TOOLS_REVISION@",
  "ndk": "@ANDROID_NDK@",
  "toolchain-prefix": "@ANDROID_TOOLCHAIN_MACHINE_NAME@",
  "tool-prefix": "@ANDROID_TOOLCHAIN_MACHINE_NAME@",
