@@ -47,7 +47,7 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
   bool GetSendStatistic() const;
   void SetSendStatistic(bool val);
 
-  int64_t GetExecCount() const;
+  quint64 GetExecCount() const;
 
   void SetDefaultView(supportedViews view);
   supportedViews GetDefaultView() const;
@@ -127,7 +127,7 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
   bool auto_open_console_;
   bool auto_connect_db_;
   bool fast_view_keys_;
-  int64_t exec_count_;
+  quint64 exec_count_;
 };
 
 }  // namespace proxy

@@ -189,19 +189,21 @@ class BuildRequest(object):
             except Exception as ex:
                 os.chdir(pwd)
                 raise ex
-            make_apk_signed = build_system_args
-            make_apk_signed.append('apk_aligned')
+
+            make_apk_aligned = build_system_args
+            make_apk_aligned.append('apk_aligned')
             try:
                 common_policy = run_command.CommonPolicy(store)
-                run_command.run_command_cb(make_apk_signed, common_policy)
+                run_command.run_command_cb(make_apk_aligned, common_policy)
             except Exception as ex:
                 os.chdir(pwd)
                 raise ex
-            make_apk_signed_aligned = build_system_args
-            make_apk_signed_aligned.append('apk_signed')
+
+            make_apk_signed = build_system_args
+            make_apk_signed('apk_signed')
             try:
                 common_policy = run_command.CommonPolicy(store)
-                run_command.run_command_cb(make_apk_signed_aligned, common_policy)
+                run_command.run_command_cb(make_apk_signed, common_policy)
             except Exception as ex:
                 os.chdir(pwd)
                 raise ex

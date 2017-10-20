@@ -159,7 +159,7 @@ class BuildRequest(object):
             os.chdir(abs_dir_path)
             raise ex
 
-    def build_libmemcached(self, prefix_path, make_install):
+    def build_libmemcached(self, prefix_path):
         abs_dir_path = self.build_dir_path_
         try:
             cloned_dir = utils.git_clone('https://github.com/fastogt/libmemcached.git', abs_dir_path)
@@ -174,8 +174,9 @@ class BuildRequest(object):
             configure_policy = run_command.CommonPolicy(print_message)
             run_command.run_command_cb(configure_libmemcached, configure_policy)
 
+            make_libmemcached = ['make', 'static']  # FIXME
             make_policy = run_command.CommonPolicy(print_message)
-            run_command.run_command_cb(make_install, make_policy)
+            run_command.run_command_cb(make_libmemcached, make_policy)
             os.chdir(abs_dir_path)
         except Exception as ex:
             os.chdir(abs_dir_path)
@@ -328,7 +329,7 @@ class BuildRequest(object):
         self.build_qscintilla(cmake_line, make_install)
 
         # database build
-        self.build_libmemcached(prefix_path, make_install)
+        self.build_libmemcached(prefix_path)
         self.build_unqlite(cmake_line, make_install)
         self.build_lmdb(prefix_path)
         self.build_leveldb(prefix_path)

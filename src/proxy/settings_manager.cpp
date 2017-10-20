@@ -108,7 +108,7 @@ void SettingsManager::SetSendStatistic(bool val) {
   send_statistic_ = val;
 }
 
-int64_t SettingsManager::GetExecCount() const {
+quint64 SettingsManager::GetExecCount() const {
   return exec_count_;
 }
 
@@ -368,7 +368,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
   auto_open_console_ = settings.value(AUTOOPENCONSOLE, true).toBool();
   auto_connect_db_ = settings.value(AUTOCONNECTDB, true).toBool();
   fast_view_keys_ = settings.value(FASTVIEWKEYS, true).toBool();
-  exec_count_ = settings.value(EXEC_COUNT, 1).toLongLong();
+  exec_count_ = settings.value(EXEC_COUNT, 1).toULongLong();
   config_version_ = settings.value(CONFIG_VERSION, PROJECT_VERSION_NUMBER).toUInt();
   Save();
 }

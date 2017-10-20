@@ -1,4 +1,7 @@
-1.10.0 /
+1.9.5 /
+[Alexandr Topilski]
+
+1.9.4 / October 20, 2017
 [Alexandr Topilski]
 - [Redis] Decrement becomes self increment #74
 - [ForestDB] Create/Remove database
