@@ -230,7 +230,7 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
                                      std::vector<std::string>* keys_out,
                                      uint64_t* cursor_out) {
   unqlite_kv_cursor* pCur; /* Cursor handle */
-  common::Error err = CheckResultCommand("SCAN", unqlite_kv_cursor_init(connection_.handle_, &pCur));
+  common::Error err = CheckResultCommand(DB_SCAN_COMMAND, unqlite_kv_cursor_init(connection_.handle_, &pCur));
   if (err) {
     return err;
   }
@@ -273,7 +273,7 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
                                      uint64_t limit,
                                      std::vector<std::string>* ret) { /* Allocate a new cursor instance */
   unqlite_kv_cursor* pCur;                                            /* Cursor handle */
-  common::Error err = CheckResultCommand("KEYS", unqlite_kv_cursor_init(connection_.handle_, &pCur));
+  common::Error err = CheckResultCommand(DB_KEYS_COMMAND, unqlite_kv_cursor_init(connection_.handle_, &pCur));
   if (err) {
     return err;
   }

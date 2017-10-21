@@ -30,13 +30,6 @@
 #define GET_SENTINEL_MASTERS "SENTINEL MASTERS"
 #define GET_SENTINEL_SLAVES_PATTERN_1ARGS_S "SENTINEL SLAVES %s"
 
-#define LATENCY_REQUEST "LATENCY"
-#define RDM_REQUEST "RDM"
-#define SYNC_REQUEST "SYNC"
-#define FIND_BIG_KEYS_REQUEST "FIND_BIG_KEYS"
-#define STAT_MODE_REQUEST "STAT"
-#define SCAN_MODE_REQUEST "SCAN"
-
 struct redisContext;  // lines 49-49
 struct redisReply;    // lines 50-50
 

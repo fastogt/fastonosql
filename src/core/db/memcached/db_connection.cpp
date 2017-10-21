@@ -637,7 +637,7 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
   ScanHolder hld(cursor_in, pattern, count_keys);
   memcached_dump_fn func[1] = {0};
   func[0] = memcached_dump_scan_callback;
-  common::Error err = CheckResultCommand("SCAN", memcached_dump(connection_.handle_, func, &hld, SIZEOFMASS(func)));
+  common::Error err = CheckResultCommand(DB_SCAN_COMMAND, memcached_dump(connection_.handle_, func, &hld, SIZEOFMASS(func)));
   if (err) {
     return err;
   }
@@ -654,7 +654,7 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
   KeysHolder hld(key_start, key_end, limit, ret);
   memcached_dump_fn func[1] = {0};
   func[0] = memcached_dump_keys_callback;
-  return CheckResultCommand("KEYS", memcached_dump(connection_.handle_, func, &hld, SIZEOFMASS(func)));
+  return CheckResultCommand(DB_KEYS_COMMAND, memcached_dump(connection_.handle_, func, &hld, SIZEOFMASS(func)));
 }
 
 common::Error DBConnection::DBkcountImpl(size_t* size) {

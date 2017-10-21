@@ -330,7 +330,7 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
   fdb_iterator_opt_t opt = FDB_ITR_NONE;
 
   common::Error err =
-      CheckResultCommand("KEYS", fdb_iterator_init(connection_.handle_->kvs, &it, NULL, 0, NULL, 0, opt));
+      CheckResultCommand(DB_SCAN_COMMAND, fdb_iterator_init(connection_.handle_->kvs, &it, NULL, 0, NULL, 0, opt));
   if (err) {
     return err;
   }
@@ -374,7 +374,7 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
   fdb_iterator* it = NULL;
   fdb_iterator_opt_t opt = FDB_ITR_NONE;
   common::Error err =
-      CheckResultCommand("KEYS", fdb_iterator_init(connection_.handle_->kvs, &it, key_start.c_str(), key_start.size(),
+      CheckResultCommand(DB_KEYS_COMMAND, fdb_iterator_init(connection_.handle_->kvs, &it, key_start.c_str(), key_start.size(),
                                                    key_end.c_str(), key_end.size(), opt));
   if (err) {
     return err;

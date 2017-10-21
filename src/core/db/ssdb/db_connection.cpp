@@ -294,7 +294,7 @@ common::Error DBConnection::ScanSsdb(const std::string& key_start,
     return err;
   }
 
-  return CheckResultCommand("SCAN", connection_.handle_->scan(key_start, key_end, limit, ret));
+  return CheckResultCommand(DB_SCAN_COMMAND, connection_.handle_->scan(key_start, key_end, limit, ret));
 }
 
 common::Error DBConnection::Rscan(const std::string& key_start,
@@ -879,7 +879,7 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
                                      uint64_t* cursor_out) {
   std::vector<std::string> ret;
   common::Error err =
-      CheckResultCommand("SCAN", connection_.handle_->keys(std::string(), std::string(), count_keys, &ret));
+      CheckResultCommand(DB_SCAN_COMMAND, connection_.handle_->keys(std::string(), std::string(), count_keys, &ret));
   if (err) {
     return err;
   }
@@ -912,7 +912,7 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
                                      const std::string& key_end,
                                      uint64_t limit,
                                      std::vector<std::string>* ret) {
-  return CheckResultCommand("KEYS", connection_.handle_->keys(key_start, key_end, limit, ret));
+  return CheckResultCommand(DB_KEYS_COMMAND, connection_.handle_->keys(key_start, key_end, limit, ret));
 }
 
 common::Error DBConnection::DBkcountImpl(size_t* size) {

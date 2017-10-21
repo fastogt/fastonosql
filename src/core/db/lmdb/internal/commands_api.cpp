@@ -64,7 +64,7 @@ const internal::ConstantCommandsArray g_commands = {CommandHolder(DB_HELP_COMMAN
                                                                   1,
                                                                   0,
                                                                   &CommandsApi::RemoveDatabase),
-                                                    CommandHolder("SCAN",
+                                                    CommandHolder(DB_SCAN_COMMAND,
                                                                   "<cursor> [MATCH pattern] [COUNT count]",
                                                                   "Incrementally iterate the keys space",
                                                                   UNDEFINED_SINCE,
@@ -72,7 +72,7 @@ const internal::ConstantCommandsArray g_commands = {CommandHolder(DB_HELP_COMMAN
                                                                   1,
                                                                   4,
                                                                   &CommandsApi::Scan),
-                                                    CommandHolder("KEYS",
+                                                    CommandHolder(DB_KEYS_COMMAND,
                                                                   "<key_start> <key_end> <limit>",
                                                                   "Find all keys matching the given limits.",
                                                                   UNDEFINED_SINCE,
@@ -97,6 +97,14 @@ const internal::ConstantCommandsArray g_commands = {CommandHolder(DB_HELP_COMMAN
                                                                   0,
                                                                   1,
                                                                   &CommandsApi::FlushDB),
+                                                    CommandHolder(LMDB_DROPDB_COMMAND,
+                                                                  "-",
+                                                                  "Drop database",
+                                                                  UNDEFINED_SINCE,
+                                                                  UNDEFINED_EXAMPLE_STR,
+                                                                  0,
+                                                                  1,
+                                                                  &CommandsApi::DropDatabase),
                                                     CommandHolder(DB_SELECTDB_COMMAND,
                                                                   "<name>",
                                                                   "Change the selected database for the "
@@ -176,6 +184,21 @@ common::Error CommandsApi::ConfigGet(internal::CommandHandler* handler, commands
   common::ArrayValue* arr = new common::ArrayValue;
   arr->AppendStrings(dbs);
   FastoObject* child = new FastoObject(out, arr, mdb->GetDelimiter());
+  out->AddChildren(child);
+  return common::Error();
+}
+
+common::Error CommandsApi::DropDatabase(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  UNUSED(argv);
+  DBConnection* mdb = static_cast<DBConnection*>(handler);
+  ServerInfo::Stats statsout;
+  common::Error err = mdb->DropDatabase();
+  if (err) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::CreateStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, mdb->GetDelimiter());
   out->AddChildren(child);
   return common::Error();
 }

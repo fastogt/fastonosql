@@ -815,7 +815,7 @@ const internal::ConstantCommandsArray g_commands = {
                   0,
                   1,
                   &CommandsApi::Info),
-    CommandHolder("KEYS",
+    CommandHolder(DB_KEYS_COMMAND,
                   "<pattern>",
                   "Find all keys matching the given pattern",
                   PROJECT_VERSION_GENERATE(1, 0, 0),
@@ -1211,7 +1211,7 @@ const internal::ConstantCommandsArray g_commands = {
                   0,
                   0,
                   &CommandsApi::Save),
-    CommandHolder("SCAN",
+    CommandHolder(DB_SCAN_COMMAND,
                   "<cursor> [MATCH pattern] [COUNT count]",
                   "Incrementally iterate the keys space",
                   PROJECT_VERSION_GENERATE(2, 8, 0),
@@ -2399,7 +2399,7 @@ common::Error CommandsApi::Hvals(internal::CommandHandler* handler, commands_arg
 
 common::Error CommandsApi::RKeys(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
-  return red->CommonExec(ExpandCommand({"KEYS"}, argv), out);
+  return red->CommonExec(ExpandCommand({DB_KEYS_COMMAND}, argv), out);
 }
 
 common::Error CommandsApi::LastSave(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {

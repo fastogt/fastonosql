@@ -42,6 +42,8 @@
 #define DB_SET_KEY_COMMAND "SET"        // exist for all
 #define DB_DELETE_KEY_COMMAND "DEL"     // exist for all
 #define DB_RENAME_KEY_COMMAND "RENAME"  // exist for all
+#define DB_KEYS_COMMAND "KEYS"          // exist for all
+#define DB_SCAN_COMMAND "SCAN"          // exist for all
 
 namespace fastonosql {
 namespace core {

@@ -304,7 +304,7 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
   memset(&rec, 0, sizeof(rec));
 
   /* create a new cursor */
-  common::Error err = CheckResultCommand("SCAN", ups_cursor_create(&cursor, connection_.handle_->db, 0, 0));
+  common::Error err = CheckResultCommand(DB_SCAN_COMMAND, ups_cursor_create(&cursor, connection_.handle_->db, 0, 0));
   if (err) {
     return err;
   }
@@ -356,7 +356,7 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
   memset(&rec, 0, sizeof(rec));
 
   /* create a new cursor */
-  common::Error err = CheckResultCommand("KEYS", ups_cursor_create(&cursor, connection_.handle_->db, 0, 0));
+  common::Error err = CheckResultCommand(DB_KEYS_COMMAND, ups_cursor_create(&cursor, connection_.handle_->db, 0, 0));
   if (err) {
     return err;
   }

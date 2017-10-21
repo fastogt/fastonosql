@@ -256,7 +256,7 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
   auto st = it->status();
   delete it;
 
-  common::Error err = CheckResultCommand("SCAN", st);
+  common::Error err = CheckResultCommand(DB_SCAN_COMMAND, st);
   if (err) {
     return err;
   }
@@ -289,7 +289,7 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
   auto st = it->status();
   delete it;
 
-  return CheckResultCommand("KEYS", st);
+  return CheckResultCommand(DB_KEYS_COMMAND, st);
 }
 
 common::Error DBConnection::DBkcountImpl(size_t* size) {
