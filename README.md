@@ -25,6 +25,10 @@ Download
 You can download compiled version (for Mac OS X, Windows, FreeBSD and Linux) from our site:<br />
 [www.fastonosql.com](https://fastonosql.com)
 
+How to use
+==========
+Some examples how to use FastoNoSQL you can find [here](https://github.com/fastogt/fastonosql/wiki/How-to-use)
+
 Contribute
 ==========
 Contributions are always welcome! Just try to follow our coding style: [FastoNoSQL Coding Style](https://github.com/fasto/fastonosql/wiki/Coding-Style)
