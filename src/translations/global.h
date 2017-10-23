@@ -117,7 +117,6 @@ extern const QString trNext;
 extern const QString trPrevious;
 extern const QString trLoading;
 extern const QString trTryToConnect;
-extern const QString trTryToChangePassword;
 extern const QString trAddItem;
 extern const QString trRemoveItem;
 
@@ -145,12 +144,11 @@ extern const QString trCloseTab;
 extern const QString trEnterFullScreen;
 extern const QString trExitFullScreen;
 extern const QString trExecuteWithArgs;
-extern const QString trAuthDbUser;
 extern const QString trEdit;
 extern const QString trReportBug;
 extern const QString trCheckUpdate;
 extern const QString trSendStatistic;
-extern const QString trCloseOtherTab;
+extern const QString trCloseOtherTabs;
 
 extern const QString trLoadAndExecuteFile;
 extern const QString trLoadContOfDataBases;
@@ -166,6 +164,7 @@ extern const QString trDecode;
 extern const QString trConnectionDiagnostic;
 extern const QString trConnectionDiscovery;
 extern const QString trKeyCountOnThePage;
+extern const QString trInvalidDbType;
 
 }  // namespace translations
 }  // namespace fastonosql

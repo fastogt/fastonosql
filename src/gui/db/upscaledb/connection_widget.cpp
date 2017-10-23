@@ -27,10 +27,6 @@
 
 #include "proxy/connection_settings/iconnection_settings_local.h"
 
-namespace {
-const QString trDefaultDb = QObject::tr("Default database:");
-}
-
 namespace fastonosql {
 namespace gui {
 namespace upscaledb {

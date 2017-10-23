@@ -32,8 +32,8 @@
 #include "gui/widgets/user_password_widget.h"
 
 namespace {
-const QString trUserPassword = QObject::tr("User Password:");
-const QString trUserName = QObject::tr("User Name:");
+const QString trUserPassword = QObject::tr("User password:");
+const QString trUserName = QObject::tr("User name:");
 const QString trUseSasl = QObject::tr("Use SASL");
 }  // namespace
 

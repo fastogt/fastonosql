@@ -25,7 +25,7 @@
 
 #include "gui/shortcuts.h"  // for closeKey, newTabKey, etc
 
-#include "translations/global.h"  // for trCloseOtherTab, trCloseTab, etc
+#include "translations/global.h"  // for trCloseOtherTabs, trCloseTab, etc
 
 namespace fastonosql {
 namespace gui {
@@ -62,7 +62,7 @@ void MainTabBar::showContextMenu(const QPoint& p) {
   closeShellAction->setShortcut(closeKey);
   VERIFY(connect(closeShellAction, &QAction::triggered, this, &MainTabBar::closedTab));
 
-  QAction* closeOtherShellsAction = new QAction(translations::trCloseOtherTab, this);
+  QAction* closeOtherShellsAction = new QAction(translations::trCloseOtherTabs, this);
   VERIFY(connect(closeOtherShellsAction, &QAction::triggered, this, &MainTabBar::closedOtherTabs));
 
   menu.addAction(newShellAction);

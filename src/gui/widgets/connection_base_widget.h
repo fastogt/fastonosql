@@ -30,11 +30,12 @@ class QSpinBox;
 
 namespace {
 const QString trDBPath = QObject::tr("Database path:");
-const QString trCaption = QObject::tr("Select Database path");
+const QString trCaption = QObject::tr("Select database path");
 const QString trFilter = QObject::tr("Database files (*.*)");
 const QString trReadOnlyDB = QObject::tr("Read only database");
 const QString trDBName = QObject::tr("Database name:");
 const QString trUseAuth = QObject::tr("Use AUTH");
+const QString trDefaultDb = QObject::tr("Default database:");
 }  // namespace
 
 namespace fastonosql {

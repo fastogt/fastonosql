@@ -28,7 +28,7 @@
 namespace fastonosql {
 namespace gui {
 
-StatisticSender::StatisticSender(int64_t exec_count, QObject* parent) : QObject(parent), exec_count_(exec_count) {}
+StatisticSender::StatisticSender(uint32_t exec_count, QObject* parent) : QObject(parent), exec_count_(exec_count) {}
 
 void StatisticSender::routine() {
 #if defined(FASTONOSQL)
@@ -60,7 +60,8 @@ void StatisticSender::routine() {
 #ifndef IS_PUBLIC_BUILD
   json_object_object_add(project_json, FIELD_OWNER, json_object_new_string(USER_SPECIFIC_ID));
 #endif
-  json_object_object_add(project_json, FIELD_PROJECT_EXEC_COUNT, json_object_new_int64(exec_count_));
+  json_object_object_add(project_json, FIELD_PROJECT_EXEC_COUNT,
+                         json_object_new_int64(static_cast<int64_t>(exec_count_)));
   json_object_object_add(stats_json, FIELD_PROJECT, project_json);
 
   const char* stats_json_string = json_object_get_string(stats_json);

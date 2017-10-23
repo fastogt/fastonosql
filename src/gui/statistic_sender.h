@@ -26,7 +26,7 @@ namespace gui {
 class StatisticSender : public QObject {
   Q_OBJECT
  public:
-  explicit StatisticSender(int64_t exec_count, QObject* parent = 0);
+  explicit StatisticSender(uint32_t exec_count, QObject* parent = 0);
 
  Q_SIGNALS:
   void statisticSended(bool succesResult);
@@ -35,7 +35,7 @@ class StatisticSender : public QObject {
   void routine();
 
  private:
-  int64_t exec_count_;
+  uint32_t exec_count_;
 };
 
 }  // namespace gui

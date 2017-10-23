@@ -46,7 +46,6 @@
 namespace {
 const QString defaultNameConnection = "New Sentinel Connection";
 const char* defaultNameConnectionFolder = "/";
-const QString invalidDbType = QObject::tr("Invalid database type!");
 }  // namespace
 
 namespace fastonosql {

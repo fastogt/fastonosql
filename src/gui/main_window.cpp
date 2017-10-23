@@ -323,7 +323,7 @@ void MainWindow::checkUpdate() {
 
 void MainWindow::sendStatistic() {
   QThread* th = new QThread;
-  int64_t exec_count = proxy::SettingsManager::GetInstance()->GetExecCount();
+  uint32_t exec_count = proxy::SettingsManager::GetInstance()->GetExecCount();
   StatisticSender* sender = new StatisticSender(exec_count);
   sender->moveToThread(th);
   VERIFY(connect(th, &QThread::started, sender, &StatisticSender::routine));
@@ -552,16 +552,10 @@ void MainWindow::versionAvailible(bool succesResult, const QString& version) {
   bool isn = isNeededUpdate(sver);
   if (isn) {
     QMessageBox::information(this, translations::trCheckVersion,
-                             QObject::tr("<h4>A new version(%1) of " PROJECT_NAME_TITLE " is Availible!</h4>"
+                             QObject::tr("<h4>A new version(%1) of " PROJECT_NAME_TITLE " is availible!</h4>"
                                          "You can download it  <a href=\"" PROJECT_DOWNLOAD_LINK "\">here</a>")
                                  .arg(version));
-  } /* else {
-     QMessageBox::information(
-         this, translations::trCheckVersion,
-         QObject::tr("<h4>You're' "
-                     "up-to-date!</h4>You are using the latest version(%1) of " PROJECT_NAME_TITLE ".")
-             .arg(version));
-   }*/
+  }
 
   checkUpdateAction_->setEnabled(isn);
 }

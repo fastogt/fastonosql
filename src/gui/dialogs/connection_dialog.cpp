@@ -35,7 +35,6 @@
 #include "translations/global.h"  // for trShow, trPrivateKey, etc
 
 namespace {
-const QString invalidDbType = QObject::tr("Invalid database type!");
 const QString trTitle = QObject::tr("Connection Settings");
 const QString trPrivateKeyInvalidInput = QObject::tr("Invalid private key value!");
 const std::string defaultNameConnectionFolder = "/";

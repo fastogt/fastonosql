@@ -46,7 +46,6 @@ const QString trUnixPath = QObject::tr("Unix socket path:");
 const QString trRemote = QObject::tr("Remote");
 const QString trLocal = QObject::tr("Local");
 const QString trSSL = QObject::tr("SSL");
-const QString trDefaultDb = QObject::tr("Default database:");
 }  // namespace
 
 namespace fastonosql {
