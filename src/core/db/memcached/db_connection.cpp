@@ -637,7 +637,8 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
   ScanHolder hld(cursor_in, pattern, count_keys);
   memcached_dump_fn func[1] = {0};
   func[0] = memcached_dump_scan_callback;
-  common::Error err = CheckResultCommand(DB_SCAN_COMMAND, memcached_dump(connection_.handle_, func, &hld, SIZEOFMASS(func)));
+  common::Error err =
+      CheckResultCommand(DB_SCAN_COMMAND, memcached_dump(connection_.handle_, func, &hld, SIZEOFMASS(func)));
   if (err) {
     return err;
   }
@@ -683,7 +684,7 @@ common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** 
 
   size_t kcount = 0;
   common::Error err = DBkcount(&kcount);
-  //DCHECK(!err);
+  // DCHECK(!err);
   *info = new DataBaseInfo(name, true, kcount);
   return common::Error();
 }

@@ -27,8 +27,8 @@
 #include <QLabel>
 #include <QLineEdit>
 
-#include <common/qt/convert2string.h>  // for ConvertToString
 #include <common/convert2string.h>
+#include <common/qt/convert2string.h>  // for ConvertToString
 
 #include "core/db_traits.h"
 #include "core/value.h"

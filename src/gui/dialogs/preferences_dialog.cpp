@@ -87,7 +87,6 @@ PreferencesDialog::PreferencesDialog(QWidget* parent) : QDialog(parent) {
   auto_comletion_ = new QCheckBox;
   generalLayout->addWidget(auto_comletion_, 1, 1);
 
-
   fast_view_keys_ = new QCheckBox;
   generalLayout->addWidget(fast_view_keys_, 2, 0);
   auto_connect_db_ = new QCheckBox;

@@ -134,7 +134,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
                                                                                  // LoadDatabaseContentFinished
   void Execute(const events_info::ExecuteInfoRequest& req);                      // signals: ExecuteStarted
 
-  void BackupToPath(const events_info::BackupInfoRequest& req);    // signals: BackupStarted, BackupFinished
+  void BackupToPath(const events_info::BackupInfoRequest& req);      // signals: BackupStarted, BackupFinished
   void RestoreFromPath(const events_info::RestoreInfoRequest& req);  // signals: ExportStarted, ExportFinished
 
   void LoadServerInfo(const events_info::ServerInfoRequest& req);  // signals:

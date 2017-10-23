@@ -484,7 +484,8 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
                                      uint64_t* cursor_out) {
   MDB_cursor* cursor = NULL;
   MDB_txn* txn = NULL;
-  common::Error err = CheckResultCommand(DB_SCAN_COMMAND, mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn));
+  common::Error err =
+      CheckResultCommand(DB_SCAN_COMMAND, mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn));
   if (err) {
     return err;
   }
@@ -529,7 +530,8 @@ common::Error DBConnection::KeysImpl(const std::string& key_start,
                                      std::vector<std::string>* ret) {
   MDB_cursor* cursor = NULL;
   MDB_txn* txn = NULL;
-  common::Error err = CheckResultCommand(DB_KEYS_COMMAND, mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn));
+  common::Error err =
+      CheckResultCommand(DB_KEYS_COMMAND, mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn));
   if (err) {
     return err;
   }

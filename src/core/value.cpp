@@ -31,7 +31,7 @@ bool have_space(const std::string& data) {
   auto it = std::find_if(data.begin(), data.end(), [](char c) { return std::isspace(c); });
   return it != data.end();
 }
-}
+}  // namespace detail
 
 std::string ConvertValue(common::Value* value, const std::string& delimiter, bool for_cmd) {
   if (!value) {
