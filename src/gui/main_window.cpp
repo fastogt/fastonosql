@@ -341,10 +341,8 @@ void MainWindow::reportBug() {
 void MainWindow::enterLeaveFullScreen() {
   if (isFullScreen()) {
     showNormal();
-    fullScreanAction_->setText(translations::trEnterFullScreen);
   } else {
     showFullScreen();
-    fullScreanAction_->setText(translations::trExitFullScreen);
   }
 }
 
@@ -638,7 +636,7 @@ void MainWindow::retranslateUi() {
   checkUpdateAction_->setText(translations::trCheckUpdate);
   editAction_->setText(translations::trEdit);
   windowAction_->setText(translations::trWindow);
-  fullScreanAction_->setText(translations::trEnterFullScreen);
+  fullScreanAction_->setText(translations::trFullScreen);
   reportBugAction_->setText(translations::trReportBug);
   aboutAction_->setText(tr("About %1...").arg(PROJECT_NAME_TITLE));
   helpAction_->setText(translations::trHelp);
@@ -654,8 +652,7 @@ void MainWindow::retranslateUi() {
 void MainWindow::updateRecentConnectionActions() {
   QStringList connections = proxy::SettingsManager::GetInstance()->GetRecentConnections();
 
-  int num_recent_files = qMin(connections.size(), static_cast<int>(max_recent_connections));
-
+  int num_recent_files = std::min(connections.size(), static_cast<int>(max_recent_connections));
   for (int i = 0; i < num_recent_files; ++i) {
     QString text = connections[i];
     recentConnectionsActs_[i]->setText(text);

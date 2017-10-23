@@ -141,8 +141,7 @@ extern const QString trNextTab;
 extern const QString trPrevTab;
 extern const QString trCloseTab;
 
-extern const QString trEnterFullScreen;
-extern const QString trExitFullScreen;
+extern const QString trFullScreen;
 extern const QString trExecuteWithArgs;
 extern const QString trEdit;
 extern const QString trReportBug;

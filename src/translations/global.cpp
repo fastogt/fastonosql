@@ -141,8 +141,7 @@ const QString trNextTab = QObject::tr("Next tab");
 const QString trPrevTab = QObject::tr("Prev tab");
 const QString trCloseTab = QObject::tr("Close tab");
 
-const QString trEnterFullScreen = QObject::tr("Enter full screen");
-const QString trExitFullScreen = QObject::tr("Exit full screen");
+const QString trFullScreen = QObject::tr("Full screen");
 const QString trExecuteWithArgs = QObject::tr("Execute with args");
 const QString trEdit = QObject::tr("Edit");
 const QString trReportBug = QObject::tr("Report bug...");

@@ -1,6 +1,7 @@
-1.9.5 /
+1.9.5 / October 23, 2017
 [Alexandr Topilski]
 - [LMDB] Drop database
+- Stabilization
 
 1.9.4 / October 20, 2017
 [Alexandr Topilski]
