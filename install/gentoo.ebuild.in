@@ -17,9 +17,6 @@ IUSE=""
 
 RDEPEND=">=sys-libs/libstdc++-v3-3.3.6-r1"
 DEPEND="${RDEPEND}
-        >=dev-qt/qtcore-5.4.0:5
-        >=dev-qt/qtgui-5.4.0:5
-        >=dev-qt/qtwebkit-5.4.0:5"
 
 ##S=${WORKDIR}/${P}.0
 S=${WORKDIR}
