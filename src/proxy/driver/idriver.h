@@ -153,7 +153,9 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   // internal methods
   virtual core::IServerInfoSPtr MakeServerInfoFromString(const std::string& val) = 0;
   virtual common::Error CurrentServerInfo(core::IServerInfo** info) = 0;
-  virtual common::Error ServerDiscoveryInfo(core::IServerInfo** sinfo, core::IDataBaseInfo** dbinfo);
+  virtual common::Error ServerDiscoveryInfo(core::IServerInfo** sinfo,
+                                            core::IDataBaseInfo** dbinfo,
+                                            std::vector<core::CommandHolder>** extended_commands);
   virtual common::Error CurrentDataBaseInfo(core::IDataBaseInfo** info) = 0;
   virtual void InitImpl() = 0;
   virtual void ClearImpl() = 0;

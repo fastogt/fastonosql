@@ -514,7 +514,8 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
   if (IsConnected()) {
     core::IServerInfo* info = nullptr;
     core::IDataBaseInfo* db = nullptr;
-    common::Error err = ServerDiscoveryInfo(&info, &db);
+    std::vector<core::CommandHolder>* ex_cmds = nullptr;
+    common::Error err = ServerDiscoveryInfo(&info, &db, &ex_cmds);
     if (err) {
       res.setErrorInfo(err);
     } else {
@@ -526,6 +527,7 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
 
       res.sinfo = server_info;
       res.dbinfo = current_database_info;
+      res.extend_commands = ex_cmds;
     }
   } else {
     res.setErrorInfo(common::make_error("Not connected to server, impossible to get discovery info!"));
@@ -536,7 +538,10 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
   NotifyProgress(sender, 100);
 }
 
-common::Error IDriver::ServerDiscoveryInfo(core::IServerInfo** sinfo, core::IDataBaseInfo** dbinfo) {
+common::Error IDriver::ServerDiscoveryInfo(core::IServerInfo** sinfo,
+                                           core::IDataBaseInfo** dbinfo,
+                                           std::vector<core::CommandHolder>** extended_commands) {
+  UNUSED(extended_commands);
   core::IServerInfo* lsinfo = nullptr;
   common::Error err = CurrentServerInfo(&lsinfo);
   if (err) {
