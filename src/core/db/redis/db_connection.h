@@ -95,6 +95,9 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
   common::Error IncrBy(const NKey& key, int inc, long long* incr);
   common::Error IncrByFloat(const NKey& key, double inc, std::string* str_incr);
 
+  common::Error GraphQuery(const commands_args_t& argv, FastoObject* out) WARN_UNUSED_RESULT;
+  common::Error GraphExplain(const commands_args_t& argv, FastoObject* out) WARN_UNUSED_RESULT;
+
  private:
   virtual common::Error ScanImpl(uint64_t cursor_in,
                                  const std::string& pattern,

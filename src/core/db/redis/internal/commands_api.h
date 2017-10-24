@@ -239,6 +239,10 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
   static common::Error Monitor(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error Subscribe(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error Sync(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+
+  // graph api
+  static common::Error GraphQuery(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error GraphExplain(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 };
 
 extern const internal::ConstantCommandsArray g_commands;

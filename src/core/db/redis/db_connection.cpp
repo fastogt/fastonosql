@@ -1830,6 +1830,14 @@ common::Error DBConnection::IncrByFloat(const NKey& key, double inc, std::string
   return common::Error();
 }
 
+common::Error DBConnection::GraphQuery(const commands_args_t& argv, FastoObject* out) {
+  return CommonExec(argv, out);
+}
+
+common::Error DBConnection::GraphExplain(const commands_args_t& argv, FastoObject* out) {
+  return CommonExec(argv, out);
+}
+
 }  // namespace redis
 }  // namespace core
 }  // namespace fastonosql

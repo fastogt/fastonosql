@@ -1,5 +1,6 @@
 1.9.6 /
 [Alexandr Topilski]
+- [Redis] redis-graph commands support
 
 1.9.5 / October 23, 2017
 [Alexandr Topilski]

@@ -1937,7 +1937,25 @@ const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &CommandsApi::SentinelSet)};
+                  &CommandsApi::SentinelSet),
+
+    CommandHolder("GRAPH.QUERY",
+                  "<Graph name> <Query>",
+                  "Executes the given query against a specified graph.",
+                  PROJECT_VERSION_GENERATE(4, 0, 0),
+                  "GRAPH.QUERY us_government \"MATCH (p:president)-[:born]->(:state {name:Hawaii}) RETURN p\"",
+                  2,
+                  0,
+                  &CommandsApi::GraphQuery),
+    CommandHolder("GRAPH.EXPLAIN",
+                  "<Graph name> <Query>",
+                  "Constructs a query execution plan but does not run it. Inspect this execution plan to better "
+                  "understand how your query will get executed.",
+                  PROJECT_VERSION_GENERATE(4, 0, 0),
+                  "GRAPH.EXPLAIN us_government \"MATCH (p:president)-[:born]->(h:state {name:Hawaii}) RETURN p\"",
+                  2,
+                  0,
+                  &CommandsApi::GraphExplain)};
 
 common::Error CommandsApi::Auth(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
@@ -3225,6 +3243,18 @@ common::Error CommandsApi::Sync(internal::CommandHandler* handler, commands_args
   UNUSED(argv);
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->SlaveMode(out);
+}
+
+common::Error CommandsApi::GraphQuery(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  UNUSED(argv);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphQuery(ExpandCommand({"GRAPH.QUERY"}, argv), out);
+}
+
+common::Error CommandsApi::GraphExplain(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  UNUSED(argv);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphExplain(ExpandCommand({"GRAPH.EXPLAIN"}, argv), out);
 }
 
 }  // namespace redis
