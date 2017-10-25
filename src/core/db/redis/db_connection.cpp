@@ -130,6 +130,11 @@ template <>
 const ConstantCommandsArray& CDBConnection<redis::NativeConnection, redis::RConfig, REDIS>::GetCommands() {
   return redis::g_commands;
 }
+
+template <>
+const ConstantCommandsArray& CDBConnection<redis::NativeConnection, redis::RConfig, REDIS>::GetExtendedCommands() {
+  return redis::g_extended_commands;
+}
 }  // namespace internal
 
 namespace redis {
@@ -486,13 +491,9 @@ common::Error DiscoverySentinelConnection(const RConfig& rconfig, std::vector<Se
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(client, new CommandTranslator(base_class::GetCommands(), GetExtendedCommands())),
+    : base_class(client, new CommandTranslator(base_class::GetCommands(), base_class::GetExtendedCommands())),
       is_auth_(false),
       cur_db_(-1) {}
-
-const core::internal::ConstantCommandsArray& DBConnection::GetExtendedCommands() {
-  return g_extended_commands;
-}
 
 bool DBConnection::IsAuthenticated() const {
   if (!base_class::IsAuthenticated()) {

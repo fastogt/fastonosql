@@ -63,6 +63,7 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>,
 
   static const char* GetDBName() { return ConnectionTraits<ContType>::GetDBName(); }
   static const ConstantCommandsArray& GetCommands();
+  static const core::internal::ConstantCommandsArray& GetExtendedCommands();
 
   virtual std::string GetCurrentDBName() const;                                      //
   common::Error Help(commands_args_t argv, std::string* answer) WARN_UNUSED_RESULT;  //

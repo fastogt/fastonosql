@@ -56,8 +56,6 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
   typedef core::internal::CDBConnection<NativeConnection, RConfig, REDIS> base_class;
   explicit DBConnection(CDBConnectionClient* client);
 
-  static const core::internal::ConstantCommandsArray& GetExtendedCommands();
-
   virtual bool IsAuthenticated() const override;
 
   virtual common::Error Connect(const config_t& config) override WARN_UNUSED_RESULT;

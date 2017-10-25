@@ -88,6 +88,11 @@ template <>
 const ConstantCommandsArray& CDBConnection<rocksdb::NativeConnection, rocksdb::Config, ROCKSDB>::GetCommands() {
   return rocksdb::g_commands;
 }
+
+template <>
+const ConstantCommandsArray& CDBConnection<rocksdb::NativeConnection, rocksdb::Config, ROCKSDB>::GetExtendedCommands() {
+  return rocksdb::g_extended_commands;
+}
 }  // namespace internal
 namespace rocksdb {
 
@@ -133,7 +138,7 @@ common::Error TestConnection(const Config& config) {
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(client, new CommandTranslator(base_class::GetCommands())) {}
+    : base_class(client, new CommandTranslator(base_class::GetCommands(), base_class::GetExtendedCommands())) {}
 
 common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* statsout) {
   UNUSED(args);

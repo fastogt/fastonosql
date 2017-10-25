@@ -250,6 +250,11 @@ const ConstantCommandsArray& CDBConnection<lmdb::NativeConnection, lmdb::Config,
   return lmdb::g_commands;
 }
 
+template <>
+const ConstantCommandsArray& CDBConnection<lmdb::NativeConnection, lmdb::Config, LMDB>::GetExtendedCommands() {
+  return lmdb::g_extended_commands;
+}
+
 }  // namespace internal
 
 namespace lmdb {
@@ -296,7 +301,7 @@ common::Error TestConnection(const Config& config) {
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(client, new CommandTranslator(base_class::GetCommands())) {}
+    : base_class(client, new CommandTranslator(base_class::GetCommands(), base_class::GetExtendedCommands())) {}
 
 std::string DBConnection::GetCurrentDBName() const {
   if (IsConnected()) {  // if connected

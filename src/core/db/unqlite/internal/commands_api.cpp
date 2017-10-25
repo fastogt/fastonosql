@@ -123,6 +123,8 @@ const internal::ConstantCommandsArray g_commands = {CommandHolder(DB_HELP_COMMAN
                                                                   0,
                                                                   &CommandsApi::Quit)};
 
+const internal::ConstantCommandsArray g_extended_commands = {};
+
 common::Error CommandsApi::Info(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* unq = static_cast<DBConnection*>(handler);
   ServerInfo::Stats statsout;

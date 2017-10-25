@@ -40,6 +40,8 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
 // TODO: cas command implementation
 extern const internal::ConstantCommandsArray g_commands;
 
+extern const internal::ConstantCommandsArray g_extended_commands;
+
 }  // namespace memcached
 }  // namespace core
 }  // namespace fastonosql

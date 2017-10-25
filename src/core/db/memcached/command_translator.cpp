@@ -33,8 +33,9 @@ namespace fastonosql {
 namespace core {
 namespace memcached {
 
-CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands)
-    : ICommandTranslatorBase(commands, std::vector<CommandHolder>()) {}
+CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands,
+                                     const std::vector<CommandHolder>& extended_commands)
+    : ICommandTranslatorBase(commands, extended_commands) {}
 
 const char* CommandTranslator::GetDBName() const {
   return ConnectionTraits<MEMCACHED>::GetDBName();

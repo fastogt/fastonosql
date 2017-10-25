@@ -26,7 +26,8 @@ namespace lmdb {
 
 class CommandTranslator : public ICommandTranslatorBase {
  public:
-  explicit CommandTranslator(const std::vector<CommandHolder>& commands);
+  explicit CommandTranslator(const std::vector<CommandHolder>& commands,
+                             const std::vector<CommandHolder>& extended_commands);
 
   virtual const char* GetDBName() const override;
 

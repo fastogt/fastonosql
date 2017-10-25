@@ -192,6 +192,11 @@ const ConstantCommandsArray& CDBConnection<forestdb::NativeConnection, forestdb:
   return forestdb::g_commands;
 }
 
+template <>
+const ConstantCommandsArray&
+CDBConnection<forestdb::NativeConnection, forestdb::Config, FORESTDB>::GetExtendedCommands() {
+  return forestdb::g_extended_commands;
+}
 }  // namespace internal
 
 namespace forestdb {
@@ -229,7 +234,7 @@ common::Error TestConnection(const Config& config) {
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(client, new CommandTranslator(base_class::GetCommands())) {}
+    : base_class(client, new CommandTranslator(base_class::GetCommands(), base_class::GetExtendedCommands())) {}
 
 std::string DBConnection::GetCurrentDBName() const {
   if (IsConnected()) {  // if connected

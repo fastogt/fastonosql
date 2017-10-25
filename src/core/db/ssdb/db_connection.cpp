@@ -74,6 +74,11 @@ template <>
 const ConstantCommandsArray& CDBConnection<ssdb::NativeConnection, ssdb::Config, SSDB>::GetCommands() {
   return ssdb::g_commands;
 }
+
+template <>
+const ConstantCommandsArray& CDBConnection<ssdb::NativeConnection, ssdb::Config, SSDB>::GetExtendedCommands() {
+  return ssdb::g_extended_commands;
+}
 }  // namespace internal
 namespace ssdb {
 namespace {
@@ -126,7 +131,8 @@ common::Error TestConnection(const Config& config) {
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(client, new CommandTranslator(base_class::GetCommands())), is_auth_(false) {}
+    : base_class(client, new CommandTranslator(base_class::GetCommands(), base_class::GetExtendedCommands())),
+      is_auth_(false) {}
 
 bool DBConnection::IsAuthenticated() const {
   if (!base_class::IsAuthenticated()) {

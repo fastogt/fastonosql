@@ -163,6 +163,12 @@ template <>
 const ConstantCommandsArray& CDBConnection<upscaledb::NativeConnection, upscaledb::Config, UPSCALEDB>::GetCommands() {
   return upscaledb::g_commands;
 }
+
+template <>
+const ConstantCommandsArray&
+CDBConnection<upscaledb::NativeConnection, upscaledb::Config, UPSCALEDB>::GetExtendedCommands() {
+  return upscaledb::g_extended_commands;
+}
 }  // namespace internal
 namespace upscaledb {
 common::Error CreateConnection(const Config& config, NativeConnection** context) {
@@ -206,7 +212,7 @@ common::Error TestConnection(const Config& config) {
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(client, new CommandTranslator(base_class::GetCommands())) {}
+    : base_class(client, new CommandTranslator(base_class::GetCommands(), base_class::GetExtendedCommands())) {}
 
 std::string DBConnection::GetCurrentDBName() const {
   if (connection_.handle_) {
