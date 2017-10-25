@@ -65,7 +65,9 @@ namespace fastonosql {
 namespace core {
 namespace redis {
 
-CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands) : ICommandTranslator(commands) {}
+CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands,
+                                     const std::vector<CommandHolder>& extended_commands)
+    : ICommandTranslator(commands, extended_commands) {}
 
 const char* CommandTranslator::GetDBName() const {
   return ConnectionTraits<REDIS>::GetDBName();

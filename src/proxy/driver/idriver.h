@@ -150,17 +150,18 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   virtual void OnLoadedKeyTTL(const core::NKey& key, core::ttl_t ttl) override;
   virtual void OnQuited() override;
 
-  // internal methods
+ private:
   virtual core::IServerInfoSPtr MakeServerInfoFromString(const std::string& val) = 0;
-  virtual common::Error CurrentServerInfo(core::IServerInfo** info) = 0;
-  virtual common::Error ServerDiscoveryInfo(core::IServerInfo** sinfo,
-                                            core::IDataBaseInfo** dbinfo,
-                                            std::vector<core::CommandHolder>** extended_commands);
-  virtual common::Error CurrentDataBaseInfo(core::IDataBaseInfo** info) = 0;
   virtual void InitImpl() = 0;
   virtual void ClearImpl() = 0;
 
- private:
+  virtual common::Error GetCurrentServerInfo(core::IServerInfo** info) = 0;
+  virtual common::Error GetExtendedServerCommands(std::vector<const core::CommandHolder*>* commands);
+  virtual common::Error ServerDiscoveryInfo(core::IServerInfo** sinfo,
+                                            core::IDataBaseInfo** dbinfo,
+                                            std::vector<const core::CommandHolder*>* extended_commands);
+  virtual common::Error GetCurrentDataBaseInfo(core::IDataBaseInfo** info) = 0;
+
   const IConnectionSettingsBaseSPtr settings_;
   QThread* thread_;
   int timer_info_id_;

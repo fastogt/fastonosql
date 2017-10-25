@@ -90,7 +90,7 @@ common::Error Driver::ExecuteImpl(const core::command_buffer_t& command, core::F
   return impl_->Execute(command, out);
 }
 
-common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
+common::Error Driver::GetCurrentServerInfo(core::IServerInfo** info) {
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(DB_INFO_COMMAND, core::C_INNER);
   LOG_COMMAND(cmd);
   core::ssdb::ServerInfo::Stats cm;
@@ -103,7 +103,7 @@ common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
   return common::Error();
 }
 
-common::Error Driver::CurrentDataBaseInfo(core::IDataBaseInfo** info) {
+common::Error Driver::GetCurrentDataBaseInfo(core::IDataBaseInfo** info) {
   if (!info) {
     DNOTREACHED();
     return common::make_error_inval();

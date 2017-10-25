@@ -1937,8 +1937,9 @@ const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &CommandsApi::SentinelSet),
+                  &CommandsApi::SentinelSet)};
 
+const internal::ConstantCommandsArray g_extended_commands = {
     CommandHolder("GRAPH.QUERY",
                   "<Graph name> <Query>",
                   "Executes the given query against a specified graph.",
@@ -1955,7 +1956,15 @@ const internal::ConstantCommandsArray g_commands = {
                   "GRAPH.EXPLAIN us_government \"MATCH (p:president)-[:born]->(h:state {name:Hawaii}) RETURN p\"",
                   2,
                   0,
-                  &CommandsApi::GraphExplain)};
+                  &CommandsApi::GraphExplain),
+    CommandHolder("GRAPH.DELETE",
+                  "<Graph name>",
+                  "Delete graph by name",
+                  PROJECT_VERSION_GENERATE(4, 0, 0),
+                  "GRAPH.DELETE us_government",
+                  1,
+                  0,
+                  &CommandsApi::GraphDelete)};
 
 common::Error CommandsApi::Auth(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
@@ -3255,6 +3264,12 @@ common::Error CommandsApi::GraphExplain(internal::CommandHandler* handler, comma
   UNUSED(argv);
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->GraphExplain(ExpandCommand({"GRAPH.EXPLAIN"}, argv), out);
+}
+
+common::Error CommandsApi::GraphDelete(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  UNUSED(argv);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({"GRAPH.DELETE"}, argv), out);
 }
 
 }  // namespace redis

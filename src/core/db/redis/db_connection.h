@@ -56,6 +56,8 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
   typedef core::internal::CDBConnection<NativeConnection, RConfig, REDIS> base_class;
   explicit DBConnection(CDBConnectionClient* client);
 
+  static const core::internal::ConstantCommandsArray& GetExtendedCommands();
+
   virtual bool IsAuthenticated() const override;
 
   virtual common::Error Connect(const config_t& config) override WARN_UNUSED_RESULT;
@@ -97,6 +99,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
 
   common::Error GraphQuery(const commands_args_t& argv, FastoObject* out) WARN_UNUSED_RESULT;
   common::Error GraphExplain(const commands_args_t& argv, FastoObject* out) WARN_UNUSED_RESULT;
+  common::Error GraphDelete(const commands_args_t& argv, FastoObject* out) WARN_UNUSED_RESULT;
 
  private:
   virtual common::Error ScanImpl(uint64_t cursor_in,

@@ -243,9 +243,11 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
   // graph api
   static common::Error GraphQuery(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error GraphExplain(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error GraphDelete(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 };
 
 extern const internal::ConstantCommandsArray g_commands;
+extern const internal::ConstantCommandsArray g_extended_commands;
 
 }  // namespace redis
 }  // namespace core

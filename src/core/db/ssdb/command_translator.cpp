@@ -43,7 +43,8 @@ namespace fastonosql {
 namespace core {
 namespace ssdb {
 
-CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands) : ICommandTranslatorBase(commands) {}
+CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands)
+    : ICommandTranslatorBase(commands, std::vector<CommandHolder>()) {}
 
 const char* CommandTranslator::GetDBName() const {
   return ConnectionTraits<SSDB>::GetDBName();

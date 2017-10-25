@@ -262,7 +262,7 @@ void IDriver::timerEvent(QTimerEvent* event) {
       common::time64_t time = common::time::current_mstime();
       std::string stamp = createStamp(time);
       core::IServerInfo* info = nullptr;
-      common::Error err = CurrentServerInfo(&info);
+      common::Error err = GetCurrentServerInfo(&info);
       if (err) {
         QObject::timerEvent(event);
         return;
@@ -401,7 +401,7 @@ void IDriver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent
   events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 50);
   core::IDataBaseInfo* info = nullptr;
-  common::Error err = CurrentDataBaseInfo(&info);
+  common::Error err = GetCurrentDataBaseInfo(&info);
   if (err) {
     res.setErrorInfo(err);
   } else {
@@ -417,7 +417,7 @@ void IDriver::HandleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
   events::ServerInfoResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 50);
   core::IServerInfo* info = nullptr;
-  common::Error err = CurrentServerInfo(&info);
+  common::Error err = GetCurrentServerInfo(&info);
   if (err) {
     res.setErrorInfo(err);
   } else {
@@ -514,7 +514,7 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
   if (IsConnected()) {
     core::IServerInfo* info = nullptr;
     core::IDataBaseInfo* db = nullptr;
-    std::vector<core::CommandHolder>* ex_cmds = nullptr;
+    std::vector<const core::CommandHolder*> ex_cmds;
     common::Error err = ServerDiscoveryInfo(&info, &db, &ex_cmds);
     if (err) {
       res.setErrorInfo(err);
@@ -540,22 +540,28 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
 
 common::Error IDriver::ServerDiscoveryInfo(core::IServerInfo** sinfo,
                                            core::IDataBaseInfo** dbinfo,
-                                           std::vector<core::CommandHolder>** extended_commands) {
-  UNUSED(extended_commands);
+                                           std::vector<const core::CommandHolder*>* extended_commands) {
   core::IServerInfo* lsinfo = nullptr;
-  common::Error err = CurrentServerInfo(&lsinfo);
+  common::Error err = GetCurrentServerInfo(&lsinfo);
+  if (err) {
+    return err;
+  }
+
+  std::vector<const core::CommandHolder*> lextended_commands;
+  err = GetExtendedServerCommands(&lextended_commands);
   if (err) {
     return err;
   }
 
   core::IDataBaseInfo* ldbinfo = nullptr;
-  err = CurrentDataBaseInfo(&ldbinfo);
+  err = GetCurrentDataBaseInfo(&ldbinfo);
   if (err) {
     delete lsinfo;
     return err;
   }
 
   *sinfo = lsinfo;
+  *extended_commands = lextended_commands;
   *dbinfo = ldbinfo;
   return err;
 }
@@ -607,6 +613,11 @@ void IDriver::OnLoadedKeyTTL(const core::NKey& key, core::ttl_t ttl) {
 
 void IDriver::OnQuited() {
   emit Disconnected();
+}
+
+common::Error IDriver::GetExtendedServerCommands(std::vector<const core::CommandHolder*>* commands) {
+  *commands = std::vector<const core::CommandHolder*>();
+  return common::Error();
 }
 
 }  // namespace proxy

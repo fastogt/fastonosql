@@ -40,6 +40,7 @@
 #define REDIS_GET_PROPERTY_SERVER_COMMAND "CONFIG GET *"
 #define REDIS_PUBSUB_CHANNELS_COMMAND "PUBSUB CHANNELS"
 #define REDIS_PUBSUB_NUMSUB_COMMAND "PUBSUB NUMSUB"
+#define REDIS_GET_COMMANDS "COMMAND"
 
 #define REDIS_SET_DEFAULT_DATABASE_COMMAND_1ARGS_S "SELECT %s"
 
@@ -48,7 +49,7 @@
 
 namespace {
 
-common::Value::Type convertFromStringRType(const std::string& type) {
+common::Value::Type ConvertFromStringRType(const std::string& type) {
   if (type.empty()) {
     return common::Value::TYPE_NULL;
   }
@@ -133,7 +134,7 @@ common::Error Driver::ExecuteImpl(const core::command_buffer_t& command, core::F
   return impl_->Execute(command, out);
 }
 
-common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
+common::Error Driver::GetCurrentServerInfo(core::IServerInfo** info) {
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(DB_INFO_COMMAND, core::C_INNER);
   common::Error err = Execute(cmd.get());
   if (err) {
@@ -151,13 +152,62 @@ common::Error Driver::CurrentServerInfo(core::IServerInfo** info) {
   return common::Error();
 }
 
-common::Error Driver::CurrentDataBaseInfo(core::IDataBaseInfo** info) {
+common::Error Driver::GetCurrentDataBaseInfo(core::IDataBaseInfo** info) {
   if (!info) {
     DNOTREACHED();
     return common::make_error_inval();
   }
 
   return impl_->Select(impl_->GetCurrentDBName(), info);
+}
+
+common::Error Driver::GetExtendedServerCommands(std::vector<const core::CommandHolder*>* commands) {
+  core::FastoObjectCommandIPtr cmd = CreateCommandFast(REDIS_GET_COMMANDS, core::C_INNER);
+  common::Error err = Execute(cmd.get());
+  if (err) {
+    return err;
+  }
+
+  core::translator_t tran = impl_->GetTranslator();
+
+  core::FastoObject::childs_t rchildrens = cmd->GetChildrens();
+  CHECK_EQ(rchildrens.size(), 1);
+  core::FastoObjectArray* array = dynamic_cast<core::FastoObjectArray*>(rchildrens[0].get());  // +
+  CHECK(array);
+  common::ArrayValue* ar = array->GetArray();
+  CHECK(ar);
+  std::vector<const core::CommandHolder*> lcommands;
+  for (core::FastoObjectIPtr child : array->GetChildrens()) {
+    common::ValueSPtr val = child->GetValue();
+    const common::ArrayValue* com_value = NULL;
+    if (val->GetAsList(&com_value)) {
+      // 0) command name
+      // 1) command arity specification
+      // 2) nested Array reply of command flags
+      // 3) position of first key in argument list
+      // 4) position of last key in argument list
+      // 5) step count for locating repeating keys
+      if (com_value->GetSize() < 4) {
+        return common::make_error("Invalid " REDIS_GET_COMMANDS " command output");
+      }
+
+      std::string command_name;
+      if (!com_value->GetString(0, &command_name)) {
+        return common::make_error("Invalid " REDIS_GET_COMMANDS " command output");
+      }
+
+      const core::CommandHolder* cmd = nullptr;
+      common::Error err = tran->FindExtendedCommand(command_name, &cmd);
+      if (!err) {
+        continue;
+      }
+
+      lcommands.push_back(cmd);
+    }
+  }
+
+  *commands = lcommands;
+  return common::Error();
 }
 
 void Driver::HandleBackupEvent(events::BackupRequestEvent* ev) {
@@ -202,7 +252,7 @@ void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
   NotifyProgress(sender, 50);
 
   core::IDataBaseInfo* info = nullptr;
-  common::Error err = CurrentDataBaseInfo(&info);
+  common::Error err = GetCurrentDataBaseInfo(&info);
   if (err) {
     res.setErrorInfo(err);
     NotifyProgress(sender, 75);
@@ -333,7 +383,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
           DCHECK_EQ(tchildrens.size(), 1);
           if (tchildrens.size() == 1) {
             std::string typeRedis = tchildrens[0]->ToString();
-            common::Value::Type ctype = convertFromStringRType(typeRedis);
+            common::Value::Type ctype = ConvertFromStringRType(typeRedis);
             common::ValueSPtr empty_val(common::Value::CreateEmptyValueFromType(ctype));
             res.keys[i].SetValue(empty_val);
           }
