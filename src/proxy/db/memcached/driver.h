@@ -61,7 +61,9 @@ class Driver : public IDriverRemote {
   virtual common::Error SyncDisconnect() override WARN_UNUSED_RESULT;
 
   virtual common::Error ExecuteImpl(const core::command_buffer_t& command, core::FastoObject* out) override;
+
   virtual common::Error GetCurrentServerInfo(core::IServerInfo** info) override;
+  virtual common::Error GetServerCommands(std::vector<const core::CommandInfo*>* commands) override;
   virtual common::Error GetCurrentDataBaseInfo(core::IDataBaseInfo** info) override;
 
   virtual void HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) override;

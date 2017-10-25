@@ -1937,9 +1937,48 @@ const internal::ConstantCommandsArray g_commands = {
                   UNDEFINED_EXAMPLE_STR,
                   3,
                   0,
-                  &CommandsApi::SentinelSet)};
-
-const internal::ConstantCommandsArray g_extended_commands = {
+                  &CommandsApi::SentinelSet),
+    // extended
+    CommandHolder("LATENCY",
+                  "<arg> <arg>  [options ...]",
+                  UNDEFINED_SUMMARY,
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  2,
+                  INFINITE_COMMAND_ARGS,
+                  &CommandsApi::Latency),
+    CommandHolder("PFDEBUG",
+                  "<arg> <arg> <arg> [options ...]",
+                  UNDEFINED_SUMMARY,
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  3,
+                  INFINITE_COMMAND_ARGS,
+                  &CommandsApi::PFDebug),
+    CommandHolder("REPLCONF",
+                  "<arg> [options ...]",
+                  UNDEFINED_SUMMARY,
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  1,
+                  INFINITE_COMMAND_ARGS,
+                  &CommandsApi::ReplConf),
+    CommandHolder("SUBSTR",
+                  "<key> <arg> <arg> <arg>",
+                  UNDEFINED_SUMMARY,
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  4,
+                  0,
+                  &CommandsApi::Substr),
+    CommandHolder("PFSELFTEST",
+                  "<arg>",
+                  UNDEFINED_SUMMARY,
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  1,
+                  0,
+                  &CommandsApi::PFSelfTest),
     CommandHolder("GRAPH.QUERY",
                   "<Graph name> <Query>",
                   "Executes the given query against a specified graph.",
@@ -3252,6 +3291,37 @@ common::Error CommandsApi::Sync(internal::CommandHandler* handler, commands_args
   UNUSED(argv);
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->SlaveMode(out);
+}
+
+// extend comands
+common::Error CommandsApi::Latency(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  UNUSED(argv);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"LATENCY"}, argv), out);
+}
+
+common::Error CommandsApi::PFDebug(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  UNUSED(argv);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"PFDEBUG"}, argv), out);
+}
+
+common::Error CommandsApi::ReplConf(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  UNUSED(argv);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"REPLCONF"}, argv), out);
+}
+
+common::Error CommandsApi::Substr(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  UNUSED(argv);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"SUBSTR"}, argv), out);
+}
+
+common::Error CommandsApi::PFSelfTest(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  UNUSED(argv);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"PFSELFTEST"}, argv), out);
 }
 
 common::Error CommandsApi::GraphQuery(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {

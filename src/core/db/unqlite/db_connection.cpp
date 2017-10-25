@@ -140,10 +140,6 @@ const ConstantCommandsArray& CDBConnection<unqlite::NativeConnection, unqlite::C
   return unqlite::g_commands;
 }
 
-template <>
-const ConstantCommandsArray& CDBConnection<unqlite::NativeConnection, unqlite::Config, UNQLITE>::GetExtendedCommands() {
-  return unqlite::g_extended_commands;
-}
 }  // namespace internal
 namespace unqlite {
 
@@ -189,7 +185,7 @@ common::Error TestConnection(const Config& config) {
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(client, new CommandTranslator(base_class::GetCommands(), base_class::GetExtendedCommands())) {}
+    : base_class(client, new CommandTranslator(base_class::GetCommands())) {}
 
 common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* statsout) {
   UNUSED(args);

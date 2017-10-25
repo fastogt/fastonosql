@@ -56,6 +56,7 @@ class CommandHolder : public CommandInfo {
                 test_functions_t tests = {&TestArgsInRange});
 
   bool IsCommand(commands_args_t argv, size_t* offset) const;
+  bool IsEqualFirstName(const std::string& cmd_first_name) const;
 
   common::Error TestArgs(commands_args_t argv) const WARN_UNUSED_RESULT;
 

@@ -81,11 +81,6 @@ template <>
 const ConstantCommandsArray& CDBConnection<leveldb::NativeConnection, leveldb::Config, LEVELDB>::GetCommands() {
   return leveldb::g_commands;
 }
-
-template <>
-const ConstantCommandsArray& CDBConnection<leveldb::NativeConnection, leveldb::Config, LEVELDB>::GetExtendedCommands() {
-  return leveldb::g_extended_commands;
-}
 }  // namespace internal
 namespace leveldb {
 
@@ -131,7 +126,7 @@ common::Error TestConnection(const Config& config) {
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(client, new CommandTranslator(base_class::GetCommands(), base_class::GetExtendedCommands())) {}
+    : base_class(client, new CommandTranslator(base_class::GetCommands())) {}
 
 common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* statsout) {
   UNUSED(args);

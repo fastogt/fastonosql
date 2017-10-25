@@ -161,5 +161,9 @@ BaseShell* BaseShell::createFromType(core::connectionTypes type, bool showAutoCo
   return new BaseShell(type, showAutoCompl);
 }
 
+void BaseShell::validateCommands(const std::vector<const core::CommandInfo*>& commands) {
+  UNUSED(commands);
+}
+
 }  // namespace gui
 }  // namespace fastonosql

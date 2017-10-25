@@ -255,11 +255,6 @@ const ConstantCommandsArray& CDBConnection<memcached::NativeConnection, memcache
   return memcached::g_commands;
 }
 
-template <>
-const ConstantCommandsArray&
-CDBConnection<memcached::NativeConnection, memcached::Config, MEMCACHED>::GetExtendedCommands() {
-  return memcached::g_extended_commands;
-}
 }  // namespace internal
 namespace memcached {
 
@@ -330,8 +325,7 @@ common::Error TestConnection(const Config& config) {
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client)
-    : base_class(client, new CommandTranslator(base_class::GetCommands(), base_class::GetExtendedCommands())),
-      current_info_() {}
+    : base_class(client, new CommandTranslator(base_class::GetCommands())), current_info_() {}
 
 common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* statsout) {
   if (!statsout) {

@@ -58,7 +58,7 @@ class BaseQsciApiCommandHolder : public BaseQsciApi {
 class BaseQsciLexer : public QsciLexerCustom {
   Q_OBJECT
  public:
-  enum { Default = 0, Command = 1 };
+  enum { Default = 0, Command = 1, ExCommand = 2 };
 
   virtual const char* language() const override = 0;
   virtual const char* version() const = 0;

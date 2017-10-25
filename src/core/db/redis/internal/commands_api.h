@@ -240,6 +240,13 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
   static common::Error Subscribe(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error Sync(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 
+  // extend commands
+  static common::Error Latency(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error PFDebug(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ReplConf(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Substr(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error PFSelfTest(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+
   // graph api
   static common::Error GraphQuery(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error GraphExplain(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
@@ -247,7 +254,6 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
 };
 
 extern const internal::ConstantCommandsArray g_commands;
-extern const internal::ConstantCommandsArray g_extended_commands;
 
 }  // namespace redis
 }  // namespace core

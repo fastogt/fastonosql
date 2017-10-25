@@ -72,7 +72,6 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
 };
 
 extern const internal::ConstantCommandsArray g_commands;
-extern const internal::ConstantCommandsArray g_extended_commands;
 
 }  // namespace ssdb
 }  // namespace core

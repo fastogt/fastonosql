@@ -103,6 +103,16 @@ common::Error Driver::GetCurrentServerInfo(core::IServerInfo** info) {
   return common::Error();
 }
 
+common::Error Driver::GetServerCommands(std::vector<const core::CommandInfo*>* commands) {
+  std::vector<const core::CommandInfo*> lcommands;
+  const core::internal::ConstantCommandsArray& origin = core::leveldb::DBConnection::GetCommands();
+  for (size_t i = 0; i < origin.size(); ++i) {
+    lcommands.push_back(&origin[i]);
+  }
+  *commands = lcommands;
+  return common::Error();
+}
+
 common::Error Driver::GetCurrentDataBaseInfo(core::IDataBaseInfo** info) {
   if (!info) {
     return common::make_error_inval();

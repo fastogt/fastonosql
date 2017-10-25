@@ -94,7 +94,9 @@ QString BaseQsciLexer::description(int style) const {
     case Default:
       return "Default";
     case Command:
-      return "Command";
+      return "Native command";
+    case ExCommand:
+      return "Extended command";
   }
 
   return QString(style);
@@ -106,6 +108,8 @@ QColor BaseQsciLexer::defaultColor(int style) const {
       return Qt::black;
     case Command:
       return Qt::red;
+    case ExCommand:
+      return Qt::gray;
   }
 
   return Qt::black;

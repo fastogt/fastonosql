@@ -87,7 +87,7 @@ struct DiscoveryInfoResponce : DiscoveryInfoRequest {
 
   core::IServerInfoSPtr sinfo;
   core::IDataBaseInfoSPtr dbinfo;
-  std::vector<const core::CommandHolder*> extend_commands;
+  std::vector<const core::CommandInfo*> commands;
 };
 
 struct EnterModeInfo : public EventInfoBase {

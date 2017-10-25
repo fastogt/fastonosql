@@ -446,6 +446,7 @@ void BaseShellWidget::finishLoadDiscoveryInfo(const proxy::events_info::Discover
 
   updateServerInfo(res.sinfo);
   updateDefaultDatabase(res.dbinfo);
+  updateCommands(res.commands);
 }
 
 void BaseShellWidget::startExecute(const proxy::events_info::ExecuteInfoRequest& req) {
@@ -475,6 +476,7 @@ void BaseShellWidget::serverDisconnect() {
   syncConnectionActions();
   updateServerInfo(core::IServerInfoSPtr());
   updateDefaultDatabase(core::IDataBaseInfoSPtr());
+  updateCommands(std::vector<const core::CommandInfo*>());
 }
 
 void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
@@ -536,6 +538,10 @@ void BaseShellWidget::updateDefaultDatabase(core::IDataBaseInfoSPtr dbs) {
   QString qname;
   common::ConvertFromString(name, &qname);
   updateDBLabel(qname);
+}
+
+void BaseShellWidget::updateCommands(const std::vector<const core::CommandInfo*>& commands) {
+  input_->validateCommands(commands);
 }
 
 void BaseShellWidget::updateServerLabel(const QString& text) {

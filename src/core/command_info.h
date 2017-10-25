@@ -21,6 +21,7 @@
 #include <string>  // for string
 
 #define UNDEFINED_SINCE 0x00000000U
+#define UNDEFINED_SUMMARY "Undefined"
 #define UNDEFINED_SINCE_STR "Undefined"
 #define UNDEFINED_EXAMPLE_STR "Unspecified"
 #define UNDEFINED_STR_IN_PROGRESS "Undefined in progress"

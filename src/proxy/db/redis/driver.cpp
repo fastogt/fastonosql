@@ -161,7 +161,7 @@ common::Error Driver::GetCurrentDataBaseInfo(core::IDataBaseInfo** info) {
   return impl_->Select(impl_->GetCurrentDBName(), info);
 }
 
-common::Error Driver::GetExtendedServerCommands(std::vector<const core::CommandHolder*>* commands) {
+common::Error Driver::GetServerCommands(std::vector<const core::CommandInfo*>* commands) {
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(REDIS_GET_COMMANDS, core::C_INNER);
   common::Error err = Execute(cmd.get());
   if (err) {
@@ -176,7 +176,7 @@ common::Error Driver::GetExtendedServerCommands(std::vector<const core::CommandH
   CHECK(array);
   common::ArrayValue* ar = array->GetArray();
   CHECK(ar);
-  std::vector<const core::CommandHolder*> lcommands;
+  std::vector<const core::CommandInfo*> lcommands;
   for (core::FastoObjectIPtr child : array->GetChildrens()) {
     common::ValueSPtr val = child->GetValue();
     const common::ArrayValue* com_value = NULL;
@@ -197,8 +197,9 @@ common::Error Driver::GetExtendedServerCommands(std::vector<const core::CommandH
       }
 
       const core::CommandHolder* cmd = nullptr;
-      common::Error err = tran->FindExtendedCommand(command_name, &cmd);
-      if (!err) {
+      common::Error err = tran->FindCommand(command_name, &cmd);
+      if (err) {
+        WARNING_LOG() << "Found not handled command: " << command_name;
         continue;
       }
 

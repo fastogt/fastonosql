@@ -23,9 +23,8 @@
 namespace fastonosql {
 namespace core {
 
-ICommandTranslatorBase::ICommandTranslatorBase(const std::vector<CommandHolder>& commands,
-                                               const std::vector<CommandHolder>& extended_commands)
-    : ICommandTranslator(commands, extended_commands) {}
+ICommandTranslatorBase::ICommandTranslatorBase(const std::vector<CommandHolder>& commands)
+    : ICommandTranslator(commands) {}
 
 ICommandTranslatorBase::~ICommandTranslatorBase() {}
 

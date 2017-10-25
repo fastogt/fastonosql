@@ -54,9 +54,7 @@ common::Error ParseCommands(const command_buffer_t& cmd, std::vector<command_buf
   return common::Error();
 }
 
-ICommandTranslator::ICommandTranslator(const std::vector<CommandHolder>& commands,
-                                       const std::vector<CommandHolder>& extended_commands)
-    : commands_(commands), extended_commands_(extended_commands) {}
+ICommandTranslator::ICommandTranslator(const std::vector<CommandHolder>& commands) : commands_(commands) {}
 
 ICommandTranslator::~ICommandTranslator() {}
 
@@ -247,6 +245,22 @@ std::vector<CommandInfo> ICommandTranslator::Commands() const {
   return cmds;
 }
 
+common::Error ICommandTranslator::FindCommand(const std::string& command_first_name, const CommandHolder** info) const {
+  if (!info || command_first_name.empty()) {
+    return common::make_error_inval();
+  }
+
+  for (size_t i = 0; i < commands_.size(); ++i) {
+    const CommandHolder* cmd = &commands_[i];
+    if (cmd->IsEqualFirstName(command_first_name)) {
+      *info = cmd;
+      return common::Error();
+    }
+  }
+
+  return UnknownCommand(command_first_name);
+}
+
 common::Error ICommandTranslator::FindCommand(commands_args_t argv, const CommandHolder** info, size_t* off) const {
   if (!info || !off) {
     return common::make_error_inval();
@@ -263,23 +277,6 @@ common::Error ICommandTranslator::FindCommand(commands_args_t argv, const Comman
   }
 
   return UnknownSequence(argv);
-}
-
-common::Error ICommandTranslator::FindExtendedCommand(const std::string& command_name,
-                                                      const CommandHolder** info) const {
-  if (!info || command_name.empty()) {
-    return common::make_error_inval();
-  }
-
-  for (size_t i = 0; i < extended_commands_.size(); ++i) {
-    const CommandHolder* cmd = &extended_commands_[i];
-    if (cmd->IsEqualName(command_name)) {
-      *info = cmd;
-      return common::Error();
-    }
-  }
-
-  return UnknownCommand(command_name);
 }
 
 common::Error ICommandTranslator::TestCommandArgs(const CommandHolder* cmd, commands_args_t argv) const {

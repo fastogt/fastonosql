@@ -23,6 +23,9 @@
 #include "gui/editor/fasto_editor_shell.h"  // for FastoEditorShell
 
 namespace fastonosql {
+namespace core {
+struct CommandInfo;
+}
 namespace gui {
 
 class BaseQsciLexer;
@@ -37,6 +40,7 @@ class BaseShell : public gui::FastoEditorShell {
   void setFilteredVersion(uint32_t version);
 
   static BaseShell* createFromType(core::connectionTypes type, bool showAutoCompl);
+  void validateCommands(const std::vector<const core::CommandInfo*>& commands);
 
  protected:
   BaseShell(core::connectionTypes type, bool showAutoCompl, QWidget* parent = 0);

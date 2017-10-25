@@ -26,8 +26,7 @@ namespace ssdb {
 
 class CommandTranslator : public ICommandTranslatorBase {
  public:
-  explicit CommandTranslator(const std::vector<CommandHolder>& commands,
-                             const std::vector<CommandHolder>& extended_commands);
+  explicit CommandTranslator(const std::vector<CommandHolder>& commands);
   virtual const char* GetDBName() const override;
 
  private:

@@ -42,6 +42,9 @@ class IconLabel;
 }  // namespace common
 
 namespace fastonosql {
+namespace core {
+struct CommandInfo;
+}
 namespace proxy {
 namespace events_info {
 struct ConnectInfoRequest;
@@ -116,6 +119,7 @@ class BaseShellWidget : public QWidget {
   void syncConnectionActions();
   void updateServerInfo(core::IServerInfoSPtr inf);
   void updateDefaultDatabase(core::IDataBaseInfoSPtr dbs);
+  void updateCommands(const std::vector<const core::CommandInfo*>& commands);
 
   void updateServerLabel(const QString& text);
   void updateDBLabel(const QString& text);

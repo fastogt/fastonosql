@@ -31,9 +31,7 @@ namespace fastonosql {
 namespace core {
 namespace forestdb {
 
-CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands,
-                                     const std::vector<CommandHolder>& extended_commands)
-    : ICommandTranslatorBase(commands, extended_commands) {}
+CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands) : ICommandTranslatorBase(commands) {}
 
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, command_buffer_t* cmdstring) const {
   const NKey cur = key.GetKey();

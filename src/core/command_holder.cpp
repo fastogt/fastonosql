@@ -97,6 +97,22 @@ bool CommandHolder::IsCommand(commands_args_t argv, size_t* offset) const {
   return true;
 }
 
+bool CommandHolder::IsEqualFirstName(const std::string& cmd_first_name) const {
+  DCHECK(count_space(cmd_first_name) == 0) << "Command (" << cmd_first_name << ") should be without spaces.";
+  if (white_spaces_count_ == 0) {
+    return IsEqualName(cmd_first_name);
+  }
+
+  for (size_t i = 0; i < name.size(); ++i) {
+    char c = name[i];
+    if (std::isspace(c)) {
+      return common::FullEqualsASCII(cmd_first_name, name.substr(0, i), false);
+    }
+  }
+
+  return IsEqualName(cmd_first_name);
+}
+
 common::Error CommandHolder::TestArgs(commands_args_t argv) const {
   const CommandInfo inf = *this;
   for (test_function_t func : test_funcs_) {

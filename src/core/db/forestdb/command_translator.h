@@ -26,8 +26,7 @@ namespace forestdb {
 
 class CommandTranslator : public ICommandTranslatorBase {
  public:
-  explicit CommandTranslator(const std::vector<CommandHolder>& commands,
-                             const std::vector<CommandHolder>& extended_commands);
+  explicit CommandTranslator(const std::vector<CommandHolder>& commands);
 
  private:
   virtual common::Error CreateKeyCommandImpl(const NDbKValue& key, command_buffer_t* cmdstring) const override;

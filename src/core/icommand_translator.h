@@ -54,8 +54,7 @@ common::Error ParseCommands(const command_buffer_t& cmd, std::vector<command_buf
 
 class ICommandTranslator {
  public:
-  explicit ICommandTranslator(const std::vector<CommandHolder>& commands,
-                              const std::vector<CommandHolder>& extended_commands);
+  explicit ICommandTranslator(const std::vector<CommandHolder>& commands);
   virtual ~ICommandTranslator();
 
   virtual const char* GetDBName() const = 0;
@@ -85,9 +84,8 @@ class ICommandTranslator {
   common::Error SubscribeCommand(const NDbPSChannel& channel, command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
 
   std::vector<CommandInfo> Commands() const;
+  common::Error FindCommand(const std::string& command_first_name, const CommandHolder** info) const WARN_UNUSED_RESULT;
   common::Error FindCommand(commands_args_t argv, const CommandHolder** info, size_t* off) const WARN_UNUSED_RESULT;
-  common::Error FindExtendedCommand(const std::string& command_name,
-                                    const CommandHolder** info) const WARN_UNUSED_RESULT;
 
   common::Error TestCommandArgs(const CommandHolder* cmd, commands_args_t argv) const WARN_UNUSED_RESULT;
   common::Error TestCommandLine(const command_buffer_t& cmd) const WARN_UNUSED_RESULT;
@@ -119,7 +117,6 @@ class ICommandTranslator {
   virtual bool IsLoadKeyCommandImpl(const CommandInfo& cmd) const = 0;
 
   const std::vector<CommandHolder> commands_;
-  const std::vector<CommandHolder> extended_commands_;
 };
 
 typedef std::shared_ptr<ICommandTranslator> translator_t;

@@ -514,8 +514,8 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
   if (IsConnected()) {
     core::IServerInfo* info = nullptr;
     core::IDataBaseInfo* db = nullptr;
-    std::vector<const core::CommandHolder*> ex_cmds;
-    common::Error err = ServerDiscoveryInfo(&info, &db, &ex_cmds);
+    std::vector<const core::CommandInfo*> cmds;
+    common::Error err = GetServerDiscoveryInfo(&info, &db, &cmds);
     if (err) {
       res.setErrorInfo(err);
     } else {
@@ -527,7 +527,7 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
 
       res.sinfo = server_info;
       res.dbinfo = current_database_info;
-      res.extend_commands = ex_cmds;
+      res.commands = cmds;
     }
   } else {
     res.setErrorInfo(common::make_error("Not connected to server, impossible to get discovery info!"));
@@ -538,17 +538,17 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
   NotifyProgress(sender, 100);
 }
 
-common::Error IDriver::ServerDiscoveryInfo(core::IServerInfo** sinfo,
-                                           core::IDataBaseInfo** dbinfo,
-                                           std::vector<const core::CommandHolder*>* extended_commands) {
+common::Error IDriver::GetServerDiscoveryInfo(core::IServerInfo** sinfo,
+                                              core::IDataBaseInfo** dbinfo,
+                                              std::vector<const core::CommandInfo*>* commands) {
   core::IServerInfo* lsinfo = nullptr;
   common::Error err = GetCurrentServerInfo(&lsinfo);
   if (err) {
     return err;
   }
 
-  std::vector<const core::CommandHolder*> lextended_commands;
-  err = GetExtendedServerCommands(&lextended_commands);
+  std::vector<const core::CommandInfo*> lcommands;
+  err = GetServerCommands(&lcommands);
   if (err) {
     return err;
   }
@@ -561,7 +561,7 @@ common::Error IDriver::ServerDiscoveryInfo(core::IServerInfo** sinfo,
   }
 
   *sinfo = lsinfo;
-  *extended_commands = lextended_commands;
+  *commands = lcommands;
   *dbinfo = ldbinfo;
   return err;
 }
@@ -613,11 +613,6 @@ void IDriver::OnLoadedKeyTTL(const core::NKey& key, core::ttl_t ttl) {
 
 void IDriver::OnQuited() {
   emit Disconnected();
-}
-
-common::Error IDriver::GetExtendedServerCommands(std::vector<const core::CommandHolder*>* commands) {
-  *commands = std::vector<const core::CommandHolder*>();
-  return common::Error();
 }
 
 }  // namespace proxy

@@ -156,11 +156,12 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   virtual void ClearImpl() = 0;
 
   virtual common::Error GetCurrentServerInfo(core::IServerInfo** info) = 0;
-  virtual common::Error GetExtendedServerCommands(std::vector<const core::CommandHolder*>* commands);
-  virtual common::Error ServerDiscoveryInfo(core::IServerInfo** sinfo,
-                                            core::IDataBaseInfo** dbinfo,
-                                            std::vector<const core::CommandHolder*>* extended_commands);
+  virtual common::Error GetServerCommands(std::vector<const core::CommandInfo*>* commands) = 0;
   virtual common::Error GetCurrentDataBaseInfo(core::IDataBaseInfo** info) = 0;
+
+  common::Error GetServerDiscoveryInfo(core::IServerInfo** sinfo,
+                                       core::IDataBaseInfo** dbinfo,
+                                       std::vector<const core::CommandInfo*>* commands);
 
   const IConnectionSettingsBaseSPtr settings_;
   QThread* thread_;

@@ -215,8 +215,6 @@ const internal::ConstantCommandsArray g_commands = {CommandHolder(DB_HELP_COMMAN
                                                                   0,
                                                                   &CommandsApi::Quit)};
 
-const internal::ConstantCommandsArray g_extended_commands = {};
-
 common::Error CommandsApi::Version(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   UNUSED(argv);
   UNUSED(out);

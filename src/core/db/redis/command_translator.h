@@ -26,8 +26,7 @@ namespace redis {
 
 class CommandTranslator : public ICommandTranslator {
  public:
-  explicit CommandTranslator(const std::vector<CommandHolder>& commands,
-                             const std::vector<CommandHolder>& extended_commands);
+  explicit CommandTranslator(const std::vector<CommandHolder>& commands);
   virtual const char* GetDBName() const override;
 
   common::Error Zrange(const NKey& key, int start, int stop, bool withscores, command_buffer_t* cmdstring)
