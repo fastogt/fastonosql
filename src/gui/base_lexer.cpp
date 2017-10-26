@@ -180,7 +180,7 @@ void BaseQsciLexerCommandHolder::paintCommands(const QString& source, int start)
       index = begin + word.length();
 
       startStyling(start + begin);
-      setStyling(word.length(), Command);
+      setStyling(word.length(), cmd.type == core::CommandInfo::Native ? Command : ExCommand);
       startStyling(start + begin);
     }
   }

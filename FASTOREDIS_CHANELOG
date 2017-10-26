@@ -1,6 +1,7 @@
 1.8.9 /
 [Alexandr Topilski]
 - redis-graph commands support
+- Handle runtime commands
 
 1.8.8 / October 23, 2017
 [Alexandr Topilski]

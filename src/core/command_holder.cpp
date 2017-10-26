@@ -63,9 +63,10 @@ CommandHolder::CommandHolder(const std::string& name,
                              const std::string& example,
                              uint8_t required_arguments_count,
                              uint8_t optional_arguments_count,
+                             Type type,
                              function_t func,
                              test_functions_t tests)
-    : CommandInfo(name, params, summary, since, example, required_arguments_count, optional_arguments_count),
+    : CommandInfo(name, params, summary, since, example, required_arguments_count, optional_arguments_count, type),
       func_(func),
       white_spaces_count_(count_space(name)),
       test_funcs_(tests) {}

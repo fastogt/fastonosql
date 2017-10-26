@@ -30,14 +30,16 @@ CommandInfo::CommandInfo(const std::string& name,
                          uint32_t since,
                          const std::string& example,
                          uint8_t required_arguments_count,
-                         uint8_t optional_arguments_count)
+                         uint8_t optional_arguments_count,
+                         Type type)
     : name(name),
       params(params),
       summary(summary),
       since(since),
       example(example),
       required_arguments_count(required_arguments_count),
-      optional_arguments_count(optional_arguments_count) {}
+      optional_arguments_count(optional_arguments_count),
+      type(type) {}
 
 uint16_t CommandInfo::GetMaxArgumentsCount() const {
   return required_arguments_count + optional_arguments_count;

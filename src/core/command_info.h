@@ -31,13 +31,14 @@ namespace fastonosql {
 namespace core {
 
 struct CommandInfo {
+  enum Type { Native, Extended };
   CommandInfo(const std::string& name,
               const std::string& params,
               const std::string& summary,
               uint32_t since,
               const std::string& example,
               uint8_t required_arguments_count,
-              uint8_t optional_arguments_count);
+              uint8_t optional_arguments_count, Type type);
 
   uint16_t GetMaxArgumentsCount() const;
   uint8_t GetMinArgumentsCount() const;
@@ -52,6 +53,7 @@ struct CommandInfo {
 
   const uint8_t required_arguments_count;
   const uint8_t optional_arguments_count;
+  const Type type;
 };
 
 std::string ConvertVersionNumberToReadableString(uint32_t version);
