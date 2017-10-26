@@ -22,6 +22,7 @@
 
 #include "core/icommand_translator.h"             // for translator_t
 #include "core/internal/cdb_connection_client.h"  // for CDBConnectionClient
+#include "core/module_info.h"
 
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "proxy/events/events.h"                             // for BackupRequestEvent, ChangeMa...
@@ -157,11 +158,13 @@ class IDriver : public QObject, public core::CDBConnectionClient {
 
   virtual common::Error GetCurrentServerInfo(core::IServerInfo** info) = 0;
   virtual common::Error GetServerCommands(std::vector<const core::CommandInfo*>* commands) = 0;
+  virtual common::Error GetServerLoadedModules(std::vector<core::ModuleInfo>* modules) = 0;
   virtual common::Error GetCurrentDataBaseInfo(core::IDataBaseInfo** info) = 0;
 
   common::Error GetServerDiscoveryInfo(core::IServerInfo** sinfo,
                                        core::IDataBaseInfo** dbinfo,
-                                       std::vector<const core::CommandInfo*>* commands);
+                                       std::vector<const core::CommandInfo*>* commands,
+                                       std::vector<core::ModuleInfo>* modules);
 
   const IConnectionSettingsBaseSPtr settings_;
   QThread* thread_;

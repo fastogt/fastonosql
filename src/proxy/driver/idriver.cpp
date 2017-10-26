@@ -515,7 +515,8 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
     core::IServerInfo* info = nullptr;
     core::IDataBaseInfo* db = nullptr;
     std::vector<const core::CommandInfo*> cmds;
-    common::Error err = GetServerDiscoveryInfo(&info, &db, &cmds);
+    std::vector<core::ModuleInfo> loaded_modules;
+    common::Error err = GetServerDiscoveryInfo(&info, &db, &cmds, &loaded_modules);
     if (err) {
       res.setErrorInfo(err);
     } else {
@@ -528,6 +529,7 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
       res.sinfo = server_info;
       res.dbinfo = current_database_info;
       res.commands = cmds;
+      res.loaded_modules = loaded_modules;
     }
   } else {
     res.setErrorInfo(common::make_error("Not connected to server, impossible to get discovery info!"));
@@ -540,7 +542,8 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
 
 common::Error IDriver::GetServerDiscoveryInfo(core::IServerInfo** sinfo,
                                               core::IDataBaseInfo** dbinfo,
-                                              std::vector<const core::CommandInfo*>* commands) {
+                                              std::vector<const core::CommandInfo*>* commands,
+                                              std::vector<core::ModuleInfo>* modules) {
   core::IServerInfo* lsinfo = nullptr;
   common::Error err = GetCurrentServerInfo(&lsinfo);
   if (err) {
@@ -548,10 +551,9 @@ common::Error IDriver::GetServerDiscoveryInfo(core::IServerInfo** sinfo,
   }
 
   std::vector<const core::CommandInfo*> lcommands;
-  err = GetServerCommands(&lcommands);
-  if (err) {
-    return err;
-  }
+  std::vector<core::ModuleInfo> lmodules;
+  GetServerCommands(&lcommands);      // can be failed
+  GetServerLoadedModules(&lmodules);  // can be failed
 
   core::IDataBaseInfo* ldbinfo = nullptr;
   err = GetCurrentDataBaseInfo(&ldbinfo);
@@ -563,6 +565,7 @@ common::Error IDriver::GetServerDiscoveryInfo(core::IServerInfo** sinfo,
   *sinfo = lsinfo;
   *commands = lcommands;
   *dbinfo = ldbinfo;
+  *modules = lmodules;
   return err;
 }
 

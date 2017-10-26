@@ -38,7 +38,8 @@ struct CommandInfo {
               uint32_t since,
               const std::string& example,
               uint8_t required_arguments_count,
-              uint8_t optional_arguments_count, Type type);
+              uint8_t optional_arguments_count,
+              Type type);
 
   uint16_t GetMaxArgumentsCount() const;
   uint8_t GetMinArgumentsCount() const;
