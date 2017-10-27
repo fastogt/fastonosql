@@ -20,6 +20,17 @@
 
 #include "core/db/redis/db_connection.h"
 
+#define REDIS_MODULE_COMMAND_GENERATE(MODULE, COMMAND) MODULE "." COMMAND
+
+#define REDIS_GRAPH_MODULE "GRAPH"
+#define REDIS_GRAPH_MODULE_COMMAND(COMMAND) REDIS_MODULE_COMMAND_GENERATE(REDIS_GRAPH_MODULE, COMMAND)
+
+#define REDIS_SEARCH_MODULE "FT"
+#define REDIS_SEARCH_MODULE_COMMAND(COMMAND) REDIS_MODULE_COMMAND_GENERATE(REDIS_SEARCH_MODULE, COMMAND)
+
+#define REDIS_JSON_MODULE "JSON"
+#define REDIS_JSON_MODULE_COMMAND(COMMAND) REDIS_MODULE_COMMAND_GENERATE(REDIS_JSON_MODULE, COMMAND)
+
 namespace fastonosql {
 namespace core {
 namespace {
@@ -2197,34 +2208,251 @@ const internal::ConstantCommandsArray g_commands = {
                   0,
                   CommandInfo::Extended,
                   &CommandsApi::PFSelfTest),
-    CommandHolder("GRAPH.QUERY",
+    // redis-graph api
+    CommandHolder(REDIS_GRAPH_MODULE_COMMAND("QUERY"),
                   "<Graph name> <Query>",
                   "Executes the given query against a specified graph.",
                   PROJECT_VERSION_GENERATE(4, 0, 0),
-                  "GRAPH.QUERY us_government \"MATCH (p:president)-[:born]->(:state {name:Hawaii}) RETURN p\"",
+                  REDIS_GRAPH_MODULE_COMMAND(
+                      "QUERY") " us_government \"MATCH (p:president)-[:born]->(:state {name:Hawaii}) RETURN p\"",
                   2,
                   0,
                   CommandInfo::Extended,
                   &CommandsApi::GraphQuery),
-    CommandHolder("GRAPH.EXPLAIN",
+    CommandHolder(REDIS_GRAPH_MODULE_COMMAND("EXPLAIN"),
                   "<Graph name> <Query>",
                   "Constructs a query execution plan but does not run it. Inspect this execution plan to better "
                   "understand how your query will get executed.",
                   PROJECT_VERSION_GENERATE(4, 0, 0),
-                  "GRAPH.EXPLAIN us_government \"MATCH (p:president)-[:born]->(h:state {name:Hawaii}) RETURN p\"",
+                  REDIS_GRAPH_MODULE_COMMAND(
+                      "EXPLAIN") " us_government \"MATCH (p:president)-[:born]->(h:state {name:Hawaii}) RETURN p\"",
                   2,
                   0,
                   CommandInfo::Extended,
                   &CommandsApi::GraphExplain),
-    CommandHolder("GRAPH.DELETE",
+    CommandHolder(REDIS_GRAPH_MODULE_COMMAND("DELETE"),
                   "<Graph name>",
                   "Delete graph by name",
                   PROJECT_VERSION_GENERATE(4, 0, 0),
-                  "GRAPH.DELETE us_government",
+                  REDIS_GRAPH_MODULE_COMMAND("DELETE") " us_government",
                   1,
                   0,
                   CommandInfo::Extended,
-                  &CommandsApi::GraphDelete)};
+                  &CommandsApi::GraphDelete),
+    // redisearch
+    CommandHolder(
+        REDIS_SEARCH_MODULE_COMMAND("ADD"),
+        "<index_name> <doc_id> <score> [NOSAVE] FIELDS [field content ...]",
+        "Add a documet to the index.",
+        PROJECT_VERSION_GENERATE(3, 4, 0),
+        REDIS_SEARCH_MODULE_COMMAND(
+            "ADD") " docs doc1 1.0 FIELDS title “war and peace” body \"Well, Prince, so Genoa and Lucca are now…\"",
+        6,
+        INFINITE_COMMAND_ARGS,
+        CommandInfo::Extended,
+        &CommandsApi::FtAdd),
+    CommandHolder(
+        REDIS_SEARCH_MODULE_COMMAND("CREATE"),
+        "<index_name> [field weight ...]",
+        "Creates an index with the given spec. The index name will be used in all the key names so keep it short!",
+        PROJECT_VERSION_GENERATE(3, 4, 0),
+        REDIS_SEARCH_MODULE_COMMAND("CREATE") " docs title 2.0 body 1.0 url 1.5",
+        3,
+        INFINITE_COMMAND_ARGS,
+        CommandInfo::Extended,
+        &CommandsApi::FtCreate),
+    CommandHolder(REDIS_SEARCH_MODULE_COMMAND("SEARCH"),
+                  "<index> <query> [NOCONTENT] [LIMIT offset num]",
+                  "Search the index with a textual query, returning either documents or just ids.",
+                  PROJECT_VERSION_GENERATE(3, 4, 0),
+                  REDIS_SEARCH_MODULE_COMMAND("SEARCH") " idx \"hello world\" LIMIT 0 1",
+                  5,
+                  1,
+                  CommandInfo::Extended,
+                  &CommandsApi::FtSearch),
+    // json
+    CommandHolder(REDIS_JSON_MODULE_COMMAND("DEL"),
+                  "<key> <path>",
+                  "Delete a value.",
+                  PROJECT_VERSION_GENERATE(1, 0, 0),
+                  UNDEFINED_EXAMPLE_STR,
+                  2,
+                  0,
+                  CommandInfo::Extended,
+                  &CommandsApi::JsonDel),
+    CommandHolder(REDIS_JSON_MODULE_COMMAND("GET"),
+                  "<key> [INDENT indentation-string][NEWLINE line-break-string][SPACE space-string] [path...]",
+                  "Return the value at path in JSON serialized form.",
+                  PROJECT_VERSION_GENERATE(1, 0, 0),
+                  REDIS_SEARCH_MODULE_COMMAND("GET") " myjsonkey INDENT \"\t\" NEWLINE \"\n\" SPACE "
+                                                     " path.to.value[1]",
+                  1,
+                  INFINITE_COMMAND_ARGS,
+                  CommandInfo::Extended,
+                  &CommandsApi::JsonGet),
+    CommandHolder(
+        REDIS_JSON_MODULE_COMMAND("MGET"),
+        "<key> [key ...] <path>",
+        "Returns the values at path from multiple keys. Non-existing keys and non-existing paths are reported as null.",
+        PROJECT_VERSION_GENERATE(1, 0, 0),
+        UNDEFINED_EXAMPLE_STR,
+        2,
+        INFINITE_COMMAND_ARGS,
+        CommandInfo::Extended,
+        &CommandsApi::JsonMget),
+    CommandHolder(REDIS_JSON_MODULE_COMMAND("SET"),
+                  "<key> <path> <json> [NX | XX]",
+                  "Sets the JSON value at path in key.",
+                  PROJECT_VERSION_GENERATE(1, 0, 0),
+                  UNDEFINED_EXAMPLE_STR,
+                  3,
+                  2,
+                  CommandInfo::Extended,
+                  &CommandsApi::JsonSet),
+    CommandHolder(REDIS_JSON_MODULE_COMMAND("TYPE"),
+                  "<key> [path]",
+                  "Report the type of JSON value at path.",
+                  PROJECT_VERSION_GENERATE(1, 0, 0),
+                  UNDEFINED_EXAMPLE_STR,
+                  1,
+                  1,
+                  CommandInfo::Extended,
+                  &CommandsApi::JsonType),
+    CommandHolder(REDIS_JSON_MODULE_COMMAND("NUMINCRBY"),
+                  "<key> <path> <number>",
+                  "Increments the number value stored at path by number.",
+                  PROJECT_VERSION_GENERATE(1, 0, 0),
+                  UNDEFINED_EXAMPLE_STR,
+                  3,
+                  0,
+                  CommandInfo::Extended,
+                  &CommandsApi::JsonNumIncrBy),
+    CommandHolder(REDIS_JSON_MODULE_COMMAND("NUMMULTBY"),
+                  "<key> <path> <number>",
+                  "Multiplies the number value stored at path by number.",
+                  PROJECT_VERSION_GENERATE(1, 0, 0),
+                  UNDEFINED_EXAMPLE_STR,
+                  3,
+                  0,
+                  CommandInfo::Extended,
+                  &CommandsApi::JsonNumMultBy),
+    CommandHolder(REDIS_JSON_MODULE_COMMAND("STRAPPEND"),
+                  "<key> [path] <json-string>",
+                  "Append the json-string value(s) the string at path.",
+                  PROJECT_VERSION_GENERATE(1, 0, 0),
+                  UNDEFINED_EXAMPLE_STR,
+                  2,
+                  1,
+                  CommandInfo::Extended,
+                  &CommandsApi::JsonStrAppend),
+    CommandHolder(REDIS_JSON_MODULE_COMMAND("STRLEN"),
+                  "<key> [path]",
+                  "Report the length of the JSON String at path in key.",
+                  PROJECT_VERSION_GENERATE(1, 0, 0),
+                  UNDEFINED_EXAMPLE_STR,
+                  1,
+                  1,
+                  CommandInfo::Extended,
+                  &CommandsApi::JsonStrlen),
+    CommandHolder(REDIS_JSON_MODULE_COMMAND("ARRAPPEND"),
+                  "<key> <path> <json> [json ...]",
+                  "Append the json value(s) into the array at path after the last element in it.",
+                  PROJECT_VERSION_GENERATE(1, 0, 0),
+                  UNDEFINED_EXAMPLE_STR,
+                  3,
+                  INFINITE_COMMAND_ARGS,
+                  CommandInfo::Extended,
+                  &CommandsApi::JsonArrAppend),
+    CommandHolder(REDIS_JSON_MODULE_COMMAND("ARRINDEX"),
+                  "<key> <path> <json-scalar> [start [stop]]",
+                  "Search for the first occurrence of a scalar JSON value in an array.",
+                  PROJECT_VERSION_GENERATE(1, 0, 0),
+                  UNDEFINED_EXAMPLE_STR,
+                  3,
+                  2,
+                  CommandInfo::Extended,
+                  &CommandsApi::JsonArrIndex),
+    CommandHolder(REDIS_JSON_MODULE_COMMAND("ARRINSERT"),
+                  "<key> <path> <index> <json> [json ...]",
+                  "Insert the json value(s) into the array at path before the index (shifts to the right).",
+                  PROJECT_VERSION_GENERATE(1, 0, 0),
+                  UNDEFINED_EXAMPLE_STR,
+                  4,
+                  INFINITE_COMMAND_ARGS,
+                  CommandInfo::Extended,
+                  &CommandsApi::JsonArrInsert),
+    CommandHolder(REDIS_JSON_MODULE_COMMAND("ARRLEN"),
+                  "<key> [path]",
+                  "Report the length of the JSON Array at path in key.",
+                  PROJECT_VERSION_GENERATE(1, 0, 0),
+                  UNDEFINED_EXAMPLE_STR,
+                  1,
+                  1,
+                  CommandInfo::Extended,
+                  &CommandsApi::JsonArrLen),
+    CommandHolder(REDIS_JSON_MODULE_COMMAND("ARRPOP"),
+                  "<key> [path [index]]",
+                  "Remove and return element from the index in the array.",
+                  PROJECT_VERSION_GENERATE(1, 0, 0),
+                  UNDEFINED_EXAMPLE_STR,
+                  1,
+                  2,
+                  CommandInfo::Extended,
+                  &CommandsApi::JsonArrPop),
+    CommandHolder(REDIS_JSON_MODULE_COMMAND("ARRTRIM"),
+                  "<key> <path> <start> <stop>",
+                  "Trim an array so that it contains only the specified inclusive range of elements.",
+                  PROJECT_VERSION_GENERATE(1, 0, 0),
+                  UNDEFINED_EXAMPLE_STR,
+                  4,
+                  0,
+                  CommandInfo::Extended,
+                  &CommandsApi::JsonArrTrim),
+    CommandHolder(REDIS_JSON_MODULE_COMMAND("OBJKEYS"),
+                  "<key> [path]",
+                  "Return the keys in the object that's referenced by path.",
+                  PROJECT_VERSION_GENERATE(1, 0, 0),
+                  UNDEFINED_EXAMPLE_STR,
+                  1,
+                  1,
+                  CommandInfo::Extended,
+                  &CommandsApi::JsonObjKeys),
+    CommandHolder(REDIS_JSON_MODULE_COMMAND("OBJLEN"),
+                  "<key> [path]",
+                  "Report the number of keys in the JSON Object at path in key.",
+                  PROJECT_VERSION_GENERATE(1, 0, 0),
+                  UNDEFINED_EXAMPLE_STR,
+                  1,
+                  1,
+                  CommandInfo::Extended,
+                  &CommandsApi::JsonObjLen),
+    CommandHolder(REDIS_JSON_MODULE_COMMAND("DEBUG"),
+                  "<subcommand & arguments>",
+                  "Report information.",
+                  PROJECT_VERSION_GENERATE(1, 0, 0),
+                  UNDEFINED_EXAMPLE_STR,
+                  1,
+                  INFINITE_COMMAND_ARGS,
+                  CommandInfo::Extended,
+                  &CommandsApi::JsonObjLen),
+    CommandHolder(REDIS_JSON_MODULE_COMMAND("FORGET"),
+                  "<key> <path>",
+                  "Delete a value.",
+                  PROJECT_VERSION_GENERATE(1, 0, 0),
+                  UNDEFINED_EXAMPLE_STR,
+                  2,
+                  0,
+                  CommandInfo::Extended,
+                  &CommandsApi::JsonForget),
+    CommandHolder(REDIS_JSON_MODULE_COMMAND("RESP"),
+                  "<key> [path]",
+                  "Return the JSON in key in Redis Serialization Protocol (RESP).",
+                  PROJECT_VERSION_GENERATE(1, 0, 0),
+                  UNDEFINED_EXAMPLE_STR,
+                  1,
+                  1,
+                  CommandInfo::Extended,
+                  &CommandsApi::JsonResp)};
 
 common::Error CommandsApi::Auth(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
@@ -3516,51 +3744,158 @@ common::Error CommandsApi::Sync(internal::CommandHandler* handler, commands_args
 
 // extend comands
 common::Error CommandsApi::Latency(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
-  UNUSED(argv);
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->CommonExec(ExpandCommand({"LATENCY"}, argv), out);
 }
 
 common::Error CommandsApi::PFDebug(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
-  UNUSED(argv);
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->CommonExec(ExpandCommand({"PFDEBUG"}, argv), out);
 }
 
 common::Error CommandsApi::ReplConf(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
-  UNUSED(argv);
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->CommonExec(ExpandCommand({"REPLCONF"}, argv), out);
 }
 
 common::Error CommandsApi::Substr(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
-  UNUSED(argv);
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->CommonExec(ExpandCommand({"SUBSTR"}, argv), out);
 }
 
 common::Error CommandsApi::PFSelfTest(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
-  UNUSED(argv);
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->CommonExec(ExpandCommand({"PFSELFTEST"}, argv), out);
 }
 
 common::Error CommandsApi::GraphQuery(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
-  UNUSED(argv);
   DBConnection* red = static_cast<DBConnection*>(handler);
-  return red->GraphQuery(ExpandCommand({"GRAPH.QUERY"}, argv), out);
+  return red->GraphQuery(ExpandCommand({REDIS_GRAPH_MODULE_COMMAND("QUERY")}, argv), out);
 }
 
 common::Error CommandsApi::GraphExplain(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
-  UNUSED(argv);
   DBConnection* red = static_cast<DBConnection*>(handler);
-  return red->GraphExplain(ExpandCommand({"GRAPH.EXPLAIN"}, argv), out);
+  return red->GraphExplain(ExpandCommand({REDIS_GRAPH_MODULE_COMMAND("EXPLAIN")}, argv), out);
 }
 
 common::Error CommandsApi::GraphDelete(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
-  UNUSED(argv);
   DBConnection* red = static_cast<DBConnection*>(handler);
-  return red->GraphDelete(ExpandCommand({"GRAPH.DELETE"}, argv), out);
+  return red->GraphDelete(ExpandCommand({REDIS_GRAPH_MODULE_COMMAND("DELETE")}, argv), out);
+}
+
+common::Error CommandsApi::FtAdd(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_SEARCH_MODULE_COMMAND("ADD")}, argv), out);
+}
+
+common::Error CommandsApi::FtCreate(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_SEARCH_MODULE_COMMAND("CREATE")}, argv), out);
+}
+
+common::Error CommandsApi::FtSearch(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_SEARCH_MODULE_COMMAND("SEARCH")}, argv), out);
+}
+
+common::Error CommandsApi::JsonDel(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_JSON_MODULE_COMMAND("DEL")}, argv), out);
+}
+
+common::Error CommandsApi::JsonGet(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_JSON_MODULE_COMMAND("GET")}, argv), out);
+}
+
+common::Error CommandsApi::JsonMget(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_JSON_MODULE_COMMAND("MGET")}, argv), out);
+}
+
+common::Error CommandsApi::JsonSet(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_JSON_MODULE_COMMAND("SET")}, argv), out);
+}
+
+common::Error CommandsApi::JsonType(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_JSON_MODULE_COMMAND("TYPE")}, argv), out);
+}
+
+common::Error CommandsApi::JsonNumIncrBy(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_JSON_MODULE_COMMAND("NUMINCRBY")}, argv), out);
+}
+
+common::Error CommandsApi::JsonNumMultBy(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_JSON_MODULE_COMMAND("NUMMULTBY")}, argv), out);
+}
+
+common::Error CommandsApi::JsonStrAppend(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_JSON_MODULE_COMMAND("STRAPPEND")}, argv), out);
+}
+
+common::Error CommandsApi::JsonStrlen(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_JSON_MODULE_COMMAND("STRLEN")}, argv), out);
+}
+
+common::Error CommandsApi::JsonArrAppend(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_JSON_MODULE_COMMAND("ARRAPPEND")}, argv), out);
+}
+
+common::Error CommandsApi::JsonArrIndex(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_JSON_MODULE_COMMAND("ARRINDEX")}, argv), out);
+}
+
+common::Error CommandsApi::JsonArrInsert(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_JSON_MODULE_COMMAND("ARRINSERT")}, argv), out);
+}
+
+common::Error CommandsApi::JsonArrLen(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_JSON_MODULE_COMMAND("ARRLEN")}, argv), out);
+}
+
+common::Error CommandsApi::JsonArrPop(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_JSON_MODULE_COMMAND("ARRPOP")}, argv), out);
+}
+
+common::Error CommandsApi::JsonArrTrim(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_JSON_MODULE_COMMAND("ARRTRIM")}, argv), out);
+}
+
+common::Error CommandsApi::JsonObjKeys(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_JSON_MODULE_COMMAND("OBJKEYS")}, argv), out);
+}
+
+common::Error CommandsApi::JsonObjLen(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_JSON_MODULE_COMMAND("OBJLEN")}, argv), out);
+}
+
+common::Error CommandsApi::JsonDebug(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_JSON_MODULE_COMMAND("DEBUG")}, argv), out);
+}
+
+common::Error CommandsApi::JsonForget(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_JSON_MODULE_COMMAND("FORGET")}, argv), out);
+}
+
+common::Error CommandsApi::JsonResp(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_JSON_MODULE_COMMAND("RESP")}, argv), out);
 }
 
 }  // namespace redis

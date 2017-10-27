@@ -247,10 +247,37 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
   static common::Error Substr(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error PFSelfTest(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 
-  // graph api
+  // redis-graph api
   static common::Error GraphQuery(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error GraphExplain(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error GraphDelete(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+
+  // redisearch
+  static common::Error FtAdd(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error FtCreate(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error FtSearch(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+
+  // rejson
+  static common::Error JsonDel(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error JsonGet(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error JsonMget(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error JsonSet(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error JsonType(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error JsonNumIncrBy(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error JsonNumMultBy(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error JsonStrAppend(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error JsonStrlen(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error JsonArrAppend(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error JsonArrIndex(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error JsonArrInsert(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error JsonArrLen(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error JsonArrPop(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error JsonArrTrim(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error JsonObjKeys(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error JsonObjLen(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error JsonDebug(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error JsonForget(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error JsonResp(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 };
 
 extern const internal::ConstantCommandsArray g_commands;

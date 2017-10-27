@@ -1,6 +1,8 @@
-1.8.9 /
+1.9.0 /
 [Alexandr Topilski]
 - redis-graph commands support
+- redisearch commands support
+- rejson commands support
 - Handle runtime commands
 
 1.8.8 / October 23, 2017

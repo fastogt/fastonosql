@@ -109,7 +109,7 @@ QColor BaseQsciLexer::defaultColor(int style) const {
     case Command:
       return Qt::red;
     case ExCommand:
-      return Qt::gray;
+      return Qt::magenta;
   }
 
   return Qt::black;
