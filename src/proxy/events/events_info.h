@@ -24,9 +24,9 @@
 #include "core/database/idatabase_info.h"
 #include "core/db_key.h"  // for NDbKValue
 #include "core/db_ps_channel.h"
+#include "core/module_info.h"
 #include "core/server/iserver_info.h"   // for IDataBaseInfoSPtr, IServerInf...
 #include "core/server_property_info.h"  // for property_t, ServerPropertiesInfo
-#include "core/module_info.h"
 
 #include "core/global.h"  // for FastoObjectIPtr
 

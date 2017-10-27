@@ -52,6 +52,6 @@ class ShellWidget : public BaseShellWidget {
 
   common::qt::gui::IconComboBox* modules_;
 };
-}
-}
-}
+}  // namespace redis
+}  // namespace gui
+}  // namespace fastonosql

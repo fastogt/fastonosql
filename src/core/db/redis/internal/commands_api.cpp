@@ -2208,15 +2208,178 @@ const internal::ConstantCommandsArray g_commands = {
                   0,
                   CommandInfo::Extended,
                   &CommandsApi::PFSelfTest),
-    CommandHolder("MODULE",
-                  "<key> <arg> [options ...]",
+    CommandHolder("MODULE LIST",
+                  "[options ...]",
                   UNDEFINED_SUMMARY,
                   UNDEFINED_SINCE,
-                  UNDEFINED_EXAMPLE_STR,
+                  "MODULE LIST",
+                  0,
+                  INFINITE_COMMAND_ARGS,
+                  CommandInfo::Extended,
+                  &CommandsApi::ModuleList),
+    CommandHolder("MODULE LOAD",
+                  "<module_path> [options ...]",
+                  UNDEFINED_SUMMARY,
+                  UNDEFINED_SINCE,
+                  "MODULE LOAD /home/sasha/Downloads/redis-graph/src/redisgraph.so",
                   1,
                   INFINITE_COMMAND_ARGS,
                   CommandInfo::Extended,
-                  &CommandsApi::Module),
+                  &CommandsApi::ModuleLoad),
+    CommandHolder("MODULE UNLOAD",
+                  "<module_name> [options ...]",
+                  UNDEFINED_SUMMARY,
+                  UNDEFINED_SINCE,
+                  "MODULE UNLOAD graph",
+                  1,
+                  INFINITE_COMMAND_ARGS,
+                  CommandInfo::Extended,
+                  &CommandsApi::ModuleUnLoad),
+    CommandHolder("MEMORY DOCTOR",
+                  "-",
+                  "Outputs memory problems report",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  0,
+                  0,
+                  CommandInfo::Extended,
+                  &CommandsApi::MemoryDoctor),
+    CommandHolder("MEMORY USAGE",
+                  "-",
+                  "Estimate memory usage of key",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  0,
+                  0,
+                  CommandInfo::Extended,
+                  &CommandsApi::MemoryUsage),
+    CommandHolder("MEMORY STATS",
+                  "-",
+                  "Show memory usage details",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  0,
+                  0,
+                  CommandInfo::Extended,
+                  &CommandsApi::MemoryStats),
+    CommandHolder("MEMORY PURGE",
+                  "-",
+                  "Ask the allocator to release memory",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  0,
+                  0,
+                  CommandInfo::Extended,
+                  &CommandsApi::MemoryPurge),
+    CommandHolder("MEMORY MALLOC-STATS",
+                  "-",
+                  "Show allocator internal stats",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  0,
+                  0,
+                  CommandInfo::Extended,
+                  &CommandsApi::MemoryMallocStats),
+    CommandHolder("SWAPDB",
+                  "<db1> <db2> [arg]",
+                  "Swap db",
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  2,
+                  1,
+                  CommandInfo::Extended,
+                  &CommandsApi::SwapDB),
+    CommandHolder("UNLINK",
+                  "<key> <arg> [options...]",
+                  UNDEFINED_SUMMARY,
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  2,
+                  INFINITE_COMMAND_ARGS,
+                  CommandInfo::Extended,
+                  &CommandsApi::Unlink),
+    CommandHolder("TOUCH",
+                  "<key> <arg> [options...]",
+                  UNDEFINED_SUMMARY,
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  2,
+                  INFINITE_COMMAND_ARGS,
+                  CommandInfo::Extended,
+                  &CommandsApi::Touch),
+    CommandHolder("XLEN",
+                  "<key> <arg>",
+                  UNDEFINED_SUMMARY,
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  2,
+                  0,
+                  CommandInfo::Extended,
+                  &CommandsApi::Xlen),
+    CommandHolder("XRANGE",
+                  "<key> <arg> <arg> <arg> [options...]",
+                  UNDEFINED_SUMMARY,
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  2,
+                  INFINITE_COMMAND_ARGS,
+                  CommandInfo::Extended,
+                  &CommandsApi::Xrange),
+    CommandHolder("XREAD",
+                  "<key> <arg> [options...]",
+                  UNDEFINED_SUMMARY,
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  2,
+                  INFINITE_COMMAND_ARGS,
+                  CommandInfo::Extended,
+                  &CommandsApi::Xread),
+    CommandHolder("XADD",
+                  "<key> <arg> [options...]",
+                  UNDEFINED_SUMMARY,
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  2,
+                  INFINITE_COMMAND_ARGS,
+                  CommandInfo::Extended,
+                  &CommandsApi::Xadd),
+    CommandHolder("ASKING",
+                  "<key> <arg> [options...]",
+                  UNDEFINED_SUMMARY,
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  2,
+                  INFINITE_COMMAND_ARGS,
+                  CommandInfo::Extended,
+                  &CommandsApi::Asking),
+    CommandHolder("RESTORE-ASKING",
+                  "<key> <arg> <arg> <arg> [options...]",
+                  UNDEFINED_SUMMARY,
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  4,
+                  INFINITE_COMMAND_ARGS,
+                  CommandInfo::Extended,
+                  &CommandsApi::RestoreAsking),
+
+    CommandHolder("GEORADIUS_RO",
+                  "<key> <arg> <arg> <arg> <arg> <arg> [options...]",
+                  UNDEFINED_SUMMARY,
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  6,
+                  INFINITE_COMMAND_ARGS,
+                  CommandInfo::Extended,
+                  &CommandsApi::GeoRadius_ro),
+    CommandHolder("GEORADIUSBYMEMBER_RO",
+                  "<key> <arg> <arg> <arg> <arg> [options...]",
+                  UNDEFINED_SUMMARY,
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  5,
+                  INFINITE_COMMAND_ARGS,
+                  CommandInfo::Extended,
+                  &CommandsApi::GeoRadiusByMember_ro),
 
     // redis-graph api
     CommandHolder(REDIS_GRAPH_MODULE_COMMAND("QUERY"),
@@ -3773,10 +3936,96 @@ common::Error CommandsApi::Substr(internal::CommandHandler* handler, commands_ar
   return red->CommonExec(ExpandCommand({"SUBSTR"}, argv), out);
 }
 
-common::Error CommandsApi::Module(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+common::Error CommandsApi::ModuleList(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   UNUSED(argv);
   DBConnection* red = static_cast<DBConnection*>(handler);
-  return red->CommonExec(ExpandCommand({"MODULE"}, argv), out);
+  return red->CommonExec(ExpandCommand({"MODULE", "LIST"}, argv), out);
+}
+
+common::Error CommandsApi::ModuleLoad(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  UNUSED(argv);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"MODULE", "LOAD"}, argv), out);
+}
+
+common::Error CommandsApi::ModuleUnLoad(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  UNUSED(argv);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"MODULE", "UNLOAD"}, argv), out);
+}
+
+common::Error CommandsApi::MemoryDoctor(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  UNUSED(argv);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"MEMORY", "DOCTOR"}, argv), out);
+}
+
+common::Error CommandsApi::MemoryUsage(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  UNUSED(argv);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"MEMORY", "USAGE"}, argv), out);
+}
+
+common::Error CommandsApi::MemoryStats(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  UNUSED(argv);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"MEMORY", "STATS"}, argv), out);
+}
+
+common::Error CommandsApi::MemoryPurge(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  UNUSED(argv);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"MEMORY", "PURGE"}, argv), out);
+}
+
+common::Error CommandsApi::MemoryMallocStats(internal::CommandHandler* handler,
+                                             commands_args_t argv,
+                                             FastoObject* out) {
+  UNUSED(argv);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"MEMORY", "MALLOC-STATS"}, argv), out);
+}
+
+common::Error CommandsApi::SwapDB(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  UNUSED(argv);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"SWAPDB"}, argv), out);
+}
+
+common::Error CommandsApi::Unlink(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  UNUSED(argv);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"UNLINK"}, argv), out);
+}
+
+common::Error CommandsApi::Touch(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  UNUSED(argv);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"TOUCH"}, argv), out);
+}
+
+common::Error CommandsApi::Xlen(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  UNUSED(argv);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"XLEN"}, argv), out);
+}
+
+common::Error CommandsApi::Xrange(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  UNUSED(argv);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"XRANGE"}, argv), out);
+}
+
+common::Error CommandsApi::Xread(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  UNUSED(argv);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"XREAD"}, argv), out);
+}
+
+common::Error CommandsApi::Xadd(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  UNUSED(argv);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"XADD"}, argv), out);
 }
 
 common::Error CommandsApi::PFSelfTest(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
@@ -3784,6 +4033,29 @@ common::Error CommandsApi::PFSelfTest(internal::CommandHandler* handler, command
   return red->CommonExec(ExpandCommand({"PFSELFTEST"}, argv), out);
 }
 
+common::Error CommandsApi::Asking(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"ASKING"}, argv), out);
+}
+
+common::Error CommandsApi::RestoreAsking(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"RESTORE-ASKING"}, argv), out);
+}
+
+common::Error CommandsApi::GeoRadius_ro(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"GEORADIUS_RO"}, argv), out);
+}
+
+common::Error CommandsApi::GeoRadiusByMember_ro(internal::CommandHandler* handler,
+                                                commands_args_t argv,
+                                                FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"GEORADIUSBYMEMBER_RO"}, argv), out);
+}
+
+// modules
 common::Error CommandsApi::GraphQuery(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->GraphQuery(ExpandCommand({REDIS_GRAPH_MODULE_COMMAND("QUERY")}, argv), out);

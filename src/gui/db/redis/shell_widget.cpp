@@ -20,8 +20,8 @@
 
 #include <QHBoxLayout>
 
-#include <common/qt/gui/icon_combobox.h>
 #include <common/qt/convert2string.h>
+#include <common/qt/gui/icon_combobox.h>
 
 #include "proxy/events/events_info.h"
 
@@ -76,6 +76,6 @@ void ShellWidget::OnFinishedLoadDiscoveryInfo(const proxy::events_info::Discover
 
   updateModules(res.loaded_modules);
 }
-}
-}
-}
+}  // namespace redis
+}  // namespace gui
+}  // namespace fastonosql

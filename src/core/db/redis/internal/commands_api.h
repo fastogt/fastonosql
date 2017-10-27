@@ -246,7 +246,25 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
   static common::Error ReplConf(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error Substr(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error PFSelfTest(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
-  static common::Error Module(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ModuleList(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ModuleLoad(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ModuleUnLoad(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error MemoryDoctor(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error MemoryUsage(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error MemoryStats(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error MemoryPurge(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error MemoryMallocStats(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error SwapDB(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Unlink(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Touch(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Xlen(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Xrange(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Xread(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Xadd(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Asking(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error RestoreAsking(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error GeoRadius_ro(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error GeoRadiusByMember_ro(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 
   // redis-graph api
   static common::Error GraphQuery(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
