@@ -41,6 +41,7 @@
 #define REDIS_PUBSUB_CHANNELS_COMMAND "PUBSUB CHANNELS"
 #define REDIS_PUBSUB_NUMSUB_COMMAND "PUBSUB NUMSUB"
 #define REDIS_GET_COMMANDS "COMMAND"
+#define REDIS_GET_LOADED_MODULES_COMMANDS "MODULE LIST"
 
 #define REDIS_SET_DEFAULT_DATABASE_COMMAND_1ARGS_S "SELECT %s"
 
@@ -152,15 +153,6 @@ common::Error Driver::GetCurrentServerInfo(core::IServerInfo** info) {
   return common::Error();
 }
 
-common::Error Driver::GetCurrentDataBaseInfo(core::IDataBaseInfo** info) {
-  if (!info) {
-    DNOTREACHED();
-    return common::make_error_inval();
-  }
-
-  return impl_->Select(impl_->GetCurrentDBName(), info);
-}
-
 common::Error Driver::GetServerCommands(std::vector<const core::CommandInfo*>* commands) {
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(REDIS_GET_COMMANDS, core::C_INNER);
   common::Error err = Execute(cmd.get());
@@ -209,6 +201,61 @@ common::Error Driver::GetServerCommands(std::vector<const core::CommandInfo*>* c
 
   *commands = lcommands;
   return common::Error();
+}
+
+common::Error Driver::GetServerLoadedModules(std::vector<core::ModuleInfo>* modules) {
+  core::FastoObjectCommandIPtr cmd = CreateCommandFast(REDIS_GET_LOADED_MODULES_COMMANDS, core::C_INNER);
+  common::Error err = Execute(cmd.get());
+  if (err) {
+    return err;
+  }
+
+  core::FastoObject::childs_t rchildrens = cmd->GetChildrens();
+  CHECK_EQ(rchildrens.size(), 1);
+  core::FastoObjectArray* array = dynamic_cast<core::FastoObjectArray*>(rchildrens[0].get());  // +
+  CHECK(array);
+  common::ArrayValue* ar = array->GetArray();
+  CHECK(ar);
+  std::vector<core::ModuleInfo> lmodules;
+  for (core::FastoObjectIPtr child : array->GetChildrens()) {
+    common::ValueSPtr val = child->GetValue();
+    const common::ArrayValue* com_value = NULL;
+    if (val->GetAsList(&com_value)) {
+      // 0) command name
+      // 1) command arity specification
+      // 2) nested Array reply of command flags
+      // 3) position of first key in argument list
+      // 4) position of last key in argument list
+      // 5) step count for locating repeating keys
+      if (com_value->GetSize() < 4) {
+        return common::make_error("Invalid " REDIS_GET_LOADED_MODULES_COMMANDS " command output");
+      }
+
+      std::string module_name;
+      if (!com_value->GetString(1, &module_name)) {
+        return common::make_error("Invalid " REDIS_GET_LOADED_MODULES_COMMANDS " command output");
+      }
+
+      long long version;
+      if (!com_value->GetLongLongInteger(3, &version)) {
+        return common::make_error("Invalid " REDIS_GET_LOADED_MODULES_COMMANDS " command output");
+      }
+
+      lmodules.push_back({module_name, static_cast<uint32_t>(version)});
+    }
+  }
+
+  *modules = lmodules;
+  return common::Error();
+}
+
+common::Error Driver::GetCurrentDataBaseInfo(core::IDataBaseInfo** info) {
+  if (!info) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
+  return impl_->Select(impl_->GetCurrentDBName(), info);
 }
 
 void Driver::HandleBackupEvent(events::BackupRequestEvent* ev) {

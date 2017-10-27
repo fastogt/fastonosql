@@ -32,6 +32,7 @@ class QComboBox;     // lines 29-29
 class QProgressBar;  // lines 27-27
 class QCheckBox;
 class QSpinBox;
+class QLabel;
 
 namespace common {
 namespace qt {
@@ -44,6 +45,7 @@ class IconLabel;
 namespace fastonosql {
 namespace core {
 struct CommandInfo;
+struct ModuleInfo;
 }
 namespace proxy {
 namespace events_info {
@@ -119,6 +121,7 @@ class BaseShellWidget : public QWidget {
   void syncConnectionActions();
   void updateServerInfo(core::IServerInfoSPtr inf);
   void updateDefaultDatabase(core::IDataBaseInfoSPtr dbs);
+  void updateModules(const std::vector<core::ModuleInfo>& modules);
   void updateCommands(const std::vector<const core::CommandInfo*>& commands);
 
   void updateServerLabel(const QString& text);
@@ -141,6 +144,10 @@ class BaseShellWidget : public QWidget {
   common::qt::gui::IconLabel* connectionMode_;
   common::qt::gui::IconLabel* serverName_;
   common::qt::gui::IconLabel* dbName_;
+
+  QLabel* modulesLabel_;
+  QComboBox* modulesComboBox_;
+
   QCheckBox* advancedOptions_;
   QWidget* advancedOptionsWidget_;
   QSpinBox* repeatCount_;

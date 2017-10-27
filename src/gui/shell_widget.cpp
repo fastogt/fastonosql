@@ -197,6 +197,14 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server, const QString& fileP
   dbName_ = new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().databaseIcon(), translations::trCalculating,
                                            iconSize);
   hlayout2->addWidget(dbName_);
+
+  QHBoxLayout* hlayout_modules = new QHBoxLayout;
+  modulesLabel_ = new QLabel(translations::trModules + ":");
+  hlayout_modules->addWidget(modulesLabel_);
+  modulesComboBox_ = new QComboBox;
+  hlayout_modules->addWidget(modulesComboBox_);
+  hlayout2->addLayout(hlayout_modules);
+
   QSplitter* spliter_info_and_options = new QSplitter(Qt::Horizontal);
   spliter_info_and_options->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
   hlayout2->addWidget(spliter_info_and_options);
@@ -232,9 +240,12 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server, const QString& fileP
 
   setLayout(mainlayout);
 
+  // sync controls
   syncConnectionActions();
   updateServerInfo(server_->GetCurrentServerInfo());
   updateDefaultDatabase(server_->GetCurrentDatabaseInfo());
+  updateCommands(std::vector<const core::CommandInfo*>());
+  updateModules(std::vector<core::ModuleInfo>());
 }
 
 void BaseShellWidget::advancedOptionsChange(int state) {
@@ -447,6 +458,7 @@ void BaseShellWidget::finishLoadDiscoveryInfo(const proxy::events_info::Discover
   updateServerInfo(res.sinfo);
   updateDefaultDatabase(res.dbinfo);
   updateCommands(res.commands);
+  updateModules(res.loaded_modules);
 }
 
 void BaseShellWidget::startExecute(const proxy::events_info::ExecuteInfoRequest& req) {
@@ -477,6 +489,7 @@ void BaseShellWidget::serverDisconnect() {
   updateServerInfo(core::IServerInfoSPtr());
   updateDefaultDatabase(core::IDataBaseInfoSPtr());
   updateCommands(std::vector<const core::CommandInfo*>());
+  updateModules(std::vector<core::ModuleInfo>());
 }
 
 void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
@@ -538,6 +551,28 @@ void BaseShellWidget::updateDefaultDatabase(core::IDataBaseInfoSPtr dbs) {
   QString qname;
   common::ConvertFromString(name, &qname);
   updateDBLabel(qname);
+}
+
+void BaseShellWidget::updateModules(const std::vector<core::ModuleInfo>& modules) {
+  core::connectionTypes ct = server_->GetType();
+  if (ct != core::REDIS) {  // modules only for redis
+    modulesLabel_->setVisible(false);
+    modulesComboBox_->setVisible(false);
+    return;
+  }
+
+  modulesComboBox_->clear();
+  if (modules.empty()) {
+    modulesComboBox_->setEnabled(false);
+    return;
+  }
+
+  for (size_t i = 0; i < modules.size(); ++i) {
+    QString qname;
+    common::ConvertFromString(modules[i].name, &qname);
+    modulesComboBox_->addItem(qname);
+  }
+  modulesComboBox_->setEnabled(true);
 }
 
 void BaseShellWidget::updateCommands(const std::vector<const core::CommandInfo*>& commands) {

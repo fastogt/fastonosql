@@ -63,8 +63,9 @@ class Driver : public IDriverRemote {
   virtual common::Error ExecuteImpl(const core::command_buffer_t& command, core::FastoObject* out) override;
 
   virtual common::Error GetCurrentServerInfo(core::IServerInfo** info) override;
-  virtual common::Error GetCurrentDataBaseInfo(core::IDataBaseInfo** info) override;
   virtual common::Error GetServerCommands(std::vector<const core::CommandInfo*>* commands) override;
+  virtual common::Error GetServerLoadedModules(std::vector<core::ModuleInfo>* modules) override;
+  virtual common::Error GetCurrentDataBaseInfo(core::IDataBaseInfo** info) override;
 
   virtual void HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) override;
   virtual void HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev) override;

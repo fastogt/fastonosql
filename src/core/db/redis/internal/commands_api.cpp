@@ -2208,6 +2208,16 @@ const internal::ConstantCommandsArray g_commands = {
                   0,
                   CommandInfo::Extended,
                   &CommandsApi::PFSelfTest),
+    CommandHolder("MODULE",
+                  "<key> <arg> [options ...]",
+                  UNDEFINED_SUMMARY,
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  1,
+                  INFINITE_COMMAND_ARGS,
+                  CommandInfo::Extended,
+                  &CommandsApi::Module),
+
     // redis-graph api
     CommandHolder(REDIS_GRAPH_MODULE_COMMAND("QUERY"),
                   "<Graph name> <Query>",
@@ -3761,6 +3771,12 @@ common::Error CommandsApi::ReplConf(internal::CommandHandler* handler, commands_
 common::Error CommandsApi::Substr(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->CommonExec(ExpandCommand({"SUBSTR"}, argv), out);
+}
+
+common::Error CommandsApi::Module(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  UNUSED(argv);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"MODULE"}, argv), out);
 }
 
 common::Error CommandsApi::PFSelfTest(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {

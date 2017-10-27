@@ -26,6 +26,7 @@
 #include "core/db_ps_channel.h"
 #include "core/server/iserver_info.h"   // for IDataBaseInfoSPtr, IServerInf...
 #include "core/server_property_info.h"  // for property_t, ServerPropertiesInfo
+#include "core/module_info.h"
 
 #include "core/global.h"  // for FastoObjectIPtr
 
@@ -88,6 +89,7 @@ struct DiscoveryInfoResponce : DiscoveryInfoRequest {
   core::IServerInfoSPtr sinfo;
   core::IDataBaseInfoSPtr dbinfo;
   std::vector<const core::CommandInfo*> commands;
+  std::vector<core::ModuleInfo> loaded_modules;
 };
 
 struct EnterModeInfo : public EventInfoBase {

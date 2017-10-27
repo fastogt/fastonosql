@@ -246,6 +246,7 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
   static common::Error ReplConf(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error Substr(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error PFSelfTest(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Module(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 
   // redis-graph api
   static common::Error GraphQuery(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
