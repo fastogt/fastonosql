@@ -32,7 +32,7 @@ class QComboBox;     // lines 29-29
 class QProgressBar;  // lines 27-27
 class QCheckBox;
 class QSpinBox;
-class QLabel;
+class QHBoxLayout;
 
 namespace common {
 namespace qt {
@@ -45,7 +45,6 @@ class IconLabel;
 namespace fastonosql {
 namespace core {
 struct CommandInfo;
-struct ModuleInfo;
 }
 namespace proxy {
 namespace events_info {
@@ -70,7 +69,12 @@ class BaseShell;
 class BaseShellWidget : public QWidget {
   Q_OBJECT
  public:
-  explicit BaseShellWidget(proxy::IServerSPtr server, const QString& filePath = QString(), QWidget* parent = 0);
+  static const QSize top_bar_icon_size;
+
+  static BaseShellWidget* createWidget(proxy::IServerSPtr server,
+                                       const QString& filePath = QString(),
+                                       QWidget* parent = 0);
+
   virtual ~BaseShellWidget();
 
   QString text() const;
@@ -115,13 +119,23 @@ class BaseShellWidget : public QWidget {
   void serverConnect();
   void serverDisconnect();
 
+ protected:
+  BaseShellWidget(proxy::IServerSPtr server, const QString& filePath = QString(), QWidget* parent = 0);
+  virtual void init();
+  virtual QHBoxLayout* createTopLayout(core::connectionTypes ct);
+
+  // notify methods for derived classes
+  virtual void OnServerConnected();
+  virtual void OnServerDisconnected();
+  virtual void OnStartedLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoRequest& res);
+  virtual void OnFinishedLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponce& res);
+
  private:
   common::Error validate(const QString& text);
 
   void syncConnectionActions();
   void updateServerInfo(core::IServerInfoSPtr inf);
   void updateDefaultDatabase(core::IDataBaseInfoSPtr dbs);
-  void updateModules(const std::vector<core::ModuleInfo>& modules);
   void updateCommands(const std::vector<const core::CommandInfo*>& commands);
 
   void updateServerLabel(const QString& text);
@@ -144,9 +158,6 @@ class BaseShellWidget : public QWidget {
   common::qt::gui::IconLabel* connectionMode_;
   common::qt::gui::IconLabel* serverName_;
   common::qt::gui::IconLabel* dbName_;
-
-  QLabel* modulesLabel_;
-  QComboBox* modulesComboBox_;
 
   QCheckBox* advancedOptions_;
   QWidget* advancedOptionsWidget_;

@@ -94,7 +94,6 @@ extern const QString trCommand;
 extern const QString trResult;
 extern const QString trErrors;
 extern const QString trCalculating;
-extern const QString trModules;
 extern const QString trName;
 extern const QString trNumberOfSubscribers;
 extern const QString trAddress;

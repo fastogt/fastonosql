@@ -38,6 +38,7 @@
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/table.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/text.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/database.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/module.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/key.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/key_ttl.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/discovery.png</file>

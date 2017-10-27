@@ -25,12 +25,13 @@
 
 #include "gui/widgets/output_widget.h"  // for OutputWidget
 
-#include "gui/shell_widget.h"  // for BaseShellWidget
+#include "gui/base_shell_widget.h"
 
 namespace fastonosql {
 namespace gui {
+
 QueryWidget::QueryWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget(parent), server_(server) {
-  shellWidget_ = new BaseShellWidget(server);
+  shellWidget_ = BaseShellWidget::createWidget(server);
   outputWidget_ = new OutputWidget(server);
 
   QVBoxLayout* mainLayout = new QVBoxLayout;

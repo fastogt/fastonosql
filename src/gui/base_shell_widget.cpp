@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/shell_widget.h"
+#include "gui/base_shell_widget.h"
 
 #include <QAction>
 #include <QCheckBox>
@@ -45,9 +45,12 @@
 
 #include "translations/global.h"  // for trError, trSaveAs, etc
 
+#ifdef BUILD_WITH_REDIS
+#include "gui/db/redis/shell_widget.h"
+#endif
+
 namespace {
 
-const QSize iconSize = QSize(24, 24);
 const QString trSupportedCommandsCountTemplate_1S = QObject::tr("Supported commands count: %1");
 const QString trCommandsVersion = QObject::tr("Command version:");
 const QString trCantReadTemplate_2S = QObject::tr(PROJECT_NAME_TITLE " can't read from %1:\n%2.");
@@ -69,8 +72,28 @@ BaseShell* makeBaseShell(core::connectionTypes type, QWidget* parent) {
   return shell;
 }
 }  // namespace
+
+const QSize BaseShellWidget::top_bar_icon_size = QSize(24, 24);
+
+BaseShellWidget* BaseShellWidget::createWidget(proxy::IServerSPtr server, const QString& filePath, QWidget* parent) {
+#ifdef BUILD_WITH_REDIS
+  core::connectionTypes ct = server->GetType();
+  if (ct == core::REDIS) {
+    BaseShellWidget* widget = new redis::ShellWidget(server, filePath, parent);
+    widget->init();
+    return widget;
+  }
+#endif
+
+  BaseShellWidget* widget = new BaseShellWidget(server, filePath, parent);
+  widget->init();
+  return widget;
+}
+
 BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server, const QString& filePath, QWidget* parent)
-    : QWidget(parent), server_(server), input_(nullptr), filePath_(filePath) {
+    : QWidget(parent), server_(server), input_(nullptr), filePath_(filePath) {}
+
+void BaseShellWidget::init() {
   CHECK(server_);
 
   VERIFY(connect(server_.get(), &proxy::IServer::ConnectStarted, this, &BaseShellWidget::startConnect));
@@ -134,7 +157,8 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server, const QString& fileP
   std::string mode_str = common::ConvertToString(mode);
   QString qmode_str;
   common::ConvertFromString(mode_str, &qmode_str);
-  connectionMode_ = new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().modeIcon(mode), qmode_str, iconSize);
+  connectionMode_ =
+      new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().modeIcon(mode), top_bar_icon_size, qmode_str);
 
   hlayout->addWidget(savebar);
   hlayout->addWidget(new QSplitter(Qt::Horizontal));
@@ -158,7 +182,7 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server, const QString& fileP
   advancedOptions_->setText(trAdvancedOptions);
   VERIFY(connect(advancedOptions_, &QCheckBox::stateChanged, this, &BaseShellWidget::advancedOptionsChange));
 
-  input_ = makeBaseShell(server->GetType(), this);
+  input_ = makeBaseShell(server_->GetType(), this);
   VERIFY(connect(input_, &BaseShell::textChanged, this, &BaseShellWidget::inputTextChanged));
 
   advancedOptionsWidget_ = new QWidget;
@@ -188,28 +212,13 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server, const QString& fileP
   advOptLayout->addWidget(historyCall_);
   advancedOptionsWidget_->setLayout(advOptLayout);
 
-  QHBoxLayout* hlayout2 = new QHBoxLayout;
   core::connectionTypes ct = server_->GetType();
-  serverName_ =
-      new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().icon(ct), translations::trCalculating, iconSize);
-  serverName_->setElideMode(Qt::ElideRight);
-  hlayout2->addWidget(serverName_);
-  dbName_ = new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().databaseIcon(), translations::trCalculating,
-                                           iconSize);
-  hlayout2->addWidget(dbName_);
-
-  QHBoxLayout* hlayout_modules = new QHBoxLayout;
-  modulesLabel_ = new QLabel(translations::trModules + ":");
-  hlayout_modules->addWidget(modulesLabel_);
-  modulesComboBox_ = new QComboBox;
-  hlayout_modules->addWidget(modulesComboBox_);
-  hlayout2->addLayout(hlayout_modules);
-
+  QHBoxLayout* top_layout = createTopLayout(ct);
   QSplitter* spliter_info_and_options = new QSplitter(Qt::Horizontal);
   spliter_info_and_options->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-  hlayout2->addWidget(spliter_info_and_options);
-  hlayout2->addWidget(advancedOptions_);
-  mainlayout->addLayout(hlayout2);
+  top_layout->addWidget(spliter_info_and_options);
+  top_layout->addWidget(advancedOptions_);
+  mainlayout->addLayout(top_layout);
 
   QHBoxLayout* inputLayout = new QHBoxLayout;
   inputLayout->addWidget(input_);
@@ -245,7 +254,18 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server, const QString& fileP
   updateServerInfo(server_->GetCurrentServerInfo());
   updateDefaultDatabase(server_->GetCurrentDatabaseInfo());
   updateCommands(std::vector<const core::CommandInfo*>());
-  updateModules(std::vector<core::ModuleInfo>());
+}
+
+QHBoxLayout* BaseShellWidget::createTopLayout(core::connectionTypes ct) {
+  QHBoxLayout* top_layout = new QHBoxLayout;
+  serverName_ = new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().icon(ct), top_bar_icon_size,
+                                               translations::trCalculating);
+  serverName_->setElideMode(Qt::ElideRight);
+  top_layout->addWidget(serverName_);
+  dbName_ = new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().databaseIcon(), top_bar_icon_size,
+                                           translations::trCalculating);
+  top_layout->addWidget(dbName_);
+  return top_layout;
 }
 
 void BaseShellWidget::advancedOptionsChange(int state) {
@@ -434,7 +454,7 @@ void BaseShellWidget::progressChange(const proxy::events_info::ProgressInfoRespo
 
 void BaseShellWidget::enterMode(const proxy::events_info::EnterModeInfo& res) {
   core::ConnectionMode mode = res.mode;
-  connectionMode_->setIcon(gui::GuiFactory::GetInstance().modeIcon(mode), iconSize);
+  connectionMode_->setIcon(gui::GuiFactory::GetInstance().modeIcon(mode), top_bar_icon_size);
   std::string modeText = common::ConvertToString(mode);
   QString qmodeText;
   common::ConvertFromString(modeText, &qmodeText);
@@ -446,10 +466,18 @@ void BaseShellWidget::leaveMode(const proxy::events_info::LeaveModeInfo& res) {
 }
 
 void BaseShellWidget::startLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoRequest& res) {
-  UNUSED(res);
+  OnStartedLoadDiscoveryInfo(res);
 }
 
 void BaseShellWidget::finishLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponce& res) {
+  OnFinishedLoadDiscoveryInfo(res);
+}
+
+void BaseShellWidget::OnStartedLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoRequest& res) {
+  UNUSED(res);
+}
+
+void BaseShellWidget::OnFinishedLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponce& res) {
   common::Error err = res.errorInfo();
   if (err) {
     return;
@@ -458,7 +486,6 @@ void BaseShellWidget::finishLoadDiscoveryInfo(const proxy::events_info::Discover
   updateServerInfo(res.sinfo);
   updateDefaultDatabase(res.dbinfo);
   updateCommands(res.commands);
-  updateModules(res.loaded_modules);
 }
 
 void BaseShellWidget::startExecute(const proxy::events_info::ExecuteInfoRequest& req) {
@@ -481,15 +508,22 @@ void BaseShellWidget::finishExecute(const proxy::events_info::ExecuteInfoResponc
 }
 
 void BaseShellWidget::serverConnect() {
-  syncConnectionActions();
+  OnServerConnected();
 }
 
 void BaseShellWidget::serverDisconnect() {
+  OnServerDisconnected();
+}
+
+void BaseShellWidget::OnServerConnected() {
+  syncConnectionActions();
+}
+
+void BaseShellWidget::OnServerDisconnected() {
   syncConnectionActions();
   updateServerInfo(core::IServerInfoSPtr());
   updateDefaultDatabase(core::IDataBaseInfoSPtr());
   updateCommands(std::vector<const core::CommandInfo*>());
-  updateModules(std::vector<core::ModuleInfo>());
 }
 
 void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
@@ -551,28 +585,6 @@ void BaseShellWidget::updateDefaultDatabase(core::IDataBaseInfoSPtr dbs) {
   QString qname;
   common::ConvertFromString(name, &qname);
   updateDBLabel(qname);
-}
-
-void BaseShellWidget::updateModules(const std::vector<core::ModuleInfo>& modules) {
-  core::connectionTypes ct = server_->GetType();
-  if (ct != core::REDIS) {  // modules only for redis
-    modulesLabel_->setVisible(false);
-    modulesComboBox_->setVisible(false);
-    return;
-  }
-
-  modulesComboBox_->clear();
-  if (modules.empty()) {
-    modulesComboBox_->setEnabled(false);
-    return;
-  }
-
-  for (size_t i = 0; i < modules.size(); ++i) {
-    QString qname;
-    common::ConvertFromString(modules[i].name, &qname);
-    modulesComboBox_->addItem(qname);
-  }
-  modulesComboBox_->setEnabled(true);
 }
 
 void BaseShellWidget::updateCommands(const std::vector<const core::CommandInfo*>& commands) {

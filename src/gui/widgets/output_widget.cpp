@@ -101,7 +101,7 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget
   textView_ = new FastoTextView;
   textView_->setModel(commonModel_);
 
-  timeLabel_ = new common::qt::gui::IconLabel(GuiFactory::GetInstance().timeIcon(), "0", QSize(32, 32));
+  timeLabel_ = new common::qt::gui::IconLabel(GuiFactory::GetInstance().timeIcon(), QSize(32, 32), "0");
 
   QVBoxLayout* mainL = new QVBoxLayout;
   QHBoxLayout* topL = new QHBoxLayout;

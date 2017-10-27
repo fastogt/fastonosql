@@ -372,7 +372,7 @@ SET(HEADERS_GUI_TO_MOC
   ${CMAKE_SOURCE_DIR}/src/gui/fasto_table_view.h
   ${CMAKE_SOURCE_DIR}/src/gui/keys_table_view.h
   ${CMAKE_SOURCE_DIR}/src/gui/fasto_scintilla.h
-  ${CMAKE_SOURCE_DIR}/src/gui/shell_widget.h
+  ${CMAKE_SOURCE_DIR}/src/gui/base_shell_widget.h
   ${CMAKE_SOURCE_DIR}/src/gui/base_lexer.h
   ${CMAKE_SOURCE_DIR}/src/gui/base_shell.h
   ${CMAKE_SOURCE_DIR}/src/gui/hash_table_model.h
@@ -416,7 +416,7 @@ SET(SOURCES_GUI
   ${CMAKE_SOURCE_DIR}/src/gui/shortcuts.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/fasto_scintilla.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/connection_widgets_factory.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/shell_widget.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/base_shell_widget.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/base_lexer.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/base_shell.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/hash_table_model.cpp
@@ -502,9 +502,17 @@ IF(BUILD_WITH_REDIS)
   )
 
   #gui redis
-  SET(HEADERS_REDIS_GUI_TO_MOC gui/db/redis/connection_widget.h gui/db/redis/lexer.h)
+  SET(HEADERS_REDIS_GUI_TO_MOC
+    gui/db/redis/connection_widget.h
+    gui/db/redis/lexer.h
+    gui/db/redis/shell_widget.h
+  )
   SET(HEADERS_REDIS_GUI)
-  SET(SOURCES_REDIS_GUI gui/db/redis/connection_widget.cpp gui/db/redis/lexer.cpp)
+  SET(SOURCES_REDIS_GUI
+    gui/db/redis/connection_widget.cpp
+    gui/db/redis/lexer.cpp
+    gui/db/redis/shell_widget.cpp
+  )
 
   #update common variables
   SET(HEADERS_CORE ${HEADERS_CORE} ${HEADERS_CORE_DB_REDIS})

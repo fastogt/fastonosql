@@ -138,6 +138,11 @@ const QIcon& GuiFactory::databaseIcon() const {
   return db;
 }
 
+const QIcon& GuiFactory::moduleIcon() const {
+  static QIcon md(":" PROJECT_NAME_LOWERCASE "/images/64x64/module.png");
+  return md;
+}
+
 const QIcon& GuiFactory::keyIcon() const {
   static QIcon db(":" PROJECT_NAME_LOWERCASE "/images/64x64/key.png");
   return db;
