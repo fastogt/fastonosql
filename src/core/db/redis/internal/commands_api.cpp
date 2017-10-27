@@ -31,6 +31,9 @@
 #define REDIS_JSON_MODULE "JSON"
 #define REDIS_JSON_MODULE_COMMAND(COMMAND) REDIS_MODULE_COMMAND_GENERATE(REDIS_JSON_MODULE, COMMAND)
 
+#define REDIS_NR_MODULE "NR"
+#define REDIS_NR_MODULE_COMMAND(COMMAND) REDIS_MODULE_COMMAND_GENERATE(REDIS_NR_MODULE, COMMAND)
+
 namespace fastonosql {
 namespace core {
 namespace {
@@ -2625,7 +2628,89 @@ const internal::ConstantCommandsArray g_commands = {
                   1,
                   1,
                   CommandInfo::Extended,
-                  &CommandsApi::JsonResp)};
+                  &CommandsApi::JsonResp),
+    // nr
+    CommandHolder(REDIS_NR_MODULE_COMMAND("RESET"),
+                  "<key> [options...]",
+                  UNDEFINED_SUMMARY,
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  1,
+                  INFINITE_COMMAND_ARGS,
+                  CommandInfo::Extended,
+                  &CommandsApi::NrReset),
+    CommandHolder(REDIS_NR_MODULE_COMMAND("INFO"),
+                  "<key> [options...]",
+                  UNDEFINED_SUMMARY,
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  1,
+                  INFINITE_COMMAND_ARGS,
+                  CommandInfo::Extended,
+                  &CommandsApi::NrInfo),
+    CommandHolder(REDIS_NR_MODULE_COMMAND("GETDATA"),
+                  "<key> [options...]",
+                  UNDEFINED_SUMMARY,
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  1,
+                  INFINITE_COMMAND_ARGS,
+                  CommandInfo::Extended,
+                  &CommandsApi::NrGetData),
+    CommandHolder(REDIS_NR_MODULE_COMMAND("RUN"),
+                  "<key> [options...]",
+                  UNDEFINED_SUMMARY,
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  1,
+                  INFINITE_COMMAND_ARGS,
+                  CommandInfo::Extended,
+                  &CommandsApi::NrRun),
+    CommandHolder(REDIS_NR_MODULE_COMMAND("CLASS"),
+                  "<key> [options...]",
+                  UNDEFINED_SUMMARY,
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  1,
+                  INFINITE_COMMAND_ARGS,
+                  CommandInfo::Extended,
+                  &CommandsApi::NrClass),
+    CommandHolder(REDIS_NR_MODULE_COMMAND("CREATE"),
+                  "<key> [options...]",
+                  UNDEFINED_SUMMARY,
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  1,
+                  INFINITE_COMMAND_ARGS,
+                  CommandInfo::Extended,
+                  &CommandsApi::NrCreate),
+    CommandHolder(REDIS_NR_MODULE_COMMAND("OBSERVE"),
+                  "<key> [options...]",
+                  UNDEFINED_SUMMARY,
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  1,
+                  INFINITE_COMMAND_ARGS,
+                  CommandInfo::Extended,
+                  &CommandsApi::NrObserve),
+    CommandHolder(REDIS_NR_MODULE_COMMAND("TRAIN"),
+                  "<key> [options...]",
+                  UNDEFINED_SUMMARY,
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  1,
+                  INFINITE_COMMAND_ARGS,
+                  CommandInfo::Extended,
+                  &CommandsApi::NrTrain),
+    CommandHolder(REDIS_NR_MODULE_COMMAND("THREADS"),
+                  "<key> [options...]",
+                  UNDEFINED_SUMMARY,
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  1,
+                  INFINITE_COMMAND_ARGS,
+                  CommandInfo::Extended,
+                  &CommandsApi::NrThreads)};
 
 common::Error CommandsApi::Auth(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
@@ -4184,6 +4269,51 @@ common::Error CommandsApi::JsonForget(internal::CommandHandler* handler, command
 common::Error CommandsApi::JsonResp(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->GraphDelete(ExpandCommand({REDIS_JSON_MODULE_COMMAND("RESP")}, argv), out);
+}
+
+common::Error CommandsApi::NrReset(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_NR_MODULE_COMMAND("RESET")}, argv), out);
+}
+
+common::Error CommandsApi::NrInfo(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_NR_MODULE_COMMAND("INFO")}, argv), out);
+}
+
+common::Error CommandsApi::NrGetData(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_NR_MODULE_COMMAND("GETDATA")}, argv), out);
+}
+
+common::Error CommandsApi::NrRun(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_NR_MODULE_COMMAND("RUN")}, argv), out);
+}
+
+common::Error CommandsApi::NrClass(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_NR_MODULE_COMMAND("CLASS")}, argv), out);
+}
+
+common::Error CommandsApi::NrCreate(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_NR_MODULE_COMMAND("CREATE")}, argv), out);
+}
+
+common::Error CommandsApi::NrObserve(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_NR_MODULE_COMMAND("OBSERVE")}, argv), out);
+}
+
+common::Error CommandsApi::NrTrain(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_NR_MODULE_COMMAND("TRAIN")}, argv), out);
+}
+
+common::Error CommandsApi::NrThreads(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->GraphDelete(ExpandCommand({REDIS_NR_MODULE_COMMAND("THREADS")}, argv), out);
 }
 
 }  // namespace redis

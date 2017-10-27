@@ -3,6 +3,7 @@
 - [Redis] redis-graph commands support
 - [Redis] redisearch commands support
 - [Redis] rejson commands support
+- [Redis] neural-redis commands support
 - [Redis] Handle runtime commands
 
 1.9.5 / October 23, 2017

@@ -297,6 +297,17 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
   static common::Error JsonDebug(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error JsonForget(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error JsonResp(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+
+  // nr
+  static common::Error NrReset(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error NrInfo(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error NrGetData(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error NrRun(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error NrClass(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error NrCreate(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error NrObserve(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error NrTrain(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error NrThreads(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 };
 
 extern const internal::ConstantCommandsArray g_commands;
