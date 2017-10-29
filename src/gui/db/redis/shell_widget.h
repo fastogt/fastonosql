@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "gui/base_shell_widget.h"
+#include "gui/shell/base_shell_widget.h"
 
 namespace common {
 namespace qt {

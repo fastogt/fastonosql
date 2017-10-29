@@ -315,6 +315,18 @@ SET(SOURCES_GUI_EXPLORER
   ${CMAKE_SOURCE_DIR}/src/gui/explorer/explorer_tree_item.cpp
 )
 
+SET(HEADERS_GUI_SHELL_TO_MOC
+  ${CMAKE_SOURCE_DIR}/src/gui/shell/base_shell_widget.h
+  ${CMAKE_SOURCE_DIR}/src/gui/shell/base_lexer.h
+  ${CMAKE_SOURCE_DIR}/src/gui/shell/base_shell.h
+)
+
+SET(SOURCES_GUI_SHELL
+  ${CMAKE_SOURCE_DIR}/src/gui/shell/base_shell_widget.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/shell/base_lexer.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/shell/base_shell.cpp
+)
+
 SET(HEADERS_GUI_WIDGETS_TO_MOC
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/log_tab_widget.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/log_widget.h
@@ -357,6 +369,7 @@ SET(HEADERS_GUI_TO_MOC
   ${HEADERS_GUI_DIALOGS_TO_MOC}
   ${HEADERS_GUI_EDITOR_TO_MOC}
   ${HEADERS_GUI_WIDGETS_TO_MOC}
+  ${HEADERS_GUI_SHELL_TO_MOC}
   ${HEADERS_GUI_EXPLORER_TO_MOC}
 
   ${CMAKE_SOURCE_DIR}/src/gui/main_window.h
@@ -372,9 +385,6 @@ SET(HEADERS_GUI_TO_MOC
   ${CMAKE_SOURCE_DIR}/src/gui/fasto_table_view.h
   ${CMAKE_SOURCE_DIR}/src/gui/keys_table_view.h
   ${CMAKE_SOURCE_DIR}/src/gui/fasto_scintilla.h
-  ${CMAKE_SOURCE_DIR}/src/gui/base_shell_widget.h
-  ${CMAKE_SOURCE_DIR}/src/gui/base_lexer.h
-  ${CMAKE_SOURCE_DIR}/src/gui/base_shell.h
   ${CMAKE_SOURCE_DIR}/src/gui/hash_table_model.h
   ${CMAKE_SOURCE_DIR}/src/gui/action_cell_delegate.h
 )
@@ -395,6 +405,7 @@ SET(SOURCES_GUI
   ${SOURCES_GUI_DIALOGS}
   ${SOURCES_GUI_EDITOR}
   ${SOURCES_GUI_WIDGETS}
+  ${SOURCES_GUI_SHELL}
   ${SOURCES_GUI_EXPLORER}
 
   ${CMAKE_SOURCE_DIR}/src/gui/main_window.cpp
@@ -416,9 +427,6 @@ SET(SOURCES_GUI
   ${CMAKE_SOURCE_DIR}/src/gui/shortcuts.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/fasto_scintilla.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/connection_widgets_factory.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/base_shell_widget.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/base_lexer.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/base_shell.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/hash_table_model.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/action_cell_delegate.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/key_value_table_item.cpp

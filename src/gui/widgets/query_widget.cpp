@@ -25,7 +25,7 @@
 
 #include "gui/widgets/output_widget.h"  // for OutputWidget
 
-#include "gui/base_shell_widget.h"
+#include "gui/shell/base_shell_widget.h"
 
 namespace fastonosql {
 namespace gui {

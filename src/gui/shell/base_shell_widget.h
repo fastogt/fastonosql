@@ -33,6 +33,7 @@ class QProgressBar;  // lines 27-27
 class QCheckBox;
 class QSpinBox;
 class QHBoxLayout;
+class QToolBar;
 
 namespace common {
 namespace qt {
@@ -130,7 +131,13 @@ class BaseShellWidget : public QWidget {
   virtual void OnStartedLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoRequest& res);
   virtual void OnFinishedLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponce& res);
 
+  virtual void changeEvent(QEvent* ev) override;
+
  private:
+  QToolBar* createToolBar();
+
+  void retranslateUi();
+
   common::Error validate(const QString& text);
 
   void syncConnectionActions();

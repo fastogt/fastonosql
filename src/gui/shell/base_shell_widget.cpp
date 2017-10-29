@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/base_shell_widget.h"
+#include "gui/shell/base_shell_widget.h"
 
 #include <QAction>
 #include <QCheckBox>
@@ -38,7 +38,6 @@
 #include "proxy/server/iserver_remote.h"
 #include "proxy/settings_manager.h"  // for SettingsManager
 
-#include "gui/base_shell.h"   // for BaseShell
 #include "gui/gui_factory.h"  // for GuiFactory
 #include "gui/shortcuts.h"    // for executeKey
 #include "gui/utils.h"
@@ -48,6 +47,7 @@
 #ifdef BUILD_WITH_REDIS
 #include "gui/db/redis/shell_widget.h"
 #endif
+#include "gui/shell/base_shell.h"
 
 namespace {
 
@@ -58,20 +58,12 @@ const QString trCantSaveTemplate_2S = QObject::tr(PROJECT_NAME_TITLE " can't sav
 const QString trAdvancedOptions = QObject::tr("Advanced options");
 const QString trIntervalMsec = QObject::tr("Interval msec:");
 const QString trRepeat = QObject::tr("Repeat:");
+const QString trBasedOn_2S = QObject::tr("Based on <b>%1</b> version: <b>%2</b>");
 
 }  // namespace
 
 namespace fastonosql {
 namespace gui {
-
-namespace {
-BaseShell* makeBaseShell(core::connectionTypes type, QWidget* parent) {
-  BaseShell* shell = BaseShell::createFromType(type, proxy::SettingsManager::GetInstance()->GetAutoCompletion());
-  parent->setToolTip(QObject::tr("Based on <b>%1</b> version: <b>%2</b>").arg(shell->basedOn(), shell->version()));
-  shell->setContextMenuPolicy(Qt::CustomContextMenu);
-  return shell;
-}
-}  // namespace
 
 const QSize BaseShellWidget::top_bar_icon_size = QSize(24, 24);
 
@@ -92,6 +84,47 @@ BaseShellWidget* BaseShellWidget::createWidget(proxy::IServerSPtr server, const 
 
 BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server, const QString& filePath, QWidget* parent)
     : QWidget(parent), server_(server), input_(nullptr), filePath_(filePath) {}
+
+QToolBar* BaseShellWidget::createToolBar() {
+  QToolBar* savebar = new QToolBar;
+  loadAction_ = new QAction;
+  loadAction_->setIcon(gui::GuiFactory::GetInstance().loadIcon());
+  typedef void (BaseShellWidget::*lf)();
+  VERIFY(connect(loadAction_, &QAction::triggered, this, static_cast<lf>(&BaseShellWidget::loadFromFile)));
+  savebar->addAction(loadAction_);
+
+  saveAction_ = new QAction;
+  saveAction_->setIcon(gui::GuiFactory::GetInstance().saveIcon());
+  VERIFY(connect(saveAction_, &QAction::triggered, this, &BaseShellWidget::saveToFile));
+  savebar->addAction(saveAction_);
+
+  saveAsAction_ = new QAction;
+  saveAsAction_->setIcon(gui::GuiFactory::GetInstance().saveAsIcon());
+  VERIFY(connect(saveAsAction_, &QAction::triggered, this, &BaseShellWidget::saveToFileAs));
+  savebar->addAction(saveAsAction_);
+
+  connectAction_ = new QAction;
+  connectAction_->setIcon(gui::GuiFactory::GetInstance().connectIcon());
+  VERIFY(connect(connectAction_, &QAction::triggered, this, &BaseShellWidget::connectToServer));
+  savebar->addAction(connectAction_);
+
+  disConnectAction_ = new QAction;
+  disConnectAction_->setIcon(gui::GuiFactory::GetInstance().disConnectIcon());
+  VERIFY(connect(disConnectAction_, &QAction::triggered, this, &BaseShellWidget::disconnectFromServer));
+  savebar->addAction(disConnectAction_);
+
+  executeAction_ = new QAction;
+  executeAction_->setIcon(gui::GuiFactory::GetInstance().executeIcon());
+  executeAction_->setShortcut(gui::executeKey);
+  VERIFY(connect(executeAction_, &QAction::triggered, this, &BaseShellWidget::execute));
+  savebar->addAction(executeAction_);
+
+  stopAction_ = new QAction;
+  stopAction_->setIcon(gui::GuiFactory::GetInstance().stopIcon());
+  VERIFY(connect(stopAction_, &QAction::triggered, this, &BaseShellWidget::stop));
+  savebar->addAction(stopAction_);
+  return savebar;
+}
 
 void BaseShellWidget::init() {
   CHECK(server_);
@@ -121,37 +154,7 @@ void BaseShellWidget::init() {
   QVBoxLayout* mainlayout = new QVBoxLayout;
   QHBoxLayout* hlayout = new QHBoxLayout;
 
-  QToolBar* savebar = new QToolBar;
-
-  loadAction_ = new QAction(gui::GuiFactory::GetInstance().loadIcon(), translations::trLoad, savebar);
-  typedef void (BaseShellWidget::*lf)();
-  VERIFY(connect(loadAction_, &QAction::triggered, this, static_cast<lf>(&BaseShellWidget::loadFromFile)));
-  savebar->addAction(loadAction_);
-
-  saveAction_ = new QAction(gui::GuiFactory::GetInstance().saveIcon(), translations::trSave, savebar);
-  VERIFY(connect(saveAction_, &QAction::triggered, this, &BaseShellWidget::saveToFile));
-  savebar->addAction(saveAction_);
-
-  saveAsAction_ = new QAction(gui::GuiFactory::GetInstance().saveAsIcon(), translations::trSaveAs, savebar);
-  VERIFY(connect(saveAsAction_, &QAction::triggered, this, &BaseShellWidget::saveToFileAs));
-  savebar->addAction(saveAsAction_);
-
-  connectAction_ = new QAction(gui::GuiFactory::GetInstance().connectIcon(), translations::trConnect, savebar);
-  VERIFY(connect(connectAction_, &QAction::triggered, this, &BaseShellWidget::connectToServer));
-  savebar->addAction(connectAction_);
-
-  disConnectAction_ = new QAction(gui::GuiFactory::GetInstance().disConnectIcon(), translations::trDisconnect, savebar);
-  VERIFY(connect(disConnectAction_, &QAction::triggered, this, &BaseShellWidget::disconnectFromServer));
-  savebar->addAction(disConnectAction_);
-
-  executeAction_ = new QAction(gui::GuiFactory::GetInstance().executeIcon(), translations::trExecute, savebar);
-  executeAction_->setShortcut(gui::executeKey);
-  VERIFY(connect(executeAction_, &QAction::triggered, this, &BaseShellWidget::execute));
-  savebar->addAction(executeAction_);
-
-  stopAction_ = new QAction(gui::GuiFactory::GetInstance().stopIcon(), translations::trStop, savebar);
-  VERIFY(connect(stopAction_, &QAction::triggered, this, &BaseShellWidget::stop));
-  savebar->addAction(stopAction_);
+  QToolBar* savebar = createToolBar();
 
   core::ConnectionMode mode = core::InteractiveMode;
   std::string mode_str = common::ConvertToString(mode);
@@ -179,10 +182,11 @@ void BaseShellWidget::init() {
   mainlayout->addLayout(hlayout);
 
   advancedOptions_ = new QCheckBox;
-  advancedOptions_->setText(trAdvancedOptions);
   VERIFY(connect(advancedOptions_, &QCheckBox::stateChanged, this, &BaseShellWidget::advancedOptionsChange));
 
-  input_ = makeBaseShell(server_->GetType(), this);
+  core::connectionTypes ct = server_->GetType();
+  input_ = BaseShell::createFromType(ct, proxy::SettingsManager::GetInstance()->GetAutoCompletion());
+  input_->setContextMenuPolicy(Qt::CustomContextMenu);
   VERIFY(connect(input_, &BaseShell::textChanged, this, &BaseShellWidget::inputTextChanged));
 
   advancedOptionsWidget_ = new QWidget;
@@ -205,14 +209,13 @@ void BaseShellWidget::init() {
   intervalLayout->addWidget(intervalLabel);
   intervalLayout->addWidget(intervalMsec_);
 
-  historyCall_ = new QCheckBox(translations::trHistory);
+  historyCall_ = new QCheckBox;
   historyCall_->setChecked(true);
   advOptLayout->addLayout(repeatLayout);
   advOptLayout->addLayout(intervalLayout);
   advOptLayout->addWidget(historyCall_);
   advancedOptionsWidget_->setLayout(advOptLayout);
 
-  core::connectionTypes ct = server_->GetType();
   QHBoxLayout* top_layout = createTopLayout(ct);
   QSplitter* spliter_info_and_options = new QSplitter(Qt::Horizontal);
   spliter_info_and_options->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
@@ -226,7 +229,8 @@ void BaseShellWidget::init() {
   mainlayout->addLayout(inputLayout);
 
   QHBoxLayout* apilayout = new QHBoxLayout;
-  apilayout->addWidget(new QLabel(trSupportedCommandsCountTemplate_1S.arg(input_->commandsCount())));
+  QLabel* commands_count = new QLabel(trSupportedCommandsCountTemplate_1S.arg(input_->commandsCount()));
+  apilayout->addWidget(commands_count);
   apilayout->addWidget(new QSplitter(Qt::Horizontal));
 
   commandsVersionApi_ = new QComboBox;
@@ -243,7 +247,8 @@ void BaseShellWidget::init() {
     commandsVersionApi_->addItem(gui::GuiFactory::GetInstance().unknownIcon(), qcurVers, cur);
     commandsVersionApi_->setCurrentIndex(i);
   }
-  apilayout->addWidget(new QLabel(trCommandsVersion));
+  QLabel* version = new QLabel(trCommandsVersion);
+  apilayout->addWidget(version);
   apilayout->addWidget(commandsVersionApi_);
   mainlayout->addLayout(apilayout);
 
@@ -254,6 +259,8 @@ void BaseShellWidget::init() {
   updateServerInfo(server_->GetCurrentServerInfo());
   updateDefaultDatabase(server_->GetCurrentDatabaseInfo());
   updateCommands(std::vector<const core::CommandInfo*>());
+
+  retranslateUi();
 }
 
 QHBoxLayout* BaseShellWidget::createTopLayout(core::connectionTypes ct) {
@@ -285,6 +292,28 @@ void BaseShellWidget::setText(const QString& text) {
 void BaseShellWidget::executeText(const QString& text) {
   input_->setText(text);
   execute();
+}
+
+void BaseShellWidget::changeEvent(QEvent* ev) {
+  if (ev->type() == QEvent::LanguageChange) {
+    retranslateUi();
+  }
+
+  QWidget::changeEvent(ev);
+}
+
+void BaseShellWidget::retranslateUi() {
+  loadAction_->setText(translations::trLoad);
+  saveAction_->setText(translations::trSave);
+  saveAsAction_->setText(translations::trSaveAs);
+  connectAction_->setText(translations::trConnect);
+  disConnectAction_->setText(translations::trDisconnect);
+  executeAction_->setText(translations::trExecute);
+  stopAction_->setText(translations::trStop);
+
+  historyCall_->setText(translations::trHistory);
+  setToolTip(trBasedOn_2S.arg(input_->basedOn(), input_->version()));
+  advancedOptions_->setText(trAdvancedOptions);
 }
 
 common::Error BaseShellWidget::validate(const QString& text) {

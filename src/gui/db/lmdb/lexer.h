@@ -17,7 +17,7 @@
 */
 #pragma once
 
-#include "gui/base_lexer.h"
+#include "gui/shell/base_lexer.h"
 
 namespace fastonosql {
 namespace gui {

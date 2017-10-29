@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/base_shell.h"
+#include "gui/shell/base_shell.h"
 
 #include <QIcon>
 

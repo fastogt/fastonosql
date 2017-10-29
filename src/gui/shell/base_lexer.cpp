@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/base_lexer.h"
+#include "gui/shell/base_lexer.h"
 
 #include <common/qt/convert2string.h>  // for ConvertFromString
 #include <common/sprintf.h>
