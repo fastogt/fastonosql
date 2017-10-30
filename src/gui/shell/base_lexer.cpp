@@ -31,7 +31,7 @@ BaseCommandsQsciLexer::validated_commands_t MakeValidatedCommands(const std::vec
   }
   return res;
 }
-}
+}  // namespace
 
 BaseQsciApi::BaseQsciApi(QsciLexer* lexer) : QsciAbstractAPIs(lexer), filtered_version_(UNDEFINED_SINCE) {}
 

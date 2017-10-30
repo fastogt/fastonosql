@@ -77,16 +77,11 @@ class DBConnection {
       return conf->delimiter;
     }
 
-    DNOTREACHED() << "Why you ask delimiter in disconnected state?";
     return Config::default_delimiter;
   }
 
  protected:
-  config_t GetConfig() const {
-    config_t conf = connection_.config_;
-    DCHECK(conf) << "Why you ask config in disconnected state?";
-    return conf;
-  }
+  config_t GetConfig() const { return connection_.config_; }
 
   dbconnection_t connection_;
   bool interrupted_;
