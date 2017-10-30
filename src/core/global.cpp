@@ -28,6 +28,9 @@ FastoObject::IFastoObjectObserver::~IFastoObjectObserver() {}
 FastoObject::FastoObject(FastoObject* parent, common::Value* val, const std::string& delimiter)
     : observer_(nullptr), value_(val), parent_(parent), childrens_(), delimiter_(delimiter) {
   DCHECK(value_);
+  if (parent_) {
+    observer_ = parent_->observer_;
+  }
 }
 
 FastoObject::~FastoObject() {
@@ -65,7 +68,6 @@ void FastoObject::AddChildren(child_t child) {
   childrens_.push_back(child);
   if (observer_) {
     observer_->ChildrenAdded(child);
-    child->observer_ = observer_;
   }
 }
 

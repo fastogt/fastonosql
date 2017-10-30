@@ -44,6 +44,19 @@ namespace fastonosql {
 namespace gui {
 namespace {
 
+core::FastoObjectCommand* FindCommand(core::FastoObject* obj) {
+  if (!obj) {
+    return nullptr;
+  }
+
+  core::FastoObjectCommand* command = dynamic_cast<core::FastoObjectCommand*>(obj);
+  if (command) {
+    return command;
+  }
+
+  return FindCommand(obj->GetParent());
+}
+
 FastoCommonItem* createItem(common::qt::gui::TreeItem* parent,
                             core::string_key_t key,
                             bool readOnly,
@@ -168,61 +181,66 @@ void OutputWidget::addChild(core::FastoObjectIPtr child) {
 
   command = dynamic_cast<core::FastoObjectCommand*>(child->GetParent());  // +
   if (command) {
-    void* parentinner = command->GetParent();
-
-    QModelIndex parent;
-    bool isFound = commonModel_->findItem(parentinner, &parent);
-    if (!isFound) {
-      return;
-    }
-
-    fastonosql::gui::FastoCommonItem* par = nullptr;
-    if (!parent.isValid()) {
-      par = static_cast<fastonosql::gui::FastoCommonItem*>(commonModel_->root());
-    } else {
-      par = common::qt::item<common::qt::gui::TreeItem*, fastonosql::gui::FastoCommonItem*>(parent);
-    }
-
-    if (!par) {
-      DNOTREACHED();
-      return;
-    }
-
-    fastonosql::gui::FastoCommonItem* comChild = nullptr;
-    core::translator_t tr = server_->GetTranslator();
-    core::command_buffer_t input_cmd = command->GetInputCommand();
-    core::string_key_t key;
-    if (tr->IsLoadKeyCommand(input_cmd, &key)) {
-      comChild = createItem(par, key, false, child.get());
-    } else {
-      comChild = createItem(par, input_cmd, true, child.get());
-    }
-    commonModel_->insertItem(parent, comChild);
-  } else {
-    core::FastoObjectArray* arr = dynamic_cast<core::FastoObjectArray*>(child->GetParent());  // +
-    CHECK(arr);
-
-    QModelIndex parent;
-    bool isFound = commonModel_->findItem(arr, &parent);
-    if (!isFound) {
-      return;
-    }
-
-    fastonosql::gui::FastoCommonItem* par = nullptr;
-    if (!parent.isValid()) {
-      par = static_cast<fastonosql::gui::FastoCommonItem*>(commonModel_->root());
-    } else {
-      par = common::qt::item<common::qt::gui::TreeItem*, fastonosql::gui::FastoCommonItem*>(parent);
-    }
-
-    if (!par) {
-      DNOTREACHED();
-      return;
-    }
-
-    fastonosql::gui::FastoCommonItem* comChild = createItem(par, core::command_buffer_t(), true, child.get());
-    commonModel_->insertItem(parent, comChild);
+    addCommand(command, child.get());
+    return;
   }
+
+  core::FastoObjectArray* arr = dynamic_cast<core::FastoObjectArray*>(child->GetParent());  // +
+  CHECK(arr);
+
+  QModelIndex parent;
+  bool isFound = commonModel_->findItem(arr, &parent);
+  if (!isFound) {
+    return;
+  }
+
+  fastonosql::gui::FastoCommonItem* par = nullptr;
+  if (!parent.isValid()) {
+    par = static_cast<fastonosql::gui::FastoCommonItem*>(commonModel_->root());
+  } else {
+    par = common::qt::item<common::qt::gui::TreeItem*, fastonosql::gui::FastoCommonItem*>(parent);
+  }
+
+  if (!par) {
+    DNOTREACHED();
+    return;
+  }
+
+  fastonosql::gui::FastoCommonItem* comChild = createItem(par, core::command_buffer_t(), true, child.get());
+  commonModel_->insertItem(parent, comChild);
+}
+
+void OutputWidget::addCommand(core::FastoObjectCommand* command, core::FastoObject* child) {
+  void* parentinner = command->GetParent();
+
+  QModelIndex parent;
+  bool isFound = commonModel_->findItem(parentinner, &parent);
+  if (!isFound) {
+    return;
+  }
+
+  fastonosql::gui::FastoCommonItem* par = nullptr;
+  if (!parent.isValid()) {
+    par = static_cast<fastonosql::gui::FastoCommonItem*>(commonModel_->root());
+  } else {
+    par = common::qt::item<common::qt::gui::TreeItem*, fastonosql::gui::FastoCommonItem*>(parent);
+  }
+
+  if (!par) {
+    DNOTREACHED();
+    return;
+  }
+
+  fastonosql::gui::FastoCommonItem* comChild = nullptr;
+  core::translator_t tr = server_->GetTranslator();
+  core::command_buffer_t input_cmd = command->GetInputCommand();
+  core::string_key_t key;
+  if (tr->IsLoadKeyCommand(input_cmd, &key)) {
+    comChild = createItem(par, key, false, child);
+  } else {
+    comChild = createItem(par, input_cmd, true, child);
+  }
+  commonModel_->insertItem(parent, comChild);
 }
 
 void OutputWidget::updateItem(core::FastoObject* item, common::ValueSPtr newValue) {

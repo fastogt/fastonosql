@@ -75,6 +75,7 @@ class OutputWidget : public QWidget {
   void updateKey(core::IDataBaseInfoSPtr db, core::NDbKValue key);
 
   void addChild(core::FastoObjectIPtr child);
+  void addCommand(core::FastoObjectCommand* command, core::FastoObject* child);
   void updateItem(core::FastoObject* item, common::ValueSPtr newValue);
 
   void setTreeView();

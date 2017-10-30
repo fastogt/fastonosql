@@ -927,14 +927,14 @@ common::Error DBConnection::CliFormatReplyRaw(FastoObjectArray* ar, redisReply* 
     case REDIS_REPLY_ARRAY: {
       common::ArrayValue* arv = common::Value::CreateArrayValue();
       FastoObjectArray* child = new FastoObjectArray(ar, arv, GetDelimiter());
-      ar->AddChildren(child);
-
       for (size_t i = 0; i < r->elements; ++i) {
         common::Error err = CliFormatReplyRaw(child, r->element[i]);
         if (err) {
+          delete child;
           return err;
         }
       }
+      ar->AddChildren(child);
       break;
     }
     default: { return common::make_error(common::MemSPrintf("Unknown reply type: %d", r->type)); }
@@ -982,14 +982,14 @@ common::Error DBConnection::CliFormatReplyRaw(FastoObject* out, redisReply* r) {
     case REDIS_REPLY_ARRAY: {
       common::ArrayValue* arv = common::Value::CreateArrayValue();
       FastoObjectArray* child = new FastoObjectArray(out, arv, GetDelimiter());
-      out->AddChildren(child);
-
       for (size_t i = 0; i < r->elements; ++i) {
         common::Error err = CliFormatReplyRaw(child, r->element[i]);
         if (err) {
+          delete child;
           return err;
         }
       }
+      out->AddChildren(child);
       break;
     }
     default: { return common::make_error(common::MemSPrintf("Unknown reply type: %d", r->type)); }
