@@ -24,9 +24,9 @@ namespace fastonosql {
 namespace gui {
 namespace lmdb {
 
-LmdbApi::LmdbApi(QsciLexer* lexer) : BaseQsciApiCommandHolder(core::lmdb::DBConnection::GetCommands(), lexer) {}
+LmdbApi::LmdbApi(Lexer* lexer) : BaseCommandsQsciApi(lexer) {}
 
-Lexer::Lexer(QObject* parent) : BaseQsciLexerCommandHolder(core::lmdb::DBConnection::GetCommands(), parent) {
+Lexer::Lexer(QObject* parent) : BaseCommandsQsciLexer(core::lmdb::DBConnection::GetCommands(), parent) {
   setAPIs(new LmdbApi(this));
 }
 

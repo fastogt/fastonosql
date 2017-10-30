@@ -24,10 +24,9 @@ namespace fastonosql {
 namespace gui {
 namespace leveldb {
 
-LeveldbApi::LeveldbApi(QsciLexer* lexer)
-    : BaseQsciApiCommandHolder(core::leveldb::DBConnection::GetCommands(), lexer) {}
+LeveldbApi::LeveldbApi(Lexer* lexer) : BaseCommandsQsciApi(lexer) {}
 
-Lexer::Lexer(QObject* parent) : BaseQsciLexerCommandHolder(core::leveldb::DBConnection::GetCommands(), parent) {
+Lexer::Lexer(QObject* parent) : BaseCommandsQsciLexer(core::leveldb::DBConnection::GetCommands(), parent) {
   setAPIs(new LeveldbApi(this));
 }
 

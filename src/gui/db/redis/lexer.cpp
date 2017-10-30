@@ -24,9 +24,9 @@ namespace fastonosql {
 namespace gui {
 namespace redis {
 
-RedisApi::RedisApi(QsciLexer* lexer) : BaseQsciApiCommandHolder(core::redis::DBConnection::GetCommands(), lexer) {}
+RedisApi::RedisApi(Lexer* lexer) : BaseCommandsQsciApi(lexer) {}
 
-Lexer::Lexer(QObject* parent) : BaseQsciLexerCommandHolder(core::redis::DBConnection::GetCommands(), parent) {
+Lexer::Lexer(QObject* parent) : BaseCommandsQsciLexer(core::redis::DBConnection::GetCommands(), parent) {
   setAPIs(new RedisApi(this));
 }
 

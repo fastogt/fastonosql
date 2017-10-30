@@ -52,7 +52,8 @@
 namespace {
 
 const QString trSupportedCommandsCountTemplate_1S = QObject::tr("Supported commands count: %1");
-const QString trCommandsVersion = QObject::tr("Command version:");
+const QString trValidatedCommandsCountTemplate_1S = QObject::tr("Validated commands count: %1");
+const QString trCommandsVersion = QObject::tr("Commands version:");
 const QString trCantReadTemplate_2S = QObject::tr(PROJECT_NAME_TITLE " can't read from %1:\n%2.");
 const QString trCantSaveTemplate_2S = QObject::tr(PROJECT_NAME_TITLE " can't save to %1:\n%2.");
 const QString trAdvancedOptions = QObject::tr("Advanced options");
@@ -229,8 +230,10 @@ void BaseShellWidget::init() {
   mainlayout->addLayout(inputLayout);
 
   QHBoxLayout* apilayout = new QHBoxLayout;
-  QLabel* commands_count = new QLabel(trSupportedCommandsCountTemplate_1S.arg(input_->commandsCount()));
-  apilayout->addWidget(commands_count);
+  supported_commands_count_ = new QLabel;
+  apilayout->addWidget(supported_commands_count_);
+  validated_commands_count_ = new QLabel;
+  apilayout->addWidget(validated_commands_count_);
   apilayout->addWidget(new QSplitter(Qt::Horizontal));
 
   commandsVersionApi_ = new QComboBox;
@@ -314,6 +317,8 @@ void BaseShellWidget::retranslateUi() {
   historyCall_->setText(translations::trHistory);
   setToolTip(trBasedOn_2S.arg(input_->basedOn(), input_->version()));
   advancedOptions_->setText(trAdvancedOptions);
+  supported_commands_count_->setText(trSupportedCommandsCountTemplate_1S.arg(input_->commandsCount()));
+  validated_commands_count_->setText(trValidatedCommandsCountTemplate_1S.arg(input_->validateCommandsCount()));
 }
 
 common::Error BaseShellWidget::validate(const QString& text) {
@@ -617,7 +622,7 @@ void BaseShellWidget::updateDefaultDatabase(core::IDataBaseInfoSPtr dbs) {
 }
 
 void BaseShellWidget::updateCommands(const std::vector<const core::CommandInfo*>& commands) {
-  input_->validateCommands(commands);
+  validated_commands_count_->setText(trValidatedCommandsCountTemplate_1S.arg(commands.size()));
 }
 
 void BaseShellWidget::updateServerLabel(const QString& text) {

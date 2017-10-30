@@ -24,10 +24,9 @@ namespace fastonosql {
 namespace gui {
 namespace upscaledb {
 
-UpscaleDBApi::UpscaleDBApi(QsciLexer* lexer)
-    : BaseQsciApiCommandHolder(core::upscaledb::DBConnection::GetCommands(), lexer) {}
+UpscaleDBApi::UpscaleDBApi(Lexer* lexer) : BaseCommandsQsciApi(lexer) {}
 
-Lexer::Lexer(QObject* parent) : BaseQsciLexerCommandHolder(core::upscaledb::DBConnection::GetCommands(), parent) {
+Lexer::Lexer(QObject* parent) : BaseCommandsQsciLexer(core::upscaledb::DBConnection::GetCommands(), parent) {
   setAPIs(new UpscaleDBApi(this));
 }
 

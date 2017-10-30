@@ -114,7 +114,10 @@ BaseShell::BaseShell(core::connectionTypes type, bool showAutoCompl, QWidget* pa
     lex = new forestdb::Lexer(this);
   }
 #endif
-  registerImage(BaseQsciLexer::Command, gui::GuiFactory::GetInstance().commandIcon(type).pixmap(image_size));
+  const QIcon& ic = gui::GuiFactory::GetInstance().commandIcon(type);
+  QPixmap pix = ic.pixmap(image_size);
+  registerImage(BaseQsciLexer::Command, pix);
+  registerImage(BaseQsciLexer::ExCommand, pix);
 
   if (!lex) {
     NOTREACHED();
@@ -151,6 +154,10 @@ size_t BaseShell::commandsCount() const {
   return lex->commandsCount();
 }
 
+size_t BaseShell::validateCommandsCount() const {
+  return 0;
+}
+
 void BaseShell::setFilteredVersion(uint32_t version) {
   BaseQsciLexer* lex = lexer();
   BaseQsciApi* api = lex->apis();
@@ -159,10 +166,6 @@ void BaseShell::setFilteredVersion(uint32_t version) {
 
 BaseShell* BaseShell::createFromType(core::connectionTypes type, bool showAutoCompl) {
   return new BaseShell(type, showAutoCompl);
-}
-
-void BaseShell::validateCommands(const std::vector<const core::CommandInfo*>& commands) {
-  UNUSED(commands);
 }
 
 }  // namespace gui

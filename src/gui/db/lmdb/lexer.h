@@ -23,13 +23,7 @@ namespace fastonosql {
 namespace gui {
 namespace lmdb {
 
-class LmdbApi : public BaseQsciApiCommandHolder {
-  Q_OBJECT
- public:
-  explicit LmdbApi(QsciLexer* lexer);
-};
-
-class Lexer : public BaseQsciLexerCommandHolder {
+class Lexer : public BaseCommandsQsciLexer {
   Q_OBJECT
  public:
   explicit Lexer(QObject* parent = 0);
@@ -37,6 +31,12 @@ class Lexer : public BaseQsciLexerCommandHolder {
   virtual const char* language() const override;
   virtual const char* version() const override;
   virtual const char* basedOn() const override;
+};
+
+class LmdbApi : public BaseCommandsQsciApi {
+  Q_OBJECT
+ public:
+  explicit LmdbApi(Lexer* lexer);
 };
 
 }  // namespace lmdb

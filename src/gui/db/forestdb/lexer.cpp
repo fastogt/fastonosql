@@ -24,10 +24,9 @@ namespace fastonosql {
 namespace gui {
 namespace forestdb {
 
-ForestDBApi::ForestDBApi(QsciLexer* lexer)
-    : BaseQsciApiCommandHolder(core::forestdb::DBConnection::GetCommands(), lexer) {}
+ForestDBApi::ForestDBApi(Lexer* lexer) : BaseCommandsQsciApi(lexer) {}
 
-Lexer::Lexer(QObject* parent) : BaseQsciLexerCommandHolder(core::forestdb::DBConnection::GetCommands(), parent) {
+Lexer::Lexer(QObject* parent) : BaseCommandsQsciLexer(core::forestdb::DBConnection::GetCommands(), parent) {
   setAPIs(new ForestDBApi(this));
 }
 

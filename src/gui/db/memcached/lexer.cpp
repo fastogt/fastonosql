@@ -24,10 +24,9 @@ namespace fastonosql {
 namespace gui {
 namespace memcached {
 
-MemcachedApi::MemcachedApi(QsciLexer* lexer)
-    : BaseQsciApiCommandHolder(core::memcached::DBConnection::GetCommands(), lexer) {}
+MemcachedApi::MemcachedApi(Lexer* lexer) : BaseCommandsQsciApi(lexer) {}
 
-Lexer::Lexer(QObject* parent) : BaseQsciLexerCommandHolder(core::memcached::DBConnection::GetCommands(), parent) {
+Lexer::Lexer(QObject* parent) : BaseCommandsQsciLexer(core::memcached::DBConnection::GetCommands(), parent) {
   setAPIs(new MemcachedApi(this));
 }
 

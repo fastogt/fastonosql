@@ -23,6 +23,15 @@
 
 namespace fastonosql {
 namespace gui {
+namespace {
+BaseCommandsQsciLexer::validated_commands_t MakeValidatedCommands(const std::vector<core::CommandHolder>& commands) {
+  BaseCommandsQsciLexer::validated_commands_t res;
+  for (size_t i = 0; i < commands.size(); ++i) {
+    res.push_back(commands[i]);
+  }
+  return res;
+}
+}
 
 BaseQsciApi::BaseQsciApi(QsciLexer* lexer) : QsciAbstractAPIs(lexer), filtered_version_(UNDEFINED_SINCE) {}
 
@@ -42,14 +51,15 @@ void BaseQsciApi::setFilteredVersion(uint32_t version) {
   filtered_version_ = version;
 }
 
-BaseQsciApiCommandHolder::BaseQsciApiCommandHolder(const std::vector<core::CommandHolder>& commands, QsciLexer* lexer)
-    : BaseQsciApi(lexer), commands_(commands) {}
+BaseCommandsQsciApi::BaseCommandsQsciApi(BaseCommandsQsciLexer* lexer) : BaseQsciApi(lexer) {}
 
-void BaseQsciApiCommandHolder::updateAutoCompletionList(const QStringList& context, QStringList& list) {
+void BaseCommandsQsciApi::updateAutoCompletionList(const QStringList& context, QStringList& list) {
+  BaseCommandsQsciLexer* lex = static_cast<BaseCommandsQsciLexer*>(lexer());
+  auto commands = lex->commands();
   for (auto it = context.begin(); it != context.end(); ++it) {
     QString val = *it;
-    for (size_t i = 0; i < commands_.size(); ++i) {
-      core::CommandInfo cmd = commands_[i];
+    for (size_t i = 0; i < commands.size(); ++i) {
+      core::CommandInfo cmd = commands[i];
       if (canSkipCommand(cmd)) {
         continue;
       }
@@ -63,18 +73,19 @@ void BaseQsciApiCommandHolder::updateAutoCompletionList(const QStringList& conte
   }
 }
 
-QStringList BaseQsciApiCommandHolder::callTips(const QStringList& context,
-                                               int commas,
-                                               QsciScintilla::CallTipsStyle style,
-                                               QList<int>& shifts) {
+QStringList BaseCommandsQsciApi::callTips(const QStringList& context,
+                                          int commas,
+                                          QsciScintilla::CallTipsStyle style,
+                                          QList<int>& shifts) {
   UNUSED(commas);
   UNUSED(style);
   UNUSED(shifts);
-
+  BaseCommandsQsciLexer* lex = static_cast<BaseCommandsQsciLexer*>(lexer());
+  auto commands = lex->commands();
   for (auto it = context.begin(); it != context.end(); ++it) {
     QString val = *it;
-    for (size_t i = 0; i < commands_.size(); ++i) {
-      core::CommandInfo cmd = commands_[i];
+    for (size_t i = 0; i < commands.size(); ++i) {
+      core::CommandInfo cmd = commands[i];
 
       QString jval;
       common::ConvertFromString(cmd.name, &jval);
@@ -121,11 +132,10 @@ BaseQsciApi* BaseQsciLexer::apis() const {
   return api;
 }
 
-BaseQsciLexerCommandHolder::BaseQsciLexerCommandHolder(const std::vector<core::CommandHolder>& commands,
-                                                       QObject* parent)
-    : BaseQsciLexer(parent), commands_(commands) {}
+BaseCommandsQsciLexer::BaseCommandsQsciLexer(const std::vector<core::CommandHolder>& commands, QObject* parent)
+    : BaseQsciLexer(parent), commands_(MakeValidatedCommands(commands)) {}
 
-std::vector<uint32_t> BaseQsciLexerCommandHolder::supportedVersions() const {
+std::vector<uint32_t> BaseCommandsQsciLexer::supportedVersions() const {
   std::vector<uint32_t> result;
   for (size_t i = 0; i < commands_.size(); ++i) {
     core::CommandInfo cmd = commands_[i];
@@ -148,11 +158,15 @@ std::vector<uint32_t> BaseQsciLexerCommandHolder::supportedVersions() const {
   return result;
 }
 
-size_t BaseQsciLexerCommandHolder::commandsCount() const {
+const BaseCommandsQsciLexer::validated_commands_t& BaseCommandsQsciLexer::commands() const {
+  return commands_;
+}
+
+size_t BaseCommandsQsciLexer::commandsCount() const {
   return commands_.size();
 }
 
-void BaseQsciLexerCommandHolder::styleText(int start, int end) {
+void BaseCommandsQsciLexer::styleText(int start, int end) {
   if (!editor()) {
     return;
   }
@@ -169,19 +183,22 @@ void BaseQsciLexerCommandHolder::styleText(int start, int end) {
   paintCommands(source, start);
 }
 
-void BaseQsciLexerCommandHolder::paintCommands(const QString& source, int start) {
+void BaseCommandsQsciLexer::paintCommands(const QString& source, int start) {
   for (size_t i = 0; i < commands_.size(); ++i) {
     core::CommandInfo cmd = commands_[i];
     QString word;
-    common::ConvertFromString(cmd.name, &word);
-    int index = 0;
-    int begin = 0;
-    while ((begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1) {
-      index = begin + word.length();
+    if (common::ConvertFromString(cmd.name, &word)) {
+      int index = 0;
+      int begin = 0;
 
-      startStyling(start + begin);
-      setStyling(word.length(), cmd.type == core::CommandInfo::Native ? Command : ExCommand);
-      startStyling(start + begin);
+      int st = cmd.type == core::CommandInfo::Native ? Command : ExCommand;
+      while ((begin = source.indexOf(word, index, Qt::CaseInsensitive)) != -1) {
+        index = begin + word.length();
+
+        startStyling(start + begin);
+        setStyling(word.length(), st);
+        startStyling(start + begin);
+      }
     }
   }
 }

@@ -34,6 +34,7 @@ class QCheckBox;
 class QSpinBox;
 class QHBoxLayout;
 class QToolBar;
+class QLabel;
 
 namespace common {
 namespace qt {
@@ -157,6 +158,8 @@ class BaseShellWidget : public QWidget {
   QAction* saveAction_;
   QAction* saveAsAction_;
   QAction* validateAction_;
+  QLabel* supported_commands_count_;
+  QLabel* validated_commands_count_;
   QComboBox* commandsVersionApi_;
 
   BaseShell* input_;

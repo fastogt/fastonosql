@@ -39,22 +39,6 @@ class BaseQsciApi : public QsciAbstractAPIs {
   uint32_t filtered_version_;
 };
 
-class BaseQsciApiCommandHolder : public BaseQsciApi {
-  Q_OBJECT
- public:
-  virtual void updateAutoCompletionList(const QStringList& context, QStringList& list) override;
-  virtual QStringList callTips(const QStringList& context,
-                               int commas,
-                               QsciScintilla::CallTipsStyle style,
-                               QList<int>& shifts) override;
-
- protected:
-  BaseQsciApiCommandHolder(const std::vector<core::CommandHolder>& commands, QsciLexer* lexer);
-
- private:
-  const std::vector<core::CommandHolder> commands_;
-};
-
 class BaseQsciLexer : public QsciLexerCustom {
   Q_OBJECT
  public:
@@ -76,24 +60,40 @@ class BaseQsciLexer : public QsciLexerCustom {
   explicit BaseQsciLexer(QObject* parent = 0);
 };
 
-class BaseQsciLexerCommandHolder : public BaseQsciLexer {
+class BaseCommandsQsciLexer : public BaseQsciLexer {
   Q_OBJECT
  public:
+  typedef std::vector<core::CommandInfo> validated_commands_t;
+
   virtual const char* language() const override = 0;
   virtual const char* version() const override = 0;
   virtual const char* basedOn() const override = 0;
 
   virtual std::vector<uint32_t> supportedVersions() const override;
   virtual size_t commandsCount() const override;
+  const validated_commands_t& commands() const;
 
  protected:
-  explicit BaseQsciLexerCommandHolder(const std::vector<core::CommandHolder>& commands, QObject* parent = 0);
+  explicit BaseCommandsQsciLexer(const std::vector<core::CommandHolder>& commands, QObject* parent = 0);
 
  private:
   virtual void styleText(int start, int end) override;
   void paintCommands(const QString& source, int start);
 
-  const std::vector<core::CommandHolder> commands_;
+  const validated_commands_t commands_;
+};
+
+class BaseCommandsQsciApi : public BaseQsciApi {
+  Q_OBJECT
+ public:
+  virtual void updateAutoCompletionList(const QStringList& context, QStringList& list) override;
+  virtual QStringList callTips(const QStringList& context,
+                               int commas,
+                               QsciScintilla::CallTipsStyle style,
+                               QList<int>& shifts) override;
+
+ protected:
+  BaseCommandsQsciApi(BaseCommandsQsciLexer* lexer);
 };
 
 QString makeCallTip(const core::CommandInfo& info);

@@ -552,7 +552,24 @@ common::Error IDriver::GetServerDiscoveryInfo(core::IServerInfo** sinfo,
 
   std::vector<const core::CommandInfo*> lcommands;
   std::vector<core::ModuleInfo> lmodules;
-  GetServerCommands(&lcommands);      // can be failed
+  GetServerCommands(&lcommands);  // can be failed
+  {                               // stabilization, DB_HELP_COMMAND available for all databases
+    bool founded = false;
+    for (size_t i = 0; i < lcommands.size(); ++i) {
+      if (lcommands[i]->IsEqualName(DB_HELP_COMMAND)) {
+        founded = true;
+        break;
+      }
+    }
+    if (!founded) {
+      const core::CommandHolder* cmd = nullptr;
+      auto tran = GetTranslator();
+      common::Error err = tran->FindCommand(DB_HELP_COMMAND, &cmd);
+      CHECK(!err);
+      lcommands.push_back(cmd);
+    }
+  }
+
   GetServerLoadedModules(&lmodules);  // can be failed
 
   core::IDataBaseInfo* ldbinfo = nullptr;

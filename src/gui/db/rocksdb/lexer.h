@@ -24,13 +24,7 @@ namespace fastonosql {
 namespace gui {
 namespace rocksdb {
 
-class RocksDBApi : public BaseQsciApiCommandHolder {
-  Q_OBJECT
- public:
-  explicit RocksDBApi(QsciLexer* lexer);
-};
-
-class Lexer : public BaseQsciLexerCommandHolder {
+class Lexer : public BaseCommandsQsciLexer {
   Q_OBJECT
  public:
   explicit Lexer(QObject* parent = 0);
@@ -38,6 +32,12 @@ class Lexer : public BaseQsciLexerCommandHolder {
   virtual const char* language() const override;
   virtual const char* version() const override;
   virtual const char* basedOn() const override;
+};
+
+class RocksDBApi : public BaseCommandsQsciApi {
+  Q_OBJECT
+ public:
+  explicit RocksDBApi(Lexer* lexer);
 };
 
 }  // namespace rocksdb

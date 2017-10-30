@@ -345,6 +345,8 @@ const QIcon& GuiFactory::commandIcon(core::connectionTypes type) const {
     return lmdbConnectionIcon();
   } else if (type == core::UPSCALEDB) {
     return upscaledbConnectionIcon();
+  } else if (type == core::UPSCALEDB) {
+    return forestdbConnectionIcon();
   } else {
     return serverIcon();
   }

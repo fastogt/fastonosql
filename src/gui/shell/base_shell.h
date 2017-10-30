@@ -35,12 +35,12 @@ class BaseShell : public gui::FastoEditorShell {
  public:
   std::vector<uint32_t> supportedVersions() const;
   size_t commandsCount() const;
+  size_t validateCommandsCount() const;
   QString version() const;
   QString basedOn() const;
   void setFilteredVersion(uint32_t version);
 
   static BaseShell* createFromType(core::connectionTypes type, bool showAutoCompl);
-  void validateCommands(const std::vector<const core::CommandInfo*>& commands);
 
  protected:
   BaseShell(core::connectionTypes type, bool showAutoCompl, QWidget* parent = 0);

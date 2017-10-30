@@ -24,13 +24,7 @@ namespace fastonosql {
 namespace gui {
 namespace ssdb {
 
-class SsdbApi : public BaseQsciApiCommandHolder {
-  Q_OBJECT
- public:
-  explicit SsdbApi(QsciLexer* lexer);
-};
-
-class Lexer : public BaseQsciLexerCommandHolder {
+class Lexer : public BaseCommandsQsciLexer {
   Q_OBJECT
  public:
   explicit Lexer(QObject* parent = 0);
@@ -38,6 +32,12 @@ class Lexer : public BaseQsciLexerCommandHolder {
   virtual const char* language() const override;
   virtual const char* version() const override;
   virtual const char* basedOn() const override;
+};
+
+class SsdbApi : public BaseCommandsQsciApi {
+  Q_OBJECT
+ public:
+  explicit SsdbApi(Lexer* lexer);
 };
 
 }  // namespace ssdb

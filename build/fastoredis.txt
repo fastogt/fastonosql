@@ -9,7 +9,7 @@
 -DBUILD_WITH_FORESTDB=OFF
 -DBRANDING_PROJECT_BUILD_TYPE_VERSION:STRING=release
 -DBRANDING_PROJECT_NAME:STRING=FastoRedis
--DBRANDING_PROJECT_VERSION:STRING=1.9.0.0
+-DBRANDING_PROJECT_VERSION:STRING=1.9.1.0
 -DBRANDING_PROJECT_DOMAIN:STRING=http://www.fastoredis.com
 -DBRANDING_PROJECT_DOWNLOAD_LINK:STRING=http://www.fastoredis.com/download.html
 -DBRANDING_PROJECT_DOWNLOAD_DIRECT_LINK:STRING=http://www.fastoredis.com/files
@@ -18,4 +18,4 @@
 -DBRANDING_PROJECT_GITHUB_ISSUES:STRING=https://www.github.com/fastogt/fastoredis/issues
 -DBRANDING_PROJECT_CHANGELOG_FILE:STRING=FASTOREDIS_CHANELOG
 -DBRANDING_PROJECT_SUMMARY:STRING=Cross-platform open source Redis GUI management tool.
--DBRANDING_PROJECT_DESCRIPTION:STRING=FastoRedis (fork of FastoNoSQL) - is a cross-platforms open source Redis management tool (i.e. Admin GUI). It put the same engine that powers Redis's redis-cli shell. Everything you can write in redis-cli shell — you can write in FastoRedis! Our program works on the most amount of Linux systems, also on Windows, Mac OS X, FreeBSD and Android platforms.
+-DBRANDING_PROJECT_DESCRIPTION:STRING=FastoRedis (fork of FastoNoSQL) - is a cross-platforms open source Redis management tool (i.e. Admin GUI). It put the same engine that powers Redis's redis-cli shell. Everything you can write in redis-cli shell - you can write in FastoRedis! Our program works on the most amount of Linux systems, also on Windows, Mac OS X, FreeBSD and Android platforms.
