@@ -18,7 +18,7 @@
 
 #include "core/internal/cdb_connection.h"
 
-#include <sstream>
+
 
 #include <common/convert2string.h>
 

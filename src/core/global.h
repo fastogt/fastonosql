@@ -19,7 +19,7 @@
 #pragma once
 
 #include <common/intrusive_ptr.h>  // for intrusive_ptr, etc
-#include <common/value.h>          // for ArrayValue (ptr only), etc
+#include <common/value.h>
 
 #include "core/connection_types.h"
 #include "core/types.h"

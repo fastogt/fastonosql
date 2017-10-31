@@ -18,7 +18,7 @@
 
 #include "core/db/lmdb/server_info.h"
 
-#include <sstream>  // for operator<<, ostream, etc
+  // for operator<<, ostream, etc
 
 #include <common/convert2string.h>
 

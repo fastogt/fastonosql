@@ -18,8 +18,6 @@
 
 #include "core/db/forestdb/command_translator.h"
 
-#include <sstream>
-
 #include "core/connection_types.h"
 
 #define FORESTDB_GET_KEY_COMMAND DB_GET_KEY_COMMAND
@@ -38,7 +36,7 @@ common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, comm
   key_t key_str = cur.GetKey();
   std::string value_str = key.GetValueForCommandLine();
   command_buffer_writer_t wr;
-  wr << FORESTDB_SET_KEY_COMMAND << " " << key_str.GetKeyForCommandLine() << " " << value_str;
+  wr << FORESTDB_SET_KEY_COMMAND " " << key_str.GetKeyForCommandLine() << " " << value_str;
   *cmdstring = wr.str();
   return common::Error();
 }
@@ -50,7 +48,7 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
 
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
-  wr << FORESTDB_GET_KEY_COMMAND << " " << key_str.GetKeyForCommandLine();
+  wr << FORESTDB_GET_KEY_COMMAND " " << key_str.GetKeyForCommandLine();
   *cmdstring = wr.str();
   return common::Error();
 }
@@ -58,7 +56,7 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
 common::Error CommandTranslator::DeleteKeyCommandImpl(const NKey& key, command_buffer_t* cmdstring) const {
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
-  wr << FORESTDB_DELETE_KEY_COMMAND << " " << key_str.GetKeyForCommandLine();
+  wr << FORESTDB_DELETE_KEY_COMMAND " " << key_str.GetKeyForCommandLine();
   *cmdstring = wr.str();
   return common::Error();
 }
@@ -68,7 +66,7 @@ common::Error CommandTranslator::RenameKeyCommandImpl(const NKey& key,
                                                       command_buffer_t* cmdstring) const {
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
-  wr << FORESTDB_RENAME_KEY_COMMAND << " " << key_str.GetKeyForCommandLine() << " " << new_name.GetKeyForCommandLine();
+  wr << FORESTDB_RENAME_KEY_COMMAND " " << key_str.GetKeyForCommandLine() << " " << new_name.GetKeyForCommandLine();
   *cmdstring = wr.str();
   return common::Error();
 }

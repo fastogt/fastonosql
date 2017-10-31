@@ -18,8 +18,6 @@
 
 #include "core/icommand_translator.h"
 
-#include <sstream>
-
 extern "C" {
 #include "sds.h"
 }
@@ -64,7 +62,7 @@ common::Error ICommandTranslator::RemoveDBCommand(const std::string& name, comma
   }
 
   command_buffer_writer_t wr;
-  wr << DB_REMOVEDB_COMMAND << " " << name;
+  wr << DB_REMOVEDB_COMMAND " " << name;
   *cmdstring = wr.str();
   return common::Error();
 }
@@ -75,7 +73,7 @@ common::Error ICommandTranslator::CreateDBCommand(const std::string& name, comma
   }
 
   command_buffer_writer_t wr;
-  wr << DB_CREATEDB_COMMAND << " " << name;
+  wr << DB_CREATEDB_COMMAND " " << name;
   *cmdstring = wr.str();
   return common::Error();
 }
@@ -86,7 +84,7 @@ common::Error ICommandTranslator::SelectDBCommand(const std::string& name, comma
   }
 
   command_buffer_writer_t wr;
-  wr << DB_SELECTDB_COMMAND << " " << name;
+  wr << DB_SELECTDB_COMMAND " " << name;
   *cmdstring = wr.str();
   return common::Error();
 }

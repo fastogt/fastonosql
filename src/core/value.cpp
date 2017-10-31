@@ -19,7 +19,6 @@
 #include "core/value.h"
 
 #include <algorithm>
-#include <sstream>
 
 #include <common/convert2string.h>
 #include <common/utils.h>

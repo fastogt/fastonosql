@@ -18,7 +18,7 @@
 
 #include "core/db/upscaledb/server_info.h"
 
-#include <sstream>  // for operator<<, ostream, etc
+  // for operator<<, ostream, etc
 
 #include "core/db_traits.h"
 

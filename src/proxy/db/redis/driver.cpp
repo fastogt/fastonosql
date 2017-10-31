@@ -18,8 +18,6 @@
 
 #include "proxy/db/redis/driver.h"
 
-#include <sstream>
-
 #include <common/convert2string.h>           // for ConvertFromString, etc
 #include <common/file_system/file_system.h>  // for copy_file
 
@@ -393,7 +391,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
           core::NKey k(key_str);
           core::NDbKValue dbv(k, core::NValue());
           core::command_buffer_writer_t wr_type;
-          wr_type << REDIS_TYPE_COMMAND << " " << key_str.GetKeyForCommandLine();
+          wr_type << REDIS_TYPE_COMMAND " " << key_str.GetKeyForCommandLine();
           cmds.push_back(CreateCommandFast(wr_type.str(), core::C_INNER));
 
           core::command_buffer_writer_t wr_ttl;
@@ -501,7 +499,7 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
 
   NotifyProgress(sender, 50);
   core::command_buffer_writer_t wr;
-  wr << REDIS_PUBSUB_CHANNELS_COMMAND << " " << res.pattern;
+  wr << REDIS_PUBSUB_CHANNELS_COMMAND " " << res.pattern;
   const core::command_buffer_t load_channels_request = wr.str();
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(load_channels_request, core::C_INNER);
   common::Error err = Execute(cmd);
@@ -526,7 +524,7 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
         bool isok = arm->GetString(i, &channel);
         if (isok) {
           core::command_buffer_writer_t wr2;
-          wr2 << REDIS_PUBSUB_NUMSUB_COMMAND << " " << channel;
+          wr2 << REDIS_PUBSUB_NUMSUB_COMMAND " " << channel;
           core::NDbPSChannel c(channel, 0);
           cmds.push_back(CreateCommandFast(wr2.str(), core::C_INNER));
           res.channels.push_back(c);

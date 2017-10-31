@@ -18,7 +18,7 @@
 
 #include "proxy/connection_settings/iconnection_settings.h"
 
-#include <sstream>
+
 
 #include <inttypes.h>  // for PRIu32
 

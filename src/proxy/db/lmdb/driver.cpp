@@ -18,7 +18,7 @@
 
 #include "proxy/db/lmdb/driver.h"
 
-#include <sstream>
+
 
 #include <common/convert2string.h>  // for ConvertToString
 
