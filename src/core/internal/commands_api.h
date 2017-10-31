@@ -101,10 +101,10 @@ common::Error ApiTraits<CDBConnection>::Scan(internal::CommandHandler* handler,
   std::string rep_out = common::ConvertToString(cursor_out);  // string representing
   common::StringValue* val = common::Value::CreateStringValue(rep_out);
   mar->Append(val);
+  mar->Append(ar);
+
   FastoObject* child = new FastoObject(out, mar, cdb->GetDelimiter());
   out->AddChildren(child);
-  FastoObject* keys_arr = new FastoObject(child, ar, cdb->GetDelimiter());
-  child->AddChildren(keys_arr);
   return common::Error();
 }
 

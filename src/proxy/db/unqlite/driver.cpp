@@ -141,16 +141,13 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
     if (rchildrens.size()) {
       CHECK_EQ(rchildrens.size(), 1);
       core::FastoObject* array = rchildrens[0].get();
-      if (!array) {
-        goto done;
-      }
-
       auto array_value = array->GetValue();
       common::ArrayValue* arm = nullptr;
       if (!array_value->GetAsList(&arm)) {
         goto done;
       }
 
+      CHECK_EQ(arm->GetSize(), 2);
       std::string cursor;
       bool isok = arm->GetString(0, &cursor);
       if (!isok) {
@@ -162,15 +159,9 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         res.cursor_out = lcursor;
       }
 
-      rchildrens = array->GetChildrens();
-      if (!rchildrens.size()) {
-        goto done;
-      }
-
-      core::FastoObject* obj = rchildrens[0].get();
-      auto obj_value = obj->GetValue();
       common::ArrayValue* ar = nullptr;
-      if (!obj_value->GetAsList(&ar) || ar->IsEmpty()) {
+      isok = arm->GetList(1, &ar);
+      if (!isok) {
         goto done;
       }
 

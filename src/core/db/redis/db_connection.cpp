@@ -184,71 +184,6 @@ common::Error ValueFromReplay(redisReply* r, common::Value** out) {
   return common::Error();
 }
 
-common::Error ObjectFromReplay(FastoObject* out,
-                               redisReply* r,
-                               const std::string& delimiter,
-                               common::ArrayValue* prev_arv = nullptr) {
-  if (!out || !r) {
-    DNOTREACHED();
-    return common::make_error_inval();
-  }
-
-  switch (r->type) {
-    case REDIS_REPLY_NIL: {
-      common::Value* val = common::Value::CreateNullValue();
-      if (!prev_arv) {
-        FastoObject* obj = new FastoObject(out, val, delimiter);
-        out->AddChildren(obj);
-      } else {
-        prev_arv->Append(val);
-      }
-      break;
-    }
-    case REDIS_REPLY_ERROR: {
-      std::string str(r->str, r->len);
-      return common::make_error(str);
-    }
-    case REDIS_REPLY_STATUS:
-    case REDIS_REPLY_STRING: {
-      std::string str(r->str, r->len);
-      common::StringValue* val = common::Value::CreateStringValue(str);
-      if (!prev_arv) {
-        FastoObject* obj = new FastoObject(out, val, delimiter);
-        out->AddChildren(obj);
-      } else {
-        prev_arv->Append(val);
-      }
-      break;
-    }
-    case REDIS_REPLY_INTEGER: {
-      common::FundamentalValue* val = common::Value::CreateLongLongIntegerValue(r->integer);
-      if (!prev_arv) {
-        FastoObject* obj = new FastoObject(out, val, delimiter);
-        out->AddChildren(obj);
-      } else {
-        prev_arv->Append(val);
-      }
-      break;
-    }
-    case REDIS_REPLY_ARRAY: {
-      common::ArrayValue* arv = common::Value::CreateArrayValue();
-      FastoObject* child = new FastoObject(out, arv, delimiter);
-      for (size_t i = 0; i < r->elements; ++i) {
-        common::Error err = ObjectFromReplay(child, r->element[i], delimiter, arv);
-        if (err) {
-          delete child;
-          return err;
-        }
-      }
-      out->AddChildren(child);
-      break;
-    }
-    default: { return common::make_error(common::MemSPrintf("Unknown reply type: %d", r->type)); }
-  }
-
-  return common::Error();
-}
-
 common::Error PrintRedisContextError(redisContext* context) {
   if (!context) {
     DNOTREACHED();
@@ -968,7 +903,6 @@ common::Error DBConnection::CliFormatReplyRaw(FastoObject* out, redisReply* r) {
     return common::make_error_inval();
   }
 
-  // common::Error err = ObjectFromReplay(out, r, GetDelimiter());
   common::Value* out_val = nullptr;
   common::Error err = ValueFromReplay(r, &out_val);
   if (err) {

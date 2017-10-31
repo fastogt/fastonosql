@@ -165,36 +165,38 @@ common::Error Driver::GetServerCommands(std::vector<const core::CommandInfo*>* c
   core::FastoObject::childs_t rchildrens = cmd->GetChildrens();
   CHECK_EQ(rchildrens.size(), 1);
   core::FastoObject* array = rchildrens[0].get();  // +
-  CHECK(array);
   std::vector<const core::CommandInfo*> lcommands;
-  for (core::FastoObjectIPtr child : array->GetChildrens()) {
-    common::ValueSPtr val = child->GetValue();
-    const common::ArrayValue* com_value = NULL;
-    if (val->GetAsList(&com_value)) {
-      // 0) command name
-      // 1) command arity specification
-      // 2) nested Array reply of command flags
-      // 3) position of first key in argument list
-      // 4) position of last key in argument list
-      // 5) step count for locating repeating keys
-      size_t sz = com_value->GetSize();
-      if (sz < 4) {
-        return common::make_error("Invalid " REDIS_GET_COMMANDS " command output");
-      }
+  auto array_value = array->GetValue();
+  common::ArrayValue* commands_array = nullptr;
+  if (array_value->GetAsList(&commands_array)) {
+    for (size_t i = 0; i < commands_array->GetSize(); ++i) {
+      const common::ArrayValue* com_value = NULL;
+      if (commands_array->GetList(i, &com_value)) {
+        // 0) command name
+        // 1) command arity specification
+        // 2) nested Array reply of command flags
+        // 3) position of first key in argument list
+        // 4) position of last key in argument list
+        // 5) step count for locating repeating keys
+        size_t sz = com_value->GetSize();
+        if (sz < 4) {
+          return common::make_error("Invalid " REDIS_GET_COMMANDS " command output");
+        }
 
-      std::string command_name;
-      if (!com_value->GetString(0, &command_name)) {
-        return common::make_error("Invalid " REDIS_GET_COMMANDS " command output");
-      }
+        std::string command_name;
+        if (!com_value->GetString(0, &command_name)) {
+          return common::make_error("Invalid " REDIS_GET_COMMANDS " command output");
+        }
 
-      const core::CommandHolder* cmd = nullptr;
-      common::Error err = tran->FindCommand(command_name, &cmd);
-      if (err) {
-        WARNING_LOG() << "Found not handled command: " << command_name;
-        continue;
-      }
+        const core::CommandHolder* cmd = nullptr;
+        common::Error err = tran->FindCommand(command_name, &cmd);
+        if (err) {
+          WARNING_LOG() << "Found not handled command: " << command_name;
+          continue;
+        }
 
-      lcommands.push_back(cmd);
+        lcommands.push_back(cmd);
+      }
     }
   }
 
@@ -211,31 +213,30 @@ common::Error Driver::GetServerLoadedModules(std::vector<core::ModuleInfo>* modu
 
   core::FastoObject::childs_t rchildrens = cmd->GetChildrens();
   CHECK_EQ(rchildrens.size(), 1);
-  core::FastoObject* array = rchildrens[0].get();  // +
-  CHECK(array);
-  common::ArrayValue* ar = nullptr;
+  core::FastoObject* array = rchildrens[0].get();
+  common::ArrayValue* modules_array = nullptr;
   auto array_value = array->GetValue();
-  CHECK(array_value->GetAsList(&ar));
   std::vector<core::ModuleInfo> lmodules;
-  for (core::FastoObjectIPtr child : array->GetChildrens()) {
-    common::ValueSPtr val = child->GetValue();
-    const common::ArrayValue* com_value = NULL;
-    if (val->GetAsList(&com_value)) {
-      if (com_value->GetSize() < 4) {
-        return common::make_error("Invalid " REDIS_GET_LOADED_MODULES_COMMANDS " command output");
-      }
+  if (array_value->GetAsList(&modules_array)) {
+    for (size_t i = 0; i < modules_array->GetSize(); ++i) {
+      const common::ArrayValue* mod_value = NULL;
+      if (modules_array->GetList(i, &mod_value)) {
+        if (mod_value->GetSize() < 4) {
+          return common::make_error("Invalid " REDIS_GET_LOADED_MODULES_COMMANDS " command output");
+        }
 
-      std::string module_name;
-      if (!com_value->GetString(1, &module_name)) {
-        return common::make_error("Invalid " REDIS_GET_LOADED_MODULES_COMMANDS " command output");
-      }
+        std::string module_name;
+        if (!mod_value->GetString(1, &module_name)) {
+          return common::make_error("Invalid " REDIS_GET_LOADED_MODULES_COMMANDS " command output");
+        }
 
-      long long version;
-      if (!com_value->GetLongLongInteger(3, &version)) {
-        return common::make_error("Invalid " REDIS_GET_LOADED_MODULES_COMMANDS " command output");
-      }
+        long long version;
+        if (!mod_value->GetLongLongInteger(3, &version)) {
+          return common::make_error("Invalid " REDIS_GET_LOADED_MODULES_COMMANDS " command output");
+        }
 
-      lmodules.push_back({module_name, static_cast<uint32_t>(version)});
+        lmodules.push_back({module_name, static_cast<uint32_t>(version)});
+      }
     }
   }
 
@@ -358,16 +359,13 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
     if (rchildrens.size()) {
       CHECK_EQ(rchildrens.size(), 1);
       core::FastoObject* array = rchildrens[0].get();
-      if (!array) {
-        goto done;
-      }
-
       auto array_value = array->GetValue();
       common::ArrayValue* arm = nullptr;
       if (!array_value->GetAsList(&arm)) {
         goto done;
       }
 
+      CHECK_EQ(arm->GetSize(), 2);
       std::string cursor;
       bool isok = arm->GetString(0, &cursor);
       if (!isok) {
@@ -379,15 +377,9 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         res.cursor_out = lcursor;
       }
 
-      rchildrens = array->GetChildrens();
-      if (!rchildrens.size()) {
-        goto done;
-      }
-
-      core::FastoObject* obj = rchildrens[0].get();
-      auto obj_value = obj->GetValue();
       common::ArrayValue* ar = nullptr;
-      if (!obj_value->GetAsList(&ar) || ar->IsEmpty()) {
+      isok = arm->GetList(1, &ar);
+      if (!isok) {
         goto done;
       }
 
