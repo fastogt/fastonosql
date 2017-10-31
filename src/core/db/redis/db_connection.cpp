@@ -136,8 +136,8 @@ const ConstantCommandsArray& CDBConnection<redis::NativeConnection, redis::RConf
 namespace redis {
 namespace {
 
-common::Error valueFromReplay(redisReply* r, common::Value** out) {
-  if (!out) {
+common::Error ValueFromReplay(redisReply* r, common::Value** out) {
+  if (!out || !r) {
     DNOTREACHED();
     return common::make_error_inval();
   }
@@ -168,7 +168,7 @@ common::Error valueFromReplay(redisReply* r, common::Value** out) {
       common::ArrayValue* arv = common::Value::CreateArrayValue();
       for (size_t i = 0; i < r->elements; ++i) {
         common::Value* val = NULL;
-        common::Error err = valueFromReplay(r->element[i], &val);
+        common::Error err = ValueFromReplay(r->element[i], &val);
         if (err) {
           delete arv;
           return err;
@@ -176,6 +176,71 @@ common::Error valueFromReplay(redisReply* r, common::Value** out) {
         arv->Append(val);
       }
       *out = arv;
+      break;
+    }
+    default: { return common::make_error(common::MemSPrintf("Unknown reply type: %d", r->type)); }
+  }
+
+  return common::Error();
+}
+
+common::Error ObjectFromReplay(FastoObject* out,
+                               redisReply* r,
+                               const std::string& delimiter,
+                               common::ArrayValue* prev_arv = nullptr) {
+  if (!out || !r) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
+  switch (r->type) {
+    case REDIS_REPLY_NIL: {
+      common::Value* val = common::Value::CreateNullValue();
+      if (!prev_arv) {
+        FastoObject* obj = new FastoObject(out, val, delimiter);
+        out->AddChildren(obj);
+      } else {
+        prev_arv->Append(val);
+      }
+      break;
+    }
+    case REDIS_REPLY_ERROR: {
+      std::string str(r->str, r->len);
+      return common::make_error(str);
+    }
+    case REDIS_REPLY_STATUS:
+    case REDIS_REPLY_STRING: {
+      std::string str(r->str, r->len);
+      common::StringValue* val = common::Value::CreateStringValue(str);
+      if (!prev_arv) {
+        FastoObject* obj = new FastoObject(out, val, delimiter);
+        out->AddChildren(obj);
+      } else {
+        prev_arv->Append(val);
+      }
+      break;
+    }
+    case REDIS_REPLY_INTEGER: {
+      common::FundamentalValue* val = common::Value::CreateLongLongIntegerValue(r->integer);
+      if (!prev_arv) {
+        FastoObject* obj = new FastoObject(out, val, delimiter);
+        out->AddChildren(obj);
+      } else {
+        prev_arv->Append(val);
+      }
+      break;
+    }
+    case REDIS_REPLY_ARRAY: {
+      common::ArrayValue* arv = common::Value::CreateArrayValue();
+      FastoObject* child = new FastoObject(out, arv, delimiter);
+      for (size_t i = 0; i < r->elements; ++i) {
+        common::Error err = ObjectFromReplay(child, r->element[i], delimiter, arv);
+        if (err) {
+          delete child;
+          return err;
+        }
+      }
+      out->AddChildren(child);
       break;
     }
     default: { return common::make_error(common::MemSPrintf("Unknown reply type: %d", r->type)); }
@@ -645,7 +710,7 @@ common::Error DBConnection::ScanImpl(uint64_t cursor_in,
   }
 
   common::Value* val = nullptr;
-  err = valueFromReplay(reply, &val);
+  err = ValueFromReplay(reply, &val);
   if (err) {
     delete val;
     freeReplyObject(reply);
@@ -897,104 +962,25 @@ common::Error DBConnection::QuitImpl() {
   return common::Error();
 }
 
-common::Error DBConnection::CliFormatReplyRaw(FastoObjectArray* ar, redisReply* r) {
-  if (!ar || !r) {
-    DNOTREACHED();
-    return common::make_error_inval();
-  }
-
-  switch (r->type) {
-    case REDIS_REPLY_NIL: {
-      common::Value* val = common::Value::CreateNullValue();
-      ar->Append(val);
-      break;
-    }
-    case REDIS_REPLY_ERROR: {
-      std::string str(r->str, r->len);
-      return common::make_error(str);
-    }
-    case REDIS_REPLY_STATUS:
-    case REDIS_REPLY_STRING: {
-      common::StringValue* val = common::Value::CreateStringValue(std::string(r->str, r->len));
-      ar->Append(val);
-      break;
-    }
-    case REDIS_REPLY_INTEGER: {
-      common::FundamentalValue* val = common::Value::CreateLongLongIntegerValue(r->integer);
-      ar->Append(val);
-      break;
-    }
-    case REDIS_REPLY_ARRAY: {
-      common::ArrayValue* arv = common::Value::CreateArrayValue();
-      FastoObjectArray* child = new FastoObjectArray(ar, arv, GetDelimiter());
-      for (size_t i = 0; i < r->elements; ++i) {
-        common::Error err = CliFormatReplyRaw(child, r->element[i]);
-        if (err) {
-          delete child;
-          return err;
-        }
-      }
-      ar->AddChildren(child);
-      break;
-    }
-    default: { return common::make_error(common::MemSPrintf("Unknown reply type: %d", r->type)); }
-  }
-
-  return common::Error();
-}
-
 common::Error DBConnection::CliFormatReplyRaw(FastoObject* out, redisReply* r) {
   if (!out || !r) {
     DNOTREACHED();
     return common::make_error_inval();
   }
 
-  FastoObject* obj = nullptr;
-  switch (r->type) {
-    case REDIS_REPLY_NIL: {
-      common::Value* val = common::Value::CreateNullValue();
-      obj = new FastoObject(out, val, GetDelimiter());
-      out->AddChildren(obj);
-      break;
+  // common::Error err = ObjectFromReplay(out, r, GetDelimiter());
+  common::Value* out_val = nullptr;
+  common::Error err = ValueFromReplay(r, &out_val);
+  if (err) {
+    if (err->GetDescription() == "NOAUTH") {  //"NOAUTH Authentication
+                                              // required."
+      is_auth_ = false;
     }
-    case REDIS_REPLY_ERROR: {
-      if (common::strcasestr(r->str, "NOAUTH")) {  //"NOAUTH Authentication
-                                                   // required."
-        is_auth_ = false;
-      }
-      std::string str(r->str, r->len);
-      return common::make_error(str);
-    }
-    case REDIS_REPLY_STATUS:
-    case REDIS_REPLY_STRING: {
-      std::string str(r->str, r->len);
-      common::StringValue* val = common::Value::CreateStringValue(str);
-      obj = new FastoObject(out, val, GetDelimiter());
-      out->AddChildren(obj);
-      break;
-    }
-    case REDIS_REPLY_INTEGER: {
-      common::FundamentalValue* val = common::Value::CreateLongLongIntegerValue(r->integer);
-      obj = new FastoObject(out, val, GetDelimiter());
-      out->AddChildren(obj);
-      break;
-    }
-    case REDIS_REPLY_ARRAY: {
-      common::ArrayValue* arv = common::Value::CreateArrayValue();
-      FastoObjectArray* child = new FastoObjectArray(out, arv, GetDelimiter());
-      for (size_t i = 0; i < r->elements; ++i) {
-        common::Error err = CliFormatReplyRaw(child, r->element[i]);
-        if (err) {
-          delete child;
-          return err;
-        }
-      }
-      out->AddChildren(child);
-      break;
-    }
-    default: { return common::make_error(common::MemSPrintf("Unknown reply type: %d", r->type)); }
+    return err;
   }
 
+  FastoObject* obj = new FastoObject(out, out_val, GetDelimiter());
+  out->AddChildren(obj);
   return common::Error();
 }
 
@@ -1314,7 +1300,7 @@ common::Error DBConnection::Lrange(const NKey& key, int start, int stop, NDbKVal
 
   if (reply->type == REDIS_REPLY_ARRAY) {
     common::Value* val = nullptr;
-    common::Error err = valueFromReplay(reply, &val);
+    common::Error err = ValueFromReplay(reply, &val);
     if (err) {
       delete val;
       freeReplyObject(reply);
@@ -1397,7 +1383,7 @@ common::Error DBConnection::Smembers(const NKey& key, NDbKValue* loaded_key) {
 
   if (reply->type == REDIS_REPLY_ARRAY) {
     common::Value* val = nullptr;
-    common::Error err = valueFromReplay(reply, &val);
+    common::Error err = ValueFromReplay(reply, &val);
     if (err) {
       delete val;
       freeReplyObject(reply);
@@ -1496,7 +1482,7 @@ common::Error DBConnection::Zrange(const NKey& key, int start, int stop, bool wi
 
   if (reply->type == REDIS_REPLY_ARRAY) {
     common::Value* val = nullptr;
-    common::Error err = valueFromReplay(reply, &val);
+    common::Error err = ValueFromReplay(reply, &val);
     if (err) {
       delete val;
       freeReplyObject(reply);
@@ -1604,7 +1590,7 @@ common::Error DBConnection::Hgetall(const NKey& key, NDbKValue* loaded_key) {
 
   if (reply->type == REDIS_REPLY_ARRAY) {
     common::Value* val = nullptr;
-    common::Error err = valueFromReplay(reply, &val);
+    common::Error err = ValueFromReplay(reply, &val);
     if (err) {
       delete val;
       freeReplyObject(reply);

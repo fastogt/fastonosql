@@ -186,7 +186,7 @@ common::Error CommandsApi::Mget(internal::CommandHandler* handler, commands_args
     common::StringValue* val = common::Value::CreateStringValue(keysout[i]);
     ar->Append(val);
   }
-  FastoObjectArray* child = new FastoObjectArray(out, ar, rocks->GetDelimiter());
+  FastoObject* child = new FastoObject(out, ar, rocks->GetDelimiter());
   out->AddChildren(child);
   return common::Error();
 }

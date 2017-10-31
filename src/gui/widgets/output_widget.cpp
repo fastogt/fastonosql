@@ -185,7 +185,7 @@ void OutputWidget::addChild(core::FastoObjectIPtr child) {
     return;
   }
 
-  core::FastoObjectArray* arr = dynamic_cast<core::FastoObjectArray*>(child->GetParent());  // +
+  core::FastoObject* arr = dynamic_cast<core::FastoObject*>(child->GetParent());  // +
   CHECK(arr);
 
   QModelIndex parent;

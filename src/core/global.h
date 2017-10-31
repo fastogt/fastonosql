@@ -106,20 +106,6 @@ class FastoObjectCommand : public FastoObject {
   const CmdLoggingType ct_;
 };
 
-class FastoObjectArray : public FastoObject {
- public:
-  FastoObjectArray(FastoObject* parent, common::ArrayValue* ar, const std::string& delimiter);
-
-  // Appends a Value to the end of the list.
-  void Append(common::Value* in_value);
-  virtual std::string ToString() const override;
-
-  common::ArrayValue* GetArray() const;
-
- private:
-  DISALLOW_COPY_AND_ASSIGN(FastoObjectArray);
-};
-
 }  // namespace core
 }  // namespace fastonosql
 

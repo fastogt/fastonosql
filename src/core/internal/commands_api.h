@@ -101,9 +101,9 @@ common::Error ApiTraits<CDBConnection>::Scan(internal::CommandHandler* handler,
   std::string rep_out = common::ConvertToString(cursor_out);  // string representing
   common::StringValue* val = common::Value::CreateStringValue(rep_out);
   mar->Append(val);
-  FastoObjectArray* child = new FastoObjectArray(out, mar, cdb->GetDelimiter());
+  FastoObject* child = new FastoObject(out, mar, cdb->GetDelimiter());
   out->AddChildren(child);
-  FastoObjectArray* keys_arr = new FastoObjectArray(child, ar, cdb->GetDelimiter());
+  FastoObject* keys_arr = new FastoObject(child, ar, cdb->GetDelimiter());
   child->AddChildren(keys_arr);
   return common::Error();
 }
@@ -130,7 +130,7 @@ common::Error ApiTraits<CDBConnection>::Keys(internal::CommandHandler* handler,
     common::StringValue* val = common::Value::CreateStringValue(keysout[i]);
     ar->Append(val);
   }
-  FastoObjectArray* child = new FastoObjectArray(out, ar, cdb->GetDelimiter());
+  FastoObject* child = new FastoObject(out, ar, cdb->GetDelimiter());
   out->AddChildren(child);
   return common::Error();
 }

@@ -124,7 +124,6 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
 
   common::Error SendSync(unsigned long long* payload) WARN_UNUSED_RESULT;
 
-  common::Error CliFormatReplyRaw(FastoObjectArray* ar, redisReply* r) WARN_UNUSED_RESULT;
   common::Error CliFormatReplyRaw(FastoObject* out, redisReply* r) WARN_UNUSED_RESULT;
   common::Error CliReadReply(FastoObject* out) WARN_UNUSED_RESULT;
 

@@ -164,10 +164,8 @@ common::Error Driver::GetServerCommands(std::vector<const core::CommandInfo*>* c
 
   core::FastoObject::childs_t rchildrens = cmd->GetChildrens();
   CHECK_EQ(rchildrens.size(), 1);
-  core::FastoObjectArray* array = dynamic_cast<core::FastoObjectArray*>(rchildrens[0].get());  // +
+  core::FastoObject* array = rchildrens[0].get();  // +
   CHECK(array);
-  common::ArrayValue* ar = array->GetArray();
-  CHECK(ar);
   std::vector<const core::CommandInfo*> lcommands;
   for (core::FastoObjectIPtr child : array->GetChildrens()) {
     common::ValueSPtr val = child->GetValue();
@@ -179,7 +177,8 @@ common::Error Driver::GetServerCommands(std::vector<const core::CommandInfo*>* c
       // 3) position of first key in argument list
       // 4) position of last key in argument list
       // 5) step count for locating repeating keys
-      if (com_value->GetSize() < 4) {
+      size_t sz = com_value->GetSize();
+      if (sz < 4) {
         return common::make_error("Invalid " REDIS_GET_COMMANDS " command output");
       }
 
@@ -212,21 +211,16 @@ common::Error Driver::GetServerLoadedModules(std::vector<core::ModuleInfo>* modu
 
   core::FastoObject::childs_t rchildrens = cmd->GetChildrens();
   CHECK_EQ(rchildrens.size(), 1);
-  core::FastoObjectArray* array = dynamic_cast<core::FastoObjectArray*>(rchildrens[0].get());  // +
+  core::FastoObject* array = rchildrens[0].get();  // +
   CHECK(array);
-  common::ArrayValue* ar = array->GetArray();
-  CHECK(ar);
+  common::ArrayValue* ar = nullptr;
+  auto array_value = array->GetValue();
+  CHECK(array_value->GetAsList(&ar));
   std::vector<core::ModuleInfo> lmodules;
   for (core::FastoObjectIPtr child : array->GetChildrens()) {
     common::ValueSPtr val = child->GetValue();
     const common::ArrayValue* com_value = NULL;
     if (val->GetAsList(&com_value)) {
-      // 0) command name
-      // 1) command arity specification
-      // 2) nested Array reply of command flags
-      // 3) position of first key in argument list
-      // 4) position of last key in argument list
-      // 5) step count for locating repeating keys
       if (com_value->GetSize() < 4) {
         return common::make_error("Invalid " REDIS_GET_LOADED_MODULES_COMMANDS " command output");
       }
@@ -320,10 +314,11 @@ void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
 
   core::FastoObject::childs_t rchildrens = cmd->GetChildrens();
   CHECK_EQ(rchildrens.size(), 1);
-  core::FastoObjectArray* array = dynamic_cast<core::FastoObjectArray*>(rchildrens[0].get());  // +
+  core::FastoObject* array = rchildrens[0].get();  // +
   CHECK(array);
-  common::ArrayValue* ar = array->GetArray();
-  CHECK(ar);
+  common::ArrayValue* ar = nullptr;
+  auto array_value = array->GetValue();
+  CHECK(array_value->GetAsList(&ar));
 
   core::IDataBaseInfoSPtr curdb(info);
   std::string scountDb;
@@ -362,13 +357,14 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
     core::FastoObject::childs_t rchildrens = cmd->GetChildrens();
     if (rchildrens.size()) {
       CHECK_EQ(rchildrens.size(), 1);
-      core::FastoObjectArray* array = dynamic_cast<core::FastoObjectArray*>(rchildrens[0].get());  // +
+      core::FastoObject* array = rchildrens[0].get();
       if (!array) {
         goto done;
       }
 
-      common::ArrayValue* arm = array->GetArray();
-      if (!arm->GetSize()) {
+      auto array_value = array->GetValue();
+      common::ArrayValue* arm = nullptr;
+      if (!array_value->GetAsList(&arm)) {
         goto done;
       }
 
@@ -389,13 +385,9 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
       }
 
       core::FastoObject* obj = rchildrens[0].get();
-      core::FastoObjectArray* arr = dynamic_cast<core::FastoObjectArray*>(obj);  // +
-      if (!arr) {
-        goto done;
-      }
-
-      common::ArrayValue* ar = arr->GetArray();
-      if (ar->IsEmpty()) {
+      auto obj_value = obj->GetValue();
+      common::ArrayValue* ar = nullptr;
+      if (!obj_value->GetAsList(&ar) || ar->IsEmpty()) {
         goto done;
       }
 
@@ -476,9 +468,11 @@ void Driver::HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEven
     core::FastoObject::childs_t ch = cmd->GetChildrens();
     if (ch.size()) {
       CHECK_EQ(ch.size(), 1);
-      core::FastoObjectArray* array = dynamic_cast<core::FastoObjectArray*>(ch[0].get());  // +
-      if (array) {
-        res.info = core::MakeServerProperty(array->GetArray());
+      core::FastoObject* array = ch[0].get();
+      auto array_value = array->GetValue();
+      common::ArrayValue* arr = nullptr;
+      if (array_value->GetAsList(&arr)) {
+        res.info = core::MakeServerProperty(arr);
       }
     }
   }
@@ -526,13 +520,10 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
     core::FastoObject::childs_t rchildrens = cmd->GetChildrens();
     if (rchildrens.size()) {
       CHECK_EQ(rchildrens.size(), 1);
-      core::FastoObjectArray* array = dynamic_cast<core::FastoObjectArray*>(rchildrens[0].get());  // +
-      if (!array) {
-        goto done;
-      }
-
-      common::ArrayValue* arm = array->GetArray();
-      if (!arm->GetSize()) {
+      core::FastoObject* array = rchildrens[0].get();
+      auto array_value = array->GetValue();
+      common::ArrayValue* arm = nullptr;
+      if (!array_value->GetAsList(&arm) || !arm->GetSize()) {
         goto done;
       }
 
@@ -562,9 +553,10 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
         if (tchildrens.size()) {
           DCHECK_EQ(tchildrens.size(), 1);
           if (tchildrens.size() == 1) {
-            core::FastoObjectArray* array_sub = dynamic_cast<core::FastoObjectArray*>(tchildrens[0].get());  // +
-            if (array_sub) {
-              common::ArrayValue* array_sub_inner = array_sub->GetArray();
+            core::FastoObject* array_sub = tchildrens[0].get();
+            auto arr_value = array_sub->GetValue();
+            common::ArrayValue* array_sub_inner = nullptr;
+            if (arr_value->GetAsList(&array_sub_inner)) {
               common::Value* fund_sub = nullptr;
               if (array_sub_inner->Get(1, &fund_sub)) {
                 long long lsub;

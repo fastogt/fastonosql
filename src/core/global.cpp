@@ -124,23 +124,6 @@ CmdLoggingType FastoObjectCommand::GetCommandLoggingType() const {
   return ct_;
 }
 
-FastoObjectArray::FastoObjectArray(FastoObject* parent, common::ArrayValue* ar, const std::string& delimiter)
-    : FastoObject(parent, ar, delimiter) {}
-
-void FastoObjectArray::Append(common::Value* in_value) {
-  common::ArrayValue* ar = static_cast<common::ArrayValue*>(value_.get());
-  ar->Append(in_value);
-}
-
-std::string FastoObjectArray::ToString() const {
-  common::ArrayValue* ar = GetArray();
-  return ConvertValue(ar, GetDelimiter(), false);
-}
-
-common::ArrayValue* FastoObjectArray::GetArray() const {
-  return static_cast<common::ArrayValue*>(value_.get());
-}
-
 }  // namespace core
 }  // namespace fastonosql
 
