@@ -197,6 +197,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
     if (rchildrens.size()) {
       CHECK_EQ(rchildrens.size(), 1);
       core::FastoObject* array = rchildrens[0].get();
+      CHECK(array);
       auto array_value = array->GetValue();
       common::ArrayValue* arm = nullptr;
       if (!array_value->GetAsList(&arm)) {

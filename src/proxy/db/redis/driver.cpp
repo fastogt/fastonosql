@@ -162,7 +162,8 @@ common::Error Driver::GetServerCommands(std::vector<const core::CommandInfo*>* c
 
   core::FastoObject::childs_t rchildrens = cmd->GetChildrens();
   CHECK_EQ(rchildrens.size(), 1);
-  core::FastoObject* array = rchildrens[0].get();  // +
+  core::FastoObject* array = rchildrens[0].get();
+  CHECK(array);
   std::vector<const core::CommandInfo*> lcommands;
   auto array_value = array->GetValue();
   common::ArrayValue* commands_array = nullptr;
@@ -212,6 +213,7 @@ common::Error Driver::GetServerLoadedModules(std::vector<core::ModuleInfo>* modu
   core::FastoObject::childs_t rchildrens = cmd->GetChildrens();
   CHECK_EQ(rchildrens.size(), 1);
   core::FastoObject* array = rchildrens[0].get();
+  CHECK(array);
   common::ArrayValue* modules_array = nullptr;
   auto array_value = array->GetValue();
   std::vector<core::ModuleInfo> lmodules;
@@ -313,7 +315,7 @@ void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent*
 
   core::FastoObject::childs_t rchildrens = cmd->GetChildrens();
   CHECK_EQ(rchildrens.size(), 1);
-  core::FastoObject* array = rchildrens[0].get();  // +
+  core::FastoObject* array = rchildrens[0].get();
   CHECK(array);
   common::ArrayValue* ar = nullptr;
   auto array_value = array->GetValue();
@@ -357,6 +359,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
     if (rchildrens.size()) {
       CHECK_EQ(rchildrens.size(), 1);
       core::FastoObject* array = rchildrens[0].get();
+      CHECK(array);
       auto array_value = array->GetValue();
       common::ArrayValue* arm = nullptr;
       if (!array_value->GetAsList(&arm)) {
@@ -511,6 +514,7 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
     if (rchildrens.size()) {
       CHECK_EQ(rchildrens.size(), 1);
       core::FastoObject* array = rchildrens[0].get();
+      CHECK(array);
       auto array_value = array->GetValue();
       common::ArrayValue* arm = nullptr;
       if (!array_value->GetAsList(&arm) || !arm->GetSize()) {
