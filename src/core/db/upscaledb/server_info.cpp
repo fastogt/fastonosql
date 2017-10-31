@@ -18,8 +18,6 @@
 
 #include "core/db/upscaledb/server_info.h"
 
-  // for operator<<, ostream, etc
-
 #include "core/db_traits.h"
 
 #define MARKER "\r\n"

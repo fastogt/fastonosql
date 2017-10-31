@@ -18,8 +18,6 @@
 
 #include "core/internal/cdb_connection.h"
 
-
-
 #include <common/convert2string.h>
 
 #define GET_KEYS_PATTERN_3ARGS_ISI "SCAN %" PRIu64 " MATCH %s COUNT %" PRIu64

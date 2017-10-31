@@ -18,8 +18,6 @@
 
 #include "core/db_key.h"
 
-
-
 #include <common/convert2string.h>
 #include <common/string_util.h>  // for JoinString, Tokenize
 

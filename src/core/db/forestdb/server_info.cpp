@@ -18,8 +18,6 @@
 
 #include "core/db/forestdb/server_info.h"
 
-  // for operator<<, ostream, etc
-
 #include <common/convert2string.h>
 
 #include "core/db_traits.h"

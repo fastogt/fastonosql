@@ -19,7 +19,6 @@
 #include "proxy/connection_settings/icluster_connection_settings.h"
 
 #include <stddef.h>  // for size_t
-   // for basic_ostream, operator<<, etc
 
 #include <common/macros.h>     // for DNOTREACHED
 #include <common/net/types.h>  // for HostAndPort, operator==

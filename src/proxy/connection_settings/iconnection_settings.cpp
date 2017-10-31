@@ -18,8 +18,6 @@
 
 #include "proxy/connection_settings/iconnection_settings.h"
 
-
-
 #include <inttypes.h>  // for PRIu32
 
 #include <common/convert2string.h>  // for ConvertFromString, etc

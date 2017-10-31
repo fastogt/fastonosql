@@ -18,8 +18,6 @@
 
 #include "proxy/db/lmdb/driver.h"
 
-
-
 #include <common/convert2string.h>  // for ConvertToString
 
 #include "core/db/lmdb/database_info.h"

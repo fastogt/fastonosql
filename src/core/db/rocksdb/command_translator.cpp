@@ -18,8 +18,6 @@
 
 #include "core/db/rocksdb/command_translator.h"
 
-
-
 #include "core/connection_types.h"
 
 #define ROCKSDB_GET_KEY_COMMAND DB_GET_KEY_COMMAND
