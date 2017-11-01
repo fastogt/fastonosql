@@ -46,6 +46,8 @@ struct ApiTraits {
   static common::Error Delete(CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error SetTTL(CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error GetTTL(CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ModuleLoad(CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ModuleUnLoad(CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error Quit(CommandHandler* handler, commands_args_t argv, FastoObject* out);
 };
 
@@ -306,8 +308,6 @@ template <class CDBConnection>
 common::Error ApiTraits<CDBConnection>::SetTTL(internal::CommandHandler* handler,
                                                commands_args_t argv,
                                                FastoObject* out) {
-  UNUSED(out);
-
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
   key_t raw_key(argv[0]);
   NKey key(raw_key);
@@ -332,8 +332,6 @@ template <class CDBConnection>
 common::Error ApiTraits<CDBConnection>::GetTTL(internal::CommandHandler* handler,
                                                commands_args_t argv,
                                                FastoObject* out) {
-  UNUSED(out);
-
   CDBConnection* cdb = static_cast<CDBConnection*>(handler);
   key_t raw_key(argv[0]);
   NKey key(raw_key);
@@ -345,6 +343,40 @@ common::Error ApiTraits<CDBConnection>::GetTTL(internal::CommandHandler* handler
   }
 
   common::FundamentalValue* val = common::Value::CreateIntegerValue(ttl);
+  FastoObject* child = new FastoObject(out, val, cdb->GetDelimiter());
+  out->AddChildren(child);
+  return common::Error();
+}
+
+template <class CDBConnection>
+common::Error ApiTraits<CDBConnection>::ModuleLoad(CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  CDBConnection* cdb = static_cast<CDBConnection*>(handler);
+  ModuleInfo mod;
+  mod.name = argv[0];
+
+  common::Error err = cdb->ModuleLoad(mod);
+  if (err) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::CreateStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, cdb->GetDelimiter());
+  out->AddChildren(child);
+  return common::Error();
+}
+
+template <class CDBConnection>
+common::Error ApiTraits<CDBConnection>::ModuleUnLoad(CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  CDBConnection* cdb = static_cast<CDBConnection*>(handler);
+  ModuleInfo mod;
+  mod.name = argv[0];
+
+  common::Error err = cdb->ModuleUnLoad(mod);
+  if (err) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::CreateStringValue("OK");
   FastoObject* child = new FastoObject(out, val, cdb->GetDelimiter());
   out->AddChildren(child);
   return common::Error();

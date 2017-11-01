@@ -84,6 +84,8 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   void KeyLoaded(core::NDbKValue key);
   void KeyTTLChanged(core::NKey key, core::ttl_t ttl);
   void KeyTTLLoaded(core::NKey key, core::ttl_t ttl);
+  void ModuleLoaded(core::ModuleInfo module);
+  void ModuleUnLoaded(core::ModuleInfo module);
   void Disconnected();
 
  private Q_SLOTS:
@@ -149,6 +151,8 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   virtual void OnRenamedKey(const core::NKey& key, const core::string_key_t& new_key) override;
   virtual void OnChangedKeyTTL(const core::NKey& key, core::ttl_t ttl) override;
   virtual void OnLoadedKeyTTL(const core::NKey& key, core::ttl_t ttl) override;
+  virtual void OnUnLoadedModule(const core::ModuleInfo& module) override;
+  virtual void OnLoadedModule(const core::ModuleInfo& module) override;
   virtual void OnQuited() override;
 
  private:

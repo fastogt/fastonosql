@@ -74,6 +74,7 @@ const struct RegisterTypes {
     qRegisterMetaType<common::ValueSPtr>("common::ValueSPtr");
     qRegisterMetaType<core::FastoObjectIPtr>("core::FastoObjectIPtr");
     qRegisterMetaType<core::NKey>("core::NKey");
+    qRegisterMetaType<core::NKey>("core::ModuleInfo");
     qRegisterMetaType<core::NDbKValue>("core::NDbKValue");
     qRegisterMetaType<core::IDataBaseInfoSPtr>("core::IDataBaseInfoSPtr");
     qRegisterMetaType<core::ttl_t>("core::ttl_t");
@@ -629,6 +630,14 @@ void IDriver::OnChangedKeyTTL(const core::NKey& key, core::ttl_t ttl) {
 
 void IDriver::OnLoadedKeyTTL(const core::NKey& key, core::ttl_t ttl) {
   emit KeyTTLLoaded(key, ttl);
+}
+
+void IDriver::OnUnLoadedModule(const core::ModuleInfo& module) {
+  emit ModuleUnLoaded(module);
+}
+
+void IDriver::OnLoadedModule(const core::ModuleInfo& module) {
+  emit ModuleLoaded(module);
 }
 
 void IDriver::OnQuited() {

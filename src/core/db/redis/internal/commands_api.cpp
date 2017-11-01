@@ -4027,18 +4027,6 @@ common::Error CommandsApi::ModuleList(internal::CommandHandler* handler, command
   return red->CommonExec(ExpandCommand({"MODULE", "LIST"}, argv), out);
 }
 
-common::Error CommandsApi::ModuleLoad(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
-  UNUSED(argv);
-  DBConnection* red = static_cast<DBConnection*>(handler);
-  return red->CommonExec(ExpandCommand({"MODULE", "LOAD"}, argv), out);
-}
-
-common::Error CommandsApi::ModuleUnLoad(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
-  UNUSED(argv);
-  DBConnection* red = static_cast<DBConnection*>(handler);
-  return red->CommonExec(ExpandCommand({"MODULE", "UNLOAD"}, argv), out);
-}
-
 common::Error CommandsApi::MemoryDoctor(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   UNUSED(argv);
   DBConnection* red = static_cast<DBConnection*>(handler);

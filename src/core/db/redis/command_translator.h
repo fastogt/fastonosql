@@ -20,6 +20,8 @@
 
 #include "core/icommand_translator.h"  // for ICommandTranslator
 
+#include "core/module_info.h"
+
 namespace fastonosql {
 namespace core {
 namespace redis {
@@ -47,6 +49,9 @@ class CommandTranslator : public ICommandTranslator {
   common::Error Incr(const NKey& key, command_buffer_t* cmdstring) WARN_UNUSED_RESULT;
   common::Error IncrBy(const NKey& key, int inc, command_buffer_t* cmdstring) WARN_UNUSED_RESULT;
   common::Error IncrByFloat(const NKey& key, double inc, command_buffer_t* cmdstring) WARN_UNUSED_RESULT;
+
+  common::Error ModuleLoadCommand(const ModuleInfo& module, command_buffer_t* cmdstring) WARN_UNUSED_RESULT;
+  common::Error ModuleUnloadCommand(const ModuleInfo& module, command_buffer_t* cmdstring) WARN_UNUSED_RESULT;
 
  private:
   virtual common::Error CreateKeyCommandImpl(const NDbKValue& key, command_buffer_t* cmdstring) const override;

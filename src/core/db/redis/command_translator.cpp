@@ -59,6 +59,9 @@
 #define REDIS_INCRBY "INCRBY"
 #define REDIS_INCRBYFLOAT "INCRBYFLOAT"
 
+#define REDIS_MODULE_LOAD "MODULE LOAD"
+#define REDIS_MODULE_UNLOAD "MODULE UNLOAD"
+
 namespace fastonosql {
 namespace core {
 namespace redis {
@@ -205,6 +208,28 @@ common::Error CommandTranslator::IncrByFloat(const NKey& key, double inc, comman
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
   wr << REDIS_INCRBYFLOAT " " << key_str.GetKeyForCommandLine() << " " << inc;
+  *cmdstring = wr.str();
+  return common::Error();
+}
+
+common::Error CommandTranslator::ModuleLoadCommand(const ModuleInfo& module, command_buffer_t* cmdstring) {
+  if (!cmdstring) {
+    return common::make_error_inval();
+  }
+
+  command_buffer_writer_t wr;
+  wr << REDIS_MODULE_LOAD " " << module.name;
+  *cmdstring = wr.str();
+  return common::Error();
+}
+
+common::Error CommandTranslator::ModuleUnloadCommand(const ModuleInfo& module, command_buffer_t* cmdstring) {
+  if (!cmdstring) {
+    return common::make_error_inval();
+  }
+
+  command_buffer_writer_t wr;
+  wr << REDIS_MODULE_UNLOAD " " << module.name;
   *cmdstring = wr.str();
   return common::Error();
 }

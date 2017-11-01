@@ -885,6 +885,42 @@ common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
   return common::Error();
 }
 
+common::Error DBConnection::ModuleLoadImpl(const ModuleInfo& module) {
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
+  command_buffer_t module_load_cmd;
+  common::Error err = tran->ModuleLoadCommand(module, &module_load_cmd);
+  if (err) {
+    return err;
+  }
+
+  redisReply* reply = NULL;
+  err = ExecRedisCommand(connection_.handle_, module_load_cmd, &reply);
+  if (err) {
+    return err;
+  }
+
+  freeReplyObject(reply);
+  return common::Error();
+}
+
+common::Error DBConnection::ModuleUnLoadImpl(const ModuleInfo& module) {
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
+  command_buffer_t module_unload_cmd;
+  common::Error err = tran->ModuleUnloadCommand(module, &module_unload_cmd);
+  if (err) {
+    return err;
+  }
+
+  redisReply* reply = NULL;
+  err = ExecRedisCommand(connection_.handle_, module_unload_cmd, &reply);
+  if (err) {
+    return err;
+  }
+
+  freeReplyObject(reply);
+  return common::Error();
+}
+
 common::Error DBConnection::QuitImpl() {
   redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, DB_QUIT_COMMAND));
   if (!reply) {

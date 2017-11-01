@@ -25,6 +25,7 @@ namespace core {
 
 struct ModuleInfo {
   std::string name;
+  std::string path;
   uint32_t version;
 };
 

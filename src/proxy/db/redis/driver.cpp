@@ -235,7 +235,7 @@ common::Error Driver::GetServerLoadedModules(std::vector<core::ModuleInfo>* modu
           return common::make_error("Invalid " REDIS_GET_LOADED_MODULES_COMMANDS " command output");
         }
 
-        lmodules.push_back({module_name, static_cast<uint32_t>(version)});
+        lmodules.push_back({module_name, std::string(), static_cast<uint32_t>(version)});
       }
     }
   }
