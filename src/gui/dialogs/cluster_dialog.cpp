@@ -47,7 +47,7 @@
 #include "translations/global.h"  // for trAddConnection, trAddress, etc
 
 namespace {
-const QString defaultNameConnection = "New Cluster Connection";
+const QString defaultNameConnection = QObject::tr("New Cluster Connection");
 const char* defaultNameConnectionFolder = "/";
 }  // namespace
 
@@ -307,7 +307,7 @@ void ClusterDialog::setStartNode() {
 
 void ClusterDialog::add() {
 #ifdef BUILD_WITH_REDIS
-  ConnectionDialog dlg(core::REDIS, "New Connection", this);
+  ConnectionDialog dlg(core::REDIS, translations::trNewConnection, this);
   dlg.setFolderEnabled(false);
   int result = dlg.exec();
   proxy::IConnectionSettingsBaseSPtr p = dlg.connection();

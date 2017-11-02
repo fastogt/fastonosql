@@ -44,7 +44,7 @@
 #include "translations/global.h"  // for trAddConnection, trAddress, etc
 
 namespace {
-const QString defaultNameConnection = "New Sentinel Connection";
+const QString defaultNameConnection = QObject::tr("New Sentinel Connection");
 const char* defaultNameConnectionFolder = "/";
 }  // namespace
 
@@ -263,7 +263,7 @@ void SentinelDialog::discoverySentinel() {
 
 void SentinelDialog::addConnectionSettings() {
 #ifdef BUILD_WITH_REDIS
-  ConnectionDialog dlg(core::REDIS, "New Connection", this);
+  ConnectionDialog dlg(core::REDIS, translations::trNewConnection, this);
   dlg.setFolderEnabled(false);
   int result = dlg.exec();
   proxy::SentinelSettings sent;

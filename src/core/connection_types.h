@@ -21,6 +21,11 @@
 #include <string>  // for string
 #include <vector>
 
+#define ALL_COMMANDS "*"
+#define ALL_KEYS_PATTERNS "*"
+#define ALL_PUBSUB_CHANNELS "*"
+#define NO_KEYS_LIMIT UINT64_MAX
+
 namespace fastonosql {
 namespace core {
 

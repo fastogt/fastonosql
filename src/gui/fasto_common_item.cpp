@@ -28,6 +28,8 @@
 
 #include "core/value.h"  // for ConvertToString
 
+#define CSV_SEPARATOR ","
+
 namespace fastonosql {
 namespace gui {
 
@@ -170,7 +172,7 @@ QString toCsv(FastoCommonItem* item) {
   for (size_t i = 0; i < item->childrenCount(); ++i) {
     value += toCsv(dynamic_cast<FastoCommonItem*>(item->child(i)));  // +
     if (i != item->childrenCount() - 1) {
-      value += ",";
+      value += CSV_SEPARATOR;
     }
   }
 

@@ -99,13 +99,13 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent) : QDialog(parent) {
   VERIFY(connect(adds, &QAction::triggered, this, &ConnectionsDialog::addSent));
   savebar->addAction(adds);
 
-  QAction* rmB = new QAction(GuiFactory::GetInstance().removeIcon(), translations::trRemoveConnection, savebar);
-  VERIFY(connect(rmB, &QAction::triggered, this, &ConnectionsDialog::remove));
-  savebar->addAction(rmB);
-
   QAction* editB = new QAction(GuiFactory::GetInstance().editIcon(), translations::trEditConnection, savebar);
   VERIFY(connect(editB, &QAction::triggered, this, &ConnectionsDialog::edit));
   savebar->addAction(editB);
+
+  QAction* rmB = new QAction(GuiFactory::GetInstance().removeIcon(), translations::trRemoveConnection, savebar);
+  VERIFY(connect(rmB, &QAction::triggered, this, &ConnectionsDialog::remove));
+  savebar->addAction(rmB);
 
   QVBoxLayout* firstColumnLayout = new QVBoxLayout;
   firstColumnLayout->addWidget(savebar);
@@ -179,7 +179,7 @@ void ConnectionsDialog::add() {
   }
 
   core::connectionTypes t = sel.connectionType();
-  ConnectionDialog dlg(t, "New Connection", this);
+  ConnectionDialog dlg(t, translations::trNewConnection, this);
   result = dlg.exec();
   proxy::IConnectionSettingsBaseSPtr p = dlg.connection();
   if (result == QDialog::Accepted && p) {

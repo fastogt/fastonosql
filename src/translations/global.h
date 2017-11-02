@@ -59,6 +59,7 @@ extern const QString trLoadFromFile;
 extern const QString trProperty;
 extern const QString trStop;
 extern const QString trError;
+extern const QString trNewConnection;
 extern const QString trLogs;
 extern const QString trKey;
 extern const QString trValue;

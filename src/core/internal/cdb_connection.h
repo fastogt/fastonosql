@@ -26,10 +26,6 @@
 
 #include "core/database/idatabase_info.h"
 
-#define ALL_COMMANDS "*"
-#define ALL_KEYS_PATTERNS "*"
-#define NO_KEYS_LIMIT UINT64_MAX
-
 namespace fastonosql {
 namespace core {
 namespace internal {

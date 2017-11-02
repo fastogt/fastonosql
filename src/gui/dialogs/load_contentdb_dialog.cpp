@@ -31,9 +31,9 @@
 
 namespace {
 const QString trInvalidPattern = QObject::tr("Invalid pattern!");
-const QString trKeysCount = QObject::tr("Keys count:");
-const QString trPattern = QObject::tr("Pattern:");
-const QString defaultPattern = "*";
+const QString trKeysCount = QObject::tr("Keys count");
+const QString trPattern = QObject::tr("Pattern");
+const QString defaultPattern = ALL_KEYS_PATTERNS;
 }  // namespace
 
 namespace fastonosql {
@@ -54,7 +54,7 @@ LoadContentDbDialog::LoadContentDbDialog(const QString& title, core::connectionT
   QVBoxLayout* mainLayout = new QVBoxLayout;
 
   QHBoxLayout* countLayout = new QHBoxLayout;
-  countLayout->addWidget(new QLabel(trKeysCount));
+  countLayout->addWidget(new QLabel(trKeysCount + ":"));
   countSpinEdit_ = new QSpinBox;
   countSpinEdit_->setRange(min_key_on_page, max_key_on_page);
   countSpinEdit_->setSingleStep(step_keys_on_page);
@@ -63,7 +63,7 @@ LoadContentDbDialog::LoadContentDbDialog(const QString& title, core::connectionT
   mainLayout->addLayout(countLayout);
 
   QHBoxLayout* patternLayout = new QHBoxLayout;
-  patternLayout->addWidget(new QLabel(trPattern));
+  patternLayout->addWidget(new QLabel(trPattern + ":"));
   patternEdit_ = new QLineEdit;
   patternEdit_->setFixedWidth(80);
   patternEdit_->setText(defaultPattern);

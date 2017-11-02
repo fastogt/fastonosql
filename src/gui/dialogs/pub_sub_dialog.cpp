@@ -68,7 +68,7 @@ PubSubDialog::PubSubDialog(const QString& title, proxy::IServerSPtr server, QWid
   QVBoxLayout* mainlayout = new QVBoxLayout;
   QHBoxLayout* searchLayout = new QHBoxLayout;
   searchBox_ = new QLineEdit;
-  searchBox_->setText("*");
+  searchBox_->setText(ALL_PUBSUB_CHANNELS);
   VERIFY(connect(searchBox_, &QLineEdit::textChanged, this, &PubSubDialog::searchLineChanged));
   searchLayout->addWidget(searchBox_);
 

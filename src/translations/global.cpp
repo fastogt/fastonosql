@@ -59,6 +59,7 @@ const QString trExportSettings = QObject::tr("Export settings");
 const QString trProperty = QObject::tr("Property");
 const QString trStop = QObject::tr("Stop");
 const QString trError = QObject::tr("Error");
+const QString trNewConnection = QObject::tr("New Connection");
 const QString trLogs = QObject::tr("Logs");
 const QString trKey = QObject::tr("Key");
 const QString trValue = QObject::tr("Value");

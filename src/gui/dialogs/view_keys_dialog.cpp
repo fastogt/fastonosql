@@ -70,7 +70,7 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QW
 
   QHBoxLayout* searchLayout = new QHBoxLayout;
   searchBox_ = new QLineEdit;
-  searchBox_->setText("*");
+  searchBox_->setText(ALL_KEYS_PATTERNS);
   VERIFY(connect(searchBox_, &QLineEdit::textChanged, this, &ViewKeysDialog::searchLineChanged));
   searchLayout->addWidget(searchBox_);
 

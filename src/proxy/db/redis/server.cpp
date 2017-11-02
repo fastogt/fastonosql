@@ -23,6 +23,12 @@
 #include "proxy/db/redis/database.h"  // for Database
 #include "proxy/db/redis/driver.h"    // for Driver
 
+#define MASTER_ROLE "master"
+#define SLAVE_ROLE "slave"
+#define STANDALONE_MODE "standalone"
+#define SENTINEL_MODE "sentinel"
+#define CLUSTER_MODE "cluster"
+
 namespace fastonosql {
 namespace proxy {
 namespace redis {
@@ -67,17 +73,17 @@ void Server::HandleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent
 
   core::IServerInfoSPtr serv_info = v.sinfo;
   core::redis::ServerInfo* rinf = static_cast<core::redis::ServerInfo*>(serv_info.get());
-  if (rinf->replication_.role_ == "master") {
+  if (rinf->replication_.role_ == MASTER_ROLE) {
     role_ = core::MASTER;
-  } else if (rinf->replication_.role_ == "slave") {
+  } else if (rinf->replication_.role_ == SLAVE_ROLE) {
     role_ = core::SLAVE;
   }
 
-  if (rinf->server_.redis_mode_ == "standalone") {
+  if (rinf->server_.redis_mode_ == STANDALONE_MODE) {
     mode_ = core::STANDALONE;
-  } else if (rinf->server_.redis_mode_ == "sentinel") {
+  } else if (rinf->server_.redis_mode_ == SENTINEL_MODE) {
     mode_ = core::SENTINEL;
-  } else if (rinf->server_.redis_mode_ == "cluster") {
+  } else if (rinf->server_.redis_mode_ == CLUSTER_MODE) {
     mode_ = core::CLUSTER;
   }
   IServer::HandleDiscoveryInfoResponceEvent(ev);
