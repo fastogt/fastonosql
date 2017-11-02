@@ -52,15 +52,7 @@ std::string KeyString::GetKeyData() const {
 
 std::string KeyString::GetHumanReadable() const {
   if (type_ == BINARY_KEY) {
-    command_buffer_writer_t wr;
-    string_key_t hexed = common::utils::hex::encode(key_, false);
-    for (size_t i = 0; i < hexed.size(); i += 2) {
-      wr << "\\x";
-      wr << hexed[i];
-      wr << hexed[i + 1];
-    }
-
-    return wr.str();
+    return detail::hex_string(key_);
   }
 
   return key_;
@@ -69,15 +61,7 @@ std::string KeyString::GetHumanReadable() const {
 string_key_t KeyString::GetKeyForCommandLine() const {
   if (type_ == BINARY_KEY) {
     command_buffer_writer_t wr;
-    wr << "\"";
-    string_key_t hexed = common::utils::hex::encode(key_, false);
-    for (size_t i = 0; i < hexed.size(); i += 2) {
-      wr << "\\x";
-      wr << hexed[i];
-      wr << hexed[i + 1];
-    }
-    wr << "\"";
-
+    wr << "\"" << detail::hex_string(key_) << "\"";
     return wr.str();
   }
 

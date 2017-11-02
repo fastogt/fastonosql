@@ -23,12 +23,37 @@
 #include <common/convert2string.h>
 #include <common/utils.h>
 
+namespace {
+
+template<typename T>
+std::string hex_string_impl(const T& value) {
+  std::ostringstream wr;
+  auto hexed = common::utils::hex::encode(value, true);
+  for (size_t i = 0; i < hexed.size(); i += 2) {
+    wr << "\\x";
+    wr << hexed[i];
+    wr << hexed[i + 1];
+  }
+
+  return wr.str();
+}
+
+}  // namespace
+
 namespace fastonosql {
 namespace core {
 namespace detail {
 bool have_space(const std::string& data) {
   auto it = std::find_if(data.begin(), data.end(), [](char c) { return std::isspace(c); });
   return it != data.end();
+}
+
+std::string hex_string(const common::buffer_t& value) {
+  return hex_string_impl(value);
+}
+
+std::string hex_string(const std::string& value) {
+  return hex_string_impl(value);
 }
 }  // namespace detail
 
@@ -264,15 +289,7 @@ std::string ConvertValue(common::ByteArrayValue* value, const std::string& delim
     return common::ConvertToString(res);
   }
 
-  std::basic_stringstream<char> wr;
-  auto hexed = common::utils::hex::encode(res, false);
-  for (size_t i = 0; i < hexed.size(); i += 2) {
-    wr << "\\x";
-    wr << hexed[i];
-    wr << hexed[i + 1];
-  }
-
-  return wr.str();
+  return detail::hex_string(res);
 }
 
 std::string ConvertToHumanReadable(common::Value* value, const std::string& delimiter) {

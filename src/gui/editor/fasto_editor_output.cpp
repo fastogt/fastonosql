@@ -25,8 +25,7 @@
 #include <common/qt/convert2string.h>
 #include <common/qt/utils_qt.h>  // for item
 
-#include "gui/editor/fasto_hex_edit.h"  // for FastoHexEdit, etc
-#include "gui/fasto_common_item.h"      // for FastoCommonItem, toRaw, etc
+#include "gui/fasto_common_item.h"  // for FastoCommonItem, toRaw, etc
 
 #include "translations/global.h"
 
@@ -34,17 +33,12 @@ namespace fastonosql {
 namespace gui {
 
 FastoEditorOutput::FastoEditorOutput(QWidget* parent) : QWidget(parent), model_(nullptr), view_method_(JSON) {
-  editor_ = new FastoHexEdit;
-  VERIFY(connect(editor_, &FastoHexEdit::textChanged, this, &FastoEditorOutput::textChanged));
-  VERIFY(connect(editor_, &FastoHexEdit::readOnlyChanged, this, &FastoEditorOutput::readOnlyChanged));
-
   text_json_editor_ = new FastoEditor;
   json_lexer_ = new QsciLexerJSON;
   VERIFY(connect(text_json_editor_, &FastoEditor::textChanged, this, &FastoEditorOutput::textChanged));
   VERIFY(connect(text_json_editor_, &FastoEditor::readOnlyChanged, this, &FastoEditorOutput::readOnlyChanged));
 
   QVBoxLayout* mainL = new QVBoxLayout;
-  mainL->addWidget(editor_);
   mainL->addWidget(text_json_editor_);
   mainL->setContentsMargins(0, 0, 0, 0);
   setLayout(mainL);
@@ -55,30 +49,12 @@ FastoEditorOutput::~FastoEditorOutput() {
   delete json_lexer_;
 }
 
-bool FastoEditorOutput::IsTextJsonEditor() const {
-  return view_method_ != HEX;
-}
-
 void FastoEditorOutput::SyncEditors() {
-  editor_->clear();
-  editor_->setReadOnly(false);
-  text_json_editor_->clear();
-  text_json_editor_->setReadOnly(false);
-
-  if (IsTextJsonEditor()) {
-    if (view_method_ == JSON) {
-      text_json_editor_->setLexer(json_lexer_);
-    } else {
-      text_json_editor_->setLexer(NULL);
-    }
-
-    text_json_editor_->setVisible(true);
-    editor_->setVisible(false);
-    return;
+  if (view_method_ == JSON) {
+    text_json_editor_->setLexer(json_lexer_);
+  } else {
+    text_json_editor_->setLexer(NULL);
   }
-
-  text_json_editor_->setVisible(false);
-  editor_->setVisible(true);
 }
 
 void FastoEditorOutput::setModel(QAbstractItemModel* model) {
@@ -131,12 +107,7 @@ void FastoEditorOutput::setModel(QAbstractItemModel* model) {
 }
 
 void FastoEditorOutput::setReadOnly(bool ro) {
-  if (IsTextJsonEditor()) {
-    text_json_editor_->setReadOnly(ro);
-    return;
-  }
-
-  editor_->setReadOnly(ro);
+  text_json_editor_->setReadOnly(ro);
 }
 
 void FastoEditorOutput::viewChange(int viewMethod) {
@@ -218,19 +189,11 @@ int FastoEditorOutput::viewMethod() const {
 }
 
 QString FastoEditorOutput::text() const {
-  if (IsTextJsonEditor()) {
-    return text_json_editor_->text();
-  }
-
-  return editor_->text();
+  return text_json_editor_->text();
 }
 
 bool FastoEditorOutput::isReadOnly() const {
-  if (IsTextJsonEditor()) {
-    return text_json_editor_->isReadOnly();
-  }
-
-  return editor_->isReadOnly();
+  return text_json_editor_->isReadOnly();
 }
 
 int FastoEditorOutput::childCount() const {
@@ -300,7 +263,7 @@ void FastoEditorOutput::layoutChanged() {
       QString raw = toRaw(child);
       result += common::EscapedText(raw);
     } else if (view_method_ == HEX) {
-      result += toRaw(child);
+      result += toHex(child);
     } else if (view_method_ == MSGPACK) {
       QString msgp = fromHexMsgPack(child);
       result += common::EscapedText(msgp);
@@ -313,27 +276,11 @@ void FastoEditorOutput::layoutChanged() {
     }
   }
 
-  if (IsTextJsonEditor()) {
-    if (result.isEmpty()) {
-      result = QString(translations::trCannotConvertPattern1ArgsS).arg(methodText);
-      text_json_editor_->setReadOnly(true);
-    }
-    text_json_editor_->setText(result);
-    editor_->setData(result.toUtf8());
-    return;
-  }
-
-  if (view_method_ == HEX) {
-    editor_->setMode(FastoHexEdit::HEX_MODE);
-  } else {
-    editor_->setMode(FastoHexEdit::TEXT_MODE);
-  }
-
   if (result.isEmpty()) {
-    result = QString(translations::trCannotConvertPattern1ArgsS).arg(methodText);
-    editor_->setReadOnly(true);
+    result = translations::trCannotConvertPattern1ArgsS.arg(methodText);
+    text_json_editor_->setReadOnly(true);
   }
-  editor_->setData(result.toUtf8());
+  text_json_editor_->setText(result);
 }
 
 }  // namespace gui

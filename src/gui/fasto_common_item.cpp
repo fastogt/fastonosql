@@ -57,6 +57,15 @@ QString FastoCommonItem::value() const {
   return qvalstr;
 }
 
+QString FastoCommonItem::hexedValue() const {
+  core::NValue nval = key_.GetValue();
+  common::Value* val = nval.get();
+  std::string valstr = core::ConvertToHumanReadable(val, delimiter_);
+  QString qvalstr;
+  common::ConvertFromString(core::detail::hex_string(valstr), &qvalstr);
+  return qvalstr;
+}
+
 void FastoCommonItem::setValue(core::NValue val) {
   key_.SetValue(val);
 }
@@ -134,19 +143,7 @@ QString toHex(FastoCommonItem* item) {
   }
 
   if (!item->childrenCount()) {
-    QString val = item->value();
-    std::string sval = common::ConvertToString(val);
-
-    std::string hexstr;
-    common::HexEDcoder hex;
-    common::Error err = hex.Encode(sval, &hexstr);
-    if (err) {
-      return QString();
-    }
-
-    QString res;
-    common::ConvertFromString(hexstr, &res);
-    return res;
+    return item->hexedValue();
   }
 
   QString value;

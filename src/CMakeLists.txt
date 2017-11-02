@@ -286,14 +286,12 @@ SET(HEADERS_GUI_EDITOR_TO_MOC
   ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor.h
   ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor_shell.h
   ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor_output.h
-  ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_hex_edit.h
 )
 
 SET(SOURCES_GUI_EDITOR
   ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor_shell.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor_output.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_hex_edit.cpp
 )
 
 SET(HEADERS_GUI_EXPLORER_TO_MOC

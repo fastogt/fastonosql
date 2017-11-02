@@ -25,7 +25,9 @@ namespace core {
 
 namespace detail {
 bool have_space(const std::string& data);
-}
+std::string hex_string(const common::buffer_t& value);
+std::string hex_string(const std::string& value);
+}  // namespace detail
 
 std::string ConvertValue(common::Value* value, const std::string& delimiter, bool for_cmd);
 std::string ConvertValue(common::ArrayValue* array, const std::string& delimiter, bool for_cmd);

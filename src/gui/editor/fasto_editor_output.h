@@ -69,13 +69,10 @@ class FastoEditorOutput : public QWidget {
   void layoutChanged();
 
  private:
-  bool IsTextJsonEditor() const;
   void SyncEditors();
 
   FastoEditor* text_json_editor_;
   QsciLexer* json_lexer_;
-
-  FastoHexEdit* editor_;
 
   QAbstractItemModel* model_;
   int view_method_;

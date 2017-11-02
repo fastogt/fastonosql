@@ -40,6 +40,8 @@ class FastoCommonItem : public common::qt::gui::TreeItem {
 
   QString key() const;
   QString value() const;
+  QString hexedValue() const;
+
   common::Value::Type type() const;
   core::NValue nvalue() const;
   core::NDbKValue dbv() const;
