@@ -174,7 +174,7 @@ class BuildRequest(object):
             configure_policy = run_command.CommonPolicy(print_message)
             run_command.run_command_cb(configure_libmemcached, configure_policy)
 
-            make_libmemcached = ['make', 'static']  # FIXME
+            make_libmemcached = ['make', 'install']  # FIXME
             make_policy = run_command.CommonPolicy(print_message)
             run_command.run_command_cb(make_libmemcached, make_policy)
             os.chdir(abs_dir_path)
@@ -266,7 +266,7 @@ class BuildRequest(object):
             run_command.run_command_cb(bootstrap_upscaledb, bootstrap_policy)
 
             configure_upscaledb = ['./configure', '--prefix={0}'.format(prefix_path), '--disable-remote',
-                                   '--enable-static-boost', '--disable-shared', '--disable-java',
+                                   '--enable-static-boost', '--disable-shared', '--disable-java', '--disable-simd',
                                    '--disable-encryption']
             configure_policy = run_command.CommonPolicy(print_message)
             run_command.run_command_cb(configure_upscaledb, configure_policy)
@@ -336,6 +336,7 @@ class BuildRequest(object):
         self.build_rocksdb(cmake_line, make_install)
         self.build_upscaledb(prefix_path)
         self.build_forestdb(cmake_line, make_install)
+
 
 if __name__ == "__main__":
     argc = len(sys.argv)
