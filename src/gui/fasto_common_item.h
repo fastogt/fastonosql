@@ -40,7 +40,7 @@ class FastoCommonItem : public common::qt::gui::TreeItem {
 
   QString key() const;
   QString value() const;
-  QString hexedValue() const;
+  std::string basicStringValue() const;
 
   common::Value::Type type() const;
   core::NValue nvalue() const;
@@ -58,7 +58,6 @@ class FastoCommonItem : public common::qt::gui::TreeItem {
 
 QString toJson(FastoCommonItem* item);
 QString toRaw(FastoCommonItem* item);
-QString toHex(FastoCommonItem* item);
 QString toCsv(FastoCommonItem* item);
 
 QString fromGzip(FastoCommonItem* item);

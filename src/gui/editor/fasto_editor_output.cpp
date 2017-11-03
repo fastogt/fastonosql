@@ -29,6 +29,8 @@
 
 #include "translations/global.h"
 
+#include "core/value.h"
+
 namespace fastonosql {
 namespace gui {
 
@@ -189,7 +191,15 @@ int FastoEditorOutput::viewMethod() const {
 }
 
 QString FastoEditorOutput::text() const {
-  return text_json_editor_->text();
+  QString val = text_json_editor_->text();
+  if (view_method_ == HEX) {
+    std::string val_str = common::ConvertToString(val);
+    std::string raw = core::detail::string_from_hex(val_str);
+    QString qraw;
+    common::ConvertFromString(raw, &qraw);
+    return qraw;
+  }
+  return val;
 }
 
 bool FastoEditorOutput::isReadOnly() const {
@@ -263,7 +273,12 @@ void FastoEditorOutput::layoutChanged() {
       QString raw = toRaw(child);
       result += common::EscapedText(raw);
     } else if (view_method_ == HEX) {
-      result += toHex(child);
+      QString raw = toRaw(child);
+      std::string str_raw = common::ConvertToString(raw);
+      std::string hexed = core::detail::hex_string(str_raw);
+      QString qhexed;
+      common::ConvertFromString(hexed, &qhexed);
+      result += qhexed;
     } else if (view_method_ == MSGPACK) {
       QString msgp = fromHexMsgPack(child);
       result += common::EscapedText(msgp);

@@ -25,7 +25,29 @@
 
 namespace {
 
-template<typename T>
+template <typename T>
+std::string string_from_hex_impl(const T& value) {
+  size_t len = value.size();
+  if (len % 4 != 0) {
+    return std::string();
+  }
+
+  std::string hex_digits;
+  for (size_t i = 0; i < len; i += 4) {
+    auto c1 = value[i];
+    auto c2 = value[i + 1];
+    if (c1 == '\\' && c2 == 'x') {
+      hex_digits += value[i + 2];
+      hex_digits += value[i + 3];
+    } else {
+      return std::string();
+    }
+  }
+
+  return common::utils::hex::decode(hex_digits);
+}
+
+template <typename T>
 std::string hex_string_impl(const T& value) {
   std::ostringstream wr;
   auto hexed = common::utils::hex::encode(value, true);
@@ -55,6 +77,15 @@ std::string hex_string(const common::buffer_t& value) {
 std::string hex_string(const std::string& value) {
   return hex_string_impl(value);
 }
+
+std::string string_from_hex(const common::buffer_t& value) {
+  return string_from_hex_impl(value);
+}
+
+std::string string_from_hex(const std::string& value) {
+  return string_from_hex_impl(value);
+}
+
 }  // namespace detail
 
 std::string ConvertValue(common::Value* value, const std::string& delimiter, bool for_cmd) {

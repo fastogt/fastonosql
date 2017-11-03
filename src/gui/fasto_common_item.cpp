@@ -49,21 +49,16 @@ QString FastoCommonItem::key() const {
 }
 
 QString FastoCommonItem::value() const {
-  core::NValue nval = key_.GetValue();
-  common::Value* val = nval.get();
-  std::string valstr = core::ConvertToHumanReadable(val, delimiter_);
+  std::string valstr = basicStringValue();
   QString qvalstr;
   common::ConvertFromString(valstr, &qvalstr);
   return qvalstr;
 }
 
-QString FastoCommonItem::hexedValue() const {
+std::string FastoCommonItem::basicStringValue() const {
   core::NValue nval = key_.GetValue();
   common::Value* val = nval.get();
-  std::string valstr = core::ConvertToHumanReadable(val, delimiter_);
-  QString qvalstr;
-  common::ConvertFromString(core::detail::hex_string(valstr), &qvalstr);
-  return qvalstr;
+  return core::ConvertToHumanReadable(val, delimiter_);
 }
 
 void FastoCommonItem::setValue(core::NValue val) {
@@ -83,7 +78,7 @@ const char* FastoCommonItem::delimiter() const {
 }
 
 common::Value::Type FastoCommonItem::type() const {
-  return key_.GetType();
+  return key_.GetType();  QString qvalstr;
 }
 
 bool FastoCommonItem::isReadOnly() const {
@@ -131,24 +126,6 @@ QString toRaw(FastoCommonItem* item) {
   QString value;
   for (size_t i = 0; i < item->childrenCount(); ++i) {
     value += toRaw(dynamic_cast<FastoCommonItem*>(item->child(i)));  // +
-  }
-
-  return value;
-}
-
-QString toHex(FastoCommonItem* item) {
-  if (!item) {
-    DNOTREACHED() << "Invalid input.";
-    return QString();
-  }
-
-  if (!item->childrenCount()) {
-    return item->hexedValue();
-  }
-
-  QString value;
-  for (size_t i = 0; i < item->childrenCount(); ++i) {
-    value += toHex(dynamic_cast<FastoCommonItem*>(item->child(i)));  // +
   }
 
   return value;

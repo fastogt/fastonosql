@@ -27,6 +27,8 @@ namespace detail {
 bool have_space(const std::string& data);
 std::string hex_string(const common::buffer_t& value);
 std::string hex_string(const std::string& value);
+std::string string_from_hex(const common::buffer_t& value);
+std::string string_from_hex(const std::string& value);
 }  // namespace detail
 
 std::string ConvertValue(common::Value* value, const std::string& delimiter, bool for_cmd);
