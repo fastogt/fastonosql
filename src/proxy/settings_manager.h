@@ -44,6 +44,9 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
 
   uint32_t ConfigVersion() const;
 
+  bool GetAccpetedEula() const;
+  void SetAccpetedEula(bool val);
+
   bool GetSendStatistic() const;
   void SetSendStatistic(bool val);
 
@@ -113,6 +116,7 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
 
   uint32_t config_version_;
   bool send_statistic_;
+  bool accepted_eula_;
   supportedViews views_;
   QString cur_style_;
   QFont cur_font_;

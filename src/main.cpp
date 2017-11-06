@@ -28,6 +28,7 @@
 
 #include "gui/gui_factory.h"
 #include "gui/main_window.h"
+#include "gui/dialogs/eula_dialog.h"
 
 #include <common/logger.h>
 #include <common/qt/translations/translations.h>
@@ -55,7 +56,8 @@ const QSize preferedSize = QSize(1024, 768);
 
 int main(int argc, char* argv[]) {
   QApplication app(argc, argv);
-  fastonosql::proxy::SettingsManager::GetInstance()->Load();
+  const auto settings_manager = fastonosql::proxy::SettingsManager::GetInstance();
+  settings_manager->Load();
   app.setOrganizationName(PROJECT_COMPANYNAME);
   app.setOrganizationDomain(PROJECT_COMPANYNAME_DOMAIN);
   app.setApplicationName(PROJECT_NAME);
@@ -64,6 +66,16 @@ int main(int argc, char* argv[]) {
   // Cross Platform High DPI support - Qt 5.7
   app.setAttribute(Qt::AA_EnableHighDpiScaling);
   app.setWindowIcon(fastonosql::gui::GuiFactory::GetInstance().logoIcon());  // default icon for app
+
+  // EULA License Agreement
+  if (!settings_manager->GetAccpetedEula()) {
+    fastonosql::gui::EulaDialog eula_dialog;
+    if (eula_dialog.exec() == QDialog::Rejected) {
+      return 1;
+    }
+    // EULA accepted
+    settings_manager->SetAccpetedEula(true);
+  }
 
   QFile file(":" PROJECT_NAME_LOWERCASE "/default.qss");
   file.open(QFile::ReadOnly);
@@ -103,7 +115,7 @@ int main(int argc, char* argv[]) {
 
   win.show();
   int res = app.exec();
-  fastonosql::proxy::SettingsManager::GetInstance()->Save();
-  fastonosql::proxy::SettingsManager::GetInstance()->FreeInstance();
+  settings_manager->Save();
+  settings_manager->FreeInstance();
   return res;
 }

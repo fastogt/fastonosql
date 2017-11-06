@@ -34,6 +34,7 @@
 
 #define LANGUAGE PREFIX "language"
 #define SEND_STATISTIC PREFIX "send_statistic"
+#define ACCEPTED_EULA PREFIX "accepted_eula"
 #define STYLE PREFIX "style"
 #define FONT PREFIX "font"
 #define CONNECTIONS PREFIX "connections"
@@ -73,6 +74,7 @@ namespace proxy {
 SettingsManager::SettingsManager()
     : config_version_(),
       send_statistic_(),
+      accepted_eula_(),
       views_(),
       cur_style_(),
       cur_font_(),
@@ -99,6 +101,14 @@ std::string SettingsManager::SettingsFilePath() {
 
 uint32_t SettingsManager::ConfigVersion() const {
   return config_version_;
+}
+
+bool SettingsManager::GetAccpetedEula() const {
+  return accepted_eula_;
+}
+
+void SettingsManager::SetAccpetedEula(bool val) {
+  accepted_eula_ = val;
 }
 
 bool SettingsManager::GetSendStatistic() const {
@@ -305,6 +315,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
 
   cur_style_ = settings.value(STYLE, common::qt::gui::defStyle).toString();
   send_statistic_ = settings.value(SEND_STATISTIC, true).toBool();
+  accepted_eula_ = settings.value(ACCEPTED_EULA, false).toBool();
   QFont font = default_font();
   cur_font_ = settings.value(FONT, font).value<QFont>();
   cur_language_ = settings.value(LANGUAGE, common::qt::translations::defLanguage).toString();
@@ -386,6 +397,7 @@ void SettingsManager::Save() {
   settings.setValue(STYLE, cur_style_);
   settings.setValue(FONT, cur_font_);
   settings.setValue(SEND_STATISTIC, send_statistic_);
+  settings.setValue(ACCEPTED_EULA, accepted_eula_);
   settings.setValue(LANGUAGE, cur_language_);
   settings.setValue(VIEW, views_);
 

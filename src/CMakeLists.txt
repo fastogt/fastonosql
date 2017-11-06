@@ -228,6 +228,7 @@ SET(SOURCES_TRANSLATIONS
 )
 
 SET(HEADERS_GUI_DIALOGS_TO_MOC
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/eula_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/about_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/input_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/info_server_dialog.h
@@ -257,6 +258,7 @@ SET(HEADERS_GUI_DIALOGS
 )
 
 SET(SOURCES_GUI_DIALOGS
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/eula_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/about_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/input_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/preferences_dialog.cpp
@@ -1076,9 +1078,11 @@ SET(SOURCES
 )
 
 QT5_WRAP_CPP(MOC_FILES ${HEADERS_TOMOC})
-CONFIGURE_FILE("resources/gui.qrc.in" "${CMAKE_CURRENT_LIST_DIR}/resources/gui.qrc" @ONLY IMMEDIATE)
-CONFIGURE_FILE("resources/${PROJECT_NAME_LOWERCASE}.qrc.in" "${CMAKE_CURRENT_LIST_DIR}/resources/branding.qrc" @ONLY IMMEDIATE)
-SET(RESOURCES ${CMAKE_CURRENT_LIST_DIR}/resources/gui.qrc ${CMAKE_CURRENT_LIST_DIR}/resources/branding.qrc)
+SET(GUI_QRC ${CMAKE_CURRENT_LIST_DIR}/resources/gui.qrc)
+SET(BRANDING_QRC ${CMAKE_CURRENT_LIST_DIR}/resources/branding.qrc)
+CONFIGURE_FILE("resources/gui.qrc.in" ${GUI_QRC} @ONLY IMMEDIATE)
+CONFIGURE_FILE("resources/${PROJECT_NAME_LOWERCASE}.qrc.in" ${BRANDING_QRC} @ONLY IMMEDIATE)
+SET(RESOURCES ${GUI_QRC} ${BRANDING_QRC})
 QT5_ADD_RESOURCES(RES_SRC ${RESOURCES})
 
 SOURCE_GROUP("Header Files" FILES ${HEADERS} ${HEADERS_TOMOC})
