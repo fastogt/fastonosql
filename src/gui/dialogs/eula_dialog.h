@@ -29,11 +29,11 @@ class EulaDialog : public QWizard {
   explicit EulaDialog(QWidget* parent = 0);
 
  private Q_SLOTS:
-  void on_agreeButton_clicked();
-  void on_notAgreeButton_clicked();
-  void on_next_clicked();
-  void on_back_clicked();
-  void on_finish_clicked();
+  void agreeButtonClicked();
+  void notAgreeButtonClicked();
+  void nextButtonClicked();
+  void backButtonClicked();
+  void finishButtonClicked();
 };
 
 }  // namespace gui

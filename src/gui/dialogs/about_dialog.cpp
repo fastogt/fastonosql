@@ -19,9 +19,11 @@
 #include "gui/dialogs/about_dialog.h"
 
 #include <QDialogButtonBox>
+#include <QFile>
 #include <QGridLayout>
 #include <QLabel>
 #include <QPushButton>
+#include <QTextEdit>
 #include <QTreeWidget>
 
 #include <Qsci/qsciglobal.h>
@@ -95,7 +97,12 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
   setWindowTitle(tAboutTitle);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
+  QTabWidget* about_tabs = new QTabWidget;
+  QWidget* about_tab = new QWidget;
+
+  // about content
   QVBoxLayout* glayout = new QVBoxLayout;
+  about_tab->setLayout(glayout);
   QLabel* copyRightLabel = new QLabel(trDescription);
   copyRightLabel->setWordWrap(true);
   copyRightLabel->setOpenExternalLinks(true);
@@ -181,10 +188,21 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
 
   copy_rights_layout->addWidget(main_tab, 4, 1, 1, 5);
   glayout->addLayout(copy_rights_layout);
-
-  glayout->addWidget(buttonBox);
   glayout->setSizeConstraint(QLayout::SetFixedSize);
-  setLayout(glayout);
+  about_tabs->addTab(about_tab, QObject::tr("About"));
+
+  // license
+  QTextEdit* license_tab = new QTextEdit;
+  QFile file(":" PROJECT_NAME_LOWERCASE "/LICENSE");
+  if (file.open(QFile::ReadOnly | QFile::Text)) {
+    license_tab->setHtml(file.readAll());
+  }
+  about_tabs->addTab(license_tab, QObject::tr("License agreement"));
+
+  QVBoxLayout* mainLayout = new QVBoxLayout;
+  mainLayout->addWidget(about_tabs);
+  mainLayout->addWidget(buttonBox);
+  setLayout(mainLayout);
 }
 
 }  // namespace gui

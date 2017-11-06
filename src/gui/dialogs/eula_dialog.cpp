@@ -23,7 +23,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QRadioButton>
-#include <QTextBrowser>
+#include <QTextEdit>
 
 #include <common/macros.h>
 
@@ -31,6 +31,10 @@ namespace {
 const QString trEulaTitle = QObject::tr("Eula for " PROJECT_NAME_TITLE);
 const QString trIAgree = QObject::tr("I agree");
 const QString trIDontAgree = QObject::tr("I don't agree");
+const QString trBack = QObject::tr("Back");
+const QString trNext = QObject::tr("Next");
+const QString trFinish = QObject::tr("Finish");
+const QString trEndUserAgr = QObject::tr("End-User License Agreement");
 }  // namespace
 
 namespace fastonosql {
@@ -44,11 +48,11 @@ EulaDialog::EulaDialog(QWidget* parent) : QWizard(parent) {
   QWizardPage* firstPage = new QWizardPage;
 
   QRadioButton* agreeButton = new QRadioButton(trIAgree);
-  VERIFY(connect(agreeButton, SIGNAL(clicked()), this, SLOT(on_agreeButton_clicked())));
+  VERIFY(connect(agreeButton, &QRadioButton::clicked, this, &EulaDialog::agreeButtonClicked));
 
   QRadioButton* notAgreeButton = new QRadioButton(trIDontAgree);
   notAgreeButton->setChecked(true);
-  VERIFY(connect(notAgreeButton, SIGNAL(clicked()), this, SLOT(on_notAgreeButton_clicked())));
+  VERIFY(connect(notAgreeButton, &QRadioButton::clicked, this, &EulaDialog::notAgreeButtonClicked));
 
   QHBoxLayout* radioButtonsLay = new QHBoxLayout;
   radioButtonsLay->setAlignment(Qt::AlignHCenter);
@@ -56,87 +60,61 @@ EulaDialog::EulaDialog(QWidget* parent) : QWizard(parent) {
   radioButtonsLay->addWidget(agreeButton);
   radioButtonsLay->addWidget(notAgreeButton);
 
-  QTextBrowser* textBrowser = new QTextBrowser;
-  textBrowser->setOpenExternalLinks(true);
-  textBrowser->setOpenLinks(true);
+  QTextEdit* textBrowser = new QTextEdit;
   QFile file(":" PROJECT_NAME_LOWERCASE "/LICENSE");
   if (file.open(QFile::ReadOnly | QFile::Text)) {
-    textBrowser->setText(file.readAll());
+    textBrowser->setHtml(file.readAll());
   }
 
-  QFrame* hline = new QFrame;
-  hline->setFrameShape(QFrame::HLine);
-  hline->setFrameShadow(QFrame::Sunken);
-
   QVBoxLayout* mainLayout1 = new QVBoxLayout;
-  mainLayout1->addWidget(new QLabel("<h3>End-User License Agreement</h3>"));
-  mainLayout1->addWidget(new QLabel(""));
+  mainLayout1->addWidget(new QLabel("<h3>" + trEndUserAgr + "</h3>"));
   mainLayout1->addWidget(textBrowser);
-  mainLayout1->addWidget(new QLabel(""));
   mainLayout1->addLayout(radioButtonsLay, Qt::AlignCenter);
-  mainLayout1->addWidget(new QLabel(""));
-  mainLayout1->addWidget(hline);
-
   firstPage->setLayout(mainLayout1);
 
   addPage(firstPage);
 
   //// Buttons
-  setButtonText(QWizard::CustomButton1, tr("Back"));
-  setButtonText(QWizard::CustomButton2, tr("Next"));
-  setButtonText(QWizard::CustomButton3, tr("Finish"));
+  setButtonText(QWizard::CustomButton1, trBack);
+  setButtonText(QWizard::CustomButton2, trNext);
+  setButtonText(QWizard::CustomButton3, trFinish);
 
-  VERIFY(connect(button(QWizard::CustomButton1), SIGNAL(clicked()), this, SLOT(on_back_clicked())));
-  VERIFY(connect(button(QWizard::CustomButton2), SIGNAL(clicked()), this, SLOT(on_next_clicked())));
-  VERIFY(connect(button(QWizard::CustomButton3), SIGNAL(clicked()), this, SLOT(on_finish_clicked())));
+  VERIFY(connect(button(QWizard::CustomButton1), &QAbstractButton::clicked, this, &EulaDialog::backButtonClicked));
+  VERIFY(connect(button(QWizard::CustomButton2), &QAbstractButton::clicked, this, &EulaDialog::nextButtonClicked));
+  VERIFY(connect(button(QWizard::CustomButton3), &QAbstractButton::clicked, this, &EulaDialog::finishButtonClicked));
 
   setButtonLayout(QList<WizardButton>{QWizard::Stretch, QWizard::CustomButton1, QWizard::CustomButton2,
                                       QWizard::CancelButton, QWizard::CustomButton3});
 
-#if defined(_WIN32) || defined(__APPLE__)
-  button(QWizard::CustomButton1)->setDisabled(true);
-  button(QWizard::CustomButton2)->setDisabled(true);
-  button(QWizard::CustomButton3)->setDisabled(true);
-#else  // linux
   button(QWizard::CustomButton1)->setHidden(true);
   button(QWizard::CustomButton2)->setHidden(true);
   button(QWizard::CustomButton3)->setDisabled(true);
-#endif
-
   setWizardStyle(QWizard::ModernStyle);
 }
 
-void EulaDialog::on_agreeButton_clicked() {
-#if defined(_WIN32) || defined(__APPLE__)
-  button(QWizard::CustomButton2)->setEnabled(true);
-#else
+void EulaDialog::agreeButtonClicked() {
   button(QWizard::CustomButton3)->setEnabled(true);
-#endif
 }
 
-void EulaDialog::on_notAgreeButton_clicked() {
-#if defined(_WIN32) || defined(__APPLE__)
-  button(QWizard::CustomButton2)->setEnabled(false);
-#else
+void EulaDialog::notAgreeButtonClicked() {
   button(QWizard::CustomButton3)->setEnabled(false);
-#endif
 }
 
-void EulaDialog::on_next_clicked() {
+void EulaDialog::nextButtonClicked() {
   next();
   button(QWizard::CustomButton1)->setEnabled(true);
   button(QWizard::CustomButton2)->setEnabled(false);
   button(QWizard::CustomButton3)->setEnabled(true);
 }
 
-void EulaDialog::on_back_clicked() {
+void EulaDialog::backButtonClicked() {
   back();
   button(QWizard::CustomButton1)->setEnabled(false);
   button(QWizard::CustomButton2)->setEnabled(true);
   button(QWizard::CustomButton3)->setEnabled(false);
 }
 
-void EulaDialog::on_finish_clicked() {
+void EulaDialog::finishButtonClicked() {
   accept();
 }
 
