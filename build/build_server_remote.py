@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 import json
 import shlex
 import sys
@@ -8,8 +8,10 @@ import config
 import pika
 from pybuild_utils.base import system_info, utils
 
+
 def gen_routing_key(platform, arch) -> str:
     return platform + '_' + arch
+
 
 def print_usage():
     print("Usage:\n"
@@ -62,12 +64,14 @@ class BuildRpcServer(object):
         self.channel_.add_on_close_callback(self.on_channel_closed)
 
     def setup_exchange(self, exchange_name):
+        print("setup_exchange: {0}".format(exchange_name))
         self.channel_.exchange_declare(self.on_exchange_declareok, exchange_name, self.EXCHANGE_TYPE)
 
     def on_exchange_declareok(self, unused_frame):
         self.setup_queue(self.routing_key_)
 
     def setup_queue(self, queue_name):
+        print("queue_name: {0}".format(queue_name))
         self.channel_.queue_declare(self.on_queue_declareok, queue_name)
 
     def on_queue_declareok(self, method_frame):
@@ -105,7 +109,7 @@ class BuildRpcServer(object):
         self.connection_.ioloop.start()
 
     def build_package(self, platform, arch_bit, op_id, branding_options, package_types, destination, routing_key):
-        buid_request = build.BuildRequest(platform, arch_bit)
+        build_request = build.BuildRequest(platform, arch_bit)
         platform = build_request.platform()
         arch = platform.arch()
 
@@ -150,10 +154,8 @@ class BuildRpcServer(object):
 
     def send_response(self, routing_key, op_id, body):
         properties = pika.BasicProperties(
-            content_type='application/json',
-            correlation_id=op_id,
-            headers={'type': 'response'}
-        )
+            content_type='application/json', correlation_id=op_id,
+            headers={'type': 'response'})
         if self.channel_:
             self.channel_.basic_publish(exchange='',
                                         routing_key=routing_key,
