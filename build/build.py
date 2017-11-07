@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 import os
 import re
 import shutil
@@ -26,16 +26,16 @@ class BuildSystem:
         self.cmake_generator_arg_ = cmake_generator_arg
         self.policy_ = policy
 
-    def cmake_generator_arg(self):
+    def cmake_generator_arg(self) -> str:
         return self.cmake_generator_arg_
 
-    def name(self):
+    def name(self) -> str:
         return self.name_
 
-    def policy(self):
+    def policy(self) -> run_command.Policy:
         return self.policy_
 
-    def cmd_line(self):  # cmd + args
+    def cmd_line(self) -> list:  # cmd + args
         return self.cmd_line_
 
 
@@ -230,6 +230,7 @@ class BuildRequest(object):
 
 if __name__ == "__main__":
     argc = len(sys.argv)
+    dev_null = '/dev/null'
 
     if argc > 1:
         cmake_root = sys.argv[1]
@@ -240,7 +241,7 @@ if __name__ == "__main__":
     if argc > 2:
         branding_file_path = sys.argv[2]
     else:
-        branding_file_path = '/dev/null'
+        branding_file_path = dev_null
 
     if argc > 3:
         platform_str = sys.argv[3]
@@ -248,9 +249,9 @@ if __name__ == "__main__":
         platform_str = system_info.get_os()
 
     if argc > 4:
-        arch_host_os = sys.argv[4]
+        arch_name_str = sys.argv[4]
     else:
-        arch_host_os = system_info.get_arch_name()
+        arch_name_str = system_info.get_arch_name()
 
     if argc > 5:
         bs_str = sys.argv[5]
@@ -263,8 +264,8 @@ if __name__ == "__main__":
     else:
         packages = []
 
-    request = BuildRequest(platform_str, arch_host_os)
-    if branding_file_path != '/dev/null':
+    request = BuildRequest(platform_str, arch_name_str)
+    if branding_file_path != dev_null:
         abs_branding_file = os.path.abspath(branding_file_path)
         branding_options = utils.read_file_line_by_line(abs_branding_file)
     else:

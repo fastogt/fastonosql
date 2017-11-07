@@ -3,24 +3,22 @@ import json
 import shlex
 import sys
 
+import build
 import config
 import pika
+from pybuild_utils.base import system_info, utils
 
-import build
-from pybuild_utils.base import system_info
-from pybuild_utils.base import utils
-
+def gen_routing_key(platform, arch) -> str:
+    return platform + '_' + arch
 
 def print_usage():
     print("Usage:\n"
           "[optional] argv[1] platform\n"
           "[optional] argv[2] architecture\n")
 
-def gen_routing_key(platform, arch) -> str:
-    return platform + '_' + arch
 
 class BuildRpcServer(object):
-    EXCHANGE = 'build_servers_excange'
+    EXCHANGE = 'build_servers_exchange'
     EXCHANGE_TYPE = 'direct'
 
     def __init__(self, platform, arch_bit):
@@ -108,7 +106,7 @@ class BuildRpcServer(object):
 
     def build_package(self, platform, arch_bit, op_id, branding_options, package_types, destination, routing_key):
         buid_request = build.BuildRequest(platform, arch_bit)
-        platform = buid_request.platform()
+        platform = build_request.platform()
         arch = platform.arch()
 
         platform_and_arch_str = '{0}_{1}'.format(platform.name(), arch.name())
@@ -130,7 +128,7 @@ class BuildRpcServer(object):
         store = store(21.0, 79.0, routing_key, op_id)
 
         saver = build.ProgressSaver(store)
-        file_paths = buid_request.build('..', branding_options, dir_name, bs, package_types, saver)
+        file_paths = build_request.build('..', branding_options, dir_name, bs, package_types, saver)
         file_path = file_paths[0]
         self.send_status(routing_key, op_id, 80.0, 'Loading package to server')
         try:
@@ -150,11 +148,11 @@ class BuildRpcServer(object):
                                         properties=properties,
                                         body=json.dumps(json_to_send))
 
-    def send_responce(self, routing_key, op_id, body):
+    def send_response(self, routing_key, op_id, body):
         properties = pika.BasicProperties(
             content_type='application/json',
             correlation_id=op_id,
-            headers={'type': 'responce'}
+            headers={'type': 'response'}
         )
         if self.channel_:
             self.channel_.basic_publish(exchange='',
@@ -164,6 +162,9 @@ class BuildRpcServer(object):
 
     def on_request(self, ch, method, props, body):
         platform_and_arch = '{0}_{1}'.format(self.platform_, self.arch_bit_)
+        if isinstance(body, bytes):
+            body = body.decode("utf-8")
+
         data = json.loads(body)
         # self.acknowledge_message(method.delivery_tag)
         # return
@@ -172,15 +173,14 @@ class BuildRpcServer(object):
         package_type = data.get('package_type')
         destination = data.get('destination')
         op_id = props.correlation_id
-        package_types = []
-        package_types.append(package_type)
+        package_types = [package_type]
 
         self.send_status(props.reply_to, op_id, 0.0, 'Prepare to build package')
         print('Build started for: {0}, platform: {1}'.format(op_id, platform_and_arch))
         try:
             response = self.build_package(self.platform_, self.arch_bit_, op_id, shlex.split(branding_variables),
                                           package_types, destination, props.reply_to)
-            print('Build finished for: {0}, platform: {1}, responce: {2}'.format(op_id, platform_and_arch, response))
+            print('Build finished for: {0}, platform: {1}, response: {2}'.format(op_id, platform_and_arch, response))
             json_to_send = {'body': response}
         except utils.BuildError as ex:
             print('Build finished for: {0}, platform: {1}, exception: {2}'.format(op_id, platform_and_arch, str(ex)))
@@ -190,7 +190,7 @@ class BuildRpcServer(object):
             json_to_send = {'error': str(ex)}
 
         self.send_status(props.reply_to, op_id, 100.0, 'Completed')
-        self.send_responce(props.reply_to, op_id, json.dumps(json_to_send))
+        self.send_response(props.reply_to, op_id, json.dumps(json_to_send))
         self.acknowledge_message(method.delivery_tag)
 
     def acknowledge_message(self, delivery_tag):
