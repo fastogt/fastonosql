@@ -115,6 +115,8 @@ std::string ConvertValue(common::Value* value, const std::string& delimiter, boo
 
   } else if (t == common::Value::TYPE_STRING) {
     return ConvertValue(static_cast<common::StringValue*>(value), delimiter, for_cmd);
+  } else if (t == common::Value::TYPE_JSON) {
+    return ConvertValue(static_cast<common::JsonValue*>(value), delimiter, for_cmd);
 
   } else if (t == common::Value::TYPE_ARRAY) {
     return ConvertValue(static_cast<common::ArrayValue*>(value), delimiter, for_cmd);
@@ -284,6 +286,28 @@ std::string ConvertValue(common::FundamentalValue* value, const std::string& del
 }
 
 std::string ConvertValue(common::StringValue* value, const std::string& delimiter, bool for_cmd) {
+  UNUSED(delimiter);
+  if (!value) {
+    return std::string();
+  }
+
+  std::string res;
+  if (!value->GetAsString(&res)) {
+    return std::string();
+  }
+
+  if (!for_cmd) {
+    return res;
+  }
+
+  if (detail::have_space(res)) {
+    return "\"" + res + "\"";
+  }
+
+  return res;
+}
+
+std::string ConvertValue(common::JsonValue* value, const std::string& delimiter, bool for_cmd) {
   UNUSED(delimiter);
   if (!value) {
     return std::string();

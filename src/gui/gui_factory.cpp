@@ -209,6 +209,9 @@ const QIcon& GuiFactory::icon(common::Value::Type type) const {
     case common::Value::TYPE_HASH:
       static QIcon h(":" PROJECT_NAME_LOWERCASE "/images/64x64/hash.png");
       return h;
+    case common::Value::TYPE_JSON:
+      static QIcon j(":" PROJECT_NAME_LOWERCASE "/images/64x64/json.png");
+      return j;
     case common::Value::TYPE_ZSET:
       static QIcon z(":" PROJECT_NAME_LOWERCASE "/images/64x64/zset.png");
       return z;

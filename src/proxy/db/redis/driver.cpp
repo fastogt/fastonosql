@@ -63,6 +63,8 @@ common::Value::Type ConvertFromStringRType(const std::string& type) {
     return common::Value::TYPE_HASH;
   } else if (type == "zset") {
     return common::Value::TYPE_ZSET;
+  } else if (type == "ReJSON-RL") {
+    return common::Value::TYPE_JSON;
   } else {
     return common::Value::TYPE_NULL;
   }

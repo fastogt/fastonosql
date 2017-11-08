@@ -1,6 +1,7 @@
 1.10.0 /
 [Alexandr Topilski]
 - EULA dialog
+- Full support JSON.GET/JSON.SET commands
 
 1.9.1 / November 4, 2017
 [Alexandr Topilski]

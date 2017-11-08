@@ -18,6 +18,7 @@
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/null.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/array.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/zset.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/json.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/hash.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/double.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/bool.png</file>

@@ -25,12 +25,14 @@
 #define REDIS_SET_KEY_SET_COMMAND "SADD"
 #define REDIS_SET_KEY_ZSET_COMMAND "ZADD"
 #define REDIS_SET_KEY_HASH_COMMAND "HMSET"
+#define REDIS_SET_KEY_JSON_COMMAND "JSON.SET"
 
 #define REDIS_GET_KEY_COMMAND DB_GET_KEY_COMMAND
 #define REDIS_GET_KEY_ARRAY_COMMAND "LRANGE"
 #define REDIS_GET_KEY_SET_COMMAND "SMEMBERS"
 #define REDIS_GET_KEY_ZSET_COMMAND "ZRANGE"
 #define REDIS_GET_KEY_HASH_COMMAND "HGETALL"
+#define REDIS_GET_KEY_JSON_COMMAND "JSON.GET"
 
 #define REDIS_DELETE_KEY_COMMAND DB_DELETE_KEY_COMMAND
 #define REDIS_RENAME_KEY_COMMAND DB_RENAME_KEY_COMMAND
@@ -242,6 +244,8 @@ common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, comm
   common::Value::Type type = key.GetType();
   if (type == common::Value::TYPE_ARRAY) {
     wr << REDIS_SET_KEY_ARRAY_COMMAND " " << key_str.GetKeyForCommandLine() << " " << value_str;
+  } else if (type == common::Value::TYPE_JSON) {
+    wr << REDIS_SET_KEY_JSON_COMMAND " " << key_str.GetKeyForCommandLine() << " . " << value_str;
   } else if (type == common::Value::TYPE_SET) {
     wr << REDIS_SET_KEY_SET_COMMAND " " << key_str.GetKeyForCommandLine() << " " << value_str;
   } else if (type == common::Value::TYPE_ZSET) {
@@ -263,6 +267,8 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
   command_buffer_writer_t wr;
   if (type == common::Value::TYPE_ARRAY) {
     wr << REDIS_GET_KEY_ARRAY_COMMAND " " << key_str.GetKeyForCommandLine() << " 0 -1";
+  } else if (type == common::Value::TYPE_JSON) {
+    wr << REDIS_GET_KEY_JSON_COMMAND " " << key_str.GetKeyForCommandLine();
   } else if (type == common::Value::TYPE_SET) {
     wr << REDIS_GET_KEY_SET_COMMAND " " << key_str.GetKeyForCommandLine();
   } else if (type == common::Value::TYPE_ZSET) {
@@ -321,7 +327,7 @@ common::Error CommandTranslator::LoadKeyTTLCommandImpl(const NKey& key, command_
 bool CommandTranslator::IsLoadKeyCommandImpl(const CommandInfo& cmd) const {
   return cmd.IsEqualName(REDIS_GET_KEY_COMMAND) || cmd.IsEqualName(REDIS_GET_KEY_ARRAY_COMMAND) ||
          cmd.IsEqualName(REDIS_GET_KEY_SET_COMMAND) || cmd.IsEqualName(REDIS_GET_KEY_ZSET_COMMAND) ||
-         cmd.IsEqualName(REDIS_GET_KEY_HASH_COMMAND);
+         cmd.IsEqualName(REDIS_GET_KEY_HASH_COMMAND) || cmd.IsEqualName(REDIS_GET_KEY_JSON_COMMAND);
 }
 
 common::Error CommandTranslator::PublishCommandImpl(const NDbPSChannel& channel,

@@ -3300,6 +3300,51 @@ common::Error DBConnection::SlaveMode(FastoObject* out) {
   return common::make_error(common::COMMON_EINTR);
 }
 
+common::Error DBConnection::JsonSetImpl(const NDbKValue& key, NDbKValue* added_key) {
+  command_buffer_t set_cmd;
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
+  common::Error err = tran->CreateKeyCommand(key, &set_cmd);
+  if (err) {
+    return err;
+  }
+
+  redisReply* reply = NULL;
+  err = ExecRedisCommand(connection_.handle_, set_cmd, &reply);
+  if (err) {
+    return err;
+  }
+
+  *added_key = key;
+  freeReplyObject(reply);
+  return common::Error();
+}
+
+common::Error DBConnection::JsonGetImpl(const NKey& key, NDbKValue* loaded_key) {
+  command_buffer_t get_cmd;
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
+  common::Error err = tran->LoadKeyCommand(key, common::Value::TYPE_JSON, &get_cmd);
+  if (err) {
+    return err;
+  }
+
+  redisReply* reply = NULL;
+  err = ExecRedisCommand(connection_.handle_, get_cmd, &reply);
+  if (err) {
+    return err;
+  }
+
+  if (reply->type == REDIS_REPLY_NIL) {
+    // key_t key_str = key.GetKey();
+    return GenerateError(REDIS_JSON_MODULE_COMMAND("GET"), "key not found.");
+  }
+
+  CHECK(reply->type == REDIS_REPLY_STRING) << "Unexpected replay type: " << reply->type;
+  common::Value* val = common::Value::CreateJsonValue(reply->str);
+  *loaded_key = NDbKValue(key, NValue(val));
+  freeReplyObject(reply);
+  return common::Error();
+}
+
 common::Error DBConnection::ScanImpl(uint64_t cursor_in,
                                      const std::string& pattern,
                                      uint64_t count_keys,
@@ -3482,7 +3527,7 @@ common::Error DBConnection::GetImpl(const NKey& key, NDbKValue* loaded_key) {
   }
 
   if (reply->type == REDIS_REPLY_NIL) {
-    key_t key_str = key.GetKey();
+    // key_t key_str = key.GetKey();
     return GenerateError(DB_GET_KEY_COMMAND, "key not found.");
   }
 
@@ -4470,6 +4515,52 @@ common::Error DBConnection::GraphExplain(const commands_args_t& argv, FastoObjec
 
 common::Error DBConnection::GraphDelete(const commands_args_t& argv, FastoObject* out) {
   return CommonExec(argv, out);
+}
+
+common::Error DBConnection::JsonSet(const NDbKValue& key, NDbKValue* added_key) {
+  if (!added_key) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
+  err = JsonSetImpl(key, added_key);
+  if (err) {
+    return err;
+  }
+
+  if (client_) {
+    client_->OnAddedKey(*added_key);
+  }
+
+  return common::Error();
+}
+
+common::Error DBConnection::JsonGet(const NKey& key, NDbKValue* loaded_key) {
+  if (!loaded_key) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
+  err = JsonGetImpl(key, loaded_key);
+  if (err) {
+    return err;
+  }
+
+  if (client_) {
+    client_->OnLoadedKey(*loaded_key);
+  }
+
+  return common::Error();
 }
 
 }  // namespace redis

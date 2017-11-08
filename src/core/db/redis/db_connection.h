@@ -99,7 +99,13 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
   common::Error GraphExplain(const commands_args_t& argv, FastoObject* out) WARN_UNUSED_RESULT;
   common::Error GraphDelete(const commands_args_t& argv, FastoObject* out) WARN_UNUSED_RESULT;
 
+  common::Error JsonSet(const NDbKValue& key, NDbKValue* added_key) WARN_UNUSED_RESULT;
+  common::Error JsonGet(const NKey& key, NDbKValue* loaded_key) WARN_UNUSED_RESULT;
+
  private:
+  common::Error JsonSetImpl(const NDbKValue& key, NDbKValue* added_key);
+  common::Error JsonGetImpl(const NKey& key, NDbKValue* loaded_key);
+
   virtual common::Error ScanImpl(uint64_t cursor_in,
                                  const std::string& pattern,
                                  uint64_t count_keys,
