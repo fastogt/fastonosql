@@ -71,8 +71,6 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
   static common::Error DBsize(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 };
 
-extern const internal::ConstantCommandsArray g_commands;
-
 }  // namespace ssdb
 }  // namespace core
 }  // namespace fastonosql

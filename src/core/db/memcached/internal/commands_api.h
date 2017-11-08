@@ -37,9 +37,6 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
   static common::Error Decr(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 };
 
-// TODO: cas command implementation
-extern const internal::ConstantCommandsArray g_commands;
-
 }  // namespace memcached
 }  // namespace core
 }  // namespace fastonosql

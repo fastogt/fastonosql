@@ -29,20 +29,6 @@ CDBConnectionClient::~CDBConnectionClient() {}
 
 namespace internal {
 
-ConstantCommandsArray::ConstantCommandsArray(std::initializer_list<CommandHolder> l) {
-  for (auto it = l.begin(); it != l.end(); ++it) {
-    CommandHolder cmd = *it;
-    for (auto jt = begin(); jt != end(); ++jt) {
-      CommandHolder cmd2 = *jt;
-      if (cmd2.IsEqualName(cmd.name)) {
-        NOTREACHED() << "Only unique commands can be in array, but command with name: \"" << cmd.name
-                     << "\" already exists!";
-      }
-    }
-    push_back(cmd);
-  }
-}
-
 command_buffer_t GetKeysPattern(uint64_t cursor_in, const std::string& pattern, uint64_t count_keys) {
   command_buffer_writer_t wr;
   wr << "SCAN " << common::ConvertToString(cursor_in) << " MATCH " << pattern << " COUNT "

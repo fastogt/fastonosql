@@ -78,7 +78,8 @@ const char* FastoCommonItem::delimiter() const {
 }
 
 common::Value::Type FastoCommonItem::type() const {
-  return key_.GetType();  QString qvalstr;
+  return key_.GetType();
+  QString qvalstr;
 }
 
 bool FastoCommonItem::isReadOnly() const {

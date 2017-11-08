@@ -44,6 +44,7 @@ SET(HEADERS_CORE
   ${HEADERS_CORE_TRANSLATOR}
   ${HEADERS_CORE_INTERNAL}
 
+  ${CMAKE_SOURCE_DIR}/src/core/constant_commands_array.h
   ${CMAKE_SOURCE_DIR}/src/core/connection_types.h
   ${CMAKE_SOURCE_DIR}/src/core/types.h
   ${CMAKE_SOURCE_DIR}/src/core/db_traits.h
@@ -68,6 +69,7 @@ SET(SOURCES_CORE
   ${SOURCES_CORE_TRANSLATOR}
   ${SOURCES_CORE_INTERNAL}
 
+  ${CMAKE_SOURCE_DIR}/src/core/constant_commands_array.cpp
   ${CMAKE_SOURCE_DIR}/src/core/connection_types.cpp
   ${CMAKE_SOURCE_DIR}/src/core/types.cpp
   ${CMAKE_SOURCE_DIR}/src/core/db_traits.cpp
@@ -463,21 +465,23 @@ IF(BUILD_WITH_REDIS)
 
   #core redis
   SET(HEADERS_CORE_DB_REDIS
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis/internal/commands_api.h
+
     ${CMAKE_SOURCE_DIR}/src/core/db/redis/config.h
     ${CMAKE_SOURCE_DIR}/src/core/db/redis/command_translator.h
     ${CMAKE_SOURCE_DIR}/src/core/db/redis/server_info.h
     ${CMAKE_SOURCE_DIR}/src/core/db/redis/db_connection.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis/internal/commands_api.h
     ${CMAKE_SOURCE_DIR}/src/core/db/redis/database_info.h
     ${CMAKE_SOURCE_DIR}/src/core/db/redis/sentinel_info.h
     ${CMAKE_SOURCE_DIR}/src/core/db/redis/cluster_infos.h
   )
   SET(SOURCES_CORE_DB_REDIS
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis/internal/commands_api.cpp
+
     ${CMAKE_SOURCE_DIR}/src/core/db/redis/config.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/redis/command_translator.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/redis/server_info.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/redis/db_connection.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis/internal/commands_api.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/redis/sentinel_info.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/redis/cluster_infos.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/redis/database_info.cpp
@@ -550,19 +554,21 @@ IF(BUILD_WITH_MEMCACHED)
 
   #core
   SET(HEADERS_CORE_DB_MEMCACHED
+    ${CMAKE_SOURCE_DIR}/src/core/db/memcached/internal/commands_api.h
+
     ${CMAKE_SOURCE_DIR}/src/core/db/memcached/config.h
     ${CMAKE_SOURCE_DIR}/src/core/db/memcached/command_translator.h
     ${CMAKE_SOURCE_DIR}/src/core/db/memcached/server_info.h
     ${CMAKE_SOURCE_DIR}/src/core/db/memcached/db_connection.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/memcached/internal/commands_api.h
     ${CMAKE_SOURCE_DIR}/src/core/db/memcached/database_info.h
   )
   SET(SOURCES_CORE_DB_MEMCACHED
+    ${CMAKE_SOURCE_DIR}/src/core/db/memcached/internal/commands_api.cpp
+
     ${CMAKE_SOURCE_DIR}/src/core/db/memcached/config.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/memcached/command_translator.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/memcached/server_info.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/memcached/db_connection.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/memcached/internal/commands_api.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/memcached/database_info.cpp
   )
 
@@ -613,19 +619,21 @@ IF(BUILD_WITH_SSDB)
 
   #core
   SET(HEADERS_CORE_DB_SSDB
+    ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/internal/commands_api.h
+
     ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/config.h
     ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/command_translator.h
     ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/server_info.h
     ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/db_connection.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/internal/commands_api.h
     ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/database_info.h
   )
   SET(SOURCES_CORE_DB_SSDB
+    ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/internal/commands_api.cpp
+
     ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/config.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/command_translator.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/server_info.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/db_connection.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/internal/commands_api.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/database_info.cpp
   )
 
@@ -674,22 +682,24 @@ IF(BUILD_WITH_LEVELDB)
 
   #core
   SET(HEADERS_CORE_DB_LEVELDB
+    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/internal/commands_api.h
+
     ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/config.h
     ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/command_translator.h
     ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/server_info.h
     ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/db_connection.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/internal/commands_api.h
     ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/database_info.h
     ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/comparators/indexed_db.h
     ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/comparators/constants.h
     ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/comparators/utils.h
   )
   SET(SOURCES_CORE_DB_LEVELDB
+    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/internal/commands_api.cpp
+
     ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/config.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/command_translator.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/server_info.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/db_connection.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/internal/commands_api.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/database_info.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/comparators/indexed_db.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/comparators/utils.cpp
@@ -740,19 +750,21 @@ IF(BUILD_WITH_ROCKSDB)
 
   #core
   SET(HEADERS_CORE_DB_ROCKSDB
+    ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/internal/commands_api.h
+
     ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/config.h
     ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/command_translator.h
     ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/server_info.h
     ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/db_connection.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/internal/commands_api.h
     ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/database_info.h
   )
   SET(SOURCES_CORE_DB_ROCKSDB
+    ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/internal/commands_api.cpp
+
     ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/config.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/command_translator.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/server_info.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/db_connection.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/internal/commands_api.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/database_info.cpp
   )
 
@@ -801,19 +813,21 @@ IF(BUILD_WITH_UNQLITE)
 
   #core
   SET(HEADERS_CORE_DB_UNQLITE
+    ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/internal/commands_api.h
+
     ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/config.h
     ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/command_translator.h
     ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/server_info.h
     ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/db_connection.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/internal/commands_api.h
     ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/database_info.h
   )
   SET(SOURCES_CORE_DB_UNQLITE
+    ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/internal/commands_api.cpp
+
     ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/config.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/command_translator.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/server_info.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/db_connection.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/internal/commands_api.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/database_info.cpp
   )
 
@@ -868,18 +882,20 @@ IF(BUILD_WITH_LMDB)
 
   #core
   SET(HEADERS_CORE_DB_LMDB
+    ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/internal/commands_api.h
+
     ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/config.h
     ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/command_translator.h
     ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/server_info.h
     ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/db_connection.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/internal/commands_api.h
     ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/database_info.h)
   SET(SOURCES_CORE_DB_LMDB
+    ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/internal/commands_api.cpp
+
     ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/config.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/command_translator.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/server_info.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/db_connection.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/internal/commands_api.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/database_info.cpp
   )
 
@@ -931,19 +947,21 @@ IF(BUILD_WITH_UPSCALEDB)
 
   #core
   SET(HEADERS_CORE_DB_UPSCALEDB
+    ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/internal/commands_api.h
+
     ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/config.h
     ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/command_translator.h
     ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/server_info.h
     ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/db_connection.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/internal/commands_api.h
     ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/database_info.h
   )
   SET(SOURCES_CORE_DB_UPSCALEDB
+    ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/internal/commands_api.cpp
+
     ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/config.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/command_translator.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/server_info.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/db_connection.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/internal/commands_api.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/database_info.cpp
   )
 
@@ -992,18 +1010,20 @@ IF(BUILD_WITH_FORESTDB)
 
   #core
   SET(HEADERS_CORE_DB_FORESTDB
+    ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/internal/commands_api.h
+
     ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/config.h
     ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/command_translator.h
     ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/server_info.h
     ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/db_connection.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/internal/commands_api.h
     ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/database_info.h)
   SET(SOURCES_CORE_DB_FORESTDB
+    ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/internal/commands_api.cpp
+
     ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/config.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/command_translator.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/server_info.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/db_connection.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/internal/commands_api.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/database_info.cpp
   )
 

@@ -31,8 +31,6 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
   static common::Error Merge(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 };
 
-extern const internal::ConstantCommandsArray g_commands;
-
 }  // namespace rocksdb
 }  // namespace core
 }  // namespace fastonosql

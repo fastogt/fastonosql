@@ -16,19 +16,24 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
-#include "core/internal/commands_api.h"  // for ApiTraits
+#include "core/constant_commands_array.h"
 
 namespace fastonosql {
 namespace core {
-namespace upscaledb {
 
-class DBConnection;
-struct CommandsApi : public internal::ApiTraits<DBConnection> {
-  static common::Error Info(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
-};
+ConstantCommandsArray::ConstantCommandsArray(std::initializer_list<CommandHolder> l) {
+  for (auto it = l.begin(); it != l.end(); ++it) {
+    CommandHolder cmd = *it;
+    for (auto jt = begin(); jt != end(); ++jt) {
+      CommandHolder cmd2 = *jt;
+      if (cmd2.IsEqualName(cmd.name)) {
+        NOTREACHED() << "Only unique commands can be in array, but command with name: \"" << cmd.name
+                     << "\" already exists!";
+      }
+    }
+    push_back(cmd);
+  }
+}
 
-}  // namespace upscaledb
 }  // namespace core
 }  // namespace fastonosql

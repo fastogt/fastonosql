@@ -32,7 +32,7 @@ namespace gui {
 namespace redis {
 
 ShellWidget::ShellWidget(proxy::IServerSPtr server, const QString& filePath, QWidget* parent)
-    : base_class(server, filePath, parent) {}
+    : base_class(server, filePath, parent), modules_(nullptr) {}
 
 void ShellWidget::init() {
   base_class::init();

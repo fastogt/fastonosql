@@ -107,7 +107,7 @@ common::Error Driver::GetCurrentServerInfo(core::IServerInfo** info) {
 
 common::Error Driver::GetServerCommands(std::vector<const core::CommandInfo*>* commands) {
   std::vector<const core::CommandInfo*> lcommands;
-  const core::internal::ConstantCommandsArray& origin = core::forestdb::DBConnection::GetCommands();
+  const core::ConstantCommandsArray& origin = core::forestdb::DBConnection::GetCommands();
   for (size_t i = 0; i < origin.size(); ++i) {
     lcommands.push_back(&origin[i]);
   }

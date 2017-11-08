@@ -28,6 +28,7 @@ namespace fastonosql {
 namespace core {
 namespace internal {
 
+// static functions, because linked to commands in static application time
 template <class CDBConnection>
 struct ApiTraits {
   typedef CDBConnection cdb_connection_t;

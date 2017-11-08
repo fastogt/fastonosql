@@ -20,6 +20,20 @@
 
 #include "core/internal/commands_api.h"  // for ApiTraits
 
+#define REDIS_MODULE_COMMAND_GENERATE(MODULE, COMMAND) MODULE "." COMMAND
+
+#define REDIS_GRAPH_MODULE "GRAPH"
+#define REDIS_GRAPH_MODULE_COMMAND(COMMAND) REDIS_MODULE_COMMAND_GENERATE(REDIS_GRAPH_MODULE, COMMAND)
+
+#define REDIS_SEARCH_MODULE "FT"
+#define REDIS_SEARCH_MODULE_COMMAND(COMMAND) REDIS_MODULE_COMMAND_GENERATE(REDIS_SEARCH_MODULE, COMMAND)
+
+#define REDIS_JSON_MODULE "JSON"
+#define REDIS_JSON_MODULE_COMMAND(COMMAND) REDIS_MODULE_COMMAND_GENERATE(REDIS_JSON_MODULE, COMMAND)
+
+#define REDIS_NR_MODULE "NR"
+#define REDIS_NR_MODULE_COMMAND(COMMAND) REDIS_MODULE_COMMAND_GENERATE(REDIS_NR_MODULE, COMMAND)
+
 namespace fastonosql {
 namespace core {
 namespace redis {
@@ -307,8 +321,6 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
   static common::Error NrTrain(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error NrThreads(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 };
-
-extern const internal::ConstantCommandsArray g_commands;
 
 }  // namespace redis
 }  // namespace core

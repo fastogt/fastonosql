@@ -20,6 +20,7 @@
 
 #include <common/sprintf.h>
 
+#include "core/constant_commands_array.h"
 #include "core/internal/cdb_connection_client.h"
 #include "core/internal/command_handler.h"  // for CommandHandler, etc
 #include "core/internal/db_connection.h"    // for DBConnection
@@ -29,11 +30,6 @@
 namespace fastonosql {
 namespace core {
 namespace internal {
-
-class ConstantCommandsArray : public std::vector<CommandHolder> {
- public:
-  ConstantCommandsArray(std::initializer_list<CommandHolder> l);
-};
 
 command_buffer_t GetKeysPattern(uint64_t cursor_in, const std::string& pattern, uint64_t count_keys);  // for SCAN
 

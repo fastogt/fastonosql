@@ -260,6 +260,7 @@ void FastoEditorOutput::layoutChanged() {
   for (size_t i = 0; i < root->childrenCount(); ++i) {
     FastoCommonItem* child = dynamic_cast<FastoCommonItem*>(root->child(i));  // +
     if (!child) {
+      DNOTREACHED();
       continue;
     }
 
