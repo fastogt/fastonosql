@@ -25,24 +25,33 @@ common::Error test(core::internal::CommandHandler* handler, core::commands_args_
   return common::Error();
 }
 
-static const std::vector<core::CommandHolder> cmds = {
-    core::CommandHolder(SET,
-                        "<key> <value>",
-                        "Set the value of a key.",
-                        UNDEFINED_SINCE,
-                        UNDEFINED_EXAMPLE_STR,
-                        2,
-                        0,
-                        &test),
-    core::CommandHolder(GET_CONFIG,
-                        "<key>",
-                        "Set the value of a key.",
-                        UNDEFINED_SINCE,
-                        UNDEFINED_EXAMPLE_STR,
-                        1,
-                        0,
-                        &test),
-    core::CommandHolder(GET2, "<key>", "Set the value of a key.", UNDEFINED_SINCE, UNDEFINED_EXAMPLE_STR, 1, 0, &test)};
+static const std::vector<core::CommandHolder> cmds = {core::CommandHolder(SET,
+                                                                          "<key> <value>",
+                                                                          "Set the value of a key.",
+                                                                          UNDEFINED_SINCE,
+                                                                          UNDEFINED_EXAMPLE_STR,
+                                                                          2,
+                                                                          0,
+                                                                          core::CommandInfo::Native,
+                                                                          &test),
+                                                      core::CommandHolder(GET_CONFIG,
+                                                                          "<key>",
+                                                                          "Set the value of a key.",
+                                                                          UNDEFINED_SINCE,
+                                                                          UNDEFINED_EXAMPLE_STR,
+                                                                          1,
+                                                                          0,
+                                                                          core::CommandInfo::Native,
+                                                                          &test),
+                                                      core::CommandHolder(GET2,
+                                                                          "<key>",
+                                                                          "Set the value of a key.",
+                                                                          UNDEFINED_SINCE,
+                                                                          UNDEFINED_EXAMPLE_STR,
+                                                                          1,
+                                                                          0,
+                                                                          core::CommandInfo::Native,
+                                                                          &test)};
 
 class FakeTranslator : public core::ICommandTranslator {
  public:
