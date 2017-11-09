@@ -22,6 +22,8 @@
 #include <QIcon>
 #include <QStyle>
 
+#include "core/value.h"
+
 #include "proxy/settings_manager.h"  // for SettingsManager
 
 namespace fastonosql {
@@ -189,7 +191,8 @@ const QIcon& GuiFactory::modeIcon(core::ConnectionMode mode) const {
 }
 
 const QIcon& GuiFactory::icon(common::Value::Type type) const {
-  switch (type) {
+  const uint8_t ctype = type;
+  switch (ctype) {
     case common::Value::TYPE_NULL:
       static QIcon u(":" PROJECT_NAME_LOWERCASE "/images/64x64/null.png");
       return u;
@@ -209,9 +212,6 @@ const QIcon& GuiFactory::icon(common::Value::Type type) const {
     case common::Value::TYPE_HASH:
       static QIcon h(":" PROJECT_NAME_LOWERCASE "/images/64x64/hash.png");
       return h;
-    case common::Value::TYPE_JSON:
-      static QIcon j(":" PROJECT_NAME_LOWERCASE "/images/64x64/json.png");
-      return j;
     case common::Value::TYPE_ZSET:
       static QIcon z(":" PROJECT_NAME_LOWERCASE "/images/64x64/zset.png");
       return z;
@@ -224,6 +224,9 @@ const QIcon& GuiFactory::icon(common::Value::Type type) const {
     case common::Value::TYPE_DOUBLE:
       static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/integer.png");
       return i;
+    case core::JsonValue::TYPE_JSON:
+      static QIcon j(":" PROJECT_NAME_LOWERCASE "/images/64x64/json.png");
+      return j;
   }
 
   static QIcon err(":" PROJECT_NAME_LOWERCASE "/images/64x64/error.png");

@@ -34,6 +34,7 @@ extern "C" {
 #include "core/db/redis/database_info.h"  // for DataBaseInfo
 #include "core/db/redis/internal/commands_api.h"
 #include "core/db/redis/sentinel_info.h"  // for DiscoverySentinelInfo, etc
+#include "core/value.h"
 
 #define HIREDIS_VERSION    \
   STRINGIZE(HIREDIS_MAJOR) \
@@ -3322,7 +3323,7 @@ common::Error DBConnection::JsonSetImpl(const NDbKValue& key, NDbKValue* added_k
 common::Error DBConnection::JsonGetImpl(const NKey& key, NDbKValue* loaded_key) {
   command_buffer_t get_cmd;
   redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
-  common::Error err = tran->LoadKeyCommand(key, common::Value::TYPE_JSON, &get_cmd);
+  common::Error err = tran->LoadKeyCommand(key, JsonValue::TYPE_JSON, &get_cmd);
   if (err) {
     return err;
   }
@@ -3339,7 +3340,7 @@ common::Error DBConnection::JsonGetImpl(const NKey& key, NDbKValue* loaded_key) 
   }
 
   CHECK(reply->type == REDIS_REPLY_STRING) << "Unexpected replay type: " << reply->type;
-  common::Value* val = common::Value::CreateJsonValue(reply->str);
+  common::Value* val = new JsonValue(reply->str);
   *loaded_key = NDbKValue(key, NValue(val));
   freeReplyObject(reply);
   return common::Error();

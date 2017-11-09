@@ -23,6 +23,8 @@
 #include <common/qt/convert2string.h>  // for ConvertToString
 #include <common/qt/utils_qt.h>        // for item
 
+#include "core/value.h"
+
 #include "gui/fasto_common_item.h"  // for FastoCommonItem, etc
 #include "gui/gui_factory.h"        // for GuiFactory
 
@@ -68,9 +70,7 @@ QVariant FastoCommonModel::data(const QModelIndex& index, int role) const {
     } else if (col == FastoCommonItem::eValue) {
       result = node->value();
     } else if (col == FastoCommonItem::eType) {
-      std::string type_str = common::Value::GetTypeName(node->type());
-      QString qtype;
-      common::ConvertFromString(type_str, &qtype);
+      QString qtype = core::GetTypeName(node->type());
       result = qtype;
     }
   }

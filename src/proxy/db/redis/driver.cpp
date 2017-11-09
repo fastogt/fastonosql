@@ -21,6 +21,7 @@
 #include <common/convert2string.h>           // for ConvertFromString, etc
 #include <common/file_system/file_system.h>  // for copy_file
 
+#include "core/value.h"
 #include "core/db/redis/database_info.h"  // for DataBaseInfo
 #include "core/db/redis/db_connection.h"  // for DBConnection, INFO_REQUEST, etc
 
@@ -64,10 +65,9 @@ common::Value::Type ConvertFromStringRType(const std::string& type) {
   } else if (type == "zset") {
     return common::Value::TYPE_ZSET;
   } else if (type == "ReJSON-RL") {
-    return common::Value::TYPE_JSON;
-  } else {
-    return common::Value::TYPE_NULL;
+    return fastonosql::core::JsonValue::TYPE_JSON;
   }
+  return common::Value::TYPE_NULL;
 }
 
 }  // namespace
@@ -419,7 +419,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
           if (tchildrens.size() == 1) {
             std::string typeRedis = tchildrens[0]->ToString();
             common::Value::Type ctype = ConvertFromStringRType(typeRedis);
-            common::ValueSPtr empty_val(common::Value::CreateEmptyValueFromType(ctype));
+            common::ValueSPtr empty_val(core::CreateEmptyValueFromType(ctype));
             res.keys[i].SetValue(empty_val);
           }
         }

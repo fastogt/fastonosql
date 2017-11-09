@@ -19,6 +19,7 @@
 #include "core/db/redis/command_translator.h"
 
 #include "core/connection_types.h"
+#include "core/value.h"
 
 #define REDIS_SET_KEY_COMMAND DB_SET_KEY_COMMAND
 #define REDIS_SET_KEY_ARRAY_COMMAND "LPUSH"
@@ -244,7 +245,7 @@ common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, comm
   common::Value::Type type = key.GetType();
   if (type == common::Value::TYPE_ARRAY) {
     wr << REDIS_SET_KEY_ARRAY_COMMAND " " << key_str.GetKeyForCommandLine() << " " << value_str;
-  } else if (type == common::Value::TYPE_JSON) {
+  } else if (type == JsonValue::TYPE_JSON) {
     wr << REDIS_SET_KEY_JSON_COMMAND " " << key_str.GetKeyForCommandLine() << " . " << value_str;
   } else if (type == common::Value::TYPE_SET) {
     wr << REDIS_SET_KEY_SET_COMMAND " " << key_str.GetKeyForCommandLine() << " " << value_str;
@@ -267,7 +268,7 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
   command_buffer_writer_t wr;
   if (type == common::Value::TYPE_ARRAY) {
     wr << REDIS_GET_KEY_ARRAY_COMMAND " " << key_str.GetKeyForCommandLine() << " 0 -1";
-  } else if (type == common::Value::TYPE_JSON) {
+  } else if (type == JsonValue::TYPE_JSON) {
     wr << REDIS_GET_KEY_JSON_COMMAND " " << key_str.GetKeyForCommandLine();
   } else if (type == common::Value::TYPE_SET) {
     wr << REDIS_GET_KEY_SET_COMMAND " " << key_str.GetKeyForCommandLine();

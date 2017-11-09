@@ -23,6 +23,24 @@
 namespace fastonosql {
 namespace core {
 
+class JsonValue : public common::Value {  // simple json class value, only save string without validation
+ public:
+  static const common::Value::Type TYPE_JSON = static_cast<common::Value::Type>(common::Value::USER_TYPES + 1);
+  explicit JsonValue(const std::string& json_value);
+  virtual ~JsonValue();
+
+  virtual bool GetAsString(std::string* out_value) const override WARN_UNUSED_RESULT;
+  virtual JsonValue* DeepCopy() const override;
+  virtual bool Equals(const Value* other) const override;
+
+ private:
+  std::string value_;
+  DISALLOW_COPY_AND_ASSIGN(JsonValue);
+};
+
+common::Value* CreateEmptyValueFromType(common::Value::Type value_type);
+const char* GetTypeName(common::Value::Type value_type);
+
 namespace detail {
 bool have_space(const std::string& data);
 std::string hex_string(const common::buffer_t& value);
@@ -38,8 +56,9 @@ std::string ConvertValue(common::ZSetValue* zset, const std::string& delimiter, 
 std::string ConvertValue(common::HashValue* hash, const std::string& delimiter, bool for_cmd);
 std::string ConvertValue(common::FundamentalValue* value, const std::string& delimiter, bool for_cmd);
 std::string ConvertValue(common::StringValue* value, const std::string& delimiter, bool for_cmd);
-std::string ConvertValue(common::JsonValue* value, const std::string& delimiter, bool for_cmd);
 std::string ConvertValue(common::ByteArrayValue* value, const std::string& delimiter, bool for_cmd);
+// extended
+std::string ConvertValue(JsonValue* value, const std::string& delimiter, bool for_cmd);
 
 std::string ConvertToHumanReadable(common::Value* value, const std::string& delimiter = std::string());
 

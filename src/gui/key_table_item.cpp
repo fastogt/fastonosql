@@ -20,6 +20,8 @@
 
 #include <common/qt/convert2string.h>
 
+#include "core/value.h"
+
 namespace fastonosql {
 namespace gui {
 
@@ -34,9 +36,7 @@ QString KeyTableItem::keyString() const {
 }
 
 QString KeyTableItem::typeText() const {
-  QString qtype;
-  common::ConvertFromString(common::Value::GetTypeName(dbv_.GetType()), &qtype);
-  return qtype;
+  return core::GetTypeName(dbv_.GetType());
 }
 
 core::ttl_t KeyTableItem::ttl() const {

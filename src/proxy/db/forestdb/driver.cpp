@@ -20,6 +20,7 @@
 
 #include <common/convert2string.h>  // for ConvertToString
 
+#include "core/value.h"
 #include "core/db/forestdb/database_info.h"
 #include "core/db/forestdb/db_connection.h"  // for DBConnection
 
@@ -227,7 +228,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         if (ar->GetString(i, &key_str)) {
           core::key_t key(key_str);
           core::NKey k(key);
-          core::NValue empty_val(common::Value::CreateEmptyValueFromType(common::Value::TYPE_STRING));
+          core::NValue empty_val(core::CreateEmptyValueFromType(common::Value::TYPE_STRING));
           core::NDbKValue ress(k, empty_val);
           res.keys.push_back(ress);
         }

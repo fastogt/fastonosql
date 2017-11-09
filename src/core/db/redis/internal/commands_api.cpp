@@ -20,6 +20,8 @@
 
 #include "core/db/redis/db_connection.h"
 
+#include "core/value.h"
+
 namespace fastonosql {
 namespace core {
 namespace {
@@ -1509,7 +1511,7 @@ common::Error CommandsApi::JsonSet(internal::CommandHandler* handler, commands_a
   key_t raw_key(argv[0]);
   NKey key(raw_key);
 
-  NValue json_val(common::Value::CreateJsonValue(common::ConvertToString(argv[2])));
+  NValue json_val(new JsonValue(common::ConvertToString(argv[2])));
   NDbKValue kv(key, json_val);
 
   DBConnection* red = static_cast<DBConnection*>(handler);

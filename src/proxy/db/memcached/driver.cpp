@@ -21,6 +21,7 @@
 #include <common/convert2string.h>
 
 #include "core/db/memcached/db_connection.h"  // for DBConnection
+#include "core/value.h"
 
 #include "proxy/command/command.h"                   // for CreateCommand, etc
 #include "proxy/command/command_logger.h"            // for LOG_COMMAND
@@ -190,7 +191,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
           } else {
             k.SetTTL(ttl);
           }
-          core::NValue empty_val(common::Value::CreateEmptyValueFromType(common::Value::TYPE_STRING));
+          core::NValue empty_val(core::CreateEmptyValueFromType(common::Value::TYPE_STRING));
           core::NDbKValue ress(k, empty_val);
           res.keys.push_back(ress);
         }

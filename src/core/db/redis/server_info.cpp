@@ -21,6 +21,7 @@
 #include <common/convert2string.h>
 
 #include "core/db_traits.h"
+#include "core/value.h"
 
 namespace fastonosql {
 namespace core {
@@ -115,7 +116,7 @@ std::vector<common::Value::Type> DBTraits<REDIS>::GetSupportedTypes() {
           common::Value::TYPE_DOUBLE,  common::Value::TYPE_STRING,
 
           common::Value::TYPE_ARRAY,   common::Value::TYPE_SET,     common::Value::TYPE_ZSET,
-          common::Value::TYPE_HASH};
+          common::Value::TYPE_HASH,    JsonValue::TYPE_JSON};
 }
 
 template <>

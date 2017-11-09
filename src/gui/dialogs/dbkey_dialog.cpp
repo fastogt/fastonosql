@@ -71,10 +71,8 @@ DbKeyDialog::DbKeyDialog(const QString& title, core::connectionTypes type, const
     if (kt == t) {
       current_index = static_cast<int>(i);
     }
-    QString type;
-    if (common::ConvertFromString(common::Value::GetTypeName(t), &type)) {
-      types_combo_box_->addItem(GuiFactory::GetInstance().icon(t), type, t);
-    }
+    QString type = core::GetTypeName(t);
+    types_combo_box_->addItem(GuiFactory::GetInstance().icon(t), type, t);
   }
 
   typedef void (QComboBox::*ind)(int);
@@ -372,6 +370,8 @@ common::Value* DbKeyDialog::item() const {
       return nullptr;
     }
     return common::Value::CreateDoubleValue(res);
+  } else if (type == core::JsonValue::TYPE_JSON) {
+    return new core::JsonValue(text_str);
   }
 
   return common::Value::CreateStringValue(text_str);
