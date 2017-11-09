@@ -1479,6 +1479,66 @@ common::Error CommandsApi::FtSearch(internal::CommandHandler* handler, commands_
   return red->CommonExec(ExpandCommand({REDIS_SEARCH_MODULE_COMMAND("SEARCH")}, argv), out);
 }
 
+common::Error CommandsApi::FtAddHash(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({REDIS_SEARCH_MODULE_COMMAND("ADDHASH")}, argv), out);
+}
+
+common::Error CommandsApi::FtInfo(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({REDIS_SEARCH_MODULE_COMMAND("INFO")}, argv), out);
+}
+
+common::Error CommandsApi::FtOptimize(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({REDIS_SEARCH_MODULE_COMMAND("OPTIMIZE")}, argv), out);
+}
+
+common::Error CommandsApi::FtExplain(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({REDIS_SEARCH_MODULE_COMMAND("EXPLAIN")}, argv), out);
+}
+
+common::Error CommandsApi::FtDel(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({REDIS_SEARCH_MODULE_COMMAND("DEL")}, argv), out);
+}
+
+common::Error CommandsApi::FtGet(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({REDIS_SEARCH_MODULE_COMMAND("GET")}, argv), out);
+}
+
+common::Error CommandsApi::FtMGet(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({REDIS_SEARCH_MODULE_COMMAND("MGET")}, argv), out);
+}
+
+common::Error CommandsApi::FtDrop(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({REDIS_SEARCH_MODULE_COMMAND("DROP")}, argv), out);
+}
+
+common::Error CommandsApi::FtSugadd(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({REDIS_SEARCH_MODULE_COMMAND("SUGGADD")}, argv), out);
+}
+
+common::Error CommandsApi::FtSugget(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({REDIS_SEARCH_MODULE_COMMAND("SUGGET")}, argv), out);
+}
+
+common::Error CommandsApi::FtSugdel(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({REDIS_SEARCH_MODULE_COMMAND("SUGDEL")}, argv), out);
+}
+
+common::Error CommandsApi::FtSuglen(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({REDIS_SEARCH_MODULE_COMMAND("SUGLEN")}, argv), out);
+}
+
 common::Error CommandsApi::JsonDel(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->CommonExec(ExpandCommand({REDIS_JSON_MODULE_COMMAND("DEL")}, argv), out);

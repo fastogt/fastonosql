@@ -287,6 +287,18 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
   static common::Error FtAdd(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error FtCreate(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error FtSearch(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error FtAddHash(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error FtInfo(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error FtOptimize(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error FtExplain(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error FtDel(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error FtGet(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error FtMGet(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error FtDrop(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error FtSugadd(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error FtSugget(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error FtSugdel(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error FtSuglen(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 
   // rejson
   static common::Error JsonDel(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);

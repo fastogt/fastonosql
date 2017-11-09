@@ -561,9 +561,18 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
             if (arr_value->GetAsList(&array_sub_inner)) {
               common::Value* fund_sub = nullptr;
               if (array_sub_inner->Get(1, &fund_sub)) {
-                long long lsub;
-                if (fund_sub->GetAsLongLongInteger(&lsub)) {
-                  res.channels[i].SetNumberOfSubscribers(lsub);
+                common::Value::Type t = fund_sub->GetType();
+                if (t == common::Value::TYPE_LONG_LONG_INTEGER) {
+                  long long lsub;
+                  if (fund_sub->GetAsLongLongInteger(&lsub)) {
+                    res.channels[i].SetNumberOfSubscribers(lsub);
+                  }
+                } else if (t == common::Value::TYPE_STRING) {
+                  std::string lsub_str;
+                  long long lsub;
+                  if (fund_sub->GetAsString(&lsub_str) && common::ConvertFromString(lsub_str, &lsub)) {
+                    res.channels[i].SetNumberOfSubscribers(lsub);
+                  }
                 }
               }
             }

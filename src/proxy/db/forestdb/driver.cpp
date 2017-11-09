@@ -20,9 +20,9 @@
 
 #include <common/convert2string.h>  // for ConvertToString
 
-#include "core/value.h"
 #include "core/db/forestdb/database_info.h"
 #include "core/db/forestdb/db_connection.h"  // for DBConnection
+#include "core/value.h"
 
 #include "proxy/command/command.h"                  // for CreateCommand, etc
 #include "proxy/command/command_logger.h"           // for LOG_COMMAND
