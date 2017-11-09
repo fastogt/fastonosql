@@ -245,14 +245,20 @@ common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, comm
   common::Value::Type type = key.GetType();
   if (type == common::Value::TYPE_ARRAY) {
     wr << REDIS_SET_KEY_ARRAY_COMMAND " " << key_str.GetKeyForCommandLine() << " " << value_str;
-  } else if (type == JsonValue::TYPE_JSON) {
-    wr << REDIS_SET_KEY_JSON_COMMAND " " << key_str.GetKeyForCommandLine() << " . " << value_str;
   } else if (type == common::Value::TYPE_SET) {
     wr << REDIS_SET_KEY_SET_COMMAND " " << key_str.GetKeyForCommandLine() << " " << value_str;
   } else if (type == common::Value::TYPE_ZSET) {
     wr << REDIS_SET_KEY_ZSET_COMMAND " " << key_str.GetKeyForCommandLine() << " " << value_str;
   } else if (type == common::Value::TYPE_HASH) {
     wr << REDIS_SET_KEY_HASH_COMMAND " " << key_str.GetKeyForCommandLine() << " " << value_str;
+  } else if (type == JsonValue::TYPE_JSON) {
+    wr << REDIS_SET_KEY_JSON_COMMAND " " << key_str.GetKeyForCommandLine() << " . " << value_str;
+  } else if (type == GraphValue::TYPE_GRAPH) {
+    return NotSupported("GRAPH.SET");
+  } else if (type == SearchValue::TYPE_FT_INDEX) {
+    return NotSupported("FT.INDEX.SET");
+  } else if (type == SearchValue::TYPE_FT_DOC) {
+    return NotSupported("FT.DOC.SET");
   } else {
     wr << REDIS_SET_KEY_COMMAND " " << key_str.GetKeyForCommandLine() << " " << value_str;
   }
@@ -276,6 +282,12 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
     wr << REDIS_GET_KEY_ZSET_COMMAND " " << key_str.GetKeyForCommandLine() << " 0 -1 WITHSCORES";
   } else if (type == common::Value::TYPE_HASH) {
     wr << REDIS_GET_KEY_HASH_COMMAND " " << key_str.GetKeyForCommandLine();
+  } else if (type == GraphValue::TYPE_GRAPH) {
+    return NotSupported("GRAPH.GET");
+  } else if (type == SearchValue::TYPE_FT_INDEX) {
+    return NotSupported("FT.INDEX.GET");
+  } else if (type == SearchValue::TYPE_FT_DOC) {
+    return NotSupported("FT.DOC.GET");
   } else {
     wr << REDIS_GET_KEY_COMMAND " " << key_str.GetKeyForCommandLine();
   }

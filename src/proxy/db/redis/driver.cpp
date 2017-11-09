@@ -21,9 +21,9 @@
 #include <common/convert2string.h>           // for ConvertFromString, etc
 #include <common/file_system/file_system.h>  // for copy_file
 
-#include "core/value.h"
 #include "core/db/redis/database_info.h"  // for DataBaseInfo
 #include "core/db/redis/db_connection.h"  // for DBConnection, INFO_REQUEST, etc
+#include "core/value.h"
 
 #include "proxy/command/command.h"  // for CreateCommand, etc
 #include "proxy/command/command_logger.h"
@@ -66,6 +66,12 @@ common::Value::Type ConvertFromStringRType(const std::string& type) {
     return common::Value::TYPE_ZSET;
   } else if (type == "ReJSON-RL") {
     return fastonosql::core::JsonValue::TYPE_JSON;
+  } else if (type == "trietype1") {
+    return fastonosql::core::GraphValue::TYPE_GRAPH;
+  } else if (type == "ft_invidx") {
+    return fastonosql::core::SearchValue::TYPE_FT_DOC;
+  } else if (type == "ft_index0") {
+    return fastonosql::core::SearchValue::TYPE_FT_INDEX;
   }
   return common::Value::TYPE_NULL;
 }

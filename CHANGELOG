@@ -2,6 +2,7 @@
 [Alexandr Topilski]
 - EULA dialog
 - [Redis] Full support JSON.GET/JSON.SET commands
+- [Redis] Basic support RediSearch, redis-graph types 
 
 1.10.0 / November 4, 2017
 [Alexandr Topilski]

@@ -193,40 +193,61 @@ const QIcon& GuiFactory::modeIcon(core::ConnectionMode mode) const {
 const QIcon& GuiFactory::icon(common::Value::Type type) const {
   const uint8_t ctype = type;
   switch (ctype) {
-    case common::Value::TYPE_NULL:
+    case common::Value::TYPE_NULL: {
       static QIcon u(":" PROJECT_NAME_LOWERCASE "/images/64x64/null.png");
       return u;
-    case common::Value::TYPE_BOOLEAN:
+    }
+    case common::Value::TYPE_BOOLEAN: {
       static QIcon b(":" PROJECT_NAME_LOWERCASE "/images/64x64/bool.png");
       return b;
-    case common::Value::TYPE_STRING:
+    }
+    case common::Value::TYPE_STRING: {
       static QIcon s(":" PROJECT_NAME_LOWERCASE "/images/64x64/string.png");
       return s;
-    case common::Value::TYPE_BYTE_ARRAY:
+    }
+    case common::Value::TYPE_BYTE_ARRAY: {
       static QIcon by(":" PROJECT_NAME_LOWERCASE "/images/64x64/byte.png");
       return by;
+    }
     case common::Value::TYPE_SET:
-    case common::Value::TYPE_ARRAY:
+    case common::Value::TYPE_ARRAY: {
       static QIcon a(":" PROJECT_NAME_LOWERCASE "/images/64x64/array.png");
       return a;
-    case common::Value::TYPE_HASH:
+    }
+    case common::Value::TYPE_HASH: {
       static QIcon h(":" PROJECT_NAME_LOWERCASE "/images/64x64/hash.png");
       return h;
-    case common::Value::TYPE_ZSET:
+    }
+    case common::Value::TYPE_ZSET: {
       static QIcon z(":" PROJECT_NAME_LOWERCASE "/images/64x64/zset.png");
       return z;
+    }
     case common::Value::TYPE_INTEGER:
     case common::Value::TYPE_UINTEGER:
     case common::Value::TYPE_LONG_INTEGER:
     case common::Value::TYPE_ULONG_INTEGER:
     case common::Value::TYPE_LONG_LONG_INTEGER:
     case common::Value::TYPE_ULONG_LONG_INTEGER:
-    case common::Value::TYPE_DOUBLE:
+    case common::Value::TYPE_DOUBLE: {
       static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/integer.png");
       return i;
-    case core::JsonValue::TYPE_JSON:
+    }
+    case core::JsonValue::TYPE_JSON: {
       static QIcon j(":" PROJECT_NAME_LOWERCASE "/images/64x64/json.png");
       return j;
+    }
+    case core::GraphValue::TYPE_GRAPH: {
+      static QIcon g(":" PROJECT_NAME_LOWERCASE "/images/64x64/graph.png");
+      return g;
+    }
+    case core::SearchValue::TYPE_FT_INDEX: {
+      static QIcon g(":" PROJECT_NAME_LOWERCASE "/images/64x64/unknown.png");
+      return g;
+    }
+    case core::SearchValue::TYPE_FT_DOC: {
+      static QIcon g(":" PROJECT_NAME_LOWERCASE "/images/64x64/unknown.png");
+      return g;
+    }
   }
 
   static QIcon err(":" PROJECT_NAME_LOWERCASE "/images/64x64/error.png");

@@ -38,6 +38,37 @@ class JsonValue : public common::Value {  // simple json class value, only save 
   DISALLOW_COPY_AND_ASSIGN(JsonValue);
 };
 
+class GraphValue : public common::Value {
+ public:
+  static const common::Value::Type TYPE_GRAPH = static_cast<common::Value::Type>(common::Value::USER_TYPES + 2);
+  GraphValue();
+  virtual ~GraphValue();
+
+  virtual GraphValue* DeepCopy() const override;
+  virtual bool Equals(const Value* other) const override;
+
+ private:
+  DISALLOW_COPY_AND_ASSIGN(GraphValue);
+};
+
+class SearchValue : public common::Value {
+ public:
+  static const common::Value::Type TYPE_FT_INDEX = static_cast<common::Value::Type>(common::Value::USER_TYPES + 3);
+  static const common::Value::Type TYPE_FT_DOC = static_cast<common::Value::Type>(common::Value::USER_TYPES + 4);
+  virtual ~SearchValue();
+
+  static SearchValue* CreateSearchIndex();
+  static SearchValue* CreateSearchDocument();
+
+  virtual SearchValue* DeepCopy() const override;
+  virtual bool Equals(const Value* other) const override;
+
+ private:
+  SearchValue(common::Value::Type type);
+
+  DISALLOW_COPY_AND_ASSIGN(SearchValue);
+};
+
 common::Value* CreateEmptyValueFromType(common::Value::Type value_type);
 const char* GetTypeName(common::Value::Type value_type);
 

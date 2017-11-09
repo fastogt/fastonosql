@@ -80,7 +80,8 @@ const char* string_types[] = {"TYPE_NULL",
                               "TYPE_SET",
                               "TYPE_ZSET",
                               "TYPE_HASH"};
-static_assert(arraysize(string_types) == static_cast<size_t>(common::Value::Type::TYPE_HASH) + 1, "string_types Has Wrong Size");
+static_assert(arraysize(string_types) == static_cast<size_t>(common::Value::Type::TYPE_HASH) + 1,
+              "string_types Has Wrong Size");
 }  // namespace
 
 JsonValue::JsonValue(const std::string& json_value) : Value(TYPE_JSON), value_(json_value) {}
@@ -108,6 +109,46 @@ bool JsonValue::Equals(const Value* other) const {
   return GetAsString(&lhs) && other->GetAsString(&rhs) && lhs == rhs;
 }
 
+GraphValue::GraphValue() : Value(TYPE_GRAPH) {}
+
+GraphValue::~GraphValue() {}
+
+GraphValue* GraphValue::DeepCopy() const {
+  return new GraphValue;
+}
+
+bool GraphValue::Equals(const Value* other) const {
+  if (other->GetType() != GetType()) {
+    return false;
+  }
+
+  return true;
+}
+
+SearchValue* SearchValue::CreateSearchIndex() {
+  return new SearchValue(TYPE_FT_INDEX);
+}
+
+SearchValue* SearchValue::CreateSearchDocument() {
+  return new SearchValue(TYPE_FT_DOC);
+}
+
+SearchValue::~SearchValue() {}
+
+SearchValue* SearchValue::DeepCopy() const {
+  return new SearchValue(GetType());
+}
+
+bool SearchValue::Equals(const Value* other) const {
+  if (other->GetType() != GetType()) {
+    return false;
+  }
+
+  return true;
+}
+
+SearchValue::SearchValue(common::Value::Type type) : Value(type) {}
+
 common::Value* CreateEmptyValueFromType(common::Value::Type value_type) {
   const uint8_t cvalue_type = value_type;
   switch (cvalue_type) {
@@ -131,8 +172,6 @@ common::Value* CreateEmptyValueFromType(common::Value::Type value_type) {
       return common::Value::CreateDoubleValue(0);
     case common::Value::TYPE_STRING:
       return common::Value::CreateStringValue(std::string());
-    case JsonValue::TYPE_JSON:
-      return new JsonValue(std::string());
     case common::Value::TYPE_ARRAY:
       return common::Value::CreateArrayValue();
     case common::Value::TYPE_BYTE_ARRAY:
@@ -143,6 +182,15 @@ common::Value* CreateEmptyValueFromType(common::Value::Type value_type) {
       return common::Value::CreateZSetValue();
     case common::Value::TYPE_HASH:
       return common::Value::CreateHashValue();
+    // extended
+    case JsonValue::TYPE_JSON:
+      return new JsonValue(std::string());
+    case GraphValue::TYPE_GRAPH:
+      return new GraphValue;
+    case SearchValue::TYPE_FT_INDEX:
+      return SearchValue::CreateSearchIndex();
+    case SearchValue::TYPE_FT_DOC:
+      return SearchValue::CreateSearchDocument();
   }
 
   return nullptr;
@@ -153,6 +201,12 @@ const char* GetTypeName(common::Value::Type value_type) {
     return string_types[value_type];
   } else if (value_type == JsonValue::TYPE_JSON) {
     return "TYPE_JSON";
+  } else if (value_type == GraphValue::TYPE_GRAPH) {
+    return "TYPE_GRAPH";
+  } else if (value_type == SearchValue::TYPE_FT_INDEX) {
+    return "TYPE_FT_INDEX";
+  } else if (value_type == SearchValue::TYPE_FT_DOC) {
+    return "TYPE_FT_DOC";
   }
 
   DNOTREACHED();
@@ -210,8 +264,6 @@ std::string ConvertValue(common::Value* value, const std::string& delimiter, boo
 
   } else if (t == common::Value::TYPE_STRING) {
     return ConvertValue(static_cast<common::StringValue*>(value), delimiter, for_cmd);
-  } else if (t == JsonValue::TYPE_JSON) {
-    return ConvertValue(static_cast<JsonValue*>(value), delimiter, for_cmd);
 
   } else if (t == common::Value::TYPE_ARRAY) {
     return ConvertValue(static_cast<common::ArrayValue*>(value), delimiter, for_cmd);
@@ -224,6 +276,15 @@ std::string ConvertValue(common::Value* value, const std::string& delimiter, boo
     return ConvertValue(static_cast<common::ZSetValue*>(value), delimiter, for_cmd);
   } else if (t == common::Value::TYPE_HASH) {
     return ConvertValue(static_cast<common::HashValue*>(value), delimiter, for_cmd);
+    // extended
+  } else if (t == JsonValue::TYPE_JSON) {
+    return ConvertValue(static_cast<JsonValue*>(value), delimiter, for_cmd);
+  } else if (t == GraphValue::TYPE_GRAPH) {
+    return std::string();
+  } else if (t == SearchValue::TYPE_FT_INDEX) {
+    return std::string();
+  } else if (t == SearchValue::TYPE_FT_DOC) {
+    return std::string();
   }
 
   DNOTREACHED();
