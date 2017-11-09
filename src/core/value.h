@@ -54,7 +54,7 @@ class GraphValue : public common::Value {
 class SearchValue : public common::Value {
  public:
   static const common::Value::Type TYPE_FT_INDEX = static_cast<common::Value::Type>(common::Value::USER_TYPES + 3);
-  static const common::Value::Type TYPE_FT_DOC = static_cast<common::Value::Type>(common::Value::USER_TYPES + 4);
+  static const common::Value::Type TYPE_FT_TERM = static_cast<common::Value::Type>(common::Value::USER_TYPES + 4);
   virtual ~SearchValue();
 
   static SearchValue* CreateSearchIndex();

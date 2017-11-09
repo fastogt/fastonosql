@@ -19,6 +19,7 @@
 #include "core/db/redis/command_translator.h"
 
 #include "core/connection_types.h"
+#include "core/db/redis/internal/modules.h"
 #include "core/value.h"
 
 #define REDIS_SET_KEY_COMMAND DB_SET_KEY_COMMAND
@@ -254,11 +255,11 @@ common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, comm
   } else if (type == JsonValue::TYPE_JSON) {
     wr << REDIS_SET_KEY_JSON_COMMAND " " << key_str.GetKeyForCommandLine() << " . " << value_str;
   } else if (type == GraphValue::TYPE_GRAPH) {
-    return NotSupported("GRAPH.SET");
+    return NotSupported(REDIS_GRAPH_MODULE_COMMAND("SET"));
   } else if (type == SearchValue::TYPE_FT_INDEX) {
-    return NotSupported("FT.INDEX.SET");
-  } else if (type == SearchValue::TYPE_FT_DOC) {
-    return NotSupported("FT.DOC.SET");
+    return NotSupported(REDIS_SEARCH_MODULE_COMMAND("INDEX.SET"));
+  } else if (type == SearchValue::TYPE_FT_TERM) {
+    return NotSupported(REDIS_SEARCH_MODULE_COMMAND("TERM.SET"));
   } else {
     wr << REDIS_SET_KEY_COMMAND " " << key_str.GetKeyForCommandLine() << " " << value_str;
   }
@@ -286,7 +287,7 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
     return NotSupported("GRAPH.GET");
   } else if (type == SearchValue::TYPE_FT_INDEX) {
     return NotSupported("FT.INDEX.GET");
-  } else if (type == SearchValue::TYPE_FT_DOC) {
+  } else if (type == SearchValue::TYPE_FT_TERM) {
     return NotSupported("FT.DOC.GET");
   } else {
     wr << REDIS_GET_KEY_COMMAND " " << key_str.GetKeyForCommandLine();

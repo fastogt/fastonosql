@@ -244,7 +244,7 @@ const QIcon& GuiFactory::icon(common::Value::Type type) const {
       static QIcon g(":" PROJECT_NAME_LOWERCASE "/images/64x64/unknown.png");
       return g;
     }
-    case core::SearchValue::TYPE_FT_DOC: {
+    case core::SearchValue::TYPE_FT_TERM: {
       static QIcon g(":" PROJECT_NAME_LOWERCASE "/images/64x64/unknown.png");
       return g;
     }

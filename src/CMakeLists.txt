@@ -465,6 +465,7 @@ IF(BUILD_WITH_REDIS)
 
   #core redis
   SET(HEADERS_CORE_DB_REDIS
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis/internal/modules.h
     ${CMAKE_SOURCE_DIR}/src/core/db/redis/internal/commands_api.h
 
     ${CMAKE_SOURCE_DIR}/src/core/db/redis/config.h

@@ -130,7 +130,7 @@ SearchValue* SearchValue::CreateSearchIndex() {
 }
 
 SearchValue* SearchValue::CreateSearchDocument() {
-  return new SearchValue(TYPE_FT_DOC);
+  return new SearchValue(TYPE_FT_TERM);
 }
 
 SearchValue::~SearchValue() {}
@@ -189,7 +189,7 @@ common::Value* CreateEmptyValueFromType(common::Value::Type value_type) {
       return new GraphValue;
     case SearchValue::TYPE_FT_INDEX:
       return SearchValue::CreateSearchIndex();
-    case SearchValue::TYPE_FT_DOC:
+    case SearchValue::TYPE_FT_TERM:
       return SearchValue::CreateSearchDocument();
   }
 
@@ -205,8 +205,8 @@ const char* GetTypeName(common::Value::Type value_type) {
     return "TYPE_GRAPH";
   } else if (value_type == SearchValue::TYPE_FT_INDEX) {
     return "TYPE_FT_INDEX";
-  } else if (value_type == SearchValue::TYPE_FT_DOC) {
-    return "TYPE_FT_DOC";
+  } else if (value_type == SearchValue::TYPE_FT_TERM) {
+    return "TYPE_FT_TERM";
   }
 
   DNOTREACHED();
@@ -283,7 +283,7 @@ std::string ConvertValue(common::Value* value, const std::string& delimiter, boo
     return std::string();
   } else if (t == SearchValue::TYPE_FT_INDEX) {
     return std::string();
-  } else if (t == SearchValue::TYPE_FT_DOC) {
+  } else if (t == SearchValue::TYPE_FT_TERM) {
     return std::string();
   }
 

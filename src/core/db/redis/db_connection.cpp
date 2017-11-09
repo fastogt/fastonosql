@@ -35,6 +35,7 @@ extern "C" {
 #include "core/db/redis/internal/commands_api.h"
 #include "core/db/redis/sentinel_info.h"  // for DiscoverySentinelInfo, etc
 #include "core/value.h"
+#include "core/db/redis/internal/modules.h"
 
 #define HIREDIS_VERSION    \
   STRINGIZE(HIREDIS_MAJOR) \

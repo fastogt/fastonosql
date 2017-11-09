@@ -69,7 +69,7 @@ common::Value::Type ConvertFromStringRType(const std::string& type) {
   } else if (type == "trietype1") {
     return fastonosql::core::GraphValue::TYPE_GRAPH;
   } else if (type == "ft_invidx") {
-    return fastonosql::core::SearchValue::TYPE_FT_DOC;
+    return fastonosql::core::SearchValue::TYPE_FT_TERM;
   } else if (type == "ft_index0") {
     return fastonosql::core::SearchValue::TYPE_FT_INDEX;
   }

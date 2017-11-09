@@ -19,6 +19,7 @@
 #include "core/db/redis/internal/commands_api.h"
 
 #include "core/db/redis/db_connection.h"
+#include "core/db/redis/internal/modules.h"
 
 #include "core/value.h"
 
