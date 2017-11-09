@@ -117,6 +117,14 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
       common::ConvertFromString(value, &qvalue);
       lineedit->setText(qvalue);
     }
+  } else if (t == core::JsonValue::TYPE_JSON) {
+    std::string value;
+    if (val->GetAsString(&value)) {
+      QLineEdit* lineedit = static_cast<QLineEdit*>(editor);
+      QString qvalue;
+      common::ConvertFromString(value, &qvalue);
+      lineedit->setText(qvalue);
+    }
   } else if (t == common::Value::TYPE_ARRAY) {
     common::ArrayValue* arr = nullptr;
     if (val->GetAsList(&arr)) {
@@ -235,6 +243,16 @@ void TypeDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, cons
     }
 
     common::StringValue* string = common::Value::CreateStringValue(common::ConvertToString(text));
+    QVariant var = QVariant::fromValue(core::NValue(string));
+    model->setData(index, var, Qt::EditRole);
+  } else if (t == core::JsonValue::TYPE_JSON) {
+    QLineEdit* lineedit = static_cast<QLineEdit*>(editor);
+    QString text = lineedit->text();
+    if (text.isEmpty()) {
+      return;
+    }
+
+    core::JsonValue* string = new core::JsonValue(common::ConvertToString(text));
     QVariant var = QVariant::fromValue(core::NValue(string));
     model->setData(index, var, Qt::EditRole);
   } else if (t == common::Value::TYPE_ARRAY) {
