@@ -241,11 +241,11 @@ const QIcon& GuiFactory::icon(common::Value::Type type) const {
       return g;
     }
     case core::SearchValue::TYPE_FT_INDEX: {
-      static QIcon g(":" PROJECT_NAME_LOWERCASE "/images/64x64/unknown.png");
+      static QIcon g(":" PROJECT_NAME_LOWERCASE "/images/64x64/index.png");
       return g;
     }
     case core::SearchValue::TYPE_FT_TERM: {
-      static QIcon g(":" PROJECT_NAME_LOWERCASE "/images/64x64/unknown.png");
+      static QIcon g(":" PROJECT_NAME_LOWERCASE "/images/64x64/index.png");
       return g;
     }
   }
