@@ -33,9 +33,9 @@ extern "C" {
 #include "core/db/redis/command_translator.h"
 #include "core/db/redis/database_info.h"  // for DataBaseInfo
 #include "core/db/redis/internal/commands_api.h"
+#include "core/db/redis/internal/modules.h"
 #include "core/db/redis/sentinel_info.h"  // for DiscoverySentinelInfo, etc
 #include "core/value.h"
-#include "core/db/redis/internal/modules.h"
 
 #define HIREDIS_VERSION    \
   STRINGIZE(HIREDIS_MAJOR) \
@@ -2866,7 +2866,72 @@ const ConstantCommandsArray g_commands = {
                   INFINITE_COMMAND_ARGS,
                   CommandInfo::Extended,
                   &CommandsApi::NrThreads)};
-}
+
+const ConstantCommandsArray g_internal_commands = {CommandHolder(REDIS_SEARCH_MODULE_COMMAND("SETPAYLOAD"),
+                                                                 UNDEFINED_ARGS,
+                                                                 UNDEFINED_SUMMARY,
+                                                                 UNDEFINED_SINCE,
+                                                                 UNDEFINED_EXAMPLE_STR,
+                                                                 INFINITE_COMMAND_ARGS,
+                                                                 INFINITE_COMMAND_ARGS,
+                                                                 CommandInfo::Internal,
+                                                                 nullptr),
+                                                   CommandHolder(REDIS_SEARCH_MODULE_COMMAND("SAFEADD"),
+                                                                 UNDEFINED_ARGS,
+                                                                 UNDEFINED_SUMMARY,
+                                                                 UNDEFINED_SINCE,
+                                                                 UNDEFINED_EXAMPLE_STR,
+                                                                 INFINITE_COMMAND_ARGS,
+                                                                 INFINITE_COMMAND_ARGS,
+                                                                 CommandInfo::Internal,
+                                                                 nullptr),
+                                                   CommandHolder(REDIS_SEARCH_MODULE_COMMAND("SAFEADDHASH"),
+                                                                 UNDEFINED_ARGS,
+                                                                 UNDEFINED_SUMMARY,
+                                                                 UNDEFINED_SINCE,
+                                                                 UNDEFINED_EXAMPLE_STR,
+                                                                 INFINITE_COMMAND_ARGS,
+                                                                 INFINITE_COMMAND_ARGS,
+                                                                 CommandInfo::Internal,
+                                                                 nullptr),
+                                                   CommandHolder(REDIS_SEARCH_MODULE_COMMAND("DTADD"),
+                                                                 UNDEFINED_ARGS,
+                                                                 UNDEFINED_SUMMARY,
+                                                                 UNDEFINED_SINCE,
+                                                                 UNDEFINED_EXAMPLE_STR,
+                                                                 INFINITE_COMMAND_ARGS,
+                                                                 INFINITE_COMMAND_ARGS,
+                                                                 CommandInfo::Internal,
+                                                                 nullptr),
+                                                   CommandHolder(REDIS_SEARCH_MODULE_COMMAND("TERMADD"),
+                                                                 UNDEFINED_ARGS,
+                                                                 UNDEFINED_SUMMARY,
+                                                                 UNDEFINED_SINCE,
+                                                                 UNDEFINED_EXAMPLE_STR,
+                                                                 INFINITE_COMMAND_ARGS,
+                                                                 INFINITE_COMMAND_ARGS,
+                                                                 CommandInfo::Internal,
+                                                                 nullptr),
+                                                   CommandHolder("post",
+                                                                 UNDEFINED_ARGS,
+                                                                 UNDEFINED_SUMMARY,
+                                                                 UNDEFINED_SINCE,
+                                                                 UNDEFINED_EXAMPLE_STR,
+                                                                 INFINITE_COMMAND_ARGS,
+                                                                 INFINITE_COMMAND_ARGS,
+                                                                 CommandInfo::Internal,
+                                                                 nullptr),
+                                                   CommandHolder("host:",
+                                                                 UNDEFINED_ARGS,
+                                                                 UNDEFINED_SUMMARY,
+                                                                 UNDEFINED_SINCE,
+                                                                 UNDEFINED_EXAMPLE_STR,
+                                                                 INFINITE_COMMAND_ARGS,
+                                                                 INFINITE_COMMAND_ARGS,
+                                                                 CommandInfo::Internal,
+                                                                 nullptr)};
+
+}  // namespace
 }  // namespace redis
 template <>
 const char* ConnectionTraits<REDIS>::GetBasedOn() {
@@ -3819,7 +3884,6 @@ common::Error DBConnection::CliReadReply(FastoObject* out) {
 common::Error DBConnection::ExecuteAsPipeline(const std::vector<FastoObjectCommandIPtr>& cmds,
                                               void (*log_command_cb)(FastoObjectCommandIPtr command)) {
   if (cmds.empty()) {
-    DNOTREACHED();
     return common::make_error("Invalid input command");
   }
 
@@ -4675,6 +4739,21 @@ common::Error DBConnection::JsonGet(const NKey& key, NDbKValue* loaded_key) {
   }
 
   return common::Error();
+}
+
+bool DBConnection::IsInternalCommand(const std::string& command_name) {
+  if (command_name.empty()) {
+    return false;
+  }
+
+  for (size_t i =0; i < g_internal_commands.size(); ++i) {
+    const CommandHolder& cmd = g_internal_commands[i];
+    if (cmd.IsEqualFirstName(command_name)){
+      return true;
+    }
+  }
+
+  return false;
 }
 
 }  // namespace redis

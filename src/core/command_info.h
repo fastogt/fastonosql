@@ -21,6 +21,7 @@
 #include <string>  // for string
 
 #define UNDEFINED_SINCE 0x00000000U
+#define UNDEFINED_ARGS "Undefined"
 #define UNDEFINED_SUMMARY "Undefined"
 #define UNDEFINED_SINCE_STR "Undefined"
 #define UNDEFINED_EXAMPLE_STR "Unspecified"
@@ -31,7 +32,7 @@ namespace fastonosql {
 namespace core {
 
 struct CommandInfo {
-  enum Type { Native, Extended };
+  enum Type { Native, Extended, Internal };
   CommandInfo(const std::string& name,
               const std::string& params,
               const std::string& summary,

@@ -102,6 +102,8 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
   common::Error JsonSet(const NDbKValue& key, NDbKValue* added_key) WARN_UNUSED_RESULT;
   common::Error JsonGet(const NKey& key, NDbKValue* loaded_key) WARN_UNUSED_RESULT;
 
+  bool IsInternalCommand(const std::string& command_name);
+
  private:
   common::Error JsonSetImpl(const NDbKValue& key, NDbKValue* added_key);
   common::Error JsonGetImpl(const NKey& key, NDbKValue* loaded_key);
