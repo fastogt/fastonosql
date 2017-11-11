@@ -371,6 +371,9 @@ common::Value* DbKeyDialog::item() const {
     }
     return common::Value::CreateDoubleValue(res);
   } else if (type == core::JsonValue::TYPE_JSON) {
+    if (!core::JsonValue::IsValidJson(text_str)) {
+      return nullptr;
+    }
     return new core::JsonValue(text_str);
   }
 

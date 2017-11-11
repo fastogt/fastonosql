@@ -21,6 +21,7 @@
 #include <common/convert2string.h>
 
 #include "core/db_traits.h"
+#include "core/value.h"
 
 #define MARKER "\r\n"
 
@@ -35,7 +36,7 @@ const std::vector<Field> lmdb_common_fields = {Field(LMDB_FILE_NAME_LABEL, commo
 template <>
 std::vector<common::Value::Type> DBTraits<LMDB>::GetSupportedTypes() {
   return {common::Value::TYPE_BOOLEAN, common::Value::TYPE_INTEGER, common::Value::TYPE_UINTEGER,
-          common::Value::TYPE_DOUBLE, common::Value::TYPE_STRING};
+          common::Value::TYPE_DOUBLE, common::Value::TYPE_STRING, JsonValue::TYPE_JSON};
 }
 
 template <>

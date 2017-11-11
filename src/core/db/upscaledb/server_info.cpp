@@ -19,6 +19,7 @@
 #include "core/db/upscaledb/server_info.h"
 
 #include "core/db_traits.h"
+#include "core/value.h"
 
 #define MARKER "\r\n"
 
@@ -33,7 +34,7 @@ const std::vector<Field> g_upscaledb_common_fields = {Field(UPSCALEDB_FILE_NAME_
 template <>
 std::vector<common::Value::Type> DBTraits<UPSCALEDB>::GetSupportedTypes() {
   return {common::Value::TYPE_BOOLEAN, common::Value::TYPE_INTEGER, common::Value::TYPE_UINTEGER,
-          common::Value::TYPE_DOUBLE, common::Value::TYPE_STRING};
+          common::Value::TYPE_DOUBLE, common::Value::TYPE_STRING, JsonValue::TYPE_JSON};
 }
 
 template <>

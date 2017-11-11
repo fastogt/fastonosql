@@ -1,6 +1,7 @@
 1.11.0 /
 [Alexandr Topilski]
 - EULA dialog
+- Json keys validation
 - [Redis] Full support JSON.GET/JSON.SET commands
 - [Redis] Basic support RediSearch, redis-graph types 
 

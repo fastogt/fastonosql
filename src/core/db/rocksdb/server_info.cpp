@@ -21,6 +21,7 @@
 #include <common/convert2string.h>
 
 #include "core/db_traits.h"
+#include "core/value.h"
 
 #define MARKER "\r\n"
 
@@ -40,7 +41,7 @@ const std::vector<Field> g_rocksdb_common_fields = {
 template <>
 std::vector<common::Value::Type> DBTraits<ROCKSDB>::GetSupportedTypes() {
   return {common::Value::TYPE_BOOLEAN, common::Value::TYPE_INTEGER, common::Value::TYPE_UINTEGER,
-          common::Value::TYPE_DOUBLE, common::Value::TYPE_STRING};
+          common::Value::TYPE_DOUBLE, common::Value::TYPE_STRING, JsonValue::TYPE_JSON};
 }
 
 template <>

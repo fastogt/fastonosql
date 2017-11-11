@@ -3,6 +3,7 @@
 - EULA dialog
 - Full support JSON.GET/JSON.SET commands
 - Basic support RediSearch, redis-graph types 
+- Json keys validation
 
 1.9.1 / November 4, 2017
 [Alexandr Topilski]

@@ -33,6 +33,8 @@ class JsonValue : public common::Value {  // simple json class value, only save 
   virtual JsonValue* DeepCopy() const override;
   virtual bool Equals(const Value* other) const override;
 
+  static bool IsValidJson(const std::string& json);
+
  private:
   std::string value_;
   DISALLOW_COPY_AND_ASSIGN(JsonValue);

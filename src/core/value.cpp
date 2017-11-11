@@ -20,6 +20,8 @@
 
 #include <algorithm>
 
+#include <json-c/json_tokener.h>
+
 #include <common/convert2string.h>
 #include <common/utils.h>
 
@@ -107,6 +109,20 @@ bool JsonValue::Equals(const Value* other) const {
 
   std::string lhs, rhs;
   return GetAsString(&lhs) && other->GetAsString(&rhs) && lhs == rhs;
+}
+
+bool JsonValue::IsValidJson(const std::string& json) {
+  if (json.empty()) {
+    return false;
+  }
+
+  json_object* obj = json_tokener_parse(json.c_str());
+  if (!obj) {
+    return false;
+  }
+
+  json_object_put(obj);
+  return true;
 }
 
 GraphValue::GraphValue() : Value(TYPE_GRAPH) {}
