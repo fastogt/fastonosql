@@ -58,7 +58,7 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
 
 void ConnectionWidget::retranslateUi() {
   create_db_if_missing_->setText(trCreateDBIfMissing);
-  comparator_label_->setText(trComparator);
+  comparator_label_->setText(trComparator + ":");
   ConnectionLocalWidget::retranslateUi();
 }
 

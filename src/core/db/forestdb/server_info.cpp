@@ -34,7 +34,7 @@ const std::vector<Field> forestdb_common_fields = {Field(FORESTDB_FILE_NAME_LABE
 }  // namespace
 
 template <>
-std::vector<common::Value::Type> DBTraits<FORESTDB>::GetSupportedTypes() {
+std::vector<common::Value::Type> DBTraits<FORESTDB>::GetSupportedValueTypes() {
   return {common::Value::TYPE_BOOLEAN, common::Value::TYPE_INTEGER, common::Value::TYPE_UINTEGER,
           common::Value::TYPE_DOUBLE, common::Value::TYPE_STRING, JsonValue::TYPE_JSON};
 }

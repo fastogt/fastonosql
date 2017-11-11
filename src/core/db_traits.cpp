@@ -27,57 +27,57 @@ bool Field::IsIntegral() const {
   return common::Value::IsIntegral(type);
 }
 
-std::vector<common::Value::Type> SupportedTypesFromType(connectionTypes type) {
+std::vector<common::Value::Type> GetSupportedValueTypes(connectionTypes type) {
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
-    return DBTraits<REDIS>::GetSupportedTypes();
+    return DBTraits<REDIS>::GetSupportedValueTypes();
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == MEMCACHED) {
-    return DBTraits<MEMCACHED>::GetSupportedTypes();
+    return DBTraits<MEMCACHED>::GetSupportedValueTypes();
   }
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type == SSDB) {
-    return DBTraits<SSDB>::GetSupportedTypes();
+    return DBTraits<SSDB>::GetSupportedValueTypes();
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type == LEVELDB) {
-    return DBTraits<LEVELDB>::GetSupportedTypes();
+    return DBTraits<LEVELDB>::GetSupportedValueTypes();
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == ROCKSDB) {
-    return DBTraits<ROCKSDB>::GetSupportedTypes();
+    return DBTraits<ROCKSDB>::GetSupportedValueTypes();
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (type == UNQLITE) {
-    return DBTraits<UNQLITE>::GetSupportedTypes();
+    return DBTraits<UNQLITE>::GetSupportedValueTypes();
   }
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type == LMDB) {
-    return DBTraits<LMDB>::GetSupportedTypes();
+    return DBTraits<LMDB>::GetSupportedValueTypes();
   }
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
   if (type == UPSCALEDB) {
-    return DBTraits<UPSCALEDB>::GetSupportedTypes();
+    return DBTraits<UPSCALEDB>::GetSupportedValueTypes();
   }
 #endif
 #ifdef BUILD_WITH_FORESTDB
   if (type == FORESTDB) {
-    return DBTraits<FORESTDB>::GetSupportedTypes();
+    return DBTraits<FORESTDB>::GetSupportedValueTypes();
   }
 #endif
   NOTREACHED();
   return std::vector<common::Value::Type>();
 }
 
-std::vector<info_field_t> InfoFieldsFromType(connectionTypes type) {
+std::vector<info_field_t> GetInfoFieldsFromType(connectionTypes type) {
 #ifdef BUILD_WITH_REDIS
   if (type == REDIS) {
     return DBTraits<REDIS>::GetInfoFields();

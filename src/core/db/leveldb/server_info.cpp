@@ -40,7 +40,7 @@ const std::vector<Field> g_leveldb_common_fields = {
 }  // namespace
 
 template <>
-std::vector<common::Value::Type> DBTraits<LEVELDB>::GetSupportedTypes() {
+std::vector<common::Value::Type> DBTraits<LEVELDB>::GetSupportedValueTypes() {
   return {common::Value::TYPE_BOOLEAN, common::Value::TYPE_INTEGER, common::Value::TYPE_UINTEGER,
           common::Value::TYPE_DOUBLE, common::Value::TYPE_STRING, JsonValue::TYPE_JSON};
 }

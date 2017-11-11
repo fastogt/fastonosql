@@ -111,7 +111,7 @@ const std::vector<Field> g_redis_keyspace_fields = {};
 }  // namespace
 
 template <>
-std::vector<common::Value::Type> DBTraits<REDIS>::GetSupportedTypes() {
+std::vector<common::Value::Type> DBTraits<REDIS>::GetSupportedValueTypes() {
   return {common::Value::TYPE_BOOLEAN, common::Value::TYPE_INTEGER, common::Value::TYPE_UINTEGER,
           common::Value::TYPE_DOUBLE,  common::Value::TYPE_STRING,
 

@@ -34,7 +34,7 @@ const std::vector<Field> lmdb_common_fields = {Field(LMDB_FILE_NAME_LABEL, commo
 }  // namespace
 
 template <>
-std::vector<common::Value::Type> DBTraits<LMDB>::GetSupportedTypes() {
+std::vector<common::Value::Type> DBTraits<LMDB>::GetSupportedValueTypes() {
   return {common::Value::TYPE_BOOLEAN, common::Value::TYPE_INTEGER, common::Value::TYPE_UINTEGER,
           common::Value::TYPE_DOUBLE, common::Value::TYPE_STRING, JsonValue::TYPE_JSON};
 }

@@ -62,7 +62,7 @@ ServerHistoryDialog::ServerHistoryDialog(proxy::IServerSPtr server, QWidget* par
   VERIFY(connect(serverInfoFields_, static_cast<curc>(&QComboBox::currentIndexChanged), this,
                  &ServerHistoryDialog::refreshGraph));
 
-  const auto fields = core::InfoFieldsFromType(server_->GetType());
+  const auto fields = core::GetInfoFieldsFromType(server_->GetType());
   for (size_t i = 0; i < fields.size(); ++i) {
     core::info_field_t field = fields[i];
     QString qitem;
@@ -148,7 +148,7 @@ void ServerHistoryDialog::refreshInfoFields(int index) {
 
   serverInfoFields_->clear();
 
-  std::vector<core::info_field_t> fields = InfoFieldsFromType(server_->GetType());
+  std::vector<core::info_field_t> fields = core::GetInfoFieldsFromType(server_->GetType());
   std::vector<core::Field> field = fields[index].second;
   for (uint32_t i = 0; i < field.size(); ++i) {
     core::Field fl = field[i];

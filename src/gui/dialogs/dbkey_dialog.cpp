@@ -60,7 +60,7 @@ DbKeyDialog::DbKeyDialog(const QString& title, core::connectionTypes type, const
   type_label_ = new QLabel;
   kvLayout->addWidget(type_label_, 0, 0);
   types_combo_box_ = new QComboBox;
-  std::vector<common::Value::Type> types = SupportedTypesFromType(type);
+  std::vector<common::Value::Type> types = core::GetSupportedValueTypes(type);
   common::Value::Type kt = common::Value::TYPE_STRING;
   if (is_edit) {
     kt = key_.GetType();

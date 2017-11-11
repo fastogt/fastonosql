@@ -38,35 +38,29 @@
 #include "translations/global.h"
 
 namespace {
-const QString trDescription = QObject::tr(
-#if defined(PROJECT_BUILD_TYPE_VERSION) && defined(PROJECT_BUILD_RELEASE)
-    "<h3>" PROJECT_NAME_TITLE " " PROJECT_VERSION "<br/>Revision:" PROJECT_GIT_VERSION "</h3>"
-#else
-    "<h3>" PROJECT_NAME_TITLE " " PROJECT_VERSION " " PROJECT_BUILD_TYPE_VERSION STRINGIZE(
-        PROJECT_VERSION_TWEAK) "<br/>Revision:" PROJECT_GIT_VERSION "</h3>"
-#endif
-    PROJECT_SUMMARY
-    "<br/>"
-    "<br/>"
-    "Visit our website: <a href=\"" PROJECT_DOMAIN "\">" PROJECT_NAME_TITLE
-    "</a> <br/>"
-    "<br/>"
-    "<a href=\"" PROJECT_GITHUB_FORK
-    "\">Fork</a> project or <a "
-    "href=" PROJECT_GITHUB_ISSUES
-    ">submit</a> issues/proposals on GitHub.  <br/>"
-    "<br/>"
-    "Copyright 2014-2017 <a "
-    "href=\"" PROJECT_COMPANYNAME_DOMAIN "\">" PROJECT_COMPANYNAME
-    "</a>. All rights reserved.<br/>"
-    "<br/>"
-    "The program is provided AS IS with NO WARRANTY OF ANY "
-    "KIND, "
-    "INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND "
-    "FITNESS FOR A "
-    "PARTICULAR PURPOSE.<br/>");
+const QString trDescription = QObject::tr("<h3>" PROJECT_NAME_TITLE " " PROJECT_VERSION
+                                          "<br/>Revision:" PROJECT_GIT_VERSION "</h3>" PROJECT_SUMMARY
+                                          "<br/>"
+                                          "<br/>"
+                                          "Visit our website: <a href=\"" PROJECT_DOMAIN "\">" PROJECT_NAME_TITLE
+                                          "</a> <br/>"
+                                          "<br/>"
+                                          "<a href=\"" PROJECT_GITHUB_FORK
+                                          "\">Fork</a> project or <a "
+                                          "href=" PROJECT_GITHUB_ISSUES
+                                          ">submit</a> issues/proposals on GitHub.  <br/>"
+                                          "<br/>"
+                                          "Copyright 2014-2017 <a "
+                                          "href=\"" PROJECT_COMPANYNAME_DOMAIN "\">" PROJECT_COMPANYNAME
+                                          "</a>. All rights reserved.<br/>"
+                                          "<br/>"
+                                          "The program is provided AS IS with NO WARRANTY OF ANY "
+                                          "KIND, "
+                                          "INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND "
+                                          "FITNESS FOR A "
+                                          "PARTICULAR PURPOSE.<br/>");
 
-const QString tAboutTitle = QObject::tr("About " PROJECT_NAME_TITLE);
+const QString trAbout = QObject::tr("About");
 
 void addDBItem(QTreeWidget* dblist_widget, const std::string& name, const char* lib_name, const char* version) {
   QTreeWidgetItem* treeItem = new QTreeWidgetItem;
@@ -94,7 +88,7 @@ namespace fastonosql {
 namespace gui {
 
 AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
-  setWindowTitle(tAboutTitle);
+  setWindowTitle(trAbout + " " PROJECT_NAME_TITLE);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
   QTabWidget* about_tabs = new QTabWidget;
@@ -189,7 +183,7 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
   copy_rights_layout->addWidget(main_tab, 4, 1, 1, 5);
   glayout->addLayout(copy_rights_layout);
   glayout->setSizeConstraint(QLayout::SetFixedSize);
-  about_tabs->addTab(about_tab, QObject::tr("About"));
+  about_tabs->addTab(about_tab, trAbout);
 
   // license
   QTextEdit* license_tab = new QTextEdit;

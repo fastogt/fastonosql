@@ -37,7 +37,7 @@ const std::vector<Field> g_ssdb_common_fields = {
 }  // namespace
 
 template <>
-std::vector<common::Value::Type> DBTraits<SSDB>::GetSupportedTypes() {
+std::vector<common::Value::Type> DBTraits<SSDB>::GetSupportedValueTypes() {
   return {common::Value::TYPE_BOOLEAN, common::Value::TYPE_INTEGER, common::Value::TYPE_UINTEGER,
           common::Value::TYPE_DOUBLE,  common::Value::TYPE_STRING,  common::Value::TYPE_ARRAY,
           common::Value::TYPE_SET,     common::Value::TYPE_ZSET,    common::Value::TYPE_HASH,
