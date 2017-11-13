@@ -4746,9 +4746,9 @@ bool DBConnection::IsInternalCommand(const std::string& command_name) {
     return false;
   }
 
-  for (size_t i =0; i < g_internal_commands.size(); ++i) {
+  for (size_t i = 0; i < g_internal_commands.size(); ++i) {
     const CommandHolder& cmd = g_internal_commands[i];
-    if (cmd.IsEqualFirstName(command_name)){
+    if (cmd.IsEqualFirstName(command_name)) {
       return true;
     }
   }
