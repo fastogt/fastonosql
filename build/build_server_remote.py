@@ -4,7 +4,6 @@ import shlex
 import sys
 
 import build
-import config
 import pika
 from pybuild_utils.base import system_info, utils
 
@@ -15,8 +14,9 @@ def gen_routing_key(platform, arch) -> str:
 
 def print_usage():
     print("Usage:\n"
-          "[optional] argv[1] platform\n"
-          "[optional] argv[2] architecture\n")
+          "[required] argv[1] config file name without extension (placed near script)\n"
+          "[optional] argv[2] platform\n"
+          "[optional] argv[3] architecture\n")
 
 
 class BuildRpcServer(object):
@@ -202,14 +202,25 @@ class BuildRpcServer(object):
 
 if __name__ == "__main__":
     argc = len(sys.argv)
-
     if argc > 1:
-        platform_str = sys.argv[1]
+        try:
+            config_name = sys.argv[1]
+            config = __import__(config_name)
+        except Exception as ex:
+            print('Failed to open config: {0}'.format(str(ex)))
+            print_usage()
+            sys.exit(1)
+    else:
+        print_usage()
+        sys.exit(1)
+
+    if argc > 2:
+        platform_str = sys.argv[2]
     else:
         platform_str = system_info.get_os()
 
-    if argc > 2:
-        arch_str = sys.argv[2]
+    if argc > 3:
+        arch_str = sys.argv[3]
     else:
         arch_str = system_info.get_arch_name()
 
