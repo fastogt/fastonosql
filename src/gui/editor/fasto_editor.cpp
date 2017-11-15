@@ -96,7 +96,7 @@ QString FastoEditor::selectedText() const {
 }
 
 void FastoEditor::setShowAutoCompletion(bool showA) {
-  scin_->setShowAutoCompletion(showA);
+  scin_->SetShowAutoCompletion(showA);
 }
 
 QMenu* FastoEditor::createStandardContextMenu() {

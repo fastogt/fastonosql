@@ -32,7 +32,7 @@ class ConnectionWidget : public ConnectionBaseWidget {
   Q_OBJECT
  public:
   typedef ConnectionBaseWidget base_class;
-  explicit ConnectionWidget(QWidget* parent = 0);
+  explicit ConnectionWidget(QWidget* parent = Q_NULLPTR);
 
   virtual void syncControls(proxy::IConnectionSettingsBase* connection) override;
   virtual void retranslateUi() override;

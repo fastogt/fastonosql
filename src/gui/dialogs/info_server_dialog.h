@@ -76,7 +76,7 @@ namespace gui {
 class InfoServerDialog : public QDialog {
   Q_OBJECT
  public:
-  explicit InfoServerDialog(proxy::IServerSPtr server, QWidget* parent = 0);
+  explicit InfoServerDialog(proxy::IServerSPtr server, QWidget* parent = Q_NULLPTR);
   enum { min_width = 420, min_height = 560 };
 
  private Q_SLOTS:

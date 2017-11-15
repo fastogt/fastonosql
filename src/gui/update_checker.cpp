@@ -52,7 +52,9 @@ void UpdateChecker::routine() {
   if (err) {
     emit versionAvailibled(false, QString());
     err = client.Close();
-    DCHECK(!err);
+    if (err) {
+      DNOTREACHED();
+    }
     return;
   }
 
@@ -62,13 +64,17 @@ void UpdateChecker::routine() {
   if (err) {
     emit versionAvailibled(false, QString());
     err = client.Close();
-    DCHECK(!err);
+    if (err) {
+      DNOTREACHED();
+    }
     return;
   }
 
   emit versionAvailibled(true, version);
   err = client.Close();
-  DCHECK(!err);
+  if (err) {
+    DNOTREACHED();
+  }
 }
 
 }  // namespace gui

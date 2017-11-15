@@ -24,23 +24,23 @@ namespace gui {
 KeyValueTableItem::KeyValueTableItem(const QString& key, const QString& value, Mode state)
     : TableItem(), key_(key), value_(value), state_(state) {}
 
-QString KeyValueTableItem::key() const {
+QString KeyValueTableItem::GetKey() const {
   return key_;
 }
 
-void KeyValueTableItem::setKey(const QString& key) {
+void KeyValueTableItem::SetKey(const QString& key) {
   key_ = key;
 }
 
-QString KeyValueTableItem::value() const {
+QString KeyValueTableItem::GetValue() const {
   return value_;
 }
 
-void KeyValueTableItem::setValue(const QString& val) {
+void KeyValueTableItem::SetValue(const QString& val) {
   value_ = val;
 }
 
-KeyValueTableItem::Mode KeyValueTableItem::actionState() const {
+KeyValueTableItem::Mode KeyValueTableItem::GetActionState() const {
   return state_;
 }
 

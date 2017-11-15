@@ -75,7 +75,7 @@ const QString trSettingsLoadedS = QObject::tr("Settings successfully loaded!");
 const QString trSettingsImportedS = QObject::tr("Settings successfully imported!");
 const QString trSettingsExportedS = QObject::tr("Settings successfully encrypted and exported!");
 
-bool isNeededUpdate(const std::string& sversion) {
+bool IsNeededUpdate(const std::string& sversion) {
   uint32_t cver = common::ConvertVersionNumberFromString(sversion);
   return PROJECT_VERSION_NUMBER < cver;
 }
@@ -547,7 +547,7 @@ void MainWindow::versionAvailible(bool succesResult, const QString& version) {
   }
 
   std::string sver = common::ConvertToString(version);
-  bool isn = isNeededUpdate(sver);
+  bool isn = IsNeededUpdate(sver);
   if (isn) {
     QMessageBox::information(this, translations::trCheckVersion,
                              QObject::tr("<h4>A new version(%1) of " PROJECT_NAME_TITLE " is availible!</h4>"

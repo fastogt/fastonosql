@@ -32,7 +32,7 @@ class FastoEditorOutput;
 class FastoTextView : public QWidget {
   Q_OBJECT
  public:
-  FastoTextView(QWidget* parent = 0);
+  FastoTextView(QWidget* parent = Q_NULLPTR);
 
   void setModel(QAbstractItemModel* model);
 

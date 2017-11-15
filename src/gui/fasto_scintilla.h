@@ -39,27 +39,26 @@ class FastoScintilla : public QsciScintilla {
  public:
   enum { rowNumberWidth = 6, indentationWidth = 4 };
 
-  explicit FastoScintilla(QWidget* parent = 0);
+  explicit FastoScintilla(QWidget* parent = Q_NULLPTR);
 
-  void setShowAutoCompletion(bool showA);
+  void SetShowAutoCompletion(bool showA);
+  bool IsShowAutoCompletion() const;
 
  private Q_SLOTS:
-  void updateLineNumbersMarginWidth();
+  void UpdateLineNumbersMarginWidth();
 
  protected:
   virtual void keyPressEvent(QKeyEvent* e) override;
 
  private:
-  int lineNumberMarginWidth() const;
-  int textWidth(int style, const QString& text);
-  void showOrHideLinesNumbers();
+  int GetLineNumberMarginWidth() const;
+  int GetTextWidth(int style, const QString& text);
+  void ToggleLinesNumbers();
 
-  void showAutocompletion();
-  void hideAutocompletion();
+  void ShowAutocompletion();
+  void HideAutocompletion();
 
   int lineNumberMarginWidth_;
-
-  bool showAutoCompletion_;
 };
 
 }  // namespace gui

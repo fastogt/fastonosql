@@ -27,7 +27,7 @@ namespace rocksdb {
 class Lexer : public BaseCommandsQsciLexer {
   Q_OBJECT
  public:
-  explicit Lexer(QObject* parent = 0);
+  explicit Lexer(QObject* parent = Q_NULLPTR);
 
   virtual const char* language() const override;
   virtual const char* version() const override;

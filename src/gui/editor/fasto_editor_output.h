@@ -35,7 +35,7 @@ class FastoHexEdit;
 class FastoEditorOutput : public QWidget {
   Q_OBJECT
  public:
-  explicit FastoEditorOutput(QWidget* parent = 0);
+  explicit FastoEditorOutput(QWidget* parent = Q_NULLPTR);
   virtual ~FastoEditorOutput();
 
   void setModel(QAbstractItemModel* model);

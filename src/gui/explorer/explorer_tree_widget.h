@@ -31,7 +31,7 @@ class ExplorerTreeView;
 class ExplorerTreeWidget : public QWidget {
   Q_OBJECT
  public:
-  explicit ExplorerTreeWidget(QWidget* parent = 0);
+  explicit ExplorerTreeWidget(QWidget* parent = Q_NULLPTR);
 
  Q_SIGNALS:
   void consoleOpened(proxy::IServerSPtr server, const QString& text);

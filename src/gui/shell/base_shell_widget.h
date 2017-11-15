@@ -75,7 +75,7 @@ class BaseShellWidget : public QWidget {
 
   static BaseShellWidget* createWidget(proxy::IServerSPtr server,
                                        const QString& filePath = QString(),
-                                       QWidget* parent = 0);
+                                       QWidget* parent = Q_NULLPTR);
 
   virtual ~BaseShellWidget();
 
@@ -122,7 +122,7 @@ class BaseShellWidget : public QWidget {
   void serverDisconnect();
 
  protected:
-  BaseShellWidget(proxy::IServerSPtr server, const QString& filePath = QString(), QWidget* parent = 0);
+  BaseShellWidget(proxy::IServerSPtr server, const QString& filePath = QString(), QWidget* parent = Q_NULLPTR);
   virtual void init();
   virtual QHBoxLayout* createTopLayout(core::connectionTypes ct);
 

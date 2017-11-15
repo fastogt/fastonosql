@@ -29,7 +29,7 @@ namespace gui {
 class FastoCommonModel : public common::qt::gui::TreeModel {
   Q_OBJECT
  public:
-  explicit FastoCommonModel(QObject* parent = 0);
+  explicit FastoCommonModel(QObject* parent = Q_NULLPTR);
 
   virtual QVariant data(const QModelIndex& index, int role) const override;
   virtual bool setData(const QModelIndex& index, const QVariant& value, int role) override;

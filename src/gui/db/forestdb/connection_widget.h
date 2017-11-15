@@ -27,7 +27,7 @@ namespace forestdb {
 class ConnectionWidget : public ConnectionLocalWidgetDirectoryPath {
   Q_OBJECT
  public:
-  explicit ConnectionWidget(QWidget* parent = 0);
+  explicit ConnectionWidget(QWidget* parent = Q_NULLPTR);
 
   virtual void syncControls(proxy::IConnectionSettingsBase* connection) override;
   virtual void retranslateUi() override;

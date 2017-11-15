@@ -44,7 +44,7 @@ namespace gui {
 class ConnectionBaseWidget : public QWidget {
   Q_OBJECT
  public:
-  explicit ConnectionBaseWidget(QWidget* parent = 0);
+  explicit ConnectionBaseWidget(QWidget* parent = Q_NULLPTR);
 
   virtual void syncControls(proxy::IConnectionSettingsBase* connection);
   virtual void retranslateUi();

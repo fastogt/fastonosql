@@ -27,7 +27,7 @@ namespace gui {
 
 KeyTableItem::KeyTableItem(const core::NDbKValue& dbv) : dbv_(dbv) {}
 
-QString KeyTableItem::keyString() const {
+QString KeyTableItem::GetKeyString() const {
   QString qkey;
   const core::NKey key = dbv_.GetKey();
   const core::key_t raw_key = key.GetKey();
@@ -35,32 +35,32 @@ QString KeyTableItem::keyString() const {
   return qkey;
 }
 
-QString KeyTableItem::typeText() const {
+QString KeyTableItem::GetTypeText() const {
   return core::GetTypeName(dbv_.GetType());
 }
 
-core::ttl_t KeyTableItem::ttl() const {
+core::ttl_t KeyTableItem::GetTTL() const {
   core::NKey key = dbv_.GetKey();
   return key.GetTTL();
 }
 
-common::Value::Type KeyTableItem::type() const {
+common::Value::Type KeyTableItem::GetType() const {
   return dbv_.GetType();
 }
 
-core::NDbKValue KeyTableItem::dbv() const {
+core::NDbKValue KeyTableItem::GetDBV() const {
   return dbv_;
 }
 
-void KeyTableItem::setDbv(const core::NDbKValue& val) {
+void KeyTableItem::SetDbv(const core::NDbKValue& val) {
   dbv_ = val;
 }
 
-core::NKey KeyTableItem::key() const {
+core::NKey KeyTableItem::GetKey() const {
   return dbv_.GetKey();
 }
 
-void KeyTableItem::setKey(const core::NKey& key) {
+void KeyTableItem::SetKey(const core::NKey& key) {
   dbv_.SetKey(key);
 }
 

@@ -33,7 +33,7 @@ namespace gui {
 class LogWidget : public QWidget {
   Q_OBJECT
  public:
-  explicit LogWidget(QWidget* parent = 0);
+  explicit LogWidget(QWidget* parent = Q_NULLPTR);
 
  public Q_SLOTS:
   void addLogMessage(const QString& message, common::logging::LOG_LEVEL level);

@@ -26,7 +26,7 @@ namespace gui {
 class EulaDialog : public QWizard {
   Q_OBJECT
  public:
-  explicit EulaDialog(QWidget* parent = 0);
+  explicit EulaDialog(QWidget* parent = Q_NULLPTR);
 
  private Q_SLOTS:
   void agreeButtonClicked();

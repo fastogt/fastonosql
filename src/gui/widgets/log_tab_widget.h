@@ -33,7 +33,7 @@ class LogWidget;
 class LogTabWidget : public QTabWidget {
   Q_OBJECT
  public:
-  explicit LogTabWidget(QWidget* parent = 0);
+  explicit LogTabWidget(QWidget* parent = Q_NULLPTR);
 
  public Q_SLOTS:
   void addLogMessage(const QString& message, common::logging::LOG_LEVEL level);

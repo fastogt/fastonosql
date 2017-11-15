@@ -43,7 +43,7 @@ class DbKeyDialog : public QDialog {
   explicit DbKeyDialog(const QString& title,
                        core::connectionTypes type,
                        const core::NDbKValue& key = core::NDbKValue(),
-                       QWidget* parent = 0);
+                       QWidget* parent = Q_NULLPTR);
   core::NDbKValue key() const;
 
  public Q_SLOTS:

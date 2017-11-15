@@ -28,7 +28,7 @@ namespace gui {
 class KeysTableModel : public common::qt::gui::TableModel {
   Q_OBJECT
  public:
-  explicit KeysTableModel(QObject* parent = 0);
+  explicit KeysTableModel(QObject* parent = Q_NULLPTR);
   virtual ~KeysTableModel();
 
   virtual QVariant data(const QModelIndex& index, int role) const override;

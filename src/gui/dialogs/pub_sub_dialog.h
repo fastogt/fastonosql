@@ -45,7 +45,7 @@ class PubSubDialog : public QDialog {
  public:
   enum { min_width = 640, min_height = 480 };
 
-  explicit PubSubDialog(const QString& title, proxy::IServerSPtr server, QWidget* parent = 0);
+  explicit PubSubDialog(const QString& title, proxy::IServerSPtr server, QWidget* parent = Q_NULLPTR);
  Q_SIGNALS:
   void consoleOpenedAndExecute(proxy::IServerSPtr server, const QString& text);
 

@@ -32,7 +32,7 @@ class KeysTableModel;
 class KeysTableView : public FastoTableView {
   Q_OBJECT
  public:
-  explicit KeysTableView(QWidget* parent = 0);
+  explicit KeysTableView(QWidget* parent = Q_NULLPTR);
 
   void insertKey(const core::NDbKValue& key);
   void updateKey(const core::NKey& key);

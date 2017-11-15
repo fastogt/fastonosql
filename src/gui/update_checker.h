@@ -26,7 +26,7 @@ namespace gui {
 class UpdateChecker : public QObject {
   Q_OBJECT
  public:
-  explicit UpdateChecker(QObject* parent = 0);
+  explicit UpdateChecker(QObject* parent = Q_NULLPTR);
 
  Q_SIGNALS:
   void versionAvailibled(bool succesResult, const QString& version);

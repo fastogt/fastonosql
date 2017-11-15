@@ -46,7 +46,7 @@ class IExplorerTreeItem;
 class ExplorerTreeModel : public common::qt::gui::TreeModel {
   Q_OBJECT
  public:
-  explicit ExplorerTreeModel(QObject* parent = 0);
+  explicit ExplorerTreeModel(QObject* parent = Q_NULLPTR);
 
   virtual QVariant data(const QModelIndex& index, int role) const override;
   virtual Qt::ItemFlags flags(const QModelIndex& index) const override;

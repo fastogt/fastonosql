@@ -31,7 +31,7 @@ class BaseShellWidget;
 class QueryWidget : public QWidget {
   Q_OBJECT
  public:
-  explicit QueryWidget(proxy::IServerSPtr server, QWidget* parent = 0);
+  explicit QueryWidget(proxy::IServerSPtr server, QWidget* parent = Q_NULLPTR);
 
   QueryWidget* clone(const QString& text);
   core::connectionTypes connectionType() const;

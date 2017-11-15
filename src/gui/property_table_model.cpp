@@ -43,9 +43,9 @@ QVariant PropertyTableModel::data(const QModelIndex& index, int role) const {
   if (role == Qt::DisplayRole) {
     int col = index.column();
     if (col == PropertyTableItem::eKey) {
-      return node->key();
+      return node->GetKey();
     } else if (col == PropertyTableItem::eValue) {
-      return node->value();
+      return node->GetValue();
     }
   }
   return QVariant();
@@ -62,8 +62,8 @@ bool PropertyTableModel::setData(const QModelIndex& index, const QVariant& value
     if (column == PropertyTableItem::eKey) {
     } else if (column == PropertyTableItem::eValue) {
       QString newValue = value.toString();
-      if (newValue != node->value()) {
-        core::property_t pr = node->property();
+      if (newValue != node->GetValue()) {
+        core::property_t pr = node->GetProperty();
         pr.second = common::ConvertToString(newValue);
         emit propertyChanged(pr);
       }
@@ -115,9 +115,9 @@ void PropertyTableModel::changeProperty(const core::property_t& pr) {
       continue;
     }
 
-    core::property_t prop = it->property();
+    core::property_t prop = it->GetProperty();
     if (prop.first == pr.first) {
-      it->setProperty(pr);
+      it->SetProperty(pr);
       updateItem(index(i, PropertyTableItem::eKey, QModelIndex()), index(i, PropertyTableItem::eValue, QModelIndex()));
       return;
     }

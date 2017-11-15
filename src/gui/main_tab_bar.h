@@ -31,7 +31,7 @@ namespace gui {
 class MainTabBar : public QTabBar {
   Q_OBJECT
  public:
-  explicit MainTabBar(QWidget* parent = 0);
+  explicit MainTabBar(QWidget* parent = Q_NULLPTR);
 
  Q_SIGNALS:
   void createdNewTab();

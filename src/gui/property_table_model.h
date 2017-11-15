@@ -28,7 +28,7 @@ namespace gui {
 class PropertyTableModel : public common::qt::gui::TableModel {
   Q_OBJECT
  public:
-  explicit PropertyTableModel(QObject* parent = 0);
+  explicit PropertyTableModel(QObject* parent = Q_NULLPTR);
 
   virtual QVariant data(const QModelIndex& index, int role) const override;
   virtual bool setData(const QModelIndex& index, const QVariant& value, int role) override;

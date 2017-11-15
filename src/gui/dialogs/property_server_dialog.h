@@ -50,7 +50,7 @@ namespace gui {
 class PropertyServerDialog : public QDialog {
   Q_OBJECT
  public:
-  explicit PropertyServerDialog(proxy::IServerSPtr server, QWidget* parent = 0);
+  explicit PropertyServerDialog(proxy::IServerSPtr server, QWidget* parent = Q_NULLPTR);
   enum { min_width = 240, min_height = 200 };
 
  private Q_SLOTS:

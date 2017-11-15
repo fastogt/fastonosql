@@ -60,7 +60,7 @@ void ListTypeWidget::clear() {
 
 void ListTypeWidget::addRow(const QModelIndex& index) {
   KeyValueTableItem* node = common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
-  model_->insertRow(node->key(), node->value());
+  model_->insertRow(node->GetKey(), node->GetValue());
 }
 
 void ListTypeWidget::removeRow(const QModelIndex& index) {

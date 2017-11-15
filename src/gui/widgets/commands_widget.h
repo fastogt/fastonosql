@@ -32,7 +32,7 @@ namespace gui {
 class CommandsWidget : public QWidget {
   Q_OBJECT
  public:
-  explicit CommandsWidget(QWidget* parent = 0);
+  explicit CommandsWidget(QWidget* parent = Q_NULLPTR);
 
  public Q_SLOTS:
   void addCommand(core::FastoObjectCommandIPtr command);

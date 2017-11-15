@@ -30,7 +30,7 @@ namespace gui {
 class UserPasswordWidget : public QWidget {
   Q_OBJECT
  public:
-  UserPasswordWidget(const QString& userTitle, const QString& passwordTitle, QWidget* parent = 0);
+  UserPasswordWidget(const QString& userTitle, const QString& passwordTitle, QWidget* parent = Q_NULLPTR);
 
   QString userName() const;
   void setUserName(const QString& user) const;

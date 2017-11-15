@@ -38,7 +38,7 @@ class IPathWidget;
 class SSHWidget : public QWidget {
   Q_OBJECT
  public:
-  explicit SSHWidget(QWidget* parent = 0);
+  explicit SSHWidget(QWidget* parent = Q_NULLPTR);
 
   bool isValidSSHInfo() const;
 

@@ -43,7 +43,7 @@ class BaseShell : public gui::FastoEditorShell {
   static BaseShell* createFromType(core::connectionTypes type, bool showAutoCompl);
 
  protected:
-  BaseShell(core::connectionTypes type, bool showAutoCompl, QWidget* parent = 0);
+  BaseShell(core::connectionTypes type, bool showAutoCompl, QWidget* parent = Q_NULLPTR);
   BaseQsciLexer* lexer() const;
 };
 

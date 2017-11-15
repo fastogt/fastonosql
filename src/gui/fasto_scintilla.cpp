@@ -36,9 +36,9 @@
 #include <common/qt/gui/shortcuts.h>  // for isAutoCompleteShortcut, etc
 
 namespace {
-int getNumberOfDigits(int x) {
+int GetNumberOfDigits(int x) {
   if (x < 0) {
-    return getNumberOfDigits(-x) + 1;
+    return GetNumberOfDigits(-x) + 1;
   }
 
   if (x >= 10000) {
@@ -74,9 +74,9 @@ int getNumberOfDigits(int x) {
   return 1;
 }
 
-const QColor caretForegroundColor = QColor(QColor(Qt::black));
-const QColor selectionBackgroundColor = QColor(QColor(Qt::blue));
-const QColor selectionForegroundColor = QColor(QColor(Qt::white));
+const QColor caretForegroundColor = QColor(Qt::black);
+const QColor selectionBackgroundColor = QColor(Qt::blue);
+const QColor selectionForegroundColor = QColor(Qt::white);
 
 const QColor matchedBraceForegroundColor = QColor(190, 190, 190);
 const QColor matchedBraceBackgroundColor = QColor(30, 36, 38);
@@ -88,8 +88,7 @@ const QColor marginsForegroundColor = QColor(Qt::white);
 namespace fastonosql {
 namespace gui {
 
-FastoScintilla::FastoScintilla(QWidget* parent)
-    : QsciScintilla(parent), lineNumberMarginWidth_(0), showAutoCompletion_(false) {
+FastoScintilla::FastoScintilla(QWidget* parent) : QsciScintilla(parent), lineNumberMarginWidth_(0) {
   setAutoIndent(true);
   setIndentationsUseTabs(false);
   setIndentationWidth(indentationWidth);
@@ -119,30 +118,30 @@ FastoScintilla::FastoScintilla(QWidget* parent)
   setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
-  VERIFY(connect(this, &FastoScintilla::linesChanged, this, &FastoScintilla::updateLineNumbersMarginWidth));
+  VERIFY(connect(this, &FastoScintilla::linesChanged, this, &FastoScintilla::UpdateLineNumbersMarginWidth));
 
   setAutoCompletionThreshold(1);
   setAutoCompletionCaseSensitivity(false);
   setAutoCompletionSource(QsciScintilla::AcsNone);
 }
 
-void FastoScintilla::setShowAutoCompletion(bool showA) {
-  showAutoCompletion_ = showA;
-  if (showAutoCompletion_) {
-    setAutoCompletionSource(QsciScintilla::AcsAPIs);
-  } else {
-    setAutoCompletionSource(QsciScintilla::AcsNone);
-  }
+void FastoScintilla::SetShowAutoCompletion(bool showA) {
+  setAutoCompletionSource(showA ? QsciScintilla::AcsAPIs : QsciScintilla::AcsNone);
 }
 
-void FastoScintilla::updateLineNumbersMarginWidth() {
-  int numberOfDigits = getNumberOfDigits(lines());
+bool FastoScintilla::IsShowAutoCompletion() const {
+  AutoCompletionSource aut = autoCompletionSource();
+  return aut == QsciScintilla::AcsAPIs;
+}
 
-  int tw = textWidth(QsciScintilla::STYLE_LINENUMBER, "0");
+void FastoScintilla::UpdateLineNumbersMarginWidth() {
+  int numberOfDigits = GetNumberOfDigits(lines());
+
+  int tw = GetTextWidth(QsciScintilla::STYLE_LINENUMBER, "0");
   lineNumberMarginWidth_ = numberOfDigits * tw + rowNumberWidth;
 
   // If line numbers margin already displayed, update its width
-  if (lineNumberMarginWidth()) {
+  if (GetLineNumberMarginWidth()) {
     setMarginWidth(0, lineNumberMarginWidth_);
   }
 }
@@ -150,16 +149,16 @@ void FastoScintilla::updateLineNumbersMarginWidth() {
 void FastoScintilla::keyPressEvent(QKeyEvent* keyEvent) {
   if (keyEvent->key() == Qt::Key_F11) {
     keyEvent->ignore();
-    showOrHideLinesNumbers();
+    ToggleLinesNumbers();
     return;
   }
 
-  if (showAutoCompletion_) {
+  if (IsShowAutoCompletion()) {
     if (common::qt::gui::isAutoCompleteShortcut(keyEvent)) {
-      showAutocompletion();
+      ShowAutocompletion();
       return;
     } else if (common::qt::gui::isHideAutoCompleteShortcut(keyEvent)) {
-      hideAutocompletion();
+      HideAutocompletion();
       return;
     }
   }
@@ -167,33 +166,33 @@ void FastoScintilla::keyPressEvent(QKeyEvent* keyEvent) {
   QsciScintilla::keyPressEvent(keyEvent);
 }
 
-int FastoScintilla::lineNumberMarginWidth() const {
+int FastoScintilla::GetLineNumberMarginWidth() const {
   return marginWidth(0);
 }
 
-int FastoScintilla::textWidth(int style, const QString& text) {
+int FastoScintilla::GetTextWidth(int style, const QString& text) {
   const QByteArray utf8 = text.toUtf8();
   const char* byteArray = utf8.constData();
   return SendScintilla(QsciScintilla::SCI_TEXTWIDTH, style, byteArray);
 }
 
-void FastoScintilla::showOrHideLinesNumbers() {
-  updateLineNumbersMarginWidth();
-  if (!lineNumberMarginWidth()) {
+void FastoScintilla::ToggleLinesNumbers() {
+  UpdateLineNumbersMarginWidth();
+  if (!GetLineNumberMarginWidth()) {
     setMarginWidth(0, lineNumberMarginWidth_);
   } else {
     setMarginWidth(0, 0);
   }
 }
 
-void FastoScintilla::showAutocompletion() {
-  if (showAutoCompletion_) {
+void FastoScintilla::ShowAutocompletion() {
+  if (IsShowAutoCompletion()) {
     autoCompleteFromAPIs();
   }
 }
 
-void FastoScintilla::hideAutocompletion() {
-  if (showAutoCompletion_) {
+void FastoScintilla::HideAutocompletion() {
+  if (IsShowAutoCompletion()) {
     cancelList();
   }
 }

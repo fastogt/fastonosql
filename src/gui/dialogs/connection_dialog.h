@@ -36,8 +36,8 @@ class ConnectionBaseWidget;
 class ConnectionDialog : public QDialog {
   Q_OBJECT
  public:
-  ConnectionDialog(core::connectionTypes type, const QString& connectionName, QWidget* parent = 0);
-  ConnectionDialog(proxy::IConnectionSettingsBase* connection, QWidget* parent = 0);
+  ConnectionDialog(core::connectionTypes type, const QString& connectionName, QWidget* parent = Q_NULLPTR);
+  ConnectionDialog(proxy::IConnectionSettingsBase* connection, QWidget* parent = Q_NULLPTR);
 
   void setFolderEnabled(bool val);
   proxy::IConnectionSettingsBaseSPtr connection() const;

@@ -28,7 +28,7 @@ namespace gui {
 class TestConnection : public QObject {
   Q_OBJECT
  public:
-  explicit TestConnection(proxy::IConnectionSettingsBaseSPtr conn, QObject* parent = 0);
+  explicit TestConnection(proxy::IConnectionSettingsBaseSPtr conn, QObject* parent = Q_NULLPTR);
 
  Q_SIGNALS:
   void connectionResult(bool suc, qint64 msTimeExecute, const QString& resultText);

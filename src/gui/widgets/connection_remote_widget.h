@@ -31,7 +31,7 @@ class HostPortWidget;
 class ConnectionRemoteWidget : public ConnectionBaseWidget {
   Q_OBJECT
  public:
-  explicit ConnectionRemoteWidget(QWidget* parent = 0);
+  explicit ConnectionRemoteWidget(QWidget* parent = Q_NULLPTR);
 
   virtual void syncControls(proxy::IConnectionSettingsBase* connection) override;
   virtual void retranslateUi() override;

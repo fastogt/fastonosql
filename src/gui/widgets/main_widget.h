@@ -30,7 +30,7 @@ class QueryWidget;
 class MainWidget : public QTabWidget {
   Q_OBJECT
  public:
-  explicit MainWidget(QWidget* parent = 0);
+  explicit MainWidget(QWidget* parent = Q_NULLPTR);
 
   QueryWidget* currentWidget() const;
   QueryWidget* widget(int index) const;

@@ -29,7 +29,7 @@ namespace gui {
 class FastoTreeView : public QTreeView {
   Q_OBJECT
  public:
-  explicit FastoTreeView(QWidget* parent = 0);
+  explicit FastoTreeView(QWidget* parent = Q_NULLPTR);
 
   QPoint calculateMenuPoint(const QPoint& point) const;
 };

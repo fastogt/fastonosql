@@ -25,23 +25,23 @@ namespace gui {
 
 PropertyTableItem::PropertyTableItem(const core::property_t& prop) : prop_(prop) {}
 
-QString PropertyTableItem::key() const {
+QString PropertyTableItem::GetKey() const {
   QString qkey;
   common::ConvertFromString(prop_.first, &qkey);
   return qkey;
 }
 
-QString PropertyTableItem::value() const {
+QString PropertyTableItem::GetValue() const {
   QString qval;
   common::ConvertFromString(prop_.second, &qval);
   return qval;
 }
 
-core::property_t PropertyTableItem::property() const {
+core::property_t PropertyTableItem::GetProperty() const {
   return prop_;
 }
 
-void PropertyTableItem::setProperty(const core::property_t& prop) {
+void PropertyTableItem::SetProperty(const core::property_t& prop) {
   prop_ = prop;
 }
 

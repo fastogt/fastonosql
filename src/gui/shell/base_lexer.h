@@ -57,7 +57,7 @@ class BaseQsciLexer : public QsciLexerCustom {
   BaseQsciApi* apis() const;
 
  protected:
-  explicit BaseQsciLexer(QObject* parent = 0);
+  explicit BaseQsciLexer(QObject* parent = Q_NULLPTR);
 };
 
 class BaseCommandsQsciLexer : public BaseQsciLexer {
@@ -74,7 +74,7 @@ class BaseCommandsQsciLexer : public BaseQsciLexer {
   const validated_commands_t& commands() const;
 
  protected:
-  explicit BaseCommandsQsciLexer(const std::vector<core::CommandHolder>& commands, QObject* parent = 0);
+  explicit BaseCommandsQsciLexer(const std::vector<core::CommandHolder>& commands, QObject* parent = Q_NULLPTR);
 
  private:
   virtual void styleText(int start, int end) override;

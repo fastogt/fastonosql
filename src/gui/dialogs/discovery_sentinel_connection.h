@@ -29,7 +29,7 @@ namespace gui {
 class DiscoverySentinelConnection : public QObject {
   Q_OBJECT
  public:
-  explicit DiscoverySentinelConnection(proxy::IConnectionSettingsBaseSPtr conn, QObject* parent = 0);
+  explicit DiscoverySentinelConnection(proxy::IConnectionSettingsBaseSPtr conn, QObject* parent = Q_NULLPTR);
 
  Q_SIGNALS:
   void connectionResult(bool suc,

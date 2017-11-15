@@ -47,7 +47,7 @@ QVariant KeysTableModel::data(const QModelIndex& index, int role) const {
 
   int col = index.column();
   if (role == Qt::DecorationRole && col == KeyTableItem::kKey) {
-    return GuiFactory::GetInstance().icon(node->type());
+    return GuiFactory::GetInstance().icon(node->GetType());
   }
 
   if (role == Qt::TextColorRole && col == KeyTableItem::kType) {
@@ -57,11 +57,11 @@ QVariant KeysTableModel::data(const QModelIndex& index, int role) const {
   QVariant result;
   if (role == Qt::DisplayRole) {
     if (col == KeyTableItem::kKey) {
-      result = node->keyString();
+      result = node->GetKeyString();
     } else if (col == KeyTableItem::kType) {
-      result = node->typeText();
+      result = node->GetTypeText();
     } else if (col == KeyTableItem::kTTL) {
-      result = node->ttl();
+      result = node->GetTTL();
     }
   }
 
@@ -81,8 +81,8 @@ bool KeysTableModel::setData(const QModelIndex& index, const QVariant& value, in
     } else if (column == KeyTableItem::kTTL) {
       bool isOk = false;
       int newValue = value.toInt(&isOk);
-      if (isOk && newValue != node->ttl()) {
-        core::NDbKValue dbv = node->dbv();
+      if (isOk && newValue != node->GetTTL()) {
+        core::NDbKValue dbv = node->GetDBV();
         emit changedTTL(dbv, newValue);
       }
     }
@@ -137,10 +137,10 @@ void KeysTableModel::updateKey(const core::NKey& key) {
       continue;
     }
 
-    core::NDbKValue dbv = it->dbv();
+    core::NDbKValue dbv = it->GetDBV();
     const core::NKey dbv_key = dbv.GetKey();
     if (dbv_key.GetKey() == key.GetKey()) {
-      it->setKey(key);
+      it->SetKey(key);
       updateItem(index(i, KeyTableItem::kKey, QModelIndex()), index(i, KeyTableItem::kTTL, QModelIndex()));
       break;
     }

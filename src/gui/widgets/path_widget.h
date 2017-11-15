@@ -30,7 +30,7 @@ namespace gui {
 class IPathWidget : public QWidget {
   Q_OBJECT
  public:
-  IPathWidget(const QString& pathTitle, const QString& filter, const QString& caption, QWidget* parent = 0);
+  IPathWidget(const QString& pathTitle, const QString& filter, const QString& caption, QWidget* parent = Q_NULLPTR);
 
   QString path() const;
   void setPath(const QString& path);
@@ -59,14 +59,14 @@ class IPathWidget : public QWidget {
 
 class FilePathWidget : public IPathWidget {
  public:
-  FilePathWidget(const QString& pathTitle, const QString& filter, const QString& caption, QWidget* parent = 0);
+  FilePathWidget(const QString& pathTitle, const QString& filter, const QString& caption, QWidget* parent = Q_NULLPTR);
 
   virtual int GetMode() const override;
 };
 
 class DirectoryPathWidget : public IPathWidget {
  public:
-  DirectoryPathWidget(const QString& pathTitle, const QString& caption, QWidget* parent = 0);
+  DirectoryPathWidget(const QString& pathTitle, const QString& caption, QWidget* parent = Q_NULLPTR);
 
   virtual int GetMode() const override;
 };

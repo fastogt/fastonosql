@@ -33,16 +33,16 @@ class KeyTableItem : public common::qt::gui::TableItem {
 
   explicit KeyTableItem(const core::NDbKValue& dbv);
 
-  QString keyString() const;
-  QString typeText() const;
-  core::ttl_t ttl() const;
-  common::Value::Type type() const;
+  QString GetKeyString() const;
+  QString GetTypeText() const;
+  core::ttl_t GetTTL() const;
+  common::Value::Type GetType() const;
 
-  core::NDbKValue dbv() const;
-  void setDbv(const core::NDbKValue& val);
+  core::NDbKValue GetDBV() const;
+  void SetDbv(const core::NDbKValue& val);
 
-  core::NKey key() const;
-  void setKey(const core::NKey& key);
+  core::NKey GetKey() const;
+  void SetKey(const core::NKey& key);
 
  private:
   core::NDbKValue dbv_;

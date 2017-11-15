@@ -40,7 +40,7 @@ class ConnectionLocalWidget : public ConnectionBaseWidget {
   virtual bool validated() const override;
 
  protected:
-  explicit ConnectionLocalWidget(IPathWidget* path_widget, QWidget* parent = 0);
+  explicit ConnectionLocalWidget(IPathWidget* path_widget, QWidget* parent = Q_NULLPTR);
 
   virtual proxy::IConnectionSettingsLocal* createConnectionLocalImpl(const proxy::connection_path_t& path) const = 0;
 
@@ -52,7 +52,7 @@ class ConnectionLocalWidget : public ConnectionBaseWidget {
 
 class ConnectionLocalWidgetDirectoryPath : public ConnectionLocalWidget {
  public:
-  ConnectionLocalWidgetDirectoryPath(const QString& path_title, const QString& caption, QWidget* parent = 0);
+  ConnectionLocalWidgetDirectoryPath(const QString& path_title, const QString& caption, QWidget* parent = Q_NULLPTR);
 
  protected:
   virtual proxy::IConnectionSettingsLocal* createConnectionLocalImpl(
@@ -64,7 +64,7 @@ class ConnectionLocalWidgetFilePath : public ConnectionLocalWidget {
   ConnectionLocalWidgetFilePath(const QString& path_title,
                                 const QString& filter,
                                 const QString& caption,
-                                QWidget* parent = 0);
+                                QWidget* parent = Q_NULLPTR);
 
  protected:
   virtual proxy::IConnectionSettingsLocal* createConnectionLocalImpl(

@@ -31,7 +31,7 @@ namespace gui {
 class HostPortWidget : public QWidget {
   Q_OBJECT
  public:
-  explicit HostPortWidget(QWidget* parent = 0);
+  explicit HostPortWidget(QWidget* parent = Q_NULLPTR);
 
   common::net::HostAndPort host() const;
   void setHost(const common::net::HostAndPort& host);

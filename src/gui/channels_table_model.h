@@ -45,7 +45,7 @@ class ChannelTableItem : public common::qt::gui::TableItem {
 class ChannelsTableModel : public common::qt::gui::TableModel {
   Q_OBJECT
  public:
-  explicit ChannelsTableModel(QObject* parent = 0);
+  explicit ChannelsTableModel(QObject* parent = Q_NULLPTR);
   virtual ~ChannelsTableModel();
 
   virtual QVariant data(const QModelIndex& index, int role) const override;

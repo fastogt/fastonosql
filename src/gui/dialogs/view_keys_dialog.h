@@ -53,7 +53,7 @@ class ViewKeysDialog : public QDialog {
     step_keys_on_page = defaults_key
   };
 
-  explicit ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QWidget* parent = 0);
+  explicit ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QWidget* parent = Q_NULLPTR);
 
  private Q_SLOTS:
   void startLoadDatabaseContent(const proxy::events_info::LoadDatabaseContentRequest& req);

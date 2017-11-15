@@ -60,7 +60,7 @@ namespace gui {
 class OutputWidget : public QWidget {
   Q_OBJECT
  public:
-  explicit OutputWidget(proxy::IServerSPtr server, QWidget* parent = 0);
+  explicit OutputWidget(proxy::IServerSPtr server, QWidget* parent = Q_NULLPTR);
 
  private Q_SLOTS:
   void createKey(const core::NDbKValue& dbv);

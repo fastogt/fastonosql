@@ -29,7 +29,7 @@
 namespace {
 class NumericDelegate : public QStyledItemDelegate {
  public:
-  explicit NumericDelegate(QObject* parent = 0) : QStyledItemDelegate(parent) {}
+  explicit NumericDelegate(QObject* parent = Q_NULLPTR) : QStyledItemDelegate(parent) {}
 
   QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index) const override {
     UNUSED(option);
