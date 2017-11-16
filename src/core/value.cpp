@@ -260,7 +260,7 @@ std::string ConvertValue(common::Value* value, const std::string& delimiter, boo
 
   common::Value::Type t = value->GetType();
   if (t == common::Value::TYPE_NULL) {
-    return std::string();
+    return "(nil)";
   } else if (t == common::Value::TYPE_BOOLEAN) {
     return ConvertValue(static_cast<common::FundamentalValue*>(value), delimiter, for_cmd);
   } else if (t == common::Value::TYPE_INTEGER) {

@@ -35,6 +35,7 @@ class CommandTranslator : public ICommandTranslator {
       WARN_UNUSED_RESULT;
 
   common::Error Hgetall(const NKey& key, command_buffer_t* cmdstring) WARN_UNUSED_RESULT;
+  common::Error Mget(const std::vector<NKey>& keys, command_buffer_t* cmdstring) WARN_UNUSED_RESULT;
 
   common::Error Smembers(const NKey& key, command_buffer_t* cmdstring) WARN_UNUSED_RESULT;
 

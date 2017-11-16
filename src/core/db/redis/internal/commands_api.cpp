@@ -543,7 +543,28 @@ common::Error CommandsApi::Ltrim(internal::CommandHandler* handler, commands_arg
 
 common::Error CommandsApi::Mget(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
-  return red->CommonExec(ExpandCommand({"MGET"}, argv), out);
+  std::vector<NKey> keys;
+  for (size_t i = 0; i < argv.size(); ++i) {
+    key_t key_str(argv[i]);
+    NKey key(key_str);
+    keys.push_back(key);
+  }
+
+  std::vector<NDbKValue> dbv;
+  common::Error err = red->Mget(keys, &dbv);
+  if (err) {
+    return err;
+  }
+
+  common::ArrayValue* arr = common::Value::CreateArrayValue();
+  for (size_t i = 0; i < dbv.size(); ++i) {
+    NValue val = dbv[i].GetValue();
+    arr->Append(val->DeepCopy());
+  }
+
+  FastoObject* child = new FastoObject(out, arr, red->GetDelimiter());
+  out->AddChildren(child);
+  return common::Error();
 }
 
 common::Error CommandsApi::Migrate(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {

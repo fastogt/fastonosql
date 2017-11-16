@@ -4,6 +4,7 @@
 - Json keys validation
 - [Redis] Full support JSON.GET/JSON.SET commands
 - [Redis] Basic support RediSearch, redis-graph types 
+- [Redis] MGET command UI handling
 
 1.10.0 / November 4, 2017
 [Alexandr Topilski]

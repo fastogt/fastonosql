@@ -4393,6 +4393,56 @@ common::Error DBConnection::Zrange(const NKey& key, int start, int stop, bool wi
   return common::Error();
 }
 
+common::Error DBConnection::Mget(const std::vector<NKey>& keys, std::vector<NDbKValue>* loaded_keys) {
+  if (keys.empty() || !loaded_keys) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
+  command_buffer_t mget_cmd;
+  err = tran->Mget(keys, &mget_cmd);
+  if (err) {
+    return err;
+  }
+
+  redisReply* reply = NULL;
+  err = ExecRedisCommand(connection_.handle_, mget_cmd, &reply);
+  if (err) {
+    return err;
+  }
+
+  if (reply->type != REDIS_REPLY_ARRAY) {
+    NOTREACHED() << mget_cmd << "command should return array somthing changed?";
+    return common::Error();
+  }
+
+  for (size_t i = 0; i < reply->elements; ++i) {
+    redisReply* key_value = reply->element[i];
+    common::Value* val = nullptr;
+    common::Error err = ValueFromReplay(key_value, &val);
+    if (err) {
+      delete val;
+      freeReplyObject(reply);
+      return err;
+    }
+
+    NDbKValue loaded_key(keys[i], NValue(val));
+    if (client_) {
+      client_->OnLoadedKey(loaded_key);
+    }
+    loaded_keys->push_back(loaded_key);
+  }
+
+  freeReplyObject(reply);
+  return common::Error();
+}
+
 common::Error DBConnection::Hmset(const NKey& key, NValue hash) {
   if (!hash || hash->GetType() != common::Value::TYPE_HASH) {
     DNOTREACHED();

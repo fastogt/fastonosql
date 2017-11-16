@@ -85,6 +85,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
   common::Error Zadd(const NKey& key, NValue scores, long long* added);
   common::Error Zrange(const NKey& key, int start, int stop, bool withscores, NDbKValue* loaded_key);
 
+  common::Error Mget(const std::vector<NKey>& keys, std::vector<NDbKValue>* loaded_keys);
   common::Error Hmset(const NKey& key, NValue hash);
   common::Error Hgetall(const NKey& key, NDbKValue* loaded_key);
 

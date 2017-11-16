@@ -47,6 +47,7 @@
 
 #define REDIS_ZRANGE "ZRANGE"
 
+#define REDIS_MGET "MGET"
 #define REDIS_HGETALL "HGETALL"
 
 #define REDIS_SMEMBERS "SMEMBERS"
@@ -100,6 +101,21 @@ common::Error CommandTranslator::Hgetall(const NKey& key, command_buffer_t* cmds
   key_t key_str = key.GetKey();
   command_buffer_writer_t wr;
   wr << REDIS_HGETALL " " << key_str.GetKeyForCommandLine();
+  *cmdstring = wr.str();
+  return common::Error();
+}
+
+common::Error CommandTranslator::Mget(const std::vector<NKey>& keys, command_buffer_t* cmdstring) {
+  if (keys.empty() || !cmdstring) {
+    return common::make_error_inval();
+  }
+
+  command_buffer_writer_t wr;
+  wr << REDIS_MGET;
+  for (size_t i = 0; i < keys.size(); ++i) {
+    key_t key_str = keys[i].GetKey();
+    wr << " " << key_str.GetKeyForCommandLine();
+  }
   *cmdstring = wr.str();
   return common::Error();
 }
