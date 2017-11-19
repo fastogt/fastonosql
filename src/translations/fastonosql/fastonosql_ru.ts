@@ -719,32 +719,32 @@
         <translation>Проверка версии</translation>
     </message>
     <message>
-        <location filename="../../gui/main_window.cpp" line="72"/>
+        <location filename="../../gui/main_window.cpp" line="74"/>
         <source>Import settings failed!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/main_window.cpp" line="73"/>
+        <location filename="../../gui/main_window.cpp" line="75"/>
         <source>Export settings failed!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/main_window.cpp" line="74"/>
+        <location filename="../../gui/main_window.cpp" line="76"/>
         <source>Settings successfully loaded!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/main_window.cpp" line="75"/>
+        <location filename="../../gui/main_window.cpp" line="77"/>
         <source>Settings successfully imported!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/main_window.cpp" line="76"/>
+        <location filename="../../gui/main_window.cpp" line="78"/>
         <source>Settings successfully encrypted and exported!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/main_window.cpp" line="553"/>
+        <location filename="../../gui/main_window.cpp" line="558"/>
         <source>&lt;h4&gt;A new version(%1) of </source>
         <translation type="unfinished"></translation>
     </message>
@@ -1330,37 +1330,37 @@
 <context>
     <name>fastonosql::gui::MainWindow</name>
     <message>
-        <location filename="../../gui/main_window.cpp" line="377"/>
+        <location filename="../../gui/main_window.cpp" line="382"/>
         <source>Select settings file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/main_window.cpp" line="377"/>
+        <location filename="../../gui/main_window.cpp" line="382"/>
         <source>Settings files (*.ini)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/main_window.cpp" line="390"/>
+        <location filename="../../gui/main_window.cpp" line="395"/>
         <source>Select encrypted settings file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/main_window.cpp" line="391"/>
+        <location filename="../../gui/main_window.cpp" line="396"/>
         <source>Encrypted settings files (*.cini)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/main_window.cpp" line="472"/>
+        <location filename="../../gui/main_window.cpp" line="477"/>
         <source>Select file to save settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/main_window.cpp" line="472"/>
+        <location filename="../../gui/main_window.cpp" line="477"/>
         <source>Settings files (*.cini)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../gui/main_window.cpp" line="641"/>
+        <location filename="../../gui/main_window.cpp" line="646"/>
         <source>About %1...</source>
         <translation type="unfinished">Об %1...</translation>
     </message>

@@ -84,6 +84,8 @@ class MainWindow : public QMainWindow {
 #endif
 
  private:
+  void sendStatisticAndCheckVersion();
+
   void createStatusBar();
   void retranslateUi();
   void updateRecentConnectionActions();
@@ -117,7 +119,6 @@ class MainWindow : public QMainWindow {
   ExplorerTreeWidget* exp_;
   QDockWidget* expDock_;
   QDockWidget* logDock_;
-  bool isCheckedInSession_;
 };
 
 }  // namespace gui

@@ -69,6 +69,8 @@
 
 namespace {
 
+std::once_flag statistic_flag;
+
 const QString trImportSettingsFailed = QObject::tr("Import settings failed!");
 const QString trExportSettingsFailed = QObject::tr("Export settings failed!");
 const QString trSettingsLoadedS = QObject::tr("Settings successfully loaded!");
@@ -92,7 +94,7 @@ void LogWatcherRedirect(common::logging::LOG_LEVEL level, const std::string& mes
 namespace fastonosql {
 namespace gui {
 
-MainWindow::MainWindow() : QMainWindow(), isCheckedInSession_(false) {
+MainWindow::MainWindow() : QMainWindow() {
 #ifdef OS_ANDROID
   setAttribute(Qt::WA_AcceptTouchEvents);
   // setAttribute(Qt::WA_StaticContents);
@@ -269,9 +271,12 @@ void MainWindow::changeEvent(QEvent* ev) {
 
 void MainWindow::showEvent(QShowEvent* ev) {
   QMainWindow::showEvent(ev);
+  std::call_once(statistic_flag, sendStatisticAndCheckVersion, this);
+}
+
+void MainWindow::sendStatisticAndCheckVersion() {
   bool check_updates = proxy::SettingsManager::GetInstance()->GetAutoCheckUpdates();
-  if (check_updates && !isCheckedInSession_) {
-    isCheckedInSession_ = true;
+  if (check_updates) {
     checkUpdate();
   }
 

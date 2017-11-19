@@ -381,7 +381,6 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
   fast_view_keys_ = settings.value(FASTVIEWKEYS, true).toBool();
   exec_count_ = settings.value(EXEC_COUNT, 1).toUInt();
   config_version_ = settings.value(CONFIG_VERSION, PROJECT_VERSION_NUMBER).toUInt();
-  Save();
 }
 
 void SettingsManager::Load() {
