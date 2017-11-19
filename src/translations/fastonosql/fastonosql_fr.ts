@@ -975,25 +975,25 @@
     </message>
     <message>
         <location filename="../../gui/dialogs/info_server_dialog.cpp" line="185"/>
-        <source>&lt;b&gt;Common:&lt;/b&gt;&lt;br/&gt;Version: %1&lt;br/&gt;Links: %2&lt;br/&gt;Total calls: %3&lt;br/&gt;Dbsize: %4&lt;br/&gt;Binlogs: %5</source>
+        <source>&lt;b&gt;Common:&lt;/b&gt;&lt;br/&gt;Version: %1&lt;br/&gt;Links: %2&lt;br/&gt;Total calls: %3&lt;br/&gt;DB size: %4 bytes&lt;br/&gt;Binlogs: %5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../gui/dialogs/info_server_dialog.cpp" line="214"/>
+        <location filename="../../gui/dialogs/info_server_dialog.cpp" line="218"/>
+        <source>&lt;b&gt;Stats:&lt;/b&gt;&lt;br/&gt;DB path: %1&lt;br/&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../gui/dialogs/info_server_dialog.cpp" line="209"/>
+        <location filename="../../gui/dialogs/info_server_dialog.cpp" line="222"/>
+        <source>&lt;b&gt;Stats:&lt;/b&gt;&lt;br/&gt;DB path: %1&lt;br/&gt;DB size: %2 bytes&lt;br/&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../gui/dialogs/info_server_dialog.cpp" line="193"/>
         <location filename="../../gui/dialogs/info_server_dialog.cpp" line="201"/>
         <source>&lt;b&gt;Stats:&lt;/b&gt;&lt;br/&gt;Compactions level: %1&lt;br/&gt;File size mb: %2&lt;br/&gt;Time sec: %3&lt;br/&gt;Read mb: %4&lt;br/&gt;Write mb: %5</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../gui/dialogs/info_server_dialog.cpp" line="209"/>
-        <source>&lt;b&gt;Stats:&lt;/b&gt;&lt;br/&gt;File path: %1&lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../gui/dialogs/info_server_dialog.cpp" line="213"/>
-        <location filename="../../gui/dialogs/info_server_dialog.cpp" line="217"/>
-        <location filename="../../gui/dialogs/info_server_dialog.cpp" line="221"/>
-        <source>&lt;b&gt;Stats:&lt;/b&gt;&lt;br/&gt;Db path: %1&lt;br/&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1321,7 +1321,7 @@
 <context>
     <name>fastonosql::gui::InfoServerDialog</name>
     <message>
-        <location filename="../../gui/dialogs/info_server_dialog.cpp" line="400"/>
+        <location filename="../../gui/dialogs/info_server_dialog.cpp" line="402"/>
         <source>%1 info</source>
         <translation type="unfinished"></translation>
     </message>

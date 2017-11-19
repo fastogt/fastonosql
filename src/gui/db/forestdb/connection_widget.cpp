@@ -30,7 +30,8 @@ namespace fastonosql {
 namespace gui {
 namespace forestdb {
 
-ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionLocalWidgetDirectoryPath(trDBPath, trFilter, parent) {
+ConnectionWidget::ConnectionWidget(QWidget* parent)
+    : ConnectionLocalWidgetFilePath(trDBPath, trFilter, trCaption, parent) {
   QHBoxLayout* name_layout = new QHBoxLayout;
   db_name_label_ = new QLabel;
   name_layout->addWidget(db_name_label_);

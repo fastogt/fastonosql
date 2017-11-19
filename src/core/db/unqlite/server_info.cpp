@@ -18,6 +18,8 @@
 
 #include "core/db/unqlite/server_info.h"
 
+#include <common/convert2string.h>
+
 #include "core/db_traits.h"
 #include "core/value.h"
 
@@ -27,7 +29,9 @@ namespace fastonosql {
 namespace core {
 namespace {
 
-const std::vector<Field> g_unqlite_common_fields = {Field(UNQLITE_DB_PATH_LABEL, common::Value::TYPE_STRING)};
+const std::vector<Field> g_unqlite_common_fields = {
+    Field(UNQLITE_DB_FILE_PATH_LABEL, common::Value::TYPE_STRING),
+    Field(UNQLITE_DB_FILE_SIZE_LABEL, common::Value::TYPE_ULONG_INTEGER)};
 
 }  // namespace
 
@@ -44,7 +48,7 @@ std::vector<info_field_t> DBTraits<UNQLITE>::GetInfoFields() {
 
 namespace unqlite {
 
-ServerInfo::Stats::Stats() : db_path() {}
+ServerInfo::Stats::Stats() : db_path(), db_size() {}
 
 ServerInfo::Stats::Stats(const std::string& common_text) {
   size_t pos = 0;
@@ -55,8 +59,13 @@ ServerInfo::Stats::Stats(const std::string& common_text) {
     size_t delem = line.find_first_of(':');
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
-    if (field == UNQLITE_DB_PATH_LABEL) {
+    if (field == UNQLITE_DB_FILE_PATH_LABEL) {
       db_path = value;
+    } else if (field == UNQLITE_DB_FILE_SIZE_LABEL) {
+      off_t sz;
+      if (common::ConvertFromString(value, &sz)) {
+        db_size = sz;
+      }
     }
     start = pos + 2;
   }
@@ -66,6 +75,8 @@ common::Value* ServerInfo::Stats::GetValueByIndex(unsigned char index) const {
   switch (index) {
     case 0:
       return new common::StringValue(db_path);
+    case 1:
+      return new common::FundamentalValue(db_size);
     default:
       break;
   }
@@ -91,7 +102,8 @@ common::Value* ServerInfo::GetValueByIndexes(unsigned char property, unsigned ch
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo::Stats& value) {
-  return out << UNQLITE_DB_PATH_LABEL ":" << value.db_path << MARKER;
+  return out << UNQLITE_DB_FILE_PATH_LABEL ":" << value.db_path << MARKER << UNQLITE_DB_FILE_SIZE_LABEL ":"
+             << value.db_size << MARKER;
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {

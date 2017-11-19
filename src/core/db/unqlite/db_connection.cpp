@@ -23,6 +23,7 @@ extern "C" {
 }
 
 #include <common/file_system/string_path_utils.h>
+#include <common/file_system/file_system.h>
 
 #include "core/db/unqlite/command_translator.h"
 #include "core/db/unqlite/database_info.h"
@@ -265,20 +266,16 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
 
   DCHECK(*context == NULL);
   struct unqlite* lcontext = NULL;
-  std::string db_path = config.db_path;  // start point must be folder
+  std::string db_path = config.db_path;
   std::string folder = common::file_system::get_dir_path(db_path);
-  common::tribool is_dir = common::file_system::is_directory(folder);
-  if (is_dir == common::INDETERMINATE) {
-    return common::make_error(common::MemSPrintf("Invalid input path(%s)", folder));
+  bool is_dir_exist = common::file_system::is_directory_exist(folder);
+  if (!is_dir_exist) {
+    return common::make_error(common::MemSPrintf("Invalid input path: (%s), please create folder.", folder));
   }
 
-  if (is_dir != common::SUCCESS) {  // if not dir
-    return common::make_error(common::MemSPrintf("Invalid input path(%s)", db_path));
-  }
-
-  const char* dbname = db_path.c_str();
+  const char* db_path_ptr = db_path.c_str();
   int env_flags = config.env_flags;
-  int st = unqlite_open(&lcontext, dbname, env_flags);
+  int st = unqlite_open(&lcontext, db_path_ptr, env_flags);
   if (st != UNQLITE_OK) {
     std::string buff = common::MemSPrintf("Fail open database: %s!", unqlite_strerror(st));
     return common::make_error(buff);
@@ -317,6 +314,11 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
   ServerInfo::Stats linfo;
   auto conf = GetConfig();
   linfo.db_path = conf->db_path;
+  off_t sz;
+  common::ErrnoError errn = common::file_system::get_file_size_by_path(linfo.db_path, &sz);
+  if (!errn) {
+    linfo.db_size = sz;
+  }
   *statsout = linfo;
   return common::Error();
 }

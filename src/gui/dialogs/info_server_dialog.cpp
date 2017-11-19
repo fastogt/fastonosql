@@ -187,7 +187,7 @@ const QString trSsdbTextServerTemplate = QObject::tr(
     "Version: %1<br/>"
     "Links: %2<br/>"
     "Total calls: %3<br/>"
-    "Dbsize: %4<br/>"
+    "DB size: %4 bytes<br/>"
     "Binlogs: %5");
 
 const QString trLeveldbTextServerTemplate = QObject::tr(
@@ -208,19 +208,21 @@ const QString trRocksdbTextServerTemplate = QObject::tr(
 
 const QString trUnqliteTextServerTemplate = QObject::tr(
     "<b>Stats:</b><br/>"
-    "File path: %1<br/>");
+    "DB path: %1<br/>"
+    "DB size: %2 bytes<br/>");
 
 const QString trLmdbTextServerTemplate = QObject::tr(
     "<b>Stats:</b><br/>"
-    "Db path: %1<br/>");
+    "DB path: %1<br/>");
 
 const QString trUpscaledbTextServerTemplate = QObject::tr(
     "<b>Stats:</b><br/>"
-    "Db path: %1<br/>");
+    "DB path: %1<br/>");
 
 const QString trForestdbTextServerTemplate = QObject::tr(
     "<b>Stats:</b><br/>"
-    "Db path: %1<br/>");
+    "DB path: %1<br/>"
+    "DB size: %2 bytes<br/>");
 }  // namespace
 
 namespace fastonosql {
@@ -609,7 +611,7 @@ void InfoServerDialog::updateText(const core::unqlite::ServerInfo& serv) {
   QString qfile_name;
   common::ConvertFromString(stats.db_path, &qfile_name);
 
-  QString textServ = trUnqliteTextServerTemplate.arg(qfile_name);
+  QString textServ = trUnqliteTextServerTemplate.arg(qfile_name).arg(stats.db_size);
   serverTextInfo_->setText(textServ);
 }
 #endif
@@ -639,7 +641,7 @@ void InfoServerDialog::updateText(const core::forestdb::ServerInfo& serv) {
   QString qdb_path;
   common::ConvertFromString(stats.db_path, &qdb_path);
 
-  QString textServ = trForestdbTextServerTemplate.arg(qdb_path);
+  QString textServ = trForestdbTextServerTemplate.arg(qdb_path).arg(stats.db_size);
   serverTextInfo_->setText(textServ);
 }
 #endif

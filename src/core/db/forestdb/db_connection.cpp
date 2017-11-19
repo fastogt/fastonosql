@@ -20,6 +20,7 @@
 
 #include <libforestdb/forestdb.h>
 
+#include <common/file_system/file_system.h>
 #include <common/file_system/string_path_utils.h>
 #include <common/utils.h>  // for c_strornull
 
@@ -342,10 +343,17 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   DCHECK(*context == NULL);
   NativeConnection* lcontext = NULL;
   fdb_config fconfig = fdb_get_default_config();
+  std::string db_path = config.db_path;
+  std::string folder = common::file_system::get_dir_path(db_path);
+  bool is_dir_exist = common::file_system::is_directory_exist(folder);
+  if (!is_dir_exist) {
+    return common::make_error(common::MemSPrintf("Invalid input path: (%s), please create folder.", folder));
+  }
+
   // fconfig.flags = FDB_OPEN_FLAG_CREATE;
-  const char* db_path = config.db_path.empty() ? NULL : config.db_path.c_str();  // start point must be file
+  const char* db_path_ptr = db_path.c_str();  // start point must be file
   const char* db_name = config.db_name.empty() ? NULL : config.db_name.c_str();
-  fdb_status st = forestdb_open(&lcontext, db_path, db_name, &fconfig);
+  fdb_status st = forestdb_open(&lcontext, db_path_ptr, db_name, &fconfig);
   if (st != FDB_RESULT_SUCCESS) {
     std::string buff = common::MemSPrintf("Fail open database: %s", fdb_error_msg(st));
     return common::make_error(buff);
@@ -394,7 +402,11 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
   ServerInfo::Stats linfo;
   auto conf = GetConfig();
   linfo.db_path = conf->db_path;
-
+  off_t sz;
+  common::ErrnoError errn = common::file_system::get_file_size_by_path(linfo.db_path, &sz);
+  if (!errn) {
+    linfo.db_size = sz;
+  }
   *statsout = linfo;
   return common::Error();
 }

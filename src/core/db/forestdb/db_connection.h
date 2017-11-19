@@ -35,6 +35,7 @@ typedef fdb NativeConnection;
 common::Error CreateConnection(const Config& config, NativeConnection** context);
 common::Error TestConnection(const Config& config);
 
+// path is file
 class DBConnection : public core::internal::CDBConnection<NativeConnection, Config, FORESTDB> {
  public:
   typedef core::internal::CDBConnection<NativeConnection, Config, FORESTDB> base_class;

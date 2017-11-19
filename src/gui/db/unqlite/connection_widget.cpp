@@ -29,7 +29,7 @@ namespace gui {
 namespace unqlite {
 
 ConnectionWidget::ConnectionWidget(QWidget* parent)
-    : ConnectionLocalWidgetFilePath(trDBPath, trCaption, trFilter, parent) {
+    : ConnectionLocalWidgetFilePath(trDBPath, trFilter, trCaption, parent) {
   create_db_if_missing_ = new QCheckBox;
   VERIFY(connect(create_db_if_missing_, &QCheckBox::stateChanged, this, &ConnectionWidget::createDBStateChange));
   addWidget(create_db_if_missing_);

@@ -22,7 +22,8 @@
 
 #define FORESTDB_STATS_LABEL "# Stats"
 
-#define FORESTDB_FILE_NAME_LABEL "db_path"
+#define FORESTDB_DB_FILE_PATH_LABEL "db_path"
+#define FORESTDB_DB_FILE_SIZE_LABEL "db_size"
 
 namespace fastonosql {
 namespace core {
@@ -38,6 +39,7 @@ class ServerInfo : public IServerInfo {
     common::Value* GetValueByIndex(unsigned char index) const override;
 
     std::string db_path;
+    off_t db_size;
   } stats_;
 
   ServerInfo();

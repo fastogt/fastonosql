@@ -29,6 +29,8 @@ extern "C" {
 
 #include "core/logger.h"
 
+#define UNQLITE_DEFAULT_ENV_FLAGS UNQLITE_OPEN_CREATE | UNQLITE_OPEN_READWRITE
+
 namespace fastonosql {
 namespace core {
 namespace unqlite {
