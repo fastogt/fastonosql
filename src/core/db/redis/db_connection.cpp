@@ -1160,7 +1160,7 @@ const ConstantCommandsArray g_commands = {
                   0,
                   CommandInfo::Native,
                   &CommandsApi::Persist),
-    CommandHolder("PEXPIRE",
+    CommandHolder(REDIS_CHANGE_PTTL_COMMAND,
                   "<key> <milliseconds>",
                   "Set a key's time to live in milliseconds",
                   PROJECT_VERSION_GENERATE(2, 6, 0),
@@ -1239,7 +1239,7 @@ const ConstantCommandsArray g_commands = {
                   INFINITE_COMMAND_ARGS,
                   CommandInfo::Native,
                   &CommandsApi::Subscribe),
-    CommandHolder("PTTL",
+    CommandHolder(REDIS_GET_PTTL_COMMAND,
                   "<key>",
                   "Get the time to live for a key in milliseconds",
                   PROJECT_VERSION_GENERATE(2, 6, 0),
@@ -3736,7 +3736,6 @@ common::Error DBConnection::RenameImpl(const NKey& key, string_key_t new_key) {
 }
 
 common::Error DBConnection::SetTTLImpl(const NKey& key, ttl_t ttl) {
-  key_t key_str = key.GetKey();
   redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
   command_buffer_t ttl_cmd;
   common::Error err = tran->ChangeKeyTTLCommand(key, ttl, &ttl_cmd);
@@ -3785,7 +3784,7 @@ common::Error DBConnection::GetTTLImpl(const NKey& key, ttl_t* ttl) {
 common::Error DBConnection::ModuleLoadImpl(const ModuleInfo& module) {
   redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
   command_buffer_t module_load_cmd;
-  common::Error err = tran->ModuleLoadCommand(module, &module_load_cmd);
+  common::Error err = tran->ModuleLoad(module, &module_load_cmd);
   if (err) {
     return err;
   }
@@ -3803,7 +3802,7 @@ common::Error DBConnection::ModuleLoadImpl(const ModuleInfo& module) {
 common::Error DBConnection::ModuleUnLoadImpl(const ModuleInfo& module) {
   redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
   command_buffer_t module_unload_cmd;
-  common::Error err = tran->ModuleUnloadCommand(module, &module_unload_cmd);
+  common::Error err = tran->ModuleUnload(module, &module_unload_cmd);
   if (err) {
     return err;
   }
@@ -4786,6 +4785,80 @@ common::Error DBConnection::JsonGet(const NKey& key, NDbKValue* loaded_key) {
 
   if (client_) {
     client_->OnLoadedKey(*loaded_key);
+  }
+
+  return common::Error();
+}
+
+common::Error DBConnection::PExpire(const NKey& key, ttl_t ttl) {
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
+  command_buffer_t ttl_cmd;
+  err = tran->PExpire(key, ttl, &ttl_cmd);
+  if (err) {
+    return err;
+  }
+
+  redisReply* reply = NULL;
+  err = ExecRedisCommand(connection_.handle_, ttl_cmd, &reply);
+  if (err) {
+    return err;
+  }
+
+  if (reply->integer == 0) {
+    return GenerateError(REDIS_CHANGE_PTTL_COMMAND, "key does not exist or the timeout could not be set.");
+  }
+
+  if (client_) {
+    client_->OnChangedKeyTTL(key, ttl);
+  }
+  freeReplyObject(reply);
+  return common::Error();
+}
+
+common::Error DBConnection::PTTL(const NKey& key, pttl_t* ttl) {
+  if (!ttl) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
+  command_buffer_t pttl_cmd;
+  err = tran->PTTL(key, &pttl_cmd);
+  if (err) {
+    return err;
+  }
+
+  redisReply* reply = NULL;
+  err = ExecRedisCommand(connection_.handle_, pttl_cmd, &reply);
+  if (err) {
+    return err;
+  }
+
+  if (reply->type != REDIS_REPLY_INTEGER) {
+    freeReplyObject(reply);
+    return GenerateError(REDIS_GET_PTTL_COMMAND, "command internal error");
+  }
+
+  *ttl = reply->integer;
+  ttl_t ttl_sec = *ttl;
+  if (ttl_sec == NO_TTL || ttl_sec == EXPIRED_TTL) {
+  } else {
+    ttl_sec = ttl_sec / 1000;
+  }
+  freeReplyObject(reply);
+
+  if (client_) {
+    client_->OnLoadedKeyTTL(key, ttl_sec);
   }
 
   return common::Error();

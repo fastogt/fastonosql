@@ -599,7 +599,26 @@ common::Error CommandsApi::Object(internal::CommandHandler* handler, commands_ar
 
 common::Error CommandsApi::Pexpire(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
-  return red->CommonExec(ExpandCommand({"PEXPIRE"}, argv), out);
+  key_t raw_key(argv[0]);
+  NKey key(raw_key);
+
+  pttl_t ttl;
+  if (!common::ConvertFromString(argv[1], &ttl)) {
+    return common::make_error_inval();
+  }
+
+  common::Error err = red->PExpire(key, ttl);
+  if (err) {
+    common::FundamentalValue* val = common::Value::CreateUIntegerValue(0);
+    FastoObject* child = new FastoObject(out, val, red->GetDelimiter());
+    out->AddChildren(child);
+    return err;
+  }
+
+  common::FundamentalValue* val = common::Value::CreateUIntegerValue(1);
+  FastoObject* child = new FastoObject(out, val, red->GetDelimiter());
+  out->AddChildren(child);
+  return common::Error();
 }
 
 common::Error CommandsApi::PexpireAt(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
@@ -634,7 +653,19 @@ common::Error CommandsApi::PsetEx(internal::CommandHandler* handler, commands_ar
 
 common::Error CommandsApi::Pttl(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
-  return red->CommonExec(ExpandCommand({"PTTL"}, argv), out);
+  key_t raw_key(argv[0]);
+  NKey key(raw_key);
+
+  pttl_t ttl;
+  common::Error err = red->PTTL(key, &ttl);
+  if (err) {
+    return err;
+  }
+
+  common::FundamentalValue* val = common::Value::CreateLongLongIntegerValue(ttl);
+  FastoObject* child = new FastoObject(out, val, red->GetDelimiter());
+  out->AddChildren(child);
+  return common::Error();
 }
 
 common::Error CommandsApi::Publish(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {

@@ -343,7 +343,7 @@ common::Error ApiTraits<CDBConnection>::GetTTL(internal::CommandHandler* handler
     return err;
   }
 
-  common::FundamentalValue* val = common::Value::CreateIntegerValue(ttl);
+  common::FundamentalValue* val = common::Value::CreateLongLongIntegerValue(ttl);
   FastoObject* child = new FastoObject(out, val, cdb->GetDelimiter());
   out->AddChildren(child);
   return common::Error();

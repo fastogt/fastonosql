@@ -103,6 +103,10 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
   common::Error JsonSet(const NDbKValue& key, NDbKValue* added_key) WARN_UNUSED_RESULT;
   common::Error JsonGet(const NKey& key, NDbKValue* loaded_key) WARN_UNUSED_RESULT;
 
+  common::Error PExpire(const NKey& key,
+                        ttl_t ttl) WARN_UNUSED_RESULT;  // PEXPIRE works differently than in redis protocol
+  common::Error PTTL(const NKey& key, pttl_t* ttl) WARN_UNUSED_RESULT;
+
   bool IsInternalCommand(const std::string& command_name);
 
  private:

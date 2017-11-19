@@ -5,6 +5,8 @@
 - [Redis] Full support JSON.GET/JSON.SET commands
 - [Redis] Basic support RediSearch, redis-graph types 
 - [Redis] MGET command UI handling
+- [Redis] PEXPIRE command UI handling
+- [Redis] PTTL command UI handling
 - [ForestDB] db size stat
 - [Unqlite] db size stat
 

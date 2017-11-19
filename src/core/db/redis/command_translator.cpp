@@ -232,7 +232,7 @@ common::Error CommandTranslator::IncrByFloat(const NKey& key, double inc, comman
   return common::Error();
 }
 
-common::Error CommandTranslator::ModuleLoadCommand(const ModuleInfo& module, command_buffer_t* cmdstring) {
+common::Error CommandTranslator::ModuleLoad(const ModuleInfo& module, command_buffer_t* cmdstring) {
   if (!cmdstring) {
     return common::make_error_inval();
   }
@@ -243,13 +243,34 @@ common::Error CommandTranslator::ModuleLoadCommand(const ModuleInfo& module, com
   return common::Error();
 }
 
-common::Error CommandTranslator::ModuleUnloadCommand(const ModuleInfo& module, command_buffer_t* cmdstring) {
+common::Error CommandTranslator::ModuleUnload(const ModuleInfo& module, command_buffer_t* cmdstring) {
   if (!cmdstring) {
     return common::make_error_inval();
   }
 
   command_buffer_writer_t wr;
   wr << REDIS_MODULE_UNLOAD " " << module.name;
+  *cmdstring = wr.str();
+  return common::Error();
+}
+
+common::Error CommandTranslator::PExpire(const NKey& key, ttl_t ttl, command_buffer_t* cmdstring) const {
+  key_t key_str = key.GetKey();
+  command_buffer_writer_t wr;
+  if (ttl == NO_TTL) {
+    wr << REDIS_PERSIST_KEY_COMMAND " " << key_str.GetKeyForCommandLine();
+  } else {
+    wr << REDIS_CHANGE_PTTL_COMMAND " " << key_str.GetKeyForCommandLine() << " " << ttl;
+  }
+
+  *cmdstring = wr.str();
+  return common::Error();
+}
+
+common::Error CommandTranslator::PTTL(const NKey& key, command_buffer_t* cmdstring) const {
+  key_t key_str = key.GetKey();
+  command_buffer_writer_t wr;
+  wr << REDIS_GET_PTTL_COMMAND " " << key_str.GetKeyForCommandLine();
   *cmdstring = wr.str();
   return common::Error();
 }
