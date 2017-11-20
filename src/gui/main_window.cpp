@@ -271,7 +271,7 @@ void MainWindow::changeEvent(QEvent* ev) {
 
 void MainWindow::showEvent(QShowEvent* ev) {
   QMainWindow::showEvent(ev);
-  std::call_once(statistic_flag, sendStatisticAndCheckVersion, this);
+  std::call_once(statistic_flag, &MainWindow::sendStatisticAndCheckVersion, this);
 }
 
 void MainWindow::sendStatisticAndCheckVersion() {

@@ -405,7 +405,7 @@ const ConstantCommandsArray& CDBConnection<lmdb::NativeConnection, lmdb::Config,
 namespace lmdb {
 
 common::Error CreateConnection(const Config& config, NativeConnection** context) {
-  if (!context || config.db_name.empty()) {  // only named dbs
+  if (!context || config.db_name.empty() || config.db_path.empty()) {  // only named dbs
     return common::make_error_inval();
   }
 
@@ -415,14 +415,17 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   std::string folder = common::file_system::get_dir_path(db_path);
   bool is_dir_exist = common::file_system::is_directory_exist(folder);
   if (!is_dir_exist) {
-    return common::make_error(common::MemSPrintf("Invalid input path: (%s), please create folder.", folder));
+    return common::make_error(
+        common::MemSPrintf("Invalid input path: (%s), There is already a directory as the file name you specified, "
+                           "specify a different name.",
+                           folder));
   }
 
   bool is_single_file = config.IsSingleFileDB();
   common::tribool is_dir = common::file_system::is_directory(db_path);
   if (is_dir == common::SUCCESS) {
     if (is_single_file) {  // if dir but want single file
-      return common::make_error(common::MemSPrintf("Invalid input path: (%s), please create folder.", db_path));
+      return common::make_error(common::MemSPrintf("Invalid input path: (%s), please remove folder.", db_path));
     }
   } else if (is_dir == common::FAIL) {  // if file
     if (!is_single_file) {              // if file but want dir
@@ -440,8 +443,8 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   const char* db_path_ptr = db_path.c_str();
   int env_flags = config.env_flags;
   unsigned int max_dbs = config.max_dbs;
-  const char* db_name = config.db_name.c_str();
-  int st = lmdb_open(&lcontext, db_path_ptr, db_name, env_flags, max_dbs);
+  const char* db_name_ptr = config.db_name.c_str();
+  int st = lmdb_open(&lcontext, db_path_ptr, db_name_ptr, env_flags, max_dbs);
   if (st != LMDB_OK) {
     std::string buff = common::MemSPrintf("Fail open database: %s", mdb_strerror(st));
     return common::make_error(buff);

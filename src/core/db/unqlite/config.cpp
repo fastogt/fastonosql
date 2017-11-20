@@ -29,7 +29,7 @@ extern "C" {
 
 #include "core/logger.h"
 
-#define UNQLITE_DEFAULT_ENV_FLAGS UNQLITE_OPEN_CREATE | UNQLITE_OPEN_READWRITE
+#define UNQLITE_DEFAULT_ENV_FLAGS (UNQLITE_OPEN_CREATE | UNQLITE_OPEN_READWRITE)
 
 namespace fastonosql {
 namespace core {
@@ -120,12 +120,8 @@ namespace common {
 
 std::string ConvertToString(const fastonosql::core::unqlite::Config& conf) {
   fastonosql::core::config_args_t argv = conf.Args();
-
-  if (conf.env_flags != UNQLITE_DEFAULT_ENV_FLAGS) {
-    argv.push_back("-e");
-    argv.push_back(common::ConvertToString(conf.env_flags));
-  }
-
+  argv.push_back("-e");
+  argv.push_back(common::ConvertToString(conf.env_flags));
   return fastonosql::core::ConvertToStringConfigArgs(argv);
 }
 

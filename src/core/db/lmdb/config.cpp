@@ -118,11 +118,8 @@ namespace common {
 
 std::string ConvertToString(const fastonosql::core::lmdb::Config& conf) {
   fastonosql::core::config_args_t argv = conf.Args();
-
-  if (conf.env_flags != LMDB_DEFAULT_ENV_FLAGS) {
-    argv.push_back("-e");
-    argv.push_back(common::ConvertToString(conf.env_flags));
-  }
+  argv.push_back("-e");
+  argv.push_back(common::ConvertToString(conf.env_flags));
 
   if (!conf.db_name.empty()) {
     argv.push_back("-n");
