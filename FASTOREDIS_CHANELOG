@@ -7,6 +7,8 @@
 - MGET command UI handling
 - PEXPIRE command UI handling
 - PTTL command UI handling
+- MSET command UI handling
+- MSETNX command UI handling
 
 1.9.1 / November 4, 2017
 [Alexandr Topilski]

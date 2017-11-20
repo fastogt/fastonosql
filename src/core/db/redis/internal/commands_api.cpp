@@ -578,13 +578,51 @@ common::Error CommandsApi::Move(internal::CommandHandler* handler, commands_args
 }
 
 common::Error CommandsApi::Mset(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
-  DBConnection* red = static_cast<DBConnection*>(handler);
-  return red->CommonExec(ExpandCommand({"MSET"}, argv), out);
+  std::vector<NDbKValue> keys;
+  for (size_t i = 0; i < argv.size(); i += 2) {
+    key_t key_str(argv[i]);
+    std::string val_str = argv[i + 1];
+    NKey key(key_str);
+    NValue val(common::Value::CreateStringValue(val_str));
+    NDbKValue kv(key, val);
+    keys.push_back(kv);
+  }
+
+  DBConnection* redis = static_cast<DBConnection*>(handler);
+  std::vector<NDbKValue> result;
+  common::Error err = redis->Mset(keys, &result);
+  if (err) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::CreateStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, redis->GetDelimiter());
+  out->AddChildren(child);
+  return common::Error();
 }
 
 common::Error CommandsApi::MsetNX(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
-  DBConnection* red = static_cast<DBConnection*>(handler);
-  return red->CommonExec(ExpandCommand({"MSETNX"}, argv), out);
+  std::vector<NDbKValue> keys;
+  for (size_t i = 0; i < argv.size(); i += 2) {
+    key_t key_str(argv[i]);
+    std::string val_str = argv[i + 1];
+    NKey key(key_str);
+    NValue val(common::Value::CreateStringValue(val_str));
+    NDbKValue kv(key, val);
+    keys.push_back(kv);
+  }
+
+  DBConnection* redis = static_cast<DBConnection*>(handler);
+  long long result = 0;
+  common::Error err = redis->MsetNX(keys, &result);
+  if (err) {
+    return err;
+  }
+
+  common::FundamentalValue* val = common::Value::CreateLongLongIntegerValue(result);
+  FastoObject* child = new FastoObject(out, val, redis->GetDelimiter());
+  out->AddChildren(child);
+  return common::Error();
 }
 
 common::Error CommandsApi::Multi(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
@@ -1346,7 +1384,7 @@ common::Error CommandsApi::ExpireRedis(internal::CommandHandler* handler, comman
     common::FundamentalValue* val = common::Value::CreateUIntegerValue(0);
     FastoObject* child = new FastoObject(out, val, red->GetDelimiter());
     out->AddChildren(child);
-    return err;
+    return common::Error();  // FIXME if error some other than key not exist
   }
 
   common::FundamentalValue* val = common::Value::CreateUIntegerValue(1);
@@ -1371,6 +1409,25 @@ common::Error CommandsApi::Sync(internal::CommandHandler* handler, commands_args
   UNUSED(argv);
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->SlaveMode(out);
+}
+
+common::Error CommandsApi::GetRedis(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  key_t key_str(argv[0]);
+  NKey key(key_str);
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  NDbKValue value;
+  common::Error err = red->Get(key, &value);
+  if (err) {
+    common::Value* val = common::Value::CreateNullValue();
+    FastoObject* child = new FastoObject(out, val, red->GetDelimiter());
+    out->AddChildren(child);
+    return common::Error();  // FIXME if error some other than key not exist
+  }
+
+  common::Value* val = value.GetValue()->DeepCopy();
+  FastoObject* child = new FastoObject(out, val, red->GetDelimiter());
+  out->AddChildren(child);
+  return common::Error();
 }
 
 // extend comands

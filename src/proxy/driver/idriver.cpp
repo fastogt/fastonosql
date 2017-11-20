@@ -617,6 +617,11 @@ void IDriver::OnAddedKey(const core::NDbKValue& key) {
 }
 
 void IDriver::OnLoadedKey(const core::NDbKValue& key) {
+  core::NValue val = key.GetValue();
+  if (val->GetType() == common::Value::TYPE_NULL) {
+    return;
+  }
+
   emit KeyLoaded(key);
 }
 

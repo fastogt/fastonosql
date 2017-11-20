@@ -7,6 +7,8 @@
 - [Redis] MGET command UI handling
 - [Redis] PEXPIRE command UI handling
 - [Redis] PTTL command UI handling
+- [Redis] MSET command UI handling
+- [Redis] MSETNX command UI handling
 - [ForestDB] db size stat
 - [Unqlite] db size stat
 

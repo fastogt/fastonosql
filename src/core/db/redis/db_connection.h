@@ -86,6 +86,9 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
   common::Error Zrange(const NKey& key, int start, int stop, bool withscores, NDbKValue* loaded_key);
 
   common::Error Mget(const std::vector<NKey>& keys, std::vector<NDbKValue>* loaded_keys);
+  common::Error Mset(const std::vector<NDbKValue>& keys, std::vector<NDbKValue>* added_key);
+  common::Error MsetNX(const std::vector<NDbKValue>& keys, long long* result);
+
   common::Error Hmset(const NKey& key, NValue hash);
   common::Error Hgetall(const NKey& key, NDbKValue* loaded_key);
 

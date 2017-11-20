@@ -755,7 +755,7 @@ const ConstantCommandsArray g_commands = {
                   1,
                   0,
                   CommandInfo::Native,
-                  &CommandsApi::Get),
+                  &CommandsApi::GetRedis),
     CommandHolder("GETBIT",
                   "<key> <offset>",
                   "Returns the bit value at offset in the "
@@ -4439,6 +4439,76 @@ common::Error DBConnection::Mget(const std::vector<NKey>& keys, std::vector<NDbK
   }
 
   freeReplyObject(reply);
+  return common::Error();
+}
+
+common::Error DBConnection::Mset(const std::vector<NDbKValue>& keys, std::vector<NDbKValue>* added_key) {
+  if (!added_key) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
+  command_buffer_t mset_cmd;
+  err = tran->Mset(keys, &mset_cmd);
+  if (err) {
+    return err;
+  }
+
+  redisReply* reply = NULL;
+  err = ExecRedisCommand(connection_.handle_, mset_cmd, &reply);
+  if (err) {
+    return err;
+  }
+
+  if (client_) {
+    for (size_t i = 0; i < keys.size(); ++i) {
+      client_->OnAddedKey(keys[i]);
+    }
+  }
+
+  *added_key = keys;
+  freeReplyObject(reply);
+  return common::Error();
+}
+
+common::Error DBConnection::MsetNX(const std::vector<NDbKValue>& keys, long long* result) {
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
+  command_buffer_t msetnx_cmd;
+  err = tran->MsetNX(keys, &msetnx_cmd);
+  if (err) {
+    return err;
+  }
+
+  redisReply* reply = NULL;
+  err = ExecRedisCommand(connection_.handle_, msetnx_cmd, &reply);
+  if (err) {
+    return err;
+  }
+
+  if (reply->type == REDIS_REPLY_INTEGER) {
+    if (client_ && reply->integer) {
+      for (size_t i = 0; i < keys.size(); ++i) {
+        client_->OnAddedKey(keys[i]);
+      }
+    }
+
+    *result = reply->integer;
+    freeReplyObject(reply);
+    return common::Error();
+  }
+
+  DNOTREACHED();
   return common::Error();
 }
 

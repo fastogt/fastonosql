@@ -240,6 +240,8 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
   static common::Error Subscribe(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error Sync(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 
+  static common::Error GetRedis(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+
   // extend commands
   static common::Error Latency(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error PFDebug(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
