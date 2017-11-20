@@ -91,11 +91,11 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
     bool is_file_path = config.IsSingleFileDB();
     QString db_path;
     common::ConvertFromString(lmdb->GetDBPath(), &db_path);
+    file_path_widget_->setPath(db_path);
+    directory_path_widget_->setPath(db_path);
     if (is_file_path) {
-      file_path_widget_->setPath(db_path);
       file_path_selection_->setChecked(true);
     } else {
-      directory_path_widget_->setPath(db_path);
       directory_path_selection_->setChecked(true);
     }
 

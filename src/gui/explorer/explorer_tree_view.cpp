@@ -61,10 +61,11 @@ const QString trRealyRemoveAllKeysTemplate_1S = QObject::tr("Really remove all k
 const QString trLoadContentTemplate_1S = QObject::tr("Load %1 content");
 const QString trSetMaxConnectionOnServerTemplate_1S = QObject::tr("Set max connection on %1 server");
 const QString trSetTTLOnKeyTemplate_1S = QObject::tr("Set ttl for %1 key");
-const QString trTTLValue = QObject::tr("New TTL:");
+const QString trNewTTLSeconds = QObject::tr("New TTL in seconds:");
 const QString trSetIntervalOnKeyTemplate_1S = QObject::tr("Set watch interval for %1 key");
 const QString trIntervalValue = QObject::tr("Interval msec:");
 const QString trSetTTL = QObject::tr("Set TTL");
+const QString trRemoveTTL = QObject::tr("Remove TTL");
 const QString trRenameKey = QObject::tr("Rename key");
 const QString trRenameKeyLabel = QObject::tr("New key name:");
 const QString trCreateDatabase_1S = QObject::tr("Create database on %1 server");
@@ -383,12 +384,17 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
     bool is_connected = server->IsConnected();
     menu.addAction(getValueAction);
     getValueAction->setEnabled(is_connected);
-    bool is_TTL_supported = server->IsSupportTTLKeys();
-    if (is_TTL_supported) {
+    bool is_ttl_supported = server->IsSupportTTLKeys();
+    if (is_ttl_supported) {
       QAction* setTTLKeyAction = new QAction(trSetTTL, this);
       setTTLKeyAction->setEnabled(is_connected);
       VERIFY(connect(setTTLKeyAction, &QAction::triggered, this, &ExplorerTreeView::setTTL));
       menu.addAction(setTTLKeyAction);
+
+      QAction* removeTTLKeyAction = new QAction(trRemoveTTL, this);
+      removeTTLKeyAction->setEnabled(is_connected);
+      VERIFY(connect(removeTTLKeyAction, &QAction::triggered, this, &ExplorerTreeView::removeTTL));
+      menu.addAction(removeTTLKeyAction);
     }
     menu.addAction(renameKeyAction);
     renameKeyAction->setEnabled(is_connected);
@@ -462,7 +468,7 @@ void ExplorerTreeView::createDb() {
     }
     bool ok;
     QString name = QInputDialog::getText(this, trCreateDatabase_1S.arg(node->name()), translations::trName + ":",
-                                         QLineEdit::Normal, QString(), &ok);
+                                         QLineEdit::Normal, QString(), &ok, Qt::WindowCloseButtonHint);
     if (ok && !name.isEmpty()) {
       node->createDatabase(name);
     }
@@ -868,7 +874,7 @@ void ExplorerTreeView::watchKey() {
     bool ok;
     QString name = node->name();
     int interval = QInputDialog::getInt(this, trSetIntervalOnKeyTemplate_1S.arg(name), trIntervalValue, 1000, 0,
-                                        INT32_MAX, 1000, &ok);
+                                        INT32_MAX, 1000, &ok, Qt::WindowCloseButtonHint);
     if (ok) {
       node->watchKey(interval);
     }
@@ -887,11 +893,24 @@ void ExplorerTreeView::setTTL() {
     bool ok;
     QString name = node->name();
     core::NKey key = node->key();
-    int ttl = QInputDialog::getInt(this, trSetTTLOnKeyTemplate_1S.arg(name), trTTLValue, key.GetTTL(), -1, INT32_MAX,
-                                   100, &ok);
+    int ttl = QInputDialog::getInt(this, trSetTTLOnKeyTemplate_1S.arg(name), trNewTTLSeconds, key.GetTTL(), NO_TTL,
+                                   INT32_MAX, 100, &ok, Qt::WindowCloseButtonHint);
     if (ok) {
       node->setTTL(ttl);
     }
+  }
+}
+
+void ExplorerTreeView::removeTTL() {
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerKeyItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerKeyItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
+
+    node->setTTL(NO_TTL);
   }
 }
 

@@ -411,20 +411,37 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
 
   DCHECK(*context == NULL);
   struct lmdb* lcontext = NULL;
-  std::string path = config.db_path;
-  bool is_single_file = config.IsSingleFileDB();
-  common::tribool is_dir = common::file_system::is_directory(path);
-  if (is_dir == common::SUCCESS && is_single_file) {  // if dir but want single file
-    return common::make_error(common::MemSPrintf("Invalid input path(%s)", path));
-  } else if (is_dir == common::FAIL && !is_single_file) {  // if file but want dir
-    return common::make_error(common::MemSPrintf("Invalid input path(%s)", path));
+  std::string db_path = config.db_path;
+  std::string folder = common::file_system::get_dir_path(db_path);
+  bool is_dir_exist = common::file_system::is_directory_exist(folder);
+  if (!is_dir_exist) {
+    return common::make_error(common::MemSPrintf("Invalid input path: (%s), please create folder.", folder));
   }
 
-  const char* db_path = path.c_str();
+  bool is_single_file = config.IsSingleFileDB();
+  common::tribool is_dir = common::file_system::is_directory(db_path);
+  if (is_dir == common::SUCCESS) {
+    if (is_single_file) {  // if dir but want single file
+      return common::make_error(common::MemSPrintf("Invalid input path: (%s), please create folder.", db_path));
+    }
+  } else if (is_dir == common::FAIL) {  // if file
+    if (!is_single_file) {              // if file but want dir
+      return common::make_error(
+          common::MemSPrintf("Invalid input path: (%s), There is already a file as the folder name you specified, "
+                             "specify a different name.",
+                             db_path));
+    }
+  } else {                  // if nothing created
+    if (!is_single_file) {  // if file but want dir
+      return common::make_error(common::MemSPrintf("Invalid input path: (%s), please create folder.", db_path));
+    }
+  }
+
+  const char* db_path_ptr = db_path.c_str();
   int env_flags = config.env_flags;
   unsigned int max_dbs = config.max_dbs;
   const char* db_name = config.db_name.c_str();
-  int st = lmdb_open(&lcontext, db_path, db_name, env_flags, max_dbs);
+  int st = lmdb_open(&lcontext, db_path_ptr, db_name, env_flags, max_dbs);
   if (st != LMDB_OK) {
     std::string buff = common::MemSPrintf("Fail open database: %s", mdb_strerror(st));
     return common::make_error(buff);
@@ -432,7 +449,7 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
 
   *context = lcontext;
   return common::Error();
-}
+}  // namespace lmdb
 
 common::Error TestConnection(const Config& config) {
   NativeConnection* ldb = nullptr;

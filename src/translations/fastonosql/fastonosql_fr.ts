@@ -853,6 +853,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../../gui/explorer/explorer_tree_view.cpp" line="64"/>
+        <source>New TTL in seconds:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../gui/explorer/explorer_tree_view.cpp" line="56"/>
         <source>View keys in %1 database</source>
         <translation type="unfinished"></translation>
@@ -865,11 +870,6 @@
     <message>
         <location filename="../../gui/explorer/explorer_tree_view.cpp" line="63"/>
         <source>Set ttl for %1 key</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../gui/explorer/explorer_tree_view.cpp" line="64"/>
-        <source>New TTL:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -890,16 +890,21 @@
     </message>
     <message>
         <location filename="../../gui/explorer/explorer_tree_view.cpp" line="68"/>
-        <source>Rename key</source>
+        <source>Remove TTL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../gui/explorer/explorer_tree_view.cpp" line="69"/>
-        <source>New key name:</source>
+        <source>Rename key</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../gui/explorer/explorer_tree_view.cpp" line="70"/>
+        <source>New key name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../gui/explorer/explorer_tree_view.cpp" line="71"/>
         <source>Create database on %1 server</source>
         <translation type="unfinished"></translation>
     </message>

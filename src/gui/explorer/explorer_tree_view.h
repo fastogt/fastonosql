@@ -90,6 +90,7 @@ class ExplorerTreeView : public QTreeView {
   void deleteKey();
   void watchKey();
   void setTTL();
+  void removeTTL();
 
   void startLoadDatabases(const proxy::events_info::LoadDatabasesInfoRequest& req);
   void finishLoadDatabases(const proxy::events_info::LoadDatabasesInfoResponce& res);
