@@ -22,8 +22,8 @@ extern "C" {
 #include <unqlite.h>
 }
 
-#include <common/file_system/string_path_utils.h>
 #include <common/file_system/file_system.h>
+#include <common/file_system/string_path_utils.h>
 
 #include "core/db/unqlite/command_translator.h"
 #include "core/db/unqlite/database_info.h"
