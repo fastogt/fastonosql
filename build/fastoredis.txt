@@ -10,9 +10,8 @@
 -DBRANDING_PROJECT_BUILD_TYPE_VERSION:STRING=release
 -DBRANDING_PROJECT_NAME:STRING=FastoRedis
 -DBRANDING_PROJECT_VERSION:STRING=1.11.0.0
--DBRANDING_PROJECT_DOMAIN:STRING=http://www.fastoredis.com
--DBRANDING_PROJECT_DOWNLOAD_LINK:STRING=http://www.fastoredis.com/download.html
--DBRANDING_PROJECT_DOWNLOAD_DIRECT_LINK:STRING=http://www.fastoredis.com/files
+-DBRANDING_PROJECT_DOMAIN:STRING=https://www.fastoredis.com
+-DBRANDING_PROJECT_DOWNLOAD_LINK:STRING=https://www.fastoredis.com/login
 -DBRANDING_PROJECT_COMPANYNAME_DOMAIN:STRING=http://www.fastogt.com
 -DBRANDING_PROJECT_GITHUB_FORK:STRING=https://www.github.com/fastogt/fastoredis
 -DBRANDING_PROJECT_GITHUB_ISSUES:STRING=https://www.github.com/fastogt/fastoredis/issues

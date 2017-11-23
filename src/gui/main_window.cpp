@@ -553,10 +553,10 @@ void MainWindow::versionAvailible(bool succesResult, const QString& version) {
 
   std::string sver = common::ConvertToString(version);
   bool isn = IsNeededUpdate(sver);
-  if (isn) {
+  if (!isn) {
     QMessageBox::information(this, translations::trCheckVersion,
                              QObject::tr("<h4>A new version(%1) of " PROJECT_NAME_TITLE " is availible!</h4>"
-                                         "You can download it  <a href=\"" PROJECT_DOWNLOAD_LINK "\">here</a>")
+                                         "You can download it in your <a href=\"" PROJECT_DOWNLOAD_LINK "\">profile page</a>")
                                  .arg(version));
   }
 
