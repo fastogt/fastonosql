@@ -33,73 +33,73 @@ Qt::ControlModifier) &&
 }*/
 
 // global variables
-const common::qt::gui::FastoQKeySequence openKey = common::qt::gui::FastoQKeySequence(QKeySequence::Open);
-const common::qt::gui::FastoQKeySequence saveKey = common::qt::gui::FastoQKeySequence(QKeySequence::Save);
-const common::qt::gui::FastoQKeySequence saveAsKey = common::qt::gui::FastoQKeySequence(QKeySequence::SaveAs);
+const common::qt::gui::FastoQKeySequence g_open_key = common::qt::gui::FastoQKeySequence(QKeySequence::Open);
+const common::qt::gui::FastoQKeySequence g_save_key = common::qt::gui::FastoQKeySequence(QKeySequence::Save);
+const common::qt::gui::FastoQKeySequence g_save_as_key = common::qt::gui::FastoQKeySequence(QKeySequence::SaveAs);
 
-const common::qt::gui::FastoQKeySequence closeKey = common::qt::gui::FastoQKeySequence(QKeySequence::Close);
-const common::qt::gui::FastoQKeySequence newTabKey = common::qt::gui::FastoQKeySequence(QKeySequence::AddTab);
-const common::qt::gui::FastoQKeySequence nextTabKey = common::qt::gui::FastoQKeySequence(QKeySequence::NextChild);
-const common::qt::gui::FastoQKeySequence prevTabKey = common::qt::gui::FastoQKeySequence(QKeySequence::PreviousChild);
-const common::qt::gui::FastoQKeySequence refreshKey = common::qt::gui::FastoQKeySequence(QKeySequence::Refresh);
-const common::qt::gui::FastoQKeySequence executeKey =
+const common::qt::gui::FastoQKeySequence g_close_key = common::qt::gui::FastoQKeySequence(QKeySequence::Close);
+const common::qt::gui::FastoQKeySequence g_new_tab_key = common::qt::gui::FastoQKeySequence(QKeySequence::AddTab);
+const common::qt::gui::FastoQKeySequence g_next_tab_key = common::qt::gui::FastoQKeySequence(QKeySequence::NextChild);
+const common::qt::gui::FastoQKeySequence g_prev_tab_key = common::qt::gui::FastoQKeySequence(QKeySequence::PreviousChild);
+const common::qt::gui::FastoQKeySequence g_refresh_key = common::qt::gui::FastoQKeySequence(QKeySequence::Refresh);
+const common::qt::gui::FastoQKeySequence g_execute_key =
     common::qt::gui::FastoQKeySequence(Qt::ControlModifier, Qt::Key_Return);
 
 #ifdef OS_MAC
-const common::qt::gui::FastoQKeySequence fullScreenKey = common::qt::gui::FastoQKeySequence(QKeySequence::FullScreen);
-const common::qt::gui::FastoQKeySequence quitKey = common::qt::gui::FastoQKeySequence(QKeySequence::Quit);
+const common::qt::gui::FastoQKeySequence g_full_screen_key = common::qt::gui::FastoQKeySequence(QKeySequence::FullScreen);
+const common::qt::gui::FastoQKeySequence g_quit_key = common::qt::gui::FastoQKeySequence(QKeySequence::Quit);
 #else
-const common::qt::gui::FastoQKeySequence fullScreenKey =
+const common::qt::gui::FastoQKeySequence g_full_screen_key =
     common::qt::gui::FastoQKeySequence(Qt::ControlModifier | Qt::ShiftModifier, Qt::Key_F11);
-const common::qt::gui::FastoQKeySequence quitKey = common::qt::gui::FastoQKeySequence(Qt::ControlModifier, Qt::Key_Q);
+const common::qt::gui::FastoQKeySequence g_quit_key = common::qt::gui::FastoQKeySequence(Qt::ControlModifier, Qt::Key_Q);
 #endif
 
-bool isOpenShortcut(QKeyEvent* keyEvent) {
-  return openKey == keyEvent;
+bool IsOpenShortcut(QKeyEvent* keyEvent) {
+  return g_open_key == keyEvent;
 }
 
-bool isSaveShortcut(QKeyEvent* keyEvent) {
-  return saveKey == keyEvent;
+bool IsSaveShortcut(QKeyEvent* keyEvent) {
+  return g_save_key == keyEvent;
 }
 
-bool isSaveAsShortcut(QKeyEvent* keyEvent) {
-  return saveAsKey == keyEvent;
+bool IsSaveAsShortcut(QKeyEvent* keyEvent) {
+  return g_save_as_key == keyEvent;
 }
 
-bool isQuitShortcut(QKeyEvent* keyEvent) {
-  return quitKey == keyEvent;
+bool IsQuitShortcut(QKeyEvent* keyEvent) {
+  return g_quit_key == keyEvent;
 }
 
-bool isCloseShortcut(QKeyEvent* keyEvent) {
-  return closeKey == keyEvent;
+bool IsCloseShortcut(QKeyEvent* keyEvent) {
+  return g_close_key == keyEvent;
 }
 
 bool isSetFocusOnQueryLineShortcut(QKeyEvent* keyEvent) {
   return keyEvent->key() == Qt::Key_F6;
 }
 
-bool isNewTabShortcut(QKeyEvent* keyEvent) {
-  return newTabKey == keyEvent;
+bool IsNewTabShortcut(QKeyEvent* keyEvent) {
+  return g_new_tab_key == keyEvent;
 }
 
-bool isNextTabShortcut(QKeyEvent* keyEvent) {
-  return nextTabKey == keyEvent;
+bool IsNextTabShortcut(QKeyEvent* keyEvent) {
+  return g_next_tab_key == keyEvent;
 }
 
-bool isPreviousTabShortcut(QKeyEvent* keyEvent) {
-  return prevTabKey == keyEvent;
+bool IsPreviousTabShortcut(QKeyEvent* keyEvent) {
+  return g_prev_tab_key == keyEvent;
 }
 
-bool isRefreshShortcut(QKeyEvent* keyEvent) {
-  return refreshKey == keyEvent;
+bool IsRefreshShortcut(QKeyEvent* keyEvent) {
+  return g_refresh_key == keyEvent;
 }
 
-bool isFullScreenShortcut(QKeyEvent* keyEvent) {
-  return fullScreenKey == keyEvent;
+bool IsFullScreenShortcut(QKeyEvent* keyEvent) {
+  return g_full_screen_key == keyEvent;
 }
 
-bool isExecuteScriptShortcut(QKeyEvent* keyEvent) {
-  return executeKey == keyEvent;
+bool IsExecuteScriptShortcut(QKeyEvent* keyEvent) {
+  return g_execute_key == keyEvent;
 }
 
 /*bool isToggleCommentsShortcut(QKeyEvent* keyEvent) {

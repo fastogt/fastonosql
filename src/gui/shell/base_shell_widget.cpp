@@ -39,7 +39,7 @@
 #include "proxy/settings_manager.h"  // for SettingsManager
 
 #include "gui/gui_factory.h"  // for GuiFactory
-#include "gui/shortcuts.h"    // for executeKey
+#include "gui/shortcuts.h"    // for g_execute_key
 #include "gui/utils.h"
 
 #include "translations/global.h"  // for trError, trSaveAs, etc
@@ -84,7 +84,30 @@ BaseShellWidget* BaseShellWidget::createWidget(proxy::IServerSPtr server, const 
 }
 
 BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server, const QString& filePath, QWidget* parent)
-    : QWidget(parent), server_(server), input_(nullptr), filePath_(filePath) {}
+    : QWidget(parent),
+      server_(server),
+      executeAction_(nullptr),
+      stopAction_(nullptr),
+      connectAction_(nullptr),
+      disConnectAction_(nullptr),
+      loadAction_(nullptr),
+      saveAction_(nullptr),
+      saveAsAction_(nullptr),
+      validateAction_(nullptr),
+      supported_commands_count_(nullptr),
+      validated_commands_count_(nullptr),
+      commandsVersionApi_(nullptr),
+      input_(nullptr),
+      workProgressBar_(nullptr),
+      connectionMode_(nullptr),
+      serverName_(nullptr),
+      dbName_(nullptr),
+      advancedOptions_(nullptr),
+      advancedOptionsWidget_(nullptr),
+      repeatCount_(nullptr),
+      intervalMsec_(nullptr),
+      historyCall_(nullptr),
+      filePath_(filePath) {}
 
 QToolBar* BaseShellWidget::createToolBar() {
   QToolBar* savebar = new QToolBar;
@@ -116,7 +139,7 @@ QToolBar* BaseShellWidget::createToolBar() {
 
   executeAction_ = new QAction;
   executeAction_->setIcon(gui::GuiFactory::GetInstance().GetExecuteIcon());
-  executeAction_->setShortcut(gui::executeKey);
+  executeAction_->setShortcut(gui::g_execute_key);
   VERIFY(connect(executeAction_, &QAction::triggered, this, &BaseShellWidget::execute));
   savebar->addAction(executeAction_);
 

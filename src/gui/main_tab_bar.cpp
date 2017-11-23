@@ -23,7 +23,7 @@
 
 #include <common/macros.h>  // for VERIFY
 
-#include "gui/shortcuts.h"  // for closeKey, newTabKey, etc
+#include "gui/shortcuts.h"  // for g_close_key, g_new_tab_key, etc
 
 #include "translations/global.h"  // for trCloseOtherTabs, trCloseTab, etc
 
@@ -40,26 +40,26 @@ MainTabBar::MainTabBar(QWidget* parent) : QTabBar(parent) {
 void MainTabBar::showContextMenu(const QPoint& p) {
   QMenu menu(this);
   QAction* newShellAction = new QAction(translations::trNewTab, this);
-  newShellAction->setShortcut(newTabKey);
+  newShellAction->setShortcut(g_new_tab_key);
   VERIFY(connect(newShellAction, &QAction::triggered, this, &MainTabBar::createdNewTab));
 
   QAction* nextTabAction = new QAction(translations::trNextTab, this);
-  nextTabAction->setShortcut(nextTabKey);
+  nextTabAction->setShortcut(g_next_tab_key);
   VERIFY(connect(nextTabAction, &QAction::triggered, this, &MainTabBar::nextTab));
 
   QAction* prevTabAction = new QAction(translations::trPrevTab, this);
-  prevTabAction->setShortcut(prevTabKey);
+  prevTabAction->setShortcut(g_prev_tab_key);
   VERIFY(connect(prevTabAction, &QAction::triggered, this, &MainTabBar::prevTab));
 
   QAction* reloadShellAction = new QAction(translations::trReload, this);
-  reloadShellAction->setShortcut(refreshKey);
+  reloadShellAction->setShortcut(g_refresh_key);
   VERIFY(connect(reloadShellAction, &QAction::triggered, this, &MainTabBar::reloadedTab));
 
   QAction* duplicateShellAction = new QAction(translations::trDuplicate, this);
   VERIFY(connect(duplicateShellAction, &QAction::triggered, this, &MainTabBar::duplicatedTab));
 
   QAction* closeShellAction = new QAction(translations::trCloseTab, this);
-  closeShellAction->setShortcut(closeKey);
+  closeShellAction->setShortcut(g_close_key);
   VERIFY(connect(closeShellAction, &QAction::triggered, this, &MainTabBar::closedTab));
 
   QAction* closeOtherShellsAction = new QAction(translations::trCloseOtherTabs, this);

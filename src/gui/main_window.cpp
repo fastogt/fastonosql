@@ -58,7 +58,7 @@
 #include "gui/dialogs/preferences_dialog.h"     // for PreferencesDialog
 #include "gui/explorer/explorer_tree_widget.h"  // for ExplorerTreeWidget
 #include "gui/gui_factory.h"                    // for GuiFactory
-#include "gui/shortcuts.h"                      // for fullScreenKey, openKey, etc
+#include "gui/shortcuts.h"                      // for g_full_screen_key, g_open_key, etc
 #include "gui/statistic_sender.h"               // for StatisticSender
 #include "gui/update_checker.h"                 // for UpdateChecker
 #include "gui/utils.h"
@@ -119,27 +119,27 @@ MainWindow::MainWindow() : QMainWindow() {
 
   openAction_ = new QAction(this);
   openAction_->setIcon(GuiFactory::GetInstance().GetOpenIcon());
-  openAction_->setShortcut(openKey);
+  openAction_->setShortcut(g_open_key);
   VERIFY(connect(openAction_, &QAction::triggered, this, &MainWindow::open));
 
   loadFromFileAction_ = new QAction(this);
   loadFromFileAction_->setIcon(GuiFactory::GetInstance().GetLoadIcon());
-  // importAction_->setShortcut(openKey);
+  // importAction_->setShortcut(g_open_key);
   VERIFY(connect(loadFromFileAction_, &QAction::triggered, this, &MainWindow::loadConnection));
 
   importAction_ = new QAction(this);
   importAction_->setIcon(GuiFactory::GetInstance().GetImportIcon());
-  // importAction_->setShortcut(openKey);
+  // importAction_->setShortcut(g_open_key);
   VERIFY(connect(importAction_, &QAction::triggered, this, &MainWindow::importConnection));
 
   exportAction_ = new QAction(this);
   exportAction_->setIcon(GuiFactory::GetInstance().GetExportIcon());
-  // exportAction_->setShortcut(openKey);
+  // exportAction_->setShortcut(g_open_key);
   VERIFY(connect(exportAction_, &QAction::triggered, this, &MainWindow::exportConnection));
 
   // Exit action
   exitAction_ = new QAction(this);
-  exitAction_->setShortcut(quitKey);
+  exitAction_->setShortcut(g_quit_key);
   VERIFY(connect(exitAction_, &QAction::triggered, this, &MainWindow::close));
 
   // File menu
@@ -188,7 +188,7 @@ MainWindow::MainWindow() : QMainWindow() {
   QMenu* window = new QMenu(this);
   windowAction_ = menuBar()->addMenu(window);
   fullScreanAction_ = new QAction(this);
-  fullScreanAction_->setShortcut(fullScreenKey);
+  fullScreanAction_->setShortcut(g_full_screen_key);
   VERIFY(connect(fullScreanAction_, &QAction::triggered, this, &MainWindow::enterLeaveFullScreen));
   window->addAction(fullScreanAction_);
 

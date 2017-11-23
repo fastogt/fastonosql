@@ -25,29 +25,29 @@ class QKeyEvent;
 namespace fastonosql {
 namespace gui {
 
-extern const common::qt::gui::FastoQKeySequence openKey;
-extern const common::qt::gui::FastoQKeySequence saveKey;
-extern const common::qt::gui::FastoQKeySequence saveAsKey;
-extern const common::qt::gui::FastoQKeySequence quitKey;
-extern const common::qt::gui::FastoQKeySequence closeKey;
-extern const common::qt::gui::FastoQKeySequence newTabKey;
-extern const common::qt::gui::FastoQKeySequence nextTabKey;
-extern const common::qt::gui::FastoQKeySequence prevTabKey;
-extern const common::qt::gui::FastoQKeySequence refreshKey;
-extern const common::qt::gui::FastoQKeySequence fullScreenKey;
-extern const common::qt::gui::FastoQKeySequence executeKey;
+extern const common::qt::gui::FastoQKeySequence g_open_key;
+extern const common::qt::gui::FastoQKeySequence g_save_key;
+extern const common::qt::gui::FastoQKeySequence g_save_as_key;
+extern const common::qt::gui::FastoQKeySequence g_quit_key;
+extern const common::qt::gui::FastoQKeySequence g_close_key;
+extern const common::qt::gui::FastoQKeySequence g_new_tab_key;
+extern const common::qt::gui::FastoQKeySequence g_next_tab_key;
+extern const common::qt::gui::FastoQKeySequence g_prev_tab_key;
+extern const common::qt::gui::FastoQKeySequence g_refresh_key;
+extern const common::qt::gui::FastoQKeySequence g_full_screen_key;
+extern const common::qt::gui::FastoQKeySequence g_execute_key;
 
-bool isOpenShortcut(QKeyEvent* keyEvent);
-bool isSaveShortcut(QKeyEvent* keyEvent);
-bool isSaveAsShortcut(QKeyEvent* keyEvent);
-bool isQuitShortcut(QKeyEvent* keyEvent);
-bool isCloseShortcut(QKeyEvent* keyEvent);
-bool isNewTabShortcut(QKeyEvent* keyEvent);
-bool isNextTabShortcut(QKeyEvent* keyEvent);
-bool isPreviousTabShortcut(QKeyEvent* keyEvent);
-bool isRefreshShortcut(QKeyEvent* keyEvent);
-bool isFullScreenShortcut(QKeyEvent* keyEvent);
-bool isExecuteScriptShortcut(QKeyEvent* keyEvent);
+bool IsOpenShortcut(QKeyEvent* keyEvent);
+bool IsSaveShortcut(QKeyEvent* keyEvent);
+bool IsSaveAsShortcut(QKeyEvent* keyEvent);
+bool IsQuitShortcut(QKeyEvent* keyEvent);
+bool IsCloseShortcut(QKeyEvent* keyEvent);
+bool IsNewTabShortcut(QKeyEvent* keyEvent);
+bool IsNextTabShortcut(QKeyEvent* keyEvent);
+bool IsPreviousTabShortcut(QKeyEvent* keyEvent);
+bool IsRefreshShortcut(QKeyEvent* keyEvent);
+bool IsFullScreenShortcut(QKeyEvent* keyEvent);
+bool IsExecuteScriptShortcut(QKeyEvent* keyEvent);
 
 }  // namespace gui
 }  // namespace fastonosql
