@@ -46,7 +46,7 @@ DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(QWidget* pare
                                                                    proxy::IClusterSettingsBaseSPtr cluster)
     : QDialog(parent), cluster_(cluster) {
   setWindowTitle(translations::trConnectionDiscovery);
-  setWindowIcon(GuiFactory::GetInstance().serverIcon());
+  setWindowIcon(GuiFactory::GetInstance().GetServerIcon());
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
@@ -58,7 +58,7 @@ DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(QWidget* pare
 
   statusLabel_ = new QLabel(translations::trTimeTemplate_1S.arg("calculate..."));
   iconLabel_ = new QLabel;
-  QIcon icon = GuiFactory::GetInstance().failIcon();
+  QIcon icon = GuiFactory::GetInstance().GetFailIcon();
   const QPixmap pm = icon.pixmap(stateIconSize);
   iconLabel_->setPixmap(pm);
 
@@ -91,7 +91,7 @@ DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(QWidget* pare
   setFixedSize(QSize(fix_width, fix_height));
   setLayout(mainLayout);
 
-  glassWidget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().pathToLoadingGif(),
+  glassWidget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().GetPathToLoadingGif(),
                                                   translations::trTryToConnect, 0.5, QColor(111, 111, 100), this);
   testConnection(connection);
 }
@@ -120,7 +120,7 @@ void DiscoveryClusterDiagnosticDialog::connectionResult(bool suc,
   listWidget_->setEnabled(suc);
   listWidget_->clear();
   if (suc) {
-    QIcon icon = GuiFactory::GetInstance().successIcon();
+    QIcon icon = GuiFactory::GetInstance().GetSuccessIcon();
     const QPixmap pm = icon.pixmap(stateIconSize);
     iconLabel_->setPixmap(pm);
 

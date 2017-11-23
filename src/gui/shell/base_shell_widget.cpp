@@ -89,33 +89,33 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server, const QString& fileP
 QToolBar* BaseShellWidget::createToolBar() {
   QToolBar* savebar = new QToolBar;
   loadAction_ = new QAction;
-  loadAction_->setIcon(gui::GuiFactory::GetInstance().loadIcon());
+  loadAction_->setIcon(gui::GuiFactory::GetInstance().GetLoadIcon());
   typedef void (BaseShellWidget::*lf)();
   VERIFY(connect(loadAction_, &QAction::triggered, this, static_cast<lf>(&BaseShellWidget::loadFromFile)));
   savebar->addAction(loadAction_);
 
   saveAction_ = new QAction;
-  saveAction_->setIcon(gui::GuiFactory::GetInstance().saveIcon());
+  saveAction_->setIcon(gui::GuiFactory::GetInstance().GetSaveIcon());
   VERIFY(connect(saveAction_, &QAction::triggered, this, &BaseShellWidget::saveToFile));
   savebar->addAction(saveAction_);
 
   saveAsAction_ = new QAction;
-  saveAsAction_->setIcon(gui::GuiFactory::GetInstance().saveAsIcon());
+  saveAsAction_->setIcon(gui::GuiFactory::GetInstance().GetSaveAsIcon());
   VERIFY(connect(saveAsAction_, &QAction::triggered, this, &BaseShellWidget::saveToFileAs));
   savebar->addAction(saveAsAction_);
 
   connectAction_ = new QAction;
-  connectAction_->setIcon(gui::GuiFactory::GetInstance().connectIcon());
+  connectAction_->setIcon(gui::GuiFactory::GetInstance().GetConnectIcon());
   VERIFY(connect(connectAction_, &QAction::triggered, this, &BaseShellWidget::connectToServer));
   savebar->addAction(connectAction_);
 
   disConnectAction_ = new QAction;
-  disConnectAction_->setIcon(gui::GuiFactory::GetInstance().disConnectIcon());
+  disConnectAction_->setIcon(gui::GuiFactory::GetInstance().GetDisConnectIcon());
   VERIFY(connect(disConnectAction_, &QAction::triggered, this, &BaseShellWidget::disconnectFromServer));
   savebar->addAction(disConnectAction_);
 
   executeAction_ = new QAction;
-  executeAction_->setIcon(gui::GuiFactory::GetInstance().executeIcon());
+  executeAction_->setIcon(gui::GuiFactory::GetInstance().GetExecuteIcon());
   executeAction_->setShortcut(gui::executeKey);
   VERIFY(connect(executeAction_, &QAction::triggered, this, &BaseShellWidget::execute));
   savebar->addAction(executeAction_);
@@ -162,7 +162,7 @@ void BaseShellWidget::init() {
   QString qmode_str;
   common::ConvertFromString(mode_str, &qmode_str);
   connectionMode_ =
-      new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().modeIcon(mode), top_bar_icon_size, qmode_str);
+      new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().GetModeIcon(mode), top_bar_icon_size, qmode_str);
 
   hlayout->addWidget(savebar);
   hlayout->addWidget(new QSplitter(Qt::Horizontal));
@@ -172,11 +172,11 @@ void BaseShellWidget::init() {
   workProgressBar_->setTextVisible(true);
   hlayout->addWidget(workProgressBar_);
   QToolBar* helpbar = new QToolBar;
-  validateAction_ = new QAction(gui::GuiFactory::GetInstance().failIcon(), translations::trValidate, helpbar);
+  validateAction_ = new QAction(gui::GuiFactory::GetInstance().GetFailIcon(), translations::trValidate, helpbar);
   VERIFY(connect(validateAction_, &QAction::triggered, this, &BaseShellWidget::validateClick));
   helpbar->addAction(validateAction_);
 
-  QAction* helpAction = new QAction(gui::GuiFactory::GetInstance().helpIcon(), translations::trHelp, helpbar);
+  QAction* helpAction = new QAction(gui::GuiFactory::GetInstance().GetHelpIcon(), translations::trHelp, helpbar);
   VERIFY(connect(helpAction, &QAction::triggered, this, &BaseShellWidget::helpClick));
   helpbar->addAction(helpAction);
   hlayout->addWidget(helpbar);
@@ -247,7 +247,7 @@ void BaseShellWidget::init() {
     std::string curVers = core::ConvertVersionNumberToReadableString(cur);
     QString qcurVers;
     common::ConvertFromString(curVers, &qcurVers);
-    commandsVersionApi_->addItem(gui::GuiFactory::GetInstance().unknownIcon(), qcurVers, cur);
+    commandsVersionApi_->addItem(gui::GuiFactory::GetInstance().GetUnknownIcon(), qcurVers, cur);
     commandsVersionApi_->setCurrentIndex(i);
   }
   QLabel* version = new QLabel(trCommandsVersion);
@@ -268,11 +268,11 @@ void BaseShellWidget::init() {
 
 QHBoxLayout* BaseShellWidget::createTopLayout(core::connectionTypes ct) {
   QHBoxLayout* top_layout = new QHBoxLayout;
-  serverName_ = new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().icon(ct), top_bar_icon_size,
+  serverName_ = new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().GetIcon(ct), top_bar_icon_size,
                                                translations::trCalculating);
   serverName_->setElideMode(Qt::ElideRight);
   top_layout->addWidget(serverName_);
-  dbName_ = new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().databaseIcon(), top_bar_icon_size,
+  dbName_ = new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().GetDatabaseIcon(), top_bar_icon_size,
                                            translations::trCalculating);
   top_layout->addWidget(dbName_);
   return top_layout;
@@ -452,9 +452,9 @@ void BaseShellWidget::inputTextChanged() {
   QString text = input_->text();
   common::Error err = validate(text);
   if (err) {
-    validateAction_->setIcon(gui::GuiFactory::GetInstance().failIcon());
+    validateAction_->setIcon(gui::GuiFactory::GetInstance().GetFailIcon());
   } else {
-    validateAction_->setIcon(gui::GuiFactory::GetInstance().successIcon());
+    validateAction_->setIcon(gui::GuiFactory::GetInstance().GetSuccessIcon());
   }
 }
 
@@ -488,7 +488,7 @@ void BaseShellWidget::progressChange(const proxy::events_info::ProgressInfoRespo
 
 void BaseShellWidget::enterMode(const proxy::events_info::EnterModeInfo& res) {
   core::ConnectionMode mode = res.mode;
-  connectionMode_->setIcon(gui::GuiFactory::GetInstance().modeIcon(mode), top_bar_icon_size);
+  connectionMode_->setIcon(gui::GuiFactory::GetInstance().GetModeIcon(mode), top_bar_icon_size);
   std::string modeText = common::ConvertToString(mode);
   QString qmodeText;
   common::ConvertFromString(modeText, &qmodeText);
@@ -564,7 +564,7 @@ void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
   if (!inf) {
     updateServerLabel(translations::trCalculating);
     for (int i = 0; i < commandsVersionApi_->count(); ++i) {
-      commandsVersionApi_->setItemIcon(i, gui::GuiFactory::GetInstance().unknownIcon());
+      commandsVersionApi_->setItemIcon(i, gui::GuiFactory::GetInstance().GetUnknownIcon());
     }
     return;
   }
@@ -591,7 +591,7 @@ void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
     QVariant var = commandsVersionApi_->itemData(i);
     uint32_t version = qvariant_cast<uint32_t>(var);
     if (version == UNDEFINED_SINCE) {
-      commandsVersionApi_->setItemIcon(i, gui::GuiFactory::GetInstance().unknownIcon());
+      commandsVersionApi_->setItemIcon(i, gui::GuiFactory::GetInstance().GetUnknownIcon());
       continue;
     }
 
@@ -599,12 +599,12 @@ void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
       if (!updatedComboIndex) {
         updatedComboIndex = true;
         commandsVersionApi_->setCurrentIndex(i);
-        commandsVersionApi_->setItemIcon(i, gui::GuiFactory::GetInstance().successIcon());
+        commandsVersionApi_->setItemIcon(i, gui::GuiFactory::GetInstance().GetSuccessIcon());
       } else {
-        commandsVersionApi_->setItemIcon(i, gui::GuiFactory::GetInstance().failIcon());
+        commandsVersionApi_->setItemIcon(i, gui::GuiFactory::GetInstance().GetFailIcon());
       }
     } else {
-      commandsVersionApi_->setItemIcon(i, gui::GuiFactory::GetInstance().successIcon());
+      commandsVersionApi_->setItemIcon(i, gui::GuiFactory::GetInstance().GetSuccessIcon());
     }
   }
 }

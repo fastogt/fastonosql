@@ -114,7 +114,7 @@ BaseShell::BaseShell(core::connectionTypes type, bool showAutoCompl, QWidget* pa
     lex = new forestdb::Lexer(this);
   }
 #endif
-  const QIcon& ic = gui::GuiFactory::GetInstance().commandIcon(type);
+  const QIcon& ic = gui::GuiFactory::GetInstance().GetCommandIcon(type);
   QPixmap pix = ic.pixmap(image_size);
   registerImage(BaseQsciLexer::Command, pix);
   registerImage(BaseQsciLexer::ExCommand, pix);
@@ -125,7 +125,7 @@ BaseShell::BaseShell(core::connectionTypes type, bool showAutoCompl, QWidget* pa
   }
 
   setLexer(lex);
-  lex->setFont(gui::GuiFactory::GetInstance().font());
+  lex->setFont(gui::GuiFactory::GetInstance().GetFont());
 }
 
 BaseQsciLexer* BaseShell::lexer() const {

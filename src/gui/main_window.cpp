@@ -113,27 +113,27 @@ MainWindow::MainWindow() : QMainWindow() {
   QString style = proxy::SettingsManager::GetInstance()->GetCurrentStyle();
   common::qt::gui::applyStyle(style);
 
-  common::qt::gui::applyFont(gui::GuiFactory::GetInstance().font());
+  common::qt::gui::applyFont(gui::GuiFactory::GetInstance().GetFont());
 
   setWindowTitle(PROJECT_NAME_TITLE " " PROJECT_VERSION);
 
   openAction_ = new QAction(this);
-  openAction_->setIcon(GuiFactory::GetInstance().openIcon());
+  openAction_->setIcon(GuiFactory::GetInstance().GetOpenIcon());
   openAction_->setShortcut(openKey);
   VERIFY(connect(openAction_, &QAction::triggered, this, &MainWindow::open));
 
   loadFromFileAction_ = new QAction(this);
-  loadFromFileAction_->setIcon(GuiFactory::GetInstance().loadIcon());
+  loadFromFileAction_->setIcon(GuiFactory::GetInstance().GetLoadIcon());
   // importAction_->setShortcut(openKey);
   VERIFY(connect(loadFromFileAction_, &QAction::triggered, this, &MainWindow::loadConnection));
 
   importAction_ = new QAction(this);
-  importAction_->setIcon(GuiFactory::GetInstance().importIcon());
+  importAction_->setIcon(GuiFactory::GetInstance().GetImportIcon());
   // importAction_->setShortcut(openKey);
   VERIFY(connect(importAction_, &QAction::triggered, this, &MainWindow::importConnection));
 
   exportAction_ = new QAction(this);
-  exportAction_->setIcon(GuiFactory::GetInstance().exportIcon());
+  exportAction_->setIcon(GuiFactory::GetInstance().GetExportIcon());
   // exportAction_->setShortcut(openKey);
   VERIFY(connect(exportAction_, &QAction::triggered, this, &MainWindow::exportConnection));
 
@@ -167,7 +167,7 @@ MainWindow::MainWindow() : QMainWindow() {
   updateRecentConnectionActions();
 
   preferencesAction_ = new QAction(this);
-  preferencesAction_->setIcon(GuiFactory::GetInstance().preferencesIcon());
+  preferencesAction_->setIcon(GuiFactory::GetInstance().GetPreferencesIcon());
   VERIFY(connect(preferencesAction_, &QAction::triggered, this, &MainWindow::openPreferences));
 
   // edit menu
@@ -180,7 +180,7 @@ MainWindow::MainWindow() : QMainWindow() {
   toolsAction_ = menuBar()->addMenu(tools);
 
   encodeDecodeDialogAction_ = new QAction(this);
-  encodeDecodeDialogAction_->setIcon(GuiFactory::GetInstance().encodeDecodeIcon());
+  encodeDecodeDialogAction_->setIcon(GuiFactory::GetInstance().GetEncodeDecodeIcon());
   VERIFY(connect(encodeDecodeDialogAction_, &QAction::triggered, this, &MainWindow::openEncodeDecodeDialog));
   tools->addAction(encodeDecodeDialogAction_);
 
@@ -554,10 +554,11 @@ void MainWindow::versionAvailible(bool succesResult, const QString& version) {
   std::string sver = common::ConvertToString(version);
   bool isn = IsNeededUpdate(sver);
   if (!isn) {
-    QMessageBox::information(this, translations::trCheckVersion,
-                             QObject::tr("<h4>A new version(%1) of " PROJECT_NAME_TITLE " is availible!</h4>"
-                                         "You can download it in your <a href=\"" PROJECT_DOWNLOAD_LINK "\">profile page</a>")
-                                 .arg(version));
+    QMessageBox::information(
+        this, translations::trCheckVersion,
+        QObject::tr("<h4>A new version(%1) of " PROJECT_NAME_TITLE " is availible!</h4>"
+                    "You can download it in your <a href=\"" PROJECT_DOWNLOAD_LINK "\">profile page</a>")
+            .arg(version));
   }
 
   checkUpdateAction_->setEnabled(isn);

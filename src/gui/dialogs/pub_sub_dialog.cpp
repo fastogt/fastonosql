@@ -151,7 +151,7 @@ void PubSubDialog::showContextMenu(const QPoint& point) {
     return;
   }
 
-  QPoint menuPoint = channelsTable_->calculateMenuPoint(point);
+  QPoint menuPoint = channelsTable_->CalculateMenuPoint(point);
   QMenu* menu = new QMenu(channelsTable_);
 
   QAction* publishAction = new QAction(translations::trPublish, this);

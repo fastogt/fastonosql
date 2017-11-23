@@ -120,6 +120,7 @@ const QString trLoading = QObject::tr("Loading...");
 const QString trTryToConnect = QObject::tr("Try to connect...");
 const QString trAddItem = QObject::tr("Add item");
 const QString trRemoveItem = QObject::tr("Remove item");
+const QString trInvalidInput = QObject::tr("Invalid input");
 
 const QString trMatchCase = QObject::tr("Match case");
 const QString trRawText = QObject::tr("Raw text");

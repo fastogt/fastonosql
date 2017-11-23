@@ -56,7 +56,7 @@ namespace gui {
 
 ClusterDialog::ClusterDialog(QWidget* parent, proxy::IClusterSettingsBase* connection)
     : QDialog(parent), cluster_connection_(connection) {
-  setWindowIcon(GuiFactory::GetInstance().serverIcon());
+  setWindowIcon(GuiFactory::GetInstance().GetServerIcon());
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
@@ -92,7 +92,7 @@ ClusterDialog::ClusterDialog(QWidget* parent, proxy::IClusterSettingsBase* conne
     std::string str = common::ConvertToString(ct);
     QString qstr;
     if (common::ConvertFromString(str, &qstr)) {
-      typeConnection_->addItem(GuiFactory::GetInstance().icon(ct), qstr, ct);
+      typeConnection_->addItem(GuiFactory::GetInstance().GetIcon(ct), qstr, ct);
     }
   }
 
@@ -150,16 +150,16 @@ ClusterDialog::ClusterDialog(QWidget* parent, proxy::IClusterSettingsBase* conne
   savebar_ = new QToolBar;
   toolBarLayout->addWidget(savebar_);
 
-  QAction* addB = new QAction(GuiFactory::GetInstance().loadIcon(), translations::trAddConnection, savebar_);
+  QAction* addB = new QAction(GuiFactory::GetInstance().GetLoadIcon(), translations::trAddConnection, savebar_);
   typedef void (QAction::*trig)(bool);
   VERIFY(connect(addB, static_cast<trig>(&QAction::triggered), this, &ClusterDialog::add));
   savebar_->addAction(addB);
 
-  QAction* rmB = new QAction(GuiFactory::GetInstance().removeIcon(), translations::trRemoveConnection, savebar_);
+  QAction* rmB = new QAction(GuiFactory::GetInstance().GetRemoveIcon(), translations::trRemoveConnection, savebar_);
   VERIFY(connect(rmB, static_cast<trig>(&QAction::triggered), this, &ClusterDialog::remove));
   savebar_->addAction(rmB);
 
-  QAction* editB = new QAction(GuiFactory::GetInstance().editIcon(), translations::trEditConnection, savebar_);
+  QAction* editB = new QAction(GuiFactory::GetInstance().GetEditIcon(), translations::trEditConnection, savebar_);
   VERIFY(connect(editB, static_cast<trig>(&QAction::triggered), this, &ClusterDialog::edit));
   savebar_->addAction(editB);
 
@@ -175,12 +175,12 @@ ClusterDialog::ClusterDialog(QWidget* parent, proxy::IClusterSettingsBase* conne
   inputLayout->addWidget(listWidget_);
 
   testButton_ = new QPushButton("&Test");
-  testButton_->setIcon(GuiFactory::GetInstance().messageBoxInformationIcon());
+  testButton_->setIcon(GuiFactory::GetInstance().GetMessageBoxInformationIcon());
   VERIFY(connect(testButton_, &QPushButton::clicked, this, &ClusterDialog::testConnection));
   testButton_->setEnabled(false);
 
   discoveryButton_ = new QPushButton("&Discovery");
-  discoveryButton_->setIcon(GuiFactory::GetInstance().discoveryIcon());
+  discoveryButton_->setIcon(GuiFactory::GetInstance().GetDiscoveryIcon());
   VERIFY(connect(discoveryButton_, &QPushButton::clicked, this, &ClusterDialog::discoveryCluster));
   discoveryButton_->setEnabled(false);
 

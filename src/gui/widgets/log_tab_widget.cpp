@@ -40,9 +40,9 @@ LogTabWidget::LogTabWidget(QWidget* parent) : QTabWidget(parent) {
   // setDocumentMode(true);
 
   log_ = new LogWidget(this);
-  addTab(log_, GuiFactory::GetInstance().loggingIcon(), QString());
+  addTab(log_, GuiFactory::GetInstance().GetLoggingIcon(), QString());
   commands_ = new CommandsWidget(this);
-  addTab(commands_, GuiFactory::GetInstance().commandIcon(), QString());
+  addTab(commands_, GuiFactory::GetInstance().GetCommandIcon(), QString());
   retranslateUi();
 }
 

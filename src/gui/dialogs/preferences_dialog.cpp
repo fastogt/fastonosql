@@ -162,7 +162,7 @@ void PreferencesDialog::accept() {
 
   QFont cf(font_combo_box_->currentText(), font_size_spin_box_->value());
   proxy::SettingsManager::GetInstance()->SetCurrentFont(cf);
-  common::qt::gui::applyFont(gui::GuiFactory::GetInstance().font());
+  common::qt::gui::applyFont(gui::GuiFactory::GetInstance().GetFont());
 
   QVariant var = default_view_combo_box_->currentData();
   proxy::supportedViews v = static_cast<proxy::supportedViews>(qvariant_cast<unsigned char>(var));

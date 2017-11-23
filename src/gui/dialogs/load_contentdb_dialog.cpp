@@ -42,7 +42,7 @@ namespace gui {
 LoadContentDbDialog::LoadContentDbDialog(const QString& title, core::connectionTypes type, QWidget* parent)
     : QDialog(parent), type_(type) {
   setWindowTitle(title);
-  setWindowIcon(GuiFactory::GetInstance().icon(type_));
+  setWindowIcon(GuiFactory::GetInstance().GetIcon(type_));
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 

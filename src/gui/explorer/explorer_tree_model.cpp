@@ -111,25 +111,24 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
 
   if (role == Qt::DecorationRole && col == ExplorerServerItem::eName) {
     if (type == IExplorerTreeItem::eCluster) {
-      return GuiFactory::GetInstance().clusterIcon();
+      return GuiFactory::GetInstance().GetClusterIcon();
     } else if (type == IExplorerTreeItem::eSentinel) {
-      return GuiFactory::GetInstance().sentinelIcon();
+      return GuiFactory::GetInstance().GetSentinelIcon();
     } else if (type == IExplorerTreeItem::eServer) {
       ExplorerServerItem* server_node = static_cast<ExplorerServerItem*>(node);
       proxy::IServerSPtr server = server_node->server();
-      return GuiFactory::GetInstance().icon(server->GetType());
+      return GuiFactory::GetInstance().GetIcon(server->GetType());
     } else if (type == IExplorerTreeItem::eKey) {
       ExplorerKeyItem* key = static_cast<ExplorerKeyItem*>(node);
       core::NKey nkey = key->key();
       if (nkey.GetTTL() == NO_TTL) {
-        return GuiFactory::GetInstance().keyIcon();
-      } else {
-        return GuiFactory::GetInstance().keyTTLIcon();
+        return GuiFactory::GetInstance().GetKeyIcon();
       }
+      return GuiFactory::GetInstance().GetKeyTTLIcon();
     } else if (type == IExplorerTreeItem::eDatabase) {
-      return GuiFactory::GetInstance().databaseIcon();
+      return GuiFactory::GetInstance().GetDatabaseIcon();
     } else if (type == IExplorerTreeItem::eNamespace) {
-      return GuiFactory::GetInstance().directoryIcon();
+      return GuiFactory::GetInstance().GetDirectoryIcon();
     } else {
       NOTREACHED();
     }

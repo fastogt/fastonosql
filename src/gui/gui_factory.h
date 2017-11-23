@@ -35,69 +35,64 @@ class GuiFactory : public common::patterns::LazySingleton<GuiFactory> {
  public:
   friend class common::patterns::LazySingleton<GuiFactory>;
 
-  const QIcon& directoryIcon() const;
+  const QIcon& GetDirectoryIcon() const;
 
-  const QIcon& homePageIcon() const;
-  const QIcon& facebookIcon() const;
-  const QIcon& twitterIcon() const;
-  const QIcon& githubIcon() const;
-
-  const QIcon& openIcon() const;
-  const QIcon& logoIcon() const;
-  const QIcon& mainWindowIcon() const;
-  const QIcon& connectIcon() const;
-  const QIcon& disConnectIcon() const;
-  const QIcon& serverIcon() const;
-  const QIcon& addIcon() const;
-  const QIcon& removeIcon() const;
-  const QIcon& editIcon() const;
-  const QIcon& messageBoxInformationIcon() const;
-  const QIcon& messageBoxQuestionIcon() const;
-  const QIcon& validateIcon() const;
-  const QIcon& executeIcon() const;
-  const QIcon& helpIcon() const;
-  const QIcon& timeIcon() const;
+  const QIcon& GetOpenIcon() const;
+  const QIcon& GetLogoIcon() const;
+  const QIcon& GetMainWindowIcon() const;
+  const QIcon& GetConnectIcon() const;
+  const QIcon& GetDisConnectIcon() const;
+  const QIcon& GetServerIcon() const;
+  const QIcon& GetAddIcon() const;
+  const QIcon& GetRemoveIcon() const;
+  const QIcon& GetEditIcon() const;
+  const QIcon& GetMessageBoxInformationIcon() const;
+  const QIcon& GetMessageBoxQuestionIcon() const;
+  const QIcon& GetValidateIcon() const;
+  const QIcon& GetExecuteIcon() const;
+  const QIcon& GetHelpIcon() const;
+  const QIcon& GetTimeIcon() const;
   const QIcon& stopIcon() const;
-  const QIcon& databaseIcon() const;
-  const QIcon& moduleIcon() const;
-  const QIcon& keyIcon() const;
-  const QIcon& keyTTLIcon() const;
+  const QIcon& GetDatabaseIcon() const;
+  const QIcon& GetModuleIcon() const;
+  const QIcon& GetKeyIcon() const;
+  const QIcon& GetKeyTTLIcon() const;
 
-  const QIcon& icon(core::connectionTypes type) const;
-  const QIcon& modeIcon(core::ConnectionMode mode) const;
-  const QIcon& icon(common::Value::Type type) const;
+  const QIcon& GetIcon(core::connectionTypes type) const;
+  const QIcon& GetModeIcon(core::ConnectionMode mode) const;
+  const QIcon& GetIcon(common::Value::Type type) const;
 
-  const QIcon& importIcon() const;
-  const QIcon& exportIcon() const;
+  const QIcon& GetImportIcon() const;
+  const QIcon& GetExportIcon() const;
 
-  const QIcon& loadIcon() const;
-  const QIcon& clusterIcon() const;
-  const QIcon& sentinelIcon() const;
-  const QIcon& saveIcon() const;
-  const QIcon& saveAsIcon() const;
-  const QIcon& textIcon() const;
-  const QIcon& tableIcon() const;
-  const QIcon& treeIcon() const;
-  const QIcon& loggingIcon() const;
-  const QIcon& discoveryIcon() const;
-  const QIcon& channelIcon() const;
-  const QIcon& commandIcon() const;
-  const QIcon& encodeDecodeIcon() const;
-  const QIcon& preferencesIcon() const;
+  const QIcon& GetLoadIcon() const;
+  const QIcon& GetClusterIcon() const;
+  const QIcon& GetSentinelIcon() const;
+  const QIcon& GetSaveIcon() const;
+  const QIcon& GetSaveAsIcon() const;
+  const QIcon& GetTextIcon() const;
+  const QIcon& GetTableIcon() const;
+  const QIcon& GetTreeIcon() const;
+  const QIcon& GetLoggingIcon() const;
+  const QIcon& GetDiscoveryIcon() const;
+  const QIcon& GetChannelIcon() const;
+  const QIcon& GetCommandIcon() const;
+  const QIcon& GetEncodeDecodeIcon() const;
+  const QIcon& GetPreferencesIcon() const;
 
-  const QIcon& leftIcon() const;
-  const QIcon& rightIcon() const;
+  const QIcon& GetLeftIcon() const;
+  const QIcon& GetRightIcon() const;
 
-  const QIcon& close16Icon() const;
-  const QIcon& search16Icon() const;
-  const QIcon& commandIcon(core::connectionTypes type) const;
+  const QIcon& GetClose16Icon() const;
+  const QIcon& GetSearch16Icon() const;
+  const QIcon& GetCommandIcon(core::connectionTypes type) const;
 
-  const QIcon& successIcon() const;
-  const QIcon& failIcon() const;
-  const QIcon& unknownIcon() const;
+  const QIcon& GetSuccessIcon() const;
+  const QIcon& GetFailIcon() const;
+  const QIcon& GetUnknownIcon() const;
 
-  QFont font() const;
-  const QString& pathToLoadingGif() const;
+  QFont GetFont() const;
+  const QString& GetPathToLoadingGif() const;
 
  private:
   GuiFactory();

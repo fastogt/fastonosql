@@ -51,7 +51,7 @@ FastoTextView::FastoTextView(QWidget* parent) : QWidget(parent) {
   snappyRadioButton_ = new QRadioButton;
 
   saveChangeButton_ = new QPushButton;
-  saveChangeButton_->setIcon(GuiFactory::GetInstance().saveIcon());
+  saveChangeButton_->setIcon(GuiFactory::GetInstance().GetSaveIcon());
   saveChangeButton_->setEnabled(false);
 
   VERIFY(connect(jsonRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChange));

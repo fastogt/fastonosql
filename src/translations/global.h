@@ -120,6 +120,7 @@ extern const QString trLoading;
 extern const QString trTryToConnect;
 extern const QString trAddItem;
 extern const QString trRemoveItem;
+extern const QString trInvalidInput;
 
 extern const QString trMatchCase;
 extern const QString trRawText;

@@ -32,7 +32,7 @@ FastoTableView::FastoTableView(QWidget* parent) : QTableView(parent) {
   header->setSectionResizeMode(QHeaderView::Stretch);
 }
 
-QPoint FastoTableView::calculateMenuPoint(const QPoint& point) const {
+QPoint FastoTableView::CalculateMenuPoint(const QPoint& point) const {
   QPoint menuPoint = mapToGlobal(point);
   menuPoint.setY(menuPoint.y() + horizontalHeader()->height());
   menuPoint.setX(menuPoint.x() + verticalHeader()->width());

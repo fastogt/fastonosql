@@ -44,7 +44,7 @@ class DbKeyDialog : public QDialog {
                        core::connectionTypes type,
                        const core::NDbKValue& key = core::NDbKValue(),
                        QWidget* parent = Q_NULLPTR);
-  core::NDbKValue key() const;
+  core::NDbKValue GetKey() const;
 
  public Q_SLOTS:
   virtual void accept() override;

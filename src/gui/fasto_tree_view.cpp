@@ -30,7 +30,7 @@ FastoTreeView::FastoTreeView(QWidget* parent) : QTreeView(parent) {
   h->setSectionResizeMode(QHeaderView::Stretch);
 }
 
-QPoint FastoTreeView::calculateMenuPoint(const QPoint& point) const {
+QPoint FastoTreeView::CalculateMenuPoint(const QPoint& point) const {
   QPoint menuPoint = mapToGlobal(point);
   menuPoint.setY(menuPoint.y() + header()->height());
   return menuPoint;

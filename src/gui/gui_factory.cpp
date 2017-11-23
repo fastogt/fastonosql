@@ -31,101 +31,81 @@ namespace gui {
 
 GuiFactory::GuiFactory() {}
 
-const QIcon& GuiFactory::directoryIcon() const {
+const QIcon& GuiFactory::GetDirectoryIcon() const {
   static QIcon open = qApp->style()->standardIcon(QStyle::SP_DirIcon);
   return open;
 }
 
-const QIcon& GuiFactory::homePageIcon() const {
-  static QIcon homepage(":" PROJECT_NAME_LOWERCASE "/images/64x64/homepage.png");
-  return homepage;
-}
-
-const QIcon& GuiFactory::facebookIcon() const {
-  static QIcon facebook(":" PROJECT_NAME_LOWERCASE "/images/64x64/facebook.png");
-  return facebook;
-}
-
-const QIcon& GuiFactory::twitterIcon() const {
-  static QIcon twitter(":" PROJECT_NAME_LOWERCASE "/images/64x64/twitter.png");
-  return twitter;
-}
-
-const QIcon& GuiFactory::githubIcon() const {
-  static QIcon github(":" PROJECT_NAME_LOWERCASE "/images/64x64/github.png");
-  return github;
-}
-
-const QIcon& GuiFactory::openIcon() const {
+const QIcon& GuiFactory::GetOpenIcon() const {
   static QIcon open(":" PROJECT_NAME_LOWERCASE "/images/64x64/open.png");
   return open;
 }
 
-const QIcon& GuiFactory::logoIcon() const {
+const QIcon& GuiFactory::GetLogoIcon() const {
   static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/logo.png");
   return main;
 }
 
-const QIcon& GuiFactory::mainWindowIcon() const {
-  return logoIcon();
+const QIcon& GuiFactory::GetMainWindowIcon() const {
+  return GetLogoIcon();
 }
 
-const QIcon& GuiFactory::connectIcon() const {
+const QIcon& GuiFactory::GetConnectIcon() const {
   static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/connect.png");
   return main;
 }
 
-const QIcon& GuiFactory::disConnectIcon() const {
+const QIcon& GuiFactory::GetDisConnectIcon() const {
   static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/disconnect.png");
   return main;
 }
 
-const QIcon& GuiFactory::serverIcon() const {
+const QIcon& GuiFactory::GetServerIcon() const {
   static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/server.png");
   return main;
 }
 
-const QIcon& GuiFactory::addIcon() const {
+const QIcon& GuiFactory::GetAddIcon() const {
   static QIcon open(":" PROJECT_NAME_LOWERCASE "/images/64x64/add.png");
   return open;
 }
 
-const QIcon& GuiFactory::removeIcon() const {
+const QIcon& GuiFactory::GetRemoveIcon() const {
   static QIcon open(":" PROJECT_NAME_LOWERCASE "/images/64x64/remove.png");
   return open;
 }
 
-const QIcon& GuiFactory::editIcon() const {
+const QIcon& GuiFactory::GetEditIcon() const {
   static QIcon open(":" PROJECT_NAME_LOWERCASE "/images/64x64/edit.png");
   return open;
 }
 
-const QIcon& GuiFactory::messageBoxInformationIcon() const {
+const QIcon& GuiFactory::GetMessageBoxInformationIcon() const {
   static QIcon open = qApp->style()->standardIcon(QStyle::SP_MessageBoxInformation);
   return open;
 }
 
-const QIcon& GuiFactory::messageBoxQuestionIcon() const {
+const QIcon& GuiFactory::GetMessageBoxQuestionIcon() const {
   static QIcon open = qApp->style()->standardIcon(QStyle::SP_MessageBoxQuestion);
   return open;
 }
 
-const QIcon& GuiFactory::validateIcon() const {
+const QIcon& GuiFactory::GetValidateIcon() const {
   static QIcon start(":" PROJECT_NAME_LOWERCASE "/images/64x64/validate.png");
   return start;
 }
 
-const QIcon& GuiFactory::executeIcon() const {
+const QIcon& GuiFactory::GetExecuteIcon() const {
   static QIcon start(":" PROJECT_NAME_LOWERCASE "/images/64x64/execute.png");
   return start;
 }
 
-const QIcon& GuiFactory::helpIcon() const {
+const QIcon& GuiFactory::GetHelpIcon() const {
   static QIcon start(":" PROJECT_NAME_LOWERCASE "/images/64x64/help.png");
   return start;
 }
 
-const QIcon& GuiFactory::timeIcon() const {
+const QIcon& GuiFactory::GetTimeIcon() const {
   static QIcon time(":" PROJECT_NAME_LOWERCASE "/images/64x64/time.png");
   return time;
 }
@@ -135,27 +115,27 @@ const QIcon& GuiFactory::stopIcon() const {
   return stop;
 }
 
-const QIcon& GuiFactory::databaseIcon() const {
+const QIcon& GuiFactory::GetDatabaseIcon() const {
   static QIcon db(":" PROJECT_NAME_LOWERCASE "/images/64x64/database.png");
   return db;
 }
 
-const QIcon& GuiFactory::moduleIcon() const {
+const QIcon& GuiFactory::GetModuleIcon() const {
   static QIcon md(":" PROJECT_NAME_LOWERCASE "/images/64x64/module.png");
   return md;
 }
 
-const QIcon& GuiFactory::keyIcon() const {
+const QIcon& GuiFactory::GetKeyIcon() const {
   static QIcon db(":" PROJECT_NAME_LOWERCASE "/images/64x64/key.png");
   return db;
 }
 
-const QIcon& GuiFactory::keyTTLIcon() const {
+const QIcon& GuiFactory::GetKeyTTLIcon() const {
   static QIcon db(":" PROJECT_NAME_LOWERCASE "/images/64x64/key_ttl.png");
   return db;
 }
 
-const QIcon& GuiFactory::icon(core::connectionTypes type) const {
+const QIcon& GuiFactory::GetIcon(core::connectionTypes type) const {
   if (type == core::REDIS) {
     return redisConnectionIcon();
   } else if (type == core::MEMCACHED) {
@@ -175,11 +155,11 @@ const QIcon& GuiFactory::icon(core::connectionTypes type) const {
   } else if (type == core::FORESTDB) {
     return forestdbConnectionIcon();
   } else {
-    return serverIcon();
+    return GetServerIcon();
   }
 }
 
-const QIcon& GuiFactory::modeIcon(core::ConnectionMode mode) const {
+const QIcon& GuiFactory::GetModeIcon(core::ConnectionMode mode) const {
   if (mode == core::InteractiveMode) {
     static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/interactive_mode.png");
     return i;
@@ -190,7 +170,7 @@ const QIcon& GuiFactory::modeIcon(core::ConnectionMode mode) const {
   return err;
 }
 
-const QIcon& GuiFactory::icon(common::Value::Type type) const {
+const QIcon& GuiFactory::GetIcon(common::Value::Type type) const {
   const uint8_t ctype = type;
   switch (ctype) {
     case common::Value::TYPE_NULL: {
@@ -255,107 +235,107 @@ const QIcon& GuiFactory::icon(common::Value::Type type) const {
   return err;
 }
 
-const QIcon& GuiFactory::importIcon() const {
+const QIcon& GuiFactory::GetImportIcon() const {
   static QIcon start(":" PROJECT_NAME_LOWERCASE "/images/64x64/import.png");
   return start;
 }
 
-const QIcon& GuiFactory::exportIcon() const {
+const QIcon& GuiFactory::GetExportIcon() const {
   static QIcon start(":" PROJECT_NAME_LOWERCASE "/images/64x64/export.png");
   return start;
 }
 
-const QIcon& GuiFactory::loadIcon() const {
+const QIcon& GuiFactory::GetLoadIcon() const {
   static QIcon start(":" PROJECT_NAME_LOWERCASE "/images/64x64/load.png");
   return start;
 }
 
-const QIcon& GuiFactory::clusterIcon() const {
+const QIcon& GuiFactory::GetClusterIcon() const {
   static QIcon cluster(":" PROJECT_NAME_LOWERCASE "/images/64x64/cluster.png");
   return cluster;
 }
 
-const QIcon& GuiFactory::sentinelIcon() const {
+const QIcon& GuiFactory::GetSentinelIcon() const {
   static QIcon sentinel(":" PROJECT_NAME_LOWERCASE "/images/64x64/sentinel.png");
   return sentinel;
 }
 
-const QIcon& GuiFactory::saveIcon() const {
+const QIcon& GuiFactory::GetSaveIcon() const {
   static QIcon start(":" PROJECT_NAME_LOWERCASE "/images/64x64/save.png");
   return start;
 }
 
-const QIcon& GuiFactory::saveAsIcon() const {
+const QIcon& GuiFactory::GetSaveAsIcon() const {
   static QIcon start(":" PROJECT_NAME_LOWERCASE "/images/64x64/saveas.png");
   return start;
 }
 
-const QIcon& GuiFactory::textIcon() const {
+const QIcon& GuiFactory::GetTextIcon() const {
   static QIcon start(":" PROJECT_NAME_LOWERCASE "/images/64x64/text.png");
   return start;
 }
 
-const QIcon& GuiFactory::tableIcon() const {
+const QIcon& GuiFactory::GetTableIcon() const {
   static QIcon start(":" PROJECT_NAME_LOWERCASE "/images/64x64/table.png");
   return start;
 }
 
-const QIcon& GuiFactory::treeIcon() const {
+const QIcon& GuiFactory::GetTreeIcon() const {
   static QIcon start(":" PROJECT_NAME_LOWERCASE "/images/64x64/tree.png");
   return start;
 }
 
-const QIcon& GuiFactory::loggingIcon() const {
+const QIcon& GuiFactory::GetLoggingIcon() const {
   static QIcon logg(":" PROJECT_NAME_LOWERCASE "/images/64x64/logging.png");
   return logg;
 }
 
-const QIcon& GuiFactory::discoveryIcon() const {
+const QIcon& GuiFactory::GetDiscoveryIcon() const {
   static QIcon discovery(":" PROJECT_NAME_LOWERCASE "/images/64x64/discovery.png");
   return discovery;
 }
 
-const QIcon& GuiFactory::channelIcon() const {
+const QIcon& GuiFactory::GetChannelIcon() const {
   static QIcon channel(":" PROJECT_NAME_LOWERCASE "/images/64x64/channel.png");
   return channel;
 }
 
-const QIcon& GuiFactory::commandIcon() const {
+const QIcon& GuiFactory::GetCommandIcon() const {
   static QIcon comm(":" PROJECT_NAME_LOWERCASE "/images/64x64/command.png");
   return comm;
 }
 
-const QIcon& GuiFactory::encodeDecodeIcon() const {
+const QIcon& GuiFactory::GetEncodeDecodeIcon() const {
   static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/encode_decode.png");
   return main;
 }
 
-const QIcon& GuiFactory::preferencesIcon() const {
+const QIcon& GuiFactory::GetPreferencesIcon() const {
   static QIcon pref(":" PROJECT_NAME_LOWERCASE "/images/64x64/preferences.png");
   return pref;
 }
 
-const QIcon& GuiFactory::leftIcon() const {
+const QIcon& GuiFactory::GetLeftIcon() const {
   static QIcon left = qApp->style()->standardIcon(QStyle::SP_ArrowLeft);
   return left;
 }
 
-const QIcon& GuiFactory::rightIcon() const {
+const QIcon& GuiFactory::GetRightIcon() const {
   static QIcon right = qApp->style()->standardIcon(QStyle::SP_ArrowRight);
   return right;
 }
 
-const QIcon& GuiFactory::close16Icon() const {
+const QIcon& GuiFactory::GetClose16Icon() const {
   static QIcon close(":" PROJECT_NAME_LOWERCASE "/images/16x16/close.png");
   return close;
 }
 
-const QIcon& GuiFactory::search16Icon() const {
+const QIcon& GuiFactory::GetSearch16Icon() const {
   static QIcon search(":" PROJECT_NAME_LOWERCASE "/images/16x16/search.png");
   return search;
 }
 
-const QIcon& GuiFactory::commandIcon(core::connectionTypes type) const {
+const QIcon& GuiFactory::GetCommandIcon(core::connectionTypes type) const {
   if (type == core::REDIS) {
     return redisConnectionIcon();
   } else if (type == core::MEMCACHED) {
@@ -375,30 +355,30 @@ const QIcon& GuiFactory::commandIcon(core::connectionTypes type) const {
   } else if (type == core::UPSCALEDB) {
     return forestdbConnectionIcon();
   } else {
-    return serverIcon();
+    return GetServerIcon();
   }
 }
 
-const QIcon& GuiFactory::successIcon() const {
+const QIcon& GuiFactory::GetSuccessIcon() const {
   static QIcon suc(":" PROJECT_NAME_LOWERCASE "/images/64x64/success.png");
   return suc;
 }
 
-const QIcon& GuiFactory::failIcon() const {
+const QIcon& GuiFactory::GetFailIcon() const {
   static QIcon fail(":" PROJECT_NAME_LOWERCASE "/images/64x64/fail.png");
   return fail;
 }
 
-const QIcon& GuiFactory::unknownIcon() const {
+const QIcon& GuiFactory::GetUnknownIcon() const {
   static QIcon unknown(":" PROJECT_NAME_LOWERCASE "/images/64x64/unknown.png");
   return unknown;
 }
 
-QFont GuiFactory::font() const {
+QFont GuiFactory::GetFont() const {
   return proxy::SettingsManager::GetInstance()->GetCurrentFont();
 }
 
-const QString& GuiFactory::pathToLoadingGif() const {
+const QString& GuiFactory::GetPathToLoadingGif() const {
   static QString path(":" PROJECT_NAME_LOWERCASE "/images/loading.gif");
   return path;
 }

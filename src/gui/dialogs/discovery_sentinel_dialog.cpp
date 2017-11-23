@@ -45,7 +45,7 @@ DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(QWidget* pa
                                                                      proxy::IConnectionSettingsBaseSPtr connection)
     : QDialog(parent) {
   setWindowTitle(translations::trConnectionDiscovery);
-  setWindowIcon(GuiFactory::GetInstance().serverIcon());
+  setWindowIcon(GuiFactory::GetInstance().GetServerIcon());
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
@@ -57,7 +57,7 @@ DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(QWidget* pa
 
   statusLabel_ = new QLabel(translations::trTimeTemplate_1S.arg("calculate..."));
   iconLabel_ = new QLabel;
-  QIcon icon = GuiFactory::GetInstance().failIcon();
+  QIcon icon = GuiFactory::GetInstance().GetFailIcon();
   const QPixmap pm = icon.pixmap(stateIconSize);
   iconLabel_->setPixmap(pm);
 
@@ -90,7 +90,7 @@ DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(QWidget* pa
   setFixedSize(QSize(fix_width, fix_height));
   setLayout(mainLayout);
 
-  glassWidget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().pathToLoadingGif(),
+  glassWidget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().GetPathToLoadingGif(),
                                                   translations::trTryToConnect, 0.5, QColor(111, 111, 100), this);
   testConnection(connection);
 }
@@ -120,7 +120,7 @@ void DiscoverySentinelDiagnosticDialog::connectionResultReady(
   listWidget_->setEnabled(suc);
   listWidget_->clear();
   if (suc) {
-    QIcon icon = GuiFactory::GetInstance().successIcon();
+    QIcon icon = GuiFactory::GetInstance().GetSuccessIcon();
     QPixmap pm = icon.pixmap(stateIconSize);
     iconLabel_->setPixmap(pm);
 

@@ -26,6 +26,7 @@
 #include <QHeaderView>
 #include <QLabel>
 #include <QLineEdit>
+#include <QMessageBox>
 
 #include <common/convert2string.h>
 #include <common/qt/convert2string.h>  // for ConvertToString
@@ -52,7 +53,7 @@ namespace gui {
 DbKeyDialog::DbKeyDialog(const QString& title, core::connectionTypes type, const core::NDbKValue& key, QWidget* parent)
     : QDialog(parent), key_(key) {
   bool is_edit = !key.Equals(core::NDbKValue());
-  setWindowIcon(GuiFactory::GetInstance().icon(type));
+  setWindowIcon(GuiFactory::GetInstance().GetIcon(type));
   setWindowTitle(title);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
@@ -72,7 +73,7 @@ DbKeyDialog::DbKeyDialog(const QString& title, core::connectionTypes type, const
       current_index = static_cast<int>(i);
     }
     QString type = core::GetTypeName(t);
-    types_combo_box_->addItem(GuiFactory::GetInstance().icon(t), type, t);
+    types_combo_box_->addItem(GuiFactory::GetInstance().GetIcon(t), type, t);
   }
 
   typedef void (QComboBox::*ind)(int);
@@ -143,14 +144,17 @@ DbKeyDialog::DbKeyDialog(const QString& title, core::connectionTypes type, const
   retranslateUi();
 }
 
-core::NDbKValue DbKeyDialog::key() const {
+core::NDbKValue DbKeyDialog::GetKey() const {
   return key_;
 }
 
 void DbKeyDialog::accept() {
-  if (validateAndApply()) {
-    QDialog::accept();
+  if (!validateAndApply()) {
+    QMessageBox::warning(this, translations::trInvalidInput, translations::trInvalidInput + "!");
+    return;
   }
+
+  QDialog::accept();
 }
 
 void DbKeyDialog::typeChanged(int index) {
