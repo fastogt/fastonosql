@@ -319,7 +319,7 @@ class BuildRequest(object):
         make_install = build_system_args
         make_install.append('install')
 
-        abs_dir_path = self.build_dir_path_
+        # abs_dir_path = self.build_dir_path_
 
         self.build_snappy(cmake_line, make_install)
         self.build_common(cmake_line, make_install)
@@ -353,14 +353,14 @@ if __name__ == "__main__":
 
     if argc > 3:
         bs_str = sys.argv[3]
-        bs = system_info.get_supported_build_system_by_name(bs_str)
+        args_bs = system_info.get_supported_build_system_by_name(bs_str)
     else:
-        bs = None
+        args_bs = None
 
     if argc > 4:
-        prefix_path = sys.argv[5]
+        args_prefix_path = sys.argv[5]
     else:
-        prefix_path = None
+        args_prefix_path = None
 
     request = BuildRequest(platform_str, arch_bit_str, 'build_' + platform_str + '_env')
-    request.build(bs, prefix_path)
+    request.build(args_bs, args_prefix_path)

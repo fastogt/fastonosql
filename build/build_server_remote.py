@@ -48,7 +48,7 @@ class BuildRpcServer(object):
             self.connection_ = self.connect()
             self.connection_.ioloop.start()
 
-    def on_connection_open(self, unused_connection):
+    def on_connection_open(self, _connection):
         self.add_on_connection_close_callback()
         self.open_channel()
 
@@ -68,19 +68,19 @@ class BuildRpcServer(object):
 
     def setup_exchange(self, exchange_name):
         print("setup_exchange: {0}".format(exchange_name))
-        self.channel_.exchange_declare(self.on_exchange_declareok, exchange_name, self.EXCHANGE_TYPE)
+        self.channel_.exchange_declare(self.on_exchange_declare_ok, exchange_name, self.EXCHANGE_TYPE)
 
-    def on_exchange_declareok(self, unused_frame):
+    def on_exchange_declare_ok(self, _frame):
         self.setup_queue(self.routing_key_)
 
     def setup_queue(self, queue_name):
         print("queue_name: {0}".format(queue_name))
-        self.channel_.queue_declare(self.on_queue_declareok, queue_name)
+        self.channel_.queue_declare(self.on_queue_declare_ok, queue_name)
 
-    def on_queue_declareok(self, method_frame):
-        self.channel_.queue_bind(self.on_bindok, self.routing_key_, self.EXCHANGE, self.routing_key_)
+    def on_queue_declare_ok(self, _frame):
+        self.channel_.queue_bind(self.on_bind_ok, self.routing_key_, self.EXCHANGE, self.routing_key_)
 
-    def on_bindok(self, unused_frame):
+    def on_bind_ok(self, _frame):
         self.start_consuming()
 
     def start_consuming(self):
@@ -88,18 +88,18 @@ class BuildRpcServer(object):
         print("Awaiting RPC build requests")
         self.consumer_tag_ = self.channel_.basic_consume(self.on_request, self.routing_key_)
 
-    def on_consumer_cancelled(self, method_frame):
+    def on_consumer_cancelled(self, _frame):
         if self.channel_:
             self.channel_.close()
 
     def add_on_cancel_callback(self):
         self.channel_.add_on_cancel_callback(self.on_consumer_cancelled)
 
-    def on_channel_closed(self, channel, reply_code, reply_text):
+    def on_channel_closed(self, _channel, reply_code, reply_text):
         print("on_channel_closed reply_code: {0}, reply_text: {1}".format(reply_code, reply_text))
         self.connection_.close()
 
-    def on_connection_closed(self, connection, reply_code, reply_text):
+    def on_connection_closed(self, _connection, reply_code, reply_text):
         print("on_connection_closed reply_code: {0}, reply_text: {1}".format(reply_code, reply_text))
         self.channel_ = None
         if self.closing_:
@@ -122,13 +122,13 @@ class BuildRpcServer(object):
 
         self.send_status(routing_key, op_id, 20.0, 'Building package')
 
-        def store(progress_min, progress_max, routing_key, op_id):
+        def store(progress_min, progress_max, closure_routing_key, closure_op_id):
             def closure(progress, message):
                 diff = progress_max - progress_min
-                perc = round(progress_min + diff * (progress / 100.0), 1)
-                print('{0}% {1}'.format(perc, message))
+                percentage = round(progress_min + diff * (progress / 100.0), 1)
+                print('{0}% {1}'.format(percentage, message))
                 sys.stdout.flush()
-                self.send_status(routing_key, op_id, perc, message)
+                self.send_status(closure_routing_key, closure_op_id, percentage, message)
 
             return closure
 
@@ -165,7 +165,7 @@ class BuildRpcServer(object):
                                         properties=properties,
                                         body=body)
 
-    def on_request(self, ch, method, props, body):
+    def on_request(self, _ch, method, props, body):
         platform_and_arch = '{0}_{1}'.format(self.platform_, self.arch_bit_)
         if isinstance(body, bytes):
             body = body.decode("utf-8")
@@ -177,27 +177,30 @@ class BuildRpcServer(object):
         branding_variables = data.get('branding_variables')
         package_type = data.get('package_type')
         destination = data.get('destination')
-        op_id = props.correlation_id
+        correlation_id = props.correlation_id
         package_types = [package_type]
 
-        self.send_status(props.reply_to, op_id, 0.0, 'Prepare to build package')
-        print('Build started for: {0}, platform: {1}'.format(op_id, platform_and_arch))
+        self.send_status(props.reply_to, correlation_id, 0.0, 'Prepare to build package')
+        print('Build started for: {0}, platform: {1}'.format(correlation_id, platform_and_arch))
         try:
             stabled_options = self.branding_options_
             stabled_options.extend(shlex.split(branding_variables))
-            response = self.build_package(self.platform_, self.arch_bit_, op_id, stabled_options,
+            response = self.build_package(self.platform_, self.arch_bit_, correlation_id, stabled_options,
                                           package_types, destination, props.reply_to)
-            print('Build finished for: {0}, platform: {1}, response: {2}'.format(op_id, platform_and_arch, response))
+            print('Build finished for: {0}, platform: {1}, response: {2}'.format(correlation_id, platform_and_arch,
+                                                                                 response))
             json_to_send = {'body': response}
         except utils.BuildError as ex:
-            print('Build finished for: {0}, platform: {1}, exception: {2}'.format(op_id, platform_and_arch, str(ex)))
+            print('Build finished for: {0}, platform: {1}, exception: {2}'.format(correlation_id, platform_and_arch,
+                                                                                  str(ex)))
             json_to_send = {'error': str(ex)}
         except Exception as ex:
-            print('Build finished for: {0}, platform: {1}, exception: {2}'.format(op_id, platform_and_arch, str(ex)))
+            print('Build finished for: {0}, platform: {1}, exception: {2}'.format(correlation_id, platform_and_arch,
+                                                                                  str(ex)))
             json_to_send = {'error': str(ex)}
 
-        self.send_status(props.reply_to, op_id, 100.0, 'Completed')
-        self.send_response(props.reply_to, op_id, json.dumps(json_to_send))
+        self.send_status(props.reply_to, correlation_id, 100.0, 'Completed')
+        self.send_response(props.reply_to, correlation_id, json.dumps(json_to_send))
         self.acknowledge_message(method.delivery_tag)
 
     def acknowledge_message(self, delivery_tag):
@@ -213,8 +216,8 @@ if __name__ == "__main__":
         try:
             config_name = sys.argv[1]
             config = __import__(config_name)
-        except Exception as ex:
-            print('Failed to open config: {0}'.format(str(ex)))
+        except Exception as gex:
+            print('Failed to open config: {0}'.format(str(gex)))
             print_usage()
             sys.exit(1)
     else:
@@ -238,9 +241,9 @@ if __name__ == "__main__":
 
     if branding_file_path != dev_null:
         abs_branding_file = os.path.abspath(branding_file_path)
-        branding_options = utils.read_file_line_by_line(abs_branding_file)
+        brand_options = utils.read_file_line_by_line(abs_branding_file)
     else:
-        branding_options = []
+        brand_options = []
 
-    server = BuildRpcServer(branding_options, platform_str, arch_str)
+    server = BuildRpcServer(brand_options, platform_str, arch_str)
     server.run()
