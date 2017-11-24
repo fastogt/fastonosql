@@ -5,6 +5,7 @@ import sys
 
 import build
 import pika
+import os
 from pybuild_utils.base import system_info, utils
 
 
@@ -15,15 +16,17 @@ def gen_routing_key(platform, arch) -> str:
 def print_usage():
     print("Usage:\n"
           "[required] argv[1] config file name without extension (placed near script)\n"
-          "[optional] argv[2] platform\n"
-          "[optional] argv[3] architecture\n")
+          "[optional] argv[2] branding_file_path\n"
+          "[optional] argv[3] platform\n"
+          "[optional] argv[4] architecture\n")
 
 
 class BuildRpcServer(object):
     EXCHANGE = 'build_servers_exchange'
     EXCHANGE_TYPE = 'direct'
 
-    def __init__(self, platform, arch_bit):
+    def __init__(self, branding_options, platform, arch_bit):
+        self.branding_options_ = branding_options
         self.connection_ = None
         self.channel_ = None
         self.closing_ = False
@@ -108,7 +111,7 @@ class BuildRpcServer(object):
         self.connection_ = self.connect()
         self.connection_.ioloop.start()
 
-    def build_package(self, platform, arch_bit, op_id, branding_options, package_types, destination, routing_key):
+    def build_package(self, platform, arch_bit, op_id, branding_options: [], package_types, destination, routing_key):
         build_request = build.BuildRequest(platform, arch_bit)
         platform = build_request.platform()
         arch = platform.arch()
@@ -180,7 +183,9 @@ class BuildRpcServer(object):
         self.send_status(props.reply_to, op_id, 0.0, 'Prepare to build package')
         print('Build started for: {0}, platform: {1}'.format(op_id, platform_and_arch))
         try:
-            response = self.build_package(self.platform_, self.arch_bit_, op_id, shlex.split(branding_variables),
+            stabled_options = self.branding_options_
+            stabled_options.extend(shlex.split(branding_variables))
+            response = self.build_package(self.platform_, self.arch_bit_, op_id, stabled_options,
                                           package_types, destination, props.reply_to)
             print('Build finished for: {0}, platform: {1}, response: {2}'.format(op_id, platform_and_arch, response))
             json_to_send = {'body': response}
@@ -202,6 +207,8 @@ class BuildRpcServer(object):
 
 if __name__ == "__main__":
     argc = len(sys.argv)
+    dev_null = '/dev/null'
+
     if argc > 1:
         try:
             config_name = sys.argv[1]
@@ -215,14 +222,25 @@ if __name__ == "__main__":
         sys.exit(1)
 
     if argc > 2:
-        platform_str = sys.argv[2]
+        branding_file_path = sys.argv[2]
+    else:
+        branding_file_path = dev_null
+
+    if argc > 3:
+        platform_str = sys.argv[3]
     else:
         platform_str = system_info.get_os()
 
-    if argc > 3:
-        arch_str = sys.argv[3]
+    if argc > 4:
+        arch_str = sys.argv[4]
     else:
         arch_str = system_info.get_arch_name()
 
-    server = BuildRpcServer(platform_str, arch_str)
+    if branding_file_path != dev_null:
+        abs_branding_file = os.path.abspath(branding_file_path)
+        branding_options = utils.read_file_line_by_line(abs_branding_file)
+    else:
+        branding_options = []
+
+    server = BuildRpcServer(branding_options, platform_str, arch_str)
     server.run()
