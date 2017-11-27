@@ -33,6 +33,7 @@ namespace fastonosql {
 namespace gui {
 
 class HashTypeWidget;
+class StreamTypeWidget;
 class ListTypeWidget;
 
 class DbKeyDialog : public QDialog {
@@ -71,6 +72,7 @@ class DbKeyDialog : public QDialog {
   QComboBox* bool_value_edit_;
   ListTypeWidget* value_list_edit_;
   HashTypeWidget* value_table_edit_;
+  StreamTypeWidget* stream_table_edit_;
 
   core::NDbKValue key_;
 };

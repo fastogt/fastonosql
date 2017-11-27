@@ -2368,10 +2368,19 @@ const ConstantCommandsArray g_commands = {
                   UNDEFINED_SUMMARY,
                   UNDEFINED_SINCE,
                   UNDEFINED_EXAMPLE_STR,
-                  2,
+                  3,
                   INFINITE_COMMAND_ARGS,
                   CommandInfo::Extended,
                   &CommandsApi::Xrange),
+    CommandHolder("XREVRANGE",
+                  "<key> <arg> <arg> <arg> [options...]",
+                  UNDEFINED_SUMMARY,
+                  UNDEFINED_SINCE,
+                  UNDEFINED_EXAMPLE_STR,
+                  3,
+                  INFINITE_COMMAND_ARGS,
+                  CommandInfo::Extended,
+                  &CommandsApi::Xrevrange),
     CommandHolder("XREAD",
                   "<key> <arg> [options...]",
                   UNDEFINED_SUMMARY,
@@ -3520,6 +3529,61 @@ common::Error DBConnection::JsonGetImpl(const NKey& key, NDbKValue* loaded_key) 
 
   CHECK(reply->type == REDIS_REPLY_STRING) << "Unexpected replay type: " << reply->type;
   common::Value* val = new JsonValue(reply->str);
+  *loaded_key = NDbKValue(key, NValue(val));
+  freeReplyObject(reply);
+  return common::Error();
+}
+
+common::Error DBConnection::XAddImpl(const NDbKValue& key, NDbKValue* added_key, std::string* gen_id) {
+  command_buffer_t set_cmd;
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
+  common::Error err = tran->CreateKeyCommand(key, &set_cmd);
+  if (err) {
+    return err;
+  }
+
+  redisReply* reply = NULL;
+  err = ExecRedisCommand(connection_.handle_, set_cmd, &reply);
+  if (err) {
+    return err;
+  }
+
+  CHECK(reply->type == REDIS_REPLY_STATUS) << "Unexpected replay type: " << reply->type;
+  *gen_id = reply->str;
+  *added_key = key;
+  freeReplyObject(reply);
+  return common::Error();
+}
+
+common::Error DBConnection::XRangeImpl(const NKey& key, NDbKValue* loaded_key, fastonosql::core::FastoObject* out) {
+  command_buffer_t get_cmd;
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
+  common::Error err = tran->LoadKeyCommand(key, StreamValue::TYPE_STREAM, &get_cmd);
+  if (err) {
+    return err;
+  }
+
+  redisReply* reply = NULL;
+  err = ExecRedisCommand(connection_.handle_, get_cmd, &reply);
+  if (err) {
+    return err;
+  }
+
+  if (reply->type == REDIS_REPLY_NIL) {
+    // key_t key_str = key.GetKey();
+    return GenerateError("XRANGE", "key not found.");
+  }
+
+  CHECK(reply->type == REDIS_REPLY_ARRAY) << "Unexpected replay type: " << reply->type;
+  err = CliFormatReplyRaw(out, reply);
+  if (err) {
+    return err;
+  }
+
+  StreamValue::stream_id sid;
+  std::vector<StreamValue::Entry> entr;
+  StreamValue* val = new StreamValue(sid);
+  val->SetEntries(entr);
   *loaded_key = NDbKValue(key, NValue(val));
   freeReplyObject(reply);
   return common::Error();
@@ -4850,6 +4914,52 @@ common::Error DBConnection::JsonGet(const NKey& key, NDbKValue* loaded_key) {
   }
 
   err = JsonGetImpl(key, loaded_key);
+  if (err) {
+    return err;
+  }
+
+  if (client_) {
+    client_->OnLoadedKey(*loaded_key);
+  }
+
+  return common::Error();
+}
+
+common::Error DBConnection::XAdd(const NDbKValue& key, NDbKValue* added_key, std::string* gen_id) {
+  if (!added_key || !gen_id) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
+  err = XAddImpl(key, added_key, gen_id);
+  if (err) {
+    return err;
+  }
+
+  if (client_) {
+    client_->OnAddedKey(*added_key);
+  }
+
+  return common::Error();
+}
+
+common::Error DBConnection::XRange(const NKey& key, NDbKValue* loaded_key, FastoObject* out) {
+  if (!loaded_key || !out) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
+  err = XRangeImpl(key, loaded_key, out);
   if (err) {
     return err;
   }

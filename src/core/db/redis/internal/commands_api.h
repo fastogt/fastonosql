@@ -259,6 +259,7 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
   static common::Error Touch(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error Xlen(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error Xrange(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Xrevrange(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error Xread(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error Xadd(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error Asking(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);

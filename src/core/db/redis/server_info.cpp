@@ -116,7 +116,7 @@ std::vector<common::Value::Type> DBTraits<REDIS>::GetSupportedValueTypes() {
           common::Value::TYPE_DOUBLE,  common::Value::TYPE_STRING,
 
           common::Value::TYPE_ARRAY,   common::Value::TYPE_SET,     common::Value::TYPE_ZSET,
-          common::Value::TYPE_HASH,    JsonValue::TYPE_JSON};
+          common::Value::TYPE_HASH,    JsonValue::TYPE_JSON,        StreamValue::TYPE_STREAM};
 }
 
 template <>

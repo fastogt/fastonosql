@@ -27,6 +27,7 @@
 #define REDIS_SET_KEY_SET_COMMAND "SADD"
 #define REDIS_SET_KEY_ZSET_COMMAND "ZADD"
 #define REDIS_SET_KEY_HASH_COMMAND "HMSET"
+#define REDIS_SET_KEY_STREAM_COMMAND "XADD"
 #define REDIS_SET_KEY_JSON_COMMAND "JSON.SET"
 
 #define REDIS_GET_KEY_COMMAND DB_GET_KEY_COMMAND
@@ -327,7 +328,7 @@ common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, comm
   } else if (type == common::Value::TYPE_HASH) {
     wr << REDIS_SET_KEY_HASH_COMMAND " " << key_str.GetKeyForCommandLine() << " " << value_str;
   } else if (type == StreamValue::TYPE_STREAM) {
-    return NotSupported("STREAM.SET");
+    wr << REDIS_SET_KEY_STREAM_COMMAND " " << key_str.GetKeyForCommandLine() << " " << value_str;
   } else if (type == JsonValue::TYPE_JSON) {
     wr << REDIS_SET_KEY_JSON_COMMAND " " << key_str.GetKeyForCommandLine() << " . " << value_str;
   } else if (type == GraphValue::TYPE_GRAPH) {

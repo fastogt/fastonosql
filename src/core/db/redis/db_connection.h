@@ -106,6 +106,10 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
   common::Error JsonSet(const NDbKValue& key, NDbKValue* added_key) WARN_UNUSED_RESULT;
   common::Error JsonGet(const NKey& key, NDbKValue* loaded_key) WARN_UNUSED_RESULT;
 
+  // stream
+  common::Error XAdd(const NDbKValue& key, NDbKValue* added_key, std::string* gen_id) WARN_UNUSED_RESULT;
+  common::Error XRange(const NKey& key, NDbKValue* loaded_key, FastoObject* out) WARN_UNUSED_RESULT;
+
   common::Error PExpire(const NKey& key,
                         ttl_t ttl) WARN_UNUSED_RESULT;  // PEXPIRE works differently than in redis protocol
   common::Error PTTL(const NKey& key, pttl_t* ttl) WARN_UNUSED_RESULT;
@@ -115,6 +119,9 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
  private:
   common::Error JsonSetImpl(const NDbKValue& key, NDbKValue* added_key);
   common::Error JsonGetImpl(const NKey& key, NDbKValue* loaded_key);
+
+  common::Error XAddImpl(const NDbKValue& key, NDbKValue* added_key, std::string* gen_id);
+  common::Error XRangeImpl(const NKey& key, NDbKValue* loaded_key, FastoObject* out);
 
   virtual common::Error ScanImpl(uint64_t cursor_in,
                                  const std::string& pattern,

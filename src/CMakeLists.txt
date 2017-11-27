@@ -345,6 +345,7 @@ SET(HEADERS_GUI_WIDGETS_TO_MOC
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/user_password_widget.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/list_type_widget.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/type_delegate.h
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/stream_type_widget.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/hash_type_widget.h
 )
 
@@ -364,6 +365,7 @@ SET(SOURCES_GUI_WIDGETS
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/user_password_widget.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/list_type_widget.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/type_delegate.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/stream_type_widget.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/hash_type_widget.cpp
 )
 
@@ -388,6 +390,7 @@ SET(HEADERS_GUI_TO_MOC
   ${CMAKE_SOURCE_DIR}/src/gui/keys_table_view.h
   ${CMAKE_SOURCE_DIR}/src/gui/fasto_scintilla.h
   ${CMAKE_SOURCE_DIR}/src/gui/hash_table_model.h
+  ${CMAKE_SOURCE_DIR}/src/gui/stream_table_model.h
   ${CMAKE_SOURCE_DIR}/src/gui/action_cell_delegate.h
 )
 SET(HEADERS_GUI
@@ -430,6 +433,7 @@ SET(SOURCES_GUI
   ${CMAKE_SOURCE_DIR}/src/gui/fasto_scintilla.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/connection_widgets_factory.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/hash_table_model.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/stream_table_model.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/action_cell_delegate.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/key_value_table_item.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/utils.cpp

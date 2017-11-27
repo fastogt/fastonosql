@@ -25,15 +25,29 @@ namespace core {
 
 class StreamValue : public common::Value {
  public:
+  struct Entry {
+    std::string name;
+    std::string value;
+  };
+  typedef std::string stream_id;
+
   static const common::Value::Type TYPE_STREAM = static_cast<common::Value::Type>(common::Value::USER_TYPES + 1);
-  StreamValue(const std::string& stream_value);
+  explicit StreamValue(stream_id sid, const std::vector<Entry>& entries = std::vector<Entry>());
   virtual ~StreamValue();
 
+  virtual bool GetAsString(std::string* out_value) const override WARN_UNUSED_RESULT;
   virtual StreamValue* DeepCopy() const override;
   virtual bool Equals(const Value* other) const override;
 
+  stream_id GetID() const;
+  void SetID(stream_id sid);
+
+  std::vector<Entry> GetEntries() const;
+  void SetEntries(const std::vector<Entry>& entries);
+
  private:
-  std::string value_;
+  stream_id id_;
+  std::vector<Entry> entries_;
   DISALLOW_COPY_AND_ASSIGN(StreamValue);
 };
 
@@ -107,6 +121,8 @@ std::string ConvertValue(common::ByteArrayValue* value, const std::string& delim
 std::string ConvertValue(StreamValue* value, const std::string& delimiter, bool for_cmd);
 // extended
 std::string ConvertValue(JsonValue* value, const std::string& delimiter, bool for_cmd);
+std::string ConvertValue(GraphValue* value, const std::string& delimiter, bool for_cmd);
+std::string ConvertValue(SearchValue* value, const std::string& delimiter, bool for_cmd);
 
 std::string ConvertToHumanReadable(common::Value* value, const std::string& delimiter = std::string());
 

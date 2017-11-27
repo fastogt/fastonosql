@@ -86,12 +86,25 @@ static_assert(arraysize(string_types) == static_cast<size_t>(common::Value::Type
               "string_types Has Wrong Size");
 }  // namespace
 
-StreamValue::StreamValue(const std::string& stream_value): Value(TYPE_STREAM), value_(stream_value) {}
+StreamValue::StreamValue(fastonosql::core::StreamValue::stream_id sid, const std::vector<Entry>& entries)
+    : Value(TYPE_STREAM), id_(sid), entries_(entries) {}
 
 StreamValue::~StreamValue() {}
 
+bool StreamValue::GetAsString(std::string* out_value) const {
+  if (out_value) {
+    std::string lout = id_;
+    for (size_t i = 0; i < entries_.size(); ++i) {
+      lout += " " + entries_[i].name + " " + entries_[i].value;
+    }
+    *out_value = lout;
+  }
+
+  return true;
+}
+
 StreamValue* StreamValue::DeepCopy() const {
-  return new StreamValue(value_);
+  return new StreamValue(id_, entries_);
 }
 
 bool StreamValue::Equals(const Value* other) const {
@@ -101,6 +114,22 @@ bool StreamValue::Equals(const Value* other) const {
 
   std::string lhs, rhs;
   return GetAsString(&lhs) && other->GetAsString(&rhs) && lhs == rhs;
+}
+
+StreamValue::stream_id StreamValue::GetID() const {
+  return id_;
+}
+
+void StreamValue::SetID(stream_id sid) {
+  id_ = sid;
+}
+
+std::vector<StreamValue::Entry> StreamValue::GetEntries() const {
+  return entries_;
+}
+
+void StreamValue::SetEntries(const std::vector<Entry>& entries) {
+  entries_ = entries;
 }
 
 JsonValue::JsonValue(const std::string& json_value) : Value(TYPE_JSON), value_(json_value) {}
@@ -319,11 +348,11 @@ std::string ConvertValue(common::Value* value, const std::string& delimiter, boo
   } else if (t == JsonValue::TYPE_JSON) {
     return ConvertValue(static_cast<JsonValue*>(value), delimiter, for_cmd);
   } else if (t == GraphValue::TYPE_GRAPH) {
-    return std::string();
+    return ConvertValue(static_cast<GraphValue*>(value), delimiter, for_cmd);
   } else if (t == SearchValue::TYPE_FT_INDEX) {
-    return std::string();
+    return ConvertValue(static_cast<SearchValue*>(value), delimiter, for_cmd);
   } else if (t == SearchValue::TYPE_FT_TERM) {
-    return std::string();
+    return ConvertValue(static_cast<SearchValue*>(value), delimiter, for_cmd);
   }
 
   DNOTREACHED();
@@ -522,6 +551,7 @@ std::string ConvertValue(common::ByteArrayValue* value, const std::string& delim
 
 std::string ConvertValue(StreamValue* value, const std::string& delimiter, bool for_cmd) {
   UNUSED(delimiter);
+  UNUSED(for_cmd);
   if (!value) {
     return std::string();
   }
@@ -529,14 +559,6 @@ std::string ConvertValue(StreamValue* value, const std::string& delimiter, bool 
   std::string res;
   if (!value->GetAsString(&res)) {
     return std::string();
-  }
-
-  if (!for_cmd) {
-    return res;
-  }
-
-  if (detail::have_space(res)) {
-    return "\"" + res + "\"";
   }
 
   return res;
@@ -562,6 +584,20 @@ std::string ConvertValue(JsonValue* value, const std::string& delimiter, bool fo
   }
 
   return res;
+}
+
+std::string ConvertValue(GraphValue* value, const std::string& delimiter, bool for_cmd) {
+  UNUSED(value);
+  UNUSED(delimiter);
+  UNUSED(for_cmd);
+  return std::string();
+}
+
+std::string ConvertValue(SearchValue* value, const std::string& delimiter, bool for_cmd) {
+  UNUSED(value);
+  UNUSED(delimiter);
+  UNUSED(for_cmd);
+  return std::string();
 }
 
 std::string ConvertToHumanReadable(common::Value* value, const std::string& delimiter) {

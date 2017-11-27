@@ -36,6 +36,7 @@
 
 #include "gui/widgets/hash_type_widget.h"
 #include "gui/widgets/list_type_widget.h"
+#include "gui/widgets/stream_type_widget.h"
 
 #include "gui/dialogs/input_dialog.h"  // for InputDialog, etc
 #include "gui/gui_factory.h"           // for GuiFactory
@@ -113,6 +114,10 @@ DbKeyDialog::DbKeyDialog(const QString& title, core::connectionTypes type, const
   kvLayout->addWidget(value_table_edit_, 2, 1);
   value_table_edit_->setVisible(false);
 
+  stream_table_edit_ = new StreamTypeWidget;
+  kvLayout->addWidget(stream_table_edit_, 2, 1);
+  stream_table_edit_->setVisible(false);
+
   general_box_ = new QGroupBox(this);
   general_box_->setLayout(kvLayout);
 
@@ -163,6 +168,7 @@ void DbKeyDialog::typeChanged(int index) {
 
   value_edit_->clear();
   value_table_edit_->clear();
+  stream_table_edit_->clear();
   value_list_edit_->clear();
 
   if (type == common::Value::TYPE_ARRAY || type == common::Value::TYPE_SET) {
@@ -170,21 +176,31 @@ void DbKeyDialog::typeChanged(int index) {
     value_edit_->setVisible(false);
     bool_value_edit_->setVisible(false);
     value_table_edit_->setVisible(false);
+    stream_table_edit_->setVisible(false);
   } else if (type == common::Value::TYPE_ZSET || type == common::Value::TYPE_HASH) {
     value_table_edit_->setVisible(true);
+    stream_table_edit_->setVisible(false);
     value_edit_->setVisible(false);
     bool_value_edit_->setVisible(false);
     value_list_edit_->setVisible(false);
   } else if (type == common::Value::TYPE_BOOLEAN) {
     value_table_edit_->setVisible(false);
+    stream_table_edit_->setVisible(false);
     value_edit_->setVisible(false);
     bool_value_edit_->setVisible(true);
+    value_list_edit_->setVisible(false);
+  } else if (type == core::StreamValue::TYPE_STREAM) {
+    value_table_edit_->setVisible(false);
+    stream_table_edit_->setVisible(true);
+    value_edit_->setVisible(false);
+    bool_value_edit_->setVisible(false);
     value_list_edit_->setVisible(false);
   } else {
     value_edit_->setVisible(true);
     bool_value_edit_->setVisible(false);
     value_list_edit_->setVisible(false);
     value_table_edit_->setVisible(false);
+    stream_table_edit_->setVisible(false);
     if (type == common::Value::TYPE_INTEGER || type == common::Value::TYPE_UINTEGER) {
       value_edit_->setValidator(new QIntValidator(this));
     } else if (type == common::Value::TYPE_DOUBLE) {
@@ -287,6 +303,27 @@ void DbKeyDialog::syncControls(common::Value* item) {
         }
       }
     }
+  } else if (t == core::StreamValue::TYPE_STREAM) {
+    core::StreamValue* stream = static_cast<core::StreamValue*>(item);
+    std::vector<core::StreamValue::Entry> entr = stream->GetEntries();
+    for (size_t i = 0; i != entr.size(); ++i) {
+      core::StreamValue::Entry ent = entr[i];
+      std::string key_str = ent.name;
+      if (key_str.empty()) {
+        continue;
+      }
+
+      std::string value_str = ent.value;
+      if (value_str.empty()) {
+        continue;
+      }
+
+      QString ftext;
+      QString stext;
+      if (common::ConvertFromString(key_str, &ftext) && common::ConvertFromString(value_str, &stext)) {
+        stream_table_edit_->insertEntry(ftext, stext);
+      }
+    }
   } else if (t == common::Value::TYPE_BOOLEAN) {
     bool val;
     if (item->GetAsBoolean(&val)) {
@@ -339,6 +376,8 @@ common::Value* DbKeyDialog::item() const {
     return value_table_edit_->zsetValue();
   } else if (type == common::Value::TYPE_HASH) {
     return value_table_edit_->hashValue();
+  } else if (type == core::StreamValue::TYPE_STREAM) {
+    return stream_table_edit_->GetStreamValue();
   } else if (type == common::Value::TYPE_BOOLEAN) {
     int index = bool_value_edit_->currentIndex();
     return common::Value::CreateBooleanValue(index == 0);

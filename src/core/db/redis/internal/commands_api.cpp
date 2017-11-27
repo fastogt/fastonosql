@@ -1514,9 +1514,22 @@ common::Error CommandsApi::Xlen(internal::CommandHandler* handler, commands_args
 }
 
 common::Error CommandsApi::Xrange(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  key_t raw_key(argv[0]);
+  NKey key(raw_key);
+
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  NDbKValue key_loaded;
+  common::Error err = red->XRange(key, &key_loaded, out);
+  if (err) {
+    return err;
+  }
+  return common::Error();
+}
+
+common::Error CommandsApi::Xrevrange(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   UNUSED(argv);
   DBConnection* red = static_cast<DBConnection*>(handler);
-  return red->CommonExec(ExpandCommand({"XRANGE"}, argv), out);
+  return red->CommonExec(ExpandCommand({"XREVRANGE"}, argv), out);
 }
 
 common::Error CommandsApi::Xread(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
@@ -1526,9 +1539,32 @@ common::Error CommandsApi::Xread(internal::CommandHandler* handler, commands_arg
 }
 
 common::Error CommandsApi::Xadd(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
-  UNUSED(argv);
+  key_t raw_key(argv[0]);
+  NKey key(raw_key);
+
+  StreamValue::stream_id sid = argv[1];
+  StreamValue* stream = new StreamValue(sid);
+  std::vector<StreamValue::Entry> entr;
+  for (size_t i = 2; i < argv.size(); i += 2) {
+    std::string key = argv[i];
+    std::string val = argv[i + 1];
+    entr.push_back(StreamValue::Entry{key, val});
+  }
+  stream->SetEntries(entr);
+  NDbKValue kv(key, NValue(stream));
+
   DBConnection* red = static_cast<DBConnection*>(handler);
-  return red->CommonExec(ExpandCommand({"XADD"}, argv), out);
+  NDbKValue key_added;
+  StreamValue::stream_id gen_id;
+  common::Error err = red->XAdd(kv, &key_added, &gen_id);
+  if (err) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::CreateStringValue(gen_id);
+  FastoObject* child = new FastoObject(out, val, red->GetDelimiter());
+  out->AddChildren(child);
+  return common::Error();
 }
 
 common::Error CommandsApi::PFSelfTest(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
