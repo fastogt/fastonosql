@@ -130,6 +130,7 @@ core::StreamValue* StreamTableModel::GetStreamValue(core::StreamValue::stream_id
     return nullptr;
   }
 
+  core::StreamValue::streams_t streams;
   std::vector<core::StreamValue::Entry> entries;
   for (size_t i = 0; i < data_.size() - 1; ++i) {
     KeyValueTableItem* node = static_cast<KeyValueTableItem*>(data_[i]);
@@ -137,13 +138,14 @@ core::StreamValue* StreamTableModel::GetStreamValue(core::StreamValue::stream_id
     std::string val = common::ConvertToString(node->GetValue());
     entries.push_back(core::StreamValue::Entry{key, val});
   }
+  streams.push_back({sid, entries});
 
-  if (entries.empty()) {
+  if (streams.empty()) {
     return nullptr;
   }
 
-  core::StreamValue* sv = new core::StreamValue(sid);
-  sv->SetEntries(entries);
+  core::StreamValue* sv = new core::StreamValue;
+  sv->SetStreams(streams);
   return sv;
 }
 

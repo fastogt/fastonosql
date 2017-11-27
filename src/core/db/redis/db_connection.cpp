@@ -3580,10 +3580,39 @@ common::Error DBConnection::XRangeImpl(const NKey& key, NDbKValue* loaded_key, f
     return err;
   }
 
-  StreamValue::stream_id sid;
-  std::vector<StreamValue::Entry> entr;
-  StreamValue* val = new StreamValue(sid);
-  val->SetEntries(entr);
+  StreamValue* val = new StreamValue;
+  FastoObject::childs_t child = out->GetChildrens();
+  common::ArrayValue* arr = static_cast<common::ArrayValue*>(child[0]->GetValue().get());
+  StreamValue::streams_t streams;
+  for (size_t i = 0; i < arr->GetSize(); ++i) {
+    StreamValue::stream_id sid;
+    std::vector<StreamValue::Entry> entr;
+    common::Value* lval = nullptr;
+    common::ArrayValue* inner_arr = nullptr;
+    if (arr->Get(i, &lval) && lval->GetAsList(&inner_arr)) {
+      common::Value* vid = nullptr;
+      common::Value* lentries = nullptr;
+      common::ArrayValue* entries = nullptr;
+      CHECK_EQ(inner_arr->GetSize(), 2);
+      if (inner_arr->Get(0, &vid) && vid->GetAsString(&sid) && inner_arr->Get(1, &lentries) &&
+          lentries->GetAsList(&entries)) {
+        for (size_t j = 0; j < entries->GetSize(); j += 2) {
+          common::Value* entr_key = nullptr;
+          common::Value* entr_val = nullptr;
+          if (entries->Get(j, &entr_key) && entries->Get(j + 1, &entr_val)) {
+            std::string key;
+            std::string value;
+            if (entr_key->GetAsString(&key) && entr_val->GetAsString(&value)) {
+              entr.push_back(StreamValue::Entry{key, value});
+            }
+          }
+        }
+      }
+      streams.push_back(StreamValue::Stream{sid, entr});
+    }
+  }
+  val->SetStreams(streams);
+
   *loaded_key = NDbKValue(key, NValue(val));
   freeReplyObject(reply);
   return common::Error();

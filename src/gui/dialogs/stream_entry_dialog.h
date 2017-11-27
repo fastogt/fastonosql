@@ -18,33 +18,35 @@
 
 #pragma once
 
-#include <QLabel>
 #include <QTableView>
+#include <QLabel>
+#include <QDialog>
 
-#include "core/value.h"
+#include <common/value.h>
 
 namespace fastonosql {
 namespace gui {
 
-class HashTableModel;
+class StreamTableModel;
 
-class StreamTypeWidget : public QTableView {
+class StreamEntryDialog : public QDialog {
   Q_OBJECT
  public:
-  explicit StreamTypeWidget(QWidget* parent = Q_NULLPTR);
+  explicit StreamEntryDialog(QWidget* parent = Q_NULLPTR);
+  virtual ~StreamEntryDialog();
 
-  core::StreamValue* GetStreamValue() const;  // alocate memory
-
-  void insertStream(const core::StreamValue::Stream& sid);
+  void insertEntry(const QString& first, const QString& second);
   void clear();
 
  private Q_SLOTS:
-  void addRow(const QModelIndex& index);
+  void insertRow(const QModelIndex& index);
   void removeRow(const QModelIndex& index);
 
  private:
-  HashTableModel* model_;
-  std::vector<core::StreamValue::Stream> streams_;
+  QLabel* entry_label_;
+  QLineEdit* id_edit_;
+  QTableView* table_;
+  StreamTableModel* model_;
 };
 
 }  // namespace gui

@@ -86,16 +86,23 @@ static_assert(arraysize(string_types) == static_cast<size_t>(common::Value::Type
               "string_types Has Wrong Size");
 }  // namespace
 
-StreamValue::StreamValue(fastonosql::core::StreamValue::stream_id sid, const std::vector<Entry>& entries)
-    : Value(TYPE_STREAM), id_(sid), entries_(entries) {}
+StreamValue::StreamValue() : Value(TYPE_STREAM), streams_() {}
 
 StreamValue::~StreamValue() {}
 
 bool StreamValue::GetAsString(std::string* out_value) const {
   if (out_value) {
-    std::string lout = id_;
-    for (size_t i = 0; i < entries_.size(); ++i) {
-      lout += " " + entries_[i].name + " " + entries_[i].value;
+    std::string lout;
+    for (size_t i = 0; i < streams_.size(); ++i) {
+      Stream cur_str = streams_[i];
+      if (i != 0) {
+        lout += " ";
+      }
+
+      lout += streams_[i].id_;
+      for (size_t j = 0; j < cur_str.entries_.size(); ++j) {
+        lout += cur_str.entries_[i].name + " " + cur_str.entries_[i].value;
+      }
     }
     *out_value = lout;
   }
@@ -104,7 +111,9 @@ bool StreamValue::GetAsString(std::string* out_value) const {
 }
 
 StreamValue* StreamValue::DeepCopy() const {
-  return new StreamValue(id_, entries_);
+  StreamValue* str = new StreamValue();
+  str->SetStreams(streams_);
+  return str;
 }
 
 bool StreamValue::Equals(const Value* other) const {
@@ -116,20 +125,12 @@ bool StreamValue::Equals(const Value* other) const {
   return GetAsString(&lhs) && other->GetAsString(&rhs) && lhs == rhs;
 }
 
-StreamValue::stream_id StreamValue::GetID() const {
-  return id_;
+StreamValue::streams_t StreamValue::GetStreams() const {
+  return streams_;
 }
 
-void StreamValue::SetID(stream_id sid) {
-  id_ = sid;
-}
-
-std::vector<StreamValue::Entry> StreamValue::GetEntries() const {
-  return entries_;
-}
-
-void StreamValue::SetEntries(const std::vector<Entry>& entries) {
-  entries_ = entries;
+void StreamValue::SetStreams(const streams_t& streams) {
+  streams_ = streams;
 }
 
 JsonValue::JsonValue(const std::string& json_value) : Value(TYPE_JSON), value_(json_value) {}
@@ -246,7 +247,7 @@ common::Value* CreateEmptyValueFromType(common::Value::Type value_type) {
       return common::Value::CreateHashValue();
     // extended
     case StreamValue::TYPE_STREAM:
-      return new StreamValue(std::string());
+      return new StreamValue;
     case JsonValue::TYPE_JSON:
       return new JsonValue(std::string());
     case GraphValue::TYPE_GRAPH:

@@ -253,6 +253,7 @@ SET(HEADERS_GUI_DIALOGS_TO_MOC
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_connection.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_sentinel_connection.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/test_connection.h
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/stream_entry_dialog.h
 )
 
 SET(HEADERS_GUI_DIALOGS
@@ -284,6 +285,7 @@ SET(SOURCES_GUI_DIALOGS
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_connection.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_sentinel_connection.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/test_connection.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/stream_entry_dialog.cpp
 )
 
 SET(HEADERS_GUI_EDITOR_TO_MOC

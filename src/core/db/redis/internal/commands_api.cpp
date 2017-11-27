@@ -1543,14 +1543,14 @@ common::Error CommandsApi::Xadd(internal::CommandHandler* handler, commands_args
   NKey key(raw_key);
 
   StreamValue::stream_id sid = argv[1];
-  StreamValue* stream = new StreamValue(sid);
+  StreamValue* stream = new StreamValue;
   std::vector<StreamValue::Entry> entr;
   for (size_t i = 2; i < argv.size(); i += 2) {
     std::string key = argv[i];
     std::string val = argv[i + 1];
     entr.push_back(StreamValue::Entry{key, val});
   }
-  stream->SetEntries(entr);
+  stream->SetStreams({StreamValue::Stream{sid, entr}});
   NDbKValue kv(key, NValue(stream));
 
   DBConnection* red = static_cast<DBConnection*>(handler);

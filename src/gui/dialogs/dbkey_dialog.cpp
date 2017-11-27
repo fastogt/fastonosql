@@ -305,37 +305,23 @@ void DbKeyDialog::syncControls(common::Value* item) {
     }
   } else if (t == core::StreamValue::TYPE_STREAM) {
     core::StreamValue* stream = static_cast<core::StreamValue*>(item);
-    std::vector<core::StreamValue::Entry> entr = stream->GetEntries();
+    auto entr = stream->GetStreams();
     for (size_t i = 0; i != entr.size(); ++i) {
-      core::StreamValue::Entry ent = entr[i];
-      std::string key_str = ent.name;
-      if (key_str.empty()) {
-        continue;
-      }
-
-      std::string value_str = ent.value;
-      if (value_str.empty()) {
-        continue;
-      }
-
-      QString ftext;
-      QString stext;
-      if (common::ConvertFromString(key_str, &ftext) && common::ConvertFromString(value_str, &stext)) {
-        stream_table_edit_->insertEntry(ftext, stext);
-      }
+      auto ent = entr[i];
+      stream_table_edit_->insertStream(ent);
     }
   } else if (t == common::Value::TYPE_BOOLEAN) {
     bool val;
     if (item->GetAsBoolean(&val)) {
       bool_value_edit_->setCurrentIndex(val ? 0 : 1);
     }
-  }
-
-  std::string text;
-  if (item->GetAsString(&text)) {
-    QString qval;
-    if (common::ConvertFromString(text, &qval)) {
-      value_edit_->setText(qval);
+  } else {
+    std::string text;
+    if (item->GetAsString(&text)) {
+      QString qval;
+      if (common::ConvertFromString(text, &qval)) {
+        value_edit_->setText(qval);
+      }
     }
   }
 }

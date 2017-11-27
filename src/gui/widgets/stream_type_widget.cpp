@@ -18,57 +18,36 @@
 
 #include "gui/widgets/stream_type_widget.h"
 
-#include <QHeaderView>
-#include <QVBoxLayout>
-#include <QLineEdit>
-
-#include <common/qt/utils_qt.h>
 #include <common/qt/convert2string.h>
+#include <common/qt/utils_qt.h>
 
 #include "gui/action_cell_delegate.h"
+#include "gui/hash_table_model.h"
 #include "gui/key_value_table_item.h"
-#include "gui/stream_table_model.h"
-
-#define DEFAILT_ID "*"
 
 namespace fastonosql {
 namespace gui {
 
-StreamTypeWidget::StreamTypeWidget(QWidget* parent) : QWidget(parent), model_(nullptr) {
-  QVBoxLayout* bl = new QVBoxLayout;
+StreamTypeWidget::StreamTypeWidget(QWidget* parent) : QTableView(parent) {
+  model_ = new HashTableModel(this);
+  setModel(model_);
 
-  QHBoxLayout* id_layout = new QHBoxLayout;
-  entry_label_ = new QLabel("ID");
-  id_layout->addWidget(entry_label_);
-
-  id_edit_ = new QLineEdit(DEFAILT_ID, this);
-  QRegExp rx(".+");
-  id_edit_->setValidator(new QRegExpValidator(rx, this));
-  id_layout->addWidget(id_edit_);
-  bl->addLayout(id_layout);
-
-  table_ = new QTableView(this);
-  table_->horizontalHeader()->hide();
-  table_->verticalHeader()->hide();
-  model_ = new StreamTableModel(this);
-  table_->setModel(model_);
+  setColumnHidden(KeyValueTableItem::kValue, true);
 
   ActionDelegate* del = new ActionDelegate(this);
-  VERIFY(connect(del, &ActionDelegate::addClicked, this, &StreamTypeWidget::insertRow));
+  VERIFY(connect(del, &ActionDelegate::addClicked, this, &StreamTypeWidget::addRow));
   VERIFY(connect(del, &ActionDelegate::removeClicked, this, &StreamTypeWidget::removeRow));
 
-  table_->setItemDelegateForColumn(KeyValueTableItem::kAction, del);
-  table_->setContextMenuPolicy(Qt::ActionsContextMenu);
-  table_->setSelectionBehavior(QAbstractItemView::SelectRows);
-  bl->addWidget(table_);
-
-  setLayout(bl);
+  setItemDelegateForColumn(KeyValueTableItem::kAction, del);
+  setContextMenuPolicy(Qt::ActionsContextMenu);
+  setSelectionBehavior(QAbstractItemView::SelectRows);
 }
 
-StreamTypeWidget::~StreamTypeWidget() {}
-
-void StreamTypeWidget::insertEntry(const QString& first, const QString& second) {
-  model_->insertEntry(first, second);
+void StreamTypeWidget::insertStream(const core::StreamValue::Stream& sid) {
+  streams_.push_back(sid);
+  QString qsid;
+  common::ConvertFromString(sid.id_, &qsid);
+  model_->insertRow(qsid, QString());
 }
 
 void StreamTypeWidget::clear() {
@@ -76,21 +55,22 @@ void StreamTypeWidget::clear() {
 }
 
 core::StreamValue* StreamTypeWidget::GetStreamValue() const {
-  QString id_text = id_edit_->text();
-  if (id_text.isEmpty()) {
+  if (streams_.empty()) {
     return nullptr;
   }
 
-  return model_->GetStreamValue(common::ConvertToString(id_text));
+  core::StreamValue* str = new core::StreamValue;
+  str->SetStreams(streams_);
+  return str;
 }
 
-void StreamTypeWidget::insertRow(const QModelIndex& index) {
+void StreamTypeWidget::addRow(const QModelIndex& index) {
   KeyValueTableItem* node = common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
-  model_->insertEntry(node->GetKey(), node->GetValue());
+  model_->insertRow(node->GetKey(), node->GetValue());
 }
 
 void StreamTypeWidget::removeRow(const QModelIndex& index) {
-  model_->removeEntry(index.row());
+  model_->removeRow(index.row());
 }
 
 }  // namespace gui

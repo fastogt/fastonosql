@@ -30,24 +30,25 @@ class StreamValue : public common::Value {
     std::string value;
   };
   typedef std::string stream_id;
+  struct Stream {
+    stream_id id_;
+    std::vector<Entry> entries_;
+  };
+  typedef std::vector<Stream> streams_t;
 
   static const common::Value::Type TYPE_STREAM = static_cast<common::Value::Type>(common::Value::USER_TYPES + 1);
-  explicit StreamValue(stream_id sid, const std::vector<Entry>& entries = std::vector<Entry>());
+  explicit StreamValue();
   virtual ~StreamValue();
 
   virtual bool GetAsString(std::string* out_value) const override WARN_UNUSED_RESULT;
   virtual StreamValue* DeepCopy() const override;
   virtual bool Equals(const Value* other) const override;
 
-  stream_id GetID() const;
-  void SetID(stream_id sid);
-
-  std::vector<Entry> GetEntries() const;
-  void SetEntries(const std::vector<Entry>& entries);
+  streams_t GetStreams() const;
+  void SetStreams(const streams_t& streams);
 
  private:
-  stream_id id_;
-  std::vector<Entry> entries_;
+  streams_t streams_;
   DISALLOW_COPY_AND_ASSIGN(StreamValue);
 };
 
