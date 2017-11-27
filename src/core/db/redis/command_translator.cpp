@@ -34,6 +34,7 @@
 #define REDIS_GET_KEY_SET_COMMAND "SMEMBERS"
 #define REDIS_GET_KEY_ZSET_COMMAND "ZRANGE"
 #define REDIS_GET_KEY_HASH_COMMAND "HGETALL"
+#define REDIS_GET_KEY_STREAM_COMMAND "XRANGE"
 #define REDIS_GET_KEY_JSON_COMMAND "JSON.GET"
 
 #define REDIS_DELETE_KEY_COMMAND DB_DELETE_KEY_COMMAND
@@ -325,6 +326,8 @@ common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, comm
     wr << REDIS_SET_KEY_ZSET_COMMAND " " << key_str.GetKeyForCommandLine() << " " << value_str;
   } else if (type == common::Value::TYPE_HASH) {
     wr << REDIS_SET_KEY_HASH_COMMAND " " << key_str.GetKeyForCommandLine() << " " << value_str;
+  } else if (type == StreamValue::TYPE_STREAM) {
+    return NotSupported("STREAM.SET");
   } else if (type == JsonValue::TYPE_JSON) {
     wr << REDIS_SET_KEY_JSON_COMMAND " " << key_str.GetKeyForCommandLine() << " . " << value_str;
   } else if (type == GraphValue::TYPE_GRAPH) {
@@ -356,12 +359,14 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
     wr << REDIS_GET_KEY_ZSET_COMMAND " " << key_str.GetKeyForCommandLine() << " 0 -1 WITHSCORES";
   } else if (type == common::Value::TYPE_HASH) {
     wr << REDIS_GET_KEY_HASH_COMMAND " " << key_str.GetKeyForCommandLine();
+  } else if (type == StreamValue::TYPE_STREAM) {
+    wr << REDIS_GET_KEY_STREAM_COMMAND " " << key_str.GetKeyForCommandLine() << " - +";
   } else if (type == GraphValue::TYPE_GRAPH) {
-    return NotSupported("GRAPH.GET");
+    return NotSupported(REDIS_GRAPH_MODULE_COMMAND("GET"));
   } else if (type == SearchValue::TYPE_FT_INDEX) {
-    return NotSupported("FT.INDEX.GET");
+    return NotSupported(REDIS_SEARCH_MODULE_COMMAND("INDEX.GET"));
   } else if (type == SearchValue::TYPE_FT_TERM) {
-    return NotSupported("FT.DOC.GET");
+    return NotSupported(REDIS_SEARCH_MODULE_COMMAND("DOC.GET"));
   } else {
     wr << REDIS_GET_KEY_COMMAND " " << key_str.GetKeyForCommandLine();
   }

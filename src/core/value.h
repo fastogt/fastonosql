@@ -23,9 +23,23 @@
 namespace fastonosql {
 namespace core {
 
+class StreamValue : public common::Value {
+ public:
+  static const common::Value::Type TYPE_STREAM = static_cast<common::Value::Type>(common::Value::USER_TYPES + 1);
+  StreamValue(const std::string& stream_value);
+  virtual ~StreamValue();
+
+  virtual StreamValue* DeepCopy() const override;
+  virtual bool Equals(const Value* other) const override;
+
+ private:
+  std::string value_;
+  DISALLOW_COPY_AND_ASSIGN(StreamValue);
+};
+
 class JsonValue : public common::Value {  // simple json class value, only save string without validation
  public:
-  static const common::Value::Type TYPE_JSON = static_cast<common::Value::Type>(common::Value::USER_TYPES + 1);
+  static const common::Value::Type TYPE_JSON = static_cast<common::Value::Type>(common::Value::USER_TYPES + 2);
   explicit JsonValue(const std::string& json_value);
   virtual ~JsonValue();
 
@@ -42,7 +56,7 @@ class JsonValue : public common::Value {  // simple json class value, only save 
 
 class GraphValue : public common::Value {
  public:
-  static const common::Value::Type TYPE_GRAPH = static_cast<common::Value::Type>(common::Value::USER_TYPES + 2);
+  static const common::Value::Type TYPE_GRAPH = static_cast<common::Value::Type>(common::Value::USER_TYPES + 3);
   GraphValue();
   virtual ~GraphValue();
 
@@ -55,8 +69,8 @@ class GraphValue : public common::Value {
 
 class SearchValue : public common::Value {
  public:
-  static const common::Value::Type TYPE_FT_INDEX = static_cast<common::Value::Type>(common::Value::USER_TYPES + 3);
-  static const common::Value::Type TYPE_FT_TERM = static_cast<common::Value::Type>(common::Value::USER_TYPES + 4);
+  static const common::Value::Type TYPE_FT_INDEX = static_cast<common::Value::Type>(common::Value::USER_TYPES + 4);
+  static const common::Value::Type TYPE_FT_TERM = static_cast<common::Value::Type>(common::Value::USER_TYPES + 5);
   virtual ~SearchValue();
 
   static SearchValue* CreateSearchIndex();
@@ -90,6 +104,7 @@ std::string ConvertValue(common::HashValue* hash, const std::string& delimiter, 
 std::string ConvertValue(common::FundamentalValue* value, const std::string& delimiter, bool for_cmd);
 std::string ConvertValue(common::StringValue* value, const std::string& delimiter, bool for_cmd);
 std::string ConvertValue(common::ByteArrayValue* value, const std::string& delimiter, bool for_cmd);
+std::string ConvertValue(StreamValue* value, const std::string& delimiter, bool for_cmd);
 // extended
 std::string ConvertValue(JsonValue* value, const std::string& delimiter, bool for_cmd);
 

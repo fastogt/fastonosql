@@ -86,6 +86,23 @@ static_assert(arraysize(string_types) == static_cast<size_t>(common::Value::Type
               "string_types Has Wrong Size");
 }  // namespace
 
+StreamValue::StreamValue(const std::string& stream_value): Value(TYPE_STREAM), value_(stream_value) {}
+
+StreamValue::~StreamValue() {}
+
+StreamValue* StreamValue::DeepCopy() const {
+  return new StreamValue(value_);
+}
+
+bool StreamValue::Equals(const Value* other) const {
+  if (other->GetType() != GetType()) {
+    return false;
+  }
+
+  std::string lhs, rhs;
+  return GetAsString(&lhs) && other->GetAsString(&rhs) && lhs == rhs;
+}
+
 JsonValue::JsonValue(const std::string& json_value) : Value(TYPE_JSON), value_(json_value) {}
 
 JsonValue::~JsonValue() {}
@@ -199,6 +216,8 @@ common::Value* CreateEmptyValueFromType(common::Value::Type value_type) {
     case common::Value::TYPE_HASH:
       return common::Value::CreateHashValue();
     // extended
+    case StreamValue::TYPE_STREAM:
+      return new StreamValue(std::string());
     case JsonValue::TYPE_JSON:
       return new JsonValue(std::string());
     case GraphValue::TYPE_GRAPH:
@@ -215,6 +234,8 @@ common::Value* CreateEmptyValueFromType(common::Value::Type value_type) {
 const char* GetTypeName(common::Value::Type value_type) {
   if (value_type <= common::Value::TYPE_HASH) {
     return string_types[value_type];
+  } else if (value_type == StreamValue::TYPE_STREAM) {
+    return "TYPE_STREAM";
   } else if (value_type == JsonValue::TYPE_JSON) {
     return "TYPE_JSON";
   } else if (value_type == GraphValue::TYPE_GRAPH) {
@@ -292,6 +313,8 @@ std::string ConvertValue(common::Value* value, const std::string& delimiter, boo
     return ConvertValue(static_cast<common::ZSetValue*>(value), delimiter, for_cmd);
   } else if (t == common::Value::TYPE_HASH) {
     return ConvertValue(static_cast<common::HashValue*>(value), delimiter, for_cmd);
+  } else if (t == StreamValue::TYPE_STREAM) {
+    return ConvertValue(static_cast<StreamValue*>(value), delimiter, for_cmd);
     // extended
   } else if (t == JsonValue::TYPE_JSON) {
     return ConvertValue(static_cast<JsonValue*>(value), delimiter, for_cmd);
@@ -495,6 +518,28 @@ std::string ConvertValue(common::ByteArrayValue* value, const std::string& delim
   }
 
   return detail::hex_string(res);
+}
+
+std::string ConvertValue(StreamValue* value, const std::string& delimiter, bool for_cmd) {
+  UNUSED(delimiter);
+  if (!value) {
+    return std::string();
+  }
+
+  std::string res;
+  if (!value->GetAsString(&res)) {
+    return std::string();
+  }
+
+  if (!for_cmd) {
+    return res;
+  }
+
+  if (detail::have_space(res)) {
+    return "\"" + res + "\"";
+  }
+
+  return res;
 }
 
 std::string ConvertValue(JsonValue* value, const std::string& delimiter, bool for_cmd) {

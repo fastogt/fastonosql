@@ -53,7 +53,8 @@ extern "C" {
 #define RTYPE_SET 2
 #define RTYPE_HASH 3
 #define RTYPE_ZSET 4
-#define RTYPE_NONE 5
+#define RTYPE_STREAM 5
+#define RTYPE_NONE 6
 
 #define ANET_OK 0
 #define ANET_ERR -1
