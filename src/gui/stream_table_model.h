@@ -39,7 +39,7 @@ class StreamTableModel : public common::qt::gui::TableModel {
   virtual int columnCount(const QModelIndex& parent) const override;
   void clear();
 
-  core::StreamValue* GetStreamValue(core::StreamValue::stream_id sid) const;  // alocate memory
+  bool GetStream(core::StreamValue::stream_id sid, core::StreamValue::Stream* stream) const;
 
   void insertEntry(const QString& key, const QString& value);
   void removeEntry(int row);

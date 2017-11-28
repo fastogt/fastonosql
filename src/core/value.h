@@ -40,7 +40,6 @@ class StreamValue : public common::Value {
   explicit StreamValue();
   virtual ~StreamValue();
 
-  virtual bool GetAsString(std::string* out_value) const override WARN_UNUSED_RESULT;
   virtual StreamValue* DeepCopy() const override;
   virtual bool Equals(const Value* other) const override;
 

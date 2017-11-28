@@ -99,7 +99,7 @@ QVariant StreamTableModel::headerData(int section, Qt::Orientation orientation, 
 
   if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
     if (section == KeyValueTableItem::kKey) {
-      return translations::trKey;
+      return translations::trField;
     } else if (section == KeyValueTableItem::kValue) {
       return translations::trValue;
     } else if (section == KeyValueTableItem::kAction) {
@@ -125,12 +125,11 @@ void StreamTableModel::clear() {
   endResetModel();
 }
 
-core::StreamValue* StreamTableModel::GetStreamValue(core::StreamValue::stream_id sid) const {
-  if (data_.size() < 2) {
-    return nullptr;
+bool StreamTableModel::GetStream(core::StreamValue::stream_id sid, core::StreamValue::Stream* stream) const {
+  if (!stream || data_.size() < 2) {
+    return false;
   }
 
-  core::StreamValue::streams_t streams;
   std::vector<core::StreamValue::Entry> entries;
   for (size_t i = 0; i < data_.size() - 1; ++i) {
     KeyValueTableItem* node = static_cast<KeyValueTableItem*>(data_[i]);
@@ -138,15 +137,13 @@ core::StreamValue* StreamTableModel::GetStreamValue(core::StreamValue::stream_id
     std::string val = common::ConvertToString(node->GetValue());
     entries.push_back(core::StreamValue::Entry{key, val});
   }
-  streams.push_back({sid, entries});
 
-  if (streams.empty()) {
-    return nullptr;
+  if (entries.empty()) {
+    return false;
   }
 
-  core::StreamValue* sv = new core::StreamValue;
-  sv->SetStreams(streams);
-  return sv;
+  *stream = {sid, entries};
+  return true;
 }
 
 void StreamTableModel::insertEntry(const QString& key, const QString& value) {

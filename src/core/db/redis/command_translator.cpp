@@ -316,21 +316,33 @@ common::Error CommandTranslator::PTTL(const NKey& key, command_buffer_t* cmdstri
 common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, command_buffer_t* cmdstring) const {
   const NKey cur = key.GetKey();
   key_t key_str = cur.GetKey();
-  std::string value_str = key.GetValueForCommandLine();
   command_buffer_writer_t wr;
   common::Value::Type type = key.GetType();
+
   if (type == common::Value::TYPE_ARRAY) {
-    wr << REDIS_SET_KEY_ARRAY_COMMAND " " << key_str.GetKeyForCommandLine() << " " << value_str;
+    wr << REDIS_SET_KEY_ARRAY_COMMAND " " << key_str.GetKeyForCommandLine() << " " << key.GetValueForCommandLine();
   } else if (type == common::Value::TYPE_SET) {
-    wr << REDIS_SET_KEY_SET_COMMAND " " << key_str.GetKeyForCommandLine() << " " << value_str;
+    wr << REDIS_SET_KEY_SET_COMMAND " " << key_str.GetKeyForCommandLine() << " " << key.GetValueForCommandLine();
   } else if (type == common::Value::TYPE_ZSET) {
-    wr << REDIS_SET_KEY_ZSET_COMMAND " " << key_str.GetKeyForCommandLine() << " " << value_str;
+    wr << REDIS_SET_KEY_ZSET_COMMAND " " << key_str.GetKeyForCommandLine() << " " << key.GetValueForCommandLine();
   } else if (type == common::Value::TYPE_HASH) {
-    wr << REDIS_SET_KEY_HASH_COMMAND " " << key_str.GetKeyForCommandLine() << " " << value_str;
-  } else if (type == StreamValue::TYPE_STREAM) {
-    wr << REDIS_SET_KEY_STREAM_COMMAND " " << key_str.GetKeyForCommandLine() << " " << value_str;
+    wr << REDIS_SET_KEY_HASH_COMMAND " " << key_str.GetKeyForCommandLine() << " " << key.GetValueForCommandLine();
+  } else if (type == StreamValue::TYPE_STREAM) {  // XADD is complex
+    NValue nv = key.GetValue();
+    StreamValue* value = static_cast<StreamValue*>(nv.get());
+    StreamValue::streams_t streams = value->GetStreams();
+    for (size_t i = 0; i < streams.size(); ++i) {
+      StreamValue::Stream cur_str = streams[i];
+      wr << REDIS_SET_KEY_STREAM_COMMAND " " << key_str.GetKeyForCommandLine() << " " << cur_str.id_;
+      for (size_t j = 0; j < cur_str.entries_.size(); ++j) {
+        wr << " " << cur_str.entries_[j].name << " " << cur_str.entries_[j].value;
+      }
+      if (i != streams.size() - 1) {
+        wr << "\n";
+      }
+    }
   } else if (type == JsonValue::TYPE_JSON) {
-    wr << REDIS_SET_KEY_JSON_COMMAND " " << key_str.GetKeyForCommandLine() << " . " << value_str;
+    wr << REDIS_SET_KEY_JSON_COMMAND " " << key_str.GetKeyForCommandLine() << " . " << key.GetValueForCommandLine();
   } else if (type == GraphValue::TYPE_GRAPH) {
     return NotSupported(REDIS_GRAPH_MODULE_COMMAND("SET"));
   } else if (type == SearchValue::TYPE_FT_INDEX) {
@@ -338,7 +350,7 @@ common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, comm
   } else if (type == SearchValue::TYPE_FT_TERM) {
     return NotSupported(REDIS_SEARCH_MODULE_COMMAND("TERM.SET"));
   } else {
-    wr << REDIS_SET_KEY_COMMAND " " << key_str.GetKeyForCommandLine() << " " << value_str;
+    wr << REDIS_SET_KEY_COMMAND " " << key_str.GetKeyForCommandLine() << " " << key.GetValueForCommandLine();
   }
 
   *cmdstring = wr.str();

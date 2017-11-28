@@ -18,11 +18,13 @@
 
 #pragma once
 
-#include <QTableView>
-#include <QLabel>
 #include <QDialog>
+#include <QLabel>
+#include <QTableView>
 
-#include <common/value.h>
+#include "core/value.h"
+
+#define DEFAILT_ID "*"
 
 namespace fastonosql {
 namespace gui {
@@ -32,8 +34,10 @@ class StreamTableModel;
 class StreamEntryDialog : public QDialog {
   Q_OBJECT
  public:
-  explicit StreamEntryDialog(QWidget* parent = Q_NULLPTR);
+  explicit StreamEntryDialog(const QString& sid = DEFAILT_ID, QWidget* parent = Q_NULLPTR);
   virtual ~StreamEntryDialog();
+
+  bool GetStream(core::StreamValue::Stream* stream) const;
 
   void insertEntry(const QString& first, const QString& second);
   void clear();

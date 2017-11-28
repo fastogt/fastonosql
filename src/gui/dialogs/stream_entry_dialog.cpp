@@ -19,33 +19,32 @@
 #include "gui/dialogs/stream_entry_dialog.h"
 
 #include <QHeaderView>
-#include <QVBoxLayout>
 #include <QLineEdit>
+#include <QVBoxLayout>
+#include <QDialogButtonBox>
 
-#include <common/qt/utils_qt.h>
 #include <common/qt/convert2string.h>
+#include <common/qt/utils_qt.h>
 
 #include "gui/action_cell_delegate.h"
 #include "gui/key_value_table_item.h"
 #include "gui/stream_table_model.h"
 
-#define DEFAILT_ID "*"
-
 namespace fastonosql {
 namespace gui {
 
-StreamEntryDialog::StreamEntryDialog(QWidget* parent) : QDialog(parent), model_(nullptr) {
-  QVBoxLayout* bl = new QVBoxLayout;
+StreamEntryDialog::StreamEntryDialog(const QString& sid, QWidget* parent) : QDialog(parent), model_(nullptr) {
+  QVBoxLayout* layout = new QVBoxLayout;
 
   QHBoxLayout* id_layout = new QHBoxLayout;
   entry_label_ = new QLabel("ID");
   id_layout->addWidget(entry_label_);
 
-  id_edit_ = new QLineEdit(DEFAILT_ID, this);
+  id_edit_ = new QLineEdit(sid, this);
   QRegExp rx(".+");
   id_edit_->setValidator(new QRegExpValidator(rx, this));
   id_layout->addWidget(id_edit_);
-  bl->addLayout(id_layout);
+  layout->addLayout(id_layout);
 
   table_ = new QTableView(this);
   table_->horizontalHeader()->hide();
@@ -60,12 +59,23 @@ StreamEntryDialog::StreamEntryDialog(QWidget* parent) : QDialog(parent), model_(
   table_->setItemDelegateForColumn(KeyValueTableItem::kAction, del);
   table_->setContextMenuPolicy(Qt::ActionsContextMenu);
   table_->setSelectionBehavior(QAbstractItemView::SelectRows);
-  bl->addWidget(table_);
+  layout->addWidget(table_);
 
-  setLayout(bl);
+  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
+  buttonBox->setOrientation(Qt::Horizontal);
+  VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &StreamEntryDialog::accept));
+  VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &StreamEntryDialog::reject));
+  layout->addWidget(buttonBox);
+
+  setLayout(layout);
 }
 
 StreamEntryDialog::~StreamEntryDialog() {}
+
+bool StreamEntryDialog::GetStream(core::StreamValue::Stream* stream) const {
+  core::StreamValue::stream_id sid = common::ConvertToString(id_edit_->text());
+  return model_->GetStream(sid, stream);
+}
 
 void StreamEntryDialog::insertEntry(const QString& first, const QString& second) {
   model_->insertEntry(first, second);

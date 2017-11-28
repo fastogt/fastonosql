@@ -22,14 +22,50 @@
 #include <common/qt/utils_qt.h>
 
 #include "gui/action_cell_delegate.h"
+#include "gui/dialogs/stream_entry_dialog.h"
 #include "gui/hash_table_model.h"
 #include "gui/key_value_table_item.h"
+
+#include "translations/global.h"
 
 namespace fastonosql {
 namespace gui {
 
+namespace {
+class StreamTableModelInner : public HashTableModel {
+ public:
+  explicit StreamTableModelInner(QObject* parent = Q_NULLPTR) : HashTableModel(parent) {}
+
+  Qt::ItemFlags flags(const QModelIndex& index) const override {
+    if (!index.isValid()) {
+      return Qt::NoItemFlags;
+    }
+
+    return Qt::NoItemFlags;
+  }
+
+  QVariant headerData(int section, Qt::Orientation orientation, int role) const override {
+    if (role != Qt::DisplayRole) {
+      return QVariant();
+    }
+
+    if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
+      if (section == KeyValueTableItem::kKey) {
+        return "ID";
+      } else if (section == KeyValueTableItem::kValue) {
+        return translations::trValue;
+      } else if (section == KeyValueTableItem::kAction) {
+        return translations::trAction;
+      }
+    }
+
+    return TableModel::headerData(section, orientation, role);
+  }
+};
+}  // namespace
+
 StreamTypeWidget::StreamTypeWidget(QWidget* parent) : QTableView(parent) {
-  model_ = new HashTableModel(this);
+  model_ = new StreamTableModelInner(this);
   setModel(model_);
 
   setColumnHidden(KeyValueTableItem::kValue, true);
@@ -66,11 +102,19 @@ core::StreamValue* StreamTypeWidget::GetStreamValue() const {
 
 void StreamTypeWidget::addRow(const QModelIndex& index) {
   KeyValueTableItem* node = common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
-  model_->insertRow(node->GetKey(), node->GetValue());
+  UNUSED(node);
+
+  StreamEntryDialog diag(DEFAILT_ID, this);
+  int result = diag.exec();
+  core::StreamValue::Stream st;
+  if (result == QDialog::Accepted && diag.GetStream(&st)) {
+    insertStream(st);
+  }
 }
 
 void StreamTypeWidget::removeRow(const QModelIndex& index) {
   model_->removeRow(index.row());
+  streams_.erase(streams_.begin() + index.row());
 }
 
 }  // namespace gui

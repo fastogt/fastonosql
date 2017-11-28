@@ -1,6 +1,7 @@
 1.13.0 / 
 [Alexandr Topilski]
 - [Redis] XREVRANGE command UI handling
+- [Redis] Support streams type
 
 1.12.0 / November 26, 2017
 [Alexandr Topilski]

@@ -90,26 +90,6 @@ StreamValue::StreamValue() : Value(TYPE_STREAM), streams_() {}
 
 StreamValue::~StreamValue() {}
 
-bool StreamValue::GetAsString(std::string* out_value) const {
-  if (out_value) {
-    std::string lout;
-    for (size_t i = 0; i < streams_.size(); ++i) {
-      Stream cur_str = streams_[i];
-      if (i != 0) {
-        lout += " ";
-      }
-
-      lout += streams_[i].id_;
-      for (size_t j = 0; j < cur_str.entries_.size(); ++j) {
-        lout += cur_str.entries_[i].name + " " + cur_str.entries_[i].value;
-      }
-    }
-    *out_value = lout;
-  }
-
-  return true;
-}
-
 StreamValue* StreamValue::DeepCopy() const {
   StreamValue* str = new StreamValue();
   str->SetStreams(streams_);
@@ -551,18 +531,26 @@ std::string ConvertValue(common::ByteArrayValue* value, const std::string& delim
 }
 
 std::string ConvertValue(StreamValue* value, const std::string& delimiter, bool for_cmd) {
-  UNUSED(delimiter);
   UNUSED(for_cmd);
   if (!value) {
     return std::string();
   }
 
-  std::string res;
-  if (!value->GetAsString(&res)) {
-    return std::string();
+  std::ostringstream wr;
+  StreamValue::streams_t streams = value->GetStreams();
+  for (size_t i = 0; i < streams.size(); ++i) {
+    StreamValue::Stream cur_str = streams[i];
+    if (i != 0) {
+      wr << delimiter;
+    }
+
+    wr << streams[i].id_;
+    for (size_t j = 0; j < cur_str.entries_.size(); ++j) {
+      wr << " " << cur_str.entries_[i].name << " " << cur_str.entries_[i].value;
+    }
   }
 
-  return res;
+  return wr.str();
 }
 
 std::string ConvertValue(JsonValue* value, const std::string& delimiter, bool for_cmd) {
