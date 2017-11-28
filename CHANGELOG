@@ -1,4 +1,4 @@
-1.13.0 / 
+1.12.1 / 
 [Alexandr Topilski]
 - [Redis] XREVRANGE command UI handling
 - [Redis] Support streams type
