@@ -32,6 +32,7 @@ class ActionDelegate : public QStyledItemDelegate {
   virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 
  Q_SIGNALS:
+  void editClicked(const QModelIndex& index);
   void addClicked(const QModelIndex& index);
   void removeClicked(const QModelIndex& index);
 

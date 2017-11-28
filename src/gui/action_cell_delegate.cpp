@@ -56,8 +56,14 @@ void ActionDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option
   pb_Style.features |= QStyleOptionButton::Flat;
   pb_Style.text = QString();
   pb_Style.iconSize = QSize(16, 16);
-  pb_Style.icon = node->GetActionState() == KeyValueTableItem::AddAction ? GuiFactory::GetInstance().GetAddIcon()
-                                                                         : GuiFactory::GetInstance().GetRemoveIcon();
+  if (node->GetActionState() == KeyValueTableItem::AddAction) {
+    pb_Style.icon = GuiFactory::GetInstance().GetAddIcon();
+  } else if (node->GetActionState() == KeyValueTableItem::EditAction) {
+    pb_Style.icon = GuiFactory::GetInstance().GetEditIcon();
+  } else {
+    pb_Style.icon = GuiFactory::GetInstance().GetRemoveIcon();
+  }
+
   if (current_index_.row() == index.row()) {
     pb_Style.state |= QStyle::State_Sunken;
   } else {
@@ -85,6 +91,8 @@ bool ActionDelegate::editorEvent(QEvent* event,
     KeyValueTableItem* node = common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
     if (node->GetActionState() == KeyValueTableItem::AddAction) {
       emit addClicked(index);
+    } else if (node->GetActionState() == KeyValueTableItem::EditAction) {
+      emit editClicked(index);
     } else {
       emit removeClicked(index);
     }

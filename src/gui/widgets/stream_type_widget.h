@@ -35,14 +35,16 @@ class StreamTypeWidget : public QTableView {
 
   core::StreamValue* GetStreamValue() const;  // alocate memory
 
-  void insertStream(const core::StreamValue::Stream& sid);
+  void insertStream(const core::StreamValue::Stream& stream);
   void clear();
 
  private Q_SLOTS:
+  void editRow(const QModelIndex& index);
   void addRow(const QModelIndex& index);
   void removeRow(const QModelIndex& index);
 
  private:
+  void updateStream(const QModelIndex& index, const core::StreamValue::Stream& stream);
   HashTableModel* model_;
   std::vector<core::StreamValue::Stream> streams_;
 };

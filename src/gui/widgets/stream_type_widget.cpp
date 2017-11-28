@@ -72,6 +72,7 @@ StreamTypeWidget::StreamTypeWidget(QWidget* parent) : QTableView(parent) {
 
   ActionDelegate* del = new ActionDelegate(this);
   VERIFY(connect(del, &ActionDelegate::addClicked, this, &StreamTypeWidget::addRow));
+  VERIFY(connect(del, &ActionDelegate::editClicked, this, &StreamTypeWidget::editRow));
   VERIFY(connect(del, &ActionDelegate::removeClicked, this, &StreamTypeWidget::removeRow));
 
   setItemDelegateForColumn(KeyValueTableItem::kAction, del);
@@ -79,11 +80,26 @@ StreamTypeWidget::StreamTypeWidget(QWidget* parent) : QTableView(parent) {
   setSelectionBehavior(QAbstractItemView::SelectRows);
 }
 
-void StreamTypeWidget::insertStream(const core::StreamValue::Stream& sid) {
-  streams_.push_back(sid);
+void StreamTypeWidget::insertStream(const core::StreamValue::Stream& stream) {
+  streams_.push_back(stream);
   QString qsid;
-  common::ConvertFromString(sid.id_, &qsid);
+  common::ConvertFromString(stream.id_, &qsid);
   model_->insertRow(qsid, QString());
+}
+
+void StreamTypeWidget::updateStream(const QModelIndex& index, const core::StreamValue::Stream& stream) {
+  if (!index.isValid()) {
+    return;
+  }
+
+  KeyValueTableItem* node = common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
+  int row = index.row();
+  streams_[row] = stream;
+  QString qsid;
+  common::ConvertFromString(stream.id_, &qsid);
+  node->SetKey(qsid);
+  model_->updateItem(model_->index(row, KeyValueTableItem::kKey, QModelIndex()),
+                     model_->index(row, KeyValueTableItem::kAction, QModelIndex()));
 }
 
 void StreamTypeWidget::clear() {
@@ -98,6 +114,31 @@ core::StreamValue* StreamTypeWidget::GetStreamValue() const {
   core::StreamValue* str = new core::StreamValue;
   str->SetStreams(streams_);
   return str;
+}
+
+void StreamTypeWidget::editRow(const QModelIndex& index) {
+  if (!index.isValid()) {
+    return;
+  }
+
+  int row = index.row();
+  core::StreamValue::Stream stream = streams_[row];
+  QString qsid;
+  common::ConvertFromString(stream.id_, &qsid);
+  StreamEntryDialog diag(qsid, this);
+  for (size_t i = 0; i < stream.entries_.size(); ++i) {
+    core::StreamValue::Entry ent = stream.entries_[i];
+    QString ftext;
+    QString stext;
+    if (common::ConvertFromString(ent.name, &ftext) && common::ConvertFromString(ent.value, &stext)) {
+      diag.insertEntry(ftext, stext);
+    }
+  }
+  int result = diag.exec();
+  core::StreamValue::Stream st;
+  if (result == QDialog::Accepted && diag.GetStream(&st)) {
+    updateStream(index, st);
+  }
 }
 
 void StreamTypeWidget::addRow(const QModelIndex& index) {
