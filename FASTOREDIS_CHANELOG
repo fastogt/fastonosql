@@ -1,7 +1,9 @@
 1.11.1 / 
 [Alexandr Topilski]
-- XREVRANGE command UI handling 
+- XADD command UI handling 
+- XRANGE command UI handling 
 - Support streams type
+- Keys displaying strategy
 
 1.11.0 / November 26, 2017
 [Alexandr Topilski]

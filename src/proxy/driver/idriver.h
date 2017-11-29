@@ -54,6 +54,7 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   connection_path_t ConnectionPath() const;
   std::string GetDelimiter() const;
   std::string GetNsSeparator() const;
+  core::NsDisplayStrategy GetNsDisplayStrategy() const;
 
   virtual core::translator_t GetTranslator() const = 0;
 

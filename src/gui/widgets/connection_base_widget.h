@@ -83,6 +83,9 @@ class ConnectionBaseWidget : public QWidget {
   QLabel* namespaceSeparatorLabel_;
   QComboBox* namespaceSeparator_;
 
+  QLabel* namespaceDisplayingStrategyLabel_;
+  QComboBox* namespaceDisplayingStrategy_;
+
   QLabel* delimiterLabel_;
   QComboBox* delimiter_;
 

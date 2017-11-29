@@ -22,6 +22,7 @@
 
 #include <common/qt/gui/base/tree_item.h>  // for TreeItem
 
+#include "core/display_strategy.h"
 #include "core/database/idatabase_info.h"
 #include "proxy/proxy_fwd.h"  // for IServerSPtr, IClusterSPtr, etc
 
@@ -128,7 +129,10 @@ class ExplorerNSItem : public IExplorerTreeItem {
 
 class ExplorerKeyItem : public IExplorerTreeItem {
  public:
-  ExplorerKeyItem(const core::NDbKValue& dbv, IExplorerTreeItem* parent);
+  ExplorerKeyItem(const core::NDbKValue& dbv,
+                  const std::string& ns_separator,
+                  core::NsDisplayStrategy ns_strategy,
+                  IExplorerTreeItem* parent);
   ExplorerDatabaseItem* db() const;
 
   core::NDbKValue dbv() const;
@@ -150,7 +154,11 @@ class ExplorerKeyItem : public IExplorerTreeItem {
   void setTTL(core::ttl_t ttl);
 
  private:
+  QString GetFullName() const;
+
   core::NDbKValue dbv_;
+  const std::string ns_separator_;
+  const core::NsDisplayStrategy ns_strategy_;
 };
 
 }  // namespace gui

@@ -81,6 +81,9 @@ ConnectionBaseWidget::ConnectionBaseWidget(QWidget* parent) : QWidget(parent) {
   basicLayout->addLayout(connectionNameLayout);
 
   QHBoxLayout* namespaceDelimiterLayout = new QHBoxLayout;
+  // namesapce
+  QVBoxLayout* namespaceLayout = new QVBoxLayout;
+  // ns
   QHBoxLayout* namespaceSeparatorLayout = new QHBoxLayout;
   namespaceSeparatorLabel_ = new QLabel;
   namespaceSeparator_ = new QComboBox;
@@ -89,7 +92,19 @@ ConnectionBaseWidget::ConnectionBaseWidget(QWidget* parent) : QWidget(parent) {
   namespaceSeparator_->setValidator(new UniqueCharValidator(this));
   namespaceSeparatorLayout->addWidget(namespaceSeparatorLabel_);
   namespaceSeparatorLayout->addWidget(namespaceSeparator_);
-  namespaceDelimiterLayout->addLayout(namespaceSeparatorLayout);
+  namespaceLayout->addLayout(namespaceSeparatorLayout);
+  // ns strategy
+  QHBoxLayout* namespaceStrategyLayout = new QHBoxLayout;
+  namespaceDisplayingStrategyLabel_ = new QLabel;
+  namespaceDisplayingStrategy_ = new QComboBox;
+  for (uint32_t i = 0; i < core::g_display_strategy_types.size(); ++i) {
+    namespaceDisplayingStrategy_->addItem(core::g_display_strategy_types[i], i);
+  }
+  namespaceStrategyLayout->addWidget(namespaceDisplayingStrategyLabel_);
+  namespaceStrategyLayout->addWidget(namespaceDisplayingStrategy_);
+  namespaceLayout->addLayout(namespaceStrategyLayout);
+
+  namespaceDelimiterLayout->addLayout(namespaceLayout);
 
   QHBoxLayout* delimiterLayout = new QHBoxLayout;
   delimiterLabel_ = new QLabel;
@@ -165,6 +180,7 @@ proxy::IConnectionSettingsBase* ConnectionBaseWidget::createConnection() const {
   proxy::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
   proxy::IConnectionSettingsBase* conn = createConnectionImpl(path);
   conn->SetNsSeparator(common::ConvertToString(namespaceSeparator_->currentText()));
+  conn->SetNsDisplayStrategy(static_cast<core::NsDisplayStrategy>(namespaceDisplayingStrategy_->currentIndex()));
   conn->SetDelimiter(common::ConvertToString(toRawCommandLine(delimiter_->currentText())));
   if (isLogging()) {
     conn->SetLoggingMsTimeInterval(loggingInterval());
@@ -190,6 +206,7 @@ void ConnectionBaseWidget::syncControls(proxy::IConnectionSettingsBase* connecti
     QString qns_separator;
     common::ConvertFromString(ns_separator, &qns_separator);
     namespaceSeparator_->setCurrentText(qns_separator);
+    namespaceDisplayingStrategy_->setCurrentIndex(connection->GetNsDisplayStrategy());
     QString qdelemitr;
     common::ConvertFromString(delemitr, &qdelemitr);
     delimiter_->setCurrentText(qdelemitr);
@@ -206,6 +223,7 @@ void ConnectionBaseWidget::syncControls(proxy::IConnectionSettingsBase* connecti
 void ConnectionBaseWidget::retranslateUi() {
   connectionNameLabel_->setText(tr("Name:"));
   namespaceSeparatorLabel_->setText(tr("Ns separator:"));
+  namespaceDisplayingStrategyLabel_->setText(tr("Ns display:"));
   delimiterLabel_->setText(tr("Delimiter:"));
   folderLabel_->setText(tr("UI Folder:"));
   logging_->setText(translations::trLoggingEnabled);

@@ -139,11 +139,14 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateFromString(const std::
         }
       } else if (commaCount == 3) {
         result->SetNsSeparator(elText);
+      } else if (commaCount == 4) {
+        core::NsDisplayStrategy strat = static_cast<core::NsDisplayStrategy>(elText[0] - 48);
+        result->SetNsDisplayStrategy(strat);
         if (!IsCanSSHConnection(result->GetType())) {
           result->SetCommandLine(val.substr(i + 1));
           break;
         }
-      } else if (commaCount == 4) {
+      } else if (commaCount == 5) {
         result->SetCommandLine(elText);
         if (IConnectionSettingsRemoteSSH* remote = dynamic_cast<IConnectionSettingsRemoteSSH*>(result)) {
           core::SSHInfo sinf(val.substr(i + 1));

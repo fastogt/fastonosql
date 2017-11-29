@@ -125,6 +125,10 @@ std::string IServer::GetNsSeparator() const {
   return drv_->GetNsSeparator();
 }
 
+core::NsDisplayStrategy IServer::GetNsDisplayStrategy() const {
+  return drv_->GetNsDisplayStrategy();
+}
+
 IDatabaseSPtr IServer::CreateDatabaseByInfo(core::IDataBaseInfoSPtr inf) {
   database_t db = FindDatabase(inf);
   return db ? CreateDatabase(inf) : IDatabaseSPtr();

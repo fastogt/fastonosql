@@ -20,6 +20,8 @@
 
 #include <common/qt/gui/base/tree_model.h>  // for TreeModel
 
+#include "core/display_strategy.h"
+
 #include "proxy/database/idatabase.h"
 #include "proxy/proxy_fwd.h"
 #include "proxy/types.h"
@@ -70,7 +72,8 @@ class ExplorerTreeModel : public common::qt::gui::TreeModel {
   void addKey(proxy::IServer* server,
               core::IDataBaseInfoSPtr db,
               const core::NDbKValue& dbv,
-              const std::string& ns_separator);
+              const std::string& ns_separator,
+              core::NsDisplayStrategy ns_strategy);
   void removeKey(proxy::IServer* server, core::IDataBaseInfoSPtr db, const core::NKey& key);
   void updateKey(proxy::IServer* server,
                  core::IDataBaseInfoSPtr db,

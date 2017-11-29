@@ -23,6 +23,7 @@
 #include <common/file_system/path.h>
 
 #include "core/connection_types.h"  // for core::connectionTypes
+#include "core/display_strategy.h"
 
 namespace fastonosql {
 namespace proxy {
@@ -68,6 +69,9 @@ class IConnectionSettings : public common::ClonableBase<IConnectionSettings> {
   int GetLoggingMsTimeInterval() const;
   void SetLoggingMsTimeInterval(int mstime);
 
+  core::NsDisplayStrategy GetNsDisplayStrategy() const;
+  void SetNsDisplayStrategy(core::NsDisplayStrategy strategy);
+
   std::string GetNsSeparator() const;
   void SetNsSeparator(const std::string& ns);
 
@@ -82,6 +86,7 @@ class IConnectionSettings : public common::ClonableBase<IConnectionSettings> {
  private:
   int msinterval_;
   std::string ns_separator_;
+  core::NsDisplayStrategy ns_display_strategy_;
 };
 
 class IConnectionSettingsBase : public IConnectionSettings {

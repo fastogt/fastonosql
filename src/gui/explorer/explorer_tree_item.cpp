@@ -26,6 +26,7 @@
 #include "proxy/cluster/icluster.h"    // for ICluster
 #include "proxy/sentinel/isentinel.h"  // for ISentinel, Sentinel, etc
 #include "proxy/server/iserver.h"
+#include "proxy/types.h"
 
 namespace fastonosql {
 namespace gui {
@@ -326,8 +327,11 @@ void ExplorerDatabaseItem::removeAllKeys() {
   dbs->Execute(req);
 }
 
-ExplorerKeyItem::ExplorerKeyItem(const core::NDbKValue& dbv, IExplorerTreeItem* parent)
-    : IExplorerTreeItem(parent, eKey), dbv_(dbv) {}
+ExplorerKeyItem::ExplorerKeyItem(const core::NDbKValue& dbv,
+                                 const std::string& ns_separator,
+                                 core::NsDisplayStrategy ns_strategy,
+                                 IExplorerTreeItem* parent)
+    : IExplorerTreeItem(parent, eKey), dbv_(dbv), ns_separator_(ns_separator), ns_strategy_(ns_strategy) {}
 
 ExplorerDatabaseItem* ExplorerKeyItem::db() const {
   TreeItem* par = parent();
@@ -364,10 +368,18 @@ void ExplorerKeyItem::setKey(const core::NKey& key) {
 }
 
 QString ExplorerKeyItem::name() const {
-  QString qname;
+  if (ns_strategy_ == core::FULL_KEY) {
+    return GetFullName();
+  }
+
   const core::NKey key = dbv_.GetKey();
-  const core::key_t raw_key = key.GetKey();
-  common::ConvertFromString(raw_key.GetHumanReadable(), &qname);
+  proxy::KeyInfo kinf(key.GetKey(), ns_separator_);
+  if (!kinf.HasNamespace()) {
+    return GetFullName();
+  }
+
+  QString qname;
+  common::ConvertFromString(kinf.GetKeyName(), &qname);
   return qname;
 }
 
@@ -420,6 +432,14 @@ void ExplorerKeyItem::setTTL(core::ttl_t ttl) {
   if (par) {
     par->setTTL(dbv_.GetKey(), ttl);
   }
+}
+
+QString ExplorerKeyItem::GetFullName() const {
+  QString qname;
+  const core::NKey key = dbv_.GetKey();
+  const core::key_t raw_key = key.GetKey();
+  common::ConvertFromString(raw_key.GetHumanReadable(), &qname);
+  return qname;
 }
 
 ExplorerNSItem::ExplorerNSItem(const QString& name, IExplorerTreeItem* parent)

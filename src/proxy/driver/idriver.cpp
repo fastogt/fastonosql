@@ -148,6 +148,10 @@ std::string IDriver::GetDelimiter() const {
   return settings_->GetDelimiter();
 }
 
+core::NsDisplayStrategy IDriver::GetNsDisplayStrategy() const {
+  return settings_->GetNsDisplayStrategy();
+}
+
 std::string IDriver::GetNsSeparator() const {
   return settings_->GetNsSeparator();
 }

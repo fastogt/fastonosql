@@ -90,7 +90,11 @@ ConnectionSettingsPath ConnectionSettingsPath::GetRoot() {
 const char IConnectionSettings::default_ns_separator[] = ":";
 
 IConnectionSettings::IConnectionSettings(const connection_path_t& connectionPath, core::connectionTypes type)
-    : connection_path_(connectionPath), type_(type), msinterval_(0), ns_separator_(default_ns_separator) {}
+    : connection_path_(connectionPath),
+      type_(type),
+      msinterval_(0),
+      ns_separator_(default_ns_separator),
+      ns_display_strategy_(core::FULL_KEY) {}
 
 IConnectionSettings::~IConnectionSettings() {}
 
@@ -118,6 +122,14 @@ void IConnectionSettings::SetLoggingMsTimeInterval(int mstime) {
   msinterval_ = mstime;
 }
 
+core::NsDisplayStrategy IConnectionSettings::GetNsDisplayStrategy() const {
+  return ns_display_strategy_;
+}
+
+void IConnectionSettings::SetNsDisplayStrategy(core::NsDisplayStrategy strategy) {
+  ns_display_strategy_ = strategy;
+}
+
 std::string IConnectionSettings::GetNsSeparator() const {
   return ns_separator_;
 }
@@ -129,7 +141,7 @@ void IConnectionSettings::SetNsSeparator(const std::string& ns) {
 std::string IConnectionSettings::ToString() const {
   std::basic_stringstream<char> wr;
   wr << type_ << setting_value_delemitr << connection_path_.ToString() << setting_value_delemitr << msinterval_
-     << setting_value_delemitr << ns_separator_;
+     << setting_value_delemitr << ns_separator_ << setting_value_delemitr << ns_display_strategy_;
   return wr.str();
 }
 

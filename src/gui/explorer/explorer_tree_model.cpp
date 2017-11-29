@@ -341,7 +341,8 @@ void ExplorerTreeModel::updateDb(proxy::IServer* server, core::IDataBaseInfoSPtr
 void ExplorerTreeModel::addKey(proxy::IServer* server,
                                core::IDataBaseInfoSPtr db,
                                const core::NDbKValue& dbv,
-                               const std::string& ns_separator) {
+                               const std::string& ns_separator,
+                               core::NsDisplayStrategy ns_strategy) {
   ExplorerServerItem* parent = findServerItem(server);
   if (!parent) {
     return;
@@ -363,7 +364,7 @@ void ExplorerTreeModel::addKey(proxy::IServer* server,
 
     common::qt::gui::TreeItem* parent_nitem = nitem->parent();
     QModelIndex parent_index = createIndex(parent_nitem->indexOf(nitem), 0, nitem);
-    ExplorerKeyItem* item = new ExplorerKeyItem(dbv, nitem);
+    ExplorerKeyItem* item = new ExplorerKeyItem(dbv, ns_separator, ns_strategy, nitem);
     insertItem(parent_index, item);
   }
 }

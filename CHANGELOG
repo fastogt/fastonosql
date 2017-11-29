@@ -1,7 +1,9 @@
 1.12.1 / 
 [Alexandr Topilski]
-- [Redis] XREVRANGE command UI handling
+- [Redis] XADD command UI handling
+- [Redis] XRANGE command UI handling
 - [Redis] Support streams type
+- Keys displaying strategy
 
 1.12.0 / November 26, 2017
 [Alexandr Topilski]
