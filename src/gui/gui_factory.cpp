@@ -80,6 +80,11 @@ const QIcon& GuiFactory::GetEditIcon() const {
   return open;
 }
 
+const QIcon& GuiFactory::GetCloneIcon() const {
+  static QIcon clone(":" PROJECT_NAME_LOWERCASE "/images/64x64/clone.png");
+  return clone;
+}
+
 const QIcon& GuiFactory::GetMessageBoxInformationIcon() const {
   static QIcon open = qApp->style()->standardIcon(QStyle::SP_MessageBoxInformation);
   return open;
@@ -213,9 +218,9 @@ const QIcon& GuiFactory::GetIcon(common::Value::Type type) const {
       return i;
     }
     case core::StreamValue::TYPE_STREAM: {
-     static QIcon g(":" PROJECT_NAME_LOWERCASE "/images/64x64/stream.png");
-     return g;
-   }
+      static QIcon g(":" PROJECT_NAME_LOWERCASE "/images/64x64/stream.png");
+      return g;
+    }
     case core::JsonValue::TYPE_JSON: {
       static QIcon j(":" PROJECT_NAME_LOWERCASE "/images/64x64/json.png");
       return j;

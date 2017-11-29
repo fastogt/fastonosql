@@ -4,6 +4,7 @@
 - [Redis] XRANGE command UI handling
 - [Redis] Support streams type
 - Keys displaying strategy
+- Clone connection functionality
 
 1.12.0 / November 26, 2017
 [Alexandr Topilski]

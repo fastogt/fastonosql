@@ -36,6 +36,7 @@ extern const QString trAddConnection;
 extern const QString trAddClusterConnection;
 extern const QString trAddSentinelConnection;
 extern const QString trRemoveConnection;
+extern const QString trCloneConnection;
 extern const QString trEditConnection;
 extern const QString trOpen;
 extern const QString trMenu;

@@ -46,6 +46,7 @@ class GuiFactory : public common::patterns::LazySingleton<GuiFactory> {
   const QIcon& GetAddIcon() const;
   const QIcon& GetRemoveIcon() const;
   const QIcon& GetEditIcon() const;
+  const QIcon& GetCloneIcon() const;
   const QIcon& GetMessageBoxInformationIcon() const;
   const QIcon& GetMessageBoxQuestionIcon() const;
   const QIcon& GetValidateIcon() const;

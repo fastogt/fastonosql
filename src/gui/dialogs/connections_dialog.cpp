@@ -105,6 +105,10 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent) : QDialog(parent) {
   VERIFY(connect(editB, &QAction::triggered, this, &ConnectionsDialog::edit));
   savebar->addAction(editB);
 
+  QAction* clone = new QAction(GuiFactory::GetInstance().GetCloneIcon(), translations::trCloneConnection, savebar);
+  VERIFY(connect(clone, &QAction::triggered, this, &ConnectionsDialog::clone));
+  savebar->addAction(clone);
+
   QAction* rmB = new QAction(GuiFactory::GetInstance().GetRemoveIcon(), translations::trRemoveConnection, savebar);
   VERIFY(connect(rmB, &QAction::triggered, this, &ConnectionsDialog::remove));
   savebar->addAction(rmB);
@@ -226,42 +230,16 @@ void ConnectionsDialog::edit() {
     return;
   }
 
-  if (ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(qitem)) {
-    IConnectionListWidgetItem::itemConnectionType type = currentItem->type();
-    if (type == IConnectionListWidgetItem::Common || type == IConnectionListWidgetItem::Discovered) {
-      QTreeWidgetItem* qpitem = qitem->parent();
-      if (ClusterConnectionListWidgetItemContainer* clitem =
-              dynamic_cast<ClusterConnectionListWidgetItemContainer*>(qpitem)) {
-        editCluster(clitem);
-        return;
-      } else if (SentinelConnectionListWidgetItemContainer* slitem =
-                     dynamic_cast<SentinelConnectionListWidgetItemContainer*>(qpitem)) {
-        editSentinel(slitem);
-        return;
-      } else if (SentinelConnectionWidgetItem* sslitem = dynamic_cast<SentinelConnectionWidgetItem*>(qpitem)) {
-        qitem = sslitem->parent();
-      } else {
-        editConnection(currentItem);
-        return;
-      }
-    } else if (type == IConnectionListWidgetItem::Sentinel) {
-      qitem = qitem->parent();
-    } else {
-      NOTREACHED();
-    }
-  }
+  editItem(qitem, true);
+}
 
-  if (ClusterConnectionListWidgetItemContainer* clCurrentItem =
-          dynamic_cast<ClusterConnectionListWidgetItemContainer*>(qitem)) {
-    editCluster(clCurrentItem);
+void ConnectionsDialog::clone() {
+  QTreeWidgetItem* qitem = listWidget_->currentItem();
+  if (!qitem) {
     return;
   }
 
-  if (SentinelConnectionListWidgetItemContainer* sentCurrentItem =
-          dynamic_cast<SentinelConnectionListWidgetItemContainer*>(qitem)) {
-    editSentinel(sentCurrentItem);
-    return;
-  }
+  editItem(qitem, false);
 }
 
 void ConnectionsDialog::remove() {
@@ -308,7 +286,46 @@ void ConnectionsDialog::remove() {
   }
 }
 
-void ConnectionsDialog::editConnection(ConnectionListWidgetItem* connectionItem) {
+void ConnectionsDialog::editItem(QTreeWidgetItem* qitem, bool remove_origin) {
+  if (ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(qitem)) {
+    IConnectionListWidgetItem::itemConnectionType type = currentItem->type();
+    if (type == IConnectionListWidgetItem::Common || type == IConnectionListWidgetItem::Discovered) {
+      QTreeWidgetItem* qpitem = qitem->parent();
+      if (ClusterConnectionListWidgetItemContainer* clitem =
+              dynamic_cast<ClusterConnectionListWidgetItemContainer*>(qpitem)) {
+        editCluster(clitem, remove_origin);
+        return;
+      } else if (SentinelConnectionListWidgetItemContainer* slitem =
+                     dynamic_cast<SentinelConnectionListWidgetItemContainer*>(qpitem)) {
+        editSentinel(slitem, remove_origin);
+        return;
+      } else if (SentinelConnectionWidgetItem* sslitem = dynamic_cast<SentinelConnectionWidgetItem*>(qpitem)) {
+        qitem = sslitem->parent();
+      } else {
+        editConnection(currentItem, remove_origin);
+        return;
+      }
+    } else if (type == IConnectionListWidgetItem::Sentinel) {
+      qitem = qitem->parent();
+    } else {
+      NOTREACHED();
+    }
+  }
+
+  if (ClusterConnectionListWidgetItemContainer* clCurrentItem =
+          dynamic_cast<ClusterConnectionListWidgetItemContainer*>(qitem)) {
+    editCluster(clCurrentItem, remove_origin);
+    return;
+  }
+
+  if (SentinelConnectionListWidgetItemContainer* sentCurrentItem =
+          dynamic_cast<SentinelConnectionListWidgetItemContainer*>(qitem)) {
+    editSentinel(sentCurrentItem, remove_origin);
+    return;
+  }
+}
+
+void ConnectionsDialog::editConnection(ConnectionListWidgetItem* connectionItem, bool remove_origin) {
   CHECK(connectionItem);
 
   proxy::IConnectionSettingsBaseSPtr con = connectionItem->connection();
@@ -319,12 +336,14 @@ void ConnectionsDialog::editConnection(ConnectionListWidgetItem* connectionItem)
     proxy::SettingsManager::GetInstance()->RemoveConnection(con);
     proxy::SettingsManager::GetInstance()->AddConnection(newConnection);
 
-    delete connectionItem;
+    if (remove_origin) {
+      delete connectionItem;
+    }
     addConnection(newConnection);
   }
 }
 
-void ConnectionsDialog::editCluster(ClusterConnectionListWidgetItemContainer* clusterItem) {
+void ConnectionsDialog::editCluster(ClusterConnectionListWidgetItemContainer* clusterItem, bool remove_origin) {
   CHECK(clusterItem);
 
   proxy::IClusterSettingsBaseSPtr con = clusterItem->connection();
@@ -335,12 +354,14 @@ void ConnectionsDialog::editCluster(ClusterConnectionListWidgetItemContainer* cl
     proxy::SettingsManager::GetInstance()->RemoveCluster(con);
     proxy::SettingsManager::GetInstance()->AddCluster(newConnection);
 
-    delete clusterItem;
+    if (remove_origin) {
+      delete clusterItem;
+    }
     addCluster(newConnection);
   }
 }
 
-void ConnectionsDialog::editSentinel(SentinelConnectionListWidgetItemContainer* sentinelItem) {
+void ConnectionsDialog::editSentinel(SentinelConnectionListWidgetItemContainer* sentinelItem, bool remove_origin) {
   CHECK(sentinelItem);
 
   proxy::ISentinelSettingsBaseSPtr con = sentinelItem->connection();
@@ -351,7 +372,9 @@ void ConnectionsDialog::editSentinel(SentinelConnectionListWidgetItemContainer* 
     proxy::SettingsManager::GetInstance()->RemoveSentinel(con);
     proxy::SettingsManager::GetInstance()->AddSentinel(newConnection);
 
-    delete sentinelItem;
+    if (remove_origin) {
+      delete sentinelItem;
+    }
     addSentinel(newConnection);
   }
 }

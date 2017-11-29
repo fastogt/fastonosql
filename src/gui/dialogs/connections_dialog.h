@@ -25,6 +25,7 @@
 #include "proxy/connection_settings/isentinel_connection_settings.h"
 
 class QTreeWidget;
+class QTreeWidgetItem;
 
 namespace fastonosql {
 namespace gui {
@@ -51,6 +52,7 @@ class ConnectionsDialog : public QDialog {
   void addCls();
   void addSent();
   void remove();
+  void clone();
   void edit();
   void itemSelectionChange();
 
@@ -58,9 +60,10 @@ class ConnectionsDialog : public QDialog {
   virtual void changeEvent(QEvent* ev) override;
 
  private:
-  void editConnection(ConnectionListWidgetItem* connectionItem);
-  void editCluster(ClusterConnectionListWidgetItemContainer* clusterItem);
-  void editSentinel(SentinelConnectionListWidgetItemContainer* sentinelItem);
+  void editItem(QTreeWidgetItem* qitem, bool remove_origin);
+  void editConnection(ConnectionListWidgetItem* connectionItem, bool remove_origin);
+  void editCluster(ClusterConnectionListWidgetItemContainer* clusterItem, bool remove_origin);
+  void editSentinel(SentinelConnectionListWidgetItemContainer* sentinelItem, bool remove_origin);
 
   void removeConnection(ConnectionListWidgetItem* connectionItem);
   void removeCluster(ClusterConnectionListWidgetItemContainer* clusterItem);
