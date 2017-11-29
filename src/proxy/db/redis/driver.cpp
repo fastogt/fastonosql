@@ -64,7 +64,7 @@ common::Value::Type ConvertFromStringRType(const std::string& type) {
     return common::Value::TYPE_HASH;
   } else if (type == "zset") {
     return common::Value::TYPE_ZSET;
-  } else if(type == "stream") {
+  } else if (type == "stream") {
     return fastonosql::core::StreamValue::TYPE_STREAM;
   } else if (type == "ReJSON-RL") {
     return fastonosql::core::JsonValue::TYPE_JSON;

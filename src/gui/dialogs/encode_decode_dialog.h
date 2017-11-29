@@ -27,12 +27,8 @@ class QWidget;
 
 namespace fastonosql {
 namespace gui {
-class FastoEditor;
-}
-}  // namespace fastonosql
 
-namespace fastonosql {
-namespace gui {
+class FastoEditor;
 
 class EncodeDecodeDialog : public QDialog {
   Q_OBJECT

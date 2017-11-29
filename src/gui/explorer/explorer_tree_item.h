@@ -22,8 +22,8 @@
 
 #include <common/qt/gui/base/tree_item.h>  // for TreeItem
 
-#include "core/display_strategy.h"
 #include "core/database/idatabase_info.h"
+#include "core/display_strategy.h"
 #include "proxy/proxy_fwd.h"  // for IServerSPtr, IClusterSPtr, etc
 
 namespace fastonosql {

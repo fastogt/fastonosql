@@ -18,10 +18,10 @@
 
 #include "gui/dialogs/stream_entry_dialog.h"
 
+#include <QDialogButtonBox>
 #include <QHeaderView>
 #include <QLineEdit>
 #include <QVBoxLayout>
-#include <QDialogButtonBox>
 
 #include <common/qt/convert2string.h>
 #include <common/qt/utils_qt.h>

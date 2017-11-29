@@ -28,6 +28,8 @@
 #include <QLineEdit>
 #include <QMessageBox>
 
+#include <Qsci/qscilexerjson.h>
+
 #include <common/convert2string.h>
 #include <common/qt/convert2string.h>  // for ConvertToString
 
@@ -41,6 +43,8 @@
 #include "gui/dialogs/input_dialog.h"  // for InputDialog, etc
 #include "gui/gui_factory.h"           // for GuiFactory
 #include "gui/hash_table_model.h"
+
+#include "gui/editor/fasto_editor.h"
 
 #include "translations/global.h"  // for trAddItem, trRemoveItem, etc
 
@@ -96,6 +100,12 @@ DbKeyDialog::DbKeyDialog(const QString& title, core::connectionTypes type, const
   kvLayout->addWidget(value_edit_, 2, 1);
   value_edit_->setVisible(true);
 
+  json_value_edit_ = new FastoEditor;
+  QsciLexerJSON* json_lexer = new QsciLexerJSON;
+  json_value_edit_->setLexer(json_lexer);
+  kvLayout->addWidget(json_value_edit_, 2, 1);
+  json_value_edit_->setVisible(false);
+
   bool_value_edit_ = new QComboBox;
   bool_value_edit_->addItem("true");
   bool_value_edit_->addItem("false");
@@ -103,14 +113,14 @@ DbKeyDialog::DbKeyDialog(const QString& title, core::connectionTypes type, const
   bool_value_edit_->setVisible(false);
 
   value_list_edit_ = new ListTypeWidget;
-  value_list_edit_->horizontalHeader()->hide();
-  value_list_edit_->verticalHeader()->hide();
+  // value_list_edit_->horizontalHeader()->hide();
+  // value_list_edit_->verticalHeader()->hide();
   kvLayout->addWidget(value_list_edit_, 2, 1);
   value_list_edit_->setVisible(false);
 
   value_table_edit_ = new HashTypeWidget;
-  value_table_edit_->horizontalHeader()->hide();
-  value_table_edit_->verticalHeader()->hide();
+  // value_table_edit_->horizontalHeader()->hide();
+  // value_table_edit_->verticalHeader()->hide();
   kvLayout->addWidget(value_table_edit_, 2, 1);
   value_table_edit_->setVisible(false);
 
@@ -167,6 +177,7 @@ void DbKeyDialog::typeChanged(int index) {
   common::Value::Type type = static_cast<common::Value::Type>(qvariant_cast<unsigned char>(var));
 
   value_edit_->clear();
+  json_value_edit_->clear();
   value_table_edit_->clear();
   stream_table_edit_->clear();
   value_list_edit_->clear();
@@ -174,6 +185,7 @@ void DbKeyDialog::typeChanged(int index) {
   if (type == common::Value::TYPE_ARRAY || type == common::Value::TYPE_SET) {
     value_list_edit_->setVisible(true);
     value_edit_->setVisible(false);
+    json_value_edit_->setVisible(false);
     bool_value_edit_->setVisible(false);
     value_table_edit_->setVisible(false);
     stream_table_edit_->setVisible(false);
@@ -181,22 +193,33 @@ void DbKeyDialog::typeChanged(int index) {
     value_table_edit_->setVisible(true);
     stream_table_edit_->setVisible(false);
     value_edit_->setVisible(false);
+    json_value_edit_->setVisible(false);
     bool_value_edit_->setVisible(false);
     value_list_edit_->setVisible(false);
   } else if (type == common::Value::TYPE_BOOLEAN) {
     value_table_edit_->setVisible(false);
     stream_table_edit_->setVisible(false);
     value_edit_->setVisible(false);
+    json_value_edit_->setVisible(false);
     bool_value_edit_->setVisible(true);
     value_list_edit_->setVisible(false);
   } else if (type == core::StreamValue::TYPE_STREAM) {
     value_table_edit_->setVisible(false);
     stream_table_edit_->setVisible(true);
     value_edit_->setVisible(false);
+    json_value_edit_->setVisible(false);
+    bool_value_edit_->setVisible(false);
+    value_list_edit_->setVisible(false);
+  } else if (type == core::JsonValue::TYPE_JSON) {
+    value_table_edit_->setVisible(false);
+    stream_table_edit_->setVisible(false);
+    value_edit_->setVisible(false);
+    json_value_edit_->setVisible(true);
     bool_value_edit_->setVisible(false);
     value_list_edit_->setVisible(false);
   } else {
     value_edit_->setVisible(true);
+    json_value_edit_->setVisible(false);
     bool_value_edit_->setVisible(false);
     value_list_edit_->setVisible(false);
     value_table_edit_->setVisible(false);
@@ -310,6 +333,14 @@ void DbKeyDialog::syncControls(common::Value* item) {
       auto ent = entr[i];
       stream_table_edit_->insertStream(ent);
     }
+  } else if (t == core::JsonValue::TYPE_JSON) {
+    std::string text;
+    if (item->GetAsString(&text)) {
+      QString qval;
+      if (common::ConvertFromString(text, &qval)) {
+        json_value_edit_->setText(qval);
+      }
+    }
   } else if (t == common::Value::TYPE_BOOLEAN) {
     bool val;
     if (item->GetAsBoolean(&val)) {
@@ -364,6 +395,12 @@ common::Value* DbKeyDialog::item() const {
     return value_table_edit_->hashValue();
   } else if (type == core::StreamValue::TYPE_STREAM) {
     return stream_table_edit_->GetStreamValue();
+  } else if (type == core::JsonValue::TYPE_JSON) {
+    const std::string text_str = common::ConvertToString(json_value_edit_->text());
+    if (!core::JsonValue::IsValidJson(text_str)) {
+      return nullptr;
+    }
+    return new core::JsonValue(text_str);
   } else if (type == common::Value::TYPE_BOOLEAN) {
     int index = bool_value_edit_->currentIndex();
     return common::Value::CreateBooleanValue(index == 0);
@@ -399,11 +436,6 @@ common::Value* DbKeyDialog::item() const {
       return nullptr;
     }
     return common::Value::CreateDoubleValue(res);
-  } else if (type == core::JsonValue::TYPE_JSON) {
-    if (!core::JsonValue::IsValidJson(text_str)) {
-      return nullptr;
-    }
-    return new core::JsonValue(text_str);
   }
 
   return common::Value::CreateStringValue(text_str);

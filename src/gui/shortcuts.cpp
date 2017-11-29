@@ -40,18 +40,21 @@ const common::qt::gui::FastoQKeySequence g_save_as_key = common::qt::gui::FastoQ
 const common::qt::gui::FastoQKeySequence g_close_key = common::qt::gui::FastoQKeySequence(QKeySequence::Close);
 const common::qt::gui::FastoQKeySequence g_new_tab_key = common::qt::gui::FastoQKeySequence(QKeySequence::AddTab);
 const common::qt::gui::FastoQKeySequence g_next_tab_key = common::qt::gui::FastoQKeySequence(QKeySequence::NextChild);
-const common::qt::gui::FastoQKeySequence g_prev_tab_key = common::qt::gui::FastoQKeySequence(QKeySequence::PreviousChild);
+const common::qt::gui::FastoQKeySequence g_prev_tab_key =
+    common::qt::gui::FastoQKeySequence(QKeySequence::PreviousChild);
 const common::qt::gui::FastoQKeySequence g_refresh_key = common::qt::gui::FastoQKeySequence(QKeySequence::Refresh);
 const common::qt::gui::FastoQKeySequence g_execute_key =
     common::qt::gui::FastoQKeySequence(Qt::ControlModifier, Qt::Key_Return);
 
 #ifdef OS_MAC
-const common::qt::gui::FastoQKeySequence g_full_screen_key = common::qt::gui::FastoQKeySequence(QKeySequence::FullScreen);
+const common::qt::gui::FastoQKeySequence g_full_screen_key =
+    common::qt::gui::FastoQKeySequence(QKeySequence::FullScreen);
 const common::qt::gui::FastoQKeySequence g_quit_key = common::qt::gui::FastoQKeySequence(QKeySequence::Quit);
 #else
 const common::qt::gui::FastoQKeySequence g_full_screen_key =
     common::qt::gui::FastoQKeySequence(Qt::ControlModifier | Qt::ShiftModifier, Qt::Key_F11);
-const common::qt::gui::FastoQKeySequence g_quit_key = common::qt::gui::FastoQKeySequence(Qt::ControlModifier, Qt::Key_Q);
+const common::qt::gui::FastoQKeySequence g_quit_key =
+    common::qt::gui::FastoQKeySequence(Qt::ControlModifier, Qt::Key_Q);
 #endif
 
 bool IsOpenShortcut(QKeyEvent* keyEvent) {

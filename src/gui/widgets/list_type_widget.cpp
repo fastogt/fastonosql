@@ -24,11 +24,36 @@
 #include "gui/hash_table_model.h"
 #include "gui/key_value_table_item.h"
 
+#include "translations/global.h"
+
 namespace fastonosql {
 namespace gui {
 
+namespace {
+class ListTableModelInner : public HashTableModel {
+ public:
+  explicit ListTableModelInner(QObject* parent = Q_NULLPTR) : HashTableModel(parent) {}
+
+  QVariant headerData(int section, Qt::Orientation orientation, int role) const override {
+    if (role != Qt::DisplayRole) {
+      return QVariant();
+    }
+
+    if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
+      if (section == KeyValueTableItem::kKey) {
+        return translations::trValue;
+      } else if (section == KeyValueTableItem::kAction) {
+        return translations::trAction;
+      }
+    }
+
+    return TableModel::headerData(section, orientation, role);
+  }
+};
+}  // namespace
+
 ListTypeWidget::ListTypeWidget(QWidget* parent) : QTableView(parent) {
-  model_ = new HashTableModel(this);
+  model_ = new ListTableModelInner(this);
   setModel(model_);
 
   setColumnHidden(KeyValueTableItem::kValue, true);
