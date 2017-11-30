@@ -440,41 +440,42 @@ void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
 
   std::string path = settings_->GetLoggingPath();
   common::file_system::ascii_string_path p(path);
-  common::file_system::ANSIFile readFile(p);
-  if (readFile.Open("rb")) {
-    events::ServerInfoHistoryResponceEvent::value_type::infos_container_type tmpInfos;
+  common::file_system::ANSIFile read_file(p);
+  common::ErrnoError err = read_file.Open("rb");
+  if (err) {
+    res.setErrorInfo(common::make_error_from_errno(err));
+  } else {
+    events::ServerInfoHistoryResponceEvent::value_type::infos_container_type tmp_infos;
 
-    common::time64_t curStamp = 0;
-    common::buffer_t dataInfo;
+    common::time64_t cur_stamp = 0;
+    common::buffer_t data_info;
 
-    while (!readFile.IsEOF()) {
+    while (!read_file.IsEOF()) {
       common::buffer_t data;
-      bool res = readFile.ReadLine(&data);
-      if (!res || readFile.IsEOF()) {
-        if (curStamp) {
-          core::ServerInfoSnapShoot shoot(curStamp, MakeServerInfoFromString(common::ConvertToString(dataInfo)));
-          tmpInfos.push_back(shoot);
+      bool res = read_file.ReadLine(&data);
+      if (!res || read_file.IsEOF()) {
+        if (cur_stamp) {
+          core::ServerInfoSnapShoot shoot(cur_stamp, MakeServerInfoFromString(common::ConvertToString(data_info)));
+          tmp_infos.push_back(shoot);
         }
         break;
       }
 
-      common::time64_t tmpStamp = 0;
-      bool isSt = getStamp(data, &tmpStamp);
-      if (isSt) {
-        if (curStamp) {
-          core::ServerInfoSnapShoot shoot(curStamp, MakeServerInfoFromString(common::ConvertToString(dataInfo)));
-          tmpInfos.push_back(shoot);
+      common::time64_t tmp_stamp = 0;
+      bool is_stamp = getStamp(data, &tmp_stamp);
+      if (is_stamp) {
+        if (cur_stamp) {
+          core::ServerInfoSnapShoot shoot(cur_stamp, MakeServerInfoFromString(common::ConvertToString(data_info)));
+          tmp_infos.push_back(shoot);
         }
-        curStamp = tmpStamp;
-        dataInfo.clear();
+        cur_stamp = tmp_stamp;
+        data_info.clear();
       } else {
-        dataInfo.insert(dataInfo.end(), data.begin(), data.end());
+        data_info.insert(data_info.end(), data.begin(), data.end());
       }
     }
-    res.setInfos(tmpInfos);
-    readFile.Close();
-  } else {
-    res.setErrorInfo(common::make_error("History file not found"));
+    res.setInfos(tmp_infos);
+    read_file.Close();
   }
 
   Reply(sender, new events::ServerInfoHistoryResponceEvent(this, res));

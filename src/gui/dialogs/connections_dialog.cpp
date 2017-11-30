@@ -87,7 +87,7 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent) : QDialog(parent) {
 
   QToolBar* savebar = new QToolBar;
 
-  QAction* addB = new QAction(GuiFactory::GetInstance().GetLoadIcon(), translations::trAddConnection, savebar);
+  QAction* addB = new QAction(GuiFactory::GetInstance().GetAddIcon(), translations::trAddConnection, savebar);
   VERIFY(connect(addB, &QAction::triggered, this, &ConnectionsDialog::add));
   savebar->addAction(addB);
 

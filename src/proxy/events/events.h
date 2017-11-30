@@ -46,7 +46,7 @@ typedef common::qt::Event<events_info::ServerInfoRequest, QEvent::User + 13> Ser
 typedef common::qt::Event<events_info::ServerInfoResponce, QEvent::User + 14> ServerInfoResponceEvent;
 
 typedef common::qt::Event<events_info::ServerInfoHistoryRequest, QEvent::User + 15> ServerInfoHistoryRequestEvent;
-typedef common::qt::Event<events_info::ServerInfoHistoryResponce, QEvent::User + 18> ServerInfoHistoryResponceEvent;
+typedef common::qt::Event<events_info::ServerInfoHistoryResponce, QEvent::User + 16> ServerInfoHistoryResponceEvent;
 
 typedef common::qt::Event<events_info::ClearServerHistoryRequest, QEvent::User + 17> ClearServerHistoryRequestEvent;
 typedef common::qt::Event<events_info::ClearServerHistoryResponce, QEvent::User + 18> ClearServerHistoryResponceEvent;

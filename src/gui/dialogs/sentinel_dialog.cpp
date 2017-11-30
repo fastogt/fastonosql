@@ -139,7 +139,7 @@ SentinelDialog::SentinelDialog(QWidget* parent, proxy::ISentinelSettingsBase* co
   savebar_ = new QToolBar;
   toolBarLayout->addWidget(savebar_);
 
-  QAction* addB = new QAction(GuiFactory::GetInstance().GetLoadIcon(), translations::trAddConnection, savebar_);
+  QAction* addB = new QAction(GuiFactory::GetInstance().GetAddIcon(), translations::trAddConnection, savebar_);
   typedef void (QAction::*trig)(bool);
   VERIFY(connect(addB, static_cast<trig>(&QAction::triggered), this, &SentinelDialog::addConnectionSettings));
   savebar_->addAction(addB);

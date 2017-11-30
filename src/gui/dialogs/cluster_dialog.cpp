@@ -150,7 +150,7 @@ ClusterDialog::ClusterDialog(QWidget* parent, proxy::IClusterSettingsBase* conne
   savebar_ = new QToolBar;
   toolBarLayout->addWidget(savebar_);
 
-  QAction* addB = new QAction(GuiFactory::GetInstance().GetLoadIcon(), translations::trAddConnection, savebar_);
+  QAction* addB = new QAction(GuiFactory::GetInstance().GetAddIcon(), translations::trAddConnection, savebar_);
   typedef void (QAction::*trig)(bool);
   VERIFY(connect(addB, static_cast<trig>(&QAction::triggered), this, &ClusterDialog::add));
   savebar_->addAction(addB);
