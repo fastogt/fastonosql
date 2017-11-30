@@ -37,7 +37,7 @@ class StreamEntryDialog : public QDialog {
   explicit StreamEntryDialog(const QString& sid = DEFAILT_ID, QWidget* parent = Q_NULLPTR);
   virtual ~StreamEntryDialog();
 
-  bool GetStream(core::StreamValue::Stream* stream) const;
+  bool getStream(core::StreamValue::Stream* stream) const;
 
   void insertEntry(const QString& first, const QString& second);
   void clear();

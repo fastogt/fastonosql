@@ -37,7 +37,7 @@ class IPathWidget : public QWidget {
 
   bool isValidPath() const;
 
-  virtual int GetMode() const = 0;
+  virtual int mode() const = 0;
 
  private Q_SLOTS:
   void selectPathDialog();
@@ -61,14 +61,14 @@ class FilePathWidget : public IPathWidget {
  public:
   FilePathWidget(const QString& pathTitle, const QString& filter, const QString& caption, QWidget* parent = Q_NULLPTR);
 
-  virtual int GetMode() const override;
+  virtual int mode() const override;
 };
 
 class DirectoryPathWidget : public IPathWidget {
  public:
   DirectoryPathWidget(const QString& pathTitle, const QString& caption, QWidget* parent = Q_NULLPTR);
 
-  virtual int GetMode() const override;
+  virtual int mode() const override;
 };
 
 }  // namespace gui

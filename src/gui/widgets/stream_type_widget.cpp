@@ -136,7 +136,7 @@ void StreamTypeWidget::editRow(const QModelIndex& index) {
   }
   int result = diag.exec();
   core::StreamValue::Stream st;
-  if (result == QDialog::Accepted && diag.GetStream(&st)) {
+  if (result == QDialog::Accepted && diag.getStream(&st)) {
     updateStream(index, st);
   }
 }
@@ -148,7 +148,7 @@ void StreamTypeWidget::addRow(const QModelIndex& index) {
   StreamEntryDialog diag(DEFAILT_ID, this);
   int result = diag.exec();
   core::StreamValue::Stream st;
-  if (result == QDialog::Accepted && diag.GetStream(&st)) {
+  if (result == QDialog::Accepted && diag.getStream(&st)) {
     insertStream(st);
   }
 }

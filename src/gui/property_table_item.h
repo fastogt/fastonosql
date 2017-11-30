@@ -31,11 +31,11 @@ class PropertyTableItem : public common::qt::gui::TableItem {
  public:
   enum eColumn { eKey = 0, eValue = 1, eCountColumns = 2 };
   explicit PropertyTableItem(const core::property_t& prop);
-  QString GetKey() const;
-  QString GetValue() const;
+  QString key() const;
+  QString value() const;
 
-  core::property_t GetProperty() const;
-  void SetProperty(const core::property_t& prop);
+  core::property_t property() const;
+  void setProperty(const core::property_t& prop);
 
  private:
   core::property_t prop_;

@@ -72,9 +72,9 @@ StreamEntryDialog::StreamEntryDialog(const QString& sid, QWidget* parent) : QDia
 
 StreamEntryDialog::~StreamEntryDialog() {}
 
-bool StreamEntryDialog::GetStream(core::StreamValue::Stream* stream) const {
+bool StreamEntryDialog::getStream(core::StreamValue::Stream* stream) const {
   core::StreamValue::stream_id sid = common::ConvertToString(id_edit_->text());
-  return model_->GetStream(sid, stream);
+  return model_->getStream(sid, stream);
 }
 
 void StreamEntryDialog::insertEntry(const QString& first, const QString& second) {

@@ -50,7 +50,7 @@ IPathWidget::IPathWidget(const QString& pathTitle, const QString& filter, const 
 }
 
 void IPathWidget::selectPathDialog() {
-  selectPathDialogRoutine(caption_, filter_, GetMode());
+  selectPathDialogRoutine(caption_, filter_, mode());
 }
 
 void IPathWidget::selectPathDialogRoutine(const QString& caption, const QString& filter, int mode) {
@@ -94,14 +94,14 @@ void IPathWidget::changeEvent(QEvent* ev) {
 FilePathWidget::FilePathWidget(const QString& pathTitle, const QString& filter, const QString& caption, QWidget* parent)
     : IPathWidget(pathTitle, filter, caption, parent) {}
 
-int FilePathWidget::GetMode() const {
+int FilePathWidget::mode() const {
   return QFileDialog::ExistingFile;
 }
 
 DirectoryPathWidget::DirectoryPathWidget(const QString& pathTitle, const QString& caption, QWidget* parent)
     : IPathWidget(pathTitle, QString(), caption, parent) {}
 
-int DirectoryPathWidget::GetMode() const {
+int DirectoryPathWidget::mode() const {
   return QFileDialog::DirectoryOnly;
 }
 
