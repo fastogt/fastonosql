@@ -91,7 +91,7 @@ class BuildRequest(object):
     def platform(self):
         return self.platform_
 
-    def build(self, cmake_project_root_path, branding_options, dir_path, bs, package_types, saver):
+    def build(self, cmake_project_root_path, app_branding_options, dir_path, bs, package_types, saver):
         cmake_project_root_abs_path = os.path.abspath(cmake_project_root_path)
         if not os.path.exists(cmake_project_root_abs_path):
             raise utils.BuildError('invalid cmake_project_root_path: %s' % cmake_project_root_path)
@@ -113,7 +113,7 @@ class BuildRequest(object):
         build_system_policy = bs.policy()
 
         saver.update_progress_message_range(0.0, 9.0, "Start building project branding_options:\n{0}".format(
-            "\n".join(branding_options)))
+            "\n".join(app_branding_options)))
 
         pwd = os.getcwd()
         os.mkdir(abs_dir_path)
@@ -122,7 +122,7 @@ class BuildRequest(object):
         # project static options
         log_to_file_args = '-DLOG_TO_FILE=ON'
         if is_android:
-            openssl_args = '-DOPENSSL_USE_STATIC=OFF'
+            openssl_args = '-DOPENSSL_USE_STATIC_LIBS=OFF'
             zlib_args = '-DZLIB_USE_STATIC=OFF'
             bzip2_args = '-DBZIP2_USE_STATIC=OFF'
         else:
@@ -139,8 +139,8 @@ class BuildRequest(object):
             toolchain_path = os.path.join(cmake_project_root_abs_path, 'cmake/android.toolchain.cmake')
             cmake_line.append('-DCMAKE_TOOLCHAIN_FILE={0}'.format(toolchain_path))
 
-        if branding_options:
-            cmake_line.extend(branding_options)
+        if app_branding_options:
+            cmake_line.extend(app_branding_options)
 
         saver.update_progress_message_range(10.0, 19.0, 'Generate project build')
 
@@ -255,9 +255,9 @@ if __name__ == "__main__":
 
     if argc > 5:
         bs_str = sys.argv[5]
-        bs = get_supported_build_system_by_name(bs_str)
+        build_system = get_supported_build_system_by_name(bs_str)
     else:
-        bs = []
+        build_system = []
 
     if argc > 6:
         packages = sys.argv[6].split()
@@ -272,4 +272,4 @@ if __name__ == "__main__":
         branding_options = []
 
     saver = ProgressSaver(print_message)
-    request.build(cmake_root, branding_options, 'build_' + platform_str, bs, packages, saver)
+    request.build(cmake_root, branding_options, 'build_' + platform_str, build_system, packages, saver)
