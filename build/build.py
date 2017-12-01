@@ -126,7 +126,7 @@ class BuildRequest(object):
             zlib_args = '-DZLIB_USE_STATIC=OFF'
             bzip2_args = '-DBZIP2_USE_STATIC=OFF'
         else:
-            openssl_args = '-DOPENSSL_USE_STATIC=ON'
+            openssl_args = '-DOPENSSL_USE_STATIC_LIBS=ON'
             zlib_args = '-DZLIB_USE_STATIC=ON'
             bzip2_args = '-DBZIP2_USE_STATIC=ON'
         snappy_args = '-DSNAPPY_USE_STATIC=ON'
