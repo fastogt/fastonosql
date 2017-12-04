@@ -47,6 +47,7 @@ FastoTextView::FastoTextView(QWidget* parent) : QWidget(parent) {
   rawRadioButton_ = new QRadioButton;
   hexRadioButton_ = new QRadioButton;
   msgPackRadioButton_ = new QRadioButton;
+  xmlRadioButton_ = new QRadioButton;
   gzipRadioButton_ = new QRadioButton;
   snappyRadioButton_ = new QRadioButton;
 
@@ -61,6 +62,7 @@ FastoTextView::FastoTextView(QWidget* parent) : QWidget(parent) {
   VERIFY(connect(msgPackRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChange));
   VERIFY(connect(gzipRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChange));
   VERIFY(connect(snappyRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChange));
+  VERIFY(connect(xmlRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChange));
 
   VERIFY(connect(saveChangeButton_, &QPushButton::clicked, this, &FastoTextView::saveChanges));
   VERIFY(connect(editor_, &FastoEditorOutput::textChanged, this, &FastoTextView::textChange));
@@ -70,6 +72,7 @@ FastoTextView::FastoTextView(QWidget* parent) : QWidget(parent) {
   radLaout->addWidget(jsonRadioButton_);
   radLaout->addWidget(csvRadioButton_);
   radLaout->addWidget(rawRadioButton_);
+  radLaout->addWidget(xmlRadioButton_);
   radLaout->addWidget(hexRadioButton_);
   radLaout->addWidget(msgPackRadioButton_);
   radLaout->addWidget(gzipRadioButton_);
@@ -152,6 +155,11 @@ void FastoTextView::viewChange(bool checked) {
     editor_->viewChange(SNAPPY);
     return;
   }
+
+  if (xmlRadioButton_->isChecked()) {
+    editor_->viewChange(XML);
+    return;
+  }
 }
 
 void FastoTextView::changeEvent(QEvent* ev) {
@@ -170,6 +178,7 @@ void FastoTextView::retranslateUi() {
   msgPackRadioButton_->setText(translations::trMsgPack);
   gzipRadioButton_->setText(translations::trGzip);
   snappyRadioButton_->setText(translations::trSnappy);
+  xmlRadioButton_->setText(translations::trXml);
 
   saveChangeButton_->setText(translations::trSave);
 }

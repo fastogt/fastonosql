@@ -27,6 +27,7 @@
 #define MSGPACK 4
 #define GZIP 5
 #define SNAPPY 6
+#define XML 7
 
 namespace fastonosql {
 namespace gui {
@@ -73,6 +74,7 @@ class FastoEditorOutput : public QWidget {
 
   FastoEditor* text_json_editor_;
   QsciLexer* json_lexer_;
+  QsciLexer* xml_lexer_;
 
   QAbstractItemModel* model_;
   int view_method_;

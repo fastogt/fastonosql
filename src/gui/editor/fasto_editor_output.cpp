@@ -21,6 +21,7 @@
 #include <QHBoxLayout>
 
 #include <Qsci/qscilexerjson.h>
+#include <Qsci/qscilexerxml.h>
 
 #include <common/qt/convert2string.h>
 #include <common/qt/utils_qt.h>  // for item
@@ -37,6 +38,7 @@ namespace gui {
 FastoEditorOutput::FastoEditorOutput(QWidget* parent) : QWidget(parent), model_(nullptr), view_method_(JSON) {
   text_json_editor_ = new FastoEditor;
   json_lexer_ = new QsciLexerJSON;
+  xml_lexer_ = new QsciLexerXML;
   VERIFY(connect(text_json_editor_, &FastoEditor::textChanged, this, &FastoEditorOutput::textChanged));
   VERIFY(connect(text_json_editor_, &FastoEditor::readOnlyChanged, this, &FastoEditorOutput::readOnlyChanged));
 
@@ -49,11 +51,14 @@ FastoEditorOutput::FastoEditorOutput(QWidget* parent) : QWidget(parent), model_(
 
 FastoEditorOutput::~FastoEditorOutput() {
   delete json_lexer_;
+  delete xml_lexer_;
 }
 
 void FastoEditorOutput::SyncEditors() {
   if (view_method_ == JSON) {
     text_json_editor_->setLexer(json_lexer_);
+  } else if (view_method_ == XML) {
+    text_json_editor_->setLexer(xml_lexer_);
   } else {
     text_json_editor_->setLexer(NULL);
   }
@@ -252,6 +257,8 @@ void FastoEditorOutput::layoutChanged() {
     methodText = translations::trGzip;
   } else if (view_method_ == SNAPPY) {
     methodText = translations::trSnappy;
+  } else if (view_method_ == XML) {
+    methodText = translations::trXml;
   } else {
     NOTREACHED();
   }
@@ -289,6 +296,9 @@ void FastoEditorOutput::layoutChanged() {
     } else if (view_method_ == SNAPPY) {
       QString snap = fromSnappy(child);
       result += common::EscapedText(snap);
+    } else if (view_method_ == XML) {
+      QString raw = toRaw(child);
+      result += common::EscapedText(raw);
     }
   }
 

@@ -55,6 +55,7 @@ class FastoTextView : public QWidget {
   QRadioButton* msgPackRadioButton_;
   QRadioButton* gzipRadioButton_;
   QRadioButton* snappyRadioButton_;
+  QRadioButton* xmlRadioButton_;
   QPushButton* saveChangeButton_;
 };
 
