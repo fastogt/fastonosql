@@ -552,8 +552,8 @@ void MainWindow::versionAvailible(bool succesResult, const QString& version) {
   }
 
   std::string sver = common::ConvertToString(version);
-  bool isn = IsNeededUpdate(sver);
-  if (!isn) {
+  bool is_need_update = IsNeededUpdate(sver);
+  if (is_need_update) {
     QMessageBox::information(
         this, translations::trCheckVersion,
         QObject::tr("<h4>A new version(%1) of " PROJECT_NAME_TITLE " is availible!</h4>"
@@ -561,7 +561,7 @@ void MainWindow::versionAvailible(bool succesResult, const QString& version) {
             .arg(version));
   }
 
-  checkUpdateAction_->setEnabled(isn);
+  checkUpdateAction_->setEnabled(is_need_update);
 }
 
 void MainWindow::statitsticSent(bool succesResult) {

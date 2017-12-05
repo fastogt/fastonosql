@@ -1,3 +1,9 @@
+1.14.0 /
+[Alexandr Topilski]
+- Check update fixes
+- [ForestDB] by default in off state, possible builds from sources or in individual build request
+- [RocksDB] by default in off state, possible builds from sources or in individual build request
+
 1.13.0 / December 5, 2017
 [Alexandr Topilski]
 - [Redis] XADD command UI handling
