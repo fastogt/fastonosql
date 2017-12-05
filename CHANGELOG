@@ -1,4 +1,4 @@
-1.12.1 / 
+1.13.0 / December 5, 2017
 [Alexandr Topilski]
 - [Redis] XADD command UI handling
 - [Redis] XRANGE command UI handling
