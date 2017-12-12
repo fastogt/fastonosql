@@ -76,16 +76,6 @@ int main(int argc, char* argv[]) {
   app.setAttribute(Qt::AA_EnableHighDpiScaling);
   app.setWindowIcon(fastonosql::gui::GuiFactory::GetInstance().GetLogoIcon());  // default icon for app
 
-  // EULA License Agreement
-  if (!settings_manager->GetAccpetedEula()) {
-    fastonosql::gui::EulaDialog eula_dialog;
-    if (eula_dialog.exec() == QDialog::Rejected) {
-      return EXIT_FAILURE;
-    }
-    // EULA accepted
-    settings_manager->SetAccpetedEula(true);
-  }
-
 #ifndef IS_PUBLIC_BUILD
   fastonosql::gui::PasswordDialog password_dialog;
   password_dialog.SetLogin(USER_SPECIFIC_LOGIN);
@@ -107,6 +97,16 @@ int main(int argc, char* argv[]) {
     return EXIT_FAILURE;
   }
 #endif
+
+  // EULA License Agreement
+  if (!settings_manager->GetAccpetedEula()) {
+    fastonosql::gui::EulaDialog eula_dialog;
+    if (eula_dialog.exec() == QDialog::Rejected) {
+      return EXIT_FAILURE;
+    }
+    // EULA accepted
+    settings_manager->SetAccpetedEula(true);
+  }
 
   QFile file(":" PROJECT_NAME_LOWERCASE "/default.qss");
   file.open(QFile::ReadOnly);
