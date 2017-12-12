@@ -48,8 +48,6 @@ PasswordDialog::PasswordDialog(QWidget* parent) : QDialog(parent) {
   QHBoxLayout* profile_layout = new QHBoxLayout;
   login_label_ = new QLabel;
   login_text_ = new QLineEdit;
-  login_text_->setText(USER_SPECIFIC_LOGIN);
-  login_text_->setEnabled(false);
   profile_layout->addWidget(login_label_);
   profile_layout->addWidget(login_text_);
 
@@ -72,8 +70,24 @@ PasswordDialog::PasswordDialog(QWidget* parent) : QDialog(parent) {
   retranslateUi();
 }
 
+QString PasswordDialog::GetLogin() const {
+  return login_text_->text();
+}
+
+void PasswordDialog::SetLogin(const QString& login) {
+  login_text_->setText(login);
+}
+
 QString PasswordDialog::GetPassword() const {
   return password_box_->text();
+}
+
+void PasswordDialog::SetPassword(const QString& password) {
+  password_box_->setText(password);
+}
+
+void PasswordDialog::SetLoginEnabled(bool en) {
+  login_text_->setEnabled(en);
 }
 
 void PasswordDialog::accept() {

@@ -32,7 +32,13 @@ class PasswordDialog : public QDialog {
  public:
   explicit PasswordDialog(QWidget* parent = Q_NULLPTR);
 
+  QString GetLogin() const;
+  void SetLogin(const QString& login);
+
   QString GetPassword() const;
+  void SetPassword(const QString& password);
+
+  void SetLoginEnabled(bool en);
 
  public Q_SLOTS:
   virtual void accept() override;

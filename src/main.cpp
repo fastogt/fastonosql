@@ -88,6 +88,8 @@ int main(int argc, char* argv[]) {
 
 #ifndef IS_PUBLIC_BUILD
   fastonosql::gui::PasswordDialog password_dialog;
+  password_dialog.SetLogin(USER_SPECIFIC_LOGIN);
+  password_dialog.SetLoginEnabled(false);
   if (password_dialog.exec() == QDialog::Rejected) {
     return EXIT_FAILURE;
   }
