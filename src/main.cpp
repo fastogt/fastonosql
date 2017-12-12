@@ -32,6 +32,9 @@
 #include <common/logger.h>
 #include <common/qt/convert2string.h>
 #include <common/qt/translations/translations.h>
+#ifdef IS_PUBLIC_BUILD
+#include <common/time.h>
+#endif
 
 #include <proxy/settings_manager.h>
 
@@ -107,6 +110,21 @@ int main(int argc, char* argv[]) {
     // EULA accepted
     settings_manager->SetAccpetedEula(true);
   }
+
+#if defined(IS_PUBLIC_BUILD)
+  common::time64_t cur_utc = common::time::current_utc_mstime() / 1000;
+  common::time64_t ttl_app = UTC_TIMESTAMP + EXPIRE_DAYS * 3600 - cur_utc;
+  if (ttl_app < 0) {
+    QMessageBox::critical(nullptr, fastonosql::translations::trTrial,
+                          QObject::tr("Your trial version is expired, bye."));
+    return EXIT_FAILURE;
+  } else {
+    QMessageBox::information(nullptr, fastonosql::translations::trTrial,
+                             QObject::tr("You should understand that you using trial version, and after %1 seconds "
+                                         "you can't start " PROJECT_NAME_TITLE ".")
+                                 .arg(ttl_app));
+  }
+#endif
 
   QFile file(":" PROJECT_NAME_LOWERCASE "/default.qss");
   file.open(QFile::ReadOnly);

@@ -100,6 +100,7 @@ const QString trName = QObject::tr("Name");
 const QString trNumberOfSubscribers = QObject::tr("Number of subscribers");
 const QString trAddress = QObject::tr("Address");
 const QString trPassword = QObject::tr("Password");
+const QString trTrial = QObject::tr("Trial");
 const QString trLogin = QObject::tr("Login");
 const QString trHide = QObject::tr("Hide");
 const QString trShow = QObject::tr("Show");
