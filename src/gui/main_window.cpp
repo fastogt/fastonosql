@@ -27,6 +27,7 @@
 #include <QThread>
 #include <QToolBar>
 #include <QUrl>
+#include <QTimer>
 
 #ifdef OS_ANDROID
 #include <QApplication>
@@ -117,10 +118,10 @@ MainWindow::MainWindow() : QMainWindow() {
 
   setWindowTitle(PROJECT_NAME_TITLE " " PROJECT_VERSION);
 
-  openAction_ = new QAction(this);
-  openAction_->setIcon(GuiFactory::GetInstance().GetOpenIcon());
-  openAction_->setShortcut(g_open_key);
-  VERIFY(connect(openAction_, &QAction::triggered, this, &MainWindow::open));
+  connectAction_ = new QAction(this);
+  connectAction_->setIcon(GuiFactory::GetInstance().GetConnectDBIcon());
+  connectAction_->setShortcut(g_new_key);
+  VERIFY(connect(connectAction_, &QAction::triggered, this, &MainWindow::open));
 
   loadFromFileAction_ = new QAction(this);
   loadFromFileAction_->setIcon(GuiFactory::GetInstance().GetLoadIcon());
@@ -145,7 +146,7 @@ MainWindow::MainWindow() : QMainWindow() {
   // File menu
   QMenu* fileMenu = new QMenu(this);
   fileAction_ = menuBar()->addMenu(fileMenu);
-  fileMenu->addAction(openAction_);
+  fileMenu->addAction(connectAction_);
   fileMenu->addAction(loadFromFileAction_);
   fileMenu->addAction(importAction_);
   fileMenu->addAction(exportAction_);
@@ -284,6 +285,8 @@ void MainWindow::sendStatisticAndCheckVersion() {
   if (send_statistic) {
     sendStatistic();
   }
+
+  QTimer::singleShot(0, this, SLOT(open()));
 }
 
 void MainWindow::open() {
@@ -630,7 +633,7 @@ void MainWindow::tapAndHoldTriggered(QTapAndHoldGesture* tapEvent) {
 void MainWindow::createStatusBar() {}
 
 void MainWindow::retranslateUi() {
-  openAction_->setText(translations::trOpen);
+  connectAction_->setText(translations::trConnect + "...");
   loadFromFileAction_->setText(translations::trLoadFromFile);
   importAction_->setText(translations::trImportSettings);
   exportAction_->setText(translations::trExportSettings);

@@ -26,6 +26,7 @@ namespace fastonosql {
 namespace gui {
 
 extern const common::qt::gui::FastoQKeySequence g_open_key;
+extern const common::qt::gui::FastoQKeySequence g_new_key;
 extern const common::qt::gui::FastoQKeySequence g_save_key;
 extern const common::qt::gui::FastoQKeySequence g_save_as_key;
 extern const common::qt::gui::FastoQKeySequence g_quit_key;

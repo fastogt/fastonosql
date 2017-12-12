@@ -34,6 +34,7 @@ Qt::ControlModifier) &&
 
 // global variables
 const common::qt::gui::FastoQKeySequence g_open_key = common::qt::gui::FastoQKeySequence(QKeySequence::Open);
+const common::qt::gui::FastoQKeySequence g_new_key = common::qt::gui::FastoQKeySequence(QKeySequence::New);
 const common::qt::gui::FastoQKeySequence g_save_key = common::qt::gui::FastoQKeySequence(QKeySequence::Save);
 const common::qt::gui::FastoQKeySequence g_save_as_key = common::qt::gui::FastoQKeySequence(QKeySequence::SaveAs);
 

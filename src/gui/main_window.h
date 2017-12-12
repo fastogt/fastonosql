@@ -94,7 +94,7 @@ class MainWindow : public QMainWindow {
   void createSentinel(proxy::ISentinelSettingsBaseSPtr settings);
   void createCluster(proxy::IClusterSettingsBaseSPtr settings);
 
-  QAction* openAction_;
+  QAction* connectAction_;
   QAction* loadFromFileAction_;
   QAction* importAction_;
   QAction* exportAction_;

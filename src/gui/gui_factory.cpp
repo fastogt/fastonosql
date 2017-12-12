@@ -36,6 +36,11 @@ const QIcon& GuiFactory::GetDirectoryIcon() const {
   return open;
 }
 
+const QIcon& GuiFactory::GetConnectDBIcon() const {
+  static QIcon servers(":" PROJECT_NAME_LOWERCASE "/images/64x64/connect_db.png");
+  return servers;
+}
+
 const QIcon& GuiFactory::GetOpenIcon() const {
   static QIcon open(":" PROJECT_NAME_LOWERCASE "/images/64x64/open.png");
   return open;

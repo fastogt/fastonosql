@@ -37,6 +37,7 @@ class GuiFactory : public common::patterns::LazySingleton<GuiFactory> {
 
   const QIcon& GetDirectoryIcon() const;
 
+  const QIcon& GetConnectDBIcon() const;
   const QIcon& GetOpenIcon() const;
   const QIcon& GetLogoIcon() const;
   const QIcon& GetMainWindowIcon() const;
