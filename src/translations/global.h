@@ -100,6 +100,7 @@ extern const QString trName;
 extern const QString trNumberOfSubscribers;
 extern const QString trAddress;
 extern const QString trPassword;
+extern const QString trLogin;
 extern const QString trHide;
 extern const QString trShow;
 extern const QString trJson;

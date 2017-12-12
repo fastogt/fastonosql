@@ -235,6 +235,7 @@ SET(SOURCES_TRANSLATIONS
 SET(HEADERS_GUI_DIALOGS_TO_MOC
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/eula_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/about_dialog.h
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/password_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/input_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/info_server_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/history_server_dialog.h
@@ -265,6 +266,7 @@ SET(HEADERS_GUI_DIALOGS
 
 SET(SOURCES_GUI_DIALOGS
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/eula_dialog.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/password_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/about_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/input_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/preferences_dialog.cpp

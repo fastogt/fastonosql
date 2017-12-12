@@ -37,10 +37,11 @@
 
 #include "gui/gui_factory.h"  // for GuiFactory
 
+#include "translations/global.h"
+
 namespace {
 const QString trPreferences = QObject::tr(PROJECT_NAME_TITLE " preferences");
 const QString trProfileSettings = QObject::tr("Profile settings");
-const QString trLogin = QObject::tr("Login:");
 const QString trGeneralSettings = QObject::tr("General settings");
 const QString trSendStatistic = QObject::tr("Send statistic");
 const QString trAutoCheckUpd = QObject::tr("Automatically check for updates");
@@ -208,7 +209,7 @@ void PreferencesDialog::retranslateUi() {
   general_box_->setTitle(trGeneralSettings);
 #ifndef IS_PUBLIC_BUILD
   profile_box_->setTitle(trProfileSettings);
-  login_label_->setText(trLogin);
+  login_label_->setText(translations::trLogin + ":");
 #endif
   send_statitsic_->setText(trSendStatistic);
   auto_check_updates_->setText(trAutoCheckUpd);

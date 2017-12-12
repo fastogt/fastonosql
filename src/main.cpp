@@ -25,14 +25,23 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QFile>
+#include <QMessageBox>
+
+#include <common/convert2string.h>
+#include <common/hash/md5.h>
+#include <common/logger.h>
+#include <common/qt/convert2string.h>
+#include <common/qt/translations/translations.h>
+
+#include <proxy/settings_manager.h>
 
 #include "gui/gui_factory.h"
 #include "gui/main_window.h"
-#include "gui/dialogs/eula_dialog.h"
 
-#include <common/logger.h>
-#include <common/qt/translations/translations.h>
-#include <proxy/settings_manager.h>
+#include "gui/dialogs/eula_dialog.h"
+#include "gui/dialogs/password_dialog.h"
+
+#include "translations/global.h"
 
 namespace {
 #ifdef OS_WIN
@@ -71,11 +80,31 @@ int main(int argc, char* argv[]) {
   if (!settings_manager->GetAccpetedEula()) {
     fastonosql::gui::EulaDialog eula_dialog;
     if (eula_dialog.exec() == QDialog::Rejected) {
-      return 1;
+      return EXIT_FAILURE;
     }
     // EULA accepted
     settings_manager->SetAccpetedEula(true);
   }
+
+#ifndef IS_PUBLIC_BUILD
+  fastonosql::gui::PasswordDialog password_dialog;
+  if (password_dialog.exec() == QDialog::Rejected) {
+    return EXIT_FAILURE;
+  }
+
+  const QString password = password_dialog.GetPassword();
+  const std::string password_str = common::ConvertToString(password);
+  unsigned char md5_result[MD5_HASH_LENGHT];
+  common::hash::MD5_CTX ctx;
+  common::hash::MD5_Init(&ctx);
+  common::hash::MD5_Update(&ctx, reinterpret_cast<const unsigned char*>(password_str.data()), password_str.size());
+  common::hash::MD5_Final(&ctx, md5_result);
+  std::string hexed = common::utils::hex::encode(std::string(md5_result, md5_result + MD5_HASH_LENGHT), true);
+  if (hexed != USER_SPECIFIC_PASSWORD) {
+    QMessageBox::critical(nullptr, fastonosql::translations::trPassword, QObject::tr("Invalid password, bye."));
+    return EXIT_FAILURE;
+  }
+#endif
 
   QFile file(":" PROJECT_NAME_LOWERCASE "/default.qss");
   file.open(QFile::ReadOnly);
