@@ -182,7 +182,6 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
 
   copy_rights_layout->addWidget(main_tab, 4, 1, 1, 5);
   glayout->addLayout(copy_rights_layout);
-  glayout->setSizeConstraint(QLayout::SetFixedSize);
   about_tabs->addTab(about_tab, trAbout);
 
   // license
@@ -196,6 +195,7 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
   QVBoxLayout* mainLayout = new QVBoxLayout;
   mainLayout->addWidget(about_tabs);
   mainLayout->addWidget(buttonBox);
+  setFixedSize(QSize(fix_width, fix_height));
   setLayout(mainLayout);
 }
 

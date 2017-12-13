@@ -25,9 +25,9 @@
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QThread>
+#include <QTimer>
 #include <QToolBar>
 #include <QUrl>
-#include <QTimer>
 
 #ifdef OS_ANDROID
 #include <QApplication>
@@ -69,8 +69,6 @@
 #include "translations/global.h"  // for trError, trCheckVersion, etc
 
 namespace {
-
-std::once_flag statistic_flag;
 
 const QString trImportSettingsFailed = QObject::tr("Import settings failed!");
 const QString trExportSettingsFailed = QObject::tr("Export settings failed!");
@@ -272,7 +270,12 @@ void MainWindow::changeEvent(QEvent* ev) {
 
 void MainWindow::showEvent(QShowEvent* ev) {
   QMainWindow::showEvent(ev);
-  std::call_once(statistic_flag, &MainWindow::sendStatisticAndCheckVersion, this);
+  static bool statistic_sent = false;
+  if (!statistic_sent) {
+    sendStatisticAndCheckVersion();
+    statistic_sent = true;
+    QTimer::singleShot(0, this, SLOT(open()));
+  }
 }
 
 void MainWindow::sendStatisticAndCheckVersion() {
@@ -285,8 +288,6 @@ void MainWindow::sendStatisticAndCheckVersion() {
   if (send_statistic) {
     sendStatistic();
   }
-
-  QTimer::singleShot(0, this, SLOT(open()));
 }
 
 void MainWindow::open() {

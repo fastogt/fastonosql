@@ -40,7 +40,6 @@
 #include "gui/widgets/list_type_widget.h"
 #include "gui/widgets/stream_type_widget.h"
 
-#include "gui/dialogs/input_dialog.h"  // for InputDialog, etc
 #include "gui/gui_factory.h"           // for GuiFactory
 #include "gui/hash_table_model.h"
 
