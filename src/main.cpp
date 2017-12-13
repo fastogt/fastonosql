@@ -33,7 +33,7 @@
 #include <common/qt/convert2string.h>
 #include <common/qt/translations/translations.h>
 #ifdef IS_PUBLIC_BUILD
-#include <common/time.h>
+#include <QDateTime>
 #endif
 
 #include <proxy/settings_manager.h>
@@ -111,18 +111,19 @@ int main(int argc, char* argv[]) {
     settings_manager->SetAccpetedEula(true);
   }
 
-#if defined(IS_PUBLIC_BUILD)
-  common::time64_t cur_utc = common::time::current_utc_mstime() / 1000;
-  common::time64_t ttl_app = UTC_TTL - cur_utc;
-  if (ttl_app < 0) {
+// 1514764800 1.1.2018:00:00
+#if defined(IS_PUBLIC_BUILD) && defined(EXPIRE_APPLICATION_UTC_TIME)
+  const QDateTime cur_time = QDateTime::currentDateTimeUtc();
+  const QDateTime end_date = QDateTime::fromTime_t(EXPIRE_APPLICATION_UTC_TIME, Qt::UTC);
+  if (cur_time > end_date) {
     QMessageBox::critical(nullptr, fastonosql::translations::trTrial,
                           QObject::tr("Your trial version is expired, bye."));
     return EXIT_FAILURE;
   } else {
     QMessageBox::information(nullptr, fastonosql::translations::trTrial,
-                             QObject::tr("You should understand that you using trial version, and after %1 seconds "
+                             QObject::tr("You should understand that you using trial version, and after (%1) "
                                          "you can't start " PROJECT_NAME_TITLE ".")
-                                 .arg(ttl_app));
+                                 .arg(end_date.toString()));
   }
 #endif
 

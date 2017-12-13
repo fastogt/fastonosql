@@ -241,7 +241,7 @@ if __name__ == "__main__":
 
     if branding_file_path != dev_null:
         abs_branding_file = os.path.abspath(branding_file_path)
-        brand_options = utils.read_file_line_by_line(abs_branding_file)
+        brand_options = utils.read_file_line_by_line_to_list(abs_branding_file)
     else:
         brand_options = []
 

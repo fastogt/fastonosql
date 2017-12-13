@@ -55,9 +55,9 @@ if __name__ == "__main__":
     saver = build.ProgressSaver(print_message)
 
     fastonosql_branding_file = os.path.abspath('fastonosql.txt')
-    fastonosql_branding_options = utils.read_file_line_by_line(fastonosql_branding_file)
+    fastonosql_branding_options = utils.read_file_line_by_line_to_list(fastonosql_branding_file)
     request.build(cmake_root, fastonosql_branding_options, 'build_fastonosql_' + platform_str, bs, packages, saver)
 
     fastoredis_branding_file = os.path.abspath('fastoredis.txt')
-    fastoredis_branding_options = utils.read_file_line_by_line(fastoredis_branding_file)
+    fastoredis_branding_options = utils.read_file_line_by_line_to_list(fastoredis_branding_file)
     request.build(cmake_root, fastoredis_branding_options, 'build_fastoredis_' + platform_str, bs, packages, saver)
