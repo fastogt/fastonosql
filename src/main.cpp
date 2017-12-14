@@ -116,14 +116,16 @@ int main(int argc, char* argv[]) {
   const QDateTime cur_time = QDateTime::currentDateTimeUtc();
   const QDateTime end_date = QDateTime::fromTime_t(EXPIRE_APPLICATION_UTC_TIME, Qt::UTC);
   if (cur_time > end_date) {
-    QMessageBox::critical(nullptr, fastonosql::translations::trTrial,
-                          QObject::tr("Your trial version is expired, bye."));
+    QMessageBox::critical(
+        nullptr, fastonosql::translations::trTrial,
+        QObject::tr("<h4>Your trial version has expired.</h4>"
+                    "You can <a href=\"" PROJECT_DOWNLOAD_LINK "\">subscribe</a> or try to find new trial version."));
     return EXIT_FAILURE;
   } else {
-    QMessageBox::information(nullptr, fastonosql::translations::trTrial,
-                             QObject::tr("You should understand that you using trial version, and after (%1) "
-                                         "you can't start " PROJECT_NAME_TITLE ".")
-                                 .arg(end_date.toString()));
+    QMessageBox::information(
+        nullptr, fastonosql::translations::trTrial,
+        QObject::tr("This is trial version, and after (%1) you can't start " PROJECT_NAME_TITLE ".")
+            .arg(end_date.toString()));
   }
 #endif
 
