@@ -40,7 +40,7 @@
 #include "gui/widgets/list_type_widget.h"
 #include "gui/widgets/stream_type_widget.h"
 
-#include "gui/gui_factory.h"           // for GuiFactory
+#include "gui/gui_factory.h"  // for GuiFactory
 #include "gui/hash_table_model.h"
 
 #include "gui/editor/fasto_editor.h"
