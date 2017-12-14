@@ -371,7 +371,7 @@ common::Error DBConnection::Mget(const std::vector<std::string>& keys, std::vect
     return err;
   }
 
-  std::vector< ::rocksdb::Slice> rslice;
+  std::vector<::rocksdb::Slice> rslice;
   for (auto key : keys) {
     rslice.push_back(key);
   }
