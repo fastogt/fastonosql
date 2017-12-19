@@ -28,6 +28,7 @@ extern "C" {
 #include <libssh2.h>  // for libssh2_exit, etc
 
 #include <common/convert2string.h>
+#include <common/file_system/string_path_utils.h>
 
 #include "core/db/redis/cluster_infos.h"  // for makeDiscoveryClusterInfo
 #include "core/db/redis/command_translator.h"
@@ -3190,12 +3191,21 @@ common::Error CreateConnection(const RConfig& config, NativeConnection** context
     std::string ssh_host_str = ssh_host.GetHost();
     const char* ssh_address = ssh_host_str.empty() ? NULL : ssh_host_str.c_str();
     int ssh_port = ssh_host.GetPort();
-    int curM = sinfo.current_method;
+    SSHInfo::SupportedAuthenticationMetods ssh_method = sinfo.current_method;
     const char* public_key = sinfo.public_key.empty() ? NULL : sinfo.public_key.c_str();
     const char* private_key = sinfo.private_key.empty() ? NULL : sinfo.private_key.c_str();
     const char* passphrase = sinfo.passphrase.empty() ? NULL : sinfo.passphrase.c_str();
+    if (ssh_method == SSHInfo::PUBLICKEY) {
+      if (!private_key || !common::file_system::is_file_exist(private_key)) {
+        return common::make_error(common::MemSPrintf("Invalid input private_key path: (%s).", private_key));
+      }
+
+      if (!public_key || !common::file_system::is_file_exist(public_key)) {
+        return common::make_error(common::MemSPrintf("Invalid input public_key path: (%s).", public_key));
+      }
+    }
     lcontext = redisConnect(host, port, ssh_address, ssh_port, username, password, public_key, private_key, passphrase,
-                            is_ssl, curM);
+                            is_ssl, ssh_method);
   }
 
   if (!lcontext) {

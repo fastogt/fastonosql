@@ -753,7 +753,7 @@ void **abstract)
 }
 
 redisContext *redisConnect(const char *ip, int port, const char *ssh_address, int ssh_port, const char *username, const char *password,
-                           const char *public_key, const char *private_key, const char *passphrase, int is_ssl, int curMethod) {
+                           const char *public_key, const char *private_key, const char *passphrase, int is_ssl, int method) {
 
   redisContext *c = redisContextInit();
   if (c == NULL) {
@@ -805,11 +805,11 @@ redisContext *redisConnect(const char *ip, int port, const char *ssh_address, in
      * Attach the SSL session to the socket descriptor            *
      * ---------------------------------------------------------- */
     SSL_set_fd(ssl, server_sock);
-  } else if(ssh_address && curMethod != SSH_UNKNOWN){
-    if (curMethod == SSH_PUBLICKEY && !private_key) {
+  } else if(ssh_address && method != SSH_UNKNOWN){
+    if (method == SSH_PUBLICKEY && !private_key) {
       __redisSetError(c, REDIS_ERR_OTHER, "Invalid input argument(private key)");
       return c;
-    } else if (curMethod == SSH_PASSWORD && !password) {
+    } else if (method == SSH_PASSWORD && !password) {
       __redisSetError(c, REDIS_ERR_OTHER, "Invalid input argument(password)");
       return c;
     }
@@ -868,7 +868,7 @@ redisContext *redisConnect(const char *ip, int port, const char *ssh_address, in
       auth_pw |= 4;
     }
 
-    if (auth_pw & 1 && curMethod == SSH_PASSWORD) {
+    if (auth_pw & 1 && method == SSH_PASSWORD) {
       /* We could authenticate via password */
       if (libssh2_userauth_password(session, username, password)) {
         libssh2_session_free(session);
@@ -882,7 +882,7 @@ redisContext *redisConnect(const char *ip, int port, const char *ssh_address, in
         __redisSetError(c, REDIS_ERR_OTHER, "Authentication by keyboard-interactive failed!");
         return c;
       }
-    } else if (auth_pw & 4 && curMethod == SSH_PUBLICKEY) {
+    } else if (auth_pw & 4 && method == SSH_PUBLICKEY) {
       /* Or by public key */
       if (libssh2_userauth_publickey_fromfile(session, username, public_key, private_key, passphrase)){
         libssh2_session_free(session);

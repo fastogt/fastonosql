@@ -2,3 +2,5 @@ build/config.py
 *.pyc
 CMakeLists.txt.user
 *~
+build_cmake/*
+*.idea
