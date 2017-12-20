@@ -1,6 +1,7 @@
 1.14.1 /
 [Alexandr Topilski]
 - [Redis] SSH input checks
+- Text view combobox
 
 1.14.0 / December 14, 2017
 [Alexandr Topilski]

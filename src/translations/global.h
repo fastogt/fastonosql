@@ -42,6 +42,7 @@ extern const QString trOpen;
 extern const QString trMenu;
 extern const QString trClose;
 extern const QString trSave;
+extern const QString trSaveChanges;
 extern const QString trExit;
 extern const QString trFilter;
 extern const QString trView;

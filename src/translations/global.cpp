@@ -42,6 +42,7 @@ const QString trOpen = QObject::tr("Open");
 const QString trMenu = QObject::tr("Menu");
 const QString trClose = QObject::tr("Close");
 const QString trSave = QObject::tr("Save");
+const QString trSaveChanges = QObject::tr("Save changes");
 const QString trExit = QObject::tr("Exit");
 const QString trFilter = QObject::tr("Filter");
 const QString trView = QObject::tr("View");

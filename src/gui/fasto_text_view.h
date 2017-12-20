@@ -22,8 +22,9 @@
 
 class QAbstractItemModel;  // lines 25-25
 class QEvent;
-class QPushButton;   // lines 24-24
-class QRadioButton;  // lines 23-23
+class QPushButton;  // lines 24-24
+class QComboBox;    // lines 23-23
+class QLabel;
 
 namespace fastonosql {
 namespace gui {
@@ -37,7 +38,7 @@ class FastoTextView : public QWidget {
   void setModel(QAbstractItemModel* model);
 
  private Q_SLOTS:
-  void viewChange(bool checked);
+  void viewChange(int index);
   void textChange();
   void saveChanges();
 
@@ -48,14 +49,8 @@ class FastoTextView : public QWidget {
   void retranslateUi();
 
   FastoEditorOutput* editor_;
-  QRadioButton* jsonRadioButton_;
-  QRadioButton* csvRadioButton_;
-  QRadioButton* rawRadioButton_;
-  QRadioButton* hexRadioButton_;
-  QRadioButton* msgPackRadioButton_;
-  QRadioButton* gzipRadioButton_;
-  QRadioButton* snappyRadioButton_;
-  QRadioButton* xmlRadioButton_;
+  QLabel* views_label_;
+  QComboBox* views_combo_box_;
   QPushButton* saveChangeButton_;
 };
 

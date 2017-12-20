@@ -20,8 +20,10 @@
 
 #include <QEvent>
 #include <QPushButton>
-#include <QRadioButton>
+#include <QComboBox>
 #include <QVBoxLayout>
+#include <QSplitter>
+#include <QLabel>
 
 #include <common/qt/convert2string.h>
 
@@ -41,53 +43,40 @@ FastoTextView::FastoTextView(QWidget* parent) : QWidget(parent) {
   QVBoxLayout* mainL = new QVBoxLayout;
 
   editor_ = new FastoEditorOutput;
-
-  jsonRadioButton_ = new QRadioButton;
-  csvRadioButton_ = new QRadioButton;
-  rawRadioButton_ = new QRadioButton;
-  hexRadioButton_ = new QRadioButton;
-  msgPackRadioButton_ = new QRadioButton;
-  xmlRadioButton_ = new QRadioButton;
-  gzipRadioButton_ = new QRadioButton;
-  snappyRadioButton_ = new QRadioButton;
+  views_label_ = new QLabel;
+  views_combo_box_ = new QComboBox;
+  views_combo_box_->addItem(translations::trJson, JSON);
+  views_combo_box_->addItem(translations::trCsv, CSV);
+  views_combo_box_->addItem(translations::trRawText, RAW);
+  views_combo_box_->addItem(translations::trHex, HEX);
+  views_combo_box_->addItem(translations::trMsgPack, MSGPACK);
+  views_combo_box_->addItem(translations::trGzip, GZIP);
+  views_combo_box_->addItem(translations::trSnappy, SNAPPY);
+  views_combo_box_->addItem(translations::trXml, XML);
 
   saveChangeButton_ = new QPushButton;
   saveChangeButton_->setIcon(GuiFactory::GetInstance().GetSaveIcon());
   saveChangeButton_->setEnabled(false);
 
-  VERIFY(connect(jsonRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChange));
-  VERIFY(connect(csvRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChange));
-  VERIFY(connect(rawRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChange));
-  VERIFY(connect(hexRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChange));
-  VERIFY(connect(msgPackRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChange));
-  VERIFY(connect(gzipRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChange));
-  VERIFY(connect(snappyRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChange));
-  VERIFY(connect(xmlRadioButton_, &QRadioButton::toggled, this, &FastoTextView::viewChange));
+  typedef void (QComboBox::*ind)(int);
+  VERIFY(connect(views_combo_box_, static_cast<ind>(&QComboBox::currentIndexChanged), this, &FastoTextView::viewChange));
 
   VERIFY(connect(saveChangeButton_, &QPushButton::clicked, this, &FastoTextView::saveChanges));
   VERIFY(connect(editor_, &FastoEditorOutput::textChanged, this, &FastoTextView::textChange));
   VERIFY(connect(editor_, &FastoEditorOutput::readOnlyChanged, this, &FastoTextView::textChange));
 
-  QHBoxLayout* radLaout = new QHBoxLayout;
-  radLaout->addWidget(jsonRadioButton_);
-  radLaout->addWidget(csvRadioButton_);
-  radLaout->addWidget(rawRadioButton_);
-  radLaout->addWidget(xmlRadioButton_);
-  radLaout->addWidget(hexRadioButton_);
-  radLaout->addWidget(msgPackRadioButton_);
-  radLaout->addWidget(gzipRadioButton_);
-  radLaout->addWidget(snappyRadioButton_);
-
-  mainL->addLayout(radLaout);
   mainL->addWidget(editor_);
   mainL->setContentsMargins(0, 0, 0, 0);
   QHBoxLayout* hlayout = new QHBoxLayout;
-  hlayout->addWidget(saveChangeButton_, 0, Qt::AlignRight);
+  hlayout->addWidget(saveChangeButton_);
+  QSplitter* spliter_save_and_view = new QSplitter(Qt::Horizontal);
+  hlayout->addWidget(spliter_save_and_view);
+  hlayout->addWidget(views_label_);
+  hlayout->addWidget(views_combo_box_);
 
   mainL->addLayout(hlayout);
   setLayout(mainL);
-
-  rawRadioButton_->setChecked(true);
+  views_combo_box_->setCurrentIndex(RAW);
   retranslateUi();
 }
 
@@ -116,50 +105,10 @@ void FastoTextView::textChange() {
   saveChangeButton_->setEnabled(isEnabled);
 }
 
-void FastoTextView::viewChange(bool checked) {
-  if (!checked) {
-    return;
-  }
-
-  if (jsonRadioButton_->isChecked()) {
-    editor_->viewChange(JSON);
-    return;
-  }
-
-  if (csvRadioButton_->isChecked()) {
-    editor_->viewChange(CSV);
-    return;
-  }
-
-  if (rawRadioButton_->isChecked()) {
-    editor_->viewChange(RAW);
-    return;
-  }
-
-  if (hexRadioButton_->isChecked()) {
-    editor_->viewChange(HEX);
-    return;
-  }
-
-  if (msgPackRadioButton_->isChecked()) {
-    editor_->viewChange(MSGPACK);
-    return;
-  }
-
-  if (gzipRadioButton_->isChecked()) {
-    editor_->viewChange(GZIP);
-    return;
-  }
-
-  if (snappyRadioButton_->isChecked()) {
-    editor_->viewChange(SNAPPY);
-    return;
-  }
-
-  if (xmlRadioButton_->isChecked()) {
-    editor_->viewChange(XML);
-    return;
-  }
+void FastoTextView::viewChange(int index) {
+  QVariant var = views_combo_box_->itemData(index);
+  unsigned char view = qvariant_cast<unsigned char>(var);
+  editor_->viewChange(view);
 }
 
 void FastoTextView::changeEvent(QEvent* ev) {
@@ -171,16 +120,8 @@ void FastoTextView::changeEvent(QEvent* ev) {
 }
 
 void FastoTextView::retranslateUi() {
-  jsonRadioButton_->setText(translations::trJson);
-  csvRadioButton_->setText(translations::trCsv);
-  rawRadioButton_->setText(translations::trRawText);
-  hexRadioButton_->setText(translations::trHex);
-  msgPackRadioButton_->setText(translations::trMsgPack);
-  gzipRadioButton_->setText(translations::trGzip);
-  snappyRadioButton_->setText(translations::trSnappy);
-  xmlRadioButton_->setText(translations::trXml);
-
-  saveChangeButton_->setText(translations::trSave);
+  saveChangeButton_->setText(translations::trSaveChanges);
+  views_label_->setText(translations::trViews + ":");
 }
 
 }  // namespace gui
