@@ -18,12 +18,12 @@
 
 #include "gui/fasto_text_view.h"
 
-#include <QEvent>
-#include <QPushButton>
 #include <QComboBox>
-#include <QVBoxLayout>
-#include <QSplitter>
+#include <QEvent>
 #include <QLabel>
+#include <QPushButton>
+#include <QSplitter>
+#include <QVBoxLayout>
 
 #include <common/qt/convert2string.h>
 
@@ -59,7 +59,8 @@ FastoTextView::FastoTextView(QWidget* parent) : QWidget(parent) {
   saveChangeButton_->setEnabled(false);
 
   typedef void (QComboBox::*ind)(int);
-  VERIFY(connect(views_combo_box_, static_cast<ind>(&QComboBox::currentIndexChanged), this, &FastoTextView::viewChange));
+  VERIFY(
+      connect(views_combo_box_, static_cast<ind>(&QComboBox::currentIndexChanged), this, &FastoTextView::viewChange));
 
   VERIFY(connect(saveChangeButton_, &QPushButton::clicked, this, &FastoTextView::saveChanges));
   VERIFY(connect(editor_, &FastoEditorOutput::textChanged, this, &FastoTextView::textChange));
