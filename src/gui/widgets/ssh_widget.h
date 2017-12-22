@@ -56,6 +56,7 @@ class SSHWidget : public QWidget {
  private Q_SLOTS:
   void securityChange(const QString& text);
   void sshSupportStateChange(int value);
+  void publicKeyStateChange(int value);
   void togglePasswordEchoMode();
   void togglePassphraseEchoMode();
 
@@ -69,6 +70,7 @@ class SSHWidget : public QWidget {
   QWidget* useSshWidget_;
 
   HostPortWidget* sshhost_widget_;
+  QCheckBox* use_public_key_;
   IPathWidget* publicKeyWidget_;
   IPathWidget* privateKeyWidget_;
 

@@ -18,6 +18,7 @@
 
 #include "core/ssh_info.h"
 
+#include <common/convert2string.h>
 #include <common/file_system/types.h>  // for prepare_path
 
 #define DEFAULT_SSH_PORT 22
@@ -27,10 +28,11 @@
 #define HOST_FIELD "host"
 #define USER_FIELD "user"
 #define PASSWORD_FIELD "password"
-#define PUBKEY_FIELD "publicKey"
-#define PRIVKEY_FIELD "privateKey"
+#define PUBKEY_FIELD "public_key"
+#define PRIVKEY_FIELD "private_key"
+#define USE_PUBLICKEY_FIELD "use_public_key"
 #define PASSPHRASE_FIELD "passphrase"
-#define CURMETHOD_FIELD "currentMethod"
+#define CURMETHOD_FIELD "current_method"
 #define MARKER "\r\n"
 
 namespace {
@@ -41,8 +43,9 @@ namespace common {
 
 std::string ConvertToString(const fastonosql::core::SSHInfo& ssh_info) {
   return HOST_FIELD ":" + common::ConvertToString(ssh_info.host) + MARKER USER_FIELD ":" + ssh_info.user_name +
-         MARKER PASSWORD_FIELD ":" + ssh_info.password + MARKER PUBKEY_FIELD ":" + ssh_info.public_key +
-         MARKER PRIVKEY_FIELD ":" + ssh_info.private_key + MARKER PASSPHRASE_FIELD ":" + ssh_info.passphrase +
+         MARKER PASSWORD_FIELD ":" + ssh_info.password + MARKER PUBKEY_FIELD ":" + ssh_info.key.public_key +
+         MARKER PRIVKEY_FIELD ":" + ssh_info.key.private_key + MARKER USE_PUBLICKEY_FIELD ":" +
+         common::ConvertToString(ssh_info.key.use_public_key) + MARKER PASSPHRASE_FIELD ":" + ssh_info.passphrase +
          MARKER CURMETHOD_FIELD ":" + common::ConvertToString(ssh_info.current_method) + MARKER;
 }
 
@@ -85,12 +88,23 @@ bool ConvertFromString(const std::string& from, fastonosql::core::SSHInfo::Suppo
 namespace fastonosql {
 namespace core {
 
+PublicPrivate::PublicPrivate()
+    : PublicPrivate(common::file_system::prepare_path(DEFAULT_PUB_KEY_PATH),
+                    common::file_system::prepare_path(DEFAULT_PRIVATE_KEY_PATH),
+                    true) {}
+
+PublicPrivate::PublicPrivate(const std::string& public_key, const std::string& private_key, bool use_public_key)
+    : public_key(public_key), private_key(private_key), use_public_key(use_public_key) {}
+
+bool PublicPrivate::IsValid() const {
+  return !private_key.empty();
+}
+
 SSHInfo::SSHInfo()
     : host(common::net::HostAndPort::CreateLocalHost(DEFAULT_SSH_PORT)),
       user_name(),
       password(),
-      public_key(common::file_system::prepare_path(DEFAULT_PUB_KEY_PATH)),
-      private_key(common::file_system::prepare_path(DEFAULT_PRIVATE_KEY_PATH)),
+      key(),
       current_method(UNKNOWN) {}
 
 SSHInfo::SSHInfo(const common::net::HostAndPort& host,
@@ -98,22 +112,21 @@ SSHInfo::SSHInfo(const common::net::HostAndPort& host,
                  const std::string& password,
                  const std::string& public_key,
                  const std::string& private_key,
+                 bool use_public_key,
                  const std::string& passphrase,
                  SupportedAuthenticationMetods method)
     : host(host),
       user_name(user_name),
       password(password),
-      public_key(public_key),
-      private_key(private_key),
       passphrase(passphrase),
+      key(public_key, private_key, use_public_key),
       current_method(method) {}
 
 SSHInfo::SSHInfo(const std::string& text)
     : host(common::net::HostAndPort::CreateLocalHost(DEFAULT_SSH_PORT)),
       user_name(),
       password(),
-      public_key(common::file_system::prepare_path(DEFAULT_PUB_KEY_PATH)),
-      private_key(common::file_system::prepare_path(DEFAULT_PRIVATE_KEY_PATH)),
+      key(),
       passphrase(),
       current_method(UNKNOWN) {
   size_t pos = 0;
@@ -134,9 +147,14 @@ SSHInfo::SSHInfo(const std::string& text)
       } else if (field == PASSWORD_FIELD) {
         password = value;
       } else if (field == PUBKEY_FIELD) {
-        public_key = value;
+        key.public_key = value;
       } else if (field == PRIVKEY_FIELD) {
-        private_key = value;
+        key.private_key = value;
+      } else if (field == USE_PUBLICKEY_FIELD) {
+        bool val;
+        if (common::ConvertFromString(value, &val)) {
+          key.use_public_key = val;
+        }
       } else if (field == PASSPHRASE_FIELD) {
         passphrase = value;
       } else if (field == CURMETHOD_FIELD) {
@@ -154,7 +172,7 @@ bool SSHInfo::IsValid() const {
   if (current_method == PASSWORD) {
     return host.IsValid() && !user_name.empty() && !password.empty();
   } else if (current_method == PUBLICKEY) {
-    return host.IsValid() && !user_name.empty() && !private_key.empty();
+    return host.IsValid() && !user_name.empty() && key.IsValid();
   }
 
   return false;

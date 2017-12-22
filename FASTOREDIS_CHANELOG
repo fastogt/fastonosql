@@ -1,3 +1,7 @@
+1.13.2 /
+[Alexandr Topilski]
+- #80 can't connect using ssh
+
 1.13.1 / December 21, 2017
 [Alexandr Topilski]
 - SSH input checks

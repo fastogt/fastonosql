@@ -23,6 +23,24 @@
 namespace fastonosql {
 namespace core {
 
+struct PublicPrivate {
+  PublicPrivate();
+  PublicPrivate(const std::string& public_key, const std::string& private_key, bool use_public_key);
+  bool IsValid() const;
+
+  std::string public_key;
+  std::string private_key;
+  bool use_public_key;
+};
+
+inline bool operator==(const PublicPrivate& r, const PublicPrivate& l) {
+  return r.public_key == l.public_key && r.private_key == l.private_key && r.use_public_key == l.use_public_key;
+}
+
+inline bool operator!=(const PublicPrivate& r, const PublicPrivate& l) {
+  return !(r == l);
+}
+
 struct SSHInfo {
   enum SupportedAuthenticationMetods { UNKNOWN = 0, PASSWORD = 1, PUBLICKEY = 2 };
 
@@ -32,6 +50,7 @@ struct SSHInfo {
           const std::string& password,
           const std::string& public_key,
           const std::string& private_key,
+          bool use_public_key,
           const std::string& passphrase,
           SupportedAuthenticationMetods method);
 
@@ -43,17 +62,14 @@ struct SSHInfo {
   common::net::HostAndPort host;
   std::string user_name;
   std::string password;
-  std::string public_key;
-  std::string private_key;
   std::string passphrase;
-
+  PublicPrivate key;
   SupportedAuthenticationMetods current_method;
 };
 
 inline bool operator==(const SSHInfo& r, const SSHInfo& l) {
-  return r.host == l.host && r.password == l.password && r.public_key == l.public_key &&
-         r.private_key == l.private_key && r.passphrase == l.passphrase && r.user_name == l.user_name &&
-         r.current_method == l.current_method;
+  return r.host == l.host && r.password == l.password && r.passphrase == l.passphrase && r.user_name == l.user_name &&
+         r.current_method == l.current_method && r.key == l.key;
 }
 
 inline bool operator!=(const SSHInfo& r, const SSHInfo& l) {

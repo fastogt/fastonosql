@@ -3192,16 +3192,20 @@ common::Error CreateConnection(const RConfig& config, NativeConnection** context
     const char* ssh_address = ssh_host_str.empty() ? NULL : ssh_host_str.c_str();
     int ssh_port = ssh_host.GetPort();
     SSHInfo::SupportedAuthenticationMetods ssh_method = sinfo.current_method;
-    const char* public_key = sinfo.public_key.empty() ? NULL : sinfo.public_key.c_str();
-    const char* private_key = sinfo.private_key.empty() ? NULL : sinfo.private_key.c_str();
+    PublicPrivate key = sinfo.key;
+    const char* public_key = key.public_key.empty() ? NULL : key.public_key.c_str();
+    const char* private_key = key.private_key.empty() ? NULL : key.private_key.c_str();
+    bool use_public_key = key.use_public_key;
     const char* passphrase = sinfo.passphrase.empty() ? NULL : sinfo.passphrase.c_str();
     if (ssh_method == SSHInfo::PUBLICKEY) {
       if (!private_key || !common::file_system::is_file_exist(private_key)) {
         return common::make_error(common::MemSPrintf("Invalid input private_key path: (%s).", private_key));
       }
 
-      if (!public_key || !common::file_system::is_file_exist(public_key)) {
-        return common::make_error(common::MemSPrintf("Invalid input public_key path: (%s).", public_key));
+      if (use_public_key) {
+        if (!public_key || !common::file_system::is_file_exist(public_key)) {
+          return common::make_error(common::MemSPrintf("Invalid input public_key path: (%s).", public_key));
+        }
       }
     }
     lcontext = redisConnect(host, port, ssh_address, ssh_port, username, password, public_key, private_key, passphrase,

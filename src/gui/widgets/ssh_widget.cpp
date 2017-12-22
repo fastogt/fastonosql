@@ -57,6 +57,8 @@ SSHWidget::SSHWidget(QWidget* parent) : QWidget(parent) {
   QLayout* pub_layout = privateKeyWidget_->layout();
   pub_layout->setContentsMargins(0, 0, 0, 0);
 
+  use_public_key_ = new QCheckBox;
+
   publicKeyWidget_ = new FilePathWidget(trPublicKey, trPublicKeyFiles, trSelectPublicKey);
   QLayout* priv_layout = publicKeyWidget_->layout();
   priv_layout->setContentsMargins(0, 0, 0, 0);
@@ -98,12 +100,14 @@ SSHWidget::SSHWidget(QWidget* parent) : QWidget(parent) {
   sshWidgetLayout->addWidget(passwordEchoModeButton_, 4, 2);
   sshWidgetLayout->addWidget(privateKeyWidget_, 5, 0);
   sshWidgetLayout->addWidget(publicKeyWidget_, 5, 1);
+  sshWidgetLayout->addWidget(use_public_key_, 5, 2);
   sshWidgetLayout->addWidget(sshPassphraseLabel_, 6, 0);
   sshWidgetLayout->addWidget(passphraseBox_, 6, 1);
   sshWidgetLayout->addWidget(passphraseEchoModeButton_, 6, 2);
   useSshWidget_->setLayout(sshWidgetLayout);
 
   VERIFY(connect(useSsh_, &QCheckBox::stateChanged, this, &SSHWidget::sshSupportStateChange));
+  VERIFY(connect(use_public_key_, &QCheckBox::stateChanged, this, &SSHWidget::publicKeyStateChange));
 
   QVBoxLayout* sshLayout = new QVBoxLayout;
   sshLayout->addWidget(useSsh_);
@@ -113,6 +117,7 @@ SSHWidget::SSHWidget(QWidget* parent) : QWidget(parent) {
   // sync controls
   useSshWidget_->setEnabled(false);
   securityChange(security_->currentText());
+  publicKeyStateChange(0);
   retranslateUi();
 }
 
@@ -137,8 +142,9 @@ core::SSHInfo SSHWidget::info() const {
   info.host = sshhost_widget_->host();
   info.user_name = common::ConvertToString(userName_->text());
   info.password = common::ConvertToString(passwordBox_->text());
-  info.public_key = common::ConvertToString(publicKeyWidget_->path());
-  info.private_key = common::ConvertToString(privateKeyWidget_->path());
+  info.key.public_key = common::ConvertToString(publicKeyWidget_->path());
+  info.key.private_key = common::ConvertToString(privateKeyWidget_->path());
+  info.key.use_public_key = use_public_key_->isChecked();
   info.passphrase = common::ConvertToString(passphraseBox_->text());
   info.current_method = selectedAuthMethod();
 
@@ -164,12 +170,14 @@ void SSHWidget::setInfo(const core::SSHInfo& info) {
   passwordBox_->setText(qpassword);
 
   QString qprivate_key;
-  common::ConvertFromString(info.private_key, &qprivate_key);
+  common::ConvertFromString(info.key.private_key, &qprivate_key);
   privateKeyWidget_->setPath(qprivate_key);
 
   QString qpublic_key;
-  common::ConvertFromString(info.public_key, &qpublic_key);
+  common::ConvertFromString(info.key.public_key, &qpublic_key);
   publicKeyWidget_->setPath(qpublic_key);
+
+  use_public_key_->setChecked(info.key.use_public_key);
 
   QString qpassphrase;
   common::ConvertFromString(info.passphrase, &qpassphrase);
@@ -187,6 +195,7 @@ core::SSHInfo::SupportedAuthenticationMetods SSHWidget::selectedAuthMethod() con
 void SSHWidget::securityChange(const QString& text) {
   bool isKey = text == translations::trPublicPrivateKey;
   privateKeyWidget_->setVisible(isKey);
+  use_public_key_->setVisible(isKey);
   publicKeyWidget_->setVisible(isKey);
   sshPassphraseLabel_->setVisible(isKey);
   passphraseBox_->setVisible(isKey);
@@ -199,6 +208,10 @@ void SSHWidget::securityChange(const QString& text) {
 
 void SSHWidget::sshSupportStateChange(int value) {
   useSshWidget_->setEnabled(value);
+}
+
+void SSHWidget::publicKeyStateChange(int value) {
+  publicKeyWidget_->setEnabled(value);
 }
 
 void SSHWidget::togglePasswordEchoMode() {
@@ -232,6 +245,7 @@ void SSHWidget::changeEvent(QEvent* ev) {
 
 void SSHWidget::retranslateUi() {
   useSsh_->setText(tr("Use SSH tunnel"));
+  use_public_key_->setText(tr("Use public key"));
   passwordLabel_->setText(tr("User Password:"));
   sshPassphraseLabel_->setText(tr("Passphrase:"));
   sshAddressLabel_->setText(tr("SSH Address:"));
