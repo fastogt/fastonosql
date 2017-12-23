@@ -321,6 +321,16 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
   static common::Error NrObserve(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error NrTrain(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error NrThreads(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+
+  // bf
+  static common::Error BfDebug(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error BfExists(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error BfScanDump(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error BfAdd(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error BfMexists(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error BfLoadChunk(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error BfMadd(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error BfReserve(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 };
 
 }  // namespace redis

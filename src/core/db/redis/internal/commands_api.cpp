@@ -1858,6 +1858,46 @@ common::Error CommandsApi::NrThreads(internal::CommandHandler* handler, commands
   return red->CommonExec(ExpandCommand({REDIS_NR_MODULE_COMMAND("THREADS")}, argv), out);
 }
 
+common::Error CommandsApi::BfDebug(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({REDIS_BLOOM_MODULE_COMMAND("DEBUG")}, argv), out);
+}
+
+common::Error CommandsApi::BfExists(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({REDIS_BLOOM_MODULE_COMMAND("EXISTS")}, argv), out);
+}
+
+common::Error CommandsApi::BfScanDump(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({REDIS_BLOOM_MODULE_COMMAND("SCANDUMP")}, argv), out);
+}
+
+common::Error CommandsApi::BfAdd(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({REDIS_BLOOM_MODULE_COMMAND("ADD")}, argv), out);
+}
+
+common::Error CommandsApi::BfMexists(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({REDIS_BLOOM_MODULE_COMMAND("MEXISTS")}, argv), out);
+}
+
+common::Error CommandsApi::BfLoadChunk(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({REDIS_BLOOM_MODULE_COMMAND("LOADCHUNK")}, argv), out);
+}
+
+common::Error CommandsApi::BfMadd(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({REDIS_BLOOM_MODULE_COMMAND("MADD")}, argv), out);
+}
+
+common::Error CommandsApi::BfReserve(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({REDIS_BLOOM_MODULE_COMMAND("RESERVE")}, argv), out);
+}
+
 }  // namespace redis
 }  // namespace core
 }  // namespace fastonosql
