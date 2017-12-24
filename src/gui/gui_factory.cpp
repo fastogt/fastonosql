@@ -234,6 +234,10 @@ const QIcon& GuiFactory::GetIcon(common::Value::Type type) const {
       static QIcon g(":" PROJECT_NAME_LOWERCASE "/images/64x64/graph.png");
       return g;
     }
+    case core::BloomValue::TYPE_BLOOM: {
+      static QIcon g(":" PROJECT_NAME_LOWERCASE "/images/64x64/bloom.png");
+      return g;
+    }
     case core::SearchValue::TYPE_FT_INDEX: {
       static QIcon g(":" PROJECT_NAME_LOWERCASE "/images/64x64/index.png");
       return g;

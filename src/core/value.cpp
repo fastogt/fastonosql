@@ -168,6 +168,22 @@ bool GraphValue::Equals(const Value* other) const {
   return true;
 }
 
+BloomValue::BloomValue() : Value(TYPE_BLOOM) {}
+
+BloomValue::~BloomValue() {}
+
+BloomValue* BloomValue::DeepCopy() const {
+  return new BloomValue;
+}
+
+bool BloomValue::Equals(const Value* other) const {
+  if (other->GetType() != GetType()) {
+    return false;
+  }
+
+  return true;
+}
+
 SearchValue* SearchValue::CreateSearchIndex() {
   return new SearchValue(TYPE_FT_INDEX);
 }
@@ -232,6 +248,8 @@ common::Value* CreateEmptyValueFromType(common::Value::Type value_type) {
       return new JsonValue(std::string());
     case GraphValue::TYPE_GRAPH:
       return new GraphValue;
+    case BloomValue::TYPE_BLOOM:
+      return new BloomValue;
     case SearchValue::TYPE_FT_INDEX:
       return SearchValue::CreateSearchIndex();
     case SearchValue::TYPE_FT_TERM:
@@ -250,6 +268,8 @@ const char* GetTypeName(common::Value::Type value_type) {
     return "TYPE_JSON";
   } else if (value_type == GraphValue::TYPE_GRAPH) {
     return "TYPE_GRAPH";
+  } else if (value_type == BloomValue::TYPE_BLOOM) {
+    return "TYPE_BLOOM";
   } else if (value_type == SearchValue::TYPE_FT_INDEX) {
     return "TYPE_FT_INDEX";
   } else if (value_type == SearchValue::TYPE_FT_TERM) {
@@ -330,6 +350,8 @@ std::string ConvertValue(common::Value* value, const std::string& delimiter, boo
     return ConvertValue(static_cast<JsonValue*>(value), delimiter, for_cmd);
   } else if (t == GraphValue::TYPE_GRAPH) {
     return ConvertValue(static_cast<GraphValue*>(value), delimiter, for_cmd);
+  } else if (t == BloomValue::TYPE_BLOOM) {
+    return ConvertValue(static_cast<BloomValue*>(value), delimiter, for_cmd);
   } else if (t == SearchValue::TYPE_FT_INDEX) {
     return ConvertValue(static_cast<SearchValue*>(value), delimiter, for_cmd);
   } else if (t == SearchValue::TYPE_FT_TERM) {
@@ -576,6 +598,13 @@ std::string ConvertValue(JsonValue* value, const std::string& delimiter, bool fo
 }
 
 std::string ConvertValue(GraphValue* value, const std::string& delimiter, bool for_cmd) {
+  UNUSED(value);
+  UNUSED(delimiter);
+  UNUSED(for_cmd);
+  return std::string();
+}
+
+std::string ConvertValue(BloomValue* value, const std::string& delimiter, bool for_cmd) {
   UNUSED(value);
   UNUSED(delimiter);
   UNUSED(for_cmd);

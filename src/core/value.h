@@ -81,10 +81,23 @@ class GraphValue : public common::Value {
   DISALLOW_COPY_AND_ASSIGN(GraphValue);
 };
 
+class BloomValue : public common::Value {
+ public:
+  static const common::Value::Type TYPE_BLOOM = static_cast<common::Value::Type>(common::Value::USER_TYPES + 4);
+  BloomValue();
+  virtual ~BloomValue();
+
+  virtual BloomValue* DeepCopy() const override;
+  virtual bool Equals(const Value* other) const override;
+
+ private:
+  DISALLOW_COPY_AND_ASSIGN(BloomValue);
+};
+
 class SearchValue : public common::Value {
  public:
-  static const common::Value::Type TYPE_FT_INDEX = static_cast<common::Value::Type>(common::Value::USER_TYPES + 4);
-  static const common::Value::Type TYPE_FT_TERM = static_cast<common::Value::Type>(common::Value::USER_TYPES + 5);
+  static const common::Value::Type TYPE_FT_INDEX = static_cast<common::Value::Type>(common::Value::USER_TYPES + 5);
+  static const common::Value::Type TYPE_FT_TERM = static_cast<common::Value::Type>(common::Value::USER_TYPES + 6);
   virtual ~SearchValue();
 
   static SearchValue* CreateSearchIndex();
@@ -122,6 +135,7 @@ std::string ConvertValue(StreamValue* value, const std::string& delimiter, bool 
 // extended
 std::string ConvertValue(JsonValue* value, const std::string& delimiter, bool for_cmd);
 std::string ConvertValue(GraphValue* value, const std::string& delimiter, bool for_cmd);
+std::string ConvertValue(BloomValue* value, const std::string& delimiter, bool for_cmd);
 std::string ConvertValue(SearchValue* value, const std::string& delimiter, bool for_cmd);
 
 std::string ConvertToHumanReadable(common::Value* value, const std::string& delimiter = std::string());

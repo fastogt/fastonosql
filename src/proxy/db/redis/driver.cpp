@@ -70,6 +70,8 @@ common::Value::Type ConvertFromStringRType(const std::string& type) {
     return fastonosql::core::JsonValue::TYPE_JSON;
   } else if (type == "trietype1") {
     return fastonosql::core::GraphValue::TYPE_GRAPH;
+  } else if (type == "MBbloom--") {
+    return fastonosql::core::BloomValue::TYPE_BLOOM;
   } else if (type == "ft_invidx") {
     return fastonosql::core::SearchValue::TYPE_FT_TERM;
   } else if (type == "ft_index0") {

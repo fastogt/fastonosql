@@ -345,6 +345,8 @@ common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, comm
     wr << REDIS_SET_KEY_JSON_COMMAND " " << key_str.GetKeyForCommandLine() << " . " << key.GetValueForCommandLine();
   } else if (type == GraphValue::TYPE_GRAPH) {
     return NotSupported(REDIS_GRAPH_MODULE_COMMAND("SET"));
+  } else if (type == BloomValue::TYPE_BLOOM) {
+    return NotSupported(REDIS_BLOOM_MODULE_COMMAND("SET"));
   } else if (type == SearchValue::TYPE_FT_INDEX) {
     return NotSupported(REDIS_SEARCH_MODULE_COMMAND("INDEX.SET"));
   } else if (type == SearchValue::TYPE_FT_TERM) {
@@ -376,6 +378,8 @@ common::Error CommandTranslator::LoadKeyCommandImpl(const NKey& key,
     wr << REDIS_GET_KEY_STREAM_COMMAND " " << key_str.GetKeyForCommandLine() << " - +";
   } else if (type == GraphValue::TYPE_GRAPH) {
     return NotSupported(REDIS_GRAPH_MODULE_COMMAND("GET"));
+  } else if (type == BloomValue::TYPE_BLOOM) {
+    return NotSupported(REDIS_BLOOM_MODULE_COMMAND("GET"));
   } else if (type == SearchValue::TYPE_FT_INDEX) {
     return NotSupported(REDIS_SEARCH_MODULE_COMMAND("INDEX.GET"));
   } else if (type == SearchValue::TYPE_FT_TERM) {
