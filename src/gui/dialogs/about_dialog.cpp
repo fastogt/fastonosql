@@ -30,6 +30,7 @@
 #include <libssh2.h>
 #include <openssl/opensslv.h>
 
+#include <common/config.h>
 #include <common/macros.h>  // for STRINGIZE, VERIFY
 #include <common/qt/convert2string.h>
 
@@ -39,7 +40,7 @@
 
 namespace {
 const QString trDescription = QObject::tr("<h3>" PROJECT_NAME_TITLE " " PROJECT_VERSION
-                                          "<br/>Revision:" PROJECT_GIT_VERSION "</h3>" PROJECT_SUMMARY
+                                          "<br/>Revision:" PROJECT_VERSION_GIT "</h3>" PROJECT_SUMMARY
                                           "<br/>"
                                           "<br/>"
                                           "Visit our website: <a href=\"" PROJECT_DOMAIN "\">" PROJECT_NAME_TITLE
@@ -178,6 +179,7 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
   addLibItem(libs_list_widget, "QScintilla", QSCINTILLA_VERSION_STR);
   addLibItem(libs_list_widget, "libssh2", LIBSSH2_VERSION);
   addLibItem(libs_list_widget, "OpenSSL", OPENSSL_VERSION_TEXT);
+  addLibItem(libs_list_widget, "common", COMMON_VERSION_STRING);
   main_tab->addTab(libs_list_widget, QObject::tr("External libraries"));
 
   copy_rights_layout->addWidget(main_tab, 4, 1, 1, 5);
