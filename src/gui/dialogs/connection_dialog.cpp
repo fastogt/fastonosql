@@ -94,13 +94,15 @@ void ConnectionDialog::init(proxy::IConnectionSettingsBase* connection) {
 
   connection_.reset(connection);
   connection_widget_ = ConnectionWidgetsFactory::GetInstance().createWidget(connection);
-  connection_widget_->layout()->setContentsMargins(0, 0, 0, 0);
+  QLayout* connection_widget_layout = connection_widget_->layout();
+  QMargins mar = connection_widget_layout->contentsMargins();
+  connection_widget_layout->setContentsMargins(0, 0, 0, mar.bottom());
 
+  QHBoxLayout* bottomLayout = new QHBoxLayout;
   testButton_ = new QPushButton("&Test");
   testButton_->setIcon(GuiFactory::GetInstance().GetMessageBoxInformationIcon());
   VERIFY(connect(testButton_, &QPushButton::clicked, this, &ConnectionDialog::testConnection));
 
-  QHBoxLayout* bottomLayout = new QHBoxLayout;
   bottomLayout->addWidget(testButton_, 1, Qt::AlignLeft);
   buttonBox_ = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Save);
   buttonBox_->setOrientation(Qt::Horizontal);

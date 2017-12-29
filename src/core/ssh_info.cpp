@@ -126,8 +126,8 @@ SSHInfo::SSHInfo(const std::string& text)
     : host(common::net::HostAndPort::CreateLocalHost(DEFAULT_SSH_PORT)),
       user_name(),
       password(),
-      key(),
       passphrase(),
+      key(),
       current_method(UNKNOWN) {
   size_t pos = 0;
   size_t start = 0;

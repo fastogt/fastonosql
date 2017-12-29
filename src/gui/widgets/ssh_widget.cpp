@@ -25,6 +25,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QSplitter>
 
 #include <common/qt/convert2string.h>
 
@@ -88,22 +89,42 @@ SSHWidget::SSHWidget(QWidget* parent) : QWidget(parent) {
 
   useSshWidget_ = new QWidget;
 
-  QGridLayout* sshWidgetLayout = new QGridLayout;
-  sshWidgetLayout->addWidget(sshAddressLabel_, 1, 0);
-  sshWidgetLayout->addWidget(sshhost_widget_, 1, 1, 1, 2);
-  sshWidgetLayout->addWidget(sshUserNameLabel_, 2, 0);
-  sshWidgetLayout->addWidget(userName_, 2, 1, 1, 2);
-  sshWidgetLayout->addWidget(sshAuthMethodLabel_, 3, 0);
-  sshWidgetLayout->addWidget(security_, 3, 1);
-  sshWidgetLayout->addWidget(passwordLabel_, 4, 0);
-  sshWidgetLayout->addWidget(passwordBox_, 4, 1, 1, 2);
-  sshWidgetLayout->addWidget(passwordEchoModeButton_, 4, 2);
-  sshWidgetLayout->addWidget(privateKeyWidget_, 5, 0);
-  sshWidgetLayout->addWidget(publicKeyWidget_, 5, 1);
-  sshWidgetLayout->addWidget(use_public_key_, 5, 2);
-  sshWidgetLayout->addWidget(sshPassphraseLabel_, 6, 0);
-  sshWidgetLayout->addWidget(passphraseBox_, 6, 1);
-  sshWidgetLayout->addWidget(passphraseEchoModeButton_, 6, 2);
+  QVBoxLayout* sshWidgetLayout = new QVBoxLayout;
+  sshWidgetLayout->setContentsMargins(0, 0, 0, 0);
+
+  QHBoxLayout* ssh = new QHBoxLayout;
+  ssh->addWidget(sshAddressLabel_);
+  ssh->addWidget(sshhost_widget_);
+  sshWidgetLayout->addLayout(ssh);
+
+  QHBoxLayout* ssh_user = new QHBoxLayout;
+  ssh_user->addWidget(sshUserNameLabel_);
+  ssh_user->addWidget(userName_);
+  sshWidgetLayout->addLayout(ssh_user);
+
+  QHBoxLayout* ssh_auth = new QHBoxLayout;
+  ssh_auth->addWidget(sshAuthMethodLabel_);
+  ssh_auth->addWidget(security_);
+  sshWidgetLayout->addLayout(ssh_auth);
+
+  QHBoxLayout* pass = new QHBoxLayout;
+  pass->addWidget(passwordLabel_);
+  pass->addWidget(passwordBox_);
+  pass->addWidget(passwordEchoModeButton_);
+  sshWidgetLayout->addLayout(pass);
+
+  sshWidgetLayout->addWidget(privateKeyWidget_);
+
+  QHBoxLayout* priv = new QHBoxLayout;
+  priv->addWidget(publicKeyWidget_);
+  priv->addWidget(use_public_key_);
+  sshWidgetLayout->addLayout(priv);
+
+  QHBoxLayout* passp = new QHBoxLayout;
+  passp->addWidget(sshPassphraseLabel_);
+  passp->addWidget(passphraseBox_);
+  passp->addWidget(passphraseEchoModeButton_);
+  sshWidgetLayout->addLayout(passp);
   useSshWidget_->setLayout(sshWidgetLayout);
 
   VERIFY(connect(useSsh_, &QCheckBox::stateChanged, this, &SSHWidget::sshSupportStateChange));
