@@ -305,6 +305,8 @@ void FastoEditorOutput::layoutChanged() {
   if (result.isEmpty()) {
     result = translations::trCannotConvertPattern1ArgsS.arg(methodText);
     text_json_editor_->setReadOnly(true);
+  } else {
+    text_json_editor_->setReadOnly(false);
   }
   text_json_editor_->setText(result);
 }
