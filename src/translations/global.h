@@ -152,6 +152,7 @@ extern const QString trFullScreen;
 extern const QString trExecuteWithArgs;
 extern const QString trEdit;
 extern const QString trReportBug;
+extern const QString trHowToUse;
 extern const QString trCheckUpdate;
 extern const QString trSendStatistic;
 extern const QString trCloseOtherTabs;

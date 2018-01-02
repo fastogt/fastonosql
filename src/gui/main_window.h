@@ -56,6 +56,7 @@ class MainWindow : public QMainWindow {
  private Q_SLOTS:
   void open();
   void about();
+  void howToUse();
   void openPreferences();
   void checkUpdate();
   void sendStatistic();
@@ -103,6 +104,7 @@ class MainWindow : public QMainWindow {
   QAction* fullScreanAction_;
   QAction* windowAction_;
   QAction* aboutAction_;
+  QAction* howtouseAction_;
   QAction* reportBugAction_;
   QAction* fileAction_;
   QAction* editAction_;

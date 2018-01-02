@@ -66,5 +66,6 @@
     <file>@PROJECT_NAME_LOWERCASE@/images/loading.gif</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/help/connect.gif</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/help/workflow.gif</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/help/individual_builds.gif</file>
     </qresource>
 </RCC>

@@ -35,7 +35,6 @@
 #include <common/qt/convert2string.h>
 
 #include "gui/gui_factory.h"  // for GuiFactory
-#include "gui/widgets/how_to_use_widget.h"
 
 #include "translations/global.h"
 
@@ -194,9 +193,6 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
     license_tab->setHtml(file.readAll());
   }
   about_tabs->addTab(license_tab, QObject::tr("License agreement"));
-
-  HowToUseWidget* hw = new HowToUseWidget;
-  about_tabs->addTab(hw, QObject::tr("How to use"));
 
   QVBoxLayout* mainLayout = new QVBoxLayout;
   mainLayout->addWidget(about_tabs);

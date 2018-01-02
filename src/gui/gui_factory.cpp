@@ -401,6 +401,11 @@ const QString& GuiFactory::GetPathToLoadingGif() const {
   return path;
 }
 
+const QString& GuiFactory::GetPathToIndividualBuilds() const {
+  static QString path(":" PROJECT_NAME_LOWERCASE "/images/help/individual_builds.gif");
+  return path;
+}
+
 const QString& GuiFactory::GetPathToConnectGif() const {
   static QString path(":" PROJECT_NAME_LOWERCASE "/images/help/connect.gif");
   return path;

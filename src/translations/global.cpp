@@ -152,6 +152,7 @@ const QString trFullScreen = QObject::tr("Full screen");
 const QString trExecuteWithArgs = QObject::tr("Execute with args");
 const QString trEdit = QObject::tr("Edit");
 const QString trReportBug = QObject::tr("Report bug...");
+const QString trHowToUse = QObject::tr("How to use");
 const QString trCheckUpdate = QObject::tr("Check for updates...");
 const QString trSendStatistic = QObject::tr("Send statistic");
 const QString trCloseOtherTabs = QObject::tr("Close other tabs");

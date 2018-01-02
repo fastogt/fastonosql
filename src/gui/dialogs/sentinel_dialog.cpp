@@ -83,7 +83,7 @@ SentinelDialog::SentinelDialog(QWidget* parent, proxy::ISentinelSettingsBase* co
     core::connectionTypes ct = core::g_compiled_types[i];
     std::string str = common::ConvertToString(ct);
     QString qstr;
-    if (common::ConvertFromString(str, &conFolder)) {
+    if (common::ConvertFromString(str, &qstr)) {
       typeConnection_->addItem(GuiFactory::GetInstance().GetIcon(ct), qstr, ct);
     }
   }

@@ -53,6 +53,7 @@
 #include "proxy/servers_manager.h"   // for ServersManager
 #include "proxy/settings_manager.h"  // for SettingsManager
 
+#include "gui/dialogs/how_to_use_dialog.h"
 #include "gui/dialogs/about_dialog.h"           // for AboutDialog
 #include "gui/dialogs/connections_dialog.h"     // for ConnectionsDialog
 #include "gui/dialogs/encode_decode_dialog.h"   // for EncodeDecodeDialog
@@ -198,6 +199,9 @@ MainWindow::MainWindow() : QMainWindow() {
   aboutAction_ = new QAction(this);
   VERIFY(connect(aboutAction_, &QAction::triggered, this, &MainWindow::about));
 
+  howtouseAction_ = new QAction(this);
+  VERIFY(connect(howtouseAction_, &QAction::triggered, this, &MainWindow::howToUse));
+
   helpAction_ = menuBar()->addMenu(helpMenu);
 
   checkUpdateAction_ = new QAction(this);
@@ -209,6 +213,7 @@ MainWindow::MainWindow() : QMainWindow() {
   helpMenu->addAction(checkUpdateAction_);
   helpMenu->addSeparator();
   helpMenu->addAction(reportBugAction_);
+  helpMenu->addAction(howtouseAction_);
   helpMenu->addSeparator();
   helpMenu->addAction(aboutAction_);
 
@@ -310,6 +315,11 @@ void MainWindow::open() {
 
 void MainWindow::about() {
   AboutDialog dlg(this);
+  dlg.exec();
+}
+
+void MainWindow::howToUse() {
+  HowToUseDialog dlg(this);
   dlg.exec();
 }
 
@@ -649,6 +659,7 @@ void MainWindow::retranslateUi() {
   fullScreanAction_->setText(translations::trFullScreen);
   reportBugAction_->setText(translations::trReportBug);
   aboutAction_->setText(tr("About %1...").arg(PROJECT_NAME_TITLE));
+  howtouseAction_->setText(translations::trHowToUse);
   helpAction_->setText(translations::trHelp);
   explorerAction_->setText(translations::trExpTree);
   logsAction_->setText(translations::trLogs);
