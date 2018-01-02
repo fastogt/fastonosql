@@ -26,7 +26,7 @@ namespace gui {
 class HowToUseDialog : public QDialog {
   Q_OBJECT
  public:
-  enum { min_width = 640, min_height = 480 };
+  enum { fix_width = 1280, fix_height = 710 };  // image size
   explicit HowToUseDialog(QWidget* parent = Q_NULLPTR);
 };
 

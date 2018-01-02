@@ -53,7 +53,8 @@ TrialTimeDialog::TrialTimeDialog(const QString& title,
   message_box_ = new QLabel;
   layout->addWidget(message_box_);
 
-  HowToUseWidget* hw = new HowToUseWidget;
+  const QSize fix_size(fix_width, fix_height);
+  HowToUseWidget* hw = new HowToUseWidget(fix_size);
   layout->addWidget(hw);
 
   buttons_box_ = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
@@ -65,7 +66,7 @@ TrialTimeDialog::TrialTimeDialog(const QString& title,
   change_sec_time_id_ = startTimer(1000);
 
   setLayout(layout);
-  setMinimumSize(min_width, min_height);
+  setFixedSize(fix_size);
   retranslateUi();
 }
 

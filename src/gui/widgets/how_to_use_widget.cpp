@@ -26,22 +26,25 @@
 namespace fastonosql {
 namespace gui {
 
-HowToUseWidget::HowToUseWidget(QWidget* parent) : QTabWidget(parent) {
+HowToUseWidget::HowToUseWidget(const QSize &scale_size, QWidget* parent) : QTabWidget(parent) {
   QLabel* individual_tab = new QLabel;
   QMovie* individual_movie = new QMovie(GuiFactory::GetInstance().GetPathToIndividualBuilds());
   individual_tab->setMovie(individual_movie);
+  individual_movie->setScaledSize(scale_size);
   individual_movie->start();
   addTab(individual_tab, QObject::tr("Individual builds"));
 
   QLabel* connect_tab = new QLabel;
   QMovie* connect_movie = new QMovie(GuiFactory::GetInstance().GetPathToConnectGif());
   connect_tab->setMovie(connect_movie);
+  connect_movie->setScaledSize(scale_size);
   connect_movie->start();
   addTab(connect_tab, QObject::tr("Connect"));
 
   QLabel* workflow_tab = new QLabel;
   QMovie* workflow_movie = new QMovie(GuiFactory::GetInstance().GetPathToWorkflowGif());
   workflow_tab->setMovie(workflow_movie);
+  workflow_movie->setScaledSize(scale_size);
   workflow_movie->start();
   addTab(workflow_tab, QObject::tr("Workflow"));
 }

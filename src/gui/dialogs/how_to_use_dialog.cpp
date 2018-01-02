@@ -31,10 +31,11 @@ HowToUseDialog::HowToUseDialog(QWidget* parent) : QDialog(parent) {
   setWindowTitle(translations::trHowToUse + " " PROJECT_NAME_TITLE);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
+  const QSize fixed_size(fix_width, fix_height);
   QVBoxLayout* mainLayout = new QVBoxLayout;
-  HowToUseWidget* hw = new HowToUseWidget;
+  HowToUseWidget* hw = new HowToUseWidget(fixed_size);
   mainLayout->addWidget(hw);
-  setMinimumSize(QSize(min_width, min_height));
+  setFixedSize(fixed_size);
   setLayout(mainLayout);
 }
 

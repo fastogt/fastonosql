@@ -30,7 +30,7 @@ namespace gui {
 class TrialTimeDialog : public QDialog {
   Q_OBJECT
  public:
-  enum { min_width = 640, min_height = 480 };
+  enum { fix_width = 1280, fix_height = 710 };  // image size
 
   explicit TrialTimeDialog(const QString& title,
                            const QDateTime& end_date,
