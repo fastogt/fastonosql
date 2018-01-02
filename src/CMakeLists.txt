@@ -257,6 +257,7 @@ SET(HEADERS_GUI_DIALOGS_TO_MOC
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_sentinel_connection.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/test_connection.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/stream_entry_dialog.h
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/trial_time_dialog.h
 )
 
 SET(HEADERS_GUI_DIALOGS
@@ -289,6 +290,7 @@ SET(SOURCES_GUI_DIALOGS
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_sentinel_connection.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/test_connection.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/stream_entry_dialog.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/trial_time_dialog.cpp
 )
 
 SET(HEADERS_GUI_EDITOR_TO_MOC
@@ -352,6 +354,7 @@ SET(HEADERS_GUI_WIDGETS_TO_MOC
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/type_delegate.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/stream_type_widget.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/hash_type_widget.h
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/how_to_use_widget.h
 )
 
 SET(SOURCES_GUI_WIDGETS
@@ -372,6 +375,7 @@ SET(SOURCES_GUI_WIDGETS
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/type_delegate.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/stream_type_widget.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/hash_type_widget.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/how_to_use_widget.cpp
 )
 
 SET(HEADERS_GUI_TO_MOC

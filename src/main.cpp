@@ -43,6 +43,7 @@
 
 #include "gui/dialogs/eula_dialog.h"
 #include "gui/dialogs/password_dialog.h"
+#include "gui/dialogs/trial_time_dialog.h"
 
 #include "translations/global.h"
 
@@ -122,10 +123,11 @@ int main(int argc, char* argv[]) {
                     "You can <a href=\"" PROJECT_DOWNLOAD_LINK "\">subscribe</a> or try to find new trial version."));
     return EXIT_FAILURE;
   } else {
-    QMessageBox::information(
-        nullptr, fastonosql::translations::trTrial,
-        QObject::tr("This is trial version, and after (%1) you can't start " PROJECT_NAME_TITLE ".")
-            .arg(end_date.toString()));
+     uint32_t ex_count = settings_manager->GetExecCount();
+     fastonosql::gui::TrialTimeDialog trial_dialog(fastonosql::translations::trTrial, end_date, ex_count);
+     if (trial_dialog.exec() == QDialog::Rejected) {
+       return EXIT_FAILURE;
+     }
   }
 #endif
 

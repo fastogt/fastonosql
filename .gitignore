@@ -37,3 +37,5 @@ CMakeLists.txt.user
 build/.idea/
 build_cmake/
 
+# project files
+build/config.py

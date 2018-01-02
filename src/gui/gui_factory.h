@@ -95,6 +95,8 @@ class GuiFactory : public common::patterns::LazySingleton<GuiFactory> {
 
   QFont GetFont() const;
   const QString& GetPathToLoadingGif() const;
+  const QString& GetPathToConnectGif() const;
+  const QString& GetPathToWorkflowGif() const;
 
  private:
   GuiFactory();

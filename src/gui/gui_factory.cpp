@@ -401,6 +401,16 @@ const QString& GuiFactory::GetPathToLoadingGif() const {
   return path;
 }
 
+const QString& GuiFactory::GetPathToConnectGif() const {
+  static QString path(":" PROJECT_NAME_LOWERCASE "/images/help/connect.gif");
+  return path;
+}
+
+const QString& GuiFactory::GetPathToWorkflowGif() const {
+  static QString path(":" PROJECT_NAME_LOWERCASE "/images/help/workflow.gif");
+  return path;
+}
+
 const QIcon& GuiFactory::redisConnectionIcon() const {
   static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/redis.png");
   return main;
