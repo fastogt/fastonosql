@@ -53,10 +53,10 @@
 #include "proxy/servers_manager.h"   // for ServersManager
 #include "proxy/settings_manager.h"  // for SettingsManager
 
+#include "gui/dialogs/about_dialog.h"          // for AboutDialog
+#include "gui/dialogs/connections_dialog.h"    // for ConnectionsDialog
+#include "gui/dialogs/encode_decode_dialog.h"  // for EncodeDecodeDialog
 #include "gui/dialogs/how_to_use_dialog.h"
-#include "gui/dialogs/about_dialog.h"           // for AboutDialog
-#include "gui/dialogs/connections_dialog.h"     // for ConnectionsDialog
-#include "gui/dialogs/encode_decode_dialog.h"   // for EncodeDecodeDialog
 #include "gui/dialogs/preferences_dialog.h"     // for PreferencesDialog
 #include "gui/explorer/explorer_tree_widget.h"  // for ExplorerTreeWidget
 #include "gui/gui_factory.h"                    // for GuiFactory

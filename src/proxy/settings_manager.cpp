@@ -48,6 +48,7 @@
 #define AUTOOPENCONSOLE PREFIX "auto_open_console"
 #define AUTOCONNECTDB "auto_connect_db"
 #define FASTVIEWKEYS PREFIX "fast_view_keys"
+#define WINDOW_SETTINGS PREFIX "window_settings"
 #define CONFIG_VERSION PREFIX "version"
 #define EXEC_COUNT PREFIX "exec_count"
 
@@ -87,7 +88,9 @@ SettingsManager::SettingsManager()
       auto_check_updates_(),
       auto_completion_(),
       auto_open_console_(),
-      fast_view_keys_() {}
+      fast_view_keys_(),
+      window_settings_(),
+      exec_count_() {}
 
 SettingsManager::~SettingsManager() {}
 
@@ -297,6 +300,14 @@ void SettingsManager::SetFastViewKeys(bool fast_view) {
   fast_view_keys_ = fast_view;
 }
 
+QByteArray SettingsManager::GetWindowSettings() const {
+  return window_settings_;
+}
+
+void SettingsManager::SetWindowSettings(const QByteArray& settings) {
+  window_settings_ = settings;
+}
+
 void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
   if (path.empty()) {
     return;
@@ -379,6 +390,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
   auto_open_console_ = settings.value(AUTOOPENCONSOLE, true).toBool();
   auto_connect_db_ = settings.value(AUTOCONNECTDB, true).toBool();
   fast_view_keys_ = settings.value(FASTVIEWKEYS, true).toBool();
+  window_settings_ = settings.value(WINDOW_SETTINGS, QByteArray()).toByteArray();
   exec_count_ = settings.value(EXEC_COUNT, 1).toUInt();
   config_version_ = settings.value(CONFIG_VERSION, PROJECT_VERSION_NUMBER).toUInt();
 }
@@ -454,6 +466,7 @@ void SettingsManager::Save() {
   settings.setValue(AUTOOPENCONSOLE, auto_open_console_);
   settings.setValue(AUTOCONNECTDB, auto_connect_db_);
   settings.setValue(FASTVIEWKEYS, fast_view_keys_);
+  settings.setValue(WINDOW_SETTINGS, window_settings_);
   settings.setValue(EXEC_COUNT, exec_count_ + 1);
   settings.setValue(CONFIG_VERSION, config_version_);
 }

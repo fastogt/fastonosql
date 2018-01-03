@@ -31,10 +31,13 @@
 #include "gui/widgets/how_to_use_widget.h"
 
 #define INDIVIDUAL_BUILDS_URL "https://github.com/fastogt/fastonosql/wiki/Individual-builds"
+#define OK_TEXT "OK"
 
 namespace {
 const QString trPleaseWait_1D = QObject::tr("Please wait (%1) seconds...");
-}
+const QString trTrialWarning_1S =
+    QObject::tr("<h3>This is trial version, and after (%1) you can't start " PROJECT_NAME_TITLE ".</h3>");
+}  // namespace
 
 namespace fastonosql {
 namespace gui {
@@ -91,7 +94,7 @@ void TrialTimeDialog::timerEvent(QTimerEvent* event) {
     if (wait_time_sec_ == 0) {
       killTimer(change_sec_time_id_);
       change_sec_time_id_ = 0;
-      setWaitButtonText("OK");
+      setWaitButtonText(OK_TEXT);
       return;
     }
 
@@ -105,9 +108,7 @@ void TrialTimeDialog::setWaitButtonText(const QString& text) {
 }
 
 void TrialTimeDialog::retranslateUi() {
-  message_box_->setText(
-      QObject::tr("<h3>This is trial version, and after (%1) you can't start " PROJECT_NAME_TITLE ".</h3>")
-          .arg(end_date_.toString()));
+  message_box_->setText(trTrialWarning_1S.arg(end_date_.toString()));
   setWaitButtonText(trPleaseWait_1D.arg(wait_time_sec_));
 }
 

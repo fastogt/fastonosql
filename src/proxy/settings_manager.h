@@ -105,6 +105,9 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
   bool GetFastViewKeys() const;
   void SetFastViewKeys(bool fast_view);
 
+  QByteArray GetWindowSettings() const;
+  void SetWindowSettings(const QByteArray& settings);
+
   void ReloadFromPath(const std::string& path, bool merge);
 
   void Load();
@@ -131,6 +134,7 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
   bool auto_open_console_;
   bool auto_connect_db_;
   bool fast_view_keys_;
+  QByteArray window_settings_;
   uint32_t exec_count_;
 };
 

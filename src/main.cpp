@@ -65,6 +65,9 @@ struct SigIgnInit {
 #endif
 
 const QSize preferedSize = QSize(1024, 768);
+const QString trExpired = QObject::tr(
+    "<h4>Your trial version has expired.</h4>"
+    "You can <a href=\"" PROJECT_DOWNLOAD_LINK "\">subscribe</a> or try to find new trial version.");
 }
 
 int main(int argc, char* argv[]) {
@@ -117,17 +120,14 @@ int main(int argc, char* argv[]) {
   const QDateTime cur_time = QDateTime::currentDateTimeUtc();
   const QDateTime end_date = QDateTime::fromTime_t(EXPIRE_APPLICATION_UTC_TIME, Qt::UTC);
   if (cur_time > end_date) {
-    QMessageBox::critical(
-        nullptr, fastonosql::translations::trTrial,
-        QObject::tr("<h4>Your trial version has expired.</h4>"
-                    "You can <a href=\"" PROJECT_DOWNLOAD_LINK "\">subscribe</a> or try to find new trial version."));
+    QMessageBox::critical(nullptr, fastonosql::translations::trTrial, trExpired);
     return EXIT_FAILURE;
   } else {
-     uint32_t ex_count = settings_manager->GetExecCount();
-     fastonosql::gui::TrialTimeDialog trial_dialog(fastonosql::translations::trTrial, end_date, ex_count);
-     if (trial_dialog.exec() == QDialog::Rejected) {
-       return EXIT_FAILURE;
-     }
+    uint32_t ex_count = settings_manager->GetExecCount();
+    fastonosql::gui::TrialTimeDialog trial_dialog(fastonosql::translations::trTrial, end_date, ex_count);
+    if (trial_dialog.exec() == QDialog::Rejected) {
+      return EXIT_FAILURE;
+    }
   }
 #endif
 
@@ -150,25 +150,31 @@ int main(int argc, char* argv[]) {
   INIT_TRANSLATION(PROJECT_NAME_LOWERCASE);
 
   fastonosql::gui::MainWindow win;
-  QRect screenGeometry = app.desktop()->availableGeometry();
-  QSize screenSize(screenGeometry.width(), screenGeometry.height());
+  QByteArray win_settings = settings_manager->GetWindowSettings();
+  if (!win_settings.isEmpty()) {
+    win.restoreGeometry(win_settings);
+  } else {
+    QRect screenGeometry = app.desktop()->availableGeometry();
+    QSize screenSize(screenGeometry.width(), screenGeometry.height());
 
 #ifdef OS_ANDROID
-  win.resize(screenSize);
+    win.resize(screenSize);
 #else
-  QSize size(screenGeometry.width() / 2, screenGeometry.height() / 2);
-  if (preferedSize.height() <= screenSize.height() && preferedSize.width() <= screenSize.width()) {
-    win.resize(preferedSize);
-  } else {
-    win.resize(size);
-  }
+    QSize size(screenGeometry.width() / 2, screenGeometry.height() / 2);
+    if (preferedSize.height() <= screenSize.height() && preferedSize.width() <= screenSize.width()) {
+      win.resize(preferedSize);
+    } else {
+      win.resize(size);
+    }
 
-  QPoint center = screenGeometry.center();
-  win.move(center.x() - win.width() / 2, center.y() - win.height() / 2);
+    QPoint center = screenGeometry.center();
+    win.move(center.x() - win.width() / 2, center.y() - win.height() / 2);
 #endif
+  }
 
   win.show();
   int res = app.exec();
+  settings_manager->SetWindowSettings(win.saveGeometry());
   settings_manager->Save();
   settings_manager->FreeInstance();
   return res;
