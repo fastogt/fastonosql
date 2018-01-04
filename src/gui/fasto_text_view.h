@@ -21,7 +21,6 @@
 #include <QWidget>
 
 class QAbstractItemModel;  // lines 25-25
-class QEvent;
 class QPushButton;  // lines 24-24
 class QComboBox;    // lines 23-23
 class QLabel;

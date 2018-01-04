@@ -22,9 +22,6 @@
 
 #include "core/global.h"
 
-class QEvent;
-class QWidget;
-
 namespace fastonosql {
 namespace gui {
 class CommandsWidget;

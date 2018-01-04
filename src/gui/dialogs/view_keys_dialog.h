@@ -23,12 +23,10 @@
 #include "core/database/idatabase_info.h"
 #include "proxy/proxy_fwd.h"  // for IDatabaseSPtr
 
-class QEvent;
 class QLabel;     // lines 30-30
 class QLineEdit;  // lines 28-28
 class QPushButton;
 class QSpinBox;  // lines 29-29
-class QWidget;
 
 namespace fastonosql {
 namespace proxy {

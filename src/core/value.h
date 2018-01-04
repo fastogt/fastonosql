@@ -117,6 +117,7 @@ const char* GetTypeName(common::Value::Type value_type);
 
 namespace detail {
 bool have_space(const std::string& data);
+bool is_json(const std::string& data);
 std::string hex_string(const common::buffer_t& value);
 std::string hex_string(const std::string& value);
 std::string string_from_hex(const common::buffer_t& value);

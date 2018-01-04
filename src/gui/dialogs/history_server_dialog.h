@@ -23,11 +23,8 @@
 #include "proxy/events/events_info.h"
 #include "proxy/proxy_fwd.h"  // for IServerSPtr
 
-class QComboBox;  // lines 23-23
-class QEvent;
+class QComboBox;    // lines 23-23
 class QPushButton;  // lines 24-24
-class QShowEvent;
-class QWidget;
 
 namespace common {
 namespace qt {

@@ -25,7 +25,6 @@
 class QLabel;     // lines 30-30
 class QLineEdit;  // lines 28-28
 class QSortFilterProxyModel;
-class QAction;
 
 namespace fastonosql {
 namespace proxy {

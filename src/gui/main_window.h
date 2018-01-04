@@ -28,8 +28,6 @@
 
 class QAction;      // lines 27-27
 class QDockWidget;  // lines 28-28
-class QEvent;       // lines 29-29
-class QShowEvent;   // lines 30-30
 #ifdef OS_ANDROID
 class QGestureEvent;
 class QSwipeGesture;

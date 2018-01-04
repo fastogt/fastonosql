@@ -49,12 +49,12 @@ PropertyServerDialog::PropertyServerDialog(proxy::IServerSPtr server, QWidget* p
                                                                      // button (?)
 
   PropertyTableModel* mod = new PropertyTableModel(this);
-  propertyes_table_ = new QTableView;
+  properties_table_ = new QTableView;
   VERIFY(connect(mod, &PropertyTableModel::propertyChanged, this, &PropertyServerDialog::changedProperty));
-  propertyes_table_->setModel(mod);
+  properties_table_->setModel(mod);
 
   QHBoxLayout* mainL = new QHBoxLayout;
-  mainL->addWidget(propertyes_table_);
+  mainL->addWidget(properties_table_);
 
   setMinimumSize(QSize(min_width, min_height));
   setLayout(mainL);
@@ -88,7 +88,7 @@ void PropertyServerDialog::finishServerProperty(const proxy::events_info::Server
 
   if (server_->GetType() == core::REDIS) {
     core::ServerPropertiesInfo inf = res.info;
-    PropertyTableModel* model = qobject_cast<PropertyTableModel*>(propertyes_table_->model());
+    PropertyTableModel* model = qobject_cast<PropertyTableModel*>(properties_table_->model());
     for (size_t i = 0; i < inf.properties.size(); ++i) {
       core::property_t it = inf.properties[i];
       model->insertItem(new PropertyTableItem(it));
@@ -109,7 +109,7 @@ void PropertyServerDialog::finishServerChangeProperty(const proxy::events_info::
   if (server_->GetType() == core::REDIS) {
     core::property_t pr = res.new_item;
     if (res.is_change) {
-      PropertyTableModel* model = qobject_cast<PropertyTableModel*>(propertyes_table_->model());
+      PropertyTableModel* model = qobject_cast<PropertyTableModel*>(properties_table_->model());
       model->changeProperty(pr);
     }
   }
@@ -124,6 +124,7 @@ void PropertyServerDialog::changeEvent(QEvent* e) {
   if (e->type() == QEvent::LanguageChange) {
     retranslateUi();
   }
+
   QDialog::changeEvent(e);
 }
 

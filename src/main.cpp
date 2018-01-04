@@ -26,17 +26,17 @@
 #include <QDesktopWidget>
 #include <QFile>
 #include <QMessageBox>
+#ifdef IS_PUBLIC_BUILD
+#include <QDateTime>
+#endif
 
 #include <common/convert2string.h>
 #include <common/hash/md5.h>
 #include <common/logger.h>
 #include <common/qt/convert2string.h>
 #include <common/qt/translations/translations.h>
-#ifdef IS_PUBLIC_BUILD
-#include <QDateTime>
-#endif
 
-#include <proxy/settings_manager.h>
+#include "proxy/settings_manager.h"
 
 #include "gui/gui_factory.h"
 #include "gui/main_window.h"

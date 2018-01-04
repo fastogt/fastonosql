@@ -20,18 +20,17 @@
 
 #include <QDialog>
 
-class QCheckBox;  // lines 25-25
-class QComboBox;  // lines 23-23
-class QEvent;
+class QCheckBox;      // lines 25-25
+class QComboBox;      // lines 23-23
 class QFontComboBox;  // lines 24-24
 class QSpinBox;
 class QGroupBox;  // lines 28-28
 class QLabel;     // lines 26-26
 class QLineEdit;  // lines 27-27
-class QWidget;
 
 namespace fastonosql {
 namespace gui {
+
 class PreferencesDialog : public QDialog {
   Q_OBJECT
  public:
@@ -77,5 +76,6 @@ class PreferencesDialog : public QDialog {
   QCheckBox* auto_connect_db_;
   QCheckBox* fast_view_keys_;
 };
+
 }  // namespace gui
 }  // namespace fastonosql

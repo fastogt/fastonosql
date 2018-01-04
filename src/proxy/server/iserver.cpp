@@ -97,7 +97,7 @@ core::connectionTypes IServer::GetType() const {
 }
 
 std::string IServer::GetName() const {
-  connection_path_t path = drv_->ConnectionPath();
+  connection_path_t path = drv_->GetConnectionPath();
   return path.GetName();
 }
 

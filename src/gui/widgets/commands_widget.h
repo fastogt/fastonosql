@@ -23,7 +23,6 @@
 #include "core/global.h"
 
 class QAction;  // lines 24-24
-class QEvent;
 class QPoint;
 class QTextEdit;  // lines 23-23
 

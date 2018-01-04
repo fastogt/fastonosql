@@ -24,10 +24,7 @@
 #include "proxy/proxy_fwd.h"  // for IServerSPtr, IClusterSPtr, etc
 
 class QAction;  // lines 23-23
-class QEvent;
-class QMouseEvent;
 class QPoint;
-class QWidget;
 class QSortFilterProxyModel;
 
 namespace fastonosql {

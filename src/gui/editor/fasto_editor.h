@@ -22,7 +22,6 @@
 #include <QWidget>
 
 class QCheckBox;  // lines 34-34
-class QEvent;
 class QFrame;  // lines 35-35
 class QKeyEvent;
 class QLineEdit;  // lines 31-31

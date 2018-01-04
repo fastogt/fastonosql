@@ -79,5 +79,6 @@ class ConnectionsDialog : public QDialog {
   QTreeWidget* listWidget_;
   QPushButton* acButton_;
 };
+
 }  // namespace gui
 }  // namespace fastonosql

@@ -27,9 +27,7 @@
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "proxy/events/events.h"                             // for BackupRequestEvent, ChangeMa...
 
-class QEvent;
 class QThread;  // lines 37-37
-class QTimerEvent;
 namespace common {
 namespace file_system {
 class ANSIFile;
@@ -51,7 +49,7 @@ class IDriver : public QObject, public core::CDBConnectionClient {
 
   // sync methods
   core::connectionTypes GetType() const;
-  connection_path_t ConnectionPath() const;
+  connection_path_t GetConnectionPath() const;
   std::string GetDelimiter() const;
   std::string GetNsSeparator() const;
   core::NsDisplayStrategy GetNsDisplayStrategy() const;

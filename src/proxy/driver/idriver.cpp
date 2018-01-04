@@ -140,7 +140,7 @@ core::connectionTypes IDriver::GetType() const {
   return settings_->GetType();
 }
 
-connection_path_t IDriver::ConnectionPath() const {
+connection_path_t IDriver::GetConnectionPath() const {
   return settings_->GetPath();
 }
 

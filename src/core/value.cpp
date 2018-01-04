@@ -211,49 +211,70 @@ SearchValue::SearchValue(common::Value::Type type) : Value(type) {}
 common::Value* CreateEmptyValueFromType(common::Value::Type value_type) {
   const uint8_t cvalue_type = value_type;
   switch (cvalue_type) {
-    case common::Value::TYPE_NULL:
+    case common::Value::TYPE_NULL: {
       return common::Value::CreateNullValue();
-    case common::Value::TYPE_BOOLEAN:
+    }
+    case common::Value::TYPE_BOOLEAN: {
       return common::Value::CreateBooleanValue(false);
-    case common::Value::TYPE_INTEGER:
+    }
+    case common::Value::TYPE_INTEGER: {
       return common::Value::CreateIntegerValue(0);
-    case common::Value::TYPE_UINTEGER:
+    }
+    case common::Value::TYPE_UINTEGER: {
       return common::Value::CreateUIntegerValue(0);
-    case common::Value::TYPE_LONG_INTEGER:
+    }
+    case common::Value::TYPE_LONG_INTEGER: {
       return common::Value::CreateLongIntegerValue(0);
-    case common::Value::TYPE_ULONG_INTEGER:
+    }
+    case common::Value::TYPE_ULONG_INTEGER: {
       return common::Value::CreateULongIntegerValue(0);
-    case common::Value::TYPE_LONG_LONG_INTEGER:
+    }
+    case common::Value::TYPE_LONG_LONG_INTEGER: {
       return common::Value::CreateLongLongIntegerValue(0);
-    case common::Value::TYPE_ULONG_LONG_INTEGER:
+    }
+    case common::Value::TYPE_ULONG_LONG_INTEGER: {
       return common::Value::CreateULongLongIntegerValue(0);
-    case common::Value::TYPE_DOUBLE:
+    }
+    case common::Value::TYPE_DOUBLE: {
       return common::Value::CreateDoubleValue(0);
-    case common::Value::TYPE_STRING:
+    }
+    case common::Value::TYPE_STRING: {
       return common::Value::CreateStringValue(std::string());
-    case common::Value::TYPE_ARRAY:
+    }
+    case common::Value::TYPE_ARRAY: {
       return common::Value::CreateArrayValue();
-    case common::Value::TYPE_BYTE_ARRAY:
+    }
+    case common::Value::TYPE_BYTE_ARRAY: {
       return common::Value::CreateByteArrayValue(common::byte_array_t());
-    case common::Value::TYPE_SET:
+    }
+    case common::Value::TYPE_SET: {
       return common::Value::CreateSetValue();
-    case common::Value::TYPE_ZSET:
+    }
+    case common::Value::TYPE_ZSET: {
       return common::Value::CreateZSetValue();
-    case common::Value::TYPE_HASH:
+    }
+    case common::Value::TYPE_HASH: {
       return common::Value::CreateHashValue();
+    }
     // extended
-    case StreamValue::TYPE_STREAM:
+    case StreamValue::TYPE_STREAM: {
       return new StreamValue;
-    case JsonValue::TYPE_JSON:
+    }
+    case JsonValue::TYPE_JSON: {
       return new JsonValue(std::string());
-    case GraphValue::TYPE_GRAPH:
+    }
+    case GraphValue::TYPE_GRAPH: {
       return new GraphValue;
-    case BloomValue::TYPE_BLOOM:
+    }
+    case BloomValue::TYPE_BLOOM: {
       return new BloomValue;
-    case SearchValue::TYPE_FT_INDEX:
+    }
+    case SearchValue::TYPE_FT_INDEX: {
       return SearchValue::CreateSearchIndex();
-    case SearchValue::TYPE_FT_TERM:
+    }
+    case SearchValue::TYPE_FT_TERM: {
       return SearchValue::CreateSearchDocument();
+    }
   }
 
   return nullptr;
@@ -284,6 +305,14 @@ namespace detail {
 bool have_space(const std::string& data) {
   auto it = std::find_if(data.begin(), data.end(), [](char c) { return std::isspace(c); });
   return it != data.end();
+}
+
+bool is_json(const std::string& data) {
+  if (data.empty()) {
+    return false;
+  }
+
+  return data[0] == '{' && data[data.size() - 1] == '}';
 }
 
 std::string hex_string(const common::buffer_t& value) {
@@ -527,7 +556,11 @@ std::string ConvertValue(common::StringValue* value, const std::string& delimite
     return res;
   }
 
-  if (res.empty() || (res[0] == '{' && res[res.size() - 1] == '}')) {  // not needed escape if json
+  if (res.empty()) {
+    return res;
+  }
+
+  if (detail::is_json(res)) {
     return res;
   }
 
@@ -593,10 +626,6 @@ std::string ConvertValue(JsonValue* value, const std::string& delimiter, bool fo
 
   if (!for_cmd) {
     return res;
-  }
-
-  if (detail::have_space(res)) {
-    return "\"" + res + "\"";
   }
 
   return res;

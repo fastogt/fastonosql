@@ -23,8 +23,6 @@
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 
 class QLabel;  // lines 28-28
-class QShowEvent;
-class QWidget;
 
 namespace common {
 namespace qt {

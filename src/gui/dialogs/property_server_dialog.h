@@ -23,10 +23,7 @@
 #include "core/server_property_info.h"  // for property_t
 #include "proxy/proxy_fwd.h"            // for IServerSPtr
 
-class QEvent;
-class QShowEvent;
 class QTableView;  // lines 26-26
-class QWidget;
 
 namespace common {
 namespace qt {
@@ -70,7 +67,7 @@ class PropertyServerDialog : public QDialog {
   void retranslateUi();
 
   common::qt::gui::GlassWidget* glassWidget_;
-  QTableView* propertyes_table_;
+  QTableView* properties_table_;
   const proxy::IServerSPtr server_;
 };
 
