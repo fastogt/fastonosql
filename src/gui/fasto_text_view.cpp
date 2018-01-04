@@ -87,7 +87,9 @@ void FastoTextView::setModel(QAbstractItemModel* model) {
 
 void FastoTextView::saveChanges() {
   QModelIndex index = editor_->selectedItem(1);  // eValue
-  common::StringValue* string = common::Value::CreateStringValue(common::ConvertToString(editor_->text().simplified()));
+  QString qsimplif = editor_->text().simplified();
+  std::string simplif = common::ConvertToString(qsimplif);
+  common::StringValue* string = common::Value::CreateStringValue(simplif);
   core::NValue nv_string(string);
   QVariant var = QVariant::fromValue(nv_string);
   editor_->setData(index, var, Qt::EditRole);

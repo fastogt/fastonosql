@@ -527,8 +527,13 @@ std::string ConvertValue(common::StringValue* value, const std::string& delimite
     return res;
   }
 
+  if (res.empty() || (res[0] == '{' && res[res.size() - 1] == '}')) {  // not needed escape if json
+    return res;
+  }
+
   if (detail::have_space(res)) {
-    return "\"" + res + "\"";
+    std::string escaped = "\"" + res + "\"";
+    return escaped;
   }
 
   return res;
