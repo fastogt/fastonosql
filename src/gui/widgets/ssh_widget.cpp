@@ -36,9 +36,9 @@
 
 namespace {
 const QString trSelectPrivateKey = QObject::tr("Select private key file");
-const QString trPrivateKeyFiles = QObject::tr("Private key files (*.*)");
+const QString trPrivateKeyFiles = QObject::tr("Private key files (*)");
 const QString trSelectPublicKey = QObject::tr("Select public key file");
-const QString trPublicKeyFiles = QObject::tr("Public key files (*.*)");
+const QString trPublicKeyFiles = QObject::tr("Public key files (*)");
 const QString trPrivateKey = QObject::tr("Private key:");
 const QString trPublicKey = QObject::tr("Public key:");
 }  // namespace

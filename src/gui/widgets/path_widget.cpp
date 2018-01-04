@@ -56,7 +56,7 @@ void IPathWidget::selectPathDialog() {
 void IPathWidget::selectPathDialogRoutine(const QString& caption, const QString& filter, int mode) {
   QFileDialog dialog(this, caption, path(), filter);
   dialog.setFileMode(static_cast<QFileDialog::FileMode>(mode));
-  dialog.setFilter(QDir::AllDirs | QDir::AllEntries | QDir::Hidden | QDir::System);
+  dialog.setFilter(QDir::AllDirs | QDir::AllEntries | QDir::Hidden | QDir::System | QDir::NoDotAndDotDot);
   int res = dialog.exec();
   if (res != QFileDialog::ExistingFile) {
     return;
