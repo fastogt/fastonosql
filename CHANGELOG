@@ -2,6 +2,7 @@
 [Alexandr Topilski]
 - Save/Restore MainWindow position
 - Save Json fixes
+- [RocksDB] added support columns(database)
 
 1.14.3 / January 2, 2018
 [Alexandr Topilski]

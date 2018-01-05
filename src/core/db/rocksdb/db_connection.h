@@ -24,7 +24,6 @@
 #include "core/db/rocksdb/server_info.h"
 
 namespace rocksdb {
-class DB;
 class Status;
 }  // namespace rocksdb
 
@@ -32,7 +31,8 @@ namespace fastonosql {
 namespace core {
 namespace rocksdb {
 
-typedef ::rocksdb::DB NativeConnection;
+class rocksdb_handle;
+typedef rocksdb_handle NativeConnection;
 
 common::Error CreateConnection(const Config& config, NativeConnection** context);
 common::Error TestConnection(const Config& config);
@@ -47,6 +47,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   common::Error Info(const std::string& args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
   common::Error Mget(const std::vector<std::string>& keys, std::vector<std::string>* ret);
   common::Error Merge(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
+  common::Error ConfigGetDatabases(std::vector<std::string>* dbs) WARN_UNUSED_RESULT;
 
  private:
   common::Error CheckResultCommand(const std::string& cmd, const ::rocksdb::Status& err) WARN_UNUSED_RESULT;
@@ -66,6 +67,8 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
                                  std::vector<std::string>* ret) override;
   virtual common::Error DBkcountImpl(size_t* size) override;
   virtual common::Error FlushDBImpl() override;
+  virtual common::Error CreateDBImpl(const std::string& name, IDataBaseInfo** info) override;
+  virtual common::Error RemoveDBImpl(const std::string& name, IDataBaseInfo** info) override;
   virtual common::Error SelectImpl(const std::string& name, IDataBaseInfo** info) override;
   virtual common::Error SetImpl(const NDbKValue& key, NDbKValue* added_key) override;
   virtual common::Error GetImpl(const NKey& key, NDbKValue* loaded_key) override;

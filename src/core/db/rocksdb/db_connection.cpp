@@ -173,7 +173,34 @@ const ConstantCommandsArray g_commands = {CommandHolder(DB_HELP_COMMAND,
                                                         0,
                                                         0,
                                                         CommandInfo::Native,
-                                                        &CommandsApi::Quit)};
+                                                        &CommandsApi::Quit),
+                                          CommandHolder("CONFIG GET",
+                                                        "<parameter>",
+                                                        "Get the value of a configuration parameter",
+                                                        UNDEFINED_SINCE,
+                                                        UNDEFINED_EXAMPLE_STR,
+                                                        1,
+                                                        0,
+                                                        CommandInfo::Native,
+                                                        &CommandsApi::ConfigGet),
+                                          CommandHolder(DB_CREATEDB_COMMAND,
+                                                        "<name>",
+                                                        "Create database",
+                                                        UNDEFINED_SINCE,
+                                                        UNDEFINED_EXAMPLE_STR,
+                                                        1,
+                                                        0,
+                                                        CommandInfo::Native,
+                                                        &CommandsApi::CreateDatabase),
+                                          CommandHolder(DB_REMOVEDB_COMMAND,
+                                                        "<name>",
+                                                        "Remove database",
+                                                        UNDEFINED_SINCE,
+                                                        UNDEFINED_EXAMPLE_STR,
+                                                        1,
+                                                        0,
+                                                        CommandInfo::Native,
+                                                        &CommandsApi::RemoveDatabase)};
 }
 }  // namespace rocksdb
 
@@ -226,14 +253,145 @@ const ConstantCommandsArray& CDBConnection<rocksdb::NativeConnection, rocksdb::C
 
 }  // namespace internal
 namespace rocksdb {
+class rocksdb_handle {
+ public:
+  rocksdb_handle(::rocksdb::DB* db, std::vector<::rocksdb::ColumnFamilyHandle*> handles)
+      : db_(db), handles_(handles), current_db_index_(0) {}
+  ~rocksdb_handle() {
+    for (auto handle : handles_) {
+      delete handle;
+    }
+    handles_.clear();
+    delete db_;
+  }
 
+  bool GetProperty(const ::rocksdb::Slice& property, std::string* value) {
+    return db_->GetProperty(GetCurrentColumn(), property, value);
+  }
+
+  ::rocksdb::Status Get(const ::rocksdb::ReadOptions& options, const ::rocksdb::Slice& key, std::string* value) {
+    return db_->Get(options, GetCurrentColumn(), key, value);
+  }
+
+  std::vector<::rocksdb::Status> MultiGet(const ::rocksdb::ReadOptions& options,
+                                          const std::vector<::rocksdb::Slice>& keys,
+                                          std::vector<std::string>* values) {
+    return db_->MultiGet(options, handles_, keys, values);
+  }
+
+  ::rocksdb::Status Merge(const ::rocksdb::WriteOptions& options,
+                          const ::rocksdb::Slice& key,
+                          const ::rocksdb::Slice& value) {
+    return db_->Merge(options, GetCurrentColumn(), key, value);
+  }
+
+  ::rocksdb::Status Put(const ::rocksdb::WriteOptions& options,
+                        const ::rocksdb::Slice& key,
+                        const ::rocksdb::Slice& value) {
+    return db_->Put(options, GetCurrentColumn(), key, value);
+  }
+
+  ::rocksdb::Status Delete(const ::rocksdb::WriteOptions& options, const ::rocksdb::Slice& key) {
+    return db_->Delete(options, GetCurrentColumn(), key);
+  }
+
+  ::rocksdb::Iterator* NewIterator(const ::rocksdb::ReadOptions& options) {
+    return db_->NewIterator(options, GetCurrentColumn());
+  }
+
+  ::rocksdb::ColumnFamilyHandle* GetCurrentColumn() const { return handles_[current_db_index_]; }
+  std::string GetCurrentDBName() const {
+    ::rocksdb::ColumnFamilyHandle* fam = GetCurrentColumn();
+    return fam->GetName();
+  }
+
+  ::rocksdb::Status Select(const std::string& name) {
+    if (name.empty()) {  // only for named dbs
+      return ::rocksdb::Status::InvalidArgument();
+    }
+
+    if (name == GetCurrentDBName()) {  // lazy select
+      return ::rocksdb::Status();
+    }
+
+    for (size_t i = 0; i < handles_.size(); ++i) {
+      ::rocksdb::ColumnFamilyHandle* fam = handles_[i];
+      if (fam->GetName() == name) {
+        current_db_index_ = i;
+        return ::rocksdb::Status();
+      }
+    }
+
+    return ::rocksdb::Status::NotFound();
+  }
+
+  ::rocksdb::Status CreateDB(const std::string& name) {
+    if (name.empty()) {  // only for named dbs
+      return ::rocksdb::Status::InvalidArgument();
+    }
+
+    for (size_t i = 0; i < handles_.size(); ++i) {
+      ::rocksdb::ColumnFamilyHandle* fam = handles_[i];
+      if (fam->GetName() == name) {
+        return ::rocksdb::Status();
+      }
+    }
+
+    ::rocksdb::ColumnFamilyHandle* fam = nullptr;
+    ::rocksdb::Status st = db_->CreateColumnFamily(::rocksdb::ColumnFamilyOptions(), name, &fam);
+    if (st.ok()) {
+      handles_.push_back(fam);
+    }
+    return st;
+  }
+
+  ::rocksdb::Status RemoveDB(const std::string& name) {
+    if (name.empty()) {  // only for named dbs
+      return ::rocksdb::Status::InvalidArgument();
+    }
+
+    if (name == GetCurrentDBName()) {  // don't want to delete selected db
+      return ::rocksdb::Status::InvalidArgument();
+    }
+
+    for (size_t i = 0; i < handles_.size(); ++i) {
+      ::rocksdb::ColumnFamilyHandle* fam = handles_[i];
+      if (fam->GetName() == name) {
+        ::rocksdb::Status st = db_->DropColumnFamily(fam);
+        if (st.ok()) {
+          handles_.erase(handles_.begin() + i);
+          if (i < current_db_index_) {
+            current_db_index_--;
+          }
+        }
+        return st;
+      }
+    }
+
+    return ::rocksdb::Status::NotFound();
+  }
+
+  std::vector<std::string> GetDatabasesNames() const {
+    std::vector<std::string> res;
+    for (size_t i = 0; i < handles_.size(); ++i) {
+      ::rocksdb::ColumnFamilyHandle* fam = handles_[i];
+      res.push_back(fam->GetName());
+    }
+    return res;
+  }
+
+ private:
+  DISALLOW_COPY_AND_ASSIGN(rocksdb_handle);
+  ::rocksdb::DB* db_;
+  std::vector<::rocksdb::ColumnFamilyHandle*> handles_;
+  size_t current_db_index_;
+};
 common::Error CreateConnection(const Config& config, NativeConnection** context) {
   if (!context) {
     return common::make_error_inval();
   }
 
   DCHECK(*context == nullptr);
-  ::rocksdb::DB* lcontext = nullptr;
   std::string folder = config.db_path;  // start point must be folder
   common::tribool is_dir = common::file_system::is_directory(folder);
   if (is_dir != common::SUCCESS && !config.create_if_missing) {
@@ -247,18 +405,33 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   } else if (config.comparator == COMP_REVERSE_BYTEWISE) {
     rs.comparator = ::rocksdb::ReverseBytewiseComparator();
   }
-  auto st = ::rocksdb::DB::Open(rs, folder, &lcontext);
+  std::vector<std::string> column_families_str;
+  auto st = ::rocksdb::DB::ListColumnFamilies(rs, folder, &column_families_str);
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("Fail open database: %s!", st.ToString());
     return common::make_error(buff);
   }
 
-  *context = lcontext;
+  std::vector<::rocksdb::ColumnFamilyDescriptor> column_families;
+  for (size_t i = 0; i < column_families_str.size(); ++i) {
+    ::rocksdb::ColumnFamilyDescriptor descr(column_families_str[i], ::rocksdb::ColumnFamilyOptions());
+    column_families.push_back(descr);
+  }
+
+  ::rocksdb::DB* lcontext = nullptr;
+  std::vector<::rocksdb::ColumnFamilyHandle*> lhandles;
+  st = ::rocksdb::DB::Open(rs, folder, column_families, &lhandles, &lcontext);
+  if (!st.ok()) {
+    std::string buff = common::MemSPrintf("Fail open database: %s!", st.ToString());
+    return common::make_error(buff);
+  }
+
+  *context = new rocksdb_handle(lcontext, lhandles);
   return common::Error();
 }
 
 common::Error TestConnection(const Config& config) {
-  ::rocksdb::DB* ldb = nullptr;
+  NativeConnection* ldb = nullptr;
   common::Error err = CreateConnection(config, &ldb);
   if (err) {
     return err;
@@ -344,10 +517,7 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
 
 std::string DBConnection::GetCurrentDBName() const {
   if (IsConnected()) {
-    ::rocksdb::ColumnFamilyHandle* fam = connection_.handle_->DefaultColumnFamily();
-    if (fam) {
-      return fam->GetName();
-    }
+    return connection_.handle_->GetCurrentDBName();
   }
 
   DNOTREACHED();
@@ -399,6 +569,21 @@ common::Error DBConnection::Merge(const std::string& key, const std::string& val
 
   ::rocksdb::WriteOptions wo;
   return CheckResultCommand("MERGE", connection_.handle_->Merge(wo, key, value));
+}
+
+common::Error DBConnection::ConfigGetDatabases(std::vector<std::string>* dbs) {
+  if (!dbs) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
+
+  common::Error err = TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
+  *dbs = connection_.handle_->GetDatabasesNames();
+  return common::Error();
 }
 
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
@@ -522,14 +707,35 @@ common::Error DBConnection::FlushDBImpl() {
   return CheckResultCommand(DB_FLUSHDB_COMMAND, st);
 }
 
+common::Error DBConnection::CreateDBImpl(const std::string& name, IDataBaseInfo** info) {
+  common::Error err = CheckResultCommand(DB_CREATEDB_COMMAND, connection_.handle_->CreateDB(name));
+  if (err) {
+    return err;
+  }
+
+  *info = new DataBaseInfo(name, false, 0);
+  return common::Error();
+}
+
+common::Error DBConnection::RemoveDBImpl(const std::string& name, IDataBaseInfo** info) {
+  common::Error err = CheckResultCommand(DB_REMOVEDB_COMMAND, connection_.handle_->RemoveDB(name));
+  if (err) {
+    return err;
+  }
+
+  *info = new DataBaseInfo(name, false, 0);
+  return common::Error();
+}
+
 common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** info) {
-  if (name != GetCurrentDBName()) {
-    return ICommandTranslator::InvalidInputArguments(DB_SELECTDB_COMMAND);
+  common::Error err = CheckResultCommand(DB_SELECTDB_COMMAND, connection_.handle_->Select(name));
+  if (err) {
+    return err;
   }
 
   size_t kcount = 0;
-  common::Error err = DBkcount(&kcount);
-  DCHECK(!err);
+  err = DBkcount(&kcount);
+  DCHECK(!err) << "DBkcount failed!";
   *info = new DataBaseInfo(name, true, kcount);
   return common::Error();
 }

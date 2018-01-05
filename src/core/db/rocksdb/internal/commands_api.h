@@ -29,6 +29,7 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
   static common::Error Info(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error Mget(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error Merge(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ConfigGet(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 };
 
 }  // namespace rocksdb

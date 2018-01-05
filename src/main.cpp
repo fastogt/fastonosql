@@ -67,7 +67,7 @@ struct SigIgnInit {
 const QSize preferedSize = QSize(1024, 768);
 const QString trExpired = QObject::tr(
     "<h4>Your trial version has expired.</h4>"
-    "You can <a href=\"" PROJECT_DOWNLOAD_LINK "\">subscribe</a> or try to find new trial version.");
+    "Please <a href=\"" PROJECT_DOWNLOAD_LINK "\">subscribe</a> and continue using " PROJECT_NAME_TITLE ".");
 }
 
 int main(int argc, char* argv[]) {
