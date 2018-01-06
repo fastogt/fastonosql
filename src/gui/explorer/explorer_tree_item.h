@@ -53,6 +53,7 @@ class ExplorerServerItem : public IExplorerTreeItem {
 
   void loadDatabases();
   void createDatabase(const QString& name);
+  void removeDatabase(const QString& name);
 
  private:
   const proxy::IServerSPtr server_;

@@ -43,6 +43,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   bool IsCanRemote() const;
   bool IsSupportTTLKeys() const;
   bool IsCanCreateDatabase() const;
+  bool IsCanRemoveDatabase() const;
 
   core::translator_t GetTranslator() const;
 

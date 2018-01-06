@@ -61,6 +61,7 @@ class ExplorerTreeView : public QTreeView {
   void openConsole();
   void loadDatabases();
   void createDb();
+  void removeDB();
   void openInfoServerDialog();
   void openPropertyServerDialog();
   void openHistoryServerDialog();

@@ -69,6 +69,7 @@ const QString trRemoveTTL = QObject::tr("Remove TTL");
 const QString trRenameKey = QObject::tr("Rename key");
 const QString trRenameKeyLabel = QObject::tr("New key name:");
 const QString trCreateDatabase_1S = QObject::tr("Create database on %1 server");
+const QString trRemoveDatabase_1S = QObject::tr("Remove database from %1 server");
 }  // namespace
 
 namespace fastonosql {
@@ -246,6 +247,13 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       VERIFY(connect(createDatabaseAction, &QAction::triggered, this, &ExplorerTreeView::createDb));
       createDatabaseAction->setEnabled(is_connected);
       menu.addAction(createDatabaseAction);
+    }
+
+    if (server->IsCanRemoveDatabase()) {
+      QAction* removeDatabaseAction = new QAction(translations::trRemoveDatabase, this);
+      VERIFY(connect(removeDatabaseAction, &QAction::triggered, this, &ExplorerTreeView::removeDB));
+      removeDatabaseAction->setEnabled(is_connected);
+      menu.addAction(removeDatabaseAction);
     }
 
     infoServerAction->setEnabled(is_connected);
@@ -471,6 +479,23 @@ void ExplorerTreeView::createDb() {
                                          QLineEdit::Normal, QString(), &ok, Qt::WindowCloseButtonHint);
     if (ok && !name.isEmpty()) {
       node->createDatabase(name);
+    }
+  }
+}
+
+void ExplorerTreeView::removeDB() {
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
+    bool ok;
+    QString name = QInputDialog::getText(this, trRemoveDatabase_1S.arg(node->name()), translations::trName + ":",
+                                         QLineEdit::Normal, QString(), &ok, Qt::WindowCloseButtonHint);
+    if (ok && !name.isEmpty()) {
+      node->removeDatabase(name);
     }
   }
 }

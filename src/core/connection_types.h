@@ -54,6 +54,7 @@ bool IsSupportTTLKeys(connectionTypes type);
 bool IsLocalType(connectionTypes type);
 bool IsCanSSHConnection(connectionTypes type);
 bool IsCanCreateDatabase(connectionTypes type);
+bool IsCanRemoveDatabase(connectionTypes type);
 const char* ConnectionTypeToString(connectionTypes t);
 
 template <connectionTypes ContType>

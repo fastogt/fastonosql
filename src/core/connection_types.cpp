@@ -82,6 +82,10 @@ bool IsCanCreateDatabase(connectionTypes type) {
   return type == LMDB || type == FORESTDB || type == ROCKSDB;
 }
 
+bool IsCanRemoveDatabase(connectionTypes type) {
+  return type == LMDB || type == FORESTDB || type == ROCKSDB;
+}
+
 const char* ConnectionTypeToString(connectionTypes t) {
   return connnectionType[t];
 }

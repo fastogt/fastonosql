@@ -139,6 +139,7 @@ extern const QString trSetDefault;
 extern const QString trSetAsStartNode;
 extern const QString trLoadDataBases;
 extern const QString trCreateDatabase;
+extern const QString trRemoveDatabase;
 extern const QString trExpTree;
 extern const QString trRecentConnections;
 extern const QString trCheckVersion;

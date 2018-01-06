@@ -88,6 +88,10 @@ bool IServer::IsCanCreateDatabase() const {
   return fastonosql::core::IsCanCreateDatabase(GetType());
 }
 
+bool IServer::IsCanRemoveDatabase() const {
+  return fastonosql::core::IsCanRemoveDatabase(GetType());
+}
+
 core::translator_t IServer::GetTranslator() const {
   return drv_->GetTranslator();
 }
