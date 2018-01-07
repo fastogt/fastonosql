@@ -113,6 +113,8 @@ class BuildRequest(object):
             libssh2_cmake_line.append('-DENABLE_ZLIB_COMPRESSION=ON')
             libssh2_cmake_line.append('-DZLIB_USE_STATIC=ON')
             libssh2_cmake_line.append('-DOPENSSL_USE_STATIC=ON')
+            libssh2_cmake_line.append('-DBUILD_EXAMPLES=OFF')
+            libssh2_cmake_line.append('-DBUILD_TESTING=OFF')
             cmake_policy = run_command.CmakePolicy(print_message)
             make_policy = run_command.CommonPolicy(print_message)
             run_command.run_command_cb(libssh2_cmake_line, cmake_policy)

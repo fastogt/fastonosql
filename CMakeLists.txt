@@ -3,7 +3,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.3.0) # deb package fix in 3.3.0
 
 SET(BRANDING_PROJECT_NAME "FastoNoSQL" CACHE STRING "Branding for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_VERSION "1.14.4.0" CACHE STRING "Branding version for ${BRANDING_PROJECT_NAME}") #default
-SET(BRANDING_PROJECT_BUILD_TYPE_VERSION "beta" CACHE STRING "Build version type for ${BRANDING_PROJECT_NAME}") #default
+SET(BRANDING_PROJECT_BUILD_TYPE_VERSION "rc" CACHE STRING "Build version type for ${BRANDING_PROJECT_NAME}") #default
   #possible variables: alfa, beta, rc, release
 
 SET(BRANDING_PROJECT_DOMAIN "https://www.fastonosql.com" CACHE STRING "Branding domain url for ${BRANDING_PROJECT_NAME}") #default
@@ -34,7 +34,7 @@ SET(BRANDING_PROJECT_DESCRIPTION "${BRANDING_PROJECT_NAME} it is GUI platform fo
   Also ${BRANDING_PROJECT_NAME} is IDE tool for NoSQL which works on the most famous platforms like:\
   Windows, Linux, MacOSX, Android, FreeBSD."
   CACHE STRING "Description of ${BRANDING_PROJECT_NAME}")
-SET(BRANDING_PROJECT_COPYRIGHT "Copyright (C) 2014-2017 ${BRANDING_PROJECT_COMPANYNAME} All Rights Reserved."
+SET(BRANDING_PROJECT_COPYRIGHT "Copyright (C) 2014-2018 ${BRANDING_PROJECT_COMPANYNAME} All Rights Reserved."
   CACHE STRING "Copyright notice for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_CHANGELOG_FILE CHANGELOG
   CACHE STRING "Branding for changelog file ${BRANDING_PROJECT_NAME}
