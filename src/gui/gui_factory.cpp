@@ -22,9 +22,16 @@
 #include <QIcon>
 #include <QStyle>
 
+#include <common/file_system/string_path_utils.h>
+#include <common/qt/convert2string.h>
+
 #include "core/value.h"
 
 #include "proxy/settings_manager.h"  // for SettingsManager
+
+#define CONNECT_GIF_PATH_RELATIVE "share/resources/help/connect.gif"
+#define INDIVIDUAL_BUILDS_GIF_PATH_RELATIVE "share/resources/help/individual_builds.gif"
+#define WORKFLOW_GIF_PATH_RELATIVE "share/resources/help/workflow.gif"
 
 namespace fastonosql {
 namespace gui {
@@ -401,18 +408,37 @@ const QString& GuiFactory::GetPathToLoadingGif() const {
   return path;
 }
 
-const QString& GuiFactory::GetPathToIndividualBuilds() const {
-  static QString path(":" PROJECT_NAME_LOWERCASE "/images/help/individual_builds.gif");
+QString GuiFactory::GetPathToIndividualBuilds() const {
+  const std::string absolute_source_dir = common::file_system::absolute_path_from_relative(RELATIVE_SOURCE_DIR);
+  const std::string img_full_path =
+      common::file_system::make_path(absolute_source_dir, INDIVIDUAL_BUILDS_GIF_PATH_RELATIVE);
+  if (!common::file_system::is_file_exist(img_full_path)) {
+    WARNING_LOG() << "Missing file: " << img_full_path;
+  }
+  QString path;
+  common::ConvertFromString(img_full_path, &path);
   return path;
 }
 
-const QString& GuiFactory::GetPathToConnectGif() const {
-  static QString path(":" PROJECT_NAME_LOWERCASE "/images/help/connect.gif");
+QString GuiFactory::GetPathToConnectGif() const {
+  const std::string absolute_source_dir = common::file_system::absolute_path_from_relative(RELATIVE_SOURCE_DIR);
+  const std::string img_full_path = common::file_system::make_path(absolute_source_dir, CONNECT_GIF_PATH_RELATIVE);
+  if (!common::file_system::is_file_exist(img_full_path)) {
+    WARNING_LOG() << "Missing file: " << img_full_path;
+  }
+  QString path;
+  common::ConvertFromString(img_full_path, &path);
   return path;
 }
 
-const QString& GuiFactory::GetPathToWorkflowGif() const {
-  static QString path(":" PROJECT_NAME_LOWERCASE "/images/help/workflow.gif");
+QString GuiFactory::GetPathToWorkflowGif() const {
+  const std::string absolute_source_dir = common::file_system::absolute_path_from_relative(RELATIVE_SOURCE_DIR);
+  const std::string img_full_path = common::file_system::make_path(absolute_source_dir, WORKFLOW_GIF_PATH_RELATIVE);
+  if (!common::file_system::is_file_exist(img_full_path)) {
+    WARNING_LOG() << "Missing file: " << img_full_path;
+  }
+  QString path;
+  common::ConvertFromString(img_full_path, &path);
   return path;
 }
 
