@@ -412,9 +412,6 @@ QString GuiFactory::GetPathToIndividualBuilds() const {
   const std::string absolute_source_dir = common::file_system::absolute_path_from_relative(RELATIVE_SOURCE_DIR);
   const std::string img_full_path =
       common::file_system::make_path(absolute_source_dir, INDIVIDUAL_BUILDS_GIF_PATH_RELATIVE);
-  if (!common::file_system::is_file_exist(img_full_path)) {
-    WARNING_LOG() << "Missing file: " << img_full_path;
-  }
   QString path;
   common::ConvertFromString(img_full_path, &path);
   return path;
@@ -423,9 +420,6 @@ QString GuiFactory::GetPathToIndividualBuilds() const {
 QString GuiFactory::GetPathToConnectGif() const {
   const std::string absolute_source_dir = common::file_system::absolute_path_from_relative(RELATIVE_SOURCE_DIR);
   const std::string img_full_path = common::file_system::make_path(absolute_source_dir, CONNECT_GIF_PATH_RELATIVE);
-  if (!common::file_system::is_file_exist(img_full_path)) {
-    WARNING_LOG() << "Missing file: " << img_full_path;
-  }
   QString path;
   common::ConvertFromString(img_full_path, &path);
   return path;
@@ -434,9 +428,6 @@ QString GuiFactory::GetPathToConnectGif() const {
 QString GuiFactory::GetPathToWorkflowGif() const {
   const std::string absolute_source_dir = common::file_system::absolute_path_from_relative(RELATIVE_SOURCE_DIR);
   const std::string img_full_path = common::file_system::make_path(absolute_source_dir, WORKFLOW_GIF_PATH_RELATIVE);
-  if (!common::file_system::is_file_exist(img_full_path)) {
-    WARNING_LOG() << "Missing file: " << img_full_path;
-  }
   QString path;
   common::ConvertFromString(img_full_path, &path);
   return path;
