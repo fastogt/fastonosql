@@ -26,12 +26,12 @@
 class QCheckBox;         // lines 29-29
 class QComboBox;         // lines 25-25
 class QDialogButtonBox;  // lines 27-27
-class QLabel;       // lines 33-33
-class QLineEdit;    // lines 26-26
-class QPushButton;  // lines 28-28
-class QSpinBox;     // lines 30-30
-class QToolBar;     // lines 32-32
-class QTreeWidget;  // lines 31-31
+class QLabel;            // lines 33-33
+class QLineEdit;         // lines 26-26
+class QPushButton;       // lines 28-28
+class QSpinBox;          // lines 30-30
+class QToolBar;          // lines 32-32
+class QTreeWidget;       // lines 31-31
 
 namespace fastonosql {
 namespace gui {

@@ -22,7 +22,7 @@
 #include <QWidget>
 
 class QCheckBox;  // lines 34-34
-class QFrame;  // lines 35-35
+class QFrame;     // lines 35-35
 class QKeyEvent;
 class QLineEdit;  // lines 31-31
 class QMenu;      // lines 37-37

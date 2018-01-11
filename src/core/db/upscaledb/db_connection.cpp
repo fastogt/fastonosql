@@ -636,6 +636,12 @@ common::Error DBConnection::QuitImpl() {
   return common::Error();
 }
 
+common::Error DBConnection::ConfigGetDatabasesImpl(std::vector<std::string>* dbs) {
+  std::vector<std::string> ldbs = {GetCurrentDBName()};
+  *dbs = ldbs;
+  return common::Error();
+}
+
 common::Error DBConnection::CheckResultCommand(const std::string& cmd, ups_status_t err) {
   if (err != UPS_SUCCESS) {
     return GenerateError(cmd, ups_strerror(err));

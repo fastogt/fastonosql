@@ -51,11 +51,14 @@ void CheckSetGet(core::internal::CDBConnection<NConnection, Config, ContType>* d
 TEST(Connection, leveldb) {
   core::leveldb::DBConnection db(nullptr);
   core::leveldb::Config lcfg;
+  common::ErrnoError errn = common::file_system::remove_directory(lcfg.db_path, true);
+  ASSERT_TRUE(!errn);
+
   lcfg.create_if_missing = false;
   common::Error err = db.Connect(lcfg);
   ASSERT_TRUE(err);
   ASSERT_TRUE(!db.IsConnected());
-  common::ErrnoError errn = common::file_system::create_directory(lcfg.db_path, false);
+  errn = common::file_system::create_directory(lcfg.db_path, false);
   ASSERT_TRUE(!errn);
   err = db.Connect(lcfg);
   ASSERT_TRUE(err);
@@ -81,11 +84,14 @@ TEST(Connection, leveldb) {
 TEST(Connection, rocksdb) {
   core::rocksdb::DBConnection db(nullptr);
   core::rocksdb::Config lcfg;
+  common::ErrnoError errn = common::file_system::remove_directory(lcfg.db_path, true);
+  ASSERT_TRUE(!errn);
+
   lcfg.create_if_missing = false;
   common::Error err = db.Connect(lcfg);
   ASSERT_TRUE(err);
   ASSERT_TRUE(!db.IsConnected());
-  common::ErrnoError errn = common::file_system::create_directory(lcfg.db_path, false);
+  errn = common::file_system::create_directory(lcfg.db_path, false);
   ASSERT_TRUE(!errn);
   err = db.Connect(lcfg);
   ASSERT_TRUE(err);
@@ -111,14 +117,18 @@ TEST(Connection, rocksdb) {
 TEST(Connection, lmdb) {
   core::lmdb::DBConnection db(nullptr);
   core::lmdb::Config lcfg;
+  common::ErrnoError errn = common::file_system::remove_file(lcfg.db_path);
+  ASSERT_TRUE(!errn);
+
+  lcfg.SetReadOnlyDB(true);
   common::Error err = db.Connect(lcfg);
   ASSERT_TRUE(err);
   ASSERT_TRUE(!db.IsConnected());
-  common::ErrnoError errn = common::file_system::create_directory(lcfg.db_path, false);
+  /*errn = common::file_system::create_node(lcfg.db_path);
   ASSERT_TRUE(!errn);
   err = db.Connect(lcfg);
   ASSERT_TRUE(!err);
-  ASSERT_TRUE(db.IsConnected());
+  ASSERT_TRUE(db.IsConnected());*/
 
   lcfg.SetReadOnlyDB(false);
   err = db.Connect(lcfg);
@@ -131,7 +141,7 @@ TEST(Connection, lmdb) {
   ASSERT_TRUE(!err);
   ASSERT_TRUE(!db.IsConnected());
 
-  errn  = common::file_system::remove_directory(lcfg.db_path, true);
+  errn = common::file_system::remove_file(lcfg.db_path);
   ASSERT_TRUE(!errn);
 }
 #endif

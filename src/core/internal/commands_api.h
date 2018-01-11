@@ -403,7 +403,9 @@ common::Error ApiTraits<CDBConnection>::Quit(internal::CommandHandler* handler,
 }
 
 template <class CDBConnection>
-common::Error ApiTraits<CDBConnection>::ConfigGet(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+common::Error ApiTraits<CDBConnection>::ConfigGet(internal::CommandHandler* handler,
+                                                  commands_args_t argv,
+                                                  FastoObject* out) {
   if (!common::EqualsASCII(argv[0], "databases", false)) {
     return common::make_error_inval();
   }

@@ -26,7 +26,7 @@
 namespace fastonosql {
 namespace gui {
 
-HowToUseWidget::HowToUseWidget(const QSize &scale_size, QWidget* parent) : QTabWidget(parent) {
+HowToUseWidget::HowToUseWidget(const QSize& scale_size, QWidget* parent) : QTabWidget(parent) {
   QLabel* individual_tab = new QLabel;
   QMovie* individual_movie = new QMovie(GuiFactory::GetInstance().GetPathToIndividualBuilds());
   individual_tab->setMovie(individual_movie);

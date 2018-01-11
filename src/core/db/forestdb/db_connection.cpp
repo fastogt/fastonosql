@@ -692,7 +692,8 @@ common::Error DBConnection::QuitImpl() {
 
 common::Error DBConnection::ConfigGetDatabasesImpl(std::vector<std::string>* dbs) {
   fdb_kvs_name_list forestdb_dbs;
-  common::Error err = CheckResultCommand("CONFIG GET DATABASES", fdb_get_kvs_name_list(connection_.handle_->handle, &forestdb_dbs));
+  common::Error err =
+      CheckResultCommand("CONFIG GET DATABASES", fdb_get_kvs_name_list(connection_.handle_->handle, &forestdb_dbs));
   if (err) {
     return err;
   }

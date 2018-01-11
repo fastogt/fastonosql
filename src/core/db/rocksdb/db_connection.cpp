@@ -405,17 +405,24 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   } else if (config.comparator == COMP_REVERSE_BYTEWISE) {
     rs.comparator = ::rocksdb::ReverseBytewiseComparator();
   }
+
   std::vector<std::string> column_families_str;
   auto st = ::rocksdb::DB::ListColumnFamilies(rs, folder, &column_families_str);
   if (!st.ok()) {
-    std::string buff = common::MemSPrintf("Fail open database: %s!", st.ToString());
-    return common::make_error(buff);
+    if (!rs.create_if_missing) {
+      std::string buff = common::MemSPrintf("Fail open database: %s!", st.ToString());
+      return common::make_error(buff);
+    }
   }
 
   std::vector<::rocksdb::ColumnFamilyDescriptor> column_families;
   for (size_t i = 0; i < column_families_str.size(); ++i) {
     ::rocksdb::ColumnFamilyDescriptor descr(column_families_str[i], ::rocksdb::ColumnFamilyOptions());
     column_families.push_back(descr);
+  }
+
+  if (column_families.empty()) {
+    column_families = {::rocksdb::ColumnFamilyDescriptor()};
   }
 
   ::rocksdb::DB* lcontext = nullptr;

@@ -20,7 +20,7 @@
 
 #include <QDialog>
 
-class QComboBox;  // lines 23-23
+class QComboBox;     // lines 23-23
 class QRadioButton;  // lines 24-24
 
 namespace fastonosql {
