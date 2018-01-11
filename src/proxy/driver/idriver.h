@@ -128,6 +128,8 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   virtual core::FastoObjectCommandIPtr CreateCommandFast(const core::command_buffer_t& input,
                                                          core::CmdLoggingType ct) = 0;
 
+  virtual core::IDataBaseInfoSPtr CreateDatabaseInfo(const std::string& name, bool is_default, size_t size) = 0;
+
  private:
   virtual common::Error SyncConnect() WARN_UNUSED_RESULT = 0;
   virtual common::Error SyncDisconnect() WARN_UNUSED_RESULT = 0;

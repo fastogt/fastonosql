@@ -39,7 +39,7 @@ std::string createStamp(common::time64_t time) {
   return magicNumber + common::ConvertToString(time) + '\n';
 }
 
-bool getStamp(common::buffer_t stamp, common::time64_t* time_out) {
+bool GetStamp(common::buffer_t stamp, common::time64_t* time_out) {
   if (stamp.empty()) {
     return false;
   }
@@ -401,7 +401,7 @@ void IDriver::HandleRestoreEvent(events::RestoreRequestEvent* ev) {
 }
 
 void IDriver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) {
-  QObject* sender = ev->sender();
+  /*QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
   events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 50);
@@ -412,6 +412,67 @@ void IDriver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent
   } else {
     res.databases.push_back(core::IDataBaseInfoSPtr(info));
   }
+  Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
+  NotifyProgress(sender, 100);*/
+
+  QObject* sender = ev->sender();
+  NotifyProgress(sender, 0);
+  events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
+  NotifyProgress(sender, 50);
+
+  core::IDataBaseInfo* info = nullptr;
+  common::Error err = GetCurrentDataBaseInfo(&info);
+  if (err) {
+    res.setErrorInfo(err);
+    NotifyProgress(sender, 75);
+    Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
+    NotifyProgress(sender, 100);
+    return;
+  }
+
+  auto tran = GetTranslator();
+  std::string get_dbs;
+  err = tran->GetDatabasesCommand(&get_dbs);
+  core::FastoObjectCommandIPtr cmd = CreateCommandFast(get_dbs, core::C_INNER);
+  if (err) {
+    res.setErrorInfo(err);
+    NotifyProgress(sender, 75);
+    Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
+    NotifyProgress(sender, 100);
+    return;
+  }
+
+  err = Execute(cmd.get());
+  if (err) {
+    res.setErrorInfo(err);
+    NotifyProgress(sender, 75);
+    Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
+    NotifyProgress(sender, 100);
+    return;
+  }
+
+  core::FastoObject::childs_t rchildrens = cmd->GetChildrens();
+  CHECK_EQ(rchildrens.size(), 1);
+  auto ar = std::static_pointer_cast<common::ArrayValue>(rchildrens[0]->GetValue());
+  CHECK(ar);
+
+  core::IDataBaseInfoSPtr curdb(info);
+  if (!ar->IsEmpty()) {
+    for (size_t i = 0; i < ar->GetSize(); ++i) {
+      std::string name;
+      if (ar->GetString(i, &name)) {
+        core::IDataBaseInfoSPtr dbInf(CreateDatabaseInfo(name, false, 0));
+        if (dbInf->GetName() == curdb->GetName()) {
+          res.databases.push_back(curdb);
+        } else {
+          res.databases.push_back(dbInf);
+        }
+      }
+    }
+  } else {
+    res.databases.push_back(curdb);
+  }
+  NotifyProgress(sender, 75);
   Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
   NotifyProgress(sender, 100);
 }
@@ -462,7 +523,7 @@ void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
       }
 
       common::time64_t tmp_stamp = 0;
-      bool is_stamp = getStamp(data, &tmp_stamp);
+      bool is_stamp = GetStamp(data, &tmp_stamp);
       if (is_stamp) {
         if (cur_stamp) {
           core::ServerInfoSnapShoot shoot(cur_stamp, MakeServerInfoFromString(common::ConvertToString(data_info)));

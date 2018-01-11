@@ -45,6 +45,9 @@
 #define DB_KEYS_COMMAND "KEYS"          // exist for all
 #define DB_SCAN_COMMAND "SCAN"          // exist for all
 
+#define DB_GET_CONFIG_COMMAND "CONFIG GET"
+#define DB_GET_DATABASES_COMMAND DB_GET_CONFIG_COMMAND " databases"
+
 namespace fastonosql {
 namespace core {
 
@@ -59,6 +62,7 @@ class ICommandTranslator {
 
   virtual const char* GetDBName() const = 0;
 
+  common::Error GetDatabasesCommand(command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
   common::Error RemoveDBCommand(const std::string& name, command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
   common::Error CreateDBCommand(const std::string& name, command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
 

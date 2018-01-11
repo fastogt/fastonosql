@@ -1,3 +1,7 @@
+1.15.1 /
+[Alexandr Topilski]
+- CONFIG GET databases
+
 1.15.0 / January 10, 2018
 [Alexandr Topilski]
 - Save/Restore MainWindow position

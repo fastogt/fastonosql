@@ -50,6 +50,7 @@ struct ApiTraits {
   static common::Error ModuleLoad(CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error ModuleUnLoad(CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error Quit(CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ConfigGet(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 };
 
 template <class CDBConnection>
@@ -397,6 +398,26 @@ common::Error ApiTraits<CDBConnection>::Quit(internal::CommandHandler* handler,
 
   common::StringValue* val = common::Value::CreateStringValue("OK");
   FastoObject* child = new FastoObject(out, val, cdb->GetDelimiter());
+  out->AddChildren(child);
+  return common::Error();
+}
+
+template <class CDBConnection>
+common::Error ApiTraits<CDBConnection>::ConfigGet(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  if (!common::EqualsASCII(argv[0], "databases", false)) {
+    return common::make_error_inval();
+  }
+
+  std::vector<std::string> dbs;
+  CDBConnection* cdb = static_cast<CDBConnection*>(handler);
+  common::Error err = cdb->ConfigGetDatabases(&dbs);
+  if (err) {
+    return err;
+  }
+
+  common::ArrayValue* arr = new common::ArrayValue;
+  arr->AppendStrings(dbs);
+  FastoObject* child = new FastoObject(out, arr, cdb->GetDelimiter());
   out->AddChildren(child);
   return common::Error();
 }

@@ -47,7 +47,6 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   common::Error Info(const std::string& args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
   common::Error Mget(const std::vector<std::string>& keys, std::vector<std::string>* ret);
   common::Error Merge(const std::string& key, const std::string& value) WARN_UNUSED_RESULT;
-  common::Error ConfigGetDatabases(std::vector<std::string>* dbs) WARN_UNUSED_RESULT;
 
  private:
   common::Error CheckResultCommand(const std::string& cmd, const ::rocksdb::Status& err) WARN_UNUSED_RESULT;
@@ -75,6 +74,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   virtual common::Error DeleteImpl(const NKeys& keys, NKeys* deleted_keys) override;
   virtual common::Error RenameImpl(const NKey& key, string_key_t new_key) override;
   virtual common::Error QuitImpl() override;
+  virtual common::Error ConfigGetDatabasesImpl(std::vector<std::string>* dbs) override;
 };
 
 }  // namespace rocksdb

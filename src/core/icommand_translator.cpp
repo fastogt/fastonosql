@@ -56,6 +56,15 @@ ICommandTranslator::ICommandTranslator(const std::vector<CommandHolder>& command
 
 ICommandTranslator::~ICommandTranslator() {}
 
+common::Error ICommandTranslator::GetDatabasesCommand(command_buffer_t* cmdstring) const {
+  if (!cmdstring) {
+    return common::make_error_inval();
+  }
+
+  *cmdstring = DB_GET_DATABASES_COMMAND;
+  return common::Error();
+}
+
 common::Error ICommandTranslator::RemoveDBCommand(const std::string& name, command_buffer_t* cmdstring) const {
   if (!cmdstring) {
     return common::make_error_inval();

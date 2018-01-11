@@ -58,7 +58,7 @@ const ConstantCommandsArray g_commands = {CommandHolder(DB_HELP_COMMAND,
                                                         1,
                                                         CommandInfo::Native,
                                                         &CommandsApi::Info),
-                                          CommandHolder("CONFIG GET",
+                                          CommandHolder(DB_GET_CONFIG_COMMAND,
                                                         "<parameter>",
                                                         "Get the value of a configuration parameter",
                                                         UNDEFINED_SINCE,
@@ -498,62 +498,6 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
   return common::Error();
 }
 
-common::Error DBConnection::ConfigGetDatabases(std::vector<std::string>* dbs) {
-  if (!dbs) {
-    DNOTREACHED();
-    return common::make_error_inval();
-  }
-
-  common::Error err = TestIsAuthenticated();
-  if (err) {
-    return err;
-  }
-
-  MDB_dbi ldbi = 0;
-  {
-    MDB_txn* txn = NULL;
-    common::Error err =
-        CheckResultCommand("CONFIG GET DATABASES", mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn));
-    if (err) {
-      return err;
-    }
-
-    err = CheckResultCommand("CONFIG GET DATABASES", mdb_dbi_open(txn, NULL, 0, &ldbi));
-    mdb_txn_abort(txn);
-    if (err) {
-      return err;
-    }
-  }
-
-  MDB_cursor* cursor = NULL;
-  MDB_txn* txn_dbs = NULL;
-  err = CheckResultCommand("CONFIG GET DATABASES", mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn_dbs));
-  if (err) {
-    mdb_dbi_close(connection_.handle_->env, ldbi);
-    return err;
-  }
-
-  err = CheckResultCommand("CONFIG GET DATABASES", mdb_cursor_open(txn_dbs, ldbi, &cursor));
-  if (err) {
-    mdb_txn_abort(txn_dbs);
-    mdb_dbi_close(connection_.handle_->env, ldbi);
-    return err;
-  }
-
-  MDB_val key;
-  MDB_val data;
-  while ((mdb_cursor_get(cursor, &key, &data, MDB_NEXT) == LMDB_OK)) {
-    std::string skey(reinterpret_cast<const char*>(key.mv_data), key.mv_size);
-    // std::string sdata(reinterpret_cast<const char*>(data.mv_data), data.mv_size);
-    dbs->push_back(skey);
-  }
-
-  mdb_cursor_close(cursor);
-  mdb_txn_abort(txn_dbs);
-  mdb_dbi_close(connection_.handle_->env, ldbi);
-  return common::Error();
-}
-
 common::Error DBConnection::DropDatabase() {
   common::Error err = TestIsAuthenticated();
   if (err) {
@@ -904,6 +848,53 @@ common::Error DBConnection::QuitImpl() {
     return err;
   }
 
+  return common::Error();
+}
+
+common::Error DBConnection::ConfigGetDatabasesImpl(std::vector<std::string>* dbs) {
+  MDB_dbi ldbi = 0;
+  {
+    MDB_txn* txn = NULL;
+    common::Error err =
+        CheckResultCommand("CONFIG GET DATABASES", mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn));
+    if (err) {
+      return err;
+    }
+
+    err = CheckResultCommand("CONFIG GET DATABASES", mdb_dbi_open(txn, NULL, 0, &ldbi));
+    mdb_txn_abort(txn);
+    if (err) {
+      return err;
+    }
+  }
+
+  MDB_cursor* cursor = NULL;
+  MDB_txn* txn_dbs = NULL;
+  common::Error err =
+      CheckResultCommand("CONFIG GET DATABASES", mdb_txn_begin(connection_.handle_->env, NULL, MDB_RDONLY, &txn_dbs));
+  if (err) {
+    mdb_dbi_close(connection_.handle_->env, ldbi);
+    return err;
+  }
+
+  err = CheckResultCommand("CONFIG GET DATABASES", mdb_cursor_open(txn_dbs, ldbi, &cursor));
+  if (err) {
+    mdb_txn_abort(txn_dbs);
+    mdb_dbi_close(connection_.handle_->env, ldbi);
+    return err;
+  }
+
+  MDB_val key;
+  MDB_val data;
+  while ((mdb_cursor_get(cursor, &key, &data, MDB_NEXT) == LMDB_OK)) {
+    std::string skey(reinterpret_cast<const char*>(key.mv_data), key.mv_size);
+    // std::string sdata(reinterpret_cast<const char*>(data.mv_data), data.mv_size);
+    dbs->push_back(skey);
+  }
+
+  mdb_cursor_close(cursor);
+  mdb_txn_abort(txn_dbs);
+  mdb_dbi_close(connection_.handle_->env, ldbi);
   return common::Error();
 }
 

@@ -146,6 +146,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, RCon
   virtual common::Error ModuleLoadImpl(const ModuleInfo& module) override;
   virtual common::Error ModuleUnLoadImpl(const ModuleInfo& module) override;
   virtual common::Error QuitImpl() override;
+  virtual common::Error ConfigGetDatabasesImpl(std::vector<std::string>* dbs) override;
 
   common::Error SendSync(unsigned long long* payload) WARN_UNUSED_RESULT;
 

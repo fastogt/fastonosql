@@ -63,6 +63,15 @@ const ConstantCommandsArray g_commands = {CommandHolder(DB_HELP_COMMAND,
                                                         1,
                                                         CommandInfo::Native,
                                                         &CommandsApi::Info),
+                                          CommandHolder(DB_GET_CONFIG_COMMAND,
+                                                        "<parameter>",
+                                                        "Get the value of a configuration parameter",
+                                                        UNDEFINED_SINCE,
+                                                        UNDEFINED_EXAMPLE_STR,
+                                                        1,
+                                                        0,
+                                                        CommandInfo::Native,
+                                                        &CommandsApi::ConfigGet),
                                           CommandHolder(DB_SCAN_COMMAND,
                                                         "<cursor> [MATCH pattern] [COUNT count]",
                                                         "Incrementally iterate the keys space",
@@ -174,15 +183,6 @@ const ConstantCommandsArray g_commands = {CommandHolder(DB_HELP_COMMAND,
                                                         0,
                                                         CommandInfo::Native,
                                                         &CommandsApi::Quit),
-                                          CommandHolder("CONFIG GET",
-                                                        "<parameter>",
-                                                        "Get the value of a configuration parameter",
-                                                        UNDEFINED_SINCE,
-                                                        UNDEFINED_EXAMPLE_STR,
-                                                        1,
-                                                        0,
-                                                        CommandInfo::Native,
-                                                        &CommandsApi::ConfigGet),
                                           CommandHolder(DB_CREATEDB_COMMAND,
                                                         "<name>",
                                                         "Create database",
@@ -571,21 +571,6 @@ common::Error DBConnection::Merge(const std::string& key, const std::string& val
   return CheckResultCommand("MERGE", connection_.handle_->Merge(wo, key, value));
 }
 
-common::Error DBConnection::ConfigGetDatabases(std::vector<std::string>* dbs) {
-  if (!dbs) {
-    DNOTREACHED();
-    return common::make_error_inval();
-  }
-
-  common::Error err = TestIsAuthenticated();
-  if (err) {
-    return err;
-  }
-
-  *dbs = connection_.handle_->GetDatabasesNames();
-  return common::Error();
-}
-
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   ::rocksdb::WriteOptions wo;
   const string_key_t key_str = key.GetKeyData();
@@ -808,6 +793,11 @@ common::Error DBConnection::QuitImpl() {
     return err;
   }
 
+  return common::Error();
+}
+
+common::Error DBConnection::ConfigGetDatabasesImpl(std::vector<std::string>* dbs) {
+  *dbs = connection_.handle_->GetDatabasesNames();
   return common::Error();
 }
 

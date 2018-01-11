@@ -18,6 +18,8 @@
 
 #include "core/db/redis/internal/commands_api.h"
 
+#include <common/string_util.h>
+
 #include "core/db/redis/db_connection.h"
 #include "core/db/redis/internal/modules.h"
 
@@ -299,6 +301,21 @@ common::Error CommandsApi::Command(internal::CommandHandler* handler, commands_a
 }
 
 common::Error CommandsApi::ConfigGet(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  if (common::EqualsASCII(argv[0], "databases", false)) {
+    std::vector<std::string> dbs;
+    DBConnection* red = static_cast<DBConnection*>(handler);
+    common::Error err = red->ConfigGetDatabases(&dbs);
+    if (err) {
+      return err;
+    }
+
+    common::ArrayValue* arr = new common::ArrayValue;
+    arr->AppendStrings(dbs);
+    FastoObject* child = new FastoObject(out, arr, red->GetDelimiter());
+    out->AddChildren(child);
+    return common::Error();
+  }
+
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->CommonExec(ExpandCommand({"CONFIG", "GET"}, argv), out);
 }

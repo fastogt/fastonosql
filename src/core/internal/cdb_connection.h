@@ -73,6 +73,7 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>,
   common::Error Select(const std::string& name, IDataBaseInfo** info) WARN_UNUSED_RESULT;  // nvi
   common::Error CreateDB(const std::string& name) WARN_UNUSED_RESULT;                      // nvi
   common::Error RemoveDB(const std::string& name) WARN_UNUSED_RESULT;                      // nvi
+  common::Error ConfigGetDatabases(std::vector<std::string>* dbs) WARN_UNUSED_RESULT;      // nvi
   common::Error Delete(const NKeys& keys, NKeys* deleted_keys) WARN_UNUSED_RESULT;         // nvi
   common::Error Set(const NDbKValue& key, NDbKValue* added_key) WARN_UNUSED_RESULT;        // nvi
   common::Error Get(const NKey& key, NDbKValue* loaded_key) WARN_UNUSED_RESULT;            // nvi
@@ -107,6 +108,7 @@ class CDBConnection : public DBConnection<NConnection, Config, ContType>,
   virtual common::Error CreateDBImpl(const std::string& name, IDataBaseInfo** info);  // optional
   virtual common::Error RemoveDBImpl(const std::string& name, IDataBaseInfo** info);  // optional
 
+  virtual common::Error ConfigGetDatabasesImpl(std::vector<std::string>* dbs) = 0;
   virtual common::Error DeleteImpl(const NKeys& keys, NKeys* deleted_keys) = 0;
   virtual common::Error SetImpl(const NDbKValue& key, NDbKValue* added_key) = 0;
   virtual common::Error GetImpl(const NKey& key, NDbKValue* loaded_key) = 0;
@@ -316,6 +318,23 @@ common::Error CDBConnection<NConnection, Config, ContType>::RemoveDB(const std::
   }
 
   delete linfo;
+  return common::Error();
+}
+
+template <typename NConnection, typename Config, connectionTypes ContType>
+common::Error CDBConnection<NConnection, Config, ContType>::ConfigGetDatabases(std::vector<std::string>* dbs) {
+  common::Error err = CDBConnection<NConnection, Config, ContType>::TestIsAuthenticated();
+  if (err) {
+    return err;
+  }
+
+  std::vector<std::string> ldbs;
+  err = ConfigGetDatabasesImpl(&ldbs);
+  if (err) {
+    return err;
+  }
+
+  *dbs = ldbs;
   return common::Error();
 }
 

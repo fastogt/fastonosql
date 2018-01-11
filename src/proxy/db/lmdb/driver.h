@@ -56,6 +56,8 @@ class Driver : public IDriverLocal {
   virtual core::FastoObjectCommandIPtr CreateCommandFast(const core::command_buffer_t& input,
                                                          core::CmdLoggingType ct) override;
 
+  virtual core::IDataBaseInfoSPtr CreateDatabaseInfo(const std::string& name, bool is_default, size_t size) override;
+
   virtual common::Error SyncConnect() override WARN_UNUSED_RESULT;
   virtual common::Error SyncDisconnect() override WARN_UNUSED_RESULT;
 
@@ -66,7 +68,6 @@ class Driver : public IDriverLocal {
   virtual common::Error GetServerLoadedModules(std::vector<core::ModuleInfo>* modules) override;
   virtual common::Error GetCurrentDataBaseInfo(core::IDataBaseInfo** info) override;
 
-  virtual void HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) override;
   virtual void HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) override;
 
   virtual core::IServerInfoSPtr MakeServerInfoFromString(const std::string& val) override;

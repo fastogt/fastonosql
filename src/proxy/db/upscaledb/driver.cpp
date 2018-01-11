@@ -20,6 +20,7 @@
 
 #include <common/convert2string.h>
 
+#include "core/db/upscaledb/database_info.h"
 #include "core/db/upscaledb/db_connection.h"  // for DBConnection
 #include "core/value.h"
 
@@ -75,6 +76,10 @@ core::FastoObjectCommandIPtr Driver::CreateCommand(core::FastoObject* parent,
 
 core::FastoObjectCommandIPtr Driver::CreateCommandFast(const core::command_buffer_t& input, core::CmdLoggingType ct) {
   return proxy::CreateCommandFast<upscaledb::Command>(input, ct);
+}
+
+core::IDataBaseInfoSPtr Driver::CreateDatabaseInfo(const std::string& name, bool is_default, size_t size) {
+  return std::make_shared<core::upscaledb::DataBaseInfo>(name, is_default, size);
 }
 
 common::Error Driver::SyncConnect() {

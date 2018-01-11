@@ -38,25 +38,6 @@ common::Error CommandsApi::Info(internal::CommandHandler* handler, commands_args
   return common::Error();
 }
 
-common::Error CommandsApi::ConfigGet(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
-  DBConnection* mdb = static_cast<DBConnection*>(handler);
-  if (argv[0] != "databases") {
-    return common::make_error_inval();
-  }
-
-  std::vector<std::string> dbs;
-  common::Error err = mdb->ConfigGetDatabases(&dbs);
-  if (err) {
-    return err;
-  }
-
-  common::ArrayValue* arr = new common::ArrayValue;
-  arr->AppendStrings(dbs);
-  FastoObject* child = new FastoObject(out, arr, mdb->GetDelimiter());
-  out->AddChildren(child);
-  return common::Error();
-}
-
 common::Error CommandsApi::DropDatabase(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   UNUSED(argv);
   DBConnection* mdb = static_cast<DBConnection*>(handler);

@@ -74,25 +74,6 @@ common::Error CommandsApi::Merge(internal::CommandHandler* handler, commands_arg
   return common::Error();
 }
 
-common::Error CommandsApi::ConfigGet(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
-  DBConnection* rocks = static_cast<DBConnection*>(handler);
-  if (argv[0] != "databases") {
-    return common::make_error_inval();
-  }
-
-  std::vector<std::string> dbs;
-  common::Error err = rocks->ConfigGetDatabases(&dbs);
-  if (err) {
-    return err;
-  }
-
-  common::ArrayValue* arr = new common::ArrayValue;
-  arr->AppendStrings(dbs);
-  FastoObject* child = new FastoObject(out, arr, rocks->GetDelimiter());
-  out->AddChildren(child);
-  return common::Error();
-}
-
 }  // namespace rocksdb
 }  // namespace core
 }  // namespace fastonosql

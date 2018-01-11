@@ -57,6 +57,8 @@ class Driver : public IDriverRemote {
   virtual core::FastoObjectCommandIPtr CreateCommandFast(const core::command_buffer_t& input,
                                                          core::CmdLoggingType ct) override;
 
+  virtual core::IDataBaseInfoSPtr CreateDatabaseInfo(const std::string& name, bool is_default, size_t size) override;
+
   virtual common::Error SyncConnect() override WARN_UNUSED_RESULT;
   virtual common::Error SyncDisconnect() override WARN_UNUSED_RESULT;
 
@@ -67,7 +69,6 @@ class Driver : public IDriverRemote {
   virtual common::Error GetServerLoadedModules(std::vector<core::ModuleInfo>* modules) override;
   virtual common::Error GetCurrentDataBaseInfo(core::IDataBaseInfo** info) override;
 
-  virtual void HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) override;
   virtual void HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev) override;
   virtual void HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev) override;
   virtual void HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequestEvent* ev) override;

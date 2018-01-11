@@ -35,7 +35,6 @@
 #define REDIS_BACKUP_COMMAND "SAVE"
 #define REDIS_SET_PASSWORD_COMMAND "CONFIG SET requirepass"
 #define REDIS_SET_MAX_CONNECTIONS_COMMAND "CONFIG SET maxclients"
-#define REDIS_GET_DATABASES_COMMAND "CONFIG GET databases"
 #define REDIS_GET_PROPERTY_SERVER_COMMAND "CONFIG GET *"
 #define REDIS_PUBSUB_CHANNELS_COMMAND "PUBSUB CHANNELS"
 #define REDIS_PUBSUB_NUMSUB_COMMAND "PUBSUB NUMSUB"
@@ -129,6 +128,10 @@ core::FastoObjectCommandIPtr Driver::CreateCommand(core::FastoObject* parent,
 
 core::FastoObjectCommandIPtr Driver::CreateCommandFast(const core::command_buffer_t& input, core::CmdLoggingType ct) {
   return proxy::CreateCommandFast<Command>(input, ct);
+}
+
+core::IDataBaseInfoSPtr Driver::CreateDatabaseInfo(const std::string& name, bool is_default, size_t size) {
+  return std::make_shared<core::redis::DataBaseInfo>(name, is_default, size);
 }
 
 common::Error Driver::SyncConnect() {
@@ -298,62 +301,6 @@ void Driver::HandleRestoreEvent(events::RestoreRequestEvent* ev) {
   }
   NotifyProgress(sender, 75);
   Reply(sender, new events::RestoreResponceEvent(this, res));
-  NotifyProgress(sender, 100);
-}
-
-void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) {
-  QObject* sender = ev->sender();
-  NotifyProgress(sender, 0);
-  events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
-  core::FastoObjectCommandIPtr cmd = CreateCommandFast(REDIS_GET_DATABASES_COMMAND, core::C_INNER);
-  NotifyProgress(sender, 50);
-
-  core::IDataBaseInfo* info = nullptr;
-  common::Error err = GetCurrentDataBaseInfo(&info);
-  if (err) {
-    res.setErrorInfo(err);
-    NotifyProgress(sender, 75);
-    Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
-    NotifyProgress(sender, 100);
-    return;
-  }
-
-  err = Execute(cmd.get());
-  if (err) {
-    res.setErrorInfo(err);
-    NotifyProgress(sender, 75);
-    Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
-    NotifyProgress(sender, 100);
-    return;
-  }
-
-  core::FastoObject::childs_t rchildrens = cmd->GetChildrens();
-  CHECK_EQ(rchildrens.size(), 1);
-  core::FastoObject* array = rchildrens[0].get();
-  CHECK(array);
-  common::ArrayValue* ar = nullptr;
-  auto array_value = array->GetValue();
-  CHECK(array_value->GetAsList(&ar));
-
-  core::IDataBaseInfoSPtr curdb(info);
-  std::string scountDb;
-  if (ar->GetString(1, &scountDb)) {
-    size_t countDb;
-    if (common::ConvertFromString(scountDb, &countDb) && countDb > 0) {
-      for (size_t i = 0; i < countDb; ++i) {
-        core::IDataBaseInfoSPtr dbInf(new core::redis::DataBaseInfo(common::ConvertToString(i), false, 0));
-        if (dbInf->GetName() == curdb->GetName()) {
-          res.databases.push_back(curdb);
-        } else {
-          res.databases.push_back(dbInf);
-        }
-      }
-    }
-  } else {
-    res.databases.push_back(curdb);
-  }
-  NotifyProgress(sender, 75);
-  Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
   NotifyProgress(sender, 100);
 }
 

@@ -220,6 +220,15 @@ const ConstantCommandsArray g_commands = {CommandHolder(DB_HELP_COMMAND,
                                                         1,
                                                         CommandInfo::Native,
                                                         &CommandsApi::Info),
+                                          CommandHolder(DB_GET_CONFIG_COMMAND,
+                                                        "<parameter>",
+                                                        "Get the value of a configuration parameter",
+                                                        UNDEFINED_SINCE,
+                                                        UNDEFINED_EXAMPLE_STR,
+                                                        1,
+                                                        0,
+                                                        CommandInfo::Native,
+                                                        &CommandsApi::ConfigGet),
                                           CommandHolder("VERSION",
                                                         "-",
                                                         "Return the Memcached server version.",
@@ -981,6 +990,12 @@ common::Error DBConnection::QuitImpl() {
     return err;
   }
 
+  return common::Error();
+}
+
+common::Error DBConnection::ConfigGetDatabasesImpl(std::vector<std::string>* dbs) {
+  std::vector<std::string> ldbs = {GetCurrentDBName()};
+  *dbs = ldbs;
   return common::Error();
 }
 

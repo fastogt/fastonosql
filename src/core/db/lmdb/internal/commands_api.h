@@ -29,7 +29,6 @@ namespace lmdb {
 class DBConnection;
 struct CommandsApi : public internal::ApiTraits<DBConnection> {
   static common::Error Info(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
-  static common::Error ConfigGet(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error DropDatabase(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 };
 

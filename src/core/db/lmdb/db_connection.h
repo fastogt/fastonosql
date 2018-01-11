@@ -40,7 +40,6 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
 
   virtual std::string GetCurrentDBName() const override;
   common::Error Info(const std::string& args, ServerInfo::Stats* statsout) WARN_UNUSED_RESULT;
-  common::Error ConfigGetDatabases(std::vector<std::string>* dbs) WARN_UNUSED_RESULT;
   common::Error DropDatabase() WARN_UNUSED_RESULT;
 
  private:
@@ -69,6 +68,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   virtual common::Error DeleteImpl(const NKeys& keys, NKeys* deleted_keys) override;
   virtual common::Error RenameImpl(const NKey& key, string_key_t new_key) override;
   virtual common::Error QuitImpl() override;
+  virtual common::Error ConfigGetDatabasesImpl(std::vector<std::string>* dbs) override;
 };
 
 }  // namespace lmdb

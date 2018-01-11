@@ -138,6 +138,7 @@ class DBConnection : public core::internal::CDBConnection<NativeConnection, Conf
   common::Error GetInner(key_t key, std::string* ret_val) WARN_UNUSED_RESULT;
   common::Error DelInner(key_t key) WARN_UNUSED_RESULT;
 
+  virtual common::Error ConfigGetDatabasesImpl(std::vector<std::string>* dbs) override;
   virtual common::Error ScanImpl(uint64_t cursor_in,
                                  const std::string& pattern,
                                  uint64_t count_keys,

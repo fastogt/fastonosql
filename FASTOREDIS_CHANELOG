@@ -1,3 +1,7 @@
+1.14.1 /
+[Alexandr Topilski]
+- CONFIG GET databases different behavior than in Redis
+
 1.14.0 / January 10, 2018
 [Alexandr Topilski]
 - Save/Restore MainWindow position

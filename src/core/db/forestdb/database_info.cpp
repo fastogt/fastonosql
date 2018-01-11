@@ -22,8 +22,8 @@ namespace fastonosql {
 namespace core {
 namespace forestdb {
 
-DataBaseInfo::DataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_container_t& keys)
-    : IDataBaseInfo(name, isDefault, size, keys) {}
+DataBaseInfo::DataBaseInfo(const std::string& name, bool is_default, size_t size, const keys_container_t& keys)
+    : IDataBaseInfo(name, is_default, size, keys) {}
 
 DataBaseInfo* DataBaseInfo::Clone() const {
   return new DataBaseInfo(*this);

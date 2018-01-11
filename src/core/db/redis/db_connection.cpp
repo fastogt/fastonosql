@@ -471,7 +471,7 @@ const ConstantCommandsArray g_commands = {
                   CommandInfo::Native,
                   &CommandsApi::Command),
 
-    CommandHolder("CONFIG GET",
+    CommandHolder(DB_GET_CONFIG_COMMAND,
                   "<parameter>",
                   "Get the value of a configuration parameter",
                   PROJECT_VERSION_GENERATE(2, 0, 0),
@@ -4007,6 +4007,34 @@ common::Error DBConnection::QuitImpl() {
   freeReplyObject(reply);
   common::Error err = Disconnect();
   UNUSED(err);
+  return common::Error();
+}
+
+common::Error DBConnection::ConfigGetDatabasesImpl(std::vector<std::string>* dbs) {
+  redis_translator_t tran = GetSpecificTranslator<CommandTranslator>();
+  command_buffer_t get_dbs_cmd;
+  common::Error err = tran->GetDatabasesCommand(&get_dbs_cmd);
+  if (err) {
+    return err;
+  }
+
+  redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(connection_.handle_, DB_GET_DATABASES_COMMAND));
+  if (!reply) {
+    return PrintRedisContextError(connection_.handle_);
+  }
+
+  size_t count_dbs;
+  if (reply->type == REDIS_REPLY_ARRAY && reply->elements == 2 &&
+      common::ConvertFromString(std::string(reply->element[1]->str, reply->element[1]->len), &count_dbs)) {
+    for (size_t i = 0; i < count_dbs; ++i) {
+      dbs->push_back(common::ConvertToString(i));
+    }
+    freeReplyObject(reply);
+    return common::Error();
+  }
+
+  *dbs = {GetCurrentDBName()};
+  freeReplyObject(reply);
   return common::Error();
 }
 

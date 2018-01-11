@@ -66,7 +66,7 @@ const ConstantCommandsArray g_commands = {CommandHolder(DB_HELP_COMMAND,
                                                         1,
                                                         CommandInfo::Native,
                                                         &CommandsApi::Info),
-                                          CommandHolder("CONFIG GET",
+                                          CommandHolder(DB_GET_CONFIG_COMMAND,
                                                         "<parameter>",
                                                         "Get the value of a configuration parameter",
                                                         UNDEFINED_SINCE,
@@ -411,34 +411,6 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
   return common::Error();
 }
 
-common::Error DBConnection::ConfigGetDatabases(std::vector<std::string>* dbs) {
-  if (!dbs) {
-    DNOTREACHED();
-    return common::make_error_inval();
-  }
-
-  common::Error err = TestIsAuthenticated();
-  if (err) {
-    return err;
-  }
-
-  fdb_kvs_name_list forestdb_dbs;
-  err = CheckResultCommand("CONFIG GET DATABASES", fdb_get_kvs_name_list(connection_.handle_->handle, &forestdb_dbs));
-  if (err) {
-    return err;
-  }
-
-  for (size_t i = 0; i < forestdb_dbs.num_kvs_names; ++i) {
-    dbs->push_back(forestdb_dbs.kvs_names[i]);
-  }
-
-  err = CheckResultCommand("CONFIG GET DATABASES", fdb_free_kvs_name_list(&forestdb_dbs));
-  if (err) {
-    return err;
-  }
-  return common::Error();
-}
-
 common::Error DBConnection::SetInner(key_t key, const std::string& value) {
   const string_key_t key_slice = key.GetKeyData();
   return CheckResultCommand(DB_SET_KEY_COMMAND, fdb_set_kv(connection_.handle_->kvs, key_slice.data(), key_slice.size(),
@@ -715,6 +687,27 @@ common::Error DBConnection::QuitImpl() {
     return err;
   }
 
+  return common::Error();
+}
+
+common::Error DBConnection::ConfigGetDatabasesImpl(std::vector<std::string>* dbs) {
+  fdb_kvs_name_list forestdb_dbs;
+  common::Error err = CheckResultCommand("CONFIG GET DATABASES", fdb_get_kvs_name_list(connection_.handle_->handle, &forestdb_dbs));
+  if (err) {
+    return err;
+  }
+
+  std::vector<std::string> ldbs;
+  for (size_t i = 0; i < forestdb_dbs.num_kvs_names; ++i) {
+    ldbs.push_back(forestdb_dbs.kvs_names[i]);
+  }
+
+  err = CheckResultCommand("CONFIG GET DATABASES", fdb_free_kvs_name_list(&forestdb_dbs));
+  if (err) {
+    return err;
+  }
+
+  *dbs = ldbs;
   return common::Error();
 }
 

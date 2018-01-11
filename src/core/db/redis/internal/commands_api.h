@@ -69,7 +69,10 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
   static common::Error CommandGetKeys(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error CommandInfo(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error Command(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
-  static common::Error ConfigGet(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ConfigGet(
+      internal::CommandHandler* handler,
+      commands_args_t argv,
+      FastoObject* out);  // CONFIG GET works differently than in redis protocol (only databases)
   static common::Error ConfigResetStat(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error ConfigRewrite(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error ConfigSet(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);

@@ -29,8 +29,6 @@
 #include "proxy/db/rocksdb/command.h"              // for Command
 #include "proxy/db/rocksdb/connection_settings.h"  // for ConnectionSettings
 
-#define ROCKSDB_GET_DATABASES_COMMAND "CONFIG GET databases"
-
 namespace fastonosql {
 namespace proxy {
 namespace rocksdb {
@@ -78,6 +76,10 @@ core::FastoObjectCommandIPtr Driver::CreateCommand(core::FastoObject* parent,
 
 core::FastoObjectCommandIPtr Driver::CreateCommandFast(const core::command_buffer_t& input, core::CmdLoggingType ct) {
   return proxy::CreateCommandFast<rocksdb::Command>(input, ct);
+}
+
+core::IDataBaseInfoSPtr Driver::CreateDatabaseInfo(const std::string& name, bool is_default, size_t size) {
+  return std::make_shared<core::rocksdb::DataBaseInfo>(name, is_default, size);
 }
 
 common::Error Driver::SyncConnect() {
@@ -128,58 +130,6 @@ common::Error Driver::GetCurrentDataBaseInfo(core::IDataBaseInfo** info) {
   }
 
   return impl_->Select(impl_->GetCurrentDBName(), info);
-}
-
-void Driver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) {
-  QObject* sender = ev->sender();
-  NotifyProgress(sender, 0);
-  events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
-  core::FastoObjectCommandIPtr cmd = CreateCommandFast(ROCKSDB_GET_DATABASES_COMMAND, core::C_INNER);
-  NotifyProgress(sender, 50);
-
-  core::IDataBaseInfo* info = nullptr;
-  common::Error err = GetCurrentDataBaseInfo(&info);
-  if (err) {
-    res.setErrorInfo(err);
-    NotifyProgress(sender, 75);
-    Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
-    NotifyProgress(sender, 100);
-    return;
-  }
-
-  err = Execute(cmd.get());
-  if (err) {
-    res.setErrorInfo(err);
-    NotifyProgress(sender, 75);
-    Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
-    NotifyProgress(sender, 100);
-    return;
-  }
-
-  core::FastoObject::childs_t rchildrens = cmd->GetChildrens();
-  CHECK_EQ(rchildrens.size(), 1);
-  auto ar = std::static_pointer_cast<common::ArrayValue>(rchildrens[0]->GetValue());
-  CHECK(ar);
-
-  core::IDataBaseInfoSPtr curdb(info);
-  if (!ar->IsEmpty()) {
-    for (size_t i = 0; i < ar->GetSize(); ++i) {
-      std::string name;
-      if (ar->GetString(i, &name)) {
-        core::IDataBaseInfoSPtr dbInf(new core::rocksdb::DataBaseInfo(name, false, 0));
-        if (dbInf->GetName() == curdb->GetName()) {
-          res.databases.push_back(curdb);
-        } else {
-          res.databases.push_back(dbInf);
-        }
-      }
-    }
-  } else {
-    res.databases.push_back(curdb);
-  }
-  NotifyProgress(sender, 75);
-  Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
-  NotifyProgress(sender, 100);
 }
 
 void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {
