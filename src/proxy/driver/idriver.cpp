@@ -136,6 +136,10 @@ void IDriver::Reply(QObject* reciver, QEvent* ev) {
   qApp->postEvent(reciver, ev);
 }
 
+void IDriver::PrepareSettings() {
+  settings_->PrepareInGuiIfNeeded();
+}
+
 core::connectionTypes IDriver::GetType() const {
   return settings_->GetType();
 }

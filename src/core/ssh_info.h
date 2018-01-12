@@ -42,7 +42,7 @@ inline bool operator!=(const PublicPrivate& r, const PublicPrivate& l) {
 }
 
 struct SSHInfo {
-  enum SupportedAuthenticationMetods { UNKNOWN = 0, PASSWORD = 1, PUBLICKEY = 2 };
+  enum SupportedAuthenticationMethods { UNKNOWN = 0, ASK_PASSWORD = 1, PASSWORD = 2, PUBLICKEY = 3 };
 
   SSHInfo();
   SSHInfo(const common::net::HostAndPort& host,
@@ -52,24 +52,35 @@ struct SSHInfo {
           const std::string& private_key,
           bool use_public_key,
           const std::string& passphrase,
-          SupportedAuthenticationMetods method);
+          SupportedAuthenticationMethods method);
 
   explicit SSHInfo(const std::string& text);
 
+  std::string ToString() const;
+
   bool IsValid() const;
-  SupportedAuthenticationMetods GetAuthMethod() const;
+  SupportedAuthenticationMethods GetAuthMethod() const;
 
   common::net::HostAndPort host;
   std::string user_name;
-  std::string password;
   std::string passphrase;
   PublicPrivate key;
-  SupportedAuthenticationMetods current_method;
+  SupportedAuthenticationMethods current_method;
+
+  std::string GetRuntimePassword() const;
+  void SetPassword(const std::string& password);
+
+  bool Equals(const SSHInfo& other) const;
+
+ private:
+  std::string GetPassword() const;
+
+  std::string password_;
+  std::string runtime_password_;
 };
 
 inline bool operator==(const SSHInfo& r, const SSHInfo& l) {
-  return r.host == l.host && r.password == l.password && r.passphrase == l.passphrase && r.user_name == l.user_name &&
-         r.current_method == l.current_method && r.key == l.key;
+  return r.Equals(l);
 }
 
 inline bool operator!=(const SSHInfo& r, const SSHInfo& l) {
@@ -81,10 +92,7 @@ inline bool operator!=(const SSHInfo& r, const SSHInfo& l) {
 
 namespace common {
 
-std::string ConvertToString(const fastonosql::core::SSHInfo& ssh_info);
-bool ConvertFromString(const std::string& from, fastonosql::core::SSHInfo* out);
-
-std::string ConvertToString(fastonosql::core::SSHInfo::SupportedAuthenticationMetods method);
-bool ConvertFromString(const std::string& from, fastonosql::core::SSHInfo::SupportedAuthenticationMetods* out);
+std::string ConvertToString(fastonosql::core::SSHInfo::SupportedAuthenticationMethods method);
+bool ConvertFromString(const std::string& from, fastonosql::core::SSHInfo::SupportedAuthenticationMethods* out);
 
 }  // namespace common

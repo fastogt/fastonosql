@@ -223,5 +223,7 @@ std::string IConnectionSettingsBase::ToString() const {
   return IConnectionSettings::ToString() + setting_value_delemitr + GetCommandLine();
 }
 
+void IConnectionSettingsBase::PrepareInGuiIfNeeded() {}
+
 }  // namespace proxy
 }  // namespace fastonosql

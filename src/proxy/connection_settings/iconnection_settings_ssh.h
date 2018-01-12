@@ -40,6 +40,8 @@ class IConnectionSettingsRemoteSSH : public IConnectionSettingsRemote {
 
   virtual std::string ToString() const override;
 
+  virtual void PrepareInGuiIfNeeded() override;
+
  protected:
   IConnectionSettingsRemoteSSH(const connection_path_t& connectionName, core::connectionTypes type);
 

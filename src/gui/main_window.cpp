@@ -22,6 +22,7 @@
 #include <QDesktopServices>
 #include <QDockWidget>
 #include <QFileDialog>
+#include <QInputDialog>
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QThread>
@@ -45,6 +46,7 @@
 #include <common/qt/translations/translations.h>  // for applyLanguage
 
 #include "core/logger.h"
+#include "core/ssh_info.h"
 
 #include "proxy/cluster/icluster.h"        // for ICluster
 #include "proxy/command/command_logger.h"  // for CommandLogger

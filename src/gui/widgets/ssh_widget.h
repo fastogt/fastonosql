@@ -51,10 +51,10 @@ class SSHWidget : public QWidget {
   core::SSHInfo info() const;
   void setInfo(const core::SSHInfo& info);
 
-  core::SSHInfo::SupportedAuthenticationMetods selectedAuthMethod() const;
+  core::SSHInfo::SupportedAuthenticationMethods selectedAuthMethod() const;
 
  private Q_SLOTS:
-  void securityChange(const QString& text);
+  void securityChange(int index);
   void sshSupportStateChange(int value);
   void publicKeyStateChange(int value);
   void togglePasswordEchoMode();

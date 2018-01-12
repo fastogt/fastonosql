@@ -44,6 +44,12 @@ const QString trPublicKey = QObject::tr("Public key:");
 }  // namespace
 
 namespace fastonosql {
+namespace {
+core::SSHInfo::SupportedAuthenticationMethods ConvertIndexToSSHMethod(int index) {
+  CHECK(index != -1) << "Impossible to select nothing in combobox.";
+  return static_cast<core::SSHInfo::SupportedAuthenticationMethods>(index + 1);  // because 0 -> UNKNOWN
+}
+}  // namespace
 namespace gui {
 
 SSHWidget::SSHWidget(QWidget* parent) : QWidget(parent) {
@@ -71,9 +77,11 @@ SSHWidget::SSHWidget(QWidget* parent) : QWidget(parent) {
   sshAuthMethodLabel_ = new QLabel;
 
   security_ = new QComboBox;
-  security_->addItems(QStringList() << translations::trPassword << translations::trPublicPrivateKey);
+  security_->addItem(translations::trAskPassword, core::SSHInfo::ASK_PASSWORD);
+  security_->addItem(translations::trPassword, core::SSHInfo::PASSWORD);
+  security_->addItem(translations::trPublicPrivateKey, core::SSHInfo::PUBLICKEY);
 
-  typedef void (QComboBox::*ind)(const QString&);
+  typedef void (QComboBox::*ind)(int index);
   VERIFY(connect(security_, static_cast<ind>(&QComboBox::currentIndexChanged), this, &SSHWidget::securityChange));
 
   passwordBox_ = new QLineEdit;
@@ -137,7 +145,7 @@ SSHWidget::SSHWidget(QWidget* parent) : QWidget(parent) {
 
   // sync controls
   useSshWidget_->setEnabled(false);
-  securityChange(security_->currentText());
+  securityChange(security_->currentIndex());
   publicKeyStateChange(0);
   retranslateUi();
 }
@@ -161,13 +169,13 @@ void SSHWidget::setSSHEnabled(bool enabled) {
 core::SSHInfo SSHWidget::info() const {
   core::SSHInfo info;
   info.host = sshhost_widget_->host();
+  info.current_method = selectedAuthMethod();  // should be first, setpassword dep on it
   info.user_name = common::ConvertToString(userName_->text());
-  info.password = common::ConvertToString(passwordBox_->text());
+  info.SetPassword(common::ConvertToString(passwordBox_->text()));
   info.key.public_key = common::ConvertToString(publicKeyWidget_->path());
   info.key.private_key = common::ConvertToString(privateKeyWidget_->path());
   info.key.use_public_key = use_public_key_->isChecked();
   info.passphrase = common::ConvertToString(passphraseBox_->text());
-  info.current_method = selectedAuthMethod();
 
   return info;
 }
@@ -180,14 +188,13 @@ void SSHWidget::setInfo(const core::SSHInfo& info) {
   QString quser_name;
   common::ConvertFromString(info.user_name, &quser_name);
   userName_->setText(quser_name);
-  if (info.GetAuthMethod() == core::SSHInfo::PUBLICKEY) {
-    security_->setCurrentText(translations::trPublicPrivateKey);
-  } else {
-    security_->setCurrentText(translations::trPassword);
+  core::SSHInfo::SupportedAuthenticationMethods method = info.GetAuthMethod();
+  if (method != core::SSHInfo::UNKNOWN) {
+    security_->setCurrentIndex(method - 1);  //
   }
 
   QString qpassword;
-  common::ConvertFromString(info.password, &qpassword);
+  common::ConvertFromString(info.GetRuntimePassword(), &qpassword);
   passwordBox_->setText(qpassword);
 
   QString qprivate_key;
@@ -205,26 +212,31 @@ void SSHWidget::setInfo(const core::SSHInfo& info) {
   passphraseBox_->setText(qpassphrase);
 }
 
-core::SSHInfo::SupportedAuthenticationMetods SSHWidget::selectedAuthMethod() const {
-  if (security_->currentText() == translations::trPublicPrivateKey) {
-    return core::SSHInfo::PUBLICKEY;
-  }
-
-  return core::SSHInfo::PASSWORD;
+core::SSHInfo::SupportedAuthenticationMethods SSHWidget::selectedAuthMethod() const {
+  int index = security_->currentIndex();
+  return ConvertIndexToSSHMethod(index);
 }
 
-void SSHWidget::securityChange(const QString& text) {
-  bool isKey = text == translations::trPublicPrivateKey;
-  privateKeyWidget_->setVisible(isKey);
-  use_public_key_->setVisible(isKey);
-  publicKeyWidget_->setVisible(isKey);
-  sshPassphraseLabel_->setVisible(isKey);
-  passphraseBox_->setVisible(isKey);
-  passphraseEchoModeButton_->setVisible(isKey);
+void SSHWidget::securityChange(int index) {
+  core::SSHInfo::SupportedAuthenticationMethods method = ConvertIndexToSSHMethod(index);
+  bool is_public_key = method == core::SSHInfo::PUBLICKEY;
+  privateKeyWidget_->setVisible(is_public_key);
+  use_public_key_->setVisible(is_public_key);
+  publicKeyWidget_->setVisible(is_public_key);
+  sshPassphraseLabel_->setVisible(is_public_key);
+  passphraseBox_->setVisible(is_public_key);
+  passphraseEchoModeButton_->setVisible(is_public_key);
 
-  passwordBox_->setVisible(!isKey);
-  passwordLabel_->setVisible(!isKey);
-  passwordEchoModeButton_->setVisible(!isKey);
+  passwordBox_->setVisible(!is_public_key);
+  passwordLabel_->setVisible(!is_public_key);
+  passwordEchoModeButton_->setVisible(!is_public_key);
+
+  if (method == core::SSHInfo::ASK_PASSWORD) {
+    passwordBox_->clear();
+  }
+  // enabled onli if password
+  passwordEchoModeButton_->setEnabled(method == core::SSHInfo::PASSWORD);
+  passwordBox_->setEnabled(method == core::SSHInfo::PASSWORD);
 }
 
 void SSHWidget::sshSupportStateChange(int value) {

@@ -743,15 +743,6 @@ int redisReconnect(redisContext *c) {
  * context will be set to the return value of the error function.
  * When no set of reply functions is given, the default set will be used. */
 #ifdef FASTO
-static void kbd_callback(const char *name, int name_len,
-const char *instruction, int instruction_len,
-int num_prompts,
-const LIBSSH2_USERAUTH_KBDINT_PROMPT *prompts,
-LIBSSH2_USERAUTH_KBDINT_RESPONSE *responses,
-void **abstract)
-{
-}
-
 redisContext *redisConnect(const char *ip, int port, const char *ssh_address, int ssh_port, const char *username, const char *password,
                            const char *public_key, const char *private_key, const char *passphrase, int is_ssl, int method) {
 
@@ -855,34 +846,27 @@ redisContext *redisConnect(const char *ip, int port, const char *ssh_address, in
       return c;
     }
 
-    int auth_pw = 0;
+    int auth_pw = SSH_UNKNOWN;
     libssh2_hostkey_hash(session, LIBSSH2_HOSTKEY_HASH_SHA1);
     char *userauthlist = libssh2_userauth_list(session, username, strlen(username));
     if (strstr(userauthlist, "password") != NULL) {
-      auth_pw |= 1;
+      auth_pw |= SSH_PASSWORD;
     }
     if (strstr(userauthlist, "keyboard-interactive") != NULL) {
-      auth_pw |= 2;
+      auth_pw |= SSH_INTERACTIVE;
     }
     if (strstr(userauthlist, "publickey") != NULL) {
-      auth_pw |= 4;
+      auth_pw |= SSH_PUBLICKEY;
     }
 
-    if (auth_pw & 1 && method == SSH_PASSWORD) {
+    if (auth_pw & SSH_PASSWORD && method == SSH_PASSWORD) {
       /* We could authenticate via password */
       if (libssh2_userauth_password(session, username, password)) {
         libssh2_session_free(session);
         __redisSetError(c, REDIS_ERR_OTHER, "Authentication by password failed!");
         return c;
       }
-    } else if (auth_pw & 2) {
-      /* Or via keyboard-interactive */
-      if (libssh2_userauth_keyboard_interactive(session, username, &kbd_callback) ) {
-        libssh2_session_free(session);
-        __redisSetError(c, REDIS_ERR_OTHER, "Authentication by keyboard-interactive failed!");
-        return c;
-      }
-    } else if (auth_pw & 4 && method == SSH_PUBLICKEY) {
+    } else if (auth_pw & SSH_PUBLICKEY && method == SSH_PUBLICKEY) {
       /* Or by public key */
       if (libssh2_userauth_publickey_fromfile(session, username, public_key, private_key, passphrase)){
         libssh2_session_free(session);
@@ -890,8 +874,8 @@ redisContext *redisConnect(const char *ip, int port, const char *ssh_address, in
         return c;
       }
     } else {
-      __redisSetError(c, REDIS_ERR_OTHER, "No supported authentication methods found!");
       libssh2_session_free(session);
+      __redisSetError(c, REDIS_ERR_OTHER, "No supported authentication methods found!");
       return c;
     }
   }

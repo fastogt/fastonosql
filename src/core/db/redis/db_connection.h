@@ -39,8 +39,7 @@ namespace redis {
 
 typedef redisContext NativeConnection;
 struct RConfig : public Config {
-  explicit RConfig(const Config& config, const SSHInfo& sinfo);
-  RConfig();
+  RConfig(const Config& config, const SSHInfo& sinfo);
 
   SSHInfo ssh_info;
 };

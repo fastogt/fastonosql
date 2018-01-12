@@ -80,7 +80,7 @@
 namespace fastonosql {
 namespace proxy {
 
-ServersManager::ServersManager() {}
+ServersManager::ServersManager() : servers_() {}
 
 ServersManager::server_t ServersManager::CreateServer(IConnectionSettingsBaseSPtr settings) {
   if (!settings) {

@@ -3237,9 +3237,9 @@ common::Error AuthContext(redisContext* context, const std::string& auth_str) {
 
 }  // namespace
 
-RConfig::RConfig(const Config& config, const SSHInfo& sinfo) : Config(config), ssh_info(sinfo) {}
-
-RConfig::RConfig() : Config(), ssh_info() {}
+RConfig::RConfig(const Config& config, const SSHInfo& sinfo)
+    : Config(config), ssh_info(sinfo) {
+}
 
 common::Error CreateConnection(const RConfig& config, NativeConnection** context) {
   if (!context) {
@@ -3259,17 +3259,19 @@ common::Error CreateConnection(const RConfig& config, NativeConnection** context
     bool is_ssl = config.is_ssl;
     uint16_t port = config.host.GetPort();
     const char* username = sinfo.user_name.empty() ? NULL : sinfo.user_name.c_str();
-    const char* password = sinfo.password.empty() ? NULL : sinfo.password.c_str();
+    std::string runtime_password = sinfo.GetRuntimePassword();
+    const char* password = runtime_password.empty() ? NULL : runtime_password.c_str();
     common::net::HostAndPort ssh_host = sinfo.host;
     std::string ssh_host_str = ssh_host.GetHost();
     const char* ssh_address = ssh_host_str.empty() ? NULL : ssh_host_str.c_str();
     int ssh_port = ssh_host.GetPort();
-    SSHInfo::SupportedAuthenticationMetods ssh_method = sinfo.current_method;
+    SSHInfo::SupportedAuthenticationMethods ssh_method = sinfo.current_method;
     PublicPrivate key = sinfo.key;
     const char* public_key = key.public_key.empty() ? NULL : key.public_key.c_str();
     const char* private_key = key.private_key.empty() ? NULL : key.private_key.c_str();
     bool use_public_key = key.use_public_key;
     const char* passphrase = sinfo.passphrase.empty() ? NULL : sinfo.passphrase.c_str();
+    int rssh_method = SSH_UNKNOWN;
     if (ssh_method == SSHInfo::PUBLICKEY) {
       if (!private_key || !common::file_system::is_file_exist(private_key)) {
         return common::make_error(common::MemSPrintf("Invalid input private_key path: (%s).", private_key));
@@ -3280,9 +3282,14 @@ common::Error CreateConnection(const RConfig& config, NativeConnection** context
           return common::make_error(common::MemSPrintf("Invalid input public_key path: (%s).", public_key));
         }
       }
+      rssh_method = SSH_PUBLICKEY;
+    } else if (ssh_method == SSHInfo::ASK_PASSWORD) {
+      rssh_method = SSH_PASSWORD;
+    } else if (ssh_method == SSHInfo::PASSWORD) {
+      rssh_method = SSH_PASSWORD;
     }
     lcontext = redisConnect(host, port, ssh_address, ssh_port, username, password, public_key, private_key, passphrase,
-                            is_ssl, ssh_method);
+                            is_ssl, rssh_method);
   }
 
   if (!lcontext) {

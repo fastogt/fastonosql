@@ -109,6 +109,8 @@ class IConnectionSettingsBase : public IConnectionSettings {
   virtual std::string ToString() const override;
   virtual IConnectionSettingsBase* Clone() const override = 0;
 
+  virtual void PrepareInGuiIfNeeded();
+
  protected:
   IConnectionSettingsBase(const connection_path_t& connectionPath, core::connectionTypes type);
 

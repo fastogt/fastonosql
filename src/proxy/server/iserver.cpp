@@ -155,6 +155,7 @@ proxy::IServer::database_t IServer::FindDatabase(core::IDataBaseInfoSPtr inf) co
 
 void IServer::Connect(const events_info::ConnectInfoRequest& req) {
   emit ConnectStarted(req);
+  drv_->PrepareSettings();
   QEvent* ev = new events::ConnectRequestEvent(this, req);
   NotifyStartEvent(ev);
 }

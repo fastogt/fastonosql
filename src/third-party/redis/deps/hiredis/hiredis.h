@@ -112,7 +112,8 @@
 #ifdef FASTO
 #define SSH_UNKNOWN 0
 #define SSH_PASSWORD 1
-#define SSH_PUBLICKEY 2
+#define SSH_INTERACTIVE 2
+#define SSH_PUBLICKEY 4
 #endif
 
 #ifdef __cplusplus

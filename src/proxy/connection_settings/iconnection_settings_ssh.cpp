@@ -18,6 +18,16 @@
 
 #include "proxy/connection_settings/iconnection_settings_ssh.h"
 
+#include <common/qt/convert2string.h>
+
+#include <QInputDialog>
+
+#include "translations/global.h"
+
+namespace {
+const QString trInputSSHPasswordForServer_1S = QObject::tr("SSH passoword for server: %1");
+}
+
 namespace fastonosql {
 namespace proxy {
 
@@ -26,7 +36,7 @@ IConnectionSettingsRemoteSSH::IConnectionSettingsRemoteSSH(const connection_path
     : IConnectionSettingsRemote(connectionName, type), ssh_info_() {}
 
 std::string IConnectionSettingsRemoteSSH::ToString() const {
-  return IConnectionSettingsBase::ToString() + setting_value_delemitr + common::ConvertToString(ssh_info_);
+  return IConnectionSettingsBase::ToString() + setting_value_delemitr + ssh_info_.ToString();
 }
 
 core::SSHInfo IConnectionSettingsRemoteSSH::GetSSHInfo() const {
@@ -35,6 +45,22 @@ core::SSHInfo IConnectionSettingsRemoteSSH::GetSSHInfo() const {
 
 void IConnectionSettingsRemoteSSH::SetSSHInfo(const struct core::SSHInfo& info) {
   ssh_info_ = info;
+}
+
+void IConnectionSettingsRemoteSSH::PrepareInGuiIfNeeded() {
+  if (ssh_info_.current_method != core::SSHInfo::ASK_PASSWORD) {
+    return;
+  }
+
+  QString qserver_name;
+  common::ConvertFromString(ssh_info_.host.GetHost(), &qserver_name);
+  bool ok;
+  QString publish_text = QInputDialog::getText(nullptr, trInputSSHPasswordForServer_1S.arg(qserver_name),
+                                               fastonosql::translations::trPassword + ":", QLineEdit::Password,
+                                               QString(), &ok, Qt::WindowCloseButtonHint);
+  if (ok) {
+    ssh_info_.SetPassword(common::ConvertToString(publish_text));
+  }
 }
 
 }  // namespace proxy
