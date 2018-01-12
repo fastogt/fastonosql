@@ -706,8 +706,9 @@ IF(BUILD_WITH_LEVELDB)
     ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/db_connection.h
     ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/database_info.h
     ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/comparators/indexed_db.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/comparators/constants.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/comparators/utils.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/comparators/indexed_db/indexed_db_leveldb_coding.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/comparators/indexed_db/indexed_db_key.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/comparators/indexed_db/WebIDBTypes.h
   )
   SET(SOURCES_CORE_DB_LEVELDB
     ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/internal/commands_api.cpp
@@ -718,7 +719,8 @@ IF(BUILD_WITH_LEVELDB)
     ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/db_connection.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/database_info.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/comparators/indexed_db.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/comparators/utils.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/comparators/indexed_db/indexed_db_leveldb_coding.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/comparators/indexed_db/indexed_db_key.cpp
   )
 
   #proxy
