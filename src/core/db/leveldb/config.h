@@ -27,11 +27,15 @@ namespace leveldb {
 enum ComparatorType { COMP_BYTEWISE = 0, COMP_INDEXED_DB };
 extern const std::vector<const char*> g_comparator_types;
 
+enum CompressionType { kNoCompression, kSnappyCompression };
+extern const std::vector<const char*> g_compression_types;
+
 struct Config : public LocalConfig {
   Config();
 
   bool create_if_missing;
   ComparatorType comparator;
+  CompressionType compression;
 };
 
 }  // namespace leveldb
@@ -44,4 +48,7 @@ bool ConvertFromString(const std::string& from, fastonosql::core::leveldb::Confi
 
 std::string ConvertToString(fastonosql::core::leveldb::ComparatorType comp);
 bool ConvertFromString(const std::string& from, fastonosql::core::leveldb::ComparatorType* out);
+
+std::string ConvertToString(fastonosql::core::leveldb::CompressionType comp);
+bool ConvertFromString(const std::string& from, fastonosql::core::leveldb::CompressionType* out);
 }  // namespace common

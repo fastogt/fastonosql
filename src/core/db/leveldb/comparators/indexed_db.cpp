@@ -35,7 +35,7 @@ namespace comparator {
 int IndexedDB::Compare(const ::leveldb::Slice& a, const ::leveldb::Slice& b) const {
   common::StringPiece sa(a.data(), a.size());
   common::StringPiece sb(b.data(), b.size());
-  return fastonosql::core::leveldb::comparator::Compare(sa, sb, false /*index_keys*/);
+  return indexed_db::Compare(sa, sb, false /*index_keys*/);
 }
 
 const char* IndexedDB::Name() const {

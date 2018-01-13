@@ -39,6 +39,8 @@ class ConnectionWidget : public ConnectionLocalWidgetDirectoryPath {
   QCheckBox* create_db_if_missing_;
   QLabel* comparator_label_;
   QComboBox* type_comparators_;
+  QLabel* compressionLabel_;
+  QComboBox* typeCompressions_;
 };
 
 }  // namespace rocksdb

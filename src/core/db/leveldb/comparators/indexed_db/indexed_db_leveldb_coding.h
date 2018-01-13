@@ -28,6 +28,7 @@ namespace fastonosql {
 namespace core {
 namespace leveldb {
 namespace comparator {
+namespace indexed_db {
 
 extern const unsigned char kMinimumIndexId;
 std::string MaxIDBKey();
@@ -375,6 +376,7 @@ class IndexDataKey {
   DISALLOW_COPY_AND_ASSIGN(IndexDataKey);
 };
 
+}  // namespace indexed_db
 }  // namespace comparator
 }  // namespace leveldb
 }  // namespace core

@@ -228,6 +228,11 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   } else if (config.comparator == COMP_INDEXED_DB) {
     lv.comparator = new comparator::IndexedDB;
   }
+  if (config.compression == kNoCompression) {
+    lv.compression = ::leveldb::kNoCompression;
+  } else if (config.compression == kSnappyCompression) {
+    lv.compression = ::leveldb::kSnappyCompression;
+  }
   auto st = ::leveldb::DB::Open(lv, folder, &lcontext);
   if (!st.ok()) {
     std::string buff = common::MemSPrintf("Fail connect to server: %s!", st.ToString());

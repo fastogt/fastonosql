@@ -406,6 +406,24 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
     rs.comparator = ::rocksdb::ReverseBytewiseComparator();
   }
 
+  if (config.compression == kNoCompression) {
+    rs.compression = ::rocksdb::kNoCompression;
+  } else if (config.compression == kSnappyCompression) {
+    rs.compression = ::rocksdb::kSnappyCompression;
+  } else if (config.compression == kZlibCompression) {
+    rs.compression = ::rocksdb::kZlibCompression;
+  } else if (config.compression == kBZip2Compression) {
+    rs.compression = ::rocksdb::kBZip2Compression;
+  } else if (config.compression == kLZ4Compression) {
+    rs.compression = ::rocksdb::kLZ4Compression;
+  } else if (config.compression == kLZ4HCCompression) {
+    rs.compression = ::rocksdb::kLZ4HCCompression;
+  } else if (config.compression == kXpressCompression) {
+    rs.compression = ::rocksdb::kXpressCompression;
+  } else if (config.compression == kZSTD) {
+    rs.compression = ::rocksdb::kZSTD;
+  }
+
   std::vector<std::string> column_families_str;
   auto st = ::rocksdb::DB::ListColumnFamilies(rs, folder, &column_families_str);
   if (!st.ok()) {

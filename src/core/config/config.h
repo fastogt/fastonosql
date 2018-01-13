@@ -22,6 +22,8 @@
 
 #include <common/net/types.h>
 
+#define ARGS_FROM_FIELD(x) "-" x
+
 namespace fastonosql {
 namespace core {
 

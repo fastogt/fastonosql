@@ -25,6 +25,7 @@
 namespace {
 const QString trCreateDBIfMissing = QObject::tr("Create database");
 const QString trComparator = QObject::tr("Comparator");
+const QString trCompression = QObject::tr("Compression");
 }  // namespace
 
 namespace fastonosql {

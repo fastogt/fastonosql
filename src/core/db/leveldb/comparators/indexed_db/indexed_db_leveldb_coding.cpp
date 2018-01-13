@@ -27,8 +27,11 @@ std::unique_ptr<T> make_unique(Args&&... args) {
 #include "content/common/indexed_db/indexed_db_key_path.h"*/
 // See leveldb_coding_scheme.md for detailed documentation of the coding
 // scheme implemented here.
-using common::StringPiece;
+using blink::WebIDBKeyPathType;
 using blink::WebIDBKeyType;
+using blink::kWebIDBKeyPathTypeArray;
+using blink::kWebIDBKeyPathTypeNull;
+using blink::kWebIDBKeyPathTypeString;
 using blink::kWebIDBKeyTypeArray;
 using blink::kWebIDBKeyTypeBinary;
 using blink::kWebIDBKeyTypeDate;
@@ -37,14 +40,12 @@ using blink::kWebIDBKeyTypeMin;
 using blink::kWebIDBKeyTypeNull;
 using blink::kWebIDBKeyTypeNumber;
 using blink::kWebIDBKeyTypeString;
-using blink::WebIDBKeyPathType;
-using blink::kWebIDBKeyPathTypeArray;
-using blink::kWebIDBKeyPathTypeNull;
-using blink::kWebIDBKeyPathTypeString;
+using common::StringPiece;
 namespace fastonosql {
 namespace core {
 namespace leveldb {
 namespace comparator {
+namespace indexed_db {
 
 // As most of the IndexedDBKeys and encoded values are short, we
 // initialize some std::vectors with a default inline buffer size to reduce
@@ -1561,6 +1562,8 @@ std::unique_ptr<IndexedDBKey> IndexDataKey::primary_key() const {
   }
   return key;
 }
+
+}  // namespace indexed_db
 }  // namespace comparator
 }  // namespace leveldb
 }  // namespace core

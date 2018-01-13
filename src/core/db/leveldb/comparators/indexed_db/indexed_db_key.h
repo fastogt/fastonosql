@@ -22,6 +22,7 @@ namespace fastonosql {
 namespace core {
 namespace leveldb {
 namespace comparator {
+namespace indexed_db {
 
 class IndexedDBKey {
  public:
@@ -74,6 +75,7 @@ class IndexedDBKey {
 // An index id, and corresponding set of keys to insert.
 using IndexedDBIndexKeys = std::pair<int64_t, std::vector<IndexedDBKey>>;
 
+}  // namespace indexed_db
 }  // namespace comparator
 }  // namespace leveldb
 }  // namespace core

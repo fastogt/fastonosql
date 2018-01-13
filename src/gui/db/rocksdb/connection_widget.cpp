@@ -44,6 +44,18 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionLocalWidgetDirec
   type_comp_layout->addWidget(comparator_label_);
   type_comp_layout->addWidget(type_comparators_);
   addLayout(type_comp_layout);
+
+  QHBoxLayout* type_compress_layout = new QHBoxLayout;
+  typeCompressions_ = new QComboBox;
+  for (uint32_t i = 0; i < core::rocksdb::g_compression_types.size(); ++i) {
+    const char* ct = core::rocksdb::g_compression_types[i];
+    typeCompressions_->addItem(ct, i);
+  }
+
+  compressionLabel_ = new QLabel;
+  type_comp_layout->addWidget(compressionLabel_);
+  type_comp_layout->addWidget(typeCompressions_);
+  addLayout(type_compress_layout);
 }
 
 void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
@@ -52,6 +64,7 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
     core::rocksdb::Config config = rock->GetInfo();
     create_db_if_missing_->setChecked(config.create_if_missing);
     type_comparators_->setCurrentIndex(config.comparator);
+    typeCompressions_->setCurrentIndex(config.compression);
   }
   ConnectionLocalWidget::syncControls(rock);
 }
@@ -59,6 +72,7 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
 void ConnectionWidget::retranslateUi() {
   create_db_if_missing_->setText(trCreateDBIfMissing);
   comparator_label_->setText(trComparator + ":");
+  compressionLabel_->setText(trCompression + ":");
   ConnectionLocalWidget::retranslateUi();
 }
 
@@ -68,6 +82,7 @@ proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
   core::rocksdb::Config config = conn->GetInfo();
   config.create_if_missing = create_db_if_missing_->isChecked();
   config.comparator = static_cast<core::rocksdb::ComparatorType>(type_comparators_->currentIndex());
+  config.compression = static_cast<core::rocksdb::CompressionType>(typeCompressions_->currentIndex());
   conn->SetInfo(config);
   return conn;
 }

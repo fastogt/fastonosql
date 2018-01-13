@@ -10,6 +10,7 @@ namespace fastonosql {
 namespace core {
 namespace leveldb {
 namespace comparator {
+namespace indexed_db {
 
 using blink::WebIDBKeyType;
 using blink::kWebIDBKeyTypeArray;
@@ -117,6 +118,7 @@ int IndexedDBKey::CompareTo(const IndexedDBKey& other) const {
   }
 }
 
+}  // namespace indexed_db
 }  // namespace comparator
 }  // namespace leveldb
 }  // namespace core

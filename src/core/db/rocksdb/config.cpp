@@ -27,11 +27,18 @@ extern "C" {
 
 #include "core/logger.h"
 
+#define ROCKSDB_COMPARATOR_FIELD "comparator"
+#define ROCKSDB_COMPRESSION_FIELD "compression"
+
 namespace fastonosql {
 namespace core {
 namespace rocksdb {
 
 const std::vector<const char*> g_comparator_types = {"BYTEWISE", "REVERSE_BYTEWISE"};
+
+const std::vector<const char*> g_compression_types = {
+    "NoCompression",  "SnappyCompression", "ZlibCompression",   "BZip2Compression",
+    "LZ4Compression", "LZ4HCCompression",  "XpressCompression", "ZSTD"};
 
 namespace {
 
@@ -46,10 +53,15 @@ Config ParseOptions(int argc, char** argv) {
       cfg.db_path = argv[++i];
     } else if (!strcmp(argv[i], "-c")) {
       cfg.create_if_missing = true;
-    } else if (!strcmp(argv[i], "-comp") && !lastarg) {
+    } else if (!strcmp(argv[i], ARGS_FROM_FIELD(ROCKSDB_COMPARATOR_FIELD)) && !lastarg) {
       ComparatorType lcomparator;
       if (common::ConvertFromString(argv[++i], &lcomparator)) {
         cfg.comparator = lcomparator;
+      }
+    } else if (!strcmp(argv[i], ARGS_FROM_FIELD(ROCKSDB_COMPRESSION_FIELD)) && !lastarg) {
+      CompressionType lcomp;
+      if (common::ConvertFromString(argv[++i], &lcomp)) {
+        cfg.compression = lcomp;
       }
     } else {
       if (argv[i][0] == '-') {
@@ -73,7 +85,8 @@ Config ParseOptions(int argc, char** argv) {
 Config::Config()
     : LocalConfig(common::file_system::prepare_path("~/test.rocksdb")),
       create_if_missing(true),
-      comparator(COMP_BYTEWISE) {}
+      comparator(COMP_BYTEWISE),
+      compression(kNoCompression) {}
 
 }  // namespace rocksdb
 }  // namespace core
@@ -88,8 +101,10 @@ std::string ConvertToString(const fastonosql::core::rocksdb::Config& conf) {
     argv.push_back("-c");
   }
 
-  argv.push_back("-comp");
+  argv.push_back(ARGS_FROM_FIELD(ROCKSDB_COMPARATOR_FIELD));
   argv.push_back(common::ConvertToString(conf.comparator));
+  argv.push_back(ARGS_FROM_FIELD(ROCKSDB_COMPRESSION_FIELD));
+  argv.push_back(common::ConvertToString(conf.compression));
   return fastonosql::core::ConvertToStringConfigArgs(argv);
 }
 
@@ -121,6 +136,26 @@ bool ConvertFromString(const std::string& from, fastonosql::core::rocksdb::Compa
   for (size_t i = 0; i < fastonosql::core::rocksdb::g_comparator_types.size(); ++i) {
     if (from == fastonosql::core::rocksdb::g_comparator_types[i]) {
       *out = static_cast<fastonosql::core::rocksdb::ComparatorType>(i);
+      return true;
+    }
+  }
+
+  NOTREACHED();
+  return false;
+}
+
+std::string ConvertToString(fastonosql::core::rocksdb::CompressionType comp) {
+  return fastonosql::core::rocksdb::g_compression_types[comp];
+}
+
+bool ConvertFromString(const std::string& from, fastonosql::core::rocksdb::CompressionType* out) {
+  if (!out || from.empty()) {
+    return false;
+  }
+
+  for (size_t i = 0; i < fastonosql::core::rocksdb::g_compression_types.size(); ++i) {
+    if (from == fastonosql::core::rocksdb::g_compression_types[i]) {
+      *out = static_cast<fastonosql::core::rocksdb::CompressionType>(i);
       return true;
     }
   }
