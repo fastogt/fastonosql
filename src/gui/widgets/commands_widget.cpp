@@ -34,39 +34,39 @@
 namespace fastonosql {
 namespace gui {
 
-CommandsWidget::CommandsWidget(QWidget* parent) : QWidget(parent), logTextEdit_(new QTextEdit) {
-  logTextEdit_->setReadOnly(true);
-  logTextEdit_->setContextMenuPolicy(Qt::CustomContextMenu);
-  VERIFY(connect(logTextEdit_, &QTextEdit::customContextMenuRequested, this, &CommandsWidget::showContextMenu));
+CommandsWidget::CommandsWidget(QWidget* parent) : QWidget(parent), log_text_edit_(new QTextEdit) {
+  log_text_edit_->setReadOnly(true);
+  log_text_edit_->setContextMenuPolicy(Qt::CustomContextMenu);
+  VERIFY(connect(log_text_edit_, &QTextEdit::customContextMenuRequested, this, &CommandsWidget::showContextMenu));
 
   QHBoxLayout* hlayout = new QHBoxLayout;
   hlayout->setContentsMargins(0, 0, 0, 0);
-  hlayout->addWidget(logTextEdit_);
+  hlayout->addWidget(log_text_edit_);
   setLayout(hlayout);
   retranslateUi();
 }
 
 void CommandsWidget::addCommand(core::FastoObjectCommandIPtr command) {
   QTime time = QTime::currentTime();
-  logTextEdit_->setTextColor(command->GetCommandLoggingType() == core::C_INNER ? QColor(Qt::gray) : QColor(Qt::black));
+  log_text_edit_->setTextColor(command->GetCommandLoggingType() == core::C_INNER ? QColor(Qt::gray) : QColor(Qt::black));
   QString mess;
   common::ConvertFromString(command->GetInputCommand(), &mess);
   std::string stype = common::ConvertToString(command->GetConnectionType());
   QString qstype;
   common::ConvertFromString(stype, &qstype);
-  logTextEdit_->append(time.toString("[%1] hh:mm:ss.zzz: %2").arg(qstype.toUpper(), mess));
-  QScrollBar* sb = logTextEdit_->verticalScrollBar();
+  log_text_edit_->append(time.toString("[%1] hh:mm:ss.zzz: %2").arg(qstype.toUpper(), mess));
+  QScrollBar* sb = log_text_edit_->verticalScrollBar();
   sb->setValue(sb->maximum());
 }
 
 void CommandsWidget::showContextMenu(const QPoint& pt) {
-  QMenu* menu = logTextEdit_->createStandardContextMenu();
+  QMenu* menu = log_text_edit_->createStandardContextMenu();
   QAction* clear = new QAction(translations::trClearAll, this);
-  VERIFY(connect(clear, &QAction::triggered, logTextEdit_, &QTextEdit::clear));
+  VERIFY(connect(clear, &QAction::triggered, log_text_edit_, &QTextEdit::clear));
   menu->addAction(clear);
-  clear->setEnabled(!logTextEdit_->toPlainText().isEmpty());
+  clear->setEnabled(!log_text_edit_->toPlainText().isEmpty());
 
-  menu->exec(logTextEdit_->mapToGlobal(pt));
+  menu->exec(log_text_edit_->mapToGlobal(pt));
   delete menu;
 }
 

@@ -30,7 +30,7 @@ namespace gui {
 class UserPasswordWidget : public QWidget {
   Q_OBJECT
  public:
-  UserPasswordWidget(const QString& userTitle, const QString& passwordTitle, QWidget* parent = Q_NULLPTR);
+  UserPasswordWidget(const QString& user_title, const QString& password_title, QWidget* parent = Q_NULLPTR);
 
   QString userName() const;
   void setUserName(const QString& user) const;
@@ -49,15 +49,15 @@ class UserPasswordWidget : public QWidget {
  private:
   void retranslateUi();
 
-  QLabel* userNameLabel_;
-  QLineEdit* userNameBox_;
+  QLabel* user_name_label_;
+  QLineEdit* user_name_textbox_;
 
-  QLabel* passwordLabel_;
-  QLineEdit* passwordBox_;
-  QPushButton* passwordEchoModeButton_;
+  QLabel* password_label_;
+  QLineEdit* password_textbox_;
+  QPushButton* password_echomode_button_;
 
-  QString userTitle_;
-  QString passwordTitle_;
+  QString user_title_;
+  QString password_title_;
 };
 
 }  // namespace gui

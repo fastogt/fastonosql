@@ -331,7 +331,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
   cur_font_ = settings.value(FONT, font).value<QFont>();
   cur_language_ = settings.value(LANGUAGE, common::qt::translations::defLanguage).toString();
 
-  int view = settings.value(VIEW, Text).toInt();
+  int view = settings.value(VIEW, kText).toInt();
   views_ = static_cast<supportedViews>(view);
 
   QList<QVariant> clusters = settings.value(CLUSTERS).toList();

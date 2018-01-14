@@ -44,7 +44,7 @@ class HostPortWidget : public QWidget {
  private:
   void retranslateUi();
 
-  QLineEdit* hostName_;
+  QLineEdit* host_edit_box_;
   QSpinBox* port_;
 };
 

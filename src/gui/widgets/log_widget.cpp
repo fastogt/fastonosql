@@ -32,34 +32,35 @@
 
 namespace fastonosql {
 namespace gui {
-LogWidget::LogWidget(QWidget* parent) : QWidget(parent), logTextEdit_(new QTextEdit) {
-  logTextEdit_->setReadOnly(true);
-  logTextEdit_->setContextMenuPolicy(Qt::CustomContextMenu);
-  VERIFY(connect(logTextEdit_, &QTextEdit::customContextMenuRequested, this, &LogWidget::showContextMenu));
+
+LogWidget::LogWidget(QWidget* parent) : QWidget(parent), log_text_edit_(new QTextEdit) {
+  log_text_edit_->setReadOnly(true);
+  log_text_edit_->setContextMenuPolicy(Qt::CustomContextMenu);
+  VERIFY(connect(log_text_edit_, &QTextEdit::customContextMenuRequested, this, &LogWidget::showContextMenu));
 
   QHBoxLayout* hlayout = new QHBoxLayout;
   hlayout->setContentsMargins(0, 0, 0, 0);
-  hlayout->addWidget(logTextEdit_);
+  hlayout->addWidget(log_text_edit_);
   setLayout(hlayout);
   retranslateUi();
 }
 
 void LogWidget::addLogMessage(const QString& message, common::logging::LOG_LEVEL level) {
   QTime time = QTime::currentTime();
-  logTextEdit_->setTextColor(level == common::logging::LOG_LEVEL_CRIT ? QColor(Qt::red) : QColor(Qt::black));
-  logTextEdit_->append(time.toString("hh:mm:ss.zzz: %1").arg(message));
-  QScrollBar* sb = logTextEdit_->verticalScrollBar();
+  log_text_edit_->setTextColor(level == common::logging::LOG_LEVEL_CRIT ? QColor(Qt::red) : QColor(Qt::black));
+  log_text_edit_->append(time.toString("hh:mm:ss.zzz: %1").arg(message));
+  QScrollBar* sb = log_text_edit_->verticalScrollBar();
   sb->setValue(sb->maximum());
 }
 
 void LogWidget::showContextMenu(const QPoint& pt) {
-  QMenu* menu = logTextEdit_->createStandardContextMenu();
+  QMenu* menu = log_text_edit_->createStandardContextMenu();
   QAction* clear = new QAction(translations::trClearAll, this);
-  VERIFY(connect(clear, &QAction::triggered, logTextEdit_, &QTextEdit::clear));
+  VERIFY(connect(clear, &QAction::triggered, log_text_edit_, &QTextEdit::clear));
   menu->addAction(clear);
-  clear->setEnabled(!logTextEdit_->toPlainText().isEmpty());
+  clear->setEnabled(!log_text_edit_->toPlainText().isEmpty());
 
-  menu->exec(logTextEdit_->mapToGlobal(pt));
+  menu->exec(log_text_edit_->mapToGlobal(pt));
   delete menu;
 }
 

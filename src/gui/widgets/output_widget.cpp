@@ -31,14 +31,13 @@
 #include "proxy/server/iserver.h"    // for IServer
 #include "proxy/settings_manager.h"  // for SettingsManager
 
-#include "gui/widgets/type_delegate.h"
-
 #include "gui/fasto_common_item.h"   // for FastoCommonItem
 #include "gui/fasto_common_model.h"  // for FastoCommonModel
 #include "gui/fasto_table_view.h"    // for FastoTableView
 #include "gui/fasto_text_view.h"     // for FastoTextView
 #include "gui/fasto_tree_view.h"     // for FastoTreeView
 #include "gui/gui_factory.h"         // for GuiFactory
+#include "gui/widgets/type_delegate.h"
 
 namespace fastonosql {
 namespace gui {
@@ -57,7 +56,7 @@ core::FastoObjectCommand* FindCommand(core::FastoObject* obj) {
   return FindCommand(obj->GetParent());
 }
 
-FastoCommonItem* createItem(common::qt::gui::TreeItem* parent,
+FastoCommonItem* CreateItem(common::qt::gui::TreeItem* parent,
                             core::string_key_t key,
                             bool readOnly,
                             core::FastoObject* item) {
@@ -67,7 +66,7 @@ FastoCommonItem* createItem(common::qt::gui::TreeItem* parent,
   return new FastoCommonItem(nkey, item->GetDelimiter(), readOnly, parent, item);
 }
 
-FastoCommonItem* createRootItem(core::FastoObject* item) {
+FastoCommonItem* CreateRootItem(core::FastoObject* item) {
   core::NValue value = item->GetValue();
   core::key_t raw_key;
   core::NKey nk(raw_key);
@@ -144,8 +143,8 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget
 }
 
 void OutputWidget::rootCreate(const proxy::events_info::CommandRootCreatedInfo& res) {
-  core::FastoObject* rootObj = res.root.get();
-  fastonosql::gui::FastoCommonItem* root = createRootItem(rootObj);
+  core::FastoObject* root_obj = res.root.get();
+  fastonosql::gui::FastoCommonItem* root = CreateRootItem(root_obj);
   commonModel_->setRoot(root);
 }
 
@@ -206,7 +205,7 @@ void OutputWidget::addChild(core::FastoObjectIPtr child) {
     return;
   }
 
-  fastonosql::gui::FastoCommonItem* comChild = createItem(par, core::command_buffer_t(), true, child.get());
+  fastonosql::gui::FastoCommonItem* comChild = CreateItem(par, core::command_buffer_t(), true, child.get());
   commonModel_->insertItem(parent, comChild);
 }
 
@@ -231,16 +230,16 @@ void OutputWidget::addCommand(core::FastoObjectCommand* command, core::FastoObje
     return;
   }
 
-  fastonosql::gui::FastoCommonItem* comChild = nullptr;
+  fastonosql::gui::FastoCommonItem* common_child = nullptr;
   core::translator_t tr = server_->GetTranslator();
   core::command_buffer_t input_cmd = command->GetInputCommand();
   core::string_key_t key;
   if (tr->IsLoadKeyCommand(input_cmd, &key)) {
-    comChild = createItem(par, key, false, child);
+    common_child = CreateItem(par, key, false, child);
   } else {
-    comChild = createItem(par, input_cmd, true, child);
+    common_child = CreateItem(par, input_cmd, true, child);
   }
-  commonModel_->insertItem(parent, comChild);
+  commonModel_->insertItem(parent, common_child);
 }
 
 void OutputWidget::updateItem(core::FastoObject* item, common::ValueSPtr newValue) {
@@ -292,18 +291,21 @@ void OutputWidget::setTextView() {
 }
 
 void OutputWidget::syncWithSettings() {
-  proxy::supportedViews curV = proxy::SettingsManager::GetInstance()->GetDefaultView();
-  if (curV == proxy::Tree) {
+  proxy::supportedViews current_view = proxy::SettingsManager::GetInstance()->GetDefaultView();
+  if (current_view == proxy::kTree) {
     setTreeView();
-  } else if (curV == proxy::Table) {
+  } else if (current_view == proxy::kTable) {
     setTableView();
-  } else {
+  } else if (current_view == proxy::kText) {
     setTextView();
+  } else {
+    NOTREACHED();
   }
 }
 
 void OutputWidget::updateTimeLabel(const proxy::events_info::EventInfoBase& evinfo) {
-  timeLabel_->setText(QString("%1 msec").arg(evinfo.ElapsedTime()));
+  static const QString msec_template("%1 msec");
+  timeLabel_->setText(msec_template.arg(evinfo.ElapsedTime()));
 }
 
 }  // namespace gui

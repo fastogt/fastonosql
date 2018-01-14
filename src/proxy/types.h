@@ -23,7 +23,7 @@
 namespace fastonosql {
 namespace proxy {
 
-enum supportedViews { Tree = 0, Table, Text };
+enum supportedViews { kTree = 0, kTable, kText };
 
 extern const std::vector<const char*> supported_views_text;
 

@@ -32,11 +32,11 @@ namespace gui {
 
 HostPortWidget::HostPortWidget(QWidget* parent) : QWidget(parent) {
   QHBoxLayout* hostAndPasswordLayout = new QHBoxLayout;
-  hostName_ = new QLineEdit;
+  host_edit_box_ = new QLineEdit;
   port_ = new QSpinBox;
   port_->setRange(0, UINT16_MAX);
   port_->setFixedWidth(80);
-  hostAndPasswordLayout->addWidget(hostName_);
+  hostAndPasswordLayout->addWidget(host_edit_box_);
   hostAndPasswordLayout->addWidget(new QLabel(":"));
   hostAndPasswordLayout->addWidget(port_);
   setLayout(hostAndPasswordLayout);
@@ -45,13 +45,13 @@ HostPortWidget::HostPortWidget(QWidget* parent) : QWidget(parent) {
 }
 
 common::net::HostAndPort HostPortWidget::host() const {
-  return common::net::HostAndPort(common::ConvertToString(hostName_->text()), port_->value());
+  return common::net::HostAndPort(common::ConvertToString(host_edit_box_->text()), port_->value());
 }
 
 void HostPortWidget::setHost(const common::net::HostAndPort& host) {
   QString qhost;
   common::ConvertFromString(host.GetHost(), &qhost);
-  hostName_->setText(qhost);
+  host_edit_box_->setText(qhost);
   port_->setValue(host.GetPort());
 }
 

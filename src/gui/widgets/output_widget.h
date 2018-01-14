@@ -36,6 +36,7 @@ class IconLabel;
 }
 }  // namespace qt
 }  // namespace common
+
 namespace fastonosql {
 namespace proxy {
 namespace events_info {
@@ -46,16 +47,10 @@ struct CommandRootCompleatedInfo;
 struct CommandRootCreatedInfo;
 }  // namespace events_info
 }  // namespace proxy
-}  // namespace fastonosql
-namespace fastonosql {
 namespace gui {
+
 class FastoTextView;
 class FastoCommonModel;
-}  // namespace gui
-}  // namespace fastonosql
-
-namespace fastonosql {
-namespace gui {
 
 class OutputWidget : public QWidget {
   Q_OBJECT

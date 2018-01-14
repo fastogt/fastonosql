@@ -22,7 +22,6 @@
 
 #include <common/log_levels.h>  // for LOG_LEVEL
 
-class QAction;  // lines 24-24
 class QPoint;
 class QTextEdit;  // lines 23-23
 
@@ -45,7 +44,7 @@ class LogWidget : public QWidget {
 
  private:
   void retranslateUi();
-  QTextEdit* const logTextEdit_;
+  QTextEdit* const log_text_edit_;
 };
 
 }  // namespace gui

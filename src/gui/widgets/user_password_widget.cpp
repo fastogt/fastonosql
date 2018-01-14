@@ -31,25 +31,25 @@
 namespace fastonosql {
 namespace gui {
 
-UserPasswordWidget::UserPasswordWidget(const QString& userTitle, const QString& passwordTitle, QWidget* parent)
-    : QWidget(parent), userTitle_(userTitle), passwordTitle_(passwordTitle) {
+UserPasswordWidget::UserPasswordWidget(const QString& user_title, const QString& password_title, QWidget* parent)
+    : QWidget(parent), user_title_(user_title), password_title_(password_title) {
   QVBoxLayout* userPasswordLayout = new QVBoxLayout;
   QHBoxLayout* userLayout = new QHBoxLayout;
-  userNameLabel_ = new QLabel;
-  userNameBox_ = new QLineEdit;
-  userLayout->addWidget(userNameLabel_);
-  userLayout->addWidget(userNameBox_);
+  user_name_label_ = new QLabel;
+  user_name_textbox_ = new QLineEdit;
+  userLayout->addWidget(user_name_label_);
+  userLayout->addWidget(user_name_textbox_);
   userPasswordLayout->addLayout(userLayout);
 
   QHBoxLayout* passwordLayout = new QHBoxLayout;
-  passwordLabel_ = new QLabel;
-  passwordBox_ = new QLineEdit;
-  passwordBox_->setEchoMode(QLineEdit::Password);
-  passwordEchoModeButton_ = new QPushButton(translations::trShow);
-  VERIFY(connect(passwordEchoModeButton_, &QPushButton::clicked, this, &UserPasswordWidget::togglePasswordEchoMode));
-  passwordLayout->addWidget(passwordLabel_);
-  passwordLayout->addWidget(passwordBox_);
-  passwordLayout->addWidget(passwordEchoModeButton_);
+  password_label_ = new QLabel;
+  password_textbox_ = new QLineEdit;
+  password_textbox_->setEchoMode(QLineEdit::Password);
+  password_echomode_button_ = new QPushButton(translations::trShow);
+  VERIFY(connect(password_echomode_button_, &QPushButton::clicked, this, &UserPasswordWidget::togglePasswordEchoMode));
+  passwordLayout->addWidget(password_label_);
+  passwordLayout->addWidget(password_textbox_);
+  passwordLayout->addWidget(password_echomode_button_);
   userPasswordLayout->addLayout(passwordLayout);
   setLayout(userPasswordLayout);
 
@@ -57,36 +57,36 @@ UserPasswordWidget::UserPasswordWidget(const QString& userTitle, const QString& 
 }
 
 QString UserPasswordWidget::userName() const {
-  return userNameBox_->text();
+  return user_name_textbox_->text();
 }
 
 void UserPasswordWidget::setUserName(const QString& user) const {
-  userNameBox_->setText(user);
+  user_name_textbox_->setText(user);
 }
 
 QString UserPasswordWidget::password() const {
-  return passwordBox_->text();
+  return password_textbox_->text();
 }
 
 void UserPasswordWidget::setPassword(const QString& pass) {
-  passwordBox_->setText(pass);
+  password_textbox_->setText(pass);
 }
 
 bool UserPasswordWidget::isValidCredential() const {
-  QString uname = userNameBox_->text();
-  QString pass = passwordBox_->text();
+  QString uname = user_name_textbox_->text();
+  QString pass = password_textbox_->text();
   return !uname.isEmpty() && !pass.isEmpty();
 }
 
 void UserPasswordWidget::togglePasswordEchoMode() {
-  bool isPassword = passwordBox_->echoMode() == QLineEdit::Password;
-  passwordBox_->setEchoMode(isPassword ? QLineEdit::Normal : QLineEdit::Password);
-  passwordEchoModeButton_->setText(isPassword ? translations::trHide : translations::trShow);
+  bool is_password = password_textbox_->echoMode() == QLineEdit::Password;
+  password_textbox_->setEchoMode(is_password ? QLineEdit::Normal : QLineEdit::Password);
+  password_echomode_button_->setText(is_password ? translations::trHide : translations::trShow);
 }
 
 void UserPasswordWidget::retranslateUi() {
-  userNameLabel_->setText(userTitle_);
-  passwordLabel_->setText(passwordTitle_);
+  user_name_label_->setText(user_title_);
+  password_label_->setText(password_title_);
 }
 
 void UserPasswordWidget::changeEvent(QEvent* ev) {

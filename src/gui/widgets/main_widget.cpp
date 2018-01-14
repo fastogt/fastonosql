@@ -84,22 +84,22 @@ void MainWidget::openConsoleAndExecute(proxy::IServerSPtr server, const QString&
 }
 
 void MainWidget::createNewTab() {
-  int curIndex = currentIndex();
-  QueryWidget* shw = widget(curIndex);
+  int current_index = currentIndex();
+  QueryWidget* shw = widget(current_index);
   if (shw) {
-    openNewTab(shw, tabText(curIndex), QString());
+    openNewTab(shw, tabText(current_index), QString());
   }
 }
 
 void MainWidget::nextTab() {
   int index = currentIndex();
-  int tabsCount = count();
-  if (index == tabsCount - 1) {
+  int tabs_count = count();
+  if (index == tabs_count - 1) {
     setCurrentIndex(0);
     return;
   }
 
-  if (index >= 0 && index < tabsCount - 1) {
+  if (index >= 0 && index < tabs_count - 1) {
     setCurrentIndex(index + 1);
     return;
   }
@@ -119,18 +119,18 @@ void MainWidget::previousTab() {
 }
 
 void MainWidget::reloadeCurrentTab() {
-  int curIndex = currentIndex();
-  QueryWidget* shw = widget(curIndex);
+  int current_index = currentIndex();
+  QueryWidget* shw = widget(current_index);
   if (shw) {
     shw->reload();
   }
 }
 
 void MainWidget::duplicateCurrentTab() {
-  int curIndex = currentIndex();
-  QueryWidget* shw = widget(curIndex);
+  int current_index = currentIndex();
+  QueryWidget* shw = widget(current_index);
   if (shw) {
-    openNewTab(shw, tabText(curIndex), shw->inputText());
+    openNewTab(shw, tabText(current_index), shw->inputText());
   }
 }
 
@@ -143,13 +143,13 @@ void MainWidget::closeTab(int index) {
 }
 
 void MainWidget::closeCurrentTab() {
-  int curIndex = currentIndex();
-  closeTab(curIndex);
+  int current_index = currentIndex();
+  closeTab(current_index);
 }
 
 void MainWidget::closedOtherTabs() {
-  int curIndex = currentIndex();
-  tabBar()->moveTab(curIndex, 0);
+  int current_index = currentIndex();
+  tabBar()->moveTab(current_index, 0);
   while (count() > 1) {
     closeTab(1);
   }
@@ -165,8 +165,8 @@ void MainWidget::addWidgetToTab(QueryWidget* wid, const QString& title) {
 }
 
 void MainWidget::openNewTab(QueryWidget* src, const QString& title, const QString& text) {
-  QueryWidget* newWid = src->clone(text);
-  addWidgetToTab(newWid, title);
+  QueryWidget* new_widget = src->clone(text);
+  addWidgetToTab(new_widget, title);
 }
 
 }  // namespace gui
