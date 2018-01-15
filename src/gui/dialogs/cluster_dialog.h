@@ -22,6 +22,9 @@
 
 #include <QDialog>
 
+#include "proxy/connection_settings/icluster_connection_settings.h"
+#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
+
 class QComboBox;
 class QLineEdit;
 class QDialogButtonBox;
@@ -31,9 +34,6 @@ class QSpinBox;
 class QTreeWidget;
 class QToolBar;
 class QLabel;
-
-#include "proxy/connection_settings/icluster_connection_settings.h"
-#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
 
 namespace fastonosql {
 namespace gui {
@@ -71,19 +71,19 @@ class ClusterDialog : public QDialog {
   void addConnection(proxy::IConnectionSettingsBaseSPtr con);
 
   proxy::IClusterSettingsBaseSPtr cluster_connection_;
-  QLineEdit* connectionName_;
-  QLabel* folderLabel_;
-  QLineEdit* connectionFolder_;
-  QComboBox* typeConnection_;
+  QLineEdit* connection_name_;
+  QLabel* folder_label_;
+  QLineEdit* connection_folder_;
+  QComboBox* type_connection_;
   QCheckBox* logging_;
-  QSpinBox* loggingMsec_;
+  QSpinBox* logging_msec_;
 
   QToolBar* savebar_;
-  QTreeWidget* listWidget_;
+  QTreeWidget* list_widget_;
 
-  QPushButton* testButton_;
-  QPushButton* discoveryButton_;
-  QDialogButtonBox* buttonBox_;
+  QPushButton* test_button_;
+  QPushButton* discovery_button_;
+  QDialogButtonBox* button_box_;
 };
 
 }  // namespace gui

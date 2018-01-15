@@ -116,8 +116,8 @@ class InfoServerDialog : public QDialog {
 #ifdef BUILD_WITH_FORESTDB
   void updateText(const core::forestdb::ServerInfo& serv);
 #endif
-  QTextEdit* serverTextInfo_;
-  common::qt::gui::GlassWidget* glassWidget_;
+  QTextEdit* server_text_info_;
+  common::qt::gui::GlassWidget* glass_widget_;
   const proxy::IServerSPtr server_;
 };
 

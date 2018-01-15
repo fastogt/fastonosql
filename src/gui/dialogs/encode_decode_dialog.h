@@ -47,8 +47,8 @@ class EncodeDecodeDialog : public QDialog {
   FastoEditor* input_;
   FastoEditor* output_;
   QComboBox* decoders_;
-  QRadioButton* encodeButton_;
-  QRadioButton* decodeButton_;
+  QRadioButton* encode_button_;
+  QRadioButton* decode_button_;
 };
 
 }  // namespace gui

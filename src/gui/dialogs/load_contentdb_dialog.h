@@ -50,8 +50,8 @@ class LoadContentDbDialog : public QDialog {
  private:
   const core::connectionTypes type_;
 
-  QLineEdit* patternEdit_;
-  QSpinBox* countSpinEdit_;
+  QLineEdit* pattern_edit_;
+  QSpinBox* count_spin_edit_;
 };
 
 }  // namespace gui

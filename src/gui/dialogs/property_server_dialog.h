@@ -66,7 +66,7 @@ class PropertyServerDialog : public QDialog {
  private:
   void retranslateUi();
 
-  common::qt::gui::GlassWidget* glassWidget_;
+  common::qt::gui::GlassWidget* glass_widget_;
   QTableView* properties_table_;
   const proxy::IServerSPtr server_;
 };

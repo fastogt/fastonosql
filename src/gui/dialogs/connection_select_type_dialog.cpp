@@ -39,30 +39,30 @@ namespace gui {
 ConnectionSelectTypeDialog::ConnectionSelectTypeDialog(QWidget* parent) : QDialog(parent) {
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
-  typeConnectionLabel_ = new QLabel;
-  typeConnection_ = new QComboBox;
+  type_connection_label_ = new QLabel;
+  type_connection_ = new QComboBox;
 
   for (size_t i = 0; i < core::g_compiled_types.size(); ++i) {
     core::connectionTypes ct = core::g_compiled_types[i];
     std::string str = common::ConvertToString(ct);
     QString qstr;
     if (common::ConvertFromString(str, &qstr)) {
-      typeConnection_->addItem(GuiFactory::GetInstance().GetIcon(ct), qstr, ct);
+      type_connection_->addItem(GuiFactory::GetInstance().GetIcon(ct), qstr, ct);
     }
   }
 
   QVBoxLayout* mainLayout = new QVBoxLayout;
   QHBoxLayout* typeLayout = new QHBoxLayout;
-  typeLayout->addWidget(typeConnectionLabel_);
-  typeLayout->addWidget(typeConnection_);
+  typeLayout->addWidget(type_connection_label_);
+  typeLayout->addWidget(type_connection_);
   mainLayout->addLayout(typeLayout);
 
   QHBoxLayout* bottomLayout = new QHBoxLayout;
-  buttonBox_ = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
-  buttonBox_->setOrientation(Qt::Horizontal);
-  VERIFY(connect(buttonBox_, &QDialogButtonBox::accepted, this, &ConnectionSelectTypeDialog::accept));
-  VERIFY(connect(buttonBox_, &QDialogButtonBox::rejected, this, &ConnectionSelectTypeDialog::reject));
-  bottomLayout->addWidget(buttonBox_);
+  button_box_ = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
+  button_box_->setOrientation(Qt::Horizontal);
+  VERIFY(connect(button_box_, &QDialogButtonBox::accepted, this, &ConnectionSelectTypeDialog::accept));
+  VERIFY(connect(button_box_, &QDialogButtonBox::rejected, this, &ConnectionSelectTypeDialog::reject));
+  bottomLayout->addWidget(button_box_);
   mainLayout->addLayout(bottomLayout);
 
   mainLayout->setSizeConstraint(QLayout::SetFixedSize);
@@ -73,7 +73,7 @@ ConnectionSelectTypeDialog::ConnectionSelectTypeDialog(QWidget* parent) : QDialo
 }
 
 core::connectionTypes ConnectionSelectTypeDialog::connectionType() const {
-  QVariant var = typeConnection_->currentData();
+  QVariant var = type_connection_->currentData();
   return static_cast<core::connectionTypes>(qvariant_cast<unsigned char>(var));
 }
 
@@ -86,7 +86,7 @@ void ConnectionSelectTypeDialog::changeEvent(QEvent* e) {
 
 void ConnectionSelectTypeDialog::retranslateUi() {
   setWindowTitle(trSectTypeTitle);
-  typeConnectionLabel_->setText(tr("Database:"));
+  type_connection_label_->setText(tr("Database:"));
 }
 
 }  // namespace gui

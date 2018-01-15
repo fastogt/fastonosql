@@ -79,8 +79,8 @@ FastoCommonItem* CreateRootItem(core::FastoObject* item) {
 OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget(parent), server_(server) {
   CHECK(server_);
 
-  commonModel_ = new FastoCommonModel(this);
-  VERIFY(connect(commonModel_, &FastoCommonModel::changedValue, this, &OutputWidget::createKey, Qt::DirectConnection));
+  common_model_ = new FastoCommonModel(this);
+  VERIFY(connect(common_model_, &FastoCommonModel::changedValue, this, &OutputWidget::createKey, Qt::DirectConnection));
   VERIFY(connect(server_.get(), &proxy::IServer::ExecuteStarted, this, &OutputWidget::startExecuteCommand,
                  Qt::DirectConnection));
   VERIFY(connect(server_.get(), &proxy::IServer::ExecuteFinished, this, &OutputWidget::finishExecuteCommand,
@@ -96,48 +96,48 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget
   VERIFY(connect(server_.get(), &proxy::IServer::ChildAdded, this, &OutputWidget::addChild, Qt::DirectConnection));
   VERIFY(connect(server_.get(), &proxy::IServer::ItemUpdated, this, &OutputWidget::updateItem, Qt::DirectConnection));
 
-  treeView_ = new QTreeView;
-  treeView_->setModel(commonModel_);
-  treeView_->header()->setSectionResizeMode(0, QHeaderView::Stretch);
-  treeView_->header()->setSectionResizeMode(1, QHeaderView::Stretch);
-  treeView_->header()->setStretchLastSection(false);
-  treeView_->setItemDelegateForColumn(FastoCommonItem::eValue, new TypeDelegate(this));
+  tree_view_ = new QTreeView;
+  tree_view_->setModel(common_model_);
+  tree_view_->header()->setSectionResizeMode(0, QHeaderView::Stretch);
+  tree_view_->header()->setSectionResizeMode(1, QHeaderView::Stretch);
+  tree_view_->header()->setStretchLastSection(false);
+  tree_view_->setItemDelegateForColumn(FastoCommonItem::eValue, new TypeDelegate(this));
 
-  tableView_ = new QTableView;
-  tableView_->setModel(commonModel_);
-  tableView_->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
-  tableView_->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
-  tableView_->horizontalHeader()->setStretchLastSection(false);
-  tableView_->setItemDelegateForColumn(FastoCommonItem::eValue, new TypeDelegate(this));
+  table_view_ = new QTableView;
+  table_view_->setModel(common_model_);
+  table_view_->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+  table_view_->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+  table_view_->horizontalHeader()->setStretchLastSection(false);
+  table_view_->setItemDelegateForColumn(FastoCommonItem::eValue, new TypeDelegate(this));
 
-  textView_ = new FastoTextView;
-  textView_->setModel(commonModel_);
+  text_view_ = new FastoTextView;
+  text_view_->setModel(common_model_);
 
-  timeLabel_ = new common::qt::gui::IconLabel(GuiFactory::GetInstance().GetTimeIcon(), QSize(32, 32), "0");
+  time_label_ = new common::qt::gui::IconLabel(GuiFactory::GetInstance().GetTimeIcon(), QSize(32, 32), "0");
 
   QVBoxLayout* mainL = new QVBoxLayout;
   QHBoxLayout* topL = new QHBoxLayout;
 
-  treeButton_ = new QPushButton;
-  tableButton_ = new QPushButton;
-  textButton_ = new QPushButton;
-  treeButton_->setIcon(GuiFactory::GetInstance().GetTreeIcon());
-  VERIFY(connect(treeButton_, &QPushButton::clicked, this, &OutputWidget::setTreeView));
-  tableButton_->setIcon(GuiFactory::GetInstance().GetTableIcon());
-  VERIFY(connect(tableButton_, &QPushButton::clicked, this, &OutputWidget::setTableView));
-  textButton_->setIcon(GuiFactory::GetInstance().GetTextIcon());
-  VERIFY(connect(textButton_, &QPushButton::clicked, this, &OutputWidget::setTextView));
+  tree_button_ = new QPushButton;
+  table_button_ = new QPushButton;
+  text_button_ = new QPushButton;
+  tree_button_->setIcon(GuiFactory::GetInstance().GetTreeIcon());
+  VERIFY(connect(tree_button_, &QPushButton::clicked, this, &OutputWidget::setTreeView));
+  table_button_->setIcon(GuiFactory::GetInstance().GetTableIcon());
+  VERIFY(connect(table_button_, &QPushButton::clicked, this, &OutputWidget::setTableView));
+  text_button_->setIcon(GuiFactory::GetInstance().GetTextIcon());
+  VERIFY(connect(text_button_, &QPushButton::clicked, this, &OutputWidget::setTextView));
 
-  topL->addWidget(treeButton_);
-  topL->addWidget(tableButton_);
-  topL->addWidget(textButton_);
+  topL->addWidget(tree_button_);
+  topL->addWidget(table_button_);
+  topL->addWidget(text_button_);
   topL->addWidget(new QSplitter(Qt::Horizontal));
-  topL->addWidget(timeLabel_);
+  topL->addWidget(time_label_);
 
   mainL->addLayout(topL);
-  mainL->addWidget(treeView_);
-  mainL->addWidget(tableView_);
-  mainL->addWidget(textView_);
+  mainL->addWidget(tree_view_);
+  mainL->addWidget(table_view_);
+  mainL->addWidget(text_view_);
   setLayout(mainL);
   syncWithSettings();
 }
@@ -145,7 +145,7 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget
 void OutputWidget::rootCreate(const proxy::events_info::CommandRootCreatedInfo& res) {
   core::FastoObject* root_obj = res.root.get();
   fastonosql::gui::FastoCommonItem* root = CreateRootItem(root_obj);
-  commonModel_->setRoot(root);
+  common_model_->setRoot(root);
 }
 
 void OutputWidget::rootCompleate(const proxy::events_info::CommandRootCompleatedInfo& res) {
@@ -154,12 +154,12 @@ void OutputWidget::rootCompleate(const proxy::events_info::CommandRootCompleated
 
 void OutputWidget::addKey(core::IDataBaseInfoSPtr db, core::NDbKValue key) {
   UNUSED(db);
-  commonModel_->changeValue(key);
+  common_model_->changeValue(key);
 }
 
 void OutputWidget::updateKey(core::IDataBaseInfoSPtr db, core::NDbKValue key) {
   UNUSED(db);
-  commonModel_->changeValue(key);
+  common_model_->changeValue(key);
 }
 
 void OutputWidget::startExecuteCommand(const proxy::events_info::ExecuteInfoRequest& req) {
@@ -188,14 +188,14 @@ void OutputWidget::addChild(core::FastoObjectIPtr child) {
   CHECK(arr);
 
   QModelIndex parent;
-  bool isFound = commonModel_->findItem(arr, &parent);
+  bool isFound = common_model_->findItem(arr, &parent);
   if (!isFound) {
     return;
   }
 
   fastonosql::gui::FastoCommonItem* par = nullptr;
   if (!parent.isValid()) {
-    par = static_cast<fastonosql::gui::FastoCommonItem*>(commonModel_->root());
+    par = static_cast<fastonosql::gui::FastoCommonItem*>(common_model_->root());
   } else {
     par = common::qt::item<common::qt::gui::TreeItem*, fastonosql::gui::FastoCommonItem*>(parent);
   }
@@ -206,21 +206,21 @@ void OutputWidget::addChild(core::FastoObjectIPtr child) {
   }
 
   fastonosql::gui::FastoCommonItem* comChild = CreateItem(par, core::command_buffer_t(), true, child.get());
-  commonModel_->insertItem(parent, comChild);
+  common_model_->insertItem(parent, comChild);
 }
 
 void OutputWidget::addCommand(core::FastoObjectCommand* command, core::FastoObject* child) {
   void* parentinner = command->GetParent();
 
   QModelIndex parent;
-  bool isFound = commonModel_->findItem(parentinner, &parent);
+  bool isFound = common_model_->findItem(parentinner, &parent);
   if (!isFound) {
     return;
   }
 
   fastonosql::gui::FastoCommonItem* par = nullptr;
   if (!parent.isValid()) {
-    par = static_cast<fastonosql::gui::FastoCommonItem*>(commonModel_->root());
+    par = static_cast<fastonosql::gui::FastoCommonItem*>(common_model_->root());
   } else {
     par = common::qt::item<common::qt::gui::TreeItem*, fastonosql::gui::FastoCommonItem*>(parent);
   }
@@ -239,12 +239,12 @@ void OutputWidget::addCommand(core::FastoObjectCommand* command, core::FastoObje
   } else {
     common_child = CreateItem(par, input_cmd, true, child);
   }
-  commonModel_->insertItem(parent, common_child);
+  common_model_->insertItem(parent, common_child);
 }
 
 void OutputWidget::updateItem(core::FastoObject* item, common::ValueSPtr newValue) {
   QModelIndex index;
-  bool isFound = commonModel_->findItem(item, &index);
+  bool isFound = common_model_->findItem(item, &index);
   if (!isFound) {
     return;
   }
@@ -256,7 +256,7 @@ void OutputWidget::updateItem(core::FastoObject* item, common::ValueSPtr newValu
 
   core::NValue nval = newValue;
   it->setValue(nval);
-  commonModel_->updateItem(index.parent(), index);
+  common_model_->updateItem(index.parent(), index);
 }
 
 void OutputWidget::createKey(const core::NDbKValue& dbv) {
@@ -273,21 +273,21 @@ void OutputWidget::createKey(const core::NDbKValue& dbv) {
 }
 
 void OutputWidget::setTreeView() {
-  treeView_->setVisible(true);
-  tableView_->setVisible(false);
-  textView_->setVisible(false);
+  tree_view_->setVisible(true);
+  table_view_->setVisible(false);
+  text_view_->setVisible(false);
 }
 
 void OutputWidget::setTableView() {
-  treeView_->setVisible(false);
-  tableView_->setVisible(true);
-  textView_->setVisible(false);
+  tree_view_->setVisible(false);
+  table_view_->setVisible(true);
+  text_view_->setVisible(false);
 }
 
 void OutputWidget::setTextView() {
-  treeView_->setVisible(false);
-  tableView_->setVisible(false);
-  textView_->setVisible(true);
+  tree_view_->setVisible(false);
+  table_view_->setVisible(false);
+  text_view_->setVisible(true);
 }
 
 void OutputWidget::syncWithSettings() {
@@ -305,7 +305,7 @@ void OutputWidget::syncWithSettings() {
 
 void OutputWidget::updateTimeLabel(const proxy::events_info::EventInfoBase& evinfo) {
   static const QString msec_template("%1 msec");
-  timeLabel_->setText(msec_template.arg(evinfo.ElapsedTime()));
+  time_label_->setText(msec_template.arg(evinfo.ElapsedTime()));
 }
 
 }  // namespace gui

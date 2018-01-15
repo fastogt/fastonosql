@@ -42,9 +42,9 @@ class ConnectionSelectTypeDialog : public QDialog {
  private:
   void retranslateUi();
 
-  QLabel* typeConnectionLabel_;
-  QComboBox* typeConnection_;
-  QDialogButtonBox* buttonBox_;
+  QLabel* type_connection_label_;
+  QComboBox* type_connection_;
+  QDialogButtonBox* button_box_;
 };
 
 }  // namespace gui

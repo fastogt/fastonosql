@@ -54,22 +54,22 @@ FastoTextView::FastoTextView(QWidget* parent) : QWidget(parent) {
   views_combo_box_->addItem(translations::trSnappy, SNAPPY);
   views_combo_box_->addItem(translations::trXml, XML);
 
-  saveChangeButton_ = new QPushButton;
-  saveChangeButton_->setIcon(GuiFactory::GetInstance().GetSaveIcon());
-  saveChangeButton_->setEnabled(false);
+  save_change_button_ = new QPushButton;
+  save_change_button_->setIcon(GuiFactory::GetInstance().GetSaveIcon());
+  save_change_button_->setEnabled(false);
 
   typedef void (QComboBox::*ind)(int);
   VERIFY(
       connect(views_combo_box_, static_cast<ind>(&QComboBox::currentIndexChanged), this, &FastoTextView::viewChange));
 
-  VERIFY(connect(saveChangeButton_, &QPushButton::clicked, this, &FastoTextView::saveChanges));
+  VERIFY(connect(save_change_button_, &QPushButton::clicked, this, &FastoTextView::saveChanges));
   VERIFY(connect(editor_, &FastoEditorOutput::textChanged, this, &FastoTextView::textChange));
   VERIFY(connect(editor_, &FastoEditorOutput::readOnlyChanged, this, &FastoTextView::textChange));
 
   mainL->addWidget(editor_);
   mainL->setContentsMargins(0, 0, 0, 0);
   QHBoxLayout* hlayout = new QHBoxLayout;
-  hlayout->addWidget(saveChangeButton_);
+  hlayout->addWidget(save_change_button_);
   QSplitter* spliter_save_and_view = new QSplitter(Qt::Horizontal);
   hlayout->addWidget(spliter_save_and_view);
   hlayout->addWidget(views_label_);
@@ -97,7 +97,7 @@ void FastoTextView::saveChanges() {
 
 void FastoTextView::textChange() {
   if (editor_->childCount() != 1) {
-    saveChangeButton_->setEnabled(false);
+    save_change_button_->setEnabled(false);
     return;
   }
 
@@ -105,7 +105,7 @@ void FastoTextView::textChange() {
   bool isEnabled = !editor_->isReadOnly() && index.isValid() && (index.flags() & Qt::ItemIsEditable) &&
                    index.data() != editor_->text().simplified();
 
-  saveChangeButton_->setEnabled(isEnabled);
+  save_change_button_->setEnabled(isEnabled);
 }
 
 void FastoTextView::viewChange(int index) {
@@ -123,7 +123,7 @@ void FastoTextView::changeEvent(QEvent* ev) {
 }
 
 void FastoTextView::retranslateUi() {
-  saveChangeButton_->setText(translations::trSaveChanges);
+  save_change_button_->setText(translations::trSaveChanges);
   views_label_->setText(translations::trViews + ":");
 }
 

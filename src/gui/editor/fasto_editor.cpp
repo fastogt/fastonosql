@@ -42,39 +42,39 @@ namespace gui {
 FastoEditor::FastoEditor(QWidget* parent) : QWidget(parent), scin_(nullptr) {
   scin_ = new FastoScintilla;
 
-  findPanel_ = new QFrame;
-  findLine_ = new QLineEdit;
+  find_panel_ = new QFrame;
+  find_line_ = new QLineEdit;
   close_ = new QToolButton;
   next_ = new QPushButton;
   prev_ = new QPushButton;
-  caseSensitive_ = new QCheckBox;
+  case_sensitive_ = new QCheckBox;
 
   close_->setIcon(GuiFactory::GetInstance().GetClose16Icon());
   close_->setToolButtonStyle(Qt::ToolButtonIconOnly);
   close_->setIconSize(QSize(16, 16));
-  findLine_->setAlignment(Qt::AlignLeft | Qt::AlignAbsolute);
+  find_line_->setAlignment(Qt::AlignLeft | Qt::AlignAbsolute);
 
   QHBoxLayout* layout = new QHBoxLayout;
   layout->addWidget(close_);
-  layout->addWidget(findLine_);
+  layout->addWidget(find_line_);
   layout->addWidget(next_);
   layout->addWidget(prev_);
-  layout->addWidget(caseSensitive_);
+  layout->addWidget(case_sensitive_);
 
-  findPanel_->setFixedHeight(HeightFindPanel);
-  findPanel_->setLayout(layout);
+  find_panel_->setFixedHeight(HeightFindPanel);
+  find_panel_->setLayout(layout);
 
   scin_->installEventFilter(this);
 
   QVBoxLayout* mainL = new QVBoxLayout;
   mainL->addWidget(scin_);
-  mainL->addWidget(findPanel_);
+  mainL->addWidget(find_panel_);
   mainL->setContentsMargins(0, 0, 0, 0);
   setLayout(mainL);
 
-  findPanel_->hide();
+  find_panel_->hide();
 
-  VERIFY(connect(close_, &QToolButton::clicked, findPanel_, &QFrame::hide));
+  VERIFY(connect(close_, &QToolButton::clicked, find_panel_, &QFrame::hide));
   VERIFY(connect(scin_, &FastoScintilla::textChanged, this, &FastoEditor::textChanged));
   VERIFY(connect(next_, &QPushButton::clicked, this, &FastoEditor::goToNextElement));
   VERIFY(connect(prev_, &QPushButton::clicked, this, &FastoEditor::goToPrevElement));
@@ -151,9 +151,9 @@ void FastoEditor::sendScintilla(unsigned int msg, unsigned long wParam, long lPa
 
 void FastoEditor::keyPressEvent(QKeyEvent* keyEvent) {
   bool isFocusScin = scin_->isActiveWindow();
-  bool isShowFind = findPanel_->isVisible();
+  bool isShowFind = find_panel_->isVisible();
   if (keyEvent->key() == Qt::Key_Escape && isFocusScin && isShowFind) {
-    findPanel_->hide();
+    find_panel_->hide();
     scin_->setFocus();
     keyEvent->accept();
   } else if (keyEvent->key() == Qt::Key_Return && (keyEvent->modifiers() & Qt::ShiftModifier) && isFocusScin &&
@@ -171,9 +171,9 @@ bool FastoEditor::eventFilter(QObject* object, QEvent* event) {
     if (event->type() == QEvent::KeyPress) {
       QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
       if (((keyEvent->modifiers() & Qt::ControlModifier) && keyEvent->key() == Qt::Key_F)) {
-        findPanel_->show();
-        findLine_->setFocus();
-        // findPanel_->selectAll();
+        find_panel_->show();
+        find_line_->setFocus();
+        // find_panel_->selectAll();
         keyEvent->accept();
         return true;
       }
@@ -194,11 +194,11 @@ void FastoEditor::changeEvent(QEvent* ev) {
 void FastoEditor::retranslateUi() {
   next_->setText(translations::trNext);
   prev_->setText(translations::trPrevious);
-  caseSensitive_->setText(translations::trMatchCase);
+  case_sensitive_->setText(translations::trMatchCase);
 }
 
 void FastoEditor::findElement(bool forward) {
-  const QString& text = findLine_->text();
+  const QString& text = find_line_->text();
   if (!text.isEmpty()) {
     bool re = false;
     bool wo = false;
@@ -213,7 +213,7 @@ void FastoEditor::findElement(bool forward) {
 
     scin_->setCursorPosition(line, 0);
     bool isFounded =
-        scin_->findFirst(text, re, caseSensitive_->checkState() == Qt::Checked, wo, looped, forward, line, index);
+        scin_->findFirst(text, re, case_sensitive_->checkState() == Qt::Checked, wo, looped, forward, line, index);
 
     if (isFounded) {
       scin_->ensureCursorVisible();

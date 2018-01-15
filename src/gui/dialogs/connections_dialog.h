@@ -76,8 +76,8 @@ class ConnectionsDialog : public QDialog {
   void addSentinel(proxy::ISentinelSettingsBaseSPtr con);
   DirectoryListWidgetItem* findFolderByPath(const proxy::connection_path_t& path) const;
 
-  QTreeWidget* listWidget_;
-  QPushButton* acButton_;
+  QTreeWidget* list_widget_;
+  QPushButton* ok_button_;
 };
 
 }  // namespace gui

@@ -39,8 +39,8 @@ class ConnectionWidget : public ConnectionLocalWidgetDirectoryPath {
   QCheckBox* create_db_if_missing_;
   QLabel* compLabel_;
   QComboBox* typeComparators_;
-  QLabel* compressionLabel_;
-  QComboBox* typeCompressions_;
+  QLabel* compression_label_;
+  QComboBox* type_compressions_;
 };
 
 }  // namespace leveldb

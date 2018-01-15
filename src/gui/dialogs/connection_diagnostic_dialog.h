@@ -49,10 +49,10 @@ class ConnectionDiagnosticDialog : public QDialog {
  private:
   void startTestConnection(proxy::IConnectionSettingsBaseSPtr connection);
 
-  common::qt::gui::GlassWidget* glassWidget_;
-  QLabel* executeTimeLabel_;
-  QLabel* statusLabel_;
-  QLabel* iconLabel_;
+  common::qt::gui::GlassWidget* glass_widget_;
+  QLabel* execute_time_label_;
+  QLabel* status_label_;
+  QLabel* icon_label_;
 };
 
 }  // namespace gui

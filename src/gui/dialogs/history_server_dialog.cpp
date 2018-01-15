@@ -48,18 +48,18 @@ ServerHistoryDialog::ServerHistoryDialog(proxy::IServerSPtr server, QWidget* par
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
-  graphWidget_ = new common::qt::gui::GraphWidget;
-  settingsGraph_ = new QWidget;
+  graph_widget_ = new common::qt::gui::GraphWidget;
+  settings_graph_ = new QWidget;
 
-  clearHistory_ = new QPushButton;
-  VERIFY(connect(clearHistory_, &QPushButton::clicked, this, &ServerHistoryDialog::clearHistory));
-  serverInfoGroupsNames_ = new QComboBox;
-  serverInfoFields_ = new QComboBox;
+  clear_history_ = new QPushButton;
+  VERIFY(connect(clear_history_, &QPushButton::clicked, this, &ServerHistoryDialog::clearHistory));
+  server_info_groups_names_ = new QComboBox;
+  server_info_fields_ = new QComboBox;
 
   typedef void (QComboBox::*curc)(int);
-  VERIFY(connect(serverInfoGroupsNames_, static_cast<curc>(&QComboBox::currentIndexChanged), this,
+  VERIFY(connect(server_info_groups_names_, static_cast<curc>(&QComboBox::currentIndexChanged), this,
                  &ServerHistoryDialog::refreshInfoFields));
-  VERIFY(connect(serverInfoFields_, static_cast<curc>(&QComboBox::currentIndexChanged), this,
+  VERIFY(connect(server_info_fields_, static_cast<curc>(&QComboBox::currentIndexChanged), this,
                  &ServerHistoryDialog::refreshGraph));
 
   const auto fields = core::GetInfoFieldsFromType(server_->GetType());
@@ -67,18 +67,18 @@ ServerHistoryDialog::ServerHistoryDialog(proxy::IServerSPtr server, QWidget* par
     core::info_field_t field = fields[i];
     QString qitem;
     if (common::ConvertFromString(field.first, &qitem)) {
-      serverInfoGroupsNames_->addItem(qitem);
+      server_info_groups_names_->addItem(qitem);
     }
   }
   QVBoxLayout* setingsLayout = new QVBoxLayout;
-  setingsLayout->addWidget(clearHistory_);
-  setingsLayout->addWidget(serverInfoGroupsNames_);
-  setingsLayout->addWidget(serverInfoFields_);
-  settingsGraph_->setLayout(setingsLayout);
+  setingsLayout->addWidget(clear_history_);
+  setingsLayout->addWidget(server_info_groups_names_);
+  setingsLayout->addWidget(server_info_fields_);
+  settings_graph_->setLayout(setingsLayout);
 
   QSplitter* splitter = new QSplitter(Qt::Horizontal);
-  splitter->addWidget(settingsGraph_);
-  splitter->addWidget(graphWidget_);
+  splitter->addWidget(settings_graph_);
+  splitter->addWidget(graph_widget_);
   splitter->setCollapsible(0, false);
   splitter->setCollapsible(1, false);
   splitter->setHandleWidth(1);
@@ -87,7 +87,7 @@ ServerHistoryDialog::ServerHistoryDialog(proxy::IServerSPtr server, QWidget* par
   mainL->addWidget(splitter);
   setLayout(mainL);
 
-  glassWidget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().GetPathToLoadingGif(),
+  glass_widget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().GetPathToLoadingGif(),
                                                   translations::trLoading, 0.5, QColor(111, 111, 100), this);
   VERIFY(connect(server.get(), &proxy::IServer::LoadServerHistoryInfoStarted, this,
                  &ServerHistoryDialog::startLoadServerHistoryInfo));
@@ -104,11 +104,11 @@ ServerHistoryDialog::ServerHistoryDialog(proxy::IServerSPtr server, QWidget* par
 void ServerHistoryDialog::startLoadServerHistoryInfo(const proxy::events_info::ServerInfoHistoryRequest& req) {
   UNUSED(req);
 
-  glassWidget_->start();
+  glass_widget_->start();
 }
 
 void ServerHistoryDialog::finishLoadServerHistoryInfo(const proxy::events_info::ServerInfoHistoryResponce& res) {
-  glassWidget_->stop();
+  glass_widget_->stop();
   common::Error err = res.errorInfo();
   if (err) {
     return;
@@ -146,7 +146,7 @@ void ServerHistoryDialog::refreshInfoFields(int index) {
     return;
   }
 
-  serverInfoFields_->clear();
+  server_info_fields_->clear();
 
   std::vector<core::info_field_t> fields = core::GetInfoFieldsFromType(server_->GetType());
   std::vector<core::Field> field = fields[index].second;
@@ -155,7 +155,7 @@ void ServerHistoryDialog::refreshInfoFields(int index) {
     if (fl.IsIntegral()) {
       QString qitem;
       if (common::ConvertFromString(fl.name, &qitem)) {
-        serverInfoFields_->addItem(qitem, i);
+        server_info_fields_->addItem(qitem, i);
       }
     }
   }
@@ -166,8 +166,8 @@ void ServerHistoryDialog::refreshGraph(int index) {
     return;
   }
 
-  int serverIndex = serverInfoGroupsNames_->currentIndex();
-  QVariant var = serverInfoFields_->itemData(index);
+  int serverIndex = server_info_groups_names_->currentIndex();
+  QVariant var = server_info_fields_->itemData(index);
   uint32_t indexIn = qvariant_cast<uint32_t>(var);
   common::qt::gui::GraphWidget::nodes_container_type nodes;
   for (auto it = infos_.begin(); it != infos_.end(); ++it) {
@@ -186,7 +186,7 @@ void ServerHistoryDialog::refreshGraph(int index) {
     }
   }
 
-  graphWidget_->setNodes(nodes);
+  graph_widget_->setNodes(nodes);
 }
 
 void ServerHistoryDialog::changeEvent(QEvent* e) {
@@ -202,7 +202,7 @@ void ServerHistoryDialog::showEvent(QShowEvent* e) {
 }
 
 void ServerHistoryDialog::reset() {
-  refreshGraph(serverInfoFields_->currentIndex());
+  refreshGraph(server_info_fields_->currentIndex());
 }
 
 void ServerHistoryDialog::retranslateUi() {
@@ -210,7 +210,7 @@ void ServerHistoryDialog::retranslateUi() {
   if (common::ConvertFromString(server_->GetName(), &name)) {
     setWindowTitle(trHistoryTemplate_1S.arg(name));
   }
-  clearHistory_->setText(translations::trClearHistory);
+  clear_history_->setText(translations::trClearHistory);
 }
 
 void ServerHistoryDialog::requestHistoryInfo() {

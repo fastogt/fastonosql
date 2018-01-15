@@ -64,14 +64,14 @@ class ServerHistoryDialog : public QDialog {
   void retranslateUi();
   void requestHistoryInfo();
 
-  QWidget* settingsGraph_;
-  QPushButton* clearHistory_;
-  QComboBox* serverInfoGroupsNames_;
-  QComboBox* serverInfoFields_;
+  QWidget* settings_graph_;
+  QPushButton* clear_history_;
+  QComboBox* server_info_groups_names_;
+  QComboBox* server_info_fields_;
 
-  common::qt::gui::GraphWidget* graphWidget_;
+  common::qt::gui::GraphWidget* graph_widget_;
 
-  common::qt::gui::GlassWidget* glassWidget_;
+  common::qt::gui::GlassWidget* glass_widget_;
   proxy::events_info::ServerInfoHistoryResponce::infos_container_type infos_;
   const proxy::IServerSPtr server_;
 };

@@ -45,8 +45,8 @@ class ConnectionWidget : public ConnectionRemoteWidget {
       const proxy::connection_path_t& path) const override;
 
   QCheckBox* useAuth_;
-  QLineEdit* passwordBox_;
-  QPushButton* passwordEchoModeButton_;
+  QLineEdit* password_box_;
+  QPushButton* password_echo_mode_button_;
 };
 
 }  // namespace ssdb

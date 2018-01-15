@@ -71,13 +71,13 @@ namespace fastonosql {
 namespace gui {
 
 ConnectionBaseWidget::ConnectionBaseWidget(QWidget* parent) : QWidget(parent) {
-  connectionName_ = new QLineEdit;
+  connection_name_ = new QLineEdit;
 
   QVBoxLayout* basicLayout = new QVBoxLayout;
   QHBoxLayout* connectionNameLayout = new QHBoxLayout;
-  connectionNameLabel_ = new QLabel;
-  connectionNameLayout->addWidget(connectionNameLabel_);
-  connectionNameLayout->addWidget(connectionName_);
+  connection_name_label_ = new QLabel;
+  connectionNameLayout->addWidget(connection_name_label_);
+  connectionNameLayout->addWidget(connection_name_);
   basicLayout->addLayout(connectionNameLayout);
 
   QHBoxLayout* namespaceDelimiterLayout = new QHBoxLayout;
@@ -85,61 +85,61 @@ ConnectionBaseWidget::ConnectionBaseWidget(QWidget* parent) : QWidget(parent) {
   QVBoxLayout* namespaceLayout = new QVBoxLayout;
   // ns
   QHBoxLayout* namespaceSeparatorLayout = new QHBoxLayout;
-  namespaceSeparatorLabel_ = new QLabel;
-  namespaceSeparator_ = new QComboBox;
-  namespaceSeparator_->addItems(separators);
-  namespaceSeparator_->setEditable(true);
-  namespaceSeparator_->setValidator(new UniqueCharValidator(this));
-  namespaceSeparatorLayout->addWidget(namespaceSeparatorLabel_);
-  namespaceSeparatorLayout->addWidget(namespaceSeparator_);
+  namespace_separator_label_ = new QLabel;
+  namespace_separator_ = new QComboBox;
+  namespace_separator_->addItems(separators);
+  namespace_separator_->setEditable(true);
+  namespace_separator_->setValidator(new UniqueCharValidator(this));
+  namespaceSeparatorLayout->addWidget(namespace_separator_label_);
+  namespaceSeparatorLayout->addWidget(namespace_separator_);
   namespaceLayout->addLayout(namespaceSeparatorLayout);
   // ns strategy
   QHBoxLayout* namespaceStrategyLayout = new QHBoxLayout;
-  namespaceDisplayingStrategyLabel_ = new QLabel;
-  namespaceDisplayingStrategy_ = new QComboBox;
+  namespace_displaying_strategy_label_ = new QLabel;
+  namespace_displaying_strategy_ = new QComboBox;
   for (uint32_t i = 0; i < core::g_display_strategy_types.size(); ++i) {
-    namespaceDisplayingStrategy_->addItem(core::g_display_strategy_types[i], i);
+    namespace_displaying_strategy_->addItem(core::g_display_strategy_types[i], i);
   }
-  namespaceStrategyLayout->addWidget(namespaceDisplayingStrategyLabel_);
-  namespaceStrategyLayout->addWidget(namespaceDisplayingStrategy_);
+  namespaceStrategyLayout->addWidget(namespace_displaying_strategy_label_);
+  namespaceStrategyLayout->addWidget(namespace_displaying_strategy_);
   namespaceLayout->addLayout(namespaceStrategyLayout);
 
   namespaceDelimiterLayout->addLayout(namespaceLayout);
 
   QHBoxLayout* delimiterLayout = new QHBoxLayout;
-  delimiterLabel_ = new QLabel;
+  delimiter_label_ = new QLabel;
   delimiter_ = new QComboBox;
   delimiter_->addItems(delimiters);
-  delimiterLayout->addWidget(delimiterLabel_);
+  delimiterLayout->addWidget(delimiter_label_);
   delimiterLayout->addWidget(delimiter_);
   namespaceDelimiterLayout->addLayout(delimiterLayout);
 
   basicLayout->addLayout(namespaceDelimiterLayout);
 
-  connectionFolder_ = new QLineEdit;
+  connection_folder_ = new QLineEdit;
   QRegExp rxf("^/[A-z0-9]+/$");
-  connectionFolder_->setValidator(new QRegExpValidator(rxf, this));
+  connection_folder_->setValidator(new QRegExpValidator(rxf, this));
 
-  folderLabel_ = new QLabel;
+  folder_label_ = new QLabel;
   QHBoxLayout* folderLayout = new QHBoxLayout;
-  folderLayout->addWidget(folderLabel_);
-  folderLayout->addWidget(connectionFolder_);
+  folderLayout->addWidget(folder_label_);
+  folderLayout->addWidget(connection_folder_);
 
   QHBoxLayout* loggingLayout = new QHBoxLayout;
   logging_ = new QCheckBox;
 
-  loggingMsec_ = new QSpinBox;
-  loggingMsec_->setRange(0, INT32_MAX);
-  loggingMsec_->setSingleStep(1000);
+  logging_msec_ = new QSpinBox;
+  logging_msec_->setRange(0, INT32_MAX);
+  logging_msec_->setSingleStep(1000);
 
   VERIFY(connect(logging_, &QCheckBox::stateChanged, this, &ConnectionBaseWidget::loggingStateChange));
-  loggingMsec_->setEnabled(false);
+  logging_msec_->setEnabled(false);
 
   loggingLayout->addWidget(logging_);
 
   QHBoxLayout* loggingVLayout = new QHBoxLayout;
   loggingVLayout->addWidget(new QLabel(QObject::tr("msec:")));
-  loggingVLayout->addWidget(loggingMsec_);
+  loggingVLayout->addWidget(logging_msec_);
   loggingLayout->addWidget(new QSplitter(Qt::Horizontal));
   loggingLayout->addLayout(loggingVLayout);
 
@@ -167,7 +167,7 @@ void ConnectionBaseWidget::changeEvent(QEvent* ev) {
 }
 
 QString ConnectionBaseWidget::connectionName() const {
-  return connectionName_->text();
+  return connection_name_->text();
 }
 
 proxy::IConnectionSettingsBase* ConnectionBaseWidget::createConnection() const {
@@ -179,8 +179,8 @@ proxy::IConnectionSettingsBase* ConnectionBaseWidget::createConnection() const {
 
   proxy::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
   proxy::IConnectionSettingsBase* conn = createConnectionImpl(path);
-  conn->SetNsSeparator(common::ConvertToString(namespaceSeparator_->currentText()));
-  conn->SetNsDisplayStrategy(static_cast<core::NsDisplayStrategy>(namespaceDisplayingStrategy_->currentIndex()));
+  conn->SetNsSeparator(common::ConvertToString(namespace_separator_->currentText()));
+  conn->SetNsDisplayStrategy(static_cast<core::NsDisplayStrategy>(namespace_displaying_strategy_->currentIndex()));
   conn->SetDelimiter(common::ConvertToString(toRawCommandLine(delimiter_->currentText())));
   if (isLogging()) {
     conn->SetLoggingMsTimeInterval(loggingInterval());
@@ -190,7 +190,7 @@ proxy::IConnectionSettingsBase* ConnectionBaseWidget::createConnection() const {
 }
 
 void ConnectionBaseWidget::setConnectionName(const QString& name) {
-  connectionName_->setText(name);
+  connection_name_->setText(name);
 }
 
 void ConnectionBaseWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
@@ -205,8 +205,8 @@ void ConnectionBaseWidget::syncControls(proxy::IConnectionSettingsBase* connecti
     std::string delemitr = connection->GetDelimiter();
     QString qns_separator;
     common::ConvertFromString(ns_separator, &qns_separator);
-    namespaceSeparator_->setCurrentText(qns_separator);
-    namespaceDisplayingStrategy_->setCurrentIndex(connection->GetNsDisplayStrategy());
+    namespace_separator_->setCurrentText(qns_separator);
+    namespace_displaying_strategy_->setCurrentIndex(connection->GetNsDisplayStrategy());
     QString qdelemitr;
     common::ConvertFromString(delemitr, &qdelemitr);
     delimiter_->setCurrentText(qdelemitr);
@@ -221,13 +221,13 @@ void ConnectionBaseWidget::syncControls(proxy::IConnectionSettingsBase* connecti
 }
 
 void ConnectionBaseWidget::retranslateUi() {
-  connectionNameLabel_->setText(tr("Name:"));
-  namespaceSeparatorLabel_->setText(tr("Ns separator:"));
-  namespaceDisplayingStrategyLabel_->setText(tr("Ns display:"));
-  delimiterLabel_->setText(tr("Delimiter:"));
-  folderLabel_->setText(tr("UI Folder:"));
+  connection_name_label_->setText(tr("Name:"));
+  namespace_separator_label_->setText(tr("Ns separator:"));
+  namespace_displaying_strategy_label_->setText(tr("Ns display:"));
+  delimiter_label_->setText(tr("Delimiter:"));
+  folder_label_->setText(tr("UI Folder:"));
   logging_->setText(translations::trLoggingEnabled);
-  loggingMsec_->setToolTip(trLoggingToolTip);
+  logging_msec_->setToolTip(trLoggingToolTip);
 }
 
 bool ConnectionBaseWidget::validated() const {
@@ -235,15 +235,15 @@ bool ConnectionBaseWidget::validated() const {
 }
 
 QString ConnectionBaseWidget::UIFolderText() const {
-  return connectionFolder_->text();
+  return connection_folder_->text();
 }
 
 void ConnectionBaseWidget::setUIFolderText(const QString& text) {
-  connectionFolder_->setText(text);
+  connection_folder_->setText(text);
 }
 
 void ConnectionBaseWidget::setUIFolderEnabled(bool val) {
-  connectionFolder_->setEnabled(val);
+  connection_folder_->setEnabled(val);
 }
 
 bool ConnectionBaseWidget::isLogging() const {
@@ -255,15 +255,15 @@ void ConnectionBaseWidget::setLogging(bool logging) {
 }
 
 int ConnectionBaseWidget::loggingInterval() const {
-  return loggingMsec_->value();
+  return logging_msec_->value();
 }
 
 void ConnectionBaseWidget::setLoggingInterval(int val) {
-  loggingMsec_->setValue(val);
+  logging_msec_->setValue(val);
 }
 
 void ConnectionBaseWidget::loggingStateChange(int value) {
-  loggingMsec_->setEnabled(value);
+  logging_msec_->setEnabled(value);
 }
 
 }  // namespace gui

@@ -152,7 +152,7 @@ class BaseShellWidget : public QWidget {
   const proxy::IServerSPtr server_;
   QAction* executeAction_;
   QAction* stopAction_;
-  QAction* connectAction_;
+  QAction* connect_action_;
   QAction* disConnectAction_;
   QAction* loadAction_;
   QAction* saveAction_;

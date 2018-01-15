@@ -88,7 +88,7 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server, const QString& fileP
       server_(server),
       executeAction_(nullptr),
       stopAction_(nullptr),
-      connectAction_(nullptr),
+      connect_action_(nullptr),
       disConnectAction_(nullptr),
       loadAction_(nullptr),
       saveAction_(nullptr),
@@ -127,10 +127,10 @@ QToolBar* BaseShellWidget::createToolBar() {
   VERIFY(connect(saveAsAction_, &QAction::triggered, this, &BaseShellWidget::saveToFileAs));
   savebar->addAction(saveAsAction_);
 
-  connectAction_ = new QAction;
-  connectAction_->setIcon(gui::GuiFactory::GetInstance().GetConnectIcon());
-  VERIFY(connect(connectAction_, &QAction::triggered, this, &BaseShellWidget::connectToServer));
-  savebar->addAction(connectAction_);
+  connect_action_ = new QAction;
+  connect_action_->setIcon(gui::GuiFactory::GetInstance().GetConnectIcon());
+  VERIFY(connect(connect_action_, &QAction::triggered, this, &BaseShellWidget::connectToServer));
+  savebar->addAction(connect_action_);
 
   disConnectAction_ = new QAction;
   disConnectAction_->setIcon(gui::GuiFactory::GetInstance().GetDisConnectIcon());
@@ -332,7 +332,7 @@ void BaseShellWidget::retranslateUi() {
   loadAction_->setText(translations::trLoad);
   saveAction_->setText(translations::trSave);
   saveAsAction_->setText(translations::trSaveAs);
-  connectAction_->setText(translations::trConnect);
+  connect_action_->setText(translations::trConnect);
   disConnectAction_->setText(translations::trDisconnect);
   executeAction_->setText(translations::trExecute);
   stopAction_->setText(translations::trStop);
@@ -661,7 +661,7 @@ void BaseShellWidget::updateDBLabel(const QString& text) {
 void BaseShellWidget::syncConnectionActions() {
   bool is_connected = server_->IsConnected();
 
-  connectAction_->setVisible(!is_connected);
+  connect_action_->setVisible(!is_connected);
   disConnectAction_->setVisible(is_connected);
   executeAction_->setEnabled(true);
   stopAction_->setEnabled(false);

@@ -59,7 +59,7 @@ PropertyServerDialog::PropertyServerDialog(proxy::IServerSPtr server, QWidget* p
   setMinimumSize(QSize(min_width, min_height));
   setLayout(mainL);
 
-  glassWidget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().GetPathToLoadingGif(),
+  glass_widget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().GetPathToLoadingGif(),
                                                   translations::trLoading, 0.5, QColor(111, 111, 100), this);
 
   VERIFY(connect(server.get(), &proxy::IServer::LoadServerPropertyStarted, this,
@@ -76,11 +76,11 @@ PropertyServerDialog::PropertyServerDialog(proxy::IServerSPtr server, QWidget* p
 void PropertyServerDialog::startServerProperty(const proxy::events_info::ServerPropertyInfoRequest& req) {
   UNUSED(req);
 
-  glassWidget_->start();
+  glass_widget_->start();
 }
 
 void PropertyServerDialog::finishServerProperty(const proxy::events_info::ServerPropertyInfoResponce& res) {
-  glassWidget_->stop();
+  glass_widget_->stop();
   common::Error err = res.errorInfo();
   if (err) {
     return;

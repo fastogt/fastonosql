@@ -80,15 +80,15 @@ class OutputWidget : public QWidget {
  private:
   void syncWithSettings();
   void updateTimeLabel(const proxy::events_info::EventInfoBase& evinfo);
-  common::qt::gui::IconLabel* timeLabel_;
-  QPushButton* treeButton_;
-  QPushButton* tableButton_;
-  QPushButton* textButton_;
+  common::qt::gui::IconLabel* time_label_;
+  QPushButton* tree_button_;
+  QPushButton* table_button_;
+  QPushButton* text_button_;
 
-  FastoCommonModel* commonModel_;
-  QTreeView* treeView_;
-  QTableView* tableView_;
-  FastoTextView* textView_;
+  FastoCommonModel* common_model_;
+  QTreeView* tree_view_;
+  QTableView* table_view_;
+  FastoTextView* text_view_;
   const proxy::IServerSPtr server_;
 };
 

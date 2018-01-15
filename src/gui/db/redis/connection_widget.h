@@ -60,8 +60,8 @@ class ConnectionWidget : public ConnectionBaseWidget {
   IPathWidget* pathWidget_;
 
   QCheckBox* useAuth_;
-  QLineEdit* passwordBox_;
-  QPushButton* passwordEchoModeButton_;
+  QLineEdit* password_box_;
+  QPushButton* password_echo_mode_button_;
 
   QLabel* default_db_label_;
   QSpinBox* default_db_num_;

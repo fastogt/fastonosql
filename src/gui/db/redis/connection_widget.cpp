@@ -87,12 +87,12 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(paren
   addWidget(useAuth_);
 
   QHBoxLayout* passwordLayout = new QHBoxLayout;
-  passwordBox_ = new QLineEdit;
-  passwordBox_->setEchoMode(QLineEdit::Password);
-  passwordEchoModeButton_ = new QPushButton(translations::trShow);
-  VERIFY(connect(passwordEchoModeButton_, &QPushButton::clicked, this, &ConnectionWidget::togglePasswordEchoMode));
-  passwordLayout->addWidget(passwordBox_);
-  passwordLayout->addWidget(passwordEchoModeButton_);
+  password_box_ = new QLineEdit;
+  password_box_->setEchoMode(QLineEdit::Password);
+  password_echo_mode_button_ = new QPushButton(translations::trShow);
+  VERIFY(connect(password_echo_mode_button_, &QPushButton::clicked, this, &ConnectionWidget::togglePasswordEchoMode));
+  passwordLayout->addWidget(password_box_);
+  passwordLayout->addWidget(password_echo_mode_button_);
   addLayout(passwordLayout);
 
   QHBoxLayout* def_layout = new QHBoxLayout;
@@ -114,8 +114,8 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(paren
   remote_->setChecked(true);
   selectRemoteDBPath(true);
   useAuth_->setChecked(false);
-  passwordBox_->setEnabled(false);
-  passwordEchoModeButton_->setEnabled(false);
+  password_box_->setEnabled(false);
+  password_echo_mode_button_->setEnabled(false);
 }
 
 void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
@@ -139,10 +139,10 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
       useAuth_->setChecked(true);
       QString qauth;
       common::ConvertFromString(auth, &qauth);
-      passwordBox_->setText(qauth);
+      password_box_->setText(qauth);
     } else {
       useAuth_->setChecked(false);
-      passwordBox_->clear();
+      password_box_->clear();
     }
     default_db_num_->setValue(config.db_num);
     core::SSHInfo ssh_info = redis->GetSSHInfo();
@@ -162,14 +162,14 @@ void ConnectionWidget::retranslateUi() {
 }
 
 void ConnectionWidget::togglePasswordEchoMode() {
-  bool isPassword = passwordBox_->echoMode() == QLineEdit::Password;
-  passwordBox_->setEchoMode(isPassword ? QLineEdit::Normal : QLineEdit::Password);
-  passwordEchoModeButton_->setText(isPassword ? translations::trHide : translations::trShow);
+  bool isPassword = password_box_->echoMode() == QLineEdit::Password;
+  password_box_->setEchoMode(isPassword ? QLineEdit::Normal : QLineEdit::Password);
+  password_echo_mode_button_->setText(isPassword ? translations::trHide : translations::trShow);
 }
 
 void ConnectionWidget::authStateChange(int state) {
-  passwordBox_->setEnabled(state);
-  passwordEchoModeButton_->setEnabled(state);
+  password_box_->setEnabled(state);
+  password_echo_mode_button_->setEnabled(state);
 }
 
 void ConnectionWidget::sslStateChange(int state) {
@@ -217,7 +217,7 @@ bool ConnectionWidget::validated() const {
 
 bool ConnectionWidget::isValidCredential() const {
   if (useAuth_->isChecked()) {
-    QString pass = passwordBox_->text();
+    QString pass = password_box_->text();
     return !pass.isEmpty();
   }
 
@@ -236,7 +236,7 @@ proxy::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(const pro
   }
 
   if (useAuth_->isChecked() && isValidCredential()) {
-    config.auth = common::ConvertToString(passwordBox_->text());
+    config.auth = common::ConvertToString(password_box_->text());
   }
   config.db_num = default_db_num_->value();
   conn->SetInfo(config);

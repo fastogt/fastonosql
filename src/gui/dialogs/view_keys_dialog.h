@@ -76,18 +76,18 @@ class ViewKeysDialog : public QDialog {
   void updateControls();
   size_t keysCount() const;
 
-  std::vector<uint64_t> cursorStack_;
-  uint32_t curPos_;
-  QLineEdit* searchBox_;
-  QLabel* keyCountLabel_;
-  QSpinBox* countSpinEdit_;
+  std::vector<uint64_t> cursor_stack_;
+  uint32_t cur_pos_;
+  QLineEdit* search_box_;
+  QLabel* key_count_label_;
+  QSpinBox* count_spin_edit_;
 
-  QPushButton* searchButton_;
-  QPushButton* leftButtonList_;
-  QSpinBox* currentKey_;
-  QSpinBox* countKey_;
-  QPushButton* rightButtonList_;
-  KeysTableView* keysTable_;
+  QPushButton* search_button_;
+  QPushButton* left_button_list_;
+  QSpinBox* current_key_;
+  QSpinBox* count_key_;
+  QPushButton* right_button_list_;
+  KeysTableView* keys_table_;
   proxy::IDatabaseSPtr db_;
 };
 

@@ -31,13 +31,13 @@ namespace fastonosql {
 namespace gui {
 
 QueryWidget::QueryWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget(parent), server_(server) {
-  shellWidget_ = BaseShellWidget::createWidget(server);
-  outputWidget_ = new OutputWidget(server);
+  shell_widget_ = BaseShellWidget::createWidget(server);
+  output_widget_ = new OutputWidget(server);
 
   QVBoxLayout* mainLayout = new QVBoxLayout;
   QSplitter* splitter = new QSplitter(Qt::Vertical);
-  splitter->addWidget(shellWidget_);
-  splitter->addWidget(outputWidget_);
+  splitter->addWidget(shell_widget_);
+  splitter->addWidget(output_widget_);
   splitter->setCollapsible(0, false);
   splitter->setCollapsible(1, false);
   splitter->setStretchFactor(0, 1);
@@ -59,19 +59,19 @@ core::connectionTypes QueryWidget::connectionType() const {
 }
 
 QString QueryWidget::inputText() const {
-  return shellWidget_->text();
+  return shell_widget_->text();
 }
 
 void QueryWidget::setInputText(const QString& text) {
-  shellWidget_->setText(text);
+  shell_widget_->setText(text);
 }
 
 void QueryWidget::execute(const QString& text) {
-  shellWidget_->executeText(text);
+  shell_widget_->executeText(text);
 }
 
 void QueryWidget::executeArgs(const QString& text, int repeat, int interval, bool history) {
-  shellWidget_->executeArgs(text, repeat, interval, history);
+  shell_widget_->executeArgs(text, repeat, interval, history);
 }
 
 void QueryWidget::reload() {}

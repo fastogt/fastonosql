@@ -84,12 +84,12 @@ class FastoEditor : public QWidget {
   void findElement(bool forward);
 
   FastoScintilla* scin_;
-  QFrame* findPanel_;
-  QLineEdit* findLine_;
+  QFrame* find_panel_;
+  QLineEdit* find_line_;
   QToolButton* close_;
   QPushButton* next_;
   QPushButton* prev_;
-  QCheckBox* caseSensitive_;
+  QCheckBox* case_sensitive_;
 };
 
 }  // namespace gui

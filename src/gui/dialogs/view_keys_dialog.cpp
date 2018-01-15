@@ -53,7 +53,7 @@ namespace fastonosql {
 namespace gui {
 
 ViewKeysDialog::ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QWidget* parent)
-    : QDialog(parent), cursorStack_(), curPos_(0), db_(db) {
+    : QDialog(parent), cursor_stack_(), cur_pos_(0), db_(db) {
   CHECK(db_);
   setWindowTitle(title);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
@@ -69,24 +69,24 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QW
   QVBoxLayout* mainlayout = new QVBoxLayout;
 
   QHBoxLayout* searchLayout = new QHBoxLayout;
-  searchBox_ = new QLineEdit;
-  searchBox_->setText(ALL_KEYS_PATTERNS);
-  VERIFY(connect(searchBox_, &QLineEdit::textChanged, this, &ViewKeysDialog::searchLineChanged));
-  searchLayout->addWidget(searchBox_);
+  search_box_ = new QLineEdit;
+  search_box_->setText(ALL_KEYS_PATTERNS);
+  VERIFY(connect(search_box_, &QLineEdit::textChanged, this, &ViewKeysDialog::searchLineChanged));
+  searchLayout->addWidget(search_box_);
 
-  countSpinEdit_ = new QSpinBox;
-  countSpinEdit_->setRange(min_key_on_page, max_key_on_page);
-  countSpinEdit_->setSingleStep(step_keys_on_page);
-  countSpinEdit_->setValue(defaults_key);
+  count_spin_edit_ = new QSpinBox;
+  count_spin_edit_->setRange(min_key_on_page, max_key_on_page);
+  count_spin_edit_->setSingleStep(step_keys_on_page);
+  count_spin_edit_->setValue(defaults_key);
 
-  keyCountLabel_ = new QLabel;
+  key_count_label_ = new QLabel;
 
-  searchLayout->addWidget(keyCountLabel_);
-  searchLayout->addWidget(countSpinEdit_);
+  searchLayout->addWidget(key_count_label_);
+  searchLayout->addWidget(count_spin_edit_);
 
-  searchButton_ = new QPushButton;
-  VERIFY(connect(searchButton_, &QPushButton::clicked, this, &ViewKeysDialog::rightPageClicked));
-  searchLayout->addWidget(searchButton_);
+  search_button_ = new QPushButton;
+  VERIFY(connect(search_button_, &QPushButton::clicked, this, &ViewKeysDialog::rightPageClicked));
+  searchLayout->addWidget(search_button_);
 
   VERIFY(
       connect(serv.get(), &proxy::IServer::ExecuteStarted, this, &ViewKeysDialog::startExecute, Qt::DirectConnection));
@@ -95,37 +95,37 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QW
   VERIFY(
       connect(serv.get(), &proxy::IServer::KeyTTLChanged, this, &ViewKeysDialog::keyTTLChange, Qt::DirectConnection));
 
-  keysTable_ = new KeysTableView;
-  VERIFY(connect(keysTable_, &KeysTableView::changedTTL, this, &ViewKeysDialog::changeTTL, Qt::DirectConnection));
+  keys_table_ = new KeysTableView;
+  VERIFY(connect(keys_table_, &KeysTableView::changedTTL, this, &ViewKeysDialog::changeTTL, Qt::DirectConnection));
 
   QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &ViewKeysDialog::accept));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &ViewKeysDialog::reject));
   mainlayout->addLayout(searchLayout);
-  mainlayout->addWidget(keysTable_);
+  mainlayout->addWidget(keys_table_);
 
-  leftButtonList_ = createButtonWithIcon(GuiFactory::GetInstance().GetLeftIcon());
-  rightButtonList_ = createButtonWithIcon(GuiFactory::GetInstance().GetRightIcon());
-  VERIFY(connect(leftButtonList_, &QPushButton::clicked, this, &ViewKeysDialog::leftPageClicked));
-  VERIFY(connect(rightButtonList_, &QPushButton::clicked, this, &ViewKeysDialog::rightPageClicked));
+  left_button_list_ = createButtonWithIcon(GuiFactory::GetInstance().GetLeftIcon());
+  right_button_list_ = createButtonWithIcon(GuiFactory::GetInstance().GetRightIcon());
+  VERIFY(connect(left_button_list_, &QPushButton::clicked, this, &ViewKeysDialog::leftPageClicked));
+  VERIFY(connect(right_button_list_, &QPushButton::clicked, this, &ViewKeysDialog::rightPageClicked));
   QHBoxLayout* pagingLayout = new QHBoxLayout;
-  pagingLayout->addWidget(leftButtonList_);
+  pagingLayout->addWidget(left_button_list_);
   core::IDataBaseInfoSPtr inf = db_->GetInfo();
   size_t keysCount = inf->GetDBKeysCount();
-  currentKey_ = new QSpinBox;
-  currentKey_->setEnabled(false);
-  currentKey_->setValue(0);
-  currentKey_->setMinimum(0);
-  currentKey_->setMaximum(keysCount);
-  countKey_ = new QSpinBox;
-  countKey_->setEnabled(false);
-  countKey_->setValue(keysCount);
+  current_key_ = new QSpinBox;
+  current_key_->setEnabled(false);
+  current_key_->setValue(0);
+  current_key_->setMinimum(0);
+  current_key_->setMaximum(keysCount);
+  count_key_ = new QSpinBox;
+  count_key_->setEnabled(false);
+  count_key_->setValue(keysCount);
   pagingLayout->addWidget(new QSplitter(Qt::Horizontal));
-  pagingLayout->addWidget(currentKey_);
-  pagingLayout->addWidget(countKey_);
+  pagingLayout->addWidget(current_key_);
+  pagingLayout->addWidget(count_key_);
   pagingLayout->addWidget(new QSplitter(Qt::Horizontal));
-  pagingLayout->addWidget(rightButtonList_);
+  pagingLayout->addWidget(right_button_list_);
 
   mainlayout->addLayout(pagingLayout);
   mainlayout->addWidget(buttonBox);
@@ -140,7 +140,7 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QW
 void ViewKeysDialog::startLoadDatabaseContent(const proxy::events_info::LoadDatabaseContentRequest& req) {
   UNUSED(req);
 
-  keysTable_->clearItems();
+  keys_table_->clearItems();
 }
 
 void ViewKeysDialog::finishLoadDatabaseContent(const proxy::events_info::LoadDatabaseContentResponce& res) {
@@ -154,15 +154,15 @@ void ViewKeysDialog::finishLoadDatabaseContent(const proxy::events_info::LoadDat
   size_t size = keys.size();
   for (size_t i = 0; i < size; ++i) {
     core::NDbKValue key = keys[i];
-    keysTable_->insertKey(key);
+    keys_table_->insertKey(key);
   }
 
-  int curv = currentKey_->value();
-  if (cursorStack_.size() == curPos_) {
-    cursorStack_.push_back(res.cursor_out);
-    currentKey_->setValue(curv + size);
+  int curv = current_key_->value();
+  if (cursor_stack_.size() == cur_pos_) {
+    cursor_stack_.push_back(res.cursor_out);
+    current_key_->setValue(curv + size);
   } else {
-    currentKey_->setValue(curv - size);
+    current_key_->setValue(curv - size);
   }
 
   updateControls();
@@ -194,29 +194,29 @@ void ViewKeysDialog::keyTTLChange(core::IDataBaseInfoSPtr db, core::NKey key, co
   UNUSED(db);
   core::NKey new_key = key;
   new_key.SetTTL(ttl);
-  keysTable_->updateKey(new_key);
+  keys_table_->updateKey(new_key);
 }
 
 void ViewKeysDialog::search(bool forward) {
-  QString pattern = searchBox_->text();
+  QString pattern = search_box_->text();
   if (pattern.isEmpty()) {
     return;
   }
 
-  if (cursorStack_.empty()) {
-    cursorStack_.push_back(0);
+  if (cursor_stack_.empty()) {
+    cursor_stack_.push_back(0);
   }
 
-  DCHECK_EQ(cursorStack_[0], 0);
+  DCHECK_EQ(cursor_stack_[0], 0);
   if (forward) {
     proxy::events_info::LoadDatabaseContentRequest req(this, db_->GetInfo(), common::ConvertToString(pattern),
-                                                       countSpinEdit_->value(), cursorStack_[curPos_]);
+                                                       count_spin_edit_->value(), cursor_stack_[cur_pos_]);
     db_->LoadContent(req);
-    ++curPos_;
+    ++cur_pos_;
   } else {
-    if (curPos_ > 0) {
+    if (cur_pos_ > 0) {
       proxy::events_info::LoadDatabaseContentRequest req(this, db_->GetInfo(), common::ConvertToString(pattern),
-                                                         countSpinEdit_->value(), cursorStack_[--curPos_]);
+                                                         count_spin_edit_->value(), cursor_stack_[--cur_pos_]);
       db_->LoadContent(req);
     }
   }
@@ -225,9 +225,9 @@ void ViewKeysDialog::search(bool forward) {
 void ViewKeysDialog::searchLineChanged(const QString& text) {
   UNUSED(text);
 
-  cursorStack_.clear();
-  curPos_ = 0;
-  currentKey_->setValue(0);
+  cursor_stack_.clear();
+  cur_pos_ = 0;
+  current_key_->setValue(0);
   updateControls();
 }
 
@@ -247,21 +247,21 @@ void ViewKeysDialog::changeEvent(QEvent* e) {
 }
 
 void ViewKeysDialog::retranslateUi() {
-  keyCountLabel_->setText(translations::trKeyCountOnThePage);
-  searchButton_->setText(translations::trSearch);
+  key_count_label_->setText(translations::trKeyCountOnThePage);
+  search_button_->setText(translations::trSearch);
 }
 
 void ViewKeysDialog::updateControls() {
   bool isEmptyDb = keysCount() == 0;
-  bool isEndSearch = curPos_ ? (cursorStack_[curPos_] == 0) : false;
+  bool isEndSearch = cur_pos_ ? (cursor_stack_[cur_pos_] == 0) : false;
 
-  leftButtonList_->setEnabled(curPos_ > 0);
-  rightButtonList_->setEnabled(!isEmptyDb && !isEndSearch);
-  searchButton_->setEnabled(!isEmptyDb && !isEndSearch);
+  left_button_list_->setEnabled(cur_pos_ > 0);
+  right_button_list_->setEnabled(!isEmptyDb && !isEndSearch);
+  search_button_->setEnabled(!isEmptyDb && !isEndSearch);
 }
 
 size_t ViewKeysDialog::keysCount() const {
-  return countKey_->value();
+  return count_key_->value();
 }
 
 }  // namespace gui

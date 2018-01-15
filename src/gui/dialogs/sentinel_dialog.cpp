@@ -57,15 +57,15 @@ SentinelDialog::SentinelDialog(QWidget* parent, proxy::ISentinelSettingsBase* co
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
-  connectionName_ = new QLineEdit;
-  connectionFolder_ = new QLineEdit;
+  connection_name_ = new QLineEdit;
+  connection_folder_ = new QLineEdit;
   QRegExp rxf("^/[A-z0-9]+/$");
-  connectionFolder_->setValidator(new QRegExpValidator(rxf, this));
+  connection_folder_->setValidator(new QRegExpValidator(rxf, this));
 
-  folderLabel_ = new QLabel;
+  folder_label_ = new QLabel;
   QHBoxLayout* folderLayout = new QHBoxLayout;
-  folderLayout->addWidget(folderLabel_);
-  folderLayout->addWidget(connectionFolder_);
+  folderLayout->addWidget(folder_label_);
+  folderLayout->addWidget(connection_folder_);
   QString conFolder = defaultNameConnectionFolder;
   QString conName = defaultNameConnection;
 
@@ -74,57 +74,57 @@ SentinelDialog::SentinelDialog(QWidget* parent, proxy::ISentinelSettingsBase* co
     common::ConvertFromString(path.GetName(), &conName);
     common::ConvertFromString(path.GetDirectory(), &conFolder);
   }
-  connectionName_->setText(conName);
-  connectionFolder_->setText(conFolder);
+  connection_name_->setText(conName);
+  connection_folder_->setText(conFolder);
 
-  typeConnection_ = new QComboBox;
+  type_connection_ = new QComboBox;
 
   for (size_t i = 0; i < core::g_compiled_types.size(); ++i) {
     core::connectionTypes ct = core::g_compiled_types[i];
     std::string str = common::ConvertToString(ct);
     QString qstr;
     if (common::ConvertFromString(str, &qstr)) {
-      typeConnection_->addItem(GuiFactory::GetInstance().GetIcon(ct), qstr, ct);
+      type_connection_->addItem(GuiFactory::GetInstance().GetIcon(ct), qstr, ct);
     }
   }
 
   if (sentinel_connection_) {
-    typeConnection_->setCurrentIndex(sentinel_connection_->GetType());
+    type_connection_->setCurrentIndex(sentinel_connection_->GetType());
   }
 
   typedef void (QComboBox::*qind)(int);
-  VERIFY(connect(typeConnection_, static_cast<qind>(&QComboBox::currentIndexChanged), this,
+  VERIFY(connect(type_connection_, static_cast<qind>(&QComboBox::currentIndexChanged), this,
                  &SentinelDialog::typeConnectionChange));
 
   QHBoxLayout* loggingLayout = new QHBoxLayout;
   logging_ = new QCheckBox;
-  loggingMsec_ = new QSpinBox;
-  loggingMsec_->setRange(0, INT32_MAX);
-  loggingMsec_->setSingleStep(1000);
+  logging_msec_ = new QSpinBox;
+  logging_msec_->setRange(0, INT32_MAX);
+  logging_msec_->setSingleStep(1000);
 
   if (sentinel_connection_) {
     logging_->setChecked(sentinel_connection_->IsHistoryEnabled());
-    loggingMsec_->setValue(sentinel_connection_->GetLoggingMsTimeInterval());
+    logging_msec_->setValue(sentinel_connection_->GetLoggingMsTimeInterval());
   } else {
     logging_->setChecked(false);
   }
   VERIFY(connect(logging_, &QCheckBox::stateChanged, this, &SentinelDialog::loggingStateChange));
 
   loggingLayout->addWidget(logging_);
-  loggingLayout->addWidget(loggingMsec_);
+  loggingLayout->addWidget(logging_msec_);
 
-  listWidget_ = new QTreeWidget;
-  listWidget_->setIndentation(5);
+  list_widget_ = new QTreeWidget;
+  list_widget_->setIndentation(5);
 
   QStringList colums;
   colums << translations::trName << translations::trAddress;
-  listWidget_->setHeaderLabels(colums);
-  listWidget_->setIndentation(15);
-  listWidget_->setSelectionMode(QAbstractItemView::SingleSelection);  // single item
+  list_widget_->setHeaderLabels(colums);
+  list_widget_->setIndentation(15);
+  list_widget_->setSelectionMode(QAbstractItemView::SingleSelection);  // single item
                                                                       // can be draged
                                                                       // or
                                                                       // droped
-  listWidget_->setSelectionBehavior(QAbstractItemView::SelectRows);
+  list_widget_->setSelectionBehavior(QAbstractItemView::SelectRows);
 
   if (sentinel_connection_) {
     auto sentinels = sentinel_connection_->GetSentinels();
@@ -133,7 +133,7 @@ SentinelDialog::SentinelDialog(QWidget* parent, proxy::ISentinelSettingsBase* co
     }
   }
 
-  VERIFY(connect(listWidget_, &QTreeWidget::itemSelectionChanged, this, &SentinelDialog::itemSelectionChanged));
+  VERIFY(connect(list_widget_, &QTreeWidget::itemSelectionChanged, this, &SentinelDialog::itemSelectionChanged));
 
   QHBoxLayout* toolBarLayout = new QHBoxLayout;
   savebar_ = new QToolBar;
@@ -156,30 +156,30 @@ SentinelDialog::SentinelDialog(QWidget* parent, proxy::ISentinelSettingsBase* co
   toolBarLayout->addSpacerItem(hSpacer);
 
   QVBoxLayout* inputLayout = new QVBoxLayout;
-  inputLayout->addWidget(connectionName_);
+  inputLayout->addWidget(connection_name_);
   inputLayout->addLayout(folderLayout);
-  inputLayout->addWidget(typeConnection_);
+  inputLayout->addWidget(type_connection_);
   inputLayout->addLayout(loggingLayout);
   inputLayout->addLayout(toolBarLayout);
-  inputLayout->addWidget(listWidget_);
+  inputLayout->addWidget(list_widget_);
 
-  testButton_ = new QPushButton("&Test");
-  testButton_->setIcon(GuiFactory::GetInstance().GetMessageBoxInformationIcon());
-  VERIFY(connect(testButton_, &QPushButton::clicked, this, &SentinelDialog::testConnection));
-  testButton_->setEnabled(false);
+  test_button_ = new QPushButton("&Test");
+  test_button_->setIcon(GuiFactory::GetInstance().GetMessageBoxInformationIcon());
+  VERIFY(connect(test_button_, &QPushButton::clicked, this, &SentinelDialog::testConnection));
+  test_button_->setEnabled(false);
 
-  discoveryButton_ = new QPushButton("&Discovery");
-  discoveryButton_->setIcon(GuiFactory::GetInstance().GetDiscoveryIcon());
-  VERIFY(connect(discoveryButton_, &QPushButton::clicked, this, &SentinelDialog::discoverySentinel));
+  discovery_button_ = new QPushButton("&Discovery");
+  discovery_button_->setIcon(GuiFactory::GetInstance().GetDiscoveryIcon());
+  VERIFY(connect(discovery_button_, &QPushButton::clicked, this, &SentinelDialog::discoverySentinel));
 
   QHBoxLayout* bottomLayout = new QHBoxLayout;
-  bottomLayout->addWidget(testButton_, 0, Qt::AlignLeft);
-  bottomLayout->addWidget(discoveryButton_, 0, Qt::AlignLeft);
-  buttonBox_ = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Save);
-  buttonBox_->setOrientation(Qt::Horizontal);
-  VERIFY(connect(buttonBox_, &QDialogButtonBox::accepted, this, &SentinelDialog::accept));
-  VERIFY(connect(buttonBox_, &QDialogButtonBox::rejected, this, &SentinelDialog::reject));
-  bottomLayout->addWidget(buttonBox_);
+  bottomLayout->addWidget(test_button_, 0, Qt::AlignLeft);
+  bottomLayout->addWidget(discovery_button_, 0, Qt::AlignLeft);
+  button_box_ = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Save);
+  button_box_->setOrientation(Qt::Horizontal);
+  VERIFY(connect(button_box_, &QDialogButtonBox::accepted, this, &SentinelDialog::accept));
+  VERIFY(connect(button_box_, &QDialogButtonBox::rejected, this, &SentinelDialog::reject));
+  bottomLayout->addWidget(button_box_);
 
   QVBoxLayout* mainLayout = new QVBoxLayout;
   mainLayout->addLayout(inputLayout);
@@ -188,7 +188,7 @@ SentinelDialog::SentinelDialog(QWidget* parent, proxy::ISentinelSettingsBase* co
   setLayout(mainLayout);
 
   // update controls
-  typeConnectionChange(typeConnection_->currentIndex());
+  typeConnectionChange(type_connection_->currentIndex());
   loggingStateChange(logging_->checkState());
   retranslateUi();
 }
@@ -204,24 +204,24 @@ void SentinelDialog::accept() {
 }
 
 void SentinelDialog::typeConnectionChange(int index) {
-  QVariant var = typeConnection_->itemData(index);
+  QVariant var = type_connection_->itemData(index);
   core::connectionTypes currentType = static_cast<core::connectionTypes>(qvariant_cast<unsigned char>(var));
   bool isValidType = currentType == core::REDIS;
-  connectionName_->setEnabled(isValidType);
-  buttonBox_->button(QDialogButtonBox::Save)->setEnabled(isValidType);
+  connection_name_->setEnabled(isValidType);
+  button_box_->button(QDialogButtonBox::Save)->setEnabled(isValidType);
   savebar_->setEnabled(isValidType);
-  listWidget_->selectionModel()->clear();
-  listWidget_->setEnabled(isValidType);
+  list_widget_->selectionModel()->clear();
+  list_widget_->setEnabled(isValidType);
   logging_->setEnabled(isValidType);
   itemSelectionChanged();
 }
 
 void SentinelDialog::loggingStateChange(int value) {
-  loggingMsec_->setEnabled(value);
+  logging_msec_->setEnabled(value);
 }
 
 void SentinelDialog::testConnection() {
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
+  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(list_widget_->currentItem());  // +
 
   // Do nothing if no item selected
   if (!currentItem) {
@@ -234,7 +234,7 @@ void SentinelDialog::testConnection() {
 
 void SentinelDialog::discoverySentinel() {
   SentinelConnectionWidgetItem* sentItem =
-      dynamic_cast<SentinelConnectionWidgetItem*>(listWidget_->currentItem());  // +
+      dynamic_cast<SentinelConnectionWidgetItem*>(list_widget_->currentItem());  // +
 
   // Do nothing if no item selected
   if (!sentItem) {
@@ -275,7 +275,7 @@ void SentinelDialog::addConnectionSettings() {
 }
 
 void SentinelDialog::remove() {
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
+  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(list_widget_->currentItem());  // +
 
   // Do nothing if no item selected
   if (!currentItem) {
@@ -295,7 +295,7 @@ void SentinelDialog::remove() {
 }
 
 void SentinelDialog::edit() {
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
+  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(list_widget_->currentItem());  // +
 
   // Do nothing if no item selected
   if (!currentItem) {
@@ -315,14 +315,14 @@ void SentinelDialog::edit() {
 }
 
 void SentinelDialog::itemSelectionChanged() {
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
+  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(list_widget_->currentItem());  // +
   bool isValidConnection = currentItem != nullptr;
 
-  testButton_->setEnabled(isValidConnection);
+  test_button_->setEnabled(isValidConnection);
 
-  SentinelConnectionWidgetItem* sent = dynamic_cast<SentinelConnectionWidgetItem*>(listWidget_->currentItem());  // +
+  SentinelConnectionWidgetItem* sent = dynamic_cast<SentinelConnectionWidgetItem*>(list_widget_->currentItem());  // +
   bool isValidSentConnection = sent != nullptr;
-  discoveryButton_->setEnabled(isValidSentConnection);
+  discovery_button_->setEnabled(isValidSentConnection);
 }
 
 void SentinelDialog::changeEvent(QEvent* e) {
@@ -335,14 +335,14 @@ void SentinelDialog::changeEvent(QEvent* e) {
 
 void SentinelDialog::retranslateUi() {
   logging_->setText(translations::trLoggingEnabled);
-  folderLabel_->setText(translations::trFolder);
+  folder_label_->setText(translations::trFolder);
 }
 
 bool SentinelDialog::validateAndApply() {
-  QVariant var = typeConnection_->currentData();
+  QVariant var = type_connection_->currentData();
   core::connectionTypes currentType = static_cast<core::connectionTypes>(qvariant_cast<unsigned char>(var));
-  std::string conName = common::ConvertToString(connectionName_->text());
-  std::string conFolder = common::ConvertToString(connectionFolder_->text());
+  std::string conName = common::ConvertToString(connection_name_->text());
+  std::string conFolder = common::ConvertToString(connection_folder_->text());
   if (conFolder.empty()) {
     conFolder = defaultNameConnectionFolder;
   }
@@ -351,12 +351,12 @@ bool SentinelDialog::validateAndApply() {
   proxy::ISentinelSettingsBase* newConnection =
       proxy::SentinelConnectionSettingsFactory::GetInstance().CreateFromType(currentType, path);
   if (logging_->isChecked()) {
-    newConnection->SetLoggingMsTimeInterval(loggingMsec_->value());
+    newConnection->SetLoggingMsTimeInterval(logging_msec_->value());
   }
 
-  for (int i = 0; i < listWidget_->topLevelItemCount(); ++i) {
+  for (int i = 0; i < list_widget_->topLevelItemCount(); ++i) {
     SentinelConnectionWidgetItem* item =
-        dynamic_cast<SentinelConnectionWidgetItem*>(listWidget_->topLevelItem(i));  // +
+        dynamic_cast<SentinelConnectionWidgetItem*>(list_widget_->topLevelItem(i));  // +
     if (!item) {
       continue;
     }
@@ -385,7 +385,7 @@ void SentinelDialog::addSentinel(proxy::SentinelSettings sent) {
     item->setConnection(node);
     sent_item->addChild(item);
   }
-  listWidget_->addTopLevelItem(sent_item);
+  list_widget_->addTopLevelItem(sent_item);
 }
 
 }  // namespace gui

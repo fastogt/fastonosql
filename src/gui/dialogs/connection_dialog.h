@@ -60,8 +60,8 @@ class ConnectionDialog : public QDialog {
   proxy::IConnectionSettingsBaseSPtr connection_;
   ConnectionBaseWidget* connection_widget_;
 
-  QPushButton* testButton_;
-  QDialogButtonBox* buttonBox_;
+  QPushButton* test_button_;
+  QDialogButtonBox* button_box_;
 };
 
 }  // namespace gui

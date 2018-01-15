@@ -48,36 +48,36 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent) : QDialog(parent) {
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
-  listWidget_ = new QTreeWidget;
-  listWidget_->setIndentation(5);
+  list_widget_ = new QTreeWidget;
+  list_widget_->setIndentation(5);
 
   QStringList colums;
   colums << translations::trName << translations::trAddress;
-  listWidget_->setHeaderLabels(colums);
+  list_widget_->setHeaderLabels(colums);
 
-  // listWidget_->header()->setSectionResizeMode(0,
+  // list_widget_->header()->setSectionResizeMode(0,
   // QHeaderView::Stretch);
-  // listWidget_->header()->setSectionResizeMode(1,
+  // list_widget_->header()->setSectionResizeMode(1,
   // QHeaderView::Stretch);
 
-  // listWidget_->setViewMode(QListView::ListMode);
-  listWidget_->setContextMenuPolicy(Qt::ActionsContextMenu);
-  listWidget_->setIndentation(15);
-  listWidget_->setSelectionMode(QAbstractItemView::SingleSelection);  // single item
+  // list_widget_->setViewMode(QListView::ListMode);
+  list_widget_->setContextMenuPolicy(Qt::ActionsContextMenu);
+  list_widget_->setIndentation(15);
+  list_widget_->setSelectionMode(QAbstractItemView::SingleSelection);  // single item
                                                                       // can be draged
                                                                       // or
                                                                       // droped
-  listWidget_->setSelectionBehavior(QAbstractItemView::SelectRows);
+  list_widget_->setSelectionBehavior(QAbstractItemView::SelectRows);
 
-  // listWidget_->setDragEnabled(true);
-  // listWidget_->setDragDropMode(QAbstractItemView::InternalMove);
+  // list_widget_->setDragEnabled(true);
+  // list_widget_->setDragDropMode(QAbstractItemView::InternalMove);
   setMinimumSize(QSize(min_width, min_height));
-  VERIFY(connect(listWidget_, &QTreeWidget::itemDoubleClicked, this, &ConnectionsDialog::accept));
+  VERIFY(connect(list_widget_, &QTreeWidget::itemDoubleClicked, this, &ConnectionsDialog::accept));
 
   QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
   buttonBox->button(QDialogButtonBox::Ok)->setIcon(GuiFactory::GetInstance().GetServerIcon());
-  acButton_ = buttonBox->button(QDialogButtonBox::Ok);
+  ok_button_ = buttonBox->button(QDialogButtonBox::Ok);
 
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &ConnectionsDialog::accept));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &ConnectionsDialog::reject));
@@ -115,7 +115,7 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent) : QDialog(parent) {
 
   QVBoxLayout* firstColumnLayout = new QVBoxLayout;
   firstColumnLayout->addWidget(savebar);
-  firstColumnLayout->addWidget(listWidget_);
+  firstColumnLayout->addWidget(list_widget_);
   firstColumnLayout->addLayout(bottomLayout);
 
   QHBoxLayout* mainLayout = new QHBoxLayout(this);
@@ -140,16 +140,16 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent) : QDialog(parent) {
     addCluster(connectionModel);
   }
 
-  VERIFY(connect(listWidget_, &QTreeWidget::itemSelectionChanged, this, &ConnectionsDialog::itemSelectionChange));
+  VERIFY(connect(list_widget_, &QTreeWidget::itemSelectionChanged, this, &ConnectionsDialog::itemSelectionChange));
   // Highlight first item
-  if (listWidget_->topLevelItemCount() > 0) {
-    listWidget_->setCurrentItem(listWidget_->topLevelItem(0));
+  if (list_widget_->topLevelItemCount() > 0) {
+    list_widget_->setCurrentItem(list_widget_->topLevelItem(0));
   }
   retranslateUi();
 }
 
 proxy::IConnectionSettingsBaseSPtr ConnectionsDialog::selectedConnection() const {
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(listWidget_->currentItem());  // +
+  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(list_widget_->currentItem());  // +
   if (currentItem) {
     return currentItem->connection();
   }
@@ -159,7 +159,7 @@ proxy::IConnectionSettingsBaseSPtr ConnectionsDialog::selectedConnection() const
 
 proxy::ISentinelSettingsBaseSPtr ConnectionsDialog::selectedSentinel() const {
   SentinelConnectionListWidgetItemContainer* currentItem =
-      dynamic_cast<SentinelConnectionListWidgetItemContainer*>(listWidget_->currentItem());  // +
+      dynamic_cast<SentinelConnectionListWidgetItemContainer*>(list_widget_->currentItem());  // +
   if (currentItem) {
     return currentItem->connection();
   }
@@ -169,7 +169,7 @@ proxy::ISentinelSettingsBaseSPtr ConnectionsDialog::selectedSentinel() const {
 
 proxy::IClusterSettingsBaseSPtr ConnectionsDialog::selectedCluster() const {
   ClusterConnectionListWidgetItemContainer* currentItem =
-      dynamic_cast<ClusterConnectionListWidgetItemContainer*>(listWidget_->currentItem());  // +
+      dynamic_cast<ClusterConnectionListWidgetItemContainer*>(list_widget_->currentItem());  // +
   if (currentItem) {
     return currentItem->connection();
   }
@@ -215,17 +215,17 @@ void ConnectionsDialog::addSent() {
 }
 
 void ConnectionsDialog::itemSelectionChange() {
-  QTreeWidgetItem* qitem = listWidget_->currentItem();
+  QTreeWidgetItem* qitem = list_widget_->currentItem();
   if (!qitem) {
     return;
   }
 
   DirectoryListWidgetItem* currentItem = dynamic_cast<DirectoryListWidgetItem*>(qitem);
-  acButton_->setEnabled(!currentItem);
+  ok_button_->setEnabled(!currentItem);
 }
 
 void ConnectionsDialog::edit() {
-  QTreeWidgetItem* qitem = listWidget_->currentItem();
+  QTreeWidgetItem* qitem = list_widget_->currentItem();
   if (!qitem) {
     return;
   }
@@ -234,7 +234,7 @@ void ConnectionsDialog::edit() {
 }
 
 void ConnectionsDialog::clone() {
-  QTreeWidgetItem* qitem = listWidget_->currentItem();
+  QTreeWidgetItem* qitem = list_widget_->currentItem();
   if (!qitem) {
     return;
   }
@@ -243,7 +243,7 @@ void ConnectionsDialog::clone() {
 }
 
 void ConnectionsDialog::remove() {
-  QTreeWidgetItem* qitem = listWidget_->currentItem();
+  QTreeWidgetItem* qitem = list_widget_->currentItem();
   if (!qitem) {
     return;
   }
@@ -435,7 +435,7 @@ void ConnectionsDialog::removeSentinel(SentinelConnectionListWidgetItemContainer
  * button.
  */
 void ConnectionsDialog::accept() {
-  QTreeWidgetItem* qitem = listWidget_->currentItem();
+  QTreeWidgetItem* qitem = list_widget_->currentItem();
   if (!qitem) {
     return;
   }
@@ -457,7 +457,7 @@ void ConnectionsDialog::changeEvent(QEvent* e) {
 
 void ConnectionsDialog::retranslateUi() {
   setWindowTitle(translations::trConnections);
-  acButton_->setText(translations::trOpen);
+  ok_button_->setText(translations::trOpen);
 }
 
 void ConnectionsDialog::addConnection(proxy::IConnectionSettingsBaseSPtr con) {
@@ -466,7 +466,7 @@ void ConnectionsDialog::addConnection(proxy::IConnectionSettingsBaseSPtr con) {
   if (dir == proxy::connection_path_t::GetRoot()) {
     ConnectionListWidgetItem* item = new ConnectionListWidgetItem(nullptr);
     item->setConnection(con);
-    listWidget_->addTopLevelItem(item);
+    list_widget_->addTopLevelItem(item);
     return;
   }
 
@@ -478,7 +478,7 @@ void ConnectionsDialog::addConnection(proxy::IConnectionSettingsBaseSPtr con) {
   ConnectionListWidgetItem* item = new ConnectionListWidgetItem(dirItem);
   item->setConnection(con);
   dirItem->addChild(item);
-  listWidget_->addTopLevelItem(dirItem);
+  list_widget_->addTopLevelItem(dirItem);
 }
 
 void ConnectionsDialog::addCluster(proxy::IClusterSettingsBaseSPtr con) {
@@ -486,7 +486,7 @@ void ConnectionsDialog::addCluster(proxy::IClusterSettingsBaseSPtr con) {
   proxy::connection_path_t dir(path.GetDirectory());
   if (dir == proxy::connection_path_t::GetRoot()) {
     ClusterConnectionListWidgetItemContainer* item = new ClusterConnectionListWidgetItemContainer(con, nullptr);
-    listWidget_->addTopLevelItem(item);
+    list_widget_->addTopLevelItem(item);
     return;
   }
 
@@ -497,7 +497,7 @@ void ConnectionsDialog::addCluster(proxy::IClusterSettingsBaseSPtr con) {
 
   ClusterConnectionListWidgetItemContainer* item = new ClusterConnectionListWidgetItemContainer(con, dirItem);
   dirItem->addChild(item);
-  listWidget_->addTopLevelItem(dirItem);
+  list_widget_->addTopLevelItem(dirItem);
 }
 
 void ConnectionsDialog::addSentinel(proxy::ISentinelSettingsBaseSPtr con) {
@@ -505,7 +505,7 @@ void ConnectionsDialog::addSentinel(proxy::ISentinelSettingsBaseSPtr con) {
   proxy::connection_path_t dir(path.GetDirectory());
   if (dir == proxy::connection_path_t::GetRoot()) {
     SentinelConnectionListWidgetItemContainer* item = new SentinelConnectionListWidgetItemContainer(con, nullptr);
-    listWidget_->addTopLevelItem(item);
+    list_widget_->addTopLevelItem(item);
     return;
   }
 
@@ -516,13 +516,13 @@ void ConnectionsDialog::addSentinel(proxy::ISentinelSettingsBaseSPtr con) {
 
   SentinelConnectionListWidgetItemContainer* item = new SentinelConnectionListWidgetItemContainer(con, dirItem);
   dirItem->addChild(item);
-  listWidget_->addTopLevelItem(dirItem);
+  list_widget_->addTopLevelItem(dirItem);
 }
 
 DirectoryListWidgetItem* ConnectionsDialog::findFolderByPath(const proxy::connection_path_t& path) const {
-  int count = listWidget_->topLevelItemCount();
+  int count = list_widget_->topLevelItemCount();
   for (int i = 0; i < count; ++i) {
-    QTreeWidgetItem* item = listWidget_->topLevelItem(i);
+    QTreeWidgetItem* item = list_widget_->topLevelItem(i);
     DirectoryListWidgetItem* dirItem = dynamic_cast<DirectoryListWidgetItem*>(item);  // +
     if (dirItem && dirItem->path() == path) {
       return dirItem;

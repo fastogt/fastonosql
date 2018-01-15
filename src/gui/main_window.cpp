@@ -119,105 +119,105 @@ MainWindow::MainWindow() : QMainWindow() {
 
   setWindowTitle(PROJECT_NAME_TITLE " " PROJECT_VERSION);
 
-  connectAction_ = new QAction(this);
-  connectAction_->setIcon(GuiFactory::GetInstance().GetConnectDBIcon());
-  connectAction_->setShortcut(g_new_key);
-  VERIFY(connect(connectAction_, &QAction::triggered, this, &MainWindow::open));
+  connect_action_ = new QAction(this);
+  connect_action_->setIcon(GuiFactory::GetInstance().GetConnectDBIcon());
+  connect_action_->setShortcut(g_new_key);
+  VERIFY(connect(connect_action_, &QAction::triggered, this, &MainWindow::open));
 
-  loadFromFileAction_ = new QAction(this);
-  loadFromFileAction_->setIcon(GuiFactory::GetInstance().GetLoadIcon());
-  // importAction_->setShortcut(g_open_key);
-  VERIFY(connect(loadFromFileAction_, &QAction::triggered, this, &MainWindow::loadConnection));
+  load_from_file_action_ = new QAction(this);
+  load_from_file_action_->setIcon(GuiFactory::GetInstance().GetLoadIcon());
+  // import_action_->setShortcut(g_open_key);
+  VERIFY(connect(load_from_file_action_, &QAction::triggered, this, &MainWindow::loadConnection));
 
-  importAction_ = new QAction(this);
-  importAction_->setIcon(GuiFactory::GetInstance().GetImportIcon());
-  // importAction_->setShortcut(g_open_key);
-  VERIFY(connect(importAction_, &QAction::triggered, this, &MainWindow::importConnection));
+  import_action_ = new QAction(this);
+  import_action_->setIcon(GuiFactory::GetInstance().GetImportIcon());
+  // import_action_->setShortcut(g_open_key);
+  VERIFY(connect(import_action_, &QAction::triggered, this, &MainWindow::importConnection));
 
-  exportAction_ = new QAction(this);
-  exportAction_->setIcon(GuiFactory::GetInstance().GetExportIcon());
-  // exportAction_->setShortcut(g_open_key);
-  VERIFY(connect(exportAction_, &QAction::triggered, this, &MainWindow::exportConnection));
+  export_action_ = new QAction(this);
+  export_action_->setIcon(GuiFactory::GetInstance().GetExportIcon());
+  // export_action_->setShortcut(g_open_key);
+  VERIFY(connect(export_action_, &QAction::triggered, this, &MainWindow::exportConnection));
 
   // Exit action
-  exitAction_ = new QAction(this);
-  exitAction_->setShortcut(g_quit_key);
-  VERIFY(connect(exitAction_, &QAction::triggered, this, &MainWindow::close));
+  exit_action_ = new QAction(this);
+  exit_action_->setShortcut(g_quit_key);
+  VERIFY(connect(exit_action_, &QAction::triggered, this, &MainWindow::close));
 
   // File menu
   QMenu* fileMenu = new QMenu(this);
-  fileAction_ = menuBar()->addMenu(fileMenu);
-  fileMenu->addAction(connectAction_);
-  fileMenu->addAction(loadFromFileAction_);
-  fileMenu->addAction(importAction_);
-  fileMenu->addAction(exportAction_);
+  file_action_ = menuBar()->addMenu(fileMenu);
+  fileMenu->addAction(connect_action_);
+  fileMenu->addAction(load_from_file_action_);
+  fileMenu->addAction(import_action_);
+  fileMenu->addAction(export_action_);
   QMenu* recentMenu = new QMenu(this);
-  recentConnections_ = fileMenu->addMenu(recentMenu);
+  recent_connections_ = fileMenu->addMenu(recentMenu);
   for (auto i = 0; i < max_recent_connections; ++i) {
-    recentConnectionsActs_[i] = new QAction(this);
-    VERIFY(connect(recentConnectionsActs_[i], &QAction::triggered, this, &MainWindow::openRecentConnection));
-    recentMenu->addAction(recentConnectionsActs_[i]);
+    recent_connections_acts_[i] = new QAction(this);
+    VERIFY(connect(recent_connections_acts_[i], &QAction::triggered, this, &MainWindow::openRecentConnection));
+    recentMenu->addAction(recent_connections_acts_[i]);
   }
 
-  clearMenu_ = new QAction(this);
+  clear_menu_ = new QAction(this);
   recentMenu->addSeparator();
-  VERIFY(connect(clearMenu_, &QAction::triggered, this, &MainWindow::clearRecentConnectionsMenu));
-  recentMenu->addAction(clearMenu_);
+  VERIFY(connect(clear_menu_, &QAction::triggered, this, &MainWindow::clearRecentConnectionsMenu));
+  recentMenu->addAction(clear_menu_);
 
   fileMenu->addSeparator();
-  fileMenu->addAction(exitAction_);
+  fileMenu->addAction(exit_action_);
   updateRecentConnectionActions();
 
-  preferencesAction_ = new QAction(this);
-  preferencesAction_->setIcon(GuiFactory::GetInstance().GetPreferencesIcon());
-  VERIFY(connect(preferencesAction_, &QAction::triggered, this, &MainWindow::openPreferences));
+  preferences_action_ = new QAction(this);
+  preferences_action_->setIcon(GuiFactory::GetInstance().GetPreferencesIcon());
+  VERIFY(connect(preferences_action_, &QAction::triggered, this, &MainWindow::openPreferences));
 
   // edit menu
   QMenu* editMenu = new QMenu(this);
-  editAction_ = menuBar()->addMenu(editMenu);
-  editMenu->addAction(preferencesAction_);
+  edit_action_ = menuBar()->addMenu(editMenu);
+  editMenu->addAction(preferences_action_);
 
   // tools menu
   QMenu* tools = new QMenu(this);
-  toolsAction_ = menuBar()->addMenu(tools);
+  tools_action_ = menuBar()->addMenu(tools);
 
-  encodeDecodeDialogAction_ = new QAction(this);
-  encodeDecodeDialogAction_->setIcon(GuiFactory::GetInstance().GetEncodeDecodeIcon());
-  VERIFY(connect(encodeDecodeDialogAction_, &QAction::triggered, this, &MainWindow::openEncodeDecodeDialog));
-  tools->addAction(encodeDecodeDialogAction_);
+  encode_decode_dialog_action_ = new QAction(this);
+  encode_decode_dialog_action_->setIcon(GuiFactory::GetInstance().GetEncodeDecodeIcon());
+  VERIFY(connect(encode_decode_dialog_action_, &QAction::triggered, this, &MainWindow::openEncodeDecodeDialog));
+  tools->addAction(encode_decode_dialog_action_);
 
   // window menu
   QMenu* window = new QMenu(this);
-  windowAction_ = menuBar()->addMenu(window);
-  fullScreanAction_ = new QAction(this);
-  fullScreanAction_->setShortcut(g_full_screen_key);
-  VERIFY(connect(fullScreanAction_, &QAction::triggered, this, &MainWindow::enterLeaveFullScreen));
-  window->addAction(fullScreanAction_);
+  window_action_ = menuBar()->addMenu(window);
+  full_screan_action_ = new QAction(this);
+  full_screan_action_->setShortcut(g_full_screen_key);
+  VERIFY(connect(full_screan_action_, &QAction::triggered, this, &MainWindow::enterLeaveFullScreen));
+  window->addAction(full_screan_action_);
 
   QMenu* views = new QMenu(translations::trViews, this);
   window->addMenu(views);
 
   QMenu* helpMenu = new QMenu(this);
-  aboutAction_ = new QAction(this);
-  VERIFY(connect(aboutAction_, &QAction::triggered, this, &MainWindow::about));
+  about_action_ = new QAction(this);
+  VERIFY(connect(about_action_, &QAction::triggered, this, &MainWindow::about));
 
-  howtouseAction_ = new QAction(this);
-  VERIFY(connect(howtouseAction_, &QAction::triggered, this, &MainWindow::howToUse));
+  howtouse_action_ = new QAction(this);
+  VERIFY(connect(howtouse_action_, &QAction::triggered, this, &MainWindow::howToUse));
 
-  helpAction_ = menuBar()->addMenu(helpMenu);
+  help_action_ = menuBar()->addMenu(helpMenu);
 
-  checkUpdateAction_ = new QAction(this);
-  VERIFY(connect(checkUpdateAction_, &QAction::triggered, this, &MainWindow::checkUpdate));
+  check_update_action_ = new QAction(this);
+  VERIFY(connect(check_update_action_, &QAction::triggered, this, &MainWindow::checkUpdate));
 
-  reportBugAction_ = new QAction(this);
-  VERIFY(connect(reportBugAction_, &QAction::triggered, this, &MainWindow::reportBug));
+  report_bug_action_ = new QAction(this);
+  VERIFY(connect(report_bug_action_, &QAction::triggered, this, &MainWindow::reportBug));
 
-  helpMenu->addAction(checkUpdateAction_);
+  helpMenu->addAction(check_update_action_);
   helpMenu->addSeparator();
-  helpMenu->addAction(reportBugAction_);
-  helpMenu->addAction(howtouseAction_);
+  helpMenu->addAction(report_bug_action_);
+  helpMenu->addAction(howtouse_action_);
   helpMenu->addSeparator();
-  helpMenu->addAction(aboutAction_);
+  helpMenu->addAction(about_action_);
 
   MainWidget* mainW = new MainWidget;
   setCentralWidget(mainW);
@@ -228,35 +228,35 @@ MainWindow::MainWindow() : QMainWindow() {
   VERIFY(connect(exp_, &ExplorerTreeWidget::serverClosed, this, &MainWindow::closeServer, Qt::DirectConnection));
   VERIFY(connect(exp_, &ExplorerTreeWidget::clusterClosed, this, &MainWindow::closeCluster, Qt::DirectConnection));
   VERIFY(connect(exp_, &ExplorerTreeWidget::sentinelClosed, this, &MainWindow::closeSentinel, Qt::DirectConnection));
-  expDock_ = new QDockWidget(this);
-  explorerAction_ = expDock_->toggleViewAction();
-  explorerAction_->setShortcut(explorerKeySequence);
-  explorerAction_->setChecked(true);
-  views->addAction(explorerAction_);
+  exp_dock_ = new QDockWidget(this);
+  explorer_action_ = exp_dock_->toggleViewAction();
+  explorer_action_->setShortcut(explorerKeySequence);
+  explorer_action_->setChecked(true);
+  views->addAction(explorer_action_);
 
-  expDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea |
+  exp_dock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea |
                             Qt::TopDockWidgetArea);
-  expDock_->setWidget(exp_);
-  expDock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
-  expDock_->setVisible(true);
-  addDockWidget(Qt::LeftDockWidgetArea, expDock_);
+  exp_dock_->setWidget(exp_);
+  exp_dock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
+  exp_dock_->setVisible(true);
+  addDockWidget(Qt::LeftDockWidgetArea, exp_dock_);
 
   LogTabWidget* log = new LogTabWidget(this);
   VERIFY(connect(&common::qt::Logger::GetInstance(), &common::qt::Logger::printed, log, &LogTabWidget::addLogMessage));
   VERIFY(connect(&proxy::CommandLogger::GetInstance(), &proxy::CommandLogger::Printed, log, &LogTabWidget::addCommand));
   SET_LOG_WATCHER(&LogWatcherRedirect);
-  logDock_ = new QDockWidget(this);
-  logsAction_ = logDock_->toggleViewAction();
-  logsAction_->setShortcut(logsKeySequence);
-  logsAction_->setChecked(true);
-  views->addAction(logsAction_);
+  log_dock_ = new QDockWidget(this);
+  logs_action_ = log_dock_->toggleViewAction();
+  logs_action_->setShortcut(logsKeySequence);
+  logs_action_->setChecked(true);
+  views->addAction(logs_action_);
 
-  logDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea |
+  log_dock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea |
                             Qt::TopDockWidgetArea);
-  logDock_->setWidget(log);
-  logDock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
-  logDock_->setVisible(true);
-  addDockWidget(Qt::BottomDockWidgetArea, logDock_);
+  log_dock_->setWidget(log);
+  log_dock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
+  log_dock_->setVisible(true);
+  addDockWidget(Qt::BottomDockWidgetArea, log_dock_);
 
   setMinimumSize(QSize(min_width, min_height));
   createStatusBar();
@@ -563,7 +563,7 @@ void MainWindow::exportConnection() {
 void MainWindow::versionAvailible(bool succesResult, const QString& version) {
   if (!succesResult) {
     QMessageBox::information(this, translations::trCheckVersion, translations::trConnectionErrorText);
-    checkUpdateAction_->setEnabled(true);
+    check_update_action_->setEnabled(true);
     return;
   }
 
@@ -577,7 +577,7 @@ void MainWindow::versionAvailible(bool succesResult, const QString& version) {
             .arg(version));
   }
 
-  checkUpdateAction_->setEnabled(is_need_update);
+  check_update_action_->setEnabled(is_need_update);
 }
 
 void MainWindow::statitsticSent(bool succesResult) {
@@ -646,30 +646,30 @@ void MainWindow::tapAndHoldTriggered(QTapAndHoldGesture* tapEvent) {
 void MainWindow::createStatusBar() {}
 
 void MainWindow::retranslateUi() {
-  connectAction_->setText(translations::trConnect + "...");
-  loadFromFileAction_->setText(translations::trLoadFromFile);
-  importAction_->setText(translations::trImportSettings);
-  exportAction_->setText(translations::trExportSettings);
-  exitAction_->setText(translations::trExit);
-  fileAction_->setText(translations::trFile);
-  toolsAction_->setText(translations::trTools);
-  encodeDecodeDialogAction_->setText(translations::trEncodeDecode);
-  preferencesAction_->setText(translations::trPreferences);
-  checkUpdateAction_->setText(translations::trCheckUpdate);
-  editAction_->setText(translations::trEdit);
-  windowAction_->setText(translations::trWindow);
-  fullScreanAction_->setText(translations::trFullScreen);
-  reportBugAction_->setText(translations::trReportBug);
-  aboutAction_->setText(tr("About %1...").arg(PROJECT_NAME_TITLE));
-  howtouseAction_->setText(translations::trHowToUse);
-  helpAction_->setText(translations::trHelp);
-  explorerAction_->setText(translations::trExpTree);
-  logsAction_->setText(translations::trLogs);
-  recentConnections_->setText(translations::trRecentConnections);
-  clearMenu_->setText(translations::trClearMenu);
+  connect_action_->setText(translations::trConnect + "...");
+  load_from_file_action_->setText(translations::trLoadFromFile);
+  import_action_->setText(translations::trImportSettings);
+  export_action_->setText(translations::trExportSettings);
+  exit_action_->setText(translations::trExit);
+  file_action_->setText(translations::trFile);
+  tools_action_->setText(translations::trTools);
+  encode_decode_dialog_action_->setText(translations::trEncodeDecode);
+  preferences_action_->setText(translations::trPreferences);
+  check_update_action_->setText(translations::trCheckUpdate);
+  edit_action_->setText(translations::trEdit);
+  window_action_->setText(translations::trWindow);
+  full_screan_action_->setText(translations::trFullScreen);
+  report_bug_action_->setText(translations::trReportBug);
+  about_action_->setText(tr("About %1...").arg(PROJECT_NAME_TITLE));
+  howtouse_action_->setText(translations::trHowToUse);
+  help_action_->setText(translations::trHelp);
+  explorer_action_->setText(translations::trExpTree);
+  logs_action_->setText(translations::trLogs);
+  recent_connections_->setText(translations::trRecentConnections);
+  clear_menu_->setText(translations::trClearMenu);
 
-  expDock_->setWindowTitle(translations::trExpTree);
-  logDock_->setWindowTitle(translations::trLogs);
+  exp_dock_->setWindowTitle(translations::trExpTree);
+  log_dock_->setWindowTitle(translations::trLogs);
 }
 
 void MainWindow::updateRecentConnectionActions() {
@@ -678,17 +678,17 @@ void MainWindow::updateRecentConnectionActions() {
   int num_recent_files = std::min(connections.size(), static_cast<int>(max_recent_connections));
   for (int i = 0; i < num_recent_files; ++i) {
     QString text = connections[i];
-    recentConnectionsActs_[i]->setText(text);
-    recentConnectionsActs_[i]->setVisible(true);
+    recent_connections_acts_[i]->setText(text);
+    recent_connections_acts_[i]->setVisible(true);
   }
 
   for (int j = num_recent_files; j < max_recent_connections; ++j) {
-    recentConnectionsActs_[j]->setVisible(false);
+    recent_connections_acts_[j]->setVisible(false);
   }
 
   bool have_items = num_recent_files > 0;
-  clearMenu_->setVisible(have_items);
-  recentConnections_->setEnabled(have_items);
+  clear_menu_->setVisible(have_items);
+  recent_connections_->setEnabled(have_items);
 }
 
 void MainWindow::clearRecentConnectionsMenu() {

@@ -67,10 +67,10 @@ EncodeDecodeDialog::EncodeDecodeDialog(QWidget* parent) : QDialog(parent) {
   toolBarLayout->addWidget(decode);
   toolBarLayout->addWidget(decoders_);
 
-  encodeButton_ = new QRadioButton;
-  decodeButton_ = new QRadioButton;
-  toolBarLayout->addWidget(encodeButton_);
-  toolBarLayout->addWidget(decodeButton_);
+  encode_button_ = new QRadioButton;
+  decode_button_ = new QRadioButton;
+  toolBarLayout->addWidget(encode_button_);
+  toolBarLayout->addWidget(decode_button_);
   toolBarLayout->addWidget(new QSplitter(Qt::Horizontal));
 
   input_ = new FastoEditor;
@@ -111,7 +111,7 @@ void EncodeDecodeDialog::decodeOrEncode() {
 
   std::string sin = common::ConvertToString(in);
   std::string out;
-  common::Error err = encodeButton_->isChecked() ? dec->Encode(sin, &out) : dec->Decode(sin, &out);
+  common::Error err = encode_button_->isChecked() ? dec->Encode(sin, &out) : dec->Decode(sin, &out);
   if (err) {
     delete dec;
     return;
@@ -126,8 +126,8 @@ void EncodeDecodeDialog::decodeOrEncode() {
 
 void EncodeDecodeDialog::retranslateUi() {
   setWindowTitle(translations::trEncodeDecode);
-  encodeButton_->setText(translations::trEncode);
-  decodeButton_->setText(translations::trDecode);
+  encode_button_->setText(translations::trEncode);
+  decode_button_->setText(translations::trDecode);
 }
 
 }  // namespace gui

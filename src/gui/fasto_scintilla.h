@@ -58,7 +58,7 @@ class FastoScintilla : public QsciScintilla {
   void ShowAutocompletion();
   void HideAutocompletion();
 
-  int lineNumberMarginWidth_;
+  int line_number_margin_width_;
 };
 
 }  // namespace gui

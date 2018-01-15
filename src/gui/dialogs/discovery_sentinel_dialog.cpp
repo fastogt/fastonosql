@@ -51,36 +51,36 @@ DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(QWidget* pa
 
   QVBoxLayout* mainLayout = new QVBoxLayout;
 
-  executeTimeLabel_ = new QLabel;
-  executeTimeLabel_->setText(translations::trConnectionStatusTemplate_1S.arg("execute..."));
-  mainLayout->addWidget(executeTimeLabel_);
+  execute_time_label_ = new QLabel;
+  execute_time_label_->setText(translations::trConnectionStatusTemplate_1S.arg("execute..."));
+  mainLayout->addWidget(execute_time_label_);
 
-  statusLabel_ = new QLabel(translations::trTimeTemplate_1S.arg("calculate..."));
-  iconLabel_ = new QLabel;
+  status_label_ = new QLabel(translations::trTimeTemplate_1S.arg("calculate..."));
+  icon_label_ = new QLabel;
   QIcon icon = GuiFactory::GetInstance().GetFailIcon();
   const QPixmap pm = icon.pixmap(stateIconSize);
-  iconLabel_->setPixmap(pm);
+  icon_label_->setPixmap(pm);
 
-  mainLayout->addWidget(statusLabel_);
-  mainLayout->addWidget(iconLabel_, 1, Qt::AlignCenter);
+  mainLayout->addWidget(status_label_);
+  mainLayout->addWidget(icon_label_, 1, Qt::AlignCenter);
 
-  listWidget_ = new QTreeWidget;
-  listWidget_->setIndentation(5);
+  list_widget_ = new QTreeWidget;
+  list_widget_->setIndentation(5);
 
   QStringList colums;
   colums << translations::trName << translations::trAddress << translations::trType << translations::trState;
-  listWidget_->setHeaderLabels(colums);
-  listWidget_->setContextMenuPolicy(Qt::ActionsContextMenu);
-  listWidget_->setIndentation(15);
-  listWidget_->setSelectionMode(QAbstractItemView::MultiSelection);  // single item
+  list_widget_->setHeaderLabels(colums);
+  list_widget_->setContextMenuPolicy(Qt::ActionsContextMenu);
+  list_widget_->setIndentation(15);
+  list_widget_->setSelectionMode(QAbstractItemView::MultiSelection);  // single item
                                                                      // can be draged
                                                                      // or
                                                                      // droped
-  listWidget_->setSelectionBehavior(QAbstractItemView::SelectRows);
+  list_widget_->setSelectionBehavior(QAbstractItemView::SelectRows);
 
-  mainLayout->addWidget(listWidget_);
-  listWidget_->setEnabled(false);
-  listWidget_->setToolTip(tr("Select items which you want add to sentinel."));
+  mainLayout->addWidget(list_widget_);
+  list_widget_->setEnabled(false);
+  list_widget_->setToolTip(tr("Select items which you want add to sentinel."));
 
   QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
@@ -90,15 +90,15 @@ DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(QWidget* pa
   setFixedSize(QSize(fix_width, fix_height));
   setLayout(mainLayout);
 
-  glassWidget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().GetPathToLoadingGif(),
+  glass_widget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().GetPathToLoadingGif(),
                                                   translations::trTryToConnect, 0.5, QColor(111, 111, 100), this);
   testConnection(connection);
 }
 
 std::vector<ConnectionListWidgetItemDiscovered*> DiscoverySentinelDiagnosticDialog::selectedConnections() const {
   std::vector<ConnectionListWidgetItemDiscovered*> res;
-  for (int i = 0; i < listWidget_->topLevelItemCount(); ++i) {
-    QTreeWidgetItem* citem = listWidget_->topLevelItem(i);
+  for (int i = 0; i < list_widget_->topLevelItemCount(); ++i) {
+    QTreeWidgetItem* citem = list_widget_->topLevelItem(i);
     if (citem->isSelected()) {
       ConnectionListWidgetItemDiscovered* item = dynamic_cast<ConnectionListWidgetItemDiscovered*>(citem);  // +
       if (item) {
@@ -114,15 +114,15 @@ void DiscoverySentinelDiagnosticDialog::connectionResultReady(
     qint64 mstimeExecute,
     const QString& resultText,
     std::vector<core::ServerDiscoverySentinelInfoSPtr> infos) {
-  glassWidget_->stop();
+  glass_widget_->stop();
 
-  executeTimeLabel_->setText(translations::trTimeTemplate_1S.arg(mstimeExecute));
-  listWidget_->setEnabled(suc);
-  listWidget_->clear();
+  execute_time_label_->setText(translations::trTimeTemplate_1S.arg(mstimeExecute));
+  list_widget_->setEnabled(suc);
+  list_widget_->clear();
   if (suc) {
     QIcon icon = GuiFactory::GetInstance().GetSuccessIcon();
     QPixmap pm = icon.pixmap(stateIconSize);
-    iconLabel_->setPixmap(pm);
+    icon_label_->setPixmap(pm);
 
     for (size_t i = 0; i < infos.size(); ++i) {
       core::ServerDiscoverySentinelInfoSPtr inf = infos[i];
@@ -133,15 +133,15 @@ void DiscoverySentinelDiagnosticDialog::connectionResultReady(
 
       ConnectionListWidgetItemDiscovered* item = new ConnectionListWidgetItemDiscovered(inf->GetInfo(), nullptr);
       item->setConnection(con);
-      listWidget_->addTopLevelItem(item);
+      list_widget_->addTopLevelItem(item);
     }
   }
-  statusLabel_->setText(translations::trConnectionStatusTemplate_1S.arg(resultText));
+  status_label_->setText(translations::trConnectionStatusTemplate_1S.arg(resultText));
 }
 
 void DiscoverySentinelDiagnosticDialog::showEvent(QShowEvent* e) {
   QDialog::showEvent(e);
-  glassWidget_->start();
+  glass_widget_->start();
 }
 
 void DiscoverySentinelDiagnosticDialog::testConnection(proxy::IConnectionSettingsBaseSPtr connection) {

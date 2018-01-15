@@ -44,8 +44,8 @@ class QueryWidget : public QWidget {
   void reload();
 
  private:
-  BaseShellWidget* shellWidget_;
-  OutputWidget* outputWidget_;
+  BaseShellWidget* shell_widget_;
+  OutputWidget* output_widget_;
   const proxy::IServerSPtr server_;
 };
 

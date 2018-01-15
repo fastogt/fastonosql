@@ -47,19 +47,19 @@ ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(QWidget* parent, proxy::I
 
   QVBoxLayout* mainLayout = new QVBoxLayout;
 
-  executeTimeLabel_ = new QLabel;
-  executeTimeLabel_->setText(translations::trConnectionStatusTemplate_1S.arg("execute..."));
-  mainLayout->addWidget(executeTimeLabel_);
+  execute_time_label_ = new QLabel;
+  execute_time_label_->setText(translations::trConnectionStatusTemplate_1S.arg("execute..."));
+  mainLayout->addWidget(execute_time_label_);
 
-  statusLabel_ = new QLabel(translations::trTimeTemplate_1S.arg("calculate..."));
-  statusLabel_->setWordWrap(true);
-  iconLabel_ = new QLabel;
+  status_label_ = new QLabel(translations::trTimeTemplate_1S.arg("calculate..."));
+  status_label_->setWordWrap(true);
+  icon_label_ = new QLabel;
   QIcon icon = GuiFactory::GetInstance().GetFailIcon();
   const QPixmap pm = icon.pixmap(stateIconSize);
-  iconLabel_->setPixmap(pm);
+  icon_label_->setPixmap(pm);
 
-  mainLayout->addWidget(statusLabel_);
-  mainLayout->addWidget(iconLabel_, 1, Qt::AlignCenter);
+  mainLayout->addWidget(status_label_);
+  mainLayout->addWidget(icon_label_, 1, Qt::AlignCenter);
 
   QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
@@ -69,26 +69,26 @@ ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(QWidget* parent, proxy::I
   mainLayout->setSizeConstraint(QLayout::SetFixedSize);
   setLayout(mainLayout);
 
-  glassWidget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().GetPathToLoadingGif(),
+  glass_widget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().GetPathToLoadingGif(),
                                                   translations::trTryToConnect, 0.5, QColor(111, 111, 100), this);
   startTestConnection(connection);
 }
 
 void ConnectionDiagnosticDialog::connectionResult(bool suc, qint64 mstimeExecute, const QString& resultText) {
-  glassWidget_->stop();
+  glass_widget_->stop();
 
-  executeTimeLabel_->setText(translations::trTimeTemplate_1S.arg(mstimeExecute));
+  execute_time_label_->setText(translations::trTimeTemplate_1S.arg(mstimeExecute));
   if (suc) {
     QIcon icon = GuiFactory::GetInstance().GetSuccessIcon();
     QPixmap pm = icon.pixmap(stateIconSize);
-    iconLabel_->setPixmap(pm);
+    icon_label_->setPixmap(pm);
   }
-  statusLabel_->setText(translations::trConnectionStatusTemplate_1S.arg(resultText));
+  status_label_->setText(translations::trConnectionStatusTemplate_1S.arg(resultText));
 }
 
 void ConnectionDiagnosticDialog::showEvent(QShowEvent* e) {
   QDialog::showEvent(e);
-  glassWidget_->start();
+  glass_widget_->start();
 }
 
 void ConnectionDiagnosticDialog::startTestConnection(proxy::IConnectionSettingsBaseSPtr connection) {

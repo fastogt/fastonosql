@@ -236,16 +236,16 @@ InfoServerDialog::InfoServerDialog(proxy::IServerSPtr server, QWidget* parent) :
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
-  serverTextInfo_ = new QTextEdit;
-  serverTextInfo_->setReadOnly(true);
+  server_text_info_ = new QTextEdit;
+  server_text_info_->setReadOnly(true);
   QHBoxLayout* mainL = new QHBoxLayout;
   mainL->setContentsMargins(0, 0, 0, 0);
-  mainL->addWidget(serverTextInfo_);
+  mainL->addWidget(server_text_info_);
 
   setMinimumSize(QSize(min_width, min_height));
   setLayout(mainL);
 
-  glassWidget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().GetPathToLoadingGif(),
+  glass_widget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().GetPathToLoadingGif(),
                                                   translations::trLoading, 0.5, QColor(111, 111, 100), this);
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
@@ -301,11 +301,11 @@ InfoServerDialog::InfoServerDialog(proxy::IServerSPtr server, QWidget* parent) :
 void InfoServerDialog::startServerInfo(const proxy::events_info::ServerInfoRequest& req) {
   UNUSED(req);
 
-  glassWidget_->start();
+  glass_widget_->start();
 }
 
 void InfoServerDialog::finishServerInfo(const proxy::events_info::ServerInfoResponce& res) {
-  glassWidget_->stop();
+  glass_widget_->stop();
   common::Error err = res.errorInfo();
   if (err) {
     return;
@@ -529,7 +529,7 @@ void InfoServerDialog::updateText(const core::redis::ServerInfo& serv) {
                         .arg(cpu.used_cpu_user_)
                         .arg(cpu.used_cpu_sys_children_)
                         .arg(cpu.used_cpu_user_children_);
-  serverTextInfo_->setText(textServ + textMem + textCpu + textCl + textPer + textStat + textRepl);
+  server_text_info_->setText(textServ + textMem + textCpu + textCl + textPer + textStat + textRepl);
 }
 #endif
 
@@ -562,7 +562,7 @@ void InfoServerDialog::updateText(const core::memcached::ServerInfo& serv) {
                          .arg(com.limit_maxbytes)
                          .arg(com.threads);
 
-  serverTextInfo_->setText(textServ);
+  server_text_info_->setText(textServ);
 }
 #endif
 
@@ -577,7 +577,7 @@ void InfoServerDialog::updateText(const core::ssdb::ServerInfo& serv) {
   QString textServ =
       trSsdbTextServerTemplate.arg(qverson).arg(com.links).arg(com.total_calls).arg(com.dbsize).arg(qbinlogs);
 
-  serverTextInfo_->setText(textServ);
+  server_text_info_->setText(textServ);
 }
 #endif
 
@@ -590,7 +590,7 @@ void InfoServerDialog::updateText(const core::leveldb::ServerInfo& serv) {
                          .arg(stats.read_mb)
                          .arg(stats.write_mb);
 
-  serverTextInfo_->setText(textServ);
+  server_text_info_->setText(textServ);
 }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
@@ -602,7 +602,7 @@ void InfoServerDialog::updateText(const core::rocksdb::ServerInfo& serv) {
                          .arg(stats.read_mb)
                          .arg(stats.write_mb);
 
-  serverTextInfo_->setText(textServ);
+  server_text_info_->setText(textServ);
 }
 #endif
 #ifdef BUILD_WITH_UNQLITE
@@ -612,7 +612,7 @@ void InfoServerDialog::updateText(const core::unqlite::ServerInfo& serv) {
   common::ConvertFromString(stats.db_path, &qfile_name);
 
   QString textServ = trUnqliteTextServerTemplate.arg(qfile_name).arg(stats.db_size);
-  serverTextInfo_->setText(textServ);
+  server_text_info_->setText(textServ);
 }
 #endif
 #ifdef BUILD_WITH_LMDB
@@ -622,7 +622,7 @@ void InfoServerDialog::updateText(const core::lmdb::ServerInfo& serv) {
   common::ConvertFromString(stats.db_path, &qdb_path);
 
   QString textServ = trLmdbTextServerTemplate.arg(qdb_path);
-  serverTextInfo_->setText(textServ);
+  server_text_info_->setText(textServ);
 }
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
@@ -632,7 +632,7 @@ void InfoServerDialog::updateText(const core::upscaledb::ServerInfo& serv) {
   common::ConvertFromString(stats.db_path, &qdb_path);
 
   QString textServ = trUpscaledbTextServerTemplate.arg(qdb_path);
-  serverTextInfo_->setText(textServ);
+  server_text_info_->setText(textServ);
 }
 #endif
 #ifdef BUILD_WITH_FORESTDB
@@ -642,7 +642,7 @@ void InfoServerDialog::updateText(const core::forestdb::ServerInfo& serv) {
   common::ConvertFromString(stats.db_path, &qdb_path);
 
   QString textServ = trForestdbTextServerTemplate.arg(qdb_path).arg(stats.db_size);
-  serverTextInfo_->setText(textServ);
+  server_text_info_->setText(textServ);
 }
 #endif
 

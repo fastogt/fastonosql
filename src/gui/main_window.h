@@ -93,32 +93,32 @@ class MainWindow : public QMainWindow {
   void createSentinel(proxy::ISentinelSettingsBaseSPtr settings);
   void createCluster(proxy::IClusterSettingsBaseSPtr settings);
 
-  QAction* connectAction_;
-  QAction* loadFromFileAction_;
-  QAction* importAction_;
-  QAction* exportAction_;
-  QAction* exitAction_;
-  QAction* preferencesAction_;
-  QAction* fullScreanAction_;
-  QAction* windowAction_;
-  QAction* aboutAction_;
-  QAction* howtouseAction_;
-  QAction* reportBugAction_;
-  QAction* fileAction_;
-  QAction* editAction_;
-  QAction* checkUpdateAction_;
-  QAction* toolsAction_;
-  QAction* encodeDecodeDialogAction_;
-  QAction* helpAction_;
-  QAction* explorerAction_;
-  QAction* logsAction_;
-  QAction* recentConnections_;
-  QAction* clearMenu_;
-  QAction* recentConnectionsActs_[max_recent_connections];
+  QAction* connect_action_;
+  QAction* load_from_file_action_;
+  QAction* import_action_;
+  QAction* export_action_;
+  QAction* exit_action_;
+  QAction* preferences_action_;
+  QAction* full_screan_action_;
+  QAction* window_action_;
+  QAction* about_action_;
+  QAction* howtouse_action_;
+  QAction* report_bug_action_;
+  QAction* file_action_;
+  QAction* edit_action_;
+  QAction* check_update_action_;
+  QAction* tools_action_;
+  QAction* encode_decode_dialog_action_;
+  QAction* help_action_;
+  QAction* explorer_action_;
+  QAction* logs_action_;
+  QAction* recent_connections_;
+  QAction* clear_menu_;
+  QAction* recent_connections_acts_[max_recent_connections];
 
   ExplorerTreeWidget* exp_;
-  QDockWidget* expDock_;
-  QDockWidget* logDock_;
+  QDockWidget* exp_dock_;
+  QDockWidget* log_dock_;
 };
 
 }  // namespace gui

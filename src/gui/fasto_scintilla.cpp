@@ -88,7 +88,7 @@ const QColor marginsForegroundColor = QColor(Qt::white);
 namespace fastonosql {
 namespace gui {
 
-FastoScintilla::FastoScintilla(QWidget* parent) : QsciScintilla(parent), lineNumberMarginWidth_(0) {
+FastoScintilla::FastoScintilla(QWidget* parent) : QsciScintilla(parent), line_number_margin_width_(0) {
   setAutoIndent(true);
   setIndentationsUseTabs(false);
   setIndentationWidth(indentationWidth);
@@ -138,11 +138,11 @@ void FastoScintilla::UpdateLineNumbersMarginWidth() {
   int numberOfDigits = GetNumberOfDigits(lines());
 
   int tw = GetTextWidth(QsciScintilla::STYLE_LINENUMBER, "0");
-  lineNumberMarginWidth_ = numberOfDigits * tw + rowNumberWidth;
+  line_number_margin_width_ = numberOfDigits * tw + rowNumberWidth;
 
   // If line numbers margin already displayed, update its width
   if (GetLineNumberMarginWidth()) {
-    setMarginWidth(0, lineNumberMarginWidth_);
+    setMarginWidth(0, line_number_margin_width_);
   }
 }
 
@@ -179,7 +179,7 @@ int FastoScintilla::GetTextWidth(int style, const QString& text) {
 void FastoScintilla::ToggleLinesNumbers() {
   UpdateLineNumbersMarginWidth();
   if (!GetLineNumberMarginWidth()) {
-    setMarginWidth(0, lineNumberMarginWidth_);
+    setMarginWidth(0, line_number_margin_width_);
   } else {
     setMarginWidth(0, 0);
   }

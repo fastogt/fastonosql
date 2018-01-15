@@ -46,15 +46,15 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionLocalWidgetDirec
   addLayout(type_comp_layout);
 
   QHBoxLayout* type_compress_layout = new QHBoxLayout;
-  typeCompressions_ = new QComboBox;
+  type_compressions_ = new QComboBox;
   for (uint32_t i = 0; i < core::rocksdb::g_compression_types.size(); ++i) {
     const char* ct = core::rocksdb::g_compression_types[i];
-    typeCompressions_->addItem(ct, i);
+    type_compressions_->addItem(ct, i);
   }
 
-  compressionLabel_ = new QLabel;
-  type_comp_layout->addWidget(compressionLabel_);
-  type_comp_layout->addWidget(typeCompressions_);
+  compression_label_ = new QLabel;
+  type_comp_layout->addWidget(compression_label_);
+  type_comp_layout->addWidget(type_compressions_);
   addLayout(type_compress_layout);
 }
 
@@ -64,7 +64,7 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
     core::rocksdb::Config config = rock->GetInfo();
     create_db_if_missing_->setChecked(config.create_if_missing);
     type_comparators_->setCurrentIndex(config.comparator);
-    typeCompressions_->setCurrentIndex(config.compression);
+    type_compressions_->setCurrentIndex(config.compression);
   }
   ConnectionLocalWidget::syncControls(rock);
 }
@@ -72,7 +72,7 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
 void ConnectionWidget::retranslateUi() {
   create_db_if_missing_->setText(trCreateDBIfMissing);
   comparator_label_->setText(trComparator + ":");
-  compressionLabel_->setText(trCompression + ":");
+  compression_label_->setText(trCompression + ":");
   ConnectionLocalWidget::retranslateUi();
 }
 
@@ -82,7 +82,7 @@ proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
   core::rocksdb::Config config = conn->GetInfo();
   config.create_if_missing = create_db_if_missing_->isChecked();
   config.comparator = static_cast<core::rocksdb::ComparatorType>(type_comparators_->currentIndex());
-  config.compression = static_cast<core::rocksdb::CompressionType>(typeCompressions_->currentIndex());
+  config.compression = static_cast<core::rocksdb::CompressionType>(type_compressions_->currentIndex());
   conn->SetInfo(config);
   return conn;
 }

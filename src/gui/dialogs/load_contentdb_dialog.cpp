@@ -55,19 +55,19 @@ LoadContentDbDialog::LoadContentDbDialog(const QString& title, core::connectionT
 
   QHBoxLayout* countLayout = new QHBoxLayout;
   countLayout->addWidget(new QLabel(trKeysCount + ":"));
-  countSpinEdit_ = new QSpinBox;
-  countSpinEdit_->setRange(min_key_on_page, max_key_on_page);
-  countSpinEdit_->setSingleStep(step_keys_on_page);
-  countSpinEdit_->setValue(defaults_key);
-  countLayout->addWidget(countSpinEdit_);
+  count_spin_edit_ = new QSpinBox;
+  count_spin_edit_->setRange(min_key_on_page, max_key_on_page);
+  count_spin_edit_->setSingleStep(step_keys_on_page);
+  count_spin_edit_->setValue(defaults_key);
+  countLayout->addWidget(count_spin_edit_);
   mainLayout->addLayout(countLayout);
 
   QHBoxLayout* patternLayout = new QHBoxLayout;
   patternLayout->addWidget(new QLabel(trPattern + ":"));
-  patternEdit_ = new QLineEdit;
-  patternEdit_->setFixedWidth(80);
-  patternEdit_->setText(defaultPattern);
-  patternLayout->addWidget(patternEdit_);
+  pattern_edit_ = new QLineEdit;
+  pattern_edit_->setFixedWidth(80);
+  pattern_edit_->setText(defaultPattern);
+  patternLayout->addWidget(pattern_edit_);
   mainLayout->addLayout(patternLayout);
 
   mainLayout->addWidget(buttonBox);
@@ -77,18 +77,18 @@ LoadContentDbDialog::LoadContentDbDialog(const QString& title, core::connectionT
 }
 
 int LoadContentDbDialog::count() const {
-  return countSpinEdit_->value();
+  return count_spin_edit_->value();
 }
 
 QString LoadContentDbDialog::pattern() const {
-  return patternEdit_->text();
+  return pattern_edit_->text();
 }
 
 void LoadContentDbDialog::accept() {
-  QString pattern = patternEdit_->text();
+  QString pattern = pattern_edit_->text();
   if (pattern.isEmpty()) {
     QMessageBox::warning(this, translations::trError, trInvalidPattern);
-    countSpinEdit_->setFocus();
+    count_spin_edit_->setFocus();
     return;
   }
 

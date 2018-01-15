@@ -50,7 +50,7 @@ class FastoTextView : public QWidget {
   FastoEditorOutput* editor_;
   QLabel* views_label_;
   QComboBox* views_combo_box_;
-  QPushButton* saveChangeButton_;
+  QPushButton* save_change_button_;
 };
 
 }  // namespace gui

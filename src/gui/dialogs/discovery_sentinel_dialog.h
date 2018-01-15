@@ -60,11 +60,11 @@ class DiscoverySentinelDiagnosticDialog : public QDialog {
  private:
   void testConnection(proxy::IConnectionSettingsBaseSPtr connection);
 
-  common::qt::gui::GlassWidget* glassWidget_;
-  QLabel* executeTimeLabel_;
-  QLabel* statusLabel_;
-  QTreeWidget* listWidget_;
-  QLabel* iconLabel_;
+  common::qt::gui::GlassWidget* glass_widget_;
+  QLabel* execute_time_label_;
+  QLabel* status_label_;
+  QTreeWidget* list_widget_;
+  QLabel* icon_label_;
 };
 
 }  // namespace gui

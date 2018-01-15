@@ -67,19 +67,19 @@ class SentinelDialog : public QDialog {
   void addSentinel(proxy::SentinelSettings sent);
 
   proxy::ISentinelSettingsBaseSPtr sentinel_connection_;
-  QLineEdit* connectionName_;
-  QLabel* folderLabel_;
-  QLineEdit* connectionFolder_;
-  QComboBox* typeConnection_;
+  QLineEdit* connection_name_;
+  QLabel* folder_label_;
+  QLineEdit* connection_folder_;
+  QComboBox* type_connection_;
   QCheckBox* logging_;
-  QSpinBox* loggingMsec_;
+  QSpinBox* logging_msec_;
 
   QToolBar* savebar_;
-  QTreeWidget* listWidget_;
+  QTreeWidget* list_widget_;
 
-  QPushButton* testButton_;
-  QPushButton* discoveryButton_;
-  QDialogButtonBox* buttonBox_;
+  QPushButton* test_button_;
+  QPushButton* discovery_button_;
+  QDialogButtonBox* button_box_;
 };
 
 }  // namespace gui

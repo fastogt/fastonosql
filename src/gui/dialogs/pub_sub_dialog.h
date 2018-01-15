@@ -67,11 +67,11 @@ class PubSubDialog : public QDialog {
  private:
   void retranslateUi();
 
-  QLineEdit* searchBox_;
-  QPushButton* searchButton_;
+  QLineEdit* search_box_;
+  QPushButton* search_button_;
 
-  FastoTableView* channelsTable_;
-  ChannelsTableModel* channelsModel_;
+  FastoTableView* channels_table_;
+  ChannelsTableModel* channels_model_;
   QSortFilterProxyModel* proxy_model_;
   proxy::IServerSPtr server_;
 };

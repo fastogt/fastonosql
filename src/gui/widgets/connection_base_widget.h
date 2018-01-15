@@ -77,23 +77,23 @@ class ConnectionBaseWidget : public QWidget {
 
   virtual proxy::IConnectionSettingsBase* createConnectionImpl(const proxy::connection_path_t& path) const = 0;
 
-  QLabel* connectionNameLabel_;
-  QLineEdit* connectionName_;
+  QLabel* connection_name_label_;
+  QLineEdit* connection_name_;
 
-  QLabel* namespaceSeparatorLabel_;
-  QComboBox* namespaceSeparator_;
+  QLabel* namespace_separator_label_;
+  QComboBox* namespace_separator_;
 
-  QLabel* namespaceDisplayingStrategyLabel_;
-  QComboBox* namespaceDisplayingStrategy_;
+  QLabel* namespace_displaying_strategy_label_;
+  QComboBox* namespace_displaying_strategy_;
 
-  QLabel* delimiterLabel_;
+  QLabel* delimiter_label_;
   QComboBox* delimiter_;
 
-  QLabel* folderLabel_;
-  QLineEdit* connectionFolder_;
+  QLabel* folder_label_;
+  QLineEdit* connection_folder_;
 
   QCheckBox* logging_;
-  QSpinBox* loggingMsec_;
+  QSpinBox* logging_msec_;
 };
 
 }  // namespace gui

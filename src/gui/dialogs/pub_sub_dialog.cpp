@@ -48,10 +48,10 @@ namespace gui {
 
 PubSubDialog::PubSubDialog(const QString& title, proxy::IServerSPtr server, QWidget* parent)
     : QDialog(parent),
-      searchBox_(nullptr),
-      searchButton_(nullptr),
-      channelsTable_(nullptr),
-      channelsModel_(nullptr),
+      search_box_(nullptr),
+      search_button_(nullptr),
+      channels_table_(nullptr),
+      channels_model_(nullptr),
       proxy_model_(nullptr),
       server_(server) {
   CHECK(server_);
@@ -67,19 +67,19 @@ PubSubDialog::PubSubDialog(const QString& title, proxy::IServerSPtr server, QWid
   // main layout
   QVBoxLayout* mainlayout = new QVBoxLayout;
   QHBoxLayout* searchLayout = new QHBoxLayout;
-  searchBox_ = new QLineEdit;
-  searchBox_->setText(ALL_PUBSUB_CHANNELS);
-  VERIFY(connect(searchBox_, &QLineEdit::textChanged, this, &PubSubDialog::searchLineChanged));
-  searchLayout->addWidget(searchBox_);
+  search_box_ = new QLineEdit;
+  search_box_->setText(ALL_PUBSUB_CHANNELS);
+  VERIFY(connect(search_box_, &QLineEdit::textChanged, this, &PubSubDialog::searchLineChanged));
+  searchLayout->addWidget(search_box_);
 
-  searchButton_ = new QPushButton;
-  VERIFY(connect(searchButton_, &QPushButton::clicked, this, &PubSubDialog::searchClicked));
-  searchLayout->addWidget(searchButton_);
+  search_button_ = new QPushButton;
+  VERIFY(connect(search_button_, &QPushButton::clicked, this, &PubSubDialog::searchClicked));
+  searchLayout->addWidget(search_button_);
   mainlayout->addLayout(searchLayout);
 
-  channelsModel_ = new ChannelsTableModel(this);
+  channels_model_ = new ChannelsTableModel(this);
   proxy_model_ = new QSortFilterProxyModel(this);
-  proxy_model_->setSourceModel(channelsModel_);
+  proxy_model_->setSourceModel(channels_model_);
   proxy_model_->setDynamicSortFilter(true);
 
   VERIFY(
@@ -87,20 +87,20 @@ PubSubDialog::PubSubDialog(const QString& title, proxy::IServerSPtr server, QWid
   VERIFY(connect(server_.get(), &proxy::IServer::ExecuteFinished, this, &PubSubDialog::finishExecute,
                  Qt::DirectConnection));
 
-  channelsTable_ = new FastoTableView;
-  channelsTable_->setSortingEnabled(true);
-  channelsTable_->setSelectionBehavior(QAbstractItemView::SelectRows);
-  channelsTable_->setSelectionMode(QAbstractItemView::SingleSelection);
-  channelsTable_->setContextMenuPolicy(Qt::CustomContextMenu);
-  VERIFY(connect(channelsTable_, &FastoTableView::customContextMenuRequested, this, &PubSubDialog::showContextMenu));
-  channelsTable_->sortByColumn(0, Qt::AscendingOrder);
-  channelsTable_->setModel(proxy_model_);
+  channels_table_ = new FastoTableView;
+  channels_table_->setSortingEnabled(true);
+  channels_table_->setSelectionBehavior(QAbstractItemView::SelectRows);
+  channels_table_->setSelectionMode(QAbstractItemView::SingleSelection);
+  channels_table_->setContextMenuPolicy(Qt::CustomContextMenu);
+  VERIFY(connect(channels_table_, &FastoTableView::customContextMenuRequested, this, &PubSubDialog::showContextMenu));
+  channels_table_->sortByColumn(0, Qt::AscendingOrder);
+  channels_table_->setModel(proxy_model_);
 
   QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &PubSubDialog::accept));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &PubSubDialog::reject));
-  mainlayout->addWidget(channelsTable_);
+  mainlayout->addWidget(channels_table_);
   mainlayout->addWidget(buttonBox);
 
   setMinimumSize(QSize(min_width, min_height));
@@ -119,7 +119,7 @@ void PubSubDialog::finishExecute(const proxy::events_info::ExecuteInfoResponce& 
 void PubSubDialog::startLoadServerChannels(const proxy::events_info::LoadServerChannelsRequest& req) {
   UNUSED(req);
 
-  channelsModel_->clear();
+  channels_model_->clear();
 }
 
 void PubSubDialog::finishLoadServerChannels(const proxy::events_info::LoadServerChannelsResponce& res) {
@@ -131,12 +131,12 @@ void PubSubDialog::finishLoadServerChannels(const proxy::events_info::LoadServer
   proxy::events_info::LoadServerChannelsResponce::channels_container_t channels = res.channels;
 
   for (core::NDbPSChannel channel : channels) {
-    channelsModel_->insertItem(new ChannelTableItem(channel));
+    channels_model_->insertItem(new ChannelTableItem(channel));
   }
 }
 
 void PubSubDialog::searchClicked() {
-  QString pattern = searchBox_->text();
+  QString pattern = search_box_->text();
   if (pattern.isEmpty()) {
     return;
   }
@@ -151,8 +151,8 @@ void PubSubDialog::showContextMenu(const QPoint& point) {
     return;
   }
 
-  QPoint menuPoint = channelsTable_->CalculateMenuPoint(point);
-  QMenu* menu = new QMenu(channelsTable_);
+  QPoint menuPoint = channels_table_->CalculateMenuPoint(point);
+  QMenu* menu = new QMenu(channels_table_);
 
   QAction* publishAction = new QAction(translations::trPublish, this);
   VERIFY(connect(publishAction, &QAction::triggered, this, &PubSubDialog::publish));
@@ -222,7 +222,7 @@ void PubSubDialog::subscribeInNewConsole() {
 }
 
 QModelIndex PubSubDialog::selectedIndex() const {
-  QModelIndexList indexses = channelsTable_->selectionModel()->selectedRows();
+  QModelIndexList indexses = channels_table_->selectionModel()->selectedRows();
 
   if (indexses.count() != 1) {
     return QModelIndex();
@@ -243,7 +243,7 @@ void PubSubDialog::changeEvent(QEvent* e) {
 }
 
 void PubSubDialog::retranslateUi() {
-  searchButton_->setText(translations::trSearch);
+  search_button_->setText(translations::trSearch);
 }
 
 }  // namespace gui

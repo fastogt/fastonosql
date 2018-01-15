@@ -66,26 +66,26 @@ class SSHWidget : public QWidget {
  private:
   void retranslateUi();
 
-  QCheckBox* useSsh_;
-  QWidget* useSshWidget_;
+  QCheckBox* use_ssh_;
+  QWidget* use_ssh_widget_;
 
   HostPortWidget* sshhost_widget_;
   QCheckBox* use_public_key_;
-  IPathWidget* publicKeyWidget_;
-  IPathWidget* privateKeyWidget_;
+  IPathWidget* public_key_widget_;
+  IPathWidget* private_key_widget_;
 
-  QLabel* sshAddressLabel_;
-  QLabel* sshPassphraseLabel_;
-  QLabel* sshUserNameLabel_;
-  QLineEdit* userName_;
-  QLabel* sshAuthMethodLabel_;
-  QLabel* passwordLabel_;
+  QLabel* ssh_address_label_;
+  QLabel* ssh_passphrase_label_;
+  QLabel* ssh_user_name_label_;
+  QLineEdit* user_name_;
+  QLabel* ssh_auth_method_label_;
+  QLabel* password_label_;
 
   QComboBox* security_;
-  QLineEdit* passwordBox_;
-  QPushButton* passwordEchoModeButton_;
-  QLineEdit* passphraseBox_;
-  QPushButton* passphraseEchoModeButton_;
+  QLineEdit* password_box_;
+  QPushButton* password_echo_mode_button_;
+  QLineEdit* passphrase_box_;
+  QPushButton* passphrase_echo_mode_button_;
 };
 
 }  // namespace gui

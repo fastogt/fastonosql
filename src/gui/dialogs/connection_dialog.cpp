@@ -99,16 +99,16 @@ void ConnectionDialog::init(proxy::IConnectionSettingsBase* connection) {
   connection_widget_layout->setContentsMargins(0, 0, 0, mar.bottom());
 
   QHBoxLayout* bottomLayout = new QHBoxLayout;
-  testButton_ = new QPushButton("&Test");
-  testButton_->setIcon(GuiFactory::GetInstance().GetMessageBoxInformationIcon());
-  VERIFY(connect(testButton_, &QPushButton::clicked, this, &ConnectionDialog::testConnection));
+  test_button_ = new QPushButton("&Test");
+  test_button_->setIcon(GuiFactory::GetInstance().GetMessageBoxInformationIcon());
+  VERIFY(connect(test_button_, &QPushButton::clicked, this, &ConnectionDialog::testConnection));
 
-  bottomLayout->addWidget(testButton_, 1, Qt::AlignLeft);
-  buttonBox_ = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Save);
-  buttonBox_->setOrientation(Qt::Horizontal);
-  VERIFY(connect(buttonBox_, &QDialogButtonBox::accepted, this, &ConnectionDialog::accept));
-  VERIFY(connect(buttonBox_, &QDialogButtonBox::rejected, this, &ConnectionDialog::reject));
-  bottomLayout->addWidget(buttonBox_);
+  bottomLayout->addWidget(test_button_, 1, Qt::AlignLeft);
+  button_box_ = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Save);
+  button_box_->setOrientation(Qt::Horizontal);
+  VERIFY(connect(button_box_, &QDialogButtonBox::accepted, this, &ConnectionDialog::accept));
+  VERIFY(connect(button_box_, &QDialogButtonBox::rejected, this, &ConnectionDialog::reject));
+  bottomLayout->addWidget(button_box_);
 
   QVBoxLayout* mainLayout = new QVBoxLayout;
   mainLayout->addWidget(connection_widget_);
