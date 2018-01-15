@@ -3237,9 +3237,7 @@ common::Error AuthContext(redisContext* context, const std::string& auth_str) {
 
 }  // namespace
 
-RConfig::RConfig(const Config& config, const SSHInfo& sinfo)
-    : Config(config), ssh_info(sinfo) {
-}
+RConfig::RConfig(const Config& config, const SSHInfo& sinfo) : Config(config), ssh_info(sinfo) {}
 
 common::Error CreateConnection(const RConfig& config, NativeConnection** context) {
   if (!context) {

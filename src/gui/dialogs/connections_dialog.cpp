@@ -64,9 +64,9 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent) : QDialog(parent) {
   list_widget_->setContextMenuPolicy(Qt::ActionsContextMenu);
   list_widget_->setIndentation(15);
   list_widget_->setSelectionMode(QAbstractItemView::SingleSelection);  // single item
-                                                                      // can be draged
-                                                                      // or
-                                                                      // droped
+                                                                       // can be draged
+                                                                       // or
+                                                                       // droped
   list_widget_->setSelectionBehavior(QAbstractItemView::SelectRows);
 
   // list_widget_->setDragEnabled(true);

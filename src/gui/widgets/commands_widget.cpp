@@ -48,7 +48,8 @@ CommandsWidget::CommandsWidget(QWidget* parent) : QWidget(parent), log_text_edit
 
 void CommandsWidget::addCommand(core::FastoObjectCommandIPtr command) {
   QTime time = QTime::currentTime();
-  log_text_edit_->setTextColor(command->GetCommandLoggingType() == core::C_INNER ? QColor(Qt::gray) : QColor(Qt::black));
+  log_text_edit_->setTextColor(command->GetCommandLoggingType() == core::C_INNER ? QColor(Qt::gray)
+                                                                                 : QColor(Qt::black));
   QString mess;
   common::ConvertFromString(command->GetInputCommand(), &mess);
   std::string stype = common::ConvertToString(command->GetConnectionType());

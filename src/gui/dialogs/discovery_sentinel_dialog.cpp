@@ -73,9 +73,9 @@ DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(QWidget* pa
   list_widget_->setContextMenuPolicy(Qt::ActionsContextMenu);
   list_widget_->setIndentation(15);
   list_widget_->setSelectionMode(QAbstractItemView::MultiSelection);  // single item
-                                                                     // can be draged
-                                                                     // or
-                                                                     // droped
+                                                                      // can be draged
+                                                                      // or
+                                                                      // droped
   list_widget_->setSelectionBehavior(QAbstractItemView::SelectRows);
 
   mainLayout->addWidget(list_widget_);
@@ -91,7 +91,7 @@ DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(QWidget* pa
   setLayout(mainLayout);
 
   glass_widget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().GetPathToLoadingGif(),
-                                                  translations::trTryToConnect, 0.5, QColor(111, 111, 100), this);
+                                                   translations::trTryToConnect, 0.5, QColor(111, 111, 100), this);
   testConnection(connection);
 }
 

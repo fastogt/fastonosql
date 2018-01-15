@@ -54,8 +54,8 @@ void IConnectionSettingsRemoteSSH::PrepareInGuiIfNeeded() {
   common::ConvertFromString(ssh_info_.host.GetHost(), &qserver_name);
   bool ok;
   QString publish_text =
-      QInputDialog::getText(nullptr, trInputSSHPasswordForServer_1S.arg(qserver_name),
-                            "Password:", QLineEdit::Password, QString(), &ok, Qt::WindowCloseButtonHint);
+      QInputDialog::getText(nullptr, trInputSSHPasswordForServer_1S.arg(qserver_name), "Password:", QLineEdit::Password,
+                            QString(), &ok, Qt::WindowCloseButtonHint);
   if (ok) {
     ssh_info_.SetPassword(common::ConvertToString(publish_text));
   }

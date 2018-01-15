@@ -129,9 +129,9 @@ ClusterDialog::ClusterDialog(QWidget* parent, proxy::IClusterSettingsBase* conne
   list_widget_->setHeaderLabels(colums);
   list_widget_->setIndentation(15);
   list_widget_->setSelectionMode(QAbstractItemView::SingleSelection);  // single item
-                                                                      // can be draged
-                                                                      // or
-                                                                      // droped
+                                                                       // can be draged
+                                                                       // or
+                                                                       // droped
   list_widget_->setSelectionBehavior(QAbstractItemView::SelectRows);
 
   list_widget_->setContextMenuPolicy(Qt::CustomContextMenu);

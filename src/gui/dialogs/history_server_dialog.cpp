@@ -88,7 +88,7 @@ ServerHistoryDialog::ServerHistoryDialog(proxy::IServerSPtr server, QWidget* par
   setLayout(mainL);
 
   glass_widget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().GetPathToLoadingGif(),
-                                                  translations::trLoading, 0.5, QColor(111, 111, 100), this);
+                                                   translations::trLoading, 0.5, QColor(111, 111, 100), this);
   VERIFY(connect(server.get(), &proxy::IServer::LoadServerHistoryInfoStarted, this,
                  &ServerHistoryDialog::startLoadServerHistoryInfo));
   VERIFY(connect(server.get(), &proxy::IServer::LoadServerHistoryInfoFinished, this,

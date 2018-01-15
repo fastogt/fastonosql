@@ -246,7 +246,7 @@ InfoServerDialog::InfoServerDialog(proxy::IServerSPtr server, QWidget* parent) :
   setLayout(mainL);
 
   glass_widget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().GetPathToLoadingGif(),
-                                                  translations::trLoading, 0.5, QColor(111, 111, 100), this);
+                                                   translations::trLoading, 0.5, QColor(111, 111, 100), this);
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
     updateText(core::redis::ServerInfo());

@@ -235,7 +235,7 @@ MainWindow::MainWindow() : QMainWindow() {
   views->addAction(explorer_action_);
 
   exp_dock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea |
-                            Qt::TopDockWidgetArea);
+                             Qt::TopDockWidgetArea);
   exp_dock_->setWidget(exp_);
   exp_dock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
   exp_dock_->setVisible(true);
@@ -252,7 +252,7 @@ MainWindow::MainWindow() : QMainWindow() {
   views->addAction(logs_action_);
 
   log_dock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea |
-                            Qt::TopDockWidgetArea);
+                             Qt::TopDockWidgetArea);
   log_dock_->setWidget(log);
   log_dock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
   log_dock_->setVisible(true);
