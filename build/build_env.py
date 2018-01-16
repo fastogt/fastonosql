@@ -250,6 +250,10 @@ class BuildRequest(object):
             common_cmake_line = list(cmake_line)
             common_cmake_line.append('-DFAIL_ON_WARNINGS=OFF')
             common_cmake_line.append('-DPORTABLE=ON')
+            common_cmake_line.append('-DWITH_TESTS=OFF')
+            common_cmake_line.append('-DWITH_SNAPPY=ON')
+            common_cmake_line.append('-DWITH_ZLIB=ON')
+            common_cmake_line.append('-DROCKSDB_INSTALL_ON_WINDOWS=ON')
             cmake_policy = run_command.CmakePolicy(print_message)
             make_policy = run_command.CommonPolicy(print_message)
             run_command.run_command_cb(common_cmake_line, cmake_policy)
@@ -331,7 +335,7 @@ class BuildRequest(object):
         self.build_libssh2(cmake_line, make_install)
         self.build_jsonc(cmake_line, make_install)
         self.build_qscintilla(cmake_line, make_install)
-
+        
         # database build
         self.build_libmemcached(prefix_path)
         self.build_unqlite(cmake_line, make_install)
