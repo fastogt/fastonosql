@@ -59,6 +59,7 @@ class BuildRequest(object):
             os.mkdir('build_cmake_release')
             os.chdir('build_cmake_release')
             snappy_cmake_line = list(cmake_line)
+            snappy_cmake_line.append('-DBUILD_SHARED_LIBS=OFF')
             cmake_policy = run_command.CmakePolicy(print_message)
             make_policy = run_command.CommonPolicy(print_message)
             run_command.run_command_cb(snappy_cmake_line, cmake_policy)
@@ -284,15 +285,16 @@ class BuildRequest(object):
     def build_forestdb(self, cmake_line, make_install):
         abs_dir_path = self.build_dir_path_
         try:
-            cloned_dir = utils.git_clone('https://github.com/fastogt/forestdb.git', abs_dir_path)
+            cloned_dir = utils.git_clone('https://github.com/fastogt/forestdb.git', abs_dir_path, False)
             os.chdir(cloned_dir)
 
             os.mkdir('build_cmake_release')
             os.chdir('build_cmake_release')
-            common_cmake_line = list(cmake_line)
+            forestdb_cmake_line = list(cmake_line)
+            forestdb_cmake_line.append('-DBUILD_SHARED_LIBS=OFF')
             cmake_policy = run_command.CmakePolicy(print_message)
             make_policy = run_command.CommonPolicy(print_message)
-            run_command.run_command_cb(common_cmake_line, cmake_policy)
+            run_command.run_command_cb(forestdb_cmake_line, cmake_policy)
             run_command.run_command_cb(make_install, make_policy)
             os.chdir(abs_dir_path)
         except Exception as ex:

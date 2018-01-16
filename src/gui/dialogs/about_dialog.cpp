@@ -29,6 +29,7 @@
 #include <Qsci/qsciglobal.h>
 #include <libssh2.h>
 #include <openssl/opensslv.h>
+#include <snappy-stubs-public.h>
 
 #include <common/config.h>
 #include <common/macros.h>  // for STRINGIZE, VERIFY
@@ -37,6 +38,8 @@
 #include "gui/gui_factory.h"  // for GuiFactory
 
 #include "translations/global.h"
+
+#define SNAPPY_VERSION_TEXT STRINGIZE(SNAPPY_MAJOR) "." STRINGIZE(SNAPPY_MINOR) "." STRINGIZE(SNAPPY_PATCHLEVEL)
 
 namespace {
 const QString trDescription = QObject::tr("<h3>" PROJECT_NAME_TITLE " " PROJECT_VERSION
@@ -180,6 +183,7 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
   addLibItem(libs_list_widget, "libssh2", LIBSSH2_VERSION);
   addLibItem(libs_list_widget, "OpenSSL", OPENSSL_VERSION_TEXT);
   addLibItem(libs_list_widget, "common", COMMON_VERSION_STRING);
+  addLibItem(libs_list_widget, "Snappy", SNAPPY_VERSION_TEXT);
   main_tab->addTab(libs_list_widget, QObject::tr("External libraries"));
 
   copy_rights_layout->addWidget(main_tab, 4, 1, 1, 5);
