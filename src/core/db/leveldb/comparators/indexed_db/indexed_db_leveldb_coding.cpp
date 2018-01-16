@@ -1351,7 +1351,7 @@ bool ObjectStoreDataKey::Decode(StringPiece* slice, ObjectStoreDataKey* result) 
 }
 std::string ObjectStoreDataKey::Encode(int64_t database_id,
                                        int64_t object_store_id,
-                                       const std::string encoded_user_key) {
+                                       const std::string& encoded_user_key) {
   KeyPrefix prefix(KeyPrefix::CreateWithSpecialIndex(database_id, object_store_id, kSpecialIndexNumber));
   std::string ret = prefix.Encode();
   ret.append(encoded_user_key);

@@ -294,7 +294,7 @@ class ObjectStoreDataKey {
   ObjectStoreDataKey();
   ~ObjectStoreDataKey();
   static bool Decode(common::StringPiece* slice, ObjectStoreDataKey* result);
-  static std::string Encode(int64_t database_id, int64_t object_store_id, const std::string encoded_user_key);
+  static std::string Encode(int64_t database_id, int64_t object_store_id, const std::string& encoded_user_key);
   static std::string Encode(int64_t database_id, int64_t object_store_id, const IndexedDBKey& user_key);
   std::unique_ptr<IndexedDBKey> user_key() const;
 
