@@ -1,4 +1,4 @@
-1.14.1 /
+1.14.1 / January 17, 2018
 [Alexandr Topilski]
 - CONFIG GET databases different behavior than in Redis
 - Runtime SSH password
