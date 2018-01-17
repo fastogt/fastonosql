@@ -4,6 +4,7 @@
 - Runtime SSH password
 - [LevelDB] Compression options
 - [RocksDB] Compression options
+- Update external libraries
 
 1.15.0 / January 10, 2018
 [Alexandr Topilski]

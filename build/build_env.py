@@ -331,21 +331,21 @@ class BuildRequest(object):
 
         # abs_dir_path = self.build_dir_path_
 
-        self.build_snappy(cmake_line, make_install)
-        self.build_common(cmake_line, make_install)
-        self.build_openssl(prefix_path)
-        self.build_libssh2(cmake_line, make_install)
-        self.build_jsonc(cmake_line, make_install)
-        self.build_qscintilla(cmake_line, make_install)
+        #self.build_snappy(cmake_line, make_install)
+        #self.build_common(cmake_line, make_install)
+        #self.build_openssl(prefix_path)
+        #self.build_libssh2(cmake_line, make_install)
+        #self.build_jsonc(cmake_line, make_install)
+        #self.build_qscintilla(cmake_line, make_install)
         
         # database build
-        self.build_libmemcached(prefix_path)
-        self.build_unqlite(cmake_line, make_install)
-        self.build_lmdb(prefix_path)
+        #self.build_libmemcached(prefix_path)
+        #self.build_unqlite(cmake_line, make_install)
+        #self.build_lmdb(prefix_path)
         self.build_leveldb(prefix_path)
-        self.build_rocksdb(cmake_line, make_install)
-        self.build_upscaledb(prefix_path)
-        self.build_forestdb(cmake_line, make_install)
+        #self.build_rocksdb(cmake_line, make_install)
+        #self.build_upscaledb(prefix_path)
+        #self.build_forestdb(cmake_line, make_install)
 
 
 if __name__ == "__main__":

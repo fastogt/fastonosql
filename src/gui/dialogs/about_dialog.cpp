@@ -30,6 +30,7 @@
 #include <libssh2.h>
 #include <openssl/opensslv.h>
 #include <snappy-stubs-public.h>
+#include <json-c/json_c_version.h>
 
 #include <common/config.h>
 #include <common/macros.h>  // for STRINGIZE, VERIFY
@@ -184,6 +185,7 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
   addLibItem(libs_list_widget, "OpenSSL", OPENSSL_VERSION_TEXT);
   addLibItem(libs_list_widget, "common", COMMON_VERSION_STRING);
   addLibItem(libs_list_widget, "Snappy", SNAPPY_VERSION_TEXT);
+  addLibItem(libs_list_widget, "json-c", JSON_C_VERSION);
   main_tab->addTab(libs_list_widget, QObject::tr("External libraries"));
 
   copy_rights_layout->addWidget(main_tab, 4, 1, 1, 5);

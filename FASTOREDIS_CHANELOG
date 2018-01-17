@@ -2,6 +2,7 @@
 [Alexandr Topilski]
 - CONFIG GET databases different behavior than in Redis
 - Runtime SSH password
+- Update external libraries
 
 1.14.0 / January 10, 2018
 [Alexandr Topilski]
