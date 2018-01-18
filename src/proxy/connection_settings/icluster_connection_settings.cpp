@@ -37,7 +37,7 @@ IClusterSettingsBase::cluster_nodes_t IClusterSettingsBase::GetNodes() const {
 
 void IClusterSettingsBase::AddNode(IConnectionSettingsBaseSPtr node) {
   if (!node) {
-    DNOTREACHED();
+    //DNOTREACHED();
     return;
   }
 
