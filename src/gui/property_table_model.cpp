@@ -42,10 +42,10 @@ QVariant PropertyTableModel::data(const QModelIndex& index, int role) const {
 
   if (role == Qt::DisplayRole) {
     int col = index.column();
-    if (col == PropertyTableItem::eKey) {
-      return node->key();
-    } else if (col == PropertyTableItem::eValue) {
-      return node->value();
+    if (col == PropertyTableItem::kKey) {
+      return node->GetKey();
+    } else if (col == PropertyTableItem::kValue) {
+      return node->GetValue();
     }
   }
   return QVariant();
@@ -59,11 +59,11 @@ bool PropertyTableModel::setData(const QModelIndex& index, const QVariant& value
     }
 
     int column = index.column();
-    if (column == PropertyTableItem::eKey) {
-    } else if (column == PropertyTableItem::eValue) {
+    if (column == PropertyTableItem::kKey) {
+    } else if (column == PropertyTableItem::kValue) {
       QString newValue = value.toString();
-      if (newValue != node->value()) {
-        core::property_t pr = node->property();
+      if (newValue != node->GetValue()) {
+        core::property_t pr = node->GetProperty();
         pr.second = common::ConvertToString(newValue);
         emit propertyChanged(pr);
       }
@@ -80,7 +80,7 @@ Qt::ItemFlags PropertyTableModel::flags(const QModelIndex& index) const {
 
   Qt::ItemFlags result = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
   int col = index.column();
-  if (col == PropertyTableItem::eValue) {
+  if (col == PropertyTableItem::kValue) {
     result |= Qt::ItemIsEditable;
   }
   return result;
@@ -92,9 +92,9 @@ QVariant PropertyTableModel::headerData(int section, Qt::Orientation orientation
   }
 
   if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-    if (section == PropertyTableItem::eKey) {
+    if (section == PropertyTableItem::kKey) {
       return translations::trKey;
-    } else if (section == PropertyTableItem::eValue) {
+    } else if (section == PropertyTableItem::kValue) {
       return translations::trValue;
     }
   }
@@ -105,7 +105,7 @@ QVariant PropertyTableModel::headerData(int section, Qt::Orientation orientation
 int PropertyTableModel::columnCount(const QModelIndex& parent) const {
   UNUSED(parent);
 
-  return PropertyTableItem::eCountColumns;
+  return PropertyTableItem::kColumnsCount;
 }
 
 void PropertyTableModel::changeProperty(const core::property_t& pr) {
@@ -115,10 +115,10 @@ void PropertyTableModel::changeProperty(const core::property_t& pr) {
       continue;
     }
 
-    core::property_t prop = it->property();
+    core::property_t prop = it->GetProperty();
     if (prop.first == pr.first) {
-      it->setProperty(pr);
-      updateItem(index(i, PropertyTableItem::eKey, QModelIndex()), index(i, PropertyTableItem::eValue, QModelIndex()));
+      it->SetProperty(pr);
+      updateItem(index(i, PropertyTableItem::kKey, QModelIndex()), index(i, PropertyTableItem::kValue, QModelIndex()));
       return;
     }
   }

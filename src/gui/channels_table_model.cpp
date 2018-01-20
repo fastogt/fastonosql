@@ -32,17 +32,17 @@ namespace gui {
 
 ChannelTableItem::ChannelTableItem(const core::NDbPSChannel& chan) : channel_(chan) {}
 
-core::NDbPSChannel ChannelTableItem::channel() const {
+core::NDbPSChannel ChannelTableItem::GetChannel() const {
   return channel_;
 }
 
-QString ChannelTableItem::name() const {
+QString ChannelTableItem::GetName() const {
   QString qname;
   common::ConvertFromString(channel_.GetName(), &qname);
   return qname;
 }
 
-size_t ChannelTableItem::numberOfSubscribers() const {
+size_t ChannelTableItem::GetNumberOfSubscribers() const {
   return channel_.GetNumberOfSubscribers();
 }
 
@@ -68,9 +68,9 @@ QVariant ChannelsTableModel::data(const QModelIndex& index, int role) const {
   QVariant result;
   if (role == Qt::DisplayRole) {
     if (col == ChannelTableItem::kName) {
-      result = node->name();
+      result = node->GetName();
     } else if (col == ChannelTableItem::kNOS) {
-      result.setValue(node->numberOfSubscribers());
+      result.setValue(node->GetNumberOfSubscribers());
     }
   }
 

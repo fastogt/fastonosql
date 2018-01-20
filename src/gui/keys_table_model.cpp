@@ -79,9 +79,9 @@ bool KeysTableModel::setData(const QModelIndex& index, const QVariant& value, in
     int column = index.column();
     if (column == KeyTableItem::kKey) {
     } else if (column == KeyTableItem::kTTL) {
-      bool isOk = false;
-      int newValue = value.toInt(&isOk);
-      if (isOk && newValue != node->GetTTL()) {
+      bool is_ok = false;
+      int newValue = value.toInt(&is_ok);
+      if (is_ok && newValue != node->GetTTL()) {
         core::NDbKValue dbv = node->GetDBV();
         emit changedTTL(dbv, newValue);
       }
