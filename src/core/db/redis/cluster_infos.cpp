@@ -74,15 +74,15 @@ common::Error MakeServerCommonInfoFromLine(const std::string& line, ServerCommon
           const size_t len = common::Tokenize(word, ",", &flags);
           for (size_t i = 0; i < len; ++i) {
             const std::string flag = flags[i];
-            if (flag == "master") {
+            if (common::StartsWithASCII(flag, "master", true)) {
               linfo.type = MASTER;
-            } else if (flag == "slave") {
+            } else if (common::StartsWithASCII(flag, "slave", true)) {
               linfo.type = SLAVE;
-            } else if (flag == "myself") {
+            } else if (common::StartsWithASCII(flag, "myself", true)) {
               lself = true;
-            } else if (flag == "fail") {
+            } else if (common::StartsWithASCII(flag, "fail", true)) {
             } else {
-              NOTREACHED();
+              DNOTREACHED() << "flag: " << flag;
             }
           }
           break;

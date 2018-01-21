@@ -3166,6 +3166,24 @@ common::Error ExecRedisCommand(redisContext* c,
 
   redisReply* rreply = static_cast<redisReply*>(reply);
   if (rreply->type == REDIS_REPLY_ERROR) {
+    if (!strncmp(rreply->str, "MOVED", 5) || !strcmp(rreply->str, "ASK")) {
+      char* p = rreply->str;
+      char* s = strchr(p, ' '); /* MOVED[S]3999 127.0.0.1:6381 */
+      p = strchr(s + 1, ' ');   /* MOVED[S]3999[P]127.0.0.1:6381 */
+      *p = '\0';
+      int slot = atoi(s + 1);
+      s = strrchr(p + 1, ':'); /* MOVED 3999[P]127.0.0.1[S]6381 */
+      *s = '\0';
+
+      std::string hostip = (p + 1);
+      int port = atoi(s + 1);
+      // std::string redirect_str = common::MemSPrintf("-> Redirected to slot [%d] located at %s:%d", slot, hostip,
+      // port);
+      freeReplyObject(rreply);
+      common::Error err = common::make_error(common::COMMON_EINTR);
+      err->SetPayload(new common::net::HostAndPortAndSlot(hostip, port, slot));
+      return err;
+    }
     std::string str(rreply->str, rreply->len);
     freeReplyObject(rreply);
     return common::make_error(str);

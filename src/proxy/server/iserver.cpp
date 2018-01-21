@@ -398,10 +398,16 @@ void IServer::HandleExecuteEvent(events::ExecuteResponceEvent* ev) {
   auto v = ev->value();
   common::Error err(v.errorInfo());
   if (err) {
-    LOG_ERROR(err,
-              err->GetErrorCode() == common::COMMON_EINTR ? common::logging::LOG_LEVEL_WARNING
-                                                          : common::logging::LOG_LEVEL_ERR,
-              true);
+    bool is_eintr = err->GetErrorCode() == common::COMMON_EINTR;
+    if (is_eintr) {
+      auto payload = err->GetPayload();
+      if (payload) {
+        common::net::HostAndPortAndSlot* hs = static_cast<common::net::HostAndPortAndSlot*>(payload);
+        delete hs;
+      }
+    }
+
+    LOG_ERROR(err, is_eintr ? common::logging::LOG_LEVEL_WARNING : common::logging::LOG_LEVEL_ERR, true);
   }
 
   emit ExecuteFinished(v);
