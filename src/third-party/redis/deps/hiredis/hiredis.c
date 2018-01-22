@@ -928,6 +928,8 @@ redisContext *redisConnectNonBlock(const char *ip, int port) {
 redisContext *redisConnectBindNonBlock(const char *ip, int port,
                                        const char *source_addr) {
     redisContext *c = redisContextInit();
+    if (c == NULL)
+        return NULL;
     c->flags &= ~REDIS_BLOCK;
     redisContextConnectBindTcp(c,ip,port,NULL,source_addr);
     return c;
@@ -936,6 +938,8 @@ redisContext *redisConnectBindNonBlock(const char *ip, int port,
 redisContext *redisConnectBindNonBlockWithReuse(const char *ip, int port,
                                                 const char *source_addr) {
     redisContext *c = redisContextInit();
+    if (c == NULL)
+        return NULL;
     c->flags &= ~REDIS_BLOCK;
     c->flags |= REDIS_REUSEADDR;
     redisContextConnectBindTcp(c,ip,port,NULL,source_addr);
@@ -1354,9 +1358,8 @@ void *redisvCommand(redisContext *c, const char *format, va_list ap) {
 
 void *redisCommand(redisContext *c, const char *format, ...) {
     va_list ap;
-    void *reply = NULL;
     va_start(ap,format);
-    reply = redisvCommand(c,format,ap);
+    void *reply = redisvCommand(c,format,ap);
     va_end(ap);
     return reply;
 }

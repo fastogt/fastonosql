@@ -126,12 +126,13 @@ static void redisContextCloseFd(redisContext *c) {
 #endif
 
 static void __redisSetErrorFromErrno(redisContext *c, int type, const char *prefix) {
+    int errorno = errno;  /* snprintf() may change errno */
     char buf[128] = { 0 };
     size_t len = 0;
 
     if (prefix != NULL)
         len = snprintf(buf,sizeof(buf),"%s: ",prefix);
-    __redis_strerror_r(errno, (char *)(buf + len), sizeof(buf) - len);
+    __redis_strerror_r(errorno, (char *)(buf + len), sizeof(buf) - len);
     __redisSetError(c,type,buf);
 }
 
@@ -237,7 +238,6 @@ int redisKeepAlive(redisContext *c, int interval) {
     }
 #else
 #if defined(__GLIBC__) && !defined(__FreeBSD_kernel__)
-    val = interval;
     if (setsockopt(fd, IPPROTO_TCP, TCP_KEEPIDLE, &val, sizeof(val)) < 0) {
         __redisSetError(c,REDIS_ERR_OTHER,strerror(errno));
         return REDIS_ERR;
@@ -536,6 +536,7 @@ addrretry:
                 n = 1;
                 if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (char*) &n,
                                sizeof(n)) < 0) {
+                    freeaddrinfo(bservinfo);
                     goto error;
                 }
             }
