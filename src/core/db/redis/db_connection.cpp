@@ -3177,8 +3177,6 @@ common::Error ExecRedisCommand(redisContext* c,
 
       std::string hostip = (p + 1);
       int port = atoi(s + 1);
-      // std::string redirect_str = common::MemSPrintf("-> Redirected to slot [%d] located at %s:%d", slot, hostip,
-      // port);
       freeReplyObject(rreply);
       common::Error err = common::make_error(common::COMMON_EINTR);
       err->SetPayload(new common::net::HostAndPortAndSlot(hostip, port, slot));

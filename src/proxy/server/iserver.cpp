@@ -21,6 +21,7 @@
 #include <QApplication>
 
 #include <common/qt/logger.h>  // for LOG_ERROR
+#include <common/sprintf.h>
 
 #include "proxy/driver/idriver.h"  // for IDriver
 
@@ -397,19 +398,27 @@ void IServer::HandleRestoreEvent(events::RestoreResponceEvent* ev) {
 void IServer::HandleExecuteEvent(events::ExecuteResponceEvent* ev) {
   auto v = ev->value();
   common::Error err(v.errorInfo());
-  if (err) {
-    bool is_eintr = err->GetErrorCode() == common::COMMON_EINTR;
-    if (is_eintr) {
-      auto payload = err->GetPayload();
-      if (payload) {
-        common::net::HostAndPortAndSlot* hs = static_cast<common::net::HostAndPortAndSlot*>(payload);
-        delete hs;
-      }
-    }
-
-    LOG_ERROR(err, is_eintr ? common::logging::LOG_LEVEL_WARNING : common::logging::LOG_LEVEL_ERR, true);
+  if (!err) {
+    emit ExecuteFinished(v);
+    return;
   }
 
+  bool is_eintr = err->GetErrorCode() == common::COMMON_EINTR;
+  auto payload = err->GetPayload();
+  if (is_eintr && payload) {
+    common::net::HostAndPortAndSlot* hs = static_cast<common::net::HostAndPortAndSlot*>(payload);
+    common::net::HostAndPortAndSlot copy = *hs;
+    std::string redirect_str = common::MemSPrintf("-> Redirected to slot [%d] located at %s:%d", copy.GetSlot(),
+                                                  copy.GetHost(), copy.GetPort());
+    common::Error red_error = common::make_error(redirect_str);
+    emit RedirectRequested(copy, v);
+    LOG_ERROR(red_error, common::logging::LOG_LEVEL_WARNING, true);
+    emit ExecuteFinished(v);
+    // delete hs;
+    return;
+  }
+
+  LOG_ERROR(err, is_eintr ? common::logging::LOG_LEVEL_WARNING : common::logging::LOG_LEVEL_ERR, true);
   emit ExecuteFinished(v);
 }
 

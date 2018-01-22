@@ -1,5 +1,6 @@
 1.15.2 /
 [Alexandr Topilski]
+- Redirect requests to cluster nodes
 
 1.14.1 / January 17, 2018
 [Alexandr Topilski]

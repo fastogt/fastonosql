@@ -52,7 +52,11 @@ class Connection {
   bool IsConnected() const { return traits_t::IsConnected(handle_); }
 
   common::Error Connect(const config_t& config) WARN_UNUSED_RESULT {
-    if (IsConnected() || !config) {
+    if (!config) {
+      return common::make_error_inval();
+    }
+
+    if (IsConnected()) {
       return common::Error();
     }
 

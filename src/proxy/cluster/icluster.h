@@ -18,8 +18,11 @@
 
 #pragma once
 
+#include <common/net/types.h>
+
 #include "proxy/proxy_fwd.h"  // for IServerSPtr
 #include "proxy/server/iserver_base.h"
+#include "proxy/events/events.h"
 
 namespace fastonosql {
 namespace proxy {
@@ -34,6 +37,9 @@ class ICluster : public IServerBase {
   void AddServer(node_t serv);
 
   node_t GetRoot() const;
+
+ private Q_SLOTS:
+  void RedirectRequest(const common::net::HostAndPortAndSlot& host, const events_info::ExecuteInfoRequest& req);
 
  protected:
   explicit ICluster(const std::string& name);

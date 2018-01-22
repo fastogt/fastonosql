@@ -110,6 +110,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void LoadDiscoveryInfoStarted(const events_info::DiscoveryInfoRequest& res);
   void LoadDiscoveryInfoFinished(const events_info::DiscoveryInfoResponce& res);
 
+  void RedirectRequested(const common::net::HostAndPortAndSlot& host, const events_info::ExecuteInfoRequest& req);
  Q_SIGNALS:
   void ChildAdded(core::FastoObjectIPtr child);
   void ItemUpdated(core::FastoObject* item, common::ValueSPtr val);

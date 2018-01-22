@@ -42,6 +42,7 @@ ICluster::nodes_t ICluster::GetNodes() const {
 }
 
 void ICluster::AddServer(node_t serv) {
+  VERIFY(QObject::connect(serv.get(), &IServer::RedirectRequested, this, &ICluster::RedirectRequest));
   nodes_.push_back(serv);
 }
 
@@ -55,6 +56,26 @@ ICluster::node_t ICluster::GetRoot() const {
 
   DNOTREACHED();
   return node_t();
+}
+
+void ICluster::RedirectRequest(const common::net::HostAndPortAndSlot& host,
+                               const events_info::ExecuteInfoRequest& req) {
+  for (auto node : nodes_) {
+    IServerRemote* rserver = dynamic_cast<IServerRemote*>(node.get());  // +
+    if (!rserver) {
+      continue;
+    }
+
+    common::net::HostAndPort server_host = rserver->GetHost();
+    if (server_host == host) {
+      proxy::events_info::ConnectInfoRequest connect_req(this);
+      rserver->Connect(connect_req);
+      events_info::ExecuteInfoRequest exec_req(req.initiator(), req.text, req.repeat, req.msec_repeat_interval,
+                                               req.history, req.silence, req.logtype);
+      rserver->Execute(exec_req);
+      return;
+    }
+  }
 }
 
 }  // namespace proxy
