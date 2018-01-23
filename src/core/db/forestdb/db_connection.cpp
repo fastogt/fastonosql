@@ -614,7 +614,7 @@ common::Error DBConnection::SelectImpl(const std::string& name, IDataBaseInfo** 
   connection_.config_->db_name = name;
   size_t kcount = 0;
   err = DBkcount(&kcount);
-  DCHECK(!err) << "DBkcount failed!";
+  DCHECK(!err) << err->GetDescription();
   *info = new DataBaseInfo(name, true, kcount);
   return common::Error();
 }

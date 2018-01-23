@@ -162,6 +162,9 @@ void BaseShellWidget::init() {
   VERIFY(connect(server_.get(), &proxy::IServer::ModeEntered, this, &BaseShellWidget::enterMode));
   VERIFY(connect(server_.get(), &proxy::IServer::ModeLeaved, this, &BaseShellWidget::leaveMode));
 
+  // infos
+  VERIFY(connect(server_.get(), &proxy::IServer::LoadServerInfoStarted, this, &BaseShellWidget::startLoadServerInfo));
+  VERIFY(connect(server_.get(), &proxy::IServer::LoadServerInfoFinished, this, &BaseShellWidget::finishLoadServerInfo));
   VERIFY(connect(server_.get(), &proxy::IServer::LoadDiscoveryInfoStarted, this,
                  &BaseShellWidget::startLoadDiscoveryInfo));
   VERIFY(connect(server_.get(), &proxy::IServer::LoadDiscoveryInfoFinished, this,
@@ -522,12 +525,33 @@ void BaseShellWidget::leaveMode(const proxy::events_info::LeaveModeInfo& res) {
   UNUSED(res);
 }
 
+void BaseShellWidget::startLoadServerInfo(const proxy::events_info::ServerInfoRequest& res) {
+  OnStartedLoadServerInfo(res);
+}
+
+void BaseShellWidget::finishLoadServerInfo(const proxy::events_info::ServerInfoResponce& res) {
+  OnFinishedLoadServerInfo(res);
+}
+
 void BaseShellWidget::startLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoRequest& res) {
   OnStartedLoadDiscoveryInfo(res);
 }
 
 void BaseShellWidget::finishLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponce& res) {
   OnFinishedLoadDiscoveryInfo(res);
+}
+
+void BaseShellWidget::OnStartedLoadServerInfo(const proxy::events_info::ServerInfoRequest& res) {
+  UNUSED(res);
+}
+
+void BaseShellWidget::OnFinishedLoadServerInfo(const proxy::events_info::ServerInfoResponce& res) {
+  common::Error err = res.errorInfo();
+  if (err) {
+    return;
+  }
+
+  updateServerInfo(res.info());
 }
 
 void BaseShellWidget::OnStartedLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoRequest& res) {
@@ -540,7 +564,6 @@ void BaseShellWidget::OnFinishedLoadDiscoveryInfo(const proxy::events_info::Disc
     return;
   }
 
-  updateServerInfo(res.sinfo);
   updateDefaultDatabase(res.dbinfo);
   updateCommands(res.commands);
 }

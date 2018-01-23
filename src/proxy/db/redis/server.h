@@ -37,7 +37,7 @@ class Server : public IServerRemote {
   virtual common::net::HostAndPort GetHost() const override;
 
  protected:
-  virtual void HandleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev) override;
+  virtual void HandleLoadServerInfoEvent(events::ServerInfoResponceEvent* ev) override;
 
  private:
   virtual IDatabaseSPtr CreateDatabase(core::IDataBaseInfoSPtr info) override;

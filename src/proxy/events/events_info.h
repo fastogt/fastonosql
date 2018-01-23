@@ -86,7 +86,6 @@ struct DiscoveryInfoResponce : DiscoveryInfoRequest {
   typedef DiscoveryInfoRequest base_class;
   explicit DiscoveryInfoResponce(const base_class& request);
 
-  core::IServerInfoSPtr sinfo;
   core::IDataBaseInfoSPtr dbinfo;
   std::vector<const core::CommandInfo*> commands;
   std::vector<core::ModuleInfo> loaded_modules;

@@ -63,15 +63,15 @@ IDatabaseSPtr Server::CreateDatabase(core::IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new Database(shared_from_this(), info));
 }
 
-void Server::HandleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev) {
-  const events_info::DiscoveryInfoResponce v = ev->value();
+void Server::HandleLoadServerInfoEvent(events::ServerInfoResponceEvent* ev) {
+  const events_info::ServerInfoResponce v = ev->value();
   common::Error err = v.errorInfo();
   if (err) {
-    IServer::HandleDiscoveryInfoResponceEvent(ev);
+    IServer::HandleLoadServerInfoEvent(ev);
     return;
   }
 
-  core::IServerInfoSPtr serv_info = v.sinfo;
+  core::IServerInfoSPtr serv_info = v.info();
   core::redis::ServerInfo* rinf = static_cast<core::redis::ServerInfo*>(serv_info.get());
   if (rinf->replication_.role_ == MASTER_ROLE) {
     role_ = core::MASTER;
@@ -86,7 +86,7 @@ void Server::HandleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent
   } else if (rinf->server_.redis_mode_ == CLUSTER_MODE) {
     mode_ = core::CLUSTER;
   }
-  IServer::HandleDiscoveryInfoResponceEvent(ev);
+  IServer::HandleLoadServerInfoEvent(ev);
 }
 
 }  // namespace redis

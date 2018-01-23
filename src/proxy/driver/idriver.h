@@ -167,8 +167,7 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   virtual common::Error GetServerLoadedModules(std::vector<core::ModuleInfo>* modules) = 0;
   virtual common::Error GetCurrentDataBaseInfo(core::IDataBaseInfo** info) = 0;
 
-  common::Error GetServerDiscoveryInfo(core::IServerInfo** sinfo,
-                                       core::IDataBaseInfo** dbinfo,
+  common::Error GetServerDiscoveryInfo(core::IDataBaseInfo** dbinfo,
                                        std::vector<const core::CommandInfo*>* commands,
                                        std::vector<core::ModuleInfo>* modules);
 

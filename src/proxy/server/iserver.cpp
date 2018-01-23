@@ -240,9 +240,12 @@ void IServer::customEvent(QEvent* event) {
     events::ConnectResponceEvent* ev = static_cast<events::ConnectResponceEvent*>(event);
     HandleConnectEvent(ev);
 
+    events_info::ServerInfoRequest sreq(this);
+    LoadServerInfo(sreq);
+
     events::ConnectResponceEvent::value_type v = ev->value();
-    common::Error er(v.errorInfo());
-    if (!er) {
+    common::Error err(v.errorInfo());
+    if (!err) {
       events_info::DiscoveryInfoRequest dreq(this);
       ProcessDiscoveryInfo(dreq);
     }
@@ -346,6 +349,8 @@ void IServer::HandleLoadServerInfoEvent(events::ServerInfoResponceEvent* ev) {
   common::Error err(v.errorInfo());
   if (err) {
     LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
+  } else {
+    server_info_ = v.info();
   }
   emit LoadServerInfoFinished(v);
 }
@@ -672,7 +677,6 @@ void IServer::HandleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEven
   if (err) {
     LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
   } else {
-    server_info_ = v.sinfo;
     database_t dbs = FindDatabase(v.dbinfo);
     if (!dbs) {
       current_database_info_ = v.dbinfo;

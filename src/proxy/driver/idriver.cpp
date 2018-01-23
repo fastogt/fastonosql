@@ -583,21 +583,17 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
   NotifyProgress(sender, 50);
 
   if (IsConnected()) {
-    core::IServerInfo* info = nullptr;
     core::IDataBaseInfo* db = nullptr;
     std::vector<const core::CommandInfo*> cmds;
     std::vector<core::ModuleInfo> loaded_modules;
-    common::Error err = GetServerDiscoveryInfo(&info, &db, &cmds, &loaded_modules);
+    common::Error err = GetServerDiscoveryInfo(&db, &cmds, &loaded_modules);
     if (err) {
       res.setErrorInfo(err);
     } else {
-      DCHECK(info);
       DCHECK(db);
 
-      core::IServerInfoSPtr server_info(info);
       core::IDataBaseInfoSPtr current_database_info(db);
 
-      res.sinfo = server_info;
       res.dbinfo = current_database_info;
       res.commands = cmds;
       res.loaded_modules = loaded_modules;
@@ -611,16 +607,9 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
   NotifyProgress(sender, 100);
 }
 
-common::Error IDriver::GetServerDiscoveryInfo(core::IServerInfo** sinfo,
-                                              core::IDataBaseInfo** dbinfo,
+common::Error IDriver::GetServerDiscoveryInfo(core::IDataBaseInfo** dbinfo,
                                               std::vector<const core::CommandInfo*>* commands,
                                               std::vector<core::ModuleInfo>* modules) {
-  core::IServerInfo* lsinfo = nullptr;
-  common::Error err = GetCurrentServerInfo(&lsinfo);
-  if (err) {
-    return err;
-  }
-
   std::vector<const core::CommandInfo*> lcommands;
   std::vector<core::ModuleInfo> lmodules;
   GetServerCommands(&lcommands);  // can be failed
@@ -644,13 +633,11 @@ common::Error IDriver::GetServerDiscoveryInfo(core::IServerInfo** sinfo,
   GetServerLoadedModules(&lmodules);  // can be failed
 
   core::IDataBaseInfo* ldbinfo = nullptr;
-  err = GetCurrentDataBaseInfo(&ldbinfo);
+  common::Error err = GetCurrentDataBaseInfo(&ldbinfo);
   if (err) {
-    delete lsinfo;
     return err;
   }
 
-  *sinfo = lsinfo;
   *commands = lcommands;
   *dbinfo = ldbinfo;
   *modules = lmodules;

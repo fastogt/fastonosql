@@ -62,6 +62,9 @@ struct EnterModeInfo;
 struct LeaveModeInfo;
 struct ProgressInfoResponce;
 struct SetDefaultDatabaseRequest;
+
+struct ServerInfoRequest;
+class ServerInfoResponce;
 }  // namespace events_info
 }  // namespace proxy
 namespace gui {
@@ -112,6 +115,9 @@ class BaseShellWidget : public QWidget {
   void enterMode(const proxy::events_info::EnterModeInfo& res);
   void leaveMode(const proxy::events_info::LeaveModeInfo& res);
 
+  void startLoadServerInfo(const proxy::events_info::ServerInfoRequest& res);
+  void finishLoadServerInfo(const proxy::events_info::ServerInfoResponce& res);
+
   void startLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoRequest& res);
   void finishLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponce& res);
 
@@ -129,6 +135,10 @@ class BaseShellWidget : public QWidget {
   // notify methods for derived classes
   virtual void OnServerConnected();
   virtual void OnServerDisconnected();
+
+  virtual void OnStartedLoadServerInfo(const proxy::events_info::ServerInfoRequest& res);
+  virtual void OnFinishedLoadServerInfo(const proxy::events_info::ServerInfoResponce& res);
+
   virtual void OnStartedLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoRequest& res);
   virtual void OnFinishedLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponce& res);
 
