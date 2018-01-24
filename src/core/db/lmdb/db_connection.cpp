@@ -198,6 +198,11 @@ const char* ConnectionTraits<LMDB>::GetVersionApi() {
   return STRINGIZE(MDB_VERSION_MAJOR) "." STRINGIZE(MDB_VERSION_MINOR) "." STRINGIZE(MDB_VERSION_PATCH);
 }
 
+template <>
+const ConstantCommandsArray& ConnectionCommandsTraits<LMDB>::GetCommands() {
+  return lmdb::g_commands;
+}
+
 namespace {
 MDB_val ConvertToLMDBSlice(const char* key, size_t len) {
   MDB_val mkey;
@@ -393,11 +398,6 @@ bool ConnectionAllocatorTraits<lmdb::NativeConnection, lmdb::Config>::IsConnecte
   }
 
   return true;
-}
-
-template <>
-const ConstantCommandsArray& CDBConnection<lmdb::NativeConnection, lmdb::Config, LMDB>::GetCommands() {
-  return lmdb::g_commands;
 }
 
 }  // namespace internal

@@ -46,6 +46,7 @@ SET(HEADERS_CORE
   ${HEADERS_CORE_INTERNAL}
 
   ${CMAKE_SOURCE_DIR}/src/core/constant_commands_array.h
+  ${CMAKE_SOURCE_DIR}/src/core/connection_commands_traits.h
   ${CMAKE_SOURCE_DIR}/src/core/display_strategy.h
   ${CMAKE_SOURCE_DIR}/src/core/connection_types.h
   ${CMAKE_SOURCE_DIR}/src/core/types.h
@@ -72,6 +73,7 @@ SET(SOURCES_CORE
   ${SOURCES_CORE_INTERNAL}
 
   ${CMAKE_SOURCE_DIR}/src/core/constant_commands_array.cpp
+  ${CMAKE_SOURCE_DIR}/src/core/connection_commands_traits.cpp
   ${CMAKE_SOURCE_DIR}/src/core/display_strategy.cpp
   ${CMAKE_SOURCE_DIR}/src/core/connection_types.cpp
   ${CMAKE_SOURCE_DIR}/src/core/types.cpp

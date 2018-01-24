@@ -18,28 +18,26 @@
 
 #include "gui/db/leveldb/lexer.h"
 
-#include "core/db/leveldb/db_connection.h"
-
 namespace fastonosql {
 namespace gui {
 namespace leveldb {
 
 LeveldbApi::LeveldbApi(Lexer* lexer) : BaseCommandsQsciApi(lexer) {}
 
-Lexer::Lexer(QObject* parent) : BaseCommandsQsciLexer(core::leveldb::DBConnection::GetCommands(), parent) {
+Lexer::Lexer(QObject* parent) : BaseCommandsQsciLexer(leveldb_trait_t::GetCommands(), parent) {
   setAPIs(new LeveldbApi(this));
 }
 
 const char* Lexer::language() const {
-  return core::leveldb::DBConnection::GetDBName();
+  return leveldb_trait_t::GetDBName();
 }
 
 const char* Lexer::version() const {
-  return core::leveldb::DBConnection::GetVersionApi();
+  return leveldb_trait_t::GetVersionApi();
 }
 
 const char* Lexer::basedOn() const {
-  return core::leveldb::DBConnection::GetBasedOn();
+  return leveldb_trait_t::GetBasedOn();
 }
 
 }  // namespace leveldb

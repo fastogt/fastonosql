@@ -214,6 +214,11 @@ const char* ConnectionTraits<ROCKSDB>::GetVersionApi() {
   return STRINGIZE(ROCKSDB_MAJOR) "." STRINGIZE(ROCKSDB_MINOR) "." STRINGIZE(ROCKSDB_PATCH);
 }
 
+template <>
+const ConstantCommandsArray& ConnectionCommandsTraits<ROCKSDB>::GetCommands() {
+  return rocksdb::g_commands;
+}
+
 namespace internal {
 template <>
 common::Error ConnectionAllocatorTraits<rocksdb::NativeConnection, rocksdb::Config>::Connect(
@@ -244,11 +249,6 @@ bool ConnectionAllocatorTraits<rocksdb::NativeConnection, rocksdb::Config>::IsCo
   }
 
   return true;
-}
-
-template <>
-const ConstantCommandsArray& CDBConnection<rocksdb::NativeConnection, rocksdb::Config, ROCKSDB>::GetCommands() {
-  return rocksdb::g_commands;
 }
 
 }  // namespace internal

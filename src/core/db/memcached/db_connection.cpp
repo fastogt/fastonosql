@@ -433,6 +433,11 @@ template <>
 const char* ConnectionTraits<MEMCACHED>::GetVersionApi() {
   return memcached_lib_version();
 }
+
+template <>
+const ConstantCommandsArray& ConnectionCommandsTraits<MEMCACHED>::GetCommands() {
+  return memcached::g_commands;
+}
 namespace internal {
 template <>
 common::Error ConnectionAllocatorTraits<memcached::NativeConnection, memcached::Config>::Connect(
@@ -472,11 +477,6 @@ bool ConnectionAllocatorTraits<memcached::NativeConnection, memcached::Config>::
   }
 
   return servers->state == MEMCACHED_SERVER_STATE_CONNECTED;
-}
-
-template <>
-const ConstantCommandsArray& CDBConnection<memcached::NativeConnection, memcached::Config, MEMCACHED>::GetCommands() {
-  return memcached::g_commands;
 }
 
 }  // namespace internal

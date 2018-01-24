@@ -18,28 +18,26 @@
 
 #include "gui/db/lmdb/lexer.h"
 
-#include "core/db/lmdb/db_connection.h"
-
 namespace fastonosql {
 namespace gui {
 namespace lmdb {
 
 LmdbApi::LmdbApi(Lexer* lexer) : BaseCommandsQsciApi(lexer) {}
 
-Lexer::Lexer(QObject* parent) : BaseCommandsQsciLexer(core::lmdb::DBConnection::GetCommands(), parent) {
+Lexer::Lexer(QObject* parent) : BaseCommandsQsciLexer(lmdb_trait_t::GetCommands(), parent) {
   setAPIs(new LmdbApi(this));
 }
 
 const char* Lexer::language() const {
-  return core::lmdb::DBConnection::GetDBName();
+  return lmdb_trait_t::GetDBName();
 }
 
 const char* Lexer::version() const {
-  return core::lmdb::DBConnection::GetVersionApi();
+  return lmdb_trait_t::GetVersionApi();
 }
 
 const char* Lexer::basedOn() const {
-  return core::lmdb::DBConnection::GetBasedOn();
+  return lmdb_trait_t::GetBasedOn();
 }
 
 }  // namespace lmdb

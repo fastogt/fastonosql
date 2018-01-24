@@ -18,28 +18,26 @@
 
 #include "gui/db/rocksdb/lexer.h"
 
-#include "core/db/rocksdb/db_connection.h"
-
 namespace fastonosql {
 namespace gui {
 namespace rocksdb {
 
 RocksDBApi::RocksDBApi(Lexer* lexer) : BaseCommandsQsciApi(lexer) {}
 
-Lexer::Lexer(QObject* parent) : BaseCommandsQsciLexer(core::rocksdb::DBConnection::GetCommands(), parent) {
+Lexer::Lexer(QObject* parent) : BaseCommandsQsciLexer(rocksdb_trait_t::GetCommands(), parent) {
   setAPIs(new RocksDBApi(this));
 }
 
 const char* Lexer::language() const {
-  return core::rocksdb::DBConnection::GetDBName();
+  return rocksdb_trait_t::GetDBName();
 }
 
 const char* Lexer::version() const {
-  return core::rocksdb::DBConnection::GetVersionApi();
+  return rocksdb_trait_t::GetVersionApi();
 }
 
 const char* Lexer::basedOn() const {
-  return core::rocksdb::DBConnection::GetBasedOn();
+  return rocksdb_trait_t::GetBasedOn();
 }
 
 }  // namespace rocksdb

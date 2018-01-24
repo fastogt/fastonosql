@@ -59,9 +59,9 @@ bool IsCanCreateDatabase(connectionTypes type);
 bool IsCanRemoveDatabase(connectionTypes type);
 const char* ConnectionTypeToString(connectionTypes t);
 
-template <connectionTypes ContType>
+template <connectionTypes conection_type>
 struct ConnectionTraits {
-  static const char* GetDBName() { return ConnectionTypeToString(ContType); }
+  static const char* GetDBName() { return ConnectionTypeToString(conection_type); }
   static const char* GetBasedOn();
   static const char* GetVersionApi();
 };

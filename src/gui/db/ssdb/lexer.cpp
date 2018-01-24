@@ -18,28 +18,26 @@
 
 #include "gui/db/ssdb/lexer.h"
 
-#include "core/db/ssdb/db_connection.h"
-
 namespace fastonosql {
 namespace gui {
 namespace ssdb {
 
 SsdbApi::SsdbApi(Lexer* lexer) : BaseCommandsQsciApi(lexer) {}
 
-Lexer::Lexer(QObject* parent) : BaseCommandsQsciLexer(core::ssdb::DBConnection::GetCommands(), parent) {
+Lexer::Lexer(QObject* parent) : BaseCommandsQsciLexer(ssdb_trait_t::GetCommands(), parent) {
   setAPIs(new SsdbApi(this));
 }
 
 const char* Lexer::language() const {
-  return core::ssdb::DBConnection::GetDBName();
+  return ssdb_trait_t::GetDBName();
 }
 
 const char* Lexer::version() const {
-  return core::ssdb::DBConnection::GetVersionApi();
+  return ssdb_trait_t::GetVersionApi();
 }
 
 const char* Lexer::basedOn() const {
-  return core::ssdb::DBConnection::GetBasedOn();
+  return ssdb_trait_t::GetBasedOn();
 }
 
 }  // namespace ssdb

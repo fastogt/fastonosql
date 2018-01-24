@@ -30,15 +30,6 @@
 
 namespace fastonosql {
 namespace core {
-template <>
-const char* ConnectionTraits<FORESTDB>::GetBasedOn() {
-  return "libforestdb";
-}
-
-template <>
-const char* ConnectionTraits<FORESTDB>::GetVersionApi() {
-  return fdb_get_lib_version();
-}
 namespace forestdb {
 struct fdb {
   fdb_file_handle* handle;
@@ -293,6 +284,22 @@ void forestdb_close(fdb** context) {
 
 }  // namespace
 }  // namespace forestdb
+
+template <>
+const char* ConnectionTraits<FORESTDB>::GetBasedOn() {
+  return "libforestdb";
+}
+
+template <>
+const char* ConnectionTraits<FORESTDB>::GetVersionApi() {
+  return fdb_get_lib_version();
+}
+
+template <>
+const ConstantCommandsArray& ConnectionCommandsTraits<FORESTDB>::GetCommands() {
+  return forestdb::g_commands;
+}
+
 namespace internal {
 template <>
 common::Error ConnectionAllocatorTraits<forestdb::NativeConnection, forestdb::Config>::Connect(
@@ -324,11 +331,6 @@ bool ConnectionAllocatorTraits<forestdb::NativeConnection, forestdb::Config>::Is
   }
 
   return true;
-}
-
-template <>
-const ConstantCommandsArray& CDBConnection<forestdb::NativeConnection, forestdb::Config, FORESTDB>::GetCommands() {
-  return forestdb::g_commands;
 }
 
 }  // namespace internal

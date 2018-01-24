@@ -18,28 +18,26 @@
 
 #include "gui/db/forestdb/lexer.h"
 
-#include "core/db/forestdb/db_connection.h"
-
 namespace fastonosql {
 namespace gui {
 namespace forestdb {
 
 ForestDBApi::ForestDBApi(Lexer* lexer) : BaseCommandsQsciApi(lexer) {}
 
-Lexer::Lexer(QObject* parent) : BaseCommandsQsciLexer(core::forestdb::DBConnection::GetCommands(), parent) {
+Lexer::Lexer(QObject* parent) : BaseCommandsQsciLexer(forestdb_trait_t::GetCommands(), parent) {
   setAPIs(new ForestDBApi(this));
 }
 
 const char* Lexer::language() const {
-  return core::forestdb::DBConnection::GetDBName();
+  return forestdb_trait_t::GetDBName();
 }
 
 const char* Lexer::version() const {
-  return core::forestdb::DBConnection::GetVersionApi();
+  return forestdb_trait_t::GetVersionApi();
 }
 
 const char* Lexer::basedOn() const {
-  return core::forestdb::DBConnection::GetBasedOn();
+  return forestdb_trait_t::GetBasedOn();
 }
 
 }  // namespace forestdb

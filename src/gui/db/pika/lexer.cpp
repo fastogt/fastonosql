@@ -18,28 +18,26 @@
 
 #include "gui/db/pika/lexer.h"
 
-#include "core/db/pika/db_connection.h"  // for redisCommands, DBConnection
-
 namespace fastonosql {
 namespace gui {
 namespace pika {
 
 PikaApi::PikaApi(Lexer* lexer) : BaseCommandsQsciApi(lexer) {}
 
-Lexer::Lexer(QObject* parent) : BaseCommandsQsciLexer(core::pika::DBConnection::GetCommands(), parent) {
+Lexer::Lexer(QObject* parent) : BaseCommandsQsciLexer(pika_trait_t::GetCommands(), parent) {
   setAPIs(new PikaApi(this));
 }
 
 const char* Lexer::language() const {
-  return core::pika::DBConnection::GetDBName();
+  return pika_trait_t::GetDBName();
 }
 
 const char* Lexer::version() const {
-  return core::pika::DBConnection::GetVersionApi();
+  return pika_trait_t::GetVersionApi();
 }
 
 const char* Lexer::basedOn() const {
-  return core::pika::DBConnection::GetBasedOn();
+  return pika_trait_t::GetBasedOn();
 }
 
 }  // namespace pika

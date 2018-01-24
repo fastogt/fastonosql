@@ -2965,6 +2965,12 @@ template <>
 const char* ConnectionTraits<REDIS>::GetVersionApi() {
   return redis_compatible::GetHiredisVersion();
 }
+
+template <>
+const ConstantCommandsArray& ConnectionCommandsTraits<REDIS>::GetCommands() {
+  return redis::g_commands;
+}
+
 namespace internal {
 template <>
 common::Error ConnectionAllocatorTraits<redis::NativeConnection, redis::RConfig>::Connect(
@@ -2999,11 +3005,6 @@ bool ConnectionAllocatorTraits<redis::NativeConnection, redis::RConfig>::IsConne
   }
 
   return true;
-}
-
-template <>
-const ConstantCommandsArray& CDBConnection<redis::NativeConnection, redis::RConfig, REDIS>::GetCommands() {
-  return redis::g_commands;
 }
 
 }  // namespace internal

@@ -169,6 +169,11 @@ const char* ConnectionTraits<LEVELDB>::GetVersionApi() {
   static std::string leveldb_version = common::MemSPrintf("%d.%d", leveldb_major_version(), leveldb_minor_version());
   return leveldb_version.c_str();
 }
+
+template <>
+const ConstantCommandsArray& ConnectionCommandsTraits<LEVELDB>::GetCommands() {
+  return leveldb::g_commands;
+}
 namespace internal {
 template <>
 common::Error ConnectionAllocatorTraits<leveldb::NativeConnection, leveldb::Config>::Connect(
@@ -199,11 +204,6 @@ bool ConnectionAllocatorTraits<leveldb::NativeConnection, leveldb::Config>::IsCo
   }
 
   return true;
-}
-
-template <>
-const ConstantCommandsArray& CDBConnection<leveldb::NativeConnection, leveldb::Config, LEVELDB>::GetCommands() {
-  return leveldb::g_commands;
 }
 }  // namespace internal
 namespace leveldb {

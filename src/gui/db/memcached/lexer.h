@@ -20,6 +20,8 @@
 
 #include "gui/shell/base_lexer.h"
 
+#include "core/connection_commands_traits.h"
+
 namespace fastonosql {
 namespace gui {
 namespace memcached {
@@ -27,6 +29,7 @@ namespace memcached {
 class Lexer : public BaseCommandsQsciLexer {
   Q_OBJECT
  public:
+  typedef core::ConnectionCommandsTraits<core::MEMCACHED> memcached_trait_t;
   explicit Lexer(QObject* parent = Q_NULLPTR);
 
   virtual const char* language() const override;

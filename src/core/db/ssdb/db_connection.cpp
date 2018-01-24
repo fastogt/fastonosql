@@ -619,6 +619,11 @@ template <>
 const char* ConnectionTraits<SSDB>::GetVersionApi() {
   return "1.9.4";
 }
+
+template <>
+const ConstantCommandsArray& ConnectionCommandsTraits<SSDB>::GetCommands() {
+  return ssdb::g_commands;
+}
 namespace {
 std::string ConvertToSSDBSlice(const key_t& key) {
   return key.GetKeyData();
@@ -652,11 +657,6 @@ bool ConnectionAllocatorTraits<ssdb::NativeConnection, ssdb::Config>::IsConnecte
   }
 
   return true;
-}
-
-template <>
-const ConstantCommandsArray& CDBConnection<ssdb::NativeConnection, ssdb::Config, SSDB>::GetCommands() {
-  return ssdb::g_commands;
 }
 
 }  // namespace internal

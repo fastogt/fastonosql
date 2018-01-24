@@ -26,20 +26,20 @@ namespace memcached {
 
 MemcachedApi::MemcachedApi(Lexer* lexer) : BaseCommandsQsciApi(lexer) {}
 
-Lexer::Lexer(QObject* parent) : BaseCommandsQsciLexer(core::memcached::DBConnection::GetCommands(), parent) {
+Lexer::Lexer(QObject* parent) : BaseCommandsQsciLexer(memcached_trait_t::GetCommands(), parent) {
   setAPIs(new MemcachedApi(this));
 }
 
 const char* Lexer::language() const {
-  return core::memcached::DBConnection::GetDBName();
+  return memcached_trait_t::GetDBName();
 }
 
 const char* Lexer::version() const {
-  return core::memcached::DBConnection::GetVersionApi();
+  return memcached_trait_t::GetVersionApi();
 }
 
 const char* Lexer::basedOn() const {
-  return core::memcached::DBConnection::GetBasedOn();
+  return memcached_trait_t::GetBasedOn();
 }
 
 }  // namespace memcached

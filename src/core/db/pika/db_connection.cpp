@@ -2161,6 +2161,11 @@ template <>
 const char* ConnectionTraits<PIKA>::GetVersionApi() {
   return redis_compatible::GetHiredisVersion();
 }
+
+template <>
+const ConstantCommandsArray& ConnectionCommandsTraits<PIKA>::GetCommands() {
+  return pika::g_commands;
+}
 namespace internal {
 template <>
 common::Error ConnectionAllocatorTraits<pika::NativeConnection, pika::RConfig>::Connect(const pika::RConfig& config,
@@ -2194,11 +2199,6 @@ bool ConnectionAllocatorTraits<pika::NativeConnection, pika::RConfig>::IsConnect
   }
 
   return true;
-}
-
-template <>
-const ConstantCommandsArray& CDBConnection<pika::NativeConnection, pika::RConfig, PIKA>::GetCommands() {
-  return pika::g_commands;
 }
 
 }  // namespace internal

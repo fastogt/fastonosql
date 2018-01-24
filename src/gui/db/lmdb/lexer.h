@@ -19,6 +19,8 @@
 
 #include "gui/shell/base_lexer.h"
 
+#include "core/connection_commands_traits.h"
+
 namespace fastonosql {
 namespace gui {
 namespace lmdb {
@@ -26,6 +28,7 @@ namespace lmdb {
 class Lexer : public BaseCommandsQsciLexer {
   Q_OBJECT
  public:
+  typedef core::ConnectionCommandsTraits<core::LMDB> lmdb_trait_t;
   explicit Lexer(QObject* parent = Q_NULLPTR);
 
   virtual const char* language() const override;

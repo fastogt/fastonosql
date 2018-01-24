@@ -229,6 +229,11 @@ template <>
 const char* ConnectionTraits<UNQLITE>::GetVersionApi() {
   return UNQLITE_VERSION;
 }
+
+template <>
+const ConstantCommandsArray& ConnectionCommandsTraits<UNQLITE>::GetCommands() {
+  return unqlite::g_commands;
+}
 namespace internal {
 template <>
 common::Error ConnectionAllocatorTraits<unqlite::NativeConnection, unqlite::Config>::Connect(
@@ -258,11 +263,6 @@ bool ConnectionAllocatorTraits<unqlite::NativeConnection, unqlite::Config>::IsCo
   }
 
   return true;
-}
-
-template <>
-const ConstantCommandsArray& CDBConnection<unqlite::NativeConnection, unqlite::Config, UNQLITE>::GetCommands() {
-  return unqlite::g_commands;
 }
 
 }  // namespace internal

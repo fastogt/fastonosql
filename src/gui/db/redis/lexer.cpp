@@ -18,28 +18,26 @@
 
 #include "gui/db/redis/lexer.h"
 
-#include "core/db/redis/db_connection.h"  // for redisCommands, DBConnection
-
 namespace fastonosql {
 namespace gui {
 namespace redis {
 
 RedisApi::RedisApi(Lexer* lexer) : BaseCommandsQsciApi(lexer) {}
 
-Lexer::Lexer(QObject* parent) : BaseCommandsQsciLexer(core::redis::DBConnection::GetCommands(), parent) {
+Lexer::Lexer(QObject* parent) : BaseCommandsQsciLexer(redis_trait_t::GetCommands(), parent) {
   setAPIs(new RedisApi(this));
 }
 
 const char* Lexer::language() const {
-  return core::redis::DBConnection::GetDBName();
+  return redis_trait_t::GetDBName();
 }
 
 const char* Lexer::version() const {
-  return core::redis::DBConnection::GetVersionApi();
+  return redis_trait_t::GetVersionApi();
 }
 
 const char* Lexer::basedOn() const {
-  return core::redis::DBConnection::GetBasedOn();
+  return redis_trait_t::GetBasedOn();
 }
 
 }  // namespace redis

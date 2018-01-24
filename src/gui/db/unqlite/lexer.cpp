@@ -18,28 +18,26 @@
 
 #include "gui/db/unqlite/lexer.h"
 
-#include "core/db/unqlite/db_connection.h"
-
 namespace fastonosql {
 namespace gui {
 namespace unqlite {
 
 UnqliteApi::UnqliteApi(Lexer* lexer) : BaseCommandsQsciApi(lexer) {}
 
-Lexer::Lexer(QObject* parent) : BaseCommandsQsciLexer(core::unqlite::DBConnection::GetCommands(), parent) {
+Lexer::Lexer(QObject* parent) : BaseCommandsQsciLexer(unqlite_trait_t::GetCommands(), parent) {
   setAPIs(new UnqliteApi(this));
 }
 
 const char* Lexer::language() const {
-  return core::unqlite::DBConnection::GetDBName();
+  return unqlite_trait_t::GetDBName();
 }
 
 const char* Lexer::version() const {
-  return core::unqlite::DBConnection::GetVersionApi();
+  return unqlite_trait_t::GetVersionApi();
 }
 
 const char* Lexer::basedOn() const {
-  return core::unqlite::DBConnection::GetBasedOn();
+  return unqlite_trait_t::GetBasedOn();
 }
 
 }  // namespace unqlite

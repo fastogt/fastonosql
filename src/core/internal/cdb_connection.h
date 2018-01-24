@@ -20,7 +20,7 @@
 
 #include <common/sprintf.h>
 
-#include "core/constant_commands_array.h"
+#include "core/connection_commands_traits.h"
 #include "core/internal/cdb_connection_client.h"
 #include "core/internal/command_handler.h"  // for CommandHandler, etc
 #include "core/internal/db_connection.h"    // for DBConnection
@@ -41,20 +41,17 @@ command_buffer_t GetKeysPattern(uint64_t cursor_in, const std::string& pattern, 
 // methods naming
 // voi CreateDB() => void OnCreatedDB()
 
-template <typename NConnection, typename Config, connectionTypes ContType>
-class CDBConnection : public DBConnection<NConnection, Config, ContType>,
+template <typename NConnection, typename Config, connectionTypes connection_type>
+class CDBConnection : public DBConnection<NConnection, Config, connection_type>,
                       public CommandHandler,
-                      public ConnectionTraits<ContType> {
+                      public ConnectionCommandsTraits<connection_type> {
  public:
-  typedef DBConnection<NConnection, Config, ContType> db_base_class;
-  typedef ConnectionTraits<ContType> connection_traits_class;
+  typedef DBConnection<NConnection, Config, connection_type> db_base_class;
+  typedef ConnectionCommandsTraits<connection_type> connection_traits_class;
 
   CDBConnection(CDBConnectionClient* client, ICommandTranslator* translator)
       : db_base_class(), CommandHandler(translator), client_(client) {}
   virtual ~CDBConnection() {}
-
-  static const char* GetDBName() { return ConnectionTraits<ContType>::GetDBName(); }
-  static const ConstantCommandsArray& GetCommands();
 
   virtual std::string GetCurrentDBName() const;                                      //
   common::Error Help(commands_args_t argv, std::string* answer) WARN_UNUSED_RESULT;  //
@@ -559,8 +556,8 @@ template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::SetTTLImpl(const NKey& key, ttl_t ttl) {
   UNUSED(key);
   UNUSED(ttl);
-  const std::string error_msg =
-      common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " for %s not supported TTL commands.", GetDBName());
+  const std::string error_msg = common::MemSPrintf(
+      "Sorry, but now " PROJECT_NAME_TITLE " for %s not supported TTL commands.", connection_traits_class::GetDBName());
   return common::make_error(error_msg);
 }
 
@@ -568,24 +565,26 @@ template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::GetTTLImpl(const NKey& key, ttl_t* ttl) {
   UNUSED(key);
   UNUSED(ttl);
-  const std::string error_msg =
-      common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " for %s not supported TTL commands.", GetDBName());
+  const std::string error_msg = common::MemSPrintf(
+      "Sorry, but now " PROJECT_NAME_TITLE " for %s not supported TTL commands.", connection_traits_class::GetDBName());
   return common::make_error(error_msg);
 }
 
 template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::ModuleLoadImpl(const ModuleInfo& module) {
   UNUSED(module);
-  const std::string error_msg = common::MemSPrintf(
-      "Sorry, but now " PROJECT_NAME_TITLE " for %s not supported load module commands.", GetDBName());
+  const std::string error_msg =
+      common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " for %s not supported load module commands.",
+                         connection_traits_class::GetDBName());
   return common::make_error(error_msg);
 }
 
 template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::ModuleUnLoadImpl(const ModuleInfo& module) {
   UNUSED(module);
-  const std::string error_msg = common::MemSPrintf(
-      "Sorry, but now " PROJECT_NAME_TITLE " for %s not supported unload module commands.", GetDBName());
+  const std::string error_msg =
+      common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " for %s not supported unload module commands.",
+                         connection_traits_class::GetDBName());
   return common::make_error(error_msg);
 }
 
@@ -594,8 +593,9 @@ common::Error CDBConnection<NConnection, Config, ContType>::RemoveDBImpl(const s
                                                                          IDataBaseInfo** info) {
   UNUSED(name);
   UNUSED(info);
-  const std::string error_msg = common::MemSPrintf(
-      "Sorry, but now " PROJECT_NAME_TITLE " for %s not supported " DB_REMOVEDB_COMMAND " commands.", GetDBName());
+  const std::string error_msg =
+      common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " for %s not supported " DB_REMOVEDB_COMMAND " commands.",
+                         connection_traits_class::GetDBName());
   return common::make_error(error_msg);
 }
 
@@ -604,8 +604,9 @@ common::Error CDBConnection<NConnection, Config, ContType>::CreateDBImpl(const s
                                                                          IDataBaseInfo** info) {
   UNUSED(name);
   UNUSED(info);
-  const std::string error_msg = common::MemSPrintf(
-      "Sorry, but now " PROJECT_NAME_TITLE " for %s not supported " DB_CREATEDB_COMMAND " commands.", GetDBName());
+  const std::string error_msg =
+      common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " for %s not supported " DB_CREATEDB_COMMAND " commands.",
+                         connection_traits_class::GetDBName());
   return common::make_error(error_msg);
 }
 

@@ -16,33 +16,24 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
-#include "gui/shell/base_lexer.h"
-
-#include "core/connection_commands_traits.h"
+#include "core/constant_commands_array.h"
 
 namespace fastonosql {
-namespace gui {
-namespace ssdb {
+namespace core {
 
-class Lexer : public BaseCommandsQsciLexer {
-  Q_OBJECT
- public:
-  typedef core::ConnectionCommandsTraits<core::SSDB> ssdb_trait_t;
-  explicit Lexer(QObject* parent = Q_NULLPTR);
+ConstantCommandsArray::ConstantCommandsArray(std::initializer_list<CommandHolder> l) {
+  for (auto it = l.begin(); it != l.end(); ++it) {
+    CommandHolder cmd = *it;
+    for (auto jt = begin(); jt != end(); ++jt) {
+      CommandHolder cmd2 = *jt;
+      if (cmd2.IsEqualName(cmd.name)) {
+        NOTREACHED() << "Only unique commands can be in array, but command with name: \"" << cmd.name
+                     << "\" already exists!";
+      }
+    }
+    push_back(cmd);
+  }
+}
 
-  virtual const char* language() const override;
-  virtual const char* version() const override;
-  virtual const char* basedOn() const override;
-};
-
-class SsdbApi : public BaseCommandsQsciApi {
-  Q_OBJECT
- public:
-  explicit SsdbApi(Lexer* lexer);
-};
-
-}  // namespace ssdb
-}  // namespace gui
+}  // namespace core
 }  // namespace fastonosql
