@@ -18,7 +18,7 @@
 
 #include "core/db/pika/config.h"
 
-#define DEFAULT_PIKA_SERVER_PORT 9211
+#define DEFAULT_PIKA_SERVER_PORT 9221
 
 namespace fastonosql {
 namespace core {

@@ -142,7 +142,7 @@ common::Error Driver::GetCurrentServerInfo(core::IServerInfo** info) {
   }
 
   std::string content = common::ConvertToString(cmd.get());
-  core::IServerInfo* linfo = core::pika::MakeRedisServerInfo(content);
+  core::IServerInfo* linfo = core::pika::MakePikaServerInfo(content);
 
   if (!linfo) {
     return common::make_error("Invalid " DB_INFO_COMMAND " command output");
@@ -448,7 +448,7 @@ done:
 }
 
 core::IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
-  core::IServerInfoSPtr res(core::pika::MakeRedisServerInfo(val));
+  core::IServerInfoSPtr res(core::pika::MakePikaServerInfo(val));
   return res;
 }
 

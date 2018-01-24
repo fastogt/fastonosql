@@ -20,95 +20,130 @@
 
 #include "core/server/iserver_info.h"  // for IStateField, IServerInfo
 
-#define REDIS_SERVER_LABEL "# Server"
-#define REDIS_CLIENTS_LABEL "# Clients"
-#define REDIS_MEMORY_LABEL "# Memory"
-#define REDIS_PERSISTENCE_LABEL "# Persistence"
-#define REDIS_STATS_LABEL "# Stats"
-#define REDIS_REPLICATION_LABEL "# Replication"
-#define REDIS_CPU_LABEL "# CPU"
-#define REDIS_KEYSPACE_LABEL "# Keyspace"
+#define PIKA_SERVER_LABEL "# Server"
+#define PIKA_DATA_LABEL "# Data"
+#define PIKA_LOG_LABEL "# Log"
+#define PIKA_CLIENTS_LABEL "# Clients"
+#define PIKA_HUB_LABEL "# Hub"
+#define PIKA_STATS_LABEL "# Stats"
+#define PIKA_CPU_LABEL "# CPU"
+#define PIKA_REPLICATION_LABEL "# Replication"
+#define PIKA_KEYSPACE_LABEL "# Keyspace"
+#define PIKA_DOUBLE_MASTER_LABE "# DoubleMaster"
 
 // Server
-#define REDIS_VERSION_LABEL "redis_version"
-#define REDIS_GIT_SHA1_LABEL "redis_git_sha1"
-#define REDIS_GIT_DIRTY_LABEL "redis_git_dirty"
-#define REDIS_BUILD_ID_LABEL "redis_build_id"
-#define REDIS_MODE_LABEL "redis_mode"
-#define REDIS_OS_LABEL "os"
-#define REDIS_ARCH_BITS_LABEL "arch_bits"
-#define REDIS_MULTIPLEXING_API_LABEL "multiplexing_api"
-#define REDIS_GCC_VERSION_LABEL "gcc_version"
-#define REDIS_PROCESS_ID_LABEL "process_id"
-#define REDIS_RUN_ID_LABEL "run_id"
-#define REDIS_TCP_PORT_LABEL "tcp_port"
-#define REDIS_UPTIME_IN_SECONDS_LABEL "uptime_in_seconds"
-#define REDIS_UPTIME_IN_DAYS_LABEL "uptime_in_days"
-#define REDIS_HZ_LABEL "hz"
-#define REDIS_LRU_CLOCK_LABEL "lru_clock"
+/*
+pika_version:2.3.2
+pika_git_sha:4fbd39ed7a29da324b6f39ab236a1004d8c1c21c
+pika_build_compile_date: Jan 23 2018
+os:Linux 4.4.0-72-generic x86_64
+arch_bits:64
+process_id:4839
+tcp_port:9221
+thread_num:1
+sync_thread_num:6
+uptime_in_seconds:421
+uptime_in_days:1
+config_file:./conf/pika.conf
+server_id:1
+*/
+#define PIKA_SERVER_VERSION_LABEL "pika_version"
+#define PIKA_SERVER_GIT_SHA_LABEL "pika_git_sha"
+#define PIKA_SERVER_BUILD_COMPILE_DATE_LABEL "pika_build_compile_date"
+#define PIKA_SERVER_OS_LABEL "os"
+#define PIKA_SERVER_ARCH_BITS_LABEL "arch_bits"
+#define PIKA_SERVER_PROCESS_ID_LABEL "process_id"
+#define PIKA_SERVER_TCP_PORT_LABEL "tcp_port"
+#define PIKA_SERVER_THREAD_NUM_LABEL "thread_num"
+#define PIKA_SERVER_SYNC_THREAD_NUM_LABEL "sync_thread_num"
+#define PIKA_SERVER_UPTIME_IN_SECONDS_LABEL "uptime_in_seconds"
+#define PIKA_SERVER_UPTIME_IN_DAYS_LABEL "uptime_in_days"
+#define PIKA_SERVER_CONFIG_FILE_LABEL "config_file"
+#define PIKA_SERVER_SERVER_ID_LABEL "server_id"
+
+// Data
+/*
+db_size:235525
+db_size_human:0M
+compression:snappy
+used_memory:4264
+used_memory_human:0M
+db_memtable_usage:4144
+db_tablereader_usage:120
+*/
+#define PIKA_DATA_DB_SIZE_LABEL "db_size"
+#define PIKA_DATA_DB_SIZE_HUMAN_LABEL "db_size_human"
+#define PIKA_DATA_COMPRESSION_LABEL "compression"
+#define PIKA_DATA_USED_MEMORY_LABEL "used_memory"
+#define PIKA_DATA_USED_MEMORY_HUMAN_LABEL "used_memory_human"
+#define PIKA_DATA_DB_MEMTABLE_USAGE_LABEL "db_memtable_usage"
+#define PIKA_DATA_DB_TABLEREADER_USAGE_LABEL "db_tablereader_usage"
+
+// Log
+/*
+log_size:73990
+log_size_human:0M
+safety_purge:none
+expire_logs_days:7
+expire_logs_nums:10
+binlog_offset:0 200
+*/
+#define PIKA_LOG_SIZE_LABEL "log_size"
+#define PIKA_LOG_SIZE_HUMAN_LABEL "log_size_human"
+#define PIKA_LOG_SAFETY_PURGE_LABEL "safety_purge"
+#define PIKA_LOG_EXPIRE_LOGS_DAYS_LABEL "expire_logs_days"
+#define PIKA_LOG_EXPIRE_LOGS_NUMS_LABEL "expire_logs_nums"
+#define PIKA_LOG_BINLOG_OFFSET_LABEL "binlog_offset"
 
 // Clients
-#define REDIS_CONNECTED_CLIENTS_LABEL "connected_clients"
-#define REDIS_CLIENT_LONGEST_OUTPUT_LIST_LABEL "client_longest_output_list"
-#define REDIS_CLIENT_BIGGEST_INPUT_BUF_LABEL "client_biggest_input_buf"
-#define REDIS_BLOCKED_CLIENTS_LABEL "blocked_clients"
-
-// Memory
-#define REDIS_USED_MEMORY_LABEL "used_memory"
-#define REDIS_USED_MEMORY_HUMAN_LABEL "used_memory_human"
-#define REDIS_USED_MEMORY_RSS_LABEL "used_memory_rss"
-#define REDIS_USED_MEMORY_PEAK_LABEL "used_memory_peak"
-#define REDIS_USED_MEMORY_PEAK_HUMAN_LABEL "used_memory_peak_human"
-#define REDIS_USED_MEMORY_LUA_LABEL "used_memory_lua"
-#define REDIS_MEM_FRAGMENTATION_RATIO_LABEL "mem_fragmentation_ratio"
-#define REDIS_MEM_ALLOCATOR_LABEL "mem_allocator"
-
-// Persistence
-#define REDIS_LOADING_LABEL "loading"
-#define REDIS_RDB_CHANGES_SINCE_LAST_SAVE_LABEL "rdb_changes_since_last_save"
-#define REDIS_RDB_DGSAVE_IN_PROGRESS_LABEL "rdb_bgsave_in_progress"
-#define REDIS_RDB_LAST_SAVE_TIME_LABEL "rdb_last_save_time"
-#define REDIS_RDB_LAST_DGSAVE_STATUS_LABEL "rdb_last_bgsave_status"
-#define REDIS_RDB_LAST_DGSAVE_TIME_SEC_LABEL "rdb_last_bgsave_time_sec"
-#define REDIS_RDB_CURRENT_DGSAVE_TIME_SEC_LABEL "rdb_current_bgsave_time_sec"
-#define REDIS_AOF_ENABLED_LABEL "aof_enabled"
-#define REDIS_AOF_REWRITE_IN_PROGRESS_LABEL "aof_rewrite_in_progress"
-#define REDIS_AOF_REWRITE_SHEDULED_LABEL "aof_rewrite_scheduled"
-#define REDIS_AOF_LAST_REWRITE_TIME_SEC_LABEL "aof_last_rewrite_time_sec"
-#define REDIS_AOF_CURRENT_REWRITE_TIME_SEC_LABEL "aof_current_rewrite_time_sec"
-#define REDIS_AOF_LAST_DGREWRITE_STATUS_LABEL "aof_last_bgrewrite_status"
-#define REDIS_AOF_LAST_WRITE_STATUS_LABEL "aof_last_write_status"
+/*
+connected_clients:1
+*/
+#define PIKA_CLIENTS_CONNECTED_CLIENTS_LABEL "connected_clients"
 
 // Stats
-#define REDIS_TOTAL_CONNECTIONS_RECEIVED_LABEL "total_connections_received"
-#define REDIS_TOTAL_COMMANDS_PROCESSED_LABEL "total_commands_processed"
-#define REDIS_INSTANTANEOUS_OPS_PER_SEC_LABEL "instantaneous_ops_per_sec"
-#define REDIS_REJECTED_CONNECTIONS_LABEL "rejected_connections"
-#define REDIS_SYNC_FULL_LABEL "sync_full"
-#define REDIS_SYNC_PARTIAL_OK_LABEL "sync_partial_ok"
-#define REDIS_SYNC_PARTIAL_ERR_LABEL "sync_partial_err"
-#define REDIS_EXPIRED_KEYS_LABEL "expired_keys"
-#define REDIS_EVICTED_KEYS_LABEL "evicted_keys"
-#define REDIS_KEYSPACE_HITS_LABEL "keyspace_hits"
-#define REDIS_KEYSPACE_MISSES_LABEL "keyspace_misses"
-#define REDIS_PUBSUB_CHANNELS_LABEL "pubsub_channels"
-#define REDIS_PUBSUB_PATTERNS_LABEL "pubsub_patterns"
-#define REDIS_LATEST_FORK_USEC_LABEL "latest_fork_usec"
-
-// Replication
-#define REDIS_ROLE_LABEL "role"
-#define REDIS_CONNECTED_SLAVES_LABEL "connected_slaves"
-#define REDIS_MASTER_REPL_OFFSET_LABEL "master_repl_offset"
-#define REDIS_BACKLOG_ACTIVE_LABEL "repl_backlog_active"
-#define REDIS_BACKLOG_SIZE_LABEL "repl_backlog_size"
-#define REDIS_BACKLOG_FIRST_BYTE_OFFSET_LABEL "repl_backlog_first_byte_offset"
-#define REDIS_BACKLOG_HISTEN_LABEL "repl_backlog_histlen"
+/*
+total_connections_received:5
+instantaneous_ops_per_sec:0
+total_commands_processed:21
+is_bgsaving:No, , 0
+is_slots_reloading:No, , 0
+is_slots_cleanuping:No, , 0
+is_scaning_keyspace:No
+is_compact:No
+compact_cron:
+compact_interval:
+*/
+#define PIKA_STATS_TOTAL_CONNECTIONS_RECEIVED_LABEL "total_connections_received"
+#define PIKA_STATS_INSTANTANEOUS_OPS_PER_SEC_LABEL "instantaneous_ops_per_sec"
+#define PIKA_STATS_TOTAL_COMMANDS_PROCESSED_LABEL "total_commands_processed"
+#define PIKA_STATS_IS_BGSAVING_LABEL "is_bgsaving"
+#define PIKA_STATS_IS_SLOTS_RELOADING_LABEL "is_slots_reloading"
+#define PIKA_STATS_IS_SLOTS_CLEANUPING_LABEL "is_slots_cleanuping"
+#define PIKA_STATS_IS_SCANING_KEYSPACE_LABEL "is_scaning_keyspace"
+#define PIKA_STATS_IS_COMPACT_LABEL "is_compact"
+#define PIKA_STATS_COMPACT_CRON_LABEL "compact_cron"
+#define PIKA_STATS_COMPACT_INTERVAL_LABEL "compact_interval"
 
 // CPU
-#define REDIS_USED_CPU_SYS_LABEL "used_cpu_sys"
-#define REDIS_USED_CPU_USER_LABEL "used_cpu_user"
-#define REDIS_USED_CPU_SYS_CHILDREN_LABEL "used_cpu_sys_children"
-#define REDIS_USED_CPU_USER_CHILDREN_LABEL "used_cpu_user_children"
+/*
+used_cpu_sys:0.06
+used_cpu_user:0.07
+used_cpu_sys_children:0.00
+used_cpu_user_children:0.00
+*/
+#define PIKA_CPU_USED_CPU_SYS_LABEL "used_cpu_sys"
+#define PIKA_CPU_USED_CPU_USER_LABEL "used_cpu_user"
+#define PIKA_CPU_USED_CPU_SYS_CHILDREN_LABEL "used_cpu_sys_children"
+#define PIKA_CPU_USED_CPU_USER_CHILDREN_LABEL "used_cpu_user_children"
+
+// Replication
+/*
+role:master
+connected_slaves:0
+*/
+#define PIKA_REPLICATION_ROLE_LABEL "role"
+#define PIKA_REPLICATION_CONNECTED_SLAVES_LABEL "connected_slaves"
 
 namespace fastonosql {
 namespace core {
@@ -120,23 +155,47 @@ struct ServerInfo : public IServerInfo {
     explicit Server(const std::string& server_text);
     common::Value* GetValueByIndex(unsigned char index) const override;
 
-    std::string redis_version_;
-    std::string redis_git_sha1_;
-    std::string redis_git_dirty_;
-    std::string redis_build_id_;
-    std::string redis_mode_;
+    std::string pika_version_;
+    std::string pika_git_sha_;
+    std::string pika_build_compile_date_;
     std::string os_;
     uint32_t arch_bits_;
-    std::string multiplexing_api_;
-    std::string gcc_version_;
     uint32_t process_id_;
-    std::string run_id_;
     uint32_t tcp_port_;
+    uint32_t thread_num_;
+    uint32_t sync_thread_num_;
     uint32_t uptime_in_seconds_;
     uint32_t uptime_in_days_;
-    uint32_t hz_;
-    uint32_t lru_clock_;
+    std::string config_file_;
+    uint32_t server_id_;
   } server_;
+
+  struct Data : IStateField {
+    Data();
+    explicit Data(const std::string& data_text);
+    common::Value* GetValueByIndex(unsigned char index) const override;
+
+    uint32_t db_size_;
+    std::string db_size_human_;
+    std::string compression_;
+    uint32_t used_memory_;
+    std::string used_memory_human_;
+    uint32_t db_memtable_usage_;
+    uint32_t db_tablereader_usage_;
+  } data_;
+
+  struct Log : IStateField {
+    Log();
+    explicit Log(const std::string& client_text);
+    common::Value* GetValueByIndex(unsigned char index) const override;
+
+    uint32_t log_size_;
+    std::string log_size_human_;
+    std::string safety_purge_;
+    uint32_t expire_logs_days_;
+    uint32_t expire_logs_nums_;
+    std::string binlog_offset_;
+  } log_;
 
   struct Clients : IStateField {
     Clients();
@@ -144,46 +203,13 @@ struct ServerInfo : public IServerInfo {
     common::Value* GetValueByIndex(unsigned char index) const override;
 
     uint32_t connected_clients_;
-    uint32_t client_longest_output_list_;
-    uint32_t client_biggest_input_buf_;
-    uint32_t blocked_clients_;
   } clients_;
 
-  struct Memory : IStateField {
-    Memory();
-    explicit Memory(const std::string& memory_text);
+  struct Hub : IStateField {
+    Hub();
+    explicit Hub(const std::string& hub_text);
     common::Value* GetValueByIndex(unsigned char index) const override;
-
-    uint32_t used_memory_;
-    std::string used_memory_human_;
-    uint32_t used_memory_rss_;
-    uint32_t used_memory_peak_;
-    std::string used_memory_peak_human_;
-    uint32_t used_memory_lua_;
-    float mem_fragmentation_ratio_;
-    std::string mem_allocator_;
-  } memory_;
-
-  struct Persistence : IStateField {
-    Persistence();
-    explicit Persistence(const std::string& persistence_text);
-    common::Value* GetValueByIndex(unsigned char index) const override;
-
-    uint32_t loading_;
-    uint32_t rdb_changes_since_last_save_;
-    uint32_t rdb_bgsave_in_progress_;
-    uint32_t rdb_last_save_time_;
-    std::string rdb_last_bgsave_status_;
-    int rdb_last_bgsave_time_sec_;
-    int rdb_current_bgsave_time_sec_;
-    uint32_t aof_enabled_;
-    uint32_t aof_rewrite_in_progress_;
-    uint32_t aof_rewrite_scheduled_;
-    int aof_last_rewrite_time_sec_;
-    int aof_current_rewrite_time_sec_;
-    std::string aof_last_bgrewrite_status_;
-    std::string aof_last_write_status_;
-  } persistence_;
+  } hub_;
 
   struct Stats : IStateField {
     Stats();
@@ -191,34 +217,16 @@ struct ServerInfo : public IServerInfo {
     common::Value* GetValueByIndex(unsigned char index) const override;
 
     uint32_t total_connections_received_;
-    uint32_t total_commands_processed_;
     uint32_t instantaneous_ops_per_sec_;
-    uint32_t rejected_connections_;
-    uint32_t sync_full_;
-    uint32_t sync_partial_ok_;
-    uint32_t sync_partial_err_;
-    uint32_t expired_keys_;
-    uint32_t evicted_keys_;
-    uint32_t keyspace_hits_;
-    uint32_t keyspace_misses_;
-    uint32_t pubsub_channels_;
-    uint32_t pubsub_patterns_;
-    uint32_t latest_fork_usec_;
+    uint32_t total_commands_processed_;
+    std::string is_bgsaving_;
+    std::string is_slots_reloading_;
+    std::string is_slots_cleanuping_;
+    std::string is_scaning_keyspace_;
+    std::string is_compact_;
+    std::string compact_cron_;
+    std::string compact_interval_;
   } stats_;
-
-  struct Replication : IStateField {
-    Replication();
-    explicit Replication(const std::string& replication_text);
-    common::Value* GetValueByIndex(unsigned char index) const override;
-
-    std::string role_;
-    uint32_t connected_slaves_;
-    uint32_t master_repl_offset_;
-    uint32_t backlog_active_;
-    uint32_t backlog_size_;
-    uint32_t backlog_first_byte_offset_;
-    uint32_t backlog_histen_;
-  } replication_;
 
   struct Cpu : IStateField {
     Cpu();
@@ -231,19 +239,38 @@ struct ServerInfo : public IServerInfo {
     float used_cpu_user_children_;
   } cpu_;
 
-  struct Keyspace : IStateField {
+  struct Replication : IStateField {
+    Replication();
+    explicit Replication(const std::string& replication_text);
     common::Value* GetValueByIndex(unsigned char index) const override;
-  } keySp_;
+
+    std::string role_;
+    uint32_t connected_slaves_;
+  } replication_;
+
+  struct KeySpace : IStateField {
+    KeySpace();
+    explicit KeySpace(const std::string& ks_text);
+    common::Value* GetValueByIndex(unsigned char index) const override;
+  } key_space_;
+
+  struct DoubleMaster : IStateField {
+    DoubleMaster();
+    explicit DoubleMaster(const std::string& dm_text);
+    common::Value* GetValueByIndex(unsigned char index) const override;
+  } double_master_;
 
   ServerInfo();
   ServerInfo(const Server& serv,
+             const Data& data,
+             const Log& log,
              const Clients& clients,
-             const Memory& memory,
-             const Persistence& pers,
+             struct Hub& hub,
              const Stats& stats,
-             const Replication& repl,
              const Cpu& cpu,
-             const Keyspace& key);
+             const Replication& repl,
+             const KeySpace& key_space,
+             const DoubleMaster& double_master);
 
   virtual common::Value* GetValueByIndexes(unsigned char property, unsigned char field) const override;
   virtual std::string ToString() const override;
@@ -252,7 +279,7 @@ struct ServerInfo : public IServerInfo {
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo& value);
 
-ServerInfo* MakeRedisServerInfo(const std::string& content);
+ServerInfo* MakePikaServerInfo(const std::string& content);
 
 }  // namespace pika
 }  // namespace core

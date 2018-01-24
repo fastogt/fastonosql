@@ -79,13 +79,6 @@ void Server::HandleLoadServerInfoEvent(events::ServerInfoResponceEvent* ev) {
     role_ = core::SLAVE;
   }
 
-  if (rinf->server_.redis_mode_ == STANDALONE_MODE) {
-    mode_ = core::STANDALONE;
-  } else if (rinf->server_.redis_mode_ == SENTINEL_MODE) {
-    mode_ = core::SENTINEL;
-  } else if (rinf->server_.redis_mode_ == CLUSTER_MODE) {
-    mode_ = core::CLUSTER;
-  }
   IServer::HandleLoadServerInfoEvent(ev);
 }
 
