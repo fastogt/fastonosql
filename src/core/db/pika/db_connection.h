@@ -16,18 +16,29 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/db/redis/config.h"
+#pragma once
 
-#define DEFAULT_REDIS_SERVER_PORT 6379
+#include "core/db/redis_compatible/db_connection.h"
+
+#include "core/db/pika/config.h"
 
 namespace fastonosql {
 namespace core {
-namespace redis {
+namespace pika {
 
-Config::Config() : base_class(common::net::HostAndPort::CreateLocalHost(DEFAULT_REDIS_SERVER_PORT)) {}
+typedef redis_compatible::NativeConnection NativeConnection;
 
-RConfig::RConfig(const Config& config, const SSHInfo& sinfo) : Config(config), ssh_info(sinfo) {}
+common::Error CreateConnection(const RConfig& config, NativeConnection** context);
+common::Error TestConnection(const RConfig& config);
+common::Error DiscoveryClusterConnection(const RConfig& config, std::vector<ServerDiscoveryClusterInfoSPtr>* infos);
+common::Error DiscoverySentinelConnection(const RConfig& config, std::vector<ServerDiscoverySentinelInfoSPtr>* infos);
 
-}  // namespace redis
+class DBConnection : public redis_compatible::DBConnection<RConfig, PIKA> {
+ public:
+  typedef redis_compatible::DBConnection<RConfig, PIKA> base_class;
+  explicit DBConnection(CDBConnectionClient* client);
+};
+
+}  // namespace pika
 }  // namespace core
 }  // namespace fastonosql

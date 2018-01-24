@@ -21,7 +21,8 @@
 #include <common/convert2string.h>           // for ConvertFromString, etc
 #include <common/file_system/file_system.h>  // for copy_file
 
-#include "core/db/redis/database_info.h"  // for DataBaseInfo
+#include "core/db/redis/server_info.h"
+#include "core/db/redis_compatible/database_info.h"
 #include "core/db/redis/db_connection.h"  // for DBConnection, INFO_REQUEST, etc
 #include "core/value.h"
 
@@ -131,7 +132,7 @@ core::FastoObjectCommandIPtr Driver::CreateCommandFast(const core::command_buffe
 }
 
 core::IDataBaseInfoSPtr Driver::CreateDatabaseInfo(const std::string& name, bool is_default, size_t size) {
-  return std::make_shared<core::redis::DataBaseInfo>(name, is_default, size);
+  return std::make_shared<core::redis_compatible::DataBaseInfo>(name, is_default, size);
 }
 
 common::Error Driver::SyncConnect() {

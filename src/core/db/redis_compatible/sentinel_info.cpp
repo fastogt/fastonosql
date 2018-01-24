@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/db/redis/sentinel_info.h"
+#include "core/db/redis_compatible/sentinel_info.h"
 
 #include <hiredis/hiredis.h>  // for redisReply
 
@@ -32,7 +32,7 @@
 
 namespace fastonosql {
 namespace core {
-namespace redis {
+namespace redis_compatible {
 
 DiscoverySentinelInfo::DiscoverySentinelInfo(const ServerCommonInfo& args) : ServerDiscoverySentinelInfo(REDIS, args) {}
 

@@ -18,23 +18,28 @@
 
 #pragma once
 
-#include <common/error.h>  // for Error
-
-#include "core/server/iserver_info.h"  // for ServerCommonInfo (ptr only), etc
-
-struct redisReply;
+#include "core/config/config.h"  // for RemoteConfig
 
 namespace fastonosql {
 namespace core {
-namespace redis {
+namespace redis_compatible {
 
-class DiscoverySentinelInfo : public ServerDiscoverySentinelInfo {
- public:
-  explicit DiscoverySentinelInfo(const ServerCommonInfo& args);
+struct Config : public RemoteConfig {
+  enum { db_num_default = 0 };
+  explicit Config(const common::net::HostAndPort& host);
+  Config();
+
+  std::string hostsocket;
+  int db_num;
+  std::string auth;
+  bool is_ssl;
 };
 
-common::Error MakeServerCommonInfo(struct redisReply* repl_info, ServerCommonInfo* info);
-
-}  // namespace redis
+}  // namespace redis_compatible
 }  // namespace core
 }  // namespace fastonosql
+
+namespace common {
+std::string ConvertToString(const fastonosql::core::redis_compatible::Config& conf);
+bool ConvertFromString(const std::string& from, fastonosql::core::redis_compatible::Config* out);
+}  // namespace common

@@ -27,7 +27,7 @@
 
 namespace fastonosql {
 namespace core {
-namespace redis {
+namespace redis_compatible {
 
 class CommandTranslator : public ICommandTranslator {
  public:
@@ -81,8 +81,6 @@ class CommandTranslator : public ICommandTranslator {
                                            command_buffer_t* cmdstring) const override;
   virtual common::Error SubscribeCommandImpl(const NDbPSChannel& channel, command_buffer_t* cmdstring) const override;
 };
-
-typedef std::shared_ptr<CommandTranslator> redis_translator_t;
 
 }  // namespace redis
 }  // namespace core

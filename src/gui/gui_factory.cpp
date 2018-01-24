@@ -171,6 +171,8 @@ const QIcon& GuiFactory::GetIcon(core::connectionTypes type) const {
     return upscaledbConnectionIcon();
   } else if (type == core::FORESTDB) {
     return forestdbConnectionIcon();
+  } else if (type == core::PIKA) {
+    return pikaConnectionIcon();
   } else {
     return GetServerIcon();
   }
@@ -379,6 +381,8 @@ const QIcon& GuiFactory::GetCommandIcon(core::connectionTypes type) const {
     return upscaledbConnectionIcon();
   } else if (type == core::UPSCALEDB) {
     return forestdbConnectionIcon();
+  } else if (type == core::PIKA) {
+    return pikaConnectionIcon();
   } else {
     return GetServerIcon();
   }
@@ -436,6 +440,11 @@ QString GuiFactory::GetPathToWorkflowGif() const {
 const QIcon& GuiFactory::redisConnectionIcon() const {
   static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/redis.png");
   return main;
+}
+
+const QIcon& GuiFactory::pikaConnectionIcon() const {
+  static QIcon pika(":" PROJECT_NAME_LOWERCASE "/images/64x64/pika.png");
+  return pika;
 }
 
 const QIcon& GuiFactory::memcachedConnectionIcon() const {

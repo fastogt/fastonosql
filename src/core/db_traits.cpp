@@ -73,6 +73,11 @@ std::vector<common::Value::Type> GetSupportedValueTypes(connectionTypes type) {
     return DBTraits<FORESTDB>::GetSupportedValueTypes();
   }
 #endif
+#ifdef BUILD_WITH_PIKA
+  if (type == PIKA) {
+    return DBTraits<PIKA>::GetSupportedValueTypes();
+  }
+#endif
   NOTREACHED();
   return std::vector<common::Value::Type>();
 }
@@ -118,9 +123,14 @@ std::vector<info_field_t> GetInfoFieldsFromType(connectionTypes type) {
     return DBTraits<UPSCALEDB>::GetInfoFields();
   }
 #endif
-#ifdef BUILD_WITH_UPSCALEDB
+#ifdef BUILD_WITH_FORESTDB
   if (type == FORESTDB) {
     return DBTraits<FORESTDB>::GetInfoFields();
+  }
+#endif
+#ifdef BUILD_WITH_PIKA
+  if (type == PIKA) {
+    return DBTraits<PIKA>::GetInfoFields();
   }
 #endif
   NOTREACHED();

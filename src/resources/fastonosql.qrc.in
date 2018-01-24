@@ -10,5 +10,6 @@
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/lmdb.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/upscaledb.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/forestdb.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/pika.png</file>
     </qresource>
 </RCC>

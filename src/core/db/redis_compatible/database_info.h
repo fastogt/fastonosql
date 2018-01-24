@@ -16,17 +16,20 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/db/redis/config.h"
+#pragma once
 
-#define DEFAULT_REDIS_SERVER_PORT 6379
+#include "core/database/idatabase_info.h"
 
 namespace fastonosql {
 namespace core {
-namespace redis {
+namespace redis_compatible {
 
-Config::Config() : base_class(common::net::HostAndPort::CreateLocalHost(DEFAULT_REDIS_SERVER_PORT)) {}
+class DataBaseInfo : public IDataBaseInfo {
+ public:
+  DataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_container_t& keys = keys_container_t());
 
-RConfig::RConfig(const Config& config, const SSHInfo& sinfo) : Config(config), ssh_info(sinfo) {}
+  virtual DataBaseInfo* Clone() const override;
+};
 
 }  // namespace redis
 }  // namespace core

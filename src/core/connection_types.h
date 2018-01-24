@@ -38,7 +38,8 @@ enum connectionTypes {
   UNQLITE,
   LMDB,
   UPSCALEDB,
-  FORESTDB
+  FORESTDB,
+  PIKA
 };  // supported types
 enum serverTypes { MASTER = 0, SLAVE };
 enum serverState { SUP = 0, SDOWN };
@@ -49,6 +50,7 @@ extern const std::vector<connectionTypes> g_compiled_types;
 
 enum ConnectionMode { InteractiveMode };
 
+bool IsRedisCompatible(connectionTypes type);
 bool IsRemoteType(connectionTypes type);
 bool IsSupportTTLKeys(connectionTypes type);
 bool IsLocalType(connectionTypes type);

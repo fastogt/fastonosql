@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/db/redis/command_translator.h"
+#include "core/db/redis_compatible/command_translator.h"
 
 #include "core/connection_types.h"
 #include "core/db/redis/internal/modules.h"
@@ -73,7 +73,7 @@
 
 namespace fastonosql {
 namespace core {
-namespace redis {
+namespace redis_compatible {
 
 CommandTranslator::CommandTranslator(const std::vector<CommandHolder>& commands) : ICommandTranslator(commands) {}
 

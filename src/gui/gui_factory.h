@@ -102,6 +102,7 @@ class GuiFactory : public common::patterns::LazySingleton<GuiFactory> {
  private:
   GuiFactory();
   const QIcon& redisConnectionIcon() const;
+  const QIcon& pikaConnectionIcon() const;
   const QIcon& memcachedConnectionIcon() const;
   const QIcon& ssdbConnectionIcon() const;
   const QIcon& leveldbConnectionIcon() const;

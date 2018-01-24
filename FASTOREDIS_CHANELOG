@@ -2,6 +2,7 @@
 [Alexandr Topilski]
 - Redirect requests to cluster nodes
 - Up hiredis sources to version 0.13.3
+- Sentinel type
 
 1.14.1 / January 17, 2018
 [Alexandr Topilski]

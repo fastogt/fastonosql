@@ -18,27 +18,26 @@
 
 #pragma once
 
-#include "core/config/config.h"  // for RemoteConfig
+#include "core/db/redis_compatible/config.h"
+
+#include "core/ssh_info.h"
 
 namespace fastonosql {
 namespace core {
 namespace redis {
 
-struct Config : public RemoteConfig {
-  enum { db_num_default = 0 };
+struct Config : public redis_compatible::Config {
+  typedef redis_compatible::Config base_class;
   Config();
+};
 
-  std::string hostsocket;
-  int db_num;
-  std::string auth;
-  bool is_ssl;
+struct RConfig : public Config {
+  RConfig(const Config& config, const SSHInfo& sinfo);
+
+  SSHInfo ssh_info;
 };
 
 }  // namespace redis
 }  // namespace core
 }  // namespace fastonosql
 
-namespace common {
-std::string ConvertToString(const fastonosql::core::redis::Config& conf);
-bool ConvertFromString(const std::string& from, fastonosql::core::redis::Config* out);
-}  // namespace common

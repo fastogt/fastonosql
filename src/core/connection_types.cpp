@@ -36,6 +36,9 @@ const std::vector<connectionTypes> g_compiled_types = {
 #ifdef BUILD_WITH_REDIS
     REDIS,
 #endif
+#ifdef BUILD_WITH_PIKA
+    PIKA,
+#endif
 #ifdef BUILD_WITH_MEMCACHED
     MEMCACHED,
 #endif
@@ -62,12 +65,16 @@ const std::vector<connectionTypes> g_compiled_types = {
 #endif
 };
 
+bool IsRedisCompatible(connectionTypes type) {
+  return type == REDIS || type == PIKA;
+}
+
 bool IsRemoteType(connectionTypes type) {
-  return type == REDIS || type == MEMCACHED || type == SSDB;
+  return type == REDIS || type == PIKA || type == MEMCACHED || type == SSDB;
 }
 
 bool IsSupportTTLKeys(connectionTypes type) {
-  return type == REDIS || type == MEMCACHED || type == SSDB;
+  return type == REDIS || type == PIKA || type == MEMCACHED || type == SSDB;
 }
 
 bool IsLocalType(connectionTypes type) {
@@ -75,7 +82,7 @@ bool IsLocalType(connectionTypes type) {
 }
 
 bool IsCanSSHConnection(connectionTypes type) {
-  return type == REDIS;
+  return IsRedisCompatible(type);
 }
 
 bool IsCanCreateDatabase(connectionTypes type) {

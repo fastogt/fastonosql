@@ -16,18 +16,27 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/db/redis/database_info.h"
+#pragma once
+
+#include <string>  // for string
+#include <vector>  // for vector
+
+#include <common/error.h>  // for Error
+
+#include "core/server/iserver_info.h"  // for ServerCommonInfo (ptr only), etc
 
 namespace fastonosql {
 namespace core {
-namespace redis {
+namespace redis_compatible {
 
-DataBaseInfo::DataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_container_t& keys)
-    : IDataBaseInfo(name, isDefault, size, keys) {}
+class DiscoveryClusterInfo : public ServerDiscoveryClusterInfo {
+ public:
+  DiscoveryClusterInfo(const ServerCommonInfo& info, bool self);
+};
 
-DataBaseInfo* DataBaseInfo::Clone() const {
-  return new DataBaseInfo(*this);
-}
+common::Error MakeDiscoveryClusterInfo(const common::net::HostAndPort& parentHost,
+                                       const std::string& text,
+                                       std::vector<ServerDiscoveryClusterInfoSPtr>* infos);
 
 }  // namespace redis
 }  // namespace core

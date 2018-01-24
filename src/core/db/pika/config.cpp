@@ -16,21 +16,18 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "core/db/pika/config.h"
 
-#include "core/database/idatabase_info.h"
+#define DEFAULT_PIKA_SERVER_PORT 9211
 
 namespace fastonosql {
 namespace core {
-namespace redis {
+namespace pika {
 
-class DataBaseInfo : public IDataBaseInfo {
- public:
-  DataBaseInfo(const std::string& name, bool isDefault, size_t size, const keys_container_t& keys = keys_container_t());
+Config::Config() : base_class(common::net::HostAndPort::CreateLocalHost(DEFAULT_PIKA_SERVER_PORT)) {}
 
-  virtual DataBaseInfo* Clone() const override;
-};
+RConfig::RConfig(const Config& config, const SSHInfo& sinfo) : Config(config), ssh_info(sinfo) {}
 
-}  // namespace redis
+}  // namespace pika
 }  // namespace core
 }  // namespace fastonosql

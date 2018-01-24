@@ -471,36 +471,50 @@ ENDIF(OS_WINDOWS)
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_LIST_DIR})
 
-#redis
-IF(BUILD_WITH_REDIS)
+#redis or pika (compatible with redis protocol)
+IF(BUILD_WITH_REDIS OR BUILD_WITH_PIKA)
   FIND_PACKAGE(OpenSSL REQUIRED)
   FIND_PACKAGE(Libssh2 REQUIRED CONFIG)
   ADD_SUBDIRECTORY(third-party/redis)
-  SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/redis/src third-party/redis/deps)
 
+  SET(HEADERS_CORE_DB_REDIS_COMPATIBLE
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/config.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/db_connection.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/command_translator.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/cluster_infos.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/sentinel_info.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/database_info.h
+  )
+  SET(SOURCES_CORE_DB_REDIS_COMPATIBLE
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/config.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/db_connection.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/command_translator.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/cluster_infos.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/sentinel_info.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/database_info.cpp
+  )
+
+  SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/redis/src third-party/redis/deps)
+  SET(DB_LIBS ${DB_LIBS} hiredis Libssh2::libssh2 ${OPENSSL_LIBRARIES})
+ENDIF(BUILD_WITH_REDIS OR BUILD_WITH_PIKA)
+
+#redis
+IF(BUILD_WITH_REDIS)
   #core redis
-  SET(HEADERS_CORE_DB_REDIS
+  SET(HEADERS_CORE_DB_REDIS ${HEADERS_CORE_DB_REDIS_COMPATIBLE}
     ${CMAKE_SOURCE_DIR}/src/core/db/redis/internal/modules.h
     ${CMAKE_SOURCE_DIR}/src/core/db/redis/internal/commands_api.h
 
     ${CMAKE_SOURCE_DIR}/src/core/db/redis/config.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis/command_translator.h
     ${CMAKE_SOURCE_DIR}/src/core/db/redis/server_info.h
     ${CMAKE_SOURCE_DIR}/src/core/db/redis/db_connection.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis/database_info.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis/sentinel_info.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis/cluster_infos.h
   )
-  SET(SOURCES_CORE_DB_REDIS
+  SET(SOURCES_CORE_DB_REDIS ${SOURCES_CORE_DB_REDIS_COMPATIBLE}
     ${CMAKE_SOURCE_DIR}/src/core/db/redis/internal/commands_api.cpp
 
     ${CMAKE_SOURCE_DIR}/src/core/db/redis/config.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis/command_translator.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/redis/server_info.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/redis/db_connection.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis/sentinel_info.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis/cluster_infos.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis/database_info.cpp
   )
 
   # proxy redis
@@ -553,9 +567,32 @@ IF(BUILD_WITH_REDIS)
   SET(HEADERS_GUI_TO_MOC ${HEADERS_GUI_TO_MOC} ${HEADERS_REDIS_GUI_TO_MOC})
   SET(HEADERS_GUI ${HEADERS_GUI} ${HEADERS_REDIS_GUI})
   SET(SOURCES_GUI ${SOURCES_GUI} ${SOURCES_REDIS_GUI})
-
-  SET(DB_LIBS ${DB_LIBS} hiredis Libssh2::libssh2 ${OPENSSL_LIBRARIES})
 ENDIF(BUILD_WITH_REDIS)
+
+#pika
+IF(BUILD_WITH_PIKA)
+  #core pika
+  SET(HEADERS_CORE_DB_PIKA ${HEADERS_CORE_DB_REDIS_COMPATIBLE}
+    ${CMAKE_SOURCE_DIR}/src/core/db/pika/internal/commands_api.h
+
+    ${CMAKE_SOURCE_DIR}/src/core/db/pika/config.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/pika/command_translator.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/pika/server_info.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/pika/db_connection.h
+  )
+  SET(SOURCES_CORE_DB_PIKA ${SOURCES_CORE_DB_REDIS_COMPATIBLE}
+    ${CMAKE_SOURCE_DIR}/src/core/db/pika/internal/commands_api.cpp
+
+    ${CMAKE_SOURCE_DIR}/src/core/db/pika/config.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/pika/command_translator.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/pika/server_info.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/pika/db_connection.cpp
+  )
+
+  #update common variables
+  SET(HEADERS_CORE ${HEADERS_CORE} ${HEADERS_CORE_DB_PIKA})
+  SET(SOURCES_CORE ${SOURCES_CORE} ${SOURCES_CORE_DB_PIKA})
+ENDIF(BUILD_WITH_PIKA)
 
 #memcached
 IF(BUILD_WITH_MEMCACHED)

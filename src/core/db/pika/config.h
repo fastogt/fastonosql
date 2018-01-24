@@ -18,26 +18,25 @@
 
 #pragma once
 
-#include <string>  // for string
-#include <vector>  // for vector
+#include "core/db/redis_compatible/config.h"
 
-#include <common/error.h>  // for Error
-
-#include "core/server/iserver_info.h"  // for ServerCommonInfo (ptr only), etc
+#include "core/ssh_info.h"
 
 namespace fastonosql {
 namespace core {
-namespace redis {
+namespace pika {
 
-class DiscoveryClusterInfo : public ServerDiscoveryClusterInfo {
- public:
-  DiscoveryClusterInfo(const ServerCommonInfo& info, bool self);
+struct Config : public redis_compatible::Config {
+  typedef redis_compatible::Config base_class;
+  Config();
 };
 
-common::Error makeDiscoveryClusterInfo(const common::net::HostAndPort& parentHost,
-                                       const std::string& text,
-                                       std::vector<ServerDiscoveryClusterInfoSPtr>* infos);
+struct RConfig : public Config {
+  RConfig(const Config& config, const SSHInfo& sinfo);
 
-}  // namespace redis
+  SSHInfo ssh_info;
+};
+
+}  // namespace pika
 }  // namespace core
 }  // namespace fastonosql
