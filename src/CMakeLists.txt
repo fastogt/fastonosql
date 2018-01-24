@@ -494,6 +494,19 @@ IF(BUILD_WITH_REDIS OR BUILD_WITH_PIKA)
     ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/database_info.cpp
   )
 
+  SET(HEADERS_PIKA_PROXY_DB_REDIS_COMPATIBLE_TO_MOC
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis_compatible/sentinel.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis_compatible/cluster.h
+  )
+  SET(HEADERS_PROXY_DB_REDIS_COMPATIBLE
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis_compatible/database.h
+  )
+  SET(SOURCES_PROXY_DB_REDIS_COMPATIBLE
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis_compatible/sentinel.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis_compatible/cluster.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis_compatible/database.cpp
+  )
+
   SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/redis/src third-party/redis/deps)
   SET(DB_LIBS ${DB_LIBS} hiredis Libssh2::libssh2 ${OPENSSL_LIBRARIES})
 ENDIF(BUILD_WITH_REDIS OR BUILD_WITH_PIKA)
@@ -518,29 +531,23 @@ IF(BUILD_WITH_REDIS)
   )
 
   # proxy redis
-  SET(HEADERS_REDIS_PROXY_TO_MOC
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/sentinel.h
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/cluster.h
+  SET(HEADERS_REDIS_PROXY_TO_MOC ${HEADERS_PIKA_PROXY_DB_REDIS_COMPATIBLE_TO_MOC}
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/server.h
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/driver.h
   )
-  SET(HEADERS_PROXY_DB_REDIS
+  SET(HEADERS_PROXY_DB_REDIS ${HEADERS_PROXY_DB_REDIS_COMPATIBLE}
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/command.h
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/connection_settings.h
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/sentinel_settings.h
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/cluster_settings.h
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/database.h
   )
-  SET(SOURCES_PROXY_DB_REDIS
+  SET(SOURCES_PROXY_DB_REDIS ${SOURCES_PROXY_DB_REDIS_COMPATIBLE}
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/command.cpp
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/connection_settings.cpp
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/sentinel_settings.cpp
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/cluster_settings.cpp
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/server.cpp
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/driver.cpp
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/sentinel.cpp
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/cluster.cpp
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/database.cpp
   )
 
   #gui redis
@@ -587,9 +594,48 @@ IF(BUILD_WITH_PIKA)
     ${CMAKE_SOURCE_DIR}/src/core/db/pika/db_connection.cpp
   )
 
+  # proxy pika
+  SET(HEADERS_PIKA_PROXY_TO_MOC ${HEADERS_PIKA_PROXY_DB_REDIS_COMPATIBLE_TO_MOC}
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/server.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/driver.h
+  )
+  SET(HEADERS_PROXY_DB_PIKA ${HEADERS_PROXY_DB_REDIS_COMPATIBLE}
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/command.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/connection_settings.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/sentinel_settings.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/cluster_settings.h
+  )
+  SET(SOURCES_PROXY_DB_PIKA ${SOURCES_PROXY_DB_REDIS_COMPATIBLE}
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/command.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/connection_settings.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/sentinel_settings.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/cluster_settings.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/server.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/driver.cpp
+  )
+
+  #gui pika
+  SET(HEADERS_PIKA_GUI_TO_MOC
+    gui/db/pika/connection_widget.h
+    gui/db/pika/lexer.h
+  )
+  SET(HEADERS_PIKA_GUI)
+  SET(SOURCES_PIKA_GUI
+    gui/db/pika/connection_widget.cpp
+    gui/db/pika/lexer.cpp
+  )
+
   #update common variables
   SET(HEADERS_CORE ${HEADERS_CORE} ${HEADERS_CORE_DB_PIKA})
   SET(SOURCES_CORE ${SOURCES_CORE} ${SOURCES_CORE_DB_PIKA})
+
+  SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_PIKA_PROXY_TO_MOC})
+  SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_PIKA})
+  SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_PIKA})
+
+  SET(HEADERS_GUI_TO_MOC ${HEADERS_GUI_TO_MOC} ${HEADERS_PIKA_GUI_TO_MOC})
+  SET(HEADERS_GUI ${HEADERS_GUI} ${HEADERS_PIKA_GUI})
+  SET(SOURCES_GUI ${SOURCES_GUI} ${SOURCES_PIKA_GUI})
 ENDIF(BUILD_WITH_PIKA)
 
 #memcached

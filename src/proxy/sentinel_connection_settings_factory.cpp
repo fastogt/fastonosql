@@ -24,6 +24,10 @@
 #include "proxy/db/redis/sentinel_settings.h"  // for SentinelSettings
 #endif
 
+#ifdef BUILD_WITH_PIKA
+#include "proxy/db/pika/sentinel_settings.h"  // for SentinelSettings
+#endif
+
 namespace fastonosql {
 namespace proxy {
 
@@ -32,6 +36,11 @@ ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromType(core::c
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
     return new redis::SentinelSettings(conName);
+  }
+#endif
+#ifdef BUILD_WITH_PIKA
+  if (type == core::PIKA) {
+    return new pika::SentinelSettings(conName);
   }
 #endif
   return nullptr;

@@ -22,7 +22,7 @@
 
 namespace fastonosql {
 namespace proxy {
-namespace redis {
+namespace redis_compatible {
 
 class Sentinel : public ISentinel {
   Q_OBJECT
@@ -30,6 +30,6 @@ class Sentinel : public ISentinel {
   explicit Sentinel(const std::string& name);
 };
 
-}  // namespace redis
+}  // namespace redis_compatible
 }  // namespace proxy
 }  // namespace fastonosql

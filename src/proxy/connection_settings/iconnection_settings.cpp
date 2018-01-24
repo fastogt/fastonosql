@@ -55,6 +55,9 @@
 #ifdef BUILD_WITH_FORESTDB
 #define LOGGING_FORESTDB_FILE_EXTENSION ".forestdb"
 #endif
+#ifdef BUILD_WITH_REDIS
+#define LOGGING_PIKA_FILE_EXTENSION ".pika"
+#endif
 
 namespace fastonosql {
 namespace proxy {
@@ -212,6 +215,11 @@ std::string IConnectionSettingsBase::GetLoggingPath() const {
 #ifdef BUILD_WITH_FORESTDB
   if (type_ == core::FORESTDB) {
     return prefix + LOGGING_FORESTDB_FILE_EXTENSION;
+  }
+#endif
+#ifdef BUILD_WITH_PIKA
+  if (type_ == core::PIKA) {
+    return prefix + LOGGING_PIKA_FILE_EXTENSION;
   }
 #endif
 

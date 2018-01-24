@@ -61,6 +61,9 @@ class ServerInfo;
 namespace forestdb {
 class ServerInfo;
 }
+namespace pika {
+class ServerInfo;
+}
 }  // namespace core
 }  // namespace fastonosql
 
@@ -115,6 +118,9 @@ class InfoServerDialog : public QDialog {
 #endif
 #ifdef BUILD_WITH_FORESTDB
   void updateText(const core::forestdb::ServerInfo& serv);
+#endif
+#ifdef BUILD_WITH_PIKA
+  void updateText(const core::pika::ServerInfo& serv);
 #endif
   QTextEdit* server_text_info_;
   common::qt::gui::GlassWidget* glass_widget_;

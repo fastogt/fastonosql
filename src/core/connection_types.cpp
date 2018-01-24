@@ -21,7 +21,7 @@
 #include <common/macros.h>  // for NOTREACHED, SIZEOFMASS
 
 namespace {
-const char* connnectionType[] = {"Redis",   "Memcached", "SSDB",      "LevelDB", "RocksDB",
+const char* connnectionType[] = {"Redis",   "Memcached", "SSDB",      "LevelDB",  "RocksDB",
                                  "UnQLite", "LMDB",      "UpscaleDB", "ForestDB", "Pika"};
 const std::string connnectionMode[] = {"Interactive mode"};
 const std::string serverTypes[] = {"Master", "Slave"};
@@ -35,9 +35,6 @@ namespace core {
 const std::vector<connectionTypes> g_compiled_types = {
 #ifdef BUILD_WITH_REDIS
     REDIS,
-#endif
-#ifdef BUILD_WITH_PIKA
-    PIKA,
 #endif
 #ifdef BUILD_WITH_MEMCACHED
     MEMCACHED,
@@ -61,7 +58,10 @@ const std::vector<connectionTypes> g_compiled_types = {
     UPSCALEDB,
 #endif
 #ifdef BUILD_WITH_FORESTDB
-    FORESTDB
+    FORESTDB,
+#endif
+#ifdef BUILD_WITH_PIKA
+    PIKA
 #endif
 };
 

@@ -58,6 +58,10 @@
 #include "gui/db/forestdb/lexer.h"
 #endif
 
+#ifdef BUILD_WITH_PIKA
+#include "gui/db/pika/lexer.h"
+#endif
+
 namespace {
 const QSize image_size(64, 64);
 }
@@ -112,6 +116,11 @@ BaseShell::BaseShell(core::connectionTypes type, bool showAutoCompl, QWidget* pa
 #ifdef BUILD_WITH_FORESTDB
   if (type == core::FORESTDB) {
     lex = new forestdb::Lexer(this);
+  }
+#endif
+#ifdef BUILD_WITH_REDIS
+  if (type == core::PIKA) {
+    lex = new pika::Lexer(this);
   }
 #endif
   const QIcon& ic = gui::GuiFactory::GetInstance().GetCommandIcon(type);

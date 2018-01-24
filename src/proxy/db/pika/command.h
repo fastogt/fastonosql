@@ -16,14 +16,19 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "proxy/db/redis/cluster.h"
+#pragma once
+
+#include "core/global.h"  // for FastoObject (ptr only), etc
 
 namespace fastonosql {
 namespace proxy {
-namespace redis {
+namespace pika {
 
-Cluster::Cluster(const std::string& name) : ICluster(name) {}
+class Command : public core::FastoObjectCommand {
+ public:
+  Command(core::FastoObject* parent, common::StringValue* cmd, core::CmdLoggingType ct, const std::string& delimiter);
+};
 
-}  // namespace redis
+}  // namespace pika
 }  // namespace proxy
 }  // namespace fastonosql

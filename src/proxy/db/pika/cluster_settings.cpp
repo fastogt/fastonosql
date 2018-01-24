@@ -16,19 +16,22 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "proxy/db/pika/cluster_settings.h"
 
-#include "proxy/database/idatabase.h"  // for IDatabase
+#include "core/connection_types.h"  // for core::connectionTypes::REDIS
 
 namespace fastonosql {
 namespace proxy {
-namespace redis {
+namespace pika {
 
-class Database : public IDatabase {
- public:
-  Database(IServerSPtr server, core::IDataBaseInfoSPtr info);
-};
+ClusterSettings::ClusterSettings(const connection_path_t& connectionName)
+    : IClusterSettingsBase(connectionName, core::PIKA) {}
 
-}  // namespace redis
+ClusterSettings* ClusterSettings::Clone() const {
+  ClusterSettings* red = new ClusterSettings(*this);
+  return red;
+}
+
+}  // namespace pika
 }  // namespace proxy
 }  // namespace fastonosql

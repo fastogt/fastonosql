@@ -18,16 +18,34 @@
 
 #pragma once
 
-#include "proxy/cluster/icluster.h"
+#include "proxy/connection_settings/iconnection_settings_ssh.h"
+
+#include "core/db/pika/config.h"  // for Config
 
 namespace fastonosql {
 namespace proxy {
-namespace redis {
+namespace pika {
 
-class Cluster : public ICluster {
-  Q_OBJECT
+class ConnectionSettings : public IConnectionSettingsRemoteSSH {
  public:
-  explicit Cluster(const std::string& name);
+  explicit ConnectionSettings(const connection_path_t& connectionName);
+
+  core::pika::Config GetInfo() const;
+  void SetInfo(const core::pika::Config& info);
+
+  virtual std::string GetDelimiter() const override;
+  virtual void SetDelimiter(const std::string& delimiter) override;
+
+  virtual common::net::HostAndPort GetHost() const override;
+  virtual void SetHost(const common::net::HostAndPort& host) override;
+
+  virtual std::string GetCommandLine() const override;
+  virtual void SetCommandLine(const std::string& line) override;
+
+  virtual ConnectionSettings* Clone() const override;
+
+ private:
+  core::pika::Config info_;
 };
 
 }  // namespace redis

@@ -16,17 +16,20 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "proxy/db/redis/database.h"
+#pragma once
+
+#include "proxy/cluster/icluster.h"
 
 namespace fastonosql {
 namespace proxy {
-namespace redis {
+namespace redis_compatible {
 
-Database::Database(IServerSPtr server, core::IDataBaseInfoSPtr info) : IDatabase(server, info) {
-  CHECK(server);
-  CHECK(info);
-}
+class Cluster : public ICluster {
+  Q_OBJECT
+ public:
+  explicit Cluster(const std::string& name);
+};
 
-}  // namespace redis
+}  // namespace pika
 }  // namespace proxy
 }  // namespace fastonosql

@@ -16,12 +16,12 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "proxy/db/redis/server.h"
+#include "proxy/db/pika/server.h"
 
-#include "core/db/redis/server_info.h"  // for ServerInfo, etc
+#include "core/db/pika/server_info.h"  // for ServerInfo, etc
 
 #include "proxy/db/redis_compatible/database.h"  // for Database
-#include "proxy/db/redis/driver.h"    // for Driver
+#include "proxy/db/pika/driver.h"    // for Driver
 
 #define MASTER_ROLE "master"
 #define SLAVE_ROLE "slave"
@@ -31,7 +31,7 @@
 
 namespace fastonosql {
 namespace proxy {
-namespace redis {
+namespace pika {
 
 Server::Server(IConnectionSettingsBaseSPtr settings)
     : IServerRemote(new Driver(settings)), role_(core::MASTER), mode_(core::STANDALONE) {
@@ -72,7 +72,7 @@ void Server::HandleLoadServerInfoEvent(events::ServerInfoResponceEvent* ev) {
   }
 
   core::IServerInfoSPtr serv_info = v.info();
-  core::redis::ServerInfo* rinf = static_cast<core::redis::ServerInfo*>(serv_info.get());
+  core::pika::ServerInfo* rinf = static_cast<core::pika::ServerInfo*>(serv_info.get());
   if (rinf->replication_.role_ == MASTER_ROLE) {
     role_ = core::MASTER;
   } else if (rinf->replication_.role_ == SLAVE_ROLE) {
@@ -89,6 +89,6 @@ void Server::HandleLoadServerInfoEvent(events::ServerInfoResponceEvent* ev) {
   IServer::HandleLoadServerInfoEvent(ev);
 }
 
-}  // namespace redis
+}  // namespace pika
 }  // namespace proxy
 }  // namespace fastonosql

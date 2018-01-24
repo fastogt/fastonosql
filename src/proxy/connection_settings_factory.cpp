@@ -56,6 +56,10 @@
 #include "proxy/db/forestdb/connection_settings.h"  // for ConnectionSettings
 #define LOGGING_FORESTDB_FILE_EXTENSION ".forestdb"
 #endif
+#ifdef BUILD_WITH_PIKA
+#include "proxy/db/pika/connection_settings.h"  // for ConnectionSettings
+#define LOGGING_PIKA_FILE_EXTENSION ".pika"
+#endif
 
 namespace fastonosql {
 namespace proxy {
@@ -105,6 +109,11 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateFromType(core::connect
 #ifdef BUILD_WITH_FORESTDB
   if (type == core::FORESTDB) {
     return new forestdb::ConnectionSettings(conName);
+  }
+#endif
+#ifdef BUILD_WITH_PIKA
+  if (type == core::PIKA) {
+    return new pika::ConnectionSettings(conName);
   }
 #endif
   return nullptr;
@@ -180,6 +189,11 @@ IConnectionSettingsRemote* ConnectionSettingsFactory::CreateFromType(core::conne
 #ifdef BUILD_WITH_SSDB
   if (type == core::SSDB) {
     remote = new ssdb::ConnectionSettings(conName);
+  }
+#endif
+#ifdef BUILD_WITH_PIKA
+  if (type == core::PIKA) {
+    remote = new pika::ConnectionSettings(conName);
   }
 #endif
 

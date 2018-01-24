@@ -45,6 +45,9 @@
 #ifdef BUILD_WITH_FORESTDB
 #include "gui/db/forestdb/connection_widget.h"
 #endif
+#ifdef BUILD_WITH_PIKA
+#include "gui/db/pika/connection_widget.h"
+#endif
 
 namespace fastonosql {
 namespace gui {
@@ -93,6 +96,11 @@ ConnectionBaseWidget* createWidgetImpl(core::connectionTypes type, QWidget* pare
 #ifdef BUILD_WITH_FORESTDB
   if (type == core::FORESTDB) {
     return new forestdb::ConnectionWidget(parent);
+  }
+#endif
+#ifdef BUILD_WITH_PIKA
+  if (type == core::PIKA) {
+    return new pika::ConnectionWidget(parent);
   }
 #endif
   NOTREACHED();

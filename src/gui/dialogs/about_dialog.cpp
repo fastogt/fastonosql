@@ -171,6 +171,10 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
   addDBItem(dblist_widget, forestdb_traits_t::GetDBName(), forestdb_traits_t::GetBasedOn(),
             forestdb_traits_t::GetVersionApi());
 #endif
+#ifdef BUILD_WITH_PIKA
+  typedef core::ConnectionTraits<core::PIKA> pika_traits_t;
+  addDBItem(dblist_widget, pika_traits_t::GetDBName(), pika_traits_t::GetBasedOn(), pika_traits_t::GetVersionApi());
+#endif
   main_tab->addTab(dblist_widget, QObject::tr("Availible databases"));
 
   QTreeWidget* libs_list_widget = new QTreeWidget;

@@ -23,10 +23,10 @@
 
 #ifdef BUILD_WITH_REDIS
 #include "core/db/redis/db_connection.h"         // for DiscoveryClusterConnection, etc
-#include "proxy/db/redis/cluster.h"              // for Cluster
 #include "proxy/db/redis/connection_settings.h"  // for ConnectionSettings
-#include "proxy/db/redis/sentinel.h"             // for Sentinel
 #include "proxy/db/redis/server.h"               // for Server
+#include "proxy/db/redis_compatible/cluster.h"   // for Cluster
+#include "proxy/db/redis_compatible/sentinel.h"  // for Sentinel
 #endif
 
 #ifdef BUILD_WITH_MEMCACHED
@@ -75,6 +75,14 @@
 #include "core/db/forestdb/db_connection.h"         // for TestConnection
 #include "proxy/db/forestdb/connection_settings.h"  // for ConnectionSettings
 #include "proxy/db/forestdb/server.h"               // for Server
+#endif
+
+#ifdef BUILD_WITH_PIKA
+#include "core/db/pika/db_connection.h"         // for DiscoveryClusterConnection, etc
+#include "proxy/db/pika/connection_settings.h"  // for ConnectionSettings
+#include "proxy/db/pika/server.h"               // for Server
+#include "proxy/db/redis_compatible/cluster.h"   // for Cluster
+#include "proxy/db/redis_compatible/sentinel.h"  // for Sentinel
 #endif
 
 namespace fastonosql {
@@ -135,6 +143,11 @@ ServersManager::server_t ServersManager::CreateServer(IConnectionSettingsBaseSPt
     server = std::make_shared<forestdb::Server>(settings);
   }
 #endif
+#ifdef BUILD_WITH_PIKA
+  if (connection_type == core::PIKA) {
+    server = std::make_shared<pika::Server>(settings);
+  }
+#endif
 
   CHECK(server);
   servers_.push_back(server);
@@ -150,7 +163,26 @@ ServersManager::sentinel_t ServersManager::CreateSentinel(ISentinelSettingsBaseS
   core::connectionTypes connection_type = settings->GetType();
 #ifdef BUILD_WITH_REDIS
   if (connection_type == core::REDIS) {
-    sentinel_t sent = std::make_shared<redis::Sentinel>(settings->GetPath().ToString());
+    sentinel_t sent = std::make_shared<redis_compatible::Sentinel>(settings->GetPath().ToString());
+    auto nodes = settings->GetSentinels();
+    for (size_t i = 0; i < nodes.size(); ++i) {
+      SentinelSettings nd = nodes[i];
+      Sentinel sentt;
+      IServerSPtr sent_serv = CreateServer(nd.sentinel);
+      sentt.sentinel = sent_serv;
+      for (size_t j = 0; j < nd.sentinel_nodes.size(); ++j) {
+        IServerSPtr serv = CreateServer(nd.sentinel_nodes[j]);
+        sentt.sentinels_nodes.push_back(serv);
+      }
+
+      sent->AddSentinel(sentt);
+    }
+    return sent;
+  }
+#endif
+#ifdef BUILD_WITH_PIKA
+  if (connection_type == core::PIKA) {
+    sentinel_t sent = std::make_shared<redis_compatible::Sentinel>(settings->GetPath().ToString());
     auto nodes = settings->GetSentinels();
     for (size_t i = 0; i < nodes.size(); ++i) {
       SentinelSettings nd = nodes[i];
@@ -181,7 +213,19 @@ ServersManager::cluster_t ServersManager::CreateCluster(IClusterSettingsBaseSPtr
   core::connectionTypes connection_type = settings->GetType();
 #ifdef BUILD_WITH_REDIS
   if (connection_type == core::REDIS) {
-    cluster_t cl = std::make_shared<redis::Cluster>(settings->GetPath().ToString());
+    cluster_t cl = std::make_shared<redis_compatible::Cluster>(settings->GetPath().ToString());
+    auto nodes = settings->GetNodes();
+    for (size_t i = 0; i < nodes.size(); ++i) {
+      IConnectionSettingsBaseSPtr nd = nodes[i];
+      IServerSPtr serv = CreateServer(nd);
+      cl->AddServer(serv);
+    }
+    return cl;
+  }
+#endif
+#ifdef BUILD_WITH_PIKA
+  if (connection_type == core::PIKA) {
+    cluster_t cl = std::make_shared<redis_compatible::Cluster>(settings->GetPath().ToString());
     auto nodes = settings->GetNodes();
     for (size_t i = 0; i < nodes.size(); ++i) {
       IConnectionSettingsBaseSPtr nd = nodes[i];
@@ -257,6 +301,13 @@ common::Error ServersManager::TestConnection(IConnectionSettingsBaseSPtr connect
     return fastonosql::core::forestdb::TestConnection(settings->GetInfo());
   }
 #endif
+#ifdef BUILD_WITH_PIKA
+  if (type == core::PIKA) {
+    pika::ConnectionSettings* settings = static_cast<pika::ConnectionSettings*>(connection.get());
+    core::pika::RConfig rconfig(settings->GetInfo(), settings->GetSSHInfo());
+    return core::pika::TestConnection(rconfig);
+  }
+#endif
 
   NOTREACHED();
   return common::make_error("Invalid setting type");
@@ -316,6 +367,13 @@ common::Error ServersManager::DiscoveryClusterConnection(IConnectionSettingsBase
     return common::make_error("Not supported setting type");
   }
 #endif
+#ifdef BUILD_WITH_PIKA
+  if (connection_type == core::PIKA) {
+    pika::ConnectionSettings* settings = static_cast<pika::ConnectionSettings*>(connection.get());
+    core::pika::RConfig rconfig(settings->GetInfo(), settings->GetSSHInfo());
+    return core::pika::DiscoveryClusterConnection(rconfig, inf);
+  }
+#endif
 
   NOTREACHED();
   return common::make_error("Invalid setting type");
@@ -373,6 +431,13 @@ common::Error ServersManager::DiscoverySentinelConnection(IConnectionSettingsBas
 #ifdef BUILD_WITH_FORESTDB
   if (type == core::FORESTDB) {
     return common::make_error("Not supported setting type");
+  }
+#endif
+#ifdef BUILD_WITH_PIKA
+  if (type == core::PIKA) {
+    pika::ConnectionSettings* settings = static_cast<pika::ConnectionSettings*>(connection.get());
+    core::pika::RConfig rconfig(settings->GetInfo(), settings->GetSSHInfo());
+    return core::pika::DiscoverySentinelConnection(rconfig, inf);
   }
 #endif
 
