@@ -63,11 +63,11 @@ common::Error ExecRedisCommand(NativeConnection* c, const commands_args_t& argv,
 common::Error ExecRedisCommand(NativeConnection* c, command_buffer_t command, redisReply** out_reply);
 common::Error AuthContext(NativeConnection* context, const std::string& auth_str);
 
-template <typename Config, connectionTypes ContType>
-class DBConnection : public core::internal::CDBConnection<NativeConnection, Config, ContType> {
+template <typename Config, connectionTypes connection_type>
+class DBConnection : public core::internal::CDBConnection<NativeConnection, Config, connection_type> {
  public:
   typedef std::shared_ptr<CommandTranslator> redis_translator_t;
-  typedef core::internal::CDBConnection<NativeConnection, Config, ContType> base_class;
+  typedef core::internal::CDBConnection<NativeConnection, Config, connection_type> base_class;
   typedef typename base_class::config_t config_t;
 
   enum { invalid_db_num = -1 };

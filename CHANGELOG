@@ -1,5 +1,6 @@
 1.15.2 /
 [Alexandr Topilski]
+- Pika db first step integration
 - [Redis] Redirect requests to cluster nodes
 - [Redis] Up hiredis sources to version 0.13.3
 - [Redis] Sentinel type
