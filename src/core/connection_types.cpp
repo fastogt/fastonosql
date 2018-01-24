@@ -22,7 +22,7 @@
 
 namespace {
 const char* connnectionType[] = {"Redis",   "Memcached", "SSDB",      "LevelDB", "RocksDB",
-                                 "UnQLite", "LMDB",      "UpscaleDB", "ForestDB"};
+                                 "UnQLite", "LMDB",      "UpscaleDB", "ForestDB", "Pika"};
 const std::string connnectionMode[] = {"Interactive mode"};
 const std::string serverTypes[] = {"Master", "Slave"};
 const std::string serverState[] = {"Up", "Down"};

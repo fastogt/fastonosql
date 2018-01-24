@@ -576,7 +576,6 @@ IF(BUILD_WITH_PIKA)
     ${CMAKE_SOURCE_DIR}/src/core/db/pika/internal/commands_api.h
 
     ${CMAKE_SOURCE_DIR}/src/core/db/pika/config.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/pika/command_translator.h
     ${CMAKE_SOURCE_DIR}/src/core/db/pika/server_info.h
     ${CMAKE_SOURCE_DIR}/src/core/db/pika/db_connection.h
   )
@@ -584,7 +583,6 @@ IF(BUILD_WITH_PIKA)
     ${CMAKE_SOURCE_DIR}/src/core/db/pika/internal/commands_api.cpp
 
     ${CMAKE_SOURCE_DIR}/src/core/db/pika/config.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/pika/command_translator.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/pika/server_info.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/pika/db_connection.cpp
   )

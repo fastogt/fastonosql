@@ -244,26 +244,6 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
   static common::Error Sync(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 
   static common::Error GetRedis(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
-
-  // extend commands
-  static common::Error Latency(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
-  static common::Error PFDebug(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
-  static common::Error ReplConf(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
-  static common::Error Substr(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
-  static common::Error PFSelfTest(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
-  static common::Error ModuleList(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
-  static common::Error MemoryDoctor(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
-  static common::Error MemoryUsage(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
-  static common::Error MemoryStats(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
-  static common::Error MemoryPurge(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
-  static common::Error MemoryMallocStats(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
-  static common::Error SwapDB(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
-  static common::Error Unlink(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
-  static common::Error Touch(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
-  static common::Error Asking(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
-  static common::Error RestoreAsking(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
-  static common::Error GeoRadius_ro(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
-  static common::Error GeoRadiusByMember_ro(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 };
 
 }  // namespace pika
