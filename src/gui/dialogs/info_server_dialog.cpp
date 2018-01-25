@@ -313,7 +313,13 @@ const QString trPikaTextReplicationTemplate = QObject::tr(
     "Role: %1<br/>"
     "Connected slaves: %2");
 
-const QString trPikaTextKeyspaceTemplate = QObject::tr("<h3>Keyspace:</h3>");
+const QString trPikaTextKeyspaceTemplate = QObject::tr(
+    "<h3>Keyspace:</h3>"
+    "kv keys: %1<br/>"
+    "hash keys: %2<br/>"
+    "list keys: %3<br/>"
+    "zset keys: %4<br/>"
+    "set keys: %5");
 
 const QString trPikaTextDoubleMasterTemplate = QObject::tr("<h3>DoubleMaster:</h3>");
 
@@ -875,8 +881,11 @@ void InfoServerDialog::updateText(const core::pika::ServerInfo& serv) {
 
   // Keyspace
   core::pika::ServerInfo::KeySpace key_space = serv.key_space_;
-  UNUSED(key_space);
-  QString textKeyspace = trPikaTextKeyspaceTemplate;
+  QString textKeyspace = trPikaTextKeyspaceTemplate.arg(key_space.kv_)
+                             .arg(key_space.hash_)
+                             .arg(key_space.list_)
+                             .arg(key_space.zset_)
+                             .arg(key_space.set_);
 
   // DoubleMaster
   core::pika::ServerInfo::DoubleMaster doub_master = serv.double_master_;

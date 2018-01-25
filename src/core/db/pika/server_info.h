@@ -145,6 +145,20 @@ connected_slaves:0
 #define PIKA_REPLICATION_ROLE_LABEL "role"
 #define PIKA_REPLICATION_CONNECTED_SLAVES_LABEL "connected_slaves"
 
+// Keyspace
+/*
+kv keys:2
+hash keys:0
+list keys:0
+zset keys:0
+set keys:0
+*/
+#define PIKA_KEYSPACE_KV_KEYS_LABEL "kv keys"
+#define PIKA_KEYSPACE_HASH_KEYS_LABEL "hash keys"
+#define PIKA_KEYSPACE_LIST_KEYS_LABEL "list keys"
+#define PIKA_KEYSPACE_ZSET_KEYS_LABEL "zset keys"
+#define PIKA_KEYSPACE_SET_KEYS_LABEL "set keys"
+
 namespace fastonosql {
 namespace core {
 namespace pika {
@@ -252,6 +266,12 @@ struct ServerInfo : public IServerInfo {
     KeySpace();
     explicit KeySpace(const std::string& ks_text);
     common::Value* GetValueByIndex(unsigned char index) const override;
+
+    uint32_t kv_;
+    uint32_t hash_;
+    uint32_t list_;
+    uint32_t zset_;
+    uint32_t set_;
   } key_space_;
 
   struct DoubleMaster : IStateField {

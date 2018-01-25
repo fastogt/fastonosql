@@ -37,6 +37,9 @@ class DBConnection : public redis_compatible::DBConnection<RConfig, PIKA> {
  public:
   typedef redis_compatible::DBConnection<RConfig, PIKA> base_class;
   explicit DBConnection(CDBConnectionClient* client);
+
+ private:
+  virtual common::Error DBkcountImpl(size_t* size) override;
 };
 
 }  // namespace pika

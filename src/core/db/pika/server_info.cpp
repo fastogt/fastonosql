@@ -582,14 +582,64 @@ common::Value* ServerInfo::Replication::GetValueByIndex(unsigned char index) con
   return nullptr;
 }
 
-ServerInfo::KeySpace::KeySpace() {}
+ServerInfo::KeySpace::KeySpace() : kv_(), hash_(), list_(), zset_(), set_() {}
 
 ServerInfo::KeySpace::KeySpace(const std::string& ks_text) : KeySpace() {
-  UNUSED(ks_text);
+  size_t pos = 0;
+  size_t start = 0;
+
+  while ((pos = ks_text.find((PIKA_INFO_MARKER), start)) != std::string::npos) {
+    std::string line = ks_text.substr(start, pos - start);
+    size_t delem = line.find_first_of(':');
+    std::string field = line.substr(0, delem);
+    std::string value = line.substr(delem + 1);
+    if (field == PIKA_KEYSPACE_KV_KEYS_LABEL) {
+      uint32_t kv;
+      if (common::ConvertFromString(value, &kv)) {
+        kv_ = kv;
+      }
+    } else if (field == PIKA_KEYSPACE_HASH_KEYS_LABEL) {
+      uint32_t hash;
+      if (common::ConvertFromString(value, &hash)) {
+        hash_ = hash;
+      }
+    } else if (field == PIKA_KEYSPACE_LIST_KEYS_LABEL) {
+      uint32_t list;
+      if (common::ConvertFromString(value, &list)) {
+        list_ = list;
+      }
+    } else if (field == PIKA_KEYSPACE_ZSET_KEYS_LABEL) {
+      uint32_t zset;
+      if (common::ConvertFromString(value, &zset)) {
+        zset_ = zset;
+      }
+    } else if (field == PIKA_KEYSPACE_SET_KEYS_LABEL) {
+      uint32_t set;
+      if (common::ConvertFromString(value, &set)) {
+        set_ = set;
+      }
+    }
+    start = pos + 2;
+  }
 }
 
 common::Value* ServerInfo::KeySpace::GetValueByIndex(unsigned char index) const {
-  UNUSED(index);
+  switch (index) {
+    case 0:
+      return new common::FundamentalValue(kv_);
+    case 1:
+      return new common::FundamentalValue(hash_);
+    case 2:
+      return new common::FundamentalValue(list_);
+    case 3:
+      return new common::FundamentalValue(zset_);
+    case 4:
+      return new common::FundamentalValue(set_);
+    default:
+      break;
+  }
+
+  NOTREACHED();
   return nullptr;
 }
 
@@ -725,8 +775,10 @@ std::ostream& operator<<(std::ostream& out, const ServerInfo::Replication& value
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo::KeySpace& value) {
-  UNUSED(value);
-  return out << PIKA_INFO_MARKER;
+  return out << PIKA_KEYSPACE_KV_KEYS_LABEL ":" << value.kv_ << PIKA_INFO_MARKER << PIKA_KEYSPACE_HASH_KEYS_LABEL ":"
+             << value.hash_ << PIKA_INFO_MARKER << PIKA_KEYSPACE_LIST_KEYS_LABEL ":" << value.list_ << PIKA_INFO_MARKER
+             << PIKA_KEYSPACE_ZSET_KEYS_LABEL ":" << value.zset_ << PIKA_INFO_MARKER << PIKA_KEYSPACE_SET_KEYS_LABEL ":"
+             << value.set_ << PIKA_INFO_MARKER;
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo::DoubleMaster& value) {

@@ -22,6 +22,9 @@
 
 #include "core/constant_commands_array.h"
 #include "core/db/pika/internal/commands_api.h"
+#include "core/db/pika/server_info.h"
+
+#define DBSIZE "INFO KEYSPACE"
 
 namespace fastonosql {
 namespace core {
@@ -2221,6 +2224,20 @@ common::Error DiscoverySentinelConnection(const RConfig& config, std::vector<Ser
 }
 
 DBConnection::DBConnection(CDBConnectionClient* client) : base_class(client) {}
+
+common::Error DBConnection::DBkcountImpl(size_t* size) {
+  redisReply* reply = reinterpret_cast<redisReply*>(redisCommand(base_class::connection_.handle_, DBSIZE));
+
+  if (!reply || reply->type != REDIS_REPLY_STRING) {
+    return common::make_error("Couldn't determine " DB_DBKCOUNT_COMMAND "!");
+  }
+
+  ServerInfo::KeySpace ks(reply->str);
+  /* Grab the number of keys and free our reply */
+  *size = ks.kv_;
+  freeReplyObject(reply);
+  return common::Error();
+}
 
 }  // namespace pika
 }  // namespace core
