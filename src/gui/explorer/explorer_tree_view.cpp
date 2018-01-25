@@ -229,7 +229,7 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
     menu.addAction(openConsoleAction);
     proxy::IServerSPtr server = server_node->server();
     bool is_connected = server->IsConnected();
-    bool is_redis = server->GetType() == core::REDIS;
+    bool is_redis_compatible = core::IsRedisCompatible(server->GetType());
 
     bool is_cluster_member = dynamic_cast<ExplorerClusterItem*>(node->parent()) != nullptr;  // +
 
@@ -259,7 +259,7 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
     infoServerAction->setEnabled(is_connected);
     menu.addAction(infoServerAction);
 
-    if (is_redis) {
+    if (is_redis_compatible) {
       QAction* propertyServerAction = new QAction(translations::trProperty, this);
       VERIFY(connect(propertyServerAction, &QAction::triggered, this, &ExplorerTreeView::openPropertyServerDialog));
 

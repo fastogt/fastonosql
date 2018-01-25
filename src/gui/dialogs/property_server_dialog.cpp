@@ -86,7 +86,7 @@ void PropertyServerDialog::finishServerProperty(const proxy::events_info::Server
     return;
   }
 
-  if (server_->GetType() == core::REDIS) {
+  if (core::IsRedisCompatible(server_->GetType())) {
     core::ServerPropertiesInfo inf = res.info;
     PropertyTableModel* model = qobject_cast<PropertyTableModel*>(properties_table_->model());
     for (size_t i = 0; i < inf.properties.size(); ++i) {
@@ -106,7 +106,7 @@ void PropertyServerDialog::finishServerChangeProperty(const proxy::events_info::
     return;
   }
 
-  if (server_->GetType() == core::REDIS) {
+  if (core::IsRedisCompatible(server_->GetType())) {
     core::property_t pr = res.new_item;
     if (res.is_change) {
       PropertyTableModel* model = qobject_cast<PropertyTableModel*>(properties_table_->model());

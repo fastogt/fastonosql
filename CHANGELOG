@@ -1,4 +1,4 @@
-1.15.2 /
+1.16.0 /
 [Alexandr Topilski]
 - Pika db first step integration
 - [Redis] Redirect requests to cluster nodes

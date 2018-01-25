@@ -1,4 +1,4 @@
-1.15.2 /
+1.15.0 /
 [Alexandr Topilski]
 - Redirect requests to cluster nodes
 - Up hiredis sources to version 0.13.3
