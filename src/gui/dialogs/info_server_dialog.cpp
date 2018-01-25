@@ -74,6 +74,7 @@
 #include "translations/global.h"  // for trLoading
 
 namespace {
+#ifdef BUILD_WITH_REDIS
 const QString trRedisTextServerTemplate = QObject::tr(
     "<h3>Server:</h3>"
     "Redis version: %1<br/>"
@@ -160,7 +161,9 @@ const QString trRedisTextCpuTemplate = QObject::tr(
     "Used cpu user: %2<br/>"
     "Used cpu sys children: %3<br/>"
     "Used cpu user children: %4");
+#endif
 
+#ifdef BUILD_WITH_MEMCACHED
 const QString trMemcachedTextServerTemplate = QObject::tr(
     "<b>Common:</b><br/>"
     "Pid: %1<br/>"
@@ -185,7 +188,9 @@ const QString trMemcachedTextServerTemplate = QObject::tr(
     "Bytes written: %20<br/>"
     "Limit max bytes: %21<br/>"
     "Threads: %22");
+#endif
 
+#ifdef BUILD_WITH_SSDB
 const QString trSsdbTextServerTemplate = QObject::tr(
     "<b>Common:</b><br/>"
     "Version: %1<br/>"
@@ -193,7 +198,9 @@ const QString trSsdbTextServerTemplate = QObject::tr(
     "Total calls: %3<br/>"
     "DB size: %4 bytes<br/>"
     "Binlogs: %5");
+#endif
 
+#ifdef BUILD_WITH_LEVELDB
 const QString trLeveldbTextServerTemplate = QObject::tr(
     "<b>Stats:</b><br/>"
     "Compactions level: %1<br/>"
@@ -201,7 +208,9 @@ const QString trLeveldbTextServerTemplate = QObject::tr(
     "Time sec: %3<br/>"
     "Read mb: %4<br/>"
     "Write mb: %5");
+#endif
 
+#ifdef BUILD_WITH_ROCKSDB
 const QString trRocksdbTextServerTemplate = QObject::tr(
     "<b>Stats:</b><br/>"
     "Compactions level: %1<br/>"
@@ -209,25 +218,35 @@ const QString trRocksdbTextServerTemplate = QObject::tr(
     "Time sec: %3<br/>"
     "Read mb: %4<br/>"
     "Write mb: %5");
+#endif
 
+#ifdef BUILD_WITH_UNQLITE
 const QString trUnqliteTextServerTemplate = QObject::tr(
     "<b>Stats:</b><br/>"
     "DB path: %1<br/>"
     "DB size: %2 bytes<br/>");
+#endif
 
+#ifdef BUILD_WITH_LMDB
 const QString trLmdbTextServerTemplate = QObject::tr(
     "<b>Stats:</b><br/>"
     "DB path: %1<br/>");
+#endif
 
+#ifdef BUILD_WITH_UPSCALEDB
 const QString trUpscaledbTextServerTemplate = QObject::tr(
     "<b>Stats:</b><br/>"
     "DB path: %1<br/>");
+#endif
 
+#ifdef BUILD_WITH_FORESTDB
 const QString trForestdbTextServerTemplate = QObject::tr(
     "<b>Stats:</b><br/>"
     "DB path: %1<br/>"
     "DB size: %2 bytes<br/>");
+#endif
 
+#ifdef BUILD_WITH_PIKA
 const QString trPikaTextServerTemplate = QObject::tr(
     "<h3>Server:</h3>"
     "Pika version: %1<br/>"
@@ -243,6 +262,62 @@ const QString trPikaTextServerTemplate = QObject::tr(
     "Uptime in days: %11<br/>"
     "Config file: %12<br/>"
     "Server id: %13");
+
+const QString trPikaTextDataTemplate = QObject::tr(
+    "<h3>Data:</h3>"
+    "DB size: %1<br/>"
+    "DB size human: %2<br/>"
+    "Compression: %3<br/>"
+    "Used memory: %4<br/>"
+    "Used memory human: %5<br/>"
+    "DB memtable usage: %6<br/>"
+    "DB table reader usage: %7");
+
+const QString trPikaTextLogTemplate = QObject::tr(
+    "<h3>Data:</h3>"
+    "Log size: %1<br/>"
+    "Log size human: %2<br/>"
+    "Safety purge: %3<br/>"
+    "Expire logs days: %4<br/>"
+    "Expire logs nums: %5<br/>"
+    "Binlog offset: %6");
+
+const QString trPikaTextClientsTemplate = QObject::tr(
+    "<h3>Clients:</h3>"
+    "Connected clients_: %1");
+
+const QString trPikaTextHubTemplate = QObject::tr("<h3>Hub:</h3>");
+
+const QString trPikaTextStatsTemplate = QObject::tr(
+    "<h3>Stats:</h3>"
+    "Total connections received: %1<br/>"
+    "Instantaneous ops per sec: %2<br/>"
+    "Total commands processed: %3<br/>"
+    "Is bg saving: %4<br/>"
+    "Is slots reloading: %5<br/>"
+    "Is slots clenuping: %6<br/>"
+    "Is scanning keyspace: %7<br/>"
+    "Is compact: %8<br/>"
+    "Compact cron: %9<br/>"
+    "Compact interval: %10");
+
+const QString trPikaTextCpuTemplate = QObject::tr(
+    "<h3>Cpu:</h3>"
+    "Used cpu sys: %1<br/>"
+    "Used cpu user: %2<br/>"
+    "Used cpu sys children: %3<br/>"
+    "Used cpu user children: %4");
+
+const QString trPikaTextReplicationTemplate = QObject::tr(
+    "<h3>Replication:</h3>"
+    "Role: %1<br/>"
+    "Connected slaves: %2");
+
+const QString trPikaTextKeyspaceTemplate = QObject::tr("<h3>Keyspace:</h3>");
+
+const QString trPikaTextDoubleMasterTemplate = QObject::tr("<h3>DoubleMaster:</h3>");
+
+#endif
 
 }  // namespace
 
@@ -566,41 +641,6 @@ void InfoServerDialog::updateText(const core::redis::ServerInfo& serv) {
 }
 #endif
 
-#ifdef BUILD_WITH_PIKA
-void InfoServerDialog::updateText(const core::pika::ServerInfo& serv) {
-  core::pika::ServerInfo::Server ser = serv.server_;
-  QString qpika_version;
-  common::ConvertFromString(ser.pika_version_, &qpika_version);
-
-  QString qpika_git_sha;
-  common::ConvertFromString(ser.pika_git_sha_, &qpika_git_sha);
-
-  QString qpika_build_compile_date;
-  common::ConvertFromString(ser.pika_build_compile_date_, &qpika_build_compile_date);
-
-  QString qos;
-  common::ConvertFromString(ser.os_, &qos);
-
-  QString qconfig_file;
-  common::ConvertFromString(ser.config_file_, &qconfig_file);
-
-  QString textServ = trPikaTextServerTemplate.arg(qpika_version)
-                         .arg(qpika_git_sha)
-                         .arg(qpika_build_compile_date)
-                         .arg(qos)
-                         .arg(ser.arch_bits_)
-                         .arg(ser.process_id_)
-                         .arg(ser.tcp_port_)
-                         .arg(ser.thread_num_)
-                         .arg(ser.sync_thread_num_)
-                         .arg(ser.uptime_in_seconds_)
-                         .arg(ser.uptime_in_days_)
-                         .arg(qconfig_file)
-                         .arg(ser.server_id_);
-  server_text_info_->setText(textServ);
-}
-#endif
-
 #ifdef BUILD_WITH_MEMCACHED
 void InfoServerDialog::updateText(const core::memcached::ServerInfo& serv) {
   core::memcached::ServerInfo::Stats com = serv.stats_;
@@ -711,6 +751,140 @@ void InfoServerDialog::updateText(const core::forestdb::ServerInfo& serv) {
 
   QString textServ = trForestdbTextServerTemplate.arg(qdb_path).arg(stats.db_size);
   server_text_info_->setText(textServ);
+}
+#endif
+
+#ifdef BUILD_WITH_PIKA
+void InfoServerDialog::updateText(const core::pika::ServerInfo& serv) {
+  // Server
+  core::pika::ServerInfo::Server ser = serv.server_;
+  QString qpika_version;
+  common::ConvertFromString(ser.pika_version_, &qpika_version);
+
+  QString qpika_git_sha;
+  common::ConvertFromString(ser.pika_git_sha_, &qpika_git_sha);
+
+  QString qpika_build_compile_date;
+  common::ConvertFromString(ser.pika_build_compile_date_, &qpika_build_compile_date);
+
+  QString qos;
+  common::ConvertFromString(ser.os_, &qos);
+
+  QString qconfig_file;
+  common::ConvertFromString(ser.config_file_, &qconfig_file);
+
+  QString textServ = trPikaTextServerTemplate.arg(qpika_version)
+                         .arg(qpika_git_sha)
+                         .arg(qpika_build_compile_date)
+                         .arg(qos)
+                         .arg(ser.arch_bits_)
+                         .arg(ser.process_id_)
+                         .arg(ser.tcp_port_)
+                         .arg(ser.thread_num_)
+                         .arg(ser.sync_thread_num_)
+                         .arg(ser.uptime_in_seconds_)
+                         .arg(ser.uptime_in_days_)
+                         .arg(qconfig_file)
+                         .arg(ser.server_id_);
+
+  // Data
+  core::pika::ServerInfo::Data data = serv.data_;
+  QString qdb_size_human;
+  common::ConvertFromString(data.db_size_human_, &qdb_size_human);
+  QString qcompression;
+  common::ConvertFromString(data.compression_, &qcompression);
+  QString qused_memory_human;
+  common::ConvertFromString(data.used_memory_human_, &qused_memory_human);
+
+  QString textData = trPikaTextDataTemplate.arg(data.db_size_)
+                         .arg(qdb_size_human)
+                         .arg(qcompression)
+                         .arg(data.used_memory_)
+                         .arg(qused_memory_human)
+                         .arg(data.db_memtable_usage_)
+                         .arg(data.db_tablereader_usage_);
+
+  // Log
+  core::pika::ServerInfo::Log log = serv.log_;
+  QString qlog_size_human;
+  common::ConvertFromString(log.log_size_human_, &qlog_size_human);
+  QString qsafety_purge;
+  common::ConvertFromString(log.safety_purge_, &qsafety_purge);
+  QString qbinlog_offset;
+  common::ConvertFromString(log.binlog_offset_, &qbinlog_offset);
+
+  QString textLog = trPikaTextLogTemplate.arg(log.log_size_)
+                        .arg(qlog_size_human)
+                        .arg(qsafety_purge)
+                        .arg(log.expire_logs_days_)
+                        .arg(log.expire_logs_nums_)
+                        .arg(qbinlog_offset);
+
+  // Clients
+  core::pika::ServerInfo::Clients clients = serv.clients_;
+
+  QString textClients = trPikaTextClientsTemplate.arg(clients.connected_clients_);
+
+  // Hub
+  core::pika::ServerInfo::Hub hub = serv.hub_;
+  UNUSED(hub);
+  QString textHub = trPikaTextHubTemplate;
+
+  // Stats
+  core::pika::ServerInfo::Stats stats = serv.stats_;
+  QString qis_bgsaving;
+  common::ConvertFromString(stats.is_bgsaving_, &qis_bgsaving);
+  QString qis_slots_reloading;
+  common::ConvertFromString(stats.is_slots_reloading_, &qis_slots_reloading);
+  QString qis_slots_cleanuping;
+  common::ConvertFromString(stats.is_slots_cleanuping_, &qis_slots_cleanuping);
+  QString qis_scaning_keyspace;
+  common::ConvertFromString(stats.is_scaning_keyspace_, &qis_scaning_keyspace);
+  QString qis_compact;
+  common::ConvertFromString(stats.is_compact_, &qis_compact);
+  QString qcompact_cron;
+  common::ConvertFromString(stats.compact_cron_, &qcompact_cron);
+  QString qcompact_interval;
+  common::ConvertFromString(stats.compact_interval_, &qcompact_interval);
+
+  QString textStats = trPikaTextStatsTemplate.arg(stats.total_connections_received_)
+                          .arg(stats.instantaneous_ops_per_sec_)
+                          .arg(stats.total_commands_processed_)
+                          .arg(qis_bgsaving)
+                          .arg(qis_slots_reloading)
+                          .arg(qis_slots_cleanuping)
+                          .arg(qis_scaning_keyspace)
+                          .arg(qis_compact)
+                          .arg(qcompact_cron)
+                          .arg(qcompact_interval);
+
+  // CPU
+  core::pika::ServerInfo::Cpu cpu = serv.cpu_;
+
+  QString textCpu = trPikaTextCpuTemplate.arg(cpu.used_cpu_sys_)
+                        .arg(cpu.used_cpu_user_)
+                        .arg(cpu.used_cpu_sys_children_)
+                        .arg(cpu.used_cpu_user_children_);
+
+  // Replication
+  core::pika::ServerInfo::Replication repl = serv.replication_;
+  QString qrole;
+  common::ConvertFromString(repl.role_, &qrole);
+
+  QString textRepl = trPikaTextReplicationTemplate.arg(qrole).arg(repl.connected_slaves_);
+
+  // Keyspace
+  core::pika::ServerInfo::KeySpace key_space = serv.key_space_;
+  UNUSED(key_space);
+  QString textKeyspace = trPikaTextKeyspaceTemplate;
+
+  // DoubleMaster
+  core::pika::ServerInfo::DoubleMaster doub_master = serv.double_master_;
+  UNUSED(doub_master);
+  QString textDoubleMaster = trPikaTextDoubleMasterTemplate;
+
+  server_text_info_->setText(textServ + textData + textLog + textClients + textHub + textStats + textCpu + textRepl +
+                             textKeyspace + textDoubleMaster);
 }
 #endif
 

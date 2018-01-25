@@ -796,10 +796,13 @@ ServerInfo* MakePikaServerInfo(const std::string& content) {
             break;
           case 6:
             result->cpu_ = ServerInfo::Cpu(part);
+            break;
           case 7:
             result->replication_ = ServerInfo::Replication(part);
+            break;
           case 8:
             result->key_space_ = ServerInfo::KeySpace(part);
+            break;
           case 9:
             result->double_master_ = ServerInfo::DoubleMaster(part);
             break;
