@@ -464,18 +464,12 @@ common::Error DBConnection<Config, ContType>::Connect(const config_t& config) {
     return err;
   }
 
-  int db_num = config->db_num;
-  err = base_class::Select(common::ConvertToString(db_num), NULL);
-  if (err) {
-    return err;
-  }
-
   return common::Error();
 }
 
 template <typename Config, connectionTypes ContType>
 common::Error DBConnection<Config, ContType>::Disconnect() {
-  cur_db_ = -1;
+  cur_db_ = invalid_db_num;
   is_auth_ = false;
   return base_class::Disconnect();
 }
@@ -483,7 +477,9 @@ common::Error DBConnection<Config, ContType>::Disconnect() {
 template <typename Config, connectionTypes ContType>
 std::string DBConnection<Config, ContType>::GetCurrentDBName() const {
   if (IsAuthenticated()) {
-    return common::ConvertToString(cur_db_);
+    auto config = base_class::GetConfig();
+    int db_num = config->db_num;
+    return cur_db_ != invalid_db_num ? common::ConvertToString(cur_db_) : common::ConvertToString(db_num);
   }
 
   DNOTREACHED();

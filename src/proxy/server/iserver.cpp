@@ -240,12 +240,12 @@ void IServer::customEvent(QEvent* event) {
     events::ConnectResponceEvent* ev = static_cast<events::ConnectResponceEvent*>(event);
     HandleConnectEvent(ev);
 
-    events_info::ServerInfoRequest sreq(this);
-    LoadServerInfo(sreq);
-
     events::ConnectResponceEvent::value_type v = ev->value();
     common::Error err(v.errorInfo());
     if (!err) {
+      events_info::ServerInfoRequest sreq(this);
+      LoadServerInfo(sreq);
+
       events_info::DiscoveryInfoRequest dreq(this);
       ProcessDiscoveryInfo(dreq);
     }

@@ -243,7 +243,7 @@ fdb_status forestdb_select(fdb* context, const char* db_name) {
   return FDB_RESULT_SUCCESS;
 }
 
-fdb_status forestdb_open(fdb** context, const char* db_path, const char* db_name, fdb_config* fconfig) {
+fdb_status forestdb_open(fdb** context, const char* db_path, fdb_config* fconfig) {
   fdb* lcontext = reinterpret_cast<fdb*>(calloc(1, sizeof(fdb)));
   fdb_status rc = fdb_open(&lcontext->handle, db_path, fconfig);
   if (rc != FDB_RESULT_SUCCESS) {
@@ -252,13 +252,12 @@ fdb_status forestdb_open(fdb** context, const char* db_path, const char* db_name
   }
 
   fdb_kvs_config kvs_config = fdb_get_default_kvs_config();
-  rc = fdb_kvs_open(lcontext->handle, &lcontext->kvs, db_name, &kvs_config);
+  rc = fdb_kvs_open_default(lcontext->handle, &lcontext->kvs, &kvs_config);
   if (rc != FDB_RESULT_SUCCESS) {
     free(lcontext);
     return rc;
   }
 
-  lcontext->db_name = common::utils::strdupornull(db_name);
   *context = lcontext;
   return rc;
 }
@@ -354,8 +353,7 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
 
   // fconfig.flags = FDB_OPEN_FLAG_CREATE;
   const char* db_path_ptr = db_path.c_str();  // start point must be file
-  const char* db_name = config.db_name.empty() ? NULL : config.db_name.c_str();
-  fdb_status st = forestdb_open(&lcontext, db_path_ptr, db_name, &fconfig);
+  fdb_status st = forestdb_open(&lcontext, db_path_ptr, &fconfig);
   if (st != FDB_RESULT_SUCCESS) {
     std::string buff = common::MemSPrintf("Fail open database: %s", fdb_error_msg(st));
     return common::make_error(buff);

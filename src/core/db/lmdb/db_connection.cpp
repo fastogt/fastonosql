@@ -317,7 +317,7 @@ int lmdb_select(lmdb* context, const char* db_name, int env_flags) {
   return LMDB_OK;
 }
 
-int lmdb_open(lmdb** context, const char* db_path, const char* db_name, int env_flags, MDB_dbi max_dbs) {
+int lmdb_open(lmdb** context, const char* db_path, int env_flags, MDB_dbi max_dbs) {
   lmdb* lcontext = reinterpret_cast<lmdb*>(calloc(1, sizeof(lmdb)));
   int rc = mdb_env_create(&lcontext->env);
   if (rc != LMDB_OK) {
@@ -332,12 +332,6 @@ int lmdb_open(lmdb** context, const char* db_path, const char* db_name, int env_
   }
 
   rc = mdb_env_open(lcontext->env, db_path, env_flags, 0664);
-  if (rc != LMDB_OK) {
-    free(lcontext);
-    return rc;
-  }
-
-  rc = lmdb_select(lcontext, db_name, env_flags);
   if (rc != LMDB_OK) {
     free(lcontext);
     return rc;
@@ -443,8 +437,7 @@ common::Error CreateConnection(const Config& config, NativeConnection** context)
   const char* db_path_ptr = db_path.c_str();
   int env_flags = config.env_flags;
   unsigned int max_dbs = config.max_dbs;
-  const char* db_name_ptr = config.db_name.c_str();
-  int st = lmdb_open(&lcontext, db_path_ptr, db_name_ptr, env_flags, max_dbs);
+  int st = lmdb_open(&lcontext, db_path_ptr, env_flags, max_dbs);
   if (st != LMDB_OK) {
     std::string buff = common::MemSPrintf("Fail open database: %s", mdb_strerror(st));
     return common::make_error(buff);
