@@ -29,15 +29,6 @@
 
 namespace fastonosql {
 namespace core {
-template <>
-const char* ConnectionTraits<UPSCALEDB>::GetBasedOn() {
-  return "libupscaledb";
-}
-
-template <>
-const char* ConnectionTraits<UPSCALEDB>::GetVersionApi() {
-  return STRINGIZE(UPS_VERSION_MAJ) "." STRINGIZE(UPS_VERSION_MIN) "." STRINGIZE(UPS_VERSION_REV);
-}
 namespace {
 ups_key_t ConvertToUpscaleDBSlice(const string_key_t& key) {
   ups_key_t dkey;
@@ -247,6 +238,20 @@ void upscaledb_close(upscaledb** context) {
 }
 }  // namespace
 }  // namespace upscaledb
+template <>
+const char* ConnectionTraits<UPSCALEDB>::GetBasedOn() {
+  return "libupscaledb";
+}
+
+template <>
+const char* ConnectionTraits<UPSCALEDB>::GetVersionApi() {
+  return STRINGIZE(UPS_VERSION_MAJ) "." STRINGIZE(UPS_VERSION_MIN) "." STRINGIZE(UPS_VERSION_REV);
+}
+
+template <>
+const ConstantCommandsArray& ConnectionCommandsTraits<UPSCALEDB>::GetCommands() {
+  return upscaledb::g_commands;
+}
 namespace internal {
 template <>
 common::Error ConnectionAllocatorTraits<upscaledb::NativeConnection, upscaledb::Config>::Connect(
@@ -278,11 +283,6 @@ bool ConnectionAllocatorTraits<upscaledb::NativeConnection, upscaledb::Config>::
   }
 
   return true;
-}
-
-template <>
-const ConstantCommandsArray& CDBConnection<upscaledb::NativeConnection, upscaledb::Config, UPSCALEDB>::GetCommands() {
-  return upscaledb::g_commands;
 }
 
 }  // namespace internal

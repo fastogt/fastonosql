@@ -18,28 +18,26 @@
 
 #include "gui/db/upscaledb/lexer.h"
 
-#include "core/db/upscaledb/db_connection.h"
-
 namespace fastonosql {
 namespace gui {
 namespace upscaledb {
 
 UpscaleDBApi::UpscaleDBApi(Lexer* lexer) : BaseCommandsQsciApi(lexer) {}
 
-Lexer::Lexer(QObject* parent) : BaseCommandsQsciLexer(core::upscaledb::DBConnection::GetCommands(), parent) {
+Lexer::Lexer(QObject* parent) : BaseCommandsQsciLexer(upscaledb_trait_t::GetCommands(), parent) {
   setAPIs(new UpscaleDBApi(this));
 }
 
 const char* Lexer::language() const {
-  return core::upscaledb::DBConnection::GetDBName();
+  return upscaledb_trait_t::GetDBName();
 }
 
 const char* Lexer::version() const {
-  return core::upscaledb::DBConnection::GetVersionApi();
+  return upscaledb_trait_t::GetVersionApi();
 }
 
 const char* Lexer::basedOn() const {
-  return core::upscaledb::DBConnection::GetBasedOn();
+  return upscaledb_trait_t::GetBasedOn();
 }
 
 }  // namespace upscaledb
