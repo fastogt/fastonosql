@@ -84,6 +84,7 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(paren
 
   default_db_num_ = new QSpinBox;
   default_db_num_->setRange(0, INT32_MAX);
+  default_db_num_->setEnabled(false);
   def_layout->addWidget(default_db_label_);
   def_layout->addWidget(default_db_num_);
   addLayout(def_layout);

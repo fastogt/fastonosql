@@ -904,7 +904,7 @@ const ConstantCommandsArray g_commands = {
                   UNDEFINED_SINCE,
                   UNDEFINED_EXAMPLE_STR,
                   0,
-                  1,
+                  2,
                   CommandInfo::Native,
                   &CommandsApi::Info),
     CommandHolder(DB_KEYS_COMMAND,
