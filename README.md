@@ -3,7 +3,7 @@ About FastoNoSQL
 [![GitHub license](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://raw.githubusercontent.com/fastogt/fastonosql/master/COPYRIGHT)
 [![Join the chat at https://gitter.im/fastogt/fastonosql](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/fastogt/fastonosql?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-FastoNoSQL &mdash; is a crossplatform Redis, Memcached, SSDB, LevelDB, RocksDB, UnQLite, LMDB, UpscaleDB, ForestDB management tool, also FastoNoSQL is platform for NoSQL databases, you can add your own implementation for diffrent databases. <br />
+FastoNoSQL &mdash; is a crossplatform Redis, Memcached, SSDB, LevelDB, RocksDB, UnQLite, LMDB, UpscaleDB, ForestDB, Pika management tool, also FastoNoSQL is platform for NoSQL databases, you can add your own implementation for diffrent databases. <br />
 
 <h3>Windows:</h3>
 <img src=https://fastonosql.com/images/common/windows/main_window_windows_more.png>

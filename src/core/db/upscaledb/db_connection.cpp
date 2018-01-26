@@ -345,11 +345,6 @@ common::Error DBConnection::Connect(const config_t& config) {
     return err;
   }
 
-  err = Select(common::ConvertToString(config->dbnum), NULL);
-  if (err) {
-    return err;
-  }
-
   return common::Error();
 }
 
