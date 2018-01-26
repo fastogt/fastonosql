@@ -2234,7 +2234,7 @@ common::Error DBConnection::DBkcountImpl(size_t* size) {
 
   ServerInfo::KeySpace ks(reply->str);
   /* Grab the number of keys and free our reply */
-  *size = ks.kv_;
+  *size = ks.kv_ + ks.hash_ + ks.list_ + ks.set_ + ks.zset_;
   freeReplyObject(reply);
   return common::Error();
 }
