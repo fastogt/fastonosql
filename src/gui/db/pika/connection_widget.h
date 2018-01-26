@@ -46,18 +46,11 @@ class ConnectionWidget : public ConnectionBaseWidget {
   void togglePasswordEchoMode();
   void authStateChange(int state);
   void sslStateChange(int state);
-  void selectRemoteDBPath(bool checked);
-  void selectLocalDBPath(bool checked);
 
  private:
   virtual proxy::IConnectionSettingsBase* createConnectionImpl(const proxy::connection_path_t& path) const override;
-  QGroupBox* groupBox_;
-  QRadioButton* remote_;
-  QRadioButton* local_;
-
   HostPortWidget* host_widget_;
   QCheckBox* isSSLConnection_;
-  IPathWidget* pathWidget_;
 
   QCheckBox* useAuth_;
   QLineEdit* password_box_;

@@ -43,8 +43,6 @@
 
 namespace {
 const QString trUnixPath = QObject::tr("Unix socket path:");
-const QString trRemote = QObject::tr("Remote");
-const QString trLocal = QObject::tr("Local");
 const QString trSSL = QObject::tr("SSL");
 }  // namespace
 
@@ -54,17 +52,11 @@ namespace pika {
 
 ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(parent) {
   QVBoxLayout* vbox = new QVBoxLayout;
-  groupBox_ = new QGroupBox;
-  remote_ = new QRadioButton;
-  local_ = new QRadioButton;
-  VERIFY(connect(remote_, &QRadioButton::toggled, this, &ConnectionWidget::selectRemoteDBPath));
-  VERIFY(connect(local_, &QRadioButton::toggled, this, &ConnectionWidget::selectLocalDBPath));
 
   isSSLConnection_ = new QCheckBox;
   VERIFY(connect(isSSLConnection_, &QCheckBox::stateChanged, this, &ConnectionWidget::sslStateChange));
 
   QHBoxLayout* hbox = new QHBoxLayout;
-  hbox->addWidget(remote_);
   hbox->addWidget(isSSLConnection_);
 
   host_widget_ = new HostPortWidget;
@@ -72,15 +64,7 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(paren
   host_layout->setContentsMargins(0, 0, 0, 0);
   vbox->addLayout(hbox);
   vbox->addWidget(host_widget_);
-
-  pathWidget_ = new FilePathWidget(trUnixPath, trFilter, trCaption);
-  QLayout* path_layout = pathWidget_->layout();
-  path_layout->setContentsMargins(0, 0, 0, 0);
-  vbox->addWidget(local_);
-  vbox->addWidget(pathWidget_);
-
-  groupBox_->setLayout(vbox);
-  addWidget(groupBox_);
+  addLayout(vbox);
 
   useAuth_ = new QCheckBox;
   VERIFY(connect(useAuth_, &QCheckBox::stateChanged, this, &ConnectionWidget::authStateChange));
@@ -111,8 +95,6 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(paren
   ssh_layout->setContentsMargins(0, 0, 0, 0);
   addWidget(sshWidget_);
 
-  remote_->setChecked(true);
-  selectRemoteDBPath(true);
   useAuth_->setChecked(false);
   password_box_->setEnabled(false);
   password_echo_mode_button_->setEnabled(false);
@@ -122,17 +104,8 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
   proxy::pika::ConnectionSettings* pika = static_cast<proxy::pika::ConnectionSettings*>(connection);
   if (pika) {
     core::pika::Config config = pika->GetInfo();
-    bool is_remote = config.hostsocket.empty();
-    if (is_remote) {
-      host_widget_->setHost(config.host);
-      remote_->setChecked(true);
-      isSSLConnection_->setChecked(config.is_ssl);
-    } else {
-      QString qhostsocket;
-      common::ConvertFromString(config.hostsocket, &qhostsocket);
-      pathWidget_->setPath(qhostsocket);
-      local_->setChecked(true);
-    }
+    host_widget_->setHost(config.host);
+    isSSLConnection_->setChecked(config.is_ssl);
 
     std::string auth = config.auth;
     if (!auth.empty()) {
@@ -152,10 +125,7 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
 }
 
 void ConnectionWidget::retranslateUi() {
-  groupBox_->setTitle(trDBPath);
-  remote_->setText(trRemote);
   isSSLConnection_->setText(trSSL);
-  local_->setText(trLocal);
   useAuth_->setText(trUseAuth);
   default_db_label_->setText(trDefaultDb);
   ConnectionBaseWidget::retranslateUi();
@@ -176,20 +146,6 @@ void ConnectionWidget::sslStateChange(int state) {
   sshWidget_->setEnabled(!state);
 }
 
-void ConnectionWidget::selectRemoteDBPath(bool checked) {
-  host_widget_->setEnabled(checked);
-  pathWidget_->setEnabled(!checked);
-  isSSLConnection_->setEnabled(checked);
-  sshWidget_->setEnabled(checked);
-}
-
-void ConnectionWidget::selectLocalDBPath(bool checked) {
-  host_widget_->setEnabled(!checked);
-  pathWidget_->setEnabled(checked);
-  isSSLConnection_->setEnabled(!checked);
-  sshWidget_->setEnabled(!checked);
-}
-
 bool ConnectionWidget::validated() const {
   if (sshWidget_->isEnabled() && sshWidget_->isSSHChecked()) {
     if (!sshWidget_->isValidSSHInfo()) {
@@ -201,15 +157,8 @@ bool ConnectionWidget::validated() const {
     return false;
   }
 
-  bool is_remote = remote_->isChecked();
-  if (is_remote) {
-    if (!host_widget_->isValidHost()) {
-      return false;
-    }
-  } else {
-    if (!pathWidget_->isValidPath()) {
-      return false;
-    }
+  if (!host_widget_->isValidHost()) {
+    return false;
   }
 
   return ConnectionBaseWidget::validated();
@@ -227,13 +176,8 @@ bool ConnectionWidget::isValidCredential() const {
 proxy::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(const proxy::connection_path_t& path) const {
   proxy::pika::ConnectionSettings* conn = new proxy::pika::ConnectionSettings(path);
   core::pika::Config config = conn->GetInfo();
-  bool is_remote = remote_->isChecked();
-  if (is_remote) {
-    config.host = host_widget_->host();
-    config.is_ssl = isSSLConnection_->isChecked();
-  } else {
-    config.hostsocket = common::ConvertToString(pathWidget_->path());
-  }
+  config.host = host_widget_->host();
+  config.is_ssl = isSSLConnection_->isChecked();
 
   if (useAuth_->isChecked() && isValidCredential()) {
     config.auth = common::ConvertToString(password_box_->text());
