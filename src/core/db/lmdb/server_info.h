@@ -22,7 +22,7 @@
 
 #define LMDB_STATS_LABEL "# Stats"
 
-#define LMDB_FILE_NAME_LABEL "db_path"
+#define LMDB_STATS_FILE_NAME_LABEL "db_path"
 
 namespace fastonosql {
 namespace core {

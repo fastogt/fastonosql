@@ -22,11 +22,11 @@
 
 #define ROCKSDB_STATS_LABEL "# Stats"
 
-#define ROCKSDB_CAMPACTIONS_LEVEL_LABEL "compactions_level"
-#define ROCKSDB_FILE_SIZE_MB_LABEL "file_size_mb"
-#define ROCKSDB_TIME_SEC_LABEL "time_sec"
-#define ROCKSDB_READ_MB_LABEL "read_mb"
-#define ROCKSDB_WRITE_MB_LABEL "write_mb"
+#define ROCKSDB_STATS_CAMPACTIONS_LEVEL_LABEL "compactions_level"
+#define ROCKSDB_STATS_FILE_SIZE_MB_LABEL "file_size_mb"
+#define ROCKSDB_STATS_TIME_SEC_LABEL "time_sec"
+#define ROCKSDB_STATS_READ_MB_LABEL "read_mb"
+#define ROCKSDB_STATS_WRITE_MB_LABEL "write_mb"
 
 namespace fastonosql {
 namespace core {

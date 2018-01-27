@@ -22,8 +22,8 @@
 
 #define UNQLITE_STATS_LABEL "# Stats"
 
-#define UNQLITE_DB_FILE_PATH_LABEL "db_path"
-#define UNQLITE_DB_FILE_SIZE_LABEL "db_size"
+#define UNQLITE_STATS_DB_FILE_PATH_LABEL "db_path"
+#define UNQLITE_STATS_DB_FILE_SIZE_LABEL "db_size"
 
 namespace fastonosql {
 namespace core {

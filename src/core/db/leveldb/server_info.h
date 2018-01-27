@@ -22,11 +22,11 @@
 
 #define LEVELDB_STATS_LABEL "# Stats"
 
-#define LEVELDB_CAMPACTIONS_LEVEL_LABEL "compactions_level"
-#define LEVELDB_FILE_SIZE_MB_LABEL "file_size_mb"
-#define LEVELDB_TIME_SEC_LABEL "time_sec"
-#define LEVELDB_READ_MB_LABEL "read_mb"
-#define LEVELDB_WRITE_MB_LABEL "write_mb"
+#define LEVELDB_STATS_CAMPACTIONS_LEVEL_LABEL "compactions_level"
+#define LEVELDB_STATS_FILE_SIZE_MB_LABEL "file_size_mb"
+#define LEVELDB_STATS_TIME_SEC_LABEL "time_sec"
+#define LEVELDB_STATS_READ_MB_LABEL "read_mb"
+#define LEVELDB_STATS_WRITE_MB_LABEL "write_mb"
 
 namespace fastonosql {
 namespace core {

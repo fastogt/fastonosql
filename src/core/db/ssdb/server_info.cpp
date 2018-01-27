@@ -29,10 +29,11 @@ namespace fastonosql {
 namespace core {
 namespace {
 
-const std::vector<Field> g_ssdb_common_fields = {
-    Field(SSDB_VERSION_LABEL, common::Value::TYPE_STRING), Field(SSDB_LINKS_LABEL, common::Value::TYPE_UINTEGER),
-    Field(SSDB_TOTAL_CALLS_LABEL, common::Value::TYPE_UINTEGER), Field(SSDB_DBSIZE_LABEL, common::Value::TYPE_UINTEGER),
-    Field(SSDB_BINLOGS_LABEL, common::Value::TYPE_STRING)};
+const std::vector<Field> g_ssdb_common_fields = {Field(SSDB_COMMON_VERSION_LABEL, common::Value::TYPE_STRING),
+                                                 Field(SSDB_COMMON_LINKS_LABEL, common::Value::TYPE_UINTEGER),
+                                                 Field(SSDB_COMMON_TOTAL_CALLS_LABEL, common::Value::TYPE_UINTEGER),
+                                                 Field(SSDB_COMMON_DBSIZE_LABEL, common::Value::TYPE_UINTEGER),
+                                                 Field(SSDB_COMMON_BINLOGS_LABEL, common::Value::TYPE_STRING)};
 
 }  // namespace
 
@@ -62,24 +63,24 @@ ServerInfo::Stats::Stats(const std::string& common_text) {
     size_t delem = line.find_first_of(':');
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
-    if (field == SSDB_VERSION_LABEL) {
+    if (field == SSDB_COMMON_VERSION_LABEL) {
       version = value;
-    } else if (field == SSDB_LINKS_LABEL) {
+    } else if (field == SSDB_COMMON_LINKS_LABEL) {
       uint32_t llinks;
       if (common::ConvertFromString(value, &llinks)) {
         links = llinks;
       }
-    } else if (field == SSDB_TOTAL_CALLS_LABEL) {
+    } else if (field == SSDB_COMMON_TOTAL_CALLS_LABEL) {
       uint32_t ltotal_calls;
       if (common::ConvertFromString(value, &ltotal_calls)) {
         total_calls = ltotal_calls;
       }
-    } else if (field == SSDB_DBSIZE_LABEL) {
+    } else if (field == SSDB_COMMON_DBSIZE_LABEL) {
       uint32_t ldbsize;
       if (common::ConvertFromString(value, &ldbsize)) {
         dbsize = ldbsize;
       }
-    } else if (field == SSDB_BINLOGS_LABEL) {
+    } else if (field == SSDB_COMMON_BINLOGS_LABEL) {
       binlogs = value;
     }
     start = pos + 2;
@@ -123,9 +124,10 @@ common::Value* ServerInfo::GetValueByIndexes(unsigned char property, unsigned ch
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo::Stats& value) {
-  return out << SSDB_VERSION_LABEL ":" << value.version << MARKER << SSDB_LINKS_LABEL ":" << value.links << MARKER
-             << SSDB_TOTAL_CALLS_LABEL ":" << value.total_calls << MARKER << SSDB_DBSIZE_LABEL ":" << value.dbsize
-             << MARKER << SSDB_BINLOGS_LABEL ":" << value.binlogs << MARKER;
+  return out << SSDB_COMMON_VERSION_LABEL ":" << value.version << MARKER << SSDB_COMMON_LINKS_LABEL ":" << value.links
+             << MARKER << SSDB_COMMON_TOTAL_CALLS_LABEL ":" << value.total_calls << MARKER
+             << SSDB_COMMON_DBSIZE_LABEL ":" << value.dbsize << MARKER << SSDB_COMMON_BINLOGS_LABEL ":" << value.binlogs
+             << MARKER;
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {

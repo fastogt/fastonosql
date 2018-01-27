@@ -30,8 +30,8 @@ namespace core {
 namespace {
 
 const std::vector<Field> forestdb_common_fields = {
-    Field(FORESTDB_DB_FILE_PATH_LABEL, common::Value::TYPE_STRING),
-    Field(FORESTDB_DB_FILE_SIZE_LABEL, common::Value::TYPE_ULONG_INTEGER)};
+    Field(FORESTDB_STATS_DB_FILE_PATH_LABEL, common::Value::TYPE_STRING),
+    Field(FORESTDB_STATS_DB_FILE_SIZE_LABEL, common::Value::TYPE_ULONG_INTEGER)};
 
 }  // namespace
 
@@ -58,9 +58,9 @@ ServerInfo::Stats::Stats(const std::string& common_text) {
     size_t delem = line.find_first_of(':');
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
-    if (field == FORESTDB_DB_FILE_PATH_LABEL) {
+    if (field == FORESTDB_STATS_DB_FILE_PATH_LABEL) {
       db_path = value;
-    } else if (field == FORESTDB_DB_FILE_SIZE_LABEL) {
+    } else if (field == FORESTDB_STATS_DB_FILE_SIZE_LABEL) {
       off_t sz;
       if (common::ConvertFromString(value, &sz)) {
         db_size = sz;
@@ -103,8 +103,8 @@ common::Value* ServerInfo::GetValueByIndexes(unsigned char property, unsigned ch
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo::Stats& value) {
-  return out << FORESTDB_DB_FILE_PATH_LABEL ":" << value.db_path << MARKER << FORESTDB_DB_FILE_SIZE_LABEL ":"
-             << value.db_size << MARKER;
+  return out << FORESTDB_STATS_DB_FILE_PATH_LABEL ":" << value.db_path << MARKER
+             << FORESTDB_STATS_DB_FILE_SIZE_LABEL ":" << value.db_size << MARKER;
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {

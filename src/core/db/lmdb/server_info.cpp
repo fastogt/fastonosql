@@ -29,7 +29,7 @@ namespace fastonosql {
 namespace core {
 namespace {
 
-const std::vector<Field> lmdb_common_fields = {Field(LMDB_FILE_NAME_LABEL, common::Value::TYPE_STRING)};
+const std::vector<Field> lmdb_common_fields = {Field(LMDB_STATS_FILE_NAME_LABEL, common::Value::TYPE_STRING)};
 
 }  // namespace
 
@@ -56,7 +56,7 @@ ServerInfo::Stats::Stats(const std::string& common_text) {
     size_t delem = line.find_first_of(':');
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
-    if (field == LMDB_FILE_NAME_LABEL) {
+    if (field == LMDB_STATS_FILE_NAME_LABEL) {
       db_path = value;
     }
     start = pos + 2;
@@ -92,7 +92,7 @@ common::Value* ServerInfo::GetValueByIndexes(unsigned char property, unsigned ch
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo::Stats& value) {
-  return out << LMDB_FILE_NAME_LABEL ":" << value.db_path << MARKER;
+  return out << LMDB_STATS_FILE_NAME_LABEL ":" << value.db_path << MARKER;
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {

@@ -22,11 +22,11 @@
 
 #define SSDB_COMMON_LABEL "# Common"
 
-#define SSDB_VERSION_LABEL "version"
-#define SSDB_LINKS_LABEL "links"
-#define SSDB_TOTAL_CALLS_LABEL "total_calls"
-#define SSDB_DBSIZE_LABEL "dbsize"
-#define SSDB_BINLOGS_LABEL "binlogs"
+#define SSDB_COMMON_VERSION_LABEL "version"
+#define SSDB_COMMON_LINKS_LABEL "links"
+#define SSDB_COMMON_TOTAL_CALLS_LABEL "total_calls"
+#define SSDB_COMMON_DBSIZE_LABEL "dbsize"
+#define SSDB_COMMON_BINLOGS_LABEL "binlogs"
 
 namespace fastonosql {
 namespace core {

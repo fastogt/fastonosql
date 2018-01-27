@@ -30,11 +30,11 @@ namespace core {
 namespace {
 
 const std::vector<Field> g_rocksdb_common_fields = {
-    Field(ROCKSDB_CAMPACTIONS_LEVEL_LABEL, common::Value::TYPE_UINTEGER),
-    Field(ROCKSDB_FILE_SIZE_MB_LABEL, common::Value::TYPE_UINTEGER),
-    Field(ROCKSDB_TIME_SEC_LABEL, common::Value::TYPE_UINTEGER),
-    Field(ROCKSDB_READ_MB_LABEL, common::Value::TYPE_UINTEGER),
-    Field(ROCKSDB_WRITE_MB_LABEL, common::Value::TYPE_UINTEGER)};
+    Field(ROCKSDB_STATS_CAMPACTIONS_LEVEL_LABEL, common::Value::TYPE_UINTEGER),
+    Field(ROCKSDB_STATS_FILE_SIZE_MB_LABEL, common::Value::TYPE_UINTEGER),
+    Field(ROCKSDB_STATS_TIME_SEC_LABEL, common::Value::TYPE_UINTEGER),
+    Field(ROCKSDB_STATS_READ_MB_LABEL, common::Value::TYPE_UINTEGER),
+    Field(ROCKSDB_STATS_WRITE_MB_LABEL, common::Value::TYPE_UINTEGER)};
 
 }  // namespace
 
@@ -62,27 +62,27 @@ ServerInfo::Stats::Stats(const std::string& common_text) {
     size_t delem = line.find_first_of(':');
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
-    if (field == ROCKSDB_CAMPACTIONS_LEVEL_LABEL) {
+    if (field == ROCKSDB_STATS_CAMPACTIONS_LEVEL_LABEL) {
       uint32_t lcompactions_level;
       if (common::ConvertFromString(value, &lcompactions_level)) {
         compactions_level = lcompactions_level;
       }
-    } else if (field == ROCKSDB_FILE_SIZE_MB_LABEL) {
+    } else if (field == ROCKSDB_STATS_FILE_SIZE_MB_LABEL) {
       uint32_t lfile_size_mb;
       if (common::ConvertFromString(value, &lfile_size_mb)) {
         file_size_mb = lfile_size_mb;
       }
-    } else if (field == ROCKSDB_TIME_SEC_LABEL) {
+    } else if (field == ROCKSDB_STATS_TIME_SEC_LABEL) {
       uint32_t ltime_sec;
       if (common::ConvertFromString(value, &ltime_sec)) {
         time_sec = ltime_sec;
       }
-    } else if (field == ROCKSDB_READ_MB_LABEL) {
+    } else if (field == ROCKSDB_STATS_READ_MB_LABEL) {
       uint32_t lread_mb;
       if (common::ConvertFromString(value, &lread_mb)) {
         read_mb = lread_mb;
       }
-    } else if (field == ROCKSDB_WRITE_MB_LABEL) {
+    } else if (field == ROCKSDB_STATS_WRITE_MB_LABEL) {
       uint32_t lwrite_mb;
       if (common::ConvertFromString(value, &lwrite_mb)) {
         write_mb = lwrite_mb;
@@ -129,10 +129,10 @@ common::Value* ServerInfo::GetValueByIndexes(unsigned char property, unsigned ch
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo::Stats& value) {
-  return out << ROCKSDB_CAMPACTIONS_LEVEL_LABEL ":" << value.compactions_level << MARKER
-             << ROCKSDB_FILE_SIZE_MB_LABEL ":" << value.file_size_mb << MARKER << ROCKSDB_TIME_SEC_LABEL ":"
-             << value.time_sec << MARKER << ROCKSDB_READ_MB_LABEL ":" << value.read_mb << MARKER
-             << ROCKSDB_WRITE_MB_LABEL ":" << value.write_mb << MARKER;
+  return out << ROCKSDB_STATS_CAMPACTIONS_LEVEL_LABEL ":" << value.compactions_level << MARKER
+             << ROCKSDB_STATS_FILE_SIZE_MB_LABEL ":" << value.file_size_mb << MARKER << ROCKSDB_STATS_TIME_SEC_LABEL ":"
+             << value.time_sec << MARKER << ROCKSDB_STATS_READ_MB_LABEL ":" << value.read_mb << MARKER
+             << ROCKSDB_STATS_WRITE_MB_LABEL ":" << value.write_mb << MARKER;
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {

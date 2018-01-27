@@ -22,8 +22,8 @@
 
 #define FORESTDB_STATS_LABEL "# Stats"
 
-#define FORESTDB_DB_FILE_PATH_LABEL "db_path"
-#define FORESTDB_DB_FILE_SIZE_LABEL "db_size"
+#define FORESTDB_STATS_DB_FILE_PATH_LABEL "db_path"
+#define FORESTDB_STATS_DB_FILE_SIZE_LABEL "db_size"
 
 namespace fastonosql {
 namespace core {

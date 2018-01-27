@@ -30,28 +30,28 @@ namespace core {
 
 namespace {
 const std::vector<Field> g_memcached_common_fields = {
-    Field(MEMCACHED_PID_LABEL, common::Value::TYPE_UINTEGER),
-    Field(MEMCACHED_UPTIME_LABEL, common::Value::TYPE_UINTEGER),
-    Field(MEMCACHED_TIME_LABEL, common::Value::TYPE_UINTEGER),
-    Field(MEMCACHED_VERSION_LABEL, common::Value::TYPE_STRING),
-    Field(MEMCACHED_POINTER_SIZE_LABEL, common::Value::TYPE_UINTEGER),
-    Field(MEMCACHED_RUSAGE_USER_LABEL, common::Value::TYPE_UINTEGER),
-    Field(MEMCACHED_RUSAGE_SYSTEM_LABEL, common::Value::TYPE_UINTEGER),
-    Field(MEMCACHED_CURR_ITEMS_LABEL, common::Value::TYPE_UINTEGER),
-    Field(MEMCACHED_TOTAL_ITEMS_LABEL, common::Value::TYPE_UINTEGER),
-    Field(MEMCACHED_BYTES_LABEL, common::Value::TYPE_UINTEGER),
-    Field(MEMCACHED_CURR_CONNECTIONS_LABEL, common::Value::TYPE_UINTEGER),
-    Field(MEMCACHED_TOTAL_CONNECTIONS_LABEL, common::Value::TYPE_UINTEGER),
-    Field(MEMCACHED_CONNECTION_STRUCTURES_LABEL, common::Value::TYPE_UINTEGER),
-    Field(MEMCACHED_CMD_GET_LABEL, common::Value::TYPE_UINTEGER),
-    Field(MEMCACHED_CMD_SET_LABEL, common::Value::TYPE_UINTEGER),
-    Field(MEMCACHED_GET_HITS_LABEL, common::Value::TYPE_UINTEGER),
-    Field(MEMCACHED_GET_MISSES_LABEL, common::Value::TYPE_UINTEGER),
-    Field(MEMCACHED_EVICTIONS_LABEL, common::Value::TYPE_UINTEGER),
-    Field(MEMCACHED_BYTES_READ_LABEL, common::Value::TYPE_UINTEGER),
-    Field(MEMCACHED_BYTES_WRITTEN_LABEL, common::Value::TYPE_UINTEGER),
-    Field(MEMCACHED_LIMIT_MAXBYTES_LABEL, common::Value::TYPE_UINTEGER),
-    Field(MEMCACHED_THREADS_LABEL, common::Value::TYPE_UINTEGER)};
+    Field(MEMCACHED_COMMON_PID_LABEL, common::Value::TYPE_UINTEGER),
+    Field(MEMCACHED_COMMON_UPTIME_LABEL, common::Value::TYPE_UINTEGER),
+    Field(MEMCACHED_COMMON_TIME_LABEL, common::Value::TYPE_UINTEGER),
+    Field(MEMCACHED_COMMON_VERSION_LABEL, common::Value::TYPE_STRING),
+    Field(MEMCACHED_COMMON_POINTER_SIZE_LABEL, common::Value::TYPE_UINTEGER),
+    Field(MEMCACHED_COMMON_RUSAGE_USER_LABEL, common::Value::TYPE_UINTEGER),
+    Field(MEMCACHED_COMMON_RUSAGE_SYSTEM_LABEL, common::Value::TYPE_UINTEGER),
+    Field(MEMCACHED_COMMON_CURR_ITEMS_LABEL, common::Value::TYPE_UINTEGER),
+    Field(MEMCACHED_COMMON_TOTAL_ITEMS_LABEL, common::Value::TYPE_UINTEGER),
+    Field(MEMCACHED_COMMON_BYTES_LABEL, common::Value::TYPE_UINTEGER),
+    Field(MEMCACHED_COMMON_CURR_CONNECTIONS_LABEL, common::Value::TYPE_UINTEGER),
+    Field(MEMCACHED_COMMON_TOTAL_CONNECTIONS_LABEL, common::Value::TYPE_UINTEGER),
+    Field(MEMCACHED_COMMON_CONNECTION_STRUCTURES_LABEL, common::Value::TYPE_UINTEGER),
+    Field(MEMCACHED_COMMON_CMD_GET_LABEL, common::Value::TYPE_UINTEGER),
+    Field(MEMCACHED_COMMON_CMD_SET_LABEL, common::Value::TYPE_UINTEGER),
+    Field(MEMCACHED_COMMON_GET_HITS_LABEL, common::Value::TYPE_UINTEGER),
+    Field(MEMCACHED_COMMON_GET_MISSES_LABEL, common::Value::TYPE_UINTEGER),
+    Field(MEMCACHED_COMMON_EVICTIONS_LABEL, common::Value::TYPE_UINTEGER),
+    Field(MEMCACHED_COMMON_BYTES_READ_LABEL, common::Value::TYPE_UINTEGER),
+    Field(MEMCACHED_COMMON_BYTES_WRITTEN_LABEL, common::Value::TYPE_UINTEGER),
+    Field(MEMCACHED_COMMON_LIMIT_MAXBYTES_LABEL, common::Value::TYPE_UINTEGER),
+    Field(MEMCACHED_COMMON_THREADS_LABEL, common::Value::TYPE_UINTEGER)};
 }  // namespace
 
 template <>
@@ -78,109 +78,109 @@ ServerInfo::Stats::Stats(const std::string& common_text) {
     size_t delem = line.find_first_of(':');
     std::string field = line.substr(0, delem);
     std::string value = line.substr(delem + 1);
-    if (field == MEMCACHED_PID_LABEL) {
+    if (field == MEMCACHED_COMMON_PID_LABEL) {
       uint32_t lpid;
       if (common::ConvertFromString(value, &lpid)) {
         pid = lpid;
       }
-    } else if (field == MEMCACHED_UPTIME_LABEL) {
+    } else if (field == MEMCACHED_COMMON_UPTIME_LABEL) {
       uint32_t luptime;
       if (common::ConvertFromString(value, &luptime)) {
         uptime = luptime;
       }
-    } else if (field == MEMCACHED_TIME_LABEL) {
+    } else if (field == MEMCACHED_COMMON_TIME_LABEL) {
       uint32_t ltime;
       if (common::ConvertFromString(value, &ltime)) {
         time = ltime;
       }
-    } else if (field == MEMCACHED_VERSION_LABEL) {
+    } else if (field == MEMCACHED_COMMON_VERSION_LABEL) {
       version = value;
-    } else if (field == MEMCACHED_POINTER_SIZE_LABEL) {
+    } else if (field == MEMCACHED_COMMON_POINTER_SIZE_LABEL) {
       uint32_t lpointer_size;
       if (common::ConvertFromString(value, &lpointer_size)) {
         pointer_size = lpointer_size;
       }
-    } else if (field == MEMCACHED_RUSAGE_USER_LABEL) {
+    } else if (field == MEMCACHED_COMMON_RUSAGE_USER_LABEL) {
       uint32_t lrusage_user;
       if (common::ConvertFromString(value, &lrusage_user)) {
         rusage_user = lrusage_user;
       }
-    } else if (field == MEMCACHED_RUSAGE_SYSTEM_LABEL) {
+    } else if (field == MEMCACHED_COMMON_RUSAGE_SYSTEM_LABEL) {
       uint32_t lrusage_system;
       if (common::ConvertFromString(value, &lrusage_system)) {
         rusage_system = lrusage_system;
       }
-    } else if (field == MEMCACHED_CURR_ITEMS_LABEL) {
+    } else if (field == MEMCACHED_COMMON_CURR_ITEMS_LABEL) {
       uint32_t lcurr_items;
       if (common::ConvertFromString(value, &lcurr_items)) {
         curr_items = lcurr_items;
       }
-    } else if (field == MEMCACHED_TOTAL_ITEMS_LABEL) {
+    } else if (field == MEMCACHED_COMMON_TOTAL_ITEMS_LABEL) {
       uint32_t ltotal_items;
       if (common::ConvertFromString(value, &ltotal_items)) {
         total_items = ltotal_items;
       }
-    } else if (field == MEMCACHED_BYTES_LABEL) {
+    } else if (field == MEMCACHED_COMMON_BYTES_LABEL) {
       uint32_t lbytes;
       if (common::ConvertFromString(value, &lbytes)) {
         bytes = lbytes;
       }
-    } else if (field == MEMCACHED_CURR_CONNECTIONS_LABEL) {
+    } else if (field == MEMCACHED_COMMON_CURR_CONNECTIONS_LABEL) {
       uint32_t lcurr_connections;
       if (common::ConvertFromString(value, &lcurr_connections)) {
         curr_connections = lcurr_connections;
       }
-    } else if (field == MEMCACHED_TOTAL_CONNECTIONS_LABEL) {
+    } else if (field == MEMCACHED_COMMON_TOTAL_CONNECTIONS_LABEL) {
       uint32_t ltotal_connections;
       if (common::ConvertFromString(value, &ltotal_connections)) {
         total_connections = ltotal_connections;
       }
-    } else if (field == MEMCACHED_CONNECTION_STRUCTURES_LABEL) {
+    } else if (field == MEMCACHED_COMMON_CONNECTION_STRUCTURES_LABEL) {
       uint32_t lconnection_structures;
       if (common::ConvertFromString(value, &lconnection_structures)) {
         connection_structures = lconnection_structures;
       }
-    } else if (field == MEMCACHED_CMD_GET_LABEL) {
+    } else if (field == MEMCACHED_COMMON_CMD_GET_LABEL) {
       uint32_t lcmd_get;
       if (common::ConvertFromString(value, &lcmd_get)) {
         cmd_get = lcmd_get;
       }
-    } else if (field == MEMCACHED_CMD_SET_LABEL) {
+    } else if (field == MEMCACHED_COMMON_CMD_SET_LABEL) {
       uint32_t lcmd_set;
       if (common::ConvertFromString(value, &lcmd_set)) {
         cmd_set = lcmd_set;
       }
-    } else if (field == MEMCACHED_GET_HITS_LABEL) {
+    } else if (field == MEMCACHED_COMMON_GET_HITS_LABEL) {
       uint32_t lget_hits;
       if (common::ConvertFromString(value, &lget_hits)) {
         get_hits = lget_hits;
       }
-    } else if (field == MEMCACHED_GET_MISSES_LABEL) {
+    } else if (field == MEMCACHED_COMMON_GET_MISSES_LABEL) {
       uint32_t lget_misses;
       if (common::ConvertFromString(value, &lget_misses)) {
         get_misses = lget_misses;
       }
-    } else if (field == MEMCACHED_EVICTIONS_LABEL) {
+    } else if (field == MEMCACHED_COMMON_EVICTIONS_LABEL) {
       uint32_t levictions;
       if (common::ConvertFromString(value, &levictions)) {
         evictions = levictions;
       }
-    } else if (field == MEMCACHED_BYTES_READ_LABEL) {
+    } else if (field == MEMCACHED_COMMON_BYTES_READ_LABEL) {
       uint32_t lbytes_read;
       if (common::ConvertFromString(value, &lbytes_read)) {
         bytes_read = lbytes_read;
       }
-    } else if (field == MEMCACHED_BYTES_WRITTEN_LABEL) {
+    } else if (field == MEMCACHED_COMMON_BYTES_WRITTEN_LABEL) {
       uint32_t lbytes_written;
       if (common::ConvertFromString(value, &lbytes_written)) {
         bytes_written = lbytes_written;
       }
-    } else if (field == MEMCACHED_LIMIT_MAXBYTES_LABEL) {
+    } else if (field == MEMCACHED_COMMON_LIMIT_MAXBYTES_LABEL) {
       uint32_t llimit_maxbytes;
       if (common::ConvertFromString(value, &llimit_maxbytes)) {
         limit_maxbytes = llimit_maxbytes;
       }
-    } else if (field == MEMCACHED_THREADS_LABEL) {
+    } else if (field == MEMCACHED_COMMON_THREADS_LABEL) {
       uint32_t lthreads;
       if (common::ConvertFromString(value, &lthreads)) {
         threads = lthreads;
@@ -261,21 +261,24 @@ common::Value* ServerInfo::GetValueByIndexes(unsigned char property, unsigned ch
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo::Stats& value) {
-  return out << MEMCACHED_PID_LABEL ":" << value.pid << MARKER << MEMCACHED_UPTIME_LABEL ":" << value.uptime << MARKER
-             << MEMCACHED_TIME_LABEL ":" << value.time << MARKER << MEMCACHED_VERSION_LABEL ":" << value.version
-             << MARKER << MEMCACHED_POINTER_SIZE_LABEL ":" << value.pointer_size << MARKER
-             << MEMCACHED_RUSAGE_USER_LABEL ":" << value.rusage_user << MARKER << MEMCACHED_RUSAGE_SYSTEM_LABEL ":"
-             << value.rusage_system << MARKER << MEMCACHED_CURR_ITEMS_LABEL ":" << value.curr_items << MARKER
-             << MEMCACHED_TOTAL_ITEMS_LABEL ":" << value.total_items << MARKER << MEMCACHED_BYTES_LABEL ":"
-             << value.bytes << MARKER << MEMCACHED_CURR_CONNECTIONS_LABEL ":" << value.curr_connections << MARKER
-             << MEMCACHED_TOTAL_CONNECTIONS_LABEL ":" << value.total_connections << MARKER
-             << MEMCACHED_CONNECTION_STRUCTURES_LABEL ":" << value.connection_structures << MARKER
-             << MEMCACHED_CMD_GET_LABEL ":" << value.cmd_get << MARKER << MEMCACHED_CMD_SET_LABEL ":" << value.cmd_set
-             << MARKER << MEMCACHED_GET_HITS_LABEL ":" << value.get_hits << MARKER << MEMCACHED_GET_MISSES_LABEL ":"
-             << value.get_misses << MARKER << MEMCACHED_EVICTIONS_LABEL ":" << value.evictions << MARKER
-             << MEMCACHED_BYTES_READ_LABEL ":" << value.bytes_read << MARKER << MEMCACHED_BYTES_WRITTEN_LABEL ":"
-             << value.bytes_written << MARKER << MEMCACHED_LIMIT_MAXBYTES_LABEL ":" << value.limit_maxbytes << MARKER
-             << MEMCACHED_THREADS_LABEL ":" << value.threads << MARKER;
+  return out << MEMCACHED_COMMON_PID_LABEL ":" << value.pid << MARKER << MEMCACHED_COMMON_UPTIME_LABEL ":"
+             << value.uptime << MARKER << MEMCACHED_COMMON_TIME_LABEL ":" << value.time << MARKER
+             << MEMCACHED_COMMON_VERSION_LABEL ":" << value.version << MARKER << MEMCACHED_COMMON_POINTER_SIZE_LABEL ":"
+             << value.pointer_size << MARKER << MEMCACHED_COMMON_RUSAGE_USER_LABEL ":" << value.rusage_user << MARKER
+             << MEMCACHED_COMMON_RUSAGE_SYSTEM_LABEL ":" << value.rusage_system << MARKER
+             << MEMCACHED_COMMON_CURR_ITEMS_LABEL ":" << value.curr_items << MARKER
+             << MEMCACHED_COMMON_TOTAL_ITEMS_LABEL ":" << value.total_items << MARKER
+             << MEMCACHED_COMMON_BYTES_LABEL ":" << value.bytes << MARKER << MEMCACHED_COMMON_CURR_CONNECTIONS_LABEL ":"
+             << value.curr_connections << MARKER << MEMCACHED_COMMON_TOTAL_CONNECTIONS_LABEL ":"
+             << value.total_connections << MARKER << MEMCACHED_COMMON_CONNECTION_STRUCTURES_LABEL ":"
+             << value.connection_structures << MARKER << MEMCACHED_COMMON_CMD_GET_LABEL ":" << value.cmd_get << MARKER
+             << MEMCACHED_COMMON_CMD_SET_LABEL ":" << value.cmd_set << MARKER << MEMCACHED_COMMON_GET_HITS_LABEL ":"
+             << value.get_hits << MARKER << MEMCACHED_COMMON_GET_MISSES_LABEL ":" << value.get_misses << MARKER
+             << MEMCACHED_COMMON_EVICTIONS_LABEL ":" << value.evictions << MARKER
+             << MEMCACHED_COMMON_BYTES_READ_LABEL ":" << value.bytes_read << MARKER
+             << MEMCACHED_COMMON_BYTES_WRITTEN_LABEL ":" << value.bytes_written << MARKER
+             << MEMCACHED_COMMON_LIMIT_MAXBYTES_LABEL ":" << value.limit_maxbytes << MARKER
+             << MEMCACHED_COMMON_THREADS_LABEL ":" << value.threads << MARKER;
 }
 
 std::ostream& operator<<(std::ostream& out, const ServerInfo& value) {

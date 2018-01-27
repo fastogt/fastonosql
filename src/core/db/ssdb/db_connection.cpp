@@ -759,24 +759,24 @@ common::Error DBConnection::Info(const std::string& args, ServerInfo::Stats* sta
 
   ServerInfo::Stats lstatsout;
   for (size_t i = 0; i < ret.size(); i += 2) {
-    if (ret[i] == SSDB_VERSION_LABEL) {
+    if (ret[i] == SSDB_COMMON_VERSION_LABEL) {
       lstatsout.version = ret[i + 1];
-    } else if (ret[i] == SSDB_LINKS_LABEL) {
+    } else if (ret[i] == SSDB_COMMON_LINKS_LABEL) {
       uint32_t links;
       if (common::ConvertFromString(ret[i + 1], &links)) {
         lstatsout.links = links;
       }
-    } else if (ret[i] == SSDB_TOTAL_CALLS_LABEL) {
+    } else if (ret[i] == SSDB_COMMON_TOTAL_CALLS_LABEL) {
       uint32_t total_calls;
       if (common::ConvertFromString(ret[i + 1], &total_calls)) {
         lstatsout.total_calls = total_calls;
       }
-    } else if (ret[i] == SSDB_DBSIZE_LABEL) {
+    } else if (ret[i] == SSDB_COMMON_DBSIZE_LABEL) {
       uint32_t dbsize;
       if (common::ConvertFromString(ret[i + 1], &dbsize)) {
         lstatsout.dbsize = dbsize;
       }
-    } else if (ret[i] == SSDB_BINLOGS_LABEL) {
+    } else if (ret[i] == SSDB_COMMON_BINLOGS_LABEL) {
       lstatsout.binlogs = ret[i + 1];
     }
   }
