@@ -118,7 +118,7 @@ BaseShell::BaseShell(core::connectionTypes type, bool showAutoCompl, QWidget* pa
     lex = new forestdb::Lexer(this);
   }
 #endif
-#ifdef BUILD_WITH_REDIS
+#ifdef BUILD_WITH_PIKA
   if (type == core::PIKA) {
     lex = new pika::Lexer(this);
   }
