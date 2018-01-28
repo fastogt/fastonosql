@@ -1,4 +1,4 @@
-1.16.0 /
+1.16.0 / January 28, 2018
 [Alexandr Topilski]
 - Pika db first step integration
 - [Redis] Redirect requests to cluster nodes

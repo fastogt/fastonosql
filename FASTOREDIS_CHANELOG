@@ -1,4 +1,4 @@
-1.15.0 /
+1.15.0 / January 28, 2018
 [Alexandr Topilski]
 - Redirect requests to cluster nodes
 - Up hiredis sources to version 0.13.3
