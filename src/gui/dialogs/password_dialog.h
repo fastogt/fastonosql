@@ -30,7 +30,7 @@ namespace gui {
 class PasswordDialog : public QDialog {
   Q_OBJECT
  public:
-  enum { fix_height = 120, fix_width = 320 };
+  enum { fix_height = 180, fix_width = 320 };
   explicit PasswordDialog(QWidget* parent = Q_NULLPTR);
 
   QString GetLogin() const;
