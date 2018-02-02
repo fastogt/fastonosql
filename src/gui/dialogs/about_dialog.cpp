@@ -27,10 +27,10 @@
 #include <QTreeWidget>
 
 #include <Qsci/qsciglobal.h>
+#include <json-c/json_c_version.h>
 #include <libssh2.h>
 #include <openssl/opensslv.h>
 #include <snappy-stubs-public.h>
-#include <json-c/json_c_version.h>
 
 #include <common/config.h>
 #include <common/macros.h>  // for STRINGIZE, VERIFY
@@ -67,7 +67,7 @@ const QString trDescription = QObject::tr("<h3>" PROJECT_NAME_TITLE " " PROJECT_
 
 const QString trAbout = QObject::tr("About");
 
-void addDBItem(QTreeWidget* dblist_widget, const std::string& name, const char* lib_name, const char* version) {
+void add_db_item(QTreeWidget* dblist_widget, const std::string& name, const char* lib_name, const char* version) {
   QTreeWidgetItem* treeItem = new QTreeWidgetItem;
   QString qname;
   if (common::ConvertFromString(name, &qname)) {
@@ -78,7 +78,7 @@ void addDBItem(QTreeWidget* dblist_widget, const std::string& name, const char* 
   dblist_widget->addTopLevelItem(treeItem);
 }
 
-void addLibItem(QTreeWidget* libs_list_widget, const std::string& name, const char* version) {
+void add_lib_item(QTreeWidget* libs_list_widget, const std::string& name, const char* version) {
   QTreeWidgetItem* treeItem = new QTreeWidgetItem;
   QString qname;
   if (common::ConvertFromString(name, &qname)) {
@@ -107,11 +107,11 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
   copyRightLabel->setOpenExternalLinks(true);
   copyRightLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
 
-  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
-  QPushButton* closeButton = buttonBox->button(QDialogButtonBox::Close);
-  buttonBox->addButton(closeButton,
+  QDialogButtonBox* button_box = new QDialogButtonBox(QDialogButtonBox::Close);
+  QPushButton* close_button = button_box->button(QDialogButtonBox::Close);
+  button_box->addButton(close_button,
                        QDialogButtonBox::ButtonRole(QDialogButtonBox::RejectRole | QDialogButtonBox::AcceptRole));
-  VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &AboutDialog::reject));
+  VERIFY(connect(button_box, &QDialogButtonBox::rejected, this, &AboutDialog::reject));
 
   QIcon icon = GuiFactory::GetInstance().GetMainWindowIcon();
   QPixmap iconPixmap = icon.pixmap(48, 48);
@@ -131,49 +131,49 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
   dblist_widget->setHeaderLabels(dbcolums);
 #ifdef BUILD_WITH_REDIS
   typedef core::ConnectionTraits<core::REDIS> redis_traits_t;
-  addDBItem(dblist_widget, redis_traits_t::GetDBName(), redis_traits_t::GetBasedOn(), redis_traits_t::GetVersionApi());
+  add_db_item(dblist_widget, redis_traits_t::GetDBName(), redis_traits_t::GetBasedOn(), redis_traits_t::GetVersionApi());
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   typedef core::ConnectionTraits<core::MEMCACHED> memcached_traits_t;
-  addDBItem(dblist_widget, memcached_traits_t::GetDBName(), memcached_traits_t::GetBasedOn(),
+  add_db_item(dblist_widget, memcached_traits_t::GetDBName(), memcached_traits_t::GetBasedOn(),
             memcached_traits_t::GetVersionApi());
 #endif
 #ifdef BUILD_WITH_SSDB
   typedef core::ConnectionTraits<core::SSDB> ssdb_traits_t;
-  addDBItem(dblist_widget, ssdb_traits_t::GetDBName(), ssdb_traits_t::GetBasedOn(), ssdb_traits_t::GetVersionApi());
+  add_db_item(dblist_widget, ssdb_traits_t::GetDBName(), ssdb_traits_t::GetBasedOn(), ssdb_traits_t::GetVersionApi());
 #endif
 #ifdef BUILD_WITH_LEVELDB
   typedef core::ConnectionTraits<core::LEVELDB> leveldb_traits_t;
-  addDBItem(dblist_widget, leveldb_traits_t::GetDBName(), leveldb_traits_t::GetBasedOn(),
+  add_db_item(dblist_widget, leveldb_traits_t::GetDBName(), leveldb_traits_t::GetBasedOn(),
             leveldb_traits_t::GetVersionApi());
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   typedef core::ConnectionTraits<core::ROCKSDB> rocksdb_traits_t;
-  addDBItem(dblist_widget, rocksdb_traits_t::GetDBName(), rocksdb_traits_t::GetBasedOn(),
+  add_db_item(dblist_widget, rocksdb_traits_t::GetDBName(), rocksdb_traits_t::GetBasedOn(),
             rocksdb_traits_t::GetVersionApi());
 #endif
 #ifdef BUILD_WITH_UNQLITE
   typedef core::ConnectionTraits<core::UNQLITE> unqlite_traits_t;
-  addDBItem(dblist_widget, unqlite_traits_t::GetDBName(), unqlite_traits_t::GetBasedOn(),
+  add_db_item(dblist_widget, unqlite_traits_t::GetDBName(), unqlite_traits_t::GetBasedOn(),
             unqlite_traits_t::GetVersionApi());
 #endif
 #ifdef BUILD_WITH_LMDB
   typedef core::ConnectionTraits<core::LMDB> lmdb_traits_t;
-  addDBItem(dblist_widget, lmdb_traits_t::GetDBName(), lmdb_traits_t::GetBasedOn(), lmdb_traits_t::GetVersionApi());
+  add_db_item(dblist_widget, lmdb_traits_t::GetDBName(), lmdb_traits_t::GetBasedOn(), lmdb_traits_t::GetVersionApi());
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
   typedef core::ConnectionTraits<core::UPSCALEDB> upscaledb_traits_t;
-  addDBItem(dblist_widget, upscaledb_traits_t::GetDBName(), upscaledb_traits_t::GetBasedOn(),
+  add_db_item(dblist_widget, upscaledb_traits_t::GetDBName(), upscaledb_traits_t::GetBasedOn(),
             upscaledb_traits_t::GetVersionApi());
 #endif
 #ifdef BUILD_WITH_FORESTDB
   typedef core::ConnectionTraits<core::FORESTDB> forestdb_traits_t;
-  addDBItem(dblist_widget, forestdb_traits_t::GetDBName(), forestdb_traits_t::GetBasedOn(),
+  add_db_item(dblist_widget, forestdb_traits_t::GetDBName(), forestdb_traits_t::GetBasedOn(),
             forestdb_traits_t::GetVersionApi());
 #endif
 #ifdef BUILD_WITH_PIKA
   typedef core::ConnectionTraits<core::PIKA> pika_traits_t;
-  addDBItem(dblist_widget, pika_traits_t::GetDBName(), pika_traits_t::GetBasedOn(), pika_traits_t::GetVersionApi());
+  add_db_item(dblist_widget, pika_traits_t::GetDBName(), pika_traits_t::GetBasedOn(), pika_traits_t::GetVersionApi());
 #endif
   main_tab->addTab(dblist_widget, QObject::tr("Availible databases"));
 
@@ -183,13 +183,13 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
   QStringList libscolums;
   libscolums << translations::trName << QObject::tr("Version");
   libs_list_widget->setHeaderLabels(libscolums);
-  addLibItem(libs_list_widget, "Qt", QT_VERSION_STR);
-  addLibItem(libs_list_widget, "QScintilla", QSCINTILLA_VERSION_STR);
-  addLibItem(libs_list_widget, "libssh2", LIBSSH2_VERSION);
-  addLibItem(libs_list_widget, "OpenSSL", OPENSSL_VERSION_TEXT);
-  addLibItem(libs_list_widget, "common", COMMON_VERSION_STRING);
-  addLibItem(libs_list_widget, "Snappy", SNAPPY_VERSION_TEXT);
-  addLibItem(libs_list_widget, "json-c", JSON_C_VERSION);
+  add_lib_item(libs_list_widget, "Qt", QT_VERSION_STR);
+  add_lib_item(libs_list_widget, "QScintilla", QSCINTILLA_VERSION_STR);
+  add_lib_item(libs_list_widget, "libssh2", LIBSSH2_VERSION);
+  add_lib_item(libs_list_widget, "OpenSSL", OPENSSL_VERSION_TEXT);
+  add_lib_item(libs_list_widget, "common", COMMON_VERSION_STRING);
+  add_lib_item(libs_list_widget, "Snappy", SNAPPY_VERSION_TEXT);
+  add_lib_item(libs_list_widget, "json-c", JSON_C_VERSION);
   main_tab->addTab(libs_list_widget, QObject::tr("External libraries"));
 
   copy_rights_layout->addWidget(main_tab, 4, 1, 1, 5);
@@ -204,11 +204,11 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
   }
   about_tabs->addTab(license_tab, QObject::tr("License agreement"));
 
-  QVBoxLayout* mainLayout = new QVBoxLayout;
-  mainLayout->addWidget(about_tabs);
-  mainLayout->addWidget(buttonBox);
-  setFixedSize(QSize(fix_width, fix_height));
-  setLayout(mainLayout);
+  QVBoxLayout* main_layout = new QVBoxLayout;
+  main_layout->addWidget(about_tabs);
+  main_layout->addWidget(button_box);
+  main_layout->setSizeConstraint(QLayout::SetFixedSize);
+  setLayout(main_layout);
 }
 
 }  // namespace gui

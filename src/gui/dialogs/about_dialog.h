@@ -26,7 +26,6 @@ namespace gui {
 class AboutDialog : public QDialog {
   Q_OBJECT
  public:
-  enum { fix_height = 480, fix_width = 520 };
   explicit AboutDialog(QWidget* parent = Q_NULLPTR);
 };
 

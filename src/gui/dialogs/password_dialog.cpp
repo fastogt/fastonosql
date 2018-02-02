@@ -65,7 +65,7 @@ PasswordDialog::PasswordDialog(QWidget* parent) : QDialog(parent) {
   mainLayout->addLayout(profile_layout);
   mainLayout->addLayout(password_layout);
   mainLayout->addWidget(buttonBox);
-  setFixedSize(QSize(fix_width, fix_height));
+  mainLayout->setSizeConstraint(QLayout::SetFixedSize);
   setLayout(mainLayout);
   retranslateUi();
 }
