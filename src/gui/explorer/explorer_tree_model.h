@@ -26,17 +26,9 @@
 #include "proxy/proxy_fwd.h"
 #include "proxy/types.h"
 
-class QModelIndex;
-class QObject;
-
-namespace fastonosql {
-namespace proxy {
-class IServer;
-}
-}  // namespace fastonosql
-
 namespace fastonosql {
 namespace gui {
+
 class ExplorerClusterItem;
 class ExplorerSentinelItem;
 class ExplorerServerItem;

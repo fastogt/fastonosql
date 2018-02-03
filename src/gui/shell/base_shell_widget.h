@@ -62,7 +62,6 @@ struct EnterModeInfo;
 struct LeaveModeInfo;
 struct ProgressInfoResponce;
 struct SetDefaultDatabaseRequest;
-
 struct ServerInfoRequest;
 class ServerInfoResponce;
 }  // namespace events_info
@@ -160,31 +159,31 @@ class BaseShellWidget : public QWidget {
   void updateDBLabel(const QString& text);
 
   const proxy::IServerSPtr server_;
-  QAction* executeAction_;
-  QAction* stopAction_;
+  QAction* execute_action_;
+  QAction* stop_action_;
   QAction* connect_action_;
-  QAction* disConnectAction_;
-  QAction* loadAction_;
-  QAction* saveAction_;
-  QAction* saveAsAction_;
-  QAction* validateAction_;
+  QAction* disconnect_action_;
+  QAction* load_action_;
+  QAction* save_action_;
+  QAction* save_as_action_;
+  QAction* validate_action_;
   QLabel* supported_commands_count_;
   QLabel* validated_commands_count_;
-  QComboBox* commandsVersionApi_;
+  QComboBox* commands_version_api_;
 
   BaseShell* input_;
 
-  QProgressBar* workProgressBar_;
-  common::qt::gui::IconLabel* connectionMode_;
-  common::qt::gui::IconLabel* serverName_;
-  common::qt::gui::IconLabel* dbName_;
+  QProgressBar* work_progressbar_;
+  common::qt::gui::IconLabel* connection_mode_;
+  common::qt::gui::IconLabel* server_name_;
+  common::qt::gui::IconLabel* db_name_;
 
-  QCheckBox* advancedOptions_;
-  QWidget* advancedOptionsWidget_;
-  QSpinBox* repeatCount_;
-  QSpinBox* intervalMsec_;
-  QCheckBox* historyCall_;
-  QString filePath_;
+  QCheckBox* advanced_options_;
+  QWidget* advanced_options_widget_;
+  QSpinBox* repeat_count_;
+  QSpinBox* interval_msec_;
+  QCheckBox* history_call_;
+  QString file_path_;
 };
 
 }  // namespace gui

@@ -33,7 +33,7 @@ namespace {
 const QString trInvalidPattern = QObject::tr("Invalid pattern!");
 const QString trKeysCount = QObject::tr("Keys count");
 const QString trPattern = QObject::tr("Pattern");
-const QString defaultPattern = ALL_KEYS_PATTERNS;
+const char* g_default_pattern = ALL_KEYS_PATTERNS;
 }  // namespace
 
 namespace fastonosql {
@@ -46,34 +46,32 @@ LoadContentDbDialog::LoadContentDbDialog(const QString& title, core::connectionT
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
-  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
-  buttonBox->setOrientation(Qt::Horizontal);
-  VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &LoadContentDbDialog::accept));
-  VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &LoadContentDbDialog::reject));
+  QDialogButtonBox* button_box = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
+  button_box->setOrientation(Qt::Horizontal);
+  VERIFY(connect(button_box, &QDialogButtonBox::accepted, this, &LoadContentDbDialog::accept));
+  VERIFY(connect(button_box, &QDialogButtonBox::rejected, this, &LoadContentDbDialog::reject));
 
-  QVBoxLayout* mainLayout = new QVBoxLayout;
-
-  QHBoxLayout* countLayout = new QHBoxLayout;
-  countLayout->addWidget(new QLabel(trKeysCount + ":"));
+  QHBoxLayout* count_layout = new QHBoxLayout;
+  count_layout->addWidget(new QLabel(trKeysCount + ":"));
   count_spin_edit_ = new QSpinBox;
   count_spin_edit_->setRange(min_key_on_page, max_key_on_page);
   count_spin_edit_->setSingleStep(step_keys_on_page);
   count_spin_edit_->setValue(defaults_key);
-  countLayout->addWidget(count_spin_edit_);
-  mainLayout->addLayout(countLayout);
+  count_layout->addWidget(count_spin_edit_);
 
-  QHBoxLayout* patternLayout = new QHBoxLayout;
-  patternLayout->addWidget(new QLabel(trPattern + ":"));
+  QHBoxLayout* pattern_layout = new QHBoxLayout;
+  pattern_layout->addWidget(new QLabel(trPattern + ":"));
   pattern_edit_ = new QLineEdit;
   pattern_edit_->setFixedWidth(80);
-  pattern_edit_->setText(defaultPattern);
-  patternLayout->addWidget(pattern_edit_);
-  mainLayout->addLayout(patternLayout);
+  pattern_edit_->setText(g_default_pattern);
+  pattern_layout->addWidget(pattern_edit_);
 
-  mainLayout->addWidget(buttonBox);
-
-  setMinimumSize(QSize(min_width, min_height));
-  setLayout(mainLayout);
+  QVBoxLayout* main_layout = new QVBoxLayout;
+  main_layout->addLayout(count_layout);
+  main_layout->addLayout(pattern_layout);
+  main_layout->addWidget(button_box);
+  main_layout->setSizeConstraint(QLayout::SetFixedSize);
+  setLayout(main_layout);
 }
 
 int LoadContentDbDialog::count() const {

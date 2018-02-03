@@ -24,6 +24,7 @@
 
 #include "core/database/idatabase_info.h"
 #include "core/display_strategy.h"
+
 #include "proxy/proxy_fwd.h"  // for IServerSPtr, IClusterSPtr, etc
 
 namespace fastonosql {

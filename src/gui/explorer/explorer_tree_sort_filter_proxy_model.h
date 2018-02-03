@@ -22,6 +22,7 @@
 
 namespace fastonosql {
 namespace gui {
+
 class ExplorerTreeSortFilterProxyModel : public QSortFilterProxyModel {
   Q_OBJECT
  public:
@@ -31,5 +32,6 @@ class ExplorerTreeSortFilterProxyModel : public QSortFilterProxyModel {
   virtual bool lessThan(const QModelIndex& left, const QModelIndex& right) const override;
   virtual bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const override;
 };
+
 }  // namespace gui
 }  // namespace fastonosql
