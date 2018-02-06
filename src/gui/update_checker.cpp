@@ -20,7 +20,7 @@
 
 #include <common/net/socket_tcp.h>  // for ClientSocketTcp
 
-#include "server_config_daemon/server_config.h"
+#include "server/server_config.h"
 
 namespace fastonosql {
 namespace gui {

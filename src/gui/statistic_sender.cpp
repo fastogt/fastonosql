@@ -23,7 +23,7 @@
 
 #include <json-c/json_object.h>
 
-#include "server_config_daemon/server_config.h"  // for FASTONOSQL_URL, etc
+#include "server/server_config.h"  // for FASTONOSQL_URL, etc
 
 namespace fastonosql {
 namespace gui {
