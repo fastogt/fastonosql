@@ -3,6 +3,7 @@
 #include <json-c/json_object.h>
 #include <json-c/json_tokener.h>
 
+#include <common/sprintf.h>
 #include <common/system_info/system_info.h>  // for SystemInfo, etc
 
 #define JSONRPC_FIELD "jsonrpc"
@@ -12,6 +13,8 @@
 #define JSONRPC_VERSION "2.0"
 
 #define JSONRPC_ERROR_FIELD "error"
+#define JSONRPC_ERROR_CODE_FIELD "code"
+#define JSONRPC_ERROR_MESSAGE_FIELD "message"
 #define JSONRPC_RESULT_FIELD "result"
 
 #define SUCCESS_RESULT "OK"
@@ -58,8 +61,23 @@ common::Error GetJsonRpcResult(json_object* rpc, std::string* result) {
 
   json_object* jerror = NULL;
   json_bool jerror_exists = json_object_object_get_ex(rpc, JSONRPC_ERROR_FIELD, &jerror);
-  if (!jerror_exists) {
-    return common::make_error_inval();
+  if (jerror_exists && json_object_get_type(jerror) != json_type_null) {
+    json_object* jerror_code = NULL;
+    json_bool jerror_code_exists = json_object_object_get_ex(jerror, JSONRPC_ERROR_CODE_FIELD, &jerror_code);
+
+    json_object* jerror_message = NULL;
+    json_bool jerror_message_exists = json_object_object_get_ex(jerror, JSONRPC_ERROR_MESSAGE_FIELD, &jerror_message);
+    std::string buff;
+    if (jerror_message_exists && jerror_code_exists) {
+      std::string error_str = json_object_get_string(jerror_message);
+      int err_code = json_object_get_int(jerror_code);
+      buff = common::MemSPrintf("json rpc error code: %d, message: %s", err_code, error_str);
+    } else {
+      std::string error_str = json_object_get_string(jerror);
+      buff = common::MemSPrintf("json rpc error: %s", error_str);
+    }
+
+    return common::make_error(buff);
   }
 
   json_object* jresult = NULL;
