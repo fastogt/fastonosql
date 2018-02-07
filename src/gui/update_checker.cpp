@@ -19,6 +19,7 @@
 #include "gui/update_checker.h"
 
 #include <common/net/socket_tcp.h>  // for ClientSocketTcp
+#include <common/qt/convert2string.h>
 
 #include "server/server_config.h"
 
@@ -29,9 +30,9 @@ UpdateChecker::UpdateChecker(QObject* parent) : QObject(parent) {}
 
 void UpdateChecker::routine() {
 #if defined(FASTONOSQL)
-  common::net::ClientSocketTcp client(common::net::HostAndPort(FASTONOSQL_URL, SERV_VERSION_PORT));
+  common::net::ClientSocketTcp client(common::net::HostAndPort(FASTONOSQL_HOST, SERVER_REQUESTS_PORT));
 #elif defined(FASTOREDIS)
-  common::net::ClientSocketTcp client(common::net::HostAndPort(FASTOREDIS_URL, SERV_VERSION_PORT));
+  common::net::ClientSocketTcp client(common::net::HostAndPort(FASTOREDIS_HOST, SERVER_REQUESTS_PORT));
 #else
 #error please specify url and port of version information
 #endif
@@ -42,13 +43,8 @@ void UpdateChecker::routine() {
   }
 
   size_t nwrite = 0;
-#if defined(FASTONOSQL)
-  err = client.Write(GET_FASTONOSQL_VERSION, sizeof(GET_FASTONOSQL_VERSION) - 1, &nwrite);
-#elif defined(FASTOREDIS)
-  err = client.Write(GET_FASTOREDIS_VERSION, sizeof(GET_FASTOREDIS_VERSION) - 1, &nwrite);
-#else
-#error please specify request to get version information
-#endif
+  std::string get_version_request = server::GetVersionRequest();
+  err = client.Write(get_version_request.c_str(), get_version_request.size(), &nwrite);
   if (err) {
     emit versionAvailibled(false, QString());
     err = client.Close();
@@ -58,9 +54,9 @@ void UpdateChecker::routine() {
     return;
   }
 
-  char version[128] = {0};
+  char version_reply[256] = {0};
   size_t nread = 0;
-  err = client.Read(version, sizeof(version), &nread);
+  err = client.Read(version_reply, sizeof(version_reply), &nread);
   if (err) {
     emit versionAvailibled(false, QString());
     err = client.Close();
@@ -70,11 +66,23 @@ void UpdateChecker::routine() {
     return;
   }
 
-  emit versionAvailibled(true, version);
-  err = client.Close();
-  if (err) {
-    DNOTREACHED();
+  std::string version_str;
+  common::Error parse_error = server::ParseVersionResponce(std::string(version_reply, nread), &version_str);
+  if (parse_error) {
+    emit versionAvailibled(false, QString());
+    err = client.Close();
+    if (err) {
+      DNOTREACHED();
+    }
+    return;
   }
+
+  QString qversion_str;
+  common::ConvertFromString(version_str, &qversion_str);
+
+  emit versionAvailibled(true, qversion_str);
+  err = client.Close();
+  DCHECK(!err) << "Close client error: " << err->GetDescription();
 }
 
 }  // namespace gui
