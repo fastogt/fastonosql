@@ -44,7 +44,7 @@ void UpdateChecker::routine() {
 
   size_t nwrite = 0;
   std::string get_version_request = server::GetVersionRequest();
-  err = client.Write(get_version_request.c_str(), get_version_request.size(), &nwrite);
+  err = client.Write(get_version_request, &nwrite);
   if (err) {
     emit versionAvailibled(false, QString());
     err = client.Close();
@@ -54,9 +54,9 @@ void UpdateChecker::routine() {
     return;
   }
 
-  char version_reply[256] = {0};
+  std::string version_reply;
   size_t nread = 0;
-  err = client.Read(version_reply, sizeof(version_reply), &nread);
+  err = client.Read(&version_reply, 256, &nread);
   if (err) {
     emit versionAvailibled(false, QString());
     err = client.Close();
@@ -67,7 +67,7 @@ void UpdateChecker::routine() {
   }
 
   std::string version_str;
-  common::Error parse_error = server::ParseVersionResponce(std::string(version_reply, nread), &version_str);
+  common::Error parse_error = server::ParseVersionResponce(version_reply, &version_str);
   if (parse_error) {
     emit versionAvailibled(false, QString());
     err = client.Close();

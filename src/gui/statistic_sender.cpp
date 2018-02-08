@@ -43,7 +43,7 @@ void StatisticSender::routine() {
 
   size_t nwrite = 0;
   std::string request = server::SendStatisticRequest(exec_count_);
-  err = client.Write(request.c_str(), request.size(), &nwrite);
+  err = client.Write(request, &nwrite);
   if (err) {
     emit statisticSended(false);
     err = client.Close();
@@ -53,9 +53,9 @@ void StatisticSender::routine() {
     return;
   }
 
-  char stat_reply[256] = {0};
+  std::string stat_reply;
   size_t nread = 0;
-  err = client.Read(stat_reply, sizeof(stat_reply), &nread);
+  err = client.Read(&stat_reply, 256, &nread);
   if (err) {
     emit statisticSended(false);
     err = client.Close();
@@ -66,7 +66,7 @@ void StatisticSender::routine() {
   }
 
   bool is_sent;
-  common::Error parse_error = server::ParseSendStatisticResponce(std::string(stat_reply, nread), &is_sent);
+  common::Error parse_error = server::ParseSendStatisticResponce(stat_reply, &is_sent);
   if (parse_error) {
     emit statisticSended(false);
     err = client.Close();
