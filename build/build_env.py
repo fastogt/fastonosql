@@ -254,6 +254,7 @@ class BuildRequest(object):
             common_cmake_line.append('-DWITH_TESTS=OFF')
             common_cmake_line.append('-DWITH_SNAPPY=ON')
             common_cmake_line.append('-DWITH_ZLIB=ON')
+            common_cmake_line.append('-DWITH_LZ4=ON')
             common_cmake_line.append('-DROCKSDB_INSTALL_ON_WINDOWS=ON')
             common_cmake_line.append('-DWITH_TOOLS=OFF')
             cmake_policy = run_command.CmakePolicy(print_message)
