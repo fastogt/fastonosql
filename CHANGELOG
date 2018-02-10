@@ -1,4 +1,4 @@
-1.16.2 /
+1.16.2 / February 10, 2018
 [Alexandr Topilski]
 - Json rpc for statistic/version
 - [RocksDB] LZ4 compression support
