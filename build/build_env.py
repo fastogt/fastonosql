@@ -10,7 +10,7 @@ from pybuild_utils.base import utils
 OPENSSL_SRC_ROOT = "https://www.openssl.org/source/"
 ARCH_OPENSSL_COMP = "gz"
 ARCH_OPENSSL_EXT = "tar." + ARCH_OPENSSL_COMP
-ROCKSDB_BRANCH = 'v5.10.2'
+#ROCKSDB_BRANCH = 'v5.10.2'
 g_script_path = os.path.realpath(sys.argv[0])
 
 
@@ -243,7 +243,7 @@ class BuildRequest(object):
     def build_rocksdb(self, cmake_line, make_install):
         abs_dir_path = self.build_dir_path_
         try:
-            cloned_dir = utils.git_clone('https://github.com/fastogt/rocksdb.git', abs_dir_path, ROCKSDB_BRANCH)
+            cloned_dir = utils.git_clone('https://github.com/fastogt/rocksdb.git', abs_dir_path)
             os.chdir(cloned_dir)
 
             os.mkdir('build_cmake_release')
