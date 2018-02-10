@@ -10,7 +10,7 @@ from pybuild_utils.base import utils
 OPENSSL_SRC_ROOT = "https://www.openssl.org/source/"
 ARCH_OPENSSL_COMP = "gz"
 ARCH_OPENSSL_EXT = "tar." + ARCH_OPENSSL_COMP
-
+ROCKSDB_BRANCH = 'v5.10.2'
 g_script_path = os.path.realpath(sys.argv[0])
 
 
@@ -243,7 +243,7 @@ class BuildRequest(object):
     def build_rocksdb(self, cmake_line, make_install):
         abs_dir_path = self.build_dir_path_
         try:
-            cloned_dir = utils.git_clone('https://github.com/fastogt/rocksdb.git', abs_dir_path)
+            cloned_dir = utils.git_clone('https://github.com/fastogt/rocksdb.git', abs_dir_path, ROCKSDB_BRANCH)
             os.chdir(cloned_dir)
 
             os.mkdir('build_cmake_release')
@@ -293,7 +293,7 @@ class BuildRequest(object):
     def build_forestdb(self, cmake_line, make_install):
         abs_dir_path = self.build_dir_path_
         try:
-            cloned_dir = utils.git_clone('https://github.com/fastogt/forestdb.git', abs_dir_path, False)
+            cloned_dir = utils.git_clone('https://github.com/fastogt/forestdb.git', abs_dir_path, None, False)
             os.chdir(cloned_dir)
 
             os.mkdir('build_cmake_release')
@@ -339,7 +339,7 @@ class BuildRequest(object):
         self.build_libssh2(cmake_line, make_install)
         self.build_jsonc(cmake_line, make_install)
         self.build_qscintilla(cmake_line, make_install)
-        
+
         # databases builds
         self.build_libmemcached(prefix_path)
         self.build_unqlite(cmake_line, make_install)
