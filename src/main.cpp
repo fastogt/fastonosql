@@ -33,10 +33,12 @@
 #include <common/convert2string.h>
 #include <common/hash/md5.h>
 #include <common/logger.h>
+#include <common/net/socket_tcp.h>
 #include <common/qt/convert2string.h>
 #include <common/qt/translations/translations.h>
 
 #include "proxy/settings_manager.h"
+#include "server/server_config.h"
 
 #include "gui/gui_factory.h"
 #include "gui/main_window.h"
@@ -98,11 +100,70 @@ int main(int argc, char* argv[]) {
   common::hash::MD5_Init(&ctx);
   common::hash::MD5_Update(&ctx, reinterpret_cast<const unsigned char*>(password_str.data()), password_str.size());
   common::hash::MD5_Final(&ctx, md5_result);
-  std::string hexed = common::utils::hex::encode(std::string(md5_result, md5_result + MD5_HASH_LENGHT), true);
-  if (hexed != USER_SPECIFIC_PASSWORD) {
+  std::string hexed_password = common::utils::hex::encode(std::string(md5_result, md5_result + MD5_HASH_LENGHT), true);
+
+#if defined(FASTONOSQL)
+  common::net::ClientSocketTcp client(common::net::HostAndPort(FASTONOSQL_HOST, SERVER_REQUESTS_PORT));
+#elif defined(FASTOREDIS)
+  common::net::ClientSocketTcp client(common::net::HostAndPort(FASTOREDIS_HOST, SERVER_REQUESTS_PORT));
+#else
+#error please specify url and port of version information
+#endif
+  common::ErrnoError err = client.Connect();
+  if (err) {
+    QMessageBox::critical(nullptr, fastonosql::translations::trPassword,
+                          QObject::tr("Sorry can't connect to server, for checking your passowrd, bye."));
+    return EXIT_FAILURE;
+  }
+
+  std::string request;
+  common::Error request_err = fastonosql::server::GetSubscriptionState(USER_SPECIFIC_LOGIN, hexed_password, &request);
+  if (request_err) {
+    QMessageBox::critical(nullptr, fastonosql::translations::trPassword,
+                          QObject::tr("Sorry can't connect to server, for checking your passowrd, bye."));
+    return EXIT_FAILURE;
+  }
+
+  size_t nwrite;
+  err = client.Write(request, &nwrite);
+  if (err) {
+    err = client.Close();
+    if (err) {
+      DNOTREACHED();
+    }
+    QMessageBox::critical(nullptr, fastonosql::translations::trPassword,
+                          QObject::tr("Sorry can't connect to server, for checking your passowrd, bye."));
+    return EXIT_FAILURE;
+  }
+
+  std::string subscribe_reply;
+  size_t nread = 0;
+  err = client.Read(&subscribe_reply, 256, &nread);
+  if (err) {
+    err = client.Close();
+    if (err) {
+      DNOTREACHED();
+    }
+    QMessageBox::critical(nullptr, fastonosql::translations::trPassword,
+                          QObject::tr("Sorry can't connect to server, for checking your passowrd, bye."));
+    return EXIT_FAILURE;
+  }
+
+  bool is_ok;
+  common::Error parse_error = fastonosql::server::ParseSubscriptionStateResponce(subscribe_reply, &is_ok);
+  if (parse_error || !is_ok) {
+    err = client.Close();
+    if (err) {
+      DNOTREACHED();
+    }
     QMessageBox::critical(nullptr, fastonosql::translations::trPassword, QObject::tr("Invalid password, bye."));
     return EXIT_FAILURE;
   }
+
+  /*if (hexed != USER_SPECIFIC_PASSWORD) {
+    QMessageBox::critical(nullptr, fastonosql::translations::trPassword, QObject::tr("Invalid password, bye."));
+    return EXIT_FAILURE;
+  }*/
 #endif
 
   // EULA License Agreement

@@ -10,6 +10,11 @@
 namespace fastonosql {
 namespace server {
 
+#ifndef IS_PUBLIC_BUILD
+common::Error GetSubscriptionState(const std::string& login, const std::string& password, std::string* request);
+common::Error ParseSubscriptionStateResponce(const std::string& data, bool* is_ok);
+#endif
+
 std::string GetVersionRequest();
 common::Error ParseVersionResponce(const std::string& data, std::string* version_str);
 

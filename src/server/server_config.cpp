@@ -22,6 +22,10 @@
 // methods
 #define GET_VERSION_METHOD "version"
 #define SEND_STATISTIC_METHOD "statistic"
+#define IS_SUBSCRIBED_METHOD "is_subscribed"
+
+#define SUBSCRIBED_LOGIN_FIELD "email"
+#define SUBSCRIBED_PASSWORD_FIELD "password"
 
 #define STATISTIC_OS_FIELD "os"
 #define STATISTIC_OS_NAME_FIELD "name"
@@ -96,6 +100,42 @@ common::Error GetJsonRpcResult(json_object* rpc, std::string* result) {
 namespace fastonosql {
 namespace server {
 
+#ifndef IS_PUBLIC_BUILD
+common::Error GetSubscriptionState(const std::string& login, const std::string& password, std::string* request) {
+  if (login.empty() || password.empty() || !request) {
+    return common::make_error_inval();
+  }
+
+  json_object* cred_json = json_object_new_object();
+  json_object_object_add(cred_json, SUBSCRIBED_LOGIN_FIELD, json_object_new_string(login.c_str()));
+  json_object_object_add(cred_json, SUBSCRIBED_PASSWORD_FIELD, json_object_new_string(password.c_str()));
+
+  json_object* is_subscribed_json = GenerateJsonRpcCommand(IS_SUBSCRIBED_METHOD, cred_json);
+  const char* command_json_string = json_object_get_string(is_subscribed_json);
+  *request = command_json_string;
+  json_object_put(is_subscribed_json);
+  return common::Error();
+}
+
+common::Error ParseSubscriptionStateResponce(const std::string& data, bool* is_ok) {
+  if (data.empty() || !is_ok) {
+    return common::make_error_inval();
+  }
+
+  const char* data_ptr = data.c_str();
+  json_object* jdata = json_tokener_parse(data_ptr);
+  if (!jdata) {
+    return common::make_error_inval();
+  }
+
+  std::string ok_str;
+  common::Error err = GetJsonRpcResult(jdata, &ok_str);
+  *is_ok = ok_str == SUCCESS_RESULT;
+  json_object_put(jdata);
+  return err;
+}
+#endif
+
 std::string GetVersionRequest() {
   json_object* command_json = GenerateJsonRpcCommand(GET_VERSION_METHOD);
   const char* command_json_string = json_object_get_string(command_json);
@@ -141,7 +181,7 @@ std::string SendStatisticRequest(uint32_t exec_count) {
                          json_object_new_int64(static_cast<int64_t>(exec_count)));
   json_object_object_add(stats_json, STATISTIC_PROJECT_FIELD, project_json);
 
-  json_object* command_json = GenerateJsonRpcCommand(SEND_STATISTIC_METHOD);
+  json_object* command_json = GenerateJsonRpcCommand(SEND_STATISTIC_METHOD, stats_json);
   const char* command_json_string = json_object_get_string(command_json);
   std::string request = command_json_string;
   json_object_put(command_json);
