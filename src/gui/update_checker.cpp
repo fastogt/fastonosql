@@ -42,8 +42,18 @@ void UpdateChecker::routine() {
     return;
   }
 
+  std::string get_version_request;
+  common::Error request_gen_err = server::GenVersionRequest(&get_version_request);
+  if (request_gen_err) {
+    emit versionAvailibled(false, QString());
+    err = client.Close();
+    if (err) {
+      DNOTREACHED();
+    }
+    return;
+  }
+
   size_t nwrite = 0;
-  std::string get_version_request = server::GetVersionRequest();
   err = client.Write(get_version_request, &nwrite);
   if (err) {
     emit versionAvailibled(false, QString());

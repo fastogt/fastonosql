@@ -101,7 +101,7 @@ namespace fastonosql {
 namespace server {
 
 #ifndef IS_PUBLIC_BUILD
-common::Error GetSubscriptionState(const std::string& login, const std::string& password, std::string* request) {
+common::Error GenSubscriptionStateRequest(const std::string& login, const std::string& password, std::string* request) {
   if (login.empty() || password.empty() || !request) {
     return common::make_error_inval();
   }
@@ -136,12 +136,16 @@ common::Error ParseSubscriptionStateResponce(const std::string& data, bool* is_o
 }
 #endif
 
-std::string GetVersionRequest() {
+common::Error GenVersionRequest(std::string* request) {
+  if (!request) {
+    return common::make_error_inval();
+  }
+
   json_object* command_json = GenerateJsonRpcCommand(GET_VERSION_METHOD);
   const char* command_json_string = json_object_get_string(command_json);
-  std::string request = command_json_string;
+  *request = command_json_string;
   json_object_put(command_json);
-  return request;
+  return common::Error();
 }
 
 common::Error ParseVersionResponce(const std::string& data, std::string* version_str) {
@@ -160,7 +164,11 @@ common::Error ParseVersionResponce(const std::string& data, std::string* version
   return err;
 }
 
-std::string SendStatisticRequest(uint32_t exec_count) {
+common::Error GenStatisticRequest(uint32_t exec_count, std::string* request) {
+  if (!request) {
+    return common::make_error_inval();
+  }
+
   json_object* stats_json = json_object_new_object();
   common::system_info::SystemInfo inf = common::system_info::currentSystemInfo();
 
@@ -175,7 +183,7 @@ std::string SendStatisticRequest(uint32_t exec_count) {
   json_object_object_add(project_json, STATISTIC_PROJECT_VERSION_FIELD, json_object_new_string(PROJECT_VERSION));
   json_object_object_add(project_json, STATISTIC_PROJECT_ARCH_FIELD, json_object_new_string(PROJECT_ARCH));
 #ifndef IS_PUBLIC_BUILD
-  json_object_object_add(project_json, STATISTIC_OWNER_FIELD, json_object_new_string(USER_SPECIFIC_ID));
+  json_object_object_add(project_json, STATISTIC_OWNER_FIELD, json_object_new_string(USER_SPECIFIC_LOGIN));
 #endif
   json_object_object_add(project_json, STATISTIC_PROJECT_EXEC_COUNT_FIELD,
                          json_object_new_int64(static_cast<int64_t>(exec_count)));
@@ -183,9 +191,9 @@ std::string SendStatisticRequest(uint32_t exec_count) {
 
   json_object* command_json = GenerateJsonRpcCommand(SEND_STATISTIC_METHOD, stats_json);
   const char* command_json_string = json_object_get_string(command_json);
-  std::string request = command_json_string;
+  *request = command_json_string;
   json_object_put(command_json);
-  return request;
+  return common::Error();
 }
 
 common::Error ParseSendStatisticResponce(const std::string& data, bool* is_sent) {

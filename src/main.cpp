@@ -112,15 +112,15 @@ int main(int argc, char* argv[]) {
   common::ErrnoError err = client.Connect();
   if (err) {
     QMessageBox::critical(nullptr, fastonosql::translations::trPassword,
-                          QObject::tr("Sorry can't connect to server, for checking your passowrd, bye."));
+                          QObject::tr("Sorry can't connect to server, for checking your passowrd."));
     return EXIT_FAILURE;
   }
 
   std::string request;
-  common::Error request_err = fastonosql::server::GetSubscriptionState(USER_SPECIFIC_LOGIN, hexed_password, &request);
+  common::Error request_err = fastonosql::server::GenSubscriptionStateRequest(USER_SPECIFIC_LOGIN, hexed_password, &request);
   if (request_err) {
     QMessageBox::critical(nullptr, fastonosql::translations::trPassword,
-                          QObject::tr("Sorry can't connect to server, for checking your passowrd, bye."));
+                          QObject::tr("Sorry can't generate password request, for checking your passowrd."));
     return EXIT_FAILURE;
   }
 
@@ -132,7 +132,7 @@ int main(int argc, char* argv[]) {
       DNOTREACHED();
     }
     QMessageBox::critical(nullptr, fastonosql::translations::trPassword,
-                          QObject::tr("Sorry can't connect to server, for checking your passowrd, bye."));
+                          QObject::tr("Sorry can't write request, for checking your passowrd."));
     return EXIT_FAILURE;
   }
 
@@ -145,7 +145,7 @@ int main(int argc, char* argv[]) {
       DNOTREACHED();
     }
     QMessageBox::critical(nullptr, fastonosql::translations::trPassword,
-                          QObject::tr("Sorry can't connect to server, for checking your passowrd, bye."));
+                          QObject::tr("Sorry can't get responce, for checking your passowrd."));
     return EXIT_FAILURE;
   }
 
@@ -160,10 +160,10 @@ int main(int argc, char* argv[]) {
     return EXIT_FAILURE;
   }
 
-  /*if (hexed != USER_SPECIFIC_PASSWORD) {
-    QMessageBox::critical(nullptr, fastonosql::translations::trPassword, QObject::tr("Invalid password, bye."));
-    return EXIT_FAILURE;
-  }*/
+    /*if (hexed != USER_SPECIFIC_PASSWORD) {
+      QMessageBox::critical(nullptr, fastonosql::translations::trPassword, QObject::tr("Invalid password, bye."));
+      return EXIT_FAILURE;
+    }*/
 #endif
 
   // EULA License Agreement

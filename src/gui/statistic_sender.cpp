@@ -41,8 +41,18 @@ void StatisticSender::routine() {
     return;
   }
 
+  std::string request;
+  common::Error request_gen_err = server::GenStatisticRequest(exec_count_, &request);
+  if (request_gen_err) {
+    emit statisticSended(false);
+    err = client.Close();
+    if (err) {
+      DNOTREACHED();
+    }
+    return;
+  }
+
   size_t nwrite = 0;
-  std::string request = server::SendStatisticRequest(exec_count_);
   err = client.Write(request, &nwrite);
   if (err) {
     emit statisticSended(false);

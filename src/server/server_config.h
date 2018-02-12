@@ -11,14 +11,14 @@ namespace fastonosql {
 namespace server {
 
 #ifndef IS_PUBLIC_BUILD
-common::Error GetSubscriptionState(const std::string& login, const std::string& password, std::string* request);
+common::Error GenSubscriptionStateRequest(const std::string& login, const std::string& password, std::string* request);
 common::Error ParseSubscriptionStateResponce(const std::string& data, bool* is_ok);
 #endif
 
-std::string GetVersionRequest();
+common::Error GenVersionRequest(std::string* request);
 common::Error ParseVersionResponce(const std::string& data, std::string* version_str);
 
-std::string SendStatisticRequest(uint32_t exec_count);
+common::Error GenStatisticRequest(uint32_t exec_count, std::string* request);
 common::Error ParseSendStatisticResponce(const std::string& data, bool* is_sent);
 
 }  // namespace server
