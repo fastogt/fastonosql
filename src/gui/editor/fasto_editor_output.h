@@ -26,8 +26,10 @@
 #define HEX 3
 #define MSGPACK 4
 #define GZIP 5
-#define SNAPPY 6
-#define XML 7
+#define LZ4 6
+#define BZIP2 7
+#define SNAPPY 8
+#define XML 9
 
 namespace fastonosql {
 namespace gui {

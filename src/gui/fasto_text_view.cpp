@@ -51,6 +51,8 @@ FastoTextView::FastoTextView(QWidget* parent) : QWidget(parent) {
   views_combo_box_->addItem(translations::trHex, HEX);
   views_combo_box_->addItem(translations::trMsgPack, MSGPACK);
   views_combo_box_->addItem(translations::trGzip, GZIP);
+  views_combo_box_->addItem(translations::trLZ4, LZ4);
+  views_combo_box_->addItem(translations::trBZip2, BZIP2);
   views_combo_box_->addItem(translations::trSnappy, SNAPPY);
   views_combo_box_->addItem(translations::trXml, XML);
 

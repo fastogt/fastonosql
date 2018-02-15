@@ -19,6 +19,8 @@
 #include "gui/fasto_common_item.h"
 
 #include <common/qt/convert2string.h>                      // for ConvertToString
+#include <common/text_decoders/compress_bzip2_edcoder.h>   // for CompressEDcoder
+#include <common/text_decoders/compress_lz4_edcoder.h>     // for CompressEDcoder
 #include <common/text_decoders/compress_snappy_edcoder.h>  // for CompressEDcoder
 #include <common/text_decoders/compress_zlib_edcoder.h>    // for CompressEDcoder
 #include <common/text_decoders/hex_edcoder.h>              // for HexEDcoder
@@ -207,6 +209,64 @@ QString fromGzip(FastoCommonItem* item) {
   QString value;
   for (size_t i = 0; i < item->childrenCount(); ++i) {
     value += fromGzip(dynamic_cast<FastoCommonItem*>(item->child(i)));  // +
+  }
+
+  return value;
+}
+
+QString fromLZ4(FastoCommonItem* item) {
+  if (!item) {
+    DNOTREACHED() << "Invalid input.";
+    return QString();
+  }
+
+  if (!item->childrenCount()) {
+    QString val = item->value();
+    std::string sval = common::ConvertToString(val);
+    std::string out;
+    common::CompressLZ4EDcoder enc;
+    common::Error err = enc.Decode(sval, &out);
+    if (err) {
+      return QString();
+    }
+
+    QString qout;
+    common::ConvertFromString(out, &qout);
+    return qout;
+  }
+
+  QString value;
+  for (size_t i = 0; i < item->childrenCount(); ++i) {
+    value += fromLZ4(dynamic_cast<FastoCommonItem*>(item->child(i)));  // +
+  }
+
+  return value;
+}
+
+QString fromBZip2(FastoCommonItem* item) {
+  if (!item) {
+    DNOTREACHED() << "Invalid input.";
+    return QString();
+  }
+
+  if (!item->childrenCount()) {
+    QString val = item->value();
+    std::string sval = common::ConvertToString(val);
+    std::string out;
+    common::CompressBZip2EDcoder enc;
+    common::Error err = enc.Decode(sval, &out);
+    if (err) {
+      return QString();
+    }
+
+    QString qout;
+    common::ConvertFromString(out, &qout);
+    return qout;
+  }
+
+  QString value;
+  for (size_t i = 0; i < item->childrenCount(); ++i) {
+    value += fromBZip2(dynamic_cast<FastoCommonItem*>(item->child(i)));  // +
   }
 
   return value;

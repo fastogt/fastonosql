@@ -113,6 +113,8 @@ extern const QString trLoggingEnabled;
 extern const QString trHex;
 extern const QString trMsgPack;
 extern const QString trGzip;
+extern const QString trLZ4;
+extern const QString trBZip2;
 extern const QString trSnappy;
 extern const QString trXml;
 extern const QString trCannotConvertPattern1ArgsS;

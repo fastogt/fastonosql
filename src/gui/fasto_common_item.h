@@ -61,6 +61,8 @@ QString toRaw(FastoCommonItem* item);
 QString toCsv(FastoCommonItem* item);
 
 QString fromGzip(FastoCommonItem* item);
+QString fromLZ4(FastoCommonItem* item);
+QString fromBZip2(FastoCommonItem* item);
 QString fromSnappy(FastoCommonItem* item);
 QString fromHexMsgPack(FastoCommonItem* item);
 
