@@ -117,7 +117,8 @@ int main(int argc, char* argv[]) {
   }
 
   std::string request;
-  common::Error request_err = fastonosql::server::GenSubscriptionStateRequest(USER_SPECIFIC_LOGIN, hexed_password, &request);
+  common::Error request_err =
+      fastonosql::server::GenSubscriptionStateRequest(USER_SPECIFIC_LOGIN, hexed_password, &request);
   if (request_err) {
     QMessageBox::critical(nullptr, fastonosql::translations::trPassword,
                           QObject::tr("Sorry can't generate password request, for checking your passowrd."));
