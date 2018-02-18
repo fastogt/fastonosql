@@ -160,11 +160,6 @@ int main(int argc, char* argv[]) {
     QMessageBox::critical(nullptr, fastonosql::translations::trPassword, QObject::tr("Invalid password, bye."));
     return EXIT_FAILURE;
   }
-
-    /*if (hexed != USER_SPECIFIC_PASSWORD) {
-      QMessageBox::critical(nullptr, fastonosql::translations::trPassword, QObject::tr("Invalid password, bye."));
-      return EXIT_FAILURE;
-    }*/
 #endif
 
   // EULA License Agreement
