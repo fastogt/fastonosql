@@ -164,8 +164,8 @@ common::Error ParseVersionResponce(const std::string& data, std::string* version
   return err;
 }
 
-common::Error GenStatisticRequest(uint32_t exec_count, std::string* request) {
-  if (!request) {
+common::Error GenStatisticRequest(const std::string& login, uint32_t exec_count, std::string* request) {
+  if (!request || login.empty()) {
     return common::make_error_inval();
   }
 
@@ -173,9 +173,12 @@ common::Error GenStatisticRequest(uint32_t exec_count, std::string* request) {
   common::system_info::SystemInfo inf = common::system_info::currentSystemInfo();
 
   json_object* os_json = json_object_new_object();
-  json_object_object_add(os_json, STATISTIC_OS_NAME_FIELD, json_object_new_string(inf.GetName().c_str()));
-  json_object_object_add(os_json, STATISTIC_OS_VERSION_FIELD, json_object_new_string(inf.GetVersion().c_str()));
-  json_object_object_add(os_json, STATISTIC_OS_ARCH_FIELD, json_object_new_string(inf.GetArch().c_str()));
+  const std::string os_name = inf.GetName();
+  json_object_object_add(os_json, STATISTIC_OS_NAME_FIELD, json_object_new_string(os_name.c_str()));
+  const std::string os_version = inf.GetVersion();
+  json_object_object_add(os_json, STATISTIC_OS_VERSION_FIELD, json_object_new_string(os_version.c_str()));
+  const std::string os_arch = inf.GetArch();
+  json_object_object_add(os_json, STATISTIC_OS_ARCH_FIELD, json_object_new_string(os_arch.c_str()));
   json_object_object_add(stats_json, STATISTIC_OS_FIELD, os_json);
 
   json_object* project_json = json_object_new_object();
@@ -183,7 +186,7 @@ common::Error GenStatisticRequest(uint32_t exec_count, std::string* request) {
   json_object_object_add(project_json, STATISTIC_PROJECT_VERSION_FIELD, json_object_new_string(PROJECT_VERSION));
   json_object_object_add(project_json, STATISTIC_PROJECT_ARCH_FIELD, json_object_new_string(PROJECT_ARCH));
 #ifndef IS_PUBLIC_BUILD
-  json_object_object_add(project_json, STATISTIC_OWNER_FIELD, json_object_new_string(USER_SPECIFIC_LOGIN));
+  json_object_object_add(project_json, STATISTIC_OWNER_FIELD, json_object_new_string(login.c_str()));
 #endif
   json_object_object_add(project_json, STATISTIC_PROJECT_EXEC_COUNT_FIELD,
                          json_object_new_int64(static_cast<int64_t>(exec_count)));

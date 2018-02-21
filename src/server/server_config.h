@@ -18,7 +18,7 @@ common::Error ParseSubscriptionStateResponce(const std::string& data, bool* is_o
 common::Error GenVersionRequest(std::string* request);
 common::Error ParseVersionResponce(const std::string& data, std::string* version_str);
 
-common::Error GenStatisticRequest(uint32_t exec_count, std::string* request);
+common::Error GenStatisticRequest(const std::string& login, uint32_t exec_count, std::string* request);
 common::Error ParseSendStatisticResponce(const std::string& data, bool* is_sent);
 
 }  // namespace server

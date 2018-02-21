@@ -25,7 +25,8 @@
 namespace fastonosql {
 namespace gui {
 
-StatisticSender::StatisticSender(uint32_t exec_count, QObject* parent) : QObject(parent), exec_count_(exec_count) {}
+StatisticSender::StatisticSender(const std::string& login, uint32_t exec_count, QObject* parent)
+    : QObject(parent), login_(login), exec_count_(exec_count) {}
 
 void StatisticSender::routine() {
 #if defined(FASTONOSQL)
@@ -42,7 +43,7 @@ void StatisticSender::routine() {
   }
 
   std::string request;
-  common::Error request_gen_err = server::GenStatisticRequest(exec_count_, &request);
+  common::Error request_gen_err = server::GenStatisticRequest(login_, exec_count_, &request);
   if (request_gen_err) {
     emit statisticSended(false);
     err = client.Close();
