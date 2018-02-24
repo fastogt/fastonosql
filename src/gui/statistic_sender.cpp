@@ -26,7 +26,7 @@ namespace fastonosql {
 namespace gui {
 
 StatisticSender::StatisticSender(const std::string& login, uint32_t exec_count, QObject* parent)
-    : QObject(parent), login_(login), exec_count_(exec_count) {}
+    : QObject(parent), exec_count_(exec_count), login_(login) {}
 
 void StatisticSender::routine() {
 #if defined(FASTONOSQL)
