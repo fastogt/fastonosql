@@ -47,9 +47,7 @@ void StatisticSender::routine() {
   if (request_gen_err) {
     emit statisticSended(false);
     err = client.Close();
-    if (err) {
-      DNOTREACHED();
-    }
+    DCHECK(!err) << "Close client error: " << err->GetDescription();
     return;
   }
 
@@ -58,9 +56,7 @@ void StatisticSender::routine() {
   if (err) {
     emit statisticSended(false);
     err = client.Close();
-    if (err) {
-      DNOTREACHED();
-    }
+    DCHECK(!err) << "Close client error: " << err->GetDescription();
     return;
   }
 
@@ -70,24 +66,12 @@ void StatisticSender::routine() {
   if (err) {
     emit statisticSended(false);
     err = client.Close();
-    if (err) {
-      DNOTREACHED();
-    }
+    DCHECK(!err) << "Close client error: " << err->GetDescription();
     return;
   }
 
-  bool is_sent;
-  common::Error parse_error = server::ParseSendStatisticResponce(stat_reply, &is_sent);
-  if (parse_error) {
-    emit statisticSended(false);
-    err = client.Close();
-    if (err) {
-      DNOTREACHED();
-    }
-    return;
-  }
-
-  emit statisticSended(is_sent);
+  server::JsonRPCError jerror = server::ParseSendStatisticResponce(stat_reply);
+  emit statisticSended(!jerror);
   err = client.Close();
   DCHECK(!err) << "Close client error: " << err->GetDescription();
 }

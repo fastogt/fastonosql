@@ -150,14 +150,14 @@ int main(int argc, char* argv[]) {
     return EXIT_FAILURE;
   }
 
-  bool is_ok;
-  common::Error parse_error = fastonosql::server::ParseSubscriptionStateResponce(subscribe_reply, &is_ok);
-  if (parse_error || !is_ok) {
+  fastonosql::server::JsonRPCError jerror = fastonosql::server::ParseSubscriptionStateResponce(subscribe_reply);
+  if (jerror) {
     err = client.Close();
-    if (err) {
-      DNOTREACHED();
-    }
-    QMessageBox::critical(nullptr, fastonosql::translations::trPassword, QObject::tr("Invalid password, bye."));
+    DCHECK(!err) << "Close client error: " << err->GetDescription();
+    std::string message = jerror->GetMessage();
+    QString qmessage;
+    common::ConvertFromString(message, &qmessage);
+    QMessageBox::critical(nullptr, fastonosql::translations::trPassword, QObject::tr("%1, bye.").arg(qmessage));
     return EXIT_FAILURE;
   }
 #endif

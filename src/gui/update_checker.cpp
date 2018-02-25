@@ -77,7 +77,7 @@ void UpdateChecker::routine() {
   }
 
   std::string version_str;
-  common::Error parse_error = server::ParseVersionResponce(version_reply, &version_str);
+  server::JsonRPCError parse_error = server::ParseVersionResponce(version_reply, &version_str);
   if (parse_error) {
     emit versionAvailibled(false, QString());
     err = client.Close();

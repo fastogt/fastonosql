@@ -1218,12 +1218,14 @@ SET(HEADERS
   ${HEADERS_PROXY}
   ${HEADERS_TRANSLATIONS}
   ${CMAKE_SOURCE_DIR}/src/server/server_config.h
+  ${CMAKE_SOURCE_DIR}/src/server/json_rpc_error.h
 )
 SET(SOURCES
   ${SOURCES_GUI}
   ${SOURCES_PROXY}
   ${SOURCES_TRANSLATIONS}
   ${CMAKE_SOURCE_DIR}/src/server/server_config.cpp
+  ${CMAKE_SOURCE_DIR}/src/server/json_rpc_error.cpp
 )
 
 QT5_WRAP_CPP(MOC_FILES ${HEADERS_TOMOC})
