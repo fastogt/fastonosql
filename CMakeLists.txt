@@ -3,12 +3,11 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.6.3) # OPENSSL_USE_STATIC_LIBS
 
 SET(BRANDING_PROJECT_NAME "FastoNoSQL" CACHE STRING "Branding for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_VERSION "1.17.3.0" CACHE STRING "Branding version for ${BRANDING_PROJECT_NAME}") #default
-SET(BRANDING_PROJECT_BUILD_TYPE_VERSION "alfa" CACHE STRING "Build version type for ${BRANDING_PROJECT_NAME}") #default
+SET(BRANDING_PROJECT_BUILD_TYPE_VERSION "rc" CACHE STRING "Build version type for ${BRANDING_PROJECT_NAME}") #default
   #possible variables: alfa, beta, rc, release
 
 SET(BRANDING_PROJECT_DOMAIN "https://www.fastonosql.com" CACHE STRING "Branding domain url for ${BRANDING_PROJECT_NAME}") #default
-SET(BRANDING_PROJECT_DOWNLOAD_LINK "https://fastonosql.com/login" CACHE 
-STRING "Branding download root url for ${BRANDING_PROJECT_NAME}")
+SET(BRANDING_PROJECT_DOWNLOAD_LINK "https://fastonosql.com/login" CACHE STRING "Branding download root url for ${BRANDING_PROJECT_NAME}")
 SET(BRANDING_PROJECT_COMPANYNAME "FastoGT" CACHE STRING "Company name for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_COMPANYNAME_DOMAIN "http://www.fastogt.com" CACHE STRING "Internet domain name company for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_MAINTAINER_MAIL "support@fastogt.com" CACHE STRING "Internet mail address mainteiner of ${BRANDING_PROJECT_NAME}") #default
