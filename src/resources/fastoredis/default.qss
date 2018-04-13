@@ -1,0 +1,4 @@
+QSplitter::handle { background-color: #C2C7CB }
+QMainWindow::separator { border: none; background-color: #C2C7CB; width: 1; height: 1 }
+QToolBar { border: none; }
+QMainWindow > QToolBar { border-bottom: 1px solid #C2C7CB; }

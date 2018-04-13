@@ -1,0 +1,463 @@
+1.16.3 /
+[Alexandr Topilski]
+- Added examples for main commands
+
+1.16.2 / April 4, 2018
+[Alexandr Topilski]
+- JSONDUMP command for all databases
+- Unicode view
+
+1.16.1 / March 28, 2018
+[Alexandr Topilski]
+- Ban users
+
+1.16.0 / March 27, 2018
+[Alexandr Topilski]
+- New trials mode
+
+1.15.7 / March 17, 2018
+[Alexandr Topilski]
+- Compiler flags
+- Up Openssl to 1.1.0g version
+
+1.15.6 / March 12, 2018
+[Alexandr Topilski]
+- First/Last name
+
+1.15.5 / March 8, 2018
+[Alexandr Topilski]
+- Update QScintilla to version 2.10.3
+
+1.15.4 / February 28, 2018
+[Alexandr Topilski]
+- Sync password remote
+
+1.15.3 / February 17, 2018
+[Alexandr Topilski]
+- More compression views
+
+1.15.2 / February 10, 2018
+[Alexandr Topilski]
+- Json rpc for statistic/version
+
+1.15.1 / February 1, 2018
+[Alexandr Topilski]
+- Fix password dialog
+
+1.14.1 / January 17, 2018
+[Alexandr Topilski]
+- CONFIG GET databases different behavior than in Redis
+- Runtime SSH password
+- Update external libraries
+
+1.14.0 / January 10, 2018
+[Alexandr Topilski]
+- Save/Restore MainWindow position
+- Save Json fixes
+
+1.13.3 / January 2, 2018
+[Alexandr Topilski]
+- How to use dialog
+- Bug fixes
+
+1.13.2 / December 30, 2017
+[Alexandr Topilski]
+- #80 can't connect using ssh
+- rebloom commands support
+
+1.13.1 / December 21, 2017
+[Alexandr Topilski]
+- SSH input checks
+- Text view combobox
+- Retina display support
+
+1.13.0 / December 14, 2017
+[Alexandr Topilski]
+- Verify private user password
+- UI fixes
+- Is public version now trial
+
+1.12.1 / December 5, 2017
+[Alexandr Topilski]
+- Check update fixes
+
+1.12.0 / December 5, 2017
+[Alexandr Topilski]
+- XADD command UI handling 
+- XRANGE command UI handling 
+- Support streams type
+- Keys displaying strategy
+- Clone connection functionality
+- Fixed history workflow
+- XML viewer
+
+1.11.0 / November 26, 2017
+[Alexandr Topilski]
+- Fixed download links
+- Validate json
+
+1.10.0 / November 22, 2017
+[Alexandr Topilski]
+- EULA dialog
+- Full support JSON.GET/JSON.SET commands
+- Basic support RediSearch, redis-graph types 
+- Json keys validation
+- MGET command UI handling
+- PEXPIRE command UI handling
+- PTTL command UI handling
+- MSET command UI handling
+- MSETNX command UI handling
+
+1.9.1 / November 4, 2017
+[Alexandr Topilski]
+- Validate server commands
+- Commands complex value
+- Hex editor save value
+
+1.9.0 / October 28, 2017
+[Alexandr Topilski]
+- redis-graph commands support
+- redisearch commands support
+- rejson commands support
+- neural-redis commands support
+- Handle runtime commands
+
+1.8.8 / October 23, 2017
+[Alexandr Topilski]
+- Bug fixes
+- Stabilization
+
+1.8.7 / October 20, 2017
+[Alexandr Topilski]
+- Decrement becomes self increment #74
+- Send statistic
+- Cant save config and restore #73
+
+1.8.6 / October 12, 2017
+[Alexandr Topilski]
+- Optimization in key inserting routine
+- Bug fixes
+
+1.8.5 / October 11, 2017
+[Alexandr Topilski]
+- UI settings layout changed, without backward compatibility
+- Changed displaying of namespace
+- Complex namespace separator
+
+1.8.4 / October 10, 2017
+[Alexandr Topilski]
+- Bug fixes
+
+1.8.3 / October 2, 2017
+[Alexandr Topilski]
+- Ui improvements
+
+1.8.2 / September 27, 2017
+[Alexandr Topilski]
+- Move web links into "Help" menu #69
+- [Windows] Processor featuring BMI2 extensions required #45
+- FastoNoSQL silently fails to launch, because it mistakenly assumes my CPU supports AVX #29
+- The Windows Error Reporting GUI fails to appear when FastoNoSQL crashes #28
+
+1.8.1 / September 19, 2017
+[Alexandr Topilski]
+- CONFIG GET does not work #43
+
+1.8.0 / September 15, 2017
+[Alexandr Topilski]
+- SSL connection (Azure service)
+- Crash on ubuntu 16.04 when running transaction on Redis #42
+
+1.7.1 / August 17, 2017
+[Alexandr Topilski]
+- Bug fixes
+
+1.7.0 / August 15, 2017
+[Alexandr Topilski]
+- Multi selection in explorer tree
+- Binary keys support
+- Fix Export/Import settings
+
+1.6.1 / August 5, 2017
+[Alexandr Topilski]
+- Https server for fastonosql.com
+- External libs info
+
+1.6.0 / Jule 31, 2017
+[Alexandr Topilski]
+- Snappy view
+- Added BITFIELD command
+- #26 Different JsonFormat for better readable json
+- #68 Don't show "Check version" modal on every start
+- #71 Bug: Crashes on windows if key doesn't exist
+- Update QScintilla to version 2.10.1
+- Update libssh2 sources to version 1.8.1 dev
+
+1.5.1 / May 18, 2017
+[Alexandr Topilski]
+- Bug fixes
+
+1.5.0 / Fabruary 2, 2017
+[Alexandr Topilski]
+- Pub/Sub dialog
+- DECR UI handling
+- DECRBY UI handling
+- Fix text editor value change
+
+1.4.1 / January 12, 2017
+[Alexandr Topilski]
+- #19 failled to load xcb plugin
+
+1.4.0 / December 30, 2016 
+[Alexandr Topilski]
+- Font size preference
+
+1.3.0 / December 17, 2016
+[Alexandr Topilski]
+- Ui bug fixes
+- Validate input
+- LPUSH UI handling
+- SADD UI handling
+- ZADD UI handling
+- HMSET UI handling
+- INCR UI handling
+- INCRBY UI handling
+- INCRBYFLOAT UI handling
+- ZETEX UI handling
+- ZETNX UI handling
+
+1.2.0 / December 3, 2016
+[Alexandr Topilski]
+- Help command
+- Common api for databases
+- Load Databases - Amazon Elastic Cache - Redis #65
+- TTL loop
+- Update libssh2 sources to version 1.8.0
+
+1.1.1 / November 23, 2016
+[Alexandr Topilski]
+Fix rpm package
+
+1.1.0 / November 19, 2016
+[Alexandr Topilski]
+- Quit function
+- New Connection setting dialog
+- Fix spaces in db path
+
+1.0.0 / October 21, 2016
+[Alexandr Topilski]
+- Sort filter keys
+- Bug fixes
+
+0.9.4 / October 15, 2016
+[Alexandr Topilski]
+- Rename command
+- Advanced options for execute command
+- Watch key
+- Edit key menu
+- Check commands args
+
+0.9.3 / October 1, 2016
+[Alexandr Topilski]
+- Select db from console
+- Console key(set/del/ttl) handling
+
+0.9.2 / September 17, 2016
+[Alexandr Topilski]
+- Set ttl context menu
+
+0.9.1 / August 6, 2016
+[Alexandr Topilski]
+- Long size command fixes
+- Statitstics module
+- Ui bug fixes
+
+0.9.0 / Jule 17, 2016
+[Alexandr Topilski]
+- Stable sentinel connection
+- Stable cluster connection
+- Stable create keys dialog
+
+0.8.4 / Jule 9, 2016
+[Alexandr Topilski]
+- Commands update
+- Update QScintilla to version 2.9.2
+- Update libssh2 to version 1.7.0
+- Crash application on running "Discovery" under Sentinel Connection #62 
+
+0.8.3 / May 7, 2016
+[Alexandr Topilski]
+- Sentinel support
+
+0.8.2 / April 30, 2016
+[Alexandr Topilski]
+- Server roles
+- Clear database
+- Property to change font globally
+- Config version
+- Folders for connections
+- Keys namespaces
+
+0.8.1 / February 20, 2016
+[Alexandr Topilski]
+- Fix some memory leaks
+
+0.8.0 / January 7, 2016
+[Alexandr Topilski]
+- Redis cluster discovery button doesn't work with protected Redis configuration #59 
+- Edit existing connection settings doesn't show existing parameter values #58 
+- Up hiredis sources to version 0.13.3
+
+0.7.9 / October 18, 2015
+[Alexandr Topilski]
+- Font selection for widgets
+- Hex view for output data
+- HGETALL for hash values
+
+0.7.8 / September 19, 2015
+[Alexandr Topilski]
+- Clear history
+- Logging mseconds option
+- Not able to view Graphical History Chart on Windows #57 
+- Bugs fixes
+- i386 build for windows
+
+0.7.7 / September 5, 2015
+[Alexandr Topilski]
+- Package installation fails on Ubuntu 14 #56
+- Added social buttons
+
+0.7.6 / August 22, 2015
+[Alexandr Topilski]
+- Update hiredis sources
+- Sentinel commands support
+- Calltips for commands (Press '(' in console after command)
+- Export/import settings to encrypted file
+- Double click show value for keys
+- Display value as readable json
+- Save value from text view
+- View key dialog direct TTL value change
+- Bugs fixes
+
+0.7.5 / August 10, 2015
+[Alexandr Topilski]
+- Update libssh2 sources
+- Resolve ssh_address for Redis connection
+- SSH default path for private key(~/.ssh/id_rsa) and for public(~/.ssh/id_rsa.pub)
+- TTL calculate for key
+- Redis driver code optimization
+- Fix crash lined with double-clicked in settings dialog
+
+0.7.4 / Jule 29, 2015
+[Alexandr Topilski]
+- Display db name in console
+- Auto open console preference 
+
+0.7.3 / April 18, 2015
+[Alexandr Topilski]
+- View keys dialog
+- Redis database size
+- Update hiredis and redis-cli sources
+- Create Redis server password
+- Setup max connection on server
+
+0.7.2 / March 28, 2015
+[Alexandr Topilski]
+- Redis clusters basic support
+- Redis clusters discovery
+- Ability to disable autocompletion
+- Redis subscribe implementation
+- Clear recent connections action
+- Find panel for all custom editors
+- Remove python/lua console dialog
+
+0.7.1 / March 14, 2015
+[Alexandr Topilski]
+- Bug fixes
+- History for SSDB
+- Create key value dialog
+- Recent connections menu
+
+0.7.0 / February 28, 2015
+[Alexandr Topilski]
+- SSDB database support http://ssdb.io/
+- Info and history for SSDB
+- Redis kyes loading by pattern
+- Fix bug with permission app
+- Test connection functionality
+- Fix displaying Redis keys(#51)
+
+0.6.2 / February 14, 2015
+[Alexandr Topilski]
+- Update design
+- Info and history for memcached
+- Delete key from explorer tree(#48)
+- Android holo theme
+- In place edit memcached
+
+0.6.1 / February 7, 2015
+[Alexandr Topilski]
+- In place edit value
+- Load databases for Redis
+- Conversion dialog
+- Set default Redis database
+- Load Redis database/keys in explorer tree
+- Context menu for Android
+
+0.6.0 / January 25, 2015
+[Alexandr Topilski]
+- MsgPack visualization output
+- Lua console(without modules)
+- Beta android version
+- Memcached added (incr, decr, delete, flush_all, stats, version) functions
+- Not 64-bit on Win?(#44)
+
+0.5.6 / January 10, 2015
+[Alexandr Topilski]
+- Remove boost library dependence
+- Move to C++11 standart
+- Server history (only Redis)
+- Memcached support(only basic functions)
+- Memcached sasl connection
+- Shutdown functionality
+- Backup/Import rdb files only localhost version
+
+0.4.5 / December 27, 2014
+[Alexandr Topilski]
+- Python embedded
+
+0.3.5 / December 3, 2014
+[Alexandr Topilski]
+- Find support for output widget
+- Key shortcuts
+- Fixed delemitr bug
+
+0.3.4 / December 3, 2014
+[Alexandr Topilski]
+- Update redis-cli sources to version 2.9.999
+- Implement latency mode
+- Implement slave mode
+- Implement rdb mode
+- Implement bigkeys mode
+- Implement stat mode
+- Implement scan mode
+
+0.2.3 / November 24, 2014
+[Alexandr Topilski]
+- Added check updates functionality
+- Full utf-8 support
+- Help keyword
+- View result as text/table/tree
+- TextView show as json or raw text
+- FreeBSD support
+
+0.1.0 / November 6, 2014
+[Alexandr Topilski]
+- Fixed utf conversions string problem
+- Added translation support
+- Fixed server information displaying
+- Added SSH tunel support
+- Fixed start on windows machine
+
+[Denis Klimenko]
+- Fixed dmg build

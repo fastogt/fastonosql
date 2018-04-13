@@ -1,0 +1,5 @@
+---
+BasedOnStyle:  Chromium
+ColumnLimit:     120
+Standard: Cpp11
+...

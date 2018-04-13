@@ -1,0 +1,438 @@
+1.17.3 /
+[Alexandr Topilski]
+- Added examples for main commands
+
+1.17.2 / April 4, 2018
+[Alexandr Topilski]
+- JSONDUMP command for all databases
+- Unicode view
+
+1.17.1 / March 28, 2018
+[Alexandr Topilski]
+- Ban users
+
+1.17.0 / March 27, 2018
+[Alexandr Topilski]
+- New trials mode
+
+1.16.7 / March 17, 2018
+[Alexandr Topilski]
+- Compiler flags
+- Up Openssl to 1.1.0g version
+
+1.16.6 / March 12, 2018
+[Alexandr Topilski]
+- First/Last name
+
+1.16.5 / March 8, 2018
+[Alexandr Topilski]
+- [Unqlite] Up sources to version 1.1.8
+- Update QScintilla to version 2.10.3
+
+1.16.4 / February 28, 2018
+[Alexandr Topilski]
+- Sync password remote
+
+1.16.3 / February 17, 2018
+[Alexandr Topilski]
+- More compression views
+
+1.16.2 / February 10, 2018
+[Alexandr Topilski]
+- Json rpc for statistic/version
+- [RocksDB] LZ4 compression support
+- [RocksDB] Update sources to version 5.10.0
+
+1.16.1 / February 1, 2018
+[Alexandr Topilski]
+- Fix password dialog
+
+1.16.0 / January 28, 2018
+[Alexandr Topilski]
+- Pika db first step integration
+- [Redis] Redirect requests to cluster nodes
+- [Redis] Up hiredis sources to version 0.13.3
+- [Redis] Sentinel type
+
+1.15.1 / January 17, 2018
+[Alexandr Topilski]
+- CONFIG GET databases
+- Runtime SSH password
+- [LevelDB] Compression options
+- [RocksDB] Compression options
+- Update external libraries
+
+1.15.0 / January 10, 2018
+[Alexandr Topilski]
+- Save/Restore MainWindow position
+- Save Json fixes
+- [RocksDB] added support columns(database)
+
+1.14.3 / January 2, 2018
+[Alexandr Topilski]
+- How to use dialog
+- Bug fixes
+
+1.14.2 / December 30, 2017
+[Alexandr Topilski]
+- #80 can't connect using ssh
+- rebloom commands support
+
+1.14.1 / December 21, 2017
+[Alexandr Topilski]
+- [Redis] SSH input checks
+- Text view combobox
+- Retina display support
+
+1.14.0 / December 14, 2017
+[Alexandr Topilski]
+- Verify private user password
+- UI fixes
+- Is public version now trial
+
+1.13.1 / December 5, 2017
+[Alexandr Topilski]
+- Check update fixes
+- [ForestDB] by default in off state, possible builds from sources or in individual build request
+- [RocksDB] by default in off state, possible builds from sources or in individual build request
+
+1.13.0 / December 5, 2017
+[Alexandr Topilski]
+- [Redis] XADD command UI handling
+- [Redis] XRANGE command UI handling
+- [Redis] Support streams type
+- Keys displaying strategy
+- Clone connection functionality
+- Fixed history workflow
+- XML viewer
+
+1.12.0 / November 26, 2017
+[Alexandr Topilski]
+- Fixed download links
+- Validate json
+- [UpscaleDB] by default in off state, possible builds from sources or in individual build request
+
+1.11.0 / November 22, 2017
+[Alexandr Topilski]
+- EULA dialog
+- Json keys validation
+- [Redis] Full support JSON.GET/JSON.SET commands
+- [Redis] Basic support RediSearch, redis-graph types 
+- [Redis] MGET command UI handling
+- [Redis] PEXPIRE command UI handling
+- [Redis] PTTL command UI handling
+- [Redis] MSET command UI handling
+- [Redis] MSETNX command UI handling
+- [ForestDB] db size stat
+- [Unqlite] db size stat
+
+1.10.0 / November 4, 2017
+[Alexandr Topilski]
+- Validate server commands
+- Commands complex value
+- Hex editor save value
+
+1.9.10 / October 28, 2017
+[Alexandr Topilski]
+- [Redis] redis-graph commands support
+- [Redis] redisearch commands support
+- [Redis] rejson commands support
+- [Redis] neural-redis commands support
+- [Redis] Handle runtime commands
+
+1.9.5 / October 23, 2017
+[Alexandr Topilski]
+- [LMDB] Drop database
+- Stabilization
+
+1.9.4 / October 20, 2017
+[Alexandr Topilski]
+- [Redis] Decrement becomes self increment #74
+- [ForestDB] Create/Remove database
+- Send statistic
+- Cant save config and restore #73
+- Recover Android build
+
+1.9.3 / October 12, 2017
+[Alexandr Topilski]
+- Optimization in key inserting routine
+- Bug fixes
+
+1.9.2 / October 11, 2017
+[Alexandr Topilski]
+- [Memcached] fixed invalid INFO command execution
+- UI settings layout changed, without backward compatibility
+- Changed displaying of namespace
+- Complex namespace separator
+
+1.9.1 / October 10, 2017
+[Alexandr Topilski]
+- [SSDB] Auth command
+- [LMDB] Create/Remove database
+- Bug fixes
+
+1.9.0 / October 2, 2017
+[Alexandr Topilski]
+- [LMDB] Support single file db
+- Ui improvements
+
+1.8.2 / September 27, 2017
+[Alexandr Topilski]
+- Move web links into "Help" menu #69
+- [Windows] Processor featuring BMI2 extensions required #45
+- FastoNoSQL silently fails to launch, because it mistakenly assumes my CPU supports AVX #29
+- The Windows Error Reporting GUI fails to appear when FastoNoSQL crashes #28
+
+1.8.1 / September 19, 2017
+[Alexandr Topilski]
+- [Redis] CONFIG GET does not work #43
+
+1.8.0 / September 15, 2017
+[Alexandr Topilski]
+- [Redis] SSL connection (Azure service)
+- [Redis] Crash on ubuntu 16.04 when running transaction on Redis #42
+
+1.7.1 / August 17, 2017
+[Alexandr Topilski]
+- [SSDB] Fix SCAN command
+- Bug fixes
+
+1.7.0 / August 15, 2017
+[Alexandr Topilski]
+- [RocksDB] Comparator option
+- [LevelDB] Comparator option (IndexedDB comparator)
+- Binary keys support
+- Multi selection in explorer tree
+- Fix Export/Import settings
+
+1.6.1 / August 5, 2017
+[Alexandr Topilski]
+- Https server for fastonosql.com
+- External libs info
+
+1.6.0 / Jule 31, 2017
+[Alexandr Topilski]
+- [Memcached, SSDB] Can't save connection setting for memcached. #31
+- [Redis] Added BITFIELD command
+- [LevelDB] Update sources to version 1.20
+- [LMDB] Update sources to version 0.9.70
+- [RocksDB] Update sources to version 5.7.0
+- [SSDB] Update sources to version 1.9.4
+- [UpscaleDB] Update sources to version 2.2.1
+- Snappy view
+- ForestDB support
+- #26 Different JsonFormat for better readable json
+- #68 Don't show "Check version" modal on every start
+- #71 Bug: Crashes on windows if key doesn't exist
+- Update QScintilla to version 2.10.1
+- Update libssh2 sources to version 1.8.1 dev
+
+1.5.1 / May 18, 2017
+[Alexandr Topilski]
+- Bug fixes
+
+1.5.0 / Fabruary 2, 2017
+[Alexandr Topilski]
+- [Redis] Pub/Sub dialog
+- [Redis] DECR UI handling
+- [Redis] DECRBY UI handling
+- [Memcached] INCR UI handling
+- [Memcached] DECR UI handling
+- [Memcached] Append UI handling
+- [Memcached] Prepend UI handling
+- [Memcached] Replace UI handling
+- [Memcached] Add UI handling
+- Fix text editor value change
+
+1.4.1 / January 12, 2017
+[Alexandr Topilski]
+- #19 failled to load xcb plugin
+
+1.4.0 / December 30, 2016 
+[Alexandr Topilski]
+- Font size preference
+
+1.3.0 / December 17, 2016
+[Alexandr Topilski]
+- Ui bug fixes
+- Validate input
+- [Redis] LPUSH UI handling
+- [Redis] SADD UI handling
+- [Redis] ZADD UI handling
+- [Redis] HMSET UI handling
+- [Redis] INCR UI handling
+- [Redis] INCRBY UI handling
+- [Redis] INCRBYFLOAT UI handling
+- [Redis] INCRBYFLOAT UI handling
+- [Redis] ZETEX UI handling
+- [Redis] ZETNX UI handling
+
+1.2.0 / December 3, 2016
+[Alexandr Topilski]
+- Help command
+- Common api for databases
+- Update libssh2 sources to version 1.8.0
+- [Redis] Load Databases - Amazon Elastic Cache - Redis #65
+- [Redis] TTL loop
+- [Memcached] TTL loop
+- [SSDB] expire, ttl commands
+- [SSDB] TTL loop
+- [UnQLite] Update sources to version 1.1.7
+
+1.1.1 / November 23, 2016
+[Alexandr Topilski]
+- [RocksDB] Update sources to version 4.13.0
+- [LevelDB] Update sources to version 1.19
+- [LMDB] Read only db flag
+- [UnQLite] Read only db flag
+- Fix rpm package
+
+1.1.0 / November 19, 2016
+[Alexandr Topilski]
+- UpscaleDB support (Local DB)
+- Quit function
+- New Connection setting dialog
+- Fix spaces in db path
+
+1.0.0 / October 21, 2016
+[Alexandr Topilski]
+- Sort filter keys
+- Bug fixes
+
+0.7.4 / October 15, 2016
+[Alexandr Topilski]
+- Rename command
+- Advanced options for execute command
+- Watch key
+- Edit key menu
+- Check commands args
+
+0.7.3 / October 1, 2016
+[Alexandr Topilski]
+- [LevelDB] Use folder as db path
+- [RocksDB] Use folder as db path
+- [LMDB] Use folder as db path
+- [Redis] Select db from console
+- Console key(set/del/ttl) handling
+
+0.7.2 / September 17, 2016
+[Alexandr Topilski]
+- [Redis] Set ttl context menu
+- [Memcached] EXPIRE function
+
+0.7.1 / August 6, 2016
+[Alexandr Topilski]
+- [Memcached] content database and keys functionality
+- [Memcached] content database and keys functionality
+- [Memcached] DBKCOUNT function
+- Statitstics module
+- Long size command fixes
+- Ui bug fixes
+
+0.7.0 / Jule 17, 2016
+[Alexandr Topilski]
+- [Redis] Stable sentinel connection
+- [Redis] Stable cluster connection
+- Stable create keys dialog
+
+0.6.3 / Jule 9, 2016
+[Alexandr Topilski]
+- [Redis] Commands update
+- [SSDB] Up sources to version 1.9.3
+- [SSDB] DBKCOUNT command
+- [RocksDB] Up sources to version 4.8.0
+- Update QScintilla to version 2.9.2
+- Update libssh2 to version libssh 1.7.0
+- Crash application on running "Discovery" under Sentinel Connection #6 
+
+0.6.2 / May 7, 2016
+[Alexandr Topilski]
+- [Redis] Sentinel support
+
+0.6.1 / April 30, 2016
+[Alexandr Topilski]
+- [Memcached] Not connected to server, impossible to get discovery info #4
+- Server roles
+- Clear database
+- Property to change font globally
+- Config version
+- Folders for connections
+- Keys namespaces
+
+0.5.8 / Fabruary 20, 2016
+[Alexandr Topilski]
+- [UnQLite] Save data propertly
+- [UnQLite] Info command
+- [LevelDB] Stable on windows
+- [LMDB] Info command
+- Commands refactoring
+- Fix some memory leaks
+
+0.5.7 / January 7, 2016
+[Alexandr Topilski]
+- [Redis] Redis cluster discovery button doesn't work with protected Redis configuration #59 
+- [Redis] Edit existing connection settings doesn't show existing parameter values #58
+- [Redis] Up hiredis sources to version 0.13.3
+- [LMDB] Up sources to version 0.9.70
+- [LevelDB] Up sources to version 1.18
+- [SSDB] Up sources to version 1.9.2
+- [UnQLite] Up sources to version 1.1.6
+- [RocksDB] Up sources to version 4.4.0
+- Fix close connection crash
+
+0.5.6 / October 18, 2015
+[Alexandr Topilski]
+- [Redis] HGETALL for hash values
+- [Memcached] memcached connection fails with UNKNOWN READ #2 
+- Font selection for widgets
+- Hex view for output data
+
+0.5.5 / September 19, 2015
+[Alexandr Topilski]
+- [SSDB] dbsize extend command
+- [LevelDB] dbsize extend command
+- [RocksDB] dbsize extend command
+- Clear history
+- Logging mseconds option
+- Not able to view Graphical History Chart on Windows #5
+- UnQLite database support http://unqlite.org/
+- LMDB database support http://symas.com/mdb/
+- Bugs fixes
+- i386 build for windows
+
+0.3.5 / September 5, 2015
+[Alexandr Topilski]
+- [SSDB] Ssdb auth command #54
+- Package installation fails on Ubuntu 14 #56
+- RocksDB database support http://rocksdb.org/
+- Added social buttons
+
+0.2.5 / August 22, 2015
+[Alexandr Topilski]
+- Update hiredis sources
+- Sentinel commands support for Redis
+- Calltips for commands (Press '(' in console after command)
+- Export/import settings to encrypted file
+- Double click show value for keys
+- Display value as readable json
+- Save value from text view
+- Official SSDB logo
+- View key dialog direct TTL value change for Redis
+- Bugs fixes
+ 
+0.2.4 / August 10, 2015
+[Alexandr Topilski]
+- LevelDB database support http://leveldb.org/
+- Info and history for LevelDB
+- Update libssh2 sources
+- Resolve ssh_address for Redis connection
+- SSH default path for private key(~/.ssh/id_rsa) and for public(~/.ssh/id_rsa.pub)
+- SSDB update sources, added command support(qpush, qpop, qslice, qclear)
+- TTL calculate for key
+- Redis driver code optimization
+- Fix crash lined with double-clicked in settings dialog
+
+0.1.4 / Jule 29, 2015
+[Alexandr Topilski]
+- Display db name in console
+- Auto open console preference
