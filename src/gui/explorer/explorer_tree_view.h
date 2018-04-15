@@ -34,6 +34,7 @@ class ExplorerTreeModel;
 class ExplorerTreeView : public QTreeView {
   Q_OBJECT
  public:
+  typedef QTreeView base_class;
   explicit ExplorerTreeView(QWidget* parent);
 
  Q_SIGNALS:
@@ -113,6 +114,7 @@ class ExplorerTreeView : public QTreeView {
  protected:
   virtual void changeEvent(QEvent* ev) override;
   virtual void mouseDoubleClickEvent(QMouseEvent* ev) override;
+  virtual void keyPressEvent(QKeyEvent* event) override;
 
  private:
   void syncWithServer(proxy::IServer* server);

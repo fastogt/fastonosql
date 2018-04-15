@@ -23,6 +23,7 @@
 #include <QInputDialog>
 #include <QMenu>
 #include <QMessageBox>
+#include <QKeyEvent>
 
 #include <common/qt/convert2string.h>  // for ConvertToString
 #include <common/qt/utils_qt.h>        // for item
@@ -1075,6 +1076,13 @@ void ExplorerTreeView::mouseDoubleClickEvent(QMouseEvent* e) {
   }
 
   QTreeView::mouseDoubleClickEvent(e);
+}
+
+void ExplorerTreeView::keyPressEvent(QKeyEvent* event) {
+  if (event->key() == Qt::Key_Delete) {
+    deleteKey();
+  }
+  return base_class::keyPressEvent(event);
 }
 
 void ExplorerTreeView::syncWithServer(proxy::IServer* server) {
