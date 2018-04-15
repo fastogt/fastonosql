@@ -214,7 +214,7 @@ bool have_space(const std::string& data) {
 bool is_binary_data(const command_buffer_t& data) {
   for (size_t i = 0; i < data.size(); ++i) {
     unsigned char c = static_cast<unsigned char>(data[i]);
-    if (c < ' ') {  // should be hexed symbol
+    if (c < ' ' && c != '\r' && c != '\n') {  // should be hexed symbol
       return true;
     }
   }
