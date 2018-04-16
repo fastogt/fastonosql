@@ -19,7 +19,7 @@
 #include "core/db/leveldb/config.h"
 
 extern "C" {
-#include "sds.h"
+#include "sds_fasto.h"
 }
 
 #include <common/file_system/types.h>  // for prepare_path

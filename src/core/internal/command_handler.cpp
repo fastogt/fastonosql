@@ -19,7 +19,7 @@
 #include "core/internal/command_handler.h"
 
 extern "C" {
-#include "sds.h"
+#include "sds_fasto.h"
 }
 
 #include "core/command_holder.h"  // for CommandHolder

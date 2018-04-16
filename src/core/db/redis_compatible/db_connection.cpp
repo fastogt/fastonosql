@@ -20,6 +20,7 @@
 
 extern "C" {
 #include <hiredis/hiredis.h>
+#include "sds_fasto.h"
 }
 
 #include <common/file_system/string_path_utils.h>

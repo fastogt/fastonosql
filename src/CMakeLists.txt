@@ -1209,6 +1209,7 @@ ENDIF(BUILD_WITH_FORESTDB)
 
 SET(SOURCES_SDS
   third-party/sds/sds.c
+  third-party/sds/sds_fasto.c
 )
 
 IF (IS_PUBLIC_BUILD)

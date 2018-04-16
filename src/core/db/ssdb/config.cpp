@@ -19,7 +19,7 @@
 #include "core/db/ssdb/config.h"
 
 extern "C" {
-#include "sds.h"
+#include "sds_fasto.h"
 }
 
 #include <common/convert2string.h>  // for ConvertFromString

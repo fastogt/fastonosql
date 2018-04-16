@@ -21,7 +21,7 @@
 #include <lmdb.h>  // for mdb_txn_abort, MDB_val
 
 extern "C" {
-#include "sds.h"
+#include "sds_fasto.h"
 }
 
 #include <common/convert2string.h>

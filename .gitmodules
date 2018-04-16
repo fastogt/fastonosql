@@ -4,3 +4,6 @@
 [submodule "build/pybuild_utils"]
 	path = build/pybuild_utils
 	url = https://github.com/fastogt/pybuild_utils.git
+[submodule "src/third-party/sds"]
+	path = src/third-party/sds
+	url = https://github.com/fastogt/sds

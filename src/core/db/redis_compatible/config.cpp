@@ -19,7 +19,7 @@
 #include "core/db/redis_compatible/config.h"
 
 extern "C" {
-#include "sds.h"
+#include "sds_fasto.h"
 }
 
 #include <common/convert2string.h>  // for ConvertToString, etc
