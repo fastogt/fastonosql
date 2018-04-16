@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 extern "C" {
-#include "third-party/sds/sds.h"
+#include "third-party/sds/sds_fasto.h"
 }
 
 #include <json-c/json_object.h>
