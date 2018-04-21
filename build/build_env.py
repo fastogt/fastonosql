@@ -3,9 +3,9 @@ import os
 import shutil
 import sys
 
-from pybuild_utils.base import run_command
-from pybuild_utils.base import system_info
-from pybuild_utils.base import utils
+from pyfastogt import run_command
+from pyfastogt import system_info
+from pyfastogt import utils
 
 OPENSSL_SRC_ROOT = "https://www.openssl.org/source/"
 ARCH_OPENSSL_COMP = "gz"

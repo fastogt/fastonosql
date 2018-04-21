@@ -6,7 +6,7 @@ import sys
 import build
 import pika
 import os
-from pybuild_utils.base import system_info, utils
+from pyfastogt import system_info, utils
 
 
 def gen_routing_key(platform, arch) -> str:

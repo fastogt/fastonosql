@@ -5,8 +5,8 @@ import sys
 from datetime import datetime
 
 import build
-from pybuild_utils.base import system_info
-from pybuild_utils.base import utils
+from pyfastogt import system_info
+from pyfastogt import utils
 
 
 def print_usage():

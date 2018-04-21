@@ -4,9 +4,9 @@ import re
 import shutil
 import sys
 
-from pybuild_utils.base import run_command
-from pybuild_utils.base import system_info
-from pybuild_utils.base import utils
+from pyfastogt import run_command
+from pyfastogt import system_info
+from pyfastogt import utils
 
 
 def print_usage():
