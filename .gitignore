@@ -34,7 +34,10 @@ CMakeLists.txt.user
 *~
 
 # fastogt tmp files
+.idea/
 build/.idea/
+build/build_fastonosql_*/
+build/build_fastoredis_*/
 build_cmake/
 
 # project files
