@@ -225,22 +225,22 @@ class BuildRequest(object):
             os.chdir(abs_dir_path)
             raise ex
 
-    def build_leveldb(self, prefix_path):
+    def build_leveldb(self, cmake_line, make_install):
         abs_dir_path = self.build_dir_path_
         try:
             cloned_dir = utils.git_clone('https://github.com/fastogt/leveldb.git', abs_dir_path)
             os.chdir(cloned_dir)
 
-            make_leveldb = ['make', 'static']  # FIXME
+            os.mkdir('build_cmake_release')
+            os.chdir('build_cmake_release')
+            common_cmake_line = list(cmake_line)
+            common_cmake_line.append('-DBUILD_SHARED_LIBS=OFF')
+            common_cmake_line.append('-DLEVELDB_BUILD_TESTS=OFF')
+            common_cmake_line.append('-DLEVELDB_BUILD_BENCHMARKS=OFF')
+            cmake_policy = run_command.CmakePolicy(print_message)
             make_policy = run_command.CommonPolicy(print_message)
-            run_command.run_command_cb(make_leveldb, make_policy)
-
-            copy_leveldb_includes = ['cp', '-r', 'include/leveldb', '{0}/include'.format(prefix_path)]
-            copy_policy = run_command.CommonPolicy(print_message)
-            run_command.run_command_cb(copy_leveldb_includes, copy_policy)
-
-            copy_leveldb_libs = ['cp', 'out-static/libleveldb.a', '{0}/lib'.format(prefix_path)]
-            run_command.run_command_cb(copy_leveldb_libs, copy_policy)
+            run_command.run_command_cb(common_cmake_line, cmake_policy)
+            run_command.run_command_cb(make_install, make_policy)
             os.chdir(abs_dir_path)
         except Exception as ex:
             os.chdir(abs_dir_path)
@@ -350,7 +350,7 @@ class BuildRequest(object):
         self.build_libmemcached(prefix_path)
         self.build_unqlite(cmake_line, make_install)
         self.build_lmdb(prefix_path)
-        self.build_leveldb(prefix_path)
+        self.build_leveldb(cmake_line, make_install)
         self.build_rocksdb(cmake_line, make_install)
         self.build_upscaledb(prefix_path)
         self.build_forestdb(cmake_line, make_install)
