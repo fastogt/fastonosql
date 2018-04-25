@@ -281,7 +281,8 @@ void IDriver::timerEvent(QTimerEvent* event) {
 
       log_file_->Write(stamp);
       log_file_->Write(info->ToString());
-      log_file_->Flush();
+      common::ErrnoError errn = log_file_->Flush();
+      DCHECK(!errn);
     }
   }
   QObject::timerEvent(event);
