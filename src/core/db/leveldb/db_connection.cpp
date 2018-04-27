@@ -170,7 +170,7 @@ const ConstantCommandsArray g_commands = {CommandHolder(DB_HELP_COMMAND,
 }  // namespace leveldb
 template <>
 const char* ConnectionTraits<LEVELDB>::GetBasedOn() {
-  return "libleveldb";
+  return "leveldb";
 }
 
 template <>

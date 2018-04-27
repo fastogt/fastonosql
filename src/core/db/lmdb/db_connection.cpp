@@ -199,7 +199,7 @@ const ConstantCommandsArray g_commands = {CommandHolder(DB_HELP_COMMAND,
 }  // namespace lmdb
 template <>
 const char* ConnectionTraits<LMDB>::GetBasedOn() {
-  return "liblmdb";
+  return "lmdb";
 }
 
 template <>

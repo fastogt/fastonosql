@@ -295,7 +295,7 @@ void forestdb_close(fdb** context) {
 
 template <>
 const char* ConnectionTraits<FORESTDB>::GetBasedOn() {
-  return "libforestdb";
+  return "forestdb";
 }
 
 template <>

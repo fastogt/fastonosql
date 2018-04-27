@@ -2,6 +2,7 @@
 [Alexandr Topilski]
 - [LevelDB] Update sources to version 1.20
 - [RocksDB] Update sources to version 5.13.0
+- Update QScintilla to version 2.10.4
 
 1.17.4 / April 20, 2018
 [Alexandr Topilski]

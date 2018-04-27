@@ -215,7 +215,7 @@ const ConstantCommandsArray g_commands = {CommandHolder(DB_HELP_COMMAND,
 
 template <>
 const char* ConnectionTraits<ROCKSDB>::GetBasedOn() {
-  return "librocksdb";
+  return "rocksdb";
 }
 
 template <>
