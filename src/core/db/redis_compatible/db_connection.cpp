@@ -93,8 +93,8 @@ common::Error CreateConnection(const Config& config, const SSHInfo& sinfo, Nativ
     } else if (ssh_method == SSHInfo::PASSWORD) {
       rssh_method = SSH_PASSWORD;
     }
-    lcontext = redisConnect(host, port, ssh_address, ssh_port, username, password, public_key, private_key, passphrase,
-                            is_ssl, rssh_method);
+    lcontext = redisConnectSSH(host, port, ssh_address, ssh_port, username, password, public_key, private_key,
+                               passphrase, is_ssl, rssh_method);
   }
 
   if (!lcontext) {
