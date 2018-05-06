@@ -175,10 +175,10 @@ class BuildRequest(object):
             cloned_dir = utils.git_clone('https://github.com/fastogt/hiredis.git', abs_dir_path)
             os.chdir(cloned_dir)
 
-            make_horedis = ['make', 'LIBSSH2_ENABLED=ON', 'OPENSSL_ROOT_DIR={0}'.format(prefix_path),
+            make_hiredis = ['make', 'LIBSSH2_ENABLED=ON', 'OPENSSL_ROOT_DIR={0}'.format(prefix_path),
                             'PREFIX={0}'.format(prefix_path), 'install']
             make_policy = run_command.CommonPolicy(print_message)
-            run_command.run_command_cb(make_horedis, make_policy)
+            run_command.run_command_cb(make_hiredis, make_policy)
             os.chdir(abs_dir_path)
         except Exception as ex:
             os.chdir(abs_dir_path)
