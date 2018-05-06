@@ -169,6 +169,20 @@ class BuildRequest(object):
             os.chdir(abs_dir_path)
             raise ex
 
+    def build_hiredis(self, prefix_path):
+        abs_dir_path = self.build_dir_path_
+        try:
+            cloned_dir = utils.git_clone('https://github.com/fastogt/hiredis.git', abs_dir_path)
+            os.chdir(cloned_dir)
+
+            make_horedis = ['make', 'LIBSSH2_ENABLED=ON', 'PREFIX={0}'.format(prefix_path), 'install']  # FIXME
+            make_policy = run_command.CommonPolicy(print_message)
+            run_command.run_command_cb(make_horedis, make_policy)
+            os.chdir(abs_dir_path)
+        except Exception as ex:
+            os.chdir(abs_dir_path)
+            raise ex
+
     def build_libmemcached(self, prefix_path):
         abs_dir_path = self.build_dir_path_
         try:
@@ -346,7 +360,8 @@ class BuildRequest(object):
         self.build_qscintilla(cmake_line, make_install)
         self.build_common(cmake_line, make_install)
 
-        # databases builds
+        # databases libs builds
+        self.build_hiredis(prefix_path)
         self.build_libmemcached(prefix_path)
         self.build_unqlite(cmake_line, make_install)
         self.build_lmdb(prefix_path)
