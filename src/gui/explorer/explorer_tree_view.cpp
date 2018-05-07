@@ -21,9 +21,9 @@
 #include <QFileDialog>
 #include <QHeaderView>
 #include <QInputDialog>
+#include <QKeyEvent>
 #include <QMenu>
 #include <QMessageBox>
-#include <QKeyEvent>
 
 #include <common/qt/convert2string.h>  // for ConvertToString
 #include <common/qt/utils_qt.h>        // for item
