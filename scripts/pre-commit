@@ -1,0 +1,11 @@
+#!/bin/sh
+
+for file in `git diff-index --name-only HEAD`; do
+	case "${file#*.}" in
+	cpp|c|h)
+		clang-format -i "${file}"
+		git add ${file}
+		;;
+	esac
+done
+
