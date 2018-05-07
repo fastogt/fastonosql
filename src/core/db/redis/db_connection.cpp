@@ -705,7 +705,7 @@ const ConstantCommandsArray g_commands = {
                   1,
                   0,
                   CommandInfo::Native,
-                  &CommandsApi::GetRedis),
+                  &CommandsApi::Get),
     CommandHolder("GETBIT",
                   "<key> <offset>",
                   "Returns the bit value at offset in the "
