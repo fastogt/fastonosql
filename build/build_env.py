@@ -104,7 +104,7 @@ class BuildRequest(object):
     def build_libssh2(self, cmake_line, prefix_path, make_install):
         abs_dir_path = self.build_dir_path_
         try:
-            cloned_dir = utils.git_clone('https://github.com/fastogt/libssh2.git', abs_dir_path)
+            cloned_dir = utils.git_clone('https://github.com/topilski/libssh2.git', abs_dir_path)
             os.chdir(cloned_dir)
 
             os.mkdir('build_cmake_release')
@@ -355,7 +355,7 @@ class BuildRequest(object):
         # abs_dir_path = self.build_dir_path_
 
         self.build_snappy(cmake_line, make_install)
-        self.build_openssl(prefix_path)
+        self.build_openssl(prefix_path)#
         self.build_libssh2(cmake_line, prefix_path, make_install)
         self.build_jsonc(prefix_path)
         self.build_qscintilla(cmake_line, make_install)
@@ -363,13 +363,13 @@ class BuildRequest(object):
 
         # databases libs builds
         self.build_hiredis(prefix_path)
-        self.build_libmemcached(prefix_path)
+        self.build_libmemcached(prefix_path) #
         self.build_unqlite(cmake_line, make_install)
         self.build_lmdb(prefix_path)
         self.build_leveldb(cmake_line, make_install)
         self.build_rocksdb(cmake_line, make_install)
-        self.build_upscaledb(prefix_path)
-        self.build_forestdb(cmake_line, make_install)
+        self.build_upscaledb(prefix_path) #
+        self.build_forestdb(cmake_line, make_install) #
 
 
 if __name__ == "__main__":
