@@ -61,6 +61,8 @@ class PreferencesDialog : public QDialog {
   QLineEdit* last_name_text_;
   QLabel* login_label_;
   QLineEdit* login_text_;
+  QLabel* type_label_;
+  QLineEdit* type_text_;
 
   // controls in general_box
   QGroupBox* general_box_;

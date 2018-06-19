@@ -39,6 +39,7 @@
 #define USER_FIRST_NAME "first_name"
 #define USER_LAST_NAME "last_name"
 #define USER_SUBSCRIPTION_STATE "subscription_state"
+#define USER_TYPE "type"
 #define USER_EXEC_COUNT "exec_count"
 #define USER_EXPIRE_TIME "expire_time"
 #define USER_ID "id"
@@ -124,6 +125,15 @@ common::Error ParseSubscriptionStateResponce(const std::string& data, UserInfo* 
   proxy::UserInfo::SubscriptionState st =
       static_cast<proxy::UserInfo::SubscriptionState>(json_object_get_int(jsubscription_state));
   lres.SetSubscriptionState(st);
+
+  json_object* jtype = NULL;
+  bool jtype_exist = json_object_object_get_ex(obj, USER_TYPE, &jtype);
+  if (!jtype_exist) {
+    json_object_put(obj);
+    return common::make_error_inval();
+  }
+  proxy::UserInfo::Type t = static_cast<proxy::UserInfo::Type>(json_object_get_int(jtype));
+  lres.SetType(t);
 
   json_object* jexec_count = NULL;
   bool jexec_count_exist = json_object_object_get_ex(obj, USER_EXEC_COUNT, &jexec_count);

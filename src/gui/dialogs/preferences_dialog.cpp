@@ -152,6 +152,8 @@ QWidget* PreferencesDialog::createMainTab() {
   profile_box_ = new QGroupBox;
   QVBoxLayout* profile_layout = new QVBoxLayout;
   QHBoxLayout* first_last_name_layout = new QHBoxLayout;
+  QHBoxLayout* login_type_layout = new QHBoxLayout;
+
   QHBoxLayout* first_name_layout = new QHBoxLayout;
   first_name_label_ = new QLabel;
   first_name_text_ = new QLineEdit;
@@ -183,9 +185,23 @@ QWidget* PreferencesDialog::createMainTab() {
   login_text_->setEnabled(false);
   login_layout->addWidget(login_label_);
   login_layout->addWidget(login_text_);
+  login_type_layout->addLayout(login_layout);
+
+  QHBoxLayout* type_layout = new QHBoxLayout;
+  type_label_ = new QLabel;
+  type_text_ = new QLineEdit;
+
+  std::string stype = common::ConvertToString(uinfo.GetType());
+  QString qtype;
+  common::ConvertFromString(stype, &qtype);
+  type_text_->setText(qtype);
+  type_text_->setEnabled(false);
+  type_layout->addWidget(type_label_);
+  type_layout->addWidget(type_text_);
+  login_type_layout->addLayout(type_layout);
 
   profile_layout->addLayout(first_last_name_layout);
-  profile_layout->addLayout(login_layout);
+  profile_layout->addLayout(login_type_layout);
   profile_box_->setLayout(profile_layout);
 
   // ui settings
@@ -276,6 +292,7 @@ void PreferencesDialog::retranslateUi() {
   first_name_label_->setText(translations::trFirstName + ":");
   last_name_label_->setText(translations::trLastName + ":");
   login_label_->setText(translations::trLogin + ":");
+  type_label_->setText(translations::trType + ":");
   send_statitsic_->setText(trSendStatistic);
   auto_check_updates_->setText(trAutoCheckUpd);
   auto_comletion_->setText(trShowAutoCompletion);

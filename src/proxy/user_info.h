@@ -28,6 +28,7 @@ typedef std::string user_id_t;
 class UserInfo {
  public:
   enum SubscriptionState { UNSUBSCIRBED = 0, SUBSCRIBED };
+  enum Type { USER = 0, SUPPORT = 1, OPEN_SOURCE = 2, ENTERPRISE = 3 };
   UserInfo();
   UserInfo(const std::string& login, const std::string& password);
 
@@ -45,6 +46,9 @@ class UserInfo {
   SubscriptionState GetSubscriptionState() const;
   void SetSubscriptionState(SubscriptionState state);
 
+  Type GetType() const;
+  void SetType(Type type);
+
   size_t GetExecCount() const;
   void SetExecCount(size_t count);
 
@@ -61,6 +65,7 @@ class UserInfo {
   std::string first_name_;
   std::string last_name_;
   SubscriptionState subscription_state_;
+  Type type_;
   size_t exec_count_;
   time_t expire_time_;
   user_id_t user_id_;
@@ -68,3 +73,8 @@ class UserInfo {
 
 }  // namespace proxy
 }  // namespace fastonosql
+
+namespace common {
+std::string ConvertToString(fastonosql::proxy::UserInfo::Type t);
+bool ConvertFromString(const std::string& from, fastonosql::proxy::UserInfo::Type* out);
+}  // namespace common

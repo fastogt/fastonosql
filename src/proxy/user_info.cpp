@@ -18,6 +18,12 @@
 
 #include "proxy/user_info.h"
 
+#include <common/macros.h>
+
+namespace {
+const std::string userTypes[] = {"USER", "SUPPORT", "OPEN_SOURCE", "ENTERPRISE"};
+}
+
 namespace fastonosql {
 namespace proxy {
 
@@ -27,6 +33,7 @@ UserInfo::UserInfo()
       first_name_(),
       last_name_(),
       subscription_state_(UNSUBSCIRBED),
+      type_(USER),
       exec_count_(0),
       expire_time_(0),
       user_id_() {}
@@ -37,6 +44,7 @@ UserInfo::UserInfo(const std::string& login, const std::string& password)
       first_name_(),
       last_name_(),
       subscription_state_(UNSUBSCIRBED),
+      type_(USER),
       exec_count_(0),
       expire_time_(0),
       user_id_() {}
@@ -77,6 +85,14 @@ void UserInfo::SetSubscriptionState(SubscriptionState state) {
   subscription_state_ = state;
 }
 
+UserInfo::Type UserInfo::GetType() const {
+  return type_;
+}
+
+void UserInfo::SetType(Type type) {
+  type_ = type;
+}
+
 size_t UserInfo::GetExecCount() const {
   return exec_count_;
 }
@@ -103,3 +119,23 @@ void UserInfo::SetUserID(user_id_t user_id) {
 
 }  // namespace proxy
 }  // namespace fastonosql
+
+namespace common {
+
+std::string ConvertToString(fastonosql::proxy::UserInfo::Type t) {
+  return userTypes[t];
+}
+
+bool ConvertFromString(const std::string& from, fastonosql::proxy::UserInfo::Type* out) {
+  for (size_t i = 0; i < SIZEOFMASS(userTypes); ++i) {
+    if (from == userTypes[i]) {
+      *out = static_cast<fastonosql::proxy::UserInfo::Type>(i);
+      return true;
+    }
+  }
+
+  NOTREACHED();
+  return false;
+}
+
+}  // namespace common
