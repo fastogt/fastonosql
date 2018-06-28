@@ -54,9 +54,12 @@ const QString trInput = QObject::tr("Key/Value input");
 namespace fastonosql {
 namespace gui {
 
-DbKeyDialog::DbKeyDialog(const QString& title, core::connectionTypes type, const core::NDbKValue& key, QWidget* parent)
+DbKeyDialog::DbKeyDialog(const QString& title,
+                         core::connectionTypes type,
+                         const core::NDbKValue& key,
+                         bool is_edit,
+                         QWidget* parent)
     : QDialog(parent), key_(key) {
-  bool is_edit = !key.Equals(core::NDbKValue());
   setWindowIcon(GuiFactory::GetInstance().GetIcon(type));
   setWindowTitle(title);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
@@ -140,15 +143,15 @@ DbKeyDialog::DbKeyDialog(const QString& title, core::connectionTypes type, const
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &DbKeyDialog::reject));
   layout->addWidget(buttonBox);
 
-  if (is_edit) {
-    QString qkey;
-    core::NKey key = key_.GetKey();
-    core::key_t raw_key = key.GetKey();
-    if (common::ConvertFromString(raw_key.GetHumanReadable(), &qkey)) {
-      key_edit_->setText(qkey);
-    }
-    key_edit_->setEnabled(false);
+  // sync keyname box
+  QString qkey;
+  core::NKey nkey = key_.GetKey();
+  core::key_t raw_key = nkey.GetKey();
+  if (common::ConvertFromString(raw_key.GetHumanReadable(), &qkey)) {
+    key_edit_->setText(qkey);
   }
+  key_edit_->setEnabled(!is_edit);
+
   types_combo_box_->setCurrentIndex(current_index);
   core::NValue val = key_.GetValue();
   syncControls(val.get());

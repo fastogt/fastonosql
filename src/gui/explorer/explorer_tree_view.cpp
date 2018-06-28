@@ -369,6 +369,8 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
     bool is_default = db && db->isDefault();
     bool is_connected = server->IsConnected();
 
+    menu.addAction(addKeyToBranchAction);
+    addKeyToBranchAction->setEnabled(is_default && is_connected);
     menu.addAction(removeBranchAction);
     removeBranchAction->setEnabled(is_default && is_connected);
     menu.exec(menuPoint);
@@ -768,7 +770,8 @@ void ExplorerTreeView::addKeyToBranch() {
     std::string full_name_str = node->keyTemplate("test");
     core::NKey raw_key(full_name_str);
     nkey.SetKey(raw_key);
-    DbKeyDialog loadDb(trCreateKeyForDbTemplate_1S.arg(node->name()), server->GetType(), nkey, this);
+    ExplorerDatabaseItem* node_db = node->db();
+    DbKeyDialog loadDb(trCreateKeyForDbTemplate_1S.arg(node_db->name()), server->GetType(), nkey, false, this);
     int result = loadDb.exec();
     if (result == QDialog::Accepted) {
       core::NDbKValue key = loadDb.GetKey();
@@ -813,7 +816,8 @@ void ExplorerTreeView::createKey() {
     }
 
     proxy::IServerSPtr server = node->server();
-    DbKeyDialog loadDb(trCreateKeyForDbTemplate_1S.arg(node->name()), server->GetType(), core::NDbKValue(), this);
+    DbKeyDialog loadDb(trCreateKeyForDbTemplate_1S.arg(node->name()), server->GetType(), core::NDbKValue(), false,
+                       this);
     int result = loadDb.exec();
     if (result == QDialog::Accepted) {
       core::NDbKValue key = loadDb.GetKey();
@@ -832,7 +836,7 @@ void ExplorerTreeView::editKey() {
     }
 
     proxy::IServerSPtr server = node->server();
-    DbKeyDialog loadDb(trEditKey_1S.arg(node->name()), server->GetType(), node->dbv(), this);
+    DbKeyDialog loadDb(trEditKey_1S.arg(node->name()), server->GetType(), node->dbv(), true, this);
     int result = loadDb.exec();
     if (result == QDialog::Accepted) {
       core::NDbKValue key = loadDb.GetKey();

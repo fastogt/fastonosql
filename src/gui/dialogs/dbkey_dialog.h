@@ -44,7 +44,8 @@ class DbKeyDialog : public QDialog {
 
   explicit DbKeyDialog(const QString& title,
                        core::connectionTypes type,
-                       const core::NDbKValue& key = core::NDbKValue(),
+                       const core::NDbKValue& key,
+                       bool is_edit,
                        QWidget* parent = Q_NULLPTR);
   core::NDbKValue GetKey() const;
 

@@ -525,9 +525,9 @@ std::string ExplorerNSItem::keyTemplate(const std::string& key_name) {
       return key_name_new;
     }
 
-    par = par->parent();
     ExplorerNSItem* ns = static_cast<ExplorerNSItem*>(par);
     key_name_new = ns->string_name() + ns_separator + key_name_new;
+    par = par->parent();
   }
 
   DNOTREACHED();
