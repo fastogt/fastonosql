@@ -114,21 +114,6 @@ class ExplorerDatabaseItem : public IExplorerTreeItem {
   const proxy::IDatabaseSPtr db_;
 };
 
-class ExplorerNSItem : public IExplorerTreeItem {
- public:
-  ExplorerNSItem(const QString& name, IExplorerTreeItem* parent);
-  ExplorerDatabaseItem* db() const;
-
-  virtual QString name() const override;
-  proxy::IServerSPtr server() const;
-  size_t keysCount() const;
-
-  void removeBranch();
-
- private:
-  QString name_;
-};
-
 class ExplorerKeyItem : public IExplorerTreeItem {
  public:
   ExplorerKeyItem(const core::NDbKValue& dbv,
@@ -155,12 +140,33 @@ class ExplorerKeyItem : public IExplorerTreeItem {
   void loadValueFromDb();
   void setTTL(core::ttl_t ttl);
 
+  std::string ns_separator() const;
+
  private:
   QString GetFullName() const;
 
   core::NDbKValue dbv_;
   const std::string ns_separator_;
   const core::NsDisplayStrategy ns_strategy_;
+};
+
+class ExplorerNSItem : public IExplorerTreeItem {
+ public:
+  ExplorerNSItem(const QString& name, IExplorerTreeItem* parent);
+  ExplorerDatabaseItem* db() const;
+
+  virtual QString name() const override;
+  proxy::IServerSPtr server() const;
+  size_t keysCount() const;
+  std::vector<const ExplorerKeyItem*> getKeys() const;
+  std::string keyTemplate(const std::string& key_name);
+
+  void createKey(const core::NDbKValue& key);
+  void removeBranch();
+
+ private:
+  std::string string_name() const;
+  QString name_;
 };
 
 }  // namespace gui

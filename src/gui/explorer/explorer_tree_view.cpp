@@ -52,7 +52,6 @@
 namespace {
 const QString trCreateKeyForDbTemplate_1S = QObject::tr("Create key for %1 database");
 const QString trEditKey_1S = QObject::tr("Edit key %1");
-const QString trRemoveBranch = QObject::tr("Remove branch");
 const QString trRemoveAllKeysTemplate_1S = QObject::tr("Really remove all keys from branch %1?");
 const QString trViewKeyTemplate_1S = QObject::tr("View keys in %1 database");
 const QString trViewChannelsTemplate_1S = QObject::tr("View channels in %1 server");
@@ -361,6 +360,9 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
     QMenu menu(this);
     QAction* removeBranchAction = new QAction(translations::trRemoveBranch, this);
     VERIFY(connect(removeBranchAction, &QAction::triggered, this, &ExplorerTreeView::removeBranch));
+
+    QAction* addKeyToBranchAction = new QAction(translations::trCreateKey, this);
+    VERIFY(connect(addKeyToBranchAction, &QAction::triggered, this, &ExplorerTreeView::addKeyToBranch));
 
     proxy::IServerSPtr server = ns->server();
     ExplorerDatabaseItem* db = ns->db();
@@ -741,7 +743,7 @@ void ExplorerTreeView::removeBranch() {
       continue;
     }
 
-    int answer = QMessageBox::question(this, trRemoveBranch, trRemoveAllKeysTemplate_1S.arg(node->name()),
+    int answer = QMessageBox::question(this, translations::trRemoveBranch, trRemoveAllKeysTemplate_1S.arg(node->name()),
                                        QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
     if (answer != QMessageBox::Yes) {
@@ -749,6 +751,29 @@ void ExplorerTreeView::removeBranch() {
     }
 
     node->removeBranch();
+  }
+}
+
+void ExplorerTreeView::addKeyToBranch() {
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerNSItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerNSItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
+
+    proxy::IServerSPtr server = node->server();
+    core::NDbKValue nkey;
+    std::string full_name_str = node->keyTemplate("test");
+    core::NKey raw_key(full_name_str);
+    nkey.SetKey(raw_key);
+    DbKeyDialog loadDb(trCreateKeyForDbTemplate_1S.arg(node->name()), server->GetType(), nkey, this);
+    int result = loadDb.exec();
+    if (result == QDialog::Accepted) {
+      core::NDbKValue key = loadDb.GetKey();
+      node->createKey(key);
+    }
   }
 }
 

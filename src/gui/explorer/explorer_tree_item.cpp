@@ -448,6 +448,10 @@ void ExplorerKeyItem::setTTL(core::ttl_t ttl) {
   }
 }
 
+std::string ExplorerKeyItem::ns_separator() const {
+  return ns_separator_;
+}
+
 QString ExplorerKeyItem::GetFullName() const {
   QString qname;
   const core::NKey key = dbv_.GetKey();
@@ -487,17 +491,52 @@ proxy::IServerSPtr ExplorerNSItem::server() const {
 }
 
 size_t ExplorerNSItem::keysCount() const {
-  size_t sz = 0;
-  common::qt::gui::forEachRecursive(this, [&sz](const common::qt::gui::TreeItem* item) {
+  std::vector<const ExplorerKeyItem*> keys = getKeys();
+  return keys.size();
+}
+
+std::vector<const ExplorerKeyItem*> ExplorerNSItem::getKeys() const {
+  std::vector<const ExplorerKeyItem*> keys;
+  common::qt::gui::forEachRecursive(this, [&keys](const common::qt::gui::TreeItem* item) {
     const ExplorerKeyItem* key_item = static_cast<const ExplorerKeyItem*>(item);
     if (key_item->type() != eKey) {
       return;
     }
 
-    sz++;
+    keys.push_back(key_item);
   });
 
-  return sz;
+  return keys;
+}
+
+std::string ExplorerNSItem::keyTemplate(const std::string& key_name) {
+  TreeItem* par = parent();
+  std::vector<const ExplorerKeyItem*> keys = getKeys();
+  if (keys.empty()) {
+    DNOTREACHED();
+    return key_name;
+  }
+
+  std::string ns_separator = keys[0]->ns_separator();
+  std::string key_name_new = string_name() + ns_separator + key_name;
+  while (par) {
+    ExplorerDatabaseItem* db = dynamic_cast<ExplorerDatabaseItem*>(par);  // +
+    if (db) {
+      return key_name_new;
+    }
+
+    par = par->parent();
+    ExplorerNSItem* ns = static_cast<ExplorerNSItem*>(par);
+    key_name_new = ns->string_name() + ns_separator + key_name_new;
+  }
+
+  DNOTREACHED();
+  return key_name_new;
+}
+
+void ExplorerNSItem::createKey(const core::NDbKValue& key) {
+  ExplorerDatabaseItem* database = db();
+  database->createKey(key);
 }
 
 void ExplorerNSItem::removeBranch() {
@@ -511,6 +550,10 @@ void ExplorerNSItem::removeBranch() {
 
     par->removeKey(key_item->key());
   });
+}
+
+std::string ExplorerNSItem::string_name() const {
+  return common::ConvertToString(name());
 }
 
 }  // namespace gui

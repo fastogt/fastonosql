@@ -77,6 +77,7 @@ class ExplorerTreeView : public QTreeView {
   void loadContentDb();
   void removeAllKeys();
   void removeBranch();
+  void addKeyToBranch();
   void setDefaultDb();
   void removeDb();
   void createKey();
