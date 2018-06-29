@@ -37,6 +37,7 @@ class KeyInfo {
   bool HasNamespace() const;
   size_t GetNspaceSize() const;
   splited_namespaces_t GetNamespaces() const;
+  std::string GetNsSeparator() const;
 
  private:
   core::key_t key_;

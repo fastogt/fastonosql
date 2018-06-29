@@ -33,6 +33,13 @@ namespace gui {
 
 IExplorerTreeItem::IExplorerTreeItem(TreeItem* parent, eType type) : TreeItem(parent, nullptr), type_(type) {}
 
+QString IExplorerTreeItem::name() const {
+  QString qname;
+  std::string name = basicStringName();
+  common::ConvertFromString(name, &qname);
+  return qname;
+}
+
 ExplorerServerItem::eType IExplorerTreeItem::type() const {
   return type_;
 }
@@ -40,10 +47,8 @@ ExplorerServerItem::eType IExplorerTreeItem::type() const {
 ExplorerServerItem::ExplorerServerItem(proxy::IServerSPtr server, TreeItem* parent)
     : IExplorerTreeItem(parent, eServer), server_(server) {}
 
-QString ExplorerServerItem::name() const {
-  QString qname;
-  common::ConvertFromString(server_->GetName(), &qname);
-  return qname;
+std::string ExplorerServerItem::basicStringName() const {
+  return server_->GetName();
 }
 
 proxy::IServerSPtr ExplorerServerItem::server() const {
@@ -98,10 +103,8 @@ ExplorerSentinelItem::ExplorerSentinelItem(proxy::ISentinelSPtr sentinel, TreeIt
   }
 }
 
-QString ExplorerSentinelItem::name() const {
-  QString qname;
-  common::ConvertFromString(sentinel_->GetName(), &qname);
-  return qname;
+std::string ExplorerSentinelItem::basicStringName() const {
+  return sentinel_->GetName();
 }
 
 proxy::ISentinelSPtr ExplorerSentinelItem::sentinel() const {
@@ -117,10 +120,8 @@ ExplorerClusterItem::ExplorerClusterItem(proxy::IClusterSPtr cluster, TreeItem* 
   }
 }
 
-QString ExplorerClusterItem::name() const {
-  QString qname;
-  common::ConvertFromString(cluster_->GetName(), &qname);
-  return qname;
+std::string ExplorerClusterItem::basicStringName() const {
+  return cluster_->GetName();
 }
 
 proxy::IClusterSPtr ExplorerClusterItem::cluster() const {
@@ -132,10 +133,8 @@ ExplorerDatabaseItem::ExplorerDatabaseItem(proxy::IDatabaseSPtr db, ExplorerServ
   DCHECK(db_);
 }
 
-QString ExplorerDatabaseItem::name() const {
-  QString qname;
-  common::ConvertFromString(db_->GetName(), &qname);
-  return qname;
+std::string ExplorerDatabaseItem::basicStringName() const {
+  return db_->GetName();
 }
 
 bool ExplorerDatabaseItem::isDefault() const {
@@ -350,9 +349,9 @@ ExplorerKeyItem::ExplorerKeyItem(const core::NDbKValue& dbv,
 ExplorerDatabaseItem* ExplorerKeyItem::db() const {
   TreeItem* par = parent();
   while (par) {
-    ExplorerDatabaseItem* db = dynamic_cast<ExplorerDatabaseItem*>(par);  // +
-    if (db) {
-      return db;
+    IExplorerTreeItem* item = static_cast<IExplorerTreeItem*>(par);
+    if (item->type() == eDatabase) {
+      return static_cast<ExplorerDatabaseItem*>(item);
     }
     par = par->parent();
   }
@@ -381,7 +380,7 @@ void ExplorerKeyItem::setKey(const core::NKey& key) {
   dbv_.SetKey(key);
 }
 
-QString ExplorerKeyItem::name() const {
+std::string ExplorerKeyItem::basicStringName() const {
   if (ns_strategy_ == core::FULL_KEY) {
     return GetFullName();
   }
@@ -392,9 +391,7 @@ QString ExplorerKeyItem::name() const {
     return GetFullName();
   }
 
-  QString qname;
-  common::ConvertFromString(kinf.GetKeyName(), &qname);
-  return qname;
+  return kinf.GetKeyName();
 }
 
 proxy::IServerSPtr ExplorerKeyItem::server() const {
@@ -452,27 +449,25 @@ std::string ExplorerKeyItem::ns_separator() const {
   return ns_separator_;
 }
 
-QString ExplorerKeyItem::GetFullName() const {
-  QString qname;
+core::readable_string_t ExplorerKeyItem::GetFullName() const {
   const core::NKey key = dbv_.GetKey();
   const core::key_t raw_key = key.GetKey();
-  common::ConvertFromString(raw_key.GetHumanReadable(), &qname);
-  return qname;
+  return raw_key.GetHumanReadable();
 }
 
-ExplorerNSItem::ExplorerNSItem(const QString& name, IExplorerTreeItem* parent)
-    : IExplorerTreeItem(parent, eNamespace), name_(name) {}
+ExplorerNSItem::ExplorerNSItem(const std::string& name, const std::string& separator, IExplorerTreeItem* parent)
+    : IExplorerTreeItem(parent, eNamespace), name_(name), ns_separator_(separator) {}
 
-QString ExplorerNSItem::name() const {
+std::string ExplorerNSItem::basicStringName() const {
   return name_;
 }
 
 ExplorerDatabaseItem* ExplorerNSItem::db() const {
   TreeItem* par = parent();
   while (par) {
-    ExplorerDatabaseItem* db = dynamic_cast<ExplorerDatabaseItem*>(par);  // +
-    if (db) {
-      return db;
+    IExplorerTreeItem* item = static_cast<IExplorerTreeItem*>(par);
+    if (item->type() == eDatabase) {
+      return static_cast<ExplorerDatabaseItem*>(item);
     }
     par = par->parent();
   }
@@ -509,24 +504,17 @@ std::vector<const ExplorerKeyItem*> ExplorerNSItem::getKeys() const {
   return keys;
 }
 
-std::string ExplorerNSItem::keyTemplate(const std::string& key_name) {
+core::readable_string_t ExplorerNSItem::keyTemplate(const core::readable_string_t& key_name) {
   TreeItem* par = parent();
-  std::vector<const ExplorerKeyItem*> keys = getKeys();
-  if (keys.empty()) {
-    DNOTREACHED();
-    return key_name;
-  }
-
-  std::string ns_separator = keys[0]->ns_separator();
-  std::string key_name_new = string_name() + ns_separator + key_name;
+  core::readable_string_t key_name_new = basicStringName() + ns_separator_ + key_name;
   while (par) {
-    ExplorerDatabaseItem* db = dynamic_cast<ExplorerDatabaseItem*>(par);  // +
-    if (db) {
+    IExplorerTreeItem* item = static_cast<IExplorerTreeItem*>(par);
+    if (item->type() == eDatabase) {
       return key_name_new;
     }
 
-    ExplorerNSItem* ns = static_cast<ExplorerNSItem*>(par);
-    key_name_new = ns->string_name() + ns_separator + key_name_new;
+    CHECK(item->type() == eNamespace);
+    key_name_new = item->basicStringName() + ns_separator_ + key_name_new;
     par = par->parent();
   }
 
@@ -550,10 +538,6 @@ void ExplorerNSItem::removeBranch() {
 
     par->removeKey(key_item->key());
   });
-}
-
-std::string ExplorerNSItem::string_name() const {
-  return common::ConvertToString(name());
 }
 
 }  // namespace gui

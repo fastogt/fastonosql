@@ -53,6 +53,10 @@ KeyInfo::splited_namespaces_t KeyInfo::GetNamespaces() const {
   return splited_namespaces_;
 }
 
+std::string KeyInfo::GetNsSeparator() const {
+  return ns_separator_;
+}
+
 }  // namespace proxy
 }  // namespace fastonosql
 

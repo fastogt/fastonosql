@@ -536,13 +536,12 @@ ExplorerKeyItem* ExplorerTreeModel::findKeyItem(IExplorerTreeItem* db_or_ns, con
 
 ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_ns, const proxy::KeyInfo& kinf) {
   auto nspaces = kinf.GetNamespaces();
+  std::string separator = kinf.GetNsSeparator();
   IExplorerTreeItem* par = db_or_ns;
   ExplorerNSItem* founded_item = nullptr;
   for (size_t i = 0; i < nspaces.size(); ++i) {
     ExplorerNSItem* item = nullptr;
     std::string cur_ns = nspaces[i];
-    QString qnspace;
-    common::ConvertFromString(cur_ns, &qnspace);
 
     for (size_t j = 0; j < par->childrenCount(); ++j) {
       ExplorerNSItem* ns_item = static_cast<ExplorerNSItem*>(par->child(j));
@@ -550,7 +549,7 @@ ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_n
         continue;
       }
 
-      if (ns_item->name() == qnspace) {
+      if (ns_item->basicStringName() == cur_ns) {
         item = ns_item;
       }
     }
@@ -558,7 +557,7 @@ ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_n
     if (!item) {
       common::qt::gui::TreeItem* gpar = par->parent();
       QModelIndex parentdb = createIndex(gpar->indexOf(par), 0, par);
-      item = new ExplorerNSItem(qnspace, par);
+      item = new ExplorerNSItem(cur_ns, separator, par);
       insertItem(parentdb, item);
     }
 
