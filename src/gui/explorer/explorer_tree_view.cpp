@@ -53,11 +53,13 @@ namespace {
 const QString trCreateKeyForDbTemplate_1S = QObject::tr("Create key for %1 database");
 const QString trEditKey_1S = QObject::tr("Edit key %1");
 const QString trRemoveAllKeysTemplate_1S = QObject::tr("Really remove all keys from branch %1?");
+const QString trRemoveKeyTemplate_1S = QObject::tr("Really remove key %1?");
 const QString trViewKeyTemplate_1S = QObject::tr("View keys in %1 database");
 const QString trViewChannelsTemplate_1S = QObject::tr("View channels in %1 server");
 const QString trConnectDisconnect = QObject::tr("Connect/Disconnect");
 const QString trClearDb = QObject::tr("Clear database");
 const QString trRealyRemoveAllKeysTemplate_1S = QObject::tr("Really remove all keys from %1 database?");
+const QString trRemoveBranchTemplate_1S = QObject::tr("Really remove branch %1 database?");
 const QString trLoadContentTemplate_1S = QObject::tr("Load keys in %1 database");
 const QString trSetMaxConnectionOnServerTemplate_1S = QObject::tr("Set max connection on %1 server");
 const QString trSetTTLOnKeyTemplate_1S = QObject::tr("Set ttl for %1 key");
@@ -359,7 +361,7 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
 
     QMenu menu(this);
     QAction* removeBranchAction = new QAction(translations::trRemoveBranch, this);
-    VERIFY(connect(removeBranchAction, &QAction::triggered, this, &ExplorerTreeView::removeBranch));
+    VERIFY(connect(removeBranchAction, &QAction::triggered, this, &ExplorerTreeView::remBranch));
 
     QAction* addKeyToBranchAction = new QAction(translations::trCreateKey, this);
     VERIFY(connect(addKeyToBranchAction, &QAction::triggered, this, &ExplorerTreeView::addKeyToBranch));
@@ -388,7 +390,7 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
     VERIFY(connect(renameKeyAction, &QAction::triggered, this, &ExplorerTreeView::renKey));
 
     QAction* deleteKeyAction = new QAction(translations::trDelete, this);
-    VERIFY(connect(deleteKeyAction, &QAction::triggered, this, &ExplorerTreeView::deleteKey));
+    VERIFY(connect(deleteKeyAction, &QAction::triggered, this, &ExplorerTreeView::remKey));
 
     QAction* watchKeyAction = new QAction(translations::trWatch, this);
     VERIFY(connect(watchKeyAction, &QAction::triggered, this, &ExplorerTreeView::watchKey));
@@ -736,16 +738,15 @@ void ExplorerTreeView::removeAllKeys() {
   }
 }
 
-void ExplorerTreeView::removeBranch() {
+void ExplorerTreeView::remBranch() {
   QModelIndexList selected = selectedEqualTypeIndexes();
   for (QModelIndex ind : selected) {
     ExplorerNSItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerNSItem*>(ind);
     if (!node) {
-      DNOTREACHED();
       continue;
     }
 
-    int answer = QMessageBox::question(this, translations::trRemoveBranch, trRemoveAllKeysTemplate_1S.arg(node->name()),
+    int answer = QMessageBox::question(this, translations::trRemoveBranch, trRemoveBranchTemplate_1S.arg(node->name()),
                                        QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
     if (answer != QMessageBox::Yes) {
@@ -905,7 +906,7 @@ void ExplorerTreeView::renKey() {
   }
 }
 
-void ExplorerTreeView::deleteKey() {
+void ExplorerTreeView::remKey() {
   QModelIndexList selected = selectedEqualTypeIndexes();
   for (QModelIndex ind : selected) {
     ExplorerKeyItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerKeyItem*>(ind);
@@ -914,7 +915,31 @@ void ExplorerTreeView::deleteKey() {
       continue;
     }
 
+    int answer = QMessageBox::question(this, translations::trRemoveKey, trRemoveKeyTemplate_1S.arg(node->name()),
+                                       QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
+
+    if (answer != QMessageBox::Yes) {
+      continue;
+    }
+
     node->removeFromDb();
+  }
+}
+
+void ExplorerTreeView::deleteItem() {
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerKeyItem* node_key = common::qt::item<common::qt::gui::TreeItem*, ExplorerKeyItem*>(ind);
+    if (node_key) {
+      node_key->removeFromDb();
+      continue;
+    }
+
+    ExplorerNSItem* node_ns = common::qt::item<common::qt::gui::TreeItem*, ExplorerNSItem*>(ind);
+    if (node_ns) {
+      node_ns->removeBranch();
+      continue;
+    }
   }
 }
 
@@ -1109,7 +1134,7 @@ void ExplorerTreeView::mouseDoubleClickEvent(QMouseEvent* e) {
 
 void ExplorerTreeView::keyPressEvent(QKeyEvent* event) {
   if (event->key() == Qt::Key_Delete) {
-    deleteKey();
+    deleteItem();
   }
   return base_class::keyPressEvent(event);
 }
