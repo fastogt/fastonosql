@@ -1,7 +1,8 @@
 1.17.6 / Jule 7, 2018
 [Alexandr Topilski]
+- [RocksDB] Update sources to version 5.14.0
+- [LevelDB] Leveldb on windows not working #62
 - Add key to branch
-- Leveldb on windows not working #62
 
 1.17.5 / May 23, 2018
 [Alexandr Topilski]
