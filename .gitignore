@@ -42,3 +42,4 @@ build_cmake/
 
 # project files
 build/config.py
+build/build_*_env

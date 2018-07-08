@@ -24,6 +24,7 @@ namespace core {
 ConstantCommandsArray::ConstantCommandsArray(std::initializer_list<CommandHolder> l) {
   for (auto it = l.begin(); it != l.end(); ++it) {
     CommandHolder cmd = *it;
+#ifndef NDEBUG
     for (auto jt = begin(); jt != end(); ++jt) {
       CommandHolder cmd2 = *jt;
       if (cmd2.IsEqualName(cmd.name)) {
@@ -31,6 +32,7 @@ ConstantCommandsArray::ConstantCommandsArray(std::initializer_list<CommandHolder
                      << "\" already exists!";
       }
     }
+#endif
     push_back(cmd);
   }
 }
