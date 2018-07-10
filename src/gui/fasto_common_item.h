@@ -20,8 +20,6 @@
 
 #include <QString>
 
-#include <common/value.h>  // for Value, Value::Type
-
 #include <common/qt/gui/base/tree_item.h>  // for TreeItem
 
 #include "core/db_key.h"  // for NDbKValue, NValue
