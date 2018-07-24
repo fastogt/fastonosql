@@ -196,7 +196,7 @@ int main(int argc, char* argv[]) {
   }
 
   const QString login = password_dialog.GetLogin();
-  const std::string login_str = common::ConvertToString(login);
+  const std::string login_str = common::ConvertToString(login.toLower());
   const QString password = password_dialog.GetPassword();
   const std::string password_str = common::ConvertToString(password);
   unsigned char md5_result[MD5_HASH_LENGHT];
