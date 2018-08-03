@@ -187,11 +187,18 @@ int main(int argc, char* argv[]) {
 
   fastonosql::gui::PasswordDialog password_dialog;
   password_dialog.SetDescription(trSignin);
-#ifndef IS_PUBLIC_BUILD
+#ifdef IS_PUBLIC_BUILD
+  const QString last_login = settings_manager->GetLastLogin();
+  if (!last_login.isEmpty()) {
+    password_dialog.SetLogin(last_login);
+    password_dialog.SetFocusInPassword();
+  }
+#else
   password_dialog.SetLogin(USER_LOGIN);
   password_dialog.SetLoginEnabled(false);
 #endif
-  if (password_dialog.exec() == QDialog::Rejected) {
+  int dialog_result = password_dialog.exec();
+  if (dialog_result == QDialog::Rejected) {
     return EXIT_FAILURE;
   }
 
@@ -233,9 +240,7 @@ int main(int argc, char* argv[]) {
   err = client.Write(request, &nwrite);
   if (err) {
     err = client.Close();
-    if (err) {
-      DNOTREACHED();
-    }
+    DCHECK(!err) << "Close client error: " << err->GetDescription();
     QMessageBox::critical(nullptr, fastonosql::translations::trAuthentication,
                           QObject::tr("Sorry can't write request, for checking your credentials."));
     return EXIT_FAILURE;
@@ -246,9 +251,7 @@ int main(int argc, char* argv[]) {
   err = client.Read(&subscribe_reply, 256, &nread);
   if (err) {
     err = client.Close();
-    if (err) {
-      DNOTREACHED();
-    }
+    DCHECK(!err) << "Close client error: " << err->GetDescription();
     QMessageBox::critical(nullptr, fastonosql::translations::trAuthentication,
                           QObject::tr("Sorry can't get responce, for checking your credentials."));
     return EXIT_FAILURE;
@@ -264,6 +267,7 @@ int main(int argc, char* argv[]) {
     return EXIT_FAILURE;
   }
 
+  // start application
   fastonosql::proxy::UserInfo::SubscriptionState user_sub_state = user_info.GetSubscriptionState();
   if (user_sub_state != fastonosql::proxy::UserInfo::SUBSCRIBED) {
     size_t exec_count = user_info.GetExecCount();
@@ -334,6 +338,9 @@ int main(int argc, char* argv[]) {
     }
   }
 
+#ifdef IS_PUBLIC_BUILD
+  settings_manager->SetLastLogin(login);
+#endif
   settings_manager->SetUserInfo(user_info);
 
   QFile file(":" PROJECT_NAME_LOWERCASE "/default.qss");

@@ -47,9 +47,10 @@
 #define AUTOCOMPLETION PREFIX "auto_completion"
 #define RCONNECTIONS PREFIX "rconnections"
 #define AUTOOPENCONSOLE PREFIX "auto_open_console"
-#define AUTOCONNECTDB "auto_connect_db"
+#define AUTOCONNECTDB PREFIX "auto_connect_db"
 #define FASTVIEWKEYS PREFIX "fast_view_keys"
 #define WINDOW_SETTINGS PREFIX "window_settings"
+#define LAST_LOGIN PREFIX "last_login"
 #define PYTHON_PATH PREFIX "python_path"
 #define CONFIG_VERSION PREFIX "version"
 
@@ -403,6 +404,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
   auto_connect_db_ = settings.value(AUTOCONNECTDB, true).toBool();
   fast_view_keys_ = settings.value(FASTVIEWKEYS, true).toBool();
   window_settings_ = settings.value(WINDOW_SETTINGS, QByteArray()).toByteArray();
+  last_login_ = settings.value(LAST_LOGIN, QString()).toString();
 
   QString qpython_path;
   std::string python_path;
@@ -485,8 +487,17 @@ void SettingsManager::Save() {
   settings.setValue(AUTOCONNECTDB, auto_connect_db_);
   settings.setValue(FASTVIEWKEYS, fast_view_keys_);
   settings.setValue(WINDOW_SETTINGS, window_settings_);
+  settings.setValue(LAST_LOGIN, last_login_);
   settings.setValue(PYTHON_PATH, python_path_);
   settings.setValue(CONFIG_VERSION, config_version_);
+}
+
+QString SettingsManager::GetLastLogin() const {
+  return last_login_;
+}
+
+void SettingsManager::SetLastLogin(const QString& login) {
+  last_login_ = login;
 }
 
 UserInfo SettingsManager::GetUserInfo() const {

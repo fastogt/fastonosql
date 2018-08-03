@@ -42,7 +42,7 @@ PasswordDialog::PasswordDialog(const QString& description, QWidget* parent)
     : QDialog(parent),
       description_(nullptr),
       login_label_(nullptr),
-      login_text_(nullptr),
+      login_box_(nullptr),
       password_label_(nullptr),
       password_box_(nullptr),
       password_echo_mode_button_(nullptr) {
@@ -60,9 +60,9 @@ PasswordDialog::PasswordDialog(const QString& description, QWidget* parent)
 
   QHBoxLayout* profile_layout = new QHBoxLayout;
   login_label_ = new QLabel;
-  login_text_ = new QLineEdit;
+  login_box_ = new QLineEdit;
   profile_layout->addWidget(login_label_);
-  profile_layout->addWidget(login_text_);
+  profile_layout->addWidget(login_box_);
 
   QHBoxLayout* password_layout = new QHBoxLayout;
   password_label_ = new QLabel;
@@ -85,11 +85,11 @@ PasswordDialog::PasswordDialog(const QString& description, QWidget* parent)
 }
 
 QString PasswordDialog::GetLogin() const {
-  return login_text_->text();
+  return login_box_->text();
 }
 
 void PasswordDialog::SetLogin(const QString& login) {
-  login_text_->setText(login);
+  login_box_->setText(login);
 }
 
 QString PasswordDialog::GetPassword() const {
@@ -101,7 +101,7 @@ void PasswordDialog::SetPassword(const QString& password) {
 }
 
 void PasswordDialog::SetLoginEnabled(bool en) {
-  login_text_->setEnabled(en);
+  login_box_->setEnabled(en);
 }
 
 void PasswordDialog::SetDescription(const QString& description) {
@@ -116,8 +116,16 @@ void PasswordDialog::SetVisibleDescription(bool visible) {
   return description_->setVisible(visible);
 }
 
-bool PasswordDialog::isVisibleDescription() const {
+bool PasswordDialog::IsVisibleDescription() const {
   return description_->isVisible();
+}
+
+void PasswordDialog::SetFocusInPassword() {
+  password_box_->setFocus();
+}
+
+void PasswordDialog::SetFocusInLogin() {
+  login_box_->setFocus();
 }
 
 void PasswordDialog::accept() {

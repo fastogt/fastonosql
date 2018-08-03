@@ -115,6 +115,10 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
   void Load();
   void Save();
 
+  QString GetLastLogin() const;
+  void SetLastLogin(const QString& login);
+
+  // runtime
   UserInfo GetUserInfo() const;
   void SetUserInfo(const UserInfo& uinfo);
 
@@ -141,6 +145,7 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
   bool fast_view_keys_;
   QByteArray window_settings_;
   QString python_path_;
+  QString last_login_;
 
   // runtime settings
   UserInfo user_info_;

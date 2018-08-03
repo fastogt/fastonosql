@@ -32,16 +32,18 @@ class UserInfo {
   UserInfo();
   UserInfo(const std::string& login, const std::string& password);
 
+  // only geters
+  std::string GetLogin() const;
+  std::string GetPassword() const;
+
+  bool IsValid() const;
+
+  // server fields
   std::string GetFirstName() const;
   void SetFirstName(const std::string& first_name);
 
   std::string GetLastName() const;
   void SetLastName(const std::string& last_name);
-
-  std::string GetLogin() const;
-  std::string GetPassword() const;
-
-  bool IsValid() const;
 
   SubscriptionState GetSubscriptionState() const;
   void SetSubscriptionState(SubscriptionState state);

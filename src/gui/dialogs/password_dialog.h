@@ -45,7 +45,10 @@ class PasswordDialog : public QDialog {
   QString GetDescription() const;
 
   void SetVisibleDescription(bool visible);
-  bool isVisibleDescription() const;
+  bool IsVisibleDescription() const;
+
+  void SetFocusInPassword();
+  void SetFocusInLogin();
 
  public Q_SLOTS:
   virtual void accept() override;
@@ -64,7 +67,7 @@ class PasswordDialog : public QDialog {
   QLabel* description_;
 
   QLabel* login_label_;
-  QLineEdit* login_text_;
+  QLineEdit* login_box_;
 
   QLabel* password_label_;
   QLineEdit* password_box_;
