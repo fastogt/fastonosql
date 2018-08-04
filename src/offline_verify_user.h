@@ -18,28 +18,19 @@
 
 #pragma once
 
-#include <QObject>
-
-#include <common/error.h>
-
-#include "proxy/user_info.h"
+#include "iverify_user.h"
 
 namespace fastonosql {
 
-class VerifyUser : public QObject {
-  Q_OBJECT
+class OfflineVerifyUser : public IVerifyUser {
  public:
-  VerifyUser(const QString& login, const QString& password, QObject* parent = Q_NULLPTR);
-
- Q_SIGNALS:
-  void verifyUserResult(common::Error err, const proxy::UserInfo& user);
-
- public Q_SLOTS:
-  void routine();
+  typedef IVerifyUser base_class;
+  OfflineVerifyUser(const QString& login, const QString& password, QObject* parent = Q_NULLPTR);
 
  private:
-  const QString login_;
-  const QString password_;
+  virtual common::Error startVerificationImpl(const std::string& login,
+                                              const std::string& hexed_password,
+                                              proxy::UserInfo* uinf) override WARN_UNUSED_RESULT;
 };
 
 }  // namespace fastonosql

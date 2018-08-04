@@ -18,49 +18,38 @@
 
 #pragma once
 
-#include <common/error.h>
+#include <QObject>
 
-#include "gui/dialogs/password_dialog.h"
+#include <common/error.h>
 
 #include "proxy/user_info.h"
 
-namespace common {
-namespace qt {
-namespace gui {
-class GlassWidget;
-}
-}  // namespace qt
-}  // namespace common
-
 namespace fastonosql {
 
-class IVerifyUser;
-
-class CredentialsDialog : public fastonosql::gui::PasswordDialog {
+class IVerifyUser : public QObject {
   Q_OBJECT
  public:
-  static const QSize status_label_icon_size;
+  IVerifyUser(const QString& login, const QString& password, QObject* parent = Q_NULLPTR);
+  virtual ~IVerifyUser();
 
-  typedef fastonosql::gui::PasswordDialog base_class;
-  explicit CredentialsDialog(QWidget* parent = Q_NULLPTR);
-
-  proxy::UserInfo GetUserInfo() const;
-
- public Q_SLOTS:
-  virtual void accept() override;
-
- private Q_SLOTS:
+ Q_SIGNALS:
   void verifyUserResult(common::Error err, const proxy::UserInfo& user);
 
+ public Q_SLOTS:
+  void routine();
+
+ protected:
+  common::Error startVerification(const QString& login,
+                                  const QString& password,
+                                  proxy::UserInfo* uinf) WARN_UNUSED_RESULT;
+
  private:
-  virtual IVerifyUser* CreateChecker() const = 0;
+  virtual common::Error startVerificationImpl(const std::string& login,
+                                              const std::string& hexed_password,
+                                              proxy::UserInfo* uinf) WARN_UNUSED_RESULT = 0;
 
-  void SetInforamtion(const QString& text);
-  void SetFailed(const QString& text);
-
-  void startVerification();
-
-  common::qt::gui::GlassWidget* glass_widget_;
-  proxy::UserInfo user_info_;
+  const QString login_;
+  const QString password_;
 };
+
 }  // namespace fastonosql

@@ -16,32 +16,20 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "verify_user.h"
+#include "online_verify_user.h"
 
-#include <common/convert2string.h>
-#include <common/hash/md5.h>
 #include <common/net/socket_tcp.h>
-#include <common/qt/convert2string.h>
 
 #include "proxy/server_config.h"
 
 namespace fastonosql {
 
-namespace {
-common::Error startVerification(const QString& login, const QString& password, proxy::UserInfo* uinf) {
-  if (login.isEmpty() || password.isEmpty() || !uinf) {
-    return common::make_error_inval();
-  }
+OnlineVerifyUser::OnlineVerifyUser(const QString& login, const QString& password, QObject* parent)
+    : base_class(login, password, parent) {}
 
-  const std::string login_str = common::ConvertToString(login.toLower());
-  const std::string password_str = common::ConvertToString(password);
-  unsigned char md5_result[MD5_HASH_LENGHT];
-  common::hash::MD5_CTX ctx;
-  common::hash::MD5_Init(&ctx);
-  common::hash::MD5_Update(&ctx, reinterpret_cast<const unsigned char*>(password_str.data()), password_str.size());
-  common::hash::MD5_Final(&ctx, md5_result);
-  std::string hexed_password = common::utils::hex::encode(std::string(md5_result, md5_result + MD5_HASH_LENGHT), true);
-
+common::Error OnlineVerifyUser::startVerificationImpl(const std::string& login,
+                                                      const std::string& hexed_password,
+                                                      proxy::UserInfo* uinf) {
 #if defined(FASTONOSQL)
   common::net::ClientSocketTcp client(common::net::HostAndPort(FASTONOSQL_HOST, SERVER_REQUESTS_PORT));
 #elif defined(FASTOREDIS)
@@ -54,7 +42,7 @@ common::Error startVerification(const QString& login, const QString& password, p
     return common::make_error("Sorry can't connect to server, for checking your credentials.");
   }
 
-  fastonosql::proxy::UserInfo user_info(login_str, hexed_password);
+  fastonosql::proxy::UserInfo user_info(login, hexed_password);
   std::string request;
   common::Error request_err = fastonosql::proxy::GenSubscriptionStateRequest(user_info, &request);
   if (request_err) {
@@ -87,17 +75,6 @@ common::Error startVerification(const QString& login, const QString& password, p
 
   *uinf = user_info;
   return common::Error();
-}
-
-}  // namespace
-
-VerifyUser::VerifyUser(const QString& login, const QString& password, QObject* parent)
-    : QObject(parent), login_(login), password_(password) {}
-
-void VerifyUser::routine() {
-  proxy::UserInfo uinf;
-  common::Error err = startVerification(login_, password_, &uinf);
-  emit verifyUserResult(err, uinf);
 }
 
 }  // namespace fastonosql

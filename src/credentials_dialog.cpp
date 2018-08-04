@@ -26,7 +26,7 @@
 
 #include "gui/gui_factory.h"
 
-#include "verify_user.h"
+#include "iverify_user.h"
 
 namespace {
 const QString trSignin =
@@ -83,12 +83,12 @@ void CredentialsDialog::startVerification() {
   qRegisterMetaType<proxy::UserInfo>("proxy::UserInfo");
 
   QThread* th = new QThread;
-  VerifyUser* cheker = new VerifyUser(GetLogin(), GetPassword());
-  cheker->moveToThread(th);
-  VERIFY(connect(th, &QThread::started, cheker, &VerifyUser::routine));
-  VERIFY(connect(cheker, &VerifyUser::verifyUserResult, this, &CredentialsDialog::verifyUserResult));
-  VERIFY(connect(cheker, &VerifyUser::verifyUserResult, th, &QThread::quit));
-  VERIFY(connect(th, &QThread::finished, cheker, &VerifyUser::deleteLater));
+  IVerifyUser* checker = CreateChecker();
+  checker->moveToThread(th);
+  VERIFY(connect(th, &QThread::started, checker, &IVerifyUser::routine));
+  VERIFY(connect(checker, &IVerifyUser::verifyUserResult, this, &CredentialsDialog::verifyUserResult));
+  VERIFY(connect(checker, &IVerifyUser::verifyUserResult, th, &QThread::quit));
+  VERIFY(connect(th, &QThread::finished, checker, &IVerifyUser::deleteLater));
   VERIFY(connect(th, &QThread::finished, th, &QThread::deleteLater));
   th->start();
 }

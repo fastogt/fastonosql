@@ -47,6 +47,12 @@
 
 #define IDENTITY_FILE_NAME "IDENTITY"
 
+#ifdef IS_PUBLIC_BUILD
+#include "online_verify_user.h"
+#else
+#include "offline_verify_user.h"
+#endif
+
 namespace {
 #ifdef OS_WIN
 struct WinsockInit {
@@ -153,6 +159,21 @@ common::Error ban_user(const fastonosql::proxy::UserInfo& user, const std::strin
   DCHECK(!err) << "Close client error: " << err->GetDescription();
   return common::Error();
 }
+
+class MainCredentialsDialog : public fastonosql::CredentialsDialog {
+ public:
+  MainCredentialsDialog() {}
+
+ private:
+  virtual fastonosql::IVerifyUser* CreateChecker() const override {
+#ifdef IS_PUBLIC_BUILD
+    return new fastonosql::OnlineVerifyUser(GetLogin(), GetPassword());
+#else
+    return new fastonosql::OfflineVerifyUser(GetLogin(), GetPassword());
+#endif
+  }
+};
+
 }  // namespace
 
 int main(int argc, char* argv[]) {
@@ -178,7 +199,7 @@ int main(int argc, char* argv[]) {
     settings_manager->SetAccpetedEula(true);
   }
 
-  fastonosql::CredentialsDialog password_dialog;
+  MainCredentialsDialog password_dialog;
 #ifdef IS_PUBLIC_BUILD
   const QString last_login = settings_manager->GetLastLogin();
   if (!last_login.isEmpty()) {
