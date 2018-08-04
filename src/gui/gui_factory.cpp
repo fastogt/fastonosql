@@ -379,7 +379,7 @@ const QIcon& GuiFactory::GetCommandIcon(core::connectionTypes type) const {
     return lmdbConnectionIcon();
   } else if (type == core::UPSCALEDB) {
     return upscaledbConnectionIcon();
-  } else if (type == core::UPSCALEDB) {
+  } else if (type == core::FORESTDB) {
     return forestdbConnectionIcon();
   } else if (type == core::PIKA) {
     return pikaConnectionIcon();
@@ -400,6 +400,11 @@ const QIcon& GuiFactory::GetFailIcon() const {
 
 const QIcon& GuiFactory::GetUnknownIcon() const {
   static QIcon unknown(":" PROJECT_NAME_LOWERCASE "/images/64x64/unknown.png");
+  return unknown;
+}
+
+const QIcon& GuiFactory::GetInfoIcon() const {
+  static QIcon unknown(":" PROJECT_NAME_LOWERCASE "/images/64x64/info.png");
   return unknown;
 }
 

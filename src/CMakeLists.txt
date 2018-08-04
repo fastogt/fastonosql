@@ -1230,6 +1230,9 @@ ENDIF(IS_PUBLIC_BUILD)
 SET(HEADERS_TOMOC
   ${HEADERS_GUI_TO_MOC}
   ${HEADERS_PROXY_TO_MOC}
+
+  credentials_dialog.h
+  verify_user.h
 )
 SET(HEADERS
   ${HEADERS_GUI}
@@ -1240,6 +1243,9 @@ SET(SOURCES
   ${SOURCES_GUI}
   ${SOURCES_PROXY}
   ${SOURCES_TRANSLATIONS}
+
+  credentials_dialog.cpp
+  verify_user.cpp
 )
 
 QT5_WRAP_CPP(MOC_FILES ${HEADERS_TOMOC})

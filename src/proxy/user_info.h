@@ -64,6 +64,7 @@ class UserInfo {
   std::string login_;
   std::string password_;
 
+  // server fields
   std::string first_name_;
   std::string last_name_;
   SubscriptionState subscription_state_;

@@ -24,6 +24,14 @@ class QLineEdit;
 class QPushButton;
 class QLabel;
 
+namespace common {
+namespace qt {
+namespace gui {
+class IconLabel;
+}
+}  // namespace qt
+}  // namespace common
+
 namespace fastonosql {
 namespace gui {
 
@@ -44,14 +52,19 @@ class PasswordDialog : public QDialog {
   void SetDescription(const QString& description);
   QString GetDescription() const;
 
-  void SetVisibleDescription(bool visible);
   bool IsVisibleDescription() const;
+  bool IsVisibleStatus() const;
 
   void SetFocusInPassword();
   void SetFocusInLogin();
 
  public Q_SLOTS:
   virtual void accept() override;
+
+  void SetVisibleDescription(bool visible);
+  void SetVisibleStatus(bool visible);
+  void SetStatusIcon(const QIcon& icon, const QSize& icon_size);
+  void SetStatus(const QString& status);
 
  private Q_SLOTS:
   void togglePasswordEchoMode();
@@ -72,6 +85,8 @@ class PasswordDialog : public QDialog {
   QLabel* password_label_;
   QLineEdit* password_box_;
   QPushButton* password_echo_mode_button_;
+
+  common::qt::gui::IconLabel* status_label_;
 };
 
 }  // namespace gui

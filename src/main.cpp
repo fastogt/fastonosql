@@ -27,15 +27,13 @@
 #include <QFile>
 #include <QMessageBox>
 
-#include <common/convert2string.h>
 #include <common/file_system/file.h>
 #include <common/file_system/file_system.h>
 #include <common/file_system/string_path_utils.h>
-#include <common/hash/md5.h>
-#include <common/logger.h>
 #include <common/net/socket_tcp.h>
-#include <common/qt/convert2string.h>
 #include <common/qt/translations/translations.h>
+
+#include "credentials_dialog.h"
 
 #include "proxy/server_config.h"
 #include "proxy/settings_manager.h"
@@ -44,9 +42,7 @@
 #include "gui/main_window.h"
 
 #include "gui/dialogs/eula_dialog.h"
-#include "gui/dialogs/password_dialog.h"
 #include "gui/dialogs/trial_time_dialog.h"
-
 #include "translations/global.h"
 
 #define IDENTITY_FILE_NAME "IDENTITY"
@@ -92,10 +88,6 @@ const QString trIdentityMissmatch = QObject::tr(
 const QString trCantSaveIdentity = QObject::tr(
     "<h4>We can't save your identity.</h4>"
     "Please <a href=\"" PROJECT_DOWNLOAD_LINK "\">subscribe</a> and continue using " PROJECT_NAME_TITLE ".");
-
-const QString trSignin =
-    QObject::tr("<b>Please sign in (use the same credentials like on <a href=\"" PROJECT_DOMAIN "\">website</a>)</b>");
-}  // namespace
 
 common::ErrnoError prepare_to_start(const std::string& runtime_directory_absolute_path) {
   if (!common::file_system::is_directory_exist(runtime_directory_absolute_path)) {
@@ -161,6 +153,7 @@ common::Error ban_user(const fastonosql::proxy::UserInfo& user, const std::strin
   DCHECK(!err) << "Close client error: " << err->GetDescription();
   return common::Error();
 }
+}  // namespace
 
 int main(int argc, char* argv[]) {
   QApplication app(argc, argv);
@@ -185,8 +178,7 @@ int main(int argc, char* argv[]) {
     settings_manager->SetAccpetedEula(true);
   }
 
-  fastonosql::gui::PasswordDialog password_dialog;
-  password_dialog.SetDescription(trSignin);
+  fastonosql::CredentialsDialog password_dialog;
 #ifdef IS_PUBLIC_BUILD
   const QString last_login = settings_manager->GetLastLogin();
   if (!last_login.isEmpty()) {
@@ -202,71 +194,7 @@ int main(int argc, char* argv[]) {
     return EXIT_FAILURE;
   }
 
-  const QString login = password_dialog.GetLogin();
-  const std::string login_str = common::ConvertToString(login.toLower());
-  const QString password = password_dialog.GetPassword();
-  const std::string password_str = common::ConvertToString(password);
-  unsigned char md5_result[MD5_HASH_LENGHT];
-  common::hash::MD5_CTX ctx;
-  common::hash::MD5_Init(&ctx);
-  common::hash::MD5_Update(&ctx, reinterpret_cast<const unsigned char*>(password_str.data()), password_str.size());
-  common::hash::MD5_Final(&ctx, md5_result);
-  std::string hexed_password = common::utils::hex::encode(std::string(md5_result, md5_result + MD5_HASH_LENGHT), true);
-
-#if defined(FASTONOSQL)
-  common::net::ClientSocketTcp client(common::net::HostAndPort(FASTONOSQL_HOST, SERVER_REQUESTS_PORT));
-#elif defined(FASTOREDIS)
-  common::net::ClientSocketTcp client(common::net::HostAndPort(FASTOREDIS_HOST, SERVER_REQUESTS_PORT));
-#else
-#error please specify url and port of version information
-#endif
-  common::ErrnoError err = client.Connect();
-  if (err) {
-    QMessageBox::critical(nullptr, fastonosql::translations::trAuthentication,
-                          QObject::tr("Sorry can't connect to server, for checking your credentials."));
-    return EXIT_FAILURE;
-  }
-
-  fastonosql::proxy::UserInfo user_info(login_str, hexed_password);
-  std::string request;
-  common::Error request_err = fastonosql::proxy::GenSubscriptionStateRequest(user_info, &request);
-  if (request_err) {
-    QMessageBox::critical(nullptr, fastonosql::translations::trAuthentication,
-                          QObject::tr("Sorry can't generate password request, for checking your credentials."));
-    return EXIT_FAILURE;
-  }
-
-  size_t nwrite;
-  err = client.Write(request, &nwrite);
-  if (err) {
-    err = client.Close();
-    DCHECK(!err) << "Close client error: " << err->GetDescription();
-    QMessageBox::critical(nullptr, fastonosql::translations::trAuthentication,
-                          QObject::tr("Sorry can't write request, for checking your credentials."));
-    return EXIT_FAILURE;
-  }
-
-  std::string subscribe_reply;
-  size_t nread = 0;
-  err = client.Read(&subscribe_reply, 256, &nread);
-  if (err) {
-    err = client.Close();
-    DCHECK(!err) << "Close client error: " << err->GetDescription();
-    QMessageBox::critical(nullptr, fastonosql::translations::trAuthentication,
-                          QObject::tr("Sorry can't get responce, for checking your credentials."));
-    return EXIT_FAILURE;
-  }
-
-  common::Error jerror = fastonosql::proxy::ParseSubscriptionStateResponce(subscribe_reply, &user_info);
-  if (jerror) {
-    err = client.Close();
-    DCHECK(!err) << "Close client error: " << err->GetDescription();
-    QString qmessage;
-    common::ConvertFromString(jerror->GetDescription(), &qmessage);
-    QMessageBox::critical(nullptr, fastonosql::translations::trAuthentication, QObject::tr("%1, bye.").arg(qmessage));
-    return EXIT_FAILURE;
-  }
-
+  fastonosql::proxy::UserInfo user_info = password_dialog.GetUserInfo();
   // start application
   fastonosql::proxy::UserInfo::SubscriptionState user_sub_state = user_info.GetSubscriptionState();
   if (user_sub_state != fastonosql::proxy::UserInfo::SUBSCRIBED) {
@@ -274,7 +202,7 @@ int main(int argc, char* argv[]) {
     fastonosql::proxy::user_id_t user_id = user_info.GetUserID();
     const std::string runtime_dir_path = settings_manager->GetSettingsDirPath();  // stabled
 
-    err = prepare_to_start(runtime_dir_path);
+    common::ErrnoError err = prepare_to_start(runtime_dir_path);
     DCHECK(!err) << "Create runtime directory error: " << err->GetDescription();
     const std::string identity_path = runtime_dir_path + IDENTITY_FILE_NAME;
 
@@ -339,7 +267,7 @@ int main(int argc, char* argv[]) {
   }
 
 #ifdef IS_PUBLIC_BUILD
-  settings_manager->SetLastLogin(login);
+  settings_manager->SetLastLogin(password_dialog.GetLogin());
 #endif
   settings_manager->SetUserInfo(user_info);
 

@@ -92,6 +92,7 @@ class GuiFactory : public common::patterns::LazySingleton<GuiFactory> {
   const QIcon& GetSuccessIcon() const;
   const QIcon& GetFailIcon() const;
   const QIcon& GetUnknownIcon() const;
+  const QIcon& GetInfoIcon() const;
 
   QFont GetFont() const;
   const QString& GetPathToLoadingGif() const;

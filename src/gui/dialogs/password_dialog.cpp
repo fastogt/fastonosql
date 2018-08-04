@@ -27,10 +27,12 @@
 
 #include <common/macros.h>
 
+#include <common/qt/gui/icon_label.h>  // for IconLabel
+
 #include "translations/global.h"
 
 namespace {
-const QString trPasswordDialogTitle = QObject::tr("Password dialog for " PROJECT_NAME_TITLE);
+const QString trSignIn = QObject::tr("Sign in");
 }
 
 namespace fastonosql {
@@ -49,10 +51,10 @@ PasswordDialog::PasswordDialog(const QString& description, QWidget* parent)
   Qt::WindowFlags flags = windowFlags();
   setWindowFlags(flags & ~Qt::WindowContextHelpButtonHint);
 
-  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
+  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &PasswordDialog::accept));
-  VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &PasswordDialog::reject));
+  buttonBox->button(QDialogButtonBox::Ok)->setText(trSignIn);
 
   description_ = new QLabel;
   description_->setText(description);
@@ -74,10 +76,15 @@ PasswordDialog::PasswordDialog(const QString& description, QWidget* parent)
   password_layout->addWidget(password_box_);
   password_layout->addWidget(password_echo_mode_button_);
 
+  status_label_ = new common::qt::gui::IconLabel;
+  status_label_->setOpenExternalLinks(true);
+  status_label_->setVisible(false);
+
   QVBoxLayout* mainLayout = new QVBoxLayout;
   mainLayout->addWidget(description_);
   mainLayout->addLayout(profile_layout);
   mainLayout->addLayout(password_layout);
+  mainLayout->addWidget(status_label_, 0, Qt::AlignCenter);
   mainLayout->addWidget(buttonBox);
   mainLayout->setSizeConstraint(QLayout::SetFixedSize);
   setLayout(mainLayout);
@@ -120,6 +127,10 @@ bool PasswordDialog::IsVisibleDescription() const {
   return description_->isVisible();
 }
 
+bool PasswordDialog::IsVisibleStatus() const {
+  return description_->isVisible();
+}
+
 void PasswordDialog::SetFocusInPassword() {
   password_box_->setFocus();
 }
@@ -136,6 +147,18 @@ void PasswordDialog::accept() {
   }
 
   QDialog::accept();
+}
+
+void PasswordDialog::SetVisibleStatus(bool visible) {
+  status_label_->setVisible(visible);
+}
+
+void PasswordDialog::SetStatusIcon(const QIcon& icon, const QSize& icon_size) {
+  status_label_->setIcon(icon, icon_size);
+}
+
+void PasswordDialog::SetStatus(const QString& status) {
+  status_label_->setText(status);
 }
 
 void PasswordDialog::togglePasswordEchoMode() {
@@ -158,7 +181,6 @@ void PasswordDialog::syncShowButton() {
 }
 
 void PasswordDialog::retranslateUi() {
-  setWindowTitle(trPasswordDialogTitle);
   password_label_->setText(translations::trPassword + ":");
   login_label_->setText(translations::trLogin + ":");
   syncShowButton();
