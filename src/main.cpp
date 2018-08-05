@@ -47,7 +47,11 @@
 
 #define IDENTITY_FILE_NAME "IDENTITY"
 
-#ifdef IS_PUBLIC_BUILD
+#define COMMUNITY_STRATEGY 0
+#define PUBLIC_STRATEGY 1
+#define PRIVATE_STRATEGY 2
+
+#if BUILD_STRATEGY == COMMUNITY_STRATEGY || BUILD_STRATEGY == PUBLIC_STRATEGY
 #include "online_verify_user.h"
 #else
 #include "offline_verify_user.h"
@@ -166,7 +170,7 @@ class MainCredentialsDialog : public fastonosql::CredentialsDialog {
 
  private:
   virtual fastonosql::IVerifyUser* CreateChecker() const override {
-#ifdef IS_PUBLIC_BUILD
+#if BUILD_STRATEGY == COMMUNITY_STRATEGY || BUILD_STRATEGY == PUBLIC_STRATEGY
     return new fastonosql::OnlineVerifyUser(GetLogin(), GetPassword());
 #else
     return new fastonosql::OfflineVerifyUser(GetLogin(), GetPassword());
@@ -200,13 +204,13 @@ int main(int argc, char* argv[]) {
   }
 
   MainCredentialsDialog password_dialog;
-#ifdef IS_PUBLIC_BUILD
+#if BUILD_STRATEGY == COMMUNITY_STRATEGY
   const QString last_login = settings_manager->GetLastLogin();
   if (!last_login.isEmpty()) {
     password_dialog.SetLogin(last_login);
     password_dialog.SetFocusInPassword();
   }
-#else
+#elif BUILD_STRATEGY == PUBLIC_STRATEGY || BUILD_STRATEGY == PRIVATE_STRATEGY
   password_dialog.SetLogin(USER_LOGIN);
   password_dialog.SetLoginEnabled(false);
 #endif
@@ -287,7 +291,7 @@ int main(int argc, char* argv[]) {
     }
   }
 
-#ifdef IS_PUBLIC_BUILD
+#if BUILD_STRATEGY == COMMUNITY_STRATEGY
   settings_manager->SetLastLogin(password_dialog.GetLogin());
 #endif
   settings_manager->SetUserInfo(user_info);

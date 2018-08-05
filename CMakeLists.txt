@@ -132,7 +132,8 @@ OPTION(LOG_TO_FILE "Logging to file" OFF)
 OPTION(GENERATE_TRANSLATIONS "Generate ts-files for ${PROJECT_NAME}" OFF)
 OPTION(QT_ENABLED "Enable Qt support" ON)
 OPTION(CPACK_SUPPORT "Enable package support" ON)
-OPTION(IS_PUBLIC_BUILD "Public version of ${PROJECT_NAME} project" ON)
+SET(BUILD_STRATEGY "community" CACHE STRING "Strategy build for ${PROJECT_NAME_TITLE} project")
+  # community, public, private
 OPTION(DEVELOPER_ENABLE_TESTS "Enable tests for ${PROJECT_NAME_TITLE} project" OFF)
 OPTION(DEVELOPER_CHECK_STYLE "Enable check style for ${PROJECT_NAME_TITLE} project" OFF)
 OPTION(DEVELOPER_GENERATE_DOCS "Generate docs api for ${PROJECT_NAME_TITLE} project" OFF)
@@ -149,7 +150,7 @@ MESSAGE(STATUS "BUILD_WITH_LMDB: ${BUILD_WITH_LMDB}")
 MESSAGE(STATUS "BUILD_WITH_UPSCALEDB: ${BUILD_WITH_UPSCALEDB}")
 MESSAGE(STATUS "BUILD_WITH_FORESTDB: ${BUILD_WITH_FORESTDB}")
 
-MESSAGE(STATUS "IS_PUBLIC_BUILD: ${IS_PUBLIC_BUILD}")
+MESSAGE(STATUS "BUILD_STRATEGY: ${BUILD_STRATEGY}")
 
 ##################################DEFAULT VALUES##########################################
 # Set the build type.  Options are:
