@@ -1,3 +1,10 @@
+1.17.9 /
+[Alexandr Topilski]
+- [RocksDB] Update sources to version 5.16.0
+- Update QScintilla to version 2.10.7
+- Update Snappy to version 1.1.7
+- Update common to version 1.18.9
+
 1.17.8 / August 5, 2018
 [Alexandr Topilski]
 - Save last login
