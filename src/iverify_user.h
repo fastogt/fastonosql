@@ -29,7 +29,10 @@ namespace fastonosql {
 class IVerifyUser : public QObject {
   Q_OBJECT
  public:
-  IVerifyUser(const QString& login, const QString& password, QObject* parent = Q_NULLPTR);
+  IVerifyUser(const QString& login,
+              const QString& password,
+              proxy::UserInfo::BuildStrategy build_strategy,
+              QObject* parent = Q_NULLPTR);
   virtual ~IVerifyUser();
 
  Q_SIGNALS:
@@ -41,15 +44,18 @@ class IVerifyUser : public QObject {
  protected:
   common::Error startVerification(const QString& login,
                                   const QString& password,
+                                  proxy::UserInfo::BuildStrategy strategy,
                                   proxy::UserInfo* uinf) WARN_UNUSED_RESULT;
 
  private:
   virtual common::Error startVerificationImpl(const std::string& login,
                                               const std::string& hexed_password,
+                                              proxy::UserInfo::BuildStrategy strategy,
                                               proxy::UserInfo* uinf) WARN_UNUSED_RESULT = 0;
 
   const QString login_;
   const QString password_;
+  const proxy::UserInfo::BuildStrategy build_strategy_;
 };
 
 }  // namespace fastonosql

@@ -25,7 +25,7 @@
 
 namespace fastonosql {
 namespace {
-common::Error SendStatistic(const std::string& login) {
+common::Error SendStatistic(const std::string& login, const std::string& build_strategy) {
   CHECK(!login.empty());
 #if defined(FASTONOSQL)
   common::net::ClientSocketTcp client(common::net::HostAndPort(FASTONOSQL_HOST, SERVER_REQUESTS_PORT));
@@ -40,7 +40,7 @@ common::Error SendStatistic(const std::string& login) {
   }
 
   std::string request;
-  common::Error request_gen_err = proxy::GenStatisticRequest(login, &request);
+  common::Error request_gen_err = proxy::GenStatisticRequest(login, build_strategy, &request);
   if (request_gen_err) {
     common::ErrnoError lerr = client.Close();
     DCHECK(!lerr) << "Close client error: " << err->GetDescription();
@@ -74,10 +74,11 @@ common::Error SendStatistic(const std::string& login) {
 
 namespace gui {
 
-StatisticSender::StatisticSender(const std::string& login, QObject* parent) : QObject(parent), login_(login) {}
+StatisticSender::StatisticSender(const std::string& login, const std::string& build_strategy, QObject* parent)
+    : QObject(parent), login_(login), build_strategy_(build_strategy) {}
 
 void StatisticSender::routine() {
-  common::Error err = SendStatistic(login_);
+  common::Error err = SendStatistic(login_, build_strategy_);
   if (err) {
     QString qerror_message;
     common::ConvertFromString(err->GetDescription(), &qerror_message);

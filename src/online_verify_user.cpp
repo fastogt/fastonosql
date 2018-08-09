@@ -24,11 +24,15 @@
 
 namespace fastonosql {
 
-OnlineVerifyUser::OnlineVerifyUser(const QString& login, const QString& password, QObject* parent)
-    : base_class(login, password, parent) {}
+OnlineVerifyUser::OnlineVerifyUser(const QString& login,
+                                   const QString& password,
+                                   proxy::UserInfo::BuildStrategy build_strategy,
+                                   QObject* parent)
+    : base_class(login, password, build_strategy, parent) {}
 
 common::Error OnlineVerifyUser::startVerificationImpl(const std::string& login,
                                                       const std::string& hexed_password,
+                                                      proxy::UserInfo::BuildStrategy strategy,
                                                       proxy::UserInfo* uinf) {
 #if defined(FASTONOSQL)
   common::net::ClientSocketTcp client(common::net::HostAndPort(FASTONOSQL_HOST, SERVER_REQUESTS_PORT));
@@ -42,7 +46,7 @@ common::Error OnlineVerifyUser::startVerificationImpl(const std::string& login,
     return common::make_error("Sorry can't connect to server, for checking your credentials.");
   }
 
-  fastonosql::proxy::UserInfo user_info(login, hexed_password);
+  fastonosql::proxy::UserInfo user_info(login, hexed_password, strategy);
   std::string request;
   common::Error request_err = fastonosql::proxy::GenSubscriptionStateRequest(user_info, &request);
   if (request_err) {

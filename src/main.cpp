@@ -170,10 +170,12 @@ class MainCredentialsDialog : public fastonosql::CredentialsDialog {
 
  private:
   virtual fastonosql::IVerifyUser* CreateChecker() const override {
-#if BUILD_STRATEGY == COMMUNITY_STRATEGY || BUILD_STRATEGY == PUBLIC_STRATEGY
-    return new fastonosql::OnlineVerifyUser(GetLogin(), GetPassword());
-#else
-    return new fastonosql::OfflineVerifyUser(GetLogin(), GetPassword());
+#if BUILD_STRATEGY == COMMUNITY_STRATEGY
+    return new fastonosql::OnlineVerifyUser(GetLogin(), GetPassword(), fastonosql::proxy::UserInfo::COMMUNITY_BUILD);
+#elif BUILD_STRATEGY == PUBLIC_STRATEGY
+    return new fastonosql::OnlineVerifyUser(GetLogin(), GetPassword(), fastonosql::proxy::UserInfo::PUBLIC_BUILD);
+#elif BUILD_STRATEGY == PRIVATE_STRATEGY
+    return new fastonosql::OfflineVerifyUser(GetLogin(), GetPassword(), fastonosql::proxy::UserInfo::PRIVATE_BUILD);
 #endif
   }
 };

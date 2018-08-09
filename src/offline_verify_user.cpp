@@ -20,11 +20,15 @@
 
 namespace fastonosql {
 
-OfflineVerifyUser::OfflineVerifyUser(const QString& login, const QString& password, QObject* parent)
-    : base_class(login, password, parent) {}
+OfflineVerifyUser::OfflineVerifyUser(const QString& login,
+                                     const QString& password,
+                                     proxy::UserInfo::BuildStrategy build_strategy,
+                                     QObject* parent)
+    : base_class(login, password, build_strategy, parent) {}
 
 common::Error OfflineVerifyUser::startVerificationImpl(const std::string& login,
                                                        const std::string& hexed_password,
+                                                       proxy::UserInfo::BuildStrategy build_strategy,
                                                        proxy::UserInfo* uinf) {
   if (login != USER_LOGIN) {
     return common::make_error("Wrong login.");
@@ -34,7 +38,7 @@ common::Error OfflineVerifyUser::startVerificationImpl(const std::string& login,
     return common::make_error("Wrong password.");
   }
 
-  fastonosql::proxy::UserInfo user_info(login, hexed_password);
+  fastonosql::proxy::UserInfo user_info(login, hexed_password, build_strategy);
   user_info.SetSubscriptionState(fastonosql::proxy::UserInfo::SUBSCRIBED);
   *uinf = user_info;
   return common::Error();

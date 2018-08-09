@@ -29,12 +29,14 @@ class UserInfo {
  public:
   enum SubscriptionState { UNSUBSCIRBED = 0, SUBSCRIBED };
   enum Type { USER = 0, SUPPORT = 1, OPEN_SOURCE = 2, ENTERPRISE = 3 };
+  enum BuildStrategy { COMMUNITY_BUILD = 0, PUBLIC_BUILD = 1, PRIVATE_BUILD = 2 };
   UserInfo();
-  UserInfo(const std::string& login, const std::string& password);
+  UserInfo(const std::string& login, const std::string& password, BuildStrategy strategy);
 
   // only geters
   std::string GetLogin() const;
   std::string GetPassword() const;
+  BuildStrategy GetBuildStrategy() const;
 
   bool IsValid() const;
 
@@ -63,6 +65,7 @@ class UserInfo {
  private:
   std::string login_;
   std::string password_;
+  BuildStrategy build_strategy_;
 
   // server fields
   std::string first_name_;
@@ -78,6 +81,9 @@ class UserInfo {
 }  // namespace fastonosql
 
 namespace common {
+std::string ConvertToString(fastonosql::proxy::UserInfo::BuildStrategy t);
+bool ConvertFromString(const std::string& from, fastonosql::proxy::UserInfo::BuildStrategy* out);
+
 std::string ConvertToString(fastonosql::proxy::UserInfo::Type t);
 bool ConvertFromString(const std::string& from, fastonosql::proxy::UserInfo::Type* out);
 }  // namespace common

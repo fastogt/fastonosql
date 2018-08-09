@@ -26,7 +26,7 @@ namespace gui {
 class StatisticSender : public QObject {
   Q_OBJECT
  public:
-  explicit StatisticSender(const std::string& login, QObject* parent = Q_NULLPTR);
+  explicit StatisticSender(const std::string& login, const std::string& build_strategy, QObject* parent = Q_NULLPTR);
 
  Q_SIGNALS:
   void statisticSended(const QString& error_message);
@@ -36,6 +36,7 @@ class StatisticSender : public QObject {
 
  private:
   const std::string login_;
+  const std::string build_strategy_;
 };
 
 }  // namespace gui

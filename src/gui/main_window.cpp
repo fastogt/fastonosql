@@ -346,7 +346,8 @@ void MainWindow::sendStatistic() {
   proxy::UserInfo uinf = proxy::SettingsManager::GetInstance()->GetUserInfo();
 
   const std::string login = uinf.GetLogin();
-  StatisticSender* sender = new StatisticSender(login);
+  const std::string build_strategy = common::ConvertToString(uinf.GetBuildStrategy());
+  StatisticSender* sender = new StatisticSender(login, build_strategy);
   sender->moveToThread(th);
   VERIFY(connect(th, &QThread::started, sender, &StatisticSender::routine));
   VERIFY(connect(sender, &StatisticSender::statisticSended, this, &MainWindow::statitsticSent));

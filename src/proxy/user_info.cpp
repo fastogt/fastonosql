@@ -21,8 +21,9 @@
 #include <common/macros.h>
 
 namespace {
-const std::string userTypes[] = {"USER", "SUPPORT", "OPEN_SOURCE", "ENTERPRISE"};
-}
+const std::string kUserTypes[] = {"USER", "SUPPORT", "OPEN_SOURCE", "ENTERPRISE"};
+const std::string kBuildStrategy[] = {"community", "public", "private"};
+}  // namespace
 
 namespace fastonosql {
 namespace proxy {
@@ -30,6 +31,7 @@ namespace proxy {
 UserInfo::UserInfo()
     : login_(),
       password_(),
+      build_strategy_(),
       first_name_(),
       last_name_(),
       subscription_state_(UNSUBSCIRBED),
@@ -38,9 +40,10 @@ UserInfo::UserInfo()
       expire_time_(0),
       user_id_() {}
 
-UserInfo::UserInfo(const std::string& login, const std::string& password)
+UserInfo::UserInfo(const std::string& login, const std::string& password, BuildStrategy strategy)
     : login_(login),
       password_(password),
+      build_strategy_(strategy),
       first_name_(),
       last_name_(),
       subscription_state_(UNSUBSCIRBED),
@@ -71,6 +74,10 @@ std::string UserInfo::GetLogin() const {
 
 std::string UserInfo::GetPassword() const {
   return password_;
+}
+
+UserInfo::BuildStrategy UserInfo::GetBuildStrategy() const {
+  return build_strategy_;
 }
 
 bool UserInfo::IsValid() const {
@@ -123,13 +130,29 @@ void UserInfo::SetUserID(user_id_t user_id) {
 namespace common {
 
 std::string ConvertToString(fastonosql::proxy::UserInfo::Type t) {
-  return userTypes[t];
+  return kUserTypes[t];
 }
 
 bool ConvertFromString(const std::string& from, fastonosql::proxy::UserInfo::Type* out) {
-  for (size_t i = 0; i < SIZEOFMASS(userTypes); ++i) {
-    if (from == userTypes[i]) {
+  for (size_t i = 0; i < SIZEOFMASS(kUserTypes); ++i) {
+    if (from == kUserTypes[i]) {
       *out = static_cast<fastonosql::proxy::UserInfo::Type>(i);
+      return true;
+    }
+  }
+
+  NOTREACHED();
+  return false;
+}
+
+std::string ConvertToString(fastonosql::proxy::UserInfo::BuildStrategy t) {
+  return kBuildStrategy[t];
+}
+
+bool ConvertFromString(const std::string& from, fastonosql::proxy::UserInfo::BuildStrategy* out) {
+  for (size_t i = 0; i < SIZEOFMASS(kBuildStrategy); ++i) {
+    if (from == kBuildStrategy[i]) {
+      *out = static_cast<fastonosql::proxy::UserInfo::BuildStrategy>(i);
       return true;
     }
   }

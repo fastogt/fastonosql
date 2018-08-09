@@ -50,6 +50,6 @@ class KeyInfo {
 }  // namespace fastonosql
 
 namespace common {
-std::string ConvertToStsring(fastonosql::proxy::supportedViews v);
+std::string ConvertToString(fastonosql::proxy::supportedViews v);
 bool ConvertFromString(const std::string& from, fastonosql::proxy::supportedViews* out);
 }  // namespace common

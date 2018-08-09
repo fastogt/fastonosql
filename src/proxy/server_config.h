@@ -18,7 +18,7 @@ common::Error ParseSubscriptionStateResponce(const std::string& data, UserInfo* 
 common::Error GenVersionRequest(std::string* request);
 common::Error ParseVersionResponce(const std::string& data, uint32_t* version);
 
-common::Error GenStatisticRequest(const std::string& login, std::string* request);
+common::Error GenStatisticRequest(const std::string& login, const std::string& build_strategy, std::string* request);
 common::Error ParseSendStatisticResponce(const std::string& data);
 
 common::Error GenBanUserRequest(const UserInfo& user_info, user_id_t collision_id, std::string* request);

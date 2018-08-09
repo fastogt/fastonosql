@@ -24,12 +24,18 @@
 
 namespace fastonosql {
 
-IVerifyUser::IVerifyUser(const QString& login, const QString& password, QObject* parent)
-    : QObject(parent), login_(login), password_(password) {}
+IVerifyUser::IVerifyUser(const QString& login,
+                         const QString& password,
+                         proxy::UserInfo::BuildStrategy build_strategy,
+                         QObject* parent)
+    : QObject(parent), login_(login), password_(password), build_strategy_(build_strategy) {}
 
 IVerifyUser::~IVerifyUser() {}
 
-common::Error IVerifyUser::startVerification(const QString& login, const QString& password, proxy::UserInfo* uinf) {
+common::Error IVerifyUser::startVerification(const QString& login,
+                                             const QString& password,
+                                             proxy::UserInfo::BuildStrategy strategy,
+                                             proxy::UserInfo* uinf) {
   if (login.isEmpty() || password.isEmpty() || !uinf) {
     return common::make_error_inval();
   }
@@ -43,12 +49,12 @@ common::Error IVerifyUser::startVerification(const QString& login, const QString
   common::hash::MD5_Final(&ctx, md5_result);
   std::string hexed_password = common::utils::hex::encode(std::string(md5_result, md5_result + MD5_HASH_LENGHT), true);
 
-  return startVerificationImpl(login_str, hexed_password, uinf);
+  return startVerificationImpl(login_str, hexed_password, strategy, uinf);
 }
 
 void IVerifyUser::routine() {
   proxy::UserInfo uinf;
-  common::Error err = startVerification(login_, password_, &uinf);
+  common::Error err = startVerification(login_, password_, build_strategy_, &uinf);
   emit verifyUserResult(err, uinf);
 }
 
