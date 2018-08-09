@@ -5,6 +5,7 @@
 - Update Snappy to version 1.1.7
 - Update common to version 1.18.9
 - Build strategy type
+- Fix leveldb snappy issue
 
 1.17.8 / August 5, 2018
 [Alexandr Topilski]
