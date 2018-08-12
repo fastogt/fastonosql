@@ -263,7 +263,6 @@ SET(HEADERS_GUI_DIALOGS_TO_MOC
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_sentinel_connection.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/test_connection.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/stream_entry_dialog.h
-  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/trial_time_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/how_to_use_dialog.h
 )
 
@@ -297,7 +296,6 @@ SET(SOURCES_GUI_DIALOGS
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_sentinel_connection.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/test_connection.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/stream_entry_dialog.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/trial_time_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/how_to_use_dialog.cpp
 )
 

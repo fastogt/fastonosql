@@ -19,6 +19,7 @@
 #include "gui/main_window.h"
 
 #include <QAction>
+#include <QDateTime>
 #include <QDesktopServices>
 #include <QDockWidget>
 #include <QFileDialog>
@@ -116,7 +117,16 @@ MainWindow::MainWindow() : QMainWindow() {
 
   common::qt::gui::applyFont(gui::GuiFactory::GetInstance().GetFont());
 
-  setWindowTitle(PROJECT_NAME_TITLE " " PROJECT_VERSION);
+  proxy::UserInfo user_info = proxy::SettingsManager::GetInstance()->GetUserInfo();
+  fastonosql::proxy::UserInfo::SubscriptionState user_sub_state = user_info.GetSubscriptionState();
+  if (user_sub_state != fastonosql::proxy::UserInfo::SUBSCRIBED) {
+    time_t expire_application_utc_time = user_info.GetExpireTime();
+    const QDateTime end_date = QDateTime::fromTime_t(expire_application_utc_time, Qt::LocalTime);
+    const QString date_fmt = end_date.toString(Qt::ISODate);
+    setWindowTitle(QString(PROJECT_NAME_TITLE " " PROJECT_VERSION " (expiration date: %1)").arg(date_fmt));
+  } else {
+    setWindowTitle(PROJECT_NAME_TITLE " " PROJECT_VERSION);
+  }
 
   connect_action_ = new QAction(this);
   connect_action_->setIcon(GuiFactory::GetInstance().GetConnectDBIcon());

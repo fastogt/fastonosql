@@ -32,6 +32,7 @@
 #include <common/file_system/string_path_utils.h>
 #include <common/net/socket_tcp.h>
 #include <common/qt/translations/translations.h>
+#include <common/time.h>
 
 #include "credentials_dialog.h"
 
@@ -42,7 +43,7 @@
 #include "gui/main_window.h"
 
 #include "gui/dialogs/eula_dialog.h"
-#include "gui/dialogs/trial_time_dialog.h"
+#include "gui/dialogs/how_to_use_dialog.h"
 #include "translations/global.h"
 
 #define IDENTITY_FILE_NAME "IDENTITY"
@@ -224,8 +225,8 @@ int main(int argc, char* argv[]) {
   fastonosql::proxy::UserInfo user_info = password_dialog.GetUserInfo();
   // start application
   fastonosql::proxy::UserInfo::SubscriptionState user_sub_state = user_info.GetSubscriptionState();
+  size_t exec_count = user_info.GetExecCount();
   if (user_sub_state != fastonosql::proxy::UserInfo::SUBSCRIBED) {
-    size_t exec_count = user_info.GetExecCount();
     fastonosql::proxy::user_id_t user_id = user_info.GetUserID();
     const std::string runtime_dir_path = settings_manager->GetSettingsDirPath();  // stabled
 
@@ -279,18 +280,16 @@ int main(int argc, char* argv[]) {
     }
 
     time_t expire_application_utc_time = user_info.GetExpireTime();
-    const QDateTime cur_time = QDateTime::currentDateTimeUtc();
-    const QDateTime end_date = QDateTime::fromTime_t(expire_application_utc_time, Qt::UTC);
-    if (cur_time > end_date) {
+    time_t cur_time = common::time::current_utc_mstime() / 1000;
+    if (cur_time > expire_application_utc_time) {
       QMessageBox::critical(nullptr, fastonosql::translations::trTrial, trExpired);
       return EXIT_FAILURE;
-    } else {
-      uint32_t ex_count = user_info.GetExecCount();
-      fastonosql::gui::TrialTimeDialog trial_dialog(fastonosql::translations::trTrial, end_date, ex_count);
-      if (trial_dialog.exec() == QDialog::Rejected) {
-        return EXIT_FAILURE;
-      }
     }
+  }
+
+  if (exec_count == 1) {
+    fastonosql::gui::HowToUseDialog hs;
+    hs.exec();
   }
 
 #if BUILD_STRATEGY == COMMUNITY_STRATEGY
