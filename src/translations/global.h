@@ -78,6 +78,8 @@ extern const QString trOptions;
 extern const QString trWindow;
 extern const QString trHelp;
 extern const QString trConnect;
+extern const QString trWorkflow;
+extern const QString trIndividualBuilds;
 extern const QString trDisconnect;
 extern const QString trValidate;
 extern const QString trExecute;
