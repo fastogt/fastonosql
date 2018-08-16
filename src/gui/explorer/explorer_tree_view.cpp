@@ -47,7 +47,7 @@
 #include "gui/explorer/explorer_tree_model.h"  // for ExplorerServerItem, etc
 #include "gui/explorer/explorer_tree_sort_filter_proxy_model.h"
 
-#include "translations/global.h"  // for trClose, trBackup, trImport, etc
+#include "translations/global.h"  // for trClose, trBackup, etc
 
 namespace {
 const QString trCreateKeyForDbTemplate_1S = QObject::tr("Create key for %1 database");
@@ -693,7 +693,7 @@ void ExplorerTreeView::exportServer() {
     }
 
     QString filepath =
-        QFileDialog::getOpenFileName(this, translations::trImport, QString(), translations::trfilterForRdb);
+        QFileDialog::getOpenFileName(this, translations::trRestore, QString(), translations::trfilterForRdb);
     if (!filepath.isEmpty()) {
       proxy::events_info::RestoreInfoRequest req(this, common::ConvertToString(filepath));
       server->RestoreFromPath(req);

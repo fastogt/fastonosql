@@ -295,11 +295,11 @@ void BaseShellWidget::init() {
 QHBoxLayout* BaseShellWidget::createTopLayout(core::connectionTypes ct) {
   QHBoxLayout* top_layout = new QHBoxLayout;
   server_name_ = new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().GetIcon(ct), top_bar_icon_size,
-                                                translations::trCalculating);
+                                                translations::trCalculate + "...");
   server_name_->setElideMode(Qt::ElideRight);
   top_layout->addWidget(server_name_);
   db_name_ = new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().GetDatabaseIcon(), top_bar_icon_size,
-                                            translations::trCalculating);
+                                            translations::trCalculate + "...");
   top_layout->addWidget(db_name_);
   return top_layout;
 }
@@ -608,7 +608,7 @@ void BaseShellWidget::OnServerDisconnected() {
 
 void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
   if (!inf) {
-    updateServerLabel(translations::trCalculating);
+    updateServerLabel(translations::trCalculate + "...");
     for (int i = 0; i < commands_version_api_->count(); ++i) {
       commands_version_api_->setItemIcon(i, gui::GuiFactory::GetInstance().GetUnknownIcon());
     }
@@ -657,7 +657,7 @@ void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
 
 void BaseShellWidget::updateDefaultDatabase(core::IDataBaseInfoSPtr dbs) {
   if (!dbs) {
-    updateDBLabel(translations::trCalculating);
+    updateDBLabel(translations::trCalculate + "...");
     return;
   }
 

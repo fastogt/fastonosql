@@ -32,7 +32,7 @@
 #include "gui/editor/fasto_editor_output.h"  // for FastoEditorOutput, CSV, etc
 #include "gui/gui_factory.h"                 // for GuiFactory
 
-#include "translations/global.h"  // for trCsv, trGzip, trHex, etc
+#include "translations/global.h"
 
 Q_DECLARE_METATYPE(fastonosql::core::NValue)
 
@@ -45,17 +45,17 @@ FastoTextView::FastoTextView(QWidget* parent) : QWidget(parent) {
   editor_ = new FastoEditorOutput;
   views_label_ = new QLabel;
   views_combo_box_ = new QComboBox;
-  views_combo_box_->addItem(translations::trJson, JSON_VIEW);
-  views_combo_box_->addItem(translations::trCsv, CSV_VIEW);
-  views_combo_box_->addItem(translations::trRawText, RAW_VIEW);
-  views_combo_box_->addItem(translations::trHex, HEX_VIEW);
-  views_combo_box_->addItem(translations::trUnicode, UNICODE_VIEW);
-  views_combo_box_->addItem(translations::trMsgPack, MSGPACK_VIEW);
-  views_combo_box_->addItem(translations::trGzip, GZIP_VIEW);
-  views_combo_box_->addItem(translations::trLZ4, LZ4_VIEW);
-  views_combo_box_->addItem(translations::trBZip2, BZIP2_VIEW);
-  views_combo_box_->addItem(translations::trSnappy, SNAPPY_VIEW);
-  views_combo_box_->addItem(translations::trXml, XML_VIEW);
+  views_combo_box_->addItem(kJson, JSON_VIEW);
+  views_combo_box_->addItem(kCsv, CSV_VIEW);
+  views_combo_box_->addItem(kRaw, RAW_VIEW);
+  views_combo_box_->addItem(kHex, HEX_VIEW);
+  views_combo_box_->addItem(kUnicode, UNICODE_VIEW);
+  views_combo_box_->addItem(kMsgPack, MSGPACK_VIEW);
+  views_combo_box_->addItem(kGzip, GZIP_VIEW);
+  views_combo_box_->addItem(kLZ4, LZ4_VIEW);
+  views_combo_box_->addItem(kBZip2, BZIP2_VIEW);
+  views_combo_box_->addItem(kSnappy, SNAPPY_VIEW);
+  views_combo_box_->addItem(kXml, XML_VIEW);
 
   save_change_button_ = new QPushButton;
   save_change_button_->setIcon(GuiFactory::GetInstance().GetSaveIcon());

@@ -36,6 +36,18 @@ namespace fastonosql {
 namespace gui {
 class FastoHexEdit;
 
+extern const char kJson[];
+extern const char kCsv[];
+extern const char kHex[];
+extern const char kUnicode[];
+extern const char kMsgPack[];
+extern const char kGzip[];
+extern const char kLZ4[];
+extern const char kBZip2[];
+extern const char kSnappy[];
+extern const char kXml[];
+extern const char kRaw[];
+
 class FastoEditorOutput : public QWidget {
   Q_OBJECT
  public:

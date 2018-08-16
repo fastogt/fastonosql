@@ -659,7 +659,7 @@ void MainWindow::createStatusBar() {}
 
 void MainWindow::retranslateUi() {
   connect_action_->setText(translations::trConnect + "...");
-  load_from_file_action_->setText(translations::trLoadFromFile);
+  load_from_file_action_->setText(translations::trLoadFromFile + "...");
   import_action_->setText(translations::trImportSettings);
   export_action_->setText(translations::trExportSettings);
   exit_action_->setText(translations::trExit);
@@ -667,13 +667,13 @@ void MainWindow::retranslateUi() {
   tools_action_->setText(translations::trTools);
   encode_decode_dialog_action_->setText(translations::trEncodeDecode);
   preferences_action_->setText(translations::trPreferences);
-  check_update_action_->setText(translations::trCheckUpdate);
+  check_update_action_->setText(translations::trCheckUpdate + "...");
   edit_action_->setText(translations::trEdit);
   window_action_->setText(translations::trWindow);
   full_screan_action_->setText(translations::trFullScreen);
-  report_bug_action_->setText(translations::trReportBug);
+  report_bug_action_->setText(translations::trReportBug + "...");
   about_action_->setText(tr("About %1...").arg(PROJECT_NAME_TITLE));
-  howtouse_action_->setText(translations::trHowToUse);
+  howtouse_action_->setText(translations::trHowToUse + "...");
   help_action_->setText(translations::trHelp);
   explorer_action_->setText(translations::trExpTree);
   logs_action_->setText(translations::trLogs);

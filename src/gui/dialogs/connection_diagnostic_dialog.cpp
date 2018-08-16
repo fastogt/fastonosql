@@ -69,8 +69,9 @@ ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(QWidget* parent, proxy::I
   mainLayout->setSizeConstraint(QLayout::SetFixedSize);
   setLayout(mainLayout);
 
-  glass_widget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().GetPathToLoadingGif(),
-                                                   translations::trTryToConnect, 0.5, QColor(111, 111, 100), this);
+  glass_widget_ =
+      new common::qt::gui::GlassWidget(GuiFactory::GetInstance().GetPathToLoadingGif(),
+                                       translations::trTryToConnect + "...", 0.5, QColor(111, 111, 100), this);
   startTestConnection(connection);
 }
 

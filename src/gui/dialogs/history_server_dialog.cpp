@@ -32,7 +32,7 @@
 
 #include "gui/gui_factory.h"  // for GuiFactory
 
-#include "translations/global.h"  // for trClearHistory, trLoading
+#include "translations/global.h"  // for trClearHistory
 
 namespace {
 const QString trHistoryTemplate_1S = QObject::tr("%1 history");
@@ -88,7 +88,7 @@ ServerHistoryDialog::ServerHistoryDialog(proxy::IServerSPtr server, QWidget* par
   setLayout(mainL);
 
   glass_widget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().GetPathToLoadingGif(),
-                                                   translations::trLoading, 0.5, QColor(111, 111, 100), this);
+                                                   translations::trLoad + "...", 0.5, QColor(111, 111, 100), this);
   VERIFY(connect(server.get(), &proxy::IServer::LoadServerHistoryInfoStarted, this,
                  &ServerHistoryDialog::startLoadServerHistoryInfo));
   VERIFY(connect(server.get(), &proxy::IServer::LoadServerHistoryInfoFinished, this,

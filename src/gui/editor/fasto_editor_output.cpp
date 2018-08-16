@@ -35,6 +35,18 @@
 namespace fastonosql {
 namespace gui {
 
+const char kJson[] = "Json";
+const char kCsv[] = "Csv";
+const char kHex[] = "Hex";
+const char kUnicode[] = "Unicode";
+const char kMsgPack[] = "MsgPack";
+const char kGzip[] = "Gzip";
+const char kLZ4[] = "LZ4";
+const char kBZip2[] = "BZip2";
+const char kSnappy[] = "Snappy";
+const char kXml[] = "Xml";
+const char kRaw[] = "Raw";
+
 FastoEditorOutput::FastoEditorOutput(QWidget* parent) : QWidget(parent), model_(nullptr), view_method_(JSON_VIEW) {
   text_json_editor_ = new FastoEditor;
   json_lexer_ = new QsciLexerJSON;
@@ -244,27 +256,27 @@ void FastoEditorOutput::layoutChanged() {
 
   QString methodText;
   if (view_method_ == JSON_VIEW) {
-    methodText = translations::trJson;
+    methodText = kJson;
   } else if (view_method_ == CSV_VIEW) {
-    methodText = translations::trCsv;
+    methodText = kCsv;
   } else if (view_method_ == RAW_VIEW) {
-    methodText = translations::trRawText;
+    methodText = kRaw;
   } else if (view_method_ == HEX_VIEW) {
-    methodText = translations::trHex;
+    methodText = kHex;
   } else if (view_method_ == UNICODE_VIEW) {
-    methodText = translations::trUnicode;
+    methodText = kUnicode;
   } else if (view_method_ == MSGPACK_VIEW) {
-    methodText = translations::trMsgPack;
+    methodText = kMsgPack;
   } else if (view_method_ == GZIP_VIEW) {
-    methodText = translations::trGzip;
+    methodText = kGzip;
   } else if (view_method_ == LZ4_VIEW) {
-    methodText = translations::trLZ4;
+    methodText = kLZ4;
   } else if (view_method_ == BZIP2_VIEW) {
-    methodText = translations::trBZip2;
+    methodText = kBZip2;
   } else if (view_method_ == SNAPPY_VIEW) {
-    methodText = translations::trSnappy;
+    methodText = kSnappy;
   } else if (view_method_ == XML_VIEW) {
-    methodText = translations::trXml;
+    methodText = kXml;
   } else {
     NOTREACHED();
   }

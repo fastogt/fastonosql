@@ -90,8 +90,9 @@ DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(QWidget* pa
   setFixedSize(QSize(fix_width, fix_height));
   setLayout(mainLayout);
 
-  glass_widget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().GetPathToLoadingGif(),
-                                                   translations::trTryToConnect, 0.5, QColor(111, 111, 100), this);
+  glass_widget_ =
+      new common::qt::gui::GlassWidget(GuiFactory::GetInstance().GetPathToLoadingGif(),
+                                       translations::trTryToConnect + "...", 0.5, QColor(111, 111, 100), this);
   testConnection(connection);
 }
 

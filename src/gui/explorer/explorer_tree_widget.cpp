@@ -87,7 +87,7 @@ void ExplorerTreeWidget::changeEvent(QEvent* e) {
 }
 
 void ExplorerTreeWidget::retranslateUi() {
-  filter_edit_->setPlaceholderText(translations::trSearching);
+  filter_edit_->setPlaceholderText(translations::trSearch + "...");
 }
 
 }  // namespace gui

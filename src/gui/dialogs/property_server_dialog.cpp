@@ -31,7 +31,7 @@
 #include "gui/property_table_item.h"
 #include "gui/property_table_model.h"  // for PropertyTableModel, etc
 
-#include "translations/global.h"  // for trLoading
+#include "translations/global.h"
 
 namespace {
 const QString trPropertiesTemplate_1S = QObject::tr("%1 properties");
@@ -60,7 +60,7 @@ PropertyServerDialog::PropertyServerDialog(proxy::IServerSPtr server, QWidget* p
   setLayout(mainL);
 
   glass_widget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().GetPathToLoadingGif(),
-                                                   translations::trLoading, 0.5, QColor(111, 111, 100), this);
+                                                   translations::trLoad + "...", 0.5, QColor(111, 111, 100), this);
 
   VERIFY(connect(server.get(), &proxy::IServer::LoadServerPropertyStarted, this,
                  &PropertyServerDialog::startServerProperty));

@@ -82,12 +82,12 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
         common::ConvertFromString(common::ConvertToString(rserver->GetRole()), &stype);
         QString mtype;
         common::ConvertFromString(common::ConvertToString(rserver->GetMode()), &mtype);
-        QString shost = translations::trCalculating;
+        QString shost = translations::trCalculate + "...";
         common::ConvertFromString(common::ConvertToString(rserver->GetHost()), &shost);
         return trRemoteServerToolTipTemplate_4S.arg(sname, stype, mtype, shost);
       } else {
         proxy::IServerLocal* lserver = static_cast<proxy::IServerLocal*>(server.get());
-        QString spath = translations::trCalculating;
+        QString spath = translations::trCalculate + "...";
         common::ConvertFromString(lserver->GetPath(), &spath);
         return trLocalServerToolTipTemplate_2S.arg(sname, spath);
       }
