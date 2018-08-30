@@ -122,7 +122,7 @@ readable_string_t ReadableString::GetHumanReadable() const {
   return data_;
 }
 
-readable_string_t ReadableString::GetForCommandLine() const {
+readable_string_t ReadableString::GetForCommandLine(bool need_quotes) const {
   if (type_ == BINARY_DATA) {
     command_buffer_writer_t wr;
     wr << "\"" << detail::hex_string(data_) << "\"";
@@ -133,7 +133,7 @@ readable_string_t ReadableString::GetForCommandLine() const {
     return data_;
   }
 
-  if (detail::have_space(data_)) {
+  if (detail::have_space(data_) && need_quotes) {
     return "\"" + data_ + "\"";
   }
 

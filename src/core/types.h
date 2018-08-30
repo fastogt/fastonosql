@@ -54,9 +54,10 @@ class ReadableString {
 
   DataType GetType() const;
 
-  readable_string_t GetData() const;            // for direct bytes call
-  readable_string_t GetHumanReadable() const;   // for diplaying
-  readable_string_t GetForCommandLine() const;  // escape if hex, or double quoted if text with space
+  readable_string_t GetData() const;           // for direct bytes call
+  readable_string_t GetHumanReadable() const;  // for diplaying
+  readable_string_t GetForCommandLine(
+      bool need_quotes = true) const;  // escape if hex, or double quoted if text with space
   void SetData(const readable_string_t& data);
 
   bool Equals(const ReadableString& other) const;

@@ -332,7 +332,8 @@ common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, comm
   } else if (type == common::Value::TYPE_ZSET) {
     wr << REDIS_SET_KEY_ZSET_COMMAND " " << key_str.GetForCommandLine() << " " << value_str.GetForCommandLine();
   } else if (type == common::Value::TYPE_HASH) {
-    wr << REDIS_SET_KEY_HASH_COMMAND " " << key_str.GetForCommandLine() << " " << value_str.GetForCommandLine();
+    // HMSET gameConfig:1:1 tile "note3" RY "1920" RX "1080" id 1
+    wr << REDIS_SET_KEY_HASH_COMMAND " " << key_str.GetForCommandLine() << " " << value_str.GetForCommandLine(false);
   } else if (type == StreamValue::TYPE_STREAM) {  // XADD is complex
     NValue nv = key.GetValue();
     StreamValue* value = static_cast<StreamValue*>(nv.get());
