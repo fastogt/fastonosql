@@ -1474,7 +1474,7 @@ IF(DEVELOPER_ENABLE_TESTS)
   SET(UNIT_TEST unit_tests)
   ADD_EXECUTABLE(${UNIT_TEST}
     ${CMAKE_SOURCE_DIR}/tests/unit_tests/test_fasto_objects.cpp
-    ${CMAKE_SOURCE_DIR}/tests/unit_tests/test_parsinng_command_line.cpp
+    ${CMAKE_SOURCE_DIR}/tests/unit_tests/test_parsing_command_line.cpp
     ${CMAKE_SOURCE_DIR}/tests/unit_tests/test_command_holder.cpp
   )
 

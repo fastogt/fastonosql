@@ -86,4 +86,40 @@ TEST(sds, sdssplitargslong) {
     sdsfree(revert);
     sdsfreesplitres(argv, argc);
   }
+
+  const std::string line3 = "GET {NAMESPACE}:{TEST}";
+  argc = 0;
+  argv = sdssplitargs(line3.c_str(), &argc);
+  ASSERT_TRUE(argv && argc == 2);
+  if (argv) {
+    ASSERT_STREQ(argv[0], "GET");
+    ASSERT_STREQ(argv[1], "{NAMESPACE}:{TEST}");
+  }
+
+  const std::string line4 = R"(HMSET gameConfig:1:1 tile "note3" RY "1920" RX "1080" id 1)";
+  argc = 0;
+  argv = sdssplitargs(line4.c_str(), &argc);
+  ASSERT_TRUE(argv && argc == 10);
+  if (argv) {
+    ASSERT_STREQ(argv[0], "HMSET");
+    ASSERT_STREQ(argv[1], "gameConfig:1:1");
+    ASSERT_STREQ(argv[2], "tile");
+    ASSERT_STREQ(argv[3], "note3");
+    ASSERT_STREQ(argv[4], "RY");
+    ASSERT_STREQ(argv[5], "1920");
+    ASSERT_STREQ(argv[6], "RX");
+    ASSERT_STREQ(argv[7], "1080");
+    ASSERT_STREQ(argv[8], "id");
+    ASSERT_STREQ(argv[9], "1");
+  }
+
+  const std::string line5 = R"(SET alex '{"test":1}')";
+  argc = 0;
+  argv = sdssplitargs(line5.c_str(), &argc);
+  ASSERT_TRUE(argv && argc == 3);
+  if (argv) {
+    ASSERT_STREQ(argv[0], "SET");
+    ASSERT_STREQ(argv[1], "alex");
+    ASSERT_STREQ(argv[2], "{\"test\":1}");
+  }
 }
