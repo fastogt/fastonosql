@@ -2224,6 +2224,7 @@ common::Error TestConnection(const RConfig& config) {
   return redis_compatible::TestConnection(config, config.ssh_info);
 }
 
+#if defined(PRO_VERSION)
 common::Error DiscoveryClusterConnection(const RConfig& config, std::vector<ServerDiscoveryClusterInfoSPtr>* infos) {
   return redis_compatible::DiscoveryClusterConnection(config, config.ssh_info, infos);
 }
@@ -2231,6 +2232,7 @@ common::Error DiscoveryClusterConnection(const RConfig& config, std::vector<Serv
 common::Error DiscoverySentinelConnection(const RConfig& config, std::vector<ServerDiscoverySentinelInfoSPtr>* infos) {
   return redis_compatible::DiscoverySentinelConnection(config, config.ssh_info, infos);
 }
+#endif
 
 DBConnection::DBConnection(CDBConnectionClient* client) : base_class(client) {}
 

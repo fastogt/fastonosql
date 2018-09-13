@@ -34,7 +34,16 @@ class IExplorerTreeItem : public common::qt::gui::TreeItem {
  public:
   enum eColumn { eName = 0, eCountColumns };
 
-  enum eType { eCluster, eSentinel, eServer, eDatabase, eNamespace, eKey };
+  enum eType {
+    eServer,
+    eDatabase,
+    eNamespace,
+    eKey,
+#if defined(PRO_VERSION)
+    eCluster,
+    eSentinel
+#endif
+  };
 
   IExplorerTreeItem(TreeItem* parent, eType type);
 
@@ -61,6 +70,7 @@ class ExplorerServerItem : public IExplorerTreeItem {
   const proxy::IServerSPtr server_;
 };
 
+#if defined(PRO_VERSION)
 class ExplorerSentinelItem : public IExplorerTreeItem {
  public:
   ExplorerSentinelItem(proxy::ISentinelSPtr sentinel, TreeItem* parent);
@@ -84,6 +94,7 @@ class ExplorerClusterItem : public IExplorerTreeItem {
  private:
   const proxy::IClusterSPtr cluster_;
 };
+#endif
 
 class ExplorerDatabaseItem : public IExplorerTreeItem {
  public:

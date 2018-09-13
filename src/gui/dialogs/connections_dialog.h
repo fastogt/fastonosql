@@ -20,9 +20,12 @@
 
 #include <QDialog>
 
-#include "proxy/connection_settings/icluster_connection_settings.h"
 #include "proxy/connection_settings/iconnection_settings.h"
+
+#if defined(PRO_VERSION)
+#include "proxy/connection_settings/icluster_connection_settings.h"
 #include "proxy/connection_settings/isentinel_connection_settings.h"
+#endif
 
 class QTreeWidget;
 class QTreeWidgetItem;
@@ -30,10 +33,12 @@ class QTreeWidgetItem;
 namespace fastonosql {
 namespace gui {
 
+#if defined(PRO_VERSION)
 class ClusterConnectionListWidgetItemContainer;
+class SentinelConnectionListWidgetItemContainer;
+#endif
 class ConnectionListWidgetItem;
 class DirectoryListWidgetItem;
-class SentinelConnectionListWidgetItemContainer;
 
 class ConnectionsDialog : public QDialog {
   Q_OBJECT
@@ -43,8 +48,10 @@ class ConnectionsDialog : public QDialog {
   explicit ConnectionsDialog(QWidget* parent = Q_NULLPTR);
 
   proxy::IConnectionSettingsBaseSPtr selectedConnection() const;
+#if defined(PRO_VERSION)
   proxy::ISentinelSettingsBaseSPtr selectedSentinel() const;
   proxy::IClusterSettingsBaseSPtr selectedCluster() const;
+#endif
 
  private Q_SLOTS:
   virtual void accept() override;
@@ -62,18 +69,24 @@ class ConnectionsDialog : public QDialog {
  private:
   void editItem(QTreeWidgetItem* qitem, bool remove_origin);
   void editConnection(ConnectionListWidgetItem* connectionItem, bool remove_origin);
+#if defined(PRO_VERSION)
   void editCluster(ClusterConnectionListWidgetItemContainer* clusterItem, bool remove_origin);
   void editSentinel(SentinelConnectionListWidgetItemContainer* sentinelItem, bool remove_origin);
+#endif
 
   void removeConnection(ConnectionListWidgetItem* connectionItem);
+#if defined(PRO_VERSION)
   void removeCluster(ClusterConnectionListWidgetItemContainer* clusterItem);
   void removeSentinel(SentinelConnectionListWidgetItemContainer* sentinelItem);
+#endif
 
   void retranslateUi();
 
   void addConnection(proxy::IConnectionSettingsBaseSPtr con);
+#if defined(PRO_VERSION)
   void addCluster(proxy::IClusterSettingsBaseSPtr con);
   void addSentinel(proxy::ISentinelSettingsBaseSPtr con);
+#endif
   DirectoryListWidgetItem* findFolderByPath(const proxy::connection_path_t& path) const;
 
   QTreeWidget* list_widget_;

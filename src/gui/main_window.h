@@ -22,9 +22,12 @@
 
 #include "proxy/proxy_fwd.h"
 
-#include "proxy/connection_settings/icluster_connection_settings.h"
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
+
+#if defined(PRO_VERSION)
+#include "proxy/connection_settings/icluster_connection_settings.h"
 #include "proxy/connection_settings/isentinel_connection_settings.h"
+#endif
 
 class QAction;      // lines 27-27
 class QDockWidget;  // lines 28-28
@@ -71,8 +74,10 @@ class MainWindow : public QMainWindow {
   void statitsticSent(const QString& error_message);
 
   void closeServer(proxy::IServerSPtr server);
+#if defined(PRO_VERSION)
   void closeSentinel(proxy::ISentinelSPtr sentinel);
   void closeCluster(proxy::IClusterSPtr cluster);
+#endif
 
  protected:
 #ifdef OS_ANDROID
@@ -90,8 +95,10 @@ class MainWindow : public QMainWindow {
   void updateRecentConnectionActions();
   void clearRecentConnectionsMenu();
   void createServer(proxy::IConnectionSettingsBaseSPtr settings);
+#if defined(PRO_VERSION)
   void createSentinel(proxy::ISentinelSettingsBaseSPtr settings);
   void createCluster(proxy::IClusterSettingsBaseSPtr settings);
+#endif
 
   QAction* connect_action_;
   QAction* load_from_file_action_;

@@ -94,21 +94,28 @@ SET(SOURCES_CORE
 
 # proxy
 SET(HEADERS_PROXY_CONNECTION_SETTINGS
-  ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/icluster_connection_settings.h
-  ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/isentinel_connection_settings.h
   ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/iconnection_settings.h
   ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/iconnection_settings_local.h
   ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/iconnection_settings_remote.h
   ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/iconnection_settings_ssh.h
 )
 SET(SOURCES_PROXY_CONNECTION_SETTINGS
-  ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/icluster_connection_settings.cpp
-  ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/isentinel_connection_settings.cpp
   ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/iconnection_settings.cpp
   ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/iconnection_settings_local.cpp
   ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/iconnection_settings_remote.cpp
   ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/iconnection_settings_ssh.cpp
 )
+
+IF(PRO_VERSION)
+  SET(HEADERS_PROXY_CONNECTION_SETTINGS ${HEADERS_PROXY_CONNECTION_SETTINGS}
+    ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/isentinel_connection_settings.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/icluster_connection_settings.h
+  )
+  SET(SOURCES_PROXY_CONNECTION_SETTINGS ${SOURCES_PROXY_CONNECTION_SETTINGS}
+    ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/isentinel_connection_settings.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/icluster_connection_settings.cpp
+  )
+ENDIF(PRO_VERSION)
 
 SET(HEADERS_PROXY_DRIVER_TO_MOC
   ${CMAKE_SOURCE_DIR}/src/proxy/driver/idriver.h
@@ -150,19 +157,20 @@ SET(SOURCES_PROXY_EVENTS
   ${CMAKE_SOURCE_DIR}/src/proxy/events/events_info.cpp
 )
 
-SET(HEADERS_PROXY_CLUSTER
-  ${CMAKE_SOURCE_DIR}/src/proxy/cluster/icluster.h
-)
-SET(SOURCES_PROXY_CLUSTER
-  ${CMAKE_SOURCE_DIR}/src/proxy/cluster/icluster.cpp
-)
-
-SET(HEADERS_PROXY_SENTINEL
-  ${CMAKE_SOURCE_DIR}/src/proxy/sentinel/isentinel.h
-)
-SET(SOURCES_PROXY_SENTINEL
-  ${CMAKE_SOURCE_DIR}/src/proxy/sentinel/isentinel.cpp
-)
+IF(PRO_VERSION)
+  SET(HEADERS_PROXY_CLUSTER
+    ${CMAKE_SOURCE_DIR}/src/proxy/cluster/icluster.h
+  )
+  SET(SOURCES_PROXY_CLUSTER
+    ${CMAKE_SOURCE_DIR}/src/proxy/cluster/icluster.cpp
+  )
+  SET(HEADERS_PROXY_SENTINEL
+    ${CMAKE_SOURCE_DIR}/src/proxy/sentinel/isentinel.h
+  )
+  SET(SOURCES_PROXY_SENTINEL
+    ${CMAKE_SOURCE_DIR}/src/proxy/sentinel/isentinel.cpp
+  )
+ENDIF(PRO_VERSION)
 
 SET(HEADERS_PROXY_DATABASE
   ${CMAKE_SOURCE_DIR}/src/proxy/database/idatabase.h
@@ -190,7 +198,6 @@ SET(HEADERS_PROXY_TO_MOC
 SET(HEADERS_PROXY
   ${HEADERS_PROXY_DRIVER}
   ${HEADERS_PROXY_SERVER}
-  ${HEADERS_PROXY_CLUSTER}
   ${HEADERS_PROXY_SENTINEL}
   ${HEADERS_PROXY_EVENTS}
   ${HEADERS_PROXY_DATABASE}
@@ -202,8 +209,6 @@ SET(HEADERS_PROXY
   ${CMAKE_SOURCE_DIR}/src/proxy/servers_manager.h
   ${CMAKE_SOURCE_DIR}/src/proxy/proxy_fwd.h
   ${CMAKE_SOURCE_DIR}/src/proxy/settings_manager.h
-  ${CMAKE_SOURCE_DIR}/src/proxy/cluster_connection_settings_factory.h
-  ${CMAKE_SOURCE_DIR}/src/proxy/sentinel_connection_settings_factory.h
   ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings_factory.h
   ${CMAKE_SOURCE_DIR}/src/proxy/user_info.h
   ${CMAKE_SOURCE_DIR}/src/proxy/server_config.h
@@ -212,7 +217,6 @@ SET(HEADERS_PROXY
 SET(SOURCES_PROXY
   ${SOURCES_PROXY_DRIVER}
   ${SOURCES_PROXY_SERVER}
-  ${SOURCES_PROXY_CLUSTER}
   ${SOURCES_PROXY_SENTINEL}
   ${SOURCES_PROXY_EVENTS}
   ${SOURCES_PROXY_DATABASE}
@@ -223,12 +227,24 @@ SET(SOURCES_PROXY
   ${CMAKE_SOURCE_DIR}/src/proxy/command/command.cpp
   ${CMAKE_SOURCE_DIR}/src/proxy/servers_manager.cpp
   ${CMAKE_SOURCE_DIR}/src/proxy/settings_manager.cpp
-  ${CMAKE_SOURCE_DIR}/src/proxy/cluster_connection_settings_factory.cpp
-  ${CMAKE_SOURCE_DIR}/src/proxy/sentinel_connection_settings_factory.cpp
   ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings_factory.cpp
   ${CMAKE_SOURCE_DIR}/src/proxy/user_info.cpp
   ${CMAKE_SOURCE_DIR}/src/proxy/server_config.cpp
 )
+
+IF(PRO_VERSION)
+  SET(HEADERS_PROXY ${HEADERS_PROXY}
+    ${HEADERS_PROXY_CLUSTER}
+    ${CMAKE_SOURCE_DIR}/src/proxy/cluster_connection_settings_factory.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/sentinel_connection_settings_factory.h
+  )
+
+  SET(SOURCES_PROXY ${SOURCES_PROXY}
+    ${SOURCES_PROXY_CLUSTER}
+    ${CMAKE_SOURCE_DIR}/src/proxy/cluster_connection_settings_factory.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/sentinel_connection_settings_factory.cpp
+  )
+ENDIF(PRO_VERSION)
 
 # gui, translation, global
 SET(HEADERS_TRANSLATIONS
@@ -249,18 +265,12 @@ SET(HEADERS_GUI_DIALOGS_TO_MOC
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/connections_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/connection_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/connection_select_type_dialog.h
-  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/cluster_dialog.h
-  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/sentinel_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/connection_diagnostic_dialog.h
-  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_cluster_dialog.h
-  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_sentinel_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/encode_decode_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/load_contentdb_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/dbkey_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/view_keys_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/pub_sub_dialog.h
-  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_connection.h
-  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_sentinel_connection.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/test_connection.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/stream_entry_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/how_to_use_dialog.h
@@ -278,11 +288,7 @@ SET(SOURCES_GUI_DIALOGS
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/connections_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/connection_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/connection_select_type_dialog.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/cluster_dialog.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/sentinel_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/connection_diagnostic_dialog.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_cluster_dialog.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_sentinel_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/connection_listwidget_items.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/info_server_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/property_server_dialog.cpp
@@ -292,12 +298,34 @@ SET(SOURCES_GUI_DIALOGS
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/dbkey_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/view_keys_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/pub_sub_dialog.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_connection.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_sentinel_connection.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/test_connection.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/stream_entry_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/how_to_use_dialog.cpp
 )
+
+IF(PRO_VERSION)
+  SET(HEADERS_GUI_DIALOGS_TO_MOC ${HEADERS_GUI_DIALOGS_TO_MOC}
+    ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_cluster_connection.h
+
+    ${CMAKE_SOURCE_DIR}/src/gui/dialogs/cluster_dialog.h
+    ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_cluster_dialog.h
+
+    ${CMAKE_SOURCE_DIR}/src/gui/dialogs/sentinel_dialog.h
+    ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_sentinel_dialog.h
+    ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_sentinel_connection.h
+  )
+
+  SET(SOURCES_GUI_DIALOGS ${SOURCES_GUI_DIALOGS}
+    ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_cluster_connection.cpp
+
+    ${CMAKE_SOURCE_DIR}/src/gui/dialogs/cluster_dialog.cpp
+    ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_cluster_dialog.cpp
+
+    ${CMAKE_SOURCE_DIR}/src/gui/dialogs/sentinel_dialog.cpp
+    ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_sentinel_dialog.cpp
+    ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_sentinel_connection.cpp
+  )
+ENDIF(PRO_VERSION)
 
 SET(HEADERS_GUI_EDITOR_TO_MOC
   ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor.h
@@ -488,31 +516,43 @@ IF(BUILD_WITH_REDIS OR BUILD_WITH_PIKA)
     ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/config.h
     ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/db_connection.h
     ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/command_translator.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/cluster_infos.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/sentinel_info.h
     ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/database_info.h
   )
   SET(SOURCES_CORE_DB_REDIS_COMPATIBLE
     ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/config.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/db_connection.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/command_translator.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/cluster_infos.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/sentinel_info.cpp
     ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/database_info.cpp
   )
 
   SET(HEADERS_PIKA_PROXY_DB_REDIS_COMPATIBLE_TO_MOC
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis_compatible/sentinel.h
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis_compatible/cluster.h
+
   )
   SET(HEADERS_PROXY_DB_REDIS_COMPATIBLE
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis_compatible/database.h
   )
   SET(SOURCES_PROXY_DB_REDIS_COMPATIBLE
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis_compatible/sentinel.cpp
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis_compatible/cluster.cpp
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis_compatible/database.cpp
   )
+
+IF(PRO_VERSION)
+  SET(HEADERS_CORE_DB_REDIS_COMPATIBLE ${HEADERS_CORE_DB_REDIS_COMPATIBLE}
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/cluster_infos.h
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/sentinel_info.h
+  )
+  SET(SOURCES_CORE_DB_REDIS_COMPATIBLE ${SOURCES_CORE_DB_REDIS_COMPATIBLE}
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/cluster_infos.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/sentinel_info.cpp
+  )
+  SET(HEADERS_PIKA_PROXY_DB_REDIS_COMPATIBLE_TO_MOC ${HEADERS_PIKA_PROXY_DB_REDIS_COMPATIBLE_TO_MOC}
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis_compatible/cluster.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis_compatible/sentinel.h
+  )
+  SET(SOURCES_PROXY_DB_REDIS_COMPATIBLE ${SOURCES_PROXY_DB_REDIS_COMPATIBLE}
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis_compatible/cluster.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis_compatible/sentinel.cpp
+  )
+ENDIF(PRO_VERSION)
 
   SET(INCLUDE_DIRS ${INCLUDE_DIRS} $<TARGET_PROPERTY:Libssh2::libssh2,INTERFACE_INCLUDE_DIRECTORIES> ${OPENSSL_INCLUDE_DIR} ${HIREDIS_INCLUDE_DIR})
   SET(DB_LIBS ${DB_LIBS} ${HIREDIS_LIBRARIES} Libssh2::libssh2 ${OPENSSL_LIBRARIES})
@@ -549,17 +589,24 @@ IF(BUILD_WITH_REDIS)
   SET(HEADERS_PROXY_DB_REDIS ${HEADERS_PROXY_DB_REDIS_COMPATIBLE}
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/command.h
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/connection_settings.h
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/sentinel_settings.h
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/cluster_settings.h
   )
   SET(SOURCES_PROXY_DB_REDIS ${SOURCES_PROXY_DB_REDIS_COMPATIBLE}
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/command.cpp
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/connection_settings.cpp
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/sentinel_settings.cpp
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/cluster_settings.cpp
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/server.cpp
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/driver.cpp
   )
+
+IF(PRO_VERSION)
+  SET(HEADERS_PROXY_DB_REDIS ${HEADERS_PROXY_DB_REDIS}
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/cluster_settings.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/sentinel_settings.h
+  )
+  SET(SOURCES_PROXY_DB_REDIS ${SOURCES_PROXY_DB_REDIS}
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/cluster_settings.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/sentinel_settings.cpp
+  )
+ENDIF(PRO_VERSION)
 
   #gui redis
   SET(HEADERS_REDIS_GUI_TO_MOC
@@ -613,17 +660,24 @@ IF(BUILD_WITH_PIKA)
   SET(HEADERS_PROXY_DB_PIKA ${HEADERS_PROXY_DB_REDIS_COMPATIBLE}
     ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/command.h
     ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/connection_settings.h
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/sentinel_settings.h
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/cluster_settings.h
   )
   SET(SOURCES_PROXY_DB_PIKA ${SOURCES_PROXY_DB_REDIS_COMPATIBLE}
     ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/command.cpp
     ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/connection_settings.cpp
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/sentinel_settings.cpp
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/cluster_settings.cpp
     ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/server.cpp
     ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/driver.cpp
   )
+
+IF(PRO_VERSION)
+  SET(HEADERS_PROXY_DB_PIKA ${HEADERS_PROXY_DB_PIKA}
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/cluster_settings.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/sentinel_settings.h
+  )
+  SET(SOURCES_PROXY_DB_PIKA ${SOURCES_PROXY_DB_PIKA}
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/cluster_settings.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/sentinel_settings.cpp
+  )
+ENDIF(PRO_VERSION)
 
   #gui pika
   SET(HEADERS_PIKA_GUI_TO_MOC

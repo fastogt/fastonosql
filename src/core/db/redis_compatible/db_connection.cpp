@@ -138,6 +138,7 @@ common::Error TestConnection(const Config& config, const SSHInfo& sinfo) {
   return common::Error();
 }
 
+#if defined(PRO_VERSION)
 common::Error DiscoveryClusterConnection(const Config& rconfig,
                                          const SSHInfo& sinfo,
                                          std::vector<ServerDiscoveryClusterInfoSPtr>* infos) {
@@ -250,6 +251,7 @@ common::Error DiscoverySentinelConnection(const Config& rconfig,
   redisFree(context);
   return common::Error();
 }
+#endif
 
 bool IsPipeLineCommand(const char* command) {
   if (!command) {

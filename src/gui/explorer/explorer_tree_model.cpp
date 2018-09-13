@@ -110,11 +110,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
   }
 
   if (role == Qt::DecorationRole && col == ExplorerServerItem::eName) {
-    if (type == IExplorerTreeItem::eCluster) {
-      return GuiFactory::GetInstance().GetClusterIcon();
-    } else if (type == IExplorerTreeItem::eSentinel) {
-      return GuiFactory::GetInstance().GetSentinelIcon();
-    } else if (type == IExplorerTreeItem::eServer) {
+    if (type == IExplorerTreeItem::eServer) {
       ExplorerServerItem* server_node = static_cast<ExplorerServerItem*>(node);
       proxy::IServerSPtr server = server_node->server();
       return GuiFactory::GetInstance().GetIcon(server->GetType());
@@ -129,7 +125,15 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
       return GuiFactory::GetInstance().GetDatabaseIcon();
     } else if (type == IExplorerTreeItem::eNamespace) {
       return GuiFactory::GetInstance().GetDirectoryIcon();
-    } else {
+    }
+#if defined(PRO_VERSION)
+    else if (type == IExplorerTreeItem::eCluster) {
+      return GuiFactory::GetInstance().GetClusterIcon();
+    } else if (type == IExplorerTreeItem::eSentinel) {
+      return GuiFactory::GetInstance().GetSentinelIcon();
+    }
+#endif
+    else {
       NOTREACHED();
     }
   }
@@ -197,6 +201,7 @@ int ExplorerTreeModel::columnCount(const QModelIndex& parent) const {
   return ExplorerServerItem::eCountColumns;
 }
 
+#if defined(PRO_VERSION)
 void ExplorerTreeModel::addCluster(proxy::IClusterSPtr cluster) {
   if (!cluster) {
     return;
@@ -222,6 +227,7 @@ void ExplorerTreeModel::removeCluster(proxy::IClusterSPtr cluster) {
     removeItem(QModelIndex(), serverItem);
   }
 }
+#endif
 
 void ExplorerTreeModel::addServer(proxy::IServerSPtr server) {
   if (!server) {
@@ -249,6 +255,7 @@ void ExplorerTreeModel::removeServer(proxy::IServerSPtr server) {
   }
 }
 
+#if defined(PRO_VERSION)
 void ExplorerTreeModel::addSentinel(proxy::ISentinelSPtr sentinel) {
   if (!sentinel) {
     return;
@@ -274,6 +281,7 @@ void ExplorerTreeModel::removeSentinel(proxy::ISentinelSPtr sentinel) {
     removeItem(QModelIndex(), serverItem);
   }
 }
+#endif
 
 void ExplorerTreeModel::addDatabase(proxy::IServer* server, core::IDataBaseInfoSPtr db) {
   ExplorerServerItem* parent = findServerItem(server);
@@ -450,6 +458,7 @@ void ExplorerTreeModel::removeAllKeys(proxy::IServer* server, core::IDataBaseInf
   removeAllItems(parentdb);
 }
 
+#if defined(PRO_VERSION)
 ExplorerClusterItem* ExplorerTreeModel::findClusterItem(proxy::IClusterSPtr cl) {
   common::qt::gui::TreeItem* parent = root_;
   if (!parent) {
@@ -487,6 +496,7 @@ ExplorerSentinelItem* ExplorerTreeModel::findSentinelItem(proxy::ISentinelSPtr s
   }
   return nullptr;
 }
+#endif
 
 ExplorerServerItem* ExplorerTreeModel::findServerItem(proxy::IServer* server) const {
   return static_cast<ExplorerServerItem*>(

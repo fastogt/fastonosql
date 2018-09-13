@@ -22,9 +22,12 @@
 
 #include <common/error.h>
 
-#include "proxy/connection_settings/icluster_connection_settings.h"
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
+
+#if defined(PRO_VERSION)
+#include "proxy/connection_settings/icluster_connection_settings.h"
 #include "proxy/connection_settings/isentinel_connection_settings.h"
+#endif
 
 #include "core/server/iserver_info.h"
 #include "proxy/proxy_fwd.h"  // for IClusterSPtr, ISentinelSPtr, etc
@@ -37,25 +40,33 @@ class ServersManager : public common::patterns::LazySingleton<ServersManager> {
 
  public:
   typedef IServerSPtr server_t;
+#if defined(PRO_VERSION)
   typedef IClusterSPtr cluster_t;
   typedef ISentinelSPtr sentinel_t;
+#endif
   typedef std::vector<server_t> servers_t;
 
   server_t CreateServer(IConnectionSettingsBaseSPtr settings);
+#if defined(PRO_VERSION)
   sentinel_t CreateSentinel(ISentinelSettingsBaseSPtr settings);
   cluster_t CreateCluster(IClusterSettingsBaseSPtr settings);
+#endif
 
   common::Error TestConnection(IConnectionSettingsBaseSPtr connection) WARN_UNUSED_RESULT;
+#if defined(PRO_VERSION)
   common::Error DiscoveryClusterConnection(IConnectionSettingsBaseSPtr connection,
                                            std::vector<core::ServerDiscoveryClusterInfoSPtr>* inf) WARN_UNUSED_RESULT;
   common::Error DiscoverySentinelConnection(IConnectionSettingsBaseSPtr connection,
                                             std::vector<core::ServerDiscoverySentinelInfoSPtr>* inf) WARN_UNUSED_RESULT;
+#endif
 
   void Clear();
 
   void CloseServer(server_t server);
+#if defined(PRO_VERSION)
   void CloseCluster(cluster_t cluster);
   void CloseSentinel(sentinel_t sentinel);
+#endif
 
  private:
   ServersManager();

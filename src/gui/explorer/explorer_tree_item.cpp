@@ -88,6 +88,7 @@ void ExplorerServerItem::removeDatabase(const QString& name) {
   server_->Execute(req);
 }
 
+#if defined(PRO_VERSION)
 ExplorerSentinelItem::ExplorerSentinelItem(proxy::ISentinelSPtr sentinel, TreeItem* parent)
     : IExplorerTreeItem(parent, eSentinel), sentinel_(sentinel) {
   proxy::ISentinel::sentinels_t nodes = sentinel->GetSentinels();
@@ -127,6 +128,7 @@ std::string ExplorerClusterItem::basicStringName() const {
 proxy::IClusterSPtr ExplorerClusterItem::cluster() const {
   return cluster_;
 }
+#endif
 
 ExplorerDatabaseItem::ExplorerDatabaseItem(proxy::IDatabaseSPtr db, ExplorerServerItem* parent)
     : IExplorerTreeItem(parent, eDatabase), db_(db) {

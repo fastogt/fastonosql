@@ -93,7 +93,7 @@ class BuildRequest(object):
     def build_openssl(self, prefix_path):
         abs_dir_path = self.build_dir_path_
         try:
-            openssl_default_version = '1.1.0h'
+            openssl_default_version = '1.1.1'
             compiler_flags = utils.CompileInfo([], ['no-shared'])
             url = '{0}openssl-{1}.{2}'.format(OPENSSL_SRC_ROOT, openssl_default_version, ARCH_OPENSSL_EXT)
             utils.build_from_sources(url, compiler_flags, g_script_path, prefix_path, './config')

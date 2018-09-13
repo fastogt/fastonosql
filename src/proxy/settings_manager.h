@@ -23,9 +23,12 @@
 
 #include <common/patterns/singleton_pattern.h>
 
-#include "proxy/connection_settings/icluster_connection_settings.h"
 #include "proxy/connection_settings/iconnection_settings.h"  // for IClusterSettingsBaseSPtr, etc
+
+#if defined(PRO_VERSION)
+#include "proxy/connection_settings/icluster_connection_settings.h"
 #include "proxy/connection_settings/isentinel_connection_settings.h"
+#endif
 
 #include "proxy/types.h"  // for supportedViews
 #include "proxy/user_info.h"
@@ -36,8 +39,10 @@ namespace proxy {
 class SettingsManager : public common::patterns::Singleton<SettingsManager> {
  public:
   typedef std::vector<IConnectionSettingsBaseSPtr> connection_settings_t;
+#if defined(PRO_VERSION)
   typedef std::vector<IClusterSettingsBaseSPtr> cluster_settings_t;
   typedef std::vector<ISentinelSettingsBaseSPtr> sentinel_settings_t;
+#endif
   friend class common::patterns::Singleton<SettingsManager>;
 
   static std::string GetSettingsDirPath();
@@ -69,6 +74,7 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
 
   connection_settings_t GetConnections() const;
 
+#if defined(PRO_VERSION)
   // sentinels
   void AddSentinel(ISentinelSettingsBaseSPtr sentinel);
   void RemoveSentinel(ISentinelSettingsBaseSPtr sentinel);
@@ -80,6 +86,7 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
   void RemoveCluster(IClusterSettingsBaseSPtr cluster);
 
   cluster_settings_t GetClusters() const;
+#endif
 
   void AddRConnection(const QString& connection);
   void RemoveRConnection(const QString& connection);
@@ -134,8 +141,10 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
   QFont cur_font_;
   QString cur_language_;
   connection_settings_t connections_;
+#if defined(PRO_VERSION)
   sentinel_settings_t sentinels_;
   cluster_settings_t clusters_;
+#endif
   QStringList recent_connections_;
   QString logging_dir_;
   bool auto_check_updates_;

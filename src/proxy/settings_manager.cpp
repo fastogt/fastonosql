@@ -27,9 +27,11 @@
 #include <common/qt/gui/app_style.h>              // for defStyle
 #include <common/qt/translations/translations.h>  // for defLanguage
 
-#include "proxy/cluster_connection_settings_factory.h"
 #include "proxy/connection_settings_factory.h"
+#if defined(PRO_VERSION)
+#include "proxy/cluster_connection_settings_factory.h"
 #include "proxy/sentinel_connection_settings_factory.h"
+#endif
 
 #define PREFIX "settings/"
 
@@ -62,7 +64,11 @@
 
 namespace {
 
+#if defined(PRO_VERSION)
+const std::string ini_path("~/.config/" PROJECT_NAME "/config_pro.ini");
+#else
 const std::string ini_path("~/.config/" PROJECT_NAME "/config.ini");
+#endif
 
 QFont default_font() {
   /*#if defined(OS_MACOSX) || defined(OS_FREEBSD)
@@ -89,8 +95,10 @@ SettingsManager::SettingsManager()
       cur_font_(),
       cur_language_(),
       connections_(),
+#if defined(PRO_VERSION)
       sentinels_(),
       clusters_(),
+#endif
       recent_connections_(),
       logging_dir_(),
       auto_check_updates_(),
@@ -99,7 +107,8 @@ SettingsManager::SettingsManager()
       fast_view_keys_(),
       window_settings_(),
       python_path_(),
-      user_info_() {}
+      user_info_() {
+}
 
 SettingsManager::~SettingsManager() {}
 
@@ -185,6 +194,7 @@ SettingsManager::connection_settings_t SettingsManager::GetConnections() const {
   return connections_;
 }
 
+#if defined(PRO_VERSION)
 void SettingsManager::AddSentinel(ISentinelSettingsBaseSPtr sentinel) {
   if (!sentinel) {
     return;
@@ -230,6 +240,7 @@ void SettingsManager::RemoveCluster(IClusterSettingsBaseSPtr cluster) {
 SettingsManager::cluster_settings_t SettingsManager::GetClusters() const {
   return clusters_;
 }
+#endif
 
 void SettingsManager::AddRConnection(const QString& connection) {
   if (!connection.isEmpty()) {
@@ -327,7 +338,9 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
   }
 
   if (!merge) {
+#if defined(PRO_VERSION)
     clusters_.clear();
+#endif
     connections_.clear();
     recent_connections_.clear();
   }
@@ -347,6 +360,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
   int view = settings.value(VIEW, kText).toInt();
   views_ = static_cast<supportedViews>(view);
 
+#if defined(PRO_VERSION)
   QList<QVariant> clusters = settings.value(CLUSTERS).toList();
   for (const auto& cluster : clusters) {
     QString string = cluster.toString();
@@ -370,6 +384,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
       sentinels_.push_back(sett);
     }
   }
+#endif
 
   QList<QVariant> connections = settings.value(CONNECTIONS).toList();
   for (const auto& connection : connections) {
@@ -432,6 +447,7 @@ void SettingsManager::Save() {
   settings.setValue(LANGUAGE, cur_language_);
   settings.setValue(VIEW, views_);
 
+#if defined(PRO_VERSION)
   QList<QVariant> clusters;
   for (const auto& cluster : clusters_) {
     if (cluster) {
@@ -455,6 +471,7 @@ void SettingsManager::Save() {
     }
   }
   settings.setValue(SENTINELS, sentinels);
+#endif
 
   QList<QVariant> connections;
   for (const auto& connection : connections_) {

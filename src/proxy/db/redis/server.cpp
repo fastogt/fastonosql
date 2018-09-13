@@ -55,7 +55,7 @@ core::serverState Server::GetState() const {
 }
 
 common::net::HostAndPort Server::GetHost() const {
-  Driver* const rdrv = static_cast<Driver* const>(drv_);
+  Driver* rdrv = static_cast<Driver*>(drv_);
   return rdrv->GetHost();
 }
 

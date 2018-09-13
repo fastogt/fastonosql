@@ -79,6 +79,7 @@ IConnectionListWidgetItem::itemConnectionType ConnectionListWidgetItem::type() c
   return Common;
 }
 
+#if defined(PRO_VERSION)
 SentinelConnectionWidgetItem::SentinelConnectionWidgetItem(const core::ServerCommonInfo& info,
                                                            SentinelConnectionListWidgetItemContainer* parent)
     : ConnectionListWidgetItemDiscovered(info,
@@ -179,6 +180,7 @@ void ClusterConnectionListWidgetItemContainer::setConnection(proxy::IClusterSett
 proxy::IClusterSettingsBaseSPtr ClusterConnectionListWidgetItemContainer::connection() const {
   return connection_;
 }
+#endif
 
 }  // namespace gui
 }  // namespace fastonosql

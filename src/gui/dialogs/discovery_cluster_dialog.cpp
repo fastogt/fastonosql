@@ -29,7 +29,7 @@
 #include "proxy/servers_manager.h"  // for ServersManager
 
 #include "gui/dialogs/connection_listwidget_items.h"
-#include "gui/dialogs/discovery_connection.h"
+#include "gui/dialogs/discovery_cluster_connection.h"
 #include "gui/gui_factory.h"  // for GuiFactory
 
 #include "translations/global.h"

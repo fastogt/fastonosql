@@ -46,11 +46,12 @@ ExplorerTreeWidget::ExplorerTreeWidget(QWidget* parent) : QWidget(parent) {
       connect(view_, &ExplorerTreeView::consoleOpenedAndExecute, this, &ExplorerTreeWidget::consoleOpenedAndExecute));
   VERIFY(
       connect(view_, &ExplorerTreeView::serverClosed, this, &ExplorerTreeWidget::serverClosed, Qt::DirectConnection));
+#if defined(PRO_VERSION)
   VERIFY(
       connect(view_, &ExplorerTreeView::clusterClosed, this, &ExplorerTreeWidget::clusterClosed, Qt::DirectConnection));
   VERIFY(connect(view_, &ExplorerTreeView::sentinelClosed, this, &ExplorerTreeWidget::sentinelClosed,
                  Qt::DirectConnection));
-
+#endif
   setLayout(main_layout);
 }
 
@@ -62,6 +63,7 @@ void ExplorerTreeWidget::removeServer(proxy::IServerSPtr server) {
   view_->removeServer(server);
 }
 
+#if defined(PRO_VERSION)
 void ExplorerTreeWidget::addSentinel(proxy::ISentinelSPtr sentinel) {
   view_->addSentinel(sentinel);
 }
@@ -77,6 +79,7 @@ void ExplorerTreeWidget::addCluster(proxy::IClusterSPtr cluster) {
 void ExplorerTreeWidget::removeCluster(proxy::IClusterSPtr cluster) {
   view_->removeCluster(cluster);
 }
+#endif
 
 void ExplorerTreeWidget::changeEvent(QEvent* e) {
   if (e->type() == QEvent::LanguageChange) {

@@ -117,6 +117,7 @@ void ExplorerTreeView::removeServer(proxy::IServerSPtr server) {
   emit serverClosed(server);
 }
 
+#if defined(PRO_VERSION)
 void ExplorerTreeView::addSentinel(proxy::ISentinelSPtr sentinel) {
   if (!sentinel) {
     DNOTREACHED();
@@ -182,6 +183,7 @@ void ExplorerTreeView::removeCluster(proxy::IClusterSPtr cluster) {
   source_model_->removeCluster(cluster);
   emit clusterClosed(cluster);
 }
+#endif
 
 void ExplorerTreeView::changeTextFilter(const QString& text) {
   QRegExp regExp(text);
@@ -205,19 +207,7 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
 
   QPoint menuPoint = mapToGlobal(point);
   menuPoint.setY(menuPoint.y() + header()->height());
-  if (node->type() == IExplorerTreeItem::eCluster) {
-    QMenu menu(this);
-    QAction* closeClusterAction = new QAction(translations::trClose, this);
-    VERIFY(connect(closeClusterAction, &QAction::triggered, this, &ExplorerTreeView::closeClusterConnection));
-    menu.addAction(closeClusterAction);
-    menu.exec(menuPoint);
-  } else if (node->type() == IExplorerTreeItem::eSentinel) {
-    QMenu menu(this);
-    QAction* closeSentinelAction = new QAction(translations::trClose, this);
-    VERIFY(connect(closeSentinelAction, &QAction::triggered, this, &ExplorerTreeView::closeSentinelConnection));
-    menu.addAction(closeSentinelAction);
-    menu.exec(menuPoint);
-  } else if (node->type() == IExplorerTreeItem::eServer) {
+  if (node->type() == IExplorerTreeItem::eServer) {
     ExplorerServerItem* server_node = static_cast<ExplorerServerItem*>(node);
 
     QMenu menu(this);
@@ -232,9 +222,6 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
     proxy::IServerSPtr server = server_node->server();
     bool is_connected = server->IsConnected();
     bool is_redis_compatible = core::IsRedisCompatible(server->GetType());
-
-    common::qt::gui::TreeItem* par = node->parent();
-    bool is_cluster_member = dynamic_cast<ExplorerClusterItem*>(par) != nullptr;  // +
 
     QAction* loadDatabaseAction = new QAction(translations::trLoadDataBases, this);
     VERIFY(connect(loadDatabaseAction, &QAction::triggered, this, &ExplorerTreeView::loadDatabases));
@@ -307,7 +294,11 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
 
     menu.addAction(historyServerAction);
     menu.addAction(clearHistoryServerAction);
+#if defined(PRO_VERSION)
+    common::qt::gui::TreeItem* par = node->parent();
+    bool is_cluster_member = dynamic_cast<ExplorerClusterItem*>(par) != nullptr;  // +
     closeServerAction->setEnabled(!is_cluster_member);
+#endif
     menu.addAction(closeServerAction);
 
     menu.exec(menuPoint);
@@ -422,6 +413,21 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
     watchKeyAction->setEnabled(is_connected);
     menu.exec(menuPoint);
   }
+#if defined(PRO_VERSION)
+  else if (node->type() == IExplorerTreeItem::eCluster) {
+    QMenu menu(this);
+    QAction* closeClusterAction = new QAction(translations::trClose, this);
+    VERIFY(connect(closeClusterAction, &QAction::triggered, this, &ExplorerTreeView::closeClusterConnection));
+    menu.addAction(closeClusterAction);
+    menu.exec(menuPoint);
+  } else if (node->type() == IExplorerTreeItem::eSentinel) {
+    QMenu menu(this);
+    QAction* closeSentinelAction = new QAction(translations::trClose, this);
+    VERIFY(connect(closeSentinelAction, &QAction::triggered, this, &ExplorerTreeView::closeSentinelConnection));
+    menu.addAction(closeSentinelAction);
+    menu.exec(menuPoint);
+  }
+#endif
 }
 
 void ExplorerTreeView::connectDisconnectToServer() {
@@ -595,7 +601,7 @@ void ExplorerTreeView::closeServerConnection() {
       }
       continue;
     }
-
+#if defined(PRO_VERSION)
     ExplorerClusterItem* cnode = common::qt::item<common::qt::gui::TreeItem*, ExplorerClusterItem*>(ind);
     if (cnode && cnode->type() == IExplorerTreeItem::eCluster) {
       proxy::IClusterSPtr server = cnode->cluster();
@@ -604,9 +610,11 @@ void ExplorerTreeView::closeServerConnection() {
       }
       continue;
     }
+#endif
   }
 }
 
+#if defined(PRO_VERSION)
 void ExplorerTreeView::closeClusterConnection() {
   QModelIndexList selected = selectedEqualTypeIndexes();
   for (QModelIndex ind : selected) {
@@ -637,6 +645,7 @@ void ExplorerTreeView::closeSentinelConnection() {
     }
   }
 }
+#endif
 
 void ExplorerTreeView::viewPubSub() {
   QModelIndexList selected = selectedEqualTypeIndexes();

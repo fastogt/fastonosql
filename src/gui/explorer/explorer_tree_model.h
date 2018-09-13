@@ -29,8 +29,10 @@
 namespace fastonosql {
 namespace gui {
 
+#if defined(PRO_VERSION)
 class ExplorerClusterItem;
 class ExplorerSentinelItem;
+#endif
 class ExplorerServerItem;
 class ExplorerDatabaseItem;
 class ExplorerKeyItem;
@@ -47,14 +49,16 @@ class ExplorerTreeModel : public common::qt::gui::TreeModel {
   virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
   virtual int columnCount(const QModelIndex& parent) const override;
 
+#if defined(PRO_VERSION)
   void addCluster(proxy::IClusterSPtr cluster);
   void removeCluster(proxy::IClusterSPtr cluster);
 
-  void addServer(proxy::IServerSPtr server);
-  void removeServer(proxy::IServerSPtr server);
-
   void addSentinel(proxy::ISentinelSPtr sentinel);
   void removeSentinel(proxy::ISentinelSPtr sentinel);
+#endif
+
+  void addServer(proxy::IServerSPtr server);
+  void removeServer(proxy::IServerSPtr server);
 
   void addDatabase(proxy::IServer* server, core::IDataBaseInfoSPtr db);
   void removeDatabase(proxy::IServer* server, core::IDataBaseInfoSPtr db);
@@ -75,8 +79,10 @@ class ExplorerTreeModel : public common::qt::gui::TreeModel {
   void removeAllKeys(proxy::IServer* server, core::IDataBaseInfoSPtr db);
 
  private:
+#if defined(PRO_VERSION)
   ExplorerClusterItem* findClusterItem(proxy::IClusterSPtr cl);
   ExplorerSentinelItem* findSentinelItem(proxy::ISentinelSPtr sentinel);
+#endif
   ExplorerServerItem* findServerItem(proxy::IServer* server) const;
   ExplorerDatabaseItem* findDatabaseItem(ExplorerServerItem* server, core::IDataBaseInfoSPtr db) const;
   ExplorerKeyItem* findKeyItem(IExplorerTreeItem* db_or_ns, const core::NKey& key) const;

@@ -37,19 +37,22 @@ class ExplorerTreeWidget : public QWidget {
   void consoleOpened(proxy::IServerSPtr server, const QString& text);
   void consoleOpenedAndExecute(proxy::IServerSPtr server, const QString& text);
   void serverClosed(proxy::IServerSPtr server);
+#if defined(PRO_VERSION)
   void sentinelClosed(proxy::ISentinelSPtr sentinel);
   void clusterClosed(proxy::IClusterSPtr cluster);
+#endif
 
  public Q_SLOTS:
   void addServer(proxy::IServerSPtr server);
   void removeServer(proxy::IServerSPtr server);
 
+#if defined(PRO_VERSION)
   void addSentinel(proxy::ISentinelSPtr sentinel);
   void removeSentinel(proxy::ISentinelSPtr sentinel);
 
   void addCluster(proxy::IClusterSPtr cluster);
   void removeCluster(proxy::IClusterSPtr cluster);
-
+#endif
  protected:
   virtual void changeEvent(QEvent* e) override;
 

@@ -235,8 +235,10 @@ MainWindow::MainWindow() : QMainWindow() {
   VERIFY(connect(exp_, &ExplorerTreeWidget::consoleOpened, mainW, &MainWidget::openConsole));
   VERIFY(connect(exp_, &ExplorerTreeWidget::consoleOpenedAndExecute, mainW, &MainWidget::openConsoleAndExecute));
   VERIFY(connect(exp_, &ExplorerTreeWidget::serverClosed, this, &MainWindow::closeServer, Qt::DirectConnection));
+#if defined(PRO_VERSION)
   VERIFY(connect(exp_, &ExplorerTreeWidget::clusterClosed, this, &MainWindow::closeCluster, Qt::DirectConnection));
   VERIFY(connect(exp_, &ExplorerTreeWidget::sentinelClosed, this, &MainWindow::closeSentinel, Qt::DirectConnection));
+#endif
   exp_dock_ = new QDockWidget(this);
   explorer_action_ = exp_dock_->toggleViewAction();
   explorer_action_->setShortcut(explorerKeySequence);
@@ -315,11 +317,15 @@ void MainWindow::open() {
 
   if (proxy::IConnectionSettingsBaseSPtr con = dlg.selectedConnection()) {
     createServer(con);
-  } else if (proxy::IClusterSettingsBaseSPtr clus = dlg.selectedCluster()) {
+  }
+#if defined(PRO_VERSION)
+  else if (proxy::IClusterSettingsBaseSPtr clus = dlg.selectedCluster()) {
     createCluster(clus);
   } else if (proxy::ISentinelSettingsBaseSPtr sent = dlg.selectedSentinel()) {
     createSentinel(sent);
-  } else {
+  }
+#endif
+  else {
     NOTREACHED();
   }
 }
@@ -602,6 +608,7 @@ void MainWindow::closeServer(proxy::IServerSPtr server) {
   proxy::ServersManager::GetInstance().CloseServer(server);
 }
 
+#if defined(PRO_VERSION)
 void MainWindow::closeSentinel(proxy::ISentinelSPtr sentinel) {
   proxy::ServersManager::GetInstance().CloseSentinel(sentinel);
 }
@@ -609,6 +616,7 @@ void MainWindow::closeSentinel(proxy::ISentinelSPtr sentinel) {
 void MainWindow::closeCluster(proxy::IClusterSPtr cluster) {
   proxy::ServersManager::GetInstance().CloseCluster(cluster);
 }
+#endif
 
 #ifdef OS_ANDROID
 bool MainWindow::event(QEvent* event) {
@@ -734,6 +742,7 @@ void MainWindow::createServer(proxy::IConnectionSettingsBaseSPtr settings) {
   }
 }
 
+#if defined(PRO_VERSION)
 void MainWindow::createSentinel(proxy::ISentinelSettingsBaseSPtr settings) {
   CHECK(settings);
 
@@ -784,6 +793,7 @@ void MainWindow::createCluster(proxy::IClusterSettingsBaseSPtr settings) {
     mwidg->openConsole(root, QString());
   }
 }
+#endif
 
 }  // namespace gui
 }  // namespace fastonosql

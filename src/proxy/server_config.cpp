@@ -232,7 +232,7 @@ common::Error GenStatisticRequest(const std::string& login, const std::string& b
   json_object_object_add(stats_json, STATISTIC_OS_FIELD, os_json);
 
   json_object* project_json = json_object_new_object();
-  json_object_object_add(project_json, STATISTIC_PROJECT_NAME_FIELD, json_object_new_string(PROJECT_NAME));
+  json_object_object_add(project_json, STATISTIC_PROJECT_NAME_FIELD, json_object_new_string(PROJECT_NAME_TITLE));
   json_object_object_add(project_json, STATISTIC_PROJECT_BUILD_STRATEGY_FIELD,
                          json_object_new_string(build_strategy.c_str()));
   json_object_object_add(project_json, STATISTIC_PROJECT_VERSION_FIELD, json_object_new_string(PROJECT_VERSION));

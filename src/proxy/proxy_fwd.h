@@ -29,11 +29,13 @@ typedef std::shared_ptr<IDatabase> IDatabaseSPtr;
 class IServer;
 typedef std::shared_ptr<IServer> IServerSPtr;
 
+#if defined(PRO_VERSION)
 class ICluster;
 typedef std::shared_ptr<ICluster> IClusterSPtr;
 
 class ISentinel;
 typedef std::shared_ptr<ISentinel> ISentinelSPtr;
+#endif
 
 }  // namespace proxy
 }  // namespace fastonosql

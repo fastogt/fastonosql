@@ -189,7 +189,7 @@ int main(int argc, char* argv[]) {
   settings_manager->Load();
   app.setOrganizationName(PROJECT_COMPANYNAME);
   app.setOrganizationDomain(PROJECT_COMPANYNAME_DOMAIN);
-  app.setApplicationName(PROJECT_NAME);
+  app.setApplicationName(PROJECT_NAME_TITLE);
   app.setApplicationVersion(PROJECT_VERSION);
   app.setAttribute(Qt::AA_UseHighDpiPixmaps);
   // Cross Platform High DPI support - Qt 5.7

@@ -21,9 +21,13 @@
 #include <QTreeWidgetItem>
 
 #include "core/server/iserver_info.h"  // for ServerCommonInfo
-#include "proxy/connection_settings/icluster_connection_settings.h"
+
 #include "proxy/connection_settings/iconnection_settings.h"  // for IClusterSettingsBaseSPtr, etc
+
+#if defined(PRO_VERSION)
+#include "proxy/connection_settings/icluster_connection_settings.h"
 #include "proxy/connection_settings/isentinel_connection_settings.h"
+#endif
 
 namespace fastonosql {
 namespace gui {
@@ -73,6 +77,7 @@ class ConnectionListWidgetItemDiscovered  // returned after
   core::ServerCommonInfo info_;
 };
 
+#if defined(PRO_VERSION)
 class SentinelConnectionListWidgetItemContainer  // can hold
                                                  // many
                                                  // sentinel
@@ -108,5 +113,7 @@ class ClusterConnectionListWidgetItemContainer  // can hold
  private:
   proxy::IClusterSettingsBaseSPtr connection_;
 };
+#endif
+
 }  // namespace gui
 }  // namespace fastonosql

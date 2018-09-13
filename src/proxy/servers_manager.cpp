@@ -154,6 +154,7 @@ ServersManager::server_t ServersManager::CreateServer(IConnectionSettingsBaseSPt
   return server;
 }
 
+#if defined(PRO_VERSION)
 ServersManager::sentinel_t ServersManager::CreateSentinel(ISentinelSettingsBaseSPtr settings) {
   if (!settings) {
     NOTREACHED();
@@ -239,6 +240,7 @@ ServersManager::cluster_t ServersManager::CreateCluster(IClusterSettingsBaseSPtr
   NOTREACHED();
   return cluster_t();
 }
+#endif
 
 common::Error ServersManager::TestConnection(IConnectionSettingsBaseSPtr connection) {
   if (!connection) {
@@ -313,6 +315,7 @@ common::Error ServersManager::TestConnection(IConnectionSettingsBaseSPtr connect
   return common::make_error("Invalid setting type");
 }
 
+#if defined(PRO_VERSION)
 common::Error ServersManager::DiscoveryClusterConnection(IConnectionSettingsBaseSPtr connection,
                                                          std::vector<core::ServerDiscoveryClusterInfoSPtr>* inf) {
   if (!connection || !inf) {
@@ -444,6 +447,7 @@ common::Error ServersManager::DiscoverySentinelConnection(IConnectionSettingsBas
   NOTREACHED();
   return common::make_error("Invalid setting type");
 }
+#endif
 
 void ServersManager::Clear() {
   servers_.clear();
@@ -453,6 +457,7 @@ void ServersManager::CloseServer(server_t server) {
   servers_.erase(std::remove(servers_.begin(), servers_.end(), server));
 }
 
+#if defined(PRO_VERSION)
 void ServersManager::CloseCluster(cluster_t cluster) {
   auto nodes = cluster->GetNodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
@@ -469,6 +474,7 @@ void ServersManager::CloseSentinel(sentinel_t sentinel) {
     }
   }
 }
+#endif
 
 }  // namespace proxy
 }  // namespace fastonosql
