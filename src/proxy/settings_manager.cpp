@@ -36,7 +36,6 @@
 #define PREFIX "settings/"
 
 #define LANGUAGE PREFIX "language"
-#define SEND_STATISTIC PREFIX "send_statistic"
 #define ACCEPTED_EULA PREFIX "accepted_eula"
 #define STYLE PREFIX "style"
 #define FONT PREFIX "font"
@@ -53,6 +52,7 @@
 #define FASTVIEWKEYS PREFIX "fast_view_keys"
 #define WINDOW_SETTINGS PREFIX "window_settings"
 #if defined(PRO_VERSION)
+#define SEND_STATISTIC PREFIX "send_statistic"
 #define LAST_LOGIN PREFIX "last_login"
 #endif
 #define PYTHON_PATH PREFIX "python_path"
@@ -90,7 +90,6 @@ namespace proxy {
 
 SettingsManager::SettingsManager()
     : config_version_(),
-      send_statistic_(),
       accepted_eula_(),
       views_(),
       cur_style_(),
@@ -98,6 +97,7 @@ SettingsManager::SettingsManager()
       cur_language_(),
       connections_(),
 #if defined(PRO_VERSION)
+      send_statistic_(),
       sentinels_(),
       clusters_(),
       last_login_(),
@@ -135,12 +135,14 @@ void SettingsManager::SetAccpetedEula(bool val) {
   accepted_eula_ = val;
 }
 
+#if defined(PRO_VERSION)
 bool SettingsManager::GetSendStatistic() const {
   return send_statistic_;
 }
 void SettingsManager::SetSendStatistic(bool val) {
   send_statistic_ = val;
 }
+#endif
 
 supportedViews SettingsManager::GetDefaultView() const {
   return views_;
@@ -354,7 +356,6 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
   DCHECK(settings.status() == QSettings::NoError);
 
   cur_style_ = settings.value(STYLE, common::qt::gui::defStyle).toString();
-  send_statistic_ = settings.value(SEND_STATISTIC, true).toBool();
   accepted_eula_ = settings.value(ACCEPTED_EULA, false).toBool();
   QFont font = default_font();
   cur_font_ = settings.value(FONT, font).value<QFont>();
@@ -364,6 +365,8 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
   views_ = static_cast<supportedViews>(view);
 
 #if defined(PRO_VERSION)
+  send_statistic_ = settings.value(SEND_STATISTIC, true).toBool();
+
   QList<QVariant> clusters = settings.value(CLUSTERS).toList();
   for (const auto& cluster : clusters) {
     QString string = cluster.toString();
@@ -445,12 +448,13 @@ void SettingsManager::Save() {
 
   settings.setValue(STYLE, cur_style_);
   settings.setValue(FONT, cur_font_);
-  settings.setValue(SEND_STATISTIC, send_statistic_);
   settings.setValue(ACCEPTED_EULA, accepted_eula_);
   settings.setValue(LANGUAGE, cur_language_);
   settings.setValue(VIEW, views_);
 
 #if defined(PRO_VERSION)
+  settings.setValue(SEND_STATISTIC, send_statistic_);
+
   QList<QVariant> clusters;
   for (const auto& cluster : clusters_) {
     if (cluster) {

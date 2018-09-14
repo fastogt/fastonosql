@@ -52,7 +52,7 @@ class PreferencesDialog : public QDialog {
   QWidget* createMainTab();
   QWidget* createExternalTab();
   void retranslateUi();
-
+#if defined(PRO_VERSION)
   // controls in profile_box
   QGroupBox* profile_box_;
   QLabel* first_name_label_;
@@ -63,10 +63,13 @@ class PreferencesDialog : public QDialog {
   QLineEdit* login_text_;
   QLabel* type_label_;
   QLineEdit* type_text_;
+#endif
 
   // controls in general_box
   QGroupBox* general_box_;
+#if defined(PRO_VERSION)
   QCheckBox* send_statitsic_;
+#endif
   QCheckBox* auto_check_updates_;
   QCheckBox* auto_comletion_;
   QLabel* languages_label_;

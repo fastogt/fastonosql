@@ -53,9 +53,6 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
   bool GetAccpetedEula() const;
   void SetAccpetedEula(bool val);
 
-  bool GetSendStatistic() const;
-  void SetSendStatistic(bool val);
-
   void SetDefaultView(supportedViews view);
   supportedViews GetDefaultView() const;
 
@@ -75,6 +72,9 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
   connection_settings_t GetConnections() const;
 
 #if defined(PRO_VERSION)
+  bool GetSendStatistic() const;
+  void SetSendStatistic(bool val);
+
   // sentinels
   void AddSentinel(ISentinelSettingsBaseSPtr sentinel);
   void RemoveSentinel(ISentinelSettingsBaseSPtr sentinel);
@@ -135,7 +135,7 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
   ~SettingsManager();
 
   uint32_t config_version_;
-  bool send_statistic_;
+
   bool accepted_eula_;
   supportedViews views_;
   QString cur_style_;
@@ -143,6 +143,7 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
   QString cur_language_;
   connection_settings_t connections_;
 #if defined(PRO_VERSION)
+  bool send_statistic_;
   sentinel_settings_t sentinels_;
   cluster_settings_t clusters_;
   QString last_login_;

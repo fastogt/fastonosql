@@ -91,7 +91,9 @@ PreferencesDialog::PreferencesDialog(QWidget* parent) : QDialog(parent) {
 }
 
 void PreferencesDialog::accept() {
+#if defined(PRO_VERSION)
   proxy::SettingsManager::GetInstance()->SetSendStatistic(send_statitsic_->isChecked());
+#endif
   proxy::SettingsManager::GetInstance()->SetAutoCheckUpdates(auto_check_updates_->isChecked());
   proxy::SettingsManager::GetInstance()->SetAutoCompletion(auto_comletion_->isChecked());
 
@@ -119,7 +121,9 @@ void PreferencesDialog::accept() {
 }
 
 void PreferencesDialog::syncWithSettings() {
+#if defined(PRO_VERSION)
   send_statitsic_->setChecked(proxy::SettingsManager::GetInstance()->GetSendStatistic());
+#endif
   auto_check_updates_->setChecked(proxy::SettingsManager::GetInstance()->GetAutoCheckUpdates());
   auto_comletion_->setChecked(proxy::SettingsManager::GetInstance()->GetAutoCompletion());
   languages_combo_box_->setCurrentText(proxy::SettingsManager::GetInstance()->GetCurrentLanguage());
@@ -210,8 +214,10 @@ QWidget* PreferencesDialog::createMainTab() {
   general_box_ = new QGroupBox;
   QGridLayout* generalLayout = new QGridLayout;
 
+#if defined(PRO_VERSION)
   send_statitsic_ = new QCheckBox;
   generalLayout->addWidget(send_statitsic_, 0, 0);
+#endif
   auto_check_updates_ = new QCheckBox;
   generalLayout->addWidget(auto_check_updates_, 0, 1);
 
@@ -294,12 +300,13 @@ void PreferencesDialog::retranslateUi() {
   general_box_->setTitle(trGeneralSettings);
 #if defined(PRO_VERSION)
   profile_box_->setTitle(trProfileSettings);
-#endif
   first_name_label_->setText(translations::trFirstName + ":");
   last_name_label_->setText(translations::trLastName + ":");
   login_label_->setText(translations::trLogin + ":");
   type_label_->setText(translations::trType + ":");
+
   send_statitsic_->setText(trSendStatistic);
+#endif
   auto_check_updates_->setText(trAutoCheckUpd);
   auto_comletion_->setText(trShowAutoCompletion);
   auto_open_console_->setText(trAutoOpenConsole);
