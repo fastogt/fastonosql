@@ -214,7 +214,7 @@ const ConstantCommandsArray g_commands = {
                   0,
                   CommandInfo::Native,
                   &CommandsApi::ClientSetName),
-
+#if defined(PRO_VERSION)
     CommandHolder("CLUSTER ADDSLOTS",
                   "<slot> [slot ...]",
                   "Assign new hash slots to receiving node",
@@ -383,7 +383,7 @@ const ConstantCommandsArray g_commands = {
                   0,
                   CommandInfo::Native,
                   &CommandsApi::ClusterSlots),
-
+#endif
     CommandHolder("COMMAND COUNT",
                   "-",
                   "Get total number of Redis commands",
@@ -1971,7 +1971,7 @@ const ConstantCommandsArray g_commands = {
                   INFINITE_COMMAND_ARGS,
                   CommandInfo::Native,
                   &CommandsApi::ZunionStore),
-
+#if defined(PRO_VERSION)
     CommandHolder("SENTINEL MASTERS",
                   "-",
                   "Show a list of monitored masters and their state.",
@@ -2159,7 +2159,9 @@ const ConstantCommandsArray g_commands = {
                   3,
                   0,
                   CommandInfo::Native,
-                  &CommandsApi::SentinelSet)};
+                  &CommandsApi::SentinelSet)
+#endif
+};
 
 }  // namespace
 }  // namespace pika

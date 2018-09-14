@@ -117,6 +117,7 @@ MainWindow::MainWindow() : QMainWindow() {
 
   common::qt::gui::applyFont(gui::GuiFactory::GetInstance().GetFont());
 
+#if defined(PRO_VERSION)
   proxy::UserInfo user_info = proxy::SettingsManager::GetInstance()->GetUserInfo();
   fastonosql::proxy::UserInfo::SubscriptionState user_sub_state = user_info.GetSubscriptionState();
   if (user_sub_state != fastonosql::proxy::UserInfo::SUBSCRIBED) {
@@ -127,6 +128,9 @@ MainWindow::MainWindow() : QMainWindow() {
   } else {
     setWindowTitle(PROJECT_NAME_TITLE " " PROJECT_VERSION);
   }
+#else
+  setWindowTitle(PROJECT_NAME_TITLE " " PROJECT_VERSION);
+#endif
 
   connect_action_ = new QAction(this);
   connect_action_->setIcon(GuiFactory::GetInstance().GetConnectDBIcon());
@@ -302,10 +306,12 @@ void MainWindow::sendStatisticAndCheckVersion() {
     checkUpdate();
   }
 
+#if defined(PRO_VERSION)
   bool send_statistic = proxy::SettingsManager::GetInstance()->GetSendStatistic();
   if (send_statistic) {
     sendStatistic();
   }
+#endif
 }
 
 void MainWindow::open() {
@@ -357,6 +363,7 @@ void MainWindow::checkUpdate() {
   th->start();
 }
 
+#if defined(PRO_VERSION)
 void MainWindow::sendStatistic() {
   QThread* th = new QThread;
   proxy::UserInfo uinf = proxy::SettingsManager::GetInstance()->GetUserInfo();
@@ -372,6 +379,7 @@ void MainWindow::sendStatistic() {
   VERIFY(connect(th, &QThread::finished, th, &QThread::deleteLater));
   th->start();
 }
+#endif
 
 void MainWindow::reportBug() {
   QDesktopServices::openUrl(QUrl(PROJECT_GITHUB_ISSUES));

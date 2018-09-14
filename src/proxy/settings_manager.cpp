@@ -52,7 +52,9 @@
 #define AUTOCONNECTDB PREFIX "auto_connect_db"
 #define FASTVIEWKEYS PREFIX "fast_view_keys"
 #define WINDOW_SETTINGS PREFIX "window_settings"
+#if defined(PRO_VERSION)
 #define LAST_LOGIN PREFIX "last_login"
+#endif
 #define PYTHON_PATH PREFIX "python_path"
 #define CONFIG_VERSION PREFIX "version"
 
@@ -98,6 +100,8 @@ SettingsManager::SettingsManager()
 #if defined(PRO_VERSION)
       sentinels_(),
       clusters_(),
+      last_login_(),
+      user_info_(),
 #endif
       recent_connections_(),
       logging_dir_(),
@@ -106,8 +110,7 @@ SettingsManager::SettingsManager()
       auto_open_console_(),
       fast_view_keys_(),
       window_settings_(),
-      python_path_(),
-      user_info_() {
+      python_path_() {
 }
 
 SettingsManager::~SettingsManager() {}
@@ -384,6 +387,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
       sentinels_.push_back(sett);
     }
   }
+  last_login_ = settings.value(LAST_LOGIN, QString()).toString();
 #endif
 
   QList<QVariant> connections = settings.value(CONNECTIONS).toList();
@@ -419,7 +423,6 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
   auto_connect_db_ = settings.value(AUTOCONNECTDB, true).toBool();
   fast_view_keys_ = settings.value(FASTVIEWKEYS, true).toBool();
   window_settings_ = settings.value(WINDOW_SETTINGS, QByteArray()).toByteArray();
-  last_login_ = settings.value(LAST_LOGIN, QString()).toString();
 
   QString qpython_path;
   std::string python_path;
@@ -504,11 +507,14 @@ void SettingsManager::Save() {
   settings.setValue(AUTOCONNECTDB, auto_connect_db_);
   settings.setValue(FASTVIEWKEYS, fast_view_keys_);
   settings.setValue(WINDOW_SETTINGS, window_settings_);
+#if defined(PRO_VERSION)
   settings.setValue(LAST_LOGIN, last_login_);
+#endif
   settings.setValue(PYTHON_PATH, python_path_);
   settings.setValue(CONFIG_VERSION, config_version_);
 }
 
+#if defined(PRO_VERSION)
 QString SettingsManager::GetLastLogin() const {
   return last_login_;
 }
@@ -524,6 +530,7 @@ UserInfo SettingsManager::GetUserInfo() const {
 void SettingsManager::SetUserInfo(const UserInfo& uinfo) {
   user_info_ = uinfo;
 }
+#endif
 
 }  // namespace proxy
 }  // namespace fastonosql

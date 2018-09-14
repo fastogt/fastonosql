@@ -48,6 +48,51 @@
 namespace fastonosql {
 namespace proxy {
 
+common::Error GenVersionRequest(std::string* request) {
+  if (!request) {
+    return common::make_error_inval();
+  }
+
+  json_object* command_json = NULL;
+  common::protocols::json_rpc::JsonRPCRequest req;
+  req.id = common::protocols::json_rpc::null_json_rpc_id;
+  req.method = GET_VERSION_METHOD;
+  common::Error err = common::protocols::json_rpc::MakeJsonRPCRequest(req, &command_json);
+  if (err) {
+    return err;
+  }
+
+  const char* command_json_string = json_object_get_string(command_json);
+  *request = command_json_string;
+  json_object_put(command_json);
+  return common::Error();
+}
+
+common::Error ParseVersionResponce(const std::string& data, uint32_t* version) {
+  if (data.empty() || !version) {
+    return common::make_error_inval();
+  }
+
+  common::protocols::json_rpc::JsonRPCResponce jres;
+  common::Error err = common::protocols::json_rpc::ParseJsonRPCResponce(data, &jres);
+  if (err) {
+    return err;
+  }
+
+  if (jres.IsError()) {
+    return common::make_error(jres.error->message);
+  }
+
+  std::string result_str = jres.message->result;
+  if (result_str.empty()) {
+    return common::make_error_inval();
+  }
+
+  *version = common::ConvertVersionNumberFromString(result_str);
+  return common::Error();
+}
+
+#if defined(PRO_VERSION)
 common::Error GenSubscriptionStateRequest(const UserInfo& user_info, std::string* request) {
   if (!user_info.IsValid() || !request) {
     return common::make_error_inval();
@@ -169,50 +214,6 @@ common::Error ParseSubscriptionStateResponce(const std::string& data, UserInfo* 
   return common::Error();
 }
 
-common::Error GenVersionRequest(std::string* request) {
-  if (!request) {
-    return common::make_error_inval();
-  }
-
-  json_object* command_json = NULL;
-  common::protocols::json_rpc::JsonRPCRequest req;
-  req.id = common::protocols::json_rpc::null_json_rpc_id;
-  req.method = GET_VERSION_METHOD;
-  common::Error err = common::protocols::json_rpc::MakeJsonRPCRequest(req, &command_json);
-  if (err) {
-    return err;
-  }
-
-  const char* command_json_string = json_object_get_string(command_json);
-  *request = command_json_string;
-  json_object_put(command_json);
-  return common::Error();
-}
-
-common::Error ParseVersionResponce(const std::string& data, uint32_t* version) {
-  if (data.empty() || !version) {
-    return common::make_error_inval();
-  }
-
-  common::protocols::json_rpc::JsonRPCResponce jres;
-  common::Error err = common::protocols::json_rpc::ParseJsonRPCResponce(data, &jres);
-  if (err) {
-    return err;
-  }
-
-  if (jres.IsError()) {
-    return common::make_error(jres.error->message);
-  }
-
-  std::string result_str = jres.message->result;
-  if (result_str.empty()) {
-    return common::make_error_inval();
-  }
-
-  *version = common::ConvertVersionNumberFromString(result_str);
-  return common::Error();
-}
-
 common::Error GenStatisticRequest(const std::string& login, const std::string& build_strategy, std::string* request) {
   if (!request || login.empty() || build_strategy.empty()) {
     return common::make_error_inval();
@@ -299,6 +300,7 @@ common::Error ParseGenBanUserResponce(const std::string& data) {
   common::protocols::json_rpc::JsonRPCResponce jres;
   return common::protocols::json_rpc::ParseJsonRPCResponce(data, &jres);
 }
+#endif
 
 }  // namespace proxy
 }  // namespace fastonosql

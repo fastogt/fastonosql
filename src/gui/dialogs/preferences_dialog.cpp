@@ -148,6 +148,7 @@ void PreferencesDialog::changeEvent(QEvent* e) {
 
 QWidget* PreferencesDialog::createMainTab() {
   QWidget* main = new QWidget;
+#if defined(PRO_VERSION)
   proxy::UserInfo uinfo = proxy::SettingsManager::GetInstance()->GetUserInfo();
   profile_box_ = new QGroupBox;
   QVBoxLayout* profile_layout = new QVBoxLayout;
@@ -203,6 +204,7 @@ QWidget* PreferencesDialog::createMainTab() {
   profile_layout->addLayout(first_last_name_layout);
   profile_layout->addLayout(login_type_layout);
   profile_box_->setLayout(profile_layout);
+#endif
 
   // ui settings
   general_box_ = new QGroupBox;
@@ -262,7 +264,9 @@ QWidget* PreferencesDialog::createMainTab() {
 
   // main layout
   QVBoxLayout* layout = new QVBoxLayout;
+#if defined(PRO_VERSION)
   layout->addWidget(profile_box_);
+#endif
   layout->addWidget(general_box_);
   main->setLayout(layout);
   return main;
@@ -288,7 +292,9 @@ void PreferencesDialog::retranslateUi() {
   setWindowTitle(trPreferences);
 
   general_box_->setTitle(trGeneralSettings);
+#if defined(PRO_VERSION)
   profile_box_->setTitle(trProfileSettings);
+#endif
   first_name_label_->setText(translations::trFirstName + ":");
   last_name_label_->setText(translations::trLastName + ":");
   login_label_->setText(translations::trLogin + ":");

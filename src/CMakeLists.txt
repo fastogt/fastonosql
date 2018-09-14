@@ -204,14 +204,13 @@ SET(HEADERS_PROXY
   ${HEADERS_PROXY_CONNECTION_SETTINGS}
   ${HEADERS_PROXY_COMMAND}
 
+  ${CMAKE_SOURCE_DIR}/src/proxy/server_config.h
   ${CMAKE_SOURCE_DIR}/src/proxy/types.h
   ${CMAKE_SOURCE_DIR}/src/proxy/command/command.h
   ${CMAKE_SOURCE_DIR}/src/proxy/servers_manager.h
   ${CMAKE_SOURCE_DIR}/src/proxy/proxy_fwd.h
   ${CMAKE_SOURCE_DIR}/src/proxy/settings_manager.h
   ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings_factory.h
-  ${CMAKE_SOURCE_DIR}/src/proxy/user_info.h
-  ${CMAKE_SOURCE_DIR}/src/proxy/server_config.h
 )
 
 SET(SOURCES_PROXY
@@ -223,13 +222,12 @@ SET(SOURCES_PROXY
   ${SOURCES_PROXY_CONNECTION_SETTINGS}
   ${SOURCES_PROXY_COMMAND}
 
+  ${CMAKE_SOURCE_DIR}/src/proxy/server_config.cpp
   ${CMAKE_SOURCE_DIR}/src/proxy/types.cpp
   ${CMAKE_SOURCE_DIR}/src/proxy/command/command.cpp
   ${CMAKE_SOURCE_DIR}/src/proxy/servers_manager.cpp
   ${CMAKE_SOURCE_DIR}/src/proxy/settings_manager.cpp
   ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings_factory.cpp
-  ${CMAKE_SOURCE_DIR}/src/proxy/user_info.cpp
-  ${CMAKE_SOURCE_DIR}/src/proxy/server_config.cpp
 )
 
 IF(PRO_VERSION)
@@ -237,12 +235,16 @@ IF(PRO_VERSION)
     ${HEADERS_PROXY_CLUSTER}
     ${CMAKE_SOURCE_DIR}/src/proxy/cluster_connection_settings_factory.h
     ${CMAKE_SOURCE_DIR}/src/proxy/sentinel_connection_settings_factory.h
+
+    ${CMAKE_SOURCE_DIR}/src/proxy/user_info.h
   )
 
   SET(SOURCES_PROXY ${SOURCES_PROXY}
     ${SOURCES_PROXY_CLUSTER}
     ${CMAKE_SOURCE_DIR}/src/proxy/cluster_connection_settings_factory.cpp
     ${CMAKE_SOURCE_DIR}/src/proxy/sentinel_connection_settings_factory.cpp
+
+    ${CMAKE_SOURCE_DIR}/src/proxy/user_info.cpp
   )
 ENDIF(PRO_VERSION)
 
@@ -420,7 +422,6 @@ SET(HEADERS_GUI_TO_MOC
   ${HEADERS_GUI_EXPLORER_TO_MOC}
 
   ${CMAKE_SOURCE_DIR}/src/gui/main_window.h
-  ${CMAKE_SOURCE_DIR}/src/gui/statistic_sender.h
   ${CMAKE_SOURCE_DIR}/src/gui/update_checker.h
   ${CMAKE_SOURCE_DIR}/src/gui/property_table_model.h
   ${CMAKE_SOURCE_DIR}/src/gui/main_tab_bar.h
@@ -457,7 +458,6 @@ SET(SOURCES_GUI
   ${SOURCES_GUI_EXPLORER}
 
   ${CMAKE_SOURCE_DIR}/src/gui/main_window.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/statistic_sender.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/update_checker.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/gui_factory.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/property_table_item.cpp
@@ -481,6 +481,15 @@ SET(SOURCES_GUI
   ${CMAKE_SOURCE_DIR}/src/gui/key_value_table_item.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/utils.cpp
 )
+
+IF(PRO_VERSION)
+  SET(HEADERS_GUI_TO_MOC ${HEADERS_GUI_TO_MOC}
+    ${CMAKE_SOURCE_DIR}/src/gui/statistic_sender.h
+  )
+  SET(SOURCES_GUI ${SOURCES_GUI}
+    ${CMAKE_SOURCE_DIR}/src/gui/statistic_sender.cpp
+  )
+ENDIF(PRO_VERSION)
 
 SET_DESKTOP_TARGET()
 
@@ -1271,44 +1280,49 @@ SET(APPLICATION_DEFINES)
 SET(APPLICATION_HEADERS)
 SET(APPLICATION_SOURCES)
 
-IF (BUILD_STRATEGY STREQUAL "community")
-  SET(APPLICATION_DEFINES ${APPLICATION_DEFINES}
-    -DBUILD_STRATEGY=0
-  )
-  SET(APPLICATION_HEADERS ${APPLICATION_HEADERS} online_verify_user.h)
-  SET(APPLICATION_SOURCES ${APPLICATION_SOURCES} online_verify_user.cpp)
-ELSEIF (BUILD_STRATEGY STREQUAL "public")
-  IF("${USER_LOGIN}" STREQUAL "")
-    MESSAGE(FATAL_ERROR "For individual builds USER_LOGIN vaiable must have value.")
-  ENDIF("${USER_LOGIN}" STREQUAL "")
-  MESSAGE(STATUS "USER_LOGIN: ${USER_LOGIN}")
+IF(PRO_VERSION)
+  SET(BUILD_STRATEGY "community" CACHE STRING "Strategy build for ${PROJECT_NAME_TITLE} project")
+    # community, public, private
+  MESSAGE(STATUS "BUILD_STRATEGY: ${BUILD_STRATEGY}")
+  IF (BUILD_STRATEGY STREQUAL "community")
+    SET(APPLICATION_DEFINES ${APPLICATION_DEFINES}
+      -DBUILD_STRATEGY=0
+    )
+    SET(APPLICATION_HEADERS ${APPLICATION_HEADERS} online_verify_user.h)
+    SET(APPLICATION_SOURCES ${APPLICATION_SOURCES} online_verify_user.cpp)
+  ELSEIF (BUILD_STRATEGY STREQUAL "public")
+    IF("${USER_LOGIN}" STREQUAL "")
+      MESSAGE(FATAL_ERROR "For individual builds USER_LOGIN vaiable must have value.")
+    ENDIF("${USER_LOGIN}" STREQUAL "")
+    MESSAGE(STATUS "USER_LOGIN: ${USER_LOGIN}")
 
-  SET(APPLICATION_DEFINES ${APPLICATION_DEFINES}
-    -DBUILD_STRATEGY=1
-    -DUSER_LOGIN="${USER_LOGIN}"
-  )
-  SET(APPLICATION_HEADERS ${APPLICATION_HEADERS} online_verify_user.h)
-  SET(APPLICATION_SOURCES ${APPLICATION_SOURCES} online_verify_user.cpp)
-ELSEIF (BUILD_STRATEGY STREQUAL "private")
-  IF("${USER_LOGIN}" STREQUAL "")
-    MESSAGE(FATAL_ERROR "For individual builds USER_LOGIN vaiable must have value.")
-  ENDIF("${USER_LOGIN}" STREQUAL "")
-  IF("${USER_PASSWORD}" STREQUAL "")
-    MESSAGE(FATAL_ERROR "For individual builds USER_PASSWORD vaiable must have value.")
-  ENDIF("${USER_PASSWORD}" STREQUAL "")
-  MESSAGE(STATUS "USER_LOGIN: ${USER_LOGIN}")
-  MESSAGE(STATUS "USER_PASSWORD: ${USER_PASSWORD}")
+    SET(APPLICATION_DEFINES ${APPLICATION_DEFINES}
+      -DBUILD_STRATEGY=1
+      -DUSER_LOGIN="${USER_LOGIN}"
+    )
+    SET(APPLICATION_HEADERS ${APPLICATION_HEADERS} online_verify_user.h)
+    SET(APPLICATION_SOURCES ${APPLICATION_SOURCES} online_verify_user.cpp)
+  ELSEIF (BUILD_STRATEGY STREQUAL "private")
+    IF("${USER_LOGIN}" STREQUAL "")
+      MESSAGE(FATAL_ERROR "For individual builds USER_LOGIN vaiable must have value.")
+    ENDIF("${USER_LOGIN}" STREQUAL "")
+    IF("${USER_PASSWORD}" STREQUAL "")
+      MESSAGE(FATAL_ERROR "For individual builds USER_PASSWORD vaiable must have value.")
+    ENDIF("${USER_PASSWORD}" STREQUAL "")
+    MESSAGE(STATUS "USER_LOGIN: ${USER_LOGIN}")
+    MESSAGE(STATUS "USER_PASSWORD: ${USER_PASSWORD}")
 
-  SET(APPLICATION_DEFINES ${APPLICATION_DEFINES}
-    -DBUILD_STRATEGY=2
-    -DUSER_LOGIN="${USER_LOGIN}"
-    -DUSER_PASSWORD="${USER_PASSWORD}"
-  )
-  SET(APPLICATION_HEADERS ${APPLICATION_HEADERS} offline_verify_user.h)
-  SET(APPLICATION_SOURCES ${APPLICATION_SOURCES} offline_verify_user.cpp)
-ELSE()
-  MESSAGE(FATAL_ERROR "Not supported strategy: ${BUILD_STRATEGY}")
-ENDIF(BUILD_STRATEGY STREQUAL "community")
+    SET(APPLICATION_DEFINES ${APPLICATION_DEFINES}
+      -DBUILD_STRATEGY=2
+      -DUSER_LOGIN="${USER_LOGIN}"
+      -DUSER_PASSWORD="${USER_PASSWORD}"
+    )
+    SET(APPLICATION_HEADERS ${APPLICATION_HEADERS} offline_verify_user.h)
+    SET(APPLICATION_SOURCES ${APPLICATION_SOURCES} offline_verify_user.cpp)
+  ELSE()
+    MESSAGE(FATAL_ERROR "Not supported strategy: ${BUILD_STRATEGY}")
+  ENDIF(BUILD_STRATEGY STREQUAL "community")
+ENDIF(PRO_VERSION)
 
 SET(HEADERS_TOMOC
   ${HEADERS_GUI_TO_MOC}

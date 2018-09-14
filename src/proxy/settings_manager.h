@@ -28,10 +28,10 @@
 #if defined(PRO_VERSION)
 #include "proxy/connection_settings/icluster_connection_settings.h"
 #include "proxy/connection_settings/isentinel_connection_settings.h"
+#include "proxy/user_info.h"
 #endif
 
 #include "proxy/types.h"  // for supportedViews
-#include "proxy/user_info.h"
 
 namespace fastonosql {
 namespace proxy {
@@ -121,13 +121,14 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
 
   void Load();
   void Save();
-
+#if defined(PRO_VERSION)
   QString GetLastLogin() const;
   void SetLastLogin(const QString& login);
 
   // runtime
   UserInfo GetUserInfo() const;
   void SetUserInfo(const UserInfo& uinfo);
+#endif
 
  private:
   SettingsManager();
@@ -144,6 +145,9 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
 #if defined(PRO_VERSION)
   sentinel_settings_t sentinels_;
   cluster_settings_t clusters_;
+  QString last_login_;
+  // runtime settings
+  UserInfo user_info_;
 #endif
   QStringList recent_connections_;
   QString logging_dir_;
@@ -154,10 +158,6 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
   bool fast_view_keys_;
   QByteArray window_settings_;
   QString python_path_;
-  QString last_login_;
-
-  // runtime settings
-  UserInfo user_info_;
 };
 
 }  // namespace proxy

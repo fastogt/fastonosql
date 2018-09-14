@@ -46,8 +46,8 @@
 #include "gui/dialogs/how_to_use_dialog.h"
 #include "translations/global.h"
 
+#if defined(PRO_VERSION)
 #define IDENTITY_FILE_NAME "IDENTITY"
-
 #define COMMUNITY_STRATEGY 0
 #define PUBLIC_STRATEGY 1
 #define PRIVATE_STRATEGY 2
@@ -56,6 +56,7 @@
 #include "online_verify_user.h"
 #else
 #include "offline_verify_user.h"
+#endif
 #endif
 
 namespace {
@@ -76,6 +77,8 @@ struct SigIgnInit {
 #endif
 
 const QSize preferedSize = QSize(1024, 768);
+
+#if defined(PRO_VERSION)
 const QString trExpired = QObject::tr(
     "<h4>Your trial version has expired.</h4>"
     "Please <a href=\"" PROJECT_DOWNLOAD_LINK "\">subscribe</a> and continue using " PROJECT_NAME_TITLE ".");
@@ -180,7 +183,7 @@ class MainCredentialsDialog : public fastonosql::CredentialsDialog {
 #endif
   }
 };
-
+#endif
 }  // namespace
 
 int main(int argc, char* argv[]) {
@@ -206,6 +209,7 @@ int main(int argc, char* argv[]) {
     settings_manager->SetAccpetedEula(true);
   }
 
+#if defined(PRO_VERSION)
   MainCredentialsDialog password_dialog;
 #if BUILD_STRATEGY == COMMUNITY_STRATEGY
   const QString last_login = settings_manager->GetLastLogin();
@@ -296,6 +300,7 @@ int main(int argc, char* argv[]) {
   settings_manager->SetLastLogin(password_dialog.GetLogin());
 #endif
   settings_manager->SetUserInfo(user_info);
+#endif
 
   QFile file(":" PROJECT_NAME_LOWERCASE "/default.qss");
   file.open(QFile::ReadOnly);
