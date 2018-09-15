@@ -23,6 +23,8 @@
 #include "core/connection_types.h"  // for connectionTypes
 #include "proxy/proxy_fwd.h"        // for IServerSPtr
 
+class QGroupBox;
+
 namespace fastonosql {
 namespace gui {
 class OutputWidget;
@@ -43,7 +45,15 @@ class QueryWidget : public QWidget {
   void executeArgs(const QString& text, int repeat, int interval, bool history);
   void reload();
 
+ protected:
+  virtual void changeEvent(QEvent* ev) override;
+
  private:
+  void retranslateUi();
+
+  QGroupBox* console_gb_;
+  QGroupBox* output_gb_;
+
   BaseShellWidget* shell_widget_;
   OutputWidget* output_widget_;
   const proxy::IServerSPtr server_;

@@ -206,9 +206,11 @@ common::Error Driver::GetServerCommands(std::vector<const core::CommandInfo*>* c
         const core::CommandHolder* cmd = nullptr;
         common::Error err = tran->FindCommand(command_name, &cmd);
         if (err) {
+#if defined(PRO_VERSION)
           if (!impl_->IsInternalCommand(command_name)) {
             WARNING_LOG() << "Found not handled command: " << command_name;
           }
+#endif
           continue;
         }
 

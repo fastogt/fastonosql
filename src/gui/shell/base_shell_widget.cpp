@@ -301,6 +301,9 @@ QHBoxLayout* BaseShellWidget::createTopLayout(core::connectionTypes ct) {
   db_name_ = new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().GetDatabaseIcon(), top_bar_icon_size,
                                             translations::trCalculate + "...");
   top_layout->addWidget(db_name_);
+  QSplitter* padding = new QSplitter(Qt::Horizontal);
+  padding->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  top_layout->addWidget(padding);
   return top_layout;
 }
 

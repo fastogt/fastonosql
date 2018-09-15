@@ -49,6 +49,8 @@ extern const QString trView;
 extern const QString trViews;
 extern const QString trHistory;
 extern const QString trClearHistory;
+extern const QString trConsole;
+extern const QString trOutput;
 extern const QString trFile;
 extern const QString trDirectory;
 extern const QString trInfo;

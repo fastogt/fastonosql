@@ -18,6 +18,7 @@
 
 #include "gui/widgets/query_widget.h"
 
+#include <QGroupBox>
 #include <QSplitter>
 #include <QVBoxLayout>
 
@@ -27,6 +28,8 @@
 
 #include "gui/shell/base_shell_widget.h"
 
+#include "translations/global.h"
+
 namespace fastonosql {
 namespace gui {
 
@@ -34,18 +37,30 @@ QueryWidget::QueryWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget(p
   shell_widget_ = BaseShellWidget::createWidget(server);
   output_widget_ = new OutputWidget(server);
 
-  QVBoxLayout* mainLayout = new QVBoxLayout;
+  QVBoxLayout* main_layout = new QVBoxLayout;
   QSplitter* splitter = new QSplitter(Qt::Vertical);
-  splitter->addWidget(shell_widget_);
-  splitter->addWidget(output_widget_);
+
+  console_gb_ = new QGroupBox;
+  QVBoxLayout* console_layout = new QVBoxLayout;
+  console_layout->addWidget(shell_widget_);
+  console_gb_->setLayout(console_layout);
+  splitter->addWidget(console_gb_);
+
+  output_gb_ = new QGroupBox;
+  QVBoxLayout* output_layout = new QVBoxLayout;
+  output_layout->addWidget(output_widget_);
+  output_gb_->setLayout(output_layout);
+  splitter->addWidget(output_gb_);
+
   splitter->setCollapsible(0, false);
   splitter->setCollapsible(1, false);
   splitter->setStretchFactor(0, 1);
   splitter->setStretchFactor(1, 3);
   splitter->setHandleWidth(1);
-  mainLayout->addWidget(splitter);
+  main_layout->addWidget(splitter);
 
-  setLayout(mainLayout);
+  setLayout(main_layout);
+  retranslateUi();
 }
 
 QueryWidget* QueryWidget::clone(const QString& text) {
@@ -75,5 +90,19 @@ void QueryWidget::executeArgs(const QString& text, int repeat, int interval, boo
 }
 
 void QueryWidget::reload() {}
+
+void QueryWidget::changeEvent(QEvent* ev) {
+  if (ev->type() == QEvent::LanguageChange) {
+    retranslateUi();
+  }
+
+  QWidget::changeEvent(ev);
+}
+
+void QueryWidget::retranslateUi() {
+  console_gb_->setTitle(translations::trConsole);
+  output_gb_->setTitle(translations::trOutput);
+}
+
 }  // namespace gui
 }  // namespace fastonosql
