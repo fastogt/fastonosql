@@ -67,9 +67,7 @@ class PreferencesDialog : public QDialog {
 
   // controls in general_box
   QGroupBox* general_box_;
-#if defined(PRO_VERSION)
   QCheckBox* send_statitsic_;
-#endif
   QCheckBox* auto_check_updates_;
   QCheckBox* auto_comletion_;
   QLabel* languages_label_;

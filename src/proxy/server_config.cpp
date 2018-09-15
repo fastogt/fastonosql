@@ -11,6 +11,7 @@
 // methods
 #define GET_VERSION_METHOD "version"
 #define SEND_STATISTIC_METHOD "statistic"
+#define ANONYMOUS_SEND_STATISTIC_METHOD "anonymous_statistic"
 #define IS_SUBSCRIBED_METHOD "is_subscribed"
 #define BAN_USER_METHOD "ban_user"
 
@@ -90,6 +91,98 @@ common::Error ParseVersionResponce(const std::string& data, uint32_t* version) {
 
   *version = common::ConvertVersionNumberFromString(result_str);
   return common::Error();
+}
+
+common::Error GenAnonymousStatisticRequest(std::string* request) {
+  if (!request) {
+    return common::make_error_inval();
+  }
+
+  json_object* stats_json = json_object_new_object();
+  common::system_info::SystemInfo inf = common::system_info::currentSystemInfo();
+
+  json_object* os_json = json_object_new_object();
+  const std::string os_name = inf.GetName();
+  json_object_object_add(os_json, STATISTIC_OS_NAME_FIELD, json_object_new_string(os_name.c_str()));
+  const std::string os_version = inf.GetVersion();
+  json_object_object_add(os_json, STATISTIC_OS_VERSION_FIELD, json_object_new_string(os_version.c_str()));
+  const std::string os_arch = inf.GetArch();
+  json_object_object_add(os_json, STATISTIC_OS_ARCH_FIELD, json_object_new_string(os_arch.c_str()));
+  json_object_object_add(stats_json, STATISTIC_OS_FIELD, os_json);
+
+  json_object* project_json = json_object_new_object();
+  json_object_object_add(project_json, STATISTIC_PROJECT_NAME_FIELD, json_object_new_string(PROJECT_NAME_TITLE));
+  json_object_object_add(project_json, STATISTIC_PROJECT_VERSION_FIELD, json_object_new_string(PROJECT_VERSION));
+  json_object_object_add(project_json, STATISTIC_PROJECT_ARCH_FIELD, json_object_new_string(PROJECT_ARCH));
+  json_object_object_add(stats_json, STATISTIC_PROJECT_FIELD, project_json);
+
+  json_object* command_json = NULL;
+  common::protocols::json_rpc::JsonRPCRequest req;
+  req.id = common::protocols::json_rpc::null_json_rpc_id;
+  req.method = ANONYMOUS_SEND_STATISTIC_METHOD;
+  req.params = std::string(json_object_get_string(stats_json));
+  json_object_put(stats_json);
+  common::Error err = common::protocols::json_rpc::MakeJsonRPCRequest(req, &command_json);
+  if (err) {
+    return err;
+  }
+
+  const char* command_json_string = json_object_get_string(command_json);
+  *request = command_json_string;
+  json_object_put(command_json);
+  return common::Error();
+}
+
+common::Error GenStatisticRequest(const std::string& login, const std::string& build_strategy, std::string* request) {
+  if (!request || login.empty() || build_strategy.empty()) {
+    return common::make_error_inval();
+  }
+
+  json_object* stats_json = json_object_new_object();
+  json_object_object_add(stats_json, STATISTIC_EMAIL_FIELD, json_object_new_string(login.c_str()));
+  common::system_info::SystemInfo inf = common::system_info::currentSystemInfo();
+
+  json_object* os_json = json_object_new_object();
+  const std::string os_name = inf.GetName();
+  json_object_object_add(os_json, STATISTIC_OS_NAME_FIELD, json_object_new_string(os_name.c_str()));
+  const std::string os_version = inf.GetVersion();
+  json_object_object_add(os_json, STATISTIC_OS_VERSION_FIELD, json_object_new_string(os_version.c_str()));
+  const std::string os_arch = inf.GetArch();
+  json_object_object_add(os_json, STATISTIC_OS_ARCH_FIELD, json_object_new_string(os_arch.c_str()));
+  json_object_object_add(stats_json, STATISTIC_OS_FIELD, os_json);
+
+  json_object* project_json = json_object_new_object();
+  json_object_object_add(project_json, STATISTIC_PROJECT_NAME_FIELD, json_object_new_string(PROJECT_NAME_TITLE));
+  json_object_object_add(project_json, STATISTIC_PROJECT_BUILD_STRATEGY_FIELD,
+                         json_object_new_string(build_strategy.c_str()));
+  json_object_object_add(project_json, STATISTIC_PROJECT_VERSION_FIELD, json_object_new_string(PROJECT_VERSION));
+  json_object_object_add(project_json, STATISTIC_PROJECT_ARCH_FIELD, json_object_new_string(PROJECT_ARCH));
+  json_object_object_add(stats_json, STATISTIC_PROJECT_FIELD, project_json);
+
+  json_object* command_json = NULL;
+  common::protocols::json_rpc::JsonRPCRequest req;
+  req.id = common::protocols::json_rpc::null_json_rpc_id;
+  req.method = SEND_STATISTIC_METHOD;
+  req.params = std::string(json_object_get_string(stats_json));
+  json_object_put(stats_json);
+  common::Error err = common::protocols::json_rpc::MakeJsonRPCRequest(req, &command_json);
+  if (err) {
+    return err;
+  }
+
+  const char* command_json_string = json_object_get_string(command_json);
+  *request = command_json_string;
+  json_object_put(command_json);
+  return common::Error();
+}
+
+common::Error ParseSendStatisticResponce(const std::string& data) {
+  if (data.empty()) {
+    return common::make_error_inval();
+  }
+
+  common::protocols::json_rpc::JsonRPCResponce jres;
+  return common::protocols::json_rpc::ParseJsonRPCResponce(data, &jres);
 }
 
 #if defined(PRO_VERSION)
@@ -212,58 +305,6 @@ common::Error ParseSubscriptionStateResponce(const std::string& data, UserInfo* 
 
   *result = lres;
   return common::Error();
-}
-
-common::Error GenStatisticRequest(const std::string& login, const std::string& build_strategy, std::string* request) {
-  if (!request || login.empty() || build_strategy.empty()) {
-    return common::make_error_inval();
-  }
-
-  json_object* stats_json = json_object_new_object();
-  json_object_object_add(stats_json, STATISTIC_EMAIL_FIELD, json_object_new_string(login.c_str()));
-  common::system_info::SystemInfo inf = common::system_info::currentSystemInfo();
-
-  json_object* os_json = json_object_new_object();
-  const std::string os_name = inf.GetName();
-  json_object_object_add(os_json, STATISTIC_OS_NAME_FIELD, json_object_new_string(os_name.c_str()));
-  const std::string os_version = inf.GetVersion();
-  json_object_object_add(os_json, STATISTIC_OS_VERSION_FIELD, json_object_new_string(os_version.c_str()));
-  const std::string os_arch = inf.GetArch();
-  json_object_object_add(os_json, STATISTIC_OS_ARCH_FIELD, json_object_new_string(os_arch.c_str()));
-  json_object_object_add(stats_json, STATISTIC_OS_FIELD, os_json);
-
-  json_object* project_json = json_object_new_object();
-  json_object_object_add(project_json, STATISTIC_PROJECT_NAME_FIELD, json_object_new_string(PROJECT_NAME_TITLE));
-  json_object_object_add(project_json, STATISTIC_PROJECT_BUILD_STRATEGY_FIELD,
-                         json_object_new_string(build_strategy.c_str()));
-  json_object_object_add(project_json, STATISTIC_PROJECT_VERSION_FIELD, json_object_new_string(PROJECT_VERSION));
-  json_object_object_add(project_json, STATISTIC_PROJECT_ARCH_FIELD, json_object_new_string(PROJECT_ARCH));
-  json_object_object_add(stats_json, STATISTIC_PROJECT_FIELD, project_json);
-
-  json_object* command_json = NULL;
-  common::protocols::json_rpc::JsonRPCRequest req;
-  req.id = common::protocols::json_rpc::null_json_rpc_id;
-  req.method = SEND_STATISTIC_METHOD;
-  req.params = std::string(json_object_get_string(stats_json));
-  json_object_put(stats_json);
-  common::Error err = common::protocols::json_rpc::MakeJsonRPCRequest(req, &command_json);
-  if (err) {
-    return err;
-  }
-
-  const char* command_json_string = json_object_get_string(command_json);
-  *request = command_json_string;
-  json_object_put(command_json);
-  return common::Error();
-}
-
-common::Error ParseSendStatisticResponce(const std::string& data) {
-  if (data.empty()) {
-    return common::make_error_inval();
-  }
-
-  common::protocols::json_rpc::JsonRPCResponce jres;
-  return common::protocols::json_rpc::ParseJsonRPCResponce(data, &jres);
 }
 
 common::Error GenBanUserRequest(const UserInfo& user_info, user_id_t collision_id, std::string* request) {

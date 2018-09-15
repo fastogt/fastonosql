@@ -28,7 +28,7 @@ namespace unqlite {
 Server::Server(IConnectionSettingsBaseSPtr settings) : IServerLocal(new Driver(settings)) {}
 
 std::string Server::GetPath() const {
-  Driver* const ldrv = static_cast<Driver* const>(drv_);
+  Driver* ldrv = static_cast<Driver*>(drv_);
   return ldrv->GetPath();
 }
 

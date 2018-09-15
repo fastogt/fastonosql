@@ -60,9 +60,7 @@ class MainWindow : public QMainWindow {
   void howToUse();
   void openPreferences();
   void checkUpdate();
-#if defined(PRO_VERSION)
   void sendStatistic();
-#endif
   void reportBug();
   void enterLeaveFullScreen();
   void openEncodeDecodeDialog();

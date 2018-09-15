@@ -70,14 +70,77 @@ common::Error SendStatistic(const std::string& login, const std::string& build_s
 
   return jerror;
 }
+
+common::Error SendAnonymousStatistic() {
+#if defined(FASTONOSQL)
+  common::net::ClientSocketTcp client(common::net::HostAndPort(FASTONOSQL_HOST, SERVER_REQUESTS_PORT));
+#elif defined(FASTOREDIS)
+  common::net::ClientSocketTcp client(common::net::HostAndPort(FASTOREDIS_HOST, SERVER_REQUESTS_PORT));
+#else
+#error please specify url and port to send statistic information
+#endif
+  common::ErrnoError err = client.Connect();
+  if (err) {
+    return common::make_error_from_errno(err);
+  }
+
+  std::string request;
+  common::Error request_gen_err = proxy::GenAnonymousStatisticRequest(&request);
+  if (request_gen_err) {
+    common::ErrnoError lerr = client.Close();
+    DCHECK(!lerr) << "Close client error: " << err->GetDescription();
+    return request_gen_err;
+  }
+
+  size_t nwrite = 0;
+  err = client.Write(request, &nwrite);
+  if (err) {
+    common::ErrnoError lerr = client.Close();
+    DCHECK(!lerr) << "Close client error: " << err->GetDescription();
+    return common::make_error_from_errno(err);
+  }
+
+  std::string stat_reply;
+  size_t nread = 0;
+  err = client.Read(&stat_reply, 256, &nread);
+  if (err) {
+    common::ErrnoError lerr = client.Close();
+    DCHECK(!lerr) << "Close client error: " << err->GetDescription();
+    return common::make_error_from_errno(err);
+  }
+
+  common::Error jerror = proxy::ParseSendStatisticResponce(stat_reply);
+  err = client.Close();
+  DCHECK(!err) << "Close client error: " << err->GetDescription();
+
+  return jerror;
+}
 }  // namespace
 
 namespace gui {
 
-StatisticSender::StatisticSender(const std::string& login, const std::string& build_strategy, QObject* parent)
-    : QObject(parent), login_(login), build_strategy_(build_strategy) {}
+AnonymousStatisticSender::AnonymousStatisticSender(QObject* parent) : QObject(parent) {}
 
-void StatisticSender::routine() {
+void AnonymousStatisticSender::routine() {
+  sendStatistic();
+}
+
+void AnonymousStatisticSender::sendStatistic() {
+  common::Error err = SendAnonymousStatistic();
+  if (err) {
+    QString qerror_message;
+    common::ConvertFromString(err->GetDescription(), &qerror_message);
+    statisticSended(qerror_message);
+    return;
+  }
+
+  statisticSended(QString());
+}
+
+StatisticSender::StatisticSender(const std::string& login, const std::string& build_strategy, QObject* parent)
+    : base_class(parent), login_(login), build_strategy_(build_strategy) {}
+
+void StatisticSender::sendStatistic() {
   common::Error err = SendStatistic(login_, build_strategy_);
   if (err) {
     QString qerror_message;
@@ -88,5 +151,6 @@ void StatisticSender::routine() {
 
   statisticSended(QString());
 }
+
 }  // namespace gui
 }  // namespace fastonosql

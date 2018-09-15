@@ -51,8 +51,8 @@
 #define AUTOCONNECTDB PREFIX "auto_connect_db"
 #define FASTVIEWKEYS PREFIX "fast_view_keys"
 #define WINDOW_SETTINGS PREFIX "window_settings"
-#if defined(PRO_VERSION)
 #define SEND_STATISTIC PREFIX "send_statistic"
+#if defined(PRO_VERSION)
 #define LAST_LOGIN PREFIX "last_login"
 #endif
 #define PYTHON_PATH PREFIX "python_path"
@@ -95,9 +95,9 @@ SettingsManager::SettingsManager()
       cur_style_(),
       cur_font_(),
       cur_language_(),
+      send_statistic_(),
       connections_(),
 #if defined(PRO_VERSION)
-      send_statistic_(),
       sentinels_(),
       clusters_(),
       last_login_(),
@@ -135,14 +135,12 @@ void SettingsManager::SetAccpetedEula(bool val) {
   accepted_eula_ = val;
 }
 
-#if defined(PRO_VERSION)
 bool SettingsManager::GetSendStatistic() const {
   return send_statistic_;
 }
 void SettingsManager::SetSendStatistic(bool val) {
   send_statistic_ = val;
 }
-#endif
 
 supportedViews SettingsManager::GetDefaultView() const {
   return views_;
@@ -360,13 +358,12 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
   QFont font = default_font();
   cur_font_ = settings.value(FONT, font).value<QFont>();
   cur_language_ = settings.value(LANGUAGE, common::qt::translations::defLanguage).toString();
+  send_statistic_ = settings.value(SEND_STATISTIC, true).toBool();
 
   int view = settings.value(VIEW, kText).toInt();
   views_ = static_cast<supportedViews>(view);
 
 #if defined(PRO_VERSION)
-  send_statistic_ = settings.value(SEND_STATISTIC, true).toBool();
-
   QList<QVariant> clusters = settings.value(CLUSTERS).toList();
   for (const auto& cluster : clusters) {
     QString string = cluster.toString();
@@ -450,11 +447,10 @@ void SettingsManager::Save() {
   settings.setValue(FONT, cur_font_);
   settings.setValue(ACCEPTED_EULA, accepted_eula_);
   settings.setValue(LANGUAGE, cur_language_);
+  settings.setValue(SEND_STATISTIC, send_statistic_);
   settings.setValue(VIEW, views_);
 
 #if defined(PRO_VERSION)
-  settings.setValue(SEND_STATISTIC, send_statistic_);
-
   QList<QVariant> clusters;
   for (const auto& cluster : clusters_) {
     if (cluster) {

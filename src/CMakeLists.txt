@@ -423,6 +423,7 @@ SET(HEADERS_GUI_TO_MOC
 
   ${CMAKE_SOURCE_DIR}/src/gui/main_window.h
   ${CMAKE_SOURCE_DIR}/src/gui/update_checker.h
+  ${CMAKE_SOURCE_DIR}/src/gui/statistic_sender.h
   ${CMAKE_SOURCE_DIR}/src/gui/property_table_model.h
   ${CMAKE_SOURCE_DIR}/src/gui/main_tab_bar.h
   ${CMAKE_SOURCE_DIR}/src/gui/fasto_text_view.h
@@ -459,6 +460,7 @@ SET(SOURCES_GUI
 
   ${CMAKE_SOURCE_DIR}/src/gui/main_window.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/update_checker.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/statistic_sender.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/gui_factory.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/property_table_item.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/property_table_model.cpp
@@ -481,15 +483,6 @@ SET(SOURCES_GUI
   ${CMAKE_SOURCE_DIR}/src/gui/key_value_table_item.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/utils.cpp
 )
-
-IF(PRO_VERSION)
-  SET(HEADERS_GUI_TO_MOC ${HEADERS_GUI_TO_MOC}
-    ${CMAKE_SOURCE_DIR}/src/gui/statistic_sender.h
-  )
-  SET(SOURCES_GUI ${SOURCES_GUI}
-    ${CMAKE_SOURCE_DIR}/src/gui/statistic_sender.cpp
-  )
-ENDIF(PRO_VERSION)
 
 SET_DESKTOP_TARGET()
 

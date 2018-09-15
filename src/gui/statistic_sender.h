@@ -23,16 +23,29 @@
 namespace fastonosql {
 namespace gui {
 
-class StatisticSender : public QObject {
+class AnonymousStatisticSender : public QObject {
   Q_OBJECT
  public:
-  explicit StatisticSender(const std::string& login, const std::string& build_strategy, QObject* parent = Q_NULLPTR);
+  explicit AnonymousStatisticSender(QObject* parent = Q_NULLPTR);
 
  Q_SIGNALS:
   void statisticSended(const QString& error_message);
 
  public Q_SLOTS:
   void routine();
+
+ protected:
+  virtual void sendStatistic();
+};
+
+class StatisticSender : public AnonymousStatisticSender {
+  Q_OBJECT
+ public:
+  typedef AnonymousStatisticSender base_class;
+  explicit StatisticSender(const std::string& login, const std::string& build_strategy, QObject* parent = Q_NULLPTR);
+
+ protected:
+  virtual void sendStatistic() override;
 
  private:
   const std::string login_;

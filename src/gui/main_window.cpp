@@ -306,12 +306,10 @@ void MainWindow::sendStatisticAndCheckVersion() {
     checkUpdate();
   }
 
-#if defined(PRO_VERSION)
   bool send_statistic = proxy::SettingsManager::GetInstance()->GetSendStatistic();
   if (send_statistic) {
     sendStatistic();
   }
-#endif
 }
 
 void MainWindow::open() {
@@ -363,23 +361,25 @@ void MainWindow::checkUpdate() {
   th->start();
 }
 
-#if defined(PRO_VERSION)
 void MainWindow::sendStatistic() {
   QThread* th = new QThread;
+#if defined(PRO_VERSION)
   proxy::UserInfo uinf = proxy::SettingsManager::GetInstance()->GetUserInfo();
 
   const std::string login = uinf.GetLogin();
   const std::string build_strategy = common::ConvertToString(uinf.GetBuildStrategy());
   StatisticSender* sender = new StatisticSender(login, build_strategy);
+#else
+  AnonymousStatisticSender* sender = new AnonymousStatisticSender;
+#endif
   sender->moveToThread(th);
-  VERIFY(connect(th, &QThread::started, sender, &StatisticSender::routine));
-  VERIFY(connect(sender, &StatisticSender::statisticSended, this, &MainWindow::statitsticSent));
-  VERIFY(connect(sender, &StatisticSender::statisticSended, th, &QThread::quit));
+  VERIFY(connect(th, &QThread::started, sender, &AnonymousStatisticSender::routine));
+  VERIFY(connect(sender, &AnonymousStatisticSender::statisticSended, this, &MainWindow::statitsticSent));
+  VERIFY(connect(sender, &AnonymousStatisticSender::statisticSended, th, &QThread::quit));
   VERIFY(connect(th, &QThread::finished, sender, &UpdateChecker::deleteLater));
   VERIFY(connect(th, &QThread::finished, th, &QThread::deleteLater));
   th->start();
 }
-#endif
 
 void MainWindow::reportBug() {
   QDesktopServices::openUrl(QUrl(PROJECT_GITHUB_ISSUES));
