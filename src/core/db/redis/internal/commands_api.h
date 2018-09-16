@@ -244,14 +244,19 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
   static common::Error Sync(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
 
   static common::Error GetRedis(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
-
+#if defined(PRO_VERSION)
+  static common::Error ModuleLoad(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ModuleUnLoad(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+#endif
   // extend commands
   static common::Error Latency(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error PFDebug(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error ReplConf(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error Substr(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error PFSelfTest(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+#if defined(PRO_VERSION)
   static common::Error ModuleList(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+#endif
   static common::Error MemoryDoctor(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error MemoryUsage(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error MemoryStats(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);

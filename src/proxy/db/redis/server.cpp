@@ -35,6 +35,12 @@ namespace redis {
 
 Server::Server(IConnectionSettingsBaseSPtr settings)
     : IServerRemote(new Driver(settings)), role_(core::MASTER), mode_(core::STANDALONE) {
+#if defined(PRO_VERSION)
+  Driver* drv = static_cast<Driver*>(drv_);
+  VERIFY(QObject::connect(drv, &Driver::ModuleLoaded, this, &Server::LoadModule));
+  VERIFY(QObject::connect(drv, &Driver::ModuleUnLoaded, this, &Server::UnLoadModule));
+#endif
+
   StartCheckKeyExistTimer();
 }
 
@@ -62,6 +68,16 @@ common::net::HostAndPort Server::GetHost() const {
 IDatabaseSPtr Server::CreateDatabase(core::IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new redis_compatible::Database(shared_from_this(), info));
 }
+
+#if defined(PRO_VERSION)
+void Server::LoadModule(core::ModuleInfo module) {
+  emit ModuleLoaded(module);
+}
+
+void Server::UnLoadModule(core::ModuleInfo module) {
+  emit ModuleUnLoaded(module);
+}
+#endif
 
 void Server::HandleLoadServerInfoEvent(events::ServerInfoResponceEvent* ev) {
   const events_info::ServerInfoResponce v = ev->value();

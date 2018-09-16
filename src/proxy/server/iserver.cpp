@@ -44,8 +44,6 @@ IServer::IServer(IDriver* drv) : drv_(drv), server_info_(), current_database_inf
   VERIFY(QObject::connect(drv_, &IDriver::KeyRenamed, this, &IServer::RenameKey));
   VERIFY(QObject::connect(drv_, &IDriver::KeyTTLChanged, this, &IServer::ChangeKeyTTL));
   VERIFY(QObject::connect(drv_, &IDriver::KeyTTLLoaded, this, &IServer::LoadKeyTTL));
-  VERIFY(QObject::connect(drv_, &IDriver::ModuleLoaded, this, &IServer::LoadModule));
-  VERIFY(QObject::connect(drv_, &IDriver::ModuleUnLoaded, this, &IServer::UnLoadModule));
   VERIFY(QObject::connect(drv_, &IDriver::Disconnected, this, &IServer::Disconnected));
 
   drv_->Start();
@@ -597,14 +595,6 @@ void IServer::LoadKeyTTL(core::NKey key, core::ttl_t ttl) {
   if (cdb->UpdateKeyTTL(key, ttl)) {
     emit KeyTTLChanged(cdb, key, ttl);
   }
-}
-
-void IServer::LoadModule(core::ModuleInfo module) {
-  emit ModuleLoaded(module);
-}
-
-void IServer::UnLoadModule(core::ModuleInfo module) {
-  emit ModuleUnLoaded(module);
 }
 
 void IServer::HandleCheckDBKeys(core::IDataBaseInfoSPtr db, core::ttl_t expired_time) {

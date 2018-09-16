@@ -22,6 +22,9 @@
 
 namespace fastonosql {
 namespace core {
+#if defined(PRO_VERSION)
+class IModuleConnectionClient;
+#endif
 namespace redis {
 class DBConnection;
 }
@@ -46,6 +49,12 @@ class Driver : public IDriverRemote {
   virtual bool IsConnected() const override;
   virtual bool IsAuthenticated() const override;
 
+#if defined(PRO_VERSION)
+ Q_SIGNALS:
+  void ModuleLoaded(core::ModuleInfo module);
+  void ModuleUnLoaded(core::ModuleInfo module);
+#endif
+
  private:
   virtual void InitImpl() override;
   virtual void ClearImpl() override;
@@ -66,9 +75,12 @@ class Driver : public IDriverRemote {
 
   virtual common::Error GetCurrentServerInfo(core::IServerInfo** info) override;
   virtual common::Error GetServerCommands(std::vector<const core::CommandInfo*>* commands) override;
-  virtual common::Error GetServerLoadedModules(std::vector<core::ModuleInfo>* modules) override;
+#if defined(PRO_VERSION)
+  virtual common::Error GetServerLoadedModules(std::vector<core::ModuleInfo>* modules);
+#endif
   virtual common::Error GetCurrentDataBaseInfo(core::IDataBaseInfo** info) override;
 
+  virtual void HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) override;
   virtual void HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev) override;
   virtual void HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev) override;
   virtual void HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequestEvent* ev) override;
@@ -79,7 +91,10 @@ class Driver : public IDriverRemote {
 
   virtual core::IServerInfoSPtr MakeServerInfoFromString(const std::string& val) override;
 
-  core::redis::DBConnection* const impl_;
+#if defined(PRO_VERSION)
+  core::IModuleConnectionClient* proxy_;
+#endif
+  core::redis::DBConnection* impl_;
 };
 
 }  // namespace redis

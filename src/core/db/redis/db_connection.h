@@ -24,6 +24,9 @@
 
 namespace fastonosql {
 namespace core {
+#if defined(PRO_VERSION)
+class IModuleConnectionClient;
+#endif
 namespace redis {
 
 typedef redis_compatible::NativeConnection NativeConnection;
@@ -38,7 +41,11 @@ common::Error DiscoverySentinelConnection(const RConfig& config, std::vector<Ser
 class DBConnection : public redis_compatible::DBConnection<RConfig, REDIS> {
  public:
   typedef redis_compatible::DBConnection<RConfig, REDIS> base_class;
+#if defined(PRO_VERSION)
+  explicit DBConnection(CDBConnectionClient* client, IModuleConnectionClient* mclient);
+#else
   explicit DBConnection(CDBConnectionClient* client);
+#endif
 
   common::Error GraphQuery(const commands_args_t& argv, FastoObject* out) WARN_UNUSED_RESULT;
   common::Error GraphExplain(const commands_args_t& argv, FastoObject* out) WARN_UNUSED_RESULT;
@@ -52,7 +59,10 @@ class DBConnection : public redis_compatible::DBConnection<RConfig, REDIS> {
   common::Error XRange(const NKey& key, NDbKValue* loaded_key, FastoObject* out) WARN_UNUSED_RESULT;
 
   bool IsInternalCommand(const std::string& command_name);
-
+#if defined(PRO_VERSION)
+  common::Error ModuleLoad(const ModuleInfo& module) WARN_UNUSED_RESULT;    // nvi
+  common::Error ModuleUnLoad(const ModuleInfo& module) WARN_UNUSED_RESULT;  // nvi
+#endif
  private:
   common::Error JsonSetImpl(const NDbKValue& key, NDbKValue* added_key);
   common::Error JsonGetImpl(const NKey& key, NDbKValue* loaded_key);
@@ -60,8 +70,12 @@ class DBConnection : public redis_compatible::DBConnection<RConfig, REDIS> {
   common::Error XAddImpl(const NDbKValue& key, NDbKValue* added_key, std::string* gen_id);
   common::Error XRangeImpl(const NKey& key, NDbKValue* loaded_key, FastoObject* out);
 
-  virtual common::Error ModuleLoadImpl(const ModuleInfo& module) override;
-  virtual common::Error ModuleUnLoadImpl(const ModuleInfo& module) override;
+#if defined(PRO_VERSION)
+  virtual common::Error ModuleLoadImpl(const ModuleInfo& module);
+  virtual common::Error ModuleUnLoadImpl(const ModuleInfo& module);
+
+  IModuleConnectionClient* mclient_;
+#endif
 };
 
 }  // namespace redis

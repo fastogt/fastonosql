@@ -74,7 +74,6 @@ const struct RegisterTypes {
     qRegisterMetaType<common::ValueSPtr>("common::ValueSPtr");
     qRegisterMetaType<core::FastoObjectIPtr>("core::FastoObjectIPtr");
     qRegisterMetaType<core::NKey>("core::NKey");
-    qRegisterMetaType<core::ModuleInfo>("core::ModuleInfo");
     qRegisterMetaType<core::NDbKValue>("core::NDbKValue");
     qRegisterMetaType<core::IDataBaseInfoSPtr>("core::IDataBaseInfoSPtr");
     qRegisterMetaType<core::ttl_t>("core::ttl_t");
@@ -584,8 +583,7 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
   if (IsConnected()) {
     core::IDataBaseInfo* db = nullptr;
     std::vector<const core::CommandInfo*> cmds;
-    std::vector<core::ModuleInfo> loaded_modules;
-    common::Error err = GetServerDiscoveryInfo(&db, &cmds, &loaded_modules);
+    common::Error err = GetServerDiscoveryInfo(&db, &cmds);
     if (err) {
       res.setErrorInfo(err);
     } else {
@@ -595,7 +593,6 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
 
       res.dbinfo = current_database_info;
       res.commands = cmds;
-      res.loaded_modules = loaded_modules;
     }
   } else {
     res.setErrorInfo(common::make_error("Not connected to server, impossible to get discovery info!"));
@@ -607,10 +604,8 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
 }
 
 common::Error IDriver::GetServerDiscoveryInfo(core::IDataBaseInfo** dbinfo,
-                                              std::vector<const core::CommandInfo*>* commands,
-                                              std::vector<core::ModuleInfo>* modules) {
+                                              std::vector<const core::CommandInfo*>* commands) {
   std::vector<const core::CommandInfo*> lcommands;
-  std::vector<core::ModuleInfo> lmodules;
   GetServerCommands(&lcommands);  // can be failed
   {                               // stabilization, DB_HELP_COMMAND available for all databases
     bool founded = false;
@@ -629,8 +624,6 @@ common::Error IDriver::GetServerDiscoveryInfo(core::IDataBaseInfo** dbinfo,
     }
   }
 
-  GetServerLoadedModules(&lmodules);  // can be failed
-
   core::IDataBaseInfo* ldbinfo = nullptr;
   common::Error err = GetCurrentDataBaseInfo(&ldbinfo);
   if (err) {
@@ -639,7 +632,6 @@ common::Error IDriver::GetServerDiscoveryInfo(core::IDataBaseInfo** dbinfo,
 
   *commands = lcommands;
   *dbinfo = ldbinfo;
-  *modules = lmodules;
   return err;
 }
 
@@ -691,14 +683,6 @@ void IDriver::OnChangedKeyTTL(const core::NKey& key, core::ttl_t ttl) {
 
 void IDriver::OnLoadedKeyTTL(const core::NKey& key, core::ttl_t ttl) {
   emit KeyTTLLoaded(key, ttl);
-}
-
-void IDriver::OnUnLoadedModule(const core::ModuleInfo& module) {
-  emit ModuleUnLoaded(module);
-}
-
-void IDriver::OnLoadedModule(const core::ModuleInfo& module) {
-  emit ModuleLoaded(module);
 }
 
 void IDriver::OnQuited() {

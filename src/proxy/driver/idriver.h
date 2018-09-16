@@ -22,7 +22,6 @@
 
 #include "core/icommand_translator.h"             // for translator_t
 #include "core/internal/cdb_connection_client.h"  // for CDBConnectionClient
-#include "core/module_info.h"
 
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "proxy/events/events.h"                             // for BackupRequestEvent, ChangeMa...
@@ -84,8 +83,6 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   void KeyLoaded(core::NDbKValue key);
   void KeyTTLChanged(core::NKey key, core::ttl_t ttl);
   void KeyTTLLoaded(core::NKey key, core::ttl_t ttl);
-  void ModuleLoaded(core::ModuleInfo module);
-  void ModuleUnLoaded(core::ModuleInfo module);
   void Disconnected();
 
  private Q_SLOTS:
@@ -115,6 +112,7 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   virtual void HandleBackupEvent(events::BackupRequestEvent* ev);
   virtual void HandleRestoreEvent(events::RestoreRequestEvent* ev);
   virtual void HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev);
+  virtual void HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev);
 
   template <typename T>
   inline std::shared_ptr<T> GetSpecificSettings() const {
@@ -131,12 +129,13 @@ class IDriver : public QObject, public core::CDBConnectionClient {
 
   virtual core::IDataBaseInfoSPtr CreateDatabaseInfo(const std::string& name, bool is_default, size_t size) = 0;
 
+  common::Error GetServerDiscoveryInfo(core::IDataBaseInfo** dbinfo, std::vector<const core::CommandInfo*>* commands);
+
  private:
   virtual common::Error SyncConnect() WARN_UNUSED_RESULT = 0;
   virtual common::Error SyncDisconnect() WARN_UNUSED_RESULT = 0;
   void HandleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev);  // call ServerInfo
   void HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestEvent* ev);
-  void HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev);
   void HandleClearServerHistoryEvent(events::ClearServerHistoryRequestEvent* ev);
 
   virtual common::Error ExecuteImpl(const core::command_buffer_t& command, core::FastoObject* out) = 0;
@@ -153,8 +152,6 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   virtual void OnRenamedKey(const core::NKey& key, const core::key_t& new_key) override;
   virtual void OnChangedKeyTTL(const core::NKey& key, core::ttl_t ttl) override;
   virtual void OnLoadedKeyTTL(const core::NKey& key, core::ttl_t ttl) override;
-  virtual void OnUnLoadedModule(const core::ModuleInfo& module) override;
-  virtual void OnLoadedModule(const core::ModuleInfo& module) override;
   virtual void OnQuited() override;
 
  private:
@@ -164,12 +161,7 @@ class IDriver : public QObject, public core::CDBConnectionClient {
 
   virtual common::Error GetCurrentServerInfo(core::IServerInfo** info) = 0;
   virtual common::Error GetServerCommands(std::vector<const core::CommandInfo*>* commands) = 0;
-  virtual common::Error GetServerLoadedModules(std::vector<core::ModuleInfo>* modules) = 0;
   virtual common::Error GetCurrentDataBaseInfo(core::IDataBaseInfo** info) = 0;
-
-  common::Error GetServerDiscoveryInfo(core::IDataBaseInfo** dbinfo,
-                                       std::vector<const core::CommandInfo*>* commands,
-                                       std::vector<core::ModuleInfo>* modules);
 
   const IConnectionSettingsBaseSPtr settings_;
   QThread* thread_;

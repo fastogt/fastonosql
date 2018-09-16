@@ -1447,6 +1447,40 @@ common::Error CommandsApi::GetRedis(internal::CommandHandler* handler, commands_
   return common::Error();
 }
 
+#if defined(PRO_VERSION)
+common::Error CommandsApi::ModuleLoad(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  ModuleInfo mod;
+  mod.name = argv[0];
+
+  common::Error err = red->ModuleLoad(mod);
+  if (err) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::CreateStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, red->GetDelimiter());
+  out->AddChildren(child);
+  return common::Error();
+}
+
+common::Error CommandsApi::ModuleUnLoad(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  ModuleInfo mod;
+  mod.name = argv[0];
+
+  common::Error err = red->ModuleUnLoad(mod);
+  if (err) {
+    return err;
+  }
+
+  common::StringValue* val = common::Value::CreateStringValue("OK");
+  FastoObject* child = new FastoObject(out, val, red->GetDelimiter());
+  out->AddChildren(child);
+  return common::Error();
+}
+#endif
+
 // extend comands
 common::Error CommandsApi::Latency(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
@@ -1468,11 +1502,13 @@ common::Error CommandsApi::Substr(internal::CommandHandler* handler, commands_ar
   return red->CommonExec(ExpandCommand({"SUBSTR"}, argv), out);
 }
 
+#if defined(PRO_VERSION)
 common::Error CommandsApi::ModuleList(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   UNUSED(argv);
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->CommonExec(ExpandCommand({"MODULE", "LIST"}, argv), out);
 }
+#endif
 
 common::Error CommandsApi::MemoryDoctor(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   UNUSED(argv);

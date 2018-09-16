@@ -20,7 +20,9 @@
 
 #include "core/icommand_translator.h"  // for ICommandTranslator
 
+#if defined(PRO_VERSION)
 #include "core/module_info.h"
+#endif
 
 #define REDIS_GET_PTTL_COMMAND "PTTL"
 #define REDIS_CHANGE_PTTL_COMMAND "PEXPIRE"
@@ -56,8 +58,10 @@ class CommandTranslator : public ICommandTranslator {
   common::Error IncrBy(const NKey& key, int inc, command_buffer_t* cmdstring) WARN_UNUSED_RESULT;
   common::Error IncrByFloat(const NKey& key, double inc, command_buffer_t* cmdstring) WARN_UNUSED_RESULT;
 
+#if defined(PRO_VERSION)
   common::Error ModuleLoad(const ModuleInfo& module, command_buffer_t* cmdstring) WARN_UNUSED_RESULT;
   common::Error ModuleUnload(const ModuleInfo& module, command_buffer_t* cmdstring) WARN_UNUSED_RESULT;
+#endif
 
   common::Error PExpire(const NKey& key, ttl_t ttl, command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
   common::Error PTTL(const NKey& key, command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;

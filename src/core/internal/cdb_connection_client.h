@@ -19,7 +19,6 @@
 #pragma once
 
 #include "core/db_key.h"  // for NDbKValue, NKey, NKeys, ttl_t
-#include "core/module_info.h"
 
 namespace fastonosql {
 namespace core {
@@ -40,9 +39,6 @@ class CDBConnectionClient {
   virtual void OnRenamedKey(const NKey& key, const key_t& new_key) = 0;
   virtual void OnChangedKeyTTL(const NKey& key, ttl_t ttl) = 0;
   virtual void OnLoadedKeyTTL(const NKey& key, ttl_t ttl) = 0;
-
-  virtual void OnUnLoadedModule(const ModuleInfo& module) = 0;
-  virtual void OnLoadedModule(const ModuleInfo& module) = 0;
 
   virtual void OnQuited() = 0;
 

@@ -16,26 +16,19 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "proxy/db/forestdb/server.h"
+#pragma once
 
-#include "proxy/db/forestdb/database.h"
-#include "proxy/db/forestdb/driver.h"
+#include "core/module_info.h"
 
 namespace fastonosql {
-namespace proxy {
-namespace forestdb {
+namespace core {
 
-Server::Server(IConnectionSettingsBaseSPtr settings) : IServerLocal(new Driver(settings)) {}
+class IModuleConnectionClient {
+ public:
+  virtual void OnLoadedModule(const ModuleInfo& module) = 0;
+  virtual void OnUnLoadedModule(const ModuleInfo& module) = 0;
+  virtual ~IModuleConnectionClient();
+};
 
-std::string Server::GetPath() const {
-  Driver* ldrv = static_cast<Driver*>(drv_);
-  return ldrv->GetPath();
-}
-
-IDatabaseSPtr Server::CreateDatabase(core::IDataBaseInfoSPtr info) {
-  return IDatabaseSPtr(new Database(shared_from_this(), info));
-}
-
-}  // namespace forestdb
-}  // namespace proxy
+}  // namespace core
 }  // namespace fastonosql

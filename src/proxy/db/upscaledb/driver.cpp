@@ -118,11 +118,6 @@ common::Error Driver::GetServerCommands(std::vector<const core::CommandInfo*>* c
   return common::Error();
 }
 
-common::Error Driver::GetServerLoadedModules(std::vector<core::ModuleInfo>* modules) {
-  *modules = std::vector<core::ModuleInfo>();
-  return common::Error();
-}
-
 common::Error Driver::GetCurrentDataBaseInfo(core::IDataBaseInfo** info) {
   if (!info) {
     DNOTREACHED();

@@ -24,9 +24,12 @@
 #include "core/database/idatabase_info.h"
 #include "core/db_key.h"  // for NDbKValue
 #include "core/db_ps_channel.h"
-#include "core/module_info.h"
 #include "core/server/iserver_info.h"   // for IDataBaseInfoSPtr, IServerInf...
 #include "core/server_property_info.h"  // for property_t, ServerPropertiesInfo
+
+#if defined(PRO_VERSION)
+#include "core/module_info.h"
+#endif
 
 #include "core/global.h"  // for FastoObjectIPtr
 
@@ -88,7 +91,10 @@ struct DiscoveryInfoResponce : DiscoveryInfoRequest {
 
   core::IDataBaseInfoSPtr dbinfo;
   std::vector<const core::CommandInfo*> commands;
+#if defined(PRO_VERSION)
+  // only for redis
   std::vector<core::ModuleInfo> loaded_modules;
+#endif
 };
 
 struct EnterModeInfo : public EventInfoBase {

@@ -44,8 +44,6 @@ readable_string_t StableForJson(const ReadableString& data) {
 }
 }  // namespace detail
 
-CDBConnectionClient::~CDBConnectionClient() {}
-
 namespace internal {
 
 command_buffer_t GetKeysPattern(cursor_t cursor_in, const std::string& pattern, keys_limit_t count_keys) {

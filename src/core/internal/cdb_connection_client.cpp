@@ -19,5 +19,9 @@
 #include "core/internal/cdb_connection_client.h"
 
 namespace fastonosql {
-namespace core {}  // namespace core
+namespace core {
+
+CDBConnectionClient::~CDBConnectionClient() {}
+
+}  // namespace core
 }  // namespace fastonosql

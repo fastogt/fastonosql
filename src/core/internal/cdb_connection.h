@@ -81,8 +81,6 @@ class CDBConnection : public DBConnection<NConnection, Config, connection_type>,
   common::Error Rename(const NKey& key, const key_t& new_key) WARN_UNUSED_RESULT;          // nvi
   common::Error SetTTL(const NKey& key, ttl_t ttl) WARN_UNUSED_RESULT;                     // nvi
   common::Error GetTTL(const NKey& key, ttl_t* ttl) WARN_UNUSED_RESULT;                    // nvi
-  common::Error ModuleLoad(const ModuleInfo& module) WARN_UNUSED_RESULT;                   // nvi
-  common::Error ModuleUnLoad(const ModuleInfo& module) WARN_UNUSED_RESULT;                 // nvi
   common::Error Quit() WARN_UNUSED_RESULT;                                                 // nvi
   common::Error JsonDump(cursor_t cursor_in,
                          const std::string& pattern,
@@ -119,10 +117,8 @@ class CDBConnection : public DBConnection<NConnection, Config, connection_type>,
   virtual common::Error SetImpl(const NDbKValue& key, NDbKValue* added_key) = 0;
   virtual common::Error GetImpl(const NKey& key, NDbKValue* loaded_key) = 0;
   virtual common::Error RenameImpl(const NKey& key, const key_t& new_key) = 0;
-  virtual common::Error SetTTLImpl(const NKey& key, ttl_t ttl);      // optional
-  virtual common::Error GetTTLImpl(const NKey& key, ttl_t* ttl);     // optional
-  virtual common::Error ModuleLoadImpl(const ModuleInfo& module);    // optional
-  virtual common::Error ModuleUnLoadImpl(const ModuleInfo& module);  // optional
+  virtual common::Error SetTTLImpl(const NKey& key, ttl_t ttl);   // optional
+  virtual common::Error GetTTLImpl(const NKey& key, ttl_t* ttl);  // optional
   virtual common::Error QuitImpl() = 0;
   virtual common::Error JsonDumpImpl(cursor_t cursor_in,
                                      const std::string& pattern,
@@ -510,44 +506,6 @@ common::Error CDBConnection<NConnection, Config, ContType>::GetTTL(const NKey& k
 }
 
 template <typename NConnection, typename Config, connectionTypes ContType>
-common::Error CDBConnection<NConnection, Config, ContType>::ModuleLoad(const ModuleInfo& module) {
-  common::Error err = CDBConnection<NConnection, Config, ContType>::TestIsAuthenticated();
-  if (err) {
-    return err;
-  }
-
-  err = ModuleLoadImpl(module);
-  if (err) {
-    return err;
-  }
-
-  if (client_) {
-    client_->OnLoadedModule(module);
-  }
-
-  return common::Error();
-}
-
-template <typename NConnection, typename Config, connectionTypes ContType>
-common::Error CDBConnection<NConnection, Config, ContType>::ModuleUnLoad(const ModuleInfo& module) {
-  common::Error err = CDBConnection<NConnection, Config, ContType>::TestIsAuthenticated();
-  if (err) {
-    return err;
-  }
-
-  err = ModuleUnLoadImpl(module);
-  if (err) {
-    return err;
-  }
-
-  if (client_) {
-    client_->OnUnLoadedModule(module);
-  }
-
-  return common::Error();
-}
-
-template <typename NConnection, typename Config, connectionTypes ContType>
 common::Error CDBConnection<NConnection, Config, ContType>::Quit() {
   common::Error err = CDBConnection<NConnection, Config, ContType>::TestIsAuthenticated();
   if (err) {
@@ -613,24 +571,6 @@ common::Error CDBConnection<NConnection, Config, ContType>::GetTTLImpl(const NKe
   UNUSED(ttl);
   const std::string error_msg = common::MemSPrintf(
       "Sorry, but now " PROJECT_NAME_TITLE " for %s not supported TTL commands.", connection_traits_class::GetDBName());
-  return common::make_error(error_msg);
-}
-
-template <typename NConnection, typename Config, connectionTypes ContType>
-common::Error CDBConnection<NConnection, Config, ContType>::ModuleLoadImpl(const ModuleInfo& module) {
-  UNUSED(module);
-  const std::string error_msg =
-      common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " for %s not supported load module commands.",
-                         connection_traits_class::GetDBName());
-  return common::make_error(error_msg);
-}
-
-template <typename NConnection, typename Config, connectionTypes ContType>
-common::Error CDBConnection<NConnection, Config, ContType>::ModuleUnLoadImpl(const ModuleInfo& module) {
-  UNUSED(module);
-  const std::string error_msg =
-      common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " for %s not supported unload module commands.",
-                         connection_traits_class::GetDBName());
   return common::make_error(error_msg);
 }
 

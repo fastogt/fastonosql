@@ -5,6 +5,7 @@ SET(HEADERS_CORE_INTERNAL
   ${CMAKE_SOURCE_DIR}/src/core/internal/db_connection.h
   ${CMAKE_SOURCE_DIR}/src/core/internal/cdb_connection.h
   ${CMAKE_SOURCE_DIR}/src/core/internal/cdb_connection_client.h
+  ${CMAKE_SOURCE_DIR}/src/core/internal/imodule_connection_client.h
   ${CMAKE_SOURCE_DIR}/src/core/internal/command_handler.h
   ${CMAKE_SOURCE_DIR}/src/core/internal/commands_api.h
 )
@@ -13,6 +14,7 @@ SET(SOURCES_CORE_INTERNAL
   ${CMAKE_SOURCE_DIR}/src/core/internal/db_connection.cpp
   ${CMAKE_SOURCE_DIR}/src/core/internal/cdb_connection.cpp
   ${CMAKE_SOURCE_DIR}/src/core/internal/cdb_connection_client.cpp
+  ${CMAKE_SOURCE_DIR}/src/core/internal/imodule_connection_client.cpp
   ${CMAKE_SOURCE_DIR}/src/core/internal/command_handler.cpp
   ${CMAKE_SOURCE_DIR}/src/core/internal/commands_api.cpp
 )
@@ -599,7 +601,24 @@ IF(BUILD_WITH_REDIS)
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/driver.cpp
   )
 
+  #gui redis
+  SET(HEADERS_REDIS_GUI_TO_MOC
+    gui/db/redis/connection_widget.h
+    gui/db/redis/lexer.h
+  )
+  SET(HEADERS_REDIS_GUI)
+  SET(SOURCES_REDIS_GUI
+    gui/db/redis/connection_widget.cpp
+    gui/db/redis/lexer.cpp
+  )
+
 IF(PRO_VERSION)
+  SET(HEADERS_REDIS_GUI_TO_MOC ${HEADERS_REDIS_GUI_TO_MOC}
+    gui/db/redis/shell_widget.h
+  )
+  SET(SOURCES_REDIS_GUI ${SOURCES_REDIS_GUI}
+    gui/db/redis/shell_widget.cpp
+  )
   SET(HEADERS_PROXY_DB_REDIS ${HEADERS_PROXY_DB_REDIS}
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/cluster_settings.h
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/sentinel_settings.h
@@ -609,19 +628,6 @@ IF(PRO_VERSION)
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/sentinel_settings.cpp
   )
 ENDIF(PRO_VERSION)
-
-  #gui redis
-  SET(HEADERS_REDIS_GUI_TO_MOC
-    gui/db/redis/connection_widget.h
-    gui/db/redis/lexer.h
-    gui/db/redis/shell_widget.h
-  )
-  SET(HEADERS_REDIS_GUI)
-  SET(SOURCES_REDIS_GUI
-    gui/db/redis/connection_widget.cpp
-    gui/db/redis/lexer.cpp
-    gui/db/redis/shell_widget.cpp
-  )
 
   #update common variables
   SET(HEADERS_CORE ${HEADERS_CORE} ${HEADERS_CORE_DB_REDIS})

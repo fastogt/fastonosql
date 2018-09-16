@@ -69,7 +69,7 @@ namespace gui {
 const QSize BaseShellWidget::top_bar_icon_size = QSize(24, 24);
 
 BaseShellWidget* BaseShellWidget::createWidget(proxy::IServerSPtr server, const QString& filePath, QWidget* parent) {
-#ifdef BUILD_WITH_REDIS
+#if defined(BUILD_WITH_REDIS) && defined(PRO_VERSION)
   core::connectionTypes ct = server->GetType();
   if (ct == core::REDIS) {
     BaseShellWidget* widget = new redis::ShellWidget(server, filePath, parent);

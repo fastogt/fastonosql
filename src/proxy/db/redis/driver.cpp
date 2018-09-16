@@ -40,7 +40,11 @@
 #define REDIS_PUBSUB_CHANNELS_COMMAND "PUBSUB CHANNELS"
 #define REDIS_PUBSUB_NUMSUB_COMMAND "PUBSUB NUMSUB"
 #define REDIS_GET_COMMANDS "COMMAND"
+
+#if defined(PRO_VERSION)
+#include "core/internal/imodule_connection_client.h"
 #define REDIS_GET_LOADED_MODULES_COMMANDS "MODULE LIST"
+#endif
 
 #define REDIS_SET_DEFAULT_DATABASE_COMMAND_1ARGS_S "SELECT %s"
 
@@ -85,9 +89,36 @@ common::Value::Type ConvertFromStringRType(const std::string& type) {
 namespace fastonosql {
 namespace proxy {
 namespace redis {
+#if defined(PRO_VERSION)
+namespace {
+const struct RedisRegisterTypes {
+  RedisRegisterTypes() { qRegisterMetaType<core::ModuleInfo>("core::ModuleInfo"); }
+} reg_type;
 
+class ProxyModuleClient : public core::IModuleConnectionClient {
+  Driver* drv_;
+
+ public:
+  ProxyModuleClient(Driver* drv) : drv_(drv) {}
+  void OnUnLoadedModule(const core::ModuleInfo& module) override { emit drv_->ModuleUnLoaded(module); }
+
+  void OnLoadedModule(const core::ModuleInfo& module) override { emit drv_->ModuleLoaded(module); }
+};
+
+}  // namespace
+#endif
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
-    : IDriverRemote(settings), impl_(new core::redis::DBConnection(this)) {
+    : IDriverRemote(settings),
+#if defined(PRO_VERSION)
+      proxy_(nullptr),
+#endif
+      impl_(nullptr) {
+#if defined(PRO_VERSION)
+  proxy_ = new ProxyModuleClient(this);
+  impl_ = new core::redis::DBConnection(this, proxy_);
+#else
+  impl_ = new core::redis::DBConnection(this);
+#endif
   COMPILE_ASSERT(core::redis::DBConnection::connection_t == core::REDIS,
                  "DBConnection must be the same type as Driver!");
   CHECK(GetType() == core::REDIS);
@@ -95,6 +126,9 @@ Driver::Driver(IConnectionSettingsBaseSPtr settings)
 
 Driver::~Driver() {
   delete impl_;
+#if defined(PRO_VERSION)
+  delete proxy_;
+#endif
 }
 
 bool Driver::IsInterrupted() const {
@@ -223,6 +257,7 @@ common::Error Driver::GetServerCommands(std::vector<const core::CommandInfo*>* c
   return common::Error();
 }
 
+#if defined(PRO_VERSION)
 common::Error Driver::GetServerLoadedModules(std::vector<core::ModuleInfo>* modules) {
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(REDIS_GET_LOADED_MODULES_COMMANDS, core::C_INNER);
   common::Error err = Execute(cmd.get());
@@ -263,6 +298,7 @@ common::Error Driver::GetServerLoadedModules(std::vector<core::ModuleInfo>* modu
   *modules = lmodules;
   return common::Error();
 }
+#endif
 
 common::Error Driver::GetCurrentDataBaseInfo(core::IDataBaseInfo** info) {
   if (!info) {
@@ -409,6 +445,40 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
 done:
   NotifyProgress(sender, 75);
   Reply(sender, new events::LoadDatabaseContentResponceEvent(this, res));
+  NotifyProgress(sender, 100);
+}
+
+void Driver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
+  QObject* sender = ev->sender();
+  NotifyProgress(sender, 0);
+  events::DiscoveryInfoResponceEvent::value_type res(ev->value());
+  NotifyProgress(sender, 50);
+
+  if (IsConnected()) {
+    core::IDataBaseInfo* db = nullptr;
+    std::vector<const core::CommandInfo*> cmds;
+    common::Error err = GetServerDiscoveryInfo(&db, &cmds);
+    if (err) {
+      res.setErrorInfo(err);
+    } else {
+      DCHECK(db);
+
+      core::IDataBaseInfoSPtr current_database_info(db);
+
+      res.dbinfo = current_database_info;
+      res.commands = cmds;
+#if defined(PRO_VERSION)
+      std::vector<core::ModuleInfo> lmodules;
+      GetServerLoadedModules(&lmodules);  // can be failed
+      res.loaded_modules = lmodules;
+#endif
+    }
+  } else {
+    res.setErrorInfo(common::make_error("Not connected to server, impossible to get discovery info!"));
+  }
+
+  NotifyProgress(sender, 75);
+  Reply(sender, new events::DiscoveryInfoResponceEvent(this, res));
   NotifyProgress(sender, 100);
 }
 

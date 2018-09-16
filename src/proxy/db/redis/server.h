@@ -21,6 +21,8 @@
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "proxy/server/iserver_remote.h"                     // for IServerRemote
 
+#include "core/module_info.h"
+
 namespace fastonosql {
 namespace proxy {
 namespace redis {
@@ -35,7 +37,15 @@ class Server : public IServerRemote {
   virtual core::serverMode GetMode() const override;
   virtual core::serverState GetState() const override;
   virtual common::net::HostAndPort GetHost() const override;
+#if defined(PRO_VERSION)
+ Q_SIGNALS:
+  void ModuleLoaded(core::ModuleInfo module);
+  void ModuleUnLoaded(core::ModuleInfo module);
 
+ private Q_SLOTS:
+  void LoadModule(core::ModuleInfo module);
+  void UnLoadModule(core::ModuleInfo module);
+#endif
  protected:
   virtual void HandleLoadServerInfoEvent(events::ServerInfoResponceEvent* ev) override;
 
