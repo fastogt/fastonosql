@@ -49,7 +49,6 @@ SET(HEADERS_CORE
 
   ${CMAKE_SOURCE_DIR}/src/core/constant_commands_array.h
   ${CMAKE_SOURCE_DIR}/src/core/connection_commands_traits.h
-  ${CMAKE_SOURCE_DIR}/src/core/display_strategy.h
   ${CMAKE_SOURCE_DIR}/src/core/connection_types.h
   ${CMAKE_SOURCE_DIR}/src/core/types.h
   ${CMAKE_SOURCE_DIR}/src/core/db_traits.h
@@ -76,7 +75,6 @@ SET(SOURCES_CORE
 
   ${CMAKE_SOURCE_DIR}/src/core/constant_commands_array.cpp
   ${CMAKE_SOURCE_DIR}/src/core/connection_commands_traits.cpp
-  ${CMAKE_SOURCE_DIR}/src/core/display_strategy.cpp
   ${CMAKE_SOURCE_DIR}/src/core/connection_types.cpp
   ${CMAKE_SOURCE_DIR}/src/core/types.cpp
   ${CMAKE_SOURCE_DIR}/src/core/db_traits.cpp
@@ -452,6 +450,7 @@ SET(HEADERS_GUI
   ${CMAKE_SOURCE_DIR}/src/gui/key_value_table_item.h
   ${CMAKE_SOURCE_DIR}/src/gui/key_table_item.h
   ${CMAKE_SOURCE_DIR}/src/gui/utils.h
+  ${CMAKE_SOURCE_DIR}/src/gui/key_info.h
 )
 SET(SOURCES_GUI
   ${SOURCES_GUI_DIALOGS}
@@ -484,6 +483,7 @@ SET(SOURCES_GUI
   ${CMAKE_SOURCE_DIR}/src/gui/action_cell_delegate.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/key_value_table_item.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/utils.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/key_info.cpp
 )
 
 SET_DESKTOP_TARGET()

@@ -149,7 +149,7 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateFromString(const std::
       } else if (commaCount == 3) {
         result->SetNsSeparator(elText);
       } else if (commaCount == 4) {
-        core::NsDisplayStrategy strat = static_cast<core::NsDisplayStrategy>(elText[0] - 48);
+        NsDisplayStrategy strat = static_cast<NsDisplayStrategy>(elText[0] - 48);
         result->SetNsDisplayStrategy(strat);
         if (!IsCanSSHConnection(result->GetType())) {
           result->SetCommandLine(val.substr(i + 1));

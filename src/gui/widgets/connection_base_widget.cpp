@@ -31,6 +31,8 @@
 
 #include "gui/gui_factory.h"
 
+#include "proxy/types.h"
+
 #include "translations/global.h"
 
 namespace {
@@ -97,8 +99,8 @@ ConnectionBaseWidget::ConnectionBaseWidget(QWidget* parent) : QWidget(parent) {
   QHBoxLayout* namespaceStrategyLayout = new QHBoxLayout;
   namespace_displaying_strategy_label_ = new QLabel;
   namespace_displaying_strategy_ = new QComboBox;
-  for (uint32_t i = 0; i < core::g_display_strategy_types.size(); ++i) {
-    namespace_displaying_strategy_->addItem(core::g_display_strategy_types[i], i);
+  for (uint32_t i = 0; i < proxy::g_display_strategy_types.size(); ++i) {
+    namespace_displaying_strategy_->addItem(proxy::g_display_strategy_types[i], i);
   }
   namespaceStrategyLayout->addWidget(namespace_displaying_strategy_label_);
   namespaceStrategyLayout->addWidget(namespace_displaying_strategy_);
@@ -180,7 +182,7 @@ proxy::IConnectionSettingsBase* ConnectionBaseWidget::createConnection() const {
   proxy::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
   proxy::IConnectionSettingsBase* conn = createConnectionImpl(path);
   conn->SetNsSeparator(common::ConvertToString(namespace_separator_->currentText()));
-  conn->SetNsDisplayStrategy(static_cast<core::NsDisplayStrategy>(namespace_displaying_strategy_->currentIndex()));
+  conn->SetNsDisplayStrategy(static_cast<proxy::NsDisplayStrategy>(namespace_displaying_strategy_->currentIndex()));
   conn->SetDelimiter(common::ConvertToString(toRawCommandLine(delimiter_->currentText())));
   if (isLogging()) {
     conn->SetLoggingMsTimeInterval(loggingInterval());

@@ -128,7 +128,7 @@ std::string IServer::GetNsSeparator() const {
   return drv_->GetNsSeparator();
 }
 
-core::NsDisplayStrategy IServer::GetNsDisplayStrategy() const {
+NsDisplayStrategy IServer::GetNsDisplayStrategy() const {
   return drv_->GetNsDisplayStrategy();
 }
 

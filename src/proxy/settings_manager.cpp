@@ -142,11 +142,11 @@ void SettingsManager::SetSendStatistic(bool val) {
   send_statistic_ = val;
 }
 
-supportedViews SettingsManager::GetDefaultView() const {
+SupportedViews SettingsManager::GetDefaultView() const {
   return views_;
 }
 
-void SettingsManager::SetDefaultView(supportedViews view) {
+void SettingsManager::SetDefaultView(SupportedViews view) {
   views_ = view;
 }
 
@@ -361,7 +361,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
   send_statistic_ = settings.value(SEND_STATISTIC, true).toBool();
 
   int view = settings.value(VIEW, kText).toInt();
-  views_ = static_cast<supportedViews>(view);
+  views_ = static_cast<SupportedViews>(view);
 
 #if defined(PRO_VERSION)
   QList<QVariant> clusters = settings.value(CLUSTERS).toList();

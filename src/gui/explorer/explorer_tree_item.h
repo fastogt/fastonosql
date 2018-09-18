@@ -23,9 +23,9 @@
 #include <common/qt/gui/base/tree_item.h>  // for TreeItem
 
 #include "core/database/idatabase_info.h"
-#include "core/display_strategy.h"
 
 #include "proxy/proxy_fwd.h"  // for IServerSPtr, IClusterSPtr, etc
+#include "proxy/types.h"
 
 namespace fastonosql {
 namespace gui {
@@ -130,7 +130,7 @@ class ExplorerKeyItem : public IExplorerTreeItem {
  public:
   ExplorerKeyItem(const core::NDbKValue& dbv,
                   const std::string& ns_separator,
-                  core::NsDisplayStrategy ns_strategy,
+                  proxy::NsDisplayStrategy ns_strategy,
                   IExplorerTreeItem* parent);
   ExplorerDatabaseItem* db() const;
 
@@ -159,7 +159,7 @@ class ExplorerKeyItem : public IExplorerTreeItem {
 
   core::NDbKValue dbv_;
   const std::string ns_separator_;
-  const core::NsDisplayStrategy ns_strategy_;
+  const proxy::NsDisplayStrategy ns_strategy_;
 };
 
 class ExplorerNSItem : public IExplorerTreeItem {

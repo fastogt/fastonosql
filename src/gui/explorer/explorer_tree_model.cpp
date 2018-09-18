@@ -350,7 +350,7 @@ void ExplorerTreeModel::addKey(proxy::IServer* server,
                                core::IDataBaseInfoSPtr db,
                                const core::NDbKValue& dbv,
                                const std::string& ns_separator,
-                               core::NsDisplayStrategy ns_strategy) {
+                               proxy::NsDisplayStrategy ns_strategy) {
   ExplorerServerItem* parent = findServerItem(server);
   if (!parent) {
     return;
@@ -365,7 +365,7 @@ void ExplorerTreeModel::addKey(proxy::IServer* server,
   ExplorerKeyItem* keyit = findKeyItem(dbs, key);
   if (!keyit) {
     IExplorerTreeItem* nitem = dbs;
-    proxy::KeyInfo kinf(key.GetKey(), ns_separator);
+    KeyInfo kinf(key.GetKey(), ns_separator);
     if (kinf.HasNamespace()) {
       nitem = findOrCreateNSItem(dbs, kinf);
     }
@@ -544,7 +544,7 @@ ExplorerKeyItem* ExplorerTreeModel::findKeyItem(IExplorerTreeItem* db_or_ns, con
       }));
 }
 
-ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_ns, const proxy::KeyInfo& kinf) {
+ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_ns, const KeyInfo& kinf) {
   auto nspaces = kinf.GetNamespaces();
   std::string separator = kinf.GetNsSeparator();
   IExplorerTreeItem* par = db_or_ns;

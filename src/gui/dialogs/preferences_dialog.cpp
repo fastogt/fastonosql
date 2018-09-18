@@ -106,7 +106,7 @@ void PreferencesDialog::accept() {
   common::qt::gui::applyFont(gui::GuiFactory::GetInstance().GetFont());
 
   QVariant var = default_view_combo_box_->currentData();
-  proxy::supportedViews v = static_cast<proxy::supportedViews>(qvariant_cast<unsigned char>(var));
+  proxy::SupportedViews v = static_cast<proxy::SupportedViews>(qvariant_cast<unsigned char>(var));
   proxy::SettingsManager::GetInstance()->SetDefaultView(v);
 
   proxy::SettingsManager::GetInstance()->SetLoggingDirectory(log_dir_path_->text());
@@ -127,8 +127,8 @@ void PreferencesDialog::syncWithSettings() {
   QFont cf = proxy::SettingsManager::GetInstance()->GetCurrentFont();
   font_combo_box_->setCurrentFont(cf);
   font_size_spin_box_->setValue(cf.pointSize());
-  proxy::supportedViews v = proxy::SettingsManager::GetInstance()->GetDefaultView();
-  QString qstr = proxy::supported_views_text[v];
+  proxy::SupportedViews v = proxy::SettingsManager::GetInstance()->GetDefaultView();
+  QString qstr = proxy::g_supported_views_text[v];
   default_view_combo_box_->setCurrentText(qstr);
   log_dir_path_->setText(proxy::SettingsManager::GetInstance()->GetLoggingDirectory());
   auto_open_console_->setChecked(proxy::SettingsManager::GetInstance()->AutoOpenConsole());
@@ -250,8 +250,8 @@ QWidget* PreferencesDialog::createMainTab() {
 
   default_view_label_ = new QLabel;
   default_view_combo_box_ = new QComboBox;
-  for (uint32_t i = 0; i < proxy::supported_views_text.size(); ++i) {
-    default_view_combo_box_->addItem(proxy::supported_views_text[i], i);
+  for (uint32_t i = 0; i < proxy::g_supported_views_text.size(); ++i) {
+    default_view_combo_box_->addItem(proxy::g_supported_views_text[i], i);
   }
   generalLayout->addWidget(default_view_label_, 6, 0);
   generalLayout->addWidget(default_view_combo_box_, 6, 1);

@@ -20,11 +20,11 @@
 
 #include <common/qt/gui/base/tree_model.h>  // for TreeModel
 
-#include "core/display_strategy.h"
-
 #include "proxy/database/idatabase.h"
 #include "proxy/proxy_fwd.h"
 #include "proxy/types.h"
+
+#include "gui/key_info.h"
 
 namespace fastonosql {
 namespace gui {
@@ -69,7 +69,7 @@ class ExplorerTreeModel : public common::qt::gui::TreeModel {
               core::IDataBaseInfoSPtr db,
               const core::NDbKValue& dbv,
               const std::string& ns_separator,
-              core::NsDisplayStrategy ns_strategy);
+              proxy::NsDisplayStrategy ns_strategy);
   void removeKey(proxy::IServer* server, core::IDataBaseInfoSPtr db, const core::NKey& key);
   void updateKey(proxy::IServer* server,
                  core::IDataBaseInfoSPtr db,
@@ -86,7 +86,7 @@ class ExplorerTreeModel : public common::qt::gui::TreeModel {
   ExplorerServerItem* findServerItem(proxy::IServer* server) const;
   ExplorerDatabaseItem* findDatabaseItem(ExplorerServerItem* server, core::IDataBaseInfoSPtr db) const;
   ExplorerKeyItem* findKeyItem(IExplorerTreeItem* db_or_ns, const core::NKey& key) const;
-  ExplorerNSItem* findOrCreateNSItem(IExplorerTreeItem* db_or_ns, const proxy::KeyInfo& kinf);
+  ExplorerNSItem* findOrCreateNSItem(IExplorerTreeItem* db_or_ns, const KeyInfo& kinf);
 };
 
 }  // namespace gui

@@ -18,62 +18,32 @@
 
 #include "proxy/types.h"
 
-#include <common/string_util.h>
+#include <common/macros.h>
 
 namespace fastonosql {
 namespace proxy {
 
-const std::vector<const char*> supported_views_text = {"Tree", "Table", "Text"};
+const std::vector<const char*> g_display_strategy_types = {"FULL_KEY", "KEY_NAME"};
 
-KeyInfo::KeyInfo(const core::key_t& key, std::string ns_separator)
-    : key_(key), splited_namespaces_(), key_name_(), ns_separator_(ns_separator) {
-  common::Tokenize(key.GetHumanReadable(), ns_separator, &splited_namespaces_);
-  key_name_ = splited_namespaces_.back();
-  splited_namespaces_.pop_back();
-}
-
-std::string KeyInfo::GetKeyName() const {
-  return key_name_;
-}
-
-std::string KeyInfo::GetKey() const {
-  return key_.GetHumanReadable();
-}
-
-bool KeyInfo::HasNamespace() const {
-  size_t ns_size = GetNspaceSize();
-  return ns_size > 0;
-}
-
-size_t KeyInfo::GetNspaceSize() const {
-  return splited_namespaces_.size();
-}
-
-KeyInfo::splited_namespaces_t KeyInfo::GetNamespaces() const {
-  return splited_namespaces_;
-}
-
-std::string KeyInfo::GetNsSeparator() const {
-  return ns_separator_;
-}
+const std::vector<const char*> g_supported_views_text = {"Tree", "Table", "Text"};
 
 }  // namespace proxy
 }  // namespace fastonosql
 
 namespace common {
 
-std::string ConvertToString(fastonosql::proxy::supportedViews v) {
-  return fastonosql::proxy::supported_views_text[v];
+std::string ConvertToString(fastonosql::proxy::SupportedViews v) {
+  return fastonosql::proxy::g_supported_views_text[v];
 }
 
-bool ConvertFromString(const std::string& from, fastonosql::proxy::supportedViews* out) {
+bool ConvertFromString(const std::string& from, fastonosql::proxy::SupportedViews* out) {
   if (!out) {
     return false;
   }
 
-  for (size_t i = 0; i < fastonosql::proxy::supported_views_text.size(); ++i) {
-    if (from == fastonosql::proxy::supported_views_text[i]) {
-      *out = static_cast<fastonosql::proxy::supportedViews>(i);
+  for (size_t i = 0; i < fastonosql::proxy::g_supported_views_text.size(); ++i) {
+    if (from == fastonosql::proxy::g_supported_views_text[i]) {
+      *out = static_cast<fastonosql::proxy::SupportedViews>(i);
       return true;
     }
   }

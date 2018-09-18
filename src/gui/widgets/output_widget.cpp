@@ -291,7 +291,7 @@ void OutputWidget::setTextView() {
 }
 
 void OutputWidget::syncWithSettings() {
-  proxy::supportedViews current_view = proxy::SettingsManager::GetInstance()->GetDefaultView();
+  proxy::SupportedViews current_view = proxy::SettingsManager::GetInstance()->GetDefaultView();
   if (current_view == proxy::kTree) {
     setTreeView();
   } else if (current_view == proxy::kTable) {

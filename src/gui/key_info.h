@@ -16,12 +16,31 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/display_strategy.h"
+#pragma once
+
+#include "core/db_key.h"
 
 namespace fastonosql {
-namespace core {
+namespace gui {
 
-const std::vector<const char*> g_display_strategy_types = {"FULL_KEY", "KEY_NAME"};
+class KeyInfo {
+ public:
+  typedef std::vector<std::string> splited_namespaces_t;
+  KeyInfo(const core::key_t& key, std::string ns_separator);
 
-}  // namespace core
+  std::string GetKeyName() const;
+  std::string GetKey() const;
+  bool HasNamespace() const;
+  size_t GetNspaceSize() const;
+  splited_namespaces_t GetNamespaces() const;
+  std::string GetNsSeparator() const;
+
+ private:
+  core::key_t key_;
+  splited_namespaces_t splited_namespaces_;
+  std::string key_name_;
+  std::string ns_separator_;
+};
+
+}  // namespace gui
 }  // namespace fastonosql

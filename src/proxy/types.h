@@ -18,38 +18,22 @@
 
 #pragma once
 
-#include "core/db_key.h"
+#include <string>
+#include <vector>
 
 namespace fastonosql {
 namespace proxy {
 
-enum supportedViews { kTree = 0, kTable, kText };
+enum NsDisplayStrategy { FULL_KEY = 0, KEY_NAME = 1 };
+extern const std::vector<const char*> g_display_strategy_types;
 
-extern const std::vector<const char*> supported_views_text;
-
-class KeyInfo {
- public:
-  typedef std::vector<std::string> splited_namespaces_t;
-  KeyInfo(const core::key_t& key, std::string ns_separator);
-
-  std::string GetKeyName() const;
-  std::string GetKey() const;
-  bool HasNamespace() const;
-  size_t GetNspaceSize() const;
-  splited_namespaces_t GetNamespaces() const;
-  std::string GetNsSeparator() const;
-
- private:
-  core::key_t key_;
-  splited_namespaces_t splited_namespaces_;
-  std::string key_name_;
-  std::string ns_separator_;
-};
+enum SupportedViews { kTree = 0, kTable, kText };
+extern const std::vector<const char*> g_supported_views_text;
 
 }  // namespace proxy
 }  // namespace fastonosql
 
 namespace common {
-std::string ConvertToString(fastonosql::proxy::supportedViews v);
-bool ConvertFromString(const std::string& from, fastonosql::proxy::supportedViews* out);
+std::string ConvertToString(fastonosql::proxy::SupportedViews v);
+bool ConvertFromString(const std::string& from, fastonosql::proxy::SupportedViews* out);
 }  // namespace common

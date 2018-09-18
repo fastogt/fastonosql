@@ -26,7 +26,8 @@
 #include "proxy/cluster/icluster.h"    // for ICluster
 #include "proxy/sentinel/isentinel.h"  // for ISentinel, Sentinel, etc
 #include "proxy/server/iserver.h"
-#include "proxy/types.h"
+
+#include "gui/key_info.h"
 
 namespace fastonosql {
 namespace gui {
@@ -344,7 +345,7 @@ void ExplorerDatabaseItem::removeAllKeys() {
 
 ExplorerKeyItem::ExplorerKeyItem(const core::NDbKValue& dbv,
                                  const std::string& ns_separator,
-                                 core::NsDisplayStrategy ns_strategy,
+                                 proxy::NsDisplayStrategy ns_strategy,
                                  IExplorerTreeItem* parent)
     : IExplorerTreeItem(parent, eKey), dbv_(dbv), ns_separator_(ns_separator), ns_strategy_(ns_strategy) {}
 
@@ -383,12 +384,12 @@ void ExplorerKeyItem::setKey(const core::NKey& key) {
 }
 
 std::string ExplorerKeyItem::basicStringName() const {
-  if (ns_strategy_ == core::FULL_KEY) {
+  if (ns_strategy_ == proxy::FULL_KEY) {
     return GetFullName();
   }
 
   const core::NKey key = dbv_.GetKey();
-  proxy::KeyInfo kinf(key.GetKey(), ns_separator_);
+  KeyInfo kinf(key.GetKey(), ns_separator_);
   if (!kinf.HasNamespace()) {
     return GetFullName();
   }

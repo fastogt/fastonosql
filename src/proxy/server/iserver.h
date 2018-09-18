@@ -20,11 +20,10 @@
 
 #include "core/icommand_translator.h"  // for translator_t
 
-#include "core/display_strategy.h"
-
 #include "proxy/events/events.h"        // for BackupResponceEvent, etc
 #include "proxy/proxy_fwd.h"            // for IDatabaseSPtr
 #include "proxy/server/iserver_base.h"  // for IServerBase
+#include "proxy/types.h"
 
 namespace fastonosql {
 namespace proxy {
@@ -55,7 +54,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
 
   std::string GetDelimiter() const;
   std::string GetNsSeparator() const;
-  core::NsDisplayStrategy GetNsDisplayStrategy() const;
+  NsDisplayStrategy GetNsDisplayStrategy() const;
   IDatabaseSPtr CreateDatabaseByInfo(core::IDataBaseInfoSPtr inf);
   database_t FindDatabase(core::IDataBaseInfoSPtr inf) const;
 

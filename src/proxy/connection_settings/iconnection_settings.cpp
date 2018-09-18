@@ -97,7 +97,7 @@ IConnectionSettings::IConnectionSettings(const connection_path_t& connectionPath
       type_(type),
       msinterval_(0),
       ns_separator_(default_ns_separator),
-      ns_display_strategy_(core::FULL_KEY) {}
+      ns_display_strategy_(FULL_KEY) {}
 
 IConnectionSettings::~IConnectionSettings() {}
 
@@ -125,11 +125,11 @@ void IConnectionSettings::SetLoggingMsTimeInterval(int mstime) {
   msinterval_ = mstime;
 }
 
-core::NsDisplayStrategy IConnectionSettings::GetNsDisplayStrategy() const {
+NsDisplayStrategy IConnectionSettings::GetNsDisplayStrategy() const {
   return ns_display_strategy_;
 }
 
-void IConnectionSettings::SetNsDisplayStrategy(core::NsDisplayStrategy strategy) {
+void IConnectionSettings::SetNsDisplayStrategy(NsDisplayStrategy strategy) {
   ns_display_strategy_ = strategy;
 }
 
