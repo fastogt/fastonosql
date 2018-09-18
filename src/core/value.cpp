@@ -509,9 +509,9 @@ std::string ConvertValue(StreamValue* value, const std::string& delimiter) {
       wr << delimiter;
     }
 
-    wr << streams[i].id_;
-    for (size_t j = 0; j < cur_str.entries_.size(); ++j) {
-      wr << " " << cur_str.entries_[i].name << " " << cur_str.entries_[i].value;
+    wr << streams[i].sid;
+    for (size_t j = 0; j < cur_str.entries.size(); ++j) {
+      wr << " " << cur_str.entries[i].name << " " << cur_str.entries[i].value;
     }
   }
 

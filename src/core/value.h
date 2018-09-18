@@ -31,8 +31,8 @@ class StreamValue : public common::Value {
   };
   typedef std::string stream_id;
   struct Stream {
-    stream_id id_;
-    std::vector<Entry> entries_;
+    stream_id sid;
+    std::vector<Entry> entries;
   };
   typedef std::vector<Stream> streams_t;
 

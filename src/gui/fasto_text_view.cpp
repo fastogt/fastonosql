@@ -45,17 +45,9 @@ FastoTextView::FastoTextView(QWidget* parent) : QWidget(parent) {
   editor_ = new FastoEditorOutput;
   views_label_ = new QLabel;
   views_combo_box_ = new QComboBox;
-  views_combo_box_->addItem(kJson, JSON_VIEW);
-  views_combo_box_->addItem(kCsv, CSV_VIEW);
-  views_combo_box_->addItem(kRaw, RAW_VIEW);
-  views_combo_box_->addItem(kHex, HEX_VIEW);
-  views_combo_box_->addItem(kUnicode, UNICODE_VIEW);
-  views_combo_box_->addItem(kMsgPack, MSGPACK_VIEW);
-  views_combo_box_->addItem(kGzip, GZIP_VIEW);
-  views_combo_box_->addItem(kLZ4, LZ4_VIEW);
-  views_combo_box_->addItem(kBZip2, BZIP2_VIEW);
-  views_combo_box_->addItem(kSnappy, SNAPPY_VIEW);
-  views_combo_box_->addItem(kXml, XML_VIEW);
+  for (size_t i = 0; i < g_output_views_text.size(); ++i) {
+    views_combo_box_->addItem(g_output_views_text[i], i);
+  }
 
   save_change_button_ = new QPushButton;
   save_change_button_->setIcon(GuiFactory::GetInstance().GetSaveIcon());

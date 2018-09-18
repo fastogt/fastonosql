@@ -20,33 +20,24 @@
 
 #include "gui/editor/fasto_editor.h"
 
-#define JSON_VIEW 0
-#define CSV_VIEW 1
-#define RAW_VIEW 2
-#define HEX_VIEW 3
-#define UNICODE_VIEW 4
-#define MSGPACK_VIEW 5
-#define GZIP_VIEW 6
-#define LZ4_VIEW 7
-#define BZIP2_VIEW 8
-#define SNAPPY_VIEW 9
-#define XML_VIEW 10
-
 namespace fastonosql {
 namespace gui {
-class FastoHexEdit;
 
-extern const char kJson[];
-extern const char kCsv[];
-extern const char kHex[];
-extern const char kUnicode[];
-extern const char kMsgPack[];
-extern const char kGzip[];
-extern const char kLZ4[];
-extern const char kBZip2[];
-extern const char kSnappy[];
-extern const char kXml[];
-extern const char kRaw[];
+enum OutputViews {
+  JSON_VIEW = 0,
+  CSV_VIEW,
+  RAW_VIEW,
+  HEX_VIEW,
+  UNICODE_VIEW,
+  MSGPACK_VIEW,
+  GZIP_VIEW,
+  LZ4_VIEW,
+  BZIP2_VIEW,
+  SNAPPY_VIEW,
+  XML_VIEW
+};
+
+extern const std::vector<const char*> g_output_views_text;
 
 class FastoEditorOutput : public QWidget {
   Q_OBJECT

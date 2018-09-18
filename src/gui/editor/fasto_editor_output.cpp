@@ -35,17 +35,8 @@
 namespace fastonosql {
 namespace gui {
 
-const char kJson[] = "Json";
-const char kCsv[] = "Csv";
-const char kHex[] = "Hex";
-const char kUnicode[] = "Unicode";
-const char kMsgPack[] = "MsgPack";
-const char kGzip[] = "Gzip";
-const char kLZ4[] = "LZ4";
-const char kBZip2[] = "BZip2";
-const char kSnappy[] = "Snappy";
-const char kXml[] = "Xml";
-const char kRaw[] = "Raw";
+const std::vector<const char*> g_output_views_text = {"Json", "Csv", "Raw",   "Hex",    "Unicode", "MsgPack",
+                                                      "Gzip", "LZ4", "BZip2", "Snappy", "Xml"};
 
 FastoEditorOutput::FastoEditorOutput(QWidget* parent) : QWidget(parent), model_(nullptr), view_method_(JSON_VIEW) {
   text_json_editor_ = new FastoEditor;
@@ -254,33 +245,7 @@ void FastoEditorOutput::layoutChanged() {
     return;
   }
 
-  QString methodText;
-  if (view_method_ == JSON_VIEW) {
-    methodText = kJson;
-  } else if (view_method_ == CSV_VIEW) {
-    methodText = kCsv;
-  } else if (view_method_ == RAW_VIEW) {
-    methodText = kRaw;
-  } else if (view_method_ == HEX_VIEW) {
-    methodText = kHex;
-  } else if (view_method_ == UNICODE_VIEW) {
-    methodText = kUnicode;
-  } else if (view_method_ == MSGPACK_VIEW) {
-    methodText = kMsgPack;
-  } else if (view_method_ == GZIP_VIEW) {
-    methodText = kGzip;
-  } else if (view_method_ == LZ4_VIEW) {
-    methodText = kLZ4;
-  } else if (view_method_ == BZIP2_VIEW) {
-    methodText = kBZip2;
-  } else if (view_method_ == SNAPPY_VIEW) {
-    methodText = kSnappy;
-  } else if (view_method_ == XML_VIEW) {
-    methodText = kXml;
-  } else {
-    NOTREACHED();
-  }
-
+  QString methodText = g_output_views_text[view_method_];
   QString result;
   for (size_t i = 0; i < root->childrenCount(); ++i) {
     FastoCommonItem* child = dynamic_cast<FastoCommonItem*>(root->child(i));  // +

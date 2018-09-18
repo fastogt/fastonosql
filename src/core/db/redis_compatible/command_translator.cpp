@@ -344,9 +344,9 @@ common::Error CommandTranslator::CreateKeyCommandImpl(const NDbKValue& key, comm
     StreamValue::streams_t streams = value->GetStreams();
     for (size_t i = 0; i < streams.size(); ++i) {
       StreamValue::Stream cur_str = streams[i];
-      wr << REDIS_SET_KEY_STREAM_COMMAND " " << key_str.GetForCommandLine() << " " << cur_str.id_;
-      for (size_t j = 0; j < cur_str.entries_.size(); ++j) {
-        wr << " " << cur_str.entries_[j].name << " " << cur_str.entries_[j].value;
+      wr << REDIS_SET_KEY_STREAM_COMMAND " " << key_str.GetForCommandLine() << " " << cur_str.sid;
+      for (size_t j = 0; j < cur_str.entries.size(); ++j) {
+        wr << " " << cur_str.entries[j].name << " " << cur_str.entries[j].value;
       }
       if (i != streams.size() - 1) {
         wr << "\n";

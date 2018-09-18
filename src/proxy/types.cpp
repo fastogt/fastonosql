@@ -29,27 +29,3 @@ const std::vector<const char*> g_supported_views_text = {"Tree", "Table", "Text"
 
 }  // namespace proxy
 }  // namespace fastonosql
-
-namespace common {
-
-std::string ConvertToString(fastonosql::proxy::SupportedViews v) {
-  return fastonosql::proxy::g_supported_views_text[v];
-}
-
-bool ConvertFromString(const std::string& from, fastonosql::proxy::SupportedViews* out) {
-  if (!out) {
-    return false;
-  }
-
-  for (size_t i = 0; i < fastonosql::proxy::g_supported_views_text.size(); ++i) {
-    if (from == fastonosql::proxy::g_supported_views_text[i]) {
-      *out = static_cast<fastonosql::proxy::SupportedViews>(i);
-      return true;
-    }
-  }
-
-  NOTREACHED();
-  return false;
-}
-
-}  // namespace common

@@ -83,7 +83,7 @@ StreamTypeWidget::StreamTypeWidget(QWidget* parent) : QTableView(parent) {
 void StreamTypeWidget::insertStream(const core::StreamValue::Stream& stream) {
   streams_.push_back(stream);
   QString qsid;
-  common::ConvertFromString(stream.id_, &qsid);
+  common::ConvertFromString(stream.sid, &qsid);
   model_->insertRow(qsid, QString());
 }
 
@@ -96,7 +96,7 @@ void StreamTypeWidget::updateStream(const QModelIndex& index, const core::Stream
   int row = index.row();
   streams_[row] = stream;
   QString qsid;
-  common::ConvertFromString(stream.id_, &qsid);
+  common::ConvertFromString(stream.sid, &qsid);
   node->SetKey(qsid);
   model_->updateItem(model_->index(row, KeyValueTableItem::kKey, QModelIndex()),
                      model_->index(row, KeyValueTableItem::kAction, QModelIndex()));
@@ -124,10 +124,10 @@ void StreamTypeWidget::editRow(const QModelIndex& index) {
   int row = index.row();
   core::StreamValue::Stream stream = streams_[row];
   QString qsid;
-  common::ConvertFromString(stream.id_, &qsid);
+  common::ConvertFromString(stream.sid, &qsid);
   StreamEntryDialog diag(qsid, this);
-  for (size_t i = 0; i < stream.entries_.size(); ++i) {
-    core::StreamValue::Entry ent = stream.entries_[i];
+  for (size_t i = 0; i < stream.entries.size(); ++i) {
+    core::StreamValue::Entry ent = stream.entries[i];
     QString ftext;
     QString stext;
     if (common::ConvertFromString(ent.name, &ftext) && common::ConvertFromString(ent.value, &stext)) {

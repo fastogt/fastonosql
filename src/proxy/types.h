@@ -18,7 +18,6 @@
 
 #pragma once
 
-#include <string>
 #include <vector>
 
 namespace fastonosql {
@@ -32,8 +31,3 @@ extern const std::vector<const char*> g_supported_views_text;
 
 }  // namespace proxy
 }  // namespace fastonosql
-
-namespace common {
-std::string ConvertToString(fastonosql::proxy::SupportedViews v);
-bool ConvertFromString(const std::string& from, fastonosql::proxy::SupportedViews* out);
-}  // namespace common
