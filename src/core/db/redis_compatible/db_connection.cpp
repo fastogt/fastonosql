@@ -25,9 +25,12 @@ extern "C" {
 
 #include <common/file_system/string_path_utils.h>
 
+#if defined(PRO_VERSION)
 #include "core/db/redis_compatible/cluster_infos.h"
-#include "core/db/redis_compatible/database_info.h"
 #include "core/db/redis_compatible/sentinel_info.h"
+#endif
+
+#include "core/db/redis_compatible/database_info.h"
 
 #define GET_SERVER_TYPE "CLUSTER NODES"
 #define GET_SENTINEL_MASTERS "SENTINEL MASTERS"

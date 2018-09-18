@@ -20,7 +20,7 @@
 
 #include <common/qt/utils_qt.h>  // for EventInfo
 
-#include "core/command_holder.h"
+#include "core/command_info.h"
 #include "core/database/idatabase_info.h"
 #include "core/db_key.h"  // for NDbKValue
 #include "core/db_ps_channel.h"

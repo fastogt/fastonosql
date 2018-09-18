@@ -58,6 +58,12 @@ void ServerDiscoveryInfoBase::SetHost(const common::net::HostAndPortAndSlot& hos
 
 ServerDiscoveryInfoBase::~ServerDiscoveryInfoBase() {}
 
+#if defined(PRO_VERSION)
+ServerDiscoverySentinelInfo::ServerDiscoverySentinelInfo(connectionTypes ctype, const ServerCommonInfo& info)
+    : ServerDiscoveryInfoBase(ctype, info) {}
+
+ServerDiscoverySentinelInfo::~ServerDiscoverySentinelInfo() {}
+
 ServerDiscoveryClusterInfo::ServerDiscoveryClusterInfo(connectionTypes ctype, const ServerCommonInfo& info, bool self)
     : ServerDiscoveryInfoBase(ctype, info), self_(self) {}
 
@@ -66,6 +72,7 @@ ServerDiscoveryClusterInfo::~ServerDiscoveryClusterInfo() {}
 bool ServerDiscoveryClusterInfo::Self() const {
   return self_;
 }
+#endif
 
 IStateField::~IStateField() {}
 
@@ -76,11 +83,6 @@ connectionTypes IServerInfo::GetType() const {
 }
 
 IServerInfo::IServerInfo(connectionTypes type) : type_(type) {}
-
-ServerDiscoverySentinelInfo::ServerDiscoverySentinelInfo(connectionTypes ctype, const ServerCommonInfo& info)
-    : ServerDiscoveryInfoBase(ctype, info) {}
-
-ServerDiscoverySentinelInfo::~ServerDiscoverySentinelInfo() {}
 
 ServerInfoSnapShoot::ServerInfoSnapShoot() : msec(0), info() {}
 
