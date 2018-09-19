@@ -105,7 +105,7 @@ void ReplyNotImplementedYet(IDriver* sender, event_request_type* ev, const char*
 }  // namespace
 
 IDriver::IDriver(IConnectionSettingsBaseSPtr settings)
-    : settings_(settings), thread_(nullptr), timer_info_id_(0), log_file_(nullptr) {
+    : settings_(settings), thread_(nullptr), timer_info_id_(0), log_file_(nullptr), server_info_() {
   thread_ = new QThread(this);
   moveToThread(thread_);
 
@@ -191,6 +191,14 @@ void IDriver::Clear() {
     DNOTREACHED();
   }
   ClearImpl();
+}
+
+core::IServerInfoSPtr IDriver::GetCurrentServerInfo() const {
+  if (IsConnected()) {
+    return server_info_;
+  }
+
+  return core::IServerInfoSPtr();
 }
 
 void IDriver::customEvent(QEvent* event) {
@@ -489,9 +497,11 @@ void IDriver::HandleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
   common::Error err = GetCurrentServerInfo(&info);
   if (err) {
     res.setErrorInfo(err);
+    server_info_.reset();
   } else {
     core::IServerInfoSPtr mem(info);
     res.setInfo(mem);
+    server_info_ = mem;
   }
   NotifyProgress(sender, 75);
   Reply(sender, new events::ServerInfoResponceEvent(this, res));

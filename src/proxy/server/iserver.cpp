@@ -28,7 +28,7 @@
 namespace fastonosql {
 namespace proxy {
 
-IServer::IServer(IDriver* drv) : drv_(drv), server_info_(), current_database_info_(), timer_check_key_exists_id_(0) {
+IServer::IServer(IDriver* drv) : drv_(drv), current_database_info_(), timer_check_key_exists_id_(0) {
   VERIFY(QObject::connect(drv_, &IDriver::ChildAdded, this, &IServer::ChildAdded));
   VERIFY(QObject::connect(drv_, &IDriver::ItemUpdated, this, &IServer::ItemUpdated));
   VERIFY(QObject::connect(drv_, &IDriver::ServerInfoSnapShooted, this, &IServer::ServerInfoSnapShooted));
@@ -105,11 +105,7 @@ std::string IServer::GetName() const {
 }
 
 core::IServerInfoSPtr IServer::GetCurrentServerInfo() const {
-  if (IsConnected()) {
-    return server_info_;
-  }
-
-  return core::IServerInfoSPtr();
+  return drv_->GetCurrentServerInfo();
 }
 
 IServer::database_t IServer::GetCurrentDatabaseInfo() const {
@@ -347,8 +343,6 @@ void IServer::HandleLoadServerInfoEvent(events::ServerInfoResponceEvent* ev) {
   common::Error err(v.errorInfo());
   if (err) {
     LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
-  } else {
-    server_info_ = v.info();
   }
   emit LoadServerInfoFinished(v);
 }

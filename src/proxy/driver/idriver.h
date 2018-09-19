@@ -67,6 +67,8 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   virtual bool IsConnected() const = 0;
   virtual bool IsAuthenticated() const = 0;
 
+  core::IServerInfoSPtr GetCurrentServerInfo() const;
+
  Q_SIGNALS:
   void ChildAdded(core::FastoObjectIPtr child);
   void ItemUpdated(core::FastoObject* item, common::ValueSPtr val);
@@ -167,6 +169,8 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   QThread* thread_;
   int timer_info_id_;
   common::file_system::ANSIFile* log_file_;
+
+  core::IServerInfoSPtr server_info_;
 };
 
 }  // namespace proxy
