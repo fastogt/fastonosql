@@ -193,7 +193,7 @@ void IDriver::Clear() {
   ClearImpl();
 }
 
-core::IServerInfoSPtr IDriver::GetCurrentServerInfo() const {
+core::IServerInfoSPtr IDriver::GetCurrentServerInfoIfConnected() const {
   if (IsConnected()) {
     return server_info_;
   }

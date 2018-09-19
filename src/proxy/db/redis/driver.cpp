@@ -87,6 +87,16 @@ common::Value::Type ConvertFromStringRType(const std::string& type) {
 }  // namespace
 
 namespace fastonosql {
+namespace core {
+namespace {
+
+command_buffer_t GetKeysOldPattern(const std::string& pattern) {
+  command_buffer_writer_t wr;
+  wr << "KEYS " << pattern;
+  return wr.str();
+}
+}  // namespace
+}  // namespace core
 namespace proxy {
 namespace redis {
 #if defined(PRO_VERSION)
@@ -347,99 +357,189 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
-  const core::command_buffer_t pattern_result =
-      core::internal::GetKeysPattern(res.cursor_in, res.pattern, res.count_keys);
+  core::command_buffer_t pattern_result;
+  bool new_behavior = true;
+  auto serv = GetCurrentServerInfoIfConnected();
+  if (!serv) {
+    NotifyProgress(sender, 50);
+    res.setErrorInfo(common::make_error("Not connected"));
+    NotifyProgress(sender, 75);
+    Reply(sender, new events::LoadDatabaseContentResponceEvent(this, res));
+    NotifyProgress(sender, 100);
+    return;
+  }
+
+  uint32_t version = serv->GetVersion();
+  new_behavior = version >= PROJECT_VERSION_GENERATE(2, 8, 0);
+  core::keys_limit_t count_keys = res.count_keys;
+  if (new_behavior) {
+    pattern_result = core::internal::GetKeysPattern(res.cursor_in, res.pattern, count_keys);
+  } else {
+    pattern_result = core::GetKeysOldPattern(res.pattern);
+  }
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(pattern_result, core::C_INNER);
   NotifyProgress(sender, 50);
   common::Error err = Execute(cmd);
   if (err) {
     res.setErrorInfo(err);
   } else {
-    core::FastoObject::childs_t rchildrens = cmd->GetChildrens();
-    if (rchildrens.size()) {
-      CHECK_EQ(rchildrens.size(), 1);
-      core::FastoObject* array = rchildrens[0].get();
-      CHECK(array);
-      auto array_value = array->GetValue();
-      common::ArrayValue* arm = nullptr;
-      if (!array_value->GetAsList(&arm)) {
-        goto done;
-      }
-
-      CHECK_EQ(arm->GetSize(), 2);
-      std::string cursor;
-      bool isok = arm->GetString(0, &cursor);
-      if (!isok) {
-        goto done;
-      }
-
-      uint64_t lcursor;
-      if (common::ConvertFromString(cursor, &lcursor)) {
-        res.cursor_out = lcursor;
-      }
-
-      common::ArrayValue* ar = nullptr;
-      isok = arm->GetList(1, &ar);
-      if (!isok) {
-        goto done;
-      }
-
-      std::vector<core::FastoObjectCommandIPtr> cmds;
-      cmds.reserve(ar->GetSize() * 2);
-      for (size_t i = 0; i < ar->GetSize(); ++i) {
-        std::string key;
-        bool isok = ar->GetString(i, &key);
-        if (isok) {
-          core::key_t key_str(key);
-          core::NKey k(key_str);
-          core::NDbKValue dbv(k, core::NValue());
-          core::command_buffer_writer_t wr_type;
-          wr_type << REDIS_TYPE_COMMAND " " << key_str.GetForCommandLine();
-          cmds.push_back(CreateCommandFast(wr_type.str(), core::C_INNER));
-
-          core::command_buffer_writer_t wr_ttl;
-          wr_ttl << DB_GET_TTL_COMMAND " " << key_str.GetForCommandLine();
-          cmds.push_back(CreateCommandFast(wr_ttl.str(), core::C_INNER));
-          res.keys.push_back(dbv);
+    if (new_behavior) {
+      core::FastoObject::childs_t rchildrens = cmd->GetChildrens();
+      if (rchildrens.size()) {
+        CHECK_EQ(rchildrens.size(), 1);
+        core::FastoObject* array = rchildrens[0].get();
+        CHECK(array);
+        auto array_value = array->GetValue();
+        common::ArrayValue* arm = nullptr;
+        if (!array_value->GetAsList(&arm)) {
+          goto done;
         }
-      }
 
-      err = impl_->ExecuteAsPipeline(cmds, &LOG_COMMAND);
-      if (err) {
-        goto done;
-      }
+        CHECK_EQ(arm->GetSize(), 2);
+        std::string cursor;
+        bool isok = arm->GetString(0, &cursor);
+        if (!isok) {
+          goto done;
+        }
 
-      for (size_t i = 0; i < res.keys.size(); ++i) {
-        core::FastoObjectIPtr cmdType = cmds[i * 2];
-        core::FastoObject::childs_t tchildrens = cmdType->GetChildrens();
-        if (tchildrens.size()) {
-          DCHECK_EQ(tchildrens.size(), 1);
-          if (tchildrens.size() == 1) {
-            std::string typeRedis = tchildrens[0]->ToString();
-            common::Value::Type ctype = ConvertFromStringRType(typeRedis);
-            common::ValueSPtr empty_val(core::CreateEmptyValueFromType(ctype));
-            res.keys[i].SetValue(empty_val);
+        uint64_t lcursor;
+        if (common::ConvertFromString(cursor, &lcursor)) {
+          res.cursor_out = lcursor;
+        }
+
+        common::ArrayValue* ar = nullptr;
+        isok = arm->GetList(1, &ar);
+        if (!isok) {
+          goto done;
+        }
+
+        std::vector<core::FastoObjectCommandIPtr> cmds;
+        cmds.reserve(ar->GetSize() * 2);
+        for (size_t i = 0; i < ar->GetSize(); ++i) {
+          std::string key;
+          bool isok = ar->GetString(i, &key);
+          if (isok) {
+            core::key_t key_str(key);
+            core::NKey k(key_str);
+            core::NDbKValue dbv(k, core::NValue());
+            core::command_buffer_writer_t wr_type;
+            wr_type << REDIS_TYPE_COMMAND " " << key_str.GetForCommandLine();
+            cmds.push_back(CreateCommandFast(wr_type.str(), core::C_INNER));
+
+            core::command_buffer_writer_t wr_ttl;
+            wr_ttl << DB_GET_TTL_COMMAND " " << key_str.GetForCommandLine();
+            cmds.push_back(CreateCommandFast(wr_ttl.str(), core::C_INNER));
+            res.keys.push_back(dbv);
           }
         }
 
-        core::FastoObjectIPtr cmdType2 = cmds[i * 2 + 1];
-        tchildrens = cmdType2->GetChildrens();
-        if (tchildrens.size()) {
-          DCHECK_EQ(tchildrens.size(), 1);
-          if (tchildrens.size() == 1) {
-            auto vttl = tchildrens[0]->GetValue();
-            core::ttl_t ttl = 0;
-            if (vttl->GetAsLongLongInteger(&ttl)) {
-              core::NKey key = res.keys[i].GetKey();
-              key.SetTTL(ttl);
-              res.keys[i].SetKey(key);
+        err = impl_->ExecuteAsPipeline(cmds, &LOG_COMMAND);
+        if (err) {
+          goto done;
+        }
+
+        for (size_t i = 0; i < res.keys.size(); ++i) {
+          core::FastoObjectIPtr cmdType = cmds[i * 2];
+          core::FastoObject::childs_t tchildrens = cmdType->GetChildrens();
+          if (tchildrens.size()) {
+            DCHECK_EQ(tchildrens.size(), 1);
+            if (tchildrens.size() == 1) {
+              std::string typeRedis = tchildrens[0]->ToString();
+              common::Value::Type ctype = ConvertFromStringRType(typeRedis);
+              common::ValueSPtr empty_val(core::CreateEmptyValueFromType(ctype));
+              res.keys[i].SetValue(empty_val);
+            }
+          }
+
+          core::FastoObjectIPtr cmdType2 = cmds[i * 2 + 1];
+          tchildrens = cmdType2->GetChildrens();
+          if (tchildrens.size()) {
+            DCHECK_EQ(tchildrens.size(), 1);
+            if (tchildrens.size() == 1) {
+              auto vttl = tchildrens[0]->GetValue();
+              core::ttl_t ttl = 0;
+              if (vttl->GetAsLongLongInteger(&ttl)) {
+                core::NKey key = res.keys[i].GetKey();
+                key.SetTTL(ttl);
+                res.keys[i].SetKey(key);
+              }
             }
           }
         }
-      }
 
-      err = impl_->DBkcount(&res.db_keys_count);
-      DCHECK(!err);
+        err = impl_->DBkcount(&res.db_keys_count);
+        DCHECK(!err);
+      }
+    } else {
+      core::FastoObject::childs_t rchildrens = cmd->GetChildrens();
+      if (rchildrens.size()) {
+        CHECK_EQ(rchildrens.size(), 1);
+        core::FastoObject* array = rchildrens[0].get();
+        CHECK(array);
+        auto array_value = array->GetValue();
+        common::ArrayValue* ar = nullptr;
+        if (!array_value->GetAsList(&ar)) {
+          goto done;
+        }
+
+        std::vector<core::FastoObjectCommandIPtr> cmds;
+        count_keys = std::min<core::keys_limit_t>(count_keys, ar->GetSize());
+        cmds.reserve(count_keys * 2);
+        for (size_t i = 0; i < count_keys; ++i) {
+          std::string key;
+          bool isok = ar->GetString(i, &key);
+          if (isok) {
+            core::key_t key_str(key);
+            core::NKey k(key_str);
+            core::NDbKValue dbv(k, core::NValue());
+            core::command_buffer_writer_t wr_type;
+            wr_type << REDIS_TYPE_COMMAND " " << key_str.GetForCommandLine();
+            cmds.push_back(CreateCommandFast(wr_type.str(), core::C_INNER));
+
+            core::command_buffer_writer_t wr_ttl;
+            wr_ttl << DB_GET_TTL_COMMAND " " << key_str.GetForCommandLine();
+            cmds.push_back(CreateCommandFast(wr_ttl.str(), core::C_INNER));
+            res.keys.push_back(dbv);
+          }
+        }
+
+        err = impl_->ExecuteAsPipeline(cmds, &LOG_COMMAND);
+        if (err) {
+          goto done;
+        }
+
+        for (size_t i = 0; i < res.keys.size(); ++i) {
+          core::FastoObjectIPtr cmdType = cmds[i * 2];
+          core::FastoObject::childs_t tchildrens = cmdType->GetChildrens();
+          if (tchildrens.size()) {
+            DCHECK_EQ(tchildrens.size(), 1);
+            if (tchildrens.size() == 1) {
+              std::string typeRedis = tchildrens[0]->ToString();
+              common::Value::Type ctype = ConvertFromStringRType(typeRedis);
+              common::ValueSPtr empty_val(core::CreateEmptyValueFromType(ctype));
+              res.keys[i].SetValue(empty_val);
+            }
+          }
+
+          core::FastoObjectIPtr cmdType2 = cmds[i * 2 + 1];
+          tchildrens = cmdType2->GetChildrens();
+          if (tchildrens.size()) {
+            DCHECK_EQ(tchildrens.size(), 1);
+            if (tchildrens.size() == 1) {
+              auto vttl = tchildrens[0]->GetValue();
+              core::ttl_t ttl = 0;
+              if (vttl->GetAsLongLongInteger(&ttl)) {
+                core::NKey key = res.keys[i].GetKey();
+                key.SetTTL(ttl);
+                res.keys[i].SetKey(key);
+              }
+            }
+          }
+        }
+
+        err = impl_->DBkcount(&res.db_keys_count);
+        DCHECK(!err);
+      }
     }
   }
 done:

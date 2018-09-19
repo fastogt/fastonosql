@@ -45,7 +45,7 @@ FastoTextView::FastoTextView(QWidget* parent) : QWidget(parent) {
   editor_ = new FastoEditorOutput;
   views_label_ = new QLabel;
   views_combo_box_ = new QComboBox;
-  for (size_t i = 0; i < g_output_views_text.size(); ++i) {
+  for (unsigned i = 0; i < g_output_views_text.size(); ++i) {
     views_combo_box_->addItem(g_output_views_text[i], i);
   }
 

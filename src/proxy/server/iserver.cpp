@@ -105,7 +105,7 @@ std::string IServer::GetName() const {
 }
 
 core::IServerInfoSPtr IServer::GetCurrentServerInfo() const {
-  return drv_->GetCurrentServerInfo();
+  return drv_->GetCurrentServerInfoIfConnected();
 }
 
 IServer::database_t IServer::GetCurrentDatabaseInfo() const {

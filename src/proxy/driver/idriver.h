@@ -67,7 +67,7 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   virtual bool IsConnected() const = 0;
   virtual bool IsAuthenticated() const = 0;
 
-  core::IServerInfoSPtr GetCurrentServerInfo() const;
+  core::IServerInfoSPtr GetCurrentServerInfoIfConnected() const;
 
  Q_SIGNALS:
   void ChildAdded(core::FastoObjectIPtr child);
