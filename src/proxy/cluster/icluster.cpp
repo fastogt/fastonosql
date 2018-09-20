@@ -23,7 +23,7 @@
 #include <memory>  // for shared_ptr
 #include <string>  // for string
 
-#include "core/connection_types.h"  // for serverTypes::MASTER
+#include "core/connection_types.h"  // for ServerTypes::MASTER
 
 #include "proxy/server/iserver.h"         // for IServer
 #include "proxy/server/iserver_remote.h"  // for IServerRemote

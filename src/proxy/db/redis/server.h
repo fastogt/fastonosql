@@ -33,9 +33,9 @@ class Server : public IServerRemote {
   explicit Server(IConnectionSettingsBaseSPtr settings);
   virtual ~Server();
 
-  virtual core::serverTypes GetRole() const override;
-  virtual core::serverMode GetMode() const override;
-  virtual core::serverState GetState() const override;
+  virtual core::ServerTypes GetRole() const override;
+  virtual core::ServerMode GetMode() const override;
+  virtual core::ServerState GetState() const override;
   virtual common::net::HostAndPort GetHost() const override;
 #if defined(PRO_VERSION)
  Q_SIGNALS:
@@ -51,8 +51,8 @@ class Server : public IServerRemote {
 
  private:
   virtual IDatabaseSPtr CreateDatabase(core::IDataBaseInfoSPtr info) override;
-  core::serverTypes role_;
-  core::serverMode mode_;
+  core::ServerTypes role_;
+  core::ServerMode mode_;
 };
 
 }  // namespace redis

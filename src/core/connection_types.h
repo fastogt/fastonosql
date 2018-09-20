@@ -44,10 +44,10 @@ enum connectionTypes {
   FORESTDB,
   PIKA
 };  // supported types
-enum serverTypes { MASTER = 0, SLAVE };
-enum serverState { SUP = 0, SDOWN };
-enum serverConnectState { SCONNECTED = 0, SDISCONNECTED };
-enum serverMode { STANDALONE = 0, SENTINEL, CLUSTER };
+enum ServerTypes { MASTER = 0, SLAVE };
+enum ServerState { SUP = 0, SDOWN };
+enum ServerConnectionState { SCONNECTED = 0, SDISCONNECTED };
+enum ServerMode { STANDALONE = 0, SENTINEL, CLUSTER };
 
 extern const std::vector<connectionTypes> g_compiled_types;
 
@@ -76,12 +76,12 @@ namespace common {
 std::string ConvertToString(fastonosql::core::connectionTypes t);
 bool ConvertFromString(const std::string& from, fastonosql::core::connectionTypes* out);
 
-std::string ConvertToString(fastonosql::core::serverTypes st);
-bool ConvertFromString(const std::string& from, fastonosql::core::serverTypes* out);
+std::string ConvertToString(fastonosql::core::ServerTypes st);
+bool ConvertFromString(const std::string& from, fastonosql::core::ServerTypes* out);
 
-std::string ConvertToString(fastonosql::core::serverState st);
-bool ConvertFromString(const std::string& from, fastonosql::core::serverState* out);
+std::string ConvertToString(fastonosql::core::ServerState st);
+bool ConvertFromString(const std::string& from, fastonosql::core::ServerState* out);
 
-std::string ConvertToString(fastonosql::core::serverMode md);
+std::string ConvertToString(fastonosql::core::ServerMode md);
 std::string ConvertToString(fastonosql::core::ConnectionMode t);
 }  // namespace common

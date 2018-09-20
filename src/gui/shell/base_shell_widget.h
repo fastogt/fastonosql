@@ -61,7 +61,6 @@ struct ExecuteInfoResponce;
 struct EnterModeInfo;
 struct LeaveModeInfo;
 struct ProgressInfoResponce;
-struct SetDefaultDatabaseRequest;
 struct ServerInfoRequest;
 class ServerInfoResponce;
 }  // namespace events_info

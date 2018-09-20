@@ -91,56 +91,56 @@ PasswordDialog::PasswordDialog(const QString& description, QWidget* parent)
   retranslateUi();
 }
 
-QString PasswordDialog::GetLogin() const {
+QString PasswordDialog::login() const {
   return login_box_->text();
 }
 
-void PasswordDialog::SetLogin(const QString& login) {
+void PasswordDialog::setLogin(const QString& login) {
   login_box_->setText(login);
 }
 
-QString PasswordDialog::GetPassword() const {
+QString PasswordDialog::password() const {
   return password_box_->text();
 }
 
-void PasswordDialog::SetPassword(const QString& password) {
+void PasswordDialog::setPassword(const QString& password) {
   password_box_->setText(password);
 }
 
-void PasswordDialog::SetLoginEnabled(bool en) {
+void PasswordDialog::setLoginEnabled(bool en) {
   login_box_->setEnabled(en);
 }
 
-void PasswordDialog::SetDescription(const QString& description) {
+void PasswordDialog::setDescription(const QString& description) {
   description_->setText(description);
 }
 
-QString PasswordDialog::GetDescription() const {
+QString PasswordDialog::description() const {
   return description_->text();
 }
 
-void PasswordDialog::SetVisibleDescription(bool visible) {
+void PasswordDialog::setVisibleDescription(bool visible) {
   return description_->setVisible(visible);
 }
 
-bool PasswordDialog::IsVisibleDescription() const {
+bool PasswordDialog::isVisibleDescription() const {
   return description_->isVisible();
 }
 
-bool PasswordDialog::IsVisibleStatus() const {
+bool PasswordDialog::isVisibleStatus() const {
   return description_->isVisible();
 }
 
-void PasswordDialog::SetFocusInPassword() {
+void PasswordDialog::setFocusInPassword() {
   password_box_->setFocus();
 }
 
-void PasswordDialog::SetFocusInLogin() {
+void PasswordDialog::setFocusInLogin() {
   login_box_->setFocus();
 }
 
 void PasswordDialog::accept() {
-  const QString pass = GetPassword();
+  const QString& pass = password();
   if (pass.isEmpty()) {
     password_box_->setFocus();
     return;
@@ -149,15 +149,15 @@ void PasswordDialog::accept() {
   QDialog::accept();
 }
 
-void PasswordDialog::SetVisibleStatus(bool visible) {
+void PasswordDialog::setVisibleStatus(bool visible) {
   status_label_->setVisible(visible);
 }
 
-void PasswordDialog::SetStatusIcon(const QIcon& icon, const QSize& icon_size) {
+void PasswordDialog::setStatusIcon(const QIcon& icon, const QSize& icon_size) {
   status_label_->setIcon(icon, icon_size);
 }
 
-void PasswordDialog::SetStatus(const QString& status) {
+void PasswordDialog::setStatus(const QString& status) {
   status_label_->setText(status);
 }
 

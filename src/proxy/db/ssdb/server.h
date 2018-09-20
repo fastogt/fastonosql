@@ -31,9 +31,9 @@ class Server : public IServerRemote {
   explicit Server(IConnectionSettingsBaseSPtr settings);
   virtual ~Server();
 
-  virtual core::serverMode GetMode() const override;
-  virtual core::serverTypes GetRole() const override;
-  virtual core::serverState GetState() const override;
+  virtual core::ServerMode GetMode() const override;
+  virtual core::ServerTypes GetRole() const override;
+  virtual core::ServerState GetState() const override;
   virtual common::net::HostAndPort GetHost() const override;
 
  private:

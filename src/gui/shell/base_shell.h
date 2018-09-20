@@ -23,9 +23,6 @@
 #include "gui/editor/fasto_editor_shell.h"  // for FastoEditorShell
 
 namespace fastonosql {
-namespace core {
-struct CommandInfo;
-}
 namespace gui {
 
 class BaseQsciLexer;

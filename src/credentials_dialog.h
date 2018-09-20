@@ -44,7 +44,7 @@ class CredentialsDialog : public fastonosql::gui::PasswordDialog {
   typedef fastonosql::gui::PasswordDialog base_class;
   explicit CredentialsDialog(QWidget* parent = Q_NULLPTR);
 
-  proxy::UserInfo GetUserInfo() const;
+  proxy::UserInfo userInfo() const;
 
  public Q_SLOTS:
   virtual void accept() override;
@@ -53,10 +53,10 @@ class CredentialsDialog : public fastonosql::gui::PasswordDialog {
   void verifyUserResult(common::Error err, const proxy::UserInfo& user);
 
  private:
-  virtual IVerifyUser* CreateChecker() const = 0;
+  virtual IVerifyUser* createChecker() const = 0;
 
-  void SetInforamtion(const QString& text);
-  void SetFailed(const QString& text);
+  void setInforamtion(const QString& text);
+  void setFailed(const QString& text);
 
   void startVerification();
 

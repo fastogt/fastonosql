@@ -41,30 +41,30 @@ class PasswordDialog : public QDialog {
   explicit PasswordDialog(QWidget* parent = Q_NULLPTR);
   explicit PasswordDialog(const QString& description, QWidget* parent = Q_NULLPTR);
 
-  QString GetLogin() const;
-  void SetLogin(const QString& login);
+  QString login() const;
+  void setLogin(const QString& login);
 
-  QString GetPassword() const;
-  void SetPassword(const QString& password);
+  QString password() const;
+  void setPassword(const QString& password);
 
-  void SetLoginEnabled(bool en);
+  void setLoginEnabled(bool en);
 
-  void SetDescription(const QString& description);
-  QString GetDescription() const;
+  void setDescription(const QString& description);
+  QString description() const;
 
-  bool IsVisibleDescription() const;
-  bool IsVisibleStatus() const;
+  bool isVisibleDescription() const;
+  bool isVisibleStatus() const;
 
-  void SetFocusInPassword();
-  void SetFocusInLogin();
+  void setFocusInPassword();
+  void setFocusInLogin();
 
  public Q_SLOTS:
   virtual void accept() override;
 
-  void SetVisibleDescription(bool visible);
-  void SetVisibleStatus(bool visible);
-  void SetStatusIcon(const QIcon& icon, const QSize& icon_size);
-  void SetStatus(const QString& status);
+  void setVisibleDescription(bool visible);
+  void setVisibleStatus(bool visible);
+  void setStatusIcon(const QIcon& icon, const QSize& icon_size);
+  void setStatus(const QString& status);
 
  private Q_SLOTS:
   void togglePasswordEchoMode();

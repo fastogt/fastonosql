@@ -173,13 +173,13 @@ class MainCredentialsDialog : public fastonosql::CredentialsDialog {
   MainCredentialsDialog() {}
 
  private:
-  virtual fastonosql::IVerifyUser* CreateChecker() const override {
+  virtual fastonosql::IVerifyUser* createChecker() const override {
 #if BUILD_STRATEGY == COMMUNITY_STRATEGY
-    return new fastonosql::OnlineVerifyUser(GetLogin(), GetPassword(), fastonosql::proxy::UserInfo::COMMUNITY_BUILD);
+    return new fastonosql::OnlineVerifyUser(login(), password(), fastonosql::proxy::UserInfo::COMMUNITY_BUILD);
 #elif BUILD_STRATEGY == PUBLIC_STRATEGY
-    return new fastonosql::OnlineVerifyUser(GetLogin(), GetPassword(), fastonosql::proxy::UserInfo::PUBLIC_BUILD);
+    return new fastonosql::OnlineVerifyUser(login(), password(), fastonosql::proxy::UserInfo::PUBLIC_BUILD);
 #elif BUILD_STRATEGY == PRIVATE_STRATEGY
-    return new fastonosql::OfflineVerifyUser(GetLogin(), GetPassword(), fastonosql::proxy::UserInfo::PRIVATE_BUILD);
+    return new fastonosql::OfflineVerifyUser(login(), password(), fastonosql::proxy::UserInfo::PRIVATE_BUILD);
 #endif
   }
 };
@@ -214,19 +214,19 @@ int main(int argc, char* argv[]) {
 #if BUILD_STRATEGY == COMMUNITY_STRATEGY
   const QString last_login = settings_manager->GetLastLogin();
   if (!last_login.isEmpty()) {
-    password_dialog.SetLogin(last_login);
-    password_dialog.SetFocusInPassword();
+    password_dialog.setLogin(last_login);
+    password_dialog.setFocusInPassword();
   }
 #elif BUILD_STRATEGY == PUBLIC_STRATEGY || BUILD_STRATEGY == PRIVATE_STRATEGY
-  password_dialog.SetLogin(USER_LOGIN);
-  password_dialog.SetLoginEnabled(false);
+  password_dialog.setLogin(USER_LOGIN);
+  password_dialog.setLoginEnabled(false);
 #endif
   int dialog_result = password_dialog.exec();
   if (dialog_result == QDialog::Rejected) {
     return EXIT_FAILURE;
   }
 
-  fastonosql::proxy::UserInfo user_info = password_dialog.GetUserInfo();
+  fastonosql::proxy::UserInfo user_info = password_dialog.userInfo();
   // start application
   fastonosql::proxy::UserInfo::SubscriptionState user_sub_state = user_info.GetSubscriptionState();
   size_t exec_count = user_info.GetExecCount();
@@ -297,7 +297,7 @@ int main(int argc, char* argv[]) {
   }
 
 #if BUILD_STRATEGY == COMMUNITY_STRATEGY
-  settings_manager->SetLastLogin(password_dialog.GetLogin());
+  settings_manager->SetLastLogin(password_dialog.login());
 #endif
   settings_manager->SetUserInfo(user_info);
 #endif

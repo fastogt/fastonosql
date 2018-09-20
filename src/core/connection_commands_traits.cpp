@@ -16,24 +16,8 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "core/constant_commands_array.h"
+#include "core/connection_commands_traits.h"
 
 namespace fastonosql {
-namespace core {
-
-ConstantCommandsArray::ConstantCommandsArray(std::initializer_list<CommandHolder> l) {
-  for (auto it = l.begin(); it != l.end(); ++it) {
-    CommandHolder cmd = *it;
-    for (auto jt = begin(); jt != end(); ++jt) {
-      CommandHolder cmd2 = *jt;
-      if (cmd2.IsEqualName(cmd.name)) {
-        NOTREACHED() << "Only unique commands can be in array, but command with name: \"" << cmd.name
-                     << "\" already exists!";
-      }
-    }
-    push_back(cmd);
-  }
-}
-
-}  // namespace core
+namespace core {}  // namespace core
 }  // namespace fastonosql

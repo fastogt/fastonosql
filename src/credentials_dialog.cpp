@@ -40,12 +40,12 @@ const QSize CredentialsDialog::status_label_icon_size = QSize(24, 24);
 CredentialsDialog::CredentialsDialog(QWidget* parent) : base_class(parent), user_info_() {
   glass_widget_ = new common::qt::gui::GlassWidget(gui::GuiFactory::GetInstance().GetPathToLoadingGif(), QString(), 0.5,
                                                    QColor(111, 111, 100), this);
-  SetVisibleDescription(false);
-  SetVisibleStatus(true);
-  SetInforamtion(trSignin);
+  setVisibleDescription(false);
+  setVisibleStatus(true);
+  setInforamtion(trSignin);
 }
 
-proxy::UserInfo CredentialsDialog::GetUserInfo() const {
+proxy::UserInfo CredentialsDialog::userInfo() const {
   return user_info_;
 }
 
@@ -55,7 +55,7 @@ void CredentialsDialog::verifyUserResult(common::Error err, const proxy::UserInf
     const std::string descr_str = err->GetDescription();
     QString descr;
     common::ConvertFromString(descr_str, &descr);
-    SetFailed(descr);
+    setFailed(descr);
     return;
   }
 
@@ -68,14 +68,14 @@ void CredentialsDialog::accept() {
   startVerification();
 }
 
-void CredentialsDialog::SetInforamtion(const QString& text) {
-  SetStatusIcon(gui::GuiFactory::GetInstance().GetInfoIcon(), status_label_icon_size);
-  SetStatus(text);
+void CredentialsDialog::setInforamtion(const QString& text) {
+  setStatusIcon(gui::GuiFactory::GetInstance().GetInfoIcon(), status_label_icon_size);
+  setStatus(text);
 }
 
-void CredentialsDialog::SetFailed(const QString& text) {
-  SetStatusIcon(gui::GuiFactory::GetInstance().GetFailIcon(), status_label_icon_size);
-  SetStatus(text);
+void CredentialsDialog::setFailed(const QString& text) {
+  setStatusIcon(gui::GuiFactory::GetInstance().GetFailIcon(), status_label_icon_size);
+  setStatus(text);
 }
 
 void CredentialsDialog::startVerification() {
@@ -83,7 +83,7 @@ void CredentialsDialog::startVerification() {
   qRegisterMetaType<proxy::UserInfo>("proxy::UserInfo");
 
   QThread* th = new QThread;
-  IVerifyUser* checker = CreateChecker();
+  IVerifyUser* checker = createChecker();
   checker->moveToThread(th);
   VERIFY(connect(th, &QThread::started, checker, &IVerifyUser::routine));
   VERIFY(connect(checker, &IVerifyUser::verifyUserResult, this, &CredentialsDialog::verifyUserResult));

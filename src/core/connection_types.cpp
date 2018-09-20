@@ -21,12 +21,12 @@
 #include <common/macros.h>  // for NOTREACHED, SIZEOFMASS
 
 namespace {
-const char* connnectionType[] = {"Redis",   "Memcached", "SSDB",      "LevelDB",  "RocksDB",
-                                 "UnQLite", "LMDB",      "UpscaleDB", "ForestDB", "Pika"};
-const std::string connnectionMode[] = {"Interactive mode"};
-const std::string serverTypes[] = {"Master", "Slave"};
-const std::string serverState[] = {"Up", "Down"};
-const std::string serverModes[] = {"Standalone", "Sentinel", "Cluster"};
+const char* kConnnectionType[] = {"Redis",   "Memcached", "SSDB",      "LevelDB",  "RocksDB",
+                                  "UnQLite", "LMDB",      "UpscaleDB", "ForestDB", "Pika"};
+const std::string kConnnectionMode[] = {"Interactive mode"};
+const std::string kServerTypes[] = {"Master", "Slave"};
+const std::string kServerState[] = {"Up", "Down"};
+const std::string kServerModes[] = {"Standalone", "Sentinel", "Cluster"};
 }  // namespace
 
 namespace fastonosql {
@@ -94,7 +94,7 @@ bool IsCanRemoveDatabase(connectionTypes type) {
 }
 
 const char* ConnectionTypeToString(connectionTypes t) {
-  return connnectionType[t];
+  return kConnnectionType[t];
 }
 
 }  // namespace core
@@ -111,8 +111,8 @@ bool ConvertFromString(const std::string& from, fastonosql::core::connectionType
     return false;
   }
 
-  for (size_t i = 0; i < SIZEOFMASS(connnectionType); ++i) {
-    if (from == connnectionType[i]) {
+  for (size_t i = 0; i < SIZEOFMASS(kConnnectionType); ++i) {
+    if (from == kConnnectionType[i]) {
       *out = static_cast<fastonosql::core::connectionTypes>(i);
       return true;
     }
@@ -122,14 +122,14 @@ bool ConvertFromString(const std::string& from, fastonosql::core::connectionType
   return false;
 }
 
-bool ConvertFromString(const std::string& from, fastonosql::core::serverTypes* out) {
+bool ConvertFromString(const std::string& from, fastonosql::core::ServerTypes* out) {
   if (!out) {
     return false;
   }
 
-  for (size_t i = 0; i < SIZEOFMASS(serverTypes); ++i) {
-    if (from == serverTypes[i]) {
-      *out = static_cast<fastonosql::core::serverTypes>(i);
+  for (size_t i = 0; i < SIZEOFMASS(kServerTypes); ++i) {
+    if (from == kServerTypes[i]) {
+      *out = static_cast<fastonosql::core::ServerTypes>(i);
       return true;
     }
   }
@@ -138,10 +138,10 @@ bool ConvertFromString(const std::string& from, fastonosql::core::serverTypes* o
   return false;
 }
 
-bool ConvertFromString(const std::string& from, fastonosql::core::serverState* out) {
-  for (size_t i = 0; i < SIZEOFMASS(serverState); ++i) {
-    if (from == serverState[i]) {
-      *out = static_cast<fastonosql::core::serverState>(i);
+bool ConvertFromString(const std::string& from, fastonosql::core::ServerState* out) {
+  for (size_t i = 0; i < SIZEOFMASS(kServerState); ++i) {
+    if (from == kServerState[i]) {
+      *out = static_cast<fastonosql::core::ServerState>(i);
       return true;
     }
   }
@@ -150,20 +150,20 @@ bool ConvertFromString(const std::string& from, fastonosql::core::serverState* o
   return false;
 }
 
-std::string ConvertToString(fastonosql::core::serverTypes st) {
-  return serverTypes[st];
+std::string ConvertToString(fastonosql::core::ServerTypes st) {
+  return kServerTypes[st];
 }
 
-std::string ConvertToString(fastonosql::core::serverState st) {
-  return serverState[st];
+std::string ConvertToString(fastonosql::core::ServerState st) {
+  return kServerState[st];
 }
 
-std::string ConvertToString(fastonosql::core::serverMode md) {
-  return serverModes[md];
+std::string ConvertToString(fastonosql::core::ServerMode md) {
+  return kServerModes[md];
 }
 
 std::string ConvertToString(fastonosql::core::ConnectionMode t) {
-  return connnectionMode[t];
+  return kConnnectionMode[t];
 }
 
 }  // namespace common
