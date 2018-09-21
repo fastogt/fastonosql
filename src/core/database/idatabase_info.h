@@ -34,7 +34,7 @@ class IDataBaseInfo : public common::ClonableBase<IDataBaseInfo> {
   size_t LoadedKeysCount() const;
 
   bool IsDefault() const;
-  void SetIsDefault(bool isDef);
+  void SetIsDefault(bool is_def);
 
   virtual ~IDataBaseInfo();
 

@@ -152,7 +152,7 @@ common::Error CDBConnection<NConnection, Config, ContType>::Help(commands_args_t
 
   translator_t tran = GetTranslator();
   if (argc == 1 && argv[0] == ALL_COMMANDS) {
-    std::vector<CommandInfo> cmds = tran->Commands();
+    std::vector<CommandInfo> cmds = tran->GetCommands();
     for (size_t i = 0; i < cmds.size(); ++i) {
       *answer += cmds[i].name;
       if (i != cmds.size() - 1) {

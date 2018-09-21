@@ -243,7 +243,7 @@ common::Error ICommandTranslator::UnknownSequence(commands_args_t argv) {
   return common::make_error(buff);
 }
 
-std::vector<CommandInfo> ICommandTranslator::Commands() const {
+std::vector<CommandInfo> ICommandTranslator::GetCommands() const {
   std::vector<CommandInfo> cmds;
   for (size_t i = 0; i < commands_.size(); ++i) {
     const CommandHolder* cmd = &commands_[i];

@@ -2,7 +2,9 @@
 
 #include <common/error.h>
 
+#if defined(PRO_VERSION)
 #include "proxy/user_info.h"
+#endif
 
 #define SERVER_REQUESTS_PORT 333
 

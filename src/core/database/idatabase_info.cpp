@@ -48,8 +48,8 @@ bool IDataBaseInfo::IsDefault() const {
   return is_default_;
 }
 
-void IDataBaseInfo::SetIsDefault(bool isDef) {
-  is_default_ = isDef;
+void IDataBaseInfo::SetIsDefault(bool is_def) {
+  is_default_ = is_def;
 }
 
 void IDataBaseInfo::SetKeys(const keys_container_t& keys) {

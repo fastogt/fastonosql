@@ -34,16 +34,17 @@ typedef keys_limit_t cursor_t;
 
 enum connectionTypes {
   REDIS = 0,
-  MEMCACHED,
-  SSDB,
-  LEVELDB,
-  ROCKSDB,
-  UNQLITE,
-  LMDB,
-  UPSCALEDB,
-  FORESTDB,
-  PIKA
+  MEMCACHED = 1,
+  SSDB = 2,
+  LEVELDB = 3,
+  ROCKSDB = 4,
+  UNQLITE = 5,
+  LMDB = 6,
+  UPSCALEDB = 7,
+  FORESTDB = 8,
+  PIKA = 9
 };  // supported types
+
 enum ServerTypes { MASTER = 0, SLAVE };
 enum ServerState { SUP = 0, SDOWN };
 enum ServerConnectionState { SCONNECTED = 0, SDISCONNECTED };

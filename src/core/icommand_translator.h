@@ -91,7 +91,7 @@ class ICommandTranslator {
 
   common::Error SubscribeCommand(const NDbPSChannel& channel, command_buffer_t* cmdstring) const WARN_UNUSED_RESULT;
 
-  std::vector<CommandInfo> Commands() const;
+  std::vector<CommandInfo> GetCommands() const;
   common::Error FindCommand(const std::string& command_first_name, const CommandHolder** info) const WARN_UNUSED_RESULT;
   common::Error FindCommand(commands_args_t argv, const CommandHolder** info, size_t* off) const WARN_UNUSED_RESULT;
 
@@ -101,10 +101,10 @@ class ICommandTranslator {
                                     const CommandHolder** info,
                                     size_t* off) const WARN_UNUSED_RESULT;
 
-  static common::Error InvalidInputArguments(const std::string& cmd);
-  static common::Error NotSupported(const std::string& cmd);
-  static common::Error UnknownCommand(const std::string& cmd);
-  static common::Error UnknownSequence(commands_args_t argv);
+  static common::Error InvalidInputArguments(const std::string& cmd) WARN_UNUSED_RESULT;
+  static common::Error NotSupported(const std::string& cmd) WARN_UNUSED_RESULT;
+  static common::Error UnknownCommand(const std::string& cmd) WARN_UNUSED_RESULT;
+  static common::Error UnknownSequence(commands_args_t argv) WARN_UNUSED_RESULT;
 
  private:
   virtual common::Error CreateKeyCommandImpl(const NDbKValue& key, command_buffer_t* cmdstring) const = 0;
