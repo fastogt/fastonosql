@@ -152,10 +152,10 @@ class ExplorerKeyItem : public IExplorerTreeItem {
   void loadValueFromDb();
   void setTTL(core::ttl_t ttl);
 
-  std::string ns_separator() const;
+  std::string nsSeparator() const;
 
  private:
-  core::readable_string_t GetFullName() const;
+  core::readable_string_t fullName() const;
 
   core::NDbKValue dbv_;
   const std::string ns_separator_;

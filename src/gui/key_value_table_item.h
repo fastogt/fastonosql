@@ -32,13 +32,13 @@ class KeyValueTableItem : public common::qt::gui::TableItem {
 
   KeyValueTableItem(const QString& key, const QString& value, Mode state);
 
-  QString GetKey() const;
-  void SetKey(const QString& key);
+  QString key() const;
+  void setKey(const QString& key);
 
-  QString GetValue() const;
-  void SetValue(const QString& val);
+  QString value() const;
+  void setValue(const QString& val);
 
-  Mode GetActionState() const;
+  Mode actionState() const;
 
  private:
   QString key_;

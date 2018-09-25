@@ -113,24 +113,24 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
     if (type == IExplorerTreeItem::eServer) {
       ExplorerServerItem* server_node = static_cast<ExplorerServerItem*>(node);
       proxy::IServerSPtr server = server_node->server();
-      return GuiFactory::GetInstance().GetIcon(server->GetType());
+      return GuiFactory::GetInstance().icon(server->GetType());
     } else if (type == IExplorerTreeItem::eKey) {
       ExplorerKeyItem* key = static_cast<ExplorerKeyItem*>(node);
       core::NKey nkey = key->key();
       if (nkey.GetTTL() == NO_TTL) {
-        return GuiFactory::GetInstance().GetKeyIcon();
+        return GuiFactory::GetInstance().keyIcon();
       }
-      return GuiFactory::GetInstance().GetKeyTTLIcon();
+      return GuiFactory::GetInstance().keyTTLIcon();
     } else if (type == IExplorerTreeItem::eDatabase) {
-      return GuiFactory::GetInstance().GetDatabaseIcon();
+      return GuiFactory::GetInstance().databaseIcon();
     } else if (type == IExplorerTreeItem::eNamespace) {
-      return GuiFactory::GetInstance().GetDirectoryIcon();
+      return GuiFactory::GetInstance().directoryIcon();
     }
 #if defined(PRO_VERSION)
     else if (type == IExplorerTreeItem::eCluster) {
-      return GuiFactory::GetInstance().GetClusterIcon();
+      return GuiFactory::GetInstance().clusterIcon();
     } else if (type == IExplorerTreeItem::eSentinel) {
-      return GuiFactory::GetInstance().GetSentinelIcon();
+      return GuiFactory::GetInstance().sentinelIcon();
     }
 #endif
     else {
@@ -366,7 +366,7 @@ void ExplorerTreeModel::addKey(proxy::IServer* server,
   if (!keyit) {
     IExplorerTreeItem* nitem = dbs;
     KeyInfo kinf(key.GetKey(), ns_separator);
-    if (kinf.HasNamespace()) {
+    if (kinf.hasNamespace()) {
       nitem = findOrCreateNSItem(dbs, kinf);
     }
 
@@ -545,8 +545,8 @@ ExplorerKeyItem* ExplorerTreeModel::findKeyItem(IExplorerTreeItem* db_or_ns, con
 }
 
 ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_ns, const KeyInfo& kinf) {
-  auto nspaces = kinf.GetNamespaces();
-  std::string separator = kinf.GetNsSeparator();
+  auto nspaces = kinf.namespaces();
+  std::string separator = kinf.nsSeparator();
   IExplorerTreeItem* par = db_or_ns;
   ExplorerNSItem* founded_item = nullptr;
   for (size_t i = 0; i < nspaces.size(); ++i) {

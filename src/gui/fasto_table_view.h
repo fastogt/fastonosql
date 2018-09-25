@@ -30,7 +30,7 @@ class FastoTableView : public QTableView {
  public:
   explicit FastoTableView(QWidget* parent = Q_NULLPTR);
 
-  QPoint CalculateMenuPoint(const QPoint& point) const;
+  QPoint calculateMenuPoint(const QPoint& point) const;
 };
 
 }  // namespace gui

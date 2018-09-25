@@ -115,7 +115,7 @@ MainWindow::MainWindow() : QMainWindow() {
   QString style = proxy::SettingsManager::GetInstance()->GetCurrentStyle();
   common::qt::gui::applyStyle(style);
 
-  common::qt::gui::applyFont(gui::GuiFactory::GetInstance().GetFont());
+  common::qt::gui::applyFont(gui::GuiFactory::GetInstance().font());
 
 #if defined(PRO_VERSION)
   proxy::UserInfo user_info = proxy::SettingsManager::GetInstance()->GetUserInfo();
@@ -133,22 +133,22 @@ MainWindow::MainWindow() : QMainWindow() {
 #endif
 
   connect_action_ = new QAction(this);
-  connect_action_->setIcon(GuiFactory::GetInstance().GetConnectDBIcon());
+  connect_action_->setIcon(GuiFactory::GetInstance().connectDBIcon());
   connect_action_->setShortcut(g_new_key);
   VERIFY(connect(connect_action_, &QAction::triggered, this, &MainWindow::open));
 
   load_from_file_action_ = new QAction(this);
-  load_from_file_action_->setIcon(GuiFactory::GetInstance().GetLoadIcon());
+  load_from_file_action_->setIcon(GuiFactory::GetInstance().loadIcon());
   // import_action_->setShortcut(g_open_key);
   VERIFY(connect(load_from_file_action_, &QAction::triggered, this, &MainWindow::loadConnection));
 
   import_action_ = new QAction(this);
-  import_action_->setIcon(GuiFactory::GetInstance().GetImportIcon());
+  import_action_->setIcon(GuiFactory::GetInstance().importIcon());
   // import_action_->setShortcut(g_open_key);
   VERIFY(connect(import_action_, &QAction::triggered, this, &MainWindow::importConnection));
 
   export_action_ = new QAction(this);
-  export_action_->setIcon(GuiFactory::GetInstance().GetExportIcon());
+  export_action_->setIcon(GuiFactory::GetInstance().exportIcon());
   // export_action_->setShortcut(g_open_key);
   VERIFY(connect(export_action_, &QAction::triggered, this, &MainWindow::exportConnection));
 
@@ -182,7 +182,7 @@ MainWindow::MainWindow() : QMainWindow() {
   updateRecentConnectionActions();
 
   preferences_action_ = new QAction(this);
-  preferences_action_->setIcon(GuiFactory::GetInstance().GetPreferencesIcon());
+  preferences_action_->setIcon(GuiFactory::GetInstance().preferencesIcon());
   VERIFY(connect(preferences_action_, &QAction::triggered, this, &MainWindow::openPreferences));
 
   // edit menu
@@ -195,7 +195,7 @@ MainWindow::MainWindow() : QMainWindow() {
   tools_action_ = menuBar()->addMenu(tools);
 
   encode_decode_dialog_action_ = new QAction(this);
-  encode_decode_dialog_action_->setIcon(GuiFactory::GetInstance().GetEncodeDecodeIcon());
+  encode_decode_dialog_action_->setIcon(GuiFactory::GetInstance().encodeDecodeIcon());
   VERIFY(connect(encode_decode_dialog_action_, &QAction::triggered, this, &MainWindow::openEncodeDecodeDialog));
   tools->addAction(encode_decode_dialog_action_);
 

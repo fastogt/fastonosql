@@ -44,7 +44,7 @@ namespace fastonosql {
 namespace gui {
 
 ConnectionsDialog::ConnectionsDialog(QWidget* parent) : QDialog(parent) {
-  setWindowIcon(GuiFactory::GetInstance().GetConnectIcon());
+  setWindowIcon(GuiFactory::GetInstance().connectIcon());
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
@@ -76,7 +76,7 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent) : QDialog(parent) {
 
   QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
-  buttonBox->button(QDialogButtonBox::Ok)->setIcon(GuiFactory::GetInstance().GetServerIcon());
+  buttonBox->button(QDialogButtonBox::Ok)->setIcon(GuiFactory::GetInstance().serverIcon());
   ok_button_ = buttonBox->button(QDialogButtonBox::Ok);
 
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &ConnectionsDialog::accept));
@@ -87,29 +87,27 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent) : QDialog(parent) {
 
   QToolBar* savebar = new QToolBar;
 
-  QAction* addB = new QAction(GuiFactory::GetInstance().GetAddIcon(), translations::trAddConnection, savebar);
+  QAction* addB = new QAction(GuiFactory::GetInstance().addIcon(), translations::trAddConnection, savebar);
   VERIFY(connect(addB, &QAction::triggered, this, &ConnectionsDialog::add));
   savebar->addAction(addB);
 
-  QAction* addc =
-      new QAction(GuiFactory::GetInstance().GetClusterIcon(), translations::trAddClusterConnection, savebar);
+  QAction* addc = new QAction(GuiFactory::GetInstance().clusterIcon(), translations::trAddClusterConnection, savebar);
   VERIFY(connect(addc, &QAction::triggered, this, &ConnectionsDialog::addCls));
   savebar->addAction(addc);
 
-  QAction* adds =
-      new QAction(GuiFactory::GetInstance().GetSentinelIcon(), translations::trAddSentinelConnection, savebar);
+  QAction* adds = new QAction(GuiFactory::GetInstance().sentinelIcon(), translations::trAddSentinelConnection, savebar);
   VERIFY(connect(adds, &QAction::triggered, this, &ConnectionsDialog::addSent));
   savebar->addAction(adds);
 
-  QAction* editB = new QAction(GuiFactory::GetInstance().GetEditIcon(), translations::trEditConnection, savebar);
+  QAction* editB = new QAction(GuiFactory::GetInstance().editIcon(), translations::trEditConnection, savebar);
   VERIFY(connect(editB, &QAction::triggered, this, &ConnectionsDialog::edit));
   savebar->addAction(editB);
 
-  QAction* clone = new QAction(GuiFactory::GetInstance().GetCloneIcon(), translations::trCloneConnection, savebar);
+  QAction* clone = new QAction(GuiFactory::GetInstance().cloneIcon(), translations::trCloneConnection, savebar);
   VERIFY(connect(clone, &QAction::triggered, this, &ConnectionsDialog::clone));
   savebar->addAction(clone);
 
-  QAction* rmB = new QAction(GuiFactory::GetInstance().GetRemoveIcon(), translations::trRemoveConnection, savebar);
+  QAction* rmB = new QAction(GuiFactory::GetInstance().removeIcon(), translations::trRemoveConnection, savebar);
   VERIFY(connect(rmB, &QAction::triggered, this, &ConnectionsDialog::remove));
   savebar->addAction(rmB);
 

@@ -105,8 +105,8 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QW
   mainlayout->addLayout(searchLayout);
   mainlayout->addWidget(keys_table_);
 
-  left_button_list_ = createButtonWithIcon(GuiFactory::GetInstance().GetLeftIcon());
-  right_button_list_ = createButtonWithIcon(GuiFactory::GetInstance().GetRightIcon());
+  left_button_list_ = createButtonWithIcon(GuiFactory::GetInstance().leftIcon());
+  right_button_list_ = createButtonWithIcon(GuiFactory::GetInstance().rightIcon());
   VERIFY(connect(left_button_list_, &QPushButton::clicked, this, &ViewKeysDialog::leftPageClicked));
   VERIFY(connect(right_button_list_, &QPushButton::clicked, this, &ViewKeysDialog::rightPageClicked));
   QHBoxLayout* pagingLayout = new QHBoxLayout;

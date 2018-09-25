@@ -30,21 +30,21 @@ namespace gui {
 
 HowToUseWidget::HowToUseWidget(const QSize& scale_size, QWidget* parent) : QTabWidget(parent) {
   QLabel* connect_tab = new QLabel;
-  QMovie* connect_movie = new QMovie(GuiFactory::GetInstance().GetPathToConnectGif());
+  QMovie* connect_movie = new QMovie(GuiFactory::GetInstance().pathToConnectGif());
   connect_tab->setMovie(connect_movie);
   connect_movie->setScaledSize(scale_size);
   connect_movie->start();
   addTab(connect_tab, translations::trConnect);
 
   QLabel* workflow_tab = new QLabel;
-  QMovie* workflow_movie = new QMovie(GuiFactory::GetInstance().GetPathToWorkflowGif());
+  QMovie* workflow_movie = new QMovie(GuiFactory::GetInstance().pathToWorkflowGif());
   workflow_tab->setMovie(workflow_movie);
   workflow_movie->setScaledSize(scale_size);
   workflow_movie->start();
   addTab(workflow_tab, translations::trWorkflow);
 
   QLabel* individual_tab = new QLabel;
-  QMovie* individual_movie = new QMovie(GuiFactory::GetInstance().GetPathToIndividualBuilds());
+  QMovie* individual_movie = new QMovie(GuiFactory::GetInstance().pathToIndividualBuilds());
   individual_tab->setMovie(individual_movie);
   individual_movie->setScaledSize(scale_size);
   individual_movie->start();

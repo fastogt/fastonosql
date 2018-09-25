@@ -784,7 +784,7 @@ void ExplorerTreeView::addKeyToBranch() {
     DbKeyDialog loadDb(trCreateKeyForDbTemplate_1S.arg(node_db->name()), server->GetType(), nkey, false, this);
     int result = loadDb.exec();
     if (result == QDialog::Accepted) {
-      core::NDbKValue key = loadDb.GetKey();
+      core::NDbKValue key = loadDb.key();
       node->createKey(key);
     }
   }
@@ -830,7 +830,7 @@ void ExplorerTreeView::createKey() {
                        this);
     int result = loadDb.exec();
     if (result == QDialog::Accepted) {
-      core::NDbKValue key = loadDb.GetKey();
+      core::NDbKValue key = loadDb.key();
       node->createKey(key);
     }
   }
@@ -849,7 +849,7 @@ void ExplorerTreeView::editKey() {
     DbKeyDialog loadDb(trEditKey_1S.arg(node->name()), server->GetType(), node->dbv(), true, this);
     int result = loadDb.exec();
     if (result == QDialog::Accepted) {
-      core::NDbKValue key = loadDb.GetKey();
+      core::NDbKValue key = loadDb.key();
       node->editKey(key.GetValue());
     }
   }

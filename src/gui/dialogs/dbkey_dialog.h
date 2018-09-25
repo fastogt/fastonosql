@@ -47,7 +47,7 @@ class DbKeyDialog : public QDialog {
                        const core::NDbKValue& key,
                        bool is_edit,
                        QWidget* parent = Q_NULLPTR);
-  core::NDbKValue GetKey() const;
+  core::NDbKValue key() const;
 
  public Q_SLOTS:
   virtual void accept() override;

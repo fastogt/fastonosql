@@ -160,7 +160,7 @@ void MainWidget::addWidgetToTab(QueryWidget* wid, const QString& title) {
     return;
   }
 
-  addTab(wid, GuiFactory::GetInstance().GetIcon(wid->connectionType()), title);
+  addTab(wid, GuiFactory::GetInstance().icon(wid->connectionType()), title);
   setCurrentWidget(wid);
 }
 

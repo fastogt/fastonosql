@@ -56,12 +56,12 @@ void ActionDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option
   pb_Style.features |= QStyleOptionButton::Flat;
   pb_Style.text = QString();
   pb_Style.iconSize = QSize(16, 16);
-  if (node->GetActionState() == KeyValueTableItem::AddAction) {
-    pb_Style.icon = GuiFactory::GetInstance().GetAddIcon();
-  } else if (node->GetActionState() == KeyValueTableItem::EditAction) {
-    pb_Style.icon = GuiFactory::GetInstance().GetEditIcon();
+  if (node->actionState() == KeyValueTableItem::AddAction) {
+    pb_Style.icon = GuiFactory::GetInstance().addIcon();
+  } else if (node->actionState() == KeyValueTableItem::EditAction) {
+    pb_Style.icon = GuiFactory::GetInstance().editIcon();
   } else {
-    pb_Style.icon = GuiFactory::GetInstance().GetRemoveIcon();
+    pb_Style.icon = GuiFactory::GetInstance().removeIcon();
   }
 
   if (current_index_.row() == index.row()) {
@@ -89,9 +89,9 @@ bool ActionDelegate::editorEvent(QEvent* event,
     current_index_ = index;
   } else if (event->type() == QEvent::MouseButtonRelease) {
     KeyValueTableItem* node = common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
-    if (node->GetActionState() == KeyValueTableItem::AddAction) {
+    if (node->actionState() == KeyValueTableItem::AddAction) {
       emit addClicked(index);
-    } else if (node->GetActionState() == KeyValueTableItem::EditAction) {
+    } else if (node->actionState() == KeyValueTableItem::EditAction) {
       emit editClicked(index);
     } else {
       emit removeClicked(index);

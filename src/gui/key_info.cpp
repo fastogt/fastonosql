@@ -30,28 +30,28 @@ KeyInfo::KeyInfo(const core::key_t& key, std::string ns_separator)
   splited_namespaces_.pop_back();
 }
 
-std::string KeyInfo::GetKeyName() const {
+std::string KeyInfo::keyName() const {
   return key_name_;
 }
 
-std::string KeyInfo::GetKey() const {
+std::string KeyInfo::key() const {
   return key_.GetHumanReadable();
 }
 
-bool KeyInfo::HasNamespace() const {
-  size_t ns_size = GetNspaceSize();
+bool KeyInfo::hasNamespace() const {
+  size_t ns_size = nsSplitedSize();
   return ns_size > 0;
 }
 
-size_t KeyInfo::GetNspaceSize() const {
+size_t KeyInfo::nsSplitedSize() const {
   return splited_namespaces_.size();
 }
 
-KeyInfo::splited_namespaces_t KeyInfo::GetNamespaces() const {
+KeyInfo::splited_namespaces_t KeyInfo::namespaces() const {
   return splited_namespaces_;
 }
 
-std::string KeyInfo::GetNsSeparator() const {
+std::string KeyInfo::nsSeparator() const {
   return ns_separator_;
 }
 

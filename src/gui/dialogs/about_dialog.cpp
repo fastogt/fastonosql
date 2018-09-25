@@ -113,7 +113,7 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
                         QDialogButtonBox::ButtonRole(QDialogButtonBox::RejectRole | QDialogButtonBox::AcceptRole));
   VERIFY(connect(button_box, &QDialogButtonBox::rejected, this, &AboutDialog::reject));
 
-  QIcon icon = GuiFactory::GetInstance().GetMainWindowIcon();
+  QIcon icon = GuiFactory::GetInstance().mainWindowIcon();
   QPixmap iconPixmap = icon.pixmap(48, 48);
 
   QGridLayout* copy_rights_layout = new QGridLayout;

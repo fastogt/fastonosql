@@ -28,12 +28,12 @@ class KeyInfo {
   typedef std::vector<std::string> splited_namespaces_t;
   KeyInfo(const core::key_t& key, std::string ns_separator);
 
-  std::string GetKeyName() const;
-  std::string GetKey() const;
-  bool HasNamespace() const;
-  size_t GetNspaceSize() const;
-  splited_namespaces_t GetNamespaces() const;
-  std::string GetNsSeparator() const;
+  std::string keyName() const;
+  std::string key() const;
+  bool hasNamespace() const;
+  size_t nsSplitedSize() const;
+  splited_namespaces_t namespaces() const;
+  std::string nsSeparator() const;
 
  private:
   core::key_t key_;

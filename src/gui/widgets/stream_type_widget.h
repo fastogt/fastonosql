@@ -33,7 +33,7 @@ class StreamTypeWidget : public QTableView {
  public:
   explicit StreamTypeWidget(QWidget* parent = Q_NULLPTR);
 
-  core::StreamValue* GetStreamValue() const;  // alocate memory
+  core::StreamValue* streamValue() const;  // alocate memory
 
   void insertStream(const core::StreamValue::Stream& stream);
   void clear();

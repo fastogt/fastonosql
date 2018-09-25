@@ -151,7 +151,7 @@ void PubSubDialog::showContextMenu(const QPoint& point) {
     return;
   }
 
-  QPoint menuPoint = channels_table_->CalculateMenuPoint(point);
+  QPoint menuPoint = channels_table_->calculateMenuPoint(point);
   QMenu* menu = new QMenu(channels_table_);
 
   QAction* publishAction = new QAction(translations::trPublish, this);
@@ -179,13 +179,12 @@ void PubSubDialog::publish() {
   }
 
   bool ok;
-  QString publish_text =
-      QInputDialog::getText(this, trPublishToChannel_1S.arg(node->GetName()), trEnterWhatYoWantToSend,
-                            QLineEdit::Normal, QString(), &ok, Qt::WindowCloseButtonHint);
+  QString publish_text = QInputDialog::getText(this, trPublishToChannel_1S.arg(node->name()), trEnterWhatYoWantToSend,
+                                               QLineEdit::Normal, QString(), &ok, Qt::WindowCloseButtonHint);
   if (ok && !publish_text.isEmpty()) {
     core::translator_t trans = server_->GetTranslator();
     core::command_buffer_t cmd_str;
-    common::Error err = trans->PublishCommand(node->GetChannel(), common::ConvertToString(publish_text), &cmd_str);
+    common::Error err = trans->PublishCommand(node->channel(), common::ConvertToString(publish_text), &cmd_str);
     if (err) {
       LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
       return;
@@ -210,7 +209,7 @@ void PubSubDialog::subscribeInNewConsole() {
 
   core::translator_t trans = server_->GetTranslator();
   core::command_buffer_t cmd_str;
-  common::Error err = trans->SubscribeCommand(node->GetChannel(), &cmd_str);
+  common::Error err = trans->SubscribeCommand(node->channel(), &cmd_str);
   if (err) {
     LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
     return;

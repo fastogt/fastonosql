@@ -50,7 +50,7 @@ FastoTextView::FastoTextView(QWidget* parent) : QWidget(parent) {
   }
 
   save_change_button_ = new QPushButton;
-  save_change_button_->setIcon(GuiFactory::GetInstance().GetSaveIcon());
+  save_change_button_->setIcon(GuiFactory::GetInstance().saveIcon());
   save_change_button_->setEnabled(false);
 
   typedef void (QComboBox::*ind)(int);

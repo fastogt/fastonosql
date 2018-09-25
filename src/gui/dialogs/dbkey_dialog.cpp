@@ -60,7 +60,7 @@ DbKeyDialog::DbKeyDialog(const QString& title,
                          bool is_edit,
                          QWidget* parent)
     : QDialog(parent), key_(key) {
-  setWindowIcon(GuiFactory::GetInstance().GetIcon(type));
+  setWindowIcon(GuiFactory::GetInstance().icon(type));
   setWindowTitle(title);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
@@ -80,7 +80,7 @@ DbKeyDialog::DbKeyDialog(const QString& title,
       current_index = static_cast<int>(i);
     }
     QString type = core::GetTypeName(t);
-    types_combo_box_->addItem(GuiFactory::GetInstance().GetIcon(t), type, t);
+    types_combo_box_->addItem(GuiFactory::GetInstance().icon(t), type, t);
   }
 
   typedef void (QComboBox::*ind)(int);
@@ -161,7 +161,7 @@ DbKeyDialog::DbKeyDialog(const QString& title,
   retranslateUi();
 }
 
-core::NDbKValue DbKeyDialog::GetKey() const {
+core::NDbKValue DbKeyDialog::key() const {
   return key_;
 }
 
@@ -396,7 +396,7 @@ common::Value* DbKeyDialog::item() const {
   } else if (type == common::Value::TYPE_HASH) {
     return value_table_edit_->hashValue();
   } else if (type == core::StreamValue::TYPE_STREAM) {
-    return stream_table_edit_->GetStreamValue();
+    return stream_table_edit_->streamValue();
   } else if (type == core::JsonValue::TYPE_JSON) {
     const std::string text_str = common::ConvertToString(json_value_edit_->text());
     if (!core::JsonValue::IsValidJson(text_str)) {

@@ -45,11 +45,11 @@ QVariant StreamTableModel::data(const QModelIndex& index, int role) const {
   QVariant result;
   if (role == Qt::DisplayRole) {
     if (col == KeyValueTableItem::kKey) {
-      result = node->GetKey();
+      result = node->key();
     } else if (col == KeyValueTableItem::kValue) {
-      result = node->GetValue();
+      result = node->value();
     } else if (col == KeyValueTableItem::kAction) {
-      result = node->GetActionState();
+      result = node->actionState();
     }
   }
 
@@ -68,9 +68,9 @@ bool StreamTableModel::setData(const QModelIndex& index, const QVariant& value, 
     }
 
     if (col == KeyValueTableItem::kKey) {
-      node->SetKey(value.toString());
+      node->setKey(value.toString());
     } else if (col == KeyValueTableItem::kValue) {
-      node->SetValue(value.toString());
+      node->setValue(value.toString());
     }
   }
 
@@ -133,8 +133,8 @@ bool StreamTableModel::getStream(core::StreamValue::stream_id sid, core::StreamV
   std::vector<core::StreamValue::Entry> entries;
   for (size_t i = 0; i < data_.size() - 1; ++i) {
     KeyValueTableItem* node = static_cast<KeyValueTableItem*>(data_[i]);
-    std::string key = common::ConvertToString(node->GetKey());
-    std::string val = common::ConvertToString(node->GetValue());
+    std::string key = common::ConvertToString(node->key());
+    std::string val = common::ConvertToString(node->value());
     entries.push_back(core::StreamValue::Entry{key, val});
   }
 
@@ -151,8 +151,8 @@ void StreamTableModel::insertEntry(const QString& key, const QString& value) {
   beginInsertRows(QModelIndex(), size, size);
   data_.insert(data_.begin() + size - 1, new KeyValueTableItem(key, value, KeyValueTableItem::RemoveAction));
   KeyValueTableItem* last = static_cast<KeyValueTableItem*>(data_.back());
-  last->SetKey(QString());
-  last->SetValue(QString());
+  last->setKey(QString());
+  last->setValue(QString());
   endInsertRows();
 }
 

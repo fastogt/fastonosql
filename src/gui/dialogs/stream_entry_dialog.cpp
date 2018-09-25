@@ -87,7 +87,7 @@ void StreamEntryDialog::clear() {
 
 void StreamEntryDialog::insertRow(const QModelIndex& index) {
   KeyValueTableItem* node = common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
-  model_->insertEntry(node->GetKey(), node->GetValue());
+  model_->insertEntry(node->key(), node->value());
 }
 
 void StreamEntryDialog::removeRow(const QModelIndex& index) {

@@ -49,7 +49,7 @@ FastoEditor::FastoEditor(QWidget* parent) : QWidget(parent), scin_(nullptr) {
   prev_ = new QPushButton;
   case_sensitive_ = new QCheckBox;
 
-  close_->setIcon(GuiFactory::GetInstance().GetClose16Icon());
+  close_->setIcon(GuiFactory::GetInstance().close16Icon());
   close_->setToolButtonStyle(Qt::ToolButtonIconOnly);
   close_->setIconSize(QSize(16, 16));
   find_line_->setAlignment(Qt::AlignLeft | Qt::AlignAbsolute);
@@ -95,8 +95,8 @@ QString FastoEditor::selectedText() const {
   return scin_->selectedText();
 }
 
-void FastoEditor::setShowAutoCompletion(bool showA) {
-  scin_->SetShowAutoCompletion(showA);
+void FastoEditor::setShowAutoCompletion(bool show) {
+  scin_->setShowAutoCompletion(show);
 }
 
 QMenu* FastoEditor::createStandardContextMenu() {

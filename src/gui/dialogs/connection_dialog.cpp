@@ -88,7 +88,7 @@ void ConnectionDialog::changeEvent(QEvent* e) {
 }
 
 void ConnectionDialog::init(proxy::IConnectionSettingsBase* connection) {
-  setWindowIcon(GuiFactory::GetInstance().GetIcon(connection->GetType()));
+  setWindowIcon(GuiFactory::GetInstance().icon(connection->GetType()));
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
@@ -100,7 +100,7 @@ void ConnectionDialog::init(proxy::IConnectionSettingsBase* connection) {
 
   QHBoxLayout* bottomLayout = new QHBoxLayout;
   test_button_ = new QPushButton("&Test");
-  test_button_->setIcon(GuiFactory::GetInstance().GetMessageBoxInformationIcon());
+  test_button_->setIcon(GuiFactory::GetInstance().messageBoxInformationIcon());
   VERIFY(connect(test_button_, &QPushButton::clicked, this, &ConnectionDialog::testConnection));
 
   bottomLayout->addWidget(test_button_, 1, Qt::AlignLeft);

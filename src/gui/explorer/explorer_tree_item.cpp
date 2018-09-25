@@ -385,16 +385,16 @@ void ExplorerKeyItem::setKey(const core::NKey& key) {
 
 std::string ExplorerKeyItem::basicStringName() const {
   if (ns_strategy_ == proxy::FULL_KEY) {
-    return GetFullName();
+    return fullName();
   }
 
   const core::NKey key = dbv_.GetKey();
   KeyInfo kinf(key.GetKey(), ns_separator_);
-  if (!kinf.HasNamespace()) {
-    return GetFullName();
+  if (!kinf.hasNamespace()) {
+    return fullName();
   }
 
-  return kinf.GetKeyName();
+  return kinf.keyName();
 }
 
 proxy::IServerSPtr ExplorerKeyItem::server() const {
@@ -448,11 +448,11 @@ void ExplorerKeyItem::setTTL(core::ttl_t ttl) {
   }
 }
 
-std::string ExplorerKeyItem::ns_separator() const {
+std::string ExplorerKeyItem::nsSeparator() const {
   return ns_separator_;
 }
 
-core::readable_string_t ExplorerKeyItem::GetFullName() const {
+core::readable_string_t ExplorerKeyItem::fullName() const {
   const core::NKey key = dbv_.GetKey();
   const core::key_t raw_key = key.GetKey();
   return raw_key.GetHumanReadable();

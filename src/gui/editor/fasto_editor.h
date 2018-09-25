@@ -69,7 +69,7 @@ class FastoEditor : public QWidget {
   void goToPrevElement();
 
  protected:
-  void setShowAutoCompletion(bool showA);
+  void setShowAutoCompletion(bool show);
   QMenu* createStandardContextMenu();
 
   void setCallTipsStyle(int style);

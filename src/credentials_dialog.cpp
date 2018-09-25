@@ -38,7 +38,7 @@ namespace fastonosql {
 const QSize CredentialsDialog::status_label_icon_size = QSize(24, 24);
 
 CredentialsDialog::CredentialsDialog(QWidget* parent) : base_class(parent), user_info_() {
-  glass_widget_ = new common::qt::gui::GlassWidget(gui::GuiFactory::GetInstance().GetPathToLoadingGif(), QString(), 0.5,
+  glass_widget_ = new common::qt::gui::GlassWidget(gui::GuiFactory::GetInstance().pathToLoadingGif(), QString(), 0.5,
                                                    QColor(111, 111, 100), this);
   setVisibleDescription(false);
   setVisibleStatus(true);
@@ -69,12 +69,12 @@ void CredentialsDialog::accept() {
 }
 
 void CredentialsDialog::setInforamtion(const QString& text) {
-  setStatusIcon(gui::GuiFactory::GetInstance().GetInfoIcon(), status_label_icon_size);
+  setStatusIcon(gui::GuiFactory::GetInstance().infoIcon(), status_label_icon_size);
   setStatus(text);
 }
 
 void CredentialsDialog::setFailed(const QString& text) {
-  setStatusIcon(gui::GuiFactory::GetInstance().GetFailIcon(), status_label_icon_size);
+  setStatusIcon(gui::GuiFactory::GetInstance().failIcon(), status_label_icon_size);
   setStatus(text);
 }
 

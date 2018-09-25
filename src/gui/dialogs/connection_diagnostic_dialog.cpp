@@ -41,7 +41,7 @@ namespace gui {
 ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(QWidget* parent, proxy::IConnectionSettingsBaseSPtr connection)
     : QDialog(parent) {
   setWindowTitle(translations::trConnectionDiagnostic);
-  setWindowIcon(GuiFactory::GetInstance().GetIcon(connection->GetType()));
+  setWindowIcon(GuiFactory::GetInstance().icon(connection->GetType()));
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
 
@@ -54,7 +54,7 @@ ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(QWidget* parent, proxy::I
   status_label_ = new QLabel(translations::trTimeTemplate_1S.arg("calculate..."));
   status_label_->setWordWrap(true);
   icon_label_ = new QLabel;
-  QIcon icon = GuiFactory::GetInstance().GetFailIcon();
+  QIcon icon = GuiFactory::GetInstance().failIcon();
   const QPixmap pm = icon.pixmap(stateIconSize);
   icon_label_->setPixmap(pm);
 
@@ -70,7 +70,7 @@ ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(QWidget* parent, proxy::I
   setLayout(mainLayout);
 
   glass_widget_ =
-      new common::qt::gui::GlassWidget(GuiFactory::GetInstance().GetPathToLoadingGif(),
+      new common::qt::gui::GlassWidget(GuiFactory::GetInstance().pathToLoadingGif(),
                                        translations::trTryToConnect + "...", 0.5, QColor(111, 111, 100), this);
   startTestConnection(connection);
 }
@@ -80,7 +80,7 @@ void ConnectionDiagnosticDialog::connectionResult(bool suc, qint64 mstimeExecute
 
   execute_time_label_->setText(translations::trTimeTemplate_1S.arg(mstimeExecute));
   if (suc) {
-    QIcon icon = GuiFactory::GetInstance().GetSuccessIcon();
+    QIcon icon = GuiFactory::GetInstance().successIcon();
     QPixmap pm = icon.pixmap(stateIconSize);
     icon_label_->setPixmap(pm);
   }

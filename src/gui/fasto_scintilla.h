@@ -41,22 +41,22 @@ class FastoScintilla : public QsciScintilla {
 
   explicit FastoScintilla(QWidget* parent = Q_NULLPTR);
 
-  void SetShowAutoCompletion(bool showA);
-  bool IsShowAutoCompletion() const;
+  void setShowAutoCompletion(bool show);
+  bool isShowAutoCompletion() const;
 
  private Q_SLOTS:
-  void UpdateLineNumbersMarginWidth();
+  void updateLineNumbersMarginWidth();
 
  protected:
   virtual void keyPressEvent(QKeyEvent* e) override;
 
  private:
-  int GetLineNumberMarginWidth() const;
-  int GetTextWidth(int style, const QString& text);
-  void ToggleLinesNumbers();
+  int lineNumberMarginWidth() const;
+  int textWidth(int style, const QString& text);
+  void toggleLinesNumbers();
 
-  void ShowAutocompletion();
-  void HideAutocompletion();
+  void showAutocompletion();
+  void hideAutocompletion();
 
   int line_number_margin_width_;
 };

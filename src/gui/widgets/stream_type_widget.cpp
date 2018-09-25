@@ -97,7 +97,7 @@ void StreamTypeWidget::updateStream(const QModelIndex& index, const core::Stream
   streams_[row] = stream;
   QString qsid;
   common::ConvertFromString(stream.sid, &qsid);
-  node->SetKey(qsid);
+  node->setKey(qsid);
   model_->updateItem(model_->index(row, KeyValueTableItem::kKey, QModelIndex()),
                      model_->index(row, KeyValueTableItem::kAction, QModelIndex()));
 }
@@ -106,7 +106,7 @@ void StreamTypeWidget::clear() {
   model_->clear();
 }
 
-core::StreamValue* StreamTypeWidget::GetStreamValue() const {
+core::StreamValue* StreamTypeWidget::streamValue() const {
   if (streams_.empty()) {
     return nullptr;
   }

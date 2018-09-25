@@ -197,7 +197,7 @@ int main(int argc, char* argv[]) {
   app.setAttribute(Qt::AA_UseHighDpiPixmaps);
   // Cross Platform High DPI support - Qt 5.7
   app.setAttribute(Qt::AA_EnableHighDpiScaling);
-  app.setWindowIcon(fastonosql::gui::GuiFactory::GetInstance().GetLogoIcon());  // default icon for app
+  app.setWindowIcon(fastonosql::gui::GuiFactory::GetInstance().logoIcon());  // default icon for app
 
   // EULA License Agreement
   if (!settings_manager->GetAccpetedEula()) {
