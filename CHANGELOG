@@ -1,4 +1,4 @@
-1.19.2 /
+1.19.2 / September 27, 2018
 [Alexandr Topilski]
 - [RocksDB] Update sources to version 5.16.0
 - [LevelDB] Update sources to version 1.20
