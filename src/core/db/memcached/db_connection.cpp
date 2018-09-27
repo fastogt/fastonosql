@@ -103,7 +103,7 @@ struct KeysHolder {
   const fastonosql::core::keys_limit_t limit;
   std::vector<std::string>* r;
 
-  memcached_return_t addKey(const char* key, size_t key_length, time_t exp) {
+  memcached_return_t AddKey(const char* key, size_t key_length, time_t exp) {
     UNUSED(exp);
     if (r->size() < limit) {
       std::string received_key(key, key_length);
@@ -127,7 +127,7 @@ memcached_return_t memcached_dump_keys_callback(const memcached_st* ptr,
   UNUSED(ptr);
 
   KeysHolder* holder = static_cast<KeysHolder*>(context);
-  return holder->addKey(key, key_length, exp);
+  return holder->AddKey(key, key_length, exp);
 }
 
 struct ScanHolder {
@@ -141,7 +141,7 @@ struct ScanHolder {
   uint64_t cursor_out;
   uint64_t offset_pos;
 
-  memcached_return_t addKey(const char* key, size_t key_length, time_t exp) {
+  memcached_return_t AddKey(const char* key, size_t key_length, time_t exp) {
     UNUSED(exp);
     if (r.size() < limit) {
       std::string received_key(key, key_length);
@@ -169,7 +169,7 @@ memcached_return_t memcached_dump_scan_callback(const memcached_st* ptr,
   UNUSED(ptr);
 
   ScanHolder* holder = static_cast<ScanHolder*>(context);
-  return holder->addKey(key, key_length, exp);
+  return holder->AddKey(key, key_length, exp);
 }
 
 struct TTLHolder {
