@@ -270,6 +270,18 @@ struct CommandsApi : public internal::ApiTraits<DBConnection> {
   static common::Error Xrevrange(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error Xread(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error Xadd(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Xack(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error XreadGroup(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error XGroup(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Xclaim(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error XTrim(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error XPending(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Xinfo(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error Xdel(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error BZpopMin(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error BZpopMax(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ZpopMin(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
+  static common::Error ZpopMax(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error Asking(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error RestoreAsking(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);
   static common::Error GeoRadius_ro(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out);

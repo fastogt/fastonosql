@@ -1620,6 +1620,66 @@ common::Error CommandsApi::Xadd(internal::CommandHandler* handler, commands_args
   return common::Error();
 }
 
+common::Error CommandsApi::Xack(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"XACK"}, argv), out);
+}
+
+common::Error CommandsApi::XreadGroup(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"XREADGROUP"}, argv), out);
+}
+
+common::Error CommandsApi::XGroup(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"XGROUP"}, argv), out);
+}
+
+common::Error CommandsApi::Xclaim(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"XCLAIM"}, argv), out);
+}
+
+common::Error CommandsApi::XTrim(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"XTRIM"}, argv), out);
+}
+
+common::Error CommandsApi::XPending(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"XPENDING"}, argv), out);
+}
+
+common::Error CommandsApi::Xinfo(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"XINFO"}, argv), out);
+}
+
+common::Error CommandsApi::Xdel(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"XDEL"}, argv), out);
+}
+
+common::Error CommandsApi::BZpopMin(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"BZPOPMIN"}, argv), out);
+}
+
+common::Error CommandsApi::BZpopMax(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"BZPOPMAX"}, argv), out);
+}
+
+common::Error CommandsApi::ZpopMin(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"ZPOPMIN"}, argv), out);
+}
+
+common::Error CommandsApi::ZpopMax(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
+  DBConnection* red = static_cast<DBConnection*>(handler);
+  return red->CommonExec(ExpandCommand({"ZPOPMAX"}, argv), out);
+}
+
 common::Error CommandsApi::PFSelfTest(internal::CommandHandler* handler, commands_args_t argv, FastoObject* out) {
   DBConnection* red = static_cast<DBConnection*>(handler);
   return red->CommonExec(ExpandCommand({"PFSELFTEST"}, argv), out);
