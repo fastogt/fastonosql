@@ -20,18 +20,18 @@
 
 #include <common/qt/utils_qt.h>  // for EventInfo
 
-#include "core/command_info.h"
-#include "core/database/idatabase_info.h"
-#include "core/db_key.h"  // for NDbKValue
-#include "core/db_ps_channel.h"
-#include "core/server/iserver_info.h"   // for IDataBaseInfoSPtr, IServerInf...
-#include "core/server_property_info.h"  // for property_t, ServerPropertiesInfo
+#include <fastonosql/core/command_info.h>
+#include <fastonosql/core/database/idatabase_info.h>
+#include <fastonosql/core/db_key.h>  // for NDbKValue
+#include <fastonosql/core/db_ps_channel.h>
+#include <fastonosql/core/server/iserver_info.h>   // for IDataBaseInfoSPtr, IServerInf...
+#include <fastonosql/core/server_property_info.h>  // for property_t, ServerPropertiesInfo
 
 #if defined(PRO_VERSION)
-#include "core/module_info.h"
+#include <fastonosql/core/module_info.h>
 #endif
 
-#include "core/global.h"  // for FastoObjectIPtr
+#include <fastonosql/core/global.h>  // for FastoObjectIPtr
 
 namespace fastonosql {
 namespace proxy {

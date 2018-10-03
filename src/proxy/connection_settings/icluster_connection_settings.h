@@ -20,7 +20,7 @@
 
 #include <common/net/types.h>
 
-#include "core/connection_types.h"  // for core::connectionTypes
+#include <fastonosql/core/connection_types.h>  // for core::connectionTypes
 #include "proxy/connection_settings/iconnection_settings.h"
 
 namespace fastonosql {

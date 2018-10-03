@@ -18,7 +18,7 @@
 
 #include "proxy/db/pika/server.h"
 
-#include "core/db/pika/server_info.h"  // for ServerInfo, etc
+#include <fastonosql/core/db/pika/server_info.h>  // for ServerInfo, etc
 
 #include "proxy/db/pika/driver.h"                // for Driver
 #include "proxy/db/redis_compatible/database.h"  // for Database

@@ -21,7 +21,7 @@
 #include <Qsci/qsciabstractapis.h>
 #include <Qsci/qscilexercustom.h>
 
-#include "core/command_holder.h"
+#include <fastonosql/core/command_holder.h>
 
 namespace fastonosql {
 namespace gui {

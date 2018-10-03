@@ -20,7 +20,7 @@
 
 #include <string>  // for string
 
-#include "core/global.h"  // for FastoObject (ptr only), etc
+#include <fastonosql/core/global.h>  // for FastoObject (ptr only), etc
 
 namespace fastonosql {
 namespace proxy {

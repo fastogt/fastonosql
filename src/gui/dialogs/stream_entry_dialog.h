@@ -22,7 +22,7 @@
 #include <QLabel>
 #include <QTableView>
 
-#include "core/value.h"
+#include <fastonosql/core/value.h>
 
 #define DEFAILT_ID "*"
 

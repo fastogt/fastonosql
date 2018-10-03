@@ -20,9 +20,9 @@
 
 #include <common/convert2string.h>  // for ConvertToString
 
-#include "core/db/lmdb/database_info.h"
-#include "core/db/lmdb/db_connection.h"  // for DBConnection
-#include "core/value.h"
+#include <fastonosql/core/db/lmdb/database_info.h>
+#include <fastonosql/core/db/lmdb/db_connection.h>  // for DBConnection
+#include <fastonosql/core/value.h>
 
 #include "proxy/command/command.h"              // for CreateCommand, etc
 #include "proxy/command/command_logger.h"       // for LOG_COMMAND

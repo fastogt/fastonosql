@@ -20,7 +20,7 @@
 
 #include <QWidget>
 
-#include "core/connection_types.h"  // for connectionTypes
+#include <fastonosql/core/connection_types.h>  // for connectionTypes
 #include "proxy/proxy_fwd.h"        // for IServerSPtr
 
 class QGroupBox;

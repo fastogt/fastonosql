@@ -20,7 +20,7 @@
 
 #include <QDialog>
 
-#include "core/connection_types.h"  // for connectionTypes
+#include <fastonosql/core/connection_types.h>  // for connectionTypes
 
 class QLineEdit;  // lines 25-25
 class QSpinBox;   // lines 26-26

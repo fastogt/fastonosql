@@ -22,8 +22,8 @@
 
 #include <common/error.h>
 
-#include "core/database/idatabase_info.h"
-#include "core/server/iserver_info.h"
+#include <fastonosql/core/database/idatabase_info.h>
+#include <fastonosql/core/server/iserver_info.h>
 
 #include "proxy/proxy_fwd.h"  // for IServerSPtr
 

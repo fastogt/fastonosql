@@ -20,10 +20,10 @@
 
 #include <QWidget>
 
-#include "core/database/idatabase_info.h"
+#include <fastonosql/core/database/idatabase_info.h>
 #include "proxy/proxy_fwd.h"  // for IServerSPtr
 
-#include "core/global.h"  // for FastoObject, etc
+#include <fastonosql/core/global.h>  // for FastoObject, etc
 
 class QPushButton;  // lines 27-27
 class QTreeView;

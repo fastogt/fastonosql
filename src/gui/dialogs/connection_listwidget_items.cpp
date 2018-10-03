@@ -20,7 +20,7 @@
 
 #include <common/qt/convert2string.h>
 
-#include "core/connection_types.h"  // for ConvertToString, etc
+#include <fastonosql/core/connection_types.h>  // for ConvertToString, etc
 
 #include "gui/gui_factory.h"  // for GuiFactory
 

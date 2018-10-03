@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "core/global.h"  // for FastoObjectCommandIPtr, FastoObject (ptr ...
+#include <fastonosql/core/global.h>  // for FastoObjectCommandIPtr, FastoObject (ptr ...
 
 namespace fastonosql {
 namespace proxy {

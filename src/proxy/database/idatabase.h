@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "core/database/idatabase_info.h"
+#include <fastonosql/core/database/idatabase_info.h>
 
 #include "proxy/proxy_fwd.h"
 

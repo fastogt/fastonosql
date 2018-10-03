@@ -20,7 +20,7 @@
 
 #include "proxy/connection_settings/iconnection_settings_local.h"
 
-#include "core/db/rocksdb/config.h"
+#include <fastonosql/core/db/rocksdb/config.h>
 
 namespace fastonosql {
 namespace proxy {

@@ -21,10 +21,10 @@
 #include <common/convert2string.h>           // for ConvertFromString, etc
 #include <common/file_system/file_system.h>  // for copy_file
 
-#include "core/db/pika/db_connection.h"  // for DBConnection, INFO_REQUEST, etc
-#include "core/db/pika/server_info.h"
-#include "core/db/redis_compatible/database_info.h"
-#include "core/value.h"
+#include <fastonosql/core/db/pika/db_connection.h>  // for DBConnection, INFO_REQUEST, etc
+#include <fastonosql/core/db/pika/server_info.h>
+#include <fastonosql/core/db/redis_compatible/database_info.h>
+#include <fastonosql/core/value.h>
 
 #include "proxy/command/command.h"  // for CreateCommand, etc
 #include "proxy/command/command_logger.h"

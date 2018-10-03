@@ -20,7 +20,7 @@
 
 #include "proxy/connection_settings/iconnection_settings_local.h"
 
-#include "core/db/lmdb/config.h"
+#include <fastonosql/core/db/lmdb/config.h>
 
 namespace fastonosql {
 namespace proxy {

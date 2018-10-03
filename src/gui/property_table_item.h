@@ -22,7 +22,7 @@
 
 #include <common/qt/gui/base/table_item.h>  // for TableItem
 
-#include "core/server_property_info.h"  // for property_t
+#include <fastonosql/core/server_property_info.h>  // for property_t
 
 namespace fastonosql {
 namespace gui {

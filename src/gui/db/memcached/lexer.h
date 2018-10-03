@@ -20,7 +20,7 @@
 
 #include "gui/shell/base_lexer.h"
 
-#include "core/connection_commands_traits.h"
+#include <fastonosql/core/connection_commands_traits.h>
 
 namespace fastonosql {
 namespace gui {

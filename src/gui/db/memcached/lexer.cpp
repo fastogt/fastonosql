@@ -18,7 +18,7 @@
 
 #include "gui/db/memcached/lexer.h"
 
-#include "core/db/memcached/db_connection.h"
+#include <fastonosql/core/db/memcached/db_connection.h>
 
 namespace fastonosql {
 namespace gui {

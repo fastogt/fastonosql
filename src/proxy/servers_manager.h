@@ -29,7 +29,7 @@
 #include "proxy/connection_settings/isentinel_connection_settings.h"
 #endif
 
-#include "core/server/iserver_info.h"
+#include <fastonosql/core/server/iserver_info.h>
 #include "proxy/proxy_fwd.h"  // for IClusterSPtr, ISentinelSPtr, etc
 
 namespace fastonosql {

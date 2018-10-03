@@ -20,7 +20,7 @@
 
 #include <QWidget>
 
-#include "core/global.h"
+#include <fastonosql/core/global.h>
 
 class QPoint;
 class QTextEdit;  // lines 23-23

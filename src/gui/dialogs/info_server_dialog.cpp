@@ -24,46 +24,46 @@
 #include <common/qt/convert2string.h>
 
 #ifdef BUILD_WITH_REDIS
-#include "core/db/redis/server_info.h"
+#include <fastonosql/core/db/redis/server_info.h>
 #endif
 
 #ifdef BUILD_WITH_MEMCACHED
-#include "core/db/memcached/server_info.h"
+#include <fastonosql/core/db/memcached/server_info.h>
 #endif
 
 #ifdef BUILD_WITH_SSDB
-#include "core/db/ssdb/server_info.h"
+#include <fastonosql/core/db/ssdb/server_info.h>
 #endif
 
 #ifdef BUILD_WITH_LEVELDB
-#include "core/db/leveldb/server_info.h"
+#include <fastonosql/core/db/leveldb/server_info.h>
 #endif
 
 #ifdef BUILD_WITH_ROCKSDB
-#include "core/db/rocksdb/server_info.h"
+#include <fastonosql/core/db/rocksdb/server_info.h>
 #endif
 
 #ifdef BUILD_WITH_UNQLITE
-#include "core/db/unqlite/server_info.h"
+#include <fastonosql/core/db/unqlite/server_info.h>
 #endif
 
 #ifdef BUILD_WITH_LMDB
-#include "core/db/lmdb/server_info.h"
+#include <fastonosql/core/db/lmdb/server_info.h>
 #endif
 
 #ifdef BUILD_WITH_UPSCALEDB
-#include "core/db/upscaledb/server_info.h"
+#include <fastonosql/core/db/upscaledb/server_info.h>
 #endif
 
 #ifdef BUILD_WITH_FORESTDB
-#include "core/db/forestdb/server_info.h"
+#include <fastonosql/core/db/forestdb/server_info.h>
 #endif
 
 #ifdef BUILD_WITH_PIKA
-#include "core/db/pika/server_info.h"
+#include <fastonosql/core/db/pika/server_info.h>
 #endif
 
-#include "core/connection_types.h"     // for connectionTypes, etc
+#include <fastonosql/core/connection_types.h>     // for connectionTypes, etc
 #include "proxy/events/events_info.h"  // for ServerInfoResponce, etc
 #include "proxy/server/iserver.h"      // for IServer
 

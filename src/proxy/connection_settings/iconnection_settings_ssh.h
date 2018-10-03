@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "core/ssh_info.h"
+#include <fastonosql/core/ssh_info.h>
 #include "proxy/connection_settings/iconnection_settings_remote.h"
 
 namespace fastonosql {

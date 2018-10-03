@@ -20,7 +20,7 @@
 
 #include <QDialog>
 
-#include "core/server_property_info.h"  // for property_t
+#include <fastonosql/core/server_property_info.h>  // for property_t
 #include "proxy/proxy_fwd.h"            // for IServerSPtr
 
 class QTableView;  // lines 26-26

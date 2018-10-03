@@ -20,7 +20,7 @@
 
 #include "proxy/connection_settings/iconnection_settings_ssh.h"
 
-#include "core/db/redis/config.h"  // for Config
+#include <fastonosql/core/db/redis/config.h>  // for Config
 
 namespace fastonosql {
 namespace proxy {

@@ -331,6 +331,27 @@ class BuildRequest(object):
             os.chdir(abs_dir_path)
             raise ex
 
+    def build_fastonosql_core(self, cmake_line, make_install):
+        abs_dir_path = self.build_dir_path_
+        try:
+            cloned_dir = utils.git_clone('https://github.com/fastogt/fastonosql_core.git', abs_dir_path, None, False)
+            os.chdir(cloned_dir)
+
+            os.mkdir('build_cmake_release')
+            os.chdir('build_cmake_release')
+            fastonosql_core_cmake_line = list(cmake_line)
+            fastonosql_core_cmake_line.append('-DJSONC_USE_STATIC=ON')
+            fastonosql_core_cmake_line.append('-DSNAPPY_USE_STATIC=ON')
+            fastonosql_core_cmake_line.append('-DOPENSSL_USE_STATIC_LIBS=ON')
+            cmake_policy = run_command.CmakePolicy(print_message)
+            make_policy = run_command.CommonPolicy(print_message)
+            run_command.run_command_cb(fastonosql_core_cmake_line, cmake_policy)
+            run_command.run_command_cb(make_install, make_policy)
+            os.chdir(abs_dir_path)
+        except Exception as ex:
+            os.chdir(abs_dir_path)
+            raise ex
+
     def build(self, bs):
         cmake_project_root_abs_path = '..'
         if not os.path.exists(cmake_project_root_abs_path):
@@ -354,22 +375,23 @@ class BuildRequest(object):
 
         # abs_dir_path = self.build_dir_path_
 
-        self.build_snappy(cmake_line, make_install)
-        self.build_openssl(prefix_path)#
-        self.build_libssh2(cmake_line, prefix_path, make_install)
-        self.build_jsonc(prefix_path)
-        self.build_qscintilla(cmake_line, make_install)
-        self.build_common(cmake_line, make_install)
+#        self.build_snappy(cmake_line, make_install)
+#        self.build_openssl(prefix_path)#
+#        self.build_libssh2(cmake_line, prefix_path, make_install)
+#        self.build_jsonc(prefix_path)
+#        self.build_qscintilla(cmake_line, make_install)
+#        self.build_common(cmake_line, make_install)
 
         # databases libs builds
-        self.build_hiredis(prefix_path)
-        self.build_libmemcached(prefix_path) #
-        self.build_unqlite(cmake_line, make_install)
-        self.build_lmdb(prefix_path)
-        self.build_leveldb(cmake_line, make_install)
-        self.build_rocksdb(cmake_line, make_install)
-        self.build_upscaledb(prefix_path) #
-        self.build_forestdb(cmake_line, make_install) #
+#        self.build_hiredis(prefix_path)
+#        self.build_libmemcached(prefix_path) #
+#        self.build_unqlite(cmake_line, make_install)
+#        self.build_lmdb(prefix_path)
+#        self.build_leveldb(cmake_line, make_install)
+#        self.build_rocksdb(cmake_line, make_install)
+#        self.build_upscaledb(prefix_path) #
+#        self.build_forestdb(cmake_line, make_install) #
+        self.build_fastonosql_core(cmake_line, make_install)
 
 
 if __name__ == "__main__":

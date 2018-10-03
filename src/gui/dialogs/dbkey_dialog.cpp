@@ -33,8 +33,8 @@
 #include <common/convert2string.h>
 #include <common/qt/convert2string.h>  // for ConvertToString
 
-#include "core/db_traits.h"
-#include "core/value.h"
+#include <fastonosql/core/db_traits.h>
+#include <fastonosql/core/value.h>
 
 #include "gui/widgets/hash_type_widget.h"
 #include "gui/widgets/list_type_widget.h"

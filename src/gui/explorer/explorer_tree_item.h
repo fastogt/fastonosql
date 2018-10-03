@@ -22,7 +22,7 @@
 
 #include <common/qt/gui/base/tree_item.h>  // for TreeItem
 
-#include "core/database/idatabase_info.h"
+#include <fastonosql/core/database/idatabase_info.h>
 
 #include "proxy/proxy_fwd.h"  // for IServerSPtr, IClusterSPtr, etc
 #include "proxy/types.h"

@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "core/global.h"  // for FastoObjectIPtr, etc
+#include <fastonosql/core/global.h>  // for FastoObjectIPtr, etc
 
 class QObject;
 

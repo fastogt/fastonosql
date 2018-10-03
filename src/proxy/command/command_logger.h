@@ -22,7 +22,7 @@
 
 #include <common/patterns/singleton_pattern.h>
 
-#include "core/global.h"
+#include <fastonosql/core/global.h>
 
 namespace fastonosql {
 namespace proxy {

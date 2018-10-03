@@ -20,7 +20,7 @@
 
 #include <common/qt/gui/base/table_model.h>
 
-#include "core/value.h"
+#include <fastonosql/core/value.h>
 
 namespace fastonosql {
 namespace gui {

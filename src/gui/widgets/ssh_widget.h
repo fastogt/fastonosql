@@ -20,7 +20,7 @@
 
 #include <QWidget>
 
-#include "core/ssh_info.h"
+#include <fastonosql/core/ssh_info.h>
 
 class QLabel;
 class QLineEdit;

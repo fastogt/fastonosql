@@ -27,7 +27,7 @@
 #include <common/qt/gui/base/graph_widget.h>  // for GraphWidget, etc
 #include <common/qt/gui/glass_widget.h>       // for GlassWidget
 
-#include "core/db_traits.h"
+#include <fastonosql/core/db_traits.h>
 #include "proxy/server/iserver.h"  // for IServer
 
 #include "gui/gui_factory.h"  // for GuiFactory

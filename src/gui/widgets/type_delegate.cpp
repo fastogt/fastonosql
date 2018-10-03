@@ -26,7 +26,7 @@
 #include <common/qt/convert2string.h>
 #include <common/qt/utils_qt.h>
 
-#include "core/value.h"
+#include <fastonosql/core/value.h>
 
 #include "gui/widgets/hash_type_widget.h"
 #include "gui/widgets/list_type_widget.h"

@@ -23,7 +23,7 @@
 #include <common/qt/convert2string.h>
 #include <common/qt/gui/icon_combobox.h>
 
-#include "core/module_info.h"
+#include <fastonosql/core/module_info.h>
 
 #include "proxy/events/events_info.h"
 

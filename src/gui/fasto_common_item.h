@@ -22,7 +22,7 @@
 
 #include <common/qt/gui/base/tree_item.h>  // for TreeItem
 
-#include "core/db_key.h"  // for NDbKValue, NValue
+#include <fastonosql/core/db_key.h>  // for NDbKValue, NValue
 
 namespace fastonosql {
 namespace gui {

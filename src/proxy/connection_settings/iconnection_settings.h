@@ -22,7 +22,7 @@
 
 #include <common/file_system/path.h>
 
-#include "core/connection_types.h"  // for core::connectionTypes
+#include <fastonosql/core/connection_types.h>  // for core::connectionTypes
 
 #include "proxy/types.h"
 

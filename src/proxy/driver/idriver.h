@@ -20,8 +20,8 @@
 
 #include <QObject>
 
-#include "core/icommand_translator.h"             // for translator_t
-#include "core/internal/cdb_connection_client.h"  // for CDBConnectionClient
+#include <fastonosql/core/icommand_translator.h>             // for translator_t
+#include <fastonosql/core/internal/cdb_connection_client.h>  // for CDBConnectionClient
 
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "proxy/events/events.h"                             // for BackupRequestEvent, ChangeMa...

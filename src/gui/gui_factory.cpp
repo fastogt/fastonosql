@@ -25,7 +25,7 @@
 #include <common/file_system/string_path_utils.h>
 #include <common/qt/convert2string.h>
 
-#include "core/value.h"
+#include <fastonosql/core/value.h>
 
 #include "proxy/settings_manager.h"  // for SettingsManager
 

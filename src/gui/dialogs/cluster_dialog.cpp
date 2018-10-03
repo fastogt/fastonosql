@@ -35,7 +35,7 @@
 #include <common/qt/convert2string.h>  // for ConvertToString
 #include <common/types.h>
 
-#include "core/connection_types.h"  // for connectionTypes, etc
+#include <fastonosql/core/connection_types.h>  // for connectionTypes, etc
 #include "proxy/cluster_connection_settings_factory.h"
 
 #include "gui/dialogs/connection_diagnostic_dialog.h"

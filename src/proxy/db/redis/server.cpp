@@ -18,7 +18,7 @@
 
 #include "proxy/db/redis/server.h"
 
-#include "core/db/redis/server_info.h"  // for ServerInfo, etc
+#include <fastonosql/core/db/redis/server_info.h>  // for ServerInfo, etc
 
 #include "proxy/db/redis/driver.h"               // for Driver
 #include "proxy/db/redis_compatible/database.h"  // for Database

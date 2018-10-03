@@ -20,7 +20,7 @@
 
 #include <QTabWidget>
 
-#include "core/global.h"
+#include <fastonosql/core/global.h>
 
 namespace fastonosql {
 namespace gui {

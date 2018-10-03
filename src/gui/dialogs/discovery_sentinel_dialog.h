@@ -20,7 +20,7 @@
 
 #include <QDialog>
 
-#include "core/server/iserver_info.h"
+#include <fastonosql/core/server/iserver_info.h>
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 
 class QLabel;  // lines 29-29

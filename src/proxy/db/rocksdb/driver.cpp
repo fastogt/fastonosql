@@ -20,9 +20,9 @@
 
 #include <common/convert2string.h>
 
-#include "core/db/rocksdb/database_info.h"
-#include "core/db/rocksdb/db_connection.h"  // for DBConnection
-#include "core/value.h"
+#include <fastonosql/core/db/rocksdb/database_info.h>
+#include <fastonosql/core/db/rocksdb/db_connection.h>  // for DBConnection
+#include <fastonosql/core/value.h>
 
 #include "proxy/command/command.h"                 // for CreateCommand, etc
 #include "proxy/command/command_logger.h"          // for LOG_COMMAND

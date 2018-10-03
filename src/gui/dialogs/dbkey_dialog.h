@@ -20,8 +20,8 @@
 
 #include <QDialog>
 
-#include "core/connection_types.h"  // for connectionTypes
-#include "core/db_key.h"            // for NDbKValue, NValue
+#include <fastonosql/core/connection_types.h>  // for connectionTypes
+#include <fastonosql/core/db_key.h>            // for NDbKValue, NValue
 
 class QLineEdit;
 class QComboBox;

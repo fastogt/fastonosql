@@ -24,7 +24,7 @@
 
 class QDialogButtonBox;
 
-#include "core/connection_types.h"  // for connectionTypes
+#include <fastonosql/core/connection_types.h>  // for connectionTypes
 
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
 

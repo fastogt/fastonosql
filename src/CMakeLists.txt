@@ -1,97 +1,4 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.6.3) # OPENSSL_USE_STATIC_LIBS
-# core
-SET(HEADERS_CORE_INTERNAL
-  ${CMAKE_SOURCE_DIR}/src/core/internal/connection.h
-  ${CMAKE_SOURCE_DIR}/src/core/internal/db_connection.h
-  ${CMAKE_SOURCE_DIR}/src/core/internal/cdb_connection.h
-  ${CMAKE_SOURCE_DIR}/src/core/internal/cdb_connection_client.h
-  ${CMAKE_SOURCE_DIR}/src/core/internal/imodule_connection_client.h
-  ${CMAKE_SOURCE_DIR}/src/core/internal/command_handler.h
-  ${CMAKE_SOURCE_DIR}/src/core/internal/commands_api.h
-)
-SET(SOURCES_CORE_INTERNAL
-  ${CMAKE_SOURCE_DIR}/src/core/internal/connection.cpp
-  ${CMAKE_SOURCE_DIR}/src/core/internal/db_connection.cpp
-  ${CMAKE_SOURCE_DIR}/src/core/internal/cdb_connection.cpp
-  ${CMAKE_SOURCE_DIR}/src/core/internal/cdb_connection_client.cpp
-  ${CMAKE_SOURCE_DIR}/src/core/internal/imodule_connection_client.cpp
-  ${CMAKE_SOURCE_DIR}/src/core/internal/command_handler.cpp
-  ${CMAKE_SOURCE_DIR}/src/core/internal/commands_api.cpp
-)
-
-SET(HEADERS_CORE_DATABASE
-  ${CMAKE_SOURCE_DIR}/src/core/database/idatabase_info.h
-)
-SET(SOURCES_CORE_DATABASE
-  ${CMAKE_SOURCE_DIR}/src/core/database/idatabase_info.cpp
-)
-
-SET(HEADERS_CORE_SERVER
-  ${CMAKE_SOURCE_DIR}/src/core/server/iserver_info.h
-)
-SET(SOURCES_CORE_SERVER
-  ${CMAKE_SOURCE_DIR}/src/core/server/iserver_info.cpp
-)
-
-SET(HEADERS_CORE_CONFIG
-  ${CMAKE_SOURCE_DIR}/src/core/config/config.h
-)
-SET(SOURCES_CORE_CONFIG
-  ${CMAKE_SOURCE_DIR}/src/core/config/config.cpp
-)
-
-SET(HEADERS_CORE
-  ${HEADERS_CORE_SERVER}
-  ${HEADERS_CORE_DATABASE}
-  ${HEADERS_CORE_CONFIG}
-  ${HEADERS_CORE_TRANSLATOR}
-  ${HEADERS_CORE_INTERNAL}
-
-  ${CMAKE_SOURCE_DIR}/src/core/constant_commands_array.h
-  ${CMAKE_SOURCE_DIR}/src/core/connection_commands_traits.h
-  ${CMAKE_SOURCE_DIR}/src/core/connection_types.h
-  ${CMAKE_SOURCE_DIR}/src/core/types.h
-  ${CMAKE_SOURCE_DIR}/src/core/db_traits.h
-  ${CMAKE_SOURCE_DIR}/src/core/db_key.h
-  ${CMAKE_SOURCE_DIR}/src/core/db_ps_channel.h
-  ${CMAKE_SOURCE_DIR}/src/core/icommand_translator.h
-  ${CMAKE_SOURCE_DIR}/src/core/icommand_translator_base.h
-  ${CMAKE_SOURCE_DIR}/src/core/command_info.h
-  ${CMAKE_SOURCE_DIR}/src/core/module_info.h
-  ${CMAKE_SOURCE_DIR}/src/core/command_holder.h
-  ${CMAKE_SOURCE_DIR}/src/core/server_property_info.h
-  ${CMAKE_SOURCE_DIR}/src/core/ssh_info.h
-  ${CMAKE_SOURCE_DIR}/src/core/logger.h
-  ${CMAKE_SOURCE_DIR}/src/core/value.h
-  ${CMAKE_SOURCE_DIR}/src/core/global.h
-)
-
-SET(SOURCES_CORE
-  ${SOURCES_CORE_DATABASE}
-  ${SOURCES_CORE_SERVER}
-  ${SOURCES_CORE_CONFIG}
-  ${SOURCES_CORE_TRANSLATOR}
-  ${SOURCES_CORE_INTERNAL}
-
-  ${CMAKE_SOURCE_DIR}/src/core/constant_commands_array.cpp
-  ${CMAKE_SOURCE_DIR}/src/core/connection_commands_traits.cpp
-  ${CMAKE_SOURCE_DIR}/src/core/connection_types.cpp
-  ${CMAKE_SOURCE_DIR}/src/core/types.cpp
-  ${CMAKE_SOURCE_DIR}/src/core/db_traits.cpp
-  ${CMAKE_SOURCE_DIR}/src/core/db_key.cpp
-  ${CMAKE_SOURCE_DIR}/src/core/db_ps_channel.cpp
-  ${CMAKE_SOURCE_DIR}/src/core/icommand_translator.cpp
-  ${CMAKE_SOURCE_DIR}/src/core/icommand_translator_base.cpp
-  ${CMAKE_SOURCE_DIR}/src/core/command_info.cpp
-  ${CMAKE_SOURCE_DIR}/src/core/module_info.cpp
-  ${CMAKE_SOURCE_DIR}/src/core/command_holder.cpp
-  ${CMAKE_SOURCE_DIR}/src/core/server_property_info.cpp
-  ${CMAKE_SOURCE_DIR}/src/core/ssh_info.cpp
-  ${CMAKE_SOURCE_DIR}/src/core/logger.cpp
-  ${CMAKE_SOURCE_DIR}/src/core/value.cpp
-  ${CMAKE_SOURCE_DIR}/src/core/global.cpp
-)
-
 # proxy
 SET(HEADERS_PROXY_CONNECTION_SETTINGS
   ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/iconnection_settings.h
@@ -516,19 +423,6 @@ IF(BUILD_WITH_REDIS OR BUILD_WITH_PIKA)
   FIND_PACKAGE(Hiredis REQUIRED)
   #ADD_SUBDIRECTORY(third-party/redis)
 
-  SET(HEADERS_CORE_DB_REDIS_COMPATIBLE
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/config.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/db_connection.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/command_translator.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/database_info.h
-  )
-  SET(SOURCES_CORE_DB_REDIS_COMPATIBLE
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/config.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/db_connection.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/command_translator.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/database_info.cpp
-  )
-
   SET(HEADERS_PIKA_PROXY_DB_REDIS_COMPATIBLE_TO_MOC
 
   )
@@ -540,14 +434,6 @@ IF(BUILD_WITH_REDIS OR BUILD_WITH_PIKA)
   )
 
 IF(PRO_VERSION)
-  SET(HEADERS_CORE_DB_REDIS_COMPATIBLE ${HEADERS_CORE_DB_REDIS_COMPATIBLE}
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/cluster_infos.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/sentinel_info.h
-  )
-  SET(SOURCES_CORE_DB_REDIS_COMPATIBLE ${SOURCES_CORE_DB_REDIS_COMPATIBLE}
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/cluster_infos.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis_compatible/sentinel_info.cpp
-  )
   SET(HEADERS_PIKA_PROXY_DB_REDIS_COMPATIBLE_TO_MOC ${HEADERS_PIKA_PROXY_DB_REDIS_COMPATIBLE_TO_MOC}
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis_compatible/cluster.h
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis_compatible/sentinel.h
@@ -558,7 +444,6 @@ IF(PRO_VERSION)
   )
 ENDIF(PRO_VERSION)
 
-  SET(INCLUDE_DIRS ${INCLUDE_DIRS} $<TARGET_PROPERTY:Libssh2::libssh2,INTERFACE_INCLUDE_DIRECTORIES> ${OPENSSL_INCLUDE_DIR} ${HIREDIS_INCLUDE_DIR})
   SET(DB_LIBS ${DB_LIBS} ${HIREDIS_LIBRARIES} Libssh2::libssh2 ${OPENSSL_LIBRARIES})
   SET(CORE_ENGINE_DEFINES ${HIREDIS_DEFINITIONS})
   IF(OS_WINDOWS)
@@ -568,23 +453,6 @@ ENDIF(BUILD_WITH_REDIS OR BUILD_WITH_PIKA)
 
 #redis
 IF(BUILD_WITH_REDIS)
-  #core redis
-  SET(HEADERS_CORE_DB_REDIS ${HEADERS_CORE_DB_REDIS_COMPATIBLE}
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis/internal/modules.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis/internal/commands_api.h
-
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis/config.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis/server_info.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis/db_connection.h
-  )
-  SET(SOURCES_CORE_DB_REDIS ${SOURCES_CORE_DB_REDIS_COMPATIBLE}
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis/internal/commands_api.cpp
-
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis/config.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis/server_info.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/redis/db_connection.cpp
-  )
-
   # proxy redis
   SET(HEADERS_REDIS_PROXY_TO_MOC ${HEADERS_PIKA_PROXY_DB_REDIS_COMPATIBLE_TO_MOC}
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/server.h
@@ -630,9 +498,6 @@ IF(PRO_VERSION)
 ENDIF(PRO_VERSION)
 
   #update common variables
-  SET(HEADERS_CORE ${HEADERS_CORE} ${HEADERS_CORE_DB_REDIS})
-  SET(SOURCES_CORE ${SOURCES_CORE} ${SOURCES_CORE_DB_REDIS})
-
   SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_REDIS_PROXY_TO_MOC})
   SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_REDIS})
   SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_REDIS})
@@ -644,22 +509,6 @@ ENDIF(BUILD_WITH_REDIS)
 
 #pika
 IF(BUILD_WITH_PIKA)
-  #core pika
-  SET(HEADERS_CORE_DB_PIKA ${HEADERS_CORE_DB_REDIS_COMPATIBLE}
-    ${CMAKE_SOURCE_DIR}/src/core/db/pika/internal/commands_api.h
-
-    ${CMAKE_SOURCE_DIR}/src/core/db/pika/config.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/pika/server_info.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/pika/db_connection.h
-  )
-  SET(SOURCES_CORE_DB_PIKA ${SOURCES_CORE_DB_REDIS_COMPATIBLE}
-    ${CMAKE_SOURCE_DIR}/src/core/db/pika/internal/commands_api.cpp
-
-    ${CMAKE_SOURCE_DIR}/src/core/db/pika/config.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/pika/server_info.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/pika/db_connection.cpp
-  )
-
   # proxy pika
   SET(HEADERS_PIKA_PROXY_TO_MOC ${HEADERS_PIKA_PROXY_DB_REDIS_COMPATIBLE_TO_MOC}
     ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/server.h
@@ -699,9 +548,6 @@ ENDIF(PRO_VERSION)
   )
 
   #update common variables
-  SET(HEADERS_CORE ${HEADERS_CORE} ${HEADERS_CORE_DB_PIKA})
-  SET(SOURCES_CORE ${SOURCES_CORE} ${SOURCES_CORE_DB_PIKA})
-
   SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_PIKA_PROXY_TO_MOC})
   SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_PIKA})
   SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_PIKA})
@@ -715,33 +561,8 @@ ENDIF(BUILD_WITH_PIKA)
 IF(BUILD_WITH_MEMCACHED)
   FIND_PACKAGE(Sasl2 QUIET)
   SET(USE_SASL2 ${SASL2_FOUND})
-  IF(SASL2_FOUND)
-    SET(INCLUDE_DIRS ${INCLUDE_DIRS} ${SASL2_INCLUDE_DIR})
-  ENDIF(SASL2_FOUND)
   FIND_LIBRARY(MEMCACHED_LIBRARY memcached)
   FIND_LIBRARY(MEMCACHED_UTIL_LIBRARY memcachedutil)
-  FIND_PATH(MEMCACHED_INCLUDE_DIR NAMES libmemcached/memcached.h PATH_SUFFIXES include)
-  SET(INCLUDE_DIRS ${INCLUDE_DIRS} ${MEMCACHED_INCLUDE_DIR} third-party/memcached/src)
-
-  #core
-  SET(HEADERS_CORE_DB_MEMCACHED
-    ${CMAKE_SOURCE_DIR}/src/core/db/memcached/internal/commands_api.h
-
-    ${CMAKE_SOURCE_DIR}/src/core/db/memcached/config.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/memcached/command_translator.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/memcached/server_info.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/memcached/db_connection.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/memcached/database_info.h
-  )
-  SET(SOURCES_CORE_DB_MEMCACHED
-    ${CMAKE_SOURCE_DIR}/src/core/db/memcached/internal/commands_api.cpp
-
-    ${CMAKE_SOURCE_DIR}/src/core/db/memcached/config.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/memcached/command_translator.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/memcached/server_info.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/memcached/db_connection.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/memcached/database_info.cpp
-  )
 
   #proxy
   SET(HEADERS_MEMCACHED_PROXY_TO_MOC
@@ -767,9 +588,6 @@ IF(BUILD_WITH_MEMCACHED)
   SET(SOURCES_MEMCACHED_GUI gui/db/memcached/connection_widget.cpp gui/db/memcached/lexer.cpp)
 
   #update common variables
-  SET(HEADERS_CORE ${HEADERS_CORE} ${HEADERS_CORE_DB_MEMCACHED})
-  SET(SOURCES_CORE ${SOURCES_CORE} ${SOURCES_CORE_DB_MEMCACHED})
-
   SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_MEMCACHED_PROXY_TO_MOC})
   SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_MEMCACHED})
   SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_MEMCACHED})
@@ -785,29 +603,6 @@ ENDIF(BUILD_WITH_MEMCACHED)
 
 #ssdb
 IF(BUILD_WITH_SSDB)
-  ADD_SUBDIRECTORY(third-party/ssdb)
-  SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/ssdb/src)
-
-  #core
-  SET(HEADERS_CORE_DB_SSDB
-    ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/internal/commands_api.h
-
-    ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/config.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/command_translator.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/server_info.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/db_connection.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/database_info.h
-  )
-  SET(SOURCES_CORE_DB_SSDB
-    ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/internal/commands_api.cpp
-
-    ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/config.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/command_translator.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/server_info.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/db_connection.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/ssdb/database_info.cpp
-  )
-
   #proxy
   SET(HEADERS_SSDB_PROXY_TO_MOC
     ${CMAKE_SOURCE_DIR}/src/proxy/db/ssdb/server.h
@@ -832,9 +627,6 @@ IF(BUILD_WITH_SSDB)
   SET(SOURCES_SSDB_GUI gui/db/ssdb/connection_widget.cpp gui/db/ssdb/lexer.cpp)
 
   #update common variables
-  SET(HEADERS_CORE ${HEADERS_CORE} ${HEADERS_CORE_DB_SSDB})
-  SET(SOURCES_CORE ${SOURCES_CORE} ${SOURCES_CORE_DB_SSDB})
-
   SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_SSDB_PROXY_TO_MOC})
   SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_SSDB})
   SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_SSDB})
@@ -842,40 +634,11 @@ IF(BUILD_WITH_SSDB)
   SET(HEADERS_GUI_TO_MOC ${HEADERS_GUI_TO_MOC} ${HEADERS_SSDB_GUI_TO_MOC})
   SET(HEADERS_GUI ${HEADERS_GUI} ${HEADERS_SSDB_GUI})
   SET(SOURCES_GUI ${SOURCES_GUI} ${SOURCES_SSDB_GUI})
-  SET(DB_LIBS ${DB_LIBS} ssdb)
 ENDIF(BUILD_WITH_SSDB)
 
 #leveldb
 IF(BUILD_WITH_LEVELDB)
   FIND_PACKAGE(leveldb REQUIRED)
-  SET(INCLUDE_DIRS ${INCLUDE_DIRS} ${LEVELDB_INCLUDE_DIR})
-
-  #core
-  SET(HEADERS_CORE_DB_LEVELDB
-    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/internal/commands_api.h
-
-    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/config.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/command_translator.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/server_info.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/db_connection.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/database_info.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/comparators/indexed_db.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/comparators/indexed_db/indexed_db_leveldb_coding.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/comparators/indexed_db/indexed_db_key.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/comparators/indexed_db/WebIDBTypes.h
-  )
-  SET(SOURCES_CORE_DB_LEVELDB
-    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/internal/commands_api.cpp
-
-    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/config.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/command_translator.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/server_info.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/db_connection.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/database_info.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/comparators/indexed_db.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/comparators/indexed_db/indexed_db_leveldb_coding.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/leveldb/comparators/indexed_db/indexed_db_key.cpp
-  )
 
   #proxy
   SET(HEADERS_LEVELDB_PROXY_TO_MOC
@@ -901,9 +664,6 @@ IF(BUILD_WITH_LEVELDB)
   SET(SOURCES_LEVELDB_GUI gui/db/leveldb/connection_widget.cpp gui/db/leveldb/lexer.cpp)
 
   #update common variables
-  SET(HEADERS_CORE ${HEADERS_CORE} ${HEADERS_CORE_DB_LEVELDB})
-  SET(SOURCES_CORE ${SOURCES_CORE} ${SOURCES_CORE_DB_LEVELDB})
-
   SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_LEVELDB_PROXY_TO_MOC})
   SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_LEVELDB})
   SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_LEVELDB})
@@ -913,7 +673,6 @@ IF(BUILD_WITH_LEVELDB)
   SET(SOURCES_GUI ${SOURCES_GUI} ${SOURCES_LEVELDB_GUI})
   SET(DB_LIBS ${DB_LIBS} leveldb::leveldb)
   IF(SNAPPY_FOUND)
-    SET(INCLUDE_DIRS ${INCLUDE_DIRS} ${SNAPPY_INCLUDE_DIRS})
     SET(DB_LIBS ${DB_LIBS} ${SNAPPY_LIBRARIES})
   ENDIF(SNAPPY_FOUND)
 ENDIF(BUILD_WITH_LEVELDB)
@@ -921,27 +680,6 @@ ENDIF(BUILD_WITH_LEVELDB)
 #rocksdb
 IF(BUILD_WITH_ROCKSDB)
   FIND_PACKAGE(RocksDB REQUIRED)
-  SET(INCLUDE_DIRS ${INCLUDE_DIRS} ${ROCKSDB_INCLUDE_DIR})
-
-  #core
-  SET(HEADERS_CORE_DB_ROCKSDB
-    ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/internal/commands_api.h
-
-    ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/config.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/command_translator.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/server_info.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/db_connection.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/database_info.h
-  )
-  SET(SOURCES_CORE_DB_ROCKSDB
-    ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/internal/commands_api.cpp
-
-    ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/config.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/command_translator.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/server_info.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/db_connection.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/rocksdb/database_info.cpp
-  )
 
   #proxy
   SET(HEADERS_ROCKSDB_PROXY_TO_MOC
@@ -967,9 +705,6 @@ IF(BUILD_WITH_ROCKSDB)
   SET(SOURCES_ROCKSDB_GUI gui/db/rocksdb/connection_widget.cpp gui/db/rocksdb/lexer.cpp)
 
   #update common variables
-  SET(HEADERS_CORE ${HEADERS_CORE} ${HEADERS_CORE_DB_ROCKSDB})
-  SET(SOURCES_CORE ${SOURCES_CORE} ${SOURCES_CORE_DB_ROCKSDB})
-
   SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_ROCKSDB_PROXY_TO_MOC})
   SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_ROCKSDB})
   SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_ROCKSDB})
@@ -979,19 +714,15 @@ IF(BUILD_WITH_ROCKSDB)
   SET(SOURCES_GUI ${SOURCES_GUI} ${SOURCES_ROCKSDB_GUI})
   SET(DB_LIBS ${DB_LIBS} RocksDB::rocksdb)
   IF(SNAPPY_FOUND)
-    SET(INCLUDE_DIRS ${INCLUDE_DIRS} ${SNAPPY_INCLUDE_DIRS})
     SET(DB_LIBS ${DB_LIBS} ${SNAPPY_LIBRARIES})
   ENDIF(SNAPPY_FOUND)
   IF(ZLIB_FOUND)
-    SET(INCLUDE_DIRS ${INCLUDE_DIRS} ${ZLIB_INCLUDE_DIRS})
     SET(DB_LIBS ${DB_LIBS} ${ZLIB_LIBRARIES})
   ENDIF(ZLIB_FOUND)
   IF(LZ4_FOUND)
-    SET(INCLUDE_DIRS ${INCLUDE_DIRS} ${LZ4_INCLUDE_DIRS})
     SET(DB_LIBS ${DB_LIBS} ${LZ4_LIBRARIES})
   ENDIF(LZ4_FOUND)
   IF(BZIP2_FOUND)
-    SET(INCLUDE_DIRS ${INCLUDE_DIRS} ${BZIP2_INCLUDE_DIRS})
     SET(DB_LIBS ${DB_LIBS} ${BZIP2_LIBRARIES})
   ENDIF(BZIP2_FOUND)
   IF(OS_WINDOWS)
@@ -1002,28 +733,6 @@ ENDIF(BUILD_WITH_ROCKSDB)
 #unqlite
 IF(BUILD_WITH_UNQLITE)
   FIND_LIBRARY(UNQLITE_LIBRARY unqlite)
-  FIND_PATH(UNQLITE_INCLUDE_DIR NAMES unqlite.h PATH_SUFFIXES include)
-  SET(INCLUDE_DIRS ${INCLUDE_DIRS} ${UNQLITE_INCLUDE_DIR})
-
-  #core
-  SET(HEADERS_CORE_DB_UNQLITE
-    ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/internal/commands_api.h
-
-    ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/config.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/command_translator.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/server_info.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/db_connection.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/database_info.h
-  )
-  SET(SOURCES_CORE_DB_UNQLITE
-    ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/internal/commands_api.cpp
-
-    ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/config.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/command_translator.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/server_info.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/db_connection.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/unqlite/database_info.cpp
-  )
 
   #proxy
   SET(HEADERS_UNQLITE_PROXY_TO_MOC
@@ -1055,9 +764,6 @@ IF(BUILD_WITH_UNQLITE)
   )
 
   #update common variables
-  SET(HEADERS_CORE ${HEADERS_CORE} ${HEADERS_CORE_DB_UNQLITE})
-  SET(SOURCES_CORE ${SOURCES_CORE} ${SOURCES_CORE_DB_UNQLITE})
-
   SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_UNQLITE_PROXY_TO_MOC})
   SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_UNQLITE})
   SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_UNQLITE})
@@ -1071,27 +777,6 @@ ENDIF(BUILD_WITH_UNQLITE)
 #lmdb
 IF(BUILD_WITH_LMDB)
   FIND_LIBRARY(LMDB_LIBRARY lmdb)
-  FIND_PATH(LMDB_INCLUDE_DIR NAMES lmdb.h PATH_SUFFIXES include)
-  SET(INCLUDE_DIRS ${INCLUDE_DIRS} ${LMDB_INCLUDE_DIR})
-
-  #core
-  SET(HEADERS_CORE_DB_LMDB
-    ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/internal/commands_api.h
-
-    ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/config.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/command_translator.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/server_info.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/db_connection.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/database_info.h)
-  SET(SOURCES_CORE_DB_LMDB
-    ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/internal/commands_api.cpp
-
-    ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/config.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/command_translator.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/server_info.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/db_connection.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/lmdb/database_info.cpp
-  )
 
   #proxy
   SET(HEADERS_LMDB_PROXY_TO_MOC
@@ -1117,9 +802,6 @@ IF(BUILD_WITH_LMDB)
   SET(SOURCES_LMDB_GUI gui/db/lmdb/connection_widget.cpp gui/db/lmdb/lexer.cpp)
 
   #update common variables
-  SET(HEADERS_CORE ${HEADERS_CORE} ${HEADERS_CORE_DB_LMDB})
-  SET(SOURCES_CORE ${SOURCES_CORE} ${SOURCES_CORE_DB_LMDB})
-
   SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_LMDB_PROXY_TO_MOC})
   SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_LMDB})
   SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_LMDB})
@@ -1139,28 +821,6 @@ IF(BUILD_WITH_UPSCALEDB)
   SET(Boost_USE_STATIC_LIBS ON)
   FIND_PACKAGE(Boost COMPONENTS thread system REQUIRED)
   FIND_LIBRARY(UPSCALEDB_LIBRARY upscaledb)
-  FIND_PATH(UPSCALEDB_INCLUDE_DIR NAMES ups/upscaledb.h PATH_SUFFIXES include)
-  SET(INCLUDE_DIRS ${INCLUDE_DIRS} ${UPSCALEDB_INCLUDE_DIR})
-
-  #core
-  SET(HEADERS_CORE_DB_UPSCALEDB
-    ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/internal/commands_api.h
-
-    ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/config.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/command_translator.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/server_info.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/db_connection.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/database_info.h
-  )
-  SET(SOURCES_CORE_DB_UPSCALEDB
-    ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/internal/commands_api.cpp
-
-    ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/config.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/command_translator.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/server_info.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/db_connection.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/upscaledb/database_info.cpp
-  )
 
   #proxy
   SET(HEADERS_UPSCALEDB_PROXY_TO_MOC
@@ -1186,9 +846,6 @@ IF(BUILD_WITH_UPSCALEDB)
   SET(SOURCES_UPSCALEDB_GUI gui/db/upscaledb/connection_widget.cpp gui/db/upscaledb/lexer.cpp)
 
   #update common variables
-  SET(HEADERS_CORE ${HEADERS_CORE} ${HEADERS_CORE_DB_UPSCALEDB})
-  SET(SOURCES_CORE ${SOURCES_CORE} ${SOURCES_CORE_DB_UPSCALEDB})
-
   SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_UPSCALEDB_PROXY_TO_MOC})
   SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_UPSCALEDB})
   SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_UPSCALEDB})
@@ -1198,7 +855,6 @@ IF(BUILD_WITH_UPSCALEDB)
   SET(SOURCES_GUI ${SOURCES_GUI} ${SOURCES_UPSCALEDB_GUI})
   SET(DB_LIBS ${DB_LIBS} ${UPSCALEDB_LIBRARY} ${Boost_LIBRARIES})
   IF(ZLIB_FOUND)
-    SET(INCLUDE_DIRS ${INCLUDE_DIRS} ${ZLIB_INCLUDE_DIRS})
     SET(DB_LIBS ${DB_LIBS} ${ZLIB_LIBRARIES})
   ENDIF(ZLIB_FOUND)
 ENDIF(BUILD_WITH_UPSCALEDB)
@@ -1206,27 +862,6 @@ ENDIF(BUILD_WITH_UPSCALEDB)
 #forestdb
 IF(BUILD_WITH_FORESTDB)
   FIND_LIBRARY(FORESTDB_LIBRARY forestdb)
-  FIND_PATH(FORESTDB_INCLUDE_DIR NAMES libforestdb/forestdb.h PATH_SUFFIXES include)
-  SET(INCLUDE_DIRS ${INCLUDE_DIRS} ${FORESTDB_INCLUDE_DIR})
-
-  #core
-  SET(HEADERS_CORE_DB_FORESTDB
-    ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/internal/commands_api.h
-
-    ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/config.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/command_translator.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/server_info.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/db_connection.h
-    ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/database_info.h)
-  SET(SOURCES_CORE_DB_FORESTDB
-    ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/internal/commands_api.cpp
-
-    ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/config.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/command_translator.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/server_info.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/db_connection.cpp
-    ${CMAKE_SOURCE_DIR}/src/core/db/forestdb/database_info.cpp
-  )
 
   #proxy
   SET(HEADERS_FORESTDB_PROXY_TO_MOC
@@ -1252,9 +887,6 @@ IF(BUILD_WITH_FORESTDB)
   SET(SOURCES_FORESTDB_GUI gui/db/forestdb/connection_widget.cpp gui/db/forestdb/lexer.cpp)
 
   #update common variables
-  SET(HEADERS_CORE ${HEADERS_CORE} ${HEADERS_CORE_DB_FORESTDB})
-  SET(SOURCES_CORE ${SOURCES_CORE} ${SOURCES_CORE_DB_FORESTDB})
-
   SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_FORESTDB_PROXY_TO_MOC})
   SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_FORESTDB})
   SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_FORESTDB})
@@ -1264,15 +896,9 @@ IF(BUILD_WITH_FORESTDB)
   SET(SOURCES_GUI ${SOURCES_GUI} ${SOURCES_FORESTDB_GUI})
   SET(DB_LIBS ${DB_LIBS} ${FORESTDB_LIBRARY})
   IF(SNAPPY_FOUND)
-    SET(INCLUDE_DIRS ${INCLUDE_DIRS} ${SNAPPY_INCLUDE_DIRS})
     SET(DB_LIBS ${DB_LIBS} ${SNAPPY_LIBRARIES})
   ENDIF(SNAPPY_FOUND)
 ENDIF(BUILD_WITH_FORESTDB)
-
-SET(SOURCES_SDS
-  third-party/sds/sds.c
-  third-party/sds/sds_fasto.c
-)
 
 # APPLICATION_DEFINES
 SET(APPLICATION_DEFINES)
@@ -1371,18 +997,18 @@ SET(TRANSLATIONS
 
 FIND_PACKAGE(Common REQUIRED)
 FIND_PACKAGE(JSON-C REQUIRED)
+FIND_PACKAGE(FastoNoSQL REQUIRED)
 
-# module
-SET(CORE_DEFINES)
-SET(PROJECT_CORE_LIBRARY ${PROJECT_NAME_LOWERCASE}_core)
-SET(PROJECT_CORE_ENGINE_LIBRARY ${PROJECT_NAME_LOWERCASE}_core_engine)
+IF(PRO_VERSION)
+  SET(FASTONOSQL_CORE_LIBRARY ${FASTONOSQL_CORE_PRO_LIBRARY})
+ELSE()
+  SET(FASTONOSQL_CORE_LIBRARY ${FASTONOSQL_CORE_LIBRARY})
+ENDIF(PRO_VERSION)
+
+MESSAGE("FASTONOSQL_CORE_LIBRARY: ${FASTONOSQL_CORE_LIBRARY}")
 
 # core engine
-SET(INCLUDE_DIRS ${INCLUDE_DIRS} third-party/sds ${COMMON_INCLUDE_DIR} ${JSONC_INCLUDE_DIRS})
-ADD_LIBRARY(${PROJECT_CORE_ENGINE_LIBRARY} STATIC ${HEADERS_CORE} ${SOURCES_CORE} ${SOURCES_SDS})
-TARGET_INCLUDE_DIRECTORIES(${PROJECT_CORE_ENGINE_LIBRARY} PRIVATE ${INCLUDE_DIRS})
-TARGET_LINK_LIBRARIES(${PROJECT_CORE_ENGINE_LIBRARY} ${DB_LIBS} ${JSONC_LIBRARIES})
-TARGET_COMPILE_DEFINITIONS(${PROJECT_CORE_ENGINE_LIBRARY} PRIVATE ${CORE_ENGINE_DEFINES})
+SET(INCLUDE_DIRS ${INCLUDE_DIRS} ${COMMON_INCLUDE_DIRS} ${JSONC_INCLUDE_DIRS} ${FASTONOSQL_INCLUDE_DIRS})
 
 # all
 IF(SNAPPY_FOUND)
@@ -1405,8 +1031,8 @@ ENDIF(BZIP2_FOUND)
 FIND_LIBRARY(QSCINTILLA2_LIBRARY qscintilla2)
 
 SET(ALL_SOURCES ${ALL_SOURCES} ${HEADERS} ${HEADERS_TO_MOC} ${SOURCES} ${MOC_FILES} ${PLATFORM_HDRS} ${PLATFORM_SRCS})
-SET(ALL_LIBS ${ALL_LIBS} ${PROJECT_CORE_ENGINE_LIBRARY} ${COMMON_BASE_LIBRARY} ${COMMON_QT_LIBRARY} ${JSONC_LIBRARIES} ${QSCINTILLA2_LIBRARY}
-  ${QT_LIBRARIES} ${COMPRESS_LIBRARIES} ${PLATFORM_LIBRARIES})
+SET(ALL_LIBS ${ALL_LIBS} ${FASTONOSQL_CORE_LIBRARY} ${COMMON_BASE_LIBRARY} ${COMMON_QT_LIBRARY} ${JSONC_LIBRARIES} ${QSCINTILLA2_LIBRARY}
+  ${QT_LIBRARIES} ${COMPRESS_LIBRARIES} ${PLATFORM_LIBRARIES} ${DB_LIBS})
 
 FIND_PACKAGE(Qt5LinguistTools REQUIRED)
 
@@ -1419,16 +1045,14 @@ ENDIF(GENERATE_TRANSLATIONS)
 SET(EXE_SOURCES main.cpp ${APPLICATION_HEADERS} ${APPLICATION_SOURCES} ${RES_SRC} ${ICON_FILE} ${RESOURCE_OS} ${QM_FILES})
 
 IF(MINGW OR CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANGCXX)
-  ADD_LIBRARY(${PROJECT_CORE_LIBRARY} STATIC ${ALL_SOURCES})
-  TARGET_LINK_LIBRARIES(${PROJECT_CORE_LIBRARY} ${ALL_LIBS})
-  TARGET_INCLUDE_DIRECTORIES(${PROJECT_CORE_LIBRARY} PRIVATE ${INCLUDE_DIRS})
-  TARGET_COMPILE_DEFINITIONS(${PROJECT_CORE_LIBRARY} PRIVATE ${CORE_DEFINES})
   IF(OS_ANDROID)
-    ADD_LIBRARY(${PROJECT_NAME} SHARED ${DESKTOP_TARGET} ${EXE_SOURCES})
-    TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${PROJECT_CORE_LIBRARY})
+    ADD_LIBRARY(${PROJECT_NAME} SHARED ${DESKTOP_TARGET} ${ALL_SOURCES} ${EXE_SOURCES})
+    TARGET_INCLUDE_DIRECTORIES(${PROJECT_NAME} PRIVATE ${INCLUDE_DIRS})
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${ALL_LIBS})
   ELSE()
-    ADD_EXECUTABLE(${PROJECT_NAME} ${DESKTOP_TARGET} ${EXE_SOURCES})
-    TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${PROJECT_CORE_LIBRARY})
+    ADD_EXECUTABLE(${PROJECT_NAME} ${DESKTOP_TARGET} ${ALL_SOURCES} ${EXE_SOURCES})
+    TARGET_INCLUDE_DIRECTORIES(${PROJECT_NAME} PRIVATE ${INCLUDE_DIRS})
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${ALL_LIBS})
   ENDIF(OS_ANDROID)
   TARGET_COMPILE_DEFINITIONS(${PROJECT_NAME} PRIVATE ${APPLICATION_DEFINES})
 ELSE()
@@ -1530,10 +1154,9 @@ ENDIF(OS_MACOSX)
 INSTALL_RUNTIME_LIBRARIES()
 
 IF(DEVELOPER_CHECK_STYLE)
-  SET(CHECK_SOURCES ${HEADERS} ${HEADERS} ${HEADERS_TO_MOC} ${SOURCES} ${PLATFORM_HDRS} ${PLATFORM_SRCS} ${HEADERS_CORE} ${SOURCES_CORE})
+  SET(CHECK_SOURCES ${HEADERS} ${HEADERS} ${HEADERS_TO_MOC} ${SOURCES} ${PLATFORM_HDRS} ${PLATFORM_SRCS})
   REGISTER_CHECK_STYLE_TARGET(check_style "${CHECK_SOURCES}")
-  REGISTER_CHECK_INCLUDES_TARGET(${PROJECT_CORE_LIBRARY})
-  REGISTER_CHECK_INCLUDES_TARGET(${PROJECT_CORE_ENGINE_LIBRARY})
+  REGISTER_CHECK_INCLUDES_TARGET(${PROJECT_NAME})
 ENDIF(DEVELOPER_CHECK_STYLE)
 
 IF(PROJECT_BUILD_TYPE_VERSION STREQUAL "release")
@@ -1543,24 +1166,4 @@ ENDIF(PROJECT_BUILD_TYPE_VERSION STREQUAL "release")
 
 IF(DEVELOPER_ENABLE_TESTS)
   FIND_PACKAGE(GTest REQUIRED)
-
-  SET(UNIT_TEST unit_tests)
-  ADD_EXECUTABLE(${UNIT_TEST}
-    ${CMAKE_SOURCE_DIR}/tests/unit_tests/test_fasto_objects.cpp
-    ${CMAKE_SOURCE_DIR}/tests/unit_tests/test_parsing_command_line.cpp
-    ${CMAKE_SOURCE_DIR}/tests/unit_tests/test_command_holder.cpp
-  )
-
-  TARGET_COMPILE_DEFINITIONS(${UNIT_TEST} PRIVATE -DPROJECT_TEST_SOURCES_DIR="${CMAKE_SOURCE_DIR}/tests")
-  TARGET_LINK_LIBRARIES(unit_tests ${GTEST_BOTH_LIBRARIES} ${PROJECT_CORE_ENGINE_LIBRARY} ${COMMON_BASE_LIBRARY} ${COMMON_QT_LIBRARY} ${JSONC_LIBRARIES} ${PLATFORM_LIBRARIES})
-  ADD_TEST_TARGET(unit_tests)
-  SET_PROPERTY(TARGET unit_tests PROPERTY FOLDER "Unit tests")
-
-  #Mock tests
-  ADD_EXECUTABLE(mock_tests
-    ${CMAKE_SOURCE_DIR}/tests/mock_tests/test_connections.cpp
-  )
-  TARGET_LINK_LIBRARIES(mock_tests ${GTEST_BOTH_LIBRARIES} ${GMOCK_BOTH_LIBRARIES} ${PROJECT_CORE_ENGINE_LIBRARY} ${COMMON_BASE_LIBRARY} ${COMMON_QT_LIBRARY} ${PLATFORM_LIBRARIES})
-  ADD_TEST_TARGET(mock_tests)
-  SET_PROPERTY(TARGET mock_tests PROPERTY FOLDER "Mock tests")
 ENDIF(DEVELOPER_ENABLE_TESTS)

@@ -46,8 +46,8 @@
 #include <common/qt/logger.h>                     // for Logger
 #include <common/qt/translations/translations.h>  // for applyLanguage
 
-#include "core/logger.h"
-#include "core/ssh_info.h"
+#include <fastonosql/core/logger.h>
+#include <fastonosql/core/ssh_info.h>
 
 #include "proxy/cluster/icluster.h"        // for ICluster
 #include "proxy/command/command_logger.h"  // for CommandLogger

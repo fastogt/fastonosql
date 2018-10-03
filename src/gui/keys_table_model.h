@@ -20,7 +20,7 @@
 
 #include <common/qt/gui/base/table_model.h>  // for TableModel
 
-#include "core/db_key.h"  // for NDbKValue, ttl_t
+#include <fastonosql/core/db_key.h>  // for NDbKValue, ttl_t
 
 namespace fastonosql {
 namespace gui {

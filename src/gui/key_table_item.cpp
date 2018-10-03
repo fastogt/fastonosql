@@ -20,7 +20,7 @@
 
 #include <common/qt/convert2string.h>
 
-#include "core/value.h"
+#include <fastonosql/core/value.h>
 
 namespace fastonosql {
 namespace gui {

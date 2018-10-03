@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "core/db_key.h"
+#include <fastonosql/core/db_key.h>
 
 #include "gui/fasto_table_view.h"
 

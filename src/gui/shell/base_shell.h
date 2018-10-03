@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "core/connection_types.h"  // for connectionTypes
+#include <fastonosql/core/connection_types.h>  // for connectionTypes
 
 #include "gui/editor/fasto_editor_shell.h"  // for FastoEditorShell
 

@@ -21,7 +21,7 @@
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 #include "proxy/server/iserver_remote.h"                     // for IServerRemote
 
-#include "core/module_info.h"
+#include <fastonosql/core/module_info.h>
 
 namespace fastonosql {
 namespace proxy {

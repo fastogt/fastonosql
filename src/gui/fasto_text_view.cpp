@@ -27,7 +27,7 @@
 
 #include <common/qt/convert2string.h>
 
-#include "core/db_key.h"
+#include <fastonosql/core/db_key.h>
 
 #include "gui/editor/fasto_editor_output.h"  // for FastoEditorOutput, CSV, etc
 #include "gui/gui_factory.h"                 // for GuiFactory

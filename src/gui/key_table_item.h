@@ -22,7 +22,7 @@
 
 #include <QString>
 
-#include "core/db_key.h"  // for NDbKValue, ttl_t
+#include <fastonosql/core/db_key.h>  // for NDbKValue, ttl_t
 
 namespace fastonosql {
 namespace gui {

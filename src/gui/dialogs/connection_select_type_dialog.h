@@ -20,7 +20,7 @@
 
 #include <QDialog>
 
-#include "core/connection_types.h"
+#include <fastonosql/core/connection_types.h>
 
 class QComboBox;
 class QLabel;

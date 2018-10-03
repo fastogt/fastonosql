@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "core/icommand_translator.h"  // for translator_t
+#include <fastonosql/core/icommand_translator.h>  // for translator_t
 
 #include "proxy/events/events.h"        // for BackupResponceEvent, etc
 #include "proxy/proxy_fwd.h"            // for IDatabaseSPtr

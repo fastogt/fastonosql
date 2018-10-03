@@ -20,7 +20,7 @@
 
 #include <QTreeWidgetItem>
 
-#include "core/server/iserver_info.h"  // for ServerCommonInfo
+#include <fastonosql/core/server/iserver_info.h>  // for ServerCommonInfo
 
 #include "proxy/connection_settings/iconnection_settings.h"  // for IClusterSettingsBaseSPtr, etc
 

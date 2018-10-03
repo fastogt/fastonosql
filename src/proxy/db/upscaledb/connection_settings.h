@@ -20,7 +20,7 @@
 
 #include "proxy/connection_settings/iconnection_settings_local.h"
 
-#include "core/db/upscaledb/config.h"
+#include <fastonosql/core/db/upscaledb/config.h>
 
 namespace fastonosql {
 namespace proxy {
