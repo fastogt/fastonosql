@@ -22,67 +22,67 @@
 #include "proxy/sentinel/isentinel.h"  // for Sentinel
 
 #ifdef BUILD_WITH_REDIS
-#include <fastonosql/core/db/redis/db_connection.h>         // for DiscoveryClusterConnection, etc
-#include "proxy/db/redis/connection_settings.h"  // for ConnectionSettings
-#include "proxy/db/redis/server.h"               // for Server
-#include "proxy/db/redis_compatible/cluster.h"   // for Cluster
-#include "proxy/db/redis_compatible/sentinel.h"  // for Sentinel
+#include <fastonosql/core/db/redis/db_connection.h>  // for DiscoveryClusterConnection, etc
+#include "proxy/db/redis/connection_settings.h"      // for ConnectionSettings
+#include "proxy/db/redis/server.h"                   // for Server
+#include "proxy/db/redis_compatible/cluster.h"       // for Cluster
+#include "proxy/db/redis_compatible/sentinel.h"      // for Sentinel
 #endif
 
 #ifdef BUILD_WITH_MEMCACHED
-#include <fastonosql/core/db/memcached/db_connection.h>         // for TestConnection
-#include "proxy/db/memcached/connection_settings.h"  // for ConnectionSettings
-#include "proxy/db/memcached/server.h"               // for Server
+#include <fastonosql/core/db/memcached/db_connection.h>  // for TestConnection
+#include "proxy/db/memcached/connection_settings.h"      // for ConnectionSettings
+#include "proxy/db/memcached/server.h"                   // for Server
 #endif
 
 #ifdef BUILD_WITH_SSDB
-#include <fastonosql/core/db/ssdb/db_connection.h>         // for TestConnection
-#include "proxy/db/ssdb/connection_settings.h"  // for ConnectionSettings
-#include "proxy/db/ssdb/server.h"               // for Server
+#include <fastonosql/core/db/ssdb/db_connection.h>  // for TestConnection
+#include "proxy/db/ssdb/connection_settings.h"      // for ConnectionSettings
+#include "proxy/db/ssdb/server.h"                   // for Server
 #endif
 
 #ifdef BUILD_WITH_LEVELDB
-#include <fastonosql/core/db/leveldb/db_connection.h>         // for TestConnection
-#include "proxy/db/leveldb/connection_settings.h"  // for ConnectionSettings
-#include "proxy/db/leveldb/server.h"               // for Server
+#include <fastonosql/core/db/leveldb/db_connection.h>  // for TestConnection
+#include "proxy/db/leveldb/connection_settings.h"      // for ConnectionSettings
+#include "proxy/db/leveldb/server.h"                   // for Server
 #endif
 
 #ifdef BUILD_WITH_ROCKSDB
-#include <fastonosql/core/db/rocksdb/db_connection.h>         // for TestConnection
-#include "proxy/db/rocksdb/connection_settings.h"  // for ConnectionSettings
-#include "proxy/db/rocksdb/server.h"               // for Server
+#include <fastonosql/core/db/rocksdb/db_connection.h>  // for TestConnection
+#include "proxy/db/rocksdb/connection_settings.h"      // for ConnectionSettings
+#include "proxy/db/rocksdb/server.h"                   // for Server
 #endif
 
 #ifdef BUILD_WITH_UNQLITE
-#include <fastonosql/core/db/unqlite/db_connection.h>         // for TestConnection
-#include "proxy/db/unqlite/connection_settings.h"  // for ConnectionSettings
-#include "proxy/db/unqlite/server.h"               // for Server
+#include <fastonosql/core/db/unqlite/db_connection.h>  // for TestConnection
+#include "proxy/db/unqlite/connection_settings.h"      // for ConnectionSettings
+#include "proxy/db/unqlite/server.h"                   // for Server
 #endif
 
 #ifdef BUILD_WITH_LMDB
-#include <fastonosql/core/db/lmdb/db_connection.h>         // for TestConnection
-#include "proxy/db/lmdb/connection_settings.h"  // for ConnectionSettings
-#include "proxy/db/lmdb/server.h"               // for Server
+#include <fastonosql/core/db/lmdb/db_connection.h>  // for TestConnection
+#include "proxy/db/lmdb/connection_settings.h"      // for ConnectionSettings
+#include "proxy/db/lmdb/server.h"                   // for Server
 #endif
 
 #ifdef BUILD_WITH_UPSCALEDB
-#include <fastonosql/core/db/upscaledb/db_connection.h>         // for TestConnection
-#include "proxy/db/upscaledb/connection_settings.h"  // for ConnectionSettings
-#include "proxy/db/upscaledb/server.h"               // for Server
+#include <fastonosql/core/db/upscaledb/db_connection.h>  // for TestConnection
+#include "proxy/db/upscaledb/connection_settings.h"      // for ConnectionSettings
+#include "proxy/db/upscaledb/server.h"                   // for Server
 #endif
 
 #ifdef BUILD_WITH_FORESTDB
-#include <fastonosql/core/db/forestdb/db_connection.h>         // for TestConnection
-#include "proxy/db/forestdb/connection_settings.h"  // for ConnectionSettings
-#include "proxy/db/forestdb/server.h"               // for Server
+#include <fastonosql/core/db/forestdb/db_connection.h>  // for TestConnection
+#include "proxy/db/forestdb/connection_settings.h"      // for ConnectionSettings
+#include "proxy/db/forestdb/server.h"                   // for Server
 #endif
 
 #ifdef BUILD_WITH_PIKA
-#include <fastonosql/core/db/pika/db_connection.h>          // for DiscoveryClusterConnection, etc
-#include "proxy/db/pika/connection_settings.h"   // for ConnectionSettings
-#include "proxy/db/pika/server.h"                // for Server
-#include "proxy/db/redis_compatible/cluster.h"   // for Cluster
-#include "proxy/db/redis_compatible/sentinel.h"  // for Sentinel
+#include <fastonosql/core/db/pika/db_connection.h>  // for DiscoveryClusterConnection, etc
+#include "proxy/db/pika/connection_settings.h"      // for ConnectionSettings
+#include "proxy/db/pika/server.h"                   // for Server
+#include "proxy/db/redis_compatible/cluster.h"      // for Cluster
+#include "proxy/db/redis_compatible/sentinel.h"     // for Sentinel
 #endif
 
 namespace fastonosql {

@@ -63,9 +63,9 @@
 #include <fastonosql/core/db/pika/server_info.h>
 #endif
 
-#include <fastonosql/core/connection_types.h>     // for connectionTypes, etc
-#include "proxy/events/events_info.h"  // for ServerInfoResponce, etc
-#include "proxy/server/iserver.h"      // for IServer
+#include <fastonosql/core/connection_types.h>  // for connectionTypes, etc
+#include "proxy/events/events_info.h"          // for ServerInfoResponce, etc
+#include "proxy/server/iserver.h"              // for IServer
 
 #include <common/qt/gui/glass_widget.h>  // for GlassWidget
 
