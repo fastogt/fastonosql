@@ -95,7 +95,7 @@ core::translator_t IServer::GetTranslator() const {
   return drv_->GetTranslator();
 }
 
-core::connectionTypes IServer::GetType() const {
+core::ConnectionTypes IServer::GetType() const {
   return drv_->GetType();
 }
 

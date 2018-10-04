@@ -28,7 +28,7 @@
 namespace fastonosql {
 namespace proxy {
 
-IClusterSettingsBase::IClusterSettingsBase(const connection_path_t& connectionPath, core::connectionTypes type)
+IClusterSettingsBase::IClusterSettingsBase(const connection_path_t& connectionPath, core::ConnectionTypes type)
     : IConnectionSettings(connectionPath, type) {}
 
 IClusterSettingsBase::cluster_nodes_t IClusterSettingsBase::GetNodes() const {

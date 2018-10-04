@@ -70,7 +70,7 @@ const QSize BaseShellWidget::top_bar_icon_size = QSize(24, 24);
 
 BaseShellWidget* BaseShellWidget::createWidget(proxy::IServerSPtr server, const QString& filePath, QWidget* parent) {
 #if defined(BUILD_WITH_REDIS) && defined(PRO_VERSION)
-  core::connectionTypes ct = server->GetType();
+  core::ConnectionTypes ct = server->GetType();
   if (ct == core::REDIS) {
     BaseShellWidget* widget = new redis::ShellWidget(server, filePath, parent);
     widget->init();
@@ -211,7 +211,7 @@ void BaseShellWidget::init() {
   advanced_options_ = new QCheckBox;
   VERIFY(connect(advanced_options_, &QCheckBox::stateChanged, this, &BaseShellWidget::advancedOptionsChange));
 
-  core::connectionTypes ct = server_->GetType();
+  core::ConnectionTypes ct = server_->GetType();
   input_ = BaseShell::createFromType(ct, proxy::SettingsManager::GetInstance()->GetAutoCompletion());
   input_->setContextMenuPolicy(Qt::CustomContextMenu);
   VERIFY(connect(input_, &BaseShell::textChanged, this, &BaseShellWidget::inputTextChanged));
@@ -292,7 +292,7 @@ void BaseShellWidget::init() {
   retranslateUi();
 }
 
-QHBoxLayout* BaseShellWidget::createTopLayout(core::connectionTypes ct) {
+QHBoxLayout* BaseShellWidget::createTopLayout(core::ConnectionTypes ct) {
   QHBoxLayout* top_layout = new QHBoxLayout;
   server_name_ = new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().icon(ct), top_bar_icon_size,
                                                 translations::trCalculate + "...");

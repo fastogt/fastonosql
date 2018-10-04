@@ -46,7 +46,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
 
   core::translator_t GetTranslator() const;
 
-  core::connectionTypes GetType() const;
+  core::ConnectionTypes GetType() const;
   virtual std::string GetName() const override;
 
   database_t GetCurrentDatabaseInfo() const;

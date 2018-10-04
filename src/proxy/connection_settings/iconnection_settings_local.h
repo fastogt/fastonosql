@@ -39,7 +39,7 @@ class IConnectionSettingsLocal : public IConnectionSettingsBase {
   virtual IConnectionSettingsBase* Clone() const override = 0;
 
  protected:
-  IConnectionSettingsLocal(const connection_path_t& connectionPath, core::connectionTypes type);
+  IConnectionSettingsLocal(const connection_path_t& connectionPath, core::ConnectionTypes type);
 };
 
 }  // namespace proxy

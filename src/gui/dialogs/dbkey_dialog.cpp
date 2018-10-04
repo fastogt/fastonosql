@@ -55,7 +55,7 @@ namespace fastonosql {
 namespace gui {
 
 DbKeyDialog::DbKeyDialog(const QString& title,
-                         core::connectionTypes type,
+                         core::ConnectionTypes type,
                          const core::NDbKValue& key,
                          bool is_edit,
                          QWidget* parent)

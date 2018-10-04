@@ -20,7 +20,7 @@
 
 #include <QDialog>
 
-#include <fastonosql/core/connection_types.h>  // for connectionTypes
+#include <fastonosql/core/connection_types.h>  // for ConnectionTypes
 #include <fastonosql/core/db_key.h>            // for NDbKValue, NValue
 
 class QLineEdit;
@@ -43,7 +43,7 @@ class DbKeyDialog : public QDialog {
   enum { min_width = 320, min_height = 200 };
 
   explicit DbKeyDialog(const QString& title,
-                       core::connectionTypes type,
+                       core::ConnectionTypes type,
                        const core::NDbKValue& key,
                        bool is_edit,
                        QWidget* parent = Q_NULLPTR);

@@ -20,7 +20,7 @@
 
 #include <QDialog>
 
-#include <fastonosql/core/connection_types.h>  // for connectionTypes
+#include <fastonosql/core/connection_types.h>  // for ConnectionTypes
 
 class QLineEdit;  // lines 25-25
 class QSpinBox;   // lines 26-26
@@ -33,7 +33,7 @@ class LoadContentDbDialog : public QDialog {
  public:
   enum { min_key_on_page = 1, max_key_on_page = 100000, defaults_key = 1000, step_keys_on_page = defaults_key };
 
-  explicit LoadContentDbDialog(const QString& title, core::connectionTypes type, QWidget* parent = Q_NULLPTR);
+  explicit LoadContentDbDialog(const QString& title, core::ConnectionTypes type, QWidget* parent = Q_NULLPTR);
   int count() const;
   QString pattern() const;
 
@@ -41,7 +41,7 @@ class LoadContentDbDialog : public QDialog {
   virtual void accept() override;
 
  private:
-  const core::connectionTypes type_;
+  const core::ConnectionTypes type_;
 
   QLineEdit* pattern_edit_;
   QSpinBox* count_spin_edit_;

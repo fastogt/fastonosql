@@ -43,7 +43,7 @@ class IConnectionSettingsRemoteSSH : public IConnectionSettingsRemote {
   virtual void PrepareInGuiIfNeeded() override;
 
  protected:
-  IConnectionSettingsRemoteSSH(const connection_path_t& connectionName, core::connectionTypes type);
+  IConnectionSettingsRemoteSSH(const connection_path_t& connectionName, core::ConnectionTypes type);
 
  private:
   struct core::SSHInfo ssh_info_;

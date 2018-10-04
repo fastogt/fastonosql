@@ -128,7 +128,7 @@ class BaseShellWidget : public QWidget {
  protected:
   BaseShellWidget(proxy::IServerSPtr server, const QString& filePath = QString(), QWidget* parent = Q_NULLPTR);
   virtual void init();
-  virtual QHBoxLayout* createTopLayout(core::connectionTypes ct);
+  virtual QHBoxLayout* createTopLayout(core::ConnectionTypes ct);
 
   // notify methods for derived classes
   virtual void OnServerConnected();

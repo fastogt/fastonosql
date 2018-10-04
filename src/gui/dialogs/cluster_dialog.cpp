@@ -35,7 +35,7 @@
 #include <common/qt/convert2string.h>  // for ConvertToString
 #include <common/types.h>
 
-#include <fastonosql/core/connection_types.h>  // for connectionTypes, etc
+#include <fastonosql/core/connection_types.h>  // for ConnectionTypes, etc
 #include "proxy/cluster_connection_settings_factory.h"
 
 #include "gui/dialogs/connection_diagnostic_dialog.h"
@@ -88,7 +88,7 @@ ClusterDialog::ClusterDialog(QWidget* parent, proxy::IClusterSettingsBase* conne
   type_connection_ = new QComboBox;
 
   for (size_t i = 0; i < core::g_compiled_types.size(); ++i) {
-    core::connectionTypes ct = core::g_compiled_types[i];
+    core::ConnectionTypes ct = core::g_compiled_types[i];
     std::string str = common::ConvertToString(ct);
     QString qstr;
     if (common::ConvertFromString(str, &qstr)) {
@@ -217,7 +217,7 @@ void ClusterDialog::accept() {
 
 void ClusterDialog::typeConnectionChange(int index) {
   QVariant var = type_connection_->itemData(index);
-  core::connectionTypes currentType = static_cast<core::connectionTypes>(qvariant_cast<unsigned char>(var));
+  core::ConnectionTypes currentType = static_cast<core::ConnectionTypes>(qvariant_cast<unsigned char>(var));
   bool isValidType = currentType == core::REDIS;
   connection_name_->setEnabled(isValidType);
   button_box_->button(QDialogButtonBox::Save)->setEnabled(isValidType);
@@ -380,7 +380,7 @@ void ClusterDialog::retranslateUi() {
 
 bool ClusterDialog::validateAndApply() {
   QVariant var = type_connection_->currentData();
-  core::connectionTypes currentType = static_cast<core::connectionTypes>(qvariant_cast<unsigned char>(var));
+  core::ConnectionTypes currentType = static_cast<core::ConnectionTypes>(qvariant_cast<unsigned char>(var));
 
   std::string conName = common::ConvertToString(connection_name_->text());
   std::string conFolder = common::ConvertToString(connection_folder_->text());

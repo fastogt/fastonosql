@@ -18,7 +18,7 @@
 
 #include "proxy/db/pika/cluster_settings.h"
 
-#include <fastonosql/core/connection_types.h>  // for core::connectionTypes::REDIS
+#include <fastonosql/core/connection_types.h>  // for core::ConnectionTypes::REDIS
 
 namespace fastonosql {
 namespace proxy {

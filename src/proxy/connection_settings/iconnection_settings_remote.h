@@ -41,7 +41,7 @@ class IConnectionSettingsRemote : public IConnectionSettingsBase {
   virtual IConnectionSettingsBase* Clone() const override = 0;
 
  protected:
-  IConnectionSettingsRemote(const connection_path_t& connectionPath, core::connectionTypes type);
+  IConnectionSettingsRemote(const connection_path_t& connectionPath, core::ConnectionTypes type);
 };
 
 }  // namespace proxy

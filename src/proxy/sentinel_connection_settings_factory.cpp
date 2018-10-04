@@ -31,7 +31,7 @@
 namespace fastonosql {
 namespace proxy {
 
-ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromType(core::connectionTypes type,
+ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromType(core::ConnectionTypes type,
                                                                          const connection_path_t& conName) {
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
@@ -62,7 +62,7 @@ ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromString(const
     if (ch == setting_value_delemitr) {
       if (commaCount == 0) {
         int crT = elText[0] - 48;
-        result = CreateFromType(static_cast<core::connectionTypes>(crT), connection_path_t());
+        result = CreateFromType(static_cast<core::ConnectionTypes>(crT), connection_path_t());
         if (!result) {
           return nullptr;
         }

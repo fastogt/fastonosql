@@ -33,7 +33,7 @@
 namespace fastonosql {
 namespace proxy {
 
-IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromType(core::connectionTypes type,
+IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromType(core::ConnectionTypes type,
                                                                        const connection_path_t& conName) {
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
@@ -64,7 +64,7 @@ IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromString(const s
     if (ch == setting_value_delemitr) {
       if (commaCount == 0) {
         int crT = elText[0] - 48;
-        result = CreateFromType(static_cast<core::connectionTypes>(crT), connection_path_t());
+        result = CreateFromType(static_cast<core::ConnectionTypes>(crT), connection_path_t());
         if (!result) {
           return nullptr;
         }

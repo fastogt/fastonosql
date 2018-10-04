@@ -80,7 +80,7 @@ SentinelDialog::SentinelDialog(QWidget* parent, proxy::ISentinelSettingsBase* co
   type_connection_ = new QComboBox;
 
   for (size_t i = 0; i < core::g_compiled_types.size(); ++i) {
-    core::connectionTypes ct = core::g_compiled_types[i];
+    core::ConnectionTypes ct = core::g_compiled_types[i];
     std::string str = common::ConvertToString(ct);
     QString qstr;
     if (common::ConvertFromString(str, &qstr)) {
@@ -205,7 +205,7 @@ void SentinelDialog::accept() {
 
 void SentinelDialog::typeConnectionChange(int index) {
   QVariant var = type_connection_->itemData(index);
-  core::connectionTypes currentType = static_cast<core::connectionTypes>(qvariant_cast<unsigned char>(var));
+  core::ConnectionTypes currentType = static_cast<core::ConnectionTypes>(qvariant_cast<unsigned char>(var));
   bool isValidType = currentType == core::REDIS;
   connection_name_->setEnabled(isValidType);
   button_box_->button(QDialogButtonBox::Save)->setEnabled(isValidType);
@@ -340,7 +340,7 @@ void SentinelDialog::retranslateUi() {
 
 bool SentinelDialog::validateAndApply() {
   QVariant var = type_connection_->currentData();
-  core::connectionTypes currentType = static_cast<core::connectionTypes>(qvariant_cast<unsigned char>(var));
+  core::ConnectionTypes currentType = static_cast<core::ConnectionTypes>(qvariant_cast<unsigned char>(var));
   std::string conName = common::ConvertToString(connection_name_->text());
   std::string conFolder = common::ConvertToString(connection_folder_->text());
   if (conFolder.empty()) {

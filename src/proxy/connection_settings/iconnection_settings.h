@@ -22,7 +22,7 @@
 
 #include <common/file_system/path.h>
 
-#include <fastonosql/core/connection_types.h>  // for core::connectionTypes
+#include <fastonosql/core/connection_types.h>  // for core::ConnectionTypes
 
 #include "proxy/types.h"
 
@@ -63,7 +63,7 @@ class IConnectionSettings : public common::ClonableBase<IConnectionSettings> {
   connection_path_t GetPath() const;
   void SetPath(const connection_path_t& path);
 
-  core::connectionTypes GetType() const;
+  core::ConnectionTypes GetType() const;
 
   bool IsHistoryEnabled() const;
 
@@ -80,9 +80,9 @@ class IConnectionSettings : public common::ClonableBase<IConnectionSettings> {
   virtual IConnectionSettings* Clone() const override = 0;
 
  protected:
-  IConnectionSettings(const connection_path_t& connectionPath, core::connectionTypes type);
+  IConnectionSettings(const connection_path_t& connectionPath, core::ConnectionTypes type);
   connection_path_t connection_path_;
-  const core::connectionTypes type_;
+  const core::ConnectionTypes type_;
 
  private:
   int msinterval_;
@@ -113,7 +113,7 @@ class IConnectionSettingsBase : public IConnectionSettings {
   virtual void PrepareInGuiIfNeeded();
 
  protected:
-  IConnectionSettingsBase(const connection_path_t& connectionPath, core::connectionTypes type);
+  IConnectionSettingsBase(const connection_path_t& connectionPath, core::ConnectionTypes type);
 
  private:
   using IConnectionSettings::SetPath;

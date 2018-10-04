@@ -64,7 +64,7 @@
 namespace fastonosql {
 namespace proxy {
 
-IConnectionSettingsBase* ConnectionSettingsFactory::CreateFromType(core::connectionTypes type,
+IConnectionSettingsBase* ConnectionSettingsFactory::CreateFromType(core::ConnectionTypes type,
                                                                    const connection_path_t& conName) {
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
@@ -133,7 +133,7 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateFromString(const std::
     char ch = val[i];
     if (ch == setting_value_delemitr) {
       if (commaCount == 0) {
-        core::connectionTypes crT = static_cast<core::connectionTypes>(elText[0] - 48);
+        core::ConnectionTypes crT = static_cast<core::ConnectionTypes>(elText[0] - 48);
         result = CreateFromType(crT, connection_path_t());
         if (!result) {
           return nullptr;
@@ -172,7 +172,7 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateFromString(const std::
   return result;
 }
 
-IConnectionSettingsRemote* ConnectionSettingsFactory::CreateFromType(core::connectionTypes type,
+IConnectionSettingsRemote* ConnectionSettingsFactory::CreateFromType(core::ConnectionTypes type,
                                                                      const connection_path_t& conName,
                                                                      const common::net::HostAndPort& host) {
   IConnectionSettingsRemote* remote = nullptr;

@@ -43,7 +43,7 @@ class ShellWidget : public BaseShellWidget {
 
  protected:
   virtual void init() override;
-  virtual QHBoxLayout* createTopLayout(core::connectionTypes ct) override;
+  virtual QHBoxLayout* createTopLayout(core::ConnectionTypes ct) override;
   virtual void OnServerDisconnected() override;
   virtual void OnFinishedLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponce& res) override;
 

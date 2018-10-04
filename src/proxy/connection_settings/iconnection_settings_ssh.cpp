@@ -30,7 +30,7 @@ namespace fastonosql {
 namespace proxy {
 
 IConnectionSettingsRemoteSSH::IConnectionSettingsRemoteSSH(const connection_path_t& connectionName,
-                                                           core::connectionTypes type)
+                                                           core::ConnectionTypes type)
     : IConnectionSettingsRemote(connectionName, type), ssh_info_() {}
 
 std::string IConnectionSettingsRemoteSSH::ToString() const {
