@@ -374,7 +374,7 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
     QAction* getValueAction = new QAction(translations::trGetValue, this);
     VERIFY(connect(getValueAction, &QAction::triggered, this, &ExplorerTreeView::loadValue));
 
-    QAction* editKeyAction = new QAction(translations::trEdit, this);
+    QAction* editKeyAction = new QAction(translations::trEditValue, this);
     VERIFY(connect(editKeyAction, &QAction::triggered, this, &ExplorerTreeView::editKey));
 
     QAction* renameKeyAction = new QAction(trRenameKey, this);
@@ -850,7 +850,7 @@ void ExplorerTreeView::editKey() {
     int result = loadDb.exec();
     if (result == QDialog::Accepted) {
       core::NDbKValue key = loadDb.key();
-      node->editKey(key.GetValue());
+      node->editValue(key.GetValue());
     }
   }
 }

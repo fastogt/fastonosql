@@ -32,7 +32,7 @@ class FastoCommonItem : public common::qt::gui::TreeItem {
   enum eColumn { eKey = 0, eValue = 1, eType = 2, eCountColumns = 3 };
   FastoCommonItem(const core::NDbKValue& key,
                   const std::string& delimiter,
-                  bool isReadOnly,
+                  bool read_only,
                   TreeItem* parent,
                   void* internalPointer);
 

@@ -371,9 +371,9 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
 
   uint32_t version = serv->GetVersion();
   new_behavior = version >= PROJECT_VERSION_GENERATE(2, 8, 0);
-  core::keys_limit_t count_keys = res.count_keys;
+  core::keys_limit_t keys_count = res.keys_count;
   if (new_behavior) {
-    pattern_result = core::GetKeysPattern(res.cursor_in, res.pattern, count_keys);
+    pattern_result = core::GetKeysPattern(res.cursor_in, res.pattern, keys_count);
   } else {
     pattern_result = core::GetKeysOldPattern(res.pattern);
   }
@@ -434,9 +434,9 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
           }
         }
       } else {
-        count_keys = std::min<core::keys_limit_t>(count_keys, arm->GetSize());
-        cmds.reserve(count_keys * 2);
-        for (size_t i = 0; i < count_keys; ++i) {
+        keys_count = std::min<core::keys_limit_t>(keys_count, arm->GetSize());
+        cmds.reserve(keys_count * 2);
+        for (size_t i = 0; i < keys_count; ++i) {
           std::string key;
           bool isok = arm->GetString(i, &key);
           if (isok) {

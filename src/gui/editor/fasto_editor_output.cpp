@@ -49,7 +49,7 @@ FastoEditorOutput::FastoEditorOutput(QWidget* parent) : QWidget(parent), model_(
   mainL->addWidget(text_json_editor_);
   mainL->setContentsMargins(0, 0, 0, 0);
   setLayout(mainL);
-  SyncEditors();
+  syncEditors();
 }
 
 FastoEditorOutput::~FastoEditorOutput() {
@@ -57,7 +57,7 @@ FastoEditorOutput::~FastoEditorOutput() {
   delete xml_lexer_;
 }
 
-void FastoEditorOutput::SyncEditors() {
+void FastoEditorOutput::syncEditors() {
   if (view_method_ == JSON_VIEW) {
     text_json_editor_->setLexer(json_lexer_);
   } else if (view_method_ == XML_VIEW) {
@@ -224,7 +224,7 @@ int FastoEditorOutput::childCount() const {
 }
 
 void FastoEditorOutput::layoutChanged() {
-  SyncEditors();
+  syncEditors();
 
   if (!model_) {
     return;

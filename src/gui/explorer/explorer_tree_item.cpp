@@ -171,10 +171,10 @@ proxy::IDatabaseSPtr ExplorerDatabaseItem::db() const {
   return db_;
 }
 
-void ExplorerDatabaseItem::loadContent(const std::string& pattern, uint32_t countKeys) {
+void ExplorerDatabaseItem::loadContent(const std::string& pattern, uint32_t keys_count) {
   proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
-  proxy::events_info::LoadDatabaseContentRequest req(this, dbs->GetInfo(), pattern, countKeys);
+  proxy::events_info::LoadDatabaseContentRequest req(this, dbs->GetInfo(), pattern, keys_count);
   dbs->LoadContent(req);
 }
 
@@ -212,13 +212,13 @@ void ExplorerDatabaseItem::removeDb() {
   dbs->Execute(req);
 }
 
-void ExplorerDatabaseItem::renameKey(const core::NKey& key, const QString& newName) {
+void ExplorerDatabaseItem::renameKey(const core::NKey& key, const QString& new_name) {
   proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
   proxy::IServerSPtr server = dbs->GetServer();
   core::translator_t tran = server->GetTranslator();
   core::command_buffer_t cmd_str;
-  core::readable_string_t key_str = common::ConvertToString(newName);
+  core::readable_string_t key_str = common::ConvertToString(new_name);
   common::Error err = tran->RenameKeyCommand(key, key_str, &cmd_str);
   if (err) {
     LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
@@ -278,30 +278,24 @@ void ExplorerDatabaseItem::watchKey(const core::NDbKValue& key, int interval) {
 }
 
 void ExplorerDatabaseItem::createKey(const core::NDbKValue& key) {
-  proxy::IDatabaseSPtr dbs = db();
-  CHECK(dbs);
-  proxy::IServerSPtr server = dbs->GetServer();
-  core::translator_t tran = server->GetTranslator();
-  core::command_buffer_t cmd_str;
-  common::Error err = tran->CreateKeyCommand(key, &cmd_str);
-  if (err) {
-    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
-    return;
-  }
-
-  proxy::events_info::ExecuteInfoRequest req(this, cmd_str);
-  dbs->Execute(req);
+  createKeyImpl(key);
 }
 
-void ExplorerDatabaseItem::editKey(const core::NDbKValue& key, const core::NValue& value) {
+void ExplorerDatabaseItem::editValue(const core::NDbKValue& key, const core::NValue& value) {
+  core::NDbKValue copy_key = key;
+  copy_key.SetValue(value);
+
+  createKeyImpl(copy_key);
+}
+
+void ExplorerDatabaseItem::createKeyImpl(const core::NDbKValue& key) {
   proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
   proxy::IServerSPtr server = dbs->GetServer();
   core::translator_t tran = server->GetTranslator();
   core::command_buffer_t cmd_str;
-  core::NDbKValue copy_key = key;
-  copy_key.SetValue(value);
-  common::Error err = tran->CreateKeyCommand(copy_key, &cmd_str);
+
+  common::Error err = tran->CreateKeyCommand(key, &cmd_str);
   if (err) {
     LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
     return;
@@ -413,10 +407,10 @@ void ExplorerKeyItem::renameKey(const QString& newName) {
   }
 }
 
-void ExplorerKeyItem::editKey(const core::NValue& value) {
+void ExplorerKeyItem::editValue(const core::NValue& value) {
   ExplorerDatabaseItem* par = db();
   if (par) {
-    par->editKey(dbv_, value);
+    par->editValue(dbv_, value);
   }
 }
 

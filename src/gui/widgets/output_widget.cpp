@@ -58,12 +58,12 @@ core::FastoObjectCommand* FindCommand(core::FastoObject* obj) {
 
 FastoCommonItem* CreateItem(common::qt::gui::TreeItem* parent,
                             core::readable_string_t key,
-                            bool readOnly,
+                            bool read_only,
                             core::FastoObject* item) {
   core::NValue value = item->GetValue();
   core::key_t raw_key(key);
   core::NDbKValue nkey(core::NKey(raw_key), value);
-  return new FastoCommonItem(nkey, item->GetDelimiter(), readOnly, parent, item);
+  return new FastoCommonItem(nkey, item->GetDelimiter(), read_only, parent, item);
 }
 
 FastoCommonItem* CreateRootItem(core::FastoObject* item) {

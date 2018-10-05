@@ -21,7 +21,6 @@
 #include <QWidget>
 
 class QAbstractItemModel;  // lines 25-25
-class QPushButton;         // lines 24-24
 class QComboBox;           // lines 23-23
 class QLabel;
 
@@ -38,8 +37,6 @@ class FastoTextView : public QWidget {
 
  private Q_SLOTS:
   void viewChange(int index);
-  void textChange();
-  void saveChanges();
 
  protected:
   virtual void changeEvent(QEvent* ev) override;
@@ -50,7 +47,6 @@ class FastoTextView : public QWidget {
   FastoEditorOutput* editor_;
   QLabel* views_label_;
   QComboBox* views_combo_box_;
-  QPushButton* save_change_button_;
 };
 
 }  // namespace gui

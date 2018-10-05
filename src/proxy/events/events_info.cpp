@@ -99,10 +99,10 @@ LoadDatabasesInfoResponce::LoadDatabasesInfoResponce(const base_class& request) 
 LoadDatabaseContentRequest::LoadDatabaseContentRequest(initiator_type sender,
                                                        core::IDataBaseInfoSPtr inf,
                                                        const std::string& pattern,
-                                                       size_t countKeys,
-                                                       uint64_t cursor,
+                                                       core::keys_limit_t keys_count,
+                                                       core::cursor_t cursor,
                                                        error_type er)
-    : base_class(sender, er), inf(inf), pattern(pattern), count_keys(countKeys), cursor_in(cursor) {}
+    : base_class(sender, er), inf(inf), pattern(pattern), keys_count(keys_count), cursor_in(cursor) {}
 
 LoadDatabaseContentResponce::LoadDatabaseContentResponce(const base_class& request)
     : base_class(request), keys(), cursor_out(0), db_keys_count(0) {}

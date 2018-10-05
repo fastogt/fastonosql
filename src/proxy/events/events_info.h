@@ -179,14 +179,14 @@ struct LoadDatabaseContentRequest : public EventInfoBase {
   LoadDatabaseContentRequest(initiator_type sender,
                              core::IDataBaseInfoSPtr inf,
                              const std::string& pattern,
-                             size_t countKeys,
-                             uint64_t cursor = 0,
+                             core::keys_limit_t keys_count,
+                             core::cursor_t cursor = 0,
                              error_type er = error_type());
 
   core::IDataBaseInfoSPtr inf;
   const std::string pattern;
-  size_t count_keys;
-  const uint64_t cursor_in;
+  core::keys_limit_t keys_count;
+  const core::cursor_t cursor_in;
 };
 
 struct LoadDatabaseContentResponce : LoadDatabaseContentRequest {
@@ -195,7 +195,7 @@ struct LoadDatabaseContentResponce : LoadDatabaseContentRequest {
   explicit LoadDatabaseContentResponce(const base_class& request);
 
   keys_container_t keys;
-  uint64_t cursor_out;
+  core::cursor_t cursor_out;
   size_t db_keys_count;
 };
 

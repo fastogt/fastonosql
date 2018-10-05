@@ -70,6 +70,7 @@ const QString trKey = QObject::tr("Key");
 const QString trValue = QObject::tr("Value");
 const QString trAction = QObject::tr("Action");
 const QString trGetValue = QObject::tr("Get value");
+const QString trEditValue = QObject::tr("Edit value");
 const QString trMember = QObject::tr("Member");
 const QString trScore = QObject::tr("Score");
 const QString trField = QObject::tr("Field");

@@ -35,10 +35,10 @@ namespace gui {
 
 FastoCommonItem::FastoCommonItem(const core::NDbKValue& key,
                                  const std::string& delimiter,
-                                 bool isReadOnly,
+                                 bool read_only,
                                  TreeItem* parent,
                                  void* internalPointer)
-    : TreeItem(parent, internalPointer), key_(key), delimiter_(delimiter), read_only_(isReadOnly) {}
+    : TreeItem(parent, internalPointer), key_(key), delimiter_(delimiter), read_only_(read_only) {}
 
 QString FastoCommonItem::key() const {
   QString qkey;

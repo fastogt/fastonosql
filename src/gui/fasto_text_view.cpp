@@ -21,7 +21,6 @@
 #include <QComboBox>
 #include <QEvent>
 #include <QLabel>
-#include <QPushButton>
 #include <QSplitter>
 #include <QVBoxLayout>
 
@@ -43,28 +42,21 @@ FastoTextView::FastoTextView(QWidget* parent) : QWidget(parent) {
   QVBoxLayout* mainL = new QVBoxLayout;
 
   editor_ = new FastoEditorOutput;
+  editor_->setReadOnly(true);
+
   views_label_ = new QLabel;
   views_combo_box_ = new QComboBox;
   for (unsigned i = 0; i < g_output_views_text.size(); ++i) {
     views_combo_box_->addItem(g_output_views_text[i], i);
   }
 
-  save_change_button_ = new QPushButton;
-  save_change_button_->setIcon(GuiFactory::GetInstance().saveIcon());
-  save_change_button_->setEnabled(false);
-
   typedef void (QComboBox::*ind)(int);
   VERIFY(
       connect(views_combo_box_, static_cast<ind>(&QComboBox::currentIndexChanged), this, &FastoTextView::viewChange));
 
-  VERIFY(connect(save_change_button_, &QPushButton::clicked, this, &FastoTextView::saveChanges));
-  VERIFY(connect(editor_, &FastoEditorOutput::textChanged, this, &FastoTextView::textChange));
-  VERIFY(connect(editor_, &FastoEditorOutput::readOnlyChanged, this, &FastoTextView::textChange));
-
   mainL->addWidget(editor_);
   mainL->setContentsMargins(0, 0, 0, 0);
   QHBoxLayout* hlayout = new QHBoxLayout;
-  hlayout->addWidget(save_change_button_);
   QSplitter* spliter_save_and_view = new QSplitter(Qt::Horizontal);
   hlayout->addWidget(spliter_save_and_view);
   hlayout->addWidget(views_label_);
@@ -78,29 +70,6 @@ FastoTextView::FastoTextView(QWidget* parent) : QWidget(parent) {
 
 void FastoTextView::setModel(QAbstractItemModel* model) {
   editor_->setModel(model);
-}
-
-void FastoTextView::saveChanges() {
-  QModelIndex index = editor_->selectedItem(1);  // eValue
-  QString qsimplif = editor_->text().simplified();
-  std::string simplif = common::ConvertToString(qsimplif);
-  common::StringValue* string = common::Value::CreateStringValue(simplif);
-  core::NValue nv_string(string);
-  QVariant var = QVariant::fromValue(nv_string);
-  editor_->setData(index, var, Qt::EditRole);
-}
-
-void FastoTextView::textChange() {
-  if (editor_->childCount() != 1) {
-    save_change_button_->setEnabled(false);
-    return;
-  }
-
-  QModelIndex index = editor_->selectedItem(1);  // eValue
-  bool isEnabled = !editor_->isReadOnly() && index.isValid() && (index.flags() & Qt::ItemIsEditable) &&
-                   index.data() != editor_->text().simplified();
-
-  save_change_button_->setEnabled(isEnabled);
 }
 
 void FastoTextView::viewChange(int index) {
@@ -118,7 +87,6 @@ void FastoTextView::changeEvent(QEvent* ev) {
 }
 
 void FastoTextView::retranslateUi() {
-  save_change_button_->setText(translations::trSaveChanges);
   views_label_->setText(translations::trViews + ":");
 }
 

@@ -76,7 +76,7 @@ class FastoEditorOutput : public QWidget {
   void layoutChanged();
 
  private:
-  void SyncEditors();
+  void syncEditors();
 
   FastoEditor* text_json_editor_;
   QsciLexer* json_lexer_;

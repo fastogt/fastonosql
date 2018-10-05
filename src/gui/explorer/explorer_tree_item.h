@@ -108,21 +108,23 @@ class ExplorerDatabaseItem : public IExplorerTreeItem {
   proxy::IServerSPtr server() const;
   proxy::IDatabaseSPtr db() const;
 
-  void loadContent(const std::string& pattern, uint32_t countKeys);
+  void loadContent(const std::string& pattern, uint32_t keys_count);
   void setDefault();
   void removeDb();
 
-  void renameKey(const core::NKey& key, const QString& newName);
+  void renameKey(const core::NKey& key, const QString& new_name);
   void removeKey(const core::NKey& key);
   void loadValue(const core::NDbKValue& key);
   void watchKey(const core::NDbKValue& key, int interval);
   void createKey(const core::NDbKValue& key);
-  void editKey(const core::NDbKValue& key, const core::NValue& value);
+  void editValue(const core::NDbKValue& key, const core::NValue& value);
   void setTTL(const core::NKey& key, core::ttl_t ttl);
 
   void removeAllKeys();
 
  private:
+  void createKeyImpl(const core::NDbKValue& key);
+
   const proxy::IDatabaseSPtr db_;
 };
 
@@ -146,7 +148,7 @@ class ExplorerKeyItem : public IExplorerTreeItem {
   proxy::IServerSPtr server() const;
 
   void renameKey(const QString& newName);
-  void editKey(const core::NValue& value);
+  void editValue(const core::NValue& value);
   void removeFromDb();
   void watchKey(int interval);
   void loadValueFromDb();
