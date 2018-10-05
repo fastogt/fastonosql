@@ -42,7 +42,7 @@
 #define REDIS_GET_COMMANDS "COMMAND"
 
 #if defined(PRO_VERSION)
-#include <fastonosql/core/internal/imodule_connection_client.h>
+#include <fastonosql/core/imodule_connection_client.h>
 #define REDIS_GET_LOADED_MODULES_COMMANDS "MODULE LIST"
 #endif
 
@@ -373,7 +373,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   new_behavior = version >= PROJECT_VERSION_GENERATE(2, 8, 0);
   core::keys_limit_t count_keys = res.count_keys;
   if (new_behavior) {
-    pattern_result = core::internal::GetKeysPattern(res.cursor_in, res.pattern, count_keys);
+    pattern_result = core::GetKeysPattern(res.cursor_in, res.pattern, count_keys);
   } else {
     pattern_result = core::GetKeysOldPattern(res.pattern);
   }
