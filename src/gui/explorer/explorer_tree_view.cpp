@@ -826,8 +826,9 @@ void ExplorerTreeView::createKey() {
     }
 
     proxy::IServerSPtr server = node->server();
-    DbKeyDialog loadDb(trCreateKeyForDbTemplate_1S.arg(node->name()), server->GetType(), core::NDbKValue(), false,
-                       this);
+    core::NValue val(common::Value::CreateEmptyStringValue());
+    core::NDbKValue dbv(core::NKey(), val);
+    DbKeyDialog loadDb(trCreateKeyForDbTemplate_1S.arg(node->name()), server->GetType(), dbv, false, this);
     int result = loadDb.exec();
     if (result == QDialog::Accepted) {
       core::NDbKValue key = loadDb.key();

@@ -280,6 +280,7 @@ SET(SOURCES_GUI_SHELL
 )
 
 SET(HEADERS_GUI_WIDGETS_TO_MOC
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/key_edit_widget.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/log_tab_widget.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/log_widget.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/commands_widget.h
@@ -301,6 +302,7 @@ SET(HEADERS_GUI_WIDGETS_TO_MOC
 )
 
 SET(SOURCES_GUI_WIDGETS
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/key_edit_widget.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/log_tab_widget.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/log_widget.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/commands_widget.cpp
