@@ -68,6 +68,7 @@ extern const QString trProLimitations;
 extern const QString trLogs;
 extern const QString trKey;
 extern const QString trValue;
+extern const QString trString;
 extern const QString trAction;
 extern const QString trType;
 extern const QString trGetValue;

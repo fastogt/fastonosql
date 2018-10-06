@@ -23,7 +23,6 @@
 #include <QEvent>
 #include <QGridLayout>
 #include <QGroupBox>
-#include <QHeaderView>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
@@ -49,10 +48,16 @@
 
 namespace {
 const QString trInput = QObject::tr("Key/Value input");
+const QSize pref_list_size = QSize(600, 300);
+const QSize pref_hash_size = QSize(600, 300);
+const QSize pref_stream_size = QSize(600, 300);
+const QSize pref_json_size = QSize(600, 300);
 }  // namespace
 
 namespace fastonosql {
 namespace gui {
+
+const QSize DbKeyDialog::min_dialog_size = QSize(360, 240);
 
 DbKeyDialog::DbKeyDialog(const QString& title,
                          core::ConnectionTypes type,
@@ -69,14 +74,14 @@ DbKeyDialog::DbKeyDialog(const QString& title,
   kvLayout->addWidget(type_label_, 0, 0);
   types_combo_box_ = new QComboBox;
   std::vector<common::Value::Type> types = core::GetSupportedValueTypes(type);
-  common::Value::Type kt = common::Value::TYPE_STRING;
+  common::Value::Type current_type = common::Value::TYPE_STRING;
   if (is_edit) {
-    kt = key_.GetType();
+    current_type = key_.GetType();
   }
   int current_index = 0;
   for (size_t i = 0; i < types.size(); ++i) {
     common::Value::Type t = types[i];
-    if (kt == t) {
+    if (current_type == t) {
       current_index = static_cast<int>(i);
     }
     QString type = core::GetTypeName(t);
@@ -156,7 +161,7 @@ DbKeyDialog::DbKeyDialog(const QString& title,
   core::NValue val = key_.GetValue();
   syncControls(val.get());
 
-  setMinimumSize(QSize(min_width, min_height));
+  setMinimumSize(min_dialog_size);
   setLayout(layout);
   retranslateUi();
 }
@@ -191,6 +196,7 @@ void DbKeyDialog::typeChanged(int index) {
     bool_value_edit_->setVisible(false);
     value_table_edit_->setVisible(false);
     stream_table_edit_->setVisible(false);
+    resize(pref_list_size);
   } else if (type == common::Value::TYPE_ZSET || type == common::Value::TYPE_HASH) {
     value_table_edit_->setVisible(true);
     stream_table_edit_->setVisible(false);
@@ -198,6 +204,7 @@ void DbKeyDialog::typeChanged(int index) {
     json_value_edit_->setVisible(false);
     bool_value_edit_->setVisible(false);
     value_list_edit_->setVisible(false);
+    resize(pref_hash_size);
   } else if (type == common::Value::TYPE_BOOLEAN) {
     value_table_edit_->setVisible(false);
     stream_table_edit_->setVisible(false);
@@ -205,6 +212,7 @@ void DbKeyDialog::typeChanged(int index) {
     json_value_edit_->setVisible(false);
     bool_value_edit_->setVisible(true);
     value_list_edit_->setVisible(false);
+    resize(min_dialog_size);
   } else if (type == core::StreamValue::TYPE_STREAM) {
     value_table_edit_->setVisible(false);
     stream_table_edit_->setVisible(true);
@@ -212,6 +220,7 @@ void DbKeyDialog::typeChanged(int index) {
     json_value_edit_->setVisible(false);
     bool_value_edit_->setVisible(false);
     value_list_edit_->setVisible(false);
+    resize(pref_stream_size);
   } else if (type == core::JsonValue::TYPE_JSON) {
     value_table_edit_->setVisible(false);
     stream_table_edit_->setVisible(false);
@@ -219,6 +228,7 @@ void DbKeyDialog::typeChanged(int index) {
     json_value_edit_->setVisible(true);
     bool_value_edit_->setVisible(false);
     value_list_edit_->setVisible(false);
+    resize(pref_json_size);
   } else {
     value_edit_->setVisible(true);
     json_value_edit_->setVisible(false);
@@ -234,6 +244,7 @@ void DbKeyDialog::typeChanged(int index) {
       QRegExp rx(".*");
       value_edit_->setValidator(new QRegExpValidator(rx, this));
     }
+    resize(min_dialog_size);
   }
 }
 

@@ -68,6 +68,7 @@ const QString trProLimitations = QObject::tr("PRO version limitations");
 const QString trLogs = QObject::tr("Logs");
 const QString trKey = QObject::tr("Key");
 const QString trValue = QObject::tr("Value");
+const QString trString = QObject::tr("String");
 const QString trAction = QObject::tr("Action");
 const QString trGetValue = QObject::tr("Get value");
 const QString trEditValue = QObject::tr("Edit value");

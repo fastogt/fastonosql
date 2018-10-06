@@ -18,6 +18,8 @@
 
 #include "gui/widgets/stream_type_widget.h"
 
+#include <QHeaderView>
+
 #include <common/qt/convert2string.h>
 #include <common/qt/utils_qt.h>
 
@@ -78,6 +80,9 @@ StreamTypeWidget::StreamTypeWidget(QWidget* parent) : QTableView(parent) {
   setItemDelegateForColumn(KeyValueTableItem::kAction, del);
   setContextMenuPolicy(Qt::ActionsContextMenu);
   setSelectionBehavior(QAbstractItemView::SelectRows);
+
+  QHeaderView* header = horizontalHeader();
+  header->setSectionResizeMode(QHeaderView::Stretch);
 }
 
 void StreamTypeWidget::insertStream(const core::StreamValue::Stream& stream) {

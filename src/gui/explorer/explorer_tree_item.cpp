@@ -278,17 +278,6 @@ void ExplorerDatabaseItem::watchKey(const core::NDbKValue& key, int interval) {
 }
 
 void ExplorerDatabaseItem::createKey(const core::NDbKValue& key) {
-  createKeyImpl(key);
-}
-
-void ExplorerDatabaseItem::editValue(const core::NDbKValue& key, const core::NValue& value) {
-  core::NDbKValue copy_key = key;
-  copy_key.SetValue(value);
-
-  createKeyImpl(copy_key);
-}
-
-void ExplorerDatabaseItem::createKeyImpl(const core::NDbKValue& key) {
   proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
   proxy::IServerSPtr server = dbs->GetServer();
@@ -303,6 +292,13 @@ void ExplorerDatabaseItem::createKeyImpl(const core::NDbKValue& key) {
 
   proxy::events_info::ExecuteInfoRequest req(this, cmd_str);
   dbs->Execute(req);
+}
+
+void ExplorerDatabaseItem::editValue(const core::NDbKValue& key, const core::NValue& value) {
+  core::NDbKValue copy_key = key;
+  copy_key.SetValue(value);
+
+  createKey(copy_key);
 }
 
 void ExplorerDatabaseItem::setTTL(const core::NKey& key, core::ttl_t ttl) {

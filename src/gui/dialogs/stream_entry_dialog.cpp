@@ -33,6 +33,8 @@
 namespace fastonosql {
 namespace gui {
 
+const QSize StreamEntryDialog::min_dialog_size = QSize(360, 240);
+
 StreamEntryDialog::StreamEntryDialog(const QString& sid, QWidget* parent) : QDialog(parent), model_(nullptr) {
   QVBoxLayout* layout = new QVBoxLayout;
 
@@ -47,8 +49,8 @@ StreamEntryDialog::StreamEntryDialog(const QString& sid, QWidget* parent) : QDia
   layout->addLayout(id_layout);
 
   table_ = new QTableView(this);
-  table_->horizontalHeader()->hide();
-  table_->verticalHeader()->hide();
+  // table_->horizontalHeader()->hide();
+  // table_->verticalHeader()->hide();
   model_ = new StreamTableModel(this);
   table_->setModel(model_);
 
@@ -59,6 +61,8 @@ StreamEntryDialog::StreamEntryDialog(const QString& sid, QWidget* parent) : QDia
   table_->setItemDelegateForColumn(KeyValueTableItem::kAction, del);
   table_->setContextMenuPolicy(Qt::ActionsContextMenu);
   table_->setSelectionBehavior(QAbstractItemView::SelectRows);
+  QHeaderView* header = table_->horizontalHeader();
+  header->setSectionResizeMode(QHeaderView::Stretch);
   layout->addWidget(table_);
 
   QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
@@ -67,6 +71,7 @@ StreamEntryDialog::StreamEntryDialog(const QString& sid, QWidget* parent) : QDia
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &StreamEntryDialog::reject));
   layout->addWidget(buttonBox);
 
+  setMinimumSize(min_dialog_size);
   setLayout(layout);
 }
 

@@ -123,8 +123,6 @@ class ExplorerDatabaseItem : public IExplorerTreeItem {
   void removeAllKeys();
 
  private:
-  void createKeyImpl(const core::NDbKValue& key);
-
   const proxy::IDatabaseSPtr db_;
 };
 

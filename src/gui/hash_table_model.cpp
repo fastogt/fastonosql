@@ -99,7 +99,7 @@ QVariant HashTableModel::headerData(int section, Qt::Orientation orientation, in
 
   if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
     if (section == KeyValueTableItem::kKey) {
-      return translations::trKey;
+      return translations::trField;
     } else if (section == KeyValueTableItem::kValue) {
       return translations::trValue;
     } else if (section == KeyValueTableItem::kAction) {

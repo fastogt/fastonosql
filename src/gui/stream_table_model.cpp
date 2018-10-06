@@ -101,7 +101,7 @@ QVariant StreamTableModel::headerData(int section, Qt::Orientation orientation, 
     if (section == KeyValueTableItem::kKey) {
       return translations::trField;
     } else if (section == KeyValueTableItem::kValue) {
-      return translations::trValue;
+      return translations::trString;
     } else if (section == KeyValueTableItem::kAction) {
       return translations::trAction;
     }

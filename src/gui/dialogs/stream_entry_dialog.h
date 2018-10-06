@@ -34,6 +34,8 @@ class StreamTableModel;
 class StreamEntryDialog : public QDialog {
   Q_OBJECT
  public:
+  static const QSize min_dialog_size;
+
   explicit StreamEntryDialog(const QString& sid = DEFAILT_ID, QWidget* parent = Q_NULLPTR);
   virtual ~StreamEntryDialog();
 

@@ -18,6 +18,8 @@
 
 #include "gui/widgets/list_type_widget.h"
 
+#include <QHeaderView>
+
 #include <common/qt/utils_qt.h>
 
 #include "gui/action_cell_delegate.h"
@@ -65,6 +67,9 @@ ListTypeWidget::ListTypeWidget(QWidget* parent) : QTableView(parent) {
   setItemDelegateForColumn(KeyValueTableItem::kAction, del);
   setContextMenuPolicy(Qt::ActionsContextMenu);
   setSelectionBehavior(QAbstractItemView::SelectRows);
+
+  QHeaderView* header = horizontalHeader();
+  header->setSectionResizeMode(QHeaderView::Stretch);
 }
 
 common::ArrayValue* ListTypeWidget::arrayValue() const {

@@ -40,7 +40,7 @@ class ListTypeWidget;
 class DbKeyDialog : public QDialog {
   Q_OBJECT
  public:
-  enum { min_width = 320, min_height = 200 };
+  static const QSize min_dialog_size;
 
   explicit DbKeyDialog(const QString& title,
                        core::ConnectionTypes type,
