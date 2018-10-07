@@ -285,6 +285,12 @@ void KeyEditWidget::syncControls(const core::NValue& item) {
     return;
   }
 
+  value_edit_->clear();
+  json_value_edit_->clear();
+  value_table_edit_->clear();
+  stream_table_edit_->clear();
+  value_list_edit_->clear();
+
   common::Value::Type t = item->GetType();
   if (t == common::Value::TYPE_ARRAY) {
     common::ArrayValue* arr = nullptr;

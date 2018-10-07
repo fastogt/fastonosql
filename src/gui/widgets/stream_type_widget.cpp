@@ -113,6 +113,7 @@ void StreamTypeWidget::updateStream(const QModelIndex& index, const core::Stream
 
 void StreamTypeWidget::clear() {
   model_->clear();
+  streams_.clear();
   emit dataChanged();
 }
 
