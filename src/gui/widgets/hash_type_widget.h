@@ -39,6 +39,9 @@ class HashTypeWidget : public QTableView {
   common::ZSetValue* zsetValue() const;  // alocate memory
   common::HashValue* hashValue() const;  // alocate memory
 
+ Q_SIGNALS:
+  void dataChanged();
+
  private Q_SLOTS:
   void addRow(const QModelIndex& index);
   void removeRow(const QModelIndex& index);

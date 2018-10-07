@@ -53,6 +53,7 @@ class KeyEditWidget : public QGroupBox {
 
  Q_SIGNALS:
   void typeChanged(common::Value::Type type);
+  void keyChanged();
 
  private Q_SLOTS:
   void changeType(int index);

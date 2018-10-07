@@ -18,36 +18,59 @@
 
 #pragma once
 
-#include <QTableView>
+#include <QWidget>
 
+#include <common/optional.h>
 #include <common/value.h>
+
+#include <fastonosql/core/db_key.h>
+
+class QPushButton;
+
+namespace common {
+namespace qt {
+namespace gui {
+class GlassWidget;
+}
+}  // namespace qt
+}  // namespace common
 
 namespace fastonosql {
 namespace gui {
 
-class HashTableModel;
+class KeyEditWidget;
 
-class ListTypeWidget : public QTableView {
+class SaveKeyEditWidget : public QWidget {
   Q_OBJECT
  public:
-  typedef QTableView base_class;
-  explicit ListTypeWidget(QWidget* parent = Q_NULLPTR);
+  typedef QWidget base_class;
 
-  common::ArrayValue* arrayValue() const;  // alocate memory
-  common::SetValue* setValue() const;      // alocate memory
+  explicit SaveKeyEditWidget(const std::vector<common::Value::Type>& availible_types, QWidget* parent = Q_NULLPTR);
+  virtual ~SaveKeyEditWidget();
 
-  void insertRow(const QString& first);
-  void clear();
+  void initialize(const core::NDbKValue& key);
+  void setEnableKeyEdit(bool enable);
+
+  void startSaveKey();
+  void finishSaveKey();
 
  Q_SIGNALS:
-  void dataChanged();
+  void keyReadyToSave(const core::NDbKValue& dbv);
 
  private Q_SLOTS:
-  void addRow(const QModelIndex& index);
-  void removeRow(const QModelIndex& index);
+  void keySave();
+  void syncControls();
+
+ protected:
+  virtual void changeEvent(QEvent* ev) override;
 
  private:
-  HashTableModel* model_;
+  void retranslateUi();
+
+  KeyEditWidget* editor_;
+  QPushButton* save_changes_button_;
+  common::Optional<core::NDbKValue> init_key_;
+  common::qt::gui::GlassWidget* glass_widget_;
 };
 
 }  // namespace gui

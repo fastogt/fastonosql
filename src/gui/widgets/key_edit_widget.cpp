@@ -76,34 +76,40 @@ KeyEditWidget::KeyEditWidget(const std::vector<common::Value::Type>& availible_t
   value_edit_->setPlaceholderText("[value]");
   kvLayout->addWidget(value_edit_, 2, 1);
   value_edit_->setVisible(true);
+  VERIFY(connect(value_edit_, &QLineEdit::textChanged, this, &KeyEditWidget::keyChanged));
 
   json_value_edit_ = new FastoEditor;
   QsciLexerJSON* json_lexer = new QsciLexerJSON;
   json_value_edit_->setLexer(json_lexer);
   kvLayout->addWidget(json_value_edit_, 2, 1);
   json_value_edit_->setVisible(false);
+  VERIFY(connect(json_value_edit_, &FastoEditor::textChanged, this, &KeyEditWidget::keyChanged));
 
   bool_value_edit_ = new QComboBox;
   bool_value_edit_->addItem("true");
   bool_value_edit_->addItem("false");
   kvLayout->addWidget(bool_value_edit_, 2, 1);
   bool_value_edit_->setVisible(false);
+  VERIFY(connect(bool_value_edit_, &QComboBox::currentTextChanged, this, &KeyEditWidget::keyChanged));
 
   value_list_edit_ = new ListTypeWidget;
   // value_list_edit_->horizontalHeader()->hide();
   // value_list_edit_->verticalHeader()->hide();
   kvLayout->addWidget(value_list_edit_, 2, 1);
   value_list_edit_->setVisible(false);
+  VERIFY(connect(value_list_edit_, &ListTypeWidget::dataChanged, this, &KeyEditWidget::keyChanged));
 
   value_table_edit_ = new HashTypeWidget;
   // value_table_edit_->horizontalHeader()->hide();
   // value_table_edit_->verticalHeader()->hide();
   kvLayout->addWidget(value_table_edit_, 2, 1);
   value_table_edit_->setVisible(false);
+  VERIFY(connect(value_table_edit_, &HashTypeWidget::dataChanged, this, &KeyEditWidget::keyChanged));
 
   stream_table_edit_ = new StreamTypeWidget;
   kvLayout->addWidget(stream_table_edit_, 2, 1);
   stream_table_edit_->setVisible(false);
+  VERIFY(connect(stream_table_edit_, &StreamTypeWidget::dataChanged, this, &KeyEditWidget::keyChanged));
 
   setLayout(kvLayout);
   retranslateUi();
@@ -170,7 +176,6 @@ common::Value* KeyEditWidget::createItem() const {
 
   const std::string text_str = common::ConvertToString(value_edit_->text());
   if (text_str.empty()) {
-    DNOTREACHED() << "Invalid user input.";
     return nullptr;
   }
 

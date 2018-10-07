@@ -51,6 +51,7 @@ namespace gui {
 
 class FastoTextView;
 class FastoCommonModel;
+class SaveKeyEditWidget;
 
 class OutputWidget : public QWidget {
   Q_OBJECT
@@ -59,6 +60,7 @@ class OutputWidget : public QWidget {
 
  private Q_SLOTS:
   void createKey(const core::NDbKValue& dbv);
+  void createKeyFromEditor(const core::NDbKValue& dbv);
 
   void startExecuteCommand(const proxy::events_info::ExecuteInfoRequest& req);
   void finishExecuteCommand(const proxy::events_info::ExecuteInfoResponce& res);
@@ -76,19 +78,24 @@ class OutputWidget : public QWidget {
   void setTreeView();
   void setTableView();
   void setTextView();
+  void setEditKeyView();
 
  private:
+  void createKeyImpl(const core::NDbKValue& dbv, void* initiator);
+
   void syncWithSettings();
   void updateTimeLabel(const proxy::events_info::EventInfoBase& evinfo);
   common::qt::gui::IconLabel* time_label_;
   QPushButton* tree_button_;
   QPushButton* table_button_;
   QPushButton* text_button_;
+  QPushButton* edit_key_button_;
 
   FastoCommonModel* common_model_;
   QTreeView* tree_view_;
   QTableView* table_view_;
   FastoTextView* text_view_;
+  SaveKeyEditWidget* key_editor_;
   const proxy::IServerSPtr server_;
 };
 

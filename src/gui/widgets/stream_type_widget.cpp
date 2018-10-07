@@ -76,6 +76,8 @@ StreamTypeWidget::StreamTypeWidget(QWidget* parent) : QTableView(parent) {
   VERIFY(connect(del, &ActionDelegate::addClicked, this, &StreamTypeWidget::addRow));
   VERIFY(connect(del, &ActionDelegate::editClicked, this, &StreamTypeWidget::editRow));
   VERIFY(connect(del, &ActionDelegate::removeClicked, this, &StreamTypeWidget::removeRow));
+  QAbstractItemDelegate* default_del = itemDelegate();
+  VERIFY(connect(default_del, &QAbstractItemDelegate::closeEditor, this, &StreamTypeWidget::dataChanged));
 
   setItemDelegateForColumn(KeyValueTableItem::kAction, del);
   setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -90,6 +92,7 @@ void StreamTypeWidget::insertStream(const core::StreamValue::Stream& stream) {
   QString qsid;
   common::ConvertFromString(stream.sid, &qsid);
   model_->insertRow(qsid, QString());
+  emit dataChanged();
 }
 
 void StreamTypeWidget::updateStream(const QModelIndex& index, const core::StreamValue::Stream& stream) {
@@ -105,10 +108,12 @@ void StreamTypeWidget::updateStream(const QModelIndex& index, const core::Stream
   node->setKey(qsid);
   model_->updateItem(model_->index(row, KeyValueTableItem::kKey, QModelIndex()),
                      model_->index(row, KeyValueTableItem::kAction, QModelIndex()));
+  emit dataChanged();
 }
 
 void StreamTypeWidget::clear() {
   model_->clear();
+  emit dataChanged();
 }
 
 core::StreamValue* StreamTypeWidget::streamValue() const {
@@ -161,6 +166,7 @@ void StreamTypeWidget::addRow(const QModelIndex& index) {
 void StreamTypeWidget::removeRow(const QModelIndex& index) {
   model_->removeRow(index.row());
   streams_.erase(streams_.begin() + index.row());
+  emit dataChanged();
 }
 
 }  // namespace gui

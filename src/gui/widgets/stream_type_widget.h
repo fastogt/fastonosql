@@ -38,6 +38,9 @@ class StreamTypeWidget : public QTableView {
   void insertStream(const core::StreamValue::Stream& stream);
   void clear();
 
+ Q_SIGNALS:
+  void dataChanged();
+
  private Q_SLOTS:
   void editRow(const QModelIndex& index);
   void addRow(const QModelIndex& index);

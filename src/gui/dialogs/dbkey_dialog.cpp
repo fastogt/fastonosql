@@ -61,7 +61,6 @@ DbKeyDialog::DbKeyDialog(const QString& title,
                                                                      // button (?)
 
   std::vector<common::Value::Type> types = core::GetSupportedValueTypes(type);
-
   general_box_ = new KeyEditWidget(types, this);
 
   // main layout

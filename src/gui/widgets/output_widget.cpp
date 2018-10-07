@@ -28,6 +28,8 @@
 #include <common/qt/gui/icon_label.h>  // for IconLabel
 #include <common/qt/logger.h>
 
+#include <fastonosql/core/db_traits.h>
+
 #include "proxy/server/iserver.h"    // for IServer
 #include "proxy/settings_manager.h"  // for SettingsManager
 
@@ -37,6 +39,7 @@
 #include "gui/fasto_text_view.h"     // for FastoTextView
 #include "gui/fasto_tree_view.h"     // for FastoTreeView
 #include "gui/gui_factory.h"         // for GuiFactory
+#include "gui/widgets/save_key_edit_widget.h"
 #include "gui/widgets/type_delegate.h"
 
 namespace fastonosql {
@@ -113,6 +116,12 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget
   text_view_ = new FastoTextView;
   text_view_->setModel(common_model_);
 
+  std::vector<common::Value::Type> types = core::GetSupportedValueTypes(server->GetType());
+  key_editor_ = new SaveKeyEditWidget(types, this);
+  key_editor_->setEnableKeyEdit(false);
+  VERIFY(connect(key_editor_, &SaveKeyEditWidget::keyReadyToSave, this, &OutputWidget::createKeyFromEditor,
+                 Qt::DirectConnection));
+
   time_label_ = new common::qt::gui::IconLabel(GuiFactory::GetInstance().timeIcon(), QSize(32, 32), "0");
 
   QVBoxLayout* mainL = new QVBoxLayout;
@@ -121,16 +130,21 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget
   tree_button_ = new QPushButton;
   table_button_ = new QPushButton;
   text_button_ = new QPushButton;
+  edit_key_button_ = new QPushButton;
+
   tree_button_->setIcon(GuiFactory::GetInstance().treeIcon());
   VERIFY(connect(tree_button_, &QPushButton::clicked, this, &OutputWidget::setTreeView));
   table_button_->setIcon(GuiFactory::GetInstance().tableIcon());
   VERIFY(connect(table_button_, &QPushButton::clicked, this, &OutputWidget::setTableView));
   text_button_->setIcon(GuiFactory::GetInstance().textIcon());
   VERIFY(connect(text_button_, &QPushButton::clicked, this, &OutputWidget::setTextView));
+  edit_key_button_->setIcon(GuiFactory::GetInstance().keyIcon());
+  VERIFY(connect(edit_key_button_, &QPushButton::clicked, this, &OutputWidget::setEditKeyView));
 
   topL->addWidget(tree_button_);
   topL->addWidget(table_button_);
   topL->addWidget(text_button_);
+  topL->addWidget(edit_key_button_);
   topL->addWidget(new QSplitter(Qt::Horizontal));
   topL->addWidget(time_label_);
 
@@ -138,6 +152,7 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget
   mainL->addWidget(tree_view_);
   mainL->addWidget(table_view_);
   mainL->addWidget(text_view_);
+  mainL->addWidget(key_editor_);
   setLayout(mainL);
   syncWithSettings();
 }
@@ -154,20 +169,28 @@ void OutputWidget::rootCompleate(const proxy::events_info::CommandRootCompleated
 
 void OutputWidget::addKey(core::IDataBaseInfoSPtr db, core::NDbKValue key) {
   UNUSED(db);
+  key_editor_->initialize(key);
+  setEditKeyView();
   common_model_->changeValue(key);
 }
 
 void OutputWidget::updateKey(core::IDataBaseInfoSPtr db, core::NDbKValue key) {
   UNUSED(db);
+  key_editor_->initialize(key);
+  setEditKeyView();
   common_model_->changeValue(key);
 }
 
 void OutputWidget::startExecuteCommand(const proxy::events_info::ExecuteInfoRequest& req) {
-  UNUSED(req);
+  if (req.initiator() == key_editor_) {
+    key_editor_->startSaveKey();
+  }
 }
 
 void OutputWidget::finishExecuteCommand(const proxy::events_info::ExecuteInfoResponce& res) {
-  UNUSED(res);
+  if (res.initiator() == key_editor_) {
+    key_editor_->finishSaveKey();
+  }
 }
 
 void OutputWidget::addChild(core::FastoObjectIPtr child) {
@@ -260,6 +283,42 @@ void OutputWidget::updateItem(core::FastoObject* item, common::ValueSPtr newValu
 }
 
 void OutputWidget::createKey(const core::NDbKValue& dbv) {
+  createKeyImpl(dbv, this);
+}
+
+void OutputWidget::createKeyFromEditor(const core::NDbKValue& dbv) {
+  createKeyImpl(dbv, key_editor_);
+}
+
+void OutputWidget::setTreeView() {
+  tree_view_->setVisible(true);
+  table_view_->setVisible(false);
+  text_view_->setVisible(false);
+  key_editor_->setVisible(false);
+}
+
+void OutputWidget::setTableView() {
+  tree_view_->setVisible(false);
+  table_view_->setVisible(true);
+  text_view_->setVisible(false);
+  key_editor_->setVisible(false);
+}
+
+void OutputWidget::setTextView() {
+  tree_view_->setVisible(false);
+  table_view_->setVisible(false);
+  text_view_->setVisible(true);
+  key_editor_->setVisible(false);
+}
+
+void OutputWidget::setEditKeyView() {
+  tree_view_->setVisible(false);
+  table_view_->setVisible(false);
+  text_view_->setVisible(false);
+  key_editor_->setVisible(true);
+}
+
+void OutputWidget::createKeyImpl(const core::NDbKValue& dbv, void* initiator) {
   core::translator_t tran = server_->GetTranslator();
   core::command_buffer_t cmd_text;
   common::Error err = tran->CreateKeyCommand(dbv, &cmd_text);
@@ -268,26 +327,8 @@ void OutputWidget::createKey(const core::NDbKValue& dbv) {
     return;
   }
 
-  proxy::events_info::ExecuteInfoRequest req(this, cmd_text, 0, 0, true, true);
+  proxy::events_info::ExecuteInfoRequest req(initiator, cmd_text, 0, 0, true, true);
   server_->Execute(req);
-}
-
-void OutputWidget::setTreeView() {
-  tree_view_->setVisible(true);
-  table_view_->setVisible(false);
-  text_view_->setVisible(false);
-}
-
-void OutputWidget::setTableView() {
-  tree_view_->setVisible(false);
-  table_view_->setVisible(true);
-  text_view_->setVisible(false);
-}
-
-void OutputWidget::setTextView() {
-  tree_view_->setVisible(false);
-  table_view_->setVisible(false);
-  text_view_->setVisible(true);
 }
 
 void OutputWidget::syncWithSettings() {
