@@ -42,12 +42,14 @@ QueryWidget::QueryWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget(p
 
   console_gb_ = new QGroupBox;
   QVBoxLayout* console_layout = new QVBoxLayout;
+  console_layout->setContentsMargins(0, 0, 0, 0);
   console_layout->addWidget(shell_widget_);
   console_gb_->setLayout(console_layout);
   splitter->addWidget(console_gb_);
 
   output_gb_ = new QGroupBox;
   QVBoxLayout* output_layout = new QVBoxLayout;
+  output_layout->setContentsMargins(0, 0, 0, 0);
   output_layout->addWidget(output_widget_);
   output_gb_->setLayout(output_layout);
   splitter->addWidget(output_gb_);
@@ -59,6 +61,7 @@ QueryWidget::QueryWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget(p
   splitter->setHandleWidth(1);
   main_layout->addWidget(splitter);
 
+  setMinimumSize(QSize(min_width, min_height));
   setLayout(main_layout);
   retranslateUi();
 }

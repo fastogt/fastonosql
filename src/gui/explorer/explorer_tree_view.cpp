@@ -93,6 +93,7 @@ ExplorerTreeView::ExplorerTreeView(QWidget* parent) : QTreeView(parent) {
   setContextMenuPolicy(Qt::CustomContextMenu);
   VERIFY(connect(this, &ExplorerTreeView::customContextMenuRequested, this, &ExplorerTreeView::showContextMenu));
 
+  setMinimumSize(QSize(min_width, min_height));
   retranslateUi();
 }
 

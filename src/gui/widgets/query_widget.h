@@ -33,6 +33,7 @@ class BaseShellWidget;
 class QueryWidget : public QWidget {
   Q_OBJECT
  public:
+  enum { min_width = 640, min_height = 480 };
   explicit QueryWidget(proxy::IServerSPtr server, QWidget* parent = Q_NULLPTR);
 
   QueryWidget* clone(const QString& text);

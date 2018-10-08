@@ -269,6 +269,7 @@ MainWindow::MainWindow() : QMainWindow() {
   log_dock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea |
                              Qt::TopDockWidgetArea);
   log_dock_->setWidget(log);
+  log_dock_->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
   log_dock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
   log_dock_->setVisible(true);
   addDockWidget(Qt::BottomDockWidgetArea, log_dock_);

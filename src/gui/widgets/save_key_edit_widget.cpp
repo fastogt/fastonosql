@@ -35,7 +35,7 @@ namespace gui {
 
 SaveKeyEditWidget::SaveKeyEditWidget(const std::vector<common::Value::Type>& availible_types, QWidget* parent)
     : base_class(parent), init_key_() {
-  QVBoxLayout* main_layout = new QVBoxLayout;
+  QHBoxLayout* main_layout = new QHBoxLayout;
 
   editor_ = new KeyEditWidget(availible_types);
 
@@ -48,8 +48,8 @@ SaveKeyEditWidget::SaveKeyEditWidget(const std::vector<common::Value::Type>& ava
   VERIFY(connect(editor_, &KeyEditWidget::keyChanged, this, &SaveKeyEditWidget::syncControls));
 
   main_layout->addWidget(editor_);
-  QHBoxLayout* save_layout = new QHBoxLayout;
-  save_layout->addWidget(new QSplitter(Qt::Horizontal));
+  QVBoxLayout* save_layout = new QVBoxLayout;
+  save_layout->addWidget(new QSplitter(Qt::Vertical));
   save_layout->addWidget(save_changes_button_);
   main_layout->addLayout(save_layout);
   main_layout->setContentsMargins(0, 0, 0, 0);
