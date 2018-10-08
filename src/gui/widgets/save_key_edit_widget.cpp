@@ -52,8 +52,9 @@ SaveKeyEditWidget::SaveKeyEditWidget(const std::vector<common::Value::Type>& ava
   save_layout->addWidget(new QSplitter(Qt::Horizontal));
   save_layout->addWidget(save_changes_button_);
   main_layout->addLayout(save_layout);
-  setLayout(main_layout);
+  main_layout->setContentsMargins(0, 0, 0, 0);
 
+  setLayout(main_layout);
   syncControls();
   retranslateUi();
 }

@@ -43,7 +43,7 @@ void ShellWidget::init() {
 
 QHBoxLayout* ShellWidget::createTopLayout(core::ConnectionTypes ct) {
   QHBoxLayout* top_layout = base_class::createTopLayout(ct);
-  modules_ = new common::qt::gui::IconComboBox(gui::GuiFactory::GetInstance().moduleIcon(), top_bar_icon_size);
+  modules_ = new common::qt::gui::IconComboBox(gui::GuiFactory::GetInstance().moduleIcon(), shell_icon_size);
   top_layout->addWidget(modules_);
   return top_layout;
 }

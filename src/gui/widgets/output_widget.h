@@ -56,6 +56,8 @@ class SaveKeyEditWidget;
 class OutputWidget : public QWidget {
   Q_OBJECT
  public:
+  static const QSize icon_size;
+
   explicit OutputWidget(proxy::IServerSPtr server, QWidget* parent = Q_NULLPTR);
 
  private Q_SLOTS:

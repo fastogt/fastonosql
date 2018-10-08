@@ -67,6 +67,7 @@ namespace fastonosql {
 namespace gui {
 
 const QSize BaseShellWidget::top_bar_icon_size = QSize(24, 24);
+const QSize BaseShellWidget::shell_icon_size = QSize(32, 32);
 
 BaseShellWidget* BaseShellWidget::createWidget(proxy::IServerSPtr server, const QString& filePath, QWidget* parent) {
 #if defined(BUILD_WITH_REDIS) && defined(PRO_VERSION)
@@ -182,6 +183,7 @@ void BaseShellWidget::init() {
   QHBoxLayout* hlayout = new QHBoxLayout;
 
   QToolBar* savebar = createToolBar();
+  savebar->setMovable(false);
 
   core::ConnectionMode mode = core::InteractiveMode;
   std::string mode_str = common::ConvertToString(mode);
@@ -197,7 +199,9 @@ void BaseShellWidget::init() {
   work_progressbar_ = new QProgressBar;
   work_progressbar_->setTextVisible(true);
   hlayout->addWidget(work_progressbar_);
+
   QToolBar* helpbar = new QToolBar;
+  helpbar->setMovable(false);
   validate_action_ = new QAction(gui::GuiFactory::GetInstance().failIcon(), translations::trValidate, helpbar);
   VERIFY(connect(validate_action_, &QAction::triggered, this, &BaseShellWidget::validateClick));
   helpbar->addAction(validate_action_);
@@ -243,12 +247,16 @@ void BaseShellWidget::init() {
   advOptLayout->addWidget(history_call_);
   advanced_options_widget_->setLayout(advOptLayout);
 
+  QWidget* fixed_height_widget = new QWidget;  // #FIXME
   QHBoxLayout* top_layout = createTopLayout(ct);
   QSplitter* spliter_info_and_options = new QSplitter(Qt::Horizontal);
-  spliter_info_and_options->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+  spliter_info_and_options->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   top_layout->addWidget(spliter_info_and_options);
   top_layout->addWidget(advanced_options_);
-  mainlayout->addLayout(top_layout);
+  top_layout->setContentsMargins(0, 0, 0, 0);
+  fixed_height_widget->setLayout(top_layout);
+  fixed_height_widget->setFixedHeight(shell_icon_size.height() * 2);  //
+  mainlayout->addWidget(fixed_height_widget);
 
   QHBoxLayout* inputLayout = new QHBoxLayout;
   inputLayout->addWidget(input_);
@@ -294,11 +302,11 @@ void BaseShellWidget::init() {
 
 QHBoxLayout* BaseShellWidget::createTopLayout(core::ConnectionTypes ct) {
   QHBoxLayout* top_layout = new QHBoxLayout;
-  server_name_ = new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().icon(ct), top_bar_icon_size,
+  server_name_ = new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().icon(ct), shell_icon_size,
                                                 translations::trCalculate + "...");
   server_name_->setElideMode(Qt::ElideRight);
   top_layout->addWidget(server_name_);
-  db_name_ = new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().databaseIcon(), top_bar_icon_size,
+  db_name_ = new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().databaseIcon(), shell_icon_size,
                                             translations::trCalculate + "...");
   top_layout->addWidget(db_name_);
   QSplitter* padding = new QSplitter(Qt::Horizontal);

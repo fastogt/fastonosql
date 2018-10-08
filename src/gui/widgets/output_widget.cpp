@@ -79,6 +79,8 @@ FastoCommonItem* CreateRootItem(core::FastoObject* item) {
 
 }  // namespace
 
+const QSize OutputWidget::icon_size = QSize(24, 24);
+
 OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget(parent), server_(server) {
   CHECK(server_);
 
@@ -122,16 +124,13 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget
   VERIFY(connect(key_editor_, &SaveKeyEditWidget::keyReadyToSave, this, &OutputWidget::createKeyFromEditor,
                  Qt::DirectConnection));
 
-  time_label_ = new common::qt::gui::IconLabel(GuiFactory::GetInstance().timeIcon(), QSize(32, 32), "0");
-
-  QVBoxLayout* mainL = new QVBoxLayout;
-  QHBoxLayout* topL = new QHBoxLayout;
-
+  QWidget* fixed_height_widget = new QWidget;  // #FIXME
+  QHBoxLayout* top_layout = new QHBoxLayout;
   tree_button_ = new QPushButton;
   table_button_ = new QPushButton;
   text_button_ = new QPushButton;
   edit_key_button_ = new QPushButton;
-
+  time_label_ = new common::qt::gui::IconLabel(GuiFactory::GetInstance().timeIcon(), icon_size, "0");
   tree_button_->setIcon(GuiFactory::GetInstance().treeIcon());
   VERIFY(connect(tree_button_, &QPushButton::clicked, this, &OutputWidget::setTreeView));
   table_button_->setIcon(GuiFactory::GetInstance().tableIcon());
@@ -140,20 +139,23 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget
   VERIFY(connect(text_button_, &QPushButton::clicked, this, &OutputWidget::setTextView));
   edit_key_button_->setIcon(GuiFactory::GetInstance().keyIcon());
   VERIFY(connect(edit_key_button_, &QPushButton::clicked, this, &OutputWidget::setEditKeyView));
+  top_layout->addWidget(tree_button_);
+  top_layout->addWidget(table_button_);
+  top_layout->addWidget(text_button_);
+  top_layout->addWidget(edit_key_button_);
+  top_layout->addWidget(new QSplitter(Qt::Horizontal));
+  top_layout->addWidget(time_label_);
+  top_layout->setContentsMargins(0, 0, 0, 0);
+  fixed_height_widget->setLayout(top_layout);
+  fixed_height_widget->setFixedHeight(icon_size.height() * 2);
 
-  topL->addWidget(tree_button_);
-  topL->addWidget(table_button_);
-  topL->addWidget(text_button_);
-  topL->addWidget(edit_key_button_);
-  topL->addWidget(new QSplitter(Qt::Horizontal));
-  topL->addWidget(time_label_);
-
-  mainL->addLayout(topL);
-  mainL->addWidget(tree_view_);
-  mainL->addWidget(table_view_);
-  mainL->addWidget(text_view_);
-  mainL->addWidget(key_editor_);
-  setLayout(mainL);
+  QVBoxLayout* main_layout = new QVBoxLayout;
+  main_layout->addWidget(fixed_height_widget);
+  main_layout->addWidget(tree_view_);
+  main_layout->addWidget(table_view_);
+  main_layout->addWidget(text_view_);
+  main_layout->addWidget(key_editor_);
+  setLayout(main_layout);
   syncWithSettings();
 }
 

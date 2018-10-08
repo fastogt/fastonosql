@@ -73,6 +73,7 @@ class BaseShellWidget : public QWidget {
   Q_OBJECT
  public:
   static const QSize top_bar_icon_size;
+  static const QSize shell_icon_size;
 
   static BaseShellWidget* createWidget(proxy::IServerSPtr server,
                                        const QString& filePath = QString(),
