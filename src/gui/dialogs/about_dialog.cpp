@@ -36,7 +36,7 @@
 #include <common/macros.h>  // for STRINGIZE, VERIFY
 #include <common/qt/convert2string.h>
 
-//#include <fastonosql/config.h>
+#include <fastonosql/config.h>
 
 #include "gui/gui_factory.h"  // for GuiFactory
 
@@ -131,50 +131,50 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
   QStringList dbcolums;
   dbcolums << translations::trName << QObject::tr("Based on") << QObject::tr("Version");
   dblist_widget->setHeaderLabels(dbcolums);
-#ifdef BUILD_WITH_REDIS
+#if defined(BUILD_WITH_REDIS) && defined(HAVE_REDIS)
   typedef core::ConnectionTraits<core::REDIS> redis_traits_t;
   add_db_item(dblist_widget, redis_traits_t::GetDBName(), redis_traits_t::GetBasedOn(),
               redis_traits_t::GetVersionApi());
 #endif
-#ifdef BUILD_WITH_MEMCACHED
+#if defined(BUILD_WITH_MEMCACHED) && defined(HAVE_MEMCACHED)
   typedef core::ConnectionTraits<core::MEMCACHED> memcached_traits_t;
   add_db_item(dblist_widget, memcached_traits_t::GetDBName(), memcached_traits_t::GetBasedOn(),
               memcached_traits_t::GetVersionApi());
 #endif
-#ifdef BUILD_WITH_SSDB
+#if defined(BUILD_WITH_SSDB) && defined(HAVE_SSDB)
   typedef core::ConnectionTraits<core::SSDB> ssdb_traits_t;
   add_db_item(dblist_widget, ssdb_traits_t::GetDBName(), ssdb_traits_t::GetBasedOn(), ssdb_traits_t::GetVersionApi());
 #endif
-#ifdef BUILD_WITH_LEVELDB
+#if defined(BUILD_WITH_LEVELDB) && defined(HAVE_LEVELDB)
   typedef core::ConnectionTraits<core::LEVELDB> leveldb_traits_t;
   add_db_item(dblist_widget, leveldb_traits_t::GetDBName(), leveldb_traits_t::GetBasedOn(),
               leveldb_traits_t::GetVersionApi());
 #endif
-#ifdef BUILD_WITH_ROCKSDB
+#if defined(BUILD_WITH_ROCKSDB) && defined(HAVE_ROCKSDB)
   typedef core::ConnectionTraits<core::ROCKSDB> rocksdb_traits_t;
   add_db_item(dblist_widget, rocksdb_traits_t::GetDBName(), rocksdb_traits_t::GetBasedOn(),
               rocksdb_traits_t::GetVersionApi());
 #endif
-#ifdef BUILD_WITH_UNQLITE
+#if defined(BUILD_WITH_UNQLITE) && defined(HAVE_UNQLITE)
   typedef core::ConnectionTraits<core::UNQLITE> unqlite_traits_t;
   add_db_item(dblist_widget, unqlite_traits_t::GetDBName(), unqlite_traits_t::GetBasedOn(),
               unqlite_traits_t::GetVersionApi());
 #endif
-#ifdef BUILD_WITH_LMDB
+#if defined(BUILD_WITH_LMDB) && defined(HAVE_LMDB)
   typedef core::ConnectionTraits<core::LMDB> lmdb_traits_t;
   add_db_item(dblist_widget, lmdb_traits_t::GetDBName(), lmdb_traits_t::GetBasedOn(), lmdb_traits_t::GetVersionApi());
 #endif
-#ifdef BUILD_WITH_UPSCALEDB
+#if defined(BUILD_WITH_UPSCALEDB) && defined(HAVE_UPSCALEDB)
   typedef core::ConnectionTraits<core::UPSCALEDB> upscaledb_traits_t;
   add_db_item(dblist_widget, upscaledb_traits_t::GetDBName(), upscaledb_traits_t::GetBasedOn(),
               upscaledb_traits_t::GetVersionApi());
 #endif
-#ifdef BUILD_WITH_FORESTDB
+#if defined(BUILD_WITH_FORESTDB) && defined(HAVE_FORESTDB)
   typedef core::ConnectionTraits<core::FORESTDB> forestdb_traits_t;
   add_db_item(dblist_widget, forestdb_traits_t::GetDBName(), forestdb_traits_t::GetBasedOn(),
               forestdb_traits_t::GetVersionApi());
 #endif
-#ifdef BUILD_WITH_PIKA
+#if defined(BUILD_WITH_PIKA) && defined(HAVE_PIKA)
   typedef core::ConnectionTraits<core::PIKA> pika_traits_t;
   add_db_item(dblist_widget, pika_traits_t::GetDBName(), pika_traits_t::GetBasedOn(), pika_traits_t::GetVersionApi());
 #endif
@@ -190,7 +190,7 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
   add_lib_item(libs_list_widget, "QScintilla", QSCINTILLA_VERSION_STR);
   add_lib_item(libs_list_widget, "libssh2", LIBSSH2_VERSION);
   add_lib_item(libs_list_widget, "OpenSSL", OPENSSL_VERSION_TEXT);
-  // add_lib_item(libs_list_widget, "FastoNoSQL Core", FASTONOSQL_CORE_VERSION_STRING);
+  add_lib_item(libs_list_widget, "FastoNoSQL Core", FASTONOSQL_CORE_VERSION_STRING);
   add_lib_item(libs_list_widget, "common", COMMON_VERSION_STRING);
   add_lib_item(libs_list_widget, "Snappy", SNAPPY_VERSION_TEXT);
   add_lib_item(libs_list_widget, "json-c", JSON_C_VERSION);
