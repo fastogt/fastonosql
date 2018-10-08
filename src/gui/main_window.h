@@ -45,7 +45,13 @@ class ExplorerTreeWidget;
 class MainWindow : public QMainWindow {
   Q_OBJECT
  public:
-  enum { min_width = 640, min_height = 480, max_recent_connections = 10 };
+  enum {
+    min_width = 800,
+    min_height = 600,
+    preferred_width = 1024,
+    preferred_height = 768,
+    max_recent_connections = 10
+  };
 
   MainWindow();
   ~MainWindow();

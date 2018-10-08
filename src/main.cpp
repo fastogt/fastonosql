@@ -76,8 +76,6 @@ struct SigIgnInit {
 } sig_init;
 #endif
 
-const QSize preferedSize = QSize(1024, 768);
-
 #if defined(PRO_VERSION)
 const QString trExpired = QObject::tr(
     "<h4>Your trial version has expired.</h4>"
@@ -325,20 +323,19 @@ int main(int argc, char* argv[]) {
   if (!win_settings.isEmpty()) {
     win.restoreGeometry(win_settings);
   } else {
-    QRect screenGeometry = app.desktop()->availableGeometry();
-    QSize screenSize(screenGeometry.width(), screenGeometry.height());
+    const QRect screen_geometry = app.desktop()->availableGeometry();
+    const QSize screen_size(screen_geometry.width(), screen_geometry.height());
 
 #ifdef OS_ANDROID
-    win.resize(screenSize);
+    win.resize(screen_size);
 #else
-    QSize size(screenGeometry.width() / 2, screenGeometry.height() / 2);
-    if (preferedSize.height() <= screenSize.height() && preferedSize.width() <= screenSize.width()) {
-      win.resize(preferedSize);
-    } else {
-      win.resize(size);
+    const QSize preferred_size =
+        QSize(fastonosql::gui::MainWindow::preferred_width, fastonosql::gui::MainWindow::preferred_height);
+    if (preferred_size.width() <= screen_size.width() && preferred_size.height() <= screen_size.height()) {
+      win.resize(preferred_size);
     }
 
-    QPoint center = screenGeometry.center();
+    QPoint center = screen_geometry.center();
     win.move(center.x() - win.width() / 2, center.y() - win.height() / 2);
 #endif
   }
