@@ -36,7 +36,7 @@
 #include <common/macros.h>  // for STRINGIZE, VERIFY
 #include <common/qt/convert2string.h>
 
-#include <fastonosql/config.h>
+//#include <fastonosql/config.h>
 
 #include "gui/gui_factory.h"  // for GuiFactory
 
@@ -190,7 +190,7 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
   add_lib_item(libs_list_widget, "QScintilla", QSCINTILLA_VERSION_STR);
   add_lib_item(libs_list_widget, "libssh2", LIBSSH2_VERSION);
   add_lib_item(libs_list_widget, "OpenSSL", OPENSSL_VERSION_TEXT);
-  add_lib_item(libs_list_widget, "FastoNoSQL Core", FASTONOSQL_CORE_VERSION_STRING);
+  // add_lib_item(libs_list_widget, "FastoNoSQL Core", FASTONOSQL_CORE_VERSION_STRING);
   add_lib_item(libs_list_widget, "common", COMMON_VERSION_STRING);
   add_lib_item(libs_list_widget, "Snappy", SNAPPY_VERSION_TEXT);
   add_lib_item(libs_list_widget, "json-c", JSON_C_VERSION);
