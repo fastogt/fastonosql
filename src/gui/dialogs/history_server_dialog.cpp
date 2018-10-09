@@ -148,7 +148,7 @@ void ServerHistoryDialog::refreshInfoFields(int index) {
 
   server_info_fields_->clear();
 
-  std::vector<core::info_field_t> fields = core::GetInfoFieldsFromType(server_->GetType());
+  const auto fields = core::GetInfoFieldsFromType(server_->GetType());
   std::vector<core::Field> field = fields[index].second;
   for (uint32_t i = 0; i < field.size(); ++i) {
     core::Field fl = field[i];
