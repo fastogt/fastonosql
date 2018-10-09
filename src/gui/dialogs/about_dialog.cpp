@@ -33,7 +33,6 @@
 #include <snappy-stubs-public.h>
 
 #include <common/config.h>
-#include <common/macros.h>  // for STRINGIZE, VERIFY
 #include <common/qt/convert2string.h>
 
 #include <fastonosql/config.h>
