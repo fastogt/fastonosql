@@ -157,8 +157,11 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget
   main_layout->addWidget(table_view_);
   main_layout->addWidget(text_view_);
   main_layout->addWidget(key_editor_);
+
+  current_view_ = proxy::SettingsManager::GetInstance()->GetDefaultView();
+
   setLayout(main_layout);
-  syncWithSettings();
+  syncWithView(current_view_);
 }
 
 void OutputWidget::rootCreate(const proxy::events_info::CommandRootCreatedInfo& res) {
@@ -168,20 +171,34 @@ void OutputWidget::rootCreate(const proxy::events_info::CommandRootCreatedInfo& 
 }
 
 void OutputWidget::rootCompleate(const proxy::events_info::CommandRootCompleatedInfo& res) {
+  core::FastoObject* root_obj = res.root.get();
+  auto childs = root_obj->GetChildrens();
+  if (!childs.empty()) {
+    core::FastoObjectIPtr last_child = childs.back();
+    core::FastoObjectCommand* command = dynamic_cast<core::FastoObjectCommand*>(last_child.get());
+    if (command) {
+      core::translator_t tr = server_->GetTranslator();
+      core::command_buffer_t input_cmd = command->GetInputCommand();
+      core::readable_string_t key;
+      if (tr->IsLoadKeyCommand(input_cmd, &key)) {
+        setEditKeyView();
+      } else {
+        syncWithView(current_view_);
+      }
+    }
+  }
   updateTimeLabel(res);
 }
 
 void OutputWidget::addKey(core::IDataBaseInfoSPtr db, core::NDbKValue key) {
   UNUSED(db);
   key_editor_->initialize(key);
-  setEditKeyView();
   common_model_->changeValue(key);
 }
 
 void OutputWidget::updateKey(core::IDataBaseInfoSPtr db, core::NDbKValue key) {
   UNUSED(db);
   key_editor_->initialize(key);
-  setEditKeyView();
   common_model_->changeValue(key);
 }
 
@@ -299,6 +316,7 @@ void OutputWidget::setTreeView() {
   table_view_->setVisible(false);
   text_view_->setVisible(false);
   key_editor_->setVisible(false);
+  current_view_ = proxy::kTree;
 }
 
 void OutputWidget::setTableView() {
@@ -306,6 +324,7 @@ void OutputWidget::setTableView() {
   table_view_->setVisible(true);
   text_view_->setVisible(false);
   key_editor_->setVisible(false);
+  current_view_ = proxy::kTable;
 }
 
 void OutputWidget::setTextView() {
@@ -313,6 +332,7 @@ void OutputWidget::setTextView() {
   table_view_->setVisible(false);
   text_view_->setVisible(true);
   key_editor_->setVisible(false);
+  current_view_ = proxy::kText;
 }
 
 void OutputWidget::setEditKeyView() {
@@ -335,16 +355,15 @@ void OutputWidget::createKeyImpl(const core::NDbKValue& dbv, void* initiator) {
   server_->Execute(req);
 }
 
-void OutputWidget::syncWithSettings() {
-  proxy::SupportedView current_view = proxy::SettingsManager::GetInstance()->GetDefaultView();
-  if (current_view == proxy::kTree) {
+void OutputWidget::syncWithView(proxy::SupportedView view) {
+  if (view == proxy::kTree) {
     setTreeView();
-  } else if (current_view == proxy::kTable) {
+  } else if (view == proxy::kTable) {
     setTableView();
-  } else if (current_view == proxy::kText) {
+  } else if (view == proxy::kText) {
     setTextView();
   } else {
-    NOTREACHED();
+    NOTREACHED() << "Unknown view: " << view;
   }
 }
 

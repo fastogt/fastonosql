@@ -21,9 +21,10 @@
 #include <QWidget>
 
 #include <fastonosql/core/database/idatabase_info.h>
-#include "proxy/proxy_fwd.h"  // for IServerSPtr
-
 #include <fastonosql/core/global.h>  // for FastoObject, etc
+
+#include "proxy/proxy_fwd.h"  // for IServerSPtr
+#include "proxy/types.h"
 
 class QPushButton;  // lines 27-27
 class QTreeView;
@@ -85,7 +86,7 @@ class OutputWidget : public QWidget {
  private:
   void createKeyImpl(const core::NDbKValue& dbv, void* initiator);
 
-  void syncWithSettings();
+  void syncWithView(proxy::SupportedView view);
   void updateTimeLabel(const proxy::events_info::EventInfoBase& evinfo);
   common::qt::gui::IconLabel* time_label_;
   QPushButton* tree_button_;
@@ -99,6 +100,7 @@ class OutputWidget : public QWidget {
   FastoTextView* text_view_;
   SaveKeyEditWidget* key_editor_;
   const proxy::IServerSPtr server_;
+  proxy::SupportedView current_view_;
 };
 
 }  // namespace gui
