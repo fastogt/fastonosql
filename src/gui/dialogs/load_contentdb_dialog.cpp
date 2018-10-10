@@ -33,7 +33,7 @@ namespace {
 const QString trInvalidPattern = QObject::tr("Invalid pattern!");
 const QString trKeysCount = QObject::tr("Keys count");
 const QString trPattern = QObject::tr("Pattern");
-const char* g_default_pattern = ALL_KEYS_PATTERNS;
+const char* kDefaultPattern = ALL_KEYS_PATTERNS;
 }  // namespace
 
 namespace fastonosql {
@@ -43,8 +43,7 @@ LoadContentDbDialog::LoadContentDbDialog(const QString& title, core::ConnectionT
     : QDialog(parent), type_(type) {
   setWindowTitle(title);
   setWindowIcon(GuiFactory::GetInstance().icon(type_));
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
-                                                                     // button (?)
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   QDialogButtonBox* button_box = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   button_box->setOrientation(Qt::Horizontal);
@@ -63,7 +62,7 @@ LoadContentDbDialog::LoadContentDbDialog(const QString& title, core::ConnectionT
   pattern_layout->addWidget(new QLabel(trPattern + ":"));
   pattern_edit_ = new QLineEdit;
   pattern_edit_->setFixedWidth(80);
-  pattern_edit_->setText(g_default_pattern);
+  pattern_edit_->setText(kDefaultPattern);
   pattern_layout->addWidget(pattern_edit_);
 
   QVBoxLayout* main_layout = new QVBoxLayout;

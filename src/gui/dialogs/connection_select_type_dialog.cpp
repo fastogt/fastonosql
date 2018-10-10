@@ -31,6 +31,7 @@
 
 namespace {
 const QString trSectTypeTitle = QObject::tr("Select connection type");
+const QString trDatabase = QObject::tr("Database");
 }  // namespace
 
 namespace fastonosql {
@@ -86,7 +87,7 @@ void ConnectionSelectTypeDialog::changeEvent(QEvent* e) {
 
 void ConnectionSelectTypeDialog::retranslateUi() {
   setWindowTitle(trSectTypeTitle);
-  type_connection_label_->setText(tr("Database:"));
+  type_connection_label_->setText(trDatabase + ":");
 }
 
 }  // namespace gui

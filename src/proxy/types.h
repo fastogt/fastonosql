@@ -26,7 +26,7 @@ namespace proxy {
 enum NsDisplayStrategy { FULL_KEY = 0, KEY_NAME = 1 };
 extern const std::vector<const char*> g_display_strategy_types;
 
-enum SupportedViews { kTree = 0, kTable, kText };
+enum SupportedView { kTree = 0, kTable, kText };
 extern const std::vector<const char*> g_supported_views_text;
 
 }  // namespace proxy

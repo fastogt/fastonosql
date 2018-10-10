@@ -50,9 +50,9 @@ QString ShowSaveFileDialog(QWidget* parent, const QString& title, const QString&
       }
     }
     return file_name;
-  } else {
-    return QString();
   }
+
+  return QString();
 #endif
 }
 

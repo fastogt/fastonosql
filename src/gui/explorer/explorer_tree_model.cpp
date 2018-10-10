@@ -53,6 +53,7 @@ const QString trKey_1S = QObject::tr("Key displayed in: <b>%1</b> format<br/>");
 
 namespace fastonosql {
 namespace gui {
+
 ExplorerTreeModel::ExplorerTreeModel(QObject* parent) : TreeModel(parent) {}
 
 QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
@@ -578,5 +579,6 @@ ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_n
   CHECK(founded_item);
   return founded_item;
 }
+
 }  // namespace gui
 }  // namespace fastonosql

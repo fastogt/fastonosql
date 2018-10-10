@@ -44,8 +44,8 @@
 #include "translations/global.h"  // for trAddConnection, trAddress, etc
 
 namespace {
-const QString defaultNameConnection = QObject::tr("New Sentinel Connection");
-const char* defaultNameConnectionFolder = "/";
+const QString trDefaultSentinelNameConnection = QObject::tr("New Sentinel Connection");
+const char* kDefaultNameConnectionFolder = "/";
 }  // namespace
 
 namespace fastonosql {
@@ -54,8 +54,7 @@ namespace gui {
 SentinelDialog::SentinelDialog(QWidget* parent, proxy::ISentinelSettingsBase* connection)
     : QDialog(parent), sentinel_connection_(connection) {
   setWindowIcon(GuiFactory::GetInstance().serverIcon());
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
-                                                                     // button (?)
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   connection_name_ = new QLineEdit;
   connection_folder_ = new QLineEdit;
@@ -66,8 +65,8 @@ SentinelDialog::SentinelDialog(QWidget* parent, proxy::ISentinelSettingsBase* co
   QHBoxLayout* folderLayout = new QHBoxLayout;
   folderLayout->addWidget(folder_label_);
   folderLayout->addWidget(connection_folder_);
-  QString conFolder = defaultNameConnectionFolder;
-  QString conName = defaultNameConnection;
+  QString conFolder = kDefaultNameConnectionFolder;
+  QString conName = trDefaultSentinelNameConnection;
 
   if (sentinel_connection_) {
     proxy::connection_path_t path = sentinel_connection_->GetPath();
@@ -344,7 +343,7 @@ bool SentinelDialog::validateAndApply() {
   std::string conName = common::ConvertToString(connection_name_->text());
   std::string conFolder = common::ConvertToString(connection_folder_->text());
   if (conFolder.empty()) {
-    conFolder = defaultNameConnectionFolder;
+    conFolder = kDefaultNameConnectionFolder;
   }
 
   proxy::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);

@@ -35,7 +35,7 @@
 #include "translations/global.h"
 
 namespace {
-const QSize stateIconSize = QSize(64, 64);
+const QSize kStateIconSize = QSize(64, 64);
 }
 
 namespace fastonosql {
@@ -47,8 +47,7 @@ DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(QWidget* pare
     : QDialog(parent), cluster_(cluster) {
   setWindowTitle(translations::trConnectionDiscovery);
   setWindowIcon(GuiFactory::GetInstance().serverIcon());
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
-                                                                     // button (?)
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   QVBoxLayout* mainLayout = new QVBoxLayout;
 
@@ -59,7 +58,7 @@ DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(QWidget* pare
   status_label_ = new QLabel(translations::trTimeTemplate_1S.arg("calculate..."));
   icon_label_ = new QLabel;
   QIcon icon = GuiFactory::GetInstance().failIcon();
-  const QPixmap pm = icon.pixmap(stateIconSize);
+  const QPixmap pm = icon.pixmap(kStateIconSize);
   icon_label_->setPixmap(pm);
 
   mainLayout->addWidget(status_label_);
@@ -122,7 +121,7 @@ void DiscoveryClusterDiagnosticDialog::connectionResult(bool suc,
   list_widget_->clear();
   if (suc) {
     QIcon icon = GuiFactory::GetInstance().successIcon();
-    const QPixmap pm = icon.pixmap(stateIconSize);
+    const QPixmap pm = icon.pixmap(kStateIconSize);
     icon_label_->setPixmap(pm);
 
     for (size_t i = 0; i < infos.size(); ++i) {

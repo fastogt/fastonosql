@@ -56,8 +56,7 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QW
     : QDialog(parent), cursor_stack_(), cur_pos_(0), db_(db) {
   CHECK(db_);
   setWindowTitle(title);
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
-                                                                     // button (?)
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   proxy::IServerSPtr serv = db_->GetServer();
   VERIFY(connect(serv.get(), &proxy::IServer::LoadDataBaseContentStarted, this,

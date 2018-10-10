@@ -74,15 +74,15 @@ int GetNumberOfDigits(int x) {
   return 1;
 }
 
-const QColor caretForegroundColor = QColor(Qt::black);
-const QColor selectionBackgroundColor = QColor(Qt::blue);
-const QColor selectionForegroundColor = QColor(Qt::white);
+const QColor kCaretForegroundColor = QColor(Qt::black);
+const QColor kSelectionBackgroundColor = QColor(Qt::blue);
+const QColor kSelectionForegroundColor = QColor(Qt::white);
 
-const QColor matchedBraceForegroundColor = QColor(190, 190, 190);
-const QColor matchedBraceBackgroundColor = QColor(30, 36, 38);
+const QColor kMatchedBraceForegroundColor = QColor(190, 190, 190);
+const QColor kMatchedBraceBackgroundColor = QColor(30, 36, 38);
 
-const QColor marginsBackgroundColor = QColor(Qt::green);
-const QColor marginsForegroundColor = QColor(Qt::white);
+const QColor kMarginsBackgroundColor = QColor(Qt::green);
+const QColor kMarginsForegroundColor = QColor(Qt::white);
 }  // namespace
 
 namespace fastonosql {
@@ -95,13 +95,13 @@ FastoScintilla::FastoScintilla(QWidget* parent) : QsciScintilla(parent), line_nu
   setUtf8(true);
   setMarginWidth(1, 0);
 
-  setCaretForegroundColor(caretForegroundColor);
+  setCaretForegroundColor(kCaretForegroundColor);
 
-  setMatchedBraceForegroundColor(matchedBraceForegroundColor);
-  setMatchedBraceBackgroundColor(matchedBraceBackgroundColor);
+  setMatchedBraceForegroundColor(kMatchedBraceForegroundColor);
+  setMatchedBraceBackgroundColor(kMatchedBraceBackgroundColor);
 
-  setSelectionBackgroundColor(selectionBackgroundColor);
-  setSelectionForegroundColor(selectionForegroundColor);
+  setSelectionBackgroundColor(kSelectionBackgroundColor);
+  setSelectionForegroundColor(kSelectionForegroundColor);
 
   setContentsMargins(0, 0, 0, 0);
   setViewportMargins(3, 3, 3, 3);
@@ -109,8 +109,8 @@ FastoScintilla::FastoScintilla(QWidget* parent) : QsciScintilla(parent), line_nu
 
   // Margins colors
   // line numbers margin
-  setMarginsBackgroundColor(marginsBackgroundColor);
-  setMarginsForegroundColor(marginsForegroundColor);
+  setMarginsBackgroundColor(kMarginsBackgroundColor);
+  setMarginsForegroundColor(kMarginsForegroundColor);
 
   SendScintilla(QsciScintilla::SCI_SETHSCROLLBAR, 0);
 

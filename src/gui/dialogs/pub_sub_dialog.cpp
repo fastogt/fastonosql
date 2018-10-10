@@ -47,17 +47,10 @@ namespace fastonosql {
 namespace gui {
 
 PubSubDialog::PubSubDialog(const QString& title, proxy::IServerSPtr server, QWidget* parent)
-    : QDialog(parent),
-      search_box_(nullptr),
-      search_button_(nullptr),
-      channels_table_(nullptr),
-      channels_model_(nullptr),
-      proxy_model_(nullptr),
-      server_(server) {
+    : QDialog(parent), server_(server) {
   CHECK(server_);
   setWindowTitle(title);
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
-                                                                     // button (?)
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   VERIFY(
       connect(server.get(), &proxy::IServer::LoadServerChannelsStarted, this, &PubSubDialog::startLoadServerChannels));

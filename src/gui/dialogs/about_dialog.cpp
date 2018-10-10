@@ -67,6 +67,11 @@ const QString trDescription = QObject::tr("<h3>" PROJECT_NAME_TITLE " " PROJECT_
                                           "PARTICULAR PURPOSE.<br/>");
 
 const QString trAbout = QObject::tr("About");
+const QString trBasedOn = QObject::tr("Based on");
+const QString trVersion = QObject::tr("Version");
+const QString trAvailibleDatabases = QObject::tr("Availible databases");
+const QString trExternalLibraries = QObject::tr("External libraries");
+const QString trLicenseAgreement = QObject::tr("License agreement");
 
 void add_db_item(QTreeWidget* dblist_widget, const std::string& name, const char* lib_name, const char* version) {
   QTreeWidgetItem* treeItem = new QTreeWidgetItem;
@@ -128,7 +133,7 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
   dblist_widget->setIndentation(5);
 
   QStringList dbcolums;
-  dbcolums << translations::trName << QObject::tr("Based on") << QObject::tr("Version");
+  dbcolums << translations::trName << trBasedOn << trVersion;
   dblist_widget->setHeaderLabels(dbcolums);
 #if defined(BUILD_WITH_REDIS) && defined(HAVE_REDIS)
   typedef core::ConnectionTraits<core::REDIS> redis_traits_t;
@@ -177,13 +182,13 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
   typedef core::ConnectionTraits<core::PIKA> pika_traits_t;
   add_db_item(dblist_widget, pika_traits_t::GetDBName(), pika_traits_t::GetBasedOn(), pika_traits_t::GetVersionApi());
 #endif
-  main_tab->addTab(dblist_widget, QObject::tr("Availible databases"));
+  main_tab->addTab(dblist_widget, trAvailibleDatabases);
 
   QTreeWidget* libs_list_widget = new QTreeWidget;
   libs_list_widget->setIndentation(5);
 
   QStringList libscolums;
-  libscolums << translations::trName << QObject::tr("Version");
+  libscolums << translations::trName << trVersion;
   libs_list_widget->setHeaderLabels(libscolums);
   add_lib_item(libs_list_widget, "Qt", QT_VERSION_STR);
   add_lib_item(libs_list_widget, "QScintilla", QSCINTILLA_VERSION_STR);
@@ -193,7 +198,7 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
   add_lib_item(libs_list_widget, "common", COMMON_VERSION_STRING);
   add_lib_item(libs_list_widget, "Snappy", SNAPPY_VERSION_TEXT);
   add_lib_item(libs_list_widget, "json-c", JSON_C_VERSION);
-  main_tab->addTab(libs_list_widget, QObject::tr("External libraries"));
+  main_tab->addTab(libs_list_widget, trExternalLibraries);
 
   copy_rights_layout->addWidget(main_tab, 4, 1, 1, 5);
   glayout->addLayout(copy_rights_layout);
@@ -205,7 +210,7 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
   if (file.open(QFile::ReadOnly | QFile::Text)) {
     license_tab->setHtml(file.readAll());
   }
-  about_tabs->addTab(license_tab, QObject::tr("License agreement"));
+  about_tabs->addTab(license_tab, trLicenseAgreement);
 
   QVBoxLayout* main_layout = new QVBoxLayout;
   main_layout->addWidget(about_tabs);

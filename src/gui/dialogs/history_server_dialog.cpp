@@ -45,8 +45,7 @@ ServerHistoryDialog::ServerHistoryDialog(proxy::IServerSPtr server, QWidget* par
     : QDialog(parent, Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint), server_(server) {
   CHECK(server_);
   setWindowIcon(GuiFactory::GetInstance().icon(server_->GetType()));
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
-                                                                     // button (?)
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   graph_widget_ = new common::qt::gui::GraphWidget;
   settings_graph_ = new QWidget;

@@ -40,8 +40,7 @@ namespace gui {
 
 EncodeDecodeDialog::EncodeDecodeDialog(QWidget* parent) : QDialog(parent) {
   setWindowIcon(GuiFactory::GetInstance().encodeDecodeIcon());
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
-                                                                     // button (?)
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   QVBoxLayout* layout = new QVBoxLayout;
   QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
@@ -103,8 +102,8 @@ void EncodeDecodeDialog::decodeOrEncode() {
 
   output_->clear();
   QVariant var = decoders_->currentData();
-  common::EDType currentType = static_cast<common::EDType>(qvariant_cast<unsigned char>(var));
-  common::IEDcoder* dec = common::CreateEDCoder(currentType);
+  common::EDType current_type = static_cast<common::EDType>(qvariant_cast<unsigned char>(var));
+  common::IEDcoder* dec = common::CreateEDCoder(current_type);
   if (!dec) {
     return;
   }

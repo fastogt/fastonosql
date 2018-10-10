@@ -23,7 +23,7 @@
 namespace fastonosql {
 namespace gui {
 
-enum OutputViews {
+enum OutputView {
   JSON_VIEW = 0,
   CSV_VIEW,
   RAW_VIEW,

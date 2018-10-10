@@ -18,8 +18,6 @@
 
 #pragma once
 
-#include <vector>
-
 #include <QDialog>
 
 #include "proxy/connection_settings/icluster_connection_settings.h"
@@ -41,7 +39,6 @@ namespace gui {
 class ClusterDialog : public QDialog {
   Q_OBJECT
  public:
-  typedef std::vector<proxy::IConnectionSettingsBaseSPtr> cluster_connection_t;
   explicit ClusterDialog(QWidget* parent,
                          proxy::IClusterSettingsBase* connection = nullptr);  // get ownerships connection
   proxy::IClusterSettingsBaseSPtr connection() const;

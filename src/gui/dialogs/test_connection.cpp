@@ -38,12 +38,13 @@ void TestConnection::routine() {
   }
 
   common::Error err = proxy::ServersManager::GetInstance().TestConnection(connection_);
+  common::time64_t msec_exec = common::time::current_mstime() - start_time_;
   if (err) {
     QString qdesc;
     common::ConvertFromString(err->GetDescription(), &qdesc);
-    emit connectionResult(false, common::time::current_mstime() - start_time_, qdesc);
+    emit connectionResult(false, msec_exec, qdesc);
   } else {
-    emit connectionResult(true, common::time::current_mstime() - start_time_, translations::trSuccess);
+    emit connectionResult(true, msec_exec, translations::trSuccess);
   }
 }
 

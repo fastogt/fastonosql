@@ -38,10 +38,10 @@
 
 namespace {
 const QString trInput = QObject::tr("Key/Value input");
-const QSize pref_list_size = QSize(600, 300);
-const QSize pref_hash_size = QSize(600, 300);
-const QSize pref_stream_size = QSize(600, 300);
-const QSize pref_json_size = QSize(600, 300);
+const QSize kPrefListSize = QSize(600, 300);
+const QSize kPrefHashSize = QSize(600, 300);
+const QSize kPrefStreamSize = QSize(600, 300);
+const QSize kPrefJsonSize = QSize(600, 300);
 }  // namespace
 
 namespace fastonosql {
@@ -57,8 +57,7 @@ DbKeyDialog::DbKeyDialog(const QString& title,
     : base_class(parent), key_(key) {
   setWindowIcon(GuiFactory::GetInstance().icon(type));
   setWindowTitle(title);
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
-                                                                     // button (?)
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   std::vector<common::Value::Type> types = core::GetSupportedValueTypes(type);
   general_box_ = new KeyEditWidget(types, this);
@@ -113,15 +112,13 @@ void DbKeyDialog::retranslateUi() {
 
 void DbKeyDialog::changeType(common::Value::Type type) {
   if (type == common::Value::TYPE_ARRAY || type == common::Value::TYPE_SET) {
-    resize(pref_list_size);
+    resize(kPrefListSize);
   } else if (type == common::Value::TYPE_ZSET || type == common::Value::TYPE_HASH) {
-    resize(pref_hash_size);
-  } else if (type == common::Value::TYPE_BOOLEAN) {
-    resize(min_dialog_size);
+    resize(kPrefHashSize);
   } else if (type == core::StreamValue::TYPE_STREAM) {
-    resize(pref_stream_size);
+    resize(kPrefStreamSize);
   } else if (type == core::JsonValue::TYPE_JSON) {
-    resize(pref_json_size);
+    resize(kPrefJsonSize);
   } else {
     resize(min_dialog_size);
   }

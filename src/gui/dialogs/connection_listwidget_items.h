@@ -31,9 +31,8 @@
 
 namespace fastonosql {
 namespace gui {
-class DirectoryListWidgetItem  // directory can hold many
-                               // (common, cluster or
-                               // sentinel_container)
+
+class DirectoryListWidgetItem  // directory can hold many (common, cluster or sentinel_container)
     : public QTreeWidgetItem {
  public:
   explicit DirectoryListWidgetItem(const proxy::connection_path_t& path);

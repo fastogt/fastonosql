@@ -40,7 +40,7 @@ class FastoScintilla;
 class FastoEditor : public QWidget {
   Q_OBJECT
  public:
-  enum { HeightFindPanel = 40 };
+  enum { find_panel_height = 40 };
   explicit FastoEditor(QWidget* parent = Q_NULLPTR);
   virtual ~FastoEditor();
 

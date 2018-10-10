@@ -47,8 +47,8 @@
 #include "translations/global.h"  // for trAddConnection, trAddress, etc
 
 namespace {
-const QString defaultNameConnection = QObject::tr("New Cluster Connection");
-const char* defaultNameConnectionFolder = "/";
+const QString trDefaultNameConnection = QObject::tr("New Cluster Connection");
+const char* kDefaultNameConnectionFolder = "/";
 }  // namespace
 
 namespace fastonosql {
@@ -57,8 +57,7 @@ namespace gui {
 ClusterDialog::ClusterDialog(QWidget* parent, proxy::IClusterSettingsBase* connection)
     : QDialog(parent), cluster_connection_(connection) {
   setWindowIcon(GuiFactory::GetInstance().serverIcon());
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
-                                                                     // button (?)
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   connection_name_ = new QLineEdit;
   connection_folder_ = new QLineEdit;
@@ -69,8 +68,8 @@ ClusterDialog::ClusterDialog(QWidget* parent, proxy::IClusterSettingsBase* conne
   QHBoxLayout* folderLayout = new QHBoxLayout;
   folderLayout->addWidget(folder_label_);
   folderLayout->addWidget(connection_folder_);
-  QString conFolder = defaultNameConnectionFolder;
-  QString conName = defaultNameConnection;
+  QString conFolder = kDefaultNameConnectionFolder;
+  QString conName = trDefaultNameConnection;
 
   if (cluster_connection_) {
     proxy::connection_path_t path = cluster_connection_->GetPath();
@@ -385,7 +384,7 @@ bool ClusterDialog::validateAndApply() {
   std::string conName = common::ConvertToString(connection_name_->text());
   std::string conFolder = common::ConvertToString(connection_folder_->text());
   if (conFolder.empty()) {
-    conFolder = defaultNameConnectionFolder;
+    conFolder = kDefaultNameConnectionFolder;
   }
   proxy::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
   proxy::IClusterSettingsBase* newConnection =

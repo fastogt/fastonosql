@@ -45,8 +45,7 @@ PropertyServerDialog::PropertyServerDialog(proxy::IServerSPtr server, QWidget* p
   CHECK(server_);
 
   setWindowIcon(GuiFactory::GetInstance().icon(server->GetType()));
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
-                                                                     // button (?)
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   PropertyTableModel* mod = new PropertyTableModel(this);
   properties_table_ = new QTableView;

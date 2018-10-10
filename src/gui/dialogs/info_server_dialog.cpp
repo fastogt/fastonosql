@@ -63,9 +63,8 @@
 #include <fastonosql/core/db/pika/server_info.h>
 #endif
 
-#include <fastonosql/core/connection_types.h>  // for ConnectionType, etc
-#include "proxy/events/events_info.h"          // for ServerInfoResponce, etc
-#include "proxy/server/iserver.h"              // for IServer
+#include "proxy/events/events_info.h"  // for ServerInfoResponce, etc
+#include "proxy/server/iserver.h"      // for IServer
 
 #include <common/qt/gui/glass_widget.h>  // for GlassWidget
 
@@ -335,8 +334,7 @@ InfoServerDialog::InfoServerDialog(proxy::IServerSPtr server, QWidget* parent) :
 
   core::ConnectionType type = server->GetType();
   setWindowIcon(GuiFactory::GetInstance().icon(type));
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
-                                                                     // button (?)
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   server_text_info_ = new QTextEdit;
   server_text_info_->setReadOnly(true);

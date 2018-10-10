@@ -35,10 +35,10 @@
 #include "translations/global.h"  // for trShow, trPrivateKey, etc
 
 namespace {
+const QString trTest = QObject::tr("&Test");
 const QString trTitle = QObject::tr("Connection Settings");
 const QString trPrivateKeyInvalidInput = QObject::tr("Invalid private key value!");
-const std::string defaultNameConnectionFolder = "/";
-
+const char* kDefaultNameConnectionFolder = "/";
 }  // namespace
 
 namespace fastonosql {
@@ -46,8 +46,7 @@ namespace gui {
 
 ConnectionDialog::ConnectionDialog(core::ConnectionType type, const QString& connectionName, QWidget* parent)
     : QDialog(parent), connection_() {
-  proxy::connection_path_t path(common::file_system::stable_dir_path(defaultNameConnectionFolder) +
-                                common::ConvertToString(connectionName));
+  proxy::connection_path_t path(kDefaultNameConnectionFolder + common::ConvertToString(connectionName));
   proxy::IConnectionSettingsBase* connection =
       proxy::ConnectionSettingsFactory().GetInstance().CreateFromType(type, path);
   init(connection);
@@ -89,8 +88,7 @@ void ConnectionDialog::changeEvent(QEvent* e) {
 
 void ConnectionDialog::init(proxy::IConnectionSettingsBase* connection) {
   setWindowIcon(GuiFactory::GetInstance().icon(connection->GetType()));
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
-                                                                     // button (?)
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   connection_.reset(connection);
   connection_widget_ = ConnectionWidgetsFactory::GetInstance().createWidget(connection);
@@ -99,7 +97,7 @@ void ConnectionDialog::init(proxy::IConnectionSettingsBase* connection) {
   connection_widget_layout->setContentsMargins(0, 0, 0, mar.bottom());
 
   QHBoxLayout* bottomLayout = new QHBoxLayout;
-  test_button_ = new QPushButton("&Test");
+  test_button_ = new QPushButton;
   test_button_->setIcon(GuiFactory::GetInstance().messageBoxInformationIcon());
   VERIFY(connect(test_button_, &QPushButton::clicked, this, &ConnectionDialog::testConnection));
 
@@ -121,6 +119,7 @@ void ConnectionDialog::init(proxy::IConnectionSettingsBase* connection) {
 
 void ConnectionDialog::retranslateUi() {
   setWindowTitle(trTitle);
+  test_button_->setText(trTest);
 }
 
 bool ConnectionDialog::validateAndApply() {

@@ -61,7 +61,7 @@ FastoEditor::FastoEditor(QWidget* parent) : QWidget(parent), scin_(nullptr) {
   layout->addWidget(prev_);
   layout->addWidget(case_sensitive_);
 
-  find_panel_->setFixedHeight(HeightFindPanel);
+  find_panel_->setFixedHeight(find_panel_height);
   find_panel_->setLayout(layout);
 
   scin_->installEventFilter(this);

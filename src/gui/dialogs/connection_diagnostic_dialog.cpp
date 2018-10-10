@@ -32,7 +32,7 @@
 #include "translations/global.h"
 
 namespace {
-const QSize stateIconSize = QSize(64, 64);
+const QSize kStateIconSize = QSize(64, 64);
 }
 
 namespace fastonosql {
@@ -42,8 +42,7 @@ ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(QWidget* parent, proxy::I
     : QDialog(parent) {
   setWindowTitle(translations::trConnectionDiagnostic);
   setWindowIcon(GuiFactory::GetInstance().icon(connection->GetType()));
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
-                                                                     // button (?)
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   QVBoxLayout* mainLayout = new QVBoxLayout;
 
@@ -55,7 +54,7 @@ ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(QWidget* parent, proxy::I
   status_label_->setWordWrap(true);
   icon_label_ = new QLabel;
   QIcon icon = GuiFactory::GetInstance().failIcon();
-  const QPixmap pm = icon.pixmap(stateIconSize);
+  const QPixmap pm = icon.pixmap(kStateIconSize);
   icon_label_->setPixmap(pm);
 
   mainLayout->addWidget(status_label_);
@@ -81,7 +80,7 @@ void ConnectionDiagnosticDialog::connectionResult(bool suc, qint64 mstimeExecute
   execute_time_label_->setText(translations::trTimeTemplate_1S.arg(mstimeExecute));
   if (suc) {
     QIcon icon = GuiFactory::GetInstance().successIcon();
-    QPixmap pm = icon.pixmap(stateIconSize);
+    QPixmap pm = icon.pixmap(kStateIconSize);
     icon_label_->setPixmap(pm);
   }
   status_label_->setText(translations::trConnectionStatusTemplate_1S.arg(resultText));

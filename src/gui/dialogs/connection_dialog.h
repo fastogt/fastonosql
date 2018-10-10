@@ -18,15 +18,13 @@
 
 #pragma once
 
-#include <vector>
-
 #include <QDialog>
-
-class QDialogButtonBox;
 
 #include <fastonosql/core/connection_types.h>  // for ConnectionType
 
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
+
+class QDialogButtonBox;
 
 namespace fastonosql {
 namespace gui {

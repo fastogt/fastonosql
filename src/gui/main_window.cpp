@@ -47,7 +47,6 @@
 #include <common/qt/translations/translations.h>  // for applyLanguage
 
 #include <fastonosql/core/logger.h>
-#include <fastonosql/core/ssh_info.h>
 
 #include "proxy/cluster/icluster.h"        // for ICluster
 #include "proxy/command/command_logger.h"  // for CommandLogger
@@ -84,8 +83,8 @@ bool IsNeedUpdate(uint32_t cver) {
   return PROJECT_VERSION_NUMBER < cver;
 }
 
-const QKeySequence logsKeySequence = Qt::CTRL + Qt::Key_L;
-const QKeySequence explorerKeySequence = Qt::CTRL + Qt::Key_T;
+const QKeySequence kLogsKeySequence = Qt::CTRL + Qt::Key_L;
+const QKeySequence kExplorerKeySequence = Qt::CTRL + Qt::Key_T;
 
 void LogWatcherRedirect(common::logging::LOG_LEVEL level, const std::string& message, bool notify) {
   LOG_MSG(message, level, notify);
@@ -104,9 +103,9 @@ MainWindow::MainWindow() : QMainWindow() {
   // grabGesture(Qt::TapGesture);  // click
   grabGesture(Qt::TapAndHoldGesture);  // long tap
 
-// grabGesture(Qt::SwipeGesture);  // swipe
-// grabGesture(Qt::PanGesture);  // drag and drop
-// grabGesture(Qt::PinchGesture);  // zoom
+  // grabGesture(Qt::SwipeGesture);  // swipe
+  // grabGesture(Qt::PanGesture);  // drag and drop
+  // grabGesture(Qt::PinchGesture);  // zoom
 #endif
   QString lang = proxy::SettingsManager::GetInstance()->GetCurrentLanguage();
   QString newLang = common::qt::translations::applyLanguage(lang);
@@ -245,7 +244,7 @@ MainWindow::MainWindow() : QMainWindow() {
 #endif
   exp_dock_ = new QDockWidget(this);
   explorer_action_ = exp_dock_->toggleViewAction();
-  explorer_action_->setShortcut(explorerKeySequence);
+  explorer_action_->setShortcut(kExplorerKeySequence);
   explorer_action_->setChecked(true);
   views->addAction(explorer_action_);
 
@@ -262,7 +261,7 @@ MainWindow::MainWindow() : QMainWindow() {
   SET_LOG_WATCHER(&LogWatcherRedirect);
   log_dock_ = new QDockWidget(this);
   logs_action_ = log_dock_->toggleViewAction();
-  logs_action_->setShortcut(logsKeySequence);
+  logs_action_->setShortcut(kLogsKeySequence);
   logs_action_->setChecked(true);
   views->addAction(logs_action_);
 

@@ -36,7 +36,7 @@
 #include "translations/global.h"
 
 namespace {
-const char* defaultNameConnectionFolder = "/";
+const char* kDefaultNameConnectionFolder = "/";
 const QString trLoggingToolTip = QObject::tr("INFO command timeout in msec for history statistic.");
 
 QString toRawCommandLine(QString input) {
@@ -176,7 +176,7 @@ proxy::IConnectionSettingsBase* ConnectionBaseWidget::createConnection() const {
   std::string conName = common::ConvertToString(connectionName());
   std::string conFolder = common::ConvertToString(UIFolderText());
   if (conFolder.empty()) {
-    conFolder = defaultNameConnectionFolder;
+    conFolder = kDefaultNameConnectionFolder;
   }
 
   proxy::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);

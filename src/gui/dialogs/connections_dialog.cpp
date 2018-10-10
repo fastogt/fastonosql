@@ -45,8 +45,7 @@ namespace gui {
 
 ConnectionsDialog::ConnectionsDialog(QWidget* parent) : QDialog(parent) {
   setWindowIcon(GuiFactory::GetInstance().connectIcon());
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
-                                                                     // button (?)
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   list_widget_ = new QTreeWidget;
   list_widget_->setIndentation(5);
@@ -63,10 +62,7 @@ ConnectionsDialog::ConnectionsDialog(QWidget* parent) : QDialog(parent) {
   // list_widget_->setViewMode(QListView::ListMode);
   list_widget_->setContextMenuPolicy(Qt::ActionsContextMenu);
   list_widget_->setIndentation(15);
-  list_widget_->setSelectionMode(QAbstractItemView::SingleSelection);  // single item
-                                                                       // can be draged
-                                                                       // or
-                                                                       // droped
+  list_widget_->setSelectionMode(QAbstractItemView::SingleSelection);  // single item can be draged or droped
   list_widget_->setSelectionBehavior(QAbstractItemView::SelectRows);
 
   // list_widget_->setDragEnabled(true);
@@ -458,10 +454,6 @@ void ConnectionsDialog::removeSentinel(SentinelConnectionListWidgetItemContainer
 }
 #endif
 
-/**
- * @brief This function is called when user clicks on "Open"
- * button.
- */
 void ConnectionsDialog::accept() {
   QTreeWidgetItem* qitem = list_widget_->currentItem();
   if (!qitem) {

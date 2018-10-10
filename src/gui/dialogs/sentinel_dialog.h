@@ -39,7 +39,6 @@ namespace gui {
 class SentinelDialog : public QDialog {
   Q_OBJECT
  public:
-  typedef std::vector<proxy::IConnectionSettingsBaseSPtr> sentinel_connection_t;
   explicit SentinelDialog(QWidget* parent,
                           proxy::ISentinelSettingsBase* connection = nullptr);  // get ownerships connection
   proxy::ISentinelSettingsBaseSPtr connection() const;

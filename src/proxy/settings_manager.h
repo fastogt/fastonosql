@@ -31,7 +31,7 @@
 #include "proxy/user_info.h"
 #endif
 
-#include "proxy/types.h"  // for SupportedViews
+#include "proxy/types.h"  // for SupportedView
 
 namespace fastonosql {
 namespace proxy {
@@ -53,8 +53,8 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
   bool GetAccpetedEula() const;
   void SetAccpetedEula(bool val);
 
-  void SetDefaultView(SupportedViews view);
-  SupportedViews GetDefaultView() const;
+  void SetDefaultView(SupportedView view);
+  SupportedView GetDefaultView() const;
 
   QString GetCurrentStyle() const;
   void SetCurrentStyle(const QString& style);
@@ -137,7 +137,7 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
   uint32_t config_version_;
 
   bool accepted_eula_;
-  SupportedViews views_;
+  SupportedView views_;
   QString cur_style_;
   QFont cur_font_;
   QString cur_language_;

@@ -117,8 +117,7 @@ std::string ISentinelSettingsBase::ToString() const {
     str << magic_number << SentinelSettingsToString(sent);
   }
 
-  std::string res = str.str();
-  return res;
+  return str.str();
 }
 
 }  // namespace proxy

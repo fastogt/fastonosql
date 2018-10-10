@@ -67,8 +67,7 @@ namespace fastonosql {
 namespace gui {
 
 PreferencesDialog::PreferencesDialog(QWidget* parent) : QDialog(parent) {
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
-                                                                     // button (?)
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   QTabWidget* preferences_tabs = new QTabWidget;
   QWidget* general_tab = createMainTab();
@@ -106,7 +105,7 @@ void PreferencesDialog::accept() {
   common::qt::gui::applyFont(gui::GuiFactory::GetInstance().font());
 
   QVariant var = default_view_combo_box_->currentData();
-  proxy::SupportedViews v = static_cast<proxy::SupportedViews>(qvariant_cast<unsigned char>(var));
+  proxy::SupportedView v = static_cast<proxy::SupportedView>(qvariant_cast<unsigned char>(var));
   proxy::SettingsManager::GetInstance()->SetDefaultView(v);
 
   proxy::SettingsManager::GetInstance()->SetLoggingDirectory(log_dir_path_->text());
@@ -127,7 +126,7 @@ void PreferencesDialog::syncWithSettings() {
   QFont cf = proxy::SettingsManager::GetInstance()->GetCurrentFont();
   font_combo_box_->setCurrentFont(cf);
   font_size_spin_box_->setValue(cf.pointSize());
-  proxy::SupportedViews v = proxy::SettingsManager::GetInstance()->GetDefaultView();
+  proxy::SupportedView v = proxy::SettingsManager::GetInstance()->GetDefaultView();
   QString qstr = proxy::g_supported_views_text[v];
   default_view_combo_box_->setCurrentText(qstr);
   log_dir_path_->setText(proxy::SettingsManager::GetInstance()->GetLoggingDirectory());
