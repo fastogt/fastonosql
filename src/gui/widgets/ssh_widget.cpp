@@ -170,7 +170,7 @@ core::SSHInfo SSHWidget::info() const {
   core::SSHInfo info;
   info.SetHost(sshhost_widget_->host());
   info.SetAuthMethod(selectedAuthMethod());  // should be first, SetPassword dep on it
-  info.SetUserName(common::ConvertToString(user_name_->text()));
+  info.SetUsername(common::ConvertToString(user_name_->text()));
   info.SetPassword(common::ConvertToString(password_box_->text()));
   core::PublicPrivate key;
   key.public_key = common::ConvertToString(public_key_widget_->path());
@@ -188,7 +188,7 @@ void SSHWidget::setInfo(const core::SSHInfo& info) {
   common::net::HostAndPort host = info.GetHost();
   sshhost_widget_->setHost(host);
   QString quser_name;
-  common::ConvertFromString(info.GetUserName(), &quser_name);
+  common::ConvertFromString(info.GetUsername(), &quser_name);
   user_name_->setText(quser_name);
   core::SSHInfo::AuthenticationMethod method = info.GetAuthMethod();
   if (method != core::SSHInfo::UNKNOWN) {
