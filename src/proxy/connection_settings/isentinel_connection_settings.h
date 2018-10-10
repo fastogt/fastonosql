@@ -46,7 +46,7 @@ class ISentinelSettingsBase : public IConnectionSettings {
   virtual ISentinelSettingsBase* Clone() const override = 0;
 
  protected:
-  ISentinelSettingsBase(const connection_path_t& connectionName, core::ConnectionTypes type);
+  ISentinelSettingsBase(const connection_path_t& connectionName, core::ConnectionType type);
 
  private:
   sentinel_connections_t sentinel_nodes_;

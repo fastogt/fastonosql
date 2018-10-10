@@ -24,7 +24,7 @@
 
 class QDialogButtonBox;
 
-#include <fastonosql/core/connection_types.h>  // for ConnectionTypes
+#include <fastonosql/core/connection_types.h>  // for ConnectionType
 
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
 
@@ -36,7 +36,7 @@ class ConnectionBaseWidget;
 class ConnectionDialog : public QDialog {
   Q_OBJECT
  public:
-  ConnectionDialog(core::ConnectionTypes type, const QString& connectionName, QWidget* parent = Q_NULLPTR);
+  ConnectionDialog(core::ConnectionType type, const QString& connectionName, QWidget* parent = Q_NULLPTR);
   ConnectionDialog(proxy::IConnectionSettingsBase* connection, QWidget* parent = Q_NULLPTR);
 
   void setFolderEnabled(bool val);

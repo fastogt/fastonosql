@@ -23,7 +23,7 @@
 #include <common/patterns/singleton_pattern.h>  // for LazySingleton
 #include <common/value.h>                       // for Value, Value::Type
 
-#include <fastonosql/core/connection_types.h>  // for ConnectionTypes, etc
+#include <fastonosql/core/connection_types.h>  // for ConnectionType, etc
 
 class QIcon;
 class QString;
@@ -60,7 +60,7 @@ class GuiFactory : public common::patterns::LazySingleton<GuiFactory> {
   const QIcon& keyIcon() const;
   const QIcon& keyTTLIcon() const;
 
-  const QIcon& icon(core::ConnectionTypes type) const;
+  const QIcon& icon(core::ConnectionType type) const;
   const QIcon& modeIcon(core::ConnectionMode mode) const;
   const QIcon& icon(common::Value::Type type) const;
 
@@ -87,7 +87,7 @@ class GuiFactory : public common::patterns::LazySingleton<GuiFactory> {
 
   const QIcon& close16Icon() const;
   const QIcon& search16Icon() const;
-  const QIcon& commandIcon(core::ConnectionTypes type) const;
+  const QIcon& commandIcon(core::ConnectionType type) const;
 
   const QIcon& successIcon() const;
   const QIcon& failIcon() const;

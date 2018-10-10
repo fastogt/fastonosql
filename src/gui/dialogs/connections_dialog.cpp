@@ -186,7 +186,7 @@ void ConnectionsDialog::add() {
     return;
   }
 
-  core::ConnectionTypes t = sel.connectionType();
+  core::ConnectionType t = sel.connectionType();
   ConnectionDialog dlg(t, translations::trNewConnection, this);
   result = dlg.exec();
   proxy::IConnectionSettingsBaseSPtr p = dlg.connection();

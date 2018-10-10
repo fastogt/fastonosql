@@ -139,7 +139,7 @@ void IDriver::PrepareSettings() {
   settings_->PrepareInGuiIfNeeded();
 }
 
-core::ConnectionTypes IDriver::GetType() const {
+core::ConnectionType IDriver::GetType() const {
   return settings_->GetType();
 }
 

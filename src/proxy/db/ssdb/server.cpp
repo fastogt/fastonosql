@@ -37,7 +37,7 @@ core::ServerMode Server::GetMode() const {
   return core::STANDALONE;
 }
 
-core::ServerTypes Server::GetRole() const {
+core::ServerType Server::GetRole() const {
   return core::MASTER;
 }
 

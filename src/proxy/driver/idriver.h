@@ -48,7 +48,7 @@ class IDriver : public QObject, public core::CDBConnectionClient {
 
   // sync methods
   void PrepareSettings();
-  core::ConnectionTypes GetType() const;
+  core::ConnectionType GetType() const;
   connection_path_t GetConnectionPath() const;
   std::string GetDelimiter() const;
   std::string GetNsSeparator() const;

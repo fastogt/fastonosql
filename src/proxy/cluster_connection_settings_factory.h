@@ -29,7 +29,7 @@ class ClusterConnectionSettingsFactory : public common::patterns::LazySingleton<
  public:
   friend class common::patterns::LazySingleton<ClusterConnectionSettingsFactory>;
 
-  IClusterSettingsBase* CreateFromType(core::ConnectionTypes type, const connection_path_t& connectionPath);
+  IClusterSettingsBase* CreateFromType(core::ConnectionType type, const connection_path_t& connectionPath);
   IClusterSettingsBase* CreateFromString(const std::string& val);
 };
 

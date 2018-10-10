@@ -31,10 +31,10 @@ class ConnectionSettingsFactory : public common::patterns::LazySingleton<Connect
  public:
   friend class common::patterns::LazySingleton<ConnectionSettingsFactory>;
 
-  IConnectionSettingsBase* CreateFromType(core::ConnectionTypes type, const connection_path_t& conName);
+  IConnectionSettingsBase* CreateFromType(core::ConnectionType type, const connection_path_t& conName);
   IConnectionSettingsBase* CreateFromString(const std::string& val);
 
-  IConnectionSettingsRemote* CreateFromType(core::ConnectionTypes type,
+  IConnectionSettingsRemote* CreateFromType(core::ConnectionType type,
                                             const connection_path_t& conName,
                                             const common::net::HostAndPort& host);
 };

@@ -20,7 +20,7 @@
 
 #include <QWidget>
 
-#include <fastonosql/core/connection_types.h>  // for ConnectionTypes
+#include <fastonosql/core/connection_types.h>  // for ConnectionType
 #include "proxy/proxy_fwd.h"                   // for IServerSPtr
 
 class QGroupBox;
@@ -37,7 +37,7 @@ class QueryWidget : public QWidget {
   explicit QueryWidget(proxy::IServerSPtr server, QWidget* parent = Q_NULLPTR);
 
   QueryWidget* clone(const QString& text);
-  core::ConnectionTypes connectionType() const;
+  core::ConnectionType connectionType() const;
   QString inputText() const;
   void setInputText(const QString& text);
 

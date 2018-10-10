@@ -41,7 +41,7 @@ void ShellWidget::init() {
   updateModules(std::vector<core::ModuleInfo>());
 }
 
-QHBoxLayout* ShellWidget::createTopLayout(core::ConnectionTypes ct) {
+QHBoxLayout* ShellWidget::createTopLayout(core::ConnectionType ct) {
   QHBoxLayout* top_layout = base_class::createTopLayout(ct);
   modules_ = new common::qt::gui::IconComboBox(gui::GuiFactory::GetInstance().moduleIcon(), shell_icon_size);
   top_layout->addWidget(modules_);

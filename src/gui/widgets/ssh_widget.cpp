@@ -45,9 +45,9 @@ const QString trPublicKey = QObject::tr("Public key:");
 
 namespace fastonosql {
 namespace {
-core::SSHInfo::SupportedAuthenticationMethods ConvertIndexToSSHMethod(int index) {
+core::SSHInfo::AuthenticationMethod ConvertIndexToSSHMethod(int index) {
   CHECK(index != -1) << "Impossible to select nothing in combobox.";
-  return static_cast<core::SSHInfo::SupportedAuthenticationMethods>(index + 1);  // because 0 -> UNKNOWN
+  return static_cast<core::SSHInfo::AuthenticationMethod>(index + 1);  // because 0 -> UNKNOWN
 }
 }  // namespace
 namespace gui {
@@ -168,14 +168,16 @@ void SSHWidget::setSSHEnabled(bool enabled) {
 
 core::SSHInfo SSHWidget::info() const {
   core::SSHInfo info;
-  info.host = sshhost_widget_->host();
-  info.current_method = selectedAuthMethod();  // should be first, setpassword dep on it
-  info.user_name = common::ConvertToString(user_name_->text());
+  info.SetHost(sshhost_widget_->host());
+  info.SetAuthMethod(selectedAuthMethod());  // should be first, SetPassword dep on it
+  info.SetUserName(common::ConvertToString(user_name_->text()));
   info.SetPassword(common::ConvertToString(password_box_->text()));
-  info.key.public_key = common::ConvertToString(public_key_widget_->path());
-  info.key.private_key = common::ConvertToString(private_key_widget_->path());
-  info.key.use_public_key = use_public_key_->isChecked();
-  info.passphrase = common::ConvertToString(passphrase_box_->text());
+  core::PublicPrivate key;
+  key.public_key = common::ConvertToString(public_key_widget_->path());
+  key.private_key = common::ConvertToString(private_key_widget_->path());
+  key.use_public_key = use_public_key_->isChecked();
+  info.SetKey(key);
+  info.SetPassPharse(common::ConvertToString(passphrase_box_->text()));
 
   return info;
 }
@@ -183,12 +185,12 @@ core::SSHInfo SSHWidget::info() const {
 void SSHWidget::setInfo(const core::SSHInfo& info) {
   bool checked = info.IsValid();
   use_ssh_->setChecked(checked);
-  common::net::HostAndPort host = info.host;
+  common::net::HostAndPort host = info.GetHost();
   sshhost_widget_->setHost(host);
   QString quser_name;
-  common::ConvertFromString(info.user_name, &quser_name);
+  common::ConvertFromString(info.GetUserName(), &quser_name);
   user_name_->setText(quser_name);
-  core::SSHInfo::SupportedAuthenticationMethods method = info.GetAuthMethod();
+  core::SSHInfo::AuthenticationMethod method = info.GetAuthMethod();
   if (method != core::SSHInfo::UNKNOWN) {
     security_->setCurrentIndex(method - 1);  //
   }
@@ -198,27 +200,28 @@ void SSHWidget::setInfo(const core::SSHInfo& info) {
   password_box_->setText(qpassword);
 
   QString qprivate_key;
-  common::ConvertFromString(info.key.private_key, &qprivate_key);
+  core::PublicPrivate key = info.GetKey();
+  common::ConvertFromString(key.private_key, &qprivate_key);
   private_key_widget_->setPath(qprivate_key);
 
   QString qpublic_key;
-  common::ConvertFromString(info.key.public_key, &qpublic_key);
+  common::ConvertFromString(key.public_key, &qpublic_key);
   public_key_widget_->setPath(qpublic_key);
 
-  use_public_key_->setChecked(info.key.use_public_key);
+  use_public_key_->setChecked(key.use_public_key);
 
   QString qpassphrase;
-  common::ConvertFromString(info.passphrase, &qpassphrase);
+  common::ConvertFromString(info.GetPassPharse(), &qpassphrase);
   passphrase_box_->setText(qpassphrase);
 }
 
-core::SSHInfo::SupportedAuthenticationMethods SSHWidget::selectedAuthMethod() const {
+core::SSHInfo::AuthenticationMethod SSHWidget::selectedAuthMethod() const {
   int index = security_->currentIndex();
   return ConvertIndexToSSHMethod(index);
 }
 
 void SSHWidget::securityChange(int index) {
-  core::SSHInfo::SupportedAuthenticationMethods method = ConvertIndexToSSHMethod(index);
+  core::SSHInfo::AuthenticationMethod method = ConvertIndexToSSHMethod(index);
   bool is_public_key = method == core::SSHInfo::PUBLICKEY;
   private_key_widget_->setVisible(is_public_key);
   use_public_key_->setVisible(is_public_key);

@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <fastonosql/core/connection_types.h>  // for ConnectionTypes
+#include <fastonosql/core/connection_types.h>  // for ConnectionType
 
 #include "gui/editor/fasto_editor_shell.h"  // for FastoEditorShell
 
@@ -37,10 +37,10 @@ class BaseShell : public gui::FastoEditorShell {
   QString basedOn() const;
   void setFilteredVersion(uint32_t version);
 
-  static BaseShell* createFromType(core::ConnectionTypes type, bool showAutoCompl);
+  static BaseShell* createFromType(core::ConnectionType type, bool showAutoCompl);
 
  protected:
-  BaseShell(core::ConnectionTypes type, bool showAutoCompl, QWidget* parent = Q_NULLPTR);
+  BaseShell(core::ConnectionType type, bool showAutoCompl, QWidget* parent = Q_NULLPTR);
   BaseQsciLexer* lexer() const;
 };
 

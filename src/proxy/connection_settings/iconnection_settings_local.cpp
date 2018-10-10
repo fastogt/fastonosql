@@ -21,7 +21,7 @@
 namespace fastonosql {
 namespace proxy {
 
-IConnectionSettingsLocal::IConnectionSettingsLocal(const connection_path_t& connectionPath, core::ConnectionTypes type)
+IConnectionSettingsLocal::IConnectionSettingsLocal(const connection_path_t& connectionPath, core::ConnectionType type)
     : IConnectionSettingsBase(connectionPath, type) {
   CHECK(IsLocalType(type));
 }

@@ -52,7 +52,7 @@
 namespace fastonosql {
 namespace gui {
 namespace {
-ConnectionBaseWidget* createWidgetImpl(core::ConnectionTypes type, QWidget* parent) {
+ConnectionBaseWidget* createWidgetImpl(core::ConnectionType type, QWidget* parent) {
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
     return new redis::ConnectionWidget(parent);
@@ -115,7 +115,7 @@ ConnectionBaseWidget* ConnectionWidgetsFactory::createWidget(proxy::IConnectionS
     return nullptr;
   }
 
-  core::ConnectionTypes type = connection->GetType();
+  core::ConnectionType type = connection->GetType();
   ConnectionBaseWidget* widget = createWidgetImpl(type, parent);
   widget->syncControls(connection);
   widget->retranslateUi();

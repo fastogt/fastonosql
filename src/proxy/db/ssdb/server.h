@@ -32,7 +32,7 @@ class Server : public IServerRemote {
   virtual ~Server();
 
   virtual core::ServerMode GetMode() const override;
-  virtual core::ServerTypes GetRole() const override;
+  virtual core::ServerType GetRole() const override;
   virtual core::ServerState GetState() const override;
   virtual common::net::HostAndPort GetHost() const override;
 

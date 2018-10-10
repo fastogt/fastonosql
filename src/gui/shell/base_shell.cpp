@@ -69,7 +69,7 @@ const QSize image_size(64, 64);
 namespace fastonosql {
 namespace gui {
 
-BaseShell::BaseShell(core::ConnectionTypes type, bool showAutoCompl, QWidget* parent)
+BaseShell::BaseShell(core::ConnectionType type, bool showAutoCompl, QWidget* parent)
     : gui::FastoEditorShell(showAutoCompl, parent) {
   VERIFY(connect(this, &BaseShell::customContextMenuRequested, this, &BaseShell::showContextMenu));
   BaseQsciLexer* lex = nullptr;
@@ -173,7 +173,7 @@ void BaseShell::setFilteredVersion(uint32_t version) {
   api->setFilteredVersion(version);
 }
 
-BaseShell* BaseShell::createFromType(core::ConnectionTypes type, bool showAutoCompl) {
+BaseShell* BaseShell::createFromType(core::ConnectionType type, bool showAutoCompl) {
   return new BaseShell(type, showAutoCompl);
 }
 

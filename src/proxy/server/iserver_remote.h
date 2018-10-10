@@ -28,7 +28,7 @@ class IServerRemote : public IServer {
  public:
   virtual common::net::HostAndPort GetHost() const = 0;
   virtual core::ServerMode GetMode() const = 0;
-  virtual core::ServerTypes GetRole() const = 0;
+  virtual core::ServerType GetRole() const = 0;
   virtual core::ServerState GetState() const = 0;
   virtual IDatabaseSPtr CreateDatabase(core::IDataBaseInfoSPtr info) override = 0;
 

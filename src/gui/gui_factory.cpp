@@ -152,7 +152,7 @@ const QIcon& GuiFactory::keyTTLIcon() const {
   return db;
 }
 
-const QIcon& GuiFactory::icon(core::ConnectionTypes type) const {
+const QIcon& GuiFactory::icon(core::ConnectionType type) const {
   if (type == core::REDIS) {
     return redisConnectionIcon();
   } else if (type == core::MEMCACHED) {
@@ -362,7 +362,7 @@ const QIcon& GuiFactory::search16Icon() const {
   return search;
 }
 
-const QIcon& GuiFactory::commandIcon(core::ConnectionTypes type) const {
+const QIcon& GuiFactory::commandIcon(core::ConnectionType type) const {
   if (type == core::REDIS) {
     return redisConnectionIcon();
   } else if (type == core::MEMCACHED) {

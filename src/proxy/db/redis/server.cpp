@@ -48,7 +48,7 @@ Server::~Server() {
   StopCheckKeyExistTimer();
 }
 
-core::ServerTypes Server::GetRole() const {
+core::ServerType Server::GetRole() const {
   return role_;
 }
 

@@ -34,7 +34,7 @@ class ConnectionSelectTypeDialog : public QDialog {
  public:
   explicit ConnectionSelectTypeDialog(QWidget* parent = Q_NULLPTR);
 
-  core::ConnectionTypes connectionType() const;
+  core::ConnectionType connectionType() const;
 
  protected:
   virtual void changeEvent(QEvent* ev) override;

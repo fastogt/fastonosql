@@ -67,7 +67,7 @@ void ConnectionListWidgetItem::setConnection(proxy::IConnectionSettingsBaseSPtr 
   if (common::ConvertFromString(path.GetName(), &conName)) {
     setText(0, conName);
   }
-  core::ConnectionTypes conType = cons->GetType();
+  core::ConnectionType conType = cons->GetType();
   setIcon(0, GuiFactory::GetInstance().icon(conType));
   if (common::ConvertFromString(cons->GetFullAddress(), &conName)) {
     setText(1, conName);

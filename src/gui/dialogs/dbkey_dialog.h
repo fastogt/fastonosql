@@ -20,7 +20,7 @@
 
 #include <QDialog>
 
-#include <fastonosql/core/connection_types.h>  // for ConnectionTypes
+#include <fastonosql/core/connection_types.h>  // for ConnectionType
 #include <fastonosql/core/db_key.h>            // for NDbKValue, NValue
 
 namespace fastonosql {
@@ -35,7 +35,7 @@ class DbKeyDialog : public QDialog {
   static const QSize min_dialog_size;
 
   DbKeyDialog(const QString& title,
-              core::ConnectionTypes type,
+              core::ConnectionType type,
               const core::NDbKValue& key,
               bool is_edit,
               QWidget* parent = Q_NULLPTR);

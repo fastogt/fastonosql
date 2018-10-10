@@ -98,7 +98,7 @@ bool SentinelSettingsfromString(const std::string& text, SentinelSettings* sent)
 
 //
 
-ISentinelSettingsBase::ISentinelSettingsBase(const connection_path_t& connectionName, core::ConnectionTypes type)
+ISentinelSettingsBase::ISentinelSettingsBase(const connection_path_t& connectionName, core::ConnectionType type)
     : IConnectionSettings(connectionName, type), sentinel_nodes_() {}
 
 ISentinelSettingsBase::sentinel_connections_t ISentinelSettingsBase::GetSentinels() const {

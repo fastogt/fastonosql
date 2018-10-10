@@ -18,7 +18,7 @@
 
 #include "proxy/db/pika/sentinel_settings.h"
 
-#include <fastonosql/core/connection_types.h>  // for core::ConnectionTypes::REDIS
+#include <fastonosql/core/connection_types.h>  // for core::ConnectionType::REDIS
 
 namespace fastonosql {
 namespace proxy {

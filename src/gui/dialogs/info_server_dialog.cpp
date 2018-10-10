@@ -63,7 +63,7 @@
 #include <fastonosql/core/db/pika/server_info.h>
 #endif
 
-#include <fastonosql/core/connection_types.h>  // for ConnectionTypes, etc
+#include <fastonosql/core/connection_types.h>  // for ConnectionType, etc
 #include "proxy/events/events_info.h"          // for ServerInfoResponce, etc
 #include "proxy/server/iserver.h"              // for IServer
 
@@ -333,7 +333,7 @@ namespace gui {
 InfoServerDialog::InfoServerDialog(proxy::IServerSPtr server, QWidget* parent) : QDialog(parent), server_(server) {
   CHECK(server_);
 
-  core::ConnectionTypes type = server->GetType();
+  core::ConnectionType type = server->GetType();
   setWindowIcon(GuiFactory::GetInstance().icon(type));
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help
                                                                      // button (?)
@@ -423,7 +423,7 @@ void InfoServerDialog::finishServerInfo(const proxy::events_info::ServerInfoResp
     return;
   }
 
-  core::ConnectionTypes type = server_->GetType();
+  core::ConnectionType type = server_->GetType();
   CHECK(type == inf->GetType());
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {

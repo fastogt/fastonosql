@@ -43,7 +43,7 @@ ConnectionSelectTypeDialog::ConnectionSelectTypeDialog(QWidget* parent) : QDialo
   type_connection_ = new QComboBox;
 
   for (size_t i = 0; i < core::g_compiled_types.size(); ++i) {
-    core::ConnectionTypes ct = core::g_compiled_types[i];
+    core::ConnectionType ct = core::g_compiled_types[i];
     std::string str = common::ConvertToString(ct);
     QString qstr;
     if (common::ConvertFromString(str, &qstr)) {
@@ -72,9 +72,9 @@ ConnectionSelectTypeDialog::ConnectionSelectTypeDialog(QWidget* parent) : QDialo
   retranslateUi();
 }
 
-core::ConnectionTypes ConnectionSelectTypeDialog::connectionType() const {
+core::ConnectionType ConnectionSelectTypeDialog::connectionType() const {
   QVariant var = type_connection_->currentData();
-  return static_cast<core::ConnectionTypes>(qvariant_cast<unsigned char>(var));
+  return static_cast<core::ConnectionType>(qvariant_cast<unsigned char>(var));
 }
 
 void ConnectionSelectTypeDialog::changeEvent(QEvent* e) {

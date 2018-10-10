@@ -39,7 +39,7 @@ const char* g_default_pattern = ALL_KEYS_PATTERNS;
 namespace fastonosql {
 namespace gui {
 
-LoadContentDbDialog::LoadContentDbDialog(const QString& title, core::ConnectionTypes type, QWidget* parent)
+LoadContentDbDialog::LoadContentDbDialog(const QString& title, core::ConnectionType type, QWidget* parent)
     : QDialog(parent), type_(type) {
   setWindowTitle(title);
   setWindowIcon(GuiFactory::GetInstance().icon(type_));

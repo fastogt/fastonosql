@@ -50,7 +50,7 @@ namespace gui {
 const QSize DbKeyDialog::min_dialog_size = QSize(360, 240);
 
 DbKeyDialog::DbKeyDialog(const QString& title,
-                         core::ConnectionTypes type,
+                         core::ConnectionType type,
                          const core::NDbKValue& key,
                          bool is_edit,
                          QWidget* parent)

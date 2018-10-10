@@ -92,8 +92,8 @@ ConnectionSettingsPath ConnectionSettingsPath::GetRoot() {
 
 const char IConnectionSettings::default_ns_separator[] = ":";
 
-IConnectionSettings::IConnectionSettings(const connection_path_t& connectionPath, core::ConnectionTypes type)
-    : connection_path_(connectionPath),
+IConnectionSettings::IConnectionSettings(const connection_path_t& connection_path, core::ConnectionType type)
+    : connection_path_(connection_path),
       type_(type),
       msinterval_(0),
       ns_separator_(default_ns_separator),
@@ -109,7 +109,7 @@ connection_path_t IConnectionSettings::GetPath() const {
   return connection_path_;
 }
 
-core::ConnectionTypes IConnectionSettings::GetType() const {
+core::ConnectionType IConnectionSettings::GetType() const {
   return type_;
 }
 
@@ -148,7 +148,7 @@ std::string IConnectionSettings::ToString() const {
   return wr.str();
 }
 
-IConnectionSettingsBase::IConnectionSettingsBase(const connection_path_t& connectionPath, core::ConnectionTypes type)
+IConnectionSettingsBase::IConnectionSettingsBase(const connection_path_t& connectionPath, core::ConnectionType type)
     : IConnectionSettings(connectionPath, type), hash_() {
   SetConnectionPathAndUpdateHash(connectionPath);
 }

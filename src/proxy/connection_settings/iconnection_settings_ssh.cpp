@@ -30,7 +30,7 @@ namespace fastonosql {
 namespace proxy {
 
 IConnectionSettingsRemoteSSH::IConnectionSettingsRemoteSSH(const connection_path_t& connectionName,
-                                                           core::ConnectionTypes type)
+                                                           core::ConnectionType type)
     : IConnectionSettingsRemote(connectionName, type), ssh_info_() {}
 
 std::string IConnectionSettingsRemoteSSH::ToString() const {
@@ -46,12 +46,13 @@ void IConnectionSettingsRemoteSSH::SetSSHInfo(const struct core::SSHInfo& info) 
 }
 
 void IConnectionSettingsRemoteSSH::PrepareInGuiIfNeeded() {
-  if (ssh_info_.current_method != core::SSHInfo::ASK_PASSWORD) {
+  if (ssh_info_.GetAuthMethod() != core::SSHInfo::ASK_PASSWORD) {
     return;
   }
 
   QString qserver_name;
-  common::ConvertFromString(ssh_info_.host.GetHost(), &qserver_name);
+  common::net::HostAndPort ssh_host = ssh_info_.GetHost();
+  common::ConvertFromString(ssh_host.GetHost(), &qserver_name);
   bool ok;
   QString publish_text =
       QInputDialog::getText(nullptr, trInputSSHPasswordForServer_1S.arg(qserver_name), "Password:", QLineEdit::Password,

@@ -20,7 +20,7 @@
 
 #include <common/net/types.h>
 
-#include <fastonosql/core/connection_types.h>  // for core::ConnectionTypes
+#include <fastonosql/core/connection_types.h>  // for core::ConnectionType
 #include "proxy/connection_settings/iconnection_settings.h"
 
 namespace fastonosql {
@@ -40,7 +40,7 @@ class IClusterSettingsBase : public IConnectionSettings {
   virtual IConnectionSettingsBaseSPtr FindSettingsByHost(const common::net::HostAndPort& host) const;
 
  protected:
-  IClusterSettingsBase(const connection_path_t& connectionName, core::ConnectionTypes type);
+  IClusterSettingsBase(const connection_path_t& connectionName, core::ConnectionType type);
 
  private:
   cluster_nodes_t clusters_nodes_;

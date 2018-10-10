@@ -72,7 +72,7 @@ QueryWidget* QueryWidget::clone(const QString& text) {
   return result;
 }
 
-core::ConnectionTypes QueryWidget::connectionType() const {
+core::ConnectionType QueryWidget::connectionType() const {
   return server_->GetType();
 }
 
