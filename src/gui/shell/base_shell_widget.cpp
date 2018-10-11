@@ -434,7 +434,7 @@ bool BaseShellWidget::loadFromFile(const QString& path) {
 }
 
 void BaseShellWidget::saveToFileAs() {
-  QString filepath = ShowSaveFileDialog(this, translations::trSaveAs, file_path_, translations::trfilterForScripts);
+  QString filepath = showSaveFileDialog(this, translations::trSaveAs, file_path_, translations::trfilterForScripts);
   if (filepath.isEmpty()) {
     return;
   }

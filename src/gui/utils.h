@@ -23,7 +23,7 @@
 namespace fastonosql {
 namespace gui {
 
-QString ShowSaveFileDialog(QWidget* parent, const QString& title, const QString& directory, const QString& filter);
+QString showSaveFileDialog(QWidget* parent, const QString& title, const QString& directory, const QString& filter);
 
 }  // namespace gui
 }  // namespace fastonosql

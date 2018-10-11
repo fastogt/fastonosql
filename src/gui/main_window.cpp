@@ -516,7 +516,7 @@ void MainWindow::exportConnection() {
   std::string dir_path = proxy::SettingsManager::GetSettingsDirPath();
   QString qdir;
   common::ConvertFromString(dir_path, &qdir);
-  QString filepathW = ShowSaveFileDialog(this, tr("Select file to save settings"), qdir, tr("Settings files (*.cini)"));
+  QString filepathW = showSaveFileDialog(this, tr("Select file to save settings"), qdir, tr("Settings files (*.cini)"));
   if (filepathW.isEmpty()) {
     return;
   }

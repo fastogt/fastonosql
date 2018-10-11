@@ -240,12 +240,14 @@ SET(HEADERS_GUI_EDITOR_TO_MOC
   ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor.h
   ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor_shell.h
   ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor_output.h
+  ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor_model_output.h
 )
 
 SET(SOURCES_GUI_EDITOR
   ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor_shell.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor_output.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor_model_output.cpp
 )
 
 SET(HEADERS_GUI_EXPLORER_TO_MOC
@@ -361,6 +363,7 @@ SET(HEADERS_GUI
   ${CMAKE_SOURCE_DIR}/src/gui/key_value_table_item.h
   ${CMAKE_SOURCE_DIR}/src/gui/key_table_item.h
   ${CMAKE_SOURCE_DIR}/src/gui/utils.h
+  ${CMAKE_SOURCE_DIR}/src/gui/text_converter.h
   ${CMAKE_SOURCE_DIR}/src/gui/key_info.h
 )
 SET(SOURCES_GUI
@@ -394,6 +397,7 @@ SET(SOURCES_GUI
   ${CMAKE_SOURCE_DIR}/src/gui/action_cell_delegate.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/key_value_table_item.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/utils.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/text_converter.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/key_info.cpp
 )
 

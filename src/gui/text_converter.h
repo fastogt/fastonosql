@@ -16,33 +16,21 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/fasto_text_view.h"
+#pragma once
 
-#include <QVBoxLayout>
-
-#include <fastonosql/core/db_key.h>
-
-#include "gui/editor/fasto_editor_model_output.h"  // for FastoEditorModelOutput
-
-Q_DECLARE_METATYPE(fastonosql::core::NValue)
+#include <fastonosql/core/types.h>
 
 namespace fastonosql {
 namespace gui {
 
-FastoTextView::FastoTextView(QWidget* parent) : QWidget(parent) {
-  QVBoxLayout* mainL = new QVBoxLayout;
-
-  editor_ = new FastoEditorModelOutput;
-  editor_->setReadOnly(true);
-
-  mainL->addWidget(editor_);
-  mainL->setContentsMargins(0, 0, 0, 0);
-  setLayout(mainL);
-}
-
-void FastoTextView::setModel(QAbstractItemModel* model) {
-  editor_->setModel(model);
-}
+bool string_from_json(const core::readable_string_t& data, std::string* out);
+bool string_to_hex(const core::readable_string_t& data, std::string* out);
+bool string_to_unicode(const core::readable_string_t& data, std::string* out);
+bool string_from_snappy(const core::readable_string_t& data, std::string* out);
+bool string_from_zlib(const core::readable_string_t& data, std::string* out);
+bool string_from_lz4(const core::readable_string_t& data, std::string* out);
+bool string_from_bzip2(const core::readable_string_t& data, std::string* out);
+bool string_from_msgpack(const core::readable_string_t& data, std::string* out);
 
 }  // namespace gui
 }  // namespace fastonosql

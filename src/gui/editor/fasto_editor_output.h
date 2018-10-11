@@ -20,17 +20,19 @@
 
 #include "gui/editor/fasto_editor.h"
 
+class QLabel;
+class QComboBox;
+
 namespace fastonosql {
 namespace gui {
 
 enum OutputView {
   JSON_VIEW = 0,
-  CSV_VIEW,
   RAW_VIEW,
   HEX_VIEW,
   UNICODE_VIEW,
   MSGPACK_VIEW,
-  GZIP_VIEW,
+  ZLIB_VIEW,
   LZ4_VIEW,
   BZIP2_VIEW,
   SNAPPY_VIEW,
@@ -45,14 +47,11 @@ class FastoEditorOutput : public QWidget {
   explicit FastoEditorOutput(QWidget* parent = Q_NULLPTR);
   virtual ~FastoEditorOutput();
 
-  void setModel(QAbstractItemModel* model);
-
-  QModelIndex selectedItem(int column) const;
-  bool setData(const QModelIndex& index, const QVariant& value, int role);
   int viewMethod() const;
   QString text() const;
+  void setText(const QString& text);
+  void setRawText(const QString& text);
   bool isReadOnly() const;
-  int childCount() const;
 
  Q_SIGNALS:
   void textChanged();
@@ -60,30 +59,23 @@ class FastoEditorOutput : public QWidget {
 
  public Q_SLOTS:
   void setReadOnly(bool ro);
-  void viewChange(int viewMethod);
+  void viewChange(int view_method);
 
- private Q_SLOTS:
-  void modelDestroyed();
-  void dataChanged(QModelIndex first, QModelIndex last);
-  void headerDataChanged();
-  void rowsInserted(QModelIndex index, int r, int c);
-  void rowsAboutToBeRemoved(QModelIndex index, int r, int c);
-  void rowsRemoved(QModelIndex index, int r, int c);
-  void columnsAboutToBeRemoved(QModelIndex index, int r, int c);
-  void columnsRemoved(QModelIndex index, int r, int c);
-  void columnsInserted(QModelIndex index, int r, int c);
-  void reset();
-  void layoutChanged();
+ protected:
+  virtual void changeEvent(QEvent* ev) override;
 
  private:
+  void retranslateUi();
   void syncEditors();
 
   FastoEditor* text_json_editor_;
   QsciLexer* json_lexer_;
   QsciLexer* xml_lexer_;
 
-  QAbstractItemModel* model_;
   int view_method_;
+
+  QLabel* views_label_;
+  QComboBox* views_combo_box_;
 };
 
 }  // namespace gui

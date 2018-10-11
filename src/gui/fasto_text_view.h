@@ -21,13 +21,11 @@
 #include <QWidget>
 
 class QAbstractItemModel;  // lines 25-25
-class QComboBox;           // lines 23-23
-class QLabel;
 
 namespace fastonosql {
 namespace gui {
 
-class FastoEditorOutput;
+class FastoEditorModelOutput;
 class FastoTextView : public QWidget {
   Q_OBJECT
  public:
@@ -35,18 +33,8 @@ class FastoTextView : public QWidget {
 
   void setModel(QAbstractItemModel* model);
 
- private Q_SLOTS:
-  void viewChange(int index);
-
- protected:
-  virtual void changeEvent(QEvent* ev) override;
-
  private:
-  void retranslateUi();
-
-  FastoEditorOutput* editor_;
-  QLabel* views_label_;
-  QComboBox* views_combo_box_;
+  FastoEditorModelOutput* editor_;
 };
 
 }  // namespace gui

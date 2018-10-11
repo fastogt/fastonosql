@@ -23,7 +23,7 @@
 namespace fastonosql {
 namespace gui {
 
-QString ShowSaveFileDialog(QWidget* parent, const QString& title, const QString& directory, const QString& filter) {
+QString showSaveFileDialog(QWidget* parent, const QString& title, const QString& directory, const QString& filter) {
 #if defined(OS_WIN) || defined(OS_MACOSX)
   return QFileDialog::getSaveFileName(parent, title, directory, filter);
 #else

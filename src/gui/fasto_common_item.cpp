@@ -18,17 +18,9 @@
 
 #include "gui/fasto_common_item.h"
 
-#include <common/qt/convert2string.h>                      // for ConvertToString
-#include <common/text_decoders/compress_bzip2_edcoder.h>   // for CompressEDcoder
-#include <common/text_decoders/compress_lz4_edcoder.h>     // for CompressEDcoder
-#include <common/text_decoders/compress_snappy_edcoder.h>  // for CompressEDcoder
-#include <common/text_decoders/compress_zlib_edcoder.h>    // for CompressEDcoder
-#include <common/text_decoders/hex_edcoder.h>              // for HexEDcoder
-#include <common/text_decoders/msgpack_edcoder.h>          // for MsgPackEDcoder
+#include "gui/text_converter.h"
 
-#include <json-c/json_tokener.h>
-
-#define CSV_SEPARATOR ","
+#include <common/qt/convert2string.h>  // for ConvertToString
 
 namespace fastonosql {
 namespace gui {
@@ -48,17 +40,9 @@ QString FastoCommonItem::key() const {
   return qkey;
 }
 
-QString FastoCommonItem::value() const {
-  std::string valstr = basicStringValue();
-  QString qvalstr;
-  common::ConvertFromString(valstr, &qvalstr);
-  return qvalstr;
-}
-
-std::string FastoCommonItem::basicStringValue() const {
+core::value_t FastoCommonItem::coreValue() const {
   core::NValue nval = key_.GetValue();
-  core::value_t value_str = nval.GetValue(delimiter_);
-  return value_str.GetHumanReadable();
+  return nval.GetValue(delimiter_);
 }
 
 void FastoCommonItem::setValue(core::NValue val) {
@@ -79,7 +63,6 @@ const char* FastoCommonItem::delimiter() const {
 
 common::Value::Type FastoCommonItem::type() const {
   return key_.GetType();
-  QString qvalstr;
 }
 
 bool FastoCommonItem::isReadOnly() const {
@@ -93,16 +76,14 @@ QString toJson(FastoCommonItem* item) {
   }
 
   if (!item->childrenCount()) {
-    std::string json = common::ConvertToString(item->value());
-    json_object* obj = json_tokener_parse(json.c_str());
-    if (!obj) {
+    core::value_t val = item->coreValue();
+    std::string jstring;
+    if (!string_from_json(val.GetData(), &jstring)) {
       return QString();
     }
 
-    std::string jstring = json_object_to_json_string_ext(obj, JSON_C_TO_STRING_PRETTY);
     QString result;
     common::ConvertFromString(jstring, &result);
-    json_object_put(obj);
     return result;
   }
 
@@ -121,34 +102,15 @@ QString toRaw(FastoCommonItem* item) {
   }
 
   if (!item->childrenCount()) {
-    return item->value();
+    QString result;
+    core::value_t val = item->coreValue();
+    common::ConvertFromString(val.GetData(), &result);
+    return result;
   }
 
   QString value;
   for (size_t i = 0; i < item->childrenCount(); ++i) {
     value += toRaw(dynamic_cast<FastoCommonItem*>(item->child(i)));  // +
-  }
-
-  return value;
-}
-
-QString toCsv(FastoCommonItem* item) {
-  if (!item) {
-    DNOTREACHED() << "Invalid input.";
-    return QString();
-  }
-
-  if (!item->childrenCount()) {
-    QString val = item->value();
-    return val.replace(item->delimiter(), ",");
-  }
-
-  QString value;
-  for (size_t i = 0; i < item->childrenCount(); ++i) {
-    value += toCsv(dynamic_cast<FastoCommonItem*>(item->child(i)));  // +
-    if (i != item->childrenCount() - 1) {
-      value += CSV_SEPARATOR;
-    }
   }
 
   return value;
@@ -161,12 +123,9 @@ QString fromSnappy(FastoCommonItem* item) {
   }
 
   if (!item->childrenCount()) {
-    QString val = item->value();
-    std::string sval = common::ConvertToString(val);
+    core::value_t val = item->coreValue();
     std::string out;
-    common::CompressSnappyEDcoder enc;
-    common::Error err = enc.Decode(sval, &out);
-    if (err) {
+    if (string_from_snappy(val.GetData(), &out)) {
       return QString();
     }
 
@@ -190,12 +149,9 @@ QString fromGzip(FastoCommonItem* item) {
   }
 
   if (!item->childrenCount()) {
-    QString val = item->value();
-    std::string sval = common::ConvertToString(val);
+    core::value_t val = item->coreValue();
     std::string out;
-    common::CompressZlibEDcoder enc;
-    common::Error err = enc.Decode(sval, &out);
-    if (err) {
+    if (string_from_zlib(val.GetData(), &out)) {
       return QString();
     }
 
@@ -219,12 +175,9 @@ QString fromLZ4(FastoCommonItem* item) {
   }
 
   if (!item->childrenCount()) {
-    QString val = item->value();
-    std::string sval = common::ConvertToString(val);
+    core::value_t val = item->coreValue();
     std::string out;
-    common::CompressLZ4EDcoder enc;
-    common::Error err = enc.Decode(sval, &out);
-    if (err) {
+    if (string_from_lz4(val.GetData(), &out)) {
       return QString();
     }
 
@@ -248,12 +201,9 @@ QString fromBZip2(FastoCommonItem* item) {
   }
 
   if (!item->childrenCount()) {
-    QString val = item->value();
-    std::string sval = common::ConvertToString(val);
+    core::value_t val = item->coreValue();
     std::string out;
-    common::CompressBZip2EDcoder enc;
-    common::Error err = enc.Decode(sval, &out);
-    if (err) {
+    if (string_from_bzip2(val.GetData(), &out)) {
       return QString();
     }
 
@@ -277,25 +227,15 @@ QString fromHexMsgPack(FastoCommonItem* item) {
   }
 
   if (!item->childrenCount()) {
-    std::string sval = common::ConvertToString(item->value());
-
-    common::HexEDcoder hex;
-    std::string hexstr;
-    common::Error err = hex.Decode(sval, &hexstr);
-    if (err) {
+    core::value_t val = item->coreValue();
+    std::string out;
+    if (string_from_msgpack(val.GetData(), &out)) {
       return QString();
     }
 
-    common::MsgPackEDcoder msg;
-    std::string upack;
-    err = msg.Decode(hexstr, &upack);
-    if (err) {
-      return QString();
-    }
-
-    QString qupack;
-    common::ConvertFromString(upack, &qupack);
-    return qupack;
+    QString qout;
+    common::ConvertFromString(out, &qout);
+    return qout;
   }
 
   QString value;
