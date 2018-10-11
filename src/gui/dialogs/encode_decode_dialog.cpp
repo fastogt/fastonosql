@@ -30,8 +30,8 @@
 #include <common/qt/convert2string.h>  // for ConvertToString
 #include <common/text_decoders/iedcoder_factory.h>
 
+#include "gui/gui_factory.h"           // for GuiFactory
 #include "gui/widgets/fasto_editor.h"  // for FastoEditor
-#include "gui/gui_factory.h"          // for GuiFactory
 
 #include "translations/global.h"  // for trDecode, trEncode, etc"
 
