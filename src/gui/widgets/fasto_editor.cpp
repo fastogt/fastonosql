@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/editor/fasto_editor.h"
+#include "gui/widgets/fasto_editor.h"
 
 #include <QCheckBox>
 #include <QHBoxLayout>
@@ -30,7 +30,7 @@
 
 #include <common/qt/convert2string.h>  // for EscapedText
 
-#include "gui/fasto_scintilla.h"  // for FastoScintilla
+#include "gui/widgets/fasto_scintilla.h"  // for FastoScintilla
 
 #include "gui/gui_factory.h"  // for GuiFactory
 

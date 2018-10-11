@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "gui/editor/fasto_editor.h"
+#include "gui/widgets/fasto_editor.h"
 
 class QLabel;
 class QComboBox;
@@ -27,44 +27,61 @@ namespace fastonosql {
 namespace gui {
 
 enum OutputView {
-  JSON_VIEW = 0,
-  RAW_VIEW,
-  HEX_VIEW,
-  UNICODE_VIEW,
-  MSGPACK_VIEW,
-  ZLIB_VIEW,
-  LZ4_VIEW,
-  BZIP2_VIEW,
-  SNAPPY_VIEW,
-  XML_VIEW
+  RAW_VIEW = 0,  // raw
+  JSON_VIEW,     // raw
+
+  TO_HEX_VIEW,
+  FROM_HEX_VIEW,
+
+  TO_UNICODE_VIEW,
+  FROM_UNICODE_VIEW,
+
+  MSGPACK_VIEW,  // from
+  ZLIB_VIEW,     // from
+  LZ4_VIEW,      // from
+  BZIP2_VIEW,    // from
+  SNAPPY_VIEW,   // from
+  XML_VIEW       // raw
 };
 
 extern const std::vector<const char*> g_output_views_text;
 
-class FastoEditorOutput : public QWidget {
+class FastoViewer : public QWidget {
   Q_OBJECT
  public:
-  explicit FastoEditorOutput(QWidget* parent = Q_NULLPTR);
-  virtual ~FastoEditorOutput();
+  explicit FastoViewer(QWidget* parent = Q_NULLPTR);
+  virtual ~FastoViewer();
 
   int viewMethod() const;
-  QString text() const;
-  void setText(const QString& text);
-  void setRawText(const QString& text);
+  std::string text() const;
+
+  bool setText(const std::string& text);
+
+  void setViewText(const QString& text);
+  void setError(const QString& error);
+  void clearError();
+
   bool isReadOnly() const;
 
  Q_SIGNALS:
   void textChanged();
   void readOnlyChanged();
+  void viewChanged(int view_method);
 
  public Q_SLOTS:
   void setReadOnly(bool ro);
   void viewChange(int view_method);
+  void clear();
 
  protected:
   virtual void changeEvent(QEvent* ev) override;
 
  private:
+  bool isError() const;
+
+  std::string convertToView(const std::string& text);
+  bool convertFromView(std::string* out) const;
+
   void retranslateUi();
   void syncEditors();
 
@@ -76,6 +93,9 @@ class FastoEditorOutput : public QWidget {
 
   QLabel* views_label_;
   QComboBox* views_combo_box_;
+  QLabel* error_box_;
+
+  mutable std::string last_valid_text_;
 };
 
 }  // namespace gui

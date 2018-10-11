@@ -23,14 +23,29 @@
 namespace fastonosql {
 namespace gui {
 
-bool string_from_json(const core::readable_string_t& data, std::string* out);
+bool string_from_json(const std::string& value, std::string* out);
+bool string_to_json(const core::readable_string_t& data, std::string* out);
+
+bool string_from_hex(const std::string& value, std::string* out);
 bool string_to_hex(const core::readable_string_t& data, std::string* out);
+
+bool string_from_unicode(const std::string& value, std::string* out);
 bool string_to_unicode(const core::readable_string_t& data, std::string* out);
-bool string_from_snappy(const core::readable_string_t& data, std::string* out);
-bool string_from_zlib(const core::readable_string_t& data, std::string* out);
-bool string_from_lz4(const core::readable_string_t& data, std::string* out);
-bool string_from_bzip2(const core::readable_string_t& data, std::string* out);
-bool string_from_msgpack(const core::readable_string_t& data, std::string* out);
+
+bool string_from_snappy(const std::string& value, std::string* out);
+bool string_to_snappy(const core::readable_string_t& data, std::string* out);
+
+bool string_from_zlib(const std::string& value, std::string* out);
+bool string_to_zlib(const core::readable_string_t& data, std::string* out);
+
+bool string_from_lz4(const std::string& value, std::string* out);
+bool string_to_lz4(const core::readable_string_t& data, std::string* out);
+
+bool string_from_bzip2(const std::string& value, std::string* out);
+bool string_to_bzip2(const core::readable_string_t& data, std::string* out);
+
+bool string_from_msgpack(const std::string& value, std::string* out);
+bool string_to_msgpack(const core::readable_string_t& data, std::string* out);
 
 }  // namespace gui
 }  // namespace fastonosql

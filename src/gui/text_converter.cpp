@@ -24,15 +24,22 @@
 #include <common/text_decoders/compress_lz4_edcoder.h>     // for CompressEDcoder
 #include <common/text_decoders/compress_snappy_edcoder.h>  // for CompressEDcoder
 #include <common/text_decoders/compress_zlib_edcoder.h>    // for CompressEDcoder
-#include <common/text_decoders/hex_edcoder.h>              // for HexEDcoder
 #include <common/text_decoders/msgpack_edcoder.h>          // for MsgPackEDcoder
+#include <common/text_decoders/xhex_edcoder.h>             // for XHexEDcoder
+
+#include <common/convert2string.h>
 
 #include <fastonosql/core/types.h>
 
 namespace fastonosql {
 namespace gui {
 
-bool string_from_json(const core::readable_string_t& data, std::string* out) {
+bool string_from_json(const std::string& value, std::string* out) {
+  *out = value;
+  return true;
+}
+
+bool string_to_json(const core::readable_string_t& data, std::string* out) {
   if (data.empty()) {
     return false;
   }
@@ -48,19 +55,40 @@ bool string_from_json(const core::readable_string_t& data, std::string* out) {
   return true;
 }
 
-bool string_to_hex(const core::readable_string_t& data, std::string* out) {
-  std::string result = core::detail::hex_string(data);
-  if (result.empty()) {
+bool string_from_hex(const std::string& value, std::string* out) {
+  common::XHexEDcoder enc(core::ReadableString::is_lower_hex);
+  common::Error err = enc.Decode(value, out);
+  if (err) {
     return false;
   }
 
-  *out = result;
+  return true;
+}
+
+bool string_to_hex(const core::readable_string_t& data, std::string* out) {
+  common::XHexEDcoder enc(core::ReadableString::is_lower_hex);
+  common::Error err = enc.Encode(data, out);
+  if (err) {
+    return false;
+  }
+
   return true;
 }
 
 bool string_to_unicode(const core::readable_string_t& data, std::string* out) {
-  std::string result = core::detail::unicode_string(data);
-  if (result.empty()) {
+  std::ostringstream wr;
+  common::string16 s16 = common::ConvertToString16(data);
+  std::string unicoded = common::utils::unicode::encode(s16, true);
+  for (size_t i = 0; i < unicoded.size(); i += 4) {
+    wr << "\\u";
+    wr << unicoded[i];
+    wr << unicoded[i + 1];
+    wr << unicoded[i + 2];
+    wr << unicoded[i + 3];
+  }
+
+  std::string result = wr.str();
+  if (result.size() % 6 != 0) {
     return false;
   }
 
@@ -68,9 +96,34 @@ bool string_to_unicode(const core::readable_string_t& data, std::string* out) {
   return true;
 }
 
-bool string_from_snappy(const core::readable_string_t& data, std::string* out) {
+bool string_from_unicode(const std::string& value, std::string* out) {
+  size_t len = value.size();
+  if (len % 6 != 0) {
+    return false;
+  }
+
+  std::string unicode_digits;
+  for (size_t i = 0; i < len; i += 6) {
+    auto c1 = value[i];
+    auto c2 = value[i + 1];
+    if (c1 == '\\' && c2 == 'u') {
+      unicode_digits += value[i + 2];
+      unicode_digits += value[i + 3];
+      unicode_digits += value[i + 4];
+      unicode_digits += value[i + 5];
+    } else {
+      return false;
+    }
+  }
+
+  common::string16 s16 = common::utils::unicode::decode(unicode_digits);
+  *out = common::ConvertToString(s16);
+  return true;
+}
+
+bool string_from_snappy(const std::string& value, std::string* out) {
   common::CompressSnappyEDcoder enc;
-  common::Error err = enc.Decode(data, out);
+  common::Error err = enc.Decode(value, out);
   if (err) {
     return false;
   }
@@ -78,9 +131,19 @@ bool string_from_snappy(const core::readable_string_t& data, std::string* out) {
   return true;
 }
 
-bool string_from_zlib(const core::readable_string_t& data, std::string* out) {
+bool string_to_snappy(const core::readable_string_t& data, std::string* out) {
+  common::CompressSnappyEDcoder enc;
+  common::Error err = enc.Encode(data, out);
+  if (err) {
+    return false;
+  }
+
+  return true;
+}
+
+bool string_from_zlib(const std::string& value, std::string* out) {
   common::CompressZlibEDcoder enc;
-  common::Error err = enc.Decode(data, out);
+  common::Error err = enc.Decode(value, out);
   if (err) {
     return false;
   }
@@ -88,9 +151,19 @@ bool string_from_zlib(const core::readable_string_t& data, std::string* out) {
   return true;
 }
 
-bool string_from_lz4(const core::readable_string_t& data, std::string* out) {
+bool string_to_zlib(const core::readable_string_t& data, std::string* out) {
+  common::CompressZlibEDcoder enc;
+  common::Error err = enc.Encode(data, out);
+  if (err) {
+    return false;
+  }
+
+  return true;
+}
+
+bool string_from_lz4(const std::string& value, std::string* out) {
   common::CompressLZ4EDcoder enc;
-  common::Error err = enc.Decode(data, out);
+  common::Error err = enc.Decode(value, out);
   if (err) {
     return false;
   }
@@ -98,9 +171,19 @@ bool string_from_lz4(const core::readable_string_t& data, std::string* out) {
   return true;
 }
 
-bool string_from_bzip2(const core::readable_string_t& data, std::string* out) {
+bool string_to_lz4(const core::readable_string_t& data, std::string* out) {
+  common::CompressLZ4EDcoder enc;
+  common::Error err = enc.Encode(data, out);
+  if (err) {
+    return false;
+  }
+
+  return true;
+}
+
+bool string_from_bzip2(const std::string& value, std::string* out) {
   common::CompressBZip2EDcoder enc;
-  common::Error err = enc.Decode(data, out);
+  common::Error err = enc.Decode(value, out);
   if (err) {
     return false;
   }
@@ -108,9 +191,29 @@ bool string_from_bzip2(const core::readable_string_t& data, std::string* out) {
   return true;
 }
 
-bool string_from_msgpack(const core::readable_string_t& data, std::string* out) {
+bool string_to_bzip2(const core::readable_string_t& data, std::string* out) {
+  common::CompressBZip2EDcoder enc;
+  common::Error err = enc.Encode(data, out);
+  if (err) {
+    return false;
+  }
+
+  return true;
+}
+
+bool string_from_msgpack(const std::string& value, std::string* out) {
   common::MsgPackEDcoder enc;
-  common::Error err = enc.Decode(data, out);
+  common::Error err = enc.Decode(value, out);
+  if (err) {
+    return false;
+  }
+
+  return true;
+}
+
+bool string_to_msgpack(const core::readable_string_t& data, std::string* out) {
+  common::MsgPackEDcoder enc;
+  common::Error err = enc.Encode(data, out);
   if (err) {
     return false;
   }

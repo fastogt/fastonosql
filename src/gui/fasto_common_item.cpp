@@ -78,7 +78,7 @@ QString toJson(FastoCommonItem* item) {
   if (!item->childrenCount()) {
     core::value_t val = item->coreValue();
     std::string jstring;
-    if (!string_from_json(val.GetData(), &jstring)) {
+    if (!string_to_json(val.GetData(), &jstring)) {
       return QString();
     }
 
@@ -116,6 +116,131 @@ QString toRaw(FastoCommonItem* item) {
   return value;
 }
 
+QString toXml(FastoCommonItem* item) {
+  if (!item) {
+    DNOTREACHED() << "Invalid input.";
+    return QString();
+  }
+
+  if (!item->childrenCount()) {
+    QString result;
+    core::value_t val = item->coreValue();
+    common::ConvertFromString(val.GetData(), &result);
+    return result;
+  }
+
+  QString value;
+  for (size_t i = 0; i < item->childrenCount(); ++i) {
+    value += toXml(dynamic_cast<FastoCommonItem*>(item->child(i)));  // +
+  }
+
+  return value;
+}
+
+QString toHex(FastoCommonItem* item) {
+  if (!item) {
+    DNOTREACHED() << "Invalid input.";
+    return QString();
+  }
+
+  if (!item->childrenCount()) {
+    core::value_t val = item->coreValue();
+    std::string out;
+    if (!string_to_hex(val.GetData(), &out)) {
+      return QString();
+    }
+
+    QString qout;
+    common::ConvertFromString(out, &qout);
+    return qout;
+  }
+
+  QString value;
+  for (size_t i = 0; i < item->childrenCount(); ++i) {
+    value += toHex(dynamic_cast<FastoCommonItem*>(item->child(i)));  // +
+  }
+
+  return value;
+}
+
+QString fromHex(FastoCommonItem* item) {
+  if (!item) {
+    DNOTREACHED() << "Invalid input.";
+    return QString();
+  }
+
+  if (!item->childrenCount()) {
+    core::value_t val = item->coreValue();
+    std::string out;
+    if (!string_from_hex(val.GetData(), &out)) {
+      return QString();
+    }
+
+    QString qout;
+    common::ConvertFromString(out, &qout);
+    return qout;
+  }
+
+  QString value;
+  for (size_t i = 0; i < item->childrenCount(); ++i) {
+    value += fromHex(dynamic_cast<FastoCommonItem*>(item->child(i)));  // +
+  }
+
+  return value;
+}
+
+QString toUnicode(FastoCommonItem* item) {
+  if (!item) {
+    DNOTREACHED() << "Invalid input.";
+    return QString();
+  }
+
+  if (!item->childrenCount()) {
+    core::value_t val = item->coreValue();
+    std::string out;
+    if (!string_to_unicode(val.GetData(), &out)) {
+      return QString();
+    }
+
+    QString qout;
+    common::ConvertFromString(out, &qout);
+    return qout;
+  }
+
+  QString value;
+  for (size_t i = 0; i < item->childrenCount(); ++i) {
+    value += toUnicode(dynamic_cast<FastoCommonItem*>(item->child(i)));  // +
+  }
+
+  return value;
+}
+
+QString fromUnicode(FastoCommonItem* item) {
+  if (!item) {
+    DNOTREACHED() << "Invalid input.";
+    return QString();
+  }
+
+  if (!item->childrenCount()) {
+    core::value_t val = item->coreValue();
+    std::string out;
+    if (!string_from_unicode(val.GetData(), &out)) {
+      return QString();
+    }
+
+    QString qout;
+    common::ConvertFromString(out, &qout);
+    return qout;
+  }
+
+  QString value;
+  for (size_t i = 0; i < item->childrenCount(); ++i) {
+    value += fromUnicode(dynamic_cast<FastoCommonItem*>(item->child(i)));  // +
+  }
+
+  return value;
+}
+
 QString fromSnappy(FastoCommonItem* item) {
   if (!item) {
     DNOTREACHED() << "Invalid input.";
@@ -125,7 +250,7 @@ QString fromSnappy(FastoCommonItem* item) {
   if (!item->childrenCount()) {
     core::value_t val = item->coreValue();
     std::string out;
-    if (string_from_snappy(val.GetData(), &out)) {
+    if (!string_from_snappy(val.GetData(), &out)) {
       return QString();
     }
 
@@ -151,7 +276,7 @@ QString fromGzip(FastoCommonItem* item) {
   if (!item->childrenCount()) {
     core::value_t val = item->coreValue();
     std::string out;
-    if (string_from_zlib(val.GetData(), &out)) {
+    if (!string_from_zlib(val.GetData(), &out)) {
       return QString();
     }
 
@@ -177,7 +302,7 @@ QString fromLZ4(FastoCommonItem* item) {
   if (!item->childrenCount()) {
     core::value_t val = item->coreValue();
     std::string out;
-    if (string_from_lz4(val.GetData(), &out)) {
+    if (!string_from_lz4(val.GetData(), &out)) {
       return QString();
     }
 
@@ -203,7 +328,7 @@ QString fromBZip2(FastoCommonItem* item) {
   if (!item->childrenCount()) {
     core::value_t val = item->coreValue();
     std::string out;
-    if (string_from_bzip2(val.GetData(), &out)) {
+    if (!string_from_bzip2(val.GetData(), &out)) {
       return QString();
     }
 
@@ -229,7 +354,7 @@ QString fromHexMsgPack(FastoCommonItem* item) {
   if (!item->childrenCount()) {
     core::value_t val = item->coreValue();
     std::string out;
-    if (string_from_msgpack(val.GetData(), &out)) {
+    if (!string_from_msgpack(val.GetData(), &out)) {
       return QString();
     }
 

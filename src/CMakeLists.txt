@@ -237,16 +237,12 @@ IF(PRO_VERSION)
 ENDIF(PRO_VERSION)
 
 SET(HEADERS_GUI_EDITOR_TO_MOC
-  ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor.h
   ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor_shell.h
-  ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor_output.h
   ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor_model_output.h
 )
 
 SET(SOURCES_GUI_EDITOR
-  ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor_shell.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor_output.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor_model_output.cpp
 )
 
@@ -282,6 +278,9 @@ SET(SOURCES_GUI_SHELL
 )
 
 SET(HEADERS_GUI_WIDGETS_TO_MOC
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/fasto_scintilla.h
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/fasto_editor.h
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/fasto_viewer.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/key_edit_widget.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/save_key_edit_widget.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/log_tab_widget.h
@@ -305,6 +304,9 @@ SET(HEADERS_GUI_WIDGETS_TO_MOC
 )
 
 SET(SOURCES_GUI_WIDGETS
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/fasto_scintilla.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/fasto_editor.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/fasto_viewer.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/key_edit_widget.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/save_key_edit_widget.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/log_tab_widget.cpp
@@ -346,7 +348,6 @@ SET(HEADERS_GUI_TO_MOC
   ${CMAKE_SOURCE_DIR}/src/gui/fasto_common_model.h
   ${CMAKE_SOURCE_DIR}/src/gui/fasto_table_view.h
   ${CMAKE_SOURCE_DIR}/src/gui/keys_table_view.h
-  ${CMAKE_SOURCE_DIR}/src/gui/fasto_scintilla.h
   ${CMAKE_SOURCE_DIR}/src/gui/hash_table_model.h
   ${CMAKE_SOURCE_DIR}/src/gui/stream_table_model.h
   ${CMAKE_SOURCE_DIR}/src/gui/action_cell_delegate.h
@@ -390,7 +391,6 @@ SET(SOURCES_GUI
   ${CMAKE_SOURCE_DIR}/src/gui/keys_table_view.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/fasto_common_item.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/shortcuts.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/fasto_scintilla.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/connection_widgets_factory.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/hash_table_model.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/stream_table_model.cpp

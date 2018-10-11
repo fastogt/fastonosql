@@ -26,7 +26,7 @@ class QAbstractItemModel;
 namespace fastonosql {
 namespace gui {
 
-class FastoEditorOutput;
+class FastoViewer;
 
 class FastoEditorModelOutput : public QWidget {
   Q_OBJECT
@@ -61,7 +61,7 @@ class FastoEditorModelOutput : public QWidget {
   void layoutChanged();
 
  private:
-  FastoEditorOutput* editor_;
+  FastoViewer* editor_;
   QAbstractItemModel* model_;
 };
 

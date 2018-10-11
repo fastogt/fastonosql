@@ -31,14 +31,14 @@
 
 #include <fastonosql/core/value.h>
 
-#include "gui/widgets/hash_type_widget.h"
-#include "gui/widgets/list_type_widget.h"
-#include "gui/widgets/stream_type_widget.h"
-
 #include "gui/gui_factory.h"  // for GuiFactory
 #include "gui/hash_table_model.h"
 
-#include "gui/editor/fasto_editor.h"
+#include "gui/widgets/fasto_editor.h"
+#include "gui/widgets/fasto_viewer.h"
+#include "gui/widgets/hash_type_widget.h"
+#include "gui/widgets/list_type_widget.h"
+#include "gui/widgets/stream_type_widget.h"
 
 #include "translations/global.h"  // for trAddItem, trRemoveItem, etc
 
@@ -72,11 +72,11 @@ KeyEditWidget::KeyEditWidget(const std::vector<common::Value::Type>& availible_t
   // value layout
   value_label_ = new QLabel;
   kvLayout->addWidget(value_label_, 2, 0);
-  value_edit_ = new QLineEdit;
-  value_edit_->setPlaceholderText("[value]");
+  value_edit_ = new FastoViewer;
+  // value_edit_->setPlaceholderText("[value]");
   kvLayout->addWidget(value_edit_, 2, 1);
   value_edit_->setVisible(true);
-  VERIFY(connect(value_edit_, &QLineEdit::textChanged, this, &KeyEditWidget::keyChanged));
+  VERIFY(connect(value_edit_, &FastoViewer::textChanged, this, &KeyEditWidget::keyChanged));
 
   json_value_edit_ = new FastoEditor;
   QsciLexerJSON* json_lexer = new QsciLexerJSON;
@@ -267,14 +267,14 @@ void KeyEditWidget::changeType(int index) {
     value_list_edit_->setVisible(false);
     value_table_edit_->setVisible(false);
     stream_table_edit_->setVisible(false);
-    if (type == common::Value::TYPE_INTEGER || type == common::Value::TYPE_UINTEGER) {
+    /*if (type == common::Value::TYPE_INTEGER || type == common::Value::TYPE_UINTEGER) {
       value_edit_->setValidator(new QIntValidator(this));
     } else if (type == common::Value::TYPE_DOUBLE) {
       value_edit_->setValidator(new QDoubleValidator(this));
     } else {
       QRegExp rx(".*");
       value_edit_->setValidator(new QRegExpValidator(rx, this));
-    }
+    }*/
   }
 
   emit typeChanged(type);
@@ -393,10 +393,7 @@ void KeyEditWidget::syncControls(const core::NValue& item) {
   } else {
     std::string text;
     if (item->GetAsString(&text)) {
-      QString qval;
-      if (common::ConvertFromString(text, &qval)) {
-        value_edit_->setText(qval);
-      }
+      value_edit_->setText(text);
     }
   }
 }

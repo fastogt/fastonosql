@@ -27,7 +27,7 @@
     OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "gui/fasto_scintilla.h"
+#include "gui/widgets/fasto_scintilla.h"
 
 #include <QKeyEvent>
 

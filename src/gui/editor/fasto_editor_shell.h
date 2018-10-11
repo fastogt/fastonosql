@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "gui/editor/fasto_editor.h"
+#include "gui/widgets/fasto_editor.h"
 
 namespace fastonosql {
 namespace gui {

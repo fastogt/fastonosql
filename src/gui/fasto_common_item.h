@@ -55,6 +55,13 @@ class FastoCommonItem : public common::qt::gui::TreeItem {
 
 QString toJson(FastoCommonItem* item);
 QString toRaw(FastoCommonItem* item);
+QString toXml(FastoCommonItem* item);
+
+QString toHex(FastoCommonItem* item);
+QString fromHex(FastoCommonItem* item);
+
+QString toUnicode(FastoCommonItem* item);
+QString fromUnicode(FastoCommonItem* item);
 
 QString fromGzip(FastoCommonItem* item);
 QString fromLZ4(FastoCommonItem* item);

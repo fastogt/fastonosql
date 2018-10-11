@@ -30,18 +30,19 @@
 
 #include "translations/global.h"
 
-#include "gui/editor/fasto_editor_output.h"
+#include "gui/widgets/fasto_viewer.h"
 
 namespace fastonosql {
 namespace gui {
 
 FastoEditorModelOutput::FastoEditorModelOutput(QWidget* parent) : QWidget(parent), model_(nullptr) {
-  editor_ = new FastoEditorOutput;
+  editor_ = new FastoViewer;
+  VERIFY(connect(editor_, &FastoViewer::viewChanged, this, &FastoEditorModelOutput::layoutChanged));
 
-  QVBoxLayout* mainL = new QVBoxLayout;
-  mainL->addWidget(editor_);
-  mainL->setContentsMargins(0, 0, 0, 0);
-  setLayout(mainL);
+  QVBoxLayout* main = new QVBoxLayout;
+  main->addWidget(editor_);
+  main->setContentsMargins(0, 0, 0, 0);
+  setLayout(main);
 }
 
 FastoEditorModelOutput::~FastoEditorModelOutput() {}
@@ -214,19 +215,17 @@ void FastoEditorModelOutput::layoutChanged() {
     } else if (vm == RAW_VIEW) {
       QString raw = toRaw(child);
       result += common::EscapedText(raw);
-    } else if (vm == HEX_VIEW) {
-      QString raw = toRaw(child);
-      std::string str_raw = common::ConvertToString(raw);
-      std::string hexed = core::detail::hex_string(str_raw);
-      QString qhexed;
-      common::ConvertFromString(hexed, &qhexed);
+    } else if (vm == TO_HEX_VIEW) {
+      QString qhexed = toHex(child);
       result += qhexed;
-    } else if (vm == UNICODE_VIEW) {
-      QString raw = toRaw(child);
-      std::string str_raw = common::ConvertToString(raw);
-      std::string unicoded = core::detail::unicode_string(str_raw);
-      QString qunicoded;
-      common::ConvertFromString(unicoded, &qunicoded);
+    } else if (vm == FROM_HEX_VIEW) {
+      QString qhexed = fromHex(child);
+      result += qhexed;
+    } else if (vm == TO_UNICODE_VIEW) {
+      QString qunicoded = toUnicode(child);
+      result += qunicoded;
+    } else if (vm == FROM_UNICODE_VIEW) {
+      QString qunicoded = fromUnicode(child);
       result += qunicoded;
     } else if (vm == MSGPACK_VIEW) {
       QString msgp = fromHexMsgPack(child);
@@ -244,16 +243,17 @@ void FastoEditorModelOutput::layoutChanged() {
       QString snap = fromSnappy(child);
       result += common::EscapedText(snap);
     } else if (vm == XML_VIEW) {
-      QString raw = toRaw(child);
+      QString raw = toXml(child);
       result += common::EscapedText(raw);
     }
   }
 
   if (result.isEmpty()) {
     result = translations::trCannotConvertPattern1ArgsS.arg(methodText);
-    editor_->setReadOnly(true);
+    editor_->setError(result);
+  } else {
+    editor_->setViewText(result);
   }
-  editor_->setRawText(result);
 }
 
 }  // namespace gui
