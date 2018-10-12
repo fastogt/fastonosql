@@ -24,8 +24,6 @@
 #include <QLabel>
 #include <QLineEdit>
 
-#include <Qsci/qscilexerjson.h>
-
 #include <common/convert2string.h>
 #include <common/qt/convert2string.h>  // for ConvertToString
 
@@ -34,7 +32,6 @@
 #include "gui/gui_factory.h"  // for GuiFactory
 #include "gui/hash_table_model.h"
 
-#include "gui/widgets/fasto_editor.h"
 #include "gui/widgets/fasto_viewer.h"
 #include "gui/widgets/hash_type_widget.h"
 #include "gui/widgets/list_type_widget.h"
@@ -72,18 +69,16 @@ KeyEditWidget::KeyEditWidget(const std::vector<common::Value::Type>& availible_t
   // value layout
   value_label_ = new QLabel;
   kvLayout->addWidget(value_label_, 2, 0);
-  value_edit_ = new FastoViewer;
-  // value_edit_->setPlaceholderText("[value]");
+  value_edit_ = new QLineEdit;
+  value_edit_->setPlaceholderText("[value]");
   kvLayout->addWidget(value_edit_, 2, 1);
   value_edit_->setVisible(true);
-  VERIFY(connect(value_edit_, &FastoViewer::textChanged, this, &KeyEditWidget::keyChanged));
+  VERIFY(connect(value_edit_, &QLineEdit::textChanged, this, &KeyEditWidget::keyChanged));
 
-  json_value_edit_ = new FastoEditor;
-  QsciLexerJSON* json_lexer = new QsciLexerJSON;
-  json_value_edit_->setLexer(json_lexer);
+  json_value_edit_ = new FastoViewer;
   kvLayout->addWidget(json_value_edit_, 2, 1);
   json_value_edit_->setVisible(false);
-  VERIFY(connect(json_value_edit_, &FastoEditor::textChanged, this, &KeyEditWidget::keyChanged));
+  VERIFY(connect(json_value_edit_, &FastoViewer::textChanged, this, &KeyEditWidget::keyChanged));
 
   bool_value_edit_ = new QComboBox;
   bool_value_edit_->addItem("true");
@@ -163,12 +158,19 @@ common::Value* KeyEditWidget::createItem() const {
     return value_table_edit_->hashValue();
   } else if (type == core::StreamValue::TYPE_STREAM) {
     return stream_table_edit_->streamValue();
-  } else if (type == core::JsonValue::TYPE_JSON) {
-    const std::string text_str = common::ConvertToString(json_value_edit_->text());
-    if (!core::JsonValue::IsValidJson(text_str)) {
+  } else if (type == core::JsonValue::TYPE_JSON || type == common::Value::TYPE_STRING) {
+    const std::string json_or_text_str = json_value_edit_->text();
+    if (type == common::Value::TYPE_STRING) {
+      if (json_or_text_str.empty()) {
+        return nullptr;
+      }
+      return common::Value::CreateStringValue(json_or_text_str);
+    }
+
+    if (!core::JsonValue::IsValidJson(json_or_text_str)) {
       return nullptr;
     }
-    return new core::JsonValue(text_str);
+    return new core::JsonValue(json_or_text_str);
   } else if (type == common::Value::TYPE_BOOLEAN) {
     int index = bool_value_edit_->currentIndex();
     return common::Value::CreateBooleanValue(index == 0);
@@ -205,7 +207,8 @@ common::Value* KeyEditWidget::createItem() const {
     return common::Value::CreateDoubleValue(res);
   }
 
-  return common::Value::CreateStringValue(text_str);
+  NOTREACHED() << "Not handled type: " << type;
+  return nullptr;
 }
 
 void KeyEditWidget::changeEvent(QEvent* e) {
@@ -253,7 +256,7 @@ void KeyEditWidget::changeType(int index) {
     json_value_edit_->setVisible(false);
     bool_value_edit_->setVisible(false);
     value_list_edit_->setVisible(false);
-  } else if (type == core::JsonValue::TYPE_JSON) {
+  } else if (type == core::JsonValue::TYPE_JSON || type == common::Value::TYPE_STRING) {
     value_table_edit_->setVisible(false);
     stream_table_edit_->setVisible(false);
     value_edit_->setVisible(false);
@@ -267,14 +270,14 @@ void KeyEditWidget::changeType(int index) {
     value_list_edit_->setVisible(false);
     value_table_edit_->setVisible(false);
     stream_table_edit_->setVisible(false);
-    /*if (type == common::Value::TYPE_INTEGER || type == common::Value::TYPE_UINTEGER) {
+    if (type == common::Value::TYPE_INTEGER || type == common::Value::TYPE_UINTEGER) {
       value_edit_->setValidator(new QIntValidator(this));
     } else if (type == common::Value::TYPE_DOUBLE) {
       value_edit_->setValidator(new QDoubleValidator(this));
     } else {
       QRegExp rx(".*");
       value_edit_->setValidator(new QRegExpValidator(rx, this));
-    }*/
+    }
   }
 
   emit typeChanged(type);
@@ -291,8 +294,8 @@ void KeyEditWidget::syncControls(const core::NValue& item) {
   stream_table_edit_->clear();
   value_list_edit_->clear();
 
-  common::Value::Type t = item->GetType();
-  if (t == common::Value::TYPE_ARRAY) {
+  common::Value::Type type = item->GetType();
+  if (type == common::Value::TYPE_ARRAY) {
     common::ArrayValue* arr = nullptr;
     if (item->GetAsList(&arr)) {
       for (auto it = arr->begin(); it != arr->end(); ++it) {
@@ -307,7 +310,7 @@ void KeyEditWidget::syncControls(const core::NValue& item) {
         }
       }
     }
-  } else if (t == common::Value::TYPE_SET) {
+  } else if (type == common::Value::TYPE_SET) {
     common::SetValue* set = nullptr;
     if (item->GetAsSet(&set)) {
       for (auto it = set->begin(); it != set->end(); ++it) {
@@ -322,7 +325,7 @@ void KeyEditWidget::syncControls(const core::NValue& item) {
         }
       }
     }
-  } else if (t == common::Value::TYPE_ZSET) {
+  } else if (type == common::Value::TYPE_ZSET) {
     common::ZSetValue* zset = nullptr;
     if (item->GetAsZSet(&zset)) {
       for (auto it = zset->begin(); it != zset->end(); ++it) {
@@ -346,7 +349,7 @@ void KeyEditWidget::syncControls(const core::NValue& item) {
         }
       }
     }
-  } else if (t == common::Value::TYPE_HASH) {
+  } else if (type == common::Value::TYPE_HASH) {
     common::HashValue* hash = nullptr;
     if (item->GetAsHash(&hash)) {
       for (auto it = hash->begin(); it != hash->end(); ++it) {
@@ -370,22 +373,26 @@ void KeyEditWidget::syncControls(const core::NValue& item) {
         }
       }
     }
-  } else if (t == core::StreamValue::TYPE_STREAM) {
+  } else if (type == core::StreamValue::TYPE_STREAM) {
     core::StreamValue* stream = static_cast<core::StreamValue*>(item.get());
     auto entr = stream->GetStreams();
     for (size_t i = 0; i != entr.size(); ++i) {
       auto ent = entr[i];
       stream_table_edit_->insertStream(ent);
     }
-  } else if (t == core::JsonValue::TYPE_JSON) {
+  } else if (type == core::JsonValue::TYPE_JSON || type == common::Value::TYPE_STRING) {
     std::string text;
     if (item->GetAsString(&text)) {
-      QString qval;
-      if (common::ConvertFromString(text, &qval)) {
-        json_value_edit_->setText(qval);
+      if (type == core::JsonValue::TYPE_JSON) {
+        json_value_edit_->setView(JSON_VIEW);
+        json_value_edit_->setViewChangeEnabled(false);
+      } else {
+        json_value_edit_->setView(RAW_VIEW);
+        json_value_edit_->setViewChangeEnabled(true);
       }
+      json_value_edit_->setText(text);
     }
-  } else if (t == common::Value::TYPE_BOOLEAN) {
+  } else if (type == common::Value::TYPE_BOOLEAN) {
     bool val;
     if (item->GetAsBoolean(&val)) {
       bool_value_edit_->setCurrentIndex(val ? 0 : 1);
@@ -393,7 +400,10 @@ void KeyEditWidget::syncControls(const core::NValue& item) {
   } else {
     std::string text;
     if (item->GetAsString(&text)) {
-      value_edit_->setText(text);
+      QString qval;
+      if (common::ConvertFromString(text, &qval)) {
+        value_edit_->setText(qval);
+      }
     }
   }
 }

@@ -117,7 +117,7 @@ void DbKeyDialog::changeType(common::Value::Type type) {
     resize(kPrefHashSize);
   } else if (type == core::StreamValue::TYPE_STREAM) {
     resize(kPrefStreamSize);
-  } else if (type == core::JsonValue::TYPE_JSON) {
+  } else if (type == core::JsonValue::TYPE_JSON || type == core::JsonValue::TYPE_STRING) {
     resize(kPrefJsonSize);
   } else {
     resize(min_dialog_size);

@@ -134,7 +134,7 @@ FastoViewer::FastoViewer(QWidget* parent) : QWidget(parent), view_method_(RAW_VI
   text_json_editor_ = new FastoEditor;
   json_lexer_ = new QsciLexerJSON;
   xml_lexer_ = new QsciLexerXML;
-  VERIFY(connect(text_json_editor_, &FastoEditor::textChanged, this, &FastoViewer::textChanged));
+  VERIFY(connect(text_json_editor_, &FastoEditor::textChanged, this, &FastoViewer::textChange));
   VERIFY(connect(text_json_editor_, &FastoEditor::readOnlyChanged, this, &FastoViewer::readOnlyChanged));
 
   QVBoxLayout* main = new QVBoxLayout;
@@ -183,6 +183,14 @@ void FastoViewer::syncEditors() {
   }
 }
 
+void FastoViewer::setView(int view_method) {
+  views_combo_box_->setCurrentIndex(view_method);
+}
+
+void FastoViewer::setViewChangeEnabled(bool enable) {
+  views_combo_box_->setEnabled(enable);
+}
+
 void FastoViewer::setReadOnly(bool ro) {
   text_json_editor_->setReadOnly(ro);
 }
@@ -193,6 +201,11 @@ void FastoViewer::viewChange(int view_method) {
   syncEditors();
   setText(last_valid);
   emit viewChanged(view_method);
+}
+
+void FastoViewer::textChange() {
+  clearError();
+  emit textChanged();
 }
 
 void FastoViewer::clear() {

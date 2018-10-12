@@ -73,8 +73,8 @@ class KeyEditWidget : public QGroupBox {
   QLineEdit* key_edit_;
   QComboBox* types_combo_box_;
   QLabel* value_label_;
-  FastoViewer* value_edit_;
-  FastoEditor* json_value_edit_;
+  QLineEdit* value_edit_;
+  FastoViewer* json_value_edit_;
   QComboBox* bool_value_edit_;
   ListTypeWidget* value_list_edit_;
   HashTypeWidget* value_table_edit_;

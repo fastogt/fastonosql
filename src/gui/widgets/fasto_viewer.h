@@ -69,9 +69,14 @@ class FastoViewer : public QWidget {
   void viewChanged(int view_method);
 
  public Q_SLOTS:
+  void setView(int view_method);
+  void setViewChangeEnabled(bool enable);
   void setReadOnly(bool ro);
-  void viewChange(int view_method);
   void clear();
+
+ private Q_SLOTS:
+  void viewChange(int view_method);
+  void textChange();
 
  protected:
   virtual void changeEvent(QEvent* ev) override;
