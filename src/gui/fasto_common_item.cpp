@@ -345,7 +345,7 @@ QString fromBZip2(FastoCommonItem* item) {
   return value;
 }
 
-QString fromHexMsgPack(FastoCommonItem* item) {
+QString fromMsgPack(FastoCommonItem* item) {
   if (!item) {
     DNOTREACHED() << "Invalid input.";
     return QString();
@@ -365,7 +365,7 @@ QString fromHexMsgPack(FastoCommonItem* item) {
 
   QString value;
   for (size_t i = 0; i < item->childrenCount(); ++i) {
-    value += fromHexMsgPack(dynamic_cast<FastoCommonItem*>(item->child(i)));  // +
+    value += fromMsgPack(dynamic_cast<FastoCommonItem*>(item->child(i)));  // +
   }
 
   return value;

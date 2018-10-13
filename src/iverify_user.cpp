@@ -47,7 +47,10 @@ common::Error IVerifyUser::startVerification(const QString& login,
   common::hash::MD5_Init(&ctx);
   common::hash::MD5_Update(&ctx, reinterpret_cast<const unsigned char*>(password_str.data()), password_str.size());
   common::hash::MD5_Final(&ctx, md5_result);
-  std::string hexed_password = common::utils::hex::encode(std::string(md5_result, md5_result + MD5_HASH_LENGHT), true);
+  std::string hexed_password;
+  std::string data(md5_result, md5_result + MD5_HASH_LENGHT);
+  bool is_ok = common::utils::hex::encode(data, true, &hexed_password);
+  DCHECK(is_ok) << "Can't hexed: " << md5_result;
 
   return startVerificationImpl(login_str, hexed_password, strategy, uinf);
 }

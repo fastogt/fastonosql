@@ -37,11 +37,11 @@ enum OutputView {
   FROM_UNICODE_VIEW,
 
   MSGPACK_VIEW,  // from
-  ZLIB_VIEW,     // from
-  LZ4_VIEW,      // from
-  BZIP2_VIEW,    // from
-  SNAPPY_VIEW,   // from
-  XML_VIEW       // raw
+  ZLIB_VIEW,    // from
+  LZ4_VIEW,     // from
+  BZIP2_VIEW,   // from
+  SNAPPY_VIEW,  // from
+  XML_VIEW      // raw
 };
 
 extern const std::vector<const char*> g_output_views_text;
@@ -84,7 +84,7 @@ class FastoViewer : public QWidget {
  private:
   bool isError() const;
 
-  std::string convertToView(const std::string& text);
+  bool convertToView(const std::string& text, std::string* out) const;
   bool convertFromView(std::string* out) const;
 
   void retranslateUi();

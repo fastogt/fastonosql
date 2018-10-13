@@ -38,97 +38,89 @@ namespace gui {
 
 namespace {
 
-std::string convertFromViewImpl(int view_method, const std::string& val_str) {
+bool convertFromViewImpl(int view_method, const std::string& val, std::string* out) {
+  if (!out || val.empty()) {
+    return false;
+  }
+
   if (view_method == JSON_VIEW) {
-    std::string result_str;
-    string_from_json(val_str, &result_str);
-    return result_str;
+    return string_from_json(val, out);
   } else if (view_method == RAW_VIEW) {
-    return val_str;
+    *out = val;
+    return true;
   } else if (view_method == TO_HEX_VIEW) {
-    std::string result_str;
-    string_from_hex(val_str, &result_str);
-    return result_str;
+    return string_from_hex(val, out);
   } else if (view_method == FROM_HEX_VIEW) {
-    std::string result_str;
-    string_to_hex(val_str, &result_str);
-    return result_str;
+    return string_to_hex(val, out);
   } else if (view_method == TO_UNICODE_VIEW) {
-    std::string result_str;
-    string_from_unicode(val_str, &result_str);
-    return result_str;
+    return string_from_unicode(val, out);
   } else if (view_method == FROM_UNICODE_VIEW) {
-    std::string result_str;
-    string_to_unicode(val_str, &result_str);
-    return result_str;
-  } else if (view_method == MSGPACK_VIEW) {
-    std::string result_str;
-    string_from_msgpack(val_str, &result_str);
-    return result_str;
+    return string_to_unicode(val, out);
   } else if (view_method == ZLIB_VIEW) {
-    std::string result_str;
-    string_from_zlib(val_str, &result_str);
-    return result_str;
+    return string_to_msgpack(val, out);
+  } else if (view_method == ZLIB_VIEW) {
+    return string_to_zlib(val, out);
   } else if (view_method == LZ4_VIEW) {
-    std::string result_str;
-    string_from_lz4(val_str, &result_str);
-    return result_str;
+    return string_to_lz4(val, out);
   } else if (view_method == BZIP2_VIEW) {
-    std::string result_str;
-    string_from_bzip2(val_str, &result_str);
-    return result_str;
+    return string_to_bzip2(val, out);
   } else if (view_method == SNAPPY_VIEW) {
-    std::string result_str;
-    string_from_snappy(val_str, &result_str);
-    return result_str;
+    return string_to_snappy(val, out);
   } else if (view_method == XML_VIEW) {
-    return val_str;
+    *out = val;
+    return true;
   }
 
   NOTREACHED() << "Please handle all types!";
-  return std::string();
+  return false;
 }
 
-std::string convertFromViewImpl(int view_method, const QString& val) {
-  return convertFromViewImpl(view_method, common::ConvertToString(val));
+bool convertFromViewImpl(int view_method, const QString& val, std::string* out) {
+  return convertFromViewImpl(view_method, common::ConvertToString(val), out);
 }
 
-std::string convertToViewImpl(int view_method, const std::string& text) {
-  std::string result_str;
-  if (view_method == JSON_VIEW) {  // raw
-    string_from_json(text, &result_str);
-  } else if (view_method == RAW_VIEW) {  // raw
-    result_str = text;
-  } else if (view_method == TO_HEX_VIEW) {
-    string_to_hex(text, &result_str);
-  } else if (view_method == FROM_HEX_VIEW) {
-    string_from_hex(text, &result_str);
-  } else if (view_method == TO_UNICODE_VIEW) {
-    string_to_unicode(text, &result_str);
-  } else if (view_method == FROM_UNICODE_VIEW) {
-    string_from_unicode(text, &result_str);
-  } else if (view_method == MSGPACK_VIEW) {
-    string_from_msgpack(text, &result_str);
-  } else if (view_method == ZLIB_VIEW) {
-    string_from_zlib(text, &result_str);
-  } else if (view_method == LZ4_VIEW) {
-    string_from_lz4(text, &result_str);
-  } else if (view_method == BZIP2_VIEW) {
-    string_from_bzip2(text, &result_str);
-  } else if (view_method == SNAPPY_VIEW) {
-    string_from_snappy(text, &result_str);
-  } else if (view_method == XML_VIEW) {  // raw
-    result_str = text;
+bool convertToViewImpl(int view_method, const std::string& text, std::string* out) {
+  if (!out || text.empty()) {
+    return false;
   }
 
-  return result_str;
+  if (view_method == JSON_VIEW) {  // raw
+    return string_to_json(text, out);
+  } else if (view_method == RAW_VIEW) {  // raw
+    *out = text;
+    return true;
+  } else if (view_method == TO_HEX_VIEW) {
+    return string_to_hex(text, out);
+  } else if (view_method == FROM_HEX_VIEW) {
+    return string_from_hex(text, out);
+  } else if (view_method == TO_UNICODE_VIEW) {
+    return string_to_unicode(text, out);
+  } else if (view_method == FROM_UNICODE_VIEW) {
+    return string_from_unicode(text, out);
+  } else if (view_method == MSGPACK_VIEW) {
+    return string_from_msgpack(text, out);
+  } else if (view_method == ZLIB_VIEW) {
+    return string_from_zlib(text, out);
+  } else if (view_method == LZ4_VIEW) {
+    return string_from_lz4(text, out);
+  } else if (view_method == BZIP2_VIEW) {
+    return string_from_bzip2(text, out);
+  } else if (view_method == SNAPPY_VIEW) {
+    return string_from_snappy(text, out);
+  } else if (view_method == XML_VIEW) {  // raw
+    *out = text;
+    return true;
+  }
+
+  NOTREACHED() << "Please handle all types!";
+  return false;
 }
 
 }  // namespace
 
-const std::vector<const char*> g_output_views_text = {"Raw",        "Json",         "To Hex",  "From Hex",
-                                                      "To Unicode", "From Unicode", "MsgPack", "Gzip",
-                                                      "LZ4",        "BZip2",        "Snappy",  "Xml"};
+const std::vector<const char*> g_output_views_text = {"Raw",        "Json",         "To Hex",         "From Hex",
+                                                      "To Unicode", "From Unicode", "MsgPack (Beta)", "Gzip",
+                                                      "LZ4",        "BZip2",        "Snappy",         "Xml"};
 
 FastoViewer::FastoViewer(QWidget* parent) : QWidget(parent), view_method_(RAW_VIEW), last_valid_text_() {
   text_json_editor_ = new FastoEditor;
@@ -204,7 +196,6 @@ void FastoViewer::viewChange(int view_method) {
 }
 
 void FastoViewer::textChange() {
-  clearError();
   emit textChanged();
 }
 
@@ -230,8 +221,8 @@ std::string FastoViewer::text() const {
 }
 
 bool FastoViewer::setText(const std::string& text) {
-  std::string result_str = convertToView(text);
-  if (result_str.empty()) {
+  std::string result_str;
+  if (!convertToView(text, &result_str)) {
     QString method_text = g_output_views_text[view_method_];
     setError(translations::trCannotConvertPattern1ArgsS.arg(method_text));
     return false;
@@ -278,17 +269,12 @@ bool FastoViewer::isError() const {
   return error_box_->isVisible();
 }
 
-std::string FastoViewer::convertToView(const std::string& text) {
-  return convertToViewImpl(view_method_, text);
+bool FastoViewer::convertToView(const std::string& text, std::string* out) const {
+  return convertToViewImpl(view_method_, text, out);
 }
 
 bool FastoViewer::convertFromView(std::string* out) const {
-  if (!out) {
-    return false;
-  }
-
-  *out = convertFromViewImpl(view_method_, text_json_editor_->text());
-  return true;
+  return convertFromViewImpl(view_method_, text_json_editor_->text(), out);
 }
 
 }  // namespace gui

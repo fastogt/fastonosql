@@ -67,7 +67,7 @@ QString fromGzip(FastoCommonItem* item);
 QString fromLZ4(FastoCommonItem* item);
 QString fromBZip2(FastoCommonItem* item);
 QString fromSnappy(FastoCommonItem* item);
-QString fromHexMsgPack(FastoCommonItem* item);
+QString fromMsgPack(FastoCommonItem* item);
 
 }  // namespace gui
 }  // namespace fastonosql

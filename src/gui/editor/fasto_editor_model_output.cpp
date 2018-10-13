@@ -228,7 +228,7 @@ void FastoEditorModelOutput::layoutChanged() {
       QString qunicoded = fromUnicode(child);
       result += qunicoded;
     } else if (vm == MSGPACK_VIEW) {
-      QString msgp = fromHexMsgPack(child);
+      QString msgp = fromMsgPack(child);
       result += common::EscapedText(msgp);
     } else if (vm == ZLIB_VIEW) {
       QString gzip = fromGzip(child);

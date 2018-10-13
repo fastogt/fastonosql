@@ -35,12 +35,23 @@ namespace fastonosql {
 namespace gui {
 
 bool string_from_json(const std::string& value, std::string* out) {
-  *out = value;
+  if (!out || value.empty()) {
+    return false;
+  }
+
+  json_object* obj = json_tokener_parse(value.c_str());
+  if (!obj) {
+    return false;
+  }
+
+  std::string jstring = json_object_to_json_string_ext(obj, JSON_C_TO_STRING_PLAIN);
+  json_object_put(obj);
+  *out = jstring;
   return true;
 }
 
 bool string_to_json(const core::readable_string_t& data, std::string* out) {
-  if (data.empty()) {
+  if (!out || data.empty()) {
     return false;
   }
 
@@ -76,9 +87,14 @@ bool string_to_hex(const core::readable_string_t& data, std::string* out) {
 }
 
 bool string_to_unicode(const core::readable_string_t& data, std::string* out) {
+  if (!out) {
+    return false;
+  }
+
   std::ostringstream wr;
   common::string16 s16 = common::ConvertToString16(data);
-  std::string unicoded = common::utils::unicode::encode(s16, true);
+  std::string unicoded;
+  common::utils::unicode::encode(s16, true, &unicoded);
   for (size_t i = 0; i < unicoded.size(); i += 4) {
     wr << "\\u";
     wr << unicoded[i];
@@ -98,7 +114,7 @@ bool string_to_unicode(const core::readable_string_t& data, std::string* out) {
 
 bool string_from_unicode(const std::string& value, std::string* out) {
   size_t len = value.size();
-  if (len % 6 != 0) {
+  if (!out || len % 6 != 0) {
     return false;
   }
 
@@ -116,7 +132,9 @@ bool string_from_unicode(const std::string& value, std::string* out) {
     }
   }
 
-  common::string16 s16 = common::utils::unicode::decode(unicode_digits);
+  common::string16 s16;
+  bool is_ok = common::utils::unicode::decode(unicode_digits, &s16);
+  DCHECK(is_ok) << "Can't un unicoded: " << unicode_digits;
   *out = common::ConvertToString(s16);
   return true;
 }
