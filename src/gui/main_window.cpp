@@ -598,11 +598,18 @@ void MainWindow::versionAvailible(const QString& error_message, unsigned version
     std::string version_str = common::ConvertVersionNumberTo2DotString(version);
     QString qversion_str;
     common::ConvertFromString(version_str, &qversion_str);
+#if defined(PRO_VERSION)
     QMessageBox::information(
         this, translations::trCheckVersion,
         QObject::tr("<h4>A new version(%1) of " PROJECT_NAME_TITLE " is availible!</h4>"
                     "You can download it in your <a href=\"" PROJECT_DOWNLOAD_LINK "\">profile page</a>")
             .arg(qversion_str));
+#else
+    QMessageBox::information(this, translations::trCheckVersion,
+                             QObject::tr("<h4>A new version(%1) of " PROJECT_NAME_TITLE " is availible!</h4>"
+                                         "You can download it in our <a href=\"" PROJECT_DOWNLOAD_LINK "\">website</a>")
+                                 .arg(qversion_str));
+#endif
   }
 
   check_update_action_->setEnabled(is_need_update);
