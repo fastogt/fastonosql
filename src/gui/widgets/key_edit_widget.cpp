@@ -121,6 +121,7 @@ void KeyEditWidget::initialize(const core::NDbKValue& key) {
     common::Value::Type type = static_cast<common::Value::Type>(qvariant_cast<unsigned char>(cur));
     if (current_type == type) {
       current_index = static_cast<int>(i);
+      break;
     }
   }
 

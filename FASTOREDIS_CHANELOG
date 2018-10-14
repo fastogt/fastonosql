@@ -1,5 +1,7 @@
 1.19.2 /
 [Alexandr Topilski]
+- Json view fixes
+- Redis 5.0 commands description
 
 1.19.1 / October 12, 2018
 [Alexandr Topilski]

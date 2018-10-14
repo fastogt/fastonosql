@@ -1,5 +1,7 @@
 1.20.2 /
 [Alexandr Topilski]
+- Json view fixes
+- [Redis] Redis 5.0 commands description
 
 1.20.1 / October 12, 2018
 [Alexandr Topilski]

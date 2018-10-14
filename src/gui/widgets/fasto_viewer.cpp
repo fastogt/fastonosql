@@ -274,7 +274,8 @@ bool FastoViewer::convertToView(const std::string& text, std::string* out) const
 }
 
 bool FastoViewer::convertFromView(std::string* out) const {
-  return convertFromViewImpl(view_method_, text_json_editor_->text(), out);
+  QString text = text_json_editor_->text();
+  return convertFromViewImpl(view_method_, text, out);
 }
 
 }  // namespace gui

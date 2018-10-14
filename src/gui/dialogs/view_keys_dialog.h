@@ -43,8 +43,8 @@ class ViewKeysDialog : public QDialog {
   Q_OBJECT
  public:
   enum {
-    min_width = 320,
-    min_height = 200,
+    min_width = 640,
+    min_height = 480,
     min_key_on_page = 1,
     max_key_on_page = 100000,
     defaults_key = 100,
