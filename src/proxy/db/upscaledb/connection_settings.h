@@ -28,7 +28,7 @@ namespace upscaledb {
 
 class ConnectionSettings : public IConnectionSettingsLocal {
  public:
-  explicit ConnectionSettings(const connection_path_t& connectionName);
+  explicit ConnectionSettings(const connection_path_t& connection_path, const std::string& log_directory);
 
   void SetInfo(const core::upscaledb::Config& conf);
   core::upscaledb::Config GetInfo() const;
