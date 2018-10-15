@@ -33,6 +33,7 @@
 #include <common/convert2string.h>
 #include <common/qt/convert2string.h>
 
+#include "proxy/connection_settings_factory.h"
 #include "proxy/db/pika/connection_settings.h"
 
 #include "gui/widgets/host_port_widget.h"
@@ -175,7 +176,7 @@ bool ConnectionWidget::isValidCredential() const {
 }
 
 proxy::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(const proxy::connection_path_t& path) const {
-  proxy::pika::ConnectionSettings* conn = new proxy::pika::ConnectionSettings(path);
+  proxy::pika::ConnectionSettings* conn = proxy::ConnectionSettingsFactory::GetInstance().CreatePIKAConnection(path);
   core::pika::Config config = conn->GetInfo();
   config.host = host_widget_->host();
   config.is_ssl = isSSLConnection_->isChecked();

@@ -22,8 +22,8 @@ namespace fastonosql {
 namespace proxy {
 namespace rocksdb {
 
-ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
-    : IConnectionSettingsLocal(connectionName, core::ROCKSDB), info_() {}
+ConnectionSettings::ConnectionSettings(const connection_path_t& connection_name, const std::string& log_directory)
+    : IConnectionSettingsLocal(connection_name, log_directory, core::ROCKSDB), info_() {}
 
 core::rocksdb::Config ConnectionSettings::GetInfo() const {
   return info_;

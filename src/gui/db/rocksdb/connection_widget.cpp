@@ -23,6 +23,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
+#include "proxy/connection_settings_factory.h"
 #include "proxy/db/rocksdb/connection_settings.h"
 
 namespace fastonosql {
@@ -78,7 +79,8 @@ void ConnectionWidget::retranslateUi() {
 
 proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
     const proxy::connection_path_t& path) const {
-  proxy::rocksdb::ConnectionSettings* conn = new proxy::rocksdb::ConnectionSettings(path);
+  proxy::rocksdb::ConnectionSettings* conn =
+      proxy::ConnectionSettingsFactory::GetInstance().CreateROCKSDBConnection(path);
   core::rocksdb::Config config = conn->GetInfo();
   config.create_if_missing = create_db_if_missing_->isChecked();
   config.comparator = static_cast<core::rocksdb::ComparatorType>(type_comparators_->currentIndex());

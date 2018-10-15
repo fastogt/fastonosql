@@ -20,6 +20,7 @@
 
 #include <QCheckBox>
 
+#include "proxy/connection_settings_factory.h"
 #include "proxy/db/unqlite/connection_settings.h"
 
 #include "proxy/connection_settings/iconnection_settings_local.h"
@@ -64,7 +65,8 @@ void ConnectionWidget::readOnlyDBStateChange(int state) {
 
 proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
     const proxy::connection_path_t& path) const {
-  proxy::unqlite::ConnectionSettings* conn = new proxy::unqlite::ConnectionSettings(path);
+  proxy::unqlite::ConnectionSettings* conn =
+      proxy::ConnectionSettingsFactory::GetInstance().CreateUNQLITEConnection(path);
   core::unqlite::Config config = conn->GetInfo();
   config.SetCreateIfMissingDB(create_db_if_missing_->isChecked());
   config.SetReadOnlyDB(read_only_db_->isChecked());

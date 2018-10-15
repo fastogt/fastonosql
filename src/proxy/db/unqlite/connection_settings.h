@@ -28,7 +28,7 @@ namespace unqlite {
 
 class ConnectionSettings : public IConnectionSettingsLocal {
  public:
-  explicit ConnectionSettings(const connection_path_t& connectionName);
+  ConnectionSettings(const connection_path_t& connection_path, const std::string& log_directory);
 
   core::unqlite::Config GetInfo() const;
   void SetInfo(const core::unqlite::Config& info);

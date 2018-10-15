@@ -31,6 +31,7 @@
 #include "gui/widgets/path_widget.h"
 #include "translations/global.h"
 
+#include "proxy/connection_settings_factory.h"
 #include "proxy/db/lmdb/connection_settings.h"
 
 namespace {
@@ -144,7 +145,7 @@ void ConnectionWidget::selectDirectoryPathDB(bool checked) {
 }
 
 proxy::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(const proxy::connection_path_t& path) const {
-  proxy::lmdb::ConnectionSettings* conn = new proxy::lmdb::ConnectionSettings(path);
+  proxy::lmdb::ConnectionSettings* conn = proxy::ConnectionSettingsFactory::GetInstance().CreateLMDBConnection(path);
   core::lmdb::Config config = conn->GetInfo();
   config.SetReadOnlyDB(read_only_db_->isChecked());
   bool is_file_path = file_path_selection_->isChecked();

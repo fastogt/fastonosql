@@ -24,6 +24,7 @@
 
 #include <common/qt/convert2string.h>
 
+#include "proxy/connection_settings_factory.h"
 #include "proxy/db/forestdb/connection_settings.h"
 
 namespace fastonosql {
@@ -59,7 +60,8 @@ void ConnectionWidget::retranslateUi() {
 
 proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
     const proxy::connection_path_t& path) const {
-  proxy::forestdb::ConnectionSettings* conn = new proxy::forestdb::ConnectionSettings(path);
+  proxy::forestdb::ConnectionSettings* conn =
+      proxy::ConnectionSettingsFactory::GetInstance().CreateFORESTDBConnection(path);
   core::forestdb::Config config = conn->GetInfo();
   config.db_name = common::ConvertToString(db_name_edit_->text());
   conn->SetInfo(config);

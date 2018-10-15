@@ -31,6 +31,7 @@
 
 #include "gui/gui_factory.h"
 
+#include "proxy/settings_manager.h"
 #include "proxy/types.h"
 
 #include "translations/global.h"

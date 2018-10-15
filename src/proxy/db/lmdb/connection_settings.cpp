@@ -22,8 +22,8 @@ namespace fastonosql {
 namespace proxy {
 namespace lmdb {
 
-ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
-    : IConnectionSettingsLocal(connectionName, core::LMDB), info_() {}
+ConnectionSettings::ConnectionSettings(const connection_path_t& connection_path, const std::string& log_directory)
+    : IConnectionSettingsLocal(connection_path, log_directory, core::LMDB), info_() {}
 
 core::lmdb::Config ConnectionSettings::GetInfo() const {
   return info_;

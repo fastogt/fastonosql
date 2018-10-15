@@ -28,7 +28,7 @@ namespace ssdb {
 
 class ConnectionSettings : public IConnectionSettingsRemote {
  public:
-  explicit ConnectionSettings(const connection_path_t& connectionName);
+  ConnectionSettings(const connection_path_t& connection_path, const std::string& log_directory);
 
   core::ssdb::Config GetInfo() const;
   void SetInfo(const core::ssdb::Config& info);

@@ -113,10 +113,13 @@ class IConnectionSettingsBase : public IConnectionSettings {
   virtual void PrepareInGuiIfNeeded();
 
  protected:
-  IConnectionSettingsBase(const connection_path_t& connectionPath, core::ConnectionType type);
+  IConnectionSettingsBase(const connection_path_t& connection_path,
+                          const std::string& log_directory,
+                          core::ConnectionType type);
 
  private:
   using IConnectionSettings::SetPath;
+  const std::string log_directory_;
   std::string hash_;
 };
 

@@ -43,7 +43,9 @@ class IConnectionSettingsRemoteSSH : public IConnectionSettingsRemote {
   virtual void PrepareInGuiIfNeeded() override;
 
  protected:
-  IConnectionSettingsRemoteSSH(const connection_path_t& connectionName, core::ConnectionType type);
+  IConnectionSettingsRemoteSSH(const connection_path_t& connection_path,
+                               const std::string& log_directory,
+                               core::ConnectionType type);
 
  private:
   struct core::SSHInfo ssh_info_;

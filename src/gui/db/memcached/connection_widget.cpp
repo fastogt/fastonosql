@@ -27,6 +27,7 @@
 #include <common/convert2string.h>
 #include <common/qt/convert2string.h>
 
+#include "proxy/connection_settings_factory.h"
 #include "proxy/db/memcached/connection_settings.h"
 
 #include "gui/widgets/user_password_widget.h"
@@ -102,7 +103,8 @@ bool ConnectionWidget::isValidCredential() const {
 
 proxy::IConnectionSettingsRemote* ConnectionWidget::createConnectionRemoteImpl(
     const proxy::connection_path_t& path) const {
-  proxy::memcached::ConnectionSettings* conn = new proxy::memcached::ConnectionSettings(path);
+  proxy::memcached::ConnectionSettings* conn =
+      proxy::ConnectionSettingsFactory::GetInstance().CreateMEMCACHEDConnection(path);
   core::memcached::Config config = conn->GetInfo();
   if (useSasl_->isChecked() && isValidCredential()) {
     config.user = common::ConvertToString(userPasswordWidget_->userName());

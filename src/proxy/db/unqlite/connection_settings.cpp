@@ -22,8 +22,8 @@ namespace fastonosql {
 namespace proxy {
 namespace unqlite {
 
-ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
-    : IConnectionSettingsLocal(connectionName, core::UNQLITE), info_() {}
+ConnectionSettings::ConnectionSettings(const connection_path_t& connection_path, const std::string& log_directory)
+    : IConnectionSettingsLocal(connection_path, log_directory, core::UNQLITE), info_() {}
 
 core::unqlite::Config ConnectionSettings::GetInfo() const {
   return info_;

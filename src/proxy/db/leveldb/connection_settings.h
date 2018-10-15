@@ -28,7 +28,7 @@ namespace leveldb {
 
 class ConnectionSettings : public IConnectionSettingsLocal {
  public:
-  explicit ConnectionSettings(const connection_path_t& connectionName);
+  ConnectionSettings(const connection_path_t& connection_path, const std::string& log_directory);
 
   core::leveldb::Config GetInfo() const;
   void SetInfo(const core::leveldb::Config& info);

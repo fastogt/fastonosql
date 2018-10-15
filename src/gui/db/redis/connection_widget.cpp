@@ -33,6 +33,7 @@
 #include <common/convert2string.h>
 #include <common/qt/convert2string.h>
 
+#include "proxy/connection_settings_factory.h"
 #include "proxy/db/redis/connection_settings.h"
 
 #include "gui/widgets/host_port_widget.h"
@@ -225,7 +226,7 @@ bool ConnectionWidget::isValidCredential() const {
 }
 
 proxy::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(const proxy::connection_path_t& path) const {
-  proxy::redis::ConnectionSettings* conn = new proxy::redis::ConnectionSettings(path);
+  proxy::redis::ConnectionSettings* conn = proxy::ConnectionSettingsFactory::GetInstance().CreateREDISConnection(path);
   core::redis::Config config = conn->GetInfo();
   bool is_remote = remote_->isChecked();
   if (is_remote) {

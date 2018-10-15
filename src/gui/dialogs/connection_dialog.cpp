@@ -44,11 +44,11 @@ const char* kDefaultNameConnectionFolder = "/";
 namespace fastonosql {
 namespace gui {
 
-ConnectionDialog::ConnectionDialog(core::ConnectionType type, const QString& connectionName, QWidget* parent)
+ConnectionDialog::ConnectionDialog(core::ConnectionType type, const QString& connection_name, QWidget* parent)
     : QDialog(parent), connection_() {
-  proxy::connection_path_t path(kDefaultNameConnectionFolder + common::ConvertToString(connectionName));
+  proxy::connection_path_t path(kDefaultNameConnectionFolder + common::ConvertToString(connection_name));
   proxy::IConnectionSettingsBase* connection =
-      proxy::ConnectionSettingsFactory().GetInstance().CreateFromType(type, path);
+      proxy::ConnectionSettingsFactory::GetInstance().CreateFromType(type, path);
   init(connection);
 }
 

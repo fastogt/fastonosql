@@ -21,8 +21,10 @@
 namespace fastonosql {
 namespace proxy {
 
-IConnectionSettingsRemote::IConnectionSettingsRemote(const connection_path_t& connectionPath, core::ConnectionType type)
-    : IConnectionSettingsBase(connectionPath, type) {
+IConnectionSettingsRemote::IConnectionSettingsRemote(const connection_path_t& connection_path,
+                                                     const std::string& log_directory,
+                                                     core::ConnectionType type)
+    : IConnectionSettingsBase(connection_path, log_directory, type) {
   CHECK(IsRemoteType(type));
 }
 

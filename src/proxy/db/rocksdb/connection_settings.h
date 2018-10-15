@@ -28,7 +28,7 @@ namespace rocksdb {
 
 class ConnectionSettings : public IConnectionSettingsLocal {
  public:
-  explicit ConnectionSettings(const connection_path_t& connectionName);
+  explicit ConnectionSettings(const connection_path_t& connection_name, const std::string& log_directory);
 
   core::rocksdb::Config GetInfo() const;
   void SetInfo(const core::rocksdb::Config& info);

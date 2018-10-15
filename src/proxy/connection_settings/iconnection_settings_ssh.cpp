@@ -29,9 +29,10 @@ const QString trInputSSHPasswordForServer_1S = QObject::tr("SSH passoword for se
 namespace fastonosql {
 namespace proxy {
 
-IConnectionSettingsRemoteSSH::IConnectionSettingsRemoteSSH(const connection_path_t& connectionName,
+IConnectionSettingsRemoteSSH::IConnectionSettingsRemoteSSH(const connection_path_t& connection_path,
+                                                           const std::string& log_directory,
                                                            core::ConnectionType type)
-    : IConnectionSettingsRemote(connectionName, type), ssh_info_() {}
+    : IConnectionSettingsRemote(connection_path, log_directory, type), ssh_info_() {}
 
 std::string IConnectionSettingsRemoteSSH::ToString() const {
   return IConnectionSettingsBase::ToString() + setting_value_delemitr + ssh_info_.ToString();

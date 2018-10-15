@@ -23,6 +23,7 @@
 #include <QLabel>
 #include <QSpinBox>
 
+#include "proxy/connection_settings_factory.h"
 #include "proxy/db/upscaledb/connection_settings.h"
 
 #include "proxy/connection_settings/iconnection_settings_local.h"
@@ -64,7 +65,8 @@ void ConnectionWidget::retranslateUi() {
 
 proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
     const proxy::connection_path_t& path) const {
-  proxy::upscaledb::ConnectionSettings* conn = new proxy::upscaledb::ConnectionSettings(path);
+  proxy::upscaledb::ConnectionSettings* conn =
+      proxy::ConnectionSettingsFactory::GetInstance().CreateUPSCALEDBConnection(path);
   core::upscaledb::Config config = conn->GetInfo();
   config.create_if_missing = create_db_if_missing_->isChecked();
   config.dbnum = default_db_num_->value();

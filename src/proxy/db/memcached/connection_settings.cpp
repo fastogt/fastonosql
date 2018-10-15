@@ -22,8 +22,8 @@ namespace fastonosql {
 namespace proxy {
 namespace memcached {
 
-ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
-    : IConnectionSettingsRemote(connectionName, core::MEMCACHED), info_() {}
+ConnectionSettings::ConnectionSettings(const connection_path_t& connection_path, const std::string& log_directory)
+    : IConnectionSettingsRemote(connection_path, log_directory, core::MEMCACHED), info_() {}
 
 core::memcached::Config ConnectionSettings::GetInfo() const {
   return info_;

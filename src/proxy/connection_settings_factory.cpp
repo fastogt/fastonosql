@@ -65,57 +65,59 @@ namespace fastonosql {
 namespace proxy {
 
 IConnectionSettingsBase* ConnectionSettingsFactory::CreateFromType(core::ConnectionType type,
-                                                                   const connection_path_t& conName) {
+                                                                   const connection_path_t& connection_path) {
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
-    return new redis::ConnectionSettings(conName);
+    return CreateREDISConnection(connection_path);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == core::MEMCACHED) {
-    return new memcached::ConnectionSettings(conName);
+    return CreateMEMCACHEDConnection(connection_path);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type == core::SSDB) {
-    return new ssdb::ConnectionSettings(conName);
+    return CreateSSDBConnection(connection_path);
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type == core::LEVELDB) {
-    return new leveldb::ConnectionSettings(conName);
+    return CreateLEVELDBConnection(connection_path);
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type == core::ROCKSDB) {
-    return new rocksdb::ConnectionSettings(conName);
+    return CreateROCKSDBConnection(connection_path);
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (type == core::UNQLITE) {
-    return new unqlite::ConnectionSettings(conName);
+    return CreateUNQLITEConnection(connection_path);
   }
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type == core::LMDB) {
-    return new lmdb::ConnectionSettings(conName);
+    return CreateLMDBConnection(connection_path);
   }
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
   if (type == core::UPSCALEDB) {
-    return new upscaledb::ConnectionSettings(conName);
+    return CreateUPSCALEDBConnection(connection_path);
   }
 #endif
 #ifdef BUILD_WITH_FORESTDB
   if (type == core::FORESTDB) {
-    return new forestdb::ConnectionSettings(conName);
+    return CreateFORESTDBConnection(connection_path);
   }
 #endif
 #ifdef BUILD_WITH_PIKA
   if (type == core::PIKA) {
-    return new pika::ConnectionSettings(conName);
+    return CreatePIKAConnection(connection_path);
   }
 #endif
+
+  NOTREACHED() << "Unknown type: " << type;
   return nullptr;
 }
 
@@ -173,37 +175,117 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateFromString(const std::
 }
 
 IConnectionSettingsRemote* ConnectionSettingsFactory::CreateFromType(core::ConnectionType type,
-                                                                     const connection_path_t& conName,
+                                                                     const connection_path_t& connection_path,
                                                                      const common::net::HostAndPort& host) {
   IConnectionSettingsRemote* remote = nullptr;
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
-    remote = new redis::ConnectionSettings(conName);
+    remote = CreateREDISConnection(connection_path);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type == core::MEMCACHED) {
-    remote = new memcached::ConnectionSettings(conName);
+    remote = CreateMEMCACHEDConnection(connection_path);
   }
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type == core::SSDB) {
-    remote = new ssdb::ConnectionSettings(conName);
+    remote = CreateSSDBConnection(connection_path);
   }
 #endif
 #ifdef BUILD_WITH_PIKA
   if (type == core::PIKA) {
-    remote = new pika::ConnectionSettings(conName);
+    remote = CreatePIKAConnection(connection_path);
   }
 #endif
 
   if (!remote) {
-    NOTREACHED();
+    NOTREACHED() << "Unknown type: " << type;
     return nullptr;
   }
 
   remote->SetHost(host);
   return remote;
+}
+
+ConnectionSettingsFactory::ConnectionSettingsFactory() {}
+
+#ifdef BUILD_WITH_REDIS
+redis::ConnectionSettings* ConnectionSettingsFactory::CreateREDISConnection(
+    const connection_path_t& connection_path) const {
+  return new redis::ConnectionSettings(connection_path, logging_dir_);
+}
+#endif
+
+#ifdef BUILD_WITH_MEMCACHED
+memcached::ConnectionSettings* ConnectionSettingsFactory::CreateMEMCACHEDConnection(
+    const connection_path_t& connection_path) const {
+  return new memcached::ConnectionSettings(connection_path, logging_dir_);
+}
+#endif
+
+#ifdef BUILD_WITH_SSDB
+ssdb::ConnectionSettings* ConnectionSettingsFactory::CreateSSDBConnection(
+    const connection_path_t& connection_path) const {
+  return new ssdb::ConnectionSettings(connection_path, logging_dir_);
+}
+#endif
+
+#ifdef BUILD_WITH_LEVELDB
+leveldb::ConnectionSettings* ConnectionSettingsFactory::CreateLEVELDBConnection(
+    const connection_path_t& connection_path) const {
+  return new leveldb::ConnectionSettings(connection_path, logging_dir_);
+}
+#endif
+
+#ifdef BUILD_WITH_ROCKSDB
+rocksdb::ConnectionSettings* ConnectionSettingsFactory::CreateROCKSDBConnection(
+    const connection_path_t& connection_path) const {
+  return new rocksdb::ConnectionSettings(connection_path, logging_dir_);
+}
+#endif
+
+#ifdef BUILD_WITH_UNQLITE
+unqlite::ConnectionSettings* ConnectionSettingsFactory::CreateUNQLITEConnection(
+    const connection_path_t& connection_path) const {
+  return new unqlite::ConnectionSettings(connection_path, logging_dir_);
+}
+#endif
+
+#ifdef BUILD_WITH_LMDB
+lmdb::ConnectionSettings* ConnectionSettingsFactory::CreateLMDBConnection(
+    const connection_path_t& connection_path) const {
+  return new lmdb::ConnectionSettings(connection_path, logging_dir_);
+}
+#endif
+
+#ifdef BUILD_WITH_UPSCALEDB
+upscaledb::ConnectionSettings* ConnectionSettingsFactory::CreateUPSCALEDBConnection(
+    const connection_path_t& connection_path) const {
+  return new upscaledb::ConnectionSettings(connection_path, logging_dir_);
+}
+#endif
+
+#ifdef BUILD_WITH_FORESTDB
+forestdb::ConnectionSettings* ConnectionSettingsFactory::CreateFORESTDBConnection(
+    const connection_path_t& connection_path) const {
+  return new forestdb::ConnectionSettings(connection_path, logging_dir_);
+}
+#endif
+
+#ifdef BUILD_WITH_PIKA
+pika::ConnectionSettings* ConnectionSettingsFactory::CreatePIKAConnection(
+    const connection_path_t& connection_path) const {
+  return new pika::ConnectionSettings(connection_path, logging_dir_);
+}
+#endif
+
+std::string ConnectionSettingsFactory::GetLoggingDirectory() const {
+  return logging_dir_;
+}
+
+void ConnectionSettingsFactory::SetLoggingDirectory(const std::string& dir) {
+  logging_dir_ = dir;
 }
 
 }  // namespace proxy

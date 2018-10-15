@@ -27,6 +27,8 @@
 
 #include <common/qt/convert2string.h>
 
+#include "proxy/connection_settings_factory.h"
+
 #include "translations/global.h"
 
 namespace fastonosql {
@@ -105,7 +107,7 @@ void ConnectionWidget::authStateChange(int state) {
 
 proxy::IConnectionSettingsRemote* ConnectionWidget::createConnectionRemoteImpl(
     const proxy::connection_path_t& path) const {
-  proxy::ssdb::ConnectionSettings* conn = new proxy::ssdb::ConnectionSettings(path);
+  proxy::ssdb::ConnectionSettings* conn = proxy::ConnectionSettingsFactory::GetInstance().CreateSSDBConnection(path);
   core::ssdb::Config config = conn->GetInfo();
   if (useAuth_->isChecked() && isValidCredential()) {
     config.auth = common::ConvertToString(password_box_->text());

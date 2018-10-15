@@ -22,8 +22,8 @@ namespace fastonosql {
 namespace proxy {
 namespace ssdb {
 
-ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
-    : IConnectionSettingsRemote(connectionName, core::SSDB), info_() {}
+ConnectionSettings::ConnectionSettings(const connection_path_t& connection_path, const std::string& log_directory)
+    : IConnectionSettingsRemote(connection_path, log_directory, core::SSDB), info_() {}
 
 std::string ConnectionSettings::GetDelimiter() const {
   return info_.delimiter;

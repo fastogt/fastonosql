@@ -104,7 +104,6 @@ SettingsManager::SettingsManager()
       user_info_(),
 #endif
       recent_connections_(),
-      logging_dir_(),
       auto_check_updates_(),
       auto_completion_(),
       auto_open_console_(),
@@ -272,11 +271,14 @@ void SettingsManager::ClearRConnections() {
 }
 
 QString SettingsManager::GetLoggingDirectory() const {
-  return logging_dir_;
+  QString path;
+  common::ConvertFromString(ConnectionSettingsFactory::GetInstance().GetLoggingDirectory(), &path);
+  return path;
 }
 
 void SettingsManager::SetLoggingDirectory(const QString& dir) {
-  logging_dir_ = dir;
+  std::string dir_str = common::ConvertToString(dir);
+  ConnectionSettingsFactory::GetInstance().SetLoggingDirectory(dir_str);
 }
 
 bool SettingsManager::GetAutoCheckUpdates() const {
@@ -363,6 +365,12 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
   int view = settings.value(VIEW, kText).toInt();
   views_ = static_cast<SupportedView>(view);
 
+  std::string dir_path = GetSettingsDirPath();
+  QString qdir;
+  common::ConvertFromString(dir_path, &qdir);
+  QString logging_dir = settings.value(LOGGINGDIR, qdir).toString();
+  SetLoggingDirectory(logging_dir);
+
 #if defined(PRO_VERSION)
   QList<QVariant> clusters = settings.value(CLUSTERS).toList();
   for (const auto& cluster : clusters) {
@@ -413,10 +421,6 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
     }
   }
 
-  std::string dir_path = GetSettingsDirPath();
-  QString qdir;
-  common::ConvertFromString(dir_path, &qdir);
-  logging_dir_ = settings.value(LOGGINGDIR, qdir).toString();
   auto_check_updates_ = settings.value(CHECKUPDATES, true).toBool();
   auto_completion_ = settings.value(AUTOCOMPLETION, true).toBool();
   auto_open_console_ = settings.value(AUTOOPENCONSOLE, true).toBool();
@@ -500,7 +504,8 @@ void SettingsManager::Save() {
   }
   settings.setValue(RCONNECTIONS, rconnections);
 
-  settings.setValue(LOGGINGDIR, logging_dir_);
+  const QString logging_dir = GetLoggingDirectory();
+  settings.setValue(LOGGINGDIR, logging_dir);
   settings.setValue(CHECKUPDATES, auto_check_updates_);
   settings.setValue(AUTOCOMPLETION, auto_completion_);
   settings.setValue(AUTOOPENCONSOLE, auto_open_console_);

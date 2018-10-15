@@ -28,7 +28,7 @@ namespace forestdb {
 
 class ConnectionSettings : public IConnectionSettingsLocal {
  public:
-  explicit ConnectionSettings(const connection_path_t& connectionName);
+  explicit ConnectionSettings(const connection_path_t& connection_path, const std::string& log_directory);
 
   core::forestdb::Config GetInfo() const;
   void SetInfo(const core::forestdb::Config& info);

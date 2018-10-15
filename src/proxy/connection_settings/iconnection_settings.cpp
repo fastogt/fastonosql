@@ -18,15 +18,8 @@
 
 #include "proxy/connection_settings/iconnection_settings.h"
 
-#include <inttypes.h>  // for PRIu32
-
 #include <common/convert2string.h>  // for ConvertFromString, etc
-#include <common/sprintf.h>
-#include <common/utils.h>  // for decode64, encode64, crc64
-
-#include <common/qt/convert2string.h>  // for ConvertToString
-
-#include "proxy/settings_manager.h"
+#include <common/utils.h>           // for decode64, encode64, crc64
 
 #ifdef BUILD_WITH_REDIS
 #define LOGGING_REDIS_FILE_EXTENSION ".red"
@@ -148,9 +141,13 @@ std::string IConnectionSettings::ToString() const {
   return wr.str();
 }
 
-IConnectionSettingsBase::IConnectionSettingsBase(const connection_path_t& connectionPath, core::ConnectionType type)
-    : IConnectionSettings(connectionPath, type), hash_() {
-  SetConnectionPathAndUpdateHash(connectionPath);
+IConnectionSettingsBase::IConnectionSettingsBase(const connection_path_t& connection_path,
+                                                 const std::string& log_directory,
+                                                 core::ConnectionType type)
+    : IConnectionSettings(connection_path, type),
+      log_directory_(common::file_system::stable_dir_path(log_directory)),
+      hash_() {
+  SetConnectionPathAndUpdateHash(connection_path);
 }
 
 IConnectionSettingsBase::~IConnectionSettingsBase() {}
@@ -170,60 +167,59 @@ std::string IConnectionSettingsBase::GetHash() const {
 }
 
 std::string IConnectionSettingsBase::GetLoggingPath() const {
-  const std::string log_directory = common::ConvertToString(SettingsManager::GetInstance()->GetLoggingDirectory());
-  const std::string prefix = log_directory + GetHash();
+  const std::string logging_path = log_directory_ + GetHash();
 #ifdef BUILD_WITH_REDIS
   if (type_ == core::REDIS) {
-    return prefix + LOGGING_REDIS_FILE_EXTENSION;
+    return logging_path + LOGGING_REDIS_FILE_EXTENSION;
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
   if (type_ == core::MEMCACHED) {
-    return prefix + LOGGING_MEMCACHED_FILE_EXTENSION;
+    return logging_path + LOGGING_MEMCACHED_FILE_EXTENSION;
   }
 #endif
 #ifdef BUILD_WITH_SSDB
   if (type_ == core::SSDB) {
-    return prefix + LOGGING_SSDB_FILE_EXTENSION;
+    return logging_path + LOGGING_SSDB_FILE_EXTENSION;
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
   if (type_ == core::LEVELDB) {
-    return prefix + LOGGING_LEVELDB_FILE_EXTENSION;
+    return logging_path + LOGGING_LEVELDB_FILE_EXTENSION;
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
   if (type_ == core::ROCKSDB) {
-    return prefix + LOGGING_ROCKSDB_FILE_EXTENSION;
+    return logging_path + LOGGING_ROCKSDB_FILE_EXTENSION;
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
   if (type_ == core::UNQLITE) {
-    return prefix + LOGGING_UNQLITE_FILE_EXTENSION;
+    return logging_path + LOGGING_UNQLITE_FILE_EXTENSION;
   }
 #endif
 #ifdef BUILD_WITH_LMDB
   if (type_ == core::LMDB) {
-    return prefix + LOGGING_LMDB_FILE_EXTENSION;
+    return logging_path + LOGGING_LMDB_FILE_EXTENSION;
   }
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
   if (type_ == core::UPSCALEDB) {
-    return prefix + LOGGING_UPSCALEDB_FILE_EXTENSION;
+    return logging_path + LOGGING_UPSCALEDB_FILE_EXTENSION;
   }
 #endif
 #ifdef BUILD_WITH_FORESTDB
   if (type_ == core::FORESTDB) {
-    return prefix + LOGGING_FORESTDB_FILE_EXTENSION;
+    return logging_path + LOGGING_FORESTDB_FILE_EXTENSION;
   }
 #endif
 #ifdef BUILD_WITH_PIKA
   if (type_ == core::PIKA) {
-    return prefix + LOGGING_PIKA_FILE_EXTENSION;
+    return logging_path + LOGGING_PIKA_FILE_EXTENSION;
   }
 #endif
 
-  NOTREACHED();
+  NOTREACHED() << "Unknown type: " << type_;
   return std::string();
 }
 

@@ -22,8 +22,8 @@ namespace fastonosql {
 namespace proxy {
 namespace pika {
 
-ConnectionSettings::ConnectionSettings(const connection_path_t& connectionName)
-    : IConnectionSettingsRemoteSSH(connectionName, core::PIKA), info_() {}
+ConnectionSettings::ConnectionSettings(const connection_path_t& connection_path, const std::string& log_directory)
+    : IConnectionSettingsRemoteSSH(connection_path, log_directory, core::PIKA), info_() {}
 
 std::string ConnectionSettings::GetDelimiter() const {
   return info_.delimiter;

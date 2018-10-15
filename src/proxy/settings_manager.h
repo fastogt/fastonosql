@@ -151,7 +151,6 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
   UserInfo user_info_;
 #endif
   QStringList recent_connections_;
-  QString logging_dir_;
   bool auto_check_updates_;
   bool auto_completion_;
   bool auto_open_console_;
