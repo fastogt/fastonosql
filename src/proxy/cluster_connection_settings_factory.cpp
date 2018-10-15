@@ -34,15 +34,15 @@ namespace fastonosql {
 namespace proxy {
 
 IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromType(core::ConnectionType type,
-                                                                       const connection_path_t& conName) {
+                                                                       const connection_path_t& connection_path) {
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
-    return new redis::ClusterSettings(conName);
+    return new redis::ClusterSettings(connection_path);
   }
 #endif
 #ifdef BUILD_WITH_PIKA
   if (type == core::PIKA) {
-    return new pika::ClusterSettings(conName);
+    return new pika::ClusterSettings(connection_path);
   }
 #endif
   return nullptr;

@@ -20,31 +20,15 @@
 
 #include <QIcon>
 
-#include <common/qt/convert2string.h>  // for ConvertFromString
-#include <common/qt/utils_qt.h>        // for item
+#include <common/qt/utils_qt.h>
 
-#include "gui/gui_factory.h"  // for GuiFactory
+#include "gui/channel_table_item.h"
+#include "gui/gui_factory.h"
 
-#include "translations/global.h"  // for trKey, trType
+#include "translations/global.h"
 
 namespace fastonosql {
 namespace gui {
-
-ChannelTableItem::ChannelTableItem(const core::NDbPSChannel& chan) : channel_(chan) {}
-
-core::NDbPSChannel ChannelTableItem::channel() const {
-  return channel_;
-}
-
-QString ChannelTableItem::name() const {
-  QString qname;
-  common::ConvertFromString(channel_.GetName(), &qname);
-  return qname;
-}
-
-size_t ChannelTableItem::numberOfSubscribers() const {
-  return channel_.GetNumberOfSubscribers();
-}
 
 ChannelsTableModel::ChannelsTableModel(QObject* parent) : TableModel(parent) {}
 

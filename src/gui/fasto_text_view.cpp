@@ -20,11 +20,7 @@
 
 #include <QVBoxLayout>
 
-#include <fastonosql/core/db_key.h>
-
 #include "gui/editor/fasto_editor_model_output.h"  // for FastoEditorModelOutput
-
-Q_DECLARE_METATYPE(fastonosql::core::NValue)
 
 namespace fastonosql {
 namespace gui {

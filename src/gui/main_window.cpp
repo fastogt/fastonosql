@@ -23,12 +23,10 @@
 #include <QDesktopServices>
 #include <QDockWidget>
 #include <QFileDialog>
-#include <QInputDialog>
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QThread>
 #include <QTimer>
-#include <QToolBar>
 #include <QUrl>
 
 #ifdef OS_ANDROID

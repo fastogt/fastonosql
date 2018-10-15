@@ -18,20 +18,15 @@
 
 #pragma once
 
-#include <QModelIndex>
 #include <QWidget>
 
-class QCheckBox;  // lines 34-34
-class QFrame;     // lines 35-35
-class QKeyEvent;
-class QLineEdit;  // lines 31-31
-class QMenu;      // lines 37-37
-class QObject;
-class QPixmap;
-class QPoint;
-class QPushButton;  // lines 33-33
-class QToolButton;  // lines 32-32
-class QsciLexer;    // lines 36-36
+class QMenu;
+class QsciLexer;
+class QFrame;
+class QLineEdit;
+class QToolButton;
+class QPushButton;
+class QCheckBox;
 
 namespace fastonosql {
 namespace gui {

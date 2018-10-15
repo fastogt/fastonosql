@@ -19,11 +19,6 @@
 #include "gui/widgets/connection_remote_widget.h"
 
 #include <QHBoxLayout>
-#include <QLabel>
-#include <QLineEdit>
-#include <QRegExpValidator>
-
-#include <common/qt/convert2string.h>
 
 #include "gui/widgets/host_port_widget.h"
 

@@ -61,10 +61,10 @@ bool PropertyTableModel::setData(const QModelIndex& index, const QVariant& value
     int column = index.column();
     if (column == PropertyTableItem::kKey) {
     } else if (column == PropertyTableItem::kValue) {
-      QString newValue = value.toString();
-      if (newValue != node->value()) {
+      QString new_value = value.toString();
+      if (new_value != node->value()) {
         core::property_t pr = node->property();
-        pr.second = common::ConvertToString(newValue);
+        pr.second = common::ConvertToString(new_value);
         emit propertyChanged(pr);
       }
     }

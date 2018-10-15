@@ -18,14 +18,6 @@
 
 #include "proxy/cluster/icluster.h"
 
-#include <common/macros.h>  // for DNOTREACHED
-
-#include <memory>  // for shared_ptr
-#include <string>  // for string
-
-#include <fastonosql/core/connection_types.h>  // for ServerType::MASTER
-
-#include "proxy/server/iserver.h"         // for IServer
 #include "proxy/server/iserver_remote.h"  // for IServerRemote
 
 namespace fastonosql {

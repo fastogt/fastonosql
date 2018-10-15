@@ -18,29 +18,10 @@
 
 #pragma once
 
-#include <common/value.h>  // for Value, Value::Type
-
-#include <common/qt/gui/base/table_item.h>   // for TableItem
 #include <common/qt/gui/base/table_model.h>  // for TableModel
-
-#include <fastonosql/core/db_ps_channel.h>
 
 namespace fastonosql {
 namespace gui {
-
-class ChannelTableItem : public common::qt::gui::TableItem {
- public:
-  enum eColumn { kName = 0, kNOS = 1, kCountColumns = 2 };
-
-  explicit ChannelTableItem(const core::NDbPSChannel& chan);
-
-  core::NDbPSChannel channel() const;
-  QString name() const;
-  size_t numberOfSubscribers() const;
-
- private:
-  core::NDbPSChannel channel_;
-};
 
 class ChannelsTableModel : public common::qt::gui::TableModel {
   Q_OBJECT

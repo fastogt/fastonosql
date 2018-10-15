@@ -16,22 +16,28 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "proxy/db/redis/cluster_settings.h"
+#include "gui/channel_table_item.h"
 
-#include <fastonosql/core/connection_types.h>  // for core::ConnectionType::REDIS
+#include <common/qt/convert2string.h>  // for ConvertFromString
 
 namespace fastonosql {
-namespace proxy {
-namespace redis {
+namespace gui {
 
-ClusterSettings::ClusterSettings(const connection_path_t& connection_path)
-    : IClusterSettingsBase(connection_path, core::REDIS) {}
+ChannelTableItem::ChannelTableItem(const core::NDbPSChannel& chan) : channel_(chan) {}
 
-ClusterSettings* ClusterSettings::Clone() const {
-  ClusterSettings* red = new ClusterSettings(*this);
-  return red;
+core::NDbPSChannel ChannelTableItem::channel() const {
+  return channel_;
 }
 
-}  // namespace redis
-}  // namespace proxy
+QString ChannelTableItem::name() const {
+  QString qname;
+  common::ConvertFromString(channel_.GetName(), &qname);
+  return qname;
+}
+
+size_t ChannelTableItem::numberOfSubscribers() const {
+  return channel_.GetNumberOfSubscribers();
+}
+
+}  // namespace gui
 }  // namespace fastonosql

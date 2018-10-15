@@ -23,8 +23,6 @@
 #include <QPushButton>
 #include <QSplitter>
 
-#include <common/convert2string.h>  // for ConvertFromString
-#include <common/qt/convert2string.h>
 #include <common/qt/gui/icon_label.h>  // for IconLabel
 #include <common/qt/logger.h>
 

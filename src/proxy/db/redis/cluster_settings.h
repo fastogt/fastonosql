@@ -26,7 +26,7 @@ namespace redis {
 
 class ClusterSettings : public IClusterSettingsBase {
  public:
-  explicit ClusterSettings(const connection_path_t& connectionName);
+  explicit ClusterSettings(const connection_path_t& connection_path);
   virtual ClusterSettings* Clone() const override;
 };
 

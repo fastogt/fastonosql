@@ -22,7 +22,6 @@
 
 class QLineEdit;
 class QLabel;
-class QCheckBox;
 
 namespace fastonosql {
 namespace gui {

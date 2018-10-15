@@ -24,8 +24,6 @@
 
 class QLineEdit;
 class QComboBox;
-class QGroupBox;
-class QTableView;
 class QLabel;
 
 namespace fastonosql {

@@ -28,8 +28,6 @@
 
 #include <Qsci/qsciscintilla.h>  // for QsciScintilla, etc
 
-#include <common/qt/convert2string.h>  // for EscapedText
-
 #include "gui/widgets/fasto_scintilla.h"  // for FastoScintilla
 
 #include "gui/gui_factory.h"  // for GuiFactory

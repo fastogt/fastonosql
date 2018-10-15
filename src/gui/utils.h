@@ -18,7 +18,9 @@
 
 #pragma once
 
-#include <QWidget>
+#include <QString>
+
+class QWidget;
 
 namespace fastonosql {
 namespace gui {

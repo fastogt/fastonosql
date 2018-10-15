@@ -25,7 +25,6 @@
 class QLabel;
 class QLineEdit;
 class QCheckBox;
-class QSpinBox;
 class QComboBox;
 class QPushButton;
 

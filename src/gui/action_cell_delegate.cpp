@@ -29,13 +29,15 @@
 namespace fastonosql {
 namespace gui {
 
+const QSize ActionDelegate::icon_size = QSize(16, 16);
+
 ActionDelegate::ActionDelegate(QObject* parent) : QStyledItemDelegate(parent), current_index_() {}
 
 QSize ActionDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const {
   UNUSED(option);
   UNUSED(index);
 
-  return QSize(16, 16);
+  return icon_size;
 }
 
 void ActionDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const {
@@ -55,7 +57,7 @@ void ActionDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option
   pb_Style.rect = option.rect;
   pb_Style.features |= QStyleOptionButton::Flat;
   pb_Style.text = QString();
-  pb_Style.iconSize = QSize(16, 16);
+  pb_Style.iconSize = icon_size;
   if (node->actionState() == KeyValueTableItem::AddAction) {
     pb_Style.icon = GuiFactory::GetInstance().addIcon();
   } else if (node->actionState() == KeyValueTableItem::EditAction) {

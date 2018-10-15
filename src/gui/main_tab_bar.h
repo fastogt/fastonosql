@@ -20,9 +20,6 @@
 
 #include <QTabBar>
 
-class QAction;
-class QPoint;
-
 namespace fastonosql {
 namespace gui {
 

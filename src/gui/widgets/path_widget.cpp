@@ -18,7 +18,6 @@
 
 #include "gui/widgets/path_widget.h"
 
-#include <QCheckBox>
 #include <QFileDialog>
 #include <QHBoxLayout>
 #include <QLabel>

@@ -18,8 +18,6 @@
 
 #include "gui/widgets/commands_widget.h"
 
-#include <string>  // for string
-
 #include <QEvent>
 #include <QHBoxLayout>
 #include <QMenu>

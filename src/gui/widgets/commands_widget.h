@@ -22,7 +22,6 @@
 
 #include <fastonosql/core/global.h>
 
-class QPoint;
 class QTextEdit;  // lines 23-23
 
 namespace fastonosql {

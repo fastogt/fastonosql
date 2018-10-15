@@ -357,6 +357,7 @@ SET(HEADERS_GUI
   ${HEADERS_GUI_DIALOGS}
 
   ${CMAKE_SOURCE_DIR}/src/gui/gui_factory.h
+  ${CMAKE_SOURCE_DIR}/src/gui/channel_table_item.h
   ${CMAKE_SOURCE_DIR}/src/gui/fasto_common_item.h
   ${CMAKE_SOURCE_DIR}/src/gui/property_table_item.h
   ${CMAKE_SOURCE_DIR}/src/gui/shortcuts.h
@@ -389,6 +390,7 @@ SET(SOURCES_GUI
   ${CMAKE_SOURCE_DIR}/src/gui/fasto_common_model.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/fasto_table_view.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/keys_table_view.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/channel_table_item.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/fasto_common_item.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/shortcuts.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/connection_widgets_factory.cpp

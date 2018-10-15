@@ -20,9 +20,6 @@
 
 #include <QTreeView>
 
-class QPoint;
-class QWidget;
-
 namespace fastonosql {
 namespace gui {
 

@@ -32,15 +32,15 @@ namespace fastonosql {
 namespace proxy {
 
 ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromType(core::ConnectionType type,
-                                                                         const connection_path_t& conName) {
+                                                                         const connection_path_t& connection_path) {
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
-    return new redis::SentinelSettings(conName);
+    return new redis::SentinelSettings(connection_path);
   }
 #endif
 #ifdef BUILD_WITH_PIKA
   if (type == core::PIKA) {
-    return new pika::SentinelSettings(conName);
+    return new pika::SentinelSettings(connection_path);
   }
 #endif
   return nullptr;

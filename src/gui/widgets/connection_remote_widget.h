@@ -18,8 +18,6 @@
 
 #pragma once
 
-#include <QWidget>
-
 #include "gui/widgets/connection_base_widget.h"
 
 #include "proxy/connection_settings/iconnection_settings_remote.h"

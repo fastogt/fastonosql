@@ -40,7 +40,7 @@ class IClusterSettingsBase : public IConnectionSettings {
   virtual IConnectionSettingsBaseSPtr FindSettingsByHost(const common::net::HostAndPort& host) const;
 
  protected:
-  IClusterSettingsBase(const connection_path_t& connectionName, core::ConnectionType type);
+  IClusterSettingsBase(const connection_path_t& connection_path, core::ConnectionType type);
 
  private:
   cluster_nodes_t clusters_nodes_;

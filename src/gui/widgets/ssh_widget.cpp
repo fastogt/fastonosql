@@ -25,7 +25,6 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QSplitter>
 
 #include <common/qt/convert2string.h>
 

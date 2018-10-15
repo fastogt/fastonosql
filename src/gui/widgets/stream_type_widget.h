@@ -18,7 +18,6 @@
 
 #pragma once
 
-#include <QLabel>
 #include <QTableView>
 
 #include <fastonosql/core/value.h>

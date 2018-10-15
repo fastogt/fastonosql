@@ -20,7 +20,7 @@
 
 #include <common/net/types.h>
 
-#include "proxy/events/events.h"
+#include "proxy/events/events_info.h"
 #include "proxy/proxy_fwd.h"  // for IServerSPtr
 #include "proxy/server/iserver_base.h"
 
