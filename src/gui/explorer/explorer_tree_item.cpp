@@ -497,7 +497,7 @@ std::vector<const ExplorerKeyItem*> ExplorerNSItem::getKeys() const {
   return keys;
 }
 
-core::readable_string_t ExplorerNSItem::keyTemplate(const core::readable_string_t& key_name) {
+core::readable_string_t ExplorerNSItem::generateKeyTemplate(const core::readable_string_t& key_name) {
   TreeItem* par = parent();
   core::readable_string_t key_name_new = basicStringName() + ns_separator_ + key_name;
   while (par) {

@@ -777,10 +777,10 @@ void ExplorerTreeView::addKeyToBranch() {
     }
 
     proxy::IServerSPtr server = node->server();
-    core::NDbKValue nkey;
-    std::string full_name_str = node->keyTemplate("test");
+    std::string full_name_str = node->generateKeyTemplate("test");
     core::NKey raw_key(full_name_str);
-    nkey.SetKey(raw_key);
+    core::NValue val(common::Value::CreateEmptyStringValue());
+    core::NDbKValue nkey(raw_key, val);
     ExplorerDatabaseItem* node_db = node->db();
     DbKeyDialog loadDb(trCreateKeyForDbTemplate_1S.arg(node_db->name()), server->GetType(), nkey, false, this);
     int result = loadDb.exec();

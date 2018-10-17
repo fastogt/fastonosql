@@ -171,7 +171,7 @@ class ExplorerNSItem : public IExplorerTreeItem {
   proxy::IServerSPtr server() const;
   size_t keysCount() const;
   std::vector<const ExplorerKeyItem*> getKeys() const;
-  core::readable_string_t keyTemplate(const core::readable_string_t& key_name);
+  core::readable_string_t generateKeyTemplate(const core::readable_string_t& key_name);
 
   void createKey(const core::NDbKValue& key);
   void removeBranch();
