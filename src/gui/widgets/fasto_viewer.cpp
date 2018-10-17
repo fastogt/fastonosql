@@ -196,6 +196,12 @@ void FastoViewer::viewChange(int view_method) {
 }
 
 void FastoViewer::textChange() {
+  if (isError()) {
+    std::string str_text;
+    if (convertFromView(&str_text)) {
+      clearError();
+    }
+  }
   emit textChanged();
 }
 
@@ -210,8 +216,8 @@ OutputView FastoViewer::viewMethod() const {
 }
 
 std::string FastoViewer::text() const {
-  std::string str_text;
   if (!isError()) {
+    std::string str_text;
     if (convertFromView(&str_text)) {
       last_valid_text_ = str_text;
     }
