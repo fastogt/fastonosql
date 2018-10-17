@@ -26,7 +26,7 @@ class QComboBox;
 namespace fastonosql {
 namespace gui {
 
-enum OutputView {
+enum OutputView : unsigned int {
   RAW_VIEW = 0,  // raw
   JSON_VIEW,     // raw
 
@@ -50,9 +50,9 @@ class FastoViewer : public QWidget {
   Q_OBJECT
  public:
   explicit FastoViewer(QWidget* parent = Q_NULLPTR);
-  virtual ~FastoViewer();
+  virtual ~FastoViewer() override;
 
-  int viewMethod() const;
+  OutputView viewMethod() const;
   std::string text() const;
 
   bool setText(const std::string& text);
@@ -94,7 +94,7 @@ class FastoViewer : public QWidget {
   QsciLexer* json_lexer_;
   QsciLexer* xml_lexer_;
 
-  int view_method_;
+  OutputView view_method_;
 
   QLabel* views_label_;
   QComboBox* views_combo_box_;

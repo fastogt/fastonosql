@@ -109,7 +109,7 @@ class ProxyModuleClient : public core::IModuleConnectionClient {
   Driver* drv_;
 
  public:
-  ProxyModuleClient(Driver* drv) : drv_(drv) {}
+  explicit ProxyModuleClient(Driver* drv) : drv_(drv) {}
   void OnUnLoadedModule(const core::ModuleInfo& module) override { emit drv_->ModuleUnLoaded(module); }
 
   void OnLoadedModule(const core::ModuleInfo& module) override { emit drv_->ModuleLoaded(module); }
@@ -229,7 +229,7 @@ common::Error Driver::GetServerCommands(std::vector<const core::CommandInfo*>* c
   common::ArrayValue* commands_array = nullptr;
   if (array_value->GetAsList(&commands_array)) {
     for (size_t i = 0; i < commands_array->GetSize(); ++i) {
-      const common::ArrayValue* com_value = NULL;
+      const common::ArrayValue* com_value = nullptr;
       if (commands_array->GetList(i, &com_value)) {
         // 0) command name
         // 1) command arity specification
@@ -284,7 +284,7 @@ common::Error Driver::GetServerLoadedModules(std::vector<core::ModuleInfo>* modu
   std::vector<core::ModuleInfo> lmodules;
   if (array_value->GetAsList(&modules_array)) {
     for (size_t i = 0; i < modules_array->GetSize(); ++i) {
-      const common::ArrayValue* mod_value = NULL;
+      const common::ArrayValue* mod_value = nullptr;
       if (modules_array->GetList(i, &mod_value)) {
         if (mod_value->GetSize() < 4) {
           return common::make_error("Invalid " REDIS_GET_LOADED_MODULES_COMMANDS " command output");
@@ -300,7 +300,10 @@ common::Error Driver::GetServerLoadedModules(std::vector<core::ModuleInfo>* modu
           return common::make_error("Invalid " REDIS_GET_LOADED_MODULES_COMMANDS " command output");
         }
 
-        lmodules.push_back({module_name, std::string(), static_cast<uint32_t>(version)});
+        core::ModuleInfo mod;
+        mod.name = module_name;
+        mod.version = static_cast<uint32_t>(version);
+        lmodules.push_back(mod);
       }
     }
   }
@@ -404,7 +407,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
           goto done;
         }
 
-        uint64_t lcursor;
+        core::cursor_t lcursor;
         if (common::ConvertFromString(cursor, &lcursor)) {
           res.cursor_out = lcursor;
         }
@@ -468,7 +471,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
           if (tchildrens.size() == 1) {
             std::string typeRedis = tchildrens[0]->ToString();
             common::Value::Type ctype = ConvertFromStringRType(typeRedis);
-            common::ValueSPtr empty_val(core::CreateEmptyValueFromType(ctype));
+            core::NValue empty_val(core::CreateEmptyValueFromType(ctype));
             res.keys[i].SetValue(empty_val);
           }
         }
@@ -646,7 +649,7 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
                   }
                 } else if (t == common::Value::TYPE_STRING) {
                   std::string lsub_str;
-                  long long lsub;
+                  size_t lsub;
                   if (fund_sub->GetAsString(&lsub_str) && common::ConvertFromString(lsub_str, &lsub)) {
                     res.channels[i].SetNumberOfSubscribers(lsub);
                   }

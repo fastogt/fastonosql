@@ -278,7 +278,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
           if (tchildrens.size() == 1) {
             std::string typeRedis = tchildrens[0]->ToString();
             common::Value::Type ctype = ConvertFromStringRType(typeRedis);
-            common::ValueSPtr empty_val(core::CreateEmptyValueFromType(ctype));
+            core::NValue empty_val(core::CreateEmptyValueFromType(ctype));
             res.keys[i].SetValue(empty_val);
           }
         }

@@ -72,7 +72,7 @@ common::Error GenVersionRequest(std::string* request) {
     return common::make_error_inval();
   }
 
-  json_object* command_json = NULL;
+  json_object* command_json = nullptr;
   common::protocols::json_rpc::JsonRPCRequest req;
   req.id = common::protocols::json_rpc::null_json_rpc_id;
   req.method = GET_VERSION_METHOD;
@@ -134,7 +134,7 @@ common::Error GenAnonymousStatisticRequest(std::string* request) {
   json_object_object_add(project_json, STATISTIC_PROJECT_ARCH_FIELD, json_object_new_string(PROJECT_ARCH));
   json_object_object_add(stats_json, STATISTIC_PROJECT_FIELD, project_json);
 
-  json_object* command_json = NULL;
+  json_object* command_json = nullptr;
   common::protocols::json_rpc::JsonRPCRequest req;
   req.id = common::protocols::json_rpc::null_json_rpc_id;
   req.method = ANONYMOUS_SEND_STATISTIC_METHOD;
@@ -177,7 +177,7 @@ common::Error GenStatisticRequest(const std::string& login, const std::string& b
   json_object_object_add(project_json, STATISTIC_PROJECT_ARCH_FIELD, json_object_new_string(PROJECT_ARCH));
   json_object_object_add(stats_json, STATISTIC_PROJECT_FIELD, project_json);
 
-  json_object* command_json = NULL;
+  json_object* command_json = nullptr;
   common::protocols::json_rpc::JsonRPCRequest req;
   req.id = common::protocols::json_rpc::null_json_rpc_id;
   req.method = SEND_STATISTIC_METHOD;
@@ -215,7 +215,7 @@ common::Error GenSubscriptionStateRequest(const UserInfo& user_info, std::string
   json_object_object_add(cred_json, SUBSCRIBED_LOGIN_FIELD, json_object_new_string(login.c_str()));
   json_object_object_add(cred_json, SUBSCRIBED_PASSWORD_FIELD, json_object_new_string(password.c_str()));
 
-  json_object* is_subscribed_json = NULL;
+  json_object* is_subscribed_json = nullptr;
   common::protocols::json_rpc::JsonRPCRequest req;
   req.id = common::protocols::json_rpc::null_json_rpc_id;
   req.method = IS_SUBSCRIBED_METHOD;
@@ -257,7 +257,7 @@ common::Error ParseSubscriptionStateResponce(const std::string& data, UserInfo* 
   }
 
   UserInfo lres = *result;
-  json_object* jfirst_name = NULL;
+  json_object* jfirst_name = nullptr;
   bool jfirst_name_exist = json_object_object_get_ex(obj, USER_FIRST_NAME, &jfirst_name);
   if (!jfirst_name_exist) {
     json_object_put(obj);
@@ -265,7 +265,7 @@ common::Error ParseSubscriptionStateResponce(const std::string& data, UserInfo* 
   }
   lres.SetFirstName(json_object_get_string(jfirst_name));
 
-  json_object* jlast_name = NULL;
+  json_object* jlast_name = nullptr;
   bool jlast_name_exist = json_object_object_get_ex(obj, USER_LAST_NAME, &jlast_name);
   if (!jlast_name_exist) {
     json_object_put(obj);
@@ -273,7 +273,7 @@ common::Error ParseSubscriptionStateResponce(const std::string& data, UserInfo* 
   }
   lres.SetLastName(json_object_get_string(jlast_name));
 
-  json_object* jsubscription_state = NULL;
+  json_object* jsubscription_state = nullptr;
   bool jsubscription_state_exist = json_object_object_get_ex(obj, USER_SUBSCRIPTION_STATE, &jsubscription_state);
   if (!jsubscription_state_exist) {
     json_object_put(obj);
@@ -283,7 +283,7 @@ common::Error ParseSubscriptionStateResponce(const std::string& data, UserInfo* 
       static_cast<proxy::UserInfo::SubscriptionState>(json_object_get_int(jsubscription_state));
   lres.SetSubscriptionState(st);
 
-  json_object* jtype = NULL;
+  json_object* jtype = nullptr;
   bool jtype_exist = json_object_object_get_ex(obj, USER_TYPE, &jtype);
   if (!jtype_exist) {
     json_object_put(obj);
@@ -292,7 +292,7 @@ common::Error ParseSubscriptionStateResponce(const std::string& data, UserInfo* 
   proxy::UserInfo::Type t = static_cast<proxy::UserInfo::Type>(json_object_get_int(jtype));
   lres.SetType(t);
 
-  json_object* jexec_count = NULL;
+  json_object* jexec_count = nullptr;
   bool jexec_count_exist = json_object_object_get_ex(obj, USER_EXEC_COUNT, &jexec_count);
   if (!jexec_count_exist) {
     json_object_put(obj);
@@ -301,7 +301,7 @@ common::Error ParseSubscriptionStateResponce(const std::string& data, UserInfo* 
   int64_t exec_count = json_object_get_int64(jexec_count);
   lres.SetExecCount(static_cast<size_t>(exec_count));
 
-  json_object* jexpire_time = NULL;
+  json_object* jexpire_time = nullptr;
   bool jexpire_time_exist = json_object_object_get_ex(obj, USER_EXPIRE_TIME, &jexpire_time);
   if (!jexpire_time_exist) {
     json_object_put(obj);
@@ -310,7 +310,7 @@ common::Error ParseSubscriptionStateResponce(const std::string& data, UserInfo* 
   time_t expire_time = json_object_get_int64(jexpire_time);
   lres.SetExpireTime(expire_time);
 
-  json_object* juser_id = NULL;
+  json_object* juser_id = nullptr;
   bool juser_id_exist = json_object_object_get_ex(obj, USER_ID, &juser_id);
   if (!juser_id_exist) {
     json_object_put(obj);
@@ -330,7 +330,7 @@ common::Error GenBanUserRequest(const UserInfo& user_info, user_id_t collision_i
     return common::make_error_inval();
   }
 
-  json_object* ban_user_json = NULL;
+  json_object* ban_user_json = nullptr;
   common::protocols::json_rpc::JsonRPCRequest req;
   req.id = common::protocols::json_rpc::null_json_rpc_id;
   req.method = BAN_USER_METHOD;

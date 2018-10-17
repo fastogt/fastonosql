@@ -76,7 +76,7 @@ class OutputWidget : public QWidget {
 
   void addChild(core::FastoObjectIPtr child);
   void addCommand(core::FastoObjectCommand* command, core::FastoObject* child);
-  void updateItem(core::FastoObject* item, common::ValueSPtr newValue);
+  void updateItem(core::FastoObject* item, common::ValueSPtr new_value);
 
   void setTreeView();
   void setTableView();

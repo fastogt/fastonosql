@@ -38,7 +38,7 @@ namespace gui {
 
 namespace {
 
-bool convertFromViewImpl(int view_method, const std::string& val, std::string* out) {
+bool convertFromViewImpl(OutputView view_method, const std::string& val, std::string* out) {
   if (!out || val.empty()) {
     return false;
   }
@@ -56,7 +56,7 @@ bool convertFromViewImpl(int view_method, const std::string& val, std::string* o
     return string_from_unicode(val, out);
   } else if (view_method == FROM_UNICODE_VIEW) {
     return string_to_unicode(val, out);
-  } else if (view_method == ZLIB_VIEW) {
+  } else if (view_method == MSGPACK_VIEW) {
     return string_to_msgpack(val, out);
   } else if (view_method == ZLIB_VIEW) {
     return string_to_zlib(val, out);
@@ -75,11 +75,11 @@ bool convertFromViewImpl(int view_method, const std::string& val, std::string* o
   return false;
 }
 
-bool convertFromViewImpl(int view_method, const QString& val, std::string* out) {
+bool convertFromViewImpl(OutputView view_method, const QString& val, std::string* out) {
   return convertFromViewImpl(view_method, common::ConvertToString(val), out);
 }
 
-bool convertToViewImpl(int view_method, const std::string& text, std::string* out) {
+bool convertToViewImpl(OutputView view_method, const std::string& text, std::string* out) {
   if (!out || text.empty()) {
     return false;
   }
@@ -171,7 +171,7 @@ void FastoViewer::syncEditors() {
   } else if (view_method_ == XML_VIEW) {
     text_json_editor_->setLexer(xml_lexer_);
   } else {
-    text_json_editor_->setLexer(NULL);
+    text_json_editor_->setLexer(nullptr);
   }
 }
 
@@ -189,7 +189,7 @@ void FastoViewer::setReadOnly(bool ro) {
 
 void FastoViewer::viewChange(int view_method) {
   std::string last_valid = text();
-  view_method_ = view_method;
+  view_method_ = static_cast<OutputView>(view_method);
   syncEditors();
   setText(last_valid);
   emit viewChanged(view_method);
@@ -205,7 +205,7 @@ void FastoViewer::clear() {
   last_valid_text_.clear();
 }
 
-int FastoViewer::viewMethod() const {
+OutputView FastoViewer::viewMethod() const {
   return view_method_;
 }
 

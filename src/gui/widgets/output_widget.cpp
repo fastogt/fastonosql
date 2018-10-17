@@ -61,14 +61,14 @@ FastoCommonItem* CreateItem(common::qt::gui::TreeItem* parent,
                             core::readable_string_t key,
                             bool read_only,
                             core::FastoObject* item) {
-  core::NValue value = item->GetValue();
+  core::NValue value(item->GetValue());
   core::key_t raw_key(key);
   core::NDbKValue nkey(core::NKey(raw_key), value);
   return new FastoCommonItem(nkey, item->GetDelimiter(), read_only, parent, item);
 }
 
 FastoCommonItem* CreateRootItem(core::FastoObject* item) {
-  core::NValue value = item->GetValue();
+  core::NValue value(item->GetValue());
   core::key_t raw_key;
   core::NKey nk(raw_key);
   core::NDbKValue nkey(nk, value);
@@ -284,7 +284,7 @@ void OutputWidget::addCommand(core::FastoObjectCommand* command, core::FastoObje
   common_model_->insertItem(parent, common_child);
 }
 
-void OutputWidget::updateItem(core::FastoObject* item, common::ValueSPtr newValue) {
+void OutputWidget::updateItem(core::FastoObject* item, common::ValueSPtr new_value) {
   QModelIndex index;
   bool isFound = common_model_->findItem(item, &index);
   if (!isFound) {
@@ -296,7 +296,7 @@ void OutputWidget::updateItem(core::FastoObject* item, common::ValueSPtr newValu
     return;
   }
 
-  core::NValue nval = newValue;
+  core::NValue nval(new_value);
   it->setValue(nval);
   common_model_->updateItem(index.parent(), index);
 }

@@ -93,7 +93,7 @@ class BaseCommandsQsciApi : public BaseQsciApi {
                                QList<int>& shifts) override;
 
  protected:
-  BaseCommandsQsciApi(BaseCommandsQsciLexer* lexer);
+  explicit BaseCommandsQsciApi(BaseCommandsQsciLexer* lexer);
 };
 
 QString makeCallTip(const core::CommandInfo& info);
