@@ -62,13 +62,13 @@ class Driver : public IDriverLocal {
   virtual common::Error SyncConnect() override WARN_UNUSED_RESULT;
   virtual common::Error SyncDisconnect() override WARN_UNUSED_RESULT;
 
-  virtual common::Error ExecuteImpl(const core::command_buffer_t& command, core::FastoObject* out) override;
+  virtual common::Error ExecuteImpl(const core::command_buffer_t& command,
+                                    core::FastoObject* out) override WARN_UNUSED_RESULT;
+  virtual common::Error DBkcountImpl(core::keys_limit_t* size) override WARN_UNUSED_RESULT;
 
   virtual common::Error GetCurrentServerInfo(core::IServerInfo** info) override;
   virtual common::Error GetServerCommands(std::vector<const core::CommandInfo*>* commands) override;
   virtual common::Error GetCurrentDataBaseInfo(core::IDataBaseInfo** info) override;
-
-  virtual void HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) override;
 
   virtual core::IServerInfoSPtr MakeServerInfoFromString(const std::string& val) override;
 

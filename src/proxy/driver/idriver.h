@@ -106,7 +106,7 @@ class IDriver : public QObject, public core::CDBConnectionClient {
 
   virtual void HandleExecuteEvent(events::ExecuteRequestEvent* ev);
 
-  virtual void HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) = 0;
+  virtual void HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev);
 
   virtual void HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev);
   virtual void HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev);
@@ -136,11 +136,14 @@ class IDriver : public QObject, public core::CDBConnectionClient {
  private:
   virtual common::Error SyncConnect() WARN_UNUSED_RESULT = 0;
   virtual common::Error SyncDisconnect() WARN_UNUSED_RESULT = 0;
+
   void HandleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev);  // call ServerInfo
   void HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestEvent* ev);
   void HandleClearServerHistoryEvent(events::ClearServerHistoryRequestEvent* ev);
 
-  virtual common::Error ExecuteImpl(const core::command_buffer_t& command, core::FastoObject* out) = 0;
+  virtual common::Error ExecuteImpl(const core::command_buffer_t& command,
+                                    core::FastoObject* out) WARN_UNUSED_RESULT = 0;
+  virtual common::Error DBkcountImpl(core::keys_limit_t* size) WARN_UNUSED_RESULT = 0;
 
   virtual void OnCreatedDB(core::IDataBaseInfo* info) override;
   virtual void OnRemovedDB(core::IDataBaseInfo* info) override;
@@ -158,6 +161,7 @@ class IDriver : public QObject, public core::CDBConnectionClient {
 
  private:
   virtual core::IServerInfoSPtr MakeServerInfoFromString(const std::string& val) = 0;
+
   virtual void InitImpl() = 0;
   virtual void ClearImpl() = 0;
 

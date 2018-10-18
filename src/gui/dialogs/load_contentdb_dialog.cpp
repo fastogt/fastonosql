@@ -25,6 +25,8 @@
 #include <QSpinBox>
 #include <QVBoxLayout>
 
+#include <fastonosql/core/types.h>
+
 #include "gui/gui_factory.h"  // for GuiFactory
 
 #include "translations/global.h"  // for trError

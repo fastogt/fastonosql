@@ -388,6 +388,63 @@ done:
   delete lock;
 }
 
+void IDriver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {
+  QObject* sender = ev->sender();
+  NotifyProgress(sender, 0);
+  events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
+  const core::command_buffer_t pattern_result = core::GetKeysPattern(res.cursor_in, res.pattern, res.keys_count);
+  core::FastoObjectCommandIPtr cmd = CreateCommandFast(pattern_result, core::C_INNER);
+  NotifyProgress(sender, 50);
+  common::Error err = Execute(cmd);
+  if (err) {
+    res.setErrorInfo(err);
+  } else {
+    core::FastoObject::childs_t rchildrens = cmd->GetChildrens();
+    if (rchildrens.size()) {
+      CHECK_EQ(rchildrens.size(), 1);
+      core::FastoObject* array = rchildrens[0].get();
+      CHECK(array);
+      auto array_value = array->GetValue();
+      common::ArrayValue* arm = nullptr;
+      if (!array_value->GetAsList(&arm)) {
+        goto done;
+      }
+
+      CHECK_EQ(arm->GetSize(), 2);
+      core::cursor_t  cursor;
+      bool isok = arm->GetUInteger(0, &cursor);
+      if (!isok) {
+        goto done;
+      }
+      res.cursor_out = cursor;
+
+      common::ArrayValue* ar = nullptr;
+      isok = arm->GetList(1, &ar);
+      if (!isok) {
+        goto done;
+      }
+
+      for (size_t i = 0; i < ar->GetSize(); ++i) {
+        std::string key_str;
+        if (ar->GetString(i, &key_str)) {
+          core::key_t key(key_str);
+          core::NKey k(key);
+          core::NValue empty_val(common::Value::CreateEmptyStringValue());
+          core::NDbKValue ress(k, empty_val);
+          res.keys.push_back(ress);
+        }
+      }
+
+      common::Error err = DBkcountImpl(&res.db_keys_count);
+      DCHECK(!err) << "can't get db keys count!";
+    }
+  }
+done:
+  NotifyProgress(sender, 75);
+  Reply(sender, new events::LoadDatabaseContentResponceEvent(this, res));
+  NotifyProgress(sender, 100);
+}
+
 void IDriver::HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev) {
   ReplyNotImplementedYet<events::ServerPropertyInfoRequestEvent, events::ServerPropertyInfoResponceEvent>(
       this, ev, "server property");

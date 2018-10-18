@@ -18,11 +18,8 @@
 
 #include "proxy/db/leveldb/driver.h"
 
-#include <common/convert2string.h>
-
 #include <fastonosql/core/db/leveldb/database_info.h>
 #include <fastonosql/core/db/leveldb/db_connection.h>  // for DBConnection
-#include <fastonosql/core/value.h>
 
 #include "proxy/command/command.h"                 // for CreateCommand, etc
 #include "proxy/command/command_logger.h"          // for LOG_COMMAND
@@ -96,6 +93,10 @@ common::Error Driver::ExecuteImpl(const core::command_buffer_t& command, core::F
   return impl_->Execute(command, out);
 }
 
+common::Error Driver::DBkcountImpl(core::keys_limit_t* size) {
+  return impl_->DBkcount(size);
+}
+
 common::Error Driver::GetCurrentServerInfo(core::IServerInfo** info) {
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(DB_INFO_COMMAND, core::C_INNER);
   LOG_COMMAND(cmd);
@@ -125,67 +126,6 @@ common::Error Driver::GetCurrentDataBaseInfo(core::IDataBaseInfo** info) {
   }
 
   return impl_->Select(impl_->GetCurrentDBName(), info);
-}
-
-void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {
-  QObject* sender = ev->sender();
-  NotifyProgress(sender, 0);
-  events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
-  const core::command_buffer_t pattern_result = core::GetKeysPattern(res.cursor_in, res.pattern, res.keys_count);
-  core::FastoObjectCommandIPtr cmd = CreateCommandFast(pattern_result, core::C_INNER);
-  NotifyProgress(sender, 50);
-  common::Error err = Execute(cmd);
-  if (err) {
-    res.setErrorInfo(err);
-  } else {
-    core::FastoObject::childs_t rchildrens = cmd->GetChildrens();
-    if (rchildrens.size()) {
-      CHECK_EQ(rchildrens.size(), 1);
-      core::FastoObject* array = rchildrens[0].get();
-      CHECK(array);
-      auto array_value = array->GetValue();
-      common::ArrayValue* arm = nullptr;
-      if (!array_value->GetAsList(&arm)) {
-        goto done;
-      }
-
-      CHECK_EQ(arm->GetSize(), 2);
-      std::string cursor;
-      bool isok = arm->GetString(0, &cursor);
-      if (!isok) {
-        goto done;
-      }
-
-      uint64_t lcursor;
-      if (common::ConvertFromString(cursor, &lcursor)) {
-        res.cursor_out = lcursor;
-      }
-
-      common::ArrayValue* ar = nullptr;
-      isok = arm->GetList(1, &ar);
-      if (!isok) {
-        goto done;
-      }
-
-      for (size_t i = 0; i < ar->GetSize(); ++i) {
-        std::string key_str;
-        if (ar->GetString(i, &key_str)) {
-          core::key_t key(key_str);
-          core::NKey k(key);
-          core::NValue empty_val(core::CreateEmptyValueFromType(common::Value::TYPE_STRING));
-          core::NDbKValue ress(k, empty_val);
-          res.keys.push_back(ress);
-        }
-      }
-
-      common::Error err = impl_->DBkcount(&res.db_keys_count);
-      DCHECK(!err);
-    }
-  }
-done:
-  NotifyProgress(sender, 75);
-  Reply(sender, new events::LoadDatabaseContentResponceEvent(this, res));
-  NotifyProgress(sender, 100);
 }
 
 core::IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {

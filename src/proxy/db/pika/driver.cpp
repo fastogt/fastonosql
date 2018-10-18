@@ -134,6 +134,10 @@ common::Error Driver::ExecuteImpl(const core::command_buffer_t& command, core::F
   return impl_->Execute(command, out);
 }
 
+common::Error Driver::DBkcountImpl(core::keys_limit_t* size) {
+  return impl_->DBkcount(size);
+}
+
 common::Error Driver::GetCurrentServerInfo(core::IServerInfo** info) {
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(DB_INFO_COMMAND, core::C_INNER);
   common::Error err = Execute(cmd.get());
@@ -228,16 +232,12 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
       }
 
       CHECK_EQ(arm->GetSize(), 2);
-      std::string cursor;
-      bool isok = arm->GetString(0, &cursor);
+      core::cursor_t cursor;
+      bool isok = arm->GetUInteger(0, &cursor);
       if (!isok) {
         goto done;
       }
-
-      uint64_t lcursor;
-      if (common::ConvertFromString(cursor, &lcursor)) {
-        res.cursor_out = lcursor;
-      }
+      res.cursor_out = cursor;
 
       common::ArrayValue* ar = nullptr;
       isok = arm->GetList(1, &ar);
@@ -299,7 +299,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         }
       }
 
-      err = impl_->DBkcount(&res.db_keys_count);
+      err = DBkcountImpl(&res.db_keys_count);
       DCHECK(!err);
     }
   }

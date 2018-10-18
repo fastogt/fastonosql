@@ -185,7 +185,7 @@ struct LoadDatabaseContentRequest : public EventInfoBase {
 
   core::IDataBaseInfoSPtr inf;
   const std::string pattern;
-  core::keys_limit_t keys_count;
+  const core::keys_limit_t keys_count;  // requested
   const core::cursor_t cursor_in;
 };
 
@@ -196,7 +196,7 @@ struct LoadDatabaseContentResponce : LoadDatabaseContentRequest {
 
   keys_container_t keys;
   core::cursor_t cursor_out;
-  size_t db_keys_count;
+  core::keys_limit_t db_keys_count;  // total keys count
 };
 
 struct LoadServerChannelsRequest : public EventInfoBase {
