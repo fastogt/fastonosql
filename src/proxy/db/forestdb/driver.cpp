@@ -67,12 +67,13 @@ void Driver::ClearImpl() {}
 
 core::FastoObjectCommandIPtr Driver::CreateCommand(core::FastoObject* parent,
                                                    const core::command_buffer_t& input,
-                                                   core::CmdLoggingType ct) {
-  return proxy::CreateCommand<forestdb::Command>(parent, input, ct);
+                                                   core::CmdLoggingType logging_type) {
+  return proxy::CreateCommand<forestdb::Command>(parent, input, logging_type);
 }
 
-core::FastoObjectCommandIPtr Driver::CreateCommandFast(const core::command_buffer_t& input, core::CmdLoggingType ct) {
-  return proxy::CreateCommandFast<forestdb::Command>(input, ct);
+core::FastoObjectCommandIPtr Driver::CreateCommandFast(const core::command_buffer_t& input,
+                                                       core::CmdLoggingType logging_type) {
+  return proxy::CreateCommandFast<forestdb::Command>(input, logging_type);
 }
 
 core::IDataBaseInfoSPtr Driver::CreateDatabaseInfo(const std::string& name, bool is_default, size_t size) {

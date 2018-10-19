@@ -36,7 +36,7 @@ class Driver : public IDriverRemote {
   Q_OBJECT
  public:
   explicit Driver(IConnectionSettingsBaseSPtr settings);
-  virtual ~Driver();
+  virtual ~Driver() override;
 
   virtual bool IsInterrupted() const override;
   virtual void SetInterrupted(bool interrupted) override;
@@ -52,10 +52,10 @@ class Driver : public IDriverRemote {
 
   virtual core::FastoObjectCommandIPtr CreateCommand(core::FastoObject* parent,
                                                      const core::command_buffer_t& input,
-                                                     core::CmdLoggingType ct) override;
+                                                     core::CmdLoggingType logging_type) override;
 
   virtual core::FastoObjectCommandIPtr CreateCommandFast(const core::command_buffer_t& input,
-                                                         core::CmdLoggingType ct) override;
+                                                         core::CmdLoggingType logging_type) override;
 
   virtual core::IDataBaseInfoSPtr CreateDatabaseInfo(const std::string& name, bool is_default, size_t size) override;
 

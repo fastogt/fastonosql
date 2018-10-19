@@ -37,7 +37,7 @@ IClusterSettingsBase::cluster_nodes_t IClusterSettingsBase::GetNodes() const {
 
 void IClusterSettingsBase::AddNode(IConnectionSettingsBaseSPtr node) {
   if (!node) {
-    // DNOTREACHED();
+    DNOTREACHED();
     return;
   }
 
@@ -54,8 +54,7 @@ std::string IClusterSettingsBase::ToString() const {
     }
   }
 
-  std::string res = str.str();
-  return res;
+  return str.str();
 }
 
 IConnectionSettingsBaseSPtr IClusterSettingsBase::FindSettingsByHost(const common::net::HostAndPort& host) const {

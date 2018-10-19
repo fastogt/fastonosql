@@ -58,7 +58,7 @@ class IConnectionSettings : public common::ClonableBase<IConnectionSettings> {
  public:
   static const char default_ns_separator[];
 
-  virtual ~IConnectionSettings();
+  virtual ~IConnectionSettings() override;
 
   connection_path_t GetPath() const;
   void SetPath(const connection_path_t& path);

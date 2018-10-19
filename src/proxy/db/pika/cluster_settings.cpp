@@ -24,12 +24,11 @@ namespace fastonosql {
 namespace proxy {
 namespace pika {
 
-ClusterSettings::ClusterSettings(const connection_path_t& connectionName)
-    : IClusterSettingsBase(connectionName, core::PIKA) {}
+ClusterSettings::ClusterSettings(const connection_path_t& connection_path)
+    : IClusterSettingsBase(connection_path, core::PIKA) {}
 
 ClusterSettings* ClusterSettings::Clone() const {
-  ClusterSettings* red = new ClusterSettings(*this);
-  return red;
+  return new ClusterSettings(*this);
 }
 
 }  // namespace pika

@@ -149,7 +149,7 @@ ServersManager::server_t ServersManager::CreateServer(IConnectionSettingsBaseSPt
   }
 #endif
 
-  CHECK(server);
+  CHECK(server) << "Server should be allocated, type: " << connection_type;
   servers_.push_back(server);
   return server;
 }
@@ -247,78 +247,78 @@ common::Error ServersManager::TestConnection(IConnectionSettingsBaseSPtr connect
     return common::make_error_inval();
   }
 
-  core::ConnectionType type = connection->GetType();
+  core::ConnectionType connection_type = connection->GetType();
 #ifdef BUILD_WITH_REDIS
-  if (type == core::REDIS) {
+  if (connection_type == core::REDIS) {
     redis::ConnectionSettings* settings = static_cast<redis::ConnectionSettings*>(connection.get());
     core::redis::RConfig rconfig(settings->GetInfo(), settings->GetSSHInfo());
     return core::redis::TestConnection(rconfig);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-  if (type == core::MEMCACHED) {
+  if (connection_type == core::MEMCACHED) {
     memcached::ConnectionSettings* settings = static_cast<memcached::ConnectionSettings*>(connection.get());
     return fastonosql::core::memcached::TestConnection(settings->GetInfo());
   }
 #endif
 #ifdef BUILD_WITH_SSDB
-  if (type == core::SSDB) {
+  if (connection_type == core::SSDB) {
     ssdb::ConnectionSettings* settings = static_cast<ssdb::ConnectionSettings*>(connection.get());
     return fastonosql::core::ssdb::TestConnection(settings->GetInfo());
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
-  if (type == core::LEVELDB) {
+  if (connection_type == core::LEVELDB) {
     leveldb::ConnectionSettings* settings = static_cast<leveldb::ConnectionSettings*>(connection.get());
     return fastonosql::core::leveldb::TestConnection(settings->GetInfo());
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-  if (type == core::ROCKSDB) {
+  if (connection_type == core::ROCKSDB) {
     rocksdb::ConnectionSettings* settings = static_cast<rocksdb::ConnectionSettings*>(connection.get());
     return fastonosql::core::rocksdb::TestConnection(settings->GetInfo());
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
-  if (type == core::UNQLITE) {
+  if (connection_type == core::UNQLITE) {
     unqlite::ConnectionSettings* settings = static_cast<unqlite::ConnectionSettings*>(connection.get());
     return fastonosql::core::unqlite::TestConnection(settings->GetInfo());
   }
 #endif
 #ifdef BUILD_WITH_LMDB
-  if (type == core::LMDB) {
+  if (connection_type == core::LMDB) {
     lmdb::ConnectionSettings* settings = static_cast<lmdb::ConnectionSettings*>(connection.get());
     return fastonosql::core::lmdb::TestConnection(settings->GetInfo());
   }
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
-  if (type == core::UPSCALEDB) {
+  if (connection_type == core::UPSCALEDB) {
     upscaledb::ConnectionSettings* settings = static_cast<upscaledb::ConnectionSettings*>(connection.get());
     return fastonosql::core::upscaledb::TestConnection(settings->GetInfo());
   }
 #endif
 #ifdef BUILD_WITH_FORESTDB
-  if (type == core::FORESTDB) {
+  if (connection_type == core::FORESTDB) {
     forestdb::ConnectionSettings* settings = static_cast<forestdb::ConnectionSettings*>(connection.get());
     return fastonosql::core::forestdb::TestConnection(settings->GetInfo());
   }
 #endif
 #ifdef BUILD_WITH_PIKA
-  if (type == core::PIKA) {
+  if (connection_type == core::PIKA) {
     pika::ConnectionSettings* settings = static_cast<pika::ConnectionSettings*>(connection.get());
     core::pika::RConfig rconfig(settings->GetInfo(), settings->GetSSHInfo());
     return core::pika::TestConnection(rconfig);
   }
 #endif
 
-  NOTREACHED();
+  NOTREACHED() << "Can't find test connection implementation for: " << connection_type;
   return common::make_error("Invalid setting type");
 }
 
 #if defined(PRO_VERSION)
 common::Error ServersManager::DiscoveryClusterConnection(IConnectionSettingsBaseSPtr connection,
-                                                         std::vector<core::ServerDiscoveryClusterInfoSPtr>* inf) {
-  if (!connection || !inf) {
+                                                         std::vector<core::ServerDiscoveryClusterInfoSPtr>* out) {
+  if (!connection || !out) {
     return common::make_error_inval();
   }
 
@@ -327,7 +327,7 @@ common::Error ServersManager::DiscoveryClusterConnection(IConnectionSettingsBase
   if (connection_type == core::REDIS) {
     redis::ConnectionSettings* settings = static_cast<redis::ConnectionSettings*>(connection.get());
     core::redis::RConfig rconfig(settings->GetInfo(), settings->GetSSHInfo());
-    return core::redis::DiscoveryClusterConnection(rconfig, inf);
+    return core::redis::DiscoveryClusterConnection(rconfig, out);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
@@ -374,77 +374,77 @@ common::Error ServersManager::DiscoveryClusterConnection(IConnectionSettingsBase
   if (connection_type == core::PIKA) {
     pika::ConnectionSettings* settings = static_cast<pika::ConnectionSettings*>(connection.get());
     core::pika::RConfig rconfig(settings->GetInfo(), settings->GetSSHInfo());
-    return core::pika::DiscoveryClusterConnection(rconfig, inf);
+    return core::pika::DiscoveryClusterConnection(rconfig, out);
   }
 #endif
 
-  NOTREACHED();
+  NOTREACHED() << "Can't find discovery cluster implementation for: " << connection_type;
   return common::make_error("Invalid setting type");
 }
 
 common::Error ServersManager::DiscoverySentinelConnection(IConnectionSettingsBaseSPtr connection,
-                                                          std::vector<core::ServerDiscoverySentinelInfoSPtr>* inf) {
-  if (!connection || !inf) {
+                                                          std::vector<core::ServerDiscoverySentinelInfoSPtr>* out) {
+  if (!connection || !out) {
     return common::make_error_inval();
   }
 
-  core::ConnectionType type = connection->GetType();
+  core::ConnectionType connection_type = connection->GetType();
 #ifdef BUILD_WITH_REDIS
-  if (type == core::REDIS) {
+  if (connection_type == core::REDIS) {
     redis::ConnectionSettings* settings = static_cast<redis::ConnectionSettings*>(connection.get());
     core::redis::RConfig rconfig(settings->GetInfo(), settings->GetSSHInfo());
-    return core::redis::DiscoverySentinelConnection(rconfig, inf);
+    return core::redis::DiscoverySentinelConnection(rconfig, out);
   }
 #endif
 #ifdef BUILD_WITH_MEMCACHED
-  if (type == core::MEMCACHED) {
+  if (connection_type == core::MEMCACHED) {
     return common::make_error("Not supported setting type");
   }
 #endif
 #ifdef BUILD_WITH_SSDB
-  if (type == core::SSDB) {
+  if (connection_type == core::SSDB) {
     return common::make_error("Not supported setting type");
   }
 #endif
 #ifdef BUILD_WITH_LEVELDB
-  if (type == core::LEVELDB) {
+  if (connection_type == core::LEVELDB) {
     return common::make_error("Not supported setting type");
   }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
-  if (type == core::ROCKSDB) {
+  if (connection_type == core::ROCKSDB) {
     return common::make_error("Not supported setting type");
   }
 #endif
 #ifdef BUILD_WITH_UNQLITE
-  if (type == core::UNQLITE) {
+  if (connection_type == core::UNQLITE) {
     return common::make_error("Not supported setting type");
   }
 #endif
 #ifdef BUILD_WITH_LMDB
-  if (type == core::LMDB) {
+  if (connection_type == core::LMDB) {
     return common::make_error("Not supported setting type");
   }
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
-  if (type == core::UPSCALEDB) {
+  if (connection_type == core::UPSCALEDB) {
     return common::make_error("Not supported setting type");
   }
 #endif
 #ifdef BUILD_WITH_FORESTDB
-  if (type == core::FORESTDB) {
+  if (connection_type == core::FORESTDB) {
     return common::make_error("Not supported setting type");
   }
 #endif
 #ifdef BUILD_WITH_PIKA
-  if (type == core::PIKA) {
+  if (connection_type == core::PIKA) {
     pika::ConnectionSettings* settings = static_cast<pika::ConnectionSettings*>(connection.get());
     core::pika::RConfig rconfig(settings->GetInfo(), settings->GetSSHInfo());
-    return core::pika::DiscoverySentinelConnection(rconfig, inf);
+    return core::pika::DiscoverySentinelConnection(rconfig, out);
   }
 #endif
 
-  NOTREACHED();
+  NOTREACHED() << "Can't find discovery cluster implementation for: " << connection_type;
   return common::make_error("Invalid setting type");
 }
 #endif

@@ -69,6 +69,7 @@ namespace proxy {
 
 common::Error GenVersionRequest(std::string* request) {
   if (!request) {
+    DNOTREACHED();
     return common::make_error_inval();
   }
 
@@ -78,6 +79,7 @@ common::Error GenVersionRequest(std::string* request) {
   req.method = GET_VERSION_METHOD;
   common::Error err = common::protocols::json_rpc::MakeJsonRPCRequest(req, &command_json);
   if (err) {
+    DNOTREACHED();
     return err;
   }
 
@@ -89,21 +91,25 @@ common::Error GenVersionRequest(std::string* request) {
 
 common::Error ParseVersionResponce(const std::string& data, uint32_t* version) {
   if (data.empty() || !version) {
+    DNOTREACHED();
     return common::make_error_inval();
   }
 
   common::protocols::json_rpc::JsonRPCResponce jres;
   common::Error err = common::protocols::json_rpc::ParseJsonRPCResponce(data, &jres);
   if (err) {
+    DNOTREACHED();
     return err;
   }
 
   if (jres.IsError()) {
+    DNOTREACHED();
     return common::make_error(jres.error->message);
   }
 
-  std::string result_str = jres.message->result;
+  const std::string result_str = jres.message->result;
   if (result_str.empty()) {
+    DNOTREACHED();
     return common::make_error_inval();
   }
 
@@ -113,11 +119,12 @@ common::Error ParseVersionResponce(const std::string& data, uint32_t* version) {
 
 common::Error GenAnonymousStatisticRequest(std::string* request) {
   if (!request) {
+    DNOTREACHED();
     return common::make_error_inval();
   }
 
   json_object* stats_json = json_object_new_object();
-  common::system_info::SystemInfo inf = common::system_info::currentSystemInfo();
+  const common::system_info::SystemInfo inf = common::system_info::currentSystemInfo();
 
   json_object* os_json = json_object_new_object();
   const std::string os_name = inf.GetName();
@@ -142,6 +149,7 @@ common::Error GenAnonymousStatisticRequest(std::string* request) {
   json_object_put(stats_json);
   common::Error err = common::protocols::json_rpc::MakeJsonRPCRequest(req, &command_json);
   if (err) {
+    DNOTREACHED();
     return err;
   }
 
@@ -153,12 +161,13 @@ common::Error GenAnonymousStatisticRequest(std::string* request) {
 
 common::Error GenStatisticRequest(const std::string& login, const std::string& build_strategy, std::string* request) {
   if (!request || login.empty() || build_strategy.empty()) {
+    DNOTREACHED();
     return common::make_error_inval();
   }
 
   json_object* stats_json = json_object_new_object();
   json_object_object_add(stats_json, STATISTIC_EMAIL_FIELD, json_object_new_string(login.c_str()));
-  common::system_info::SystemInfo inf = common::system_info::currentSystemInfo();
+  const common::system_info::SystemInfo inf = common::system_info::currentSystemInfo();
 
   json_object* os_json = json_object_new_object();
   const std::string os_name = inf.GetName();
@@ -185,6 +194,7 @@ common::Error GenStatisticRequest(const std::string& login, const std::string& b
   json_object_put(stats_json);
   common::Error err = common::protocols::json_rpc::MakeJsonRPCRequest(req, &command_json);
   if (err) {
+    DNOTREACHED();
     return err;
   }
 
@@ -196,6 +206,7 @@ common::Error GenStatisticRequest(const std::string& login, const std::string& b
 
 common::Error ParseSendStatisticResponce(const std::string& data) {
   if (data.empty()) {
+    DNOTREACHED();
     return common::make_error_inval();
   }
 
@@ -206,11 +217,12 @@ common::Error ParseSendStatisticResponce(const std::string& data) {
 #if defined(PRO_VERSION)
 common::Error GenSubscriptionStateRequest(const UserInfo& user_info, std::string* request) {
   if (!user_info.IsValid() || !request) {
+    DNOTREACHED();
     return common::make_error_inval();
   }
 
-  std::string login = user_info.GetLogin();
-  std::string password = user_info.GetPassword();
+  const std::string login = user_info.GetLogin();
+  const std::string password = user_info.GetPassword();
   json_object* cred_json = json_object_new_object();
   json_object_object_add(cred_json, SUBSCRIBED_LOGIN_FIELD, json_object_new_string(login.c_str()));
   json_object_object_add(cred_json, SUBSCRIBED_PASSWORD_FIELD, json_object_new_string(password.c_str()));
@@ -222,44 +234,52 @@ common::Error GenSubscriptionStateRequest(const UserInfo& user_info, std::string
   req.params = std::string(json_object_get_string(cred_json));
   common::Error err = common::protocols::json_rpc::MakeJsonRPCRequest(req, &is_subscribed_json);
   if (err) {
+    DNOTREACHED();
     json_object_put(cred_json);
     return err;
   }
+
   const char* command_json_string = json_object_get_string(is_subscribed_json);
   *request = command_json_string;
   json_object_put(is_subscribed_json);
   return common::Error();
 }
 
-common::Error ParseSubscriptionStateResponce(const std::string& data, UserInfo* result) {
-  if (data.empty() || !result) {
+common::Error ParseSubscriptionStateResponce(const std::string& data, UserInfo* update) {
+  if (data.empty() || !update || !update->IsValid()) {
+    DNOTREACHED();
     return common::make_error_inval();
   }
 
   common::protocols::json_rpc::JsonRPCResponce jres;
   common::Error err = common::protocols::json_rpc::ParseJsonRPCResponce(data, &jres);
   if (err) {
+    DNOTREACHED();
     return err;
   }
 
   if (jres.IsError()) {
+    DNOTREACHED();
     return common::make_error(jres.error->message);
   }
 
-  std::string result_str = jres.message->result;
+  const std::string result_str = jres.message->result;
   if (result_str.empty()) {
+    DNOTREACHED();
     return common::make_error_inval();
   }
 
   json_object* obj = json_tokener_parse(result_str.c_str());
   if (!obj) {
+    DNOTREACHED();
     return common::make_error_inval();
   }
 
-  UserInfo lres = *result;
+  UserInfo lres = *update;
   json_object* jfirst_name = nullptr;
   bool jfirst_name_exist = json_object_object_get_ex(obj, USER_FIRST_NAME, &jfirst_name);
   if (!jfirst_name_exist) {
+    DNOTREACHED();
     json_object_put(obj);
     return common::make_error_inval();
   }
@@ -268,6 +288,7 @@ common::Error ParseSubscriptionStateResponce(const std::string& data, UserInfo* 
   json_object* jlast_name = nullptr;
   bool jlast_name_exist = json_object_object_get_ex(obj, USER_LAST_NAME, &jlast_name);
   if (!jlast_name_exist) {
+    DNOTREACHED();
     json_object_put(obj);
     return common::make_error_inval();
   }
@@ -276,6 +297,7 @@ common::Error ParseSubscriptionStateResponce(const std::string& data, UserInfo* 
   json_object* jsubscription_state = nullptr;
   bool jsubscription_state_exist = json_object_object_get_ex(obj, USER_SUBSCRIPTION_STATE, &jsubscription_state);
   if (!jsubscription_state_exist) {
+    DNOTREACHED();
     json_object_put(obj);
     return common::make_error_inval();
   }
@@ -286,15 +308,17 @@ common::Error ParseSubscriptionStateResponce(const std::string& data, UserInfo* 
   json_object* jtype = nullptr;
   bool jtype_exist = json_object_object_get_ex(obj, USER_TYPE, &jtype);
   if (!jtype_exist) {
+    DNOTREACHED();
     json_object_put(obj);
     return common::make_error_inval();
   }
-  proxy::UserInfo::Type t = static_cast<proxy::UserInfo::Type>(json_object_get_int(jtype));
-  lres.SetType(t);
+  const proxy::UserInfo::Type user_type = static_cast<proxy::UserInfo::Type>(json_object_get_int(jtype));
+  lres.SetType(user_type);
 
   json_object* jexec_count = nullptr;
   bool jexec_count_exist = json_object_object_get_ex(obj, USER_EXEC_COUNT, &jexec_count);
   if (!jexec_count_exist) {
+    DNOTREACHED();
     json_object_put(obj);
     return common::make_error_inval();
   }
@@ -304,6 +328,7 @@ common::Error ParseSubscriptionStateResponce(const std::string& data, UserInfo* 
   json_object* jexpire_time = nullptr;
   bool jexpire_time_exist = json_object_object_get_ex(obj, USER_EXPIRE_TIME, &jexpire_time);
   if (!jexpire_time_exist) {
+    DNOTREACHED();
     json_object_put(obj);
     return common::make_error_inval();
   }
@@ -313,20 +338,21 @@ common::Error ParseSubscriptionStateResponce(const std::string& data, UserInfo* 
   json_object* juser_id = nullptr;
   bool juser_id_exist = json_object_object_get_ex(obj, USER_ID, &juser_id);
   if (!juser_id_exist) {
+    DNOTREACHED();
     json_object_put(obj);
     return common::make_error_inval();
   }
-  proxy::user_id_t user_id = json_object_get_string(juser_id);
+
+  const proxy::user_id_t user_id = json_object_get_string(juser_id);
   lres.SetUserID(user_id);
-
   json_object_put(obj);
-
-  *result = lres;
+  *update = lres;
   return common::Error();
 }
 
 common::Error GenBanUserRequest(const UserInfo& user_info, user_id_t collision_id, std::string* request) {
   if (!request || !user_info.IsValid() || collision_id.empty()) {
+    DNOTREACHED();
     return common::make_error_inval();
   }
 
@@ -335,13 +361,14 @@ common::Error GenBanUserRequest(const UserInfo& user_info, user_id_t collision_i
   req.id = common::protocols::json_rpc::null_json_rpc_id;
   req.method = BAN_USER_METHOD;
   json_object* ban_json = json_object_new_object();
-  std::string login = user_info.GetLogin();
+  const std::string login = user_info.GetLogin();
   json_object_object_add(ban_json, BAN_USER_LOGIN_FIELD, json_object_new_string(login.c_str()));
   json_object_object_add(ban_json, BAN_USER_COLLISION_FIELD, json_object_new_string(collision_id.c_str()));
   req.params = std::string(json_object_get_string(ban_json));
   json_object_put(ban_json);
   common::Error err = common::protocols::json_rpc::MakeJsonRPCRequest(req, &ban_user_json);
   if (err) {
+    DNOTREACHED();
     return err;
   }
 
@@ -353,6 +380,7 @@ common::Error GenBanUserRequest(const UserInfo& user_info, user_id_t collision_i
 
 common::Error ParseGenBanUserResponce(const std::string& data) {
   if (data.empty()) {
+    DNOTREACHED();
     return common::make_error_inval();
   }
 

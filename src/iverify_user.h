@@ -41,17 +41,16 @@ class IVerifyUser : public QObject {
  public Q_SLOTS:
   void routine();
 
- protected:
+ private:
   common::Error startVerification(const QString& login,
                                   const QString& password,
                                   proxy::UserInfo::BuildStrategy strategy,
-                                  proxy::UserInfo* uinf) WARN_UNUSED_RESULT;
+                                  proxy::UserInfo* user_info_out) WARN_UNUSED_RESULT;
 
- private:
   virtual common::Error startVerificationImpl(const std::string& login,
                                               const std::string& hexed_password,
                                               proxy::UserInfo::BuildStrategy strategy,
-                                              proxy::UserInfo* uinf) WARN_UNUSED_RESULT = 0;
+                                              proxy::UserInfo* user_info_out) WARN_UNUSED_RESULT = 0;
 
   const QString login_;
   const QString password_;

@@ -48,7 +48,7 @@ ConnectionDialog::ConnectionDialog(core::ConnectionType type, const QString& con
     : QDialog(parent), connection_() {
   proxy::connection_path_t path(kDefaultNameConnectionFolder + common::ConvertToString(connection_name));
   proxy::IConnectionSettingsBase* connection =
-      proxy::ConnectionSettingsFactory::GetInstance().CreateFromType(type, path);
+      proxy::ConnectionSettingsFactory::GetInstance().CreateFromTypeConnection(type, path);
   init(connection);
 }
 

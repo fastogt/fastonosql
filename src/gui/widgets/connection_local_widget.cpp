@@ -28,11 +28,11 @@ namespace fastonosql {
 namespace gui {
 
 ConnectionLocalWidget::ConnectionLocalWidget(IPathWidget* path_widget, QWidget* parent)
-    : ConnectionBaseWidget(parent), pathWidget_(path_widget) {
+    : ConnectionBaseWidget(parent), path_widget_(path_widget) {
   CHECK(path_widget);
-  QLayout* path_layout = pathWidget_->layout();
+  QLayout* path_layout = path_widget_->layout();
   path_layout->setContentsMargins(0, 0, 0, 0);
-  addWidget(pathWidget_);
+  addWidget(path_widget_);
 }
 
 void ConnectionLocalWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
@@ -40,7 +40,7 @@ void ConnectionLocalWidget::syncControls(proxy::IConnectionSettingsBase* connect
   if (local) {
     QString db_path;
     common::ConvertFromString(local->GetDBPath(), &db_path);
-    pathWidget_->setPath(db_path);
+    path_widget_->setPath(db_path);
   }
   ConnectionBaseWidget::syncControls(local);
 }
@@ -50,7 +50,7 @@ void ConnectionLocalWidget::retranslateUi() {
 }
 
 bool ConnectionLocalWidget::validated() const {
-  if (!pathWidget_->isValidPath()) {
+  if (!path_widget_->isValidPath()) {
     return false;
   }
 
@@ -60,7 +60,7 @@ bool ConnectionLocalWidget::validated() const {
 proxy::IConnectionSettingsBase* ConnectionLocalWidget::createConnectionImpl(
     const proxy::connection_path_t& path) const {
   proxy::IConnectionSettingsLocal* local = createConnectionLocalImpl(path);
-  local->SetDBPath(common::ConvertToString(pathWidget_->path()));
+  local->SetDBPath(common::ConvertToString(path_widget_->path()));
   return local;
 }
 

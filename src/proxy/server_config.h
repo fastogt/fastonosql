@@ -41,7 +41,7 @@ common::Error ParseSendStatisticResponce(const std::string& data);
 
 #if defined(PRO_VERSION)
 common::Error GenSubscriptionStateRequest(const UserInfo& user_info, std::string* request);
-common::Error ParseSubscriptionStateResponce(const std::string& data, UserInfo* result);
+common::Error ParseSubscriptionStateResponce(const std::string& data, UserInfo* update);
 
 common::Error GenBanUserRequest(const UserInfo& user_info, user_id_t collision_id, std::string* request);
 common::Error ParseGenBanUserResponce(const std::string& data);

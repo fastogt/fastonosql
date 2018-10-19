@@ -42,7 +42,7 @@ namespace proxy {
 class IDriver : public QObject, public core::CDBConnectionClient {
   Q_OBJECT
  public:
-  virtual ~IDriver();
+  virtual ~IDriver() override;
 
   static void Reply(QObject* reciver, QEvent* ev);
 

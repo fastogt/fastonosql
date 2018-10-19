@@ -48,7 +48,7 @@ class ConnectionLocalWidget : public ConnectionBaseWidget {
  private:
   virtual proxy::IConnectionSettingsBase* createConnectionImpl(
       const proxy::connection_path_t& path) const override final;
-  IPathWidget* const pathWidget_;
+  IPathWidget* const path_widget_;
 };
 
 class ConnectionLocalWidgetDirectoryPath : public ConnectionLocalWidget {

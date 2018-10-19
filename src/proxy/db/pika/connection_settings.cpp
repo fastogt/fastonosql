@@ -61,8 +61,7 @@ void ConnectionSettings::SetInfo(const core::pika::Config& info) {
 }
 
 ConnectionSettings* ConnectionSettings::Clone() const {
-  ConnectionSettings* red = new ConnectionSettings(*this);
-  return red;
+  return new ConnectionSettings(*this);
 }
 
 }  // namespace pika

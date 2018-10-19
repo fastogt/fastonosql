@@ -42,8 +42,7 @@ std::string SentinelSettingsToString(const SentinelSettings& sent) {
   }
 
   str << common::utils::base64::encode64(sents_raw);
-  std::string res = str.str();
-  return res;
+  return str.str();
 }
 
 bool SentinelSettingsfromString(const std::string& text, SentinelSettings* sent) {
@@ -54,41 +53,42 @@ bool SentinelSettingsfromString(const std::string& text, SentinelSettings* sent)
   SentinelSettings result;
   size_t len = text.size();
 
-  uint8_t commaCount = 0;
-  std::string elText;
+  uint8_t comma_count = 0;
+  std::string element_text;
   for (size_t i = 0; i < len; ++i) {
     char ch = text[i];
     if (ch == setting_value_delemitr || i == len - 1) {
-      if (commaCount == 0) {
-        std::string sent_raw = common::utils::base64::decode64(elText);
-        IConnectionSettingsBaseSPtr sent(ConnectionSettingsFactory::GetInstance().CreateFromString(sent_raw));
+      if (comma_count == 0) {
+        std::string sent_raw = common::utils::base64::decode64(element_text);
+        IConnectionSettingsBaseSPtr sent(ConnectionSettingsFactory::GetInstance().CreateFromStringConnection(sent_raw));
         if (!sent) {
           return false;
         }
 
         result.sentinel = sent;
 
-        std::string serText;
+        std::string server_text;
         std::string raw_sent = common::utils::base64::decode64(text.substr(i + 1));
         len = raw_sent.length();
         for (size_t j = 0; j < len; ++j) {
           ch = raw_sent[j];
           if (ch == magic_number || j == len - 1) {
-            IConnectionSettingsBaseSPtr ser(ConnectionSettingsFactory::GetInstance().CreateFromString(serText));
+            IConnectionSettingsBaseSPtr ser(
+                ConnectionSettingsFactory::GetInstance().CreateFromStringConnection(server_text));
             if (ser) {
               result.sentinel_nodes.push_back(ser);
             }
-            serText.clear();
+            server_text.clear();
           } else {
-            serText += ch;
+            server_text += ch;
           }
         }
         break;
       }
-      commaCount++;
-      elText.clear();
+      comma_count++;
+      element_text.clear();
     } else {
-      elText += ch;
+      element_text += ch;
     }
   }
 
@@ -98,8 +98,8 @@ bool SentinelSettingsfromString(const std::string& text, SentinelSettings* sent)
 
 //
 
-ISentinelSettingsBase::ISentinelSettingsBase(const connection_path_t& connectionName, core::ConnectionType type)
-    : IConnectionSettings(connectionName, type), sentinel_nodes_() {}
+ISentinelSettingsBase::ISentinelSettingsBase(const connection_path_t& connection_path, core::ConnectionType type)
+    : IConnectionSettings(connection_path, type), sentinel_nodes_() {}
 
 ISentinelSettingsBase::sentinel_connections_t ISentinelSettingsBase::GetSentinels() const {
   return sentinel_nodes_;

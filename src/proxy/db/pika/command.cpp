@@ -24,9 +24,9 @@ namespace pika {
 
 Command::Command(core::FastoObject* parent,
                  common::StringValue* cmd,
-                 core::CmdLoggingType ct,
+                 core::CmdLoggingType logging_type,
                  const std::string& delimiter)
-    : core::FastoObjectCommand(parent, cmd, ct, delimiter, core::PIKA) {}
+    : core::FastoObjectCommand(parent, cmd, logging_type, delimiter, core::PIKA) {}
 
 }  // namespace pika
 }  // namespace proxy

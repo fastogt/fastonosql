@@ -24,9 +24,9 @@ namespace redis {
 
 Command::Command(core::FastoObject* parent,
                  common::StringValue* cmd,
-                 core::CmdLoggingType ct,
+                 core::CmdLoggingType logging_type,
                  const std::string& delimiter)
-    : core::FastoObjectCommand(parent, cmd, ct, delimiter, core::REDIS) {}
+    : core::FastoObjectCommand(parent, cmd, logging_type, delimiter, core::REDIS) {}
 
 }  // namespace redis
 }  // namespace proxy

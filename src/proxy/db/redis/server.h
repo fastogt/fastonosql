@@ -31,7 +31,7 @@ class Server : public IServerRemote {
   Q_OBJECT
  public:
   explicit Server(IConnectionSettingsBaseSPtr settings);
-  virtual ~Server();
+  virtual ~Server() override;
 
   virtual core::ServerType GetRole() const override;
   virtual core::ServerMode GetMode() const override;

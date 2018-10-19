@@ -33,7 +33,7 @@ OnlineVerifyUser::OnlineVerifyUser(const QString& login,
 common::Error OnlineVerifyUser::startVerificationImpl(const std::string& login,
                                                       const std::string& hexed_password,
                                                       proxy::UserInfo::BuildStrategy strategy,
-                                                      proxy::UserInfo* uinf) {
+                                                      proxy::UserInfo* user_info_out) {
 #if defined(FASTONOSQL)
   common::net::ClientSocketTcp client(common::net::HostAndPort(FASTONOSQL_HOST, SERVER_REQUESTS_PORT));
 #elif defined(FASTOREDIS)
@@ -77,7 +77,7 @@ common::Error OnlineVerifyUser::startVerificationImpl(const std::string& login,
     return jerror;
   }
 
-  *uinf = user_info;
+  *user_info_out = user_info;
   return common::Error();
 }
 

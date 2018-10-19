@@ -33,8 +33,9 @@
 namespace fastonosql {
 namespace proxy {
 
-IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromType(core::ConnectionType type,
-                                                                       const connection_path_t& connection_path) {
+IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromTypeCluster(
+    core::ConnectionType type,
+    const connection_path_t& connection_path) {
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
     return new redis::ClusterSettings(connection_path);
@@ -45,57 +46,64 @@ IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromType(core::Con
     return new pika::ClusterSettings(connection_path);
   }
 #endif
+
+  NOTREACHED() << "Not handled type: " << type;
   return nullptr;
 }
 
-IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromString(const std::string& val) {
-  if (val.empty()) {
+IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromStringCluster(const std::string& value) {
+  if (value.empty()) {
+    DNOTREACHED();
     return nullptr;
   }
 
   IClusterSettingsBase* result = nullptr;
-  size_t len = val.size();
+  size_t value_len = value.size();
 
-  uint8_t commaCount = 0;
-  std::string elText;
+  uint8_t comma_count = 0;
+  std::string element_text;
 
-  for (size_t i = 0; i < len; ++i) {
-    char ch = val[i];
+  for (size_t i = 0; i < value_len; ++i) {
+    char ch = value[i];
     if (ch == setting_value_delemitr) {
-      if (commaCount == 0) {
-        int crT = elText[0] - 48;
-        result = CreateFromType(static_cast<core::ConnectionType>(crT), connection_path_t());
+      if (comma_count == 0) {
+        int ascii_connection_type = element_text[0] - 48;  // saved in char but number
+        result = CreateFromTypeCluster(static_cast<core::ConnectionType>(ascii_connection_type), connection_path_t());
         if (!result) {
           return nullptr;
         }
-      } else if (commaCount == 1) {
-        connection_path_t path(elText);
+      } else if (comma_count == 1) {
+        connection_path_t path(element_text);
         result->SetPath(path);
-      } else if (commaCount == 2) {
-        int msTime;
-        if (common::ConvertFromString(elText, &msTime)) {
-          result->SetLoggingMsTimeInterval(msTime);
+      } else if (comma_count == 2) {
+        int ms_time;
+        if (common::ConvertFromString(element_text, &ms_time)) {
+          result->SetLoggingMsTimeInterval(ms_time);
         }
-        std::string serText;
-        for (size_t j = i + 2; j < len; ++j) {
-          ch = val[j];
-          if (ch == magic_number || j == len - 1) {
-            IConnectionSettingsBaseSPtr ser(ConnectionSettingsFactory::GetInstance().CreateFromString(serText));
-            result->AddNode(ser);
-            serText.clear();
+        std::string server_text;
+        for (size_t j = i + 2; j < value_len; ++j) {
+          ch = value[j];
+          if (ch == magic_number || j == value_len - 1) {
+            IConnectionSettingsBase* server =
+                ConnectionSettingsFactory::GetInstance().CreateFromStringConnection(server_text);
+            if (server) {
+              result->AddNode(IConnectionSettingsBaseSPtr(server));
+            }
+            server_text.clear();
           } else {
-            serText += ch;
+            server_text += ch;
           }
         }
         break;
       }
-      commaCount++;
-      elText.clear();
+      comma_count++;
+      element_text.clear();
     } else {
-      elText += ch;
+      element_text += ch;
     }
   }
 
+  DCHECK(result);
   return result;
 }
 

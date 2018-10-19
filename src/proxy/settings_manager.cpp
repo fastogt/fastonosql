@@ -321,11 +321,11 @@ void SettingsManager::SetFastViewKeys(bool fast_view) {
   fast_view_keys_ = fast_view;
 }
 
-QByteArray SettingsManager::GetWindowSettings() const {
+QByteArray SettingsManager::GetMainWindowSettings() const {
   return window_settings_;
 }
 
-void SettingsManager::SetWindowSettings(const QByteArray& settings) {
+void SettingsManager::SetMainWindowSettings(const QByteArray& settings) {
   window_settings_ = settings;
 }
 
@@ -378,7 +378,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
     std::string encoded = common::ConvertToString(string);
     std::string raw = common::utils::base64::decode64(encoded);
 
-    IClusterSettingsBaseSPtr sett(ClusterConnectionSettingsFactory::GetInstance().CreateFromString(raw));
+    IClusterSettingsBaseSPtr sett(ClusterConnectionSettingsFactory::GetInstance().CreateFromStringCluster(raw));
     if (sett) {
       clusters_.push_back(sett);
     }
@@ -390,9 +390,10 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
     std::string encoded = common::ConvertToString(string);
     std::string raw = common::utils::base64::decode64(encoded);
 
-    ISentinelSettingsBaseSPtr sett(SentinelConnectionSettingsFactory::GetInstance().CreateFromString(raw));
-    if (sett) {
-      sentinels_.push_back(sett);
+    ISentinelSettingsBase* sentinel_settings =
+        SentinelConnectionSettingsFactory::GetInstance().CreateFromStringSentinel(raw);
+    if (sentinel_settings) {
+      sentinels_.push_back(ISentinelSettingsBaseSPtr(sentinel_settings));
     }
   }
   last_login_ = settings.value(LAST_LOGIN, QString()).toString();
@@ -404,7 +405,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
     std::string encoded = common::ConvertToString(string);
     std::string raw = common::utils::base64::decode64(encoded);
 
-    IConnectionSettingsBaseSPtr sett(ConnectionSettingsFactory::GetInstance().CreateFromString(raw));
+    IConnectionSettingsBaseSPtr sett(ConnectionSettingsFactory::GetInstance().CreateFromStringConnection(raw));
     if (sett) {
       connections_.push_back(sett);
     }

@@ -34,7 +34,7 @@ class OfflineVerifyUser : public IVerifyUser {
   virtual common::Error startVerificationImpl(const std::string& login,
                                               const std::string& hexed_password,
                                               proxy::UserInfo::BuildStrategy build_strategy,
-                                              proxy::UserInfo* uinf) override WARN_UNUSED_RESULT;
+                                              proxy::UserInfo* user_info_out) override WARN_UNUSED_RESULT;
 };
 
 }  // namespace fastonosql

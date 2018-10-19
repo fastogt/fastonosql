@@ -24,9 +24,9 @@ namespace leveldb {
 
 Command::Command(core::FastoObject* parent,
                  common::StringValue* cmd,
-                 core::CmdLoggingType ct,
+                 core::CmdLoggingType logging_type,
                  const std::string& delimiter)
-    : FastoObjectCommand(parent, cmd, ct, delimiter, core::LEVELDB) {}
+    : FastoObjectCommand(parent, cmd, logging_type, delimiter, core::LEVELDB) {}
 
 }  // namespace leveldb
 }  // namespace proxy

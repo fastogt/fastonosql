@@ -36,7 +36,7 @@ class Driver : public IDriverLocal {
   Q_OBJECT
  public:
   explicit Driver(IConnectionSettingsBaseSPtr settings);
-  virtual ~Driver();
+  virtual ~Driver() override;
 
   virtual bool IsInterrupted() const override;
   virtual void SetInterrupted(bool interrupted) override;
@@ -51,17 +51,18 @@ class Driver : public IDriverLocal {
   virtual void ClearImpl() override;
   virtual core::FastoObjectCommandIPtr CreateCommand(core::FastoObject* parent,
                                                      const core::command_buffer_t& input,
-                                                     core::CmdLoggingType ct) override;
+                                                     core::CmdLoggingType logging_type) override;
 
   virtual core::FastoObjectCommandIPtr CreateCommandFast(const core::command_buffer_t& input,
-                                                         core::CmdLoggingType ct) override;
+                                                         core::CmdLoggingType logging_type) override;
 
   virtual core::IDataBaseInfoSPtr CreateDatabaseInfo(const std::string& name, bool is_default, size_t size) override;
 
   virtual common::Error SyncConnect() override WARN_UNUSED_RESULT;
   virtual common::Error SyncDisconnect() override WARN_UNUSED_RESULT;
 
-  virtual common::Error ExecuteImpl(const core::command_buffer_t& command, core::FastoObject* out) override WARN_UNUSED_RESULT;
+  virtual common::Error ExecuteImpl(const core::command_buffer_t& command,
+                                    core::FastoObject* out) override WARN_UNUSED_RESULT;
   virtual common::Error DBkcountImpl(core::keys_limit_t* size) override WARN_UNUSED_RESULT;
 
   virtual common::Error GetCurrentServerInfo(core::IServerInfo** info) override;

@@ -36,7 +36,7 @@ class Driver : public IDriverRemote {
   Q_OBJECT
  public:
   explicit Driver(IConnectionSettingsBaseSPtr settings);
-  virtual ~Driver();
+  virtual ~Driver() override;
 
   virtual bool IsInterrupted() const override;
   virtual void SetInterrupted(bool interrupted) override;

@@ -18,8 +18,6 @@
 
 #include "proxy/types.h"
 
-#include <common/macros.h>
-
 namespace fastonosql {
 namespace proxy {
 

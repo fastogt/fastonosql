@@ -111,8 +111,8 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
   bool GetFastViewKeys() const;
   void SetFastViewKeys(bool fast_view);
 
-  QByteArray GetWindowSettings() const;
-  void SetWindowSettings(const QByteArray& settings);
+  QByteArray GetMainWindowSettings() const;
+  void SetMainWindowSettings(const QByteArray& settings);
 
   QString GetPythonPath() const;
   void SetPythonPath(const QString& path);

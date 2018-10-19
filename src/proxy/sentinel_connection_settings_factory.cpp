@@ -31,8 +31,9 @@
 namespace fastonosql {
 namespace proxy {
 
-ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromType(core::ConnectionType type,
-                                                                         const connection_path_t& connection_path) {
+ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromTypeSentinel(
+    core::ConnectionType type,
+    const connection_path_t& connection_path) {
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
     return new redis::SentinelSettings(connection_path);
@@ -43,61 +44,66 @@ ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromType(core::C
     return new pika::SentinelSettings(connection_path);
   }
 #endif
+
+  NOTREACHED() << "Not handled type: " << type;
   return nullptr;
 }
 
-ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromString(const std::string& val) {
-  if (val.empty()) {
+ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromStringSentinel(const std::string& value) {
+  if (value.empty()) {
+    DNOTREACHED();
     return nullptr;
   }
 
   ISentinelSettingsBase* result = nullptr;
-  size_t len = val.size();
+  const size_t value_len = value.size();
 
-  uint8_t commaCount = 0;
-  std::string elText;
+  uint8_t comma_count = 0;
+  std::string element_text;
 
-  for (size_t i = 0; i < len; ++i) {
-    char ch = val[i];
+  for (size_t i = 0; i < value_len; ++i) {
+    char ch = value[i];
     if (ch == setting_value_delemitr) {
-      if (commaCount == 0) {
-        int crT = elText[0] - 48;
-        result = CreateFromType(static_cast<core::ConnectionType>(crT), connection_path_t());
+      if (comma_count == 0) {
+        int ascii_connection_type = element_text[0] - 48;  // saved in char but number
+        result = CreateFromTypeSentinel(static_cast<core::ConnectionType>(ascii_connection_type), connection_path_t());
         if (!result) {
+          DNOTREACHED() << "Unknown ascii_connection_type: " << ascii_connection_type;
           return nullptr;
         }
-      } else if (commaCount == 1) {
-        connection_path_t path(elText);
+      } else if (comma_count == 1) {
+        connection_path_t path(element_text);
         result->SetPath(path);
-      } else if (commaCount == 2) {
-        int msTime;
-        if (common::ConvertFromString(elText, &msTime)) {
-          result->SetLoggingMsTimeInterval(msTime);
+      } else if (comma_count == 2) {
+        int ms_time;
+        if (common::ConvertFromString(element_text, &ms_time)) {
+          result->SetLoggingMsTimeInterval(ms_time);
         }
 
-        std::string serText;
-        for (size_t j = i + 2; j < len; ++j) {
-          ch = val[j];
-          if (ch == magic_number || j == len - 1) {
+        std::string sentinel_text;
+        for (size_t j = i + 2; j < value_len; ++j) {
+          ch = value[j];
+          if (ch == magic_number || j == value_len - 1) {
             SentinelSettings sent;
-            bool res = SentinelSettingsfromString(serText, &sent);
+            bool res = SentinelSettingsfromString(sentinel_text, &sent);
             if (res) {
               result->AddSentinel(sent);
             }
-            serText.clear();
+            sentinel_text.clear();
           } else {
-            serText += ch;
+            sentinel_text += ch;
           }
         }
         break;
       }
-      commaCount++;
-      elText.clear();
+      comma_count++;
+      element_text.clear();
     } else {
-      elText += ch;
+      element_text += ch;
     }
   }
 
+  DCHECK(result);
   return result;
 }
 

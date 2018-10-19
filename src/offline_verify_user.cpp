@@ -29,7 +29,7 @@ OfflineVerifyUser::OfflineVerifyUser(const QString& login,
 common::Error OfflineVerifyUser::startVerificationImpl(const std::string& login,
                                                        const std::string& hexed_password,
                                                        proxy::UserInfo::BuildStrategy build_strategy,
-                                                       proxy::UserInfo* uinf) {
+                                                       proxy::UserInfo* user_info_out) {
   if (login != USER_LOGIN) {
     return common::make_error("Wrong login.");
   }
@@ -40,7 +40,7 @@ common::Error OfflineVerifyUser::startVerificationImpl(const std::string& login,
 
   fastonosql::proxy::UserInfo user_info(login, hexed_password, build_strategy);
   user_info.SetSubscriptionState(fastonosql::proxy::UserInfo::SUBSCRIBED);
-  *uinf = user_info;
+  *user_info_out = user_info;
   return common::Error();
 }
 

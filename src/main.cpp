@@ -109,15 +109,10 @@ common::ErrnoError prepare_to_start(const std::string& runtime_directory_absolut
     }
   }
 
-  common::ErrnoError err = common::file_system::node_access(runtime_directory_absolute_path);
-  if (err) {
-    return err;
-  }
-
-  return common::ErrnoError();
+  return common::file_system::node_access(runtime_directory_absolute_path);
 }
 
-common::Error ban_user(const fastonosql::proxy::UserInfo& user, const std::string& collision_id) {
+common::ErrnoError ban_user(const fastonosql::proxy::UserInfo& user, const std::string& collision_id) {
 #if defined(FASTONOSQL)
   common::net::ClientSocketTcp client(common::net::HostAndPort(FASTONOSQL_HOST, SERVER_REQUESTS_PORT));
 #elif defined(FASTOREDIS)
@@ -128,13 +123,13 @@ common::Error ban_user(const fastonosql::proxy::UserInfo& user, const std::strin
 
   common::ErrnoError err = client.Connect();
   if (err) {
-    return common::make_error_from_errno(err);
+    return err;
   }
 
   std::string request;
   common::Error request_err = fastonosql::proxy::GenBanUserRequest(user, collision_id, &request);
   if (request_err) {
-    return request_err;
+    return common::make_errno_error(request_err->GetDescription(), EINTR);
   }
 
   size_t nwrite;
@@ -142,28 +137,28 @@ common::Error ban_user(const fastonosql::proxy::UserInfo& user, const std::strin
   if (err) {
     common::ErrnoError close_err = client.Close();
     DCHECK(!close_err) << "Close client error: " << close_err->GetDescription();
-    return common::make_error_from_errno(err);
+    return err;
   }
 
   std::string ban_reply;
-  size_t nread = 0;
+  size_t nread;
   err = client.Read(&ban_reply, 256, &nread);
   if (err) {
     common::ErrnoError close_err = client.Close();
     DCHECK(!close_err) << "Close client error: " << close_err->GetDescription();
-    return common::make_error_from_errno(err);
+    return err;
   }
 
   common::Error jerror = fastonosql::proxy::ParseGenBanUserResponce(ban_reply);
   if (jerror) {
     common::ErrnoError close_err = client.Close();
     DCHECK(!close_err) << "Close client error: " << close_err->GetDescription();
-    return jerror;
+    return common::make_errno_error(jerror->GetDescription(), EINTR);
   }
 
   err = client.Close();
   DCHECK(!err) << "Close client error: " << err->GetDescription();
-  return common::Error();
+  return common::ErrnoError();
 }
 
 class MainCredentialsDialog : public fastonosql::CredentialsDialog {
@@ -281,17 +276,17 @@ int main(int argc, char* argv[]) {
       }
     }
 
-    time_t expire_application_utc_time = user_info.GetExpireTime();
-    time_t cur_time = common::time::current_utc_mstime() / 1000;
-    if (cur_time > expire_application_utc_time) {
+    const time_t expire_application_utc_time = user_info.GetExpireTime();
+    const time_t current_time = common::time::current_utc_mstime() / 1000;
+    if (current_time > expire_application_utc_time) {
       QMessageBox::critical(nullptr, fastonosql::translations::trTrial, trExpired);
       return EXIT_FAILURE;
     }
   }
 
   if (exec_count == 1) {
-    fastonosql::gui::HowToUseDialog hs;
-    hs.exec();
+    fastonosql::gui::HowToUseDialog howto_use_dialog;
+    howto_use_dialog.exec();
   }
 
 #if BUILD_STRATEGY == COMMUNITY_STRATEGY
@@ -318,31 +313,31 @@ int main(int argc, char* argv[]) {
 
   INIT_TRANSLATION(PROJECT_NAME_LOWERCASE);
 
-  fastonosql::gui::MainWindow win;
-  QByteArray win_settings = settings_manager->GetWindowSettings();
+  fastonosql::gui::MainWindow main_window;
+  QByteArray win_settings = settings_manager->GetMainWindowSettings();
   if (!win_settings.isEmpty()) {
-    win.restoreGeometry(win_settings);
+    main_window.restoreGeometry(win_settings);
   } else {
     const QRect screen_geometry = app.desktop()->availableGeometry();
     const QSize screen_size(screen_geometry.width(), screen_geometry.height());
 
 #ifdef OS_ANDROID
-    win.resize(screen_size);
+    main_window.resize(screen_size);
 #else
     const QSize preferred_size =
         QSize(fastonosql::gui::MainWindow::preferred_width, fastonosql::gui::MainWindow::preferred_height);
     if (preferred_size.width() <= screen_size.width() && preferred_size.height() <= screen_size.height()) {
-      win.resize(preferred_size);
+      main_window.resize(preferred_size);
     }
 
     QPoint center = screen_geometry.center();
-    win.move(center.x() - win.width() / 2, center.y() - win.height() / 2);
+    main_window.move(center.x() - main_window.width() / 2, center.y() - main_window.height() / 2);
 #endif
   }
 
-  win.show();
+  main_window.show();
   int res = app.exec();
-  settings_manager->SetWindowSettings(win.saveGeometry());
+  settings_manager->SetMainWindowSettings(main_window.saveGeometry());
   settings_manager->Save();
   settings_manager->FreeInstance();
   return res;

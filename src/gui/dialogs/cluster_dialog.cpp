@@ -388,7 +388,7 @@ bool ClusterDialog::validateAndApply() {
   }
   proxy::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
   proxy::IClusterSettingsBase* newConnection =
-      proxy::ClusterConnectionSettingsFactory::GetInstance().CreateFromType(currentType, path);
+      proxy::ClusterConnectionSettingsFactory::GetInstance().CreateFromTypeCluster(currentType, path);
   if (newConnection) {
     cluster_connection_.reset(newConnection);
     if (logging_->isChecked()) {

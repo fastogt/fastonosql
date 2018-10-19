@@ -24,12 +24,11 @@ namespace fastonosql {
 namespace proxy {
 namespace pika {
 
-SentinelSettings::SentinelSettings(const connection_path_t& connectionName)
-    : ISentinelSettingsBase(connectionName, core::PIKA) {}
+SentinelSettings::SentinelSettings(const connection_path_t& connection_path)
+    : ISentinelSettingsBase(connection_path, core::PIKA) {}
 
 SentinelSettings* SentinelSettings::Clone() const {
-  SentinelSettings* red = new SentinelSettings(*this);
-  return red;
+  return new SentinelSettings(*this);
 }
 
 }  // namespace pika

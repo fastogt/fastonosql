@@ -24,12 +24,11 @@ namespace fastonosql {
 namespace proxy {
 namespace redis {
 
-SentinelSettings::SentinelSettings(const connection_path_t& connectionName)
-    : ISentinelSettingsBase(connectionName, core::REDIS) {}
+SentinelSettings::SentinelSettings(const connection_path_t& connection_path)
+    : ISentinelSettingsBase(connection_path, core::REDIS) {}
 
 SentinelSettings* SentinelSettings::Clone() const {
-  SentinelSettings* red = new SentinelSettings(*this);
-  return red;
+  return new SentinelSettings(*this);
 }
 
 }  // namespace redis

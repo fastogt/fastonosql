@@ -61,8 +61,7 @@ void ConnectionSettings::SetCommandLine(const std::string& line) {
 }
 
 ConnectionSettings* ConnectionSettings::Clone() const {
-  ConnectionSettings* red = new ConnectionSettings(*this);
-  return red;
+  return new ConnectionSettings(*this);
 }
 
 }  // namespace memcached

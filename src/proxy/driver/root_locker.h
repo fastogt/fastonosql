@@ -26,10 +26,11 @@ namespace fastonosql {
 namespace proxy {
 class IDriver;
 
-class RootLocker : core::FastoObject::IFastoObjectObserver {
+class RootLocker : public core::FastoObject::IFastoObjectObserver {
  public:
+  typedef core::FastoObject::IFastoObjectObserver base_class;
   RootLocker(IDriver* parent, QObject* receiver, const core::command_buffer_t& text, bool silence);
-  virtual ~RootLocker();
+  virtual ~RootLocker() override;
 
   core::FastoObjectIPtr Root() const;
 

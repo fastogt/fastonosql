@@ -128,8 +128,8 @@ void DiscoveryClusterDiagnosticDialog::connectionResult(bool suc,
       core::ServerDiscoveryClusterInfoSPtr inf = infos[i];
       common::net::HostAndPortAndSlot host = inf->GetHost();
       proxy::connection_path_t path(common::file_system::get_separator_string<char>() + inf->GetName());
-      proxy::IConnectionSettingsBaseSPtr con(
-          proxy::ConnectionSettingsFactory::GetInstance().CreateFromType(inf->GetConnectionType(), path, host));
+      proxy::IConnectionSettingsBaseSPtr con(proxy::ConnectionSettingsFactory::GetInstance().CreateFromTypeConnection(
+          inf->GetConnectionType(), path, host));
       ConnectionListWidgetItemDiscovered* item = new ConnectionListWidgetItemDiscovered(inf->GetInfo(), nullptr);
       item->setConnection(con);
       item->setDisabled(inf->Self() || cluster_->FindSettingsByHost(host));

@@ -28,8 +28,7 @@ ClusterSettings::ClusterSettings(const connection_path_t& connection_path)
     : IClusterSettingsBase(connection_path, core::REDIS) {}
 
 ClusterSettings* ClusterSettings::Clone() const {
-  ClusterSettings* red = new ClusterSettings(*this);
-  return red;
+  return new ClusterSettings(*this);
 }
 
 }  // namespace redis

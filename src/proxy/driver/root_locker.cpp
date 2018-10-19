@@ -29,11 +29,7 @@ namespace fastonosql {
 namespace proxy {
 
 RootLocker::RootLocker(IDriver* parent, QObject* receiver, const core::command_buffer_t& text, bool silence)
-    : core::FastoObject::IFastoObjectObserver(),
-      parent_(parent),
-      receiver_(receiver),
-      tstart_(common::time::current_mstime()),
-      silence_(silence) {
+    : base_class(), parent_(parent), receiver_(receiver), tstart_(common::time::current_mstime()), silence_(silence) {
   CHECK(parent_);
 
   root_ = core::FastoObject::CreateRoot(text, this);

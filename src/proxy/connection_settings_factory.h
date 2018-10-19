@@ -91,12 +91,13 @@ class ConnectionSettingsFactory : public common::patterns::LazySingleton<Connect
  public:
   friend class common::patterns::LazySingleton<ConnectionSettingsFactory>;
 
-  IConnectionSettingsBase* CreateFromType(core::ConnectionType type, const connection_path_t& connection_path);
-  IConnectionSettingsBase* CreateFromString(const std::string& val);
+  IConnectionSettingsBase* CreateFromTypeConnection(core::ConnectionType type,
+                                                    const connection_path_t& connection_path);
+  IConnectionSettingsBase* CreateFromStringConnection(const std::string& value);
 
-  IConnectionSettingsRemote* CreateFromType(core::ConnectionType type,
-                                            const connection_path_t& connection_path,
-                                            const common::net::HostAndPort& host);
+  IConnectionSettingsRemote* CreateFromTypeConnection(core::ConnectionType type,
+                                                      const connection_path_t& connection_path,
+                                                      const common::net::HostAndPort& host);
 
 #ifdef BUILD_WITH_REDIS
   redis::ConnectionSettings* CreateREDISConnection(const connection_path_t& connection_path) const;

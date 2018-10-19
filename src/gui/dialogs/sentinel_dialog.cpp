@@ -44,7 +44,7 @@
 #include "translations/global.h"  // for trAddConnection, trAddress, etc
 
 namespace {
-const QString trDefaultSentinelNameConnection = QObject::tr("New Sentinel Connection");
+const char* kDefaultSentinelNameConnection = "New Sentinel Connection";
 const char* kDefaultNameConnectionFolder = "/";
 }  // namespace
 
@@ -66,7 +66,7 @@ SentinelDialog::SentinelDialog(QWidget* parent, proxy::ISentinelSettingsBase* co
   folderLayout->addWidget(folder_label_);
   folderLayout->addWidget(connection_folder_);
   QString conFolder = kDefaultNameConnectionFolder;
-  QString conName = trDefaultSentinelNameConnection;
+  QString conName = kDefaultSentinelNameConnection;
 
   if (sentinel_connection_) {
     proxy::connection_path_t path = sentinel_connection_->GetPath();
@@ -265,63 +265,69 @@ void SentinelDialog::addConnectionSettings() {
   ConnectionDialog dlg(core::REDIS, translations::trNewConnection, this);
   dlg.setFolderEnabled(false);
   int result = dlg.exec();
-  proxy::SentinelSettings sent;
-  sent.sentinel = dlg.connection();
-  if (result == QDialog::Accepted && sent.sentinel) {
-    addSentinel(sent);
+  if (result == QDialog::Accepted) {
+    proxy::IConnectionSettingsBaseSPtr sent_connection = dlg.connection();
+    if (sent_connection) {
+      proxy::SentinelSettings sent;
+      sent.sentinel = sent_connection;
+      addSentinel(sent);
+    }
   }
 #endif
 }
 
 void SentinelDialog::remove() {
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(list_widget_->currentItem());  // +
+  QTreeWidgetItem* current_list_item = list_widget_->currentItem();
+  ConnectionListWidgetItem* current_item = dynamic_cast<ConnectionListWidgetItem*>(current_list_item);  // +
 
   // Do nothing if no item selected
-  if (!currentItem) {
+  if (!current_item) {
     return;
   }
 
   // Ask user
   int answer = QMessageBox::question(this, translations::trConnections,
-                                     translations::trDeleteConnectionTemplate_1S.arg(currentItem->text(0)),
+                                     translations::trDeleteConnectionTemplate_1S.arg(current_item->text(0)),
                                      QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
   if (answer != QMessageBox::Yes) {
     return;
   }
 
-  delete currentItem;
+  delete current_item;
 }
 
 void SentinelDialog::edit() {
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(list_widget_->currentItem());  // +
+  QTreeWidgetItem* current_list_item = list_widget_->currentItem();
+  ConnectionListWidgetItem* current_item = dynamic_cast<ConnectionListWidgetItem*>(current_list_item);  // +
 
   // Do nothing if no item selected
-  if (!currentItem) {
+  if (!current_item) {
     return;
   }
 
 #ifdef BUILD_WITH_REDIS
-  proxy::IConnectionSettingsBaseSPtr oldConnection = currentItem->connection();
-  ConnectionDialog dlg(oldConnection->Clone(), this);
+  const proxy::IConnectionSettingsBaseSPtr connection = current_item->connection();
+  ConnectionDialog dlg(connection->Clone(), this);
   dlg.setFolderEnabled(false);
   int result = dlg.exec();
-  proxy::IConnectionSettingsBaseSPtr newConnection = dlg.connection();
-  if (result == QDialog::Accepted && newConnection) {
-    currentItem->setConnection(newConnection);
+  proxy::IConnectionSettingsBaseSPtr new_connection = dlg.connection();
+  if (result == QDialog::Accepted && new_connection) {
+    current_item->setConnection(new_connection);
   }
 #endif
 }
 
 void SentinelDialog::itemSelectionChanged() {
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(list_widget_->currentItem());  // +
-  bool isValidConnection = currentItem != nullptr;
+  QTreeWidgetItem* current_list_item = list_widget_->currentItem();
 
-  test_button_->setEnabled(isValidConnection);
+  ConnectionListWidgetItem* current_item = dynamic_cast<ConnectionListWidgetItem*>(current_list_item);  // +
+  bool is_valid_connection = current_item != nullptr;
+  test_button_->setEnabled(is_valid_connection);
 
-  SentinelConnectionWidgetItem* sent = dynamic_cast<SentinelConnectionWidgetItem*>(list_widget_->currentItem());  // +
-  bool isValidSentConnection = sent != nullptr;
-  discovery_button_->setEnabled(isValidSentConnection);
+  SentinelConnectionWidgetItem* sent = dynamic_cast<SentinelConnectionWidgetItem*>(current_list_item);  // +
+  bool is_valid_sent_connection = sent != nullptr;
+  discovery_button_->setEnabled(is_valid_sent_connection);
 }
 
 void SentinelDialog::changeEvent(QEvent* e) {
@@ -338,19 +344,22 @@ void SentinelDialog::retranslateUi() {
 }
 
 bool SentinelDialog::validateAndApply() {
-  QVariant var = type_connection_->currentData();
-  core::ConnectionType currentType = static_cast<core::ConnectionType>(qvariant_cast<unsigned char>(var));
-  std::string conName = common::ConvertToString(connection_name_->text());
-  std::string conFolder = common::ConvertToString(connection_folder_->text());
-  if (conFolder.empty()) {
-    conFolder = kDefaultNameConnectionFolder;
+  const QVariant var = type_connection_->currentData();
+  const core::ConnectionType current_type = static_cast<core::ConnectionType>(qvariant_cast<unsigned char>(var));
+  std::string connection_name = common::ConvertToString(connection_name_->text());
+  if (connection_name.empty()) {
+    connection_name = kDefaultSentinelNameConnection;
+  }
+  std::string connection_folder = common::ConvertToString(connection_folder_->text());
+  if (connection_folder.empty()) {
+    connection_folder = kDefaultNameConnectionFolder;
   }
 
-  proxy::connection_path_t path(common::file_system::stable_dir_path(conFolder) + conName);
-  proxy::ISentinelSettingsBase* newConnection =
-      proxy::SentinelConnectionSettingsFactory::GetInstance().CreateFromType(currentType, path);
+  const proxy::connection_path_t path(common::file_system::stable_dir_path(connection_folder) + connection_name);
+  proxy::ISentinelSettingsBase* new_connection =
+      proxy::SentinelConnectionSettingsFactory::GetInstance().CreateFromTypeSentinel(current_type, path);
   if (logging_->isChecked()) {
-    newConnection->SetLoggingMsTimeInterval(logging_msec_->value());
+    new_connection->SetLoggingMsTimeInterval(logging_msec_->value());
   }
 
   for (int i = 0; i < list_widget_->topLevelItemCount(); ++i) {
@@ -368,18 +377,17 @@ bool SentinelDialog::validateAndApply() {
         sent.sentinel_nodes.push_back(child->connection());
       }
     }
-    newConnection->AddSentinel(sent);
+    new_connection->AddSentinel(sent);
   }
 
-  sentinel_connection_.reset(newConnection);
+  sentinel_connection_.reset(new_connection);
   return true;
 }
 
 void SentinelDialog::addSentinel(proxy::SentinelSettings sent) {
   SentinelConnectionWidgetItem* sent_item = new SentinelConnectionWidgetItem(core::ServerCommonInfo(), nullptr);
   sent_item->setConnection(sent.sentinel);
-  auto nodes = sent.sentinel_nodes;
-  for (const auto& node : nodes) {
+  for (const auto& node : sent.sentinel_nodes) {
     ConnectionListWidgetItem* item = new ConnectionListWidgetItem(sent_item);
     item->setConnection(node);
     sent_item->addChild(item);

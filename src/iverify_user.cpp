@@ -35,8 +35,8 @@ IVerifyUser::~IVerifyUser() {}
 common::Error IVerifyUser::startVerification(const QString& login,
                                              const QString& password,
                                              proxy::UserInfo::BuildStrategy strategy,
-                                             proxy::UserInfo* uinf) {
-  if (login.isEmpty() || password.isEmpty() || !uinf) {
+                                             proxy::UserInfo* user_info_out) {
+  if (login.isEmpty() || password.isEmpty() || !user_info_out) {
     return common::make_error_inval();
   }
 
@@ -48,17 +48,17 @@ common::Error IVerifyUser::startVerification(const QString& login,
   common::hash::MD5_Update(&ctx, reinterpret_cast<const unsigned char*>(password_str.data()), password_str.size());
   common::hash::MD5_Final(&ctx, md5_result);
   std::string hexed_password;
-  std::string data(md5_result, md5_result + MD5_HASH_LENGHT);
-  bool is_ok = common::utils::hex::encode(data, true, &hexed_password);
+  const std::string md5_data(md5_result, md5_result + MD5_HASH_LENGHT);
+  bool is_ok = common::utils::hex::encode(md5_data, true, &hexed_password);
   DCHECK(is_ok) << "Can't hexed: " << md5_result;
 
-  return startVerificationImpl(login_str, hexed_password, strategy, uinf);
+  return startVerificationImpl(login_str, hexed_password, strategy, user_info_out);
 }
 
 void IVerifyUser::routine() {
-  proxy::UserInfo uinf;
-  common::Error err = startVerification(login_, password_, build_strategy_, &uinf);
-  emit verifyUserResult(err, uinf);
+  proxy::UserInfo user_info_out;
+  common::Error err = startVerification(login_, password_, build_strategy_, &user_info_out);
+  emit verifyUserResult(err, user_info_out);
 }
 
 }  // namespace fastonosql

@@ -26,7 +26,7 @@ namespace pika {
 
 class SentinelSettings : public ISentinelSettingsBase {
  public:
-  explicit SentinelSettings(const connection_path_t& connectionName);
+  explicit SentinelSettings(const connection_path_t& connection_path);
   virtual SentinelSettings* Clone() const override;
 };
 

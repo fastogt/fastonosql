@@ -21,8 +21,8 @@
 #include <common/macros.h>
 
 namespace {
-const std::string kUserTypes[] = {"USER", "SUPPORT", "OPEN_SOURCE", "ENTERPRISE"};
-const std::string kBuildStrategy[] = {"community", "public", "private"};
+const char* kUserTypes[] = {"USER", "SUPPORT", "OPEN_SOURCE", "ENTERPRISE"};
+const char* kBuildStrategy[] = {"community", "public", "private"};
 }  // namespace
 
 namespace fastonosql {
@@ -141,7 +141,7 @@ bool ConvertFromString(const std::string& from, fastonosql::proxy::UserInfo::Typ
     }
   }
 
-  NOTREACHED();
+  NOTREACHED() << "Can't convert user info type: " << from;
   return false;
 }
 
@@ -157,7 +157,7 @@ bool ConvertFromString(const std::string& from, fastonosql::proxy::UserInfo::Bui
     }
   }
 
-  NOTREACHED();
+  NOTREACHED() << "Can't convert build strategy: " << from;
   return false;
 }
 

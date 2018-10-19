@@ -29,7 +29,7 @@
 #include "iverify_user.h"
 
 namespace {
-const QString trSignin =
+const QString trSignInInfo =
     QObject::tr("<b>Please sign in (use the same credentials like on <a href=\"" PROJECT_DOMAIN "\">website</a>)</b>");
 }  // namespace
 
@@ -37,15 +37,19 @@ namespace fastonosql {
 
 const QSize CredentialsDialog::status_label_icon_size = QSize(24, 24);
 
-CredentialsDialog::CredentialsDialog(QWidget* parent) : base_class(parent), user_info_() {
+CredentialsDialog::CredentialsDialog(QWidget* parent) : base_class(parent), glass_widget_(nullptr), user_info_() {
+  qRegisterMetaType<common::Error>("common::Error");
+  qRegisterMetaType<proxy::UserInfo>("proxy::UserInfo");
+
   glass_widget_ = new common::qt::gui::GlassWidget(gui::GuiFactory::GetInstance().pathToLoadingGif(), QString(), 0.5,
                                                    QColor(111, 111, 100), this);
   setVisibleDescription(false);
   setVisibleStatus(true);
-  setInforamtion(trSignin);
+  setInforamtion(trSignInInfo);
 }
 
 proxy::UserInfo CredentialsDialog::userInfo() const {
+  DCHECK(user_info_.IsValid()) << "You can get only valid user info.";
   return user_info_;
 }
 
@@ -79,9 +83,6 @@ void CredentialsDialog::setFailed(const QString& text) {
 }
 
 void CredentialsDialog::startVerification() {
-  qRegisterMetaType<common::Error>("common::Error");
-  qRegisterMetaType<proxy::UserInfo>("proxy::UserInfo");
-
   QThread* th = new QThread;
   IVerifyUser* checker = createChecker();
   checker->moveToThread(th);

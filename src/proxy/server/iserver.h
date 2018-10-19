@@ -34,7 +34,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
  public:
   typedef core::IDataBaseInfoSPtr database_t;
   typedef std::vector<database_t> databases_t;
-  virtual ~IServer();
+  virtual ~IServer() override;
 
   // sync methods
   void StopCurrentEvent();

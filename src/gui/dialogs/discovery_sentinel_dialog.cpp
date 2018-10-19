@@ -128,8 +128,8 @@ void DiscoverySentinelDiagnosticDialog::connectionResultReady(
       core::ServerDiscoverySentinelInfoSPtr inf = infos[i];
       common::net::HostAndPort host = inf->GetHost();
       proxy::connection_path_t path(common::file_system::get_separator_string<char>() + inf->GetName());
-      proxy::IConnectionSettingsBaseSPtr con(
-          proxy::ConnectionSettingsFactory::GetInstance().CreateFromType(inf->GetConnectionType(), path, host));
+      proxy::IConnectionSettingsBaseSPtr con(proxy::ConnectionSettingsFactory::GetInstance().CreateFromTypeConnection(
+          inf->GetConnectionType(), path, host));
 
       ConnectionListWidgetItemDiscovered* item = new ConnectionListWidgetItemDiscovered(inf->GetInfo(), nullptr);
       item->setConnection(con);
