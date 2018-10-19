@@ -1,4 +1,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.6.3) # OPENSSL_USE_STATIC_LIBS
+
+SET(CMAKE_AUTOMOC ON)
+
 # proxy
 SET(HEADERS_PROXY_CONNECTION_SETTINGS
   ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/iconnection_settings.h
@@ -24,14 +27,13 @@ IF(PRO_VERSION)
   )
 ENDIF(PRO_VERSION)
 
-SET(HEADERS_PROXY_DRIVER_TO_MOC
-  ${CMAKE_SOURCE_DIR}/src/proxy/driver/idriver.h
-  ${CMAKE_SOURCE_DIR}/src/proxy/driver/idriver_local.h
-  ${CMAKE_SOURCE_DIR}/src/proxy/driver/idriver_remote.h
-)
 SET(HEADERS_PROXY_DRIVER
   ${CMAKE_SOURCE_DIR}/src/proxy/driver/root_locker.h
   ${CMAKE_SOURCE_DIR}/src/proxy/driver/first_child_update_root_locker.h
+
+  ${CMAKE_SOURCE_DIR}/src/proxy/driver/idriver.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/driver/idriver_local.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/driver/idriver_remote.h
 )
 SET(SOURCES_PROXY_DRIVER
   ${CMAKE_SOURCE_DIR}/src/proxy/driver/idriver.cpp
@@ -41,13 +43,11 @@ SET(SOURCES_PROXY_DRIVER
   ${CMAKE_SOURCE_DIR}/src/proxy/driver/first_child_update_root_locker.cpp
 )
 
-SET(HEADERS_PROXY_SERVER_TO_MOC
+SET(HEADERS_PROXY_SERVER
   ${CMAKE_SOURCE_DIR}/src/proxy/server/iserver_base.h
   ${CMAKE_SOURCE_DIR}/src/proxy/server/iserver.h
   ${CMAKE_SOURCE_DIR}/src/proxy/server/iserver_local.h
   ${CMAKE_SOURCE_DIR}/src/proxy/server/iserver_remote.h
-)
-SET(HEADERS_PROXY_SERVER
 )
 SET(SOURCES_PROXY_SERVER
   ${CMAKE_SOURCE_DIR}/src/proxy/server/iserver_base.cpp
@@ -86,22 +86,14 @@ SET(SOURCES_PROXY_DATABASE
   ${CMAKE_SOURCE_DIR}/src/proxy/database/idatabase.cpp
 )
 
-SET(HEADERS_PROXY_COMMAND_TO_MOC
-  ${CMAKE_SOURCE_DIR}/src/proxy/command/command_logger.h
-)
 SET(HEADERS_PROXY_COMMAND
+  ${CMAKE_SOURCE_DIR}/src/proxy/command/command_logger.h
 )
 SET(SOURCES_PROXY_COMMAND
   ${CMAKE_SOURCE_DIR}/src/proxy/command/command_logger.cpp
 )
 
 #
-SET(HEADERS_PROXY_TO_MOC
-  ${HEADERS_PROXY_DRIVER_TO_MOC}
-  ${HEADERS_PROXY_SERVER_TO_MOC}
-  ${HEADERS_PROXY_COMMAND_TO_MOC}
-)
-
 SET(HEADERS_PROXY
   ${HEADERS_PROXY_DRIVER}
   ${HEADERS_PROXY_SERVER}
@@ -163,7 +155,9 @@ SET(SOURCES_TRANSLATIONS
   ${CMAKE_SOURCE_DIR}/src/translations/global.cpp
 )
 
-SET(HEADERS_GUI_DIALOGS_TO_MOC
+SET(HEADERS_GUI_DIALOGS
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/connection_listwidget_items.h
+
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/eula_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/about_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/password_dialog.h
@@ -183,10 +177,6 @@ SET(HEADERS_GUI_DIALOGS_TO_MOC
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/test_connection.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/stream_entry_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/how_to_use_dialog.h
-)
-
-SET(HEADERS_GUI_DIALOGS
-  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/connection_listwidget_items.h
 )
 
 SET(SOURCES_GUI_DIALOGS
@@ -213,7 +203,7 @@ SET(SOURCES_GUI_DIALOGS
 )
 
 IF(PRO_VERSION)
-  SET(HEADERS_GUI_DIALOGS_TO_MOC ${HEADERS_GUI_DIALOGS_TO_MOC}
+  SET(HEADERS_GUI_DIALOGS ${HEADERS_GUI_DIALOGS}
     ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_cluster_connection.h
 
     ${CMAKE_SOURCE_DIR}/src/gui/dialogs/cluster_dialog.h
@@ -236,7 +226,7 @@ IF(PRO_VERSION)
   )
 ENDIF(PRO_VERSION)
 
-SET(HEADERS_GUI_EDITOR_TO_MOC
+SET(HEADERS_GUI_EDITOR
   ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor_shell.h
   ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor_model_output.h
 )
@@ -246,15 +236,13 @@ SET(SOURCES_GUI_EDITOR
   ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor_model_output.cpp
 )
 
-SET(HEADERS_GUI_EXPLORER_TO_MOC
+SET(HEADERS_GUI_EXPLORER
+  ${CMAKE_SOURCE_DIR}/src/gui/explorer/explorer_tree_item.h
+
   ${CMAKE_SOURCE_DIR}/src/gui/explorer/explorer_tree_widget.h
   ${CMAKE_SOURCE_DIR}/src/gui/explorer/explorer_tree_view.h
   ${CMAKE_SOURCE_DIR}/src/gui/explorer/explorer_tree_model.h
   ${CMAKE_SOURCE_DIR}/src/gui/explorer/explorer_tree_sort_filter_proxy_model.h
-)
-
-SET(HEADERS_GUI_EXPLORER
-  ${CMAKE_SOURCE_DIR}/src/gui/explorer/explorer_tree_item.h
 )
 
 SET(SOURCES_GUI_EXPLORER
@@ -265,7 +253,7 @@ SET(SOURCES_GUI_EXPLORER
   ${CMAKE_SOURCE_DIR}/src/gui/explorer/explorer_tree_item.cpp
 )
 
-SET(HEADERS_GUI_SHELL_TO_MOC
+SET(HEADERS_GUI_SHELL
   ${CMAKE_SOURCE_DIR}/src/gui/shell/base_shell_widget.h
   ${CMAKE_SOURCE_DIR}/src/gui/shell/base_lexer.h
   ${CMAKE_SOURCE_DIR}/src/gui/shell/base_shell.h
@@ -277,7 +265,7 @@ SET(SOURCES_GUI_SHELL
   ${CMAKE_SOURCE_DIR}/src/gui/shell/base_shell.cpp
 )
 
-SET(HEADERS_GUI_WIDGETS_TO_MOC
+SET(HEADERS_GUI_WIDGETS
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/fasto_scintilla.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/fasto_editor.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/fasto_viewer.h
@@ -329,12 +317,21 @@ SET(SOURCES_GUI_WIDGETS
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/how_to_use_widget.cpp
 )
 
-SET(HEADERS_GUI_TO_MOC
-  ${HEADERS_GUI_DIALOGS_TO_MOC}
-  ${HEADERS_GUI_EDITOR_TO_MOC}
-  ${HEADERS_GUI_WIDGETS_TO_MOC}
-  ${HEADERS_GUI_SHELL_TO_MOC}
-  ${HEADERS_GUI_EXPLORER_TO_MOC}
+SET(HEADERS_GUI
+  ${HEADERS_GUI_EXPLORER}
+  ${HEADERS_GUI_DIALOGS}
+
+  ${CMAKE_SOURCE_DIR}/src/gui/gui_factory.h
+  ${CMAKE_SOURCE_DIR}/src/gui/channel_table_item.h
+  ${CMAKE_SOURCE_DIR}/src/gui/fasto_common_item.h
+  ${CMAKE_SOURCE_DIR}/src/gui/property_table_item.h
+  ${CMAKE_SOURCE_DIR}/src/gui/shortcuts.h
+  ${CMAKE_SOURCE_DIR}/src/gui/connection_widgets_factory.h
+  ${CMAKE_SOURCE_DIR}/src/gui/key_value_table_item.h
+  ${CMAKE_SOURCE_DIR}/src/gui/key_table_item.h
+  ${CMAKE_SOURCE_DIR}/src/gui/utils.h
+  ${CMAKE_SOURCE_DIR}/src/gui/text_converter.h
+  ${CMAKE_SOURCE_DIR}/src/gui/key_info.h
 
   ${CMAKE_SOURCE_DIR}/src/gui/main_window.h
   ${CMAKE_SOURCE_DIR}/src/gui/update_checker.h
@@ -351,22 +348,6 @@ SET(HEADERS_GUI_TO_MOC
   ${CMAKE_SOURCE_DIR}/src/gui/hash_table_model.h
   ${CMAKE_SOURCE_DIR}/src/gui/stream_table_model.h
   ${CMAKE_SOURCE_DIR}/src/gui/action_cell_delegate.h
-)
-SET(HEADERS_GUI
-  ${HEADERS_GUI_EXPLORER}
-  ${HEADERS_GUI_DIALOGS}
-
-  ${CMAKE_SOURCE_DIR}/src/gui/gui_factory.h
-  ${CMAKE_SOURCE_DIR}/src/gui/channel_table_item.h
-  ${CMAKE_SOURCE_DIR}/src/gui/fasto_common_item.h
-  ${CMAKE_SOURCE_DIR}/src/gui/property_table_item.h
-  ${CMAKE_SOURCE_DIR}/src/gui/shortcuts.h
-  ${CMAKE_SOURCE_DIR}/src/gui/connection_widgets_factory.h
-  ${CMAKE_SOURCE_DIR}/src/gui/key_value_table_item.h
-  ${CMAKE_SOURCE_DIR}/src/gui/key_table_item.h
-  ${CMAKE_SOURCE_DIR}/src/gui/utils.h
-  ${CMAKE_SOURCE_DIR}/src/gui/text_converter.h
-  ${CMAKE_SOURCE_DIR}/src/gui/key_info.h
 )
 SET(SOURCES_GUI
   ${SOURCES_GUI_DIALOGS}
@@ -431,9 +412,6 @@ IF(BUILD_WITH_REDIS OR BUILD_WITH_PIKA)
   FIND_PACKAGE(Libssh2 REQUIRED CONFIG)
   FIND_PACKAGE(Hiredis REQUIRED)
 
-  SET(HEADERS_PIKA_PROXY_DB_REDIS_COMPATIBLE_TO_MOC
-
-  )
   SET(HEADERS_PROXY_DB_REDIS_COMPATIBLE
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis_compatible/database.h
   )
@@ -442,7 +420,7 @@ IF(BUILD_WITH_REDIS OR BUILD_WITH_PIKA)
   )
 
 IF(PRO_VERSION)
-  SET(HEADERS_PIKA_PROXY_DB_REDIS_COMPATIBLE_TO_MOC ${HEADERS_PIKA_PROXY_DB_REDIS_COMPATIBLE_TO_MOC}
+  SET(HEADERS_PROXY_DB_REDIS_COMPATIBLE ${HEADERS_PROXY_DB_REDIS_COMPATIBLE}
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis_compatible/cluster.h
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis_compatible/sentinel.h
   )
@@ -461,13 +439,11 @@ ENDIF(BUILD_WITH_REDIS OR BUILD_WITH_PIKA)
 #redis
 IF(BUILD_WITH_REDIS)
   # proxy redis
-  SET(HEADERS_REDIS_PROXY_TO_MOC ${HEADERS_PIKA_PROXY_DB_REDIS_COMPATIBLE_TO_MOC}
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/server.h
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/driver.h
-  )
   SET(HEADERS_PROXY_DB_REDIS ${HEADERS_PROXY_DB_REDIS_COMPATIBLE}
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/command.h
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/connection_settings.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/server.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/driver.h
   )
   SET(SOURCES_PROXY_DB_REDIS ${SOURCES_PROXY_DB_REDIS_COMPATIBLE}
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/command.cpp
@@ -477,22 +453,21 @@ IF(BUILD_WITH_REDIS)
   )
 
   #gui redis
-  SET(HEADERS_REDIS_GUI_TO_MOC
-    gui/db/redis/connection_widget.h
-    gui/db/redis/lexer.h
+  SET(HEADERS_REDIS_GUI
+    ${CMAKE_SOURCE_DIR}/src/gui/db/redis/connection_widget.h
+    ${CMAKE_SOURCE_DIR}/src/gui/db/redis/lexer.h
   )
-  SET(HEADERS_REDIS_GUI)
   SET(SOURCES_REDIS_GUI
-    gui/db/redis/connection_widget.cpp
-    gui/db/redis/lexer.cpp
+    ${CMAKE_SOURCE_DIR}/src/gui/db/redis/connection_widget.cpp
+    ${CMAKE_SOURCE_DIR}/src/gui/db/redis/lexer.cpp
   )
 
 IF(PRO_VERSION)
-  SET(HEADERS_REDIS_GUI_TO_MOC ${HEADERS_REDIS_GUI_TO_MOC}
-    gui/db/redis/shell_widget.h
+  SET(HEADERS_REDIS_GUI ${HEADERS_REDIS_GUI}
+    ${CMAKE_SOURCE_DIR}/src/gui/db/redis/shell_widget.h
   )
   SET(SOURCES_REDIS_GUI ${SOURCES_REDIS_GUI}
-    gui/db/redis/shell_widget.cpp
+    ${CMAKE_SOURCE_DIR}/src/gui/db/redis/shell_widget.cpp
   )
   SET(HEADERS_PROXY_DB_REDIS ${HEADERS_PROXY_DB_REDIS}
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/cluster_settings.h
@@ -505,11 +480,9 @@ IF(PRO_VERSION)
 ENDIF(PRO_VERSION)
 
   #update common variables
-  SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_REDIS_PROXY_TO_MOC})
   SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_REDIS})
   SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_REDIS})
 
-  SET(HEADERS_GUI_TO_MOC ${HEADERS_GUI_TO_MOC} ${HEADERS_REDIS_GUI_TO_MOC})
   SET(HEADERS_GUI ${HEADERS_GUI} ${HEADERS_REDIS_GUI})
   SET(SOURCES_GUI ${SOURCES_GUI} ${SOURCES_REDIS_GUI})
 ENDIF(BUILD_WITH_REDIS)
@@ -517,13 +490,11 @@ ENDIF(BUILD_WITH_REDIS)
 #pika
 IF(BUILD_WITH_PIKA)
   # proxy pika
-  SET(HEADERS_PIKA_PROXY_TO_MOC ${HEADERS_PIKA_PROXY_DB_REDIS_COMPATIBLE_TO_MOC}
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/server.h
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/driver.h
-  )
   SET(HEADERS_PROXY_DB_PIKA ${HEADERS_PROXY_DB_REDIS_COMPATIBLE}
     ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/command.h
     ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/connection_settings.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/server.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/driver.h
   )
   SET(SOURCES_PROXY_DB_PIKA ${SOURCES_PROXY_DB_REDIS_COMPATIBLE}
     ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/command.cpp
@@ -544,22 +515,19 @@ IF(PRO_VERSION)
 ENDIF(PRO_VERSION)
 
   #gui pika
-  SET(HEADERS_PIKA_GUI_TO_MOC
-    gui/db/pika/connection_widget.h
-    gui/db/pika/lexer.h
+  SET(HEADERS_PIKA_GUI
+    ${CMAKE_SOURCE_DIR}/src/gui/db/pika/connection_widget.h
+    ${CMAKE_SOURCE_DIR}/src/gui/db/pika/lexer.h
   )
-  SET(HEADERS_PIKA_GUI)
   SET(SOURCES_PIKA_GUI
-    gui/db/pika/connection_widget.cpp
-    gui/db/pika/lexer.cpp
+    ${CMAKE_SOURCE_DIR}/src/gui/db/pika/connection_widget.cpp
+    ${CMAKE_SOURCE_DIR}/src/gui/db/pika/lexer.cpp
   )
 
   #update common variables
-  SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_PIKA_PROXY_TO_MOC})
   SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_PIKA})
   SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_PIKA})
 
-  SET(HEADERS_GUI_TO_MOC ${HEADERS_GUI_TO_MOC} ${HEADERS_PIKA_GUI_TO_MOC})
   SET(HEADERS_GUI ${HEADERS_GUI} ${HEADERS_PIKA_GUI})
   SET(SOURCES_GUI ${SOURCES_GUI} ${SOURCES_PIKA_GUI})
 ENDIF(BUILD_WITH_PIKA)
@@ -572,14 +540,12 @@ IF(BUILD_WITH_MEMCACHED)
   FIND_LIBRARY(MEMCACHED_UTIL_LIBRARY memcachedutil)
 
   #proxy
-  SET(HEADERS_MEMCACHED_PROXY_TO_MOC
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/memcached/server.h
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/memcached/driver.h
-  )
   SET(HEADERS_PROXY_DB_MEMCACHED
     ${CMAKE_SOURCE_DIR}/src/proxy/db/memcached/connection_settings.h
     ${CMAKE_SOURCE_DIR}/src/proxy/db/memcached/database.h
     ${CMAKE_SOURCE_DIR}/src/proxy/db/memcached/command.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/memcached/server.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/memcached/driver.h
   )
   SET(SOURCES_PROXY_DB_MEMCACHED
     ${CMAKE_SOURCE_DIR}/src/proxy/db/memcached/connection_settings.cpp
@@ -590,16 +556,19 @@ IF(BUILD_WITH_MEMCACHED)
   )
 
   #gui
-  SET(HEADERS_MEMCACHED_GUI_TO_MOC gui/db/memcached/connection_widget.h gui/db/memcached/lexer.h)
-  SET(HEADERS_MEMCACHED_GUI)
-  SET(SOURCES_MEMCACHED_GUI gui/db/memcached/connection_widget.cpp gui/db/memcached/lexer.cpp)
+  SET(HEADERS_MEMCACHED_GUI
+    ${CMAKE_SOURCE_DIR}/src/gui/db/memcached/connection_widget.h
+    ${CMAKE_SOURCE_DIR}/src/gui/db/memcached/lexer.h
+  )
+  SET(SOURCES_MEMCACHED_GUI
+    ${CMAKE_SOURCE_DIR}/src/gui/db/memcached/connection_widget.cpp
+    ${CMAKE_SOURCE_DIR}/src/gui/db/memcached/lexer.cpp
+  )
 
   #update common variables
-  SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_MEMCACHED_PROXY_TO_MOC})
   SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_MEMCACHED})
   SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_MEMCACHED})
 
-  SET(HEADERS_GUI_TO_MOC ${HEADERS_GUI_TO_MOC} ${HEADERS_MEMCACHED_GUI_TO_MOC})
   SET(HEADERS_GUI ${HEADERS_GUI} ${HEADERS_MEMCACHED_GUI})
   SET(SOURCES_GUI ${SOURCES_GUI} ${SOURCES_MEMCACHED_GUI})
 
@@ -612,14 +581,12 @@ ENDIF(BUILD_WITH_MEMCACHED)
 #ssdb
 IF(BUILD_WITH_SSDB)
   #proxy
-  SET(HEADERS_SSDB_PROXY_TO_MOC
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/ssdb/server.h
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/ssdb/driver.h
-  )
   SET(HEADERS_PROXY_DB_SSDB
     ${CMAKE_SOURCE_DIR}/src/proxy/db/ssdb/connection_settings.h
     ${CMAKE_SOURCE_DIR}/src/proxy/db/ssdb/database.h
     ${CMAKE_SOURCE_DIR}/src/proxy/db/ssdb/command.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/ssdb/server.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/ssdb/driver.h
   )
   SET(SOURCES_PROXY_DB_SSDB
     ${CMAKE_SOURCE_DIR}/src/proxy/db/ssdb/connection_settings.cpp
@@ -630,16 +597,19 @@ IF(BUILD_WITH_SSDB)
   )
 
   #gui
-  SET(HEADERS_SSDB_GUI_TO_MOC gui/db/ssdb/connection_widget.h gui/db/ssdb/lexer.h)
-  SET(HEADERS_SSDB_GUI)
-  SET(SOURCES_SSDB_GUI gui/db/ssdb/connection_widget.cpp gui/db/ssdb/lexer.cpp)
+  SET(HEADERS_SSDB_GUI
+    ${CMAKE_SOURCE_DIR}/src/gui/db/ssdb/connection_widget.h
+    ${CMAKE_SOURCE_DIR}/src/gui/db/ssdb/lexer.h
+  )
+  SET(SOURCES_SSDB_GUI
+    ${CMAKE_SOURCE_DIR}/src/gui/db/ssdb/connection_widget.cpp
+    ${CMAKE_SOURCE_DIR}/src/gui/db/ssdb/lexer.cpp
+  )
 
   #update common variables
-  SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_SSDB_PROXY_TO_MOC})
   SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_SSDB})
   SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_SSDB})
 
-  SET(HEADERS_GUI_TO_MOC ${HEADERS_GUI_TO_MOC} ${HEADERS_SSDB_GUI_TO_MOC})
   SET(HEADERS_GUI ${HEADERS_GUI} ${HEADERS_SSDB_GUI})
   SET(SOURCES_GUI ${SOURCES_GUI} ${SOURCES_SSDB_GUI})
 ENDIF(BUILD_WITH_SSDB)
@@ -649,14 +619,12 @@ IF(BUILD_WITH_LEVELDB)
   FIND_PACKAGE(leveldb REQUIRED)
 
   #proxy
-  SET(HEADERS_LEVELDB_PROXY_TO_MOC
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/leveldb/server.h
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/leveldb/driver.h
-  )
   SET(HEADERS_PROXY_DB_LEVELDB
     ${CMAKE_SOURCE_DIR}/src/proxy/db/leveldb/connection_settings.h
     ${CMAKE_SOURCE_DIR}/src/proxy/db/leveldb/database.h
     ${CMAKE_SOURCE_DIR}/src/proxy/db/leveldb/command.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/leveldb/server.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/leveldb/driver.h
   )
   SET(SOURCES_PROXY_DB_LEVELDB
     ${CMAKE_SOURCE_DIR}/src/proxy/db/leveldb/connection_settings.cpp
@@ -667,16 +635,19 @@ IF(BUILD_WITH_LEVELDB)
   )
 
   #gui
-  SET(HEADERS_LEVELDB_GUI_TO_MOC gui/db/leveldb/connection_widget.h gui/db/leveldb/lexer.h)
-  SET(HEADERS_LEVELDB_GUI)
-  SET(SOURCES_LEVELDB_GUI gui/db/leveldb/connection_widget.cpp gui/db/leveldb/lexer.cpp)
+  SET(HEADERS_LEVELDB_GUI
+    ${CMAKE_SOURCE_DIR}/src/gui/db/leveldb/connection_widget.h
+    ${CMAKE_SOURCE_DIR}/src/gui/db/leveldb/lexer.h
+  )
+  SET(SOURCES_LEVELDB_GUI
+    ${CMAKE_SOURCE_DIR}/src/gui/db/leveldb/connection_widget.cpp
+    ${CMAKE_SOURCE_DIR}/src/gui/db/leveldb/lexer.cpp
+  )
 
   #update common variables
-  SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_LEVELDB_PROXY_TO_MOC})
   SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_LEVELDB})
   SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_LEVELDB})
 
-  SET(HEADERS_GUI_TO_MOC ${HEADERS_GUI_TO_MOC} ${HEADERS_LEVELDB_GUI_TO_MOC})
   SET(HEADERS_GUI ${HEADERS_GUI} ${HEADERS_LEVELDB_GUI})
   SET(SOURCES_GUI ${SOURCES_GUI} ${SOURCES_LEVELDB_GUI})
 
@@ -691,14 +662,12 @@ IF(BUILD_WITH_ROCKSDB)
   FIND_PACKAGE(RocksDB REQUIRED)
 
   #proxy
-  SET(HEADERS_ROCKSDB_PROXY_TO_MOC
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/rocksdb/server.h
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/rocksdb/driver.h
-  )
   SET(HEADERS_PROXY_DB_ROCKSDB
     ${CMAKE_SOURCE_DIR}/src/proxy/db/rocksdb/connection_settings.h
     ${CMAKE_SOURCE_DIR}/src/proxy/db/rocksdb/database.h
     ${CMAKE_SOURCE_DIR}/src/proxy/db/rocksdb/command.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/rocksdb/server.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/rocksdb/driver.h
   )
   SET(SOURCES_PROXY_DB_ROCKSDB
     ${CMAKE_SOURCE_DIR}/src/proxy/db/rocksdb/connection_settings.cpp
@@ -709,16 +678,13 @@ IF(BUILD_WITH_ROCKSDB)
   )
 
   #gui
-  SET(HEADERS_ROCKSDB_GUI_TO_MOC gui/db/rocksdb/connection_widget.h gui/db/rocksdb/lexer.h)
-  SET(HEADERS_ROCKSDB_GUI)
-  SET(SOURCES_ROCKSDB_GUI gui/db/rocksdb/connection_widget.cpp gui/db/rocksdb/lexer.cpp)
+  SET(HEADERS_ROCKSDB_GUI ${CMAKE_SOURCE_DIR}/src/gui/db/rocksdb/connection_widget.h ${CMAKE_SOURCE_DIR}/src/gui/db/rocksdb/lexer.h)
+  SET(SOURCES_ROCKSDB_GUI ${CMAKE_SOURCE_DIR}/src/gui/db/rocksdb/connection_widget.cpp ${CMAKE_SOURCE_DIR}/src/gui/db/rocksdb/lexer.cpp)
 
   #update common variables
-  SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_ROCKSDB_PROXY_TO_MOC})
   SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_ROCKSDB})
   SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_ROCKSDB})
 
-  SET(HEADERS_GUI_TO_MOC ${HEADERS_GUI_TO_MOC} ${HEADERS_ROCKSDB_GUI_TO_MOC})
   SET(HEADERS_GUI ${HEADERS_GUI} ${HEADERS_ROCKSDB_GUI})
   SET(SOURCES_GUI ${SOURCES_GUI} ${SOURCES_ROCKSDB_GUI})
 
@@ -745,14 +711,12 @@ IF(BUILD_WITH_UNQLITE)
   FIND_LIBRARY(UNQLITE_LIBRARY unqlite)
 
   #proxy
-  SET(HEADERS_UNQLITE_PROXY_TO_MOC
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/unqlite/server.h
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/unqlite/driver.h
-  )
   SET(HEADERS_PROXY_DB_UNQLITE
     ${CMAKE_SOURCE_DIR}/src/proxy/db/unqlite/connection_settings.h
     ${CMAKE_SOURCE_DIR}/src/proxy/db/unqlite/database.h
     ${CMAKE_SOURCE_DIR}/src/proxy/db/unqlite/command.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/unqlite/server.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/unqlite/driver.h
   )
   SET(SOURCES_PROXY_DB_UNQLITE
     ${CMAKE_SOURCE_DIR}/src/proxy/db/unqlite/connection_settings.cpp
@@ -763,22 +727,19 @@ IF(BUILD_WITH_UNQLITE)
   )
 
   #gui
-  SET(HEADERS_UNQLITE_GUI_TO_MOC
+  SET(HEADERS_UNQLITE_GUI
     ${CMAKE_SOURCE_DIR}/src/gui/db/unqlite/connection_widget.h
     ${CMAKE_SOURCE_DIR}/src/gui/db/unqlite/lexer.h
   )
-  SET(HEADERS_UNQLITE_GUI)
   SET(SOURCES_UNQLITE_GUI
     ${CMAKE_SOURCE_DIR}/src/gui/db/unqlite/connection_widget.cpp
     ${CMAKE_SOURCE_DIR}/src/gui/db/unqlite/lexer.cpp
   )
 
   #update common variables
-  SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_UNQLITE_PROXY_TO_MOC})
   SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_UNQLITE})
   SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_UNQLITE})
 
-  SET(HEADERS_GUI_TO_MOC ${HEADERS_GUI_TO_MOC} ${HEADERS_UNQLITE_GUI_TO_MOC})
   SET(HEADERS_GUI ${HEADERS_GUI} ${HEADERS_UNQLITE_GUI})
   SET(SOURCES_GUI ${SOURCES_GUI} ${SOURCES_UNQLITE_GUI})
 
@@ -790,14 +751,12 @@ IF(BUILD_WITH_LMDB)
   FIND_LIBRARY(LMDB_LIBRARY lmdb)
 
   #proxy
-  SET(HEADERS_LMDB_PROXY_TO_MOC
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/lmdb/server.h
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/lmdb/driver.h
-  )
   SET(HEADERS_PROXY_DB_LMDB
     ${CMAKE_SOURCE_DIR}/src/proxy/db/lmdb/connection_settings.h
     ${CMAKE_SOURCE_DIR}/src/proxy/db/lmdb/database.h
     ${CMAKE_SOURCE_DIR}/src/proxy/db/lmdb/command.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/lmdb/server.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/lmdb/driver.h
   )
   SET(SOURCES_PROXY_DB_LMDB
     ${CMAKE_SOURCE_DIR}/src/proxy/db/lmdb/connection_settings.cpp
@@ -808,16 +767,19 @@ IF(BUILD_WITH_LMDB)
   )
 
   #gui
-  SET(HEADERS_LMDB_GUI_TO_MOC gui/db/lmdb/connection_widget.h gui/db/lmdb/lexer.h)
-  SET(HEADERS_LMDB_GUI)
-  SET(SOURCES_LMDB_GUI gui/db/lmdb/connection_widget.cpp gui/db/lmdb/lexer.cpp)
+  SET(HEADERS_LMDB_GUI
+    ${CMAKE_SOURCE_DIR}/src/gui/db/lmdb/connection_widget.h
+    ${CMAKE_SOURCE_DIR}/src/gui/db/lmdb/lexer.h
+  )
+  SET(SOURCES_LMDB_GUI
+    ${CMAKE_SOURCE_DIR}/src/gui/db/lmdb/connection_widget.cpp
+    ${CMAKE_SOURCE_DIR}/src/gui/db/lmdb/lexer.cpp
+  )
 
   #update common variables
-  SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_LMDB_PROXY_TO_MOC})
   SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_LMDB})
   SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_LMDB})
 
-  SET(HEADERS_GUI_TO_MOC ${HEADERS_GUI_TO_MOC} ${HEADERS_LMDB_GUI_TO_MOC})
   SET(HEADERS_GUI ${HEADERS_GUI} ${HEADERS_LMDB_GUI})
   SET(SOURCES_GUI ${SOURCES_GUI} ${SOURCES_LMDB_GUI})
 
@@ -835,14 +797,12 @@ IF(BUILD_WITH_UPSCALEDB)
   FIND_LIBRARY(UPSCALEDB_LIBRARY upscaledb)
 
   #proxy
-  SET(HEADERS_UPSCALEDB_PROXY_TO_MOC
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/upscaledb/server.h
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/upscaledb/driver.h
-  )
   SET(HEADERS_PROXY_DB_UPSCALEDB
     ${CMAKE_SOURCE_DIR}/src/proxy/db/upscaledb/connection_settings.h
     ${CMAKE_SOURCE_DIR}/src/proxy/db/upscaledb/database.h
     ${CMAKE_SOURCE_DIR}/src/proxy/db/upscaledb/command.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/upscaledb/server.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/upscaledb/driver.h
   )
   SET(SOURCES_PROXY_DB_UPSCALEDB
     ${CMAKE_SOURCE_DIR}/src/proxy/db/upscaledb/connection_settings.cpp
@@ -853,16 +813,19 @@ IF(BUILD_WITH_UPSCALEDB)
   )
 
   #gui
-  SET(HEADERS_UPSCALEDB_GUI_TO_MOC gui/db/upscaledb/connection_widget.h gui/db/upscaledb/lexer.h)
-  SET(HEADERS_UPSCALEDB_GUI)
-  SET(SOURCES_UPSCALEDB_GUI gui/db/upscaledb/connection_widget.cpp gui/db/upscaledb/lexer.cpp)
+  SET(HEADERS_UPSCALEDB_GUI
+    ${CMAKE_SOURCE_DIR}/src/gui/db/upscaledb/connection_widget.h
+    ${CMAKE_SOURCE_DIR}/src/gui/db/upscaledb/lexer.h
+  )
+  SET(SOURCES_UPSCALEDB_GUI
+    ${CMAKE_SOURCE_DIR}/src/gui/db/upscaledb/connection_widget.cpp
+    ${CMAKE_SOURCE_DIR}/src/gui/db/upscaledb/lexer.cpp
+  )
 
   #update common variables
-  SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_UPSCALEDB_PROXY_TO_MOC})
   SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_UPSCALEDB})
   SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_UPSCALEDB})
 
-  SET(HEADERS_GUI_TO_MOC ${HEADERS_GUI_TO_MOC} ${HEADERS_UPSCALEDB_GUI_TO_MOC})
   SET(HEADERS_GUI ${HEADERS_GUI} ${HEADERS_UPSCALEDB_GUI})
   SET(SOURCES_GUI ${SOURCES_GUI} ${SOURCES_UPSCALEDB_GUI})
 
@@ -877,14 +840,12 @@ IF(BUILD_WITH_FORESTDB)
   FIND_LIBRARY(FORESTDB_LIBRARY forestdb)
 
   #proxy
-  SET(HEADERS_FORESTDB_PROXY_TO_MOC
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/forestdb/server.h
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/forestdb/driver.h
-  )
   SET(HEADERS_PROXY_DB_FORESTDB
     ${CMAKE_SOURCE_DIR}/src/proxy/db/forestdb/connection_settings.h
     ${CMAKE_SOURCE_DIR}/src/proxy/db/forestdb/database.h
     ${CMAKE_SOURCE_DIR}/src/proxy/db/forestdb/command.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/forestdb/server.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/forestdb/driver.h
   )
   SET(SOURCES_PROXY_DB_FORESTDB
     ${CMAKE_SOURCE_DIR}/src/proxy/db/forestdb/connection_settings.cpp
@@ -895,16 +856,19 @@ IF(BUILD_WITH_FORESTDB)
   )
 
   #gui
-  SET(HEADERS_FORESTDB_GUI_TO_MOC gui/db/forestdb/connection_widget.h gui/db/forestdb/lexer.h)
-  SET(HEADERS_FORESTDB_GUI)
-  SET(SOURCES_FORESTDB_GUI gui/db/forestdb/connection_widget.cpp gui/db/forestdb/lexer.cpp)
+  SET(HEADERS_FORESTDB_GUI
+    ${CMAKE_SOURCE_DIR}/src/gui/db/forestdb/connection_widget.h
+    ${CMAKE_SOURCE_DIR}/src/gui/db/forestdb/lexer.h
+  )
+  SET(SOURCES_FORESTDB_GUI
+    ${CMAKE_SOURCE_DIR}/src/gui/db/forestdb/connection_widget.cpp
+    ${CMAKE_SOURCE_DIR}/src/gui/db/forestdb/lexer.cpp
+  )
 
   #update common variables
-  SET(HEADERS_PROXY_TO_MOC ${HEADERS_PROXY_TO_MOC} ${HEADERS_FORESTDB_PROXY_TO_MOC})
   SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_FORESTDB})
   SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_FORESTDB})
 
-  SET(HEADERS_GUI_TO_MOC ${HEADERS_GUI_TO_MOC} ${HEADERS_FORESTDB_GUI_TO_MOC})
   SET(HEADERS_GUI ${HEADERS_GUI} ${HEADERS_FORESTDB_GUI})
   SET(SOURCES_GUI ${SOURCES_GUI} ${SOURCES_FORESTDB_GUI})
 
@@ -962,7 +926,7 @@ IF(PRO_VERSION)
     MESSAGE(FATAL_ERROR "Not supported strategy: ${BUILD_STRATEGY}")
   ENDIF(BUILD_STRATEGY STREQUAL "community")
 
-  SET(HEADERS_CREDS_TO_MOC
+  SET(HEADERS_CREDS
     ${CMAKE_SOURCE_DIR}/src/credentials_dialog.h
     ${CMAKE_SOURCE_DIR}/src/iverify_user.h
   )
@@ -973,12 +937,8 @@ IF(PRO_VERSION)
   )
 ENDIF(PRO_VERSION)
 
-SET(HEADERS_TO_MOC
-  ${HEADERS_CREDS_TO_MOC}
-  ${HEADERS_GUI_TO_MOC}
-  ${HEADERS_PROXY_TO_MOC}
-)
 SET(HEADERS
+  ${HEADERS_CREDS}
   ${HEADERS_GUI}
   ${HEADERS_PROXY}
   ${HEADERS_TRANSLATIONS}
@@ -990,7 +950,6 @@ SET(SOURCES
   ${SOURCES_TRANSLATIONS}
 )
 
-QT5_WRAP_CPP(MOC_FILES ${HEADERS_TO_MOC})
 SET(GUI_QRC ${CMAKE_CURRENT_LIST_DIR}/resources/gui.qrc)
 SET(BRANDING_QRC ${CMAKE_CURRENT_LIST_DIR}/resources/branding.qrc)
 CONFIGURE_FILE("resources/gui.qrc.in" ${GUI_QRC} @ONLY IMMEDIATE)
@@ -1000,7 +959,6 @@ QT5_ADD_RESOURCES(RES_SRC ${RESOURCES})
 
 SOURCE_GROUP("Header Files" FILES ${HEADERS} ${HEADERS_TO_MOC})
 SOURCE_GROUP("Source Files" FILES ${SOURCES})
-SOURCE_GROUP("Generated" FILES ${MOC_FILES})
 SOURCE_GROUP("Platform Files" FILES ${PLATFORM_HDRS} ${PLATFORM_SRCS})
 SOURCE_GROUP("Resources" FILES ${RES_SRC} ${RESOURCE_OS})
 
@@ -1045,9 +1003,7 @@ ENDIF(BZIP2_FOUND)
 FIND_LIBRARY(QSCINTILLA2_LIBRARY qscintilla2)
 
 SET(ALL_SOURCES
-  ${HEADERS}
-  ${HEADERS_TO_MOC} ${MOC_FILES}
-  ${SOURCES}
+  ${HEADERS} ${SOURCES}
   ${PLATFORM_HDRS} ${PLATFORM_SRCS}
 )
 SET(ALL_LIBS
