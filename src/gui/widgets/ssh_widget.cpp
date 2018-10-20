@@ -172,8 +172,8 @@ core::SSHInfo SSHWidget::info() const {
   info.SetUsername(common::ConvertToString(user_name_->text()));
   info.SetPassword(common::ConvertToString(password_box_->text()));
   core::PublicPrivate key;
-  key.public_key = common::ConvertToString(public_key_widget_->path());
-  key.private_key = common::ConvertToString(private_key_widget_->path());
+  key.public_key_path = common::ConvertToString(public_key_widget_->path());
+  key.private_key_path = common::ConvertToString(private_key_widget_->path());
   key.use_public_key = use_public_key_->isChecked();
   info.SetKey(key);
   info.SetPassPharse(common::ConvertToString(passphrase_box_->text()));
@@ -200,11 +200,11 @@ void SSHWidget::setInfo(const core::SSHInfo& info) {
 
   QString qprivate_key;
   core::PublicPrivate key = info.GetKey();
-  common::ConvertFromString(key.private_key, &qprivate_key);
+  common::ConvertFromString(key.private_key_path, &qprivate_key);
   private_key_widget_->setPath(qprivate_key);
 
   QString qpublic_key;
-  common::ConvertFromString(key.public_key, &qpublic_key);
+  common::ConvertFromString(key.public_key_path, &qpublic_key);
   public_key_widget_->setPath(qpublic_key);
 
   use_public_key_->setChecked(key.use_public_key);
