@@ -29,7 +29,7 @@ class KeysTableModel : public common::qt::gui::TableModel {
   Q_OBJECT
  public:
   explicit KeysTableModel(QObject* parent = Q_NULLPTR);
-  virtual ~KeysTableModel();
+  virtual ~KeysTableModel() override;
 
   virtual QVariant data(const QModelIndex& index, int role) const override;
   virtual bool setData(const QModelIndex& index, const QVariant& value, int role) override;

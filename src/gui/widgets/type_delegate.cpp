@@ -101,7 +101,7 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
     unsigned int value = 0;
     if (val->GetAsUInteger(&value)) {
       QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
-      spinBox->setValue(value);
+      spinBox->setValue(static_cast<int>(value));
     }
   } else if (t == common::Value::TYPE_BOOLEAN) {
     bool value;
@@ -226,7 +226,7 @@ void TypeDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, cons
   } else if (t == common::Value::TYPE_UINTEGER) {
     QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
     int value = spinBox->value();
-    core::NValue val(common::Value::CreateUIntegerValue(value));
+    core::NValue val(common::Value::CreateUIntegerValue(static_cast<unsigned int>(value)));
     QVariant var = QVariant::fromValue(val);
     model->setData(index, var, Qt::EditRole);
   } else if (t == common::Value::TYPE_BOOLEAN) {

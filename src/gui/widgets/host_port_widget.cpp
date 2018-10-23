@@ -34,7 +34,7 @@ HostPortWidget::HostPortWidget(QWidget* parent) : QWidget(parent) {
   QHBoxLayout* hostAndPasswordLayout = new QHBoxLayout;
   host_edit_box_ = new QLineEdit;
   port_ = new QSpinBox;
-  port_->setRange(0, UINT16_MAX);
+  port_->setRange(0, std::numeric_limits<common::net::HostAndPort::port_t>::max());
   port_->setFixedWidth(80);
   hostAndPasswordLayout->addWidget(host_edit_box_);
   hostAndPasswordLayout->addWidget(new QLabel(":"));
@@ -45,7 +45,8 @@ HostPortWidget::HostPortWidget(QWidget* parent) : QWidget(parent) {
 }
 
 common::net::HostAndPort HostPortWidget::host() const {
-  return common::net::HostAndPort(common::ConvertToString(host_edit_box_->text()), port_->value());
+  common::net::HostAndPort::port_t port = static_cast<common::net::HostAndPort::port_t>(port_->value());
+  return common::net::HostAndPort(common::ConvertToString(host_edit_box_->text()), port);
 }
 
 void HostPortWidget::setHost(const common::net::HostAndPort& host) {

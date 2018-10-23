@@ -79,7 +79,7 @@ bool HashTableModel::setData(const QModelIndex& index, const QVariant& value, in
 
 Qt::ItemFlags HashTableModel::flags(const QModelIndex& index) const {
   if (!index.isValid()) {
-    return 0;
+    return Qt::NoItemFlags;
   }
 
   Qt::ItemFlags result = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
@@ -198,12 +198,13 @@ void HashTableModel::insertRow(const QString& key, const QString& value) {
 }
 
 void HashTableModel::removeRow(int row) {
-  if (row == -1) {
+  if (row < 0) {
     return;
   }
 
+  size_t stabled_index_row = static_cast<size_t>(row);
   beginRemoveRows(QModelIndex(), row, row);
-  common::qt::gui::TableItem* child = data_[row];
+  common::qt::gui::TableItem* child = data_[stabled_index_row];
   data_.erase(data_.begin() + row);
   delete child;
   endRemoveRows();

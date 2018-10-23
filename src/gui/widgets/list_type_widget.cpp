@@ -64,7 +64,7 @@ ListTypeWidget::ListTypeWidget(QWidget* parent) : QTableView(parent) {
   VERIFY(connect(del, &ActionDelegate::addClicked, this, &ListTypeWidget::addRow));
   VERIFY(connect(del, &ActionDelegate::removeClicked, this, &ListTypeWidget::removeRow));
   QAbstractItemDelegate* default_del = itemDelegate();
-  VERIFY(connect(default_del, &QAbstractItemDelegate::closeEditor, this, &ListTypeWidget::dataChanged));
+  VERIFY(connect(default_del, &QAbstractItemDelegate::closeEditor, this, &ListTypeWidget::dataChangedSignal));
 
   setItemDelegateForColumn(KeyValueTableItem::kAction, del);
   setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -84,23 +84,23 @@ common::SetValue* ListTypeWidget::setValue() const {
 
 void ListTypeWidget::insertRow(const QString& first) {
   model_->insertRow(first, QString());
-  emit dataChanged();
+  emit dataChangedSignal();
 }
 
 void ListTypeWidget::clear() {
   model_->clear();
-  emit dataChanged();
+  emit dataChangedSignal();
 }
 
 void ListTypeWidget::addRow(const QModelIndex& index) {
   KeyValueTableItem* node = common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
   model_->insertRow(node->key(), node->value());
-  emit dataChanged();
+  emit dataChangedSignal();
 }
 
 void ListTypeWidget::removeRow(const QModelIndex& index) {
   model_->removeRow(index.row());
-  emit dataChanged();
+  emit dataChangedSignal();
 }
 
 }  // namespace gui

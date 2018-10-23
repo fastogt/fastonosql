@@ -29,8 +29,6 @@
 
 #include <common/convert2string.h>
 
-#include <fastonosql/core/types.h>
-
 namespace fastonosql {
 namespace gui {
 

@@ -92,19 +92,19 @@ KeyEditWidget::KeyEditWidget(const std::vector<common::Value::Type>& availible_t
   // value_list_edit_->verticalHeader()->hide();
   kvLayout->addWidget(value_list_edit_, 2, 1);
   value_list_edit_->setVisible(false);
-  VERIFY(connect(value_list_edit_, &ListTypeWidget::dataChanged, this, &KeyEditWidget::keyChanged));
+  VERIFY(connect(value_list_edit_, &ListTypeWidget::dataChangedSignal, this, &KeyEditWidget::keyChanged));
 
   value_table_edit_ = new HashTypeWidget;
   // value_table_edit_->horizontalHeader()->hide();
   // value_table_edit_->verticalHeader()->hide();
   kvLayout->addWidget(value_table_edit_, 2, 1);
   value_table_edit_->setVisible(false);
-  VERIFY(connect(value_table_edit_, &HashTypeWidget::dataChanged, this, &KeyEditWidget::keyChanged));
+  VERIFY(connect(value_table_edit_, &HashTypeWidget::dataChangedSignal, this, &KeyEditWidget::keyChanged));
 
   stream_table_edit_ = new StreamTypeWidget;
   kvLayout->addWidget(stream_table_edit_, 2, 1);
   stream_table_edit_->setVisible(false);
-  VERIFY(connect(stream_table_edit_, &StreamTypeWidget::dataChanged, this, &KeyEditWidget::keyChanged));
+  VERIFY(connect(stream_table_edit_, &StreamTypeWidget::dataChangedSignal, this, &KeyEditWidget::keyChanged));
 
   setLayout(kvLayout);
   retranslateUi();

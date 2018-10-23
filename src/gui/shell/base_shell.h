@@ -42,9 +42,6 @@ class BaseShell : public gui::FastoEditorShell {
  protected:
   BaseShell(core::ConnectionType type, bool show_auto_complete, QWidget* parent = Q_NULLPTR);
   BaseQsciLexer* lexer() const;
-
- private:
-  BaseQsciLexer* createLexer(core::ConnectionType type);
 };
 
 }  // namespace gui

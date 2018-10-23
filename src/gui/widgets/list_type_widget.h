@@ -40,7 +40,7 @@ class ListTypeWidget : public QTableView {
   void clear();
 
  Q_SIGNALS:
-  void dataChanged();
+  void dataChangedSignal();
 
  private Q_SLOTS:
   void addRow(const QModelIndex& index);

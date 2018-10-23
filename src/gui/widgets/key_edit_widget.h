@@ -44,7 +44,7 @@ class KeyEditWidget : public QGroupBox {
 
   void initialize(const core::NDbKValue& key);
 
-  virtual ~KeyEditWidget();
+  virtual ~KeyEditWidget() override;
 
   void setEnableKeyEdit(bool key_edit);
 

@@ -77,7 +77,7 @@ StreamTypeWidget::StreamTypeWidget(QWidget* parent) : QTableView(parent) {
   VERIFY(connect(del, &ActionDelegate::editClicked, this, &StreamTypeWidget::editRow));
   VERIFY(connect(del, &ActionDelegate::removeClicked, this, &StreamTypeWidget::removeRow));
   QAbstractItemDelegate* default_del = itemDelegate();
-  VERIFY(connect(default_del, &QAbstractItemDelegate::closeEditor, this, &StreamTypeWidget::dataChanged));
+  VERIFY(connect(default_del, &QAbstractItemDelegate::closeEditor, this, &StreamTypeWidget::dataChangedSignal));
 
   setItemDelegateForColumn(KeyValueTableItem::kAction, del);
   setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -92,7 +92,7 @@ void StreamTypeWidget::insertStream(const core::StreamValue::Stream& stream) {
   QString qsid;
   common::ConvertFromString(stream.sid, &qsid);
   model_->insertRow(qsid, QString());
-  emit dataChanged();
+  emit dataChangedSignal();
 }
 
 void StreamTypeWidget::updateStream(const QModelIndex& index, const core::StreamValue::Stream& stream) {
@@ -102,19 +102,20 @@ void StreamTypeWidget::updateStream(const QModelIndex& index, const core::Stream
 
   KeyValueTableItem* node = common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
   int row = index.row();
-  streams_[row] = stream;
+  size_t stabled_row_index = static_cast<size_t>(row);
+  streams_[stabled_row_index] = stream;
   QString qsid;
   common::ConvertFromString(stream.sid, &qsid);
   node->setKey(qsid);
   model_->updateItem(model_->index(row, KeyValueTableItem::kKey, QModelIndex()),
                      model_->index(row, KeyValueTableItem::kAction, QModelIndex()));
-  emit dataChanged();
+  emit dataChangedSignal();
 }
 
 void StreamTypeWidget::clear() {
   model_->clear();
   streams_.clear();
-  emit dataChanged();
+  emit dataChangedSignal();
 }
 
 core::StreamValue* StreamTypeWidget::streamValue() const {
@@ -133,7 +134,8 @@ void StreamTypeWidget::editRow(const QModelIndex& index) {
   }
 
   int row = index.row();
-  core::StreamValue::Stream stream = streams_[row];
+  size_t stabled_row_index = static_cast<size_t>(row);
+  core::StreamValue::Stream stream = streams_[stabled_row_index];
   QString qsid;
   common::ConvertFromString(stream.sid, &qsid);
   StreamEntryDialog diag(qsid, this);
@@ -167,7 +169,7 @@ void StreamTypeWidget::addRow(const QModelIndex& index) {
 void StreamTypeWidget::removeRow(const QModelIndex& index) {
   model_->removeRow(index.row());
   streams_.erase(streams_.begin() + index.row());
-  emit dataChanged();
+  emit dataChangedSignal();
 }
 
 }  // namespace gui

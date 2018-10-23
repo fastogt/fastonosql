@@ -93,7 +93,7 @@ bool KeysTableModel::setData(const QModelIndex& index, const QVariant& value, in
 
 Qt::ItemFlags KeysTableModel::flags(const QModelIndex& index) const {
   if (!index.isValid()) {
-    return 0;
+    return Qt::NoItemFlags;
   }
 
   Qt::ItemFlags result = Qt::ItemIsSelectable | Qt::ItemIsEnabled;

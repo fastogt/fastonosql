@@ -38,7 +38,7 @@ class StreamTypeWidget : public QTableView {
   void clear();
 
  Q_SIGNALS:
-  void dataChanged();
+  void dataChangedSignal();
 
  private Q_SLOTS:
   void editRow(const QModelIndex& index);

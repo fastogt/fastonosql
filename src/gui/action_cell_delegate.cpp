@@ -26,10 +26,12 @@
 
 #include "gui/gui_factory.h"
 
+namespace {
+const QSize kIconSize = QSize(16, 16);
+}
+
 namespace fastonosql {
 namespace gui {
-
-const QSize ActionDelegate::icon_size = QSize(16, 16);
 
 ActionDelegate::ActionDelegate(QObject* parent) : QStyledItemDelegate(parent), current_index_() {}
 
@@ -37,7 +39,7 @@ QSize ActionDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelI
   UNUSED(option);
   UNUSED(index);
 
-  return icon_size;
+  return kIconSize;
 }
 
 void ActionDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const {
@@ -57,7 +59,7 @@ void ActionDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option
   pb_Style.rect = option.rect;
   pb_Style.features |= QStyleOptionButton::Flat;
   pb_Style.text = QString();
-  pb_Style.iconSize = icon_size;
+  pb_Style.iconSize = kIconSize;
   if (node->actionState() == KeyValueTableItem::AddAction) {
     pb_Style.icon = GuiFactory::GetInstance().addIcon();
   } else if (node->actionState() == KeyValueTableItem::EditAction) {
@@ -78,7 +80,6 @@ bool ActionDelegate::editorEvent(QEvent* event,
                                  QAbstractItemModel* model,
                                  const QStyleOptionViewItem& option,
                                  const QModelIndex& index) {
-  UNUSED(model);
   if (!index.isValid()) {
     return QStyledItemDelegate::editorEvent(event, model, option, index);
   }

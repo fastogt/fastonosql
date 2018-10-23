@@ -37,7 +37,7 @@ class FastoEditor : public QWidget {
  public:
   enum { find_panel_height = 40 };
   explicit FastoEditor(QWidget* parent = Q_NULLPTR);
-  virtual ~FastoEditor();
+  virtual ~FastoEditor() override;
 
   void registerImage(int id, const QPixmap& im);
 

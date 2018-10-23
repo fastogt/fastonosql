@@ -75,7 +75,7 @@ bool PropertyTableModel::setData(const QModelIndex& index, const QVariant& value
 
 Qt::ItemFlags PropertyTableModel::flags(const QModelIndex& index) const {
   if (!index.isValid()) {
-    return 0;
+    return Qt::NoItemFlags;
   }
 
   Qt::ItemFlags result = Qt::ItemIsSelectable | Qt::ItemIsEnabled;

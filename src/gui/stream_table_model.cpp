@@ -79,7 +79,7 @@ bool StreamTableModel::setData(const QModelIndex& index, const QVariant& value, 
 
 Qt::ItemFlags StreamTableModel::flags(const QModelIndex& index) const {
   if (!index.isValid()) {
-    return 0;
+    return Qt::NoItemFlags;
   }
 
   Qt::ItemFlags result = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
@@ -153,12 +153,13 @@ void StreamTableModel::insertEntry(const QString& key, const QString& value) {
 }
 
 void StreamTableModel::removeEntry(int row) {
-  if (row == -1) {
+  if (row < 0) {
     return;
   }
 
+  size_t stabled_row_index = static_cast<size_t>(row);
   beginRemoveRows(QModelIndex(), row, row);
-  common::qt::gui::TableItem* child = data_[row];
+  common::qt::gui::TableItem* child = data_[stabled_row_index];
   data_.erase(data_.begin() + row);
   delete child;
   endRemoveRows();

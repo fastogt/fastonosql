@@ -28,7 +28,7 @@ class HashTableModel : public common::qt::gui::TableModel {
   Q_OBJECT
  public:
   explicit HashTableModel(QObject* parent = Q_NULLPTR);
-  virtual ~HashTableModel();
+  virtual ~HashTableModel() override;
 
   virtual QVariant data(const QModelIndex& index, int role) const override;
   virtual bool setData(const QModelIndex& index, const QVariant& value, int role) override;

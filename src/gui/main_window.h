@@ -54,7 +54,7 @@ class MainWindow : public QMainWindow {
   };
 
   MainWindow();
-  ~MainWindow();
+  virtual ~MainWindow() override;
 
  protected:
   virtual void changeEvent(QEvent* ev) override;

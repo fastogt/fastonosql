@@ -46,7 +46,7 @@ class SaveKeyEditWidget : public QWidget {
   typedef QWidget base_class;
 
   explicit SaveKeyEditWidget(const std::vector<common::Value::Type>& availible_types, QWidget* parent = Q_NULLPTR);
-  virtual ~SaveKeyEditWidget();
+  virtual ~SaveKeyEditWidget() override;
 
   void initialize(const core::NDbKValue& key);
   void setEnableKeyEdit(bool enable);

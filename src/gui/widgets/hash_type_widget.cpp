@@ -37,7 +37,7 @@ HashTypeWidget::HashTypeWidget(QWidget* parent) : QTableView(parent), model_(nul
   VERIFY(connect(del, &ActionDelegate::addClicked, this, &HashTypeWidget::addRow));
   VERIFY(connect(del, &ActionDelegate::removeClicked, this, &HashTypeWidget::removeRow));
   QAbstractItemDelegate* default_del = itemDelegate();
-  VERIFY(connect(default_del, &QAbstractItemDelegate::closeEditor, this, &HashTypeWidget::dataChanged));
+  VERIFY(connect(default_del, &QAbstractItemDelegate::closeEditor, this, &HashTypeWidget::dataChangedSignal));
 
   setItemDelegateForColumn(KeyValueTableItem::kAction, del);
   setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -51,12 +51,12 @@ HashTypeWidget::~HashTypeWidget() {}
 
 void HashTypeWidget::insertRow(const QString& first, const QString& second) {
   model_->insertRow(first, second);
-  emit dataChanged();
+  emit dataChangedSignal();
 }
 
 void HashTypeWidget::clear() {
   model_->clear();
-  emit dataChanged();
+  emit dataChangedSignal();
 }
 
 common::ZSetValue* HashTypeWidget::zsetValue() const {
@@ -70,12 +70,12 @@ common::HashValue* HashTypeWidget::hashValue() const {
 void HashTypeWidget::addRow(const QModelIndex& index) {
   KeyValueTableItem* node = common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
   model_->insertRow(node->key(), node->value());
-  emit dataChanged();
+  emit dataChangedSignal();
 }
 
 void HashTypeWidget::removeRow(const QModelIndex& index) {
   model_->removeRow(index.row());
-  emit dataChanged();
+  emit dataChangedSignal();
 }
 
 }  // namespace gui

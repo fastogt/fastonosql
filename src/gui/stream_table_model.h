@@ -29,7 +29,7 @@ class StreamTableModel : public common::qt::gui::TableModel {
   Q_OBJECT
  public:
   explicit StreamTableModel(QObject* parent = Q_NULLPTR);
-  virtual ~StreamTableModel();
+  virtual ~StreamTableModel() override;
 
   virtual QVariant data(const QModelIndex& index, int role) const override;
   virtual bool setData(const QModelIndex& index, const QVariant& value, int role) override;

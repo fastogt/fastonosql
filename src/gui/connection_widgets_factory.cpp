@@ -103,7 +103,8 @@ ConnectionBaseWidget* createWidgetImpl(core::ConnectionType type, QWidget* paren
     return new pika::ConnectionWidget(parent);
   }
 #endif
-  NOTREACHED();
+
+  NOTREACHED() << "Not handled type: " << type;
   return nullptr;
 }
 }  // namespace
