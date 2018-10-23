@@ -40,7 +40,10 @@ namespace gui {
 class ServerHistoryDialog : public QDialog {
   Q_OBJECT
  public:
-  explicit ServerHistoryDialog(proxy::IServerSPtr server, QWidget* parent = Q_NULLPTR);
+  explicit ServerHistoryDialog(const QString& title,
+                               const QIcon& icon,
+                               proxy::IServerSPtr server,
+                               QWidget* parent = Q_NULLPTR);
 
   enum { min_width = 640, min_height = 480 };
 

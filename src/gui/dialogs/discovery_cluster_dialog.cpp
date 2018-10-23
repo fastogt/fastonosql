@@ -29,8 +29,8 @@
 #include "proxy/servers_manager.h"  // for ServersManager
 
 #include "gui/dialogs/connection_listwidget_items.h"
-#include "gui/dialogs/discovery_cluster_connection.h"
 #include "gui/gui_factory.h"  // for GuiFactory
+#include "gui/workers/discovery_cluster_connection.h"
 
 #include "translations/global.h"
 
@@ -41,12 +41,20 @@ const QSize kStateIconSize = QSize(64, 64);
 namespace fastonosql {
 namespace gui {
 
-DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(QWidget* parent,
+DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(const QString& title,
+                                                                   const QIcon& icon,
                                                                    proxy::IConnectionSettingsBaseSPtr connection,
-                                                                   proxy::IClusterSettingsBaseSPtr cluster)
-    : QDialog(parent), cluster_(cluster) {
-  setWindowTitle(translations::trConnectionDiscovery);
-  setWindowIcon(GuiFactory::GetInstance().serverIcon());
+                                                                   proxy::IClusterSettingsBaseSPtr cluster,
+                                                                   QWidget* parent)
+    : QDialog(parent),
+      glass_widget_(nullptr),
+      execute_time_label_(nullptr),
+      status_label_(nullptr),
+      list_widget_(nullptr),
+      icon_label_(nullptr),
+      cluster_(cluster) {
+  setWindowTitle(title);
+  setWindowIcon(icon);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   QVBoxLayout* mainLayout = new QVBoxLayout;
@@ -57,8 +65,8 @@ DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(QWidget* pare
 
   status_label_ = new QLabel(translations::trTimeTemplate_1S.arg("calculate..."));
   icon_label_ = new QLabel;
-  QIcon icon = GuiFactory::GetInstance().failIcon();
-  const QPixmap pm = icon.pixmap(kStateIconSize);
+  const QIcon fail_icon = GuiFactory::GetInstance().failIcon();
+  const QPixmap pm = fail_icon.pixmap(kStateIconSize);
   icon_label_->setPixmap(pm);
 
   mainLayout->addWidget(status_label_);

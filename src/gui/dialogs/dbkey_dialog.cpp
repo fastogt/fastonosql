@@ -30,8 +30,6 @@
 #include <fastonosql/core/db_traits.h>
 #include <fastonosql/core/value.h>
 
-#include "gui/gui_factory.h"  // for GuiFactory
-
 #include "gui/widgets/key_edit_widget.h"
 
 #include "translations/global.h"
@@ -50,13 +48,14 @@ namespace gui {
 const QSize DbKeyDialog::min_dialog_size = QSize(360, 240);
 
 DbKeyDialog::DbKeyDialog(const QString& title,
+                         const QIcon& icon,
                          core::ConnectionType type,
                          const core::NDbKValue& key,
                          bool is_edit,
                          QWidget* parent)
-    : base_class(parent), key_(key) {
-  setWindowIcon(GuiFactory::GetInstance().icon(type));
+    : base_class(parent), general_box_(nullptr), key_(key) {
   setWindowTitle(title);
+  setWindowIcon(icon);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   std::vector<common::Value::Type> types = core::GetSupportedValueTypes(type);

@@ -31,11 +31,11 @@
 namespace {
 const QString trSignInInfo =
     QObject::tr("<b>Please sign in (use the same credentials like on <a href=\"" PROJECT_DOMAIN "\">website</a>)</b>");
+
+const QSize kStatusLabelIconSize = QSize(24, 24);
 }  // namespace
 
 namespace fastonosql {
-
-const QSize CredentialsDialog::status_label_icon_size = QSize(24, 24);
 
 CredentialsDialog::CredentialsDialog(QWidget* parent) : base_class(parent), glass_widget_(nullptr), user_info_() {
   qRegisterMetaType<common::Error>("common::Error");
@@ -73,12 +73,12 @@ void CredentialsDialog::accept() {
 }
 
 void CredentialsDialog::setInforamtion(const QString& text) {
-  setStatusIcon(gui::GuiFactory::GetInstance().infoIcon(), status_label_icon_size);
+  setStatusIcon(gui::GuiFactory::GetInstance().infoIcon(), kStatusLabelIconSize);
   setStatus(text);
 }
 
 void CredentialsDialog::setFailed(const QString& text) {
-  setStatusIcon(gui::GuiFactory::GetInstance().failIcon(), status_label_icon_size);
+  setStatusIcon(gui::GuiFactory::GetInstance().failIcon(), kStatusLabelIconSize);
   setStatus(text);
 }
 

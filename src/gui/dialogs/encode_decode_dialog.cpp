@@ -38,8 +38,15 @@
 namespace fastonosql {
 namespace gui {
 
-EncodeDecodeDialog::EncodeDecodeDialog(QWidget* parent) : QDialog(parent) {
-  setWindowIcon(GuiFactory::GetInstance().encodeDecodeIcon());
+EncodeDecodeDialog::EncodeDecodeDialog(const QString& title, const QIcon& icon, QWidget* parent)
+    : QDialog(parent),
+      input_(nullptr),
+      output_(nullptr),
+      decoders_(nullptr),
+      encode_button_(nullptr),
+      decode_button_(nullptr) {
+  setWindowTitle(title);
+  setWindowIcon(icon);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   QVBoxLayout* layout = new QVBoxLayout;
@@ -95,8 +102,8 @@ void EncodeDecodeDialog::changeEvent(QEvent* e) {
 }
 
 void EncodeDecodeDialog::decodeOrEncode() {
-  QString in = input_->text();
-  if (in.isEmpty()) {
+  QString input = input_->text();
+  if (input.isEmpty()) {
     return;
   }
 
@@ -108,9 +115,9 @@ void EncodeDecodeDialog::decodeOrEncode() {
     return;
   }
 
-  std::string sin = common::ConvertToString(in);
+  std::string input_str = common::ConvertToString(input);
   std::string out;
-  common::Error err = encode_button_->isChecked() ? dec->Encode(sin, &out) : dec->Decode(sin, &out);
+  common::Error err = encode_button_->isChecked() ? dec->Encode(input_str, &out) : dec->Decode(input_str, &out);
   if (err) {
     delete dec;
     return;
@@ -124,7 +131,6 @@ void EncodeDecodeDialog::decodeOrEncode() {
 }
 
 void EncodeDecodeDialog::retranslateUi() {
-  setWindowTitle(translations::trEncodeDecode);
   encode_button_->setText(translations::trEncode);
   decode_button_->setText(translations::trDecode);
 }

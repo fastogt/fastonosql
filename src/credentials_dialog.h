@@ -39,8 +39,6 @@ class IVerifyUser;
 class CredentialsDialog : public fastonosql::gui::PasswordDialog {
   Q_OBJECT
  public:
-  static const QSize status_label_icon_size;
-
   typedef fastonosql::gui::PasswordDialog base_class;
   explicit CredentialsDialog(QWidget* parent = Q_NULLPTR);
 

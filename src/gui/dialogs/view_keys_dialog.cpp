@@ -53,8 +53,20 @@ namespace fastonosql {
 namespace gui {
 
 ViewKeysDialog::ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QWidget* parent)
-    : QDialog(parent), cursor_stack_(), cur_pos_(0), db_(db) {
-  CHECK(db_);
+    : QDialog(parent),
+      cursor_stack_(),
+      cur_pos_(0),
+      search_box_(nullptr),
+      key_count_label_(nullptr),
+      count_spin_edit_(nullptr),
+      search_button_(nullptr),
+      left_button_list_(nullptr),
+      current_key_(nullptr),
+      count_key_(nullptr),
+      right_button_list_(nullptr),
+      keys_table_(nullptr),
+      db_(db) {
+  CHECK(db_) << "Must be database.";
   setWindowTitle(title);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
@@ -65,13 +77,13 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QW
                  &ViewKeysDialog::finishLoadDatabaseContent));
 
   // main layout
-  QVBoxLayout* mainlayout = new QVBoxLayout;
+  QVBoxLayout* main_layout = new QVBoxLayout;
 
-  QHBoxLayout* searchLayout = new QHBoxLayout;
+  QHBoxLayout* search_layout = new QHBoxLayout;
   search_box_ = new QLineEdit;
   search_box_->setText(ALL_KEYS_PATTERNS);
   VERIFY(connect(search_box_, &QLineEdit::textChanged, this, &ViewKeysDialog::searchLineChanged));
-  searchLayout->addWidget(search_box_);
+  search_layout->addWidget(search_box_);
 
   count_spin_edit_ = new QSpinBox;
   count_spin_edit_->setRange(min_key_on_page, max_key_on_page);
@@ -80,12 +92,12 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QW
 
   key_count_label_ = new QLabel;
 
-  searchLayout->addWidget(key_count_label_);
-  searchLayout->addWidget(count_spin_edit_);
+  search_layout->addWidget(key_count_label_);
+  search_layout->addWidget(count_spin_edit_);
 
   search_button_ = new QPushButton;
   VERIFY(connect(search_button_, &QPushButton::clicked, this, &ViewKeysDialog::rightPageClicked));
-  searchLayout->addWidget(search_button_);
+  search_layout->addWidget(search_button_);
 
   VERIFY(
       connect(serv.get(), &proxy::IServer::ExecuteStarted, this, &ViewKeysDialog::startExecute, Qt::DirectConnection));
@@ -101,8 +113,8 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QW
   buttonBox->setOrientation(Qt::Horizontal);
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &ViewKeysDialog::accept));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &ViewKeysDialog::reject));
-  mainlayout->addLayout(searchLayout);
-  mainlayout->addWidget(keys_table_);
+  main_layout->addLayout(search_layout);
+  main_layout->addWidget(keys_table_);
 
   left_button_list_ = createButtonWithIcon(GuiFactory::GetInstance().leftIcon());
   right_button_list_ = createButtonWithIcon(GuiFactory::GetInstance().rightIcon());
@@ -126,11 +138,11 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QW
   pagingLayout->addWidget(new QSplitter(Qt::Horizontal));
   pagingLayout->addWidget(right_button_list_);
 
-  mainlayout->addLayout(pagingLayout);
-  mainlayout->addWidget(buttonBox);
+  main_layout->addLayout(pagingLayout);
+  main_layout->addWidget(buttonBox);
 
   setMinimumSize(QSize(min_width, min_height));
-  setLayout(mainlayout);
+  setLayout(main_layout);
 
   updateControls();
   retranslateUi();

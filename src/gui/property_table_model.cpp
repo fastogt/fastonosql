@@ -124,5 +124,9 @@ void PropertyTableModel::changeProperty(const core::property_t& pr) {
   }
 }
 
+void PropertyTableModel::insertProperty(const core::property_t& property) {
+  insertItem(new PropertyTableItem(property));
+}
+
 }  // namespace gui
 }  // namespace fastonosql

@@ -35,6 +35,7 @@ class DbKeyDialog : public QDialog {
   static const QSize min_dialog_size;
 
   DbKeyDialog(const QString& title,
+              const QIcon& icon,
               core::ConnectionType type,
               const core::NDbKValue& key,
               bool is_edit,

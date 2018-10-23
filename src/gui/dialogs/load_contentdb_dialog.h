@@ -20,10 +20,9 @@
 
 #include <QDialog>
 
-#include <fastonosql/core/connection_types.h>  // for ConnectionType
-
 class QLineEdit;  // lines 25-25
 class QSpinBox;   // lines 26-26
+class QLabel;
 
 namespace fastonosql {
 namespace gui {
@@ -31,18 +30,24 @@ namespace gui {
 class LoadContentDbDialog : public QDialog {
   Q_OBJECT
  public:
-  enum { min_key_on_page = 1, max_key_on_page = 100000, defaults_key = 1000, step_keys_on_page = defaults_key };
+  enum { min_key_on_page = 1, max_key_on_page = 1000000, defaults_key = 1000, step_keys_on_page = defaults_key };
 
-  explicit LoadContentDbDialog(const QString& title, core::ConnectionType type, QWidget* parent = Q_NULLPTR);
+  explicit LoadContentDbDialog(const QString& title, const QIcon& icon, QWidget* parent = Q_NULLPTR);
+
   int count() const;
   QString pattern() const;
 
  public Q_SLOTS:
   virtual void accept() override;
 
- private:
-  const core::ConnectionType type_;
+ protected:
+  virtual void changeEvent(QEvent* e) override;
 
+ private:
+  void retranslateUi();
+
+  QLabel* keys_count_label_;
+  QLabel* key_pattern_label_;
   QLineEdit* pattern_edit_;
   QSpinBox* count_spin_edit_;
 };

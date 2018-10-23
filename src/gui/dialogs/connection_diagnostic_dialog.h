@@ -38,7 +38,9 @@ namespace gui {
 class ConnectionDiagnosticDialog : public QDialog {
   Q_OBJECT
  public:
-  ConnectionDiagnosticDialog(QWidget* parent, proxy::IConnectionSettingsBaseSPtr connection);
+  ConnectionDiagnosticDialog(const QString& title,
+                             proxy::IConnectionSettingsBaseSPtr connection,
+                             QWidget* parent = Q_NULLPTR);
 
  private Q_SLOTS:
   void connectionResult(bool suc, qint64 mstimeExecute, const QString& resultText);

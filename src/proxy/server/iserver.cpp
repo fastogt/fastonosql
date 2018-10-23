@@ -198,7 +198,7 @@ void IServer::LoadServerInfo(const events_info::ServerInfoRequest& req) {
   NotifyStartEvent(ev);
 }
 
-void IServer::ServerProperty(const events_info::ServerPropertyInfoRequest& req) {
+void IServer::LoadServerProperty(const events_info::ServerPropertyInfoRequest& req) {
   emit LoadServerPropertyStarted(req);
   QEvent* ev = new events::ServerPropertyInfoRequestEvent(this, req);
   NotifyStartEvent(ev);

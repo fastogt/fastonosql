@@ -40,11 +40,17 @@
 
 #include "translations/global.h"  // for trConnections, etc
 
+namespace {
+const QString trSelectConTypeTitle = QObject::tr("Select connection type");
+}
+
 namespace fastonosql {
 namespace gui {
 
-ConnectionsDialog::ConnectionsDialog(QWidget* parent) : QDialog(parent) {
-  setWindowIcon(GuiFactory::GetInstance().connectIcon());
+ConnectionsDialog::ConnectionsDialog(const QString& title, const QIcon& icon, QWidget* parent)
+    : QDialog(parent), list_widget_(nullptr), ok_button_(nullptr) {
+  setWindowTitle(title);
+  setWindowIcon(icon);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   list_widget_ = new QTreeWidget;
@@ -176,7 +182,7 @@ proxy::IClusterSettingsBaseSPtr ConnectionsDialog::selectedCluster() const {
 #endif
 
 void ConnectionsDialog::add() {
-  ConnectionSelectTypeDialog sel(this);
+  ConnectionSelectTypeDialog sel(trSelectConTypeTitle, this);
   int result = sel.exec();
   if (result != QDialog::Accepted) {
     return;
@@ -476,7 +482,6 @@ void ConnectionsDialog::changeEvent(QEvent* e) {
 }
 
 void ConnectionsDialog::retranslateUi() {
-  setWindowTitle(translations::trConnections);
   ok_button_->setText(translations::trOpen);
 }
 

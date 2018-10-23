@@ -37,6 +37,8 @@ class TestConnection : public QObject {
   void routine();
 
  private:
+  common::time64_t elipsedTime() const;
+
   proxy::IConnectionSettingsBaseSPtr connection_;
   common::time64_t start_time_;
 };

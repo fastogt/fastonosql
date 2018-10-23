@@ -48,7 +48,13 @@ namespace fastonosql {
 namespace gui {
 
 PubSubDialog::PubSubDialog(const QString& title, proxy::IServerSPtr server, QWidget* parent)
-    : QDialog(parent), server_(server) {
+    : QDialog(parent),
+      search_box_(nullptr),
+      search_button_(nullptr),
+      channels_table_(nullptr),
+      channels_model_(nullptr),
+      proxy_model_(nullptr),
+      server_(server) {
   CHECK(server_);
   setWindowTitle(title);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
@@ -59,27 +65,22 @@ PubSubDialog::PubSubDialog(const QString& title, proxy::IServerSPtr server, QWid
                  &PubSubDialog::finishLoadServerChannels));
 
   // main layout
-  QVBoxLayout* mainlayout = new QVBoxLayout;
-  QHBoxLayout* searchLayout = new QHBoxLayout;
+  QVBoxLayout* main_layout = new QVBoxLayout;
+  QHBoxLayout* search_layout = new QHBoxLayout;
   search_box_ = new QLineEdit;
   search_box_->setText(ALL_PUBSUB_CHANNELS);
   VERIFY(connect(search_box_, &QLineEdit::textChanged, this, &PubSubDialog::searchLineChanged));
-  searchLayout->addWidget(search_box_);
+  search_layout->addWidget(search_box_);
 
   search_button_ = new QPushButton;
   VERIFY(connect(search_button_, &QPushButton::clicked, this, &PubSubDialog::searchClicked));
-  searchLayout->addWidget(search_button_);
-  mainlayout->addLayout(searchLayout);
+  search_layout->addWidget(search_button_);
+  main_layout->addLayout(search_layout);
 
   channels_model_ = new ChannelsTableModel(this);
   proxy_model_ = new QSortFilterProxyModel(this);
   proxy_model_->setSourceModel(channels_model_);
   proxy_model_->setDynamicSortFilter(true);
-
-  VERIFY(
-      connect(server_.get(), &proxy::IServer::ExecuteStarted, this, &PubSubDialog::startExecute, Qt::DirectConnection));
-  VERIFY(connect(server_.get(), &proxy::IServer::ExecuteFinished, this, &PubSubDialog::finishExecute,
-                 Qt::DirectConnection));
 
   channels_table_ = new FastoTableView;
   channels_table_->setSortingEnabled(true);
@@ -94,20 +95,12 @@ PubSubDialog::PubSubDialog(const QString& title, proxy::IServerSPtr server, QWid
   buttonBox->setOrientation(Qt::Horizontal);
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &PubSubDialog::accept));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &PubSubDialog::reject));
-  mainlayout->addWidget(channels_table_);
-  mainlayout->addWidget(buttonBox);
+  main_layout->addWidget(channels_table_);
+  main_layout->addWidget(buttonBox);
 
   setMinimumSize(QSize(min_width, min_height));
-  setLayout(mainlayout);
+  setLayout(main_layout);
   retranslateUi();
-}
-
-void PubSubDialog::startExecute(const proxy::events_info::ExecuteInfoRequest& req) {
-  UNUSED(req);
-}
-
-void PubSubDialog::finishExecute(const proxy::events_info::ExecuteInfoResponce& res) {
-  UNUSED(res);
 }
 
 void PubSubDialog::startLoadServerChannels(const proxy::events_info::LoadServerChannelsRequest& req) {
@@ -123,14 +116,13 @@ void PubSubDialog::finishLoadServerChannels(const proxy::events_info::LoadServer
   }
 
   proxy::events_info::LoadServerChannelsResponce::channels_container_t channels = res.channels;
-
   for (core::NDbPSChannel channel : channels) {
     channels_model_->insertItem(new ChannelTableItem(channel));
   }
 }
 
 void PubSubDialog::searchClicked() {
-  QString pattern = search_box_->text();
+  const QString pattern = search_box_->text();
   if (pattern.isEmpty()) {
     return;
   }
@@ -140,23 +132,23 @@ void PubSubDialog::searchClicked() {
 }
 
 void PubSubDialog::showContextMenu(const QPoint& point) {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
+  const QModelIndex selected = selectedIndex();
+  if (!selected.isValid()) {
     return;
   }
 
-  QPoint menuPoint = channels_table_->calculateMenuPoint(point);
+  QPoint menu_point = channels_table_->calculateMenuPoint(point);
   QMenu* menu = new QMenu(channels_table_);
 
-  QAction* publishAction = new QAction(translations::trPublish, this);
-  VERIFY(connect(publishAction, &QAction::triggered, this, &PubSubDialog::publish));
+  QAction* publish_action = new QAction(translations::trPublish, this);
+  VERIFY(connect(publish_action, &QAction::triggered, this, &PubSubDialog::publish));
 
-  QAction* subscribeAction = new QAction(trSubscribeInNewConsole, this);
-  VERIFY(connect(subscribeAction, &QAction::triggered, this, &PubSubDialog::subscribeInNewConsole));
+  QAction* subscribe_action = new QAction(trSubscribeInNewConsole, this);
+  VERIFY(connect(subscribe_action, &QAction::triggered, this, &PubSubDialog::subscribeInNewConsole));
 
-  menu->addAction(publishAction);
-  menu->addAction(subscribeAction);
-  menu->exec(menuPoint);
+  menu->addAction(publish_action);
+  menu->addAction(subscribe_action);
+  menu->exec(menu_point);
   delete menu;
 }
 
@@ -176,7 +168,7 @@ void PubSubDialog::publish() {
   QString publish_text = QInputDialog::getText(this, trPublishToChannel_1S.arg(node->name()), trEnterWhatYoWantToSend,
                                                QLineEdit::Normal, QString(), &ok, Qt::WindowCloseButtonHint);
   if (ok && !publish_text.isEmpty()) {
-    core::translator_t trans = server_->GetTranslator();
+    const core::translator_t trans = server_->GetTranslator();
     core::command_buffer_t cmd_str;
     common::Error err = trans->PublishCommand(node->channel(), common::ConvertToString(publish_text), &cmd_str);
     if (err) {
@@ -190,18 +182,18 @@ void PubSubDialog::publish() {
 }
 
 void PubSubDialog::subscribeInNewConsole() {
-  QModelIndex sel = selectedIndex();
-  if (!sel.isValid()) {
+  const QModelIndex selected = selectedIndex();
+  if (!selected.isValid()) {
     return;
   }
 
-  ChannelTableItem* node = common::qt::item<common::qt::gui::TableItem*, ChannelTableItem*>(sel);
+  ChannelTableItem* node = common::qt::item<common::qt::gui::TableItem*, ChannelTableItem*>(selected);
   if (!node) {
     DNOTREACHED();
     return;
   }
 
-  core::translator_t trans = server_->GetTranslator();
+  const core::translator_t trans = server_->GetTranslator();
   core::command_buffer_t cmd_str;
   common::Error err = trans->SubscribeCommand(node->channel(), &cmd_str);
   if (err) {
@@ -216,7 +208,7 @@ void PubSubDialog::subscribeInNewConsole() {
 }
 
 QModelIndex PubSubDialog::selectedIndex() const {
-  QModelIndexList indexses = channels_table_->selectionModel()->selectedRows();
+  const QModelIndexList indexses = channels_table_->selectionModel()->selectedRows();
 
   if (indexses.count() != 1) {
     return QModelIndex();

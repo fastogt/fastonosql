@@ -45,7 +45,7 @@ class ConnectionsDialog : public QDialog {
  public:
   enum { min_width = 640, min_height = 480 };
 
-  explicit ConnectionsDialog(QWidget* parent = Q_NULLPTR);
+  explicit ConnectionsDialog(const QString& title, const QIcon& icon, QWidget* parent = Q_NULLPTR);
 
   proxy::IConnectionSettingsBaseSPtr selectedConnection() const;
 #if defined(PRO_VERSION)

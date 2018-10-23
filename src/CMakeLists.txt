@@ -158,6 +158,30 @@ SET(SOURCES_TRANSLATIONS
   ${CMAKE_SOURCE_DIR}/src/translations/global.cpp
 )
 
+SET(HEADERS_GUI_WORKERS
+  ${CMAKE_SOURCE_DIR}/src/gui/workers/test_connection.h
+  ${CMAKE_SOURCE_DIR}/src/gui/workers/update_checker.h
+  ${CMAKE_SOURCE_DIR}/src/gui/workers/statistic_sender.h
+)
+
+SET(SOURCES_GUI_WORKERS
+  ${CMAKE_SOURCE_DIR}/src/gui/workers/test_connection.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/workers/update_checker.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/workers/statistic_sender.cpp
+)
+
+IF(PRO_VERSION)
+  SET(HEADERS_GUI_WORKERS ${HEADERS_GUI_WORKERS}
+    ${CMAKE_SOURCE_DIR}/src/gui/workers/discovery_cluster_connection.h
+    ${CMAKE_SOURCE_DIR}/src/gui/workers/discovery_sentinel_connection.h
+  )
+
+  SET(SOURCES_GUI_WORKERS ${SOURCES_GUI_WORKERS}
+    ${CMAKE_SOURCE_DIR}/src/gui/workers/discovery_cluster_connection.cpp
+    ${CMAKE_SOURCE_DIR}/src/gui/workers/discovery_sentinel_connection.cpp
+  )
+ENDIF(PRO_VERSION)
+
 SET(HEADERS_GUI_DIALOGS
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/connection_listwidget_items.h
 
@@ -177,7 +201,6 @@ SET(HEADERS_GUI_DIALOGS
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/dbkey_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/view_keys_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/pub_sub_dialog.h
-  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/test_connection.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/stream_entry_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/how_to_use_dialog.h
 )
@@ -200,32 +223,25 @@ SET(SOURCES_GUI_DIALOGS
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/dbkey_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/view_keys_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/pub_sub_dialog.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/test_connection.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/stream_entry_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/how_to_use_dialog.cpp
 )
 
 IF(PRO_VERSION)
   SET(HEADERS_GUI_DIALOGS ${HEADERS_GUI_DIALOGS}
-    ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_cluster_connection.h
-
     ${CMAKE_SOURCE_DIR}/src/gui/dialogs/cluster_dialog.h
     ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_cluster_dialog.h
 
     ${CMAKE_SOURCE_DIR}/src/gui/dialogs/sentinel_dialog.h
     ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_sentinel_dialog.h
-    ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_sentinel_connection.h
   )
 
   SET(SOURCES_GUI_DIALOGS ${SOURCES_GUI_DIALOGS}
-    ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_cluster_connection.cpp
-
     ${CMAKE_SOURCE_DIR}/src/gui/dialogs/cluster_dialog.cpp
     ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_cluster_dialog.cpp
 
     ${CMAKE_SOURCE_DIR}/src/gui/dialogs/sentinel_dialog.cpp
     ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_sentinel_dialog.cpp
-    ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_sentinel_connection.cpp
   )
 ENDIF(PRO_VERSION)
 
@@ -321,8 +337,12 @@ SET(SOURCES_GUI_WIDGETS
 )
 
 SET(HEADERS_GUI
-  ${HEADERS_GUI_EXPLORER}
+  ${HEADERS_GUI_WORKERS}
   ${HEADERS_GUI_DIALOGS}
+  ${HEADERS_GUI_EDITOR}
+  ${HEADERS_GUI_WIDGETS}
+  ${HEADERS_GUI_SHELL}
+  ${HEADERS_GUI_EXPLORER}
 
   ${CMAKE_SOURCE_DIR}/src/gui/gui_factory.h
   ${CMAKE_SOURCE_DIR}/src/gui/channel_table_item.h
@@ -337,8 +357,6 @@ SET(HEADERS_GUI
   ${CMAKE_SOURCE_DIR}/src/gui/key_info.h
 
   ${CMAKE_SOURCE_DIR}/src/gui/main_window.h
-  ${CMAKE_SOURCE_DIR}/src/gui/update_checker.h
-  ${CMAKE_SOURCE_DIR}/src/gui/statistic_sender.h
   ${CMAKE_SOURCE_DIR}/src/gui/property_table_model.h
   ${CMAKE_SOURCE_DIR}/src/gui/main_tab_bar.h
   ${CMAKE_SOURCE_DIR}/src/gui/fasto_text_view.h
@@ -353,6 +371,7 @@ SET(HEADERS_GUI
   ${CMAKE_SOURCE_DIR}/src/gui/action_cell_delegate.h
 )
 SET(SOURCES_GUI
+  ${SOURCES_GUI_WORKERS}
   ${SOURCES_GUI_DIALOGS}
   ${SOURCES_GUI_EDITOR}
   ${SOURCES_GUI_WIDGETS}
@@ -360,8 +379,6 @@ SET(SOURCES_GUI
   ${SOURCES_GUI_EXPLORER}
 
   ${CMAKE_SOURCE_DIR}/src/gui/main_window.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/update_checker.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/statistic_sender.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/gui_factory.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/property_table_item.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/property_table_model.cpp

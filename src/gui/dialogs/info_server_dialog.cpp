@@ -329,12 +329,15 @@ const QString trPikaTextDoubleMasterTemplate = QObject::tr("<h3>DoubleMaster:</h
 namespace fastonosql {
 namespace gui {
 
-InfoServerDialog::InfoServerDialog(proxy::IServerSPtr server, QWidget* parent) : QDialog(parent), server_(server) {
+InfoServerDialog::InfoServerDialog(const QString& title, const QIcon& icon, proxy::IServerSPtr server, QWidget* parent)
+    : QDialog(parent), server_text_info_(nullptr), glass_widget_(nullptr), server_(server) {
   CHECK(server_);
 
-  core::ConnectionType type = server->GetType();
-  setWindowIcon(GuiFactory::GetInstance().icon(type));
+  setWindowTitle(title);
+  setWindowIcon(icon);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
+
+  const core::ConnectionType type = server->GetType();
 
   server_text_info_ = new QTextEdit;
   server_text_info_->setReadOnly(true);
@@ -508,12 +511,7 @@ void InfoServerDialog::changeEvent(QEvent* e) {
   QDialog::changeEvent(e);
 }
 
-void InfoServerDialog::retranslateUi() {
-  QString qname;
-  if (common::ConvertFromString(server_->GetName(), &qname)) {
-    setWindowTitle(tr("%1 info").arg(qname));
-  }
-}
+void InfoServerDialog::retranslateUi() {}
 
 #ifdef BUILD_WITH_REDIS
 void InfoServerDialog::updateText(const core::redis::ServerInfo& serv) {

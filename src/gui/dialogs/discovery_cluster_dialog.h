@@ -47,9 +47,11 @@ class DiscoveryClusterDiagnosticDialog : public QDialog {
  public:
   enum { fix_height = 320, fix_width = 480 };
 
-  DiscoveryClusterDiagnosticDialog(QWidget* parent,
+  DiscoveryClusterDiagnosticDialog(const QString& title,
+                                   const QIcon& icon,
                                    proxy::IConnectionSettingsBaseSPtr connection,
-                                   proxy::IClusterSettingsBaseSPtr cluster);
+                                   proxy::IClusterSettingsBaseSPtr cluster,
+                                   QWidget* parent = Q_NULLPTR);
   std::vector<fastonosql::gui::ConnectionListWidgetItemDiscovered*> selectedConnections() const;
 
  private Q_SLOTS:

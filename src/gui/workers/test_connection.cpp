@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/dialogs/test_connection.h"
+#include "gui/workers/test_connection.h"
 
 #include <common/qt/convert2string.h>  // for ConvertFromString
 #include <common/time.h>               // for current_mstime
@@ -31,14 +31,18 @@ namespace gui {
 TestConnection::TestConnection(proxy::IConnectionSettingsBaseSPtr conn, QObject* parent)
     : QObject(parent), connection_(conn), start_time_(common::time::current_mstime()) {}
 
+common::time64_t TestConnection::elipsedTime() const {
+  return common::time::current_mstime() - start_time_;
+}
+
 void TestConnection::routine() {
   if (!connection_) {
-    emit connectionResult(false, common::time::current_mstime() - start_time_, "Invalid connection settings");
+    emit connectionResult(false, elipsedTime(), "Invalid connection settings");
     return;
   }
 
   common::Error err = proxy::ServersManager::GetInstance().TestConnection(connection_);
-  common::time64_t msec_exec = common::time::current_mstime() - start_time_;
+  const common::time64_t msec_exec = elipsedTime();
   if (err) {
     QString qdesc;
     common::ConvertFromString(err->GetDescription(), &qdesc);

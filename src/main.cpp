@@ -76,6 +76,8 @@ struct SigIgnInit {
 } sig_init;
 #endif
 
+const QString trEulaTitle = QObject::tr("Eula for " PROJECT_NAME_TITLE);
+
 #if defined(PRO_VERSION)
 const QString trExpired = QObject::tr(
     "<h4>Your trial version has expired.</h4>"
@@ -194,7 +196,8 @@ int main(int argc, char* argv[]) {
 
   // EULA License Agreement
   if (!settings_manager->GetAccpetedEula()) {
-    fastonosql::gui::EulaDialog eula_dialog;
+
+    fastonosql::gui::EulaDialog eula_dialog(trEulaTitle);
     if (eula_dialog.exec() == QDialog::Rejected) {
       return EXIT_FAILURE;
     }
@@ -285,7 +288,7 @@ int main(int argc, char* argv[]) {
   }
 
   if (exec_count == 1) {
-    fastonosql::gui::HowToUseDialog howto_use_dialog;
+    fastonosql::gui::HowToUseDialog howto_use_dialog(fastonosql::translations::trHowToUse + " " PROJECT_NAME_TITLE);
     howto_use_dialog.exec();
   }
 

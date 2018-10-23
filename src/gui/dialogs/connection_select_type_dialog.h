@@ -32,7 +32,7 @@ namespace gui {
 class ConnectionSelectTypeDialog : public QDialog {
   Q_OBJECT
  public:
-  explicit ConnectionSelectTypeDialog(QWidget* parent = Q_NULLPTR);
+  explicit ConnectionSelectTypeDialog(const QString& title, QWidget* parent = Q_NULLPTR);
 
   core::ConnectionType connectionType() const;
 

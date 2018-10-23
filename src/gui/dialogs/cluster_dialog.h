@@ -67,7 +67,6 @@ class ClusterDialog : public QDialog {
                             // cluster_connection_
   void addConnection(proxy::IConnectionSettingsBaseSPtr con);
 
-  proxy::IClusterSettingsBaseSPtr cluster_connection_;
   QLineEdit* connection_name_;
   QLabel* folder_label_;
   QLineEdit* connection_folder_;
@@ -81,6 +80,8 @@ class ClusterDialog : public QDialog {
   QPushButton* test_button_;
   QPushButton* discovery_button_;
   QDialogButtonBox* button_box_;
+
+  proxy::IClusterSettingsBaseSPtr cluster_connection_;
 };
 
 }  // namespace gui

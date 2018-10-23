@@ -41,7 +41,6 @@
 #include "translations/global.h"
 
 namespace {
-const QString trPreferences = QObject::tr(PROJECT_NAME_TITLE " preferences");
 const QString trProfileSettings = QObject::tr("Profile settings");
 const QString trGeneralSettings = QObject::tr("General settings");
 const QString trSendStatistic = QObject::tr("Send statistic");
@@ -50,11 +49,11 @@ const QString trShowAutoCompletion = QObject::tr("Show autocompletion");
 const QString trAutoOpenConsole = QObject::tr("Automatically open console");
 const QString trAutoConnectDb = QObject::tr("Automatically connect to DB");
 const QString trFastViewValues = QObject::tr("Fast view values");
-const QString trLanguage = QObject::tr("Language:");
-const QString trSupportedUiStyles = QObject::tr("Supported UI styles:");
-const QString trSupportedFonts = QObject::tr("Supported fonts:");
-const QString trDefaultViews = QObject::tr("Default views:");
-const QString trHistoryDirectory = QObject::tr("History directory:");
+const QString trLanguage = QObject::tr("Language");
+const QString trSupportedUiStyles = QObject::tr("Supported UI styles");
+const QString trSupportedFonts = QObject::tr("Supported fonts");
+const QString trDefaultViews = QObject::tr("Default views");
+const QString trHistoryDirectory = QObject::tr("History directory");
 const QString trGeneral = QObject::tr("General");
 const QString trExternal = QObject::tr("External");
 
@@ -66,7 +65,40 @@ const QString trPythonPath = QObject::tr("Python path:");
 namespace fastonosql {
 namespace gui {
 
-PreferencesDialog::PreferencesDialog(QWidget* parent) : QDialog(parent) {
+PreferencesDialog::PreferencesDialog(const QString& title, QWidget* parent)
+    : QDialog(parent),
+#if defined(PRO_VERSION)
+      profile_box_(nullptr),
+      first_name_label_(nullptr),
+      first_name_text_(nullptr),
+      last_name_label_(nullptr),
+      last_name_text_(nullptr),
+      login_label_(nullptr),
+      login_text_(nullptr),
+      type_label_(nullptr),
+      type_text_(nullptr),
+#endif
+      general_box_(nullptr),
+      send_statitsic_(nullptr),
+      auto_check_updates_(nullptr),
+      auto_comletion_(nullptr),
+      languages_label_(nullptr),
+      languages_combo_box_(nullptr),
+      styles_label_(nullptr),
+      styles_combo_box_(nullptr),
+      font_label_(nullptr),
+      font_combo_box_(nullptr),
+      font_size_spin_box_(nullptr),
+      default_view_label_(nullptr),
+      default_view_combo_box_(nullptr),
+      log_dir_label_(nullptr),
+      log_dir_path_(nullptr),
+      auto_open_console_(nullptr),
+      auto_connect_db_(nullptr),
+      fast_view_keys_(nullptr),
+      external_box_(nullptr),
+      python_path_widget_(nullptr) {
+  setWindowTitle(title);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   QTabWidget* preferences_tabs = new QTabWidget;
@@ -94,19 +126,19 @@ void PreferencesDialog::accept() {
   proxy::SettingsManager::GetInstance()->SetAutoCheckUpdates(auto_check_updates_->isChecked());
   proxy::SettingsManager::GetInstance()->SetAutoCompletion(auto_comletion_->isChecked());
 
-  QString newLang = common::qt::translations::applyLanguage(languages_combo_box_->currentText());
-  proxy::SettingsManager::GetInstance()->SetCurrentLanguage(newLang);
+  QString new_lang = common::qt::translations::applyLanguage(languages_combo_box_->currentText());
+  proxy::SettingsManager::GetInstance()->SetCurrentLanguage(new_lang);
 
   common::qt::gui::applyStyle(styles_combo_box_->currentText());
   proxy::SettingsManager::GetInstance()->SetCurrentStyle(styles_combo_box_->currentText());
 
-  QFont cf(font_combo_box_->currentText(), font_size_spin_box_->value());
-  proxy::SettingsManager::GetInstance()->SetCurrentFont(cf);
+  const QFont current_font(font_combo_box_->currentText(), font_size_spin_box_->value());
+  proxy::SettingsManager::GetInstance()->SetCurrentFont(current_font);
   common::qt::gui::applyFont(gui::GuiFactory::GetInstance().font());
 
-  QVariant var = default_view_combo_box_->currentData();
-  proxy::SupportedView v = static_cast<proxy::SupportedView>(qvariant_cast<unsigned char>(var));
-  proxy::SettingsManager::GetInstance()->SetDefaultView(v);
+  const QVariant view_var = default_view_combo_box_->currentData();
+  proxy::SupportedView view = static_cast<proxy::SupportedView>(qvariant_cast<unsigned char>(view_var));
+  proxy::SettingsManager::GetInstance()->SetDefaultView(view);
 
   proxy::SettingsManager::GetInstance()->SetLoggingDirectory(log_dir_path_->text());
   proxy::SettingsManager::GetInstance()->SetAutoOpenConsole(auto_open_console_->isChecked());
@@ -123,12 +155,12 @@ void PreferencesDialog::syncWithSettings() {
   auto_comletion_->setChecked(proxy::SettingsManager::GetInstance()->GetAutoCompletion());
   languages_combo_box_->setCurrentText(proxy::SettingsManager::GetInstance()->GetCurrentLanguage());
   styles_combo_box_->setCurrentText(proxy::SettingsManager::GetInstance()->GetCurrentStyle());
-  QFont cf = proxy::SettingsManager::GetInstance()->GetCurrentFont();
-  font_combo_box_->setCurrentFont(cf);
-  font_size_spin_box_->setValue(cf.pointSize());
+  QFont current_font = proxy::SettingsManager::GetInstance()->GetCurrentFont();
+  font_combo_box_->setCurrentFont(current_font);
+  font_size_spin_box_->setValue(current_font.pointSize());
   proxy::SupportedView v = proxy::SettingsManager::GetInstance()->GetDefaultView();
-  QString qstr = proxy::g_supported_views_text[v];
-  default_view_combo_box_->setCurrentText(qstr);
+  QString view_text = proxy::g_supported_views_text[v];
+  default_view_combo_box_->setCurrentText(view_text);
   log_dir_path_->setText(proxy::SettingsManager::GetInstance()->GetLoggingDirectory());
   auto_open_console_->setChecked(proxy::SettingsManager::GetInstance()->AutoOpenConsole());
   auto_connect_db_->setChecked(proxy::SettingsManager::GetInstance()->GetAutoConnectDB());
@@ -207,59 +239,59 @@ QWidget* PreferencesDialog::createMainTab() {
 
   // ui settings
   general_box_ = new QGroupBox;
-  QGridLayout* generalLayout = new QGridLayout;
+  QGridLayout* general_layout = new QGridLayout;
 
   send_statitsic_ = new QCheckBox;
-  generalLayout->addWidget(send_statitsic_, 0, 0);
+  general_layout->addWidget(send_statitsic_, 0, 0);
   auto_check_updates_ = new QCheckBox;
-  generalLayout->addWidget(auto_check_updates_, 0, 1);
+  general_layout->addWidget(auto_check_updates_, 0, 1);
 
   auto_open_console_ = new QCheckBox;
-  generalLayout->addWidget(auto_open_console_, 1, 0);
+  general_layout->addWidget(auto_open_console_, 1, 0);
   auto_comletion_ = new QCheckBox;
-  generalLayout->addWidget(auto_comletion_, 1, 1);
+  general_layout->addWidget(auto_comletion_, 1, 1);
 
   fast_view_keys_ = new QCheckBox;
-  generalLayout->addWidget(fast_view_keys_, 2, 0);
+  general_layout->addWidget(fast_view_keys_, 2, 0);
   auto_connect_db_ = new QCheckBox;
-  generalLayout->addWidget(auto_connect_db_, 2, 1);
+  general_layout->addWidget(auto_connect_db_, 2, 1);
 
   styles_label_ = new QLabel;
   styles_combo_box_ = new QComboBox;
   styles_combo_box_->addItems(common::qt::gui::supportedStyles());
-  generalLayout->addWidget(styles_label_, 3, 0);
-  generalLayout->addWidget(styles_combo_box_, 3, 1);
+  general_layout->addWidget(styles_label_, 3, 0);
+  general_layout->addWidget(styles_combo_box_, 3, 1);
 
   font_label_ = new QLabel;
   font_combo_box_ = new QFontComboBox;
   font_combo_box_->setEditable(false);
   font_size_spin_box_ = new QSpinBox;
-  generalLayout->addWidget(font_label_, 4, 0);
+  general_layout->addWidget(font_label_, 4, 0);
   // fontLayout->addWidget(new QSplitter(Qt::Horizontal));
   QHBoxLayout* l = new QHBoxLayout;
   l->addWidget(font_combo_box_);
   l->addWidget(font_size_spin_box_);
-  generalLayout->addLayout(l, 4, 1);
+  general_layout->addLayout(l, 4, 1);
 
   languages_label_ = new QLabel;
-  generalLayout->addWidget(languages_label_, 5, 0);
+  general_layout->addWidget(languages_label_, 5, 0);
   languages_combo_box_ = new QComboBox;
   languages_combo_box_->addItems(common::qt::translations::supportedLanguages());
-  generalLayout->addWidget(languages_combo_box_, 5, 1);
+  general_layout->addWidget(languages_combo_box_, 5, 1);
 
   default_view_label_ = new QLabel;
   default_view_combo_box_ = new QComboBox;
   for (uint32_t i = 0; i < proxy::g_supported_views_text.size(); ++i) {
     default_view_combo_box_->addItem(proxy::g_supported_views_text[i], i);
   }
-  generalLayout->addWidget(default_view_label_, 6, 0);
-  generalLayout->addWidget(default_view_combo_box_, 6, 1);
+  general_layout->addWidget(default_view_label_, 6, 0);
+  general_layout->addWidget(default_view_combo_box_, 6, 1);
 
   log_dir_path_ = new QLineEdit;
   log_dir_label_ = new QLabel;
-  generalLayout->addWidget(log_dir_label_, 7, 0);
-  generalLayout->addWidget(log_dir_path_, 7, 1);
-  general_box_->setLayout(generalLayout);
+  general_layout->addWidget(log_dir_label_, 7, 0);
+  general_layout->addWidget(log_dir_path_, 7, 1);
+  general_box_->setLayout(general_layout);
 
   // main layout
   QVBoxLayout* layout = new QVBoxLayout;
@@ -280,7 +312,6 @@ QWidget* PreferencesDialog::createExternalTab() {
   external_layout->addWidget(python_path_widget_);
   external_box_->setLayout(external_layout);
 
-  // main layout
   QVBoxLayout* layout = new QVBoxLayout;
   layout->addWidget(external_box_);
   external->setLayout(layout);
@@ -288,8 +319,6 @@ QWidget* PreferencesDialog::createExternalTab() {
 }
 
 void PreferencesDialog::retranslateUi() {
-  setWindowTitle(trPreferences);
-
   general_box_->setTitle(trGeneralSettings);
 #if defined(PRO_VERSION)
   profile_box_->setTitle(trProfileSettings);
@@ -305,11 +334,11 @@ void PreferencesDialog::retranslateUi() {
   auto_open_console_->setText(trAutoOpenConsole);
   auto_connect_db_->setText(trAutoConnectDb);
   fast_view_keys_->setText(trFastViewValues);
-  languages_label_->setText(trLanguage);
-  styles_label_->setText(trSupportedUiStyles);
-  font_label_->setText(trSupportedFonts);
-  default_view_label_->setText(trDefaultViews);
-  log_dir_label_->setText(trHistoryDirectory);
+  languages_label_->setText(trLanguage + ":");
+  styles_label_->setText(trSupportedUiStyles + ":");
+  font_label_->setText(trSupportedFonts + ":");
+  default_view_label_->setText(trDefaultViews + ":");
+  log_dir_label_->setText(trHistoryDirectory + ":");
 }
 
 }  // namespace gui

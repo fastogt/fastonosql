@@ -28,7 +28,6 @@
 #include <common/macros.h>
 
 namespace {
-const QString trEulaTitle = QObject::tr("Eula for " PROJECT_NAME_TITLE);
 const QString trIAgree = QObject::tr("I agree");
 const QString trIDontAgree = QObject::tr("I don't agree");
 const QString trBack = QObject::tr("Back");
@@ -40,8 +39,8 @@ const QString trEndUserAgr = QObject::tr("End-User License Agreement");
 namespace fastonosql {
 namespace gui {
 
-EulaDialog::EulaDialog(QWidget* parent) : QWizard(parent) {
-  setWindowTitle(trEulaTitle);
+EulaDialog::EulaDialog(const QString& title, QWidget* parent) : QWizard(parent) {
+  setWindowTitle(title);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
   //// First page
@@ -66,11 +65,11 @@ EulaDialog::EulaDialog(QWidget* parent) : QWizard(parent) {
     textBrowser->setHtml(file.readAll());
   }
 
-  QVBoxLayout* mainLayout1 = new QVBoxLayout;
-  mainLayout1->addWidget(new QLabel("<h3>" + trEndUserAgr + "</h3>"));
-  mainLayout1->addWidget(textBrowser);
-  mainLayout1->addLayout(radioButtonsLay, Qt::AlignCenter);
-  firstPage->setLayout(mainLayout1);
+  QVBoxLayout* main_layout = new QVBoxLayout;
+  main_layout->addWidget(new QLabel("<h3>" + trEndUserAgr + "</h3>"));
+  main_layout->addWidget(textBrowser);
+  main_layout->addLayout(radioButtonsLay, Qt::AlignCenter);
+  firstPage->setLayout(main_layout);
 
   addPage(firstPage);
 

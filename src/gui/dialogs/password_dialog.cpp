@@ -38,9 +38,7 @@ const QString trSignIn = QObject::tr("Sign in");
 namespace fastonosql {
 namespace gui {
 
-PasswordDialog::PasswordDialog(QWidget* parent) : PasswordDialog(QString(), parent) {}
-
-PasswordDialog::PasswordDialog(const QString& description, QWidget* parent)
+PasswordDialog::PasswordDialog(QWidget* parent)
     : QDialog(parent),
       description_(nullptr),
       login_label_(nullptr),
@@ -57,7 +55,6 @@ PasswordDialog::PasswordDialog(const QString& description, QWidget* parent)
   buttonBox->button(QDialogButtonBox::Ok)->setText(trSignIn);
 
   description_ = new QLabel;
-  description_->setText(description);
   description_->setOpenExternalLinks(true);
 
   QHBoxLayout* profile_layout = new QHBoxLayout;

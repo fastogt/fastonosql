@@ -31,7 +31,7 @@ class FastoEditor;
 class EncodeDecodeDialog : public QDialog {
   Q_OBJECT
  public:
-  explicit EncodeDecodeDialog(QWidget* parent);
+  explicit EncodeDecodeDialog(const QString& title, const QIcon& icon, QWidget* parent = Q_NULLPTR);
 
   enum { min_width = 640, min_height = 480 };
 

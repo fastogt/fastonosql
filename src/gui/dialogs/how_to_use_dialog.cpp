@@ -20,23 +20,21 @@
 
 #include <QVBoxLayout>
 
-#include "translations/global.h"
-
 #include "gui/widgets/how_to_use_widget.h"
 
 namespace fastonosql {
 namespace gui {
 
-HowToUseDialog::HowToUseDialog(QWidget* parent) : QDialog(parent) {
-  setWindowTitle(translations::trHowToUse + " " PROJECT_NAME_TITLE);
+HowToUseDialog::HowToUseDialog(const QString& title, QWidget* parent) : QDialog(parent) {
+  setWindowTitle(title);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
   const QSize fixed_size(fix_width, fix_height);
-  QVBoxLayout* mainLayout = new QVBoxLayout;
+  QVBoxLayout* main_layout = new QVBoxLayout;
   HowToUseWidget* hw = new HowToUseWidget(fixed_size);
-  mainLayout->addWidget(hw);
+  main_layout->addWidget(hw);
   setFixedSize(fixed_size);
-  setLayout(mainLayout);
+  setLayout(main_layout);
 }
 
 }  // namespace gui

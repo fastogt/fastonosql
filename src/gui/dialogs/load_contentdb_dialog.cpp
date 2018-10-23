@@ -19,15 +19,16 @@
 #include "gui/dialogs/load_contentdb_dialog.h"
 
 #include <QDialogButtonBox>
+#include <QEvent>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QSpinBox>
 #include <QVBoxLayout>
 
-#include <fastonosql/core/macros.h>
+#include <common/macros.h>
 
-#include "gui/gui_factory.h"  // for GuiFactory
+#include <fastonosql/core/macros.h>
 
 #include "translations/global.h"  // for trError
 
@@ -41,10 +42,14 @@ const char* kDefaultPattern = ALL_KEYS_PATTERNS;
 namespace fastonosql {
 namespace gui {
 
-LoadContentDbDialog::LoadContentDbDialog(const QString& title, core::ConnectionType type, QWidget* parent)
-    : QDialog(parent), type_(type) {
+LoadContentDbDialog::LoadContentDbDialog(const QString& title, const QIcon& icon, QWidget* parent)
+    : QDialog(parent),
+      keys_count_label_(nullptr),
+      key_pattern_label_(nullptr),
+      pattern_edit_(nullptr),
+      count_spin_edit_(nullptr) {
   setWindowTitle(title);
-  setWindowIcon(GuiFactory::GetInstance().icon(type_));
+  setWindowIcon(icon);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   QDialogButtonBox* button_box = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
@@ -53,7 +58,8 @@ LoadContentDbDialog::LoadContentDbDialog(const QString& title, core::ConnectionT
   VERIFY(connect(button_box, &QDialogButtonBox::rejected, this, &LoadContentDbDialog::reject));
 
   QHBoxLayout* count_layout = new QHBoxLayout;
-  count_layout->addWidget(new QLabel(trKeysCount + ":"));
+  keys_count_label_ = new QLabel;
+  count_layout->addWidget(keys_count_label_);
   count_spin_edit_ = new QSpinBox;
   count_spin_edit_->setRange(min_key_on_page, max_key_on_page);
   count_spin_edit_->setSingleStep(step_keys_on_page);
@@ -61,7 +67,8 @@ LoadContentDbDialog::LoadContentDbDialog(const QString& title, core::ConnectionT
   count_layout->addWidget(count_spin_edit_);
 
   QHBoxLayout* pattern_layout = new QHBoxLayout;
-  pattern_layout->addWidget(new QLabel(trPattern + ":"));
+  key_pattern_label_ = new QLabel;
+  pattern_layout->addWidget(key_pattern_label_);
   pattern_edit_ = new QLineEdit;
   pattern_edit_->setFixedWidth(80);
   pattern_edit_->setText(kDefaultPattern);
@@ -73,6 +80,8 @@ LoadContentDbDialog::LoadContentDbDialog(const QString& title, core::ConnectionT
   main_layout->addWidget(button_box);
   main_layout->setSizeConstraint(QLayout::SetFixedSize);
   setLayout(main_layout);
+
+  retranslateUi();
 }
 
 int LoadContentDbDialog::count() const {
@@ -84,7 +93,7 @@ QString LoadContentDbDialog::pattern() const {
 }
 
 void LoadContentDbDialog::accept() {
-  QString pattern = pattern_edit_->text();
+  const QString pattern = pattern_edit_->text();
   if (pattern.isEmpty()) {
     QMessageBox::warning(this, translations::trError, trInvalidPattern);
     count_spin_edit_->setFocus();
@@ -92,6 +101,18 @@ void LoadContentDbDialog::accept() {
   }
 
   QDialog::accept();
+}
+
+void LoadContentDbDialog::changeEvent(QEvent* e) {
+  if (e->type() == QEvent::LanguageChange) {
+    retranslateUi();
+  }
+  QDialog::changeEvent(e);
+}
+
+void LoadContentDbDialog::retranslateUi() {
+  keys_count_label_->setText(trKeysCount + ":");
+  key_pattern_label_->setText(trPattern + ":");
 }
 
 }  // namespace gui

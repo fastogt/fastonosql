@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/update_checker.h"
+#include "gui/workers/update_checker.h"
 
 #include <common/net/socket_tcp.h>  // for ClientSocketTcp
 #include <common/qt/convert2string.h>

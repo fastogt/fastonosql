@@ -39,7 +39,6 @@ class PasswordDialog : public QDialog {
   Q_OBJECT
  public:
   explicit PasswordDialog(QWidget* parent = Q_NULLPTR);
-  explicit PasswordDialog(const QString& description, QWidget* parent = Q_NULLPTR);
 
   QString login() const;
   void setLogin(const QString& login);

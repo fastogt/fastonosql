@@ -38,6 +38,7 @@ class AnonymousStatisticSender : public QObject {
   virtual void sendStatistic();
 };
 
+#if defined(PRO_VERSION)
 class StatisticSender : public AnonymousStatisticSender {
   Q_OBJECT
  public:
@@ -51,6 +52,7 @@ class StatisticSender : public AnonymousStatisticSender {
   const std::string login_;
   const std::string build_strategy_;
 };
+#endif
 
 }  // namespace gui
 }  // namespace fastonosql

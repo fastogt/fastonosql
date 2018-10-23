@@ -23,7 +23,7 @@
 #include <QPushButton>
 #include <QSplitter>
 
-#include <common/qt/convert2string.h>         // for ConvertFromString
+#include <common/qt/convert2string.h>
 #include <common/qt/gui/base/graph_widget.h>  // for GraphWidget, etc
 #include <common/qt/gui/glass_widget.h>       // for GlassWidget
 
@@ -34,18 +34,36 @@
 
 #include "translations/global.h"  // for trClearHistory
 
-namespace {
-const QString trHistoryTemplate_1S = QObject::tr("%1 history");
-}
-
 namespace fastonosql {
 namespace gui {
 
-ServerHistoryDialog::ServerHistoryDialog(proxy::IServerSPtr server, QWidget* parent)
-    : QDialog(parent, Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint), server_(server) {
+ServerHistoryDialog::ServerHistoryDialog(const QString& title,
+                                         const QIcon& icon,
+                                         proxy::IServerSPtr server,
+                                         QWidget* parent)
+    : QDialog(parent),
+      settings_graph_(nullptr),
+      clear_history_(nullptr),
+      server_info_groups_names_(nullptr),
+      server_info_fields_(nullptr),
+      graph_widget_(nullptr),
+      glass_widget_(nullptr),
+      infos_(),
+      server_(server) {
   CHECK(server_);
-  setWindowIcon(GuiFactory::GetInstance().icon(server_->GetType()));
+  setWindowTitle(title);
+  setWindowIcon(icon);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
+
+  VERIFY(connect(server.get(), &proxy::IServer::LoadServerHistoryInfoStarted, this,
+                 &ServerHistoryDialog::startLoadServerHistoryInfo));
+  VERIFY(connect(server.get(), &proxy::IServer::LoadServerHistoryInfoFinished, this,
+                 &ServerHistoryDialog::finishLoadServerHistoryInfo));
+  VERIFY(connect(server.get(), &proxy::IServer::ClearServerHistoryStarted, this,
+                 &ServerHistoryDialog::startClearServerHistory));
+  VERIFY(connect(server.get(), &proxy::IServer::ClearServerHistoryFinished, this,
+                 &ServerHistoryDialog::finishClearServerHistory));
+  VERIFY(connect(server.get(), &proxy::IServer::ServerInfoSnapShooted, this, &ServerHistoryDialog::snapShotAdd));
 
   graph_widget_ = new common::qt::gui::GraphWidget;
   settings_graph_ = new QWidget;
@@ -88,15 +106,6 @@ ServerHistoryDialog::ServerHistoryDialog(proxy::IServerSPtr server, QWidget* par
 
   glass_widget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().pathToLoadingGif(),
                                                    translations::trLoad + "...", 0.5, QColor(111, 111, 100), this);
-  VERIFY(connect(server.get(), &proxy::IServer::LoadServerHistoryInfoStarted, this,
-                 &ServerHistoryDialog::startLoadServerHistoryInfo));
-  VERIFY(connect(server.get(), &proxy::IServer::LoadServerHistoryInfoFinished, this,
-                 &ServerHistoryDialog::finishLoadServerHistoryInfo));
-  VERIFY(connect(server.get(), &proxy::IServer::ClearServerHistoryStarted, this,
-                 &ServerHistoryDialog::startClearServerHistory));
-  VERIFY(connect(server.get(), &proxy::IServer::ClearServerHistoryFinished, this,
-                 &ServerHistoryDialog::finishClearServerHistory));
-  VERIFY(connect(server.get(), &proxy::IServer::ServerInfoSnapShooted, this, &ServerHistoryDialog::snapShotAdd));
   retranslateUi();
 }
 
@@ -205,10 +214,6 @@ void ServerHistoryDialog::reset() {
 }
 
 void ServerHistoryDialog::retranslateUi() {
-  QString name;
-  if (common::ConvertFromString(server_->GetName(), &name)) {
-    setWindowTitle(trHistoryTemplate_1S.arg(name));
-  }
   clear_history_->setText(translations::trClearHistory);
 }
 

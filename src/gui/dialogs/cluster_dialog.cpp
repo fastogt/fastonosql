@@ -55,7 +55,19 @@ namespace fastonosql {
 namespace gui {
 
 ClusterDialog::ClusterDialog(QWidget* parent, proxy::IClusterSettingsBase* connection)
-    : QDialog(parent), cluster_connection_(connection) {
+    : QDialog(parent),
+      connection_name_(nullptr),
+      folder_label_(nullptr),
+      connection_folder_(nullptr),
+      type_connection_(nullptr),
+      logging_(nullptr),
+      logging_msec_(nullptr),
+      savebar_(nullptr),
+      list_widget_(nullptr),
+      test_button_(nullptr),
+      discovery_button_(nullptr),
+      button_box_(nullptr),
+      cluster_connection_(connection) {
   setWindowIcon(GuiFactory::GetInstance().serverIcon());
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
@@ -232,22 +244,22 @@ void ClusterDialog::loggingStateChange(int value) {
 }
 
 void ClusterDialog::testConnection() {
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(list_widget_->currentItem());  // +
+  ConnectionListWidgetItem* current_item = dynamic_cast<ConnectionListWidgetItem*>(list_widget_->currentItem());  // +
 
   // Do nothing if no item selected
-  if (!currentItem) {
+  if (!current_item) {
     return;
   }
 
-  ConnectionDiagnosticDialog diag(this, currentItem->connection());
+  ConnectionDiagnosticDialog diag(translations::trConnectionDiagnostic, current_item->connection(), this);
   diag.exec();
 }
 
 void ClusterDialog::discoveryCluster() {
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(list_widget_->currentItem());  // +
+  ConnectionListWidgetItem* current_item = dynamic_cast<ConnectionListWidgetItem*>(list_widget_->currentItem());  // +
 
   // Do nothing if no item selected
-  if (!currentItem) {
+  if (!current_item) {
     return;
   }
 
@@ -255,7 +267,8 @@ void ClusterDialog::discoveryCluster() {
     return;
   }
 
-  DiscoveryClusterDiagnosticDialog diag(this, currentItem->connection(), cluster_connection_);
+  DiscoveryClusterDiagnosticDialog diag(translations::trConnectionDiscovery, GuiFactory::GetInstance().serverIcon(),
+                                        current_item->connection(), cluster_connection_, this);
   int result = diag.exec();
   if (result == QDialog::Accepted) {
     std::vector<ConnectionListWidgetItemDiscovered*> conns = diag.selectedConnections();

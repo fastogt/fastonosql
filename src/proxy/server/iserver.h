@@ -144,12 +144,12 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void LoadServerInfo(const events_info::ServerInfoRequest& req);  // signals:
   // LoadServerInfoStarted,
   // LoadServerInfoFinished
-  void ServerProperty(const events_info::ServerPropertyInfoRequest& req);     // signals: LoadServerPropertyStarted,
-                                                                              // LoadServerPropertyFinished
-  void RequestHistoryInfo(const events_info::ServerInfoHistoryRequest& req);  // signals: LoadServerHistoryInfoStarted,
-                                                                              // LoadServerHistoryInfoFinished
-  void ClearHistory(const events_info::ClearServerHistoryRequest& req);       // signals: ClearServerHistoryStarted,
-                                                                              // ClearServerHistoryFinished
+  void LoadServerProperty(const events_info::ServerPropertyInfoRequest& req);  // signals: LoadServerPropertyStarted,
+                                                                               // LoadServerPropertyFinished
+  void RequestHistoryInfo(const events_info::ServerInfoHistoryRequest& req);   // signals: LoadServerHistoryInfoStarted,
+                                                                               // LoadServerHistoryInfoFinished
+  void ClearHistory(const events_info::ClearServerHistoryRequest& req);        // signals: ClearServerHistoryStarted,
+                                                                               // ClearServerHistoryFinished
   void ChangeProperty(
       const events_info::ChangeServerPropertyInfoRequest& req);  // signals: ChangeServerPropertyStarted,
                                                                  // ChangeServerPropertyFinished

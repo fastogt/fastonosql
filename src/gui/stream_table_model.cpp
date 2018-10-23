@@ -125,8 +125,8 @@ void StreamTableModel::clear() {
   endResetModel();
 }
 
-bool StreamTableModel::getStream(core::StreamValue::stream_id sid, core::StreamValue::Stream* stream) const {
-  if (!stream || data_.size() < 2) {
+bool StreamTableModel::getStream(core::StreamValue::stream_id sid, core::StreamValue::Stream* out) const {
+  if (!out || data_.size() < 2) {
     return false;
   }
 
@@ -138,11 +138,7 @@ bool StreamTableModel::getStream(core::StreamValue::stream_id sid, core::StreamV
     entries.push_back(core::StreamValue::Entry{key, val});
   }
 
-  if (entries.empty()) {
-    return false;
-  }
-
-  *stream = {sid, entries};
+  *out = {sid, entries};
   return true;
 }
 

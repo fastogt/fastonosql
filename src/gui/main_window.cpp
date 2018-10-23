@@ -61,11 +61,11 @@
 #include "gui/explorer/explorer_tree_widget.h"  // for ExplorerTreeWidget
 #include "gui/gui_factory.h"                    // for GuiFactory
 #include "gui/shortcuts.h"                      // for g_full_screen_key, g_open_key, etc
-#include "gui/statistic_sender.h"               // for StatisticSender
-#include "gui/update_checker.h"                 // for UpdateChecker
 #include "gui/utils.h"
-#include "gui/widgets/log_tab_widget.h"  // for LogTabWidget
-#include "gui/widgets/main_widget.h"     // for MainWidget
+#include "gui/widgets/log_tab_widget.h"    // for LogTabWidget
+#include "gui/widgets/main_widget.h"       // for MainWidget
+#include "gui/workers/statistic_sender.h"  // for StatisticSender
+#include "gui/workers/update_checker.h"    // for UpdateChecker
 
 #include "translations/global.h"  // for trError, trCheckVersion, etc
 
@@ -76,6 +76,7 @@ const QString trExportSettingsFailed = QObject::tr("Export settings failed!");
 const QString trSettingsLoadedS = QObject::tr("Settings successfully loaded!");
 const QString trSettingsImportedS = QObject::tr("Settings successfully imported!");
 const QString trSettingsExportedS = QObject::tr("Settings successfully encrypted and exported!");
+const QString trPreferences = QObject::tr(PROJECT_NAME_TITLE " preferences");
 
 bool IsNeedUpdate(uint32_t cver) {
   return PROJECT_VERSION_NUMBER < cver;
@@ -105,11 +106,11 @@ MainWindow::MainWindow() : QMainWindow() {
   // grabGesture(Qt::PanGesture);  // drag and drop
   // grabGesture(Qt::PinchGesture);  // zoom
 #endif
-  QString lang = proxy::SettingsManager::GetInstance()->GetCurrentLanguage();
-  QString newLang = common::qt::translations::applyLanguage(lang);
-  proxy::SettingsManager::GetInstance()->SetCurrentLanguage(newLang);
+  const QString lang = proxy::SettingsManager::GetInstance()->GetCurrentLanguage();
+  const QString new_language = common::qt::translations::applyLanguage(lang);
+  proxy::SettingsManager::GetInstance()->SetCurrentLanguage(new_language);
 
-  QString style = proxy::SettingsManager::GetInstance()->GetCurrentStyle();
+  const QString style = proxy::SettingsManager::GetInstance()->GetCurrentStyle();
   common::qt::gui::applyStyle(style);
 
   common::qt::gui::applyFont(gui::GuiFactory::GetInstance().font());
@@ -311,7 +312,7 @@ void MainWindow::sendStatisticAndCheckVersion() {
 }
 
 void MainWindow::open() {
-  ConnectionsDialog dlg(this);
+  ConnectionsDialog dlg(translations::trConnections, GuiFactory::GetInstance().connectIcon(), this);
   int result = dlg.exec();
   if (result != QDialog::Accepted) {
     return;
@@ -338,12 +339,12 @@ void MainWindow::about() {
 }
 
 void MainWindow::howToUse() {
-  HowToUseDialog dlg(this);
+  HowToUseDialog dlg(translations::trHowToUse + " " PROJECT_NAME_TITLE, this);
   dlg.exec();
 }
 
 void MainWindow::openPreferences() {
-  PreferencesDialog dlg(this);
+  PreferencesDialog dlg(trPreferences, this);
   dlg.exec();
 }
 
@@ -392,7 +393,7 @@ void MainWindow::enterLeaveFullScreen() {
 }
 
 void MainWindow::openEncodeDecodeDialog() {
-  EncodeDecodeDialog dlg(this);
+  EncodeDecodeDialog dlg(translations::trEncodeDecode, GuiFactory::GetInstance().encodeDecodeIcon(), this);
   dlg.exec();
 }
 

@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/statistic_sender.h"
+#include "gui/workers/statistic_sender.h"
 
 #include <common/net/socket_tcp.h>  // for ClientSocketTcp
 #include <common/qt/convert2string.h>
@@ -25,7 +25,8 @@
 
 namespace fastonosql {
 namespace {
-common::Error SendStatistic(const std::string& login, const std::string& build_strategy) {
+#if defined(PRO_VERSION)
+common::Error sendStatisticRoutine(const std::string& login, const std::string& build_strategy) {
   CHECK(!login.empty());
 #if defined(FASTONOSQL)
   common::net::ClientSocketTcp client(common::net::HostAndPort(FASTONOSQL_HOST, SERVER_REQUESTS_PORT));
@@ -70,8 +71,9 @@ common::Error SendStatistic(const std::string& login, const std::string& build_s
 
   return jerror;
 }
+#endif
 
-common::Error SendAnonymousStatistic() {
+common::Error sendAnonymousStatisticRoutine() {
 #if defined(FASTONOSQL)
   common::net::ClientSocketTcp client(common::net::HostAndPort(FASTONOSQL_HOST, SERVER_REQUESTS_PORT));
 #elif defined(FASTOREDIS)
@@ -126,7 +128,7 @@ void AnonymousStatisticSender::routine() {
 }
 
 void AnonymousStatisticSender::sendStatistic() {
-  common::Error err = SendAnonymousStatistic();
+  common::Error err = sendAnonymousStatisticRoutine();
   if (err) {
     QString qerror_message;
     common::ConvertFromString(err->GetDescription(), &qerror_message);
@@ -137,11 +139,12 @@ void AnonymousStatisticSender::sendStatistic() {
   statisticSended(QString());
 }
 
+#if defined(PRO_VERSION)
 StatisticSender::StatisticSender(const std::string& login, const std::string& build_strategy, QObject* parent)
     : base_class(parent), login_(login), build_strategy_(build_strategy) {}
 
 void StatisticSender::sendStatistic() {
-  common::Error err = SendStatistic(login_, build_strategy_);
+  common::Error err = sendStatisticRoutine(login_, build_strategy_);
   if (err) {
     QString qerror_message;
     common::ConvertFromString(err->GetDescription(), &qerror_message);
@@ -151,6 +154,7 @@ void StatisticSender::sendStatistic() {
 
   statisticSended(QString());
 }
+#endif
 
 }  // namespace gui
 }  // namespace fastonosql

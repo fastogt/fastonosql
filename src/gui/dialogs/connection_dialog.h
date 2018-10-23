@@ -55,11 +55,12 @@ class ConnectionDialog : public QDialog {
   void retranslateUi();
   bool validateAndApply();
 
-  proxy::IConnectionSettingsBaseSPtr connection_;
   ConnectionBaseWidget* connection_widget_;
 
   QPushButton* test_button_;
   QDialogButtonBox* button_box_;
+
+  proxy::IConnectionSettingsBaseSPtr connection_;
 };
 
 }  // namespace gui

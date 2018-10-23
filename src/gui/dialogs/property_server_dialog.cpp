@@ -21,64 +21,63 @@
 #include <QHBoxLayout>
 #include <QTableView>
 
-#include <common/qt/convert2string.h>    // for ConvertFromString
 #include <common/qt/gui/glass_widget.h>  // for GlassWidget
 
 #include "proxy/events/events_info.h"
 #include "proxy/server/iserver.h"  // for IServer
 
-#include "gui/gui_factory.h"  // for GuiFactory
-#include "gui/property_table_item.h"
+#include "gui/gui_factory.h"
+
 #include "gui/property_table_model.h"  // for PropertyTableModel, etc
 
 #include "translations/global.h"
 
-namespace {
-const QString trPropertiesTemplate_1S = QObject::tr("%1 properties");
-}
-
 namespace fastonosql {
 namespace gui {
 
-PropertyServerDialog::PropertyServerDialog(proxy::IServerSPtr server, QWidget* parent)
-    : QDialog(parent), server_(server) {
+PropertyServerDialog::PropertyServerDialog(const QString& title,
+                                           const QIcon& icon,
+                                           proxy::IServerSPtr server,
+                                           QWidget* parent)
+    : QDialog(parent), glass_widget_(nullptr), properties_table_(nullptr), server_(server) {
   CHECK(server_);
 
-  setWindowIcon(GuiFactory::GetInstance().icon(server->GetType()));
+  setWindowTitle(title);
+  setWindowIcon(icon);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
-  PropertyTableModel* mod = new PropertyTableModel(this);
-  properties_table_ = new QTableView;
-  VERIFY(connect(mod, &PropertyTableModel::propertyChanged, this, &PropertyServerDialog::changedProperty));
-  properties_table_->setModel(mod);
-
-  QHBoxLayout* mainL = new QHBoxLayout;
-  mainL->addWidget(properties_table_);
-
-  setMinimumSize(QSize(min_width, min_height));
-  setLayout(mainL);
-
-  glass_widget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().pathToLoadingGif(),
-                                                   translations::trLoad + "...", 0.5, QColor(111, 111, 100), this);
-
   VERIFY(connect(server.get(), &proxy::IServer::LoadServerPropertyStarted, this,
-                 &PropertyServerDialog::startServerProperty));
+                 &PropertyServerDialog::startLoadServerProperty));
   VERIFY(connect(server.get(), &proxy::IServer::LoadServerPropertyFinished, this,
-                 &PropertyServerDialog::finishServerProperty));
+                 &PropertyServerDialog::finishLoadServerProperty));
   VERIFY(connect(server.get(), &proxy::IServer::ChangeServerPropertyStarted, this,
                  &PropertyServerDialog::startServerChangeProperty));
   VERIFY(connect(server.get(), &proxy::IServer::ChangeServerPropertyFinished, this,
                  &PropertyServerDialog::finishServerChangeProperty));
+
+  PropertyTableModel* mod = new PropertyTableModel(this);
+  properties_table_ = new QTableView;
+  VERIFY(connect(mod, &PropertyTableModel::propertyChanged, this, &PropertyServerDialog::changeProperty));
+  properties_table_->setModel(mod);
+
+  glass_widget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().pathToLoadingGif(),
+                                                   translations::trLoad + "...", 0.5, QColor(111, 111, 100), this);
+
+  QHBoxLayout* main_layout = new QHBoxLayout;
+  main_layout->addWidget(properties_table_);
+
+  setMinimumSize(QSize(min_width, min_height));
+  setLayout(main_layout);
   retranslateUi();
 }
 
-void PropertyServerDialog::startServerProperty(const proxy::events_info::ServerPropertyInfoRequest& req) {
+void PropertyServerDialog::startLoadServerProperty(const proxy::events_info::ServerPropertyInfoRequest& req) {
   UNUSED(req);
 
   glass_widget_->start();
 }
 
-void PropertyServerDialog::finishServerProperty(const proxy::events_info::ServerPropertyInfoResponce& res) {
+void PropertyServerDialog::finishLoadServerProperty(const proxy::events_info::ServerPropertyInfoResponce& res) {
   glass_widget_->stop();
   common::Error err = res.errorInfo();
   if (err) {
@@ -89,8 +88,7 @@ void PropertyServerDialog::finishServerProperty(const proxy::events_info::Server
     core::ServerPropertiesInfo inf = res.info;
     PropertyTableModel* model = qobject_cast<PropertyTableModel*>(properties_table_->model());
     for (size_t i = 0; i < inf.properties.size(); ++i) {
-      core::property_t it = inf.properties[i];
-      model->insertItem(new PropertyTableItem(it));
+      model->insertProperty(inf.properties[i]);
     }
   }
 }
@@ -114,7 +112,7 @@ void PropertyServerDialog::finishServerChangeProperty(const proxy::events_info::
   }
 }
 
-void PropertyServerDialog::changedProperty(const core::property_t& prop) {
+void PropertyServerDialog::changeProperty(const core::property_t& prop) {
   proxy::events_info::ChangeServerPropertyInfoRequest req(this, prop);
   server_->ChangeProperty(req);
 }
@@ -128,17 +126,12 @@ void PropertyServerDialog::changeEvent(QEvent* e) {
 }
 
 void PropertyServerDialog::showEvent(QShowEvent* e) {
-  QDialog::showEvent(e);
   proxy::events_info::ServerPropertyInfoRequest req(this);
-  server_->ServerProperty(req);
+  server_->LoadServerProperty(req);
+  QDialog::showEvent(e);
 }
 
-void PropertyServerDialog::retranslateUi() {
-  QString name;
-  if (common::ConvertFromString(server_->GetName(), &name)) {
-    setWindowTitle(trPropertiesTemplate_1S.arg(name));
-  }
-}
+void PropertyServerDialog::retranslateUi() {}
 
 }  // namespace gui
 }  // namespace fastonosql

@@ -52,7 +52,19 @@ namespace fastonosql {
 namespace gui {
 
 SentinelDialog::SentinelDialog(QWidget* parent, proxy::ISentinelSettingsBase* connection)
-    : QDialog(parent), sentinel_connection_(connection) {
+    : QDialog(parent),
+      sentinel_connection_(connection),
+      connection_name_(nullptr),
+      folder_label_(nullptr),
+      connection_folder_(nullptr),
+      type_connection_(nullptr),
+      logging_(nullptr),
+      logging_msec_(nullptr),
+      savebar_(nullptr),
+      list_widget_(nullptr),
+      test_button_(nullptr),
+      discovery_button_(nullptr),
+      button_box_(nullptr) {
   setWindowIcon(GuiFactory::GetInstance().serverIcon());
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
@@ -220,23 +232,23 @@ void SentinelDialog::loggingStateChange(int value) {
 }
 
 void SentinelDialog::testConnection() {
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(list_widget_->currentItem());  // +
+  ConnectionListWidgetItem* current_item = dynamic_cast<ConnectionListWidgetItem*>(list_widget_->currentItem());  // +
 
   // Do nothing if no item selected
-  if (!currentItem) {
+  if (!current_item) {
     return;
   }
 
-  ConnectionDiagnosticDialog diag(this, currentItem->connection());
+  ConnectionDiagnosticDialog diag(translations::trConnectionDiagnostic, current_item->connection(), this);
   diag.exec();
 }
 
 void SentinelDialog::discoverySentinel() {
-  SentinelConnectionWidgetItem* sentItem =
+  SentinelConnectionWidgetItem* sent_item =
       dynamic_cast<SentinelConnectionWidgetItem*>(list_widget_->currentItem());  // +
 
   // Do nothing if no item selected
-  if (!sentItem) {
+  if (!sent_item) {
     return;
   }
 
@@ -244,7 +256,8 @@ void SentinelDialog::discoverySentinel() {
     return;
   }
 
-  DiscoverySentinelDiagnosticDialog diag(this, sentItem->connection());
+  DiscoverySentinelDiagnosticDialog diag(translations::trConnectionDiscovery, GuiFactory::GetInstance().serverIcon(),
+                                         sent_item->connection(), this);
   int result = diag.exec();
   if (result != QDialog::Accepted) {
     return;
@@ -254,9 +267,9 @@ void SentinelDialog::discoverySentinel() {
   for (size_t i = 0; i < conns.size(); ++i) {
     ConnectionListWidgetItemDiscovered* it = conns[i];
 
-    ConnectionListWidgetItem* item = new ConnectionListWidgetItem(sentItem);
+    ConnectionListWidgetItem* item = new ConnectionListWidgetItem(sent_item);
     item->setConnection(it->connection());
-    sentItem->addChild(item);
+    sent_item->addChild(item);
   }
 }
 

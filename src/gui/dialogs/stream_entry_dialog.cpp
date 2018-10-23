@@ -33,9 +33,8 @@
 namespace fastonosql {
 namespace gui {
 
-const QSize StreamEntryDialog::min_dialog_size = QSize(360, 240);
-
-StreamEntryDialog::StreamEntryDialog(const QString& sid, QWidget* parent) : QDialog(parent), model_(nullptr) {
+StreamEntryDialog::StreamEntryDialog(const QString& sid, QWidget* parent)
+    : QDialog(parent), entry_label_(nullptr), id_edit_(nullptr), table_(nullptr), model_(nullptr) {
   QVBoxLayout* layout = new QVBoxLayout;
 
   QHBoxLayout* id_layout = new QHBoxLayout;
@@ -71,15 +70,15 @@ StreamEntryDialog::StreamEntryDialog(const QString& sid, QWidget* parent) : QDia
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &StreamEntryDialog::reject));
   layout->addWidget(buttonBox);
 
-  setMinimumSize(min_dialog_size);
+  setMinimumSize(QSize(min_height, min_width));
   setLayout(layout);
 }
 
 StreamEntryDialog::~StreamEntryDialog() {}
 
-bool StreamEntryDialog::getStream(core::StreamValue::Stream* stream) const {
+bool StreamEntryDialog::getStream(core::StreamValue::Stream* out) const {
   core::StreamValue::stream_id sid = common::ConvertToString(id_edit_->text());
-  return model_->getStream(sid, stream);
+  return model_->getStream(sid, out);
 }
 
 void StreamEntryDialog::insertEntry(const QString& first, const QString& second) {

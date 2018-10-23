@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/dialogs/discovery_cluster_connection.h"
+#include "gui/workers/discovery_cluster_connection.h"
 
 #include <common/qt/convert2string.h>  // for ConvertFromString
 #include <common/time.h>               // for current_mstime

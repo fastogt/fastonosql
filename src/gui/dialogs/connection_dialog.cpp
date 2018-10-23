@@ -45,7 +45,7 @@ namespace fastonosql {
 namespace gui {
 
 ConnectionDialog::ConnectionDialog(core::ConnectionType type, const QString& connection_name, QWidget* parent)
-    : QDialog(parent), connection_() {
+    : QDialog(parent), connection_widget_(nullptr), test_button_(nullptr), button_box_(nullptr), connection_() {
   proxy::connection_path_t path(kDefaultNameConnectionFolder + common::ConvertToString(connection_name));
   proxy::IConnectionSettingsBase* connection =
       proxy::ConnectionSettingsFactory::GetInstance().CreateFromTypeConnection(type, path);
@@ -74,7 +74,7 @@ void ConnectionDialog::accept() {
 
 void ConnectionDialog::testConnection() {
   if (validateAndApply()) {
-    ConnectionDiagnosticDialog diag(this, connection_);
+    ConnectionDiagnosticDialog diag(translations::trConnectionDiagnostic, connection_, this);
     diag.exec();
   }
 }
@@ -87,6 +87,7 @@ void ConnectionDialog::changeEvent(QEvent* e) {
 }
 
 void ConnectionDialog::init(proxy::IConnectionSettingsBase* connection) {
+  setWindowTitle(trTitle);
   setWindowIcon(GuiFactory::GetInstance().icon(connection->GetType()));
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
@@ -118,7 +119,6 @@ void ConnectionDialog::init(proxy::IConnectionSettingsBase* connection) {
 }
 
 void ConnectionDialog::retranslateUi() {
-  setWindowTitle(trTitle);
   test_button_->setText(trTest);
 }
 

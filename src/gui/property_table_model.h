@@ -37,7 +37,10 @@ class PropertyTableModel : public common::qt::gui::TableModel {
 
   virtual int columnCount(const QModelIndex& parent) const override;
 
+ public Q_SLOTS:
   void changeProperty(const core::property_t& pr);
+
+  void insertProperty(const core::property_t& property);
 
  Q_SIGNALS:
   void propertyChanged(const core::property_t& pr);

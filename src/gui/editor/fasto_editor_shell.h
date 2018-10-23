@@ -26,10 +26,10 @@ namespace gui {
 class FastoEditorShell : public FastoEditor {
   Q_OBJECT
  protected Q_SLOTS:
-  void showContextMenu(const QPoint& pt);
+  void showContextMenu(const QPoint& point);
 
  protected:
-  explicit FastoEditorShell(bool showAutoCompl, QWidget* parent = Q_NULLPTR);
+  explicit FastoEditorShell(bool show_auto_compleate, QWidget* parent = Q_NULLPTR);
 };
 
 }  // namespace gui

@@ -26,8 +26,8 @@
 
 #include <common/qt/gui/glass_widget.h>  // for GlassWidget
 
-#include "gui/dialogs/test_connection.h"  // for TestConnection
 #include "gui/gui_factory.h"              // for GuiFactory
+#include "gui/workers/test_connection.h"  // for TestConnection
 
 #include "translations/global.h"
 
@@ -38,9 +38,15 @@ const QSize kStateIconSize = QSize(64, 64);
 namespace fastonosql {
 namespace gui {
 
-ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(QWidget* parent, proxy::IConnectionSettingsBaseSPtr connection)
-    : QDialog(parent) {
-  setWindowTitle(translations::trConnectionDiagnostic);
+ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(const QString& title,
+                                                       proxy::IConnectionSettingsBaseSPtr connection,
+                                                       QWidget* parent)
+    : QDialog(parent),
+      glass_widget_(nullptr),
+      execute_time_label_(nullptr),
+      status_label_(nullptr),
+      icon_label_(nullptr) {
+  setWindowTitle(title);
   setWindowIcon(GuiFactory::GetInstance().icon(connection->GetType()));
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 

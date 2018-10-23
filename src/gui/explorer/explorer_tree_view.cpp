@@ -46,6 +46,7 @@
 #include "gui/explorer/explorer_tree_item.h"
 #include "gui/explorer/explorer_tree_model.h"  // for ExplorerServerItem, etc
 #include "gui/explorer/explorer_tree_sort_filter_proxy_model.h"
+#include "gui/gui_factory.h"
 
 #include "translations/global.h"  // for trClose, trBackup, etc
 
@@ -72,6 +73,8 @@ const QString trRenameKey = QObject::tr("Rename key");
 const QString trRenameKeyLabel = QObject::tr("New key name:");
 const QString trCreateDatabase_1S = QObject::tr("Create database on %1 server");
 const QString trRemoveDatabase_1S = QObject::tr("Remove database from %1 server");
+const QString trPropertiesTemplate_1S = QObject::tr("%1 properties");
+const QString trHistoryTemplate_1S = QObject::tr("%1 history");
 }  // namespace
 
 namespace fastonosql {
@@ -529,7 +532,11 @@ void ExplorerTreeView::openInfoServerDialog() {
       continue;
     }
 
-    InfoServerDialog infDialog(server, this);
+    QString server_name;
+    common::ConvertFromString(server->GetName(), &server_name);
+    core::ConnectionType type = server->GetType();
+    InfoServerDialog infDialog(QObject::tr("%1 info").arg(server_name), GuiFactory::GetInstance().icon(type), server,
+                               this);
     infDialog.exec();
   }
 }
@@ -548,7 +555,10 @@ void ExplorerTreeView::openPropertyServerDialog() {
       continue;
     }
 
-    PropertyServerDialog infDialog(server, this);
+    QString server_name;
+    common::ConvertFromString(server->GetName(), &server_name);
+    const QIcon dialog_icon = gui::GuiFactory::GetInstance().icon(node->server()->GetType());
+    PropertyServerDialog infDialog(trPropertiesTemplate_1S.arg(server_name), dialog_icon, server, this);
     infDialog.exec();
   }
 }
@@ -567,7 +577,10 @@ void ExplorerTreeView::openHistoryServerDialog() {
       continue;
     }
 
-    ServerHistoryDialog histDialog(server, this);
+    QString server_name;
+    common::ConvertFromString(server->GetName(), &server_name);
+    const QIcon dialog_icon = GuiFactory::GetInstance().icon(server->GetType());
+    ServerHistoryDialog histDialog(trHistoryTemplate_1S.arg(server_name), dialog_icon, server, this);
     histDialog.exec();
   }
 }
@@ -720,7 +733,8 @@ void ExplorerTreeView::loadContentDb() {
       continue;
     }
 
-    LoadContentDbDialog loadDb(trLoadContentTemplate_1S.arg(node->name()), node->server()->GetType(), this);
+    const QIcon dialog_icon = gui::GuiFactory::GetInstance().icon(node->server()->GetType());
+    LoadContentDbDialog loadDb(trLoadContentTemplate_1S.arg(node->name()), dialog_icon, this);
     int result = loadDb.exec();
     if (result == QDialog::Accepted) {
       node->loadContent(common::ConvertToString(loadDb.pattern()), loadDb.count());
@@ -782,7 +796,9 @@ void ExplorerTreeView::addKeyToBranch() {
     core::NValue val(common::Value::CreateEmptyStringValue());
     core::NDbKValue nkey(raw_key, val);
     ExplorerDatabaseItem* node_db = node->db();
-    DbKeyDialog loadDb(trCreateKeyForDbTemplate_1S.arg(node_db->name()), server->GetType(), nkey, false, this);
+    core::ConnectionType type = server->GetType();
+    DbKeyDialog loadDb(trCreateKeyForDbTemplate_1S.arg(node_db->name()), GuiFactory::GetInstance().keyIcon(), type,
+                       nkey, false, this);
     int result = loadDb.exec();
     if (result == QDialog::Accepted) {
       core::NDbKValue key = loadDb.key();
@@ -829,7 +845,9 @@ void ExplorerTreeView::createKey() {
     proxy::IServerSPtr server = node->server();
     core::NValue val(common::Value::CreateEmptyStringValue());
     core::NDbKValue dbv(core::NKey(), val);
-    DbKeyDialog loadDb(trCreateKeyForDbTemplate_1S.arg(node->name()), server->GetType(), dbv, false, this);
+    core::ConnectionType type = server->GetType();
+    DbKeyDialog loadDb(trCreateKeyForDbTemplate_1S.arg(node->name()), GuiFactory::GetInstance().keyIcon(), type, dbv,
+                       false, this);
     int result = loadDb.exec();
     if (result == QDialog::Accepted) {
       core::NDbKValue key = loadDb.key();
@@ -848,7 +866,9 @@ void ExplorerTreeView::editKey() {
     }
 
     proxy::IServerSPtr server = node->server();
-    DbKeyDialog loadDb(trEditKey_1S.arg(node->name()), server->GetType(), node->dbv(), true, this);
+    core::ConnectionType type = server->GetType();
+    DbKeyDialog loadDb(trEditKey_1S.arg(node->name()), GuiFactory::GetInstance().keyIcon(), type, node->dbv(), true,
+                       this);
     int result = loadDb.exec();
     if (result == QDialog::Accepted) {
       core::NDbKValue key = loadDb.key();

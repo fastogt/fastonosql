@@ -36,7 +36,7 @@ class IPathWidget;
 class PreferencesDialog : public QDialog {
   Q_OBJECT
  public:
-  explicit PreferencesDialog(QWidget* parent);
+  explicit PreferencesDialog(const QString& title, QWidget* parent);
   enum { min_width = 640, min_height = 480 };
 
  public Q_SLOTS:
@@ -52,6 +52,7 @@ class PreferencesDialog : public QDialog {
   QWidget* createMainTab();
   QWidget* createExternalTab();
   void retranslateUi();
+
 #if defined(PRO_VERSION)
   // controls in profile_box
   QGroupBox* profile_box_;

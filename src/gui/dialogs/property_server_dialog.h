@@ -47,17 +47,20 @@ namespace gui {
 class PropertyServerDialog : public QDialog {
   Q_OBJECT
  public:
-  explicit PropertyServerDialog(proxy::IServerSPtr server, QWidget* parent = Q_NULLPTR);
+  explicit PropertyServerDialog(const QString& title,
+                                const QIcon& icon,
+                                proxy::IServerSPtr server,
+                                QWidget* parent = Q_NULLPTR);
   enum { min_width = 240, min_height = 200 };
 
  private Q_SLOTS:
-  void startServerProperty(const proxy::events_info::ServerPropertyInfoRequest& req);
-  void finishServerProperty(const proxy::events_info::ServerPropertyInfoResponce& res);
+  void startLoadServerProperty(const proxy::events_info::ServerPropertyInfoRequest& req);
+  void finishLoadServerProperty(const proxy::events_info::ServerPropertyInfoResponce& res);
 
   void startServerChangeProperty(const proxy::events_info::ChangeServerPropertyInfoRequest& req);
   void finishServerChangeProperty(const proxy::events_info::ChangeServerPropertyInfoResponce& res);
 
-  void changedProperty(const core::property_t& prop);
+  void changeProperty(const core::property_t& prop);
 
  protected:
   virtual void changeEvent(QEvent* e) override;

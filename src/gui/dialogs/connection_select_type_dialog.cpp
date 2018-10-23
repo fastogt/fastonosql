@@ -30,14 +30,15 @@
 #include "gui/gui_factory.h"
 
 namespace {
-const QString trSectTypeTitle = QObject::tr("Select connection type");
 const QString trDatabase = QObject::tr("Database");
 }  // namespace
 
 namespace fastonosql {
 namespace gui {
 
-ConnectionSelectTypeDialog::ConnectionSelectTypeDialog(QWidget* parent) : QDialog(parent) {
+ConnectionSelectTypeDialog::ConnectionSelectTypeDialog(const QString& title, QWidget* parent)
+    : QDialog(parent), type_connection_label_(nullptr), type_connection_(nullptr), button_box_(nullptr) {
+  setWindowTitle(title);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
   type_connection_label_ = new QLabel;
@@ -86,7 +87,6 @@ void ConnectionSelectTypeDialog::changeEvent(QEvent* e) {
 }
 
 void ConnectionSelectTypeDialog::retranslateUi() {
-  setWindowTitle(trSectTypeTitle);
   type_connection_label_->setText(trDatabase + ":");
 }
 

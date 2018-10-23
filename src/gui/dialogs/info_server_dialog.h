@@ -79,7 +79,10 @@ namespace gui {
 class InfoServerDialog : public QDialog {
   Q_OBJECT
  public:
-  explicit InfoServerDialog(proxy::IServerSPtr server, QWidget* parent = Q_NULLPTR);
+  explicit InfoServerDialog(const QString& title,
+                            const QIcon& icon,
+                            proxy::IServerSPtr server,
+                            QWidget* parent = Q_NULLPTR);
   enum { min_width = 420, min_height = 560 };
 
  private Q_SLOTS:
@@ -122,6 +125,7 @@ class InfoServerDialog : public QDialog {
 #ifdef BUILD_WITH_PIKA
   void updateText(const core::pika::ServerInfo& serv);
 #endif
+
   QTextEdit* server_text_info_;
   common::qt::gui::GlassWidget* glass_widget_;
   const proxy::IServerSPtr server_;

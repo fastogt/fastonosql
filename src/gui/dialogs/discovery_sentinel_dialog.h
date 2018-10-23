@@ -45,7 +45,10 @@ class DiscoverySentinelDiagnosticDialog : public QDialog {
  public:
   enum { fix_height = 320, fix_width = 480 };
 
-  DiscoverySentinelDiagnosticDialog(QWidget* parent, proxy::IConnectionSettingsBaseSPtr connection);
+  DiscoverySentinelDiagnosticDialog(const QString& title,
+                                    const QIcon& icon,
+                                    proxy::IConnectionSettingsBaseSPtr connection,
+                                    QWidget* parent = Q_NULLPTR);
   std::vector<ConnectionListWidgetItemDiscovered*> selectedConnections() const;
 
  private Q_SLOTS:
