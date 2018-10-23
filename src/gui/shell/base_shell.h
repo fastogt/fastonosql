@@ -37,11 +37,14 @@ class BaseShell : public gui::FastoEditorShell {
   QString basedOn() const;
   void setFilteredVersion(uint32_t version);
 
-  static BaseShell* createFromType(core::ConnectionType type, bool showAutoCompl);
+  static BaseShell* createFromType(core::ConnectionType type, bool show_auto_complete);
 
  protected:
-  BaseShell(core::ConnectionType type, bool showAutoCompl, QWidget* parent = Q_NULLPTR);
+  BaseShell(core::ConnectionType type, bool show_auto_complete, QWidget* parent = Q_NULLPTR);
   BaseQsciLexer* lexer() const;
+
+ private:
+  BaseQsciLexer* createLexer(core::ConnectionType type);
 };
 
 }  // namespace gui

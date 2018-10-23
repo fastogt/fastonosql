@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/dialogs/connection_listwidget_items.h"
+#include "gui/connection_listwidget_items.h"
 
 #include <common/qt/convert2string.h>
 

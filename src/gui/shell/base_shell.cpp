@@ -63,76 +63,21 @@
 #endif
 
 namespace {
-const QSize image_size(64, 64);
+const QSize image_size = QSize(64, 64);
 }
 
 namespace fastonosql {
 namespace gui {
 
-BaseShell::BaseShell(core::ConnectionType type, bool showAutoCompl, QWidget* parent)
-    : gui::FastoEditorShell(showAutoCompl, parent) {
+BaseShell::BaseShell(core::ConnectionType type, bool show_auto_complete, QWidget* parent)
+    : gui::FastoEditorShell(show_auto_complete, parent) {
   VERIFY(connect(this, &BaseShell::customContextMenuRequested, this, &BaseShell::showContextMenu));
-  BaseQsciLexer* lex = nullptr;
-#ifdef BUILD_WITH_REDIS
-  if (type == core::REDIS) {
-    lex = new redis::Lexer(this);
-  }
-#endif
-#ifdef BUILD_WITH_MEMCACHED
-  if (type == core::MEMCACHED) {
-    lex = new memcached::Lexer(this);
-  }
-#endif
-#ifdef BUILD_WITH_SSDB
-  if (type == core::SSDB) {
-    lex = new ssdb::Lexer(this);
-  }
-#endif
-#ifdef BUILD_WITH_LEVELDB
-  if (type == core::LEVELDB) {
-    lex = new leveldb::Lexer(this);
-  }
-#endif
-#ifdef BUILD_WITH_ROCKSDB
-  if (type == core::ROCKSDB) {
-    lex = new rocksdb::Lexer(this);
-  }
-#endif
-#ifdef BUILD_WITH_UNQLITE
-  if (type == core::UNQLITE) {
-    lex = new unqlite::Lexer(this);
-  }
-#endif
-#ifdef BUILD_WITH_LMDB
-  if (type == core::LMDB) {
-    lex = new lmdb::Lexer(this);
-  }
-#endif
-#ifdef BUILD_WITH_UPSCALEDB
-  if (type == core::UPSCALEDB) {
-    lex = new upscaledb::Lexer(this);
-  }
-#endif
-#ifdef BUILD_WITH_FORESTDB
-  if (type == core::FORESTDB) {
-    lex = new forestdb::Lexer(this);
-  }
-#endif
-#ifdef BUILD_WITH_PIKA
-  if (type == core::PIKA) {
-    lex = new pika::Lexer(this);
-  }
-#endif
   const QIcon& ic = gui::GuiFactory::GetInstance().commandIcon(type);
   QPixmap pix = ic.pixmap(image_size);
   registerImage(BaseQsciLexer::Command, pix);
   registerImage(BaseQsciLexer::ExCommand, pix);
 
-  if (!lex) {
-    NOTREACHED();
-    return;
-  }
-
+  BaseQsciLexer* lex = createLexer(type);
   setLexer(lex);
   lex->setFont(gui::GuiFactory::GetInstance().font());
 }
@@ -173,9 +118,64 @@ void BaseShell::setFilteredVersion(uint32_t version) {
   api->setFilteredVersion(version);
 }
 
-BaseShell* BaseShell::createFromType(core::ConnectionType type, bool showAutoCompl) {
-  return new BaseShell(type, showAutoCompl);
+BaseShell* BaseShell::createFromType(core::ConnectionType type, bool show_auto_complete) {
+  return new BaseShell(type, show_auto_complete);
 }
 
+BaseQsciLexer* BaseShell::createLexer(core::ConnectionType type) {
+#ifdef BUILD_WITH_REDIS
+  if (type == core::REDIS) {
+    return new redis::Lexer(this);
+  }
+#endif
+#ifdef BUILD_WITH_MEMCACHED
+  if (type == core::MEMCACHED) {
+    return new memcached::Lexer(this);
+  }
+#endif
+#ifdef BUILD_WITH_SSDB
+  if (type == core::SSDB) {
+    return new ssdb::Lexer(this);
+  }
+#endif
+#ifdef BUILD_WITH_LEVELDB
+  if (type == core::LEVELDB) {
+    return new leveldb::Lexer(this);
+  }
+#endif
+#ifdef BUILD_WITH_ROCKSDB
+  if (type == core::ROCKSDB) {
+    return new rocksdb::Lexer(this);
+  }
+#endif
+#ifdef BUILD_WITH_UNQLITE
+  if (type == core::UNQLITE) {
+    return new unqlite::Lexer(this);
+  }
+#endif
+#ifdef BUILD_WITH_LMDB
+  if (type == core::LMDB) {
+    return new lmdb::Lexer(this);
+  }
+#endif
+#ifdef BUILD_WITH_UPSCALEDB
+  if (type == core::UPSCALEDB) {
+    return new upscaledb::Lexer(this);
+  }
+#endif
+#ifdef BUILD_WITH_FORESTDB
+  if (type == core::FORESTDB) {
+    return new forestdb::Lexer(this);
+  }
+#endif
+#ifdef BUILD_WITH_PIKA
+  if (type == core::PIKA) {
+    return new pika::Lexer(this);
+  }
+
+  NOTREACHED() << "Not handled type: " << type;
+  return nullptr;
+}
+#endif
 }  // namespace gui
 }  // namespace fastonosql

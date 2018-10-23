@@ -25,8 +25,8 @@
 namespace fastonosql {
 namespace gui {
 
-FastoEditorShell::FastoEditorShell(bool show_auto_compleate, QWidget* parent) : FastoEditor(parent) {
-  setShowAutoCompletion(show_auto_compleate);
+FastoEditorShell::FastoEditorShell(bool show_auto_complete, QWidget* parent) : FastoEditor(parent) {
+  setShowAutoCompletion(show_auto_complete);
   VERIFY(connect(this, &FastoEditorShell::customContextMenuRequested, this, &FastoEditorShell::showContextMenu));
 }
 

@@ -107,6 +107,7 @@ SettingsManager::SettingsManager()
       auto_check_updates_(),
       auto_completion_(),
       auto_open_console_(),
+      auto_connect_db_(),
       fast_view_keys_(),
       window_settings_(),
       python_path_() {

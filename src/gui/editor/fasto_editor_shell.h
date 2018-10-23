@@ -29,7 +29,7 @@ class FastoEditorShell : public FastoEditor {
   void showContextMenu(const QPoint& point);
 
  protected:
-  explicit FastoEditorShell(bool show_auto_compleate, QWidget* parent = Q_NULLPTR);
+  explicit FastoEditorShell(bool show_auto_complete, QWidget* parent = Q_NULLPTR);
 };
 
 }  // namespace gui

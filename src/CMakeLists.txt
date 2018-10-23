@@ -183,8 +183,6 @@ IF(PRO_VERSION)
 ENDIF(PRO_VERSION)
 
 SET(HEADERS_GUI_DIALOGS
-  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/connection_listwidget_items.h
-
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/eula_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/about_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/password_dialog.h
@@ -214,7 +212,6 @@ SET(SOURCES_GUI_DIALOGS
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/connection_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/connection_select_type_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/connection_diagnostic_dialog.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/connection_listwidget_items.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/info_server_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/property_server_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/history_server_dialog.cpp
@@ -355,7 +352,7 @@ SET(HEADERS_GUI
   ${CMAKE_SOURCE_DIR}/src/gui/utils.h
   ${CMAKE_SOURCE_DIR}/src/gui/text_converter.h
   ${CMAKE_SOURCE_DIR}/src/gui/key_info.h
-
+  ${CMAKE_SOURCE_DIR}/src/gui/connection_listwidget_items.h
   ${CMAKE_SOURCE_DIR}/src/gui/main_window.h
   ${CMAKE_SOURCE_DIR}/src/gui/property_table_model.h
   ${CMAKE_SOURCE_DIR}/src/gui/main_tab_bar.h
@@ -378,6 +375,7 @@ SET(SOURCES_GUI
   ${SOURCES_GUI_SHELL}
   ${SOURCES_GUI_EXPLORER}
 
+  ${CMAKE_SOURCE_DIR}/src/gui/connection_listwidget_items.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/main_window.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/gui_factory.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/property_table_item.cpp

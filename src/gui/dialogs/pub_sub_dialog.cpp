@@ -47,7 +47,7 @@ const QString trSubscribeInNewConsole = QObject::tr("Subscribe in new console");
 namespace fastonosql {
 namespace gui {
 
-PubSubDialog::PubSubDialog(const QString& title, proxy::IServerSPtr server, QWidget* parent)
+PubSubDialog::PubSubDialog(const QString& title, const QIcon& icon, proxy::IServerSPtr server, QWidget* parent)
     : QDialog(parent),
       search_box_(nullptr),
       search_button_(nullptr),
@@ -57,6 +57,7 @@ PubSubDialog::PubSubDialog(const QString& title, proxy::IServerSPtr server, QWid
       server_(server) {
   CHECK(server_);
   setWindowTitle(title);
+  setWindowIcon(icon);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   VERIFY(

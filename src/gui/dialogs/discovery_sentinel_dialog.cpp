@@ -28,7 +28,7 @@
 #include "proxy/connection_settings_factory.h"
 #include "proxy/servers_manager.h"  // for ServersManager
 
-#include "gui/dialogs/connection_listwidget_items.h"
+#include "gui/connection_listwidget_items.h"
 #include "gui/gui_factory.h"  // for GuiFactory
 #include "gui/workers/discovery_sentinel_connection.h"
 
