@@ -117,8 +117,8 @@ MainWindow::MainWindow() : QMainWindow() {
 
 #if defined(PRO_VERSION)
   proxy::UserInfo user_info = proxy::SettingsManager::GetInstance()->GetUserInfo();
-  fastonosql::proxy::UserInfo::SubscriptionState user_sub_state = user_info.GetSubscriptionState();
-  if (user_sub_state != fastonosql::proxy::UserInfo::SUBSCRIBED) {
+  proxy::UserInfo::SubscriptionState user_sub_state = user_info.GetSubscriptionState();
+  if (user_sub_state != proxy::UserInfo::SUBSCRIBED) {
     time_t expire_application_utc_time = user_info.GetExpireTime();
     const QDateTime end_date = QDateTime::fromTime_t(expire_application_utc_time, Qt::LocalTime);
     const QString date_fmt = end_date.toString(Qt::ISODate);
@@ -403,9 +403,9 @@ void MainWindow::openRecentConnection() {
     return;
   }
 
-  QString rcon = action->text();
-  std::string srcon = common::ConvertToString(rcon);
-  proxy::ConnectionSettingsPath path(srcon);
+  const QString rcon = action->text();
+  const std::string srcon = common::ConvertToString(rcon);
+  const proxy::connection_path_t path(srcon);
   auto conns = proxy::SettingsManager::GetInstance()->GetConnections();
   for (auto it = conns.begin(); it != conns.end(); ++it) {
     proxy::IConnectionSettingsBaseSPtr con = *it;

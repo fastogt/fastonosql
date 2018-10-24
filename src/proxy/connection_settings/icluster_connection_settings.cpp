@@ -18,8 +18,6 @@
 
 #include "proxy/connection_settings/icluster_connection_settings.h"
 
-#include <stddef.h>  // for size_t
-
 #include <common/macros.h>     // for DNOTREACHED
 #include <common/net/types.h>  // for HostAndPort, operator==
 
@@ -42,19 +40,6 @@ void IClusterSettingsBase::AddNode(IConnectionSettingsBaseSPtr node) {
   }
 
   clusters_nodes_.push_back(node);
-}
-
-std::string IClusterSettingsBase::ToString() const {
-  std::stringstream str;
-  str << IConnectionSettings::ToString() << setting_value_delemitr;
-  for (size_t i = 0; i < clusters_nodes_.size(); ++i) {
-    IConnectionSettingsBaseSPtr serv = clusters_nodes_[i];
-    if (serv) {
-      str << magic_number << serv->ToString();
-    }
-  }
-
-  return str.str();
 }
 
 IConnectionSettingsBaseSPtr IClusterSettingsBase::FindSettingsByHost(const common::net::HostAndPort& host) const {

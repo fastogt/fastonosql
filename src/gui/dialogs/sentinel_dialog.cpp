@@ -65,7 +65,7 @@ SentinelDialog::SentinelDialog(QWidget* parent, proxy::ISentinelSettingsBase* co
       test_button_(nullptr),
       discovery_button_(nullptr),
       button_box_(nullptr) {
-  setWindowIcon(GuiFactory::GetInstance().serverIcon());
+  setWindowIcon(GuiFactory::GetInstance().sentinelIcon());
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   connection_name_ = new QLineEdit;

@@ -33,6 +33,20 @@
 namespace fastonosql {
 namespace proxy {
 
+std::string ClusterConnectionSettingsFactory::ConvertSettingsToString(IClusterSettingsBase* settings) {
+  std::stringstream str;
+  str << ConnectionSettingsFactory::GetInstance().ConvertSettingsToString(settings) << setting_value_delemitr;
+  auto nodes = settings->GetNodes();
+  for (size_t i = 0; i < nodes.size(); ++i) {
+    IConnectionSettingsBaseSPtr serv = nodes[i];
+    if (serv) {
+      str << magic_number << ConnectionSettingsFactory::GetInstance().ConvertSettingsToString(serv.get());
+    }
+  }
+
+  return str.str();
+}
+
 IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromTypeCluster(
     core::ConnectionType type,
     const connection_path_t& connection_path) {
@@ -85,7 +99,7 @@ IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromStringCluster(
           ch = value[j];
           if (ch == magic_number || j == value_len - 1) {
             IConnectionSettingsBase* server =
-                ConnectionSettingsFactory::GetInstance().CreateFromStringConnection(server_text);
+                ConnectionSettingsFactory::GetInstance().CreateSettingsFromString(server_text);
             if (server) {
               result->AddNode(IConnectionSettingsBaseSPtr(server));
             }

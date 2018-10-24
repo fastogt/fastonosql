@@ -29,7 +29,7 @@ namespace gui {
 
 class PropertyTableItem : public common::qt::gui::TableItem {
  public:
-  enum Columns { kKey = 0, kValue = 1, kColumnsCount = 2 };
+  enum Columns : uint8_t { kKey = 0, kValue = 1, kColumnsCount = 2 };
   explicit PropertyTableItem(const core::property_t& prop);
   QString key() const;
   QString value() const;

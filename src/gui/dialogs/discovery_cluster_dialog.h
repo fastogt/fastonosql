@@ -52,7 +52,7 @@ class DiscoveryClusterDiagnosticDialog : public QDialog {
                                    proxy::IConnectionSettingsBaseSPtr connection,
                                    proxy::IClusterSettingsBaseSPtr cluster,
                                    QWidget* parent = Q_NULLPTR);
-  std::vector<fastonosql::gui::ConnectionListWidgetItemDiscovered*> selectedConnections() const;
+  std::vector<ConnectionListWidgetItemDiscovered*> selectedConnections() const;
 
  private Q_SLOTS:
   void connectionResult(bool suc,

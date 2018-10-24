@@ -68,7 +68,7 @@ ClusterDialog::ClusterDialog(QWidget* parent, proxy::IClusterSettingsBase* conne
       discovery_button_(nullptr),
       button_box_(nullptr),
       cluster_connection_(connection) {
-  setWindowIcon(GuiFactory::GetInstance().serverIcon());
+  setWindowIcon(GuiFactory::GetInstance().clusterIcon());
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   connection_name_ = new QLineEdit;

@@ -53,44 +53,69 @@
 #endif
 
 namespace fastonosql {
+namespace {
+const char* GetLoggingFileExtensionByConnectionType(core::ConnectionType type) {
+#ifdef BUILD_WITH_REDIS
+  if (type == core::REDIS) {
+    return LOGGING_REDIS_FILE_EXTENSION;
+  }
+#endif
+#ifdef BUILD_WITH_MEMCACHED
+  if (type == core::MEMCACHED) {
+    return LOGGING_MEMCACHED_FILE_EXTENSION;
+  }
+#endif
+#ifdef BUILD_WITH_SSDB
+  if (type == core::SSDB) {
+    return LOGGING_SSDB_FILE_EXTENSION;
+  }
+#endif
+#ifdef BUILD_WITH_LEVELDB
+  if (type == core::LEVELDB) {
+    return LOGGING_LEVELDB_FILE_EXTENSION;
+  }
+#endif
+#ifdef BUILD_WITH_ROCKSDB
+  if (type == core::ROCKSDB) {
+    return LOGGING_ROCKSDB_FILE_EXTENSION;
+  }
+#endif
+#ifdef BUILD_WITH_UNQLITE
+  if (type == core::UNQLITE) {
+    return LOGGING_UNQLITE_FILE_EXTENSION;
+  }
+#endif
+#ifdef BUILD_WITH_LMDB
+  if (type == core::LMDB) {
+    return LOGGING_LMDB_FILE_EXTENSION;
+  }
+#endif
+#ifdef BUILD_WITH_UPSCALEDB
+  if (type == core::UPSCALEDB) {
+    return LOGGING_UPSCALEDB_FILE_EXTENSION;
+  }
+#endif
+#ifdef BUILD_WITH_FORESTDB
+  if (type == core::FORESTDB) {
+    return LOGGING_FORESTDB_FILE_EXTENSION;
+  }
+#endif
+#ifdef BUILD_WITH_PIKA
+  if (type == core::PIKA) {
+    return LOGGING_PIKA_FILE_EXTENSION;
+  }
+#endif
+
+  NOTREACHED() << "Not handled type: " << type;
+  return nullptr;
+}
+}  // namespace
 namespace proxy {
-
-ConnectionSettingsPath::ConnectionSettingsPath() : path_() {}
-
-ConnectionSettingsPath::ConnectionSettingsPath(const std::string& path) : path_(path) {}
-
-ConnectionSettingsPath::ConnectionSettingsPath(const common::file_system::ascii_string_path& path) : path_(path) {}
-
-bool ConnectionSettingsPath::Equals(const ConnectionSettingsPath& path) const {
-  return path_.Equals(path.path_);
-}
-
-std::string ConnectionSettingsPath::GetName() const {
-  std::string path = path_.GetPath();
-  return common::file_system::get_file_or_dir_name(path);
-}
-
-std::string ConnectionSettingsPath::GetDirectory() const {
-  return path_.GetDirectory();
-}
-
-std::string ConnectionSettingsPath::ToString() const {
-  return common::ConvertToString(path_);
-}
-
-ConnectionSettingsPath ConnectionSettingsPath::GetRoot() {
-  static const common::file_system::ascii_string_path root(common::file_system::get_separator_string<char>());
-  return ConnectionSettingsPath(root);
-}
 
 const char IConnectionSettings::default_ns_separator[] = ":";
 
 IConnectionSettings::IConnectionSettings(const connection_path_t& connection_path, core::ConnectionType type)
-    : connection_path_(connection_path),
-      type_(type),
-      msinterval_(0),
-      ns_separator_(default_ns_separator),
-      ns_display_strategy_(FULL_KEY) {}
+    : connection_path_(connection_path), type_(type), msinterval_(0) {}
 
 IConnectionSettings::~IConnectionSettings() {}
 
@@ -118,39 +143,34 @@ void IConnectionSettings::SetLoggingMsTimeInterval(int mstime) {
   msinterval_ = mstime;
 }
 
-NsDisplayStrategy IConnectionSettings::GetNsDisplayStrategy() const {
-  return ns_display_strategy_;
-}
-
-void IConnectionSettings::SetNsDisplayStrategy(NsDisplayStrategy strategy) {
-  ns_display_strategy_ = strategy;
-}
-
-std::string IConnectionSettings::GetNsSeparator() const {
-  return ns_separator_;
-}
-
-void IConnectionSettings::SetNsSeparator(const std::string& ns) {
-  ns_separator_ = ns;
-}
-
-std::string IConnectionSettings::ToString() const {
-  std::basic_stringstream<char> wr;
-  wr << type_ << setting_value_delemitr << connection_path_.ToString() << setting_value_delemitr << msinterval_
-     << setting_value_delemitr << ns_separator_ << setting_value_delemitr << ns_display_strategy_;
-  return wr.str();
-}
-
 IConnectionSettingsBase::IConnectionSettingsBase(const connection_path_t& connection_path,
                                                  const std::string& log_directory,
                                                  core::ConnectionType type)
     : IConnectionSettings(connection_path, type),
       log_directory_(common::file_system::stable_dir_path(log_directory)),
-      hash_() {
+      hash_(),
+      ns_separator_(default_ns_separator),
+      ns_display_strategy_(FULL_KEY) {
   SetConnectionPathAndUpdateHash(connection_path);
 }
 
 IConnectionSettingsBase::~IConnectionSettingsBase() {}
+
+NsDisplayStrategy IConnectionSettingsBase::GetNsDisplayStrategy() const {
+  return ns_display_strategy_;
+}
+
+void IConnectionSettingsBase::SetNsDisplayStrategy(NsDisplayStrategy strategy) {
+  ns_display_strategy_ = strategy;
+}
+
+std::string IConnectionSettingsBase::GetNsSeparator() const {
+  return ns_separator_;
+}
+
+void IConnectionSettingsBase::SetNsSeparator(const std::string& ns) {
+  ns_separator_ = ns;
+}
 
 void IConnectionSettingsBase::SetConnectionPathAndUpdateHash(const connection_path_t& name) {
   SetPath(name);
@@ -168,63 +188,7 @@ std::string IConnectionSettingsBase::GetHash() const {
 
 std::string IConnectionSettingsBase::GetLoggingPath() const {
   const std::string logging_path = log_directory_ + GetHash();
-#ifdef BUILD_WITH_REDIS
-  if (type_ == core::REDIS) {
-    return logging_path + LOGGING_REDIS_FILE_EXTENSION;
-  }
-#endif
-#ifdef BUILD_WITH_MEMCACHED
-  if (type_ == core::MEMCACHED) {
-    return logging_path + LOGGING_MEMCACHED_FILE_EXTENSION;
-  }
-#endif
-#ifdef BUILD_WITH_SSDB
-  if (type_ == core::SSDB) {
-    return logging_path + LOGGING_SSDB_FILE_EXTENSION;
-  }
-#endif
-#ifdef BUILD_WITH_LEVELDB
-  if (type_ == core::LEVELDB) {
-    return logging_path + LOGGING_LEVELDB_FILE_EXTENSION;
-  }
-#endif
-#ifdef BUILD_WITH_ROCKSDB
-  if (type_ == core::ROCKSDB) {
-    return logging_path + LOGGING_ROCKSDB_FILE_EXTENSION;
-  }
-#endif
-#ifdef BUILD_WITH_UNQLITE
-  if (type_ == core::UNQLITE) {
-    return logging_path + LOGGING_UNQLITE_FILE_EXTENSION;
-  }
-#endif
-#ifdef BUILD_WITH_LMDB
-  if (type_ == core::LMDB) {
-    return logging_path + LOGGING_LMDB_FILE_EXTENSION;
-  }
-#endif
-#ifdef BUILD_WITH_UPSCALEDB
-  if (type_ == core::UPSCALEDB) {
-    return logging_path + LOGGING_UPSCALEDB_FILE_EXTENSION;
-  }
-#endif
-#ifdef BUILD_WITH_FORESTDB
-  if (type_ == core::FORESTDB) {
-    return logging_path + LOGGING_FORESTDB_FILE_EXTENSION;
-  }
-#endif
-#ifdef BUILD_WITH_PIKA
-  if (type_ == core::PIKA) {
-    return logging_path + LOGGING_PIKA_FILE_EXTENSION;
-  }
-#endif
-
-  NOTREACHED() << "Unknown type: " << type_;
-  return std::string();
-}
-
-std::string IConnectionSettingsBase::ToString() const {
-  return IConnectionSettings::ToString() + setting_value_delemitr + GetCommandLine();
+  return logging_path + GetLoggingFileExtensionByConnectionType(type_);
 }
 
 void IConnectionSettingsBase::PrepareInGuiIfNeeded() {}

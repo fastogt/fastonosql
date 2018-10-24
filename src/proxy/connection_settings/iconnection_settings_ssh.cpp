@@ -34,10 +34,6 @@ IConnectionSettingsRemoteSSH::IConnectionSettingsRemoteSSH(const connection_path
                                                            core::ConnectionType type)
     : IConnectionSettingsRemote(connection_path, log_directory, type), ssh_info_() {}
 
-std::string IConnectionSettingsRemoteSSH::ToString() const {
-  return IConnectionSettingsBase::ToString() + setting_value_delemitr + ssh_info_.ToString();
-}
-
 core::SSHInfo IConnectionSettingsRemoteSSH::GetSSHInfo() const {
   return ssh_info_;
 }

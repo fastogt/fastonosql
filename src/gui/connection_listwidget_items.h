@@ -45,7 +45,7 @@ class DirectoryListWidgetItem  // directory can hold many (common, cluster or se
 class IConnectionListWidgetItem  // base class
     : public QTreeWidgetItem {
  public:
-  enum itemConnectionType { Common, Discovered, Sentinel };
+  enum itemConnectionType : uint8_t { Common = 0, Discovered, Sentinel };
   virtual void setConnection(proxy::IConnectionSettingsBaseSPtr cons);
   proxy::IConnectionSettingsBaseSPtr connection() const;
   virtual itemConnectionType type() const = 0;

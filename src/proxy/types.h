@@ -23,10 +23,10 @@
 namespace fastonosql {
 namespace proxy {
 
-enum NsDisplayStrategy { FULL_KEY = 0, KEY_NAME = 1 };
+enum NsDisplayStrategy : unsigned char { FULL_KEY = 0, KEY_NAME = 1 };
 extern const std::vector<const char*> g_display_strategy_types;
 
-enum SupportedView { kTree = 0, kTable, kText };
+enum SupportedView : unsigned char { kTree = 0, kTable, kText };
 extern const std::vector<const char*> g_supported_views_text;
 
 }  // namespace proxy

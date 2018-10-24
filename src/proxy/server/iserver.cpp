@@ -80,15 +80,15 @@ bool IServer::IsCanRemote() const {
 }
 
 bool IServer::IsSupportTTLKeys() const {
-  return fastonosql::core::IsSupportTTLKeys(GetType());
+  return core::IsSupportTTLKeys(GetType());
 }
 
 bool IServer::IsCanCreateDatabase() const {
-  return fastonosql::core::IsCanCreateDatabase(GetType());
+  return core::IsCanCreateDatabase(GetType());
 }
 
 bool IServer::IsCanRemoveDatabase() const {
-  return fastonosql::core::IsCanRemoveDatabase(GetType());
+  return core::IsCanRemoveDatabase(GetType());
 }
 
 core::translator_t IServer::GetTranslator() const {

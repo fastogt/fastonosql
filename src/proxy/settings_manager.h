@@ -23,11 +23,9 @@
 
 #include <common/patterns/singleton_pattern.h>
 
-#include "proxy/connection_settings/iconnection_settings.h"  // for IClusterSettingsBaseSPtr, etc
+#include "proxy/connection_settings/settings_fwd.h"
 
 #if defined(PRO_VERSION)
-#include "proxy/connection_settings/icluster_connection_settings.h"
-#include "proxy/connection_settings/isentinel_connection_settings.h"
 #include "proxy/user_info.h"
 #endif
 

@@ -29,7 +29,7 @@ namespace gui {
 
 class FastoCommonItem : public common::qt::gui::TreeItem {
  public:
-  enum eColumn { eKey = 0, eValue = 1, eType = 2, eCountColumns = 3 };
+  enum eColumn : uint8_t { eKey = 0, eValue = 1, eType = 2, eCountColumns = 3 };
   FastoCommonItem(const core::NDbKValue& key,
                   const std::string& delimiter,
                   bool read_only,

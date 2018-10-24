@@ -31,9 +31,6 @@ struct SentinelSettings {
   sentinel_nodes_t sentinel_nodes;
 };
 
-std::string SentinelSettingsToString(const SentinelSettings& sent);
-bool SentinelSettingsfromString(const std::string& text, SentinelSettings* sent);
-
 class ISentinelSettingsBase : public IConnectionSettings {
  public:
   typedef SentinelSettings sentinel_connection_t;
@@ -42,7 +39,6 @@ class ISentinelSettingsBase : public IConnectionSettings {
   sentinel_connections_t GetSentinels() const;
   void AddSentinel(sentinel_connection_t sent);
 
-  virtual std::string ToString() const override;
   virtual ISentinelSettingsBase* Clone() const override = 0;
 
  protected:

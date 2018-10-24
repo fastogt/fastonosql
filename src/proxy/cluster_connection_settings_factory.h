@@ -20,14 +20,20 @@
 
 #include <common/patterns/singleton_pattern.h>
 
-#include "proxy/connection_settings/icluster_connection_settings.h"
+#include <fastonosql/core/connection_types.h>
+
+#include "proxy/connection_settings/connection_settings_path.h"
 
 namespace fastonosql {
 namespace proxy {
 
+class IClusterSettingsBase;
+
 class ClusterConnectionSettingsFactory : public common::patterns::LazySingleton<ClusterConnectionSettingsFactory> {
  public:
   friend class common::patterns::LazySingleton<ClusterConnectionSettingsFactory>;
+
+  std::string ConvertSettingsToString(IClusterSettingsBase* settings);
 
   IClusterSettingsBase* CreateFromTypeCluster(core::ConnectionType type, const connection_path_t& connection_path);
   IClusterSettingsBase* CreateFromStringCluster(const std::string& value);

@@ -64,8 +64,28 @@
 namespace fastonosql {
 namespace proxy {
 
-IConnectionSettingsBase* ConnectionSettingsFactory::CreateFromTypeConnection(core::ConnectionType type,
-                                                                             const connection_path_t& connection_path) {
+std::string ConnectionSettingsFactory::ConvertSettingsToString(IConnectionSettings* settings) {
+  std::ostringstream wr;
+  wr << settings->GetType() << setting_value_delemitr << settings->GetPath().ToString() << setting_value_delemitr
+     << settings->GetLoggingMsTimeInterval();
+  return wr.str();
+}
+
+std::string ConnectionSettingsFactory::ConvertSettingsToString(IConnectionSettingsBase* settings) {
+  std::ostringstream wr;
+  wr << ConvertSettingsToString(static_cast<IConnectionSettings*>(settings));
+  wr << setting_value_delemitr << settings->GetNsSeparator() << setting_value_delemitr
+     << settings->GetNsDisplayStrategy() << setting_value_delemitr << settings->GetCommandLine();
+  IConnectionSettingsRemoteSSH* ssh_settings = dynamic_cast<IConnectionSettingsRemoteSSH*>(settings);
+  if (ssh_settings) {
+    wr << setting_value_delemitr << ssh_settings->GetSSHInfo().ToString();
+  }
+  return wr.str();
+}
+
+IConnectionSettingsBase* ConnectionSettingsFactory::CreateSettingsFromTypeConnection(
+    core::ConnectionType type,
+    const connection_path_t& connection_path) {
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {
     return CreateREDISConnection(connection_path);
@@ -121,7 +141,7 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateFromTypeConnection(cor
   return nullptr;
 }
 
-IConnectionSettingsBase* ConnectionSettingsFactory::CreateFromStringConnection(const std::string& value) {
+IConnectionSettingsBase* ConnectionSettingsFactory::CreateSettingsFromString(const std::string& value) {
   if (value.empty()) {
     DNOTREACHED();
     return nullptr;
@@ -137,8 +157,8 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateFromStringConnection(c
     if (ch == setting_value_delemitr) {
       if (comma_count == 0) {
         int ascii_connection_type = element_text[0] - 48;  // saved in char but number
-        result =
-            CreateFromTypeConnection(static_cast<core::ConnectionType>(ascii_connection_type), connection_path_t());
+        result = CreateSettingsFromTypeConnection(static_cast<core::ConnectionType>(ascii_connection_type),
+                                                  connection_path_t());
         if (!result) {
           return nullptr;
         }
@@ -178,9 +198,10 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateFromStringConnection(c
   return result;
 }
 
-IConnectionSettingsRemote* ConnectionSettingsFactory::CreateFromTypeConnection(core::ConnectionType type,
-                                                                               const connection_path_t& connection_path,
-                                                                               const common::net::HostAndPort& host) {
+IConnectionSettingsRemote* ConnectionSettingsFactory::CreateSettingsFromTypeConnection(
+    core::ConnectionType type,
+    const connection_path_t& connection_path,
+    const common::net::HostAndPort& host) {
   IConnectionSettingsRemote* remote = nullptr;
 #ifdef BUILD_WITH_REDIS
   if (type == core::REDIS) {

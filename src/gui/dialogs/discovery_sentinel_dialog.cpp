@@ -25,6 +25,7 @@
 
 #include <common/qt/gui/glass_widget.h>  // for GlassWidget
 
+#include "proxy/connection_settings/iconnection_settings_remote.h"
 #include "proxy/connection_settings_factory.h"
 #include "proxy/servers_manager.h"  // for ServersManager
 
@@ -135,8 +136,10 @@ void DiscoverySentinelDiagnosticDialog::connectionResultReady(
       core::ServerDiscoverySentinelInfoSPtr inf = infos[i];
       common::net::HostAndPort host = inf->GetHost();
       proxy::connection_path_t path(common::file_system::get_separator_string<char>() + inf->GetName());
-      proxy::IConnectionSettingsBaseSPtr con(proxy::ConnectionSettingsFactory::GetInstance().CreateFromTypeConnection(
-          inf->GetConnectionType(), path, host));
+      proxy::IConnectionSettingsRemote* remote =
+          proxy::ConnectionSettingsFactory::GetInstance().CreateSettingsFromTypeConnection(inf->GetConnectionType(),
+                                                                                           path, host);
+      proxy::IConnectionSettingsBaseSPtr con(remote);
 
       ConnectionListWidgetItemDiscovered* item = new ConnectionListWidgetItemDiscovered(inf->GetInfo(), nullptr);
       item->setConnection(con);

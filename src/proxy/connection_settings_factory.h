@@ -18,14 +18,22 @@
 
 #pragma once
 
+#include <common/net/types.h>
 #include <common/patterns/singleton_pattern.h>
 
-#include "proxy/connection_settings/iconnection_settings.h"
-#include "proxy/connection_settings/iconnection_settings_remote.h"
-#include "proxy/connection_settings/iconnection_settings_ssh.h"
+#include <fastonosql/core/connection_types.h>
+
+#include "proxy/connection_settings/connection_settings_path.h"
 
 namespace fastonosql {
 namespace proxy {
+
+static const char magic_number = 0x1E;
+static const char setting_value_delemitr = 0x1F;
+
+class IConnectionSettings;
+class IConnectionSettingsBase;
+class IConnectionSettingsRemote;
 
 #ifdef BUILD_WITH_REDIS
 namespace redis {
@@ -91,13 +99,16 @@ class ConnectionSettingsFactory : public common::patterns::LazySingleton<Connect
  public:
   friend class common::patterns::LazySingleton<ConnectionSettingsFactory>;
 
-  IConnectionSettingsBase* CreateFromTypeConnection(core::ConnectionType type,
-                                                    const connection_path_t& connection_path);
-  IConnectionSettingsBase* CreateFromStringConnection(const std::string& value);
+  std::string ConvertSettingsToString(IConnectionSettings* settings);
+  std::string ConvertSettingsToString(IConnectionSettingsBase* settings);
 
-  IConnectionSettingsRemote* CreateFromTypeConnection(core::ConnectionType type,
-                                                      const connection_path_t& connection_path,
-                                                      const common::net::HostAndPort& host);
+  IConnectionSettingsBase* CreateSettingsFromTypeConnection(core::ConnectionType type,
+                                                            const connection_path_t& connection_path);
+  IConnectionSettingsBase* CreateSettingsFromString(const std::string& value);
+
+  IConnectionSettingsRemote* CreateSettingsFromTypeConnection(core::ConnectionType type,
+                                                              const connection_path_t& connection_path,
+                                                              const common::net::HostAndPort& host);
 
 #ifdef BUILD_WITH_REDIS
   redis::ConnectionSettings* CreateREDISConnection(const connection_path_t& connection_path) const;

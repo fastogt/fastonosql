@@ -18,85 +18,10 @@
 
 #include "proxy/connection_settings/isentinel_connection_settings.h"
 
-#include <common/utils.h>
-
-#include "proxy/connection_settings_factory.h"
-
 namespace fastonosql {
 namespace proxy {
 
 SentinelSettings::SentinelSettings() : sentinel(), sentinel_nodes() {}
-
-std::string SentinelSettingsToString(const SentinelSettings& sent) {
-  std::stringstream str;
-  std::string sent_raw = sent.sentinel->ToString();
-  str << common::utils::base64::encode64(sent_raw) << setting_value_delemitr;
-
-  std::string sents_raw;
-  for (size_t i = 0; i < sent.sentinel_nodes.size(); ++i) {
-    IConnectionSettingsBaseSPtr serv = sent.sentinel_nodes[i];
-    if (serv) {
-      sents_raw += magic_number;
-      sents_raw += serv->ToString();
-    }
-  }
-
-  str << common::utils::base64::encode64(sents_raw);
-  return str.str();
-}
-
-bool SentinelSettingsfromString(const std::string& text, SentinelSettings* sent) {
-  if (text.empty() || !sent) {
-    return false;
-  }
-
-  SentinelSettings result;
-  size_t len = text.size();
-
-  uint8_t comma_count = 0;
-  std::string element_text;
-  for (size_t i = 0; i < len; ++i) {
-    char ch = text[i];
-    if (ch == setting_value_delemitr || i == len - 1) {
-      if (comma_count == 0) {
-        std::string sent_raw = common::utils::base64::decode64(element_text);
-        IConnectionSettingsBaseSPtr sent(ConnectionSettingsFactory::GetInstance().CreateFromStringConnection(sent_raw));
-        if (!sent) {
-          return false;
-        }
-
-        result.sentinel = sent;
-
-        std::string server_text;
-        std::string raw_sent = common::utils::base64::decode64(text.substr(i + 1));
-        len = raw_sent.length();
-        for (size_t j = 0; j < len; ++j) {
-          ch = raw_sent[j];
-          if (ch == magic_number || j == len - 1) {
-            IConnectionSettingsBaseSPtr ser(
-                ConnectionSettingsFactory::GetInstance().CreateFromStringConnection(server_text));
-            if (ser) {
-              result.sentinel_nodes.push_back(ser);
-            }
-            server_text.clear();
-          } else {
-            server_text += ch;
-          }
-        }
-        break;
-      }
-      comma_count++;
-      element_text.clear();
-    } else {
-      element_text += ch;
-    }
-  }
-
-  *sent = result;
-  return true;
-}
-
-//
 
 ISentinelSettingsBase::ISentinelSettingsBase(const connection_path_t& connection_path, core::ConnectionType type)
     : IConnectionSettings(connection_path, type), sentinel_nodes_() {}
@@ -107,17 +32,6 @@ ISentinelSettingsBase::sentinel_connections_t ISentinelSettingsBase::GetSentinel
 
 void ISentinelSettingsBase::AddSentinel(sentinel_connection_t sent) {
   sentinel_nodes_.push_back(sent);
-}
-
-std::string ISentinelSettingsBase::ToString() const {
-  std::stringstream str;
-  str << IConnectionSettings::ToString() << setting_value_delemitr;
-  for (size_t i = 0; i < sentinel_nodes_.size(); ++i) {
-    sentinel_connection_t sent = sentinel_nodes_[i];
-    str << magic_number << SentinelSettingsToString(sent);
-  }
-
-  return str.str();
 }
 
 }  // namespace proxy

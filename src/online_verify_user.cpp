@@ -46,9 +46,9 @@ common::Error OnlineVerifyUser::startVerificationImpl(const std::string& login,
     return common::make_error("Sorry can't connect to server, for checking your credentials.");
   }
 
-  fastonosql::proxy::UserInfo user_info(login, hexed_password, strategy);
+  proxy::UserInfo user_info(login, hexed_password, strategy);
   std::string request;
-  common::Error request_err = fastonosql::proxy::GenSubscriptionStateRequest(user_info, &request);
+  common::Error request_err = proxy::GenSubscriptionStateRequest(user_info, &request);
   if (request_err) {
     return common::make_error("Sorry can't generate password request, for checking your credentials.");
   }
@@ -70,7 +70,7 @@ common::Error OnlineVerifyUser::startVerificationImpl(const std::string& login,
     return common::make_error("Sorry can't get responce, for checking your credentials.");
   }
 
-  common::Error jerror = fastonosql::proxy::ParseSubscriptionStateResponce(subscribe_reply, &user_info);
+  common::Error jerror = proxy::ParseSubscriptionStateResponce(subscribe_reply, &user_info);
   if (jerror) {
     err = client.Close();
     DCHECK(!err) << "Close client error: " << err->GetDescription();

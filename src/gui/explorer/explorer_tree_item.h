@@ -32,10 +32,10 @@ namespace gui {
 
 class IExplorerTreeItem : public common::qt::gui::TreeItem {
  public:
-  enum eColumn { eName = 0, eCountColumns };
+  enum eColumn : uint8_t { eName = 0, eCountColumns };
 
-  enum eType {
-    eServer,
+  enum eType : uint8_t {
+    eServer = 0,
     eDatabase,
     eNamespace,
     eKey,

@@ -26,7 +26,7 @@ class QComboBox;
 namespace fastonosql {
 namespace gui {
 
-enum OutputView : unsigned int {
+enum OutputView : uint8_t {
   RAW_VIEW = 0,  // raw
   JSON_VIEW,     // raw
 

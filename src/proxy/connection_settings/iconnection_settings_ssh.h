@@ -38,8 +38,6 @@ class IConnectionSettingsRemoteSSH : public IConnectionSettingsRemote {
   struct core::SSHInfo GetSSHInfo() const;
   void SetSSHInfo(const struct core::SSHInfo& info);
 
-  virtual std::string ToString() const override;
-
   virtual void PrepareInGuiIfNeeded() override;
 
  protected:

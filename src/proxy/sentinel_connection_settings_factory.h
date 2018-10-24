@@ -20,14 +20,20 @@
 
 #include <common/patterns/singleton_pattern.h>
 
-#include "proxy/connection_settings/isentinel_connection_settings.h"
+#include <fastonosql/core/connection_types.h>
+
+#include "proxy/connection_settings/connection_settings_path.h"
 
 namespace fastonosql {
 namespace proxy {
 
+class ISentinelSettingsBase;
+
 class SentinelConnectionSettingsFactory : public common::patterns::LazySingleton<SentinelConnectionSettingsFactory> {
  public:
   friend class common::patterns::LazySingleton<SentinelConnectionSettingsFactory>;
+
+  std::string ConvertSettingsToString(ISentinelSettingsBase* settings);
 
   ISentinelSettingsBase* CreateFromTypeSentinel(core::ConnectionType type, const connection_path_t& connection_path);
   ISentinelSettingsBase* CreateFromStringSentinel(const std::string& value);

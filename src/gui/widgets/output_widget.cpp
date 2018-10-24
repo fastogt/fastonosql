@@ -164,7 +164,7 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget
 
 void OutputWidget::rootCreate(const proxy::events_info::CommandRootCreatedInfo& res) {
   core::FastoObject* root_obj = res.root.get();
-  fastonosql::gui::FastoCommonItem* root = CreateRootItem(root_obj);
+  FastoCommonItem* root = CreateRootItem(root_obj);
   common_model_->setRoot(root);
 }
 
@@ -235,11 +235,11 @@ void OutputWidget::addChild(core::FastoObjectIPtr child) {
     return;
   }
 
-  fastonosql::gui::FastoCommonItem* par = nullptr;
+  FastoCommonItem* par = nullptr;
   if (!parent.isValid()) {
-    par = static_cast<fastonosql::gui::FastoCommonItem*>(common_model_->root());
+    par = static_cast<FastoCommonItem*>(common_model_->root());
   } else {
-    par = common::qt::item<common::qt::gui::TreeItem*, fastonosql::gui::FastoCommonItem*>(parent);
+    par = common::qt::item<common::qt::gui::TreeItem*, FastoCommonItem*>(parent);
   }
 
   if (!par) {
@@ -247,7 +247,7 @@ void OutputWidget::addChild(core::FastoObjectIPtr child) {
     return;
   }
 
-  fastonosql::gui::FastoCommonItem* comChild = CreateItem(par, core::command_buffer_t(), true, child.get());
+  FastoCommonItem* comChild = CreateItem(par, core::command_buffer_t(), true, child.get());
   common_model_->insertItem(parent, comChild);
 }
 
@@ -260,11 +260,11 @@ void OutputWidget::addCommand(core::FastoObjectCommand* command, core::FastoObje
     return;
   }
 
-  fastonosql::gui::FastoCommonItem* par = nullptr;
+  FastoCommonItem* par = nullptr;
   if (!parent.isValid()) {
-    par = static_cast<fastonosql::gui::FastoCommonItem*>(common_model_->root());
+    par = static_cast<FastoCommonItem*>(common_model_->root());
   } else {
-    par = common::qt::item<common::qt::gui::TreeItem*, fastonosql::gui::FastoCommonItem*>(parent);
+    par = common::qt::item<common::qt::gui::TreeItem*, FastoCommonItem*>(parent);
   }
 
   if (!par) {
@@ -272,7 +272,7 @@ void OutputWidget::addCommand(core::FastoObjectCommand* command, core::FastoObje
     return;
   }
 
-  fastonosql::gui::FastoCommonItem* common_child = nullptr;
+  FastoCommonItem* common_child = nullptr;
   core::translator_t tr = server_->GetTranslator();
   core::command_buffer_t input_cmd = command->GetInputCommand();
   core::readable_string_t key;

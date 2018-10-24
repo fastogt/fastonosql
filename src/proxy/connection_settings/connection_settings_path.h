@@ -18,35 +18,32 @@
 
 #pragma once
 
-#include <common/net/types.h>
-
-#include <fastonosql/core/connection_types.h>  // for core::ConnectionType
-
-#include "proxy/connection_settings/iconnection_settings.h"
+#include <common/file_system/path.h>
 
 namespace fastonosql {
 namespace proxy {
 
-class IClusterSettingsBase : public IConnectionSettings {
+class ConnectionSettingsPath {
  public:
-  typedef IConnectionSettingsBaseSPtr cluster_node_t;
-  typedef std::vector<cluster_node_t> cluster_nodes_t;
-  cluster_nodes_t GetNodes() const;
+  ConnectionSettingsPath();
+  explicit ConnectionSettingsPath(const std::string& path);
 
-  void AddNode(IConnectionSettingsBaseSPtr node);
-
-  virtual IClusterSettingsBase* Clone() const override = 0;
-
-  virtual IConnectionSettingsBaseSPtr FindSettingsByHost(const common::net::HostAndPort& host) const;
-
- protected:
-  IClusterSettingsBase(const connection_path_t& connection_path, core::ConnectionType type);
+  std::string GetName() const;
+  std::string GetDirectory() const;
+  bool Equals(const ConnectionSettingsPath& path) const;
+  std::string ToString() const;
+  static ConnectionSettingsPath GetRoot();
 
  private:
-  cluster_nodes_t clusters_nodes_;
+  explicit ConnectionSettingsPath(const common::file_system::ascii_string_path& path);
+  common::file_system::ascii_string_path path_;
 };
 
-typedef std::shared_ptr<IClusterSettingsBase> IClusterSettingsBaseSPtr;
+inline bool operator==(const ConnectionSettingsPath& r, const ConnectionSettingsPath& l) {
+  return r.Equals(l);
+}
+
+typedef ConnectionSettingsPath connection_path_t;
 
 }  // namespace proxy
 }  // namespace fastonosql

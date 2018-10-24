@@ -27,9 +27,12 @@
 #include <common/qt/gui/app_style.h>              // for defStyle
 #include <common/qt/translations/translations.h>  // for defLanguage
 
+#include "proxy/connection_settings/iconnection_settings.h"
 #include "proxy/connection_settings_factory.h"
 #if defined(PRO_VERSION)
 #include "proxy/cluster_connection_settings_factory.h"
+#include "proxy/connection_settings/icluster_connection_settings.h"
+#include "proxy/connection_settings/isentinel_connection_settings.h"
 #include "proxy/sentinel_connection_settings_factory.h"
 #endif
 
@@ -67,9 +70,9 @@
 namespace {
 
 #if defined(PRO_VERSION)
-const std::string ini_path("~/.config/" PROJECT_NAME "/config_pro.ini");
+const std::string ini_path("~/.config/" PROJECT_NAME "/config_new_pro.ini");
 #else
-const std::string ini_path("~/.config/" PROJECT_NAME "/config.ini");
+const std::string ini_path("~/.config/" PROJECT_NAME "/config_new.ini");
 #endif
 
 QFont default_font() {
@@ -176,6 +179,7 @@ void SettingsManager::SetCurrentLanguage(const QString& lang) {
 
 void SettingsManager::AddConnection(IConnectionSettingsBaseSPtr connection) {
   if (!connection) {
+    DNOTREACHED();
     return;
   }
 
@@ -187,6 +191,7 @@ void SettingsManager::AddConnection(IConnectionSettingsBaseSPtr connection) {
 
 void SettingsManager::RemoveConnection(IConnectionSettingsBaseSPtr connection) {
   if (!connection) {
+    DNOTREACHED();
     return;
   }
 
@@ -200,6 +205,7 @@ SettingsManager::connection_settings_t SettingsManager::GetConnections() const {
 #if defined(PRO_VERSION)
 void SettingsManager::AddSentinel(ISentinelSettingsBaseSPtr sentinel) {
   if (!sentinel) {
+    DNOTREACHED();
     return;
   }
 
@@ -211,6 +217,7 @@ void SettingsManager::AddSentinel(ISentinelSettingsBaseSPtr sentinel) {
 
 void SettingsManager::RemoveSentinel(ISentinelSettingsBaseSPtr sentinel) {
   if (!sentinel) {
+    DNOTREACHED();
     return;
   }
 
@@ -223,6 +230,7 @@ SettingsManager::sentinel_settings_t SettingsManager::GetSentinels() const {
 
 void SettingsManager::AddCluster(IClusterSettingsBaseSPtr cluster) {
   if (!cluster) {
+    DNOTREACHED();
     return;
   }
 
@@ -234,6 +242,7 @@ void SettingsManager::AddCluster(IClusterSettingsBaseSPtr cluster) {
 
 void SettingsManager::RemoveCluster(IClusterSettingsBaseSPtr cluster) {
   if (!cluster) {
+    DNOTREACHED();
     return;
   }
 
@@ -406,7 +415,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
     std::string encoded = common::ConvertToString(string);
     std::string raw = common::utils::base64::decode64(encoded);
 
-    IConnectionSettingsBaseSPtr sett(ConnectionSettingsFactory::GetInstance().CreateFromStringConnection(raw));
+    IConnectionSettingsBaseSPtr sett(ConnectionSettingsFactory::GetInstance().CreateSettingsFromString(raw));
     if (sett) {
       connections_.push_back(sett);
     }
@@ -460,7 +469,7 @@ void SettingsManager::Save() {
   QList<QVariant> clusters;
   for (const auto& cluster : clusters_) {
     if (cluster) {
-      std::string raw = cluster->ToString();
+      std::string raw = ClusterConnectionSettingsFactory::GetInstance().ConvertSettingsToString(cluster.get());
       std::string enc = common::utils::base64::encode64(raw);
       QString qdata;
       common::ConvertFromString(enc, &qdata);
@@ -472,7 +481,7 @@ void SettingsManager::Save() {
   QList<QVariant> sentinels;
   for (const auto& sentinel : sentinels_) {
     if (sentinel) {
-      std::string raw = sentinel->ToString();
+      std::string raw = SentinelConnectionSettingsFactory::GetInstance().ConvertSettingsToString(sentinel.get());
       std::string enc = common::utils::base64::encode64(raw);
       QString qdata;
       common::ConvertFromString(enc, &qdata);
@@ -485,7 +494,7 @@ void SettingsManager::Save() {
   QList<QVariant> connections;
   for (const auto& connection : connections_) {
     if (connection) {
-      std::string raw = connection->ToString();
+      std::string raw = ConnectionSettingsFactory::GetInstance().ConvertSettingsToString(connection.get());
       std::string enc = common::utils::base64::encode64(raw);
       QString qdata;
       common::ConvertFromString(enc, &qdata);

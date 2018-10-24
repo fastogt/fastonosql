@@ -36,10 +36,10 @@ namespace fastonosql {
 
 class IVerifyUser;
 
-class CredentialsDialog : public fastonosql::gui::PasswordDialog {
+class CredentialsDialog : public gui::PasswordDialog {
   Q_OBJECT
  public:
-  typedef fastonosql::gui::PasswordDialog base_class;
+  typedef gui::PasswordDialog base_class;
   explicit CredentialsDialog(QWidget* parent = Q_NULLPTR);
 
   proxy::UserInfo userInfo() const;  // if success verification

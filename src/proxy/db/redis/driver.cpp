@@ -51,6 +51,7 @@
 #define BACKUP_DEFAULT_PATH "/var/lib/redis/dump.rdb"
 #define EXPORT_DEFAULT_PATH "/var/lib/redis/dump.rdb"
 
+namespace fastonosql {
 namespace {
 
 common::Value::Type ConvertFromStringRType(const std::string& type) {
@@ -69,24 +70,22 @@ common::Value::Type ConvertFromStringRType(const std::string& type) {
   } else if (type == "zset") {
     return common::Value::TYPE_ZSET;
   } else if (type == "stream") {
-    return fastonosql::core::StreamValue::TYPE_STREAM;
+    return core::StreamValue::TYPE_STREAM;
   } else if (type == "ReJSON-RL") {
-    return fastonosql::core::JsonValue::TYPE_JSON;
+    return core::JsonValue::TYPE_JSON;
   } else if (type == "trietype1") {
-    return fastonosql::core::GraphValue::TYPE_GRAPH;
+    return core::GraphValue::TYPE_GRAPH;
   } else if (type == "MBbloom--") {
-    return fastonosql::core::BloomValue::TYPE_BLOOM;
+    return core::BloomValue::TYPE_BLOOM;
   } else if (type == "ft_invidx") {
-    return fastonosql::core::SearchValue::TYPE_FT_TERM;
+    return core::SearchValue::TYPE_FT_TERM;
   } else if (type == "ft_index0") {
-    return fastonosql::core::SearchValue::TYPE_FT_INDEX;
+    return core::SearchValue::TYPE_FT_INDEX;
   }
   return common::Value::TYPE_NULL;
 }
 
 }  // namespace
-
-namespace fastonosql {
 namespace core {
 namespace {
 

@@ -18,35 +18,21 @@
 
 #pragma once
 
-#include <common/qt/gui/base/table_item.h>  // for TableItem
-
-#include <QString>
-
-#include <fastonosql/core/db_key.h>  // for NDbKValue, ttl_t
+#include <memory>
 
 namespace fastonosql {
-namespace gui {
+namespace proxy {
 
-class KeyTableItem : public common::qt::gui::TableItem {
- public:
-  enum eColumn : uint8_t { kKey = 0, kType = 1, kTTL = 2, kCountColumns = 3 };
+class IConnectionSettingsBase;
+typedef std::shared_ptr<IConnectionSettingsBase> IConnectionSettingsBaseSPtr;
 
-  explicit KeyTableItem(const core::NDbKValue& dbv);
+#if defined(PRO_VERSION)
+class IClusterSettingsBase;
+typedef std::shared_ptr<IClusterSettingsBase> IClusterSettingsBaseSPtr;
 
-  QString keyString() const;
-  QString typeText() const;
-  core::ttl_t TTL() const;
-  common::Value::Type type() const;
+class ISentinelSettingsBase;
+typedef std::shared_ptr<ISentinelSettingsBase> ISentinelSettingsBaseSPtr;
+#endif
 
-  core::NDbKValue Dbv() const;
-  void setDbv(const core::NDbKValue& val);
-
-  core::NKey key() const;
-  void setKey(const core::NKey& key);
-
- private:
-  core::NDbKValue dbv_;
-};
-
-}  // namespace gui
+}  // namespace proxy
 }  // namespace fastonosql

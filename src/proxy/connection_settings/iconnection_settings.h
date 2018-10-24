@@ -20,39 +20,13 @@
 
 #include <memory>
 
-#include <common/file_system/path.h>
-
 #include <fastonosql/core/connection_types.h>  // for core::ConnectionType
 
+#include "proxy/connection_settings/connection_settings_path.h"
 #include "proxy/types.h"
 
 namespace fastonosql {
 namespace proxy {
-
-static const char magic_number = 0x1E;
-static const char setting_value_delemitr = 0x1F;
-
-class ConnectionSettingsPath {
- public:
-  ConnectionSettingsPath();
-  explicit ConnectionSettingsPath(const std::string& path);
-
-  std::string GetName() const;
-  std::string GetDirectory() const;
-  bool Equals(const ConnectionSettingsPath& path) const;
-  std::string ToString() const;
-  static ConnectionSettingsPath GetRoot();
-
- private:
-  explicit ConnectionSettingsPath(const common::file_system::ascii_string_path& path);
-  common::file_system::ascii_string_path path_;
-};
-
-inline bool operator==(const ConnectionSettingsPath& r, const ConnectionSettingsPath& l) {
-  return r.Equals(l);
-}
-
-typedef ConnectionSettingsPath connection_path_t;
 
 class IConnectionSettings : public common::ClonableBase<IConnectionSettings> {
  public:
@@ -70,13 +44,6 @@ class IConnectionSettings : public common::ClonableBase<IConnectionSettings> {
   int GetLoggingMsTimeInterval() const;
   void SetLoggingMsTimeInterval(int mstime);
 
-  NsDisplayStrategy GetNsDisplayStrategy() const;
-  void SetNsDisplayStrategy(NsDisplayStrategy strategy);
-
-  std::string GetNsSeparator() const;
-  void SetNsSeparator(const std::string& ns);
-
-  virtual std::string ToString() const;
   virtual IConnectionSettings* Clone() const override = 0;
 
  protected:
@@ -86,13 +53,17 @@ class IConnectionSettings : public common::ClonableBase<IConnectionSettings> {
 
  private:
   int msinterval_;
-  std::string ns_separator_;
-  NsDisplayStrategy ns_display_strategy_;
 };
 
 class IConnectionSettingsBase : public IConnectionSettings {
  public:
-  virtual ~IConnectionSettingsBase();
+  NsDisplayStrategy GetNsDisplayStrategy() const;
+  void SetNsDisplayStrategy(NsDisplayStrategy strategy);
+
+  std::string GetNsSeparator() const;
+  void SetNsSeparator(const std::string& ns);
+
+  virtual ~IConnectionSettingsBase() override;
   std::string GetHash() const;
 
   std::string GetLoggingPath() const;
@@ -107,7 +78,6 @@ class IConnectionSettingsBase : public IConnectionSettings {
 
   virtual std::string GetFullAddress() const = 0;
 
-  virtual std::string ToString() const override;
   virtual IConnectionSettingsBase* Clone() const override = 0;
 
   virtual void PrepareInGuiIfNeeded();
@@ -121,6 +91,9 @@ class IConnectionSettingsBase : public IConnectionSettings {
   using IConnectionSettings::SetPath;
   const std::string log_directory_;
   std::string hash_;
+
+  std::string ns_separator_;
+  NsDisplayStrategy ns_display_strategy_;
 };
 
 typedef std::shared_ptr<IConnectionSettingsBase> IConnectionSettingsBaseSPtr;
