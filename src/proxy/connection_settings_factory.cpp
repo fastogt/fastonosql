@@ -18,6 +18,7 @@
 
 #include "proxy/connection_settings_factory.h"
 
+#include <common/byte_writer.h>
 #include <common/convert2string.h>
 
 #ifdef BUILD_WITH_REDIS
@@ -64,21 +65,24 @@
 namespace fastonosql {
 namespace proxy {
 
-std::string ConnectionSettingsFactory::ConvertSettingsToString(IConnectionSettings* settings) {
-  std::ostringstream wr;
-  wr << settings->GetType() << setting_value_delemitr << settings->GetPath().ToString() << setting_value_delemitr
+serialize_t ConnectionSettingsFactory::ConvertSettingsToString(IConnectionSettings* settings) {
+  common::ByteWriter<serialize_t::value_type, 512> wr;
+  const connection_path_t path = settings->GetPath();
+  const serialize_t::value_type connection_type = settings->GetType();
+  wr << connection_type << setting_value_delemitr << path.ToString() << setting_value_delemitr
      << settings->GetLoggingMsTimeInterval();
   return wr.str();
 }
 
-std::string ConnectionSettingsFactory::ConvertSettingsToString(IConnectionSettingsBase* settings) {
-  std::ostringstream wr;
+serialize_t ConnectionSettingsFactory::ConvertSettingsToString(IConnectionSettingsBase* settings) {
+  common::ByteWriter<serialize_t::value_type, 512> wr;
+  const serialize_t::value_type ns_disp_strategy = settings->GetNsDisplayStrategy();
   wr << ConvertSettingsToString(static_cast<IConnectionSettings*>(settings));
-  wr << setting_value_delemitr << settings->GetNsSeparator() << setting_value_delemitr
-     << settings->GetNsDisplayStrategy() << setting_value_delemitr << settings->GetCommandLine();
+  wr << setting_value_delemitr << settings->GetNsSeparator() << setting_value_delemitr << ns_disp_strategy
+     << setting_value_delemitr << settings->GetCommandLine();
   IConnectionSettingsRemoteSSH* ssh_settings = dynamic_cast<IConnectionSettingsRemoteSSH*>(settings);
   if (ssh_settings) {
-    wr << setting_value_delemitr << ssh_settings->GetSSHInfo().ToString();
+    wr << setting_value_delemitr << common::ConvertToString(ssh_settings->GetSSHInfo());
   }
   return wr.str();
 }
@@ -141,7 +145,7 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateSettingsFromTypeConnec
   return nullptr;
 }
 
-IConnectionSettingsBase* ConnectionSettingsFactory::CreateSettingsFromString(const std::string& value) {
+IConnectionSettingsBase* ConnectionSettingsFactory::CreateSettingsFromString(const serialize_t& value) {
   if (value.empty()) {
     DNOTREACHED();
     return nullptr;
@@ -150,47 +154,54 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateSettingsFromString(con
   IConnectionSettingsBase* result = nullptr;
   size_t value_len = value.size();
   uint8_t comma_count = 0;
-  std::string element_text;
+  serialize_t element_text;
 
   for (size_t i = 0; i < value_len; ++i) {
-    char ch = value[i];
+    serialize_t::value_type ch = value[i];
     if (ch == setting_value_delemitr) {
       if (comma_count == 0) {
-        int ascii_connection_type = element_text[0] - 48;  // saved in char but number
+        serialize_t::value_type ascii_connection_type = element_text[0];  // saved in char but number
         result = CreateSettingsFromTypeConnection(static_cast<core::ConnectionType>(ascii_connection_type),
                                                   connection_path_t());
         if (!result) {
           return nullptr;
         }
       } else if (comma_count == 1) {
-        connection_path_t path(element_text);
+        const std::string path_str = common::ConvertToString(element_text);
+        connection_path_t path(path_str);
         result->SetConnectionPathAndUpdateHash(path);
       } else if (comma_count == 2) {
         int ms_time;
-        if (common::ConvertFromString(element_text, &ms_time)) {
+        if (common::ConvertFromBytes(element_text, &ms_time)) {
           result->SetLoggingMsTimeInterval(ms_time);
         }
       } else if (comma_count == 3) {
-        result->SetNsSeparator(element_text);
+        const std::string ns_separator_str = common::ConvertToString(element_text);
+        result->SetNsSeparator(ns_separator_str);
       } else if (comma_count == 4) {
-        int ascii_ns_strategy = element_text[0] - 48;  // saved in char but number
+        serialize_t::value_type ascii_ns_strategy = element_text[0];  // saved in char but number
         result->SetNsDisplayStrategy(static_cast<NsDisplayStrategy>(ascii_ns_strategy));
         if (!IsCanSSHConnection(result->GetType())) {
-          result->SetCommandLine(value.substr(i + 1));
+          const std::string cmd_str = std::string(value.begin() + i + 1, value.end());
+          result->SetCommandLine(cmd_str);
           break;
         }
       } else if (comma_count == 5) {
-        result->SetCommandLine(element_text);
+        const std::string cmd_str = common::ConvertToString(element_text);
+        result->SetCommandLine(cmd_str);
         if (IConnectionSettingsRemoteSSH* remote = dynamic_cast<IConnectionSettingsRemoteSSH*>(result)) {
-          core::SSHInfo sinf(value.substr(i + 1));
-          remote->SetSSHInfo(sinf);
+          std::string ssh_str(value.begin() + i + 1, value.end());
+          core::SSHInfo sinf;
+          if (common::ConvertFromString(ssh_str, &sinf)) {
+            remote->SetSSHInfo(sinf);
+          }
         }
         break;
       }
       comma_count++;
       element_text.clear();
     } else {
-      element_text += ch;
+      element_text.push_back(ch);
     }
   }
 

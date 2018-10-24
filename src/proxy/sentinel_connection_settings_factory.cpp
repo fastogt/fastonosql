@@ -18,6 +18,7 @@
 
 #include "proxy/sentinel_connection_settings_factory.h"
 
+#include <common/byte_writer.h>
 #include <common/convert2string.h>
 #include <common/utils.h>
 
@@ -35,39 +36,39 @@ namespace fastonosql {
 namespace proxy {
 
 namespace {
-std::string SentinelSettingsToString(const SentinelSettings& sent) {
-  std::stringstream str;
-  std::string sent_raw = ConnectionSettingsFactory::GetInstance().ConvertSettingsToString(sent.sentinel.get());
+serialize_t SentinelSettingsToString(const SentinelSettings& sent) {
+  common::ByteWriter<serialize_t::value_type, 512> str;
+  serialize_t sent_raw = ConnectionSettingsFactory::GetInstance().ConvertSettingsToString(sent.sentinel.get());
   str << common::utils::base64::encode64(sent_raw) << setting_value_delemitr;
 
-  std::string sents_raw;
+  common::ByteWriter<serialize_t::value_type, 512> sents_raw;
   for (size_t i = 0; i < sent.sentinel_nodes.size(); ++i) {
     IConnectionSettingsBaseSPtr serv = sent.sentinel_nodes[i];
     if (serv) {
-      sents_raw += magic_number;
-      sents_raw += ConnectionSettingsFactory::GetInstance().ConvertSettingsToString(serv.get());
+      sents_raw << magic_number;
+      sents_raw << ConnectionSettingsFactory::GetInstance().ConvertSettingsToString(serv.get());
     }
   }
 
-  str << common::utils::base64::encode64(sents_raw);
+  str << common::utils::base64::encode64(sents_raw.str());
   return str.str();
 }
 
-bool SentinelSettingsfromString(const std::string& text, SentinelSettings* sent) {
+bool SentinelSettingsfromString(const serialize_t& text, SentinelSettings* sent) {
   if (text.empty() || !sent) {
     return false;
   }
 
   SentinelSettings result;
-  size_t len = text.size();
+  size_t value_len = text.size();
 
   uint8_t comma_count = 0;
-  std::string element_text;
-  for (size_t i = 0; i < len; ++i) {
-    char ch = text[i];
-    if (ch == setting_value_delemitr || i == len - 1) {
+  serialize_t element_text;
+  for (size_t i = 0; i < value_len; ++i) {
+    serialize_t::value_type ch = text[i];
+    if (ch == setting_value_delemitr || i == value_len - 1) {
       if (comma_count == 0) {
-        std::string sent_raw = common::utils::base64::decode64(element_text);
+        serialize_t sent_raw = common::utils::base64::decode64(element_text);
         IConnectionSettingsBaseSPtr sent(ConnectionSettingsFactory::GetInstance().CreateSettingsFromString(sent_raw));
         if (!sent) {
           return false;
@@ -75,9 +76,10 @@ bool SentinelSettingsfromString(const std::string& text, SentinelSettings* sent)
 
         result.sentinel = sent;
 
-        std::string server_text;
-        std::string raw_sent = common::utils::base64::decode64(text.substr(i + 1));
-        len = raw_sent.length();
+        serialize_t server_text;
+        serialize_t end_text(text.begin() + i + 1, text.end());
+        serialize_t raw_sent = common::utils::base64::decode64(end_text);
+        size_t len = raw_sent.size();
         for (size_t j = 0; j < len; ++j) {
           ch = raw_sent[j];
           if (ch == magic_number || j == len - 1) {
@@ -88,7 +90,7 @@ bool SentinelSettingsfromString(const std::string& text, SentinelSettings* sent)
             }
             server_text.clear();
           } else {
-            server_text += ch;
+            server_text.push_back(ch);
           }
         }
         break;
@@ -96,7 +98,7 @@ bool SentinelSettingsfromString(const std::string& text, SentinelSettings* sent)
       comma_count++;
       element_text.clear();
     } else {
-      element_text += ch;
+      element_text.push_back(ch);
     }
   }
 
@@ -106,8 +108,8 @@ bool SentinelSettingsfromString(const std::string& text, SentinelSettings* sent)
 
 }  // namespace
 
-std::string SentinelConnectionSettingsFactory::ConvertSettingsToString(ISentinelSettingsBase* settings) {
-  std::stringstream str;
+serialize_t SentinelConnectionSettingsFactory::ConvertSettingsToString(ISentinelSettingsBase* settings) {
+  common::ByteWriter<serialize_t::value_type, 512> str;
   str << ConnectionSettingsFactory::GetInstance().ConvertSettingsToString(settings) << setting_value_delemitr;
   auto nodes = settings->GetSentinels();
   for (size_t i = 0; i < nodes.size(); ++i) {
@@ -136,7 +138,7 @@ ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromTypeSentinel
   return nullptr;
 }
 
-ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromStringSentinel(const std::string& value) {
+ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromStringSentinel(const serialize_t& value) {
   if (value.empty()) {
     DNOTREACHED();
     return nullptr;
@@ -146,31 +148,36 @@ ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromStringSentin
   const size_t value_len = value.size();
 
   uint8_t comma_count = 0;
-  std::string element_text;
+  serialize_t element_text;
 
   for (size_t i = 0; i < value_len; ++i) {
-    char ch = value[i];
+    serialize_t::value_type ch = value[i];
     if (ch == setting_value_delemitr) {
       if (comma_count == 0) {
-        int ascii_connection_type = element_text[0] - 48;  // saved in char but number
+        serialize_t::value_type ascii_connection_type = element_text[0];  // saved in char but number
         result = CreateFromTypeSentinel(static_cast<core::ConnectionType>(ascii_connection_type), connection_path_t());
         if (!result) {
           DNOTREACHED() << "Unknown ascii_connection_type: " << ascii_connection_type;
           return nullptr;
         }
       } else if (comma_count == 1) {
-        connection_path_t path(element_text);
+        const std::string path_str = common::ConvertToString(element_text);
+        connection_path_t path(path_str);
         result->SetPath(path);
       } else if (comma_count == 2) {
         int ms_time;
-        if (common::ConvertFromString(element_text, &ms_time)) {
+        if (common::ConvertFromBytes(element_text, &ms_time)) {
           result->SetLoggingMsTimeInterval(ms_time);
         }
 
-        std::string sentinel_text;
+        serialize_t sentinel_text;
         for (size_t j = i + 2; j < value_len; ++j) {
           ch = value[j];
           if (ch == magic_number || j == value_len - 1) {
+            if (j == value_len - 1) {
+              sentinel_text.push_back(ch);
+            }
+
             SentinelSettings sent;
             bool res = SentinelSettingsfromString(sentinel_text, &sent);
             if (res) {
@@ -178,7 +185,7 @@ ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromStringSentin
             }
             sentinel_text.clear();
           } else {
-            sentinel_text += ch;
+            sentinel_text.push_back(ch);
           }
         }
         break;
@@ -186,7 +193,7 @@ ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromStringSentin
       comma_count++;
       element_text.clear();
     } else {
-      element_text += ch;
+      element_text.push_back(ch);
     }
   }
 

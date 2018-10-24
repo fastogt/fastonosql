@@ -27,16 +27,18 @@
 namespace fastonosql {
 namespace proxy {
 
+typedef common::buffer_t serialize_t;
+
 class IClusterSettingsBase;
 
 class ClusterConnectionSettingsFactory : public common::patterns::LazySingleton<ClusterConnectionSettingsFactory> {
  public:
   friend class common::patterns::LazySingleton<ClusterConnectionSettingsFactory>;
 
-  std::string ConvertSettingsToString(IClusterSettingsBase* settings);
+  serialize_t ConvertSettingsToString(IClusterSettingsBase* settings);
 
   IClusterSettingsBase* CreateFromTypeCluster(core::ConnectionType type, const connection_path_t& connection_path);
-  IClusterSettingsBase* CreateFromStringCluster(const std::string& value);
+  IClusterSettingsBase* CreateFromStringCluster(const serialize_t& value);
 };
 
 }  // namespace proxy

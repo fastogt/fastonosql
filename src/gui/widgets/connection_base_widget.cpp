@@ -41,6 +41,10 @@ QString toRawCommandLine(QString input) {
   return input.replace("\\n", "\n").replace("\\r", "\r");
 }
 
+QString fromRawCommandLine(QString input) {
+  return input.replace("\n", "\\n").replace("\r", "\\r");
+}
+
 const QStringList separators = {":", ";", ",", "[", "]"};
 const QStringList delimiters = {"\\n", "\\r\\n"};
 
@@ -181,7 +185,8 @@ proxy::IConnectionSettingsBase* ConnectionBaseWidget::createConnection() const {
   proxy::IConnectionSettingsBase* conn = createConnectionImpl(path);
   conn->SetNsSeparator(common::ConvertToString(namespace_separator_->currentText()));
   conn->SetNsDisplayStrategy(static_cast<proxy::NsDisplayStrategy>(namespace_displaying_strategy_->currentIndex()));
-  conn->SetDelimiter(common::ConvertToString(toRawCommandLine(delimiter_->currentText())));
+  QString raw_delemiter = toRawCommandLine(delimiter_->currentText());
+  conn->SetDelimiter(common::ConvertToString(raw_delemiter));
   if (isLogging()) {
     conn->SetLoggingMsTimeInterval(loggingInterval());
   }
@@ -202,14 +207,14 @@ void ConnectionBaseWidget::syncControls(proxy::IConnectionSettingsBase* connecti
     }
 
     std::string ns_separator = connection->GetNsSeparator();
-    std::string delemitr = connection->GetDelimiter();
+    std::string delemiter = connection->GetDelimiter();
     QString qns_separator;
     common::ConvertFromString(ns_separator, &qns_separator);
     namespace_separator_->setCurrentText(qns_separator);
     namespace_displaying_strategy_->setCurrentIndex(connection->GetNsDisplayStrategy());
-    QString qdelemitr;
-    common::ConvertFromString(delemitr, &qdelemitr);
-    delimiter_->setCurrentText(qdelemitr);
+    QString qdelemiter;
+    common::ConvertFromString(delemiter, &qdelemiter);
+    delimiter_->setCurrentText(fromRawCommandLine(qdelemiter));
 
     QString qdir;
     common::ConvertFromString(path.GetDirectory(), &qdir);
@@ -221,7 +226,7 @@ void ConnectionBaseWidget::syncControls(proxy::IConnectionSettingsBase* connecti
 }
 
 void ConnectionBaseWidget::retranslateUi() {
-  connection_name_label_->setText(tr("Name:"));
+  connection_name_label_->setText(translations::trName + ":");
   namespace_separator_label_->setText(tr("Ns separator:"));
   namespace_displaying_strategy_label_->setText(tr("Ns display:"));
   delimiter_label_->setText(tr("Delimiter:"));

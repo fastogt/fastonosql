@@ -18,6 +18,7 @@
 
 #include "proxy/cluster_connection_settings_factory.h"
 
+#include <common/byte_writer.h>
 #include <common/convert2string.h>
 
 #ifdef BUILD_WITH_REDIS
@@ -33,8 +34,8 @@
 namespace fastonosql {
 namespace proxy {
 
-std::string ClusterConnectionSettingsFactory::ConvertSettingsToString(IClusterSettingsBase* settings) {
-  std::stringstream str;
+serialize_t ClusterConnectionSettingsFactory::ConvertSettingsToString(IClusterSettingsBase* settings) {
+  common::ByteWriter<serialize_t::value_type, 512> str;
   str << ConnectionSettingsFactory::GetInstance().ConvertSettingsToString(settings) << setting_value_delemitr;
   auto nodes = settings->GetNodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
@@ -65,7 +66,7 @@ IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromTypeCluster(
   return nullptr;
 }
 
-IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromStringCluster(const std::string& value) {
+IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromStringCluster(const serialize_t& value) {
   if (value.empty()) {
     DNOTREACHED();
     return nullptr;
@@ -75,29 +76,34 @@ IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromStringCluster(
   size_t value_len = value.size();
 
   uint8_t comma_count = 0;
-  std::string element_text;
+  serialize_t element_text;
 
   for (size_t i = 0; i < value_len; ++i) {
-    char ch = value[i];
+    serialize_t::value_type ch = value[i];
     if (ch == setting_value_delemitr) {
       if (comma_count == 0) {
-        int ascii_connection_type = element_text[0] - 48;  // saved in char but number
+        serialize_t::value_type ascii_connection_type = element_text[0];
         result = CreateFromTypeCluster(static_cast<core::ConnectionType>(ascii_connection_type), connection_path_t());
         if (!result) {
           return nullptr;
         }
       } else if (comma_count == 1) {
-        connection_path_t path(element_text);
+        const std::string path_str = common::ConvertToString(element_text);
+        connection_path_t path(path_str);
         result->SetPath(path);
       } else if (comma_count == 2) {
         int ms_time;
-        if (common::ConvertFromString(element_text, &ms_time)) {
+        if (common::ConvertFromBytes(element_text, &ms_time)) {
           result->SetLoggingMsTimeInterval(ms_time);
         }
-        std::string server_text;
+        serialize_t server_text;
         for (size_t j = i + 2; j < value_len; ++j) {
           ch = value[j];
           if (ch == magic_number || j == value_len - 1) {
+            if (j == value_len - 1) {
+              server_text.push_back(ch);
+            }
+
             IConnectionSettingsBase* server =
                 ConnectionSettingsFactory::GetInstance().CreateSettingsFromString(server_text);
             if (server) {
@@ -105,7 +111,7 @@ IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromStringCluster(
             }
             server_text.clear();
           } else {
-            server_text += ch;
+            server_text.push_back(ch);
           }
         }
         break;
@@ -113,7 +119,7 @@ IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromStringCluster(
       comma_count++;
       element_text.clear();
     } else {
-      element_text += ch;
+      element_text.push_back(ch);
     }
   }
 

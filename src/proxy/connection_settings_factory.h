@@ -30,6 +30,7 @@ namespace proxy {
 
 static const char magic_number = 0x1E;
 static const char setting_value_delemitr = 0x1F;
+typedef common::buffer_t serialize_t;
 
 class IConnectionSettings;
 class IConnectionSettingsBase;
@@ -99,12 +100,12 @@ class ConnectionSettingsFactory : public common::patterns::LazySingleton<Connect
  public:
   friend class common::patterns::LazySingleton<ConnectionSettingsFactory>;
 
-  std::string ConvertSettingsToString(IConnectionSettings* settings);
-  std::string ConvertSettingsToString(IConnectionSettingsBase* settings);
+  serialize_t ConvertSettingsToString(IConnectionSettings* settings);
+  serialize_t ConvertSettingsToString(IConnectionSettingsBase* settings);
 
   IConnectionSettingsBase* CreateSettingsFromTypeConnection(core::ConnectionType type,
                                                             const connection_path_t& connection_path);
-  IConnectionSettingsBase* CreateSettingsFromString(const std::string& value);
+  IConnectionSettingsBase* CreateSettingsFromString(const serialize_t& value);
 
   IConnectionSettingsRemote* CreateSettingsFromTypeConnection(core::ConnectionType type,
                                                               const connection_path_t& connection_path,
