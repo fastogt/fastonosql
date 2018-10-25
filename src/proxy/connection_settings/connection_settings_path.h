@@ -23,6 +23,8 @@
 namespace fastonosql {
 namespace proxy {
 
+typedef std::string serialize_t;  // #FIXME
+
 class ConnectionSettingsPath {
  public:
   ConnectionSettingsPath();

@@ -37,11 +37,11 @@ namespace proxy {
 
 namespace {
 serialize_t SentinelSettingsToString(const SentinelSettings& sent) {
-  common::ByteWriter<serialize_t::value_type, 512> str;
+  std::ostringstream str;
   serialize_t sent_raw = ConnectionSettingsFactory::GetInstance().ConvertSettingsToString(sent.sentinel.get());
   str << common::utils::base64::encode64(sent_raw) << setting_value_delemitr;
 
-  common::ByteWriter<serialize_t::value_type, 512> sents_raw;
+  std::ostringstream sents_raw;
   for (size_t i = 0; i < sent.sentinel_nodes.size(); ++i) {
     IConnectionSettingsBaseSPtr serv = sent.sentinel_nodes[i];
     if (serv) {
@@ -109,7 +109,7 @@ bool SentinelSettingsfromString(const serialize_t& text, SentinelSettings* sent)
 }  // namespace
 
 serialize_t SentinelConnectionSettingsFactory::ConvertSettingsToString(ISentinelSettingsBase* settings) {
-  common::ByteWriter<serialize_t::value_type, 512> str;
+  std::ostringstream str;
   str << ConnectionSettingsFactory::GetInstance().ConvertSettingsToString(settings) << setting_value_delemitr;
   auto nodes = settings->GetSentinels();
   for (size_t i = 0; i < nodes.size(); ++i) {
@@ -154,10 +154,12 @@ ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromStringSentin
     serialize_t::value_type ch = value[i];
     if (ch == setting_value_delemitr) {
       if (comma_count == 0) {
-        serialize_t::value_type ascii_connection_type = element_text[0];  // saved in char but number
-        result = CreateFromTypeSentinel(static_cast<core::ConnectionType>(ascii_connection_type), connection_path_t());
+        uint8_t connection_type;
+        if (common::ConvertFromString(element_text, &connection_type)) {
+          result = CreateFromTypeSentinel(static_cast<core::ConnectionType>(connection_type), connection_path_t());
+        }
         if (!result) {
-          DNOTREACHED() << "Unknown ascii_connection_type: " << ascii_connection_type;
+          DNOTREACHED() << "Unknown connection_type: " << element_text;
           return nullptr;
         }
       } else if (comma_count == 1) {
@@ -166,7 +168,7 @@ ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromStringSentin
         result->SetPath(path);
       } else if (comma_count == 2) {
         int ms_time;
-        if (common::ConvertFromBytes(element_text, &ms_time)) {
+        if (common::ConvertFromString(element_text, &ms_time)) {
           result->SetLoggingMsTimeInterval(ms_time);
         }
 

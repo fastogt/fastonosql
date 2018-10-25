@@ -30,7 +30,6 @@ namespace proxy {
 
 static const char magic_number = 0x1E;
 static const char setting_value_delemitr = 0x1F;
-typedef common::buffer_t serialize_t;
 
 class IConnectionSettings;
 class IConnectionSettingsBase;

@@ -35,7 +35,7 @@ namespace fastonosql {
 namespace proxy {
 
 serialize_t ClusterConnectionSettingsFactory::ConvertSettingsToString(IClusterSettingsBase* settings) {
-  common::ByteWriter<serialize_t::value_type, 512> str;
+  std::ostringstream str;
   str << ConnectionSettingsFactory::GetInstance().ConvertSettingsToString(settings) << setting_value_delemitr;
   auto nodes = settings->GetNodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
@@ -82,9 +82,12 @@ IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromStringCluster(
     serialize_t::value_type ch = value[i];
     if (ch == setting_value_delemitr) {
       if (comma_count == 0) {
-        serialize_t::value_type ascii_connection_type = element_text[0];
-        result = CreateFromTypeCluster(static_cast<core::ConnectionType>(ascii_connection_type), connection_path_t());
+        uint8_t connection_type;
+        if (common::ConvertFromString(element_text, &connection_type)) {
+          result = CreateFromTypeCluster(static_cast<core::ConnectionType>(connection_type), connection_path_t());
+        }
         if (!result) {
+          DNOTREACHED() << "Unknown connection_type: " << element_text;
           return nullptr;
         }
       } else if (comma_count == 1) {
@@ -93,7 +96,7 @@ IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromStringCluster(
         result->SetPath(path);
       } else if (comma_count == 2) {
         int ms_time;
-        if (common::ConvertFromBytes(element_text, &ms_time)) {
+        if (common::ConvertFromString(element_text, &ms_time)) {
           result->SetLoggingMsTimeInterval(ms_time);
         }
         serialize_t server_text;

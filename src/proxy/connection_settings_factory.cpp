@@ -18,7 +18,6 @@
 
 #include "proxy/connection_settings_factory.h"
 
-#include <common/byte_writer.h>
 #include <common/convert2string.h>
 
 #ifdef BUILD_WITH_REDIS
@@ -66,20 +65,18 @@ namespace fastonosql {
 namespace proxy {
 
 serialize_t ConnectionSettingsFactory::ConvertSettingsToString(IConnectionSettings* settings) {
-  common::ByteWriter<serialize_t::value_type, 512> wr;
+  std::ostringstream wr;
   const connection_path_t path = settings->GetPath();
-  const serialize_t::value_type connection_type = settings->GetType();
-  wr << connection_type << setting_value_delemitr << path.ToString() << setting_value_delemitr
+  wr << settings->GetType() << setting_value_delemitr << path.ToString() << setting_value_delemitr
      << settings->GetLoggingMsTimeInterval();
   return wr.str();
 }
 
 serialize_t ConnectionSettingsFactory::ConvertSettingsToString(IConnectionSettingsBase* settings) {
-  common::ByteWriter<serialize_t::value_type, 512> wr;
-  const serialize_t::value_type ns_disp_strategy = settings->GetNsDisplayStrategy();
+  std::ostringstream wr;
   wr << ConvertSettingsToString(static_cast<IConnectionSettings*>(settings));
-  wr << setting_value_delemitr << settings->GetNsSeparator() << setting_value_delemitr << ns_disp_strategy
-     << setting_value_delemitr << settings->GetCommandLine();
+  wr << setting_value_delemitr << settings->GetNsSeparator() << setting_value_delemitr
+     << settings->GetNsDisplayStrategy() << setting_value_delemitr << settings->GetCommandLine();
   IConnectionSettingsRemoteSSH* ssh_settings = dynamic_cast<IConnectionSettingsRemoteSSH*>(settings);
   if (ssh_settings) {
     wr << setting_value_delemitr << common::ConvertToString(ssh_settings->GetSSHInfo());
@@ -160,10 +157,13 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateSettingsFromString(con
     serialize_t::value_type ch = value[i];
     if (ch == setting_value_delemitr) {
       if (comma_count == 0) {
-        serialize_t::value_type ascii_connection_type = element_text[0];  // saved in char but number
-        result = CreateSettingsFromTypeConnection(static_cast<core::ConnectionType>(ascii_connection_type),
-                                                  connection_path_t());
+        uint8_t connection_type;
+        if (common::ConvertFromString(element_text, &connection_type)) {
+          result =
+              CreateSettingsFromTypeConnection(static_cast<core::ConnectionType>(connection_type), connection_path_t());
+        }
         if (!result) {
+          DNOTREACHED() << "Unknown connection_type: " << element_text;
           return nullptr;
         }
       } else if (comma_count == 1) {
@@ -171,16 +171,18 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateSettingsFromString(con
         connection_path_t path(path_str);
         result->SetConnectionPathAndUpdateHash(path);
       } else if (comma_count == 2) {
-        int ms_time;
-        if (common::ConvertFromBytes(element_text, &ms_time)) {
+        int ms_time = 0;
+        if (common::ConvertFromString(element_text, &ms_time)) {
           result->SetLoggingMsTimeInterval(ms_time);
         }
       } else if (comma_count == 3) {
         const std::string ns_separator_str = common::ConvertToString(element_text);
         result->SetNsSeparator(ns_separator_str);
       } else if (comma_count == 4) {
-        serialize_t::value_type ascii_ns_strategy = element_text[0];  // saved in char but number
-        result->SetNsDisplayStrategy(static_cast<NsDisplayStrategy>(ascii_ns_strategy));
+        uint8_t ns_strategy;
+        if (common::ConvertFromString(element_text, &ns_strategy)) {
+          result->SetNsDisplayStrategy(static_cast<NsDisplayStrategy>(ns_strategy));
+        }
         if (!IsCanSSHConnection(result->GetType())) {
           const std::string cmd_str = std::string(value.begin() + i + 1, value.end());
           result->SetCommandLine(cmd_str);

@@ -487,6 +487,11 @@ void BaseShellWidget::helpClick() {
 
 void BaseShellWidget::inputTextChanged() {
   QString text = input_->text();
+  if (text.isEmpty()) {
+    validate_action_->setIcon(gui::GuiFactory::GetInstance().failIcon());
+    return;
+  }
+
   common::Error err = validate(text);
   if (err) {
     validate_action_->setIcon(gui::GuiFactory::GetInstance().failIcon());

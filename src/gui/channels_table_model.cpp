@@ -54,7 +54,7 @@ QVariant ChannelsTableModel::data(const QModelIndex& index, int role) const {
     if (col == ChannelTableItem::kName) {
       result = node->name();
     } else if (col == ChannelTableItem::kNOS) {
-      result = node->numberOfSubscribers();
+      result = static_cast<uint32_t>(node->numberOfSubscribers());
     }
   }
 

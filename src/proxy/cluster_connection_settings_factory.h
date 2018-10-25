@@ -27,8 +27,6 @@
 namespace fastonosql {
 namespace proxy {
 
-typedef common::buffer_t serialize_t;
-
 class IClusterSettingsBase;
 
 class ClusterConnectionSettingsFactory : public common::patterns::LazySingleton<ClusterConnectionSettingsFactory> {

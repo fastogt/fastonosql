@@ -27,8 +27,6 @@
 namespace fastonosql {
 namespace proxy {
 
-typedef common::buffer_t serialize_t;
-
 class ISentinelSettingsBase;
 
 class SentinelConnectionSettingsFactory : public common::patterns::LazySingleton<SentinelConnectionSettingsFactory> {
