@@ -70,9 +70,9 @@
 namespace {
 
 #if defined(PRO_VERSION)
-const std::string ini_path("~/.config/" PROJECT_NAME "/config_pro.ini");
+const std::string ini_path("~/.config/" PROJECT_NAME "/config_new_pro.ini");
 #else
-const std::string ini_path("~/.config/" PROJECT_NAME "/config.ini");
+const std::string ini_path("~/.config/" PROJECT_NAME "/config_new.ini");
 #endif
 
 QFont default_font() {
