@@ -46,7 +46,7 @@ ConnectionSelectTypeDialog::ConnectionSelectTypeDialog(const QString& title, QWi
 
   for (size_t i = 0; i < core::g_compiled_types.size(); ++i) {
     core::ConnectionType ct = core::g_compiled_types[i];
-    std::string str = common::ConvertToString(ct);
+    std::string str = core::ConnectionTypeToString(ct);
     QString qstr;
     if (common::ConvertFromString(str, &qstr)) {
       type_connection_->addItem(GuiFactory::GetInstance().icon(ct), qstr, ct);

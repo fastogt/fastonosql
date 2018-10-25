@@ -335,7 +335,7 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
 
   const core::command_buffer_t input_line = res.text;
   std::vector<core::command_buffer_t> commands;
-  common::Error err = core::ParseCommands(input_line, &commands);
+  common::Error err = ParseCommands(input_line, &commands);
   if (err) {
     res.setErrorInfo(err);
     Reply(sender, new events::ExecuteResponceEvent(this, res));

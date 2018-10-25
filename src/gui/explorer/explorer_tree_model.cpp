@@ -468,7 +468,7 @@ ExplorerClusterItem* ExplorerTreeModel::findClusterItem(proxy::IClusterSPtr cl) 
 
   for (size_t i = 0; i < parent->childrenCount(); ++i) {
     ExplorerClusterItem* cluster_item = static_cast<ExplorerClusterItem*>(parent->child(i));
-    if (cluster_item->type() != IExplorerTreeItem::eCluster) {
+    if (!cluster_item || cluster_item->type() != IExplorerTreeItem::eCluster) {
       continue;
     }
 
@@ -487,7 +487,7 @@ ExplorerSentinelItem* ExplorerTreeModel::findSentinelItem(proxy::ISentinelSPtr s
 
   for (size_t i = 0; i < parent->childrenCount(); ++i) {
     ExplorerSentinelItem* sentinel_item = static_cast<ExplorerSentinelItem*>(parent->child(i));
-    if (sentinel_item->type() != IExplorerTreeItem::eSentinel) {
+    if (!sentinel_item || sentinel_item->type() != IExplorerTreeItem::eSentinel) {
       continue;
     }
 

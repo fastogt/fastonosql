@@ -50,7 +50,7 @@ void CommandsWidget::addCommand(core::FastoObjectCommandIPtr command) {
                                                                                  : QColor(Qt::black));
   QString mess;
   common::ConvertFromString(command->GetInputCommand(), &mess);
-  std::string stype = common::ConvertToString(command->GetConnectionType());
+  std::string stype = core::ConnectionTypeToString(command->GetConnectionType());
   QString qstype;
   common::ConvertFromString(stype, &qstype);
   log_text_edit_->append(time.toString("[%1] hh:mm:ss.zzz: %2").arg(qstype.toUpper(), mess));

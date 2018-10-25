@@ -41,9 +41,10 @@ class QueryWidget : public QWidget {
   QString inputText() const;
   void setInputText(const QString& text);
 
+  void executeArgs(const QString& text, size_t repeat, int interval, bool history);
+
  public Q_SLOTS:
   void execute(const QString& text);
-  void executeArgs(const QString& text, int repeat, int interval, bool history);
   void reload();
 
  protected:

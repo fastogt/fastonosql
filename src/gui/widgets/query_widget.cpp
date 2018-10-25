@@ -88,7 +88,7 @@ void QueryWidget::execute(const QString& text) {
   shell_widget_->executeText(text);
 }
 
-void QueryWidget::executeArgs(const QString& text, int repeat, int interval, bool history) {
+void QueryWidget::executeArgs(const QString& text, size_t repeat, int interval, bool history) {
   shell_widget_->executeArgs(text, repeat, interval, history);
 }
 

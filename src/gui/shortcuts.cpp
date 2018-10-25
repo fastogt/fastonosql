@@ -78,10 +78,6 @@ bool IsCloseShortcut(QKeyEvent* keyEvent) {
   return g_close_key == keyEvent;
 }
 
-bool isSetFocusOnQueryLineShortcut(QKeyEvent* keyEvent) {
-  return keyEvent->key() == Qt::Key_F6;
-}
-
 bool IsNewTabShortcut(QKeyEvent* keyEvent) {
   return g_new_tab_key == keyEvent;
 }

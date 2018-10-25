@@ -79,14 +79,14 @@ class BaseShellWidget : public QWidget {
                                        const QString& filePath = QString(),
                                        QWidget* parent = Q_NULLPTR);
 
-  virtual ~BaseShellWidget();
+  virtual ~BaseShellWidget() override;
 
   QString text() const;
 
  public Q_SLOTS:
   void setText(const QString& text);
   void executeText(const QString& text);
-  void executeArgs(const QString& text, int repeat, int interval, bool history);
+  void executeArgs(const QString& text, size_t repeat, int interval, bool history);
 
  private Q_SLOTS:
   void execute();
