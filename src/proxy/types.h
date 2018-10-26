@@ -33,8 +33,8 @@ extern const std::vector<const char*> g_display_strategy_types;
 enum SupportedView : unsigned char { kTree = 0, kTable, kText };
 extern const std::vector<const char*> g_supported_views_text;
 
-// GET alex\nSET alex
-// should return vector of 2 commands {{"GET","alex"}, {"SET", "alex"}}
+// GET alex\nSET alex name
+// should return vector of 2 commands "GET alex", "SET alex name"
 common::Error ParseCommands(const core::command_buffer_t& cmd, std::vector<core::command_buffer_t>* cmds);
 
 }  // namespace proxy

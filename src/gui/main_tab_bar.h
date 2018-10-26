@@ -38,7 +38,7 @@ class MainTabBar : public QTabBar {
   void closedOtherTabs();
 
  private Q_SLOTS:
-  void showContextMenu(const QPoint& p);
+  void showContextMenu(const QPoint& point);
 
  protected:
   virtual void changeEvent(QEvent*) override;

@@ -38,7 +38,7 @@ class KeyTableItem : public common::qt::gui::TableItem {
   core::ttl_t TTL() const;
   common::Value::Type type() const;
 
-  core::NDbKValue Dbv() const;
+  core::NDbKValue dbv() const;
   void setDbv(const core::NDbKValue& val);
 
   core::NKey key() const;

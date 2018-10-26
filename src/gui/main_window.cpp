@@ -363,7 +363,7 @@ void MainWindow::checkUpdate() {
 void MainWindow::sendStatistic() {
   QThread* th = new QThread;
 #if defined(PRO_VERSION)
-  proxy::UserInfo uinf = proxy::SettingsManager::GetInstance()->GetUserInfo();
+  const proxy::UserInfo uinf = proxy::SettingsManager::GetInstance()->GetUserInfo();
 
   const std::string login = uinf.GetLogin();
   const std::string build_strategy = common::ConvertToString(uinf.GetBuildStrategy());

@@ -82,7 +82,7 @@ bool KeysTableModel::setData(const QModelIndex& index, const QVariant& value, in
       bool is_ok = false;
       int newValue = value.toInt(&is_ok);
       if (is_ok && newValue != node->TTL()) {
-        core::NDbKValue dbv = node->Dbv();
+        core::NDbKValue dbv = node->dbv();
         emit changedTTL(dbv, newValue);
       }
     }
@@ -137,7 +137,7 @@ void KeysTableModel::updateKey(const core::NKey& key) {
       continue;
     }
 
-    core::NDbKValue dbv = it->Dbv();
+    core::NDbKValue dbv = it->dbv();
     const core::NKey dbv_key = dbv.GetKey();
     if (dbv_key.GetKey() == key.GetKey()) {
       it->setKey(key);

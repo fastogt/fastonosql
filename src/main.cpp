@@ -196,7 +196,6 @@ int main(int argc, char* argv[]) {
 
   // EULA License Agreement
   if (!settings_manager->GetAccpetedEula()) {
-
     fastonosql::gui::EulaDialog eula_dialog(trEulaTitle);
     if (eula_dialog.exec() == QDialog::Rejected) {
       return EXIT_FAILURE;
@@ -222,10 +221,10 @@ int main(int argc, char* argv[]) {
     return EXIT_FAILURE;
   }
 
-  fastonosql::proxy::UserInfo user_info = password_dialog.userInfo();
+  const fastonosql::proxy::UserInfo user_info = password_dialog.userInfo();
   // start application
-  fastonosql::proxy::UserInfo::SubscriptionState user_sub_state = user_info.GetSubscriptionState();
-  size_t exec_count = user_info.GetExecCount();
+  const fastonosql::proxy::UserInfo::SubscriptionState user_sub_state = user_info.GetSubscriptionState();
+  const size_t exec_count = user_info.GetExecCount();
   if (user_sub_state != fastonosql::proxy::UserInfo::SUBSCRIBED) {
     fastonosql::proxy::user_id_t user_id = user_info.GetUserID();
     const std::string runtime_dir_path = settings_manager->GetSettingsDirPath();  // stabled

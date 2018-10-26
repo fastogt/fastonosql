@@ -360,9 +360,9 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
     recent_connections_.clear();
   }
 
-  QString inip;
-  common::ConvertFromString(common::file_system::prepare_path(path), &inip);
-  QSettings settings(inip, QSettings::IniFormat);
+  QString ini_path;
+  common::ConvertFromString(common::file_system::prepare_path(path), &ini_path);
+  QSettings settings(ini_path, QSettings::IniFormat);
   DCHECK(settings.status() == QSettings::NoError);
 
   cur_style_ = settings.value(STYLE, common::qt::gui::defStyle).toString();
@@ -375,14 +375,14 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
   int view = settings.value(VIEW, kText).toInt();
   views_ = static_cast<SupportedView>(view);
 
-  std::string dir_path = GetSettingsDirPath();
+  const std::string dir_path = GetSettingsDirPath();
   QString qdir;
   common::ConvertFromString(dir_path, &qdir);
-  QString logging_dir = settings.value(LOGGINGDIR, qdir).toString();
+  const QString logging_dir = settings.value(LOGGINGDIR, qdir).toString();
   SetLoggingDirectory(logging_dir);
 
 #if defined(PRO_VERSION)
-  QList<QVariant> clusters = settings.value(CLUSTERS).toList();
+  const QList<QVariant> clusters = settings.value(CLUSTERS).toList();
   for (const auto& cluster : clusters) {
     QString string = cluster.toString();
     std::string encoded = common::ConvertToString(string);
@@ -394,7 +394,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
     }
   }
 
-  QList<QVariant> sentinels = settings.value(SENTINELS).toList();
+  const QList<QVariant> sentinels = settings.value(SENTINELS).toList();
   for (const auto& sentinel : sentinels) {
     QString string = sentinel.toString();
     std::string encoded = common::ConvertToString(string);
@@ -409,7 +409,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
   last_login_ = settings.value(LAST_LOGIN, QString()).toString();
 #endif
 
-  QList<QVariant> connections = settings.value(CONNECTIONS).toList();
+  const QList<QVariant> connections = settings.value(CONNECTIONS).toList();
   for (const auto& connection : connections) {
     QString string = connection.toString();
     std::string encoded = common::ConvertToString(string);
@@ -421,7 +421,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
     }
   }
 
-  QStringList rconnections = settings.value(RCONNECTIONS).toStringList();
+  const QStringList rconnections = settings.value(RCONNECTIONS).toStringList();
   for (const auto& rconnection : rconnections) {
     recent_connections_.push_back(rconnection);
   }

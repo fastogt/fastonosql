@@ -93,12 +93,13 @@ IConnectionListWidgetItem::itemConnectionType SentinelConnectionWidgetItem::type
 ConnectionListWidgetItemDiscovered::ConnectionListWidgetItemDiscovered(const core::ServerCommonInfo& info,
                                                                        QTreeWidgetItem* parent)
     : ConnectionListWidgetItem(parent), info_(info) {
-  std::string stype = common::ConvertToString(info_.type);
+  const std::string stype = common::ConvertToString(info_.type);
   QString qstype;
   if (common::ConvertFromString(stype, &qstype)) {
     setText(2, qstype);
   }
-  std::string sstate = common::ConvertToString(info_.state);
+
+  const std::string sstate = common::ConvertToString(info_.state);
   QString qsstate;
   if (common::ConvertFromString(sstate, &qsstate)) {
     setText(3, qsstate);
@@ -136,7 +137,7 @@ void SentinelConnectionListWidgetItemContainer::setConnection(proxy::ISentinelSe
   }
 
   connection_ = cons;
-  std::string path = connection_->GetPath().ToString();
+  const std::string path = connection_->GetPath().ToString();
   QString qpath;
   if (common::ConvertFromString(path, &qpath)) {
     setText(0, qpath);
@@ -169,7 +170,7 @@ void ClusterConnectionListWidgetItemContainer::setConnection(proxy::IClusterSett
   }
 
   connection_ = cons;
-  std::string path = connection_->GetPath().ToString();
+  const std::string path = connection_->GetPath().ToString();
   QString qpath;
   if (common::ConvertFromString(path, &qpath)) {
     setText(0, qpath);

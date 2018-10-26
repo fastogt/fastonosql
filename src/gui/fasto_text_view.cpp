@@ -26,14 +26,14 @@ namespace fastonosql {
 namespace gui {
 
 FastoTextView::FastoTextView(QWidget* parent) : QWidget(parent) {
-  QVBoxLayout* mainL = new QVBoxLayout;
+  QVBoxLayout* main_layout = new QVBoxLayout;
 
   editor_ = new FastoEditorModelOutput;
   editor_->setReadOnly(true);
 
-  mainL->addWidget(editor_);
-  mainL->setContentsMargins(0, 0, 0, 0);
-  setLayout(mainL);
+  main_layout->addWidget(editor_);
+  main_layout->setContentsMargins(0, 0, 0, 0);
+  setLayout(main_layout);
 }
 
 void FastoTextView::setModel(QAbstractItemModel* model) {

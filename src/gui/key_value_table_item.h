@@ -27,7 +27,7 @@ namespace gui {
 
 class KeyValueTableItem : public common::qt::gui::TableItem {
  public:
-  enum Mode : uint8_t { AddAction = 0, EditAction = 1, RemoveAction };
+  enum Mode : uint8_t { AddAction = 0, EditAction = 1, RemoveAction = 3 };
   enum eColumn : uint8_t { kKey = 0, kValue = 1, kAction = 2, kCountColumns = 3 };
 
   KeyValueTableItem(const QString& key, const QString& value, Mode state);

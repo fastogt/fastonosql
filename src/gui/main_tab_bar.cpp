@@ -37,44 +37,44 @@ MainTabBar::MainTabBar(QWidget* parent) : QTabBar(parent) {
   retranslateUi();
 }
 
-void MainTabBar::showContextMenu(const QPoint& p) {
+void MainTabBar::showContextMenu(const QPoint& point) {
   QMenu menu(this);
-  QAction* newShellAction = new QAction(translations::trNewTab, this);
-  newShellAction->setShortcut(g_new_tab_key);
-  VERIFY(connect(newShellAction, &QAction::triggered, this, &MainTabBar::createdNewTab));
+  QAction* new_shell_action = new QAction(translations::trNewTab, this);
+  new_shell_action->setShortcut(g_new_tab_key);
+  VERIFY(connect(new_shell_action, &QAction::triggered, this, &MainTabBar::createdNewTab));
 
-  QAction* nextTabAction = new QAction(translations::trNextTab, this);
-  nextTabAction->setShortcut(g_next_tab_key);
-  VERIFY(connect(nextTabAction, &QAction::triggered, this, &MainTabBar::nextTab));
+  QAction* next_tab_action = new QAction(translations::trNextTab, this);
+  next_tab_action->setShortcut(g_next_tab_key);
+  VERIFY(connect(next_tab_action, &QAction::triggered, this, &MainTabBar::nextTab));
 
-  QAction* prevTabAction = new QAction(translations::trPrevTab, this);
-  prevTabAction->setShortcut(g_prev_tab_key);
-  VERIFY(connect(prevTabAction, &QAction::triggered, this, &MainTabBar::prevTab));
+  QAction* prev_tab_action = new QAction(translations::trPrevTab, this);
+  prev_tab_action->setShortcut(g_prev_tab_key);
+  VERIFY(connect(prev_tab_action, &QAction::triggered, this, &MainTabBar::prevTab));
 
-  QAction* reloadShellAction = new QAction(translations::trReload, this);
-  reloadShellAction->setShortcut(g_refresh_key);
-  VERIFY(connect(reloadShellAction, &QAction::triggered, this, &MainTabBar::reloadedTab));
+  QAction* reload_shell_action = new QAction(translations::trReload, this);
+  reload_shell_action->setShortcut(g_refresh_key);
+  VERIFY(connect(reload_shell_action, &QAction::triggered, this, &MainTabBar::reloadedTab));
 
-  QAction* duplicateShellAction = new QAction(translations::trDuplicate, this);
-  VERIFY(connect(duplicateShellAction, &QAction::triggered, this, &MainTabBar::duplicatedTab));
+  QAction* duplicate_shell_action = new QAction(translations::trDuplicate, this);
+  VERIFY(connect(duplicate_shell_action, &QAction::triggered, this, &MainTabBar::duplicatedTab));
 
-  QAction* closeShellAction = new QAction(translations::trCloseTab, this);
-  closeShellAction->setShortcut(g_close_key);
-  VERIFY(connect(closeShellAction, &QAction::triggered, this, &MainTabBar::closedTab));
+  QAction* close_shell_action = new QAction(translations::trCloseTab, this);
+  close_shell_action->setShortcut(g_close_key);
+  VERIFY(connect(close_shell_action, &QAction::triggered, this, &MainTabBar::closedTab));
 
-  QAction* closeOtherShellsAction = new QAction(translations::trCloseOtherTabs, this);
-  VERIFY(connect(closeOtherShellsAction, &QAction::triggered, this, &MainTabBar::closedOtherTabs));
+  QAction* close_other_shells_action = new QAction(translations::trCloseOtherTabs, this);
+  VERIFY(connect(close_other_shells_action, &QAction::triggered, this, &MainTabBar::closedOtherTabs));
 
-  menu.addAction(newShellAction);
-  menu.addAction(nextTabAction);
-  menu.addAction(prevTabAction);
+  menu.addAction(new_shell_action);
+  menu.addAction(next_tab_action);
+  menu.addAction(prev_tab_action);
   menu.addSeparator();
-  menu.addAction(reloadShellAction);
-  menu.addAction(duplicateShellAction);
+  menu.addAction(reload_shell_action);
+  menu.addAction(duplicate_shell_action);
   menu.addSeparator();
-  menu.addAction(closeShellAction);
-  menu.addAction(closeOtherShellsAction);
-  menu.exec(mapToGlobal(p));
+  menu.addAction(close_shell_action);
+  menu.addAction(close_other_shells_action);
+  menu.exec(mapToGlobal(point));
 }
 
 void MainTabBar::changeEvent(QEvent* e) {

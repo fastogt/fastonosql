@@ -48,7 +48,7 @@ common::Value::Type KeyTableItem::type() const {
   return dbv_.GetType();
 }
 
-core::NDbKValue KeyTableItem::Dbv() const {
+core::NDbKValue KeyTableItem::dbv() const {
   return dbv_;
 }
 

@@ -25,15 +25,16 @@ namespace fastonosql {
 namespace gui {
 
 FastoTreeView::FastoTreeView(QWidget* parent) : QTreeView(parent) {
-  QHeaderView* h = header();
-  h->setDefaultAlignment(Qt::AlignLeft);
-  h->setSectionResizeMode(QHeaderView::Stretch);
+  QHeaderView* head = header();
+  head->setDefaultAlignment(Qt::AlignLeft);
+  head->setSectionResizeMode(QHeaderView::Stretch);
 }
 
 QPoint FastoTreeView::calculateMenuPoint(const QPoint& point) const {
-  QPoint menuPoint = mapToGlobal(point);
-  menuPoint.setY(menuPoint.y() + header()->height());
-  return menuPoint;
+  QPoint menu_point = mapToGlobal(point);
+  QHeaderView* head = header();
+  menu_point.setY(menu_point.y() + head->height());
+  return menu_point;
 }
 
 }  // namespace gui

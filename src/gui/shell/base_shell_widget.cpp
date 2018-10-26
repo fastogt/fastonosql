@@ -179,14 +179,14 @@ void BaseShellWidget::init() {
   VERIFY(connect(server_.get(), &proxy::IServer::DatabaseChanged, this, &BaseShellWidget::updateDefaultDatabase));
   VERIFY(connect(server_.get(), &proxy::IServer::Disconnected, this, &BaseShellWidget::serverDisconnect));
 
-  QVBoxLayout* mainlayout = new QVBoxLayout;
+  QVBoxLayout* main_layout = new QVBoxLayout;
   QHBoxLayout* hlayout = new QHBoxLayout;
 
   QToolBar* savebar = createToolBar();
   savebar->setMovable(false);
 
-  core::ConnectionMode mode = core::InteractiveMode;
-  std::string mode_str = common::ConvertToString(mode);
+  static const core::ConnectionMode mode = core::InteractiveMode;
+  const std::string mode_str = common::ConvertToString(mode);
   QString qmode_str;
   common::ConvertFromString(mode_str, &qmode_str);
   connection_mode_ =
@@ -206,11 +206,11 @@ void BaseShellWidget::init() {
   VERIFY(connect(validate_action_, &QAction::triggered, this, &BaseShellWidget::validateClick));
   helpbar->addAction(validate_action_);
 
-  QAction* helpAction = new QAction(gui::GuiFactory::GetInstance().helpIcon(), translations::trHelp, helpbar);
-  VERIFY(connect(helpAction, &QAction::triggered, this, &BaseShellWidget::helpClick));
-  helpbar->addAction(helpAction);
+  QAction* help_action = new QAction(gui::GuiFactory::GetInstance().helpIcon(), translations::trHelp, helpbar);
+  VERIFY(connect(help_action, &QAction::triggered, this, &BaseShellWidget::helpClick));
+  helpbar->addAction(help_action);
   hlayout->addWidget(helpbar);
-  mainlayout->addLayout(hlayout);
+  main_layout->addLayout(hlayout);
 
   advanced_options_ = new QCheckBox;
   VERIFY(connect(advanced_options_, &QCheckBox::stateChanged, this, &BaseShellWidget::advancedOptionsChange));
@@ -222,30 +222,30 @@ void BaseShellWidget::init() {
 
   advanced_options_widget_ = new QWidget;
   advanced_options_widget_->setVisible(false);
-  QVBoxLayout* advOptLayout = new QVBoxLayout;
+  QVBoxLayout* adv_opt_layout = new QVBoxLayout;
 
-  QHBoxLayout* repeatLayout = new QHBoxLayout;
-  QLabel* repeatLabel = new QLabel(trRepeat);
+  QHBoxLayout* repeat_layout = new QHBoxLayout;
+  QLabel* repeat_label = new QLabel(trRepeat);
   repeat_count_ = new QSpinBox;
   repeat_count_->setRange(0, INT32_MAX);
   repeat_count_->setSingleStep(1);
-  repeatLayout->addWidget(repeatLabel);
-  repeatLayout->addWidget(repeat_count_);
+  repeat_layout->addWidget(repeat_label);
+  repeat_layout->addWidget(repeat_count_);
 
-  QHBoxLayout* intervalLayout = new QHBoxLayout;
-  QLabel* intervalLabel = new QLabel(trIntervalMsec);
+  QHBoxLayout* interval_layout = new QHBoxLayout;
+  QLabel* interval_label = new QLabel(trIntervalMsec);
   interval_msec_ = new QSpinBox;
   interval_msec_->setRange(0, INT32_MAX);
   interval_msec_->setSingleStep(1000);
-  intervalLayout->addWidget(intervalLabel);
-  intervalLayout->addWidget(interval_msec_);
+  interval_layout->addWidget(interval_label);
+  interval_layout->addWidget(interval_msec_);
 
   history_call_ = new QCheckBox;
   history_call_->setChecked(true);
-  advOptLayout->addLayout(repeatLayout);
-  advOptLayout->addLayout(intervalLayout);
-  advOptLayout->addWidget(history_call_);
-  advanced_options_widget_->setLayout(advOptLayout);
+  adv_opt_layout->addLayout(repeat_layout);
+  adv_opt_layout->addLayout(interval_layout);
+  adv_opt_layout->addWidget(history_call_);
+  advanced_options_widget_->setLayout(adv_opt_layout);
 
   QWidget* fixed_height_widget = new QWidget;  // #FIXME
   QHBoxLayout* top_layout = createTopLayout(ct);
@@ -256,12 +256,12 @@ void BaseShellWidget::init() {
   top_layout->setContentsMargins(0, 0, 0, 0);
   fixed_height_widget->setLayout(top_layout);
   fixed_height_widget->setFixedHeight(shell_icon_size.height() * 2);  //
-  mainlayout->addWidget(fixed_height_widget);
+  main_layout->addWidget(fixed_height_widget);
 
-  QHBoxLayout* inputLayout = new QHBoxLayout;
-  inputLayout->addWidget(input_);
-  inputLayout->addWidget(advanced_options_widget_);
-  mainlayout->addLayout(inputLayout);
+  QHBoxLayout* input_layout = new QHBoxLayout;
+  input_layout->addWidget(input_);
+  input_layout->addWidget(advanced_options_widget_);
+  main_layout->addLayout(input_layout);
 
   QHBoxLayout* apilayout = new QHBoxLayout;
   supported_commands_count_ = new QLabel;
@@ -277,19 +277,19 @@ void BaseShellWidget::init() {
 
   std::vector<uint32_t> versions = input_->supportedVersions();
   for (size_t i = 0; i < versions.size(); ++i) {
-    uint32_t cur = versions[i];
-    std::string curVers = core::ConvertVersionNumberToReadableString(cur);
-    QString qcurVers;
-    common::ConvertFromString(curVers, &qcurVers);
-    commands_version_api_->addItem(gui::GuiFactory::GetInstance().unknownIcon(), qcurVers, cur);
+    const uint32_t current = versions[i];
+    const std::string current_version = core::ConvertVersionNumberToReadableString(current);
+    QString qcur_vers;
+    common::ConvertFromString(current_version, &qcur_vers);
+    commands_version_api_->addItem(gui::GuiFactory::GetInstance().unknownIcon(), qcur_vers, current);
     commands_version_api_->setCurrentIndex(i);
   }
   QLabel* version = new QLabel(trCommandsVersion);
   apilayout->addWidget(version);
   apilayout->addWidget(commands_version_api_);
-  mainlayout->addLayout(apilayout);
+  main_layout->addLayout(apilayout);
 
-  setLayout(mainlayout);
+  setLayout(main_layout);
 
   // sync controls
   syncConnectionActions();

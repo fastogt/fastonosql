@@ -40,7 +40,7 @@ QVariant StreamTableModel::data(const QModelIndex& index, int role) const {
   }
 
   // int row = index.row();
-  int col = index.column();
+  const int col = index.column();
   KeyValueTableItem* node = common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
   QVariant result;
   if (role == Qt::DisplayRole) {
@@ -133,8 +133,8 @@ bool StreamTableModel::getStream(core::StreamValue::stream_id sid, core::StreamV
   std::vector<core::StreamValue::Entry> entries;
   for (size_t i = 0; i < data_.size() - 1; ++i) {
     KeyValueTableItem* node = static_cast<KeyValueTableItem*>(data_[i]);
-    std::string key = common::ConvertToString(node->key());
-    std::string val = common::ConvertToString(node->value());
+    const std::string key = common::ConvertToString(node->key());
+    const std::string val = common::ConvertToString(node->value());
     entries.push_back(core::StreamValue::Entry{key, val});
   }
 
@@ -143,7 +143,7 @@ bool StreamTableModel::getStream(core::StreamValue::stream_id sid, core::StreamV
 }
 
 void StreamTableModel::insertEntry(const QString& key, const QString& value) {
-  size_t size = data_.size();
+  const size_t size = data_.size();
   beginInsertRows(QModelIndex(), size, size);
   data_.insert(data_.begin() + size - 1, new KeyValueTableItem(key, value, KeyValueTableItem::RemoveAction));
   KeyValueTableItem* last = static_cast<KeyValueTableItem*>(data_.back());
@@ -157,7 +157,7 @@ void StreamTableModel::removeEntry(int row) {
     return;
   }
 
-  size_t stabled_row_index = static_cast<size_t>(row);
+  const size_t stabled_row_index = static_cast<size_t>(row);
   beginRemoveRows(QModelIndex(), row, row);
   common::qt::gui::TableItem* child = data_[stabled_row_index];
   data_.erase(data_.begin() + row);
