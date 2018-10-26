@@ -1,11 +1,15 @@
 #!/bin/sh
 
-for file in `git diff-index --name-only HEAD`; do
-	case "${file#*.}" in
-	cpp|c|h)
-		clang-format -i "${file}"
-		git add ${file}
-		;;
-	esac
+TOTAL_ERRORS=0
+
+for file in `git diff-index --name-only --diff-filter=d HEAD`; do
+    case "${file#*.}" in
+    cpp|c|h)
+        clang-format -i "${file}"
+        cpplint "${file}"
+        TOTAL_ERRORS=$(expr $TOTAL_ERRORS + $?);
+        ;;
+    esac
 done
 
+exit $TOTAL_ERRORS

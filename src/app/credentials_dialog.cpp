@@ -16,7 +16,9 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "credentials_dialog.h"
+#include "app/credentials_dialog.h"
+
+#include <string>
 
 #include <QMetaType>  // for qRegisterMetaType
 #include <QThread>
@@ -26,7 +28,7 @@
 
 #include "gui/gui_factory.h"
 
-#include "iverify_user.h"
+#include "app/iverify_user.h"
 
 namespace {
 const QString trSignInInfo =

@@ -16,7 +16,9 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "iverify_user.h"
+#include "app/iverify_user.h"
+
+#include <string>
 
 #include <common/convert2string.h>
 #include <common/hash/md5.h>

@@ -16,7 +16,9 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "online_verify_user.h"
+#include "app/online_verify_user.h"
+
+#include <string>
 
 #include <common/net/socket_tcp.h>
 

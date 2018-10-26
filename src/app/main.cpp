@@ -34,7 +34,7 @@
 #include <common/qt/translations/translations.h>
 #include <common/time.h>
 
-#include "credentials_dialog.h"
+#include "app/credentials_dialog.h"
 
 #include "proxy/server_config.h"
 #include "proxy/settings_manager.h"
@@ -53,9 +53,9 @@
 #define PRIVATE_STRATEGY 2
 
 #if BUILD_STRATEGY == COMMUNITY_STRATEGY || BUILD_STRATEGY == PUBLIC_STRATEGY
-#include "online_verify_user.h"
+#include "app/online_verify_user.h"
 #else
-#include "offline_verify_user.h"
+#include "app/offline_verify_user.h"
 #endif
 #endif
 
@@ -168,7 +168,7 @@ class MainCredentialsDialog : public fastonosql::CredentialsDialog {
   MainCredentialsDialog() {}
 
  private:
-  virtual fastonosql::IVerifyUser* createChecker() const override {
+  fastonosql::IVerifyUser* createChecker() const override {
 #if BUILD_STRATEGY == COMMUNITY_STRATEGY
     return new fastonosql::OnlineVerifyUser(login(), password(), fastonosql::proxy::UserInfo::COMMUNITY_BUILD);
 #elif BUILD_STRATEGY == PUBLIC_STRATEGY

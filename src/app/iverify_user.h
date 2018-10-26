@@ -20,6 +20,8 @@
 
 #include <QObject>
 
+#include <string>
+
 #include <common/error.h>
 
 #include "proxy/user_info.h"
@@ -28,6 +30,7 @@ namespace fastonosql {
 
 class IVerifyUser : public QObject {
   Q_OBJECT
+
  public:
   IVerifyUser(const QString& login,
               const QString& password,
