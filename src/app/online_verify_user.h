@@ -18,23 +18,25 @@
 
 #pragma once
 
-#include "iverify_user.h"
+#include <string>
+
+#include "app/iverify_user.h"
 
 namespace fastonosql {
 
-class OfflineVerifyUser : public IVerifyUser {
+class OnlineVerifyUser : public IVerifyUser {
  public:
   typedef IVerifyUser base_class;
-  OfflineVerifyUser(const QString& login,
-                    const QString& password,
-                    proxy::UserInfo::BuildStrategy build_strategy,
-                    QObject* parent = Q_NULLPTR);
+  OnlineVerifyUser(const QString& login,
+                   const QString& password,
+                   proxy::UserInfo::BuildStrategy build_strategy,
+                   QObject* parent = Q_NULLPTR);
 
  private:
-  virtual common::Error startVerificationImpl(const std::string& login,
-                                              const std::string& hexed_password,
-                                              proxy::UserInfo::BuildStrategy build_strategy,
-                                              proxy::UserInfo* user_info_out) override WARN_UNUSED_RESULT;
+  common::Error startVerificationImpl(const std::string& login,
+                                      const std::string& hexed_password,
+                                      proxy::UserInfo::BuildStrategy strategy,
+                                      proxy::UserInfo* user_info_out) override WARN_UNUSED_RESULT;
 };
 
 }  // namespace fastonosql

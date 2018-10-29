@@ -45,7 +45,7 @@ class CredentialsDialog : public gui::PasswordDialog {
   proxy::UserInfo userInfo() const;  // if success verification
 
  public Q_SLOTS:
-  virtual void accept() override;
+  void accept() override;
 
  private Q_SLOTS:
   void verifyUserResult(common::Error err, const proxy::UserInfo& user);

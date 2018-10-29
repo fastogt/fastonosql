@@ -541,7 +541,8 @@ void Driver::HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEven
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
   events::ServerPropertyInfoResponceEvent::value_type res(ev->value());
-  core::FastoObjectCommandIPtr cmd = CreateCommandFast(GEN_CMD_STRING(REDIS_GET_PROPERTY_SERVER_COMMAND), core::C_INNER);
+  core::FastoObjectCommandIPtr cmd =
+      CreateCommandFast(GEN_CMD_STRING(REDIS_GET_PROPERTY_SERVER_COMMAND), core::C_INNER);
   NotifyProgress(sender, 50);
   common::Error err = Execute(cmd);
   if (err) {

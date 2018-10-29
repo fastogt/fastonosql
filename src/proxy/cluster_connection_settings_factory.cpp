@@ -18,7 +18,8 @@
 
 #include "proxy/cluster_connection_settings_factory.h"
 
-#include <common/byte_writer.h>
+#include <string>
+
 #include <common/convert2string.h>
 
 #ifdef BUILD_WITH_REDIS

@@ -315,7 +315,7 @@ void KeyEditWidget::syncControls(const core::NValue& item) {
     common::SetValue* set = nullptr;
     if (item->GetAsSet(&set)) {
       for (auto it = set->begin(); it != set->end(); ++it) {
-        const auto  val = core::ConvertValue(*it, DEFAULT_DELIMITER);
+        const auto val = core::ConvertValue(*it, DEFAULT_DELIMITER);
         if (val.empty()) {
           continue;
         }
@@ -332,13 +332,13 @@ void KeyEditWidget::syncControls(const core::NValue& item) {
       for (auto it = zset->begin(); it != zset->end(); ++it) {
         auto element = (*it);
         common::Value* key = element.first;
-        const auto  key_str = core::ConvertValue(key, DEFAULT_DELIMITER);
+        const auto key_str = core::ConvertValue(key, DEFAULT_DELIMITER);
         if (key_str.empty()) {
           continue;
         }
 
         common::Value* value = element.second;
-        const auto  value_str = core::ConvertValue(value, DEFAULT_DELIMITER);
+        const auto value_str = core::ConvertValue(value, DEFAULT_DELIMITER);
         if (value_str.empty()) {
           continue;
         }
@@ -356,13 +356,13 @@ void KeyEditWidget::syncControls(const core::NValue& item) {
       for (auto it = hash->begin(); it != hash->end(); ++it) {
         auto element = (*it);
         common::Value* key = element.first;
-        const auto  key_str = core::ConvertValue(key, DEFAULT_DELIMITER);
+        const auto key_str = core::ConvertValue(key, DEFAULT_DELIMITER);
         if (key_str.empty()) {
           continue;
         }
 
         common::Value* value = element.second;
-        const auto  value_str = core::ConvertValue(value, DEFAULT_DELIMITER);
+        const auto value_str = core::ConvertValue(value, DEFAULT_DELIMITER);
         if (value_str.empty()) {
           continue;
         }

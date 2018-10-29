@@ -16,7 +16,9 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "offline_verify_user.h"
+#include "app/offline_verify_user.h"
+
+#include <string>
 
 namespace fastonosql {
 
