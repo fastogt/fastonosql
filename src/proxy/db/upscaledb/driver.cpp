@@ -97,10 +97,10 @@ common::Error Driver::DBkcountImpl(core::keys_limit_t* size) {
 }
 
 common::Error Driver::GetCurrentServerInfo(core::IServerInfo** info) {
-  core::FastoObjectCommandIPtr cmd = CreateCommandFast(DB_INFO_COMMAND, core::C_INNER);
+  core::FastoObjectCommandIPtr cmd = CreateCommandFast(GEN_CMD_STRING(DB_INFO_COMMAND), core::C_INNER);
   LOG_COMMAND(cmd);
   core::upscaledb::ServerInfo::Stats cm;
-  common::Error err = impl_->Info(std::string(), &cm);
+  common::Error err = impl_->Info(core::command_buffer_t(), &cm);
   if (err) {
     return err;
   }

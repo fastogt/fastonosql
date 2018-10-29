@@ -133,7 +133,7 @@ common::ArrayValue* HashTableModel::arrayValue() const {
   common::ArrayValue* ar = common::Value::CreateArrayValue();
   for (size_t i = 0; i < data_.size() - 1; ++i) {
     KeyValueTableItem* node = static_cast<KeyValueTableItem*>(data_[i]);
-    std::string key = common::ConvertToString(node->key());
+    common::Value::string_t key = common::ConvertToCharBytes(node->key());
     ar->AppendString(key);
   }
 
@@ -148,7 +148,7 @@ common::SetValue* HashTableModel::setValue() const {
   common::SetValue* ar = common::Value::CreateSetValue();
   for (size_t i = 0; i < data_.size() - 1; ++i) {
     KeyValueTableItem* node = static_cast<KeyValueTableItem*>(data_[i]);
-    std::string key = common::ConvertToString(node->key());
+    common::Value::string_t key = common::ConvertToCharBytes(node->key());
     ar->Insert(key);
   }
 
@@ -163,8 +163,8 @@ common::ZSetValue* HashTableModel::zsetValue() const {
   common::ZSetValue* ar = common::Value::CreateZSetValue();
   for (size_t i = 0; i < data_.size() - 1; ++i) {
     KeyValueTableItem* node = static_cast<KeyValueTableItem*>(data_[i]);
-    std::string key = common::ConvertToString(node->key());
-    std::string val = common::ConvertToString(node->value());
+    common::Value::string_t key = common::ConvertToCharBytes(node->key());
+    common::Value::string_t val = common::ConvertToCharBytes(node->value());
     ar->Insert(key, val);
   }
 
@@ -179,8 +179,8 @@ common::HashValue* HashTableModel::hashValue() const {
   common::HashValue* ar = common::Value::CreateHashValue();
   for (size_t i = 0; i < data_.size() - 1; ++i) {
     KeyValueTableItem* node = static_cast<KeyValueTableItem*>(data_[i]);
-    std::string key = common::ConvertToString(node->key());
-    std::string val = common::ConvertToString(node->value());
+    common::Value::string_t key = common::ConvertToCharBytes(node->key());
+    common::Value::string_t val = common::ConvertToCharBytes(node->value());
     ar->Insert(key, val);
   }
 

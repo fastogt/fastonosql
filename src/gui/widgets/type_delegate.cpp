@@ -110,19 +110,19 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
       combobox->setCurrentIndex(value ? 0 : 1);
     }
   } else if (t == common::Value::TYPE_STRING) {
-    std::string value;
+    common::Value::string_t value;
     if (val->GetAsString(&value)) {
       QLineEdit* lineedit = static_cast<QLineEdit*>(editor);
       QString qvalue;
-      common::ConvertFromString(value, &qvalue);
+      common::ConvertFromBytes(value, &qvalue);
       lineedit->setText(qvalue);
     }
   } else if (t == core::JsonValue::TYPE_JSON) {
-    std::string value;
+    common::Value::string_t value;
     if (val->GetAsString(&value)) {
       QLineEdit* lineedit = static_cast<QLineEdit*>(editor);
       QString qvalue;
-      common::ConvertFromString(value, &qvalue);
+      common::ConvertFromBytes(value, &qvalue);
       lineedit->setText(qvalue);
     }
   } else if (t == common::Value::TYPE_ARRAY) {
@@ -130,13 +130,13 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
     if (val->GetAsList(&arr)) {
       ListTypeWidget* listwidget = static_cast<ListTypeWidget*>(editor);
       for (auto it = arr->begin(); it != arr->end(); ++it) {
-        std::string val = core::ConvertValue(*it, DEFAULT_DELIMITER);
+        common::Value::string_t val = core::ConvertValue(*it, DEFAULT_DELIMITER);
         if (val.empty()) {
           continue;
         }
 
         QString qvalue;
-        common::ConvertFromString(val, &qvalue);
+        common::ConvertFromBytes(val, &qvalue);
         listwidget->insertRow(qvalue);
       }
     }
@@ -145,13 +145,13 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
     if (val->GetAsSet(&set)) {
       ListTypeWidget* listwidget = static_cast<ListTypeWidget*>(editor);
       for (auto it = set->begin(); it != set->end(); ++it) {
-        std::string val = core::ConvertValue(*it, DEFAULT_DELIMITER);
+        common::Value::string_t val = core::ConvertValue(*it, DEFAULT_DELIMITER);
         if (val.empty()) {
           continue;
         }
 
         QString qvalue;
-        common::ConvertFromString(val, &qvalue);
+        common::ConvertFromBytes(val, &qvalue);
         listwidget->insertRow(qvalue);
       }
     }
@@ -162,20 +162,20 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
       for (auto it = zset->begin(); it != zset->end(); ++it) {
         auto element = (*it);
         common::Value* key = element.first;
-        std::string key_str = core::ConvertValue(key, DEFAULT_DELIMITER);
+        common::Value::string_t key_str = core::ConvertValue(key, DEFAULT_DELIMITER);
         if (key_str.empty()) {
           continue;
         }
 
         common::Value* value = element.second;
-        std::string value_str = core::ConvertValue(value, DEFAULT_DELIMITER);
+        common::Value::string_t value_str = core::ConvertValue(value, DEFAULT_DELIMITER);
         if (value_str.empty()) {
           continue;
         }
 
         QString ftext;
         QString stext;
-        if (common::ConvertFromString(key_str, &ftext) && common::ConvertFromString(value_str, &stext)) {
+        if (common::ConvertFromBytes(key_str, &ftext) && common::ConvertFromBytes(value_str, &stext)) {
           hashwidget->insertRow(ftext, stext);
         }
       }
@@ -187,20 +187,20 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
       for (auto it = hash->begin(); it != hash->end(); ++it) {
         auto element = (*it);
         common::Value* key = element.first;
-        std::string key_str = core::ConvertValue(key, DEFAULT_DELIMITER);
+        common::Value::string_t key_str = core::ConvertValue(key, DEFAULT_DELIMITER);
         if (key_str.empty()) {
           continue;
         }
 
         common::Value* value = element.second;
-        std::string value_str = core::ConvertValue(value, DEFAULT_DELIMITER);
+        common::Value::string_t value_str = core::ConvertValue(value, DEFAULT_DELIMITER);
         if (value_str.empty()) {
           continue;
         }
 
         QString ftext;
         QString stext;
-        if (common::ConvertFromString(key_str, &ftext) && common::ConvertFromString(value_str, &stext)) {
+        if (common::ConvertFromBytes(key_str, &ftext) && common::ConvertFromBytes(value_str, &stext)) {
           hashwidget->insertRow(ftext, stext);
         }
       }
@@ -242,7 +242,7 @@ void TypeDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, cons
       return;
     }
 
-    common::StringValue* string = common::Value::CreateStringValue(common::ConvertToString(text));
+    common::StringValue* string = common::Value::CreateStringValue(common::ConvertToCharBytes(text));
     QVariant var = QVariant::fromValue(core::NValue(string));
     model->setData(index, var, Qt::EditRole);
   } else if (t == core::JsonValue::TYPE_JSON) {
@@ -252,7 +252,7 @@ void TypeDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, cons
       return;
     }
 
-    core::JsonValue* string = new core::JsonValue(common::ConvertToString(text));
+    core::JsonValue* string = new core::JsonValue(common::ConvertToCharBytes(text));
     QVariant var = QVariant::fromValue(core::NValue(string));
     model->setData(index, var, Qt::EditRole);
   } else if (t == common::Value::TYPE_ARRAY) {

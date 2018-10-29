@@ -47,20 +47,20 @@
 
 namespace {
 
-common::Value::Type ConvertFromStringRType(const std::string& type) {
+common::Value::Type ConvertFromStringRType(const fastonosql::core::command_buffer_t& type) {
   if (type.empty()) {
     return common::Value::TYPE_NULL;
   }
 
-  if (type == "string") {
+  if (type == GEN_CMD_STRING("string")) {
     return common::Value::TYPE_STRING;
-  } else if (type == "list") {
+  } else if (type == GEN_CMD_STRING("list")) {
     return common::Value::TYPE_ARRAY;
-  } else if (type == "set") {
+  } else if (type == GEN_CMD_STRING("set")) {
     return common::Value::TYPE_SET;
-  } else if (type == "hash") {
+  } else if (type == GEN_CMD_STRING("hash")) {
     return common::Value::TYPE_HASH;
-  } else if (type == "zset") {
+  } else if (type == GEN_CMD_STRING("zset")) {
     return common::Value::TYPE_ZSET;
   }
   return common::Value::TYPE_NULL;
@@ -140,14 +140,14 @@ common::Error Driver::DBkcountImpl(core::keys_limit_t* size) {
 }
 
 common::Error Driver::GetCurrentServerInfo(core::IServerInfo** info) {
-  core::FastoObjectCommandIPtr cmd = CreateCommandFast(DB_INFO_COMMAND, core::C_INNER);
+  core::FastoObjectCommandIPtr cmd = CreateCommandFast(GEN_CMD_STRING(DB_INFO_COMMAND), core::C_INNER);
   common::Error err = Execute(cmd.get());
   if (err) {
     return err;
   }
 
-  std::string content = common::ConvertToString(cmd.get());
-  core::IServerInfo* linfo = core::pika::MakePikaServerInfo(content);
+  core::command_buffer_t content = common::ConvertToString(cmd.get());
+  core::IServerInfo* linfo = core::pika::MakePikaServerInfo(common::ConvertToString(content));  // #FIXME
 
   if (!linfo) {
     return common::make_error("Invalid " DB_INFO_COMMAND " command output");
@@ -181,7 +181,7 @@ void Driver::HandleBackupEvent(events::BackupRequestEvent* ev) {
   NotifyProgress(sender, 0);
   events::BackupResponceEvent::value_type res(ev->value());
   NotifyProgress(sender, 25);
-  core::FastoObjectCommandIPtr cmd = CreateCommandFast(REDIS_BACKUP_COMMAND, core::C_INNER);
+  core::FastoObjectCommandIPtr cmd = CreateCommandFast(GEN_CMD_STRING(REDIS_BACKUP_COMMAND), core::C_INNER);
   common::Error err = Execute(cmd);
   if (err) {
     res.setErrorInfo(err);
@@ -249,7 +249,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
       std::vector<core::FastoObjectCommandIPtr> cmds;
       cmds.reserve(ar->GetSize() * 2);
       for (size_t i = 0; i < ar->GetSize(); ++i) {
-        std::string key;
+        core::command_buffer_t key;
         bool isok = ar->GetString(i, &key);
         if (isok) {
           core::key_t key_str(key);
@@ -277,8 +277,8 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         if (tchildrens.size()) {
           DCHECK_EQ(tchildrens.size(), 1);
           if (tchildrens.size() == 1) {
-            std::string typeRedis = tchildrens[0]->ToString();
-            common::Value::Type ctype = ConvertFromStringRType(typeRedis);
+            core::command_buffer_t type_redis = tchildrens[0]->ToString();
+            common::Value::Type ctype = ConvertFromStringRType(type_redis);
             core::NValue empty_val(core::CreateEmptyValueFromType(ctype));
             res.keys[i].SetValue(empty_val);
           }
@@ -314,7 +314,8 @@ void Driver::HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEven
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
   events::ServerPropertyInfoResponceEvent::value_type res(ev->value());
-  core::FastoObjectCommandIPtr cmd = CreateCommandFast(REDIS_GET_PROPERTY_SERVER_COMMAND, core::C_INNER);
+  core::FastoObjectCommandIPtr cmd =
+      CreateCommandFast(GEN_CMD_STRING(REDIS_GET_PROPERTY_SERVER_COMMAND), core::C_INNER);
   NotifyProgress(sender, 50);
   common::Error err = Execute(cmd);
   if (err) {
@@ -386,12 +387,12 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
       std::vector<core::FastoObjectCommandIPtr> cmds;
       cmds.reserve(arm->GetSize());
       for (size_t i = 0; i < arm->GetSize(); ++i) {
-        std::string channel;
+        core::command_buffer_t channel;
         bool isok = arm->GetString(i, &channel);
         if (isok) {
           core::command_buffer_writer_t wr2;
           wr2 << REDIS_PUBSUB_NUMSUB_COMMAND " " << channel;
-          core::NDbPSChannel c(channel, 0);
+          core::NDbPSChannel c(common::ConvertToString(channel), 0);  // #FIXME
           cmds.push_back(CreateCommandFast(wr2.str(), core::C_INNER));
           res.channels.push_back(c);
         }
@@ -422,9 +423,9 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
                     res.channels[i].SetNumberOfSubscribers(lsub);
                   }
                 } else if (t == common::Value::TYPE_STRING) {
-                  std::string lsub_str;
+                  core::command_buffer_t lsub_str;
                   long long lsub;
-                  if (fund_sub->GetAsString(&lsub_str) && common::ConvertFromString(lsub_str, &lsub)) {
+                  if (fund_sub->GetAsString(&lsub_str) && common::ConvertFromBytes(lsub_str, &lsub)) {
                     res.channels[i].SetNumberOfSubscribers(lsub);
                   }
                 }

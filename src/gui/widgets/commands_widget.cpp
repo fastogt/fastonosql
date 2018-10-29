@@ -49,7 +49,7 @@ void CommandsWidget::addCommand(core::FastoObjectCommandIPtr command) {
   log_text_edit_->setTextColor(command->GetCommandLoggingType() == core::C_INNER ? QColor(Qt::gray)
                                                                                  : QColor(Qt::black));
   QString mess;
-  common::ConvertFromString(command->GetInputCommand(), &mess);
+  common::ConvertFromBytes(command->GetInputCommand(), &mess);
   std::string stype = core::ConnectionTypeToString(command->GetConnectionType());
   QString qstype;
   common::ConvertFromString(stype, &qstype);

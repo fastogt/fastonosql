@@ -20,6 +20,8 @@
 
 #include "gui/widgets/fasto_editor.h"
 
+#include <common/types.h>
+
 class QLabel;
 class QComboBox;
 
@@ -49,13 +51,16 @@ extern const std::vector<const char*> g_output_views_text;
 class FastoViewer : public QWidget {
   Q_OBJECT
  public:
+  typedef common::char_buffer_t view_input_text_t;
+  typedef common::char_buffer_t view_output_text_t;
+
   explicit FastoViewer(QWidget* parent = Q_NULLPTR);
   virtual ~FastoViewer() override;
 
   OutputView viewMethod() const;
-  std::string text() const;
+  view_input_text_t text() const;
 
-  bool setText(const std::string& text);
+  bool setText(const view_input_text_t& text);
 
   void setViewText(const QString& text);
   void setError(const QString& error);
@@ -84,8 +89,8 @@ class FastoViewer : public QWidget {
  private:
   bool isError() const;
 
-  bool convertToView(const std::string& text, std::string* out) const;
-  bool convertFromView(std::string* out) const;
+  bool convertToView(const view_input_text_t& text, view_output_text_t* out) const;
+  bool convertFromView(view_output_text_t* out) const;
 
   void retranslateUi();
   void syncEditors();
@@ -100,7 +105,7 @@ class FastoViewer : public QWidget {
   QComboBox* views_combo_box_;
   QLabel* error_box_;
 
-  mutable std::string last_valid_text_;
+  mutable view_input_text_t last_valid_text_;
 };
 
 }  // namespace gui

@@ -77,13 +77,13 @@ QString toJson(FastoCommonItem* item) {
 
   if (!item->childrenCount()) {
     core::value_t val = item->coreValue();
-    std::string jstring;
+    convert_out_t jstring;
     if (!string_to_json(val.GetData(), &jstring)) {
       return QString();
     }
 
     QString result;
-    common::ConvertFromString(jstring, &result);
+    common::ConvertFromBytes(jstring, &result);
     return result;
   }
 
@@ -104,7 +104,7 @@ QString toRaw(FastoCommonItem* item) {
   if (!item->childrenCount()) {
     QString result;
     core::value_t val = item->coreValue();
-    common::ConvertFromString(val.GetData(), &result);
+    common::ConvertFromBytes(val.GetData(), &result);
     return result;
   }
 
@@ -125,7 +125,7 @@ QString toXml(FastoCommonItem* item) {
   if (!item->childrenCount()) {
     QString result;
     core::value_t val = item->coreValue();
-    common::ConvertFromString(val.GetData(), &result);
+    common::ConvertFromBytes(val.GetData(), &result);
     return result;
   }
 
@@ -145,13 +145,13 @@ QString toHex(FastoCommonItem* item) {
 
   if (!item->childrenCount()) {
     core::value_t val = item->coreValue();
-    std::string out;
+    convert_out_t out;
     if (!string_to_hex(val.GetData(), &out)) {
       return QString();
     }
 
     QString qout;
-    common::ConvertFromString(out, &qout);
+    common::ConvertFromBytes(out, &qout);
     return qout;
   }
 
@@ -171,13 +171,13 @@ QString fromHex(FastoCommonItem* item) {
 
   if (!item->childrenCount()) {
     core::value_t val = item->coreValue();
-    std::string out;
+    convert_out_t out;
     if (!string_from_hex(val.GetData(), &out)) {
       return QString();
     }
 
     QString qout;
-    common::ConvertFromString(out, &qout);
+    common::ConvertFromBytes(out, &qout);
     return qout;
   }
 
@@ -197,13 +197,13 @@ QString toUnicode(FastoCommonItem* item) {
 
   if (!item->childrenCount()) {
     core::value_t val = item->coreValue();
-    std::string out;
+    convert_out_t out;
     if (!string_to_unicode(val.GetData(), &out)) {
       return QString();
     }
 
     QString qout;
-    common::ConvertFromString(out, &qout);
+    common::ConvertFromBytes(out, &qout);
     return qout;
   }
 
@@ -223,13 +223,13 @@ QString fromUnicode(FastoCommonItem* item) {
 
   if (!item->childrenCount()) {
     core::value_t val = item->coreValue();
-    std::string out;
+    convert_out_t out;
     if (!string_from_unicode(val.GetData(), &out)) {
       return QString();
     }
 
     QString qout;
-    common::ConvertFromString(out, &qout);
+    common::ConvertFromBytes(out, &qout);
     return qout;
   }
 
@@ -249,13 +249,13 @@ QString fromSnappy(FastoCommonItem* item) {
 
   if (!item->childrenCount()) {
     core::value_t val = item->coreValue();
-    std::string out;
+    convert_out_t out;
     if (!string_from_snappy(val.GetData(), &out)) {
       return QString();
     }
 
     QString qout;
-    common::ConvertFromString(out, &qout);
+    common::ConvertFromBytes(out, &qout);
     return qout;
   }
 
@@ -275,13 +275,13 @@ QString fromGzip(FastoCommonItem* item) {
 
   if (!item->childrenCount()) {
     core::value_t val = item->coreValue();
-    std::string out;
+    convert_out_t out;
     if (!string_from_zlib(val.GetData(), &out)) {
       return QString();
     }
 
     QString qout;
-    common::ConvertFromString(out, &qout);
+    common::ConvertFromBytes(out, &qout);
     return qout;
   }
 
@@ -301,13 +301,13 @@ QString fromLZ4(FastoCommonItem* item) {
 
   if (!item->childrenCount()) {
     core::value_t val = item->coreValue();
-    std::string out;
+    convert_out_t out;
     if (!string_from_lz4(val.GetData(), &out)) {
       return QString();
     }
 
     QString qout;
-    common::ConvertFromString(out, &qout);
+    common::ConvertFromBytes(out, &qout);
     return qout;
   }
 
@@ -327,13 +327,13 @@ QString fromBZip2(FastoCommonItem* item) {
 
   if (!item->childrenCount()) {
     core::value_t val = item->coreValue();
-    std::string out;
+    convert_out_t out;
     if (!string_from_bzip2(val.GetData(), &out)) {
       return QString();
     }
 
     QString qout;
-    common::ConvertFromString(out, &qout);
+    common::ConvertFromBytes(out, &qout);
     return qout;
   }
 
@@ -353,13 +353,13 @@ QString fromMsgPack(FastoCommonItem* item) {
 
   if (!item->childrenCount()) {
     core::value_t val = item->coreValue();
-    std::string out;
+    convert_out_t out;
     if (!string_from_msgpack(val.GetData(), &out)) {
       return QString();
     }
 
     QString qout;
-    common::ConvertFromString(out, &qout);
+    common::ConvertFromBytes(out, &qout);
     return qout;
   }
 

@@ -77,7 +77,7 @@ StreamEntryDialog::StreamEntryDialog(const QString& sid, QWidget* parent)
 StreamEntryDialog::~StreamEntryDialog() {}
 
 bool StreamEntryDialog::getStream(core::StreamValue::Stream* out) const {
-  core::StreamValue::stream_id sid = common::ConvertToString(id_edit_->text());
+  core::StreamValue::stream_id sid = common::ConvertToCharBytes(id_edit_->text());
   return model_->getStream(sid, out);
 }
 

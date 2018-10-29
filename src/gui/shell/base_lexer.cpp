@@ -65,7 +65,7 @@ void BaseCommandsQsciApi::updateAutoCompletionList(const QStringList& context, Q
       }
 
       QString jval;
-      common::ConvertFromString(cmd.name, &jval);
+      common::ConvertFromBytes(cmd.name, &jval);
       if (jval.startsWith(val, Qt::CaseInsensitive)) {
         list.append(jval + "?1");
       }
@@ -88,7 +88,7 @@ QStringList BaseCommandsQsciApi::callTips(const QStringList& context,
       core::CommandInfo cmd = commands[i];
 
       QString jval;
-      common::ConvertFromString(cmd.name, &jval);
+      common::ConvertFromBytes(cmd.name, &jval);
       if (QString::compare(jval, val, Qt::CaseInsensitive) == 0) {
         return QStringList() << makeCallTip(cmd);
       }
@@ -187,7 +187,7 @@ void BaseCommandsQsciLexer::paintCommands(const QString& source, int start) {
   for (size_t i = 0; i < commands_.size(); ++i) {
     core::CommandInfo cmd = commands_[i];
     QString word;
-    if (common::ConvertFromString(cmd.name, &word)) {
+    if (common::ConvertFromBytes(cmd.name, &word)) {
       int index = 0;
       int begin = 0;
 

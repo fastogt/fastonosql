@@ -58,7 +58,7 @@ core::FastoObjectCommand* FindCommand(core::FastoObject* obj) {
 }
 
 FastoCommonItem* CreateItem(common::qt::gui::TreeItem* parent,
-                            core::readable_string_t key,
+                            core::command_buffer_t key,
                             bool read_only,
                             core::FastoObject* item) {
   core::NValue value(item->GetValue());
@@ -177,7 +177,7 @@ void OutputWidget::rootCompleate(const proxy::events_info::CommandRootCompleated
     if (command) {
       core::translator_t tr = server_->GetTranslator();
       core::command_buffer_t input_cmd = command->GetInputCommand();
-      core::readable_string_t key;
+      core::command_buffer_t key;
       if (tr->IsLoadKeyCommand(input_cmd, &key)) {
         setEditKeyView();
       } else {
@@ -275,7 +275,7 @@ void OutputWidget::addCommand(core::FastoObjectCommand* command, core::FastoObje
   FastoCommonItem* common_child = nullptr;
   core::translator_t tr = server_->GetTranslator();
   core::command_buffer_t input_cmd = command->GetInputCommand();
-  core::readable_string_t key;
+  core::command_buffer_t key;
   if (tr->IsLoadKeyCommand(input_cmd, &key)) {
     common_child = CreateItem(par, key, false, child);
   } else {

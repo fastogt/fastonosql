@@ -26,6 +26,7 @@
 #include <Qsci/qscilexerjson.h>
 #include <Qsci/qscilexerxml.h>
 
+#include <common/convert2string.h>
 #include <common/qt/convert2string.h>
 #include <common/qt/utils_qt.h>  // for item
 
@@ -38,7 +39,7 @@ namespace gui {
 
 namespace {
 
-bool convertFromViewImpl(OutputView view_method, const std::string& val, std::string* out) {
+bool convertFromViewImplRoutine(OutputView view_method, const convert_in_t& val, convert_out_t* out) {
   if (!out || val.empty()) {
     return false;
   }
@@ -46,7 +47,7 @@ bool convertFromViewImpl(OutputView view_method, const std::string& val, std::st
   if (view_method == JSON_VIEW) {
     return string_from_json(val, out);
   } else if (view_method == RAW_VIEW) {
-    *out = val;
+    *out = common::ConvertToCharBytes(val);
     return true;
   } else if (view_method == TO_HEX_VIEW) {
     return string_from_hex(val, out);
@@ -67,7 +68,7 @@ bool convertFromViewImpl(OutputView view_method, const std::string& val, std::st
   } else if (view_method == SNAPPY_VIEW) {
     return string_to_snappy(val, out);
   } else if (view_method == XML_VIEW) {
-    *out = val;
+    *out = common::ConvertToCharBytes(val);
     return true;
   }
 
@@ -75,11 +76,11 @@ bool convertFromViewImpl(OutputView view_method, const std::string& val, std::st
   return false;
 }
 
-bool convertFromViewImpl(OutputView view_method, const QString& val, std::string* out) {
-  return convertFromViewImpl(view_method, common::ConvertToString(val), out);
+bool convertFromViewImpl(OutputView view_method, const QString& val, convert_out_t* out) {
+  return convertFromViewImplRoutine(view_method, common::ConvertToCharBytes(val), out);
 }
 
-bool convertToViewImpl(OutputView view_method, const std::string& text, std::string* out) {
+bool convertToViewImpl(OutputView view_method, const convert_in_t& text, convert_out_t* out) {
   if (!out || text.empty()) {
     return false;
   }
@@ -87,7 +88,7 @@ bool convertToViewImpl(OutputView view_method, const std::string& text, std::str
   if (view_method == JSON_VIEW) {  // raw
     return string_to_json(text, out);
   } else if (view_method == RAW_VIEW) {  // raw
-    *out = text;
+    *out = common::ConvertToCharBytes(text);
     return true;
   } else if (view_method == TO_HEX_VIEW) {
     return string_to_hex(text, out);
@@ -108,7 +109,7 @@ bool convertToViewImpl(OutputView view_method, const std::string& text, std::str
   } else if (view_method == SNAPPY_VIEW) {
     return string_from_snappy(text, out);
   } else if (view_method == XML_VIEW) {  // raw
-    *out = text;
+    *out = common::ConvertToCharBytes(text);
     return true;
   }
 
@@ -188,7 +189,7 @@ void FastoViewer::setReadOnly(bool ro) {
 }
 
 void FastoViewer::viewChange(int view_method) {
-  std::string last_valid = text();
+  view_input_text_t last_valid = text();
   view_method_ = static_cast<OutputView>(view_method);
   syncEditors();
   setText(last_valid);
@@ -197,7 +198,7 @@ void FastoViewer::viewChange(int view_method) {
 
 void FastoViewer::textChange() {
   if (isError()) {
-    std::string str_text;
+    view_output_text_t str_text;
     if (convertFromView(&str_text)) {
       clearError();
     }
@@ -215,9 +216,9 @@ OutputView FastoViewer::viewMethod() const {
   return view_method_;
 }
 
-std::string FastoViewer::text() const {
+FastoViewer::view_input_text_t FastoViewer::text() const {
   if (!isError()) {
-    std::string str_text;
+    view_output_text_t str_text;
     if (convertFromView(&str_text)) {
       last_valid_text_ = str_text;
     }
@@ -226,8 +227,8 @@ std::string FastoViewer::text() const {
   return last_valid_text_;
 }
 
-bool FastoViewer::setText(const std::string& text) {
-  std::string result_str;
+bool FastoViewer::setText(const view_input_text_t& text) {
+  view_output_text_t result_str;
   if (!convertToView(text, &result_str)) {
     QString method_text = g_output_views_text[view_method_];
     setError(translations::trCannotConvertPattern1ArgsS.arg(method_text));
@@ -235,7 +236,7 @@ bool FastoViewer::setText(const std::string& text) {
   }
 
   QString result;
-  common::ConvertFromString(result_str, &result);
+  common::ConvertFromBytes(result_str, &result);
   setViewText(result);
   return true;
 }
@@ -275,11 +276,11 @@ bool FastoViewer::isError() const {
   return error_box_->isVisible();
 }
 
-bool FastoViewer::convertToView(const std::string& text, std::string* out) const {
+bool FastoViewer::convertToView(const view_input_text_t& text, view_output_text_t* out) const {
   return convertToViewImpl(view_method_, text, out);
 }
 
-bool FastoViewer::convertFromView(std::string* out) const {
+bool FastoViewer::convertFromView(view_output_text_t* out) const {
   QString text = text_json_editor_->text();
   return convertFromViewImpl(view_method_, text, out);
 }

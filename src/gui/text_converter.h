@@ -23,29 +23,32 @@
 namespace fastonosql {
 namespace gui {
 
-bool string_from_json(const std::string& value, std::string* out);
-bool string_to_json(const core::readable_string_t& data, std::string* out);
+typedef core::command_buffer_t convert_in_t;
+typedef core::command_buffer_t convert_out_t;
 
-bool string_from_hex(const std::string& value, std::string* out);
-bool string_to_hex(const core::readable_string_t& data, std::string* out);
+bool string_from_json(const convert_in_t& value, convert_out_t* out);
+bool string_to_json(const convert_in_t& data, convert_out_t* out);
 
-bool string_from_unicode(const std::string& value, std::string* out);
-bool string_to_unicode(const core::readable_string_t& data, std::string* out);
+bool string_from_hex(const convert_in_t& value, convert_out_t* out);
+bool string_to_hex(const convert_in_t& data, convert_out_t* out);
 
-bool string_from_snappy(const std::string& value, std::string* out);
-bool string_to_snappy(const core::readable_string_t& data, std::string* out);
+bool string_from_unicode(const convert_in_t& value, convert_out_t* out);
+bool string_to_unicode(const convert_in_t& data, convert_out_t* out);
 
-bool string_from_zlib(const std::string& value, std::string* out);
-bool string_to_zlib(const core::readable_string_t& data, std::string* out);
+bool string_from_snappy(const convert_in_t& value, convert_out_t* out);
+bool string_to_snappy(const convert_in_t& data, convert_out_t* out);
 
-bool string_from_lz4(const std::string& value, std::string* out);
-bool string_to_lz4(const core::readable_string_t& data, std::string* out);
+bool string_from_zlib(const convert_in_t& value, convert_out_t* out);
+bool string_to_zlib(const convert_in_t& data, convert_out_t* out);
 
-bool string_from_bzip2(const std::string& value, std::string* out);
-bool string_to_bzip2(const core::readable_string_t& data, std::string* out);
+bool string_from_lz4(const convert_in_t& value, convert_out_t* out);
+bool string_to_lz4(const convert_in_t& data, convert_out_t* out);
 
-bool string_from_msgpack(const std::string& value, std::string* out);
-bool string_to_msgpack(const core::readable_string_t& data, std::string* out);
+bool string_from_bzip2(const convert_in_t& value, convert_out_t* out);
+bool string_to_bzip2(const convert_in_t& data, convert_out_t* out);
+
+bool string_from_msgpack(const convert_in_t& value, convert_out_t* out);
+bool string_to_msgpack(const convert_in_t& data, convert_out_t* out);
 
 }  // namespace gui
 }  // namespace fastonosql

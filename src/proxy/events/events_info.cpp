@@ -98,7 +98,7 @@ LoadDatabasesInfoResponce::LoadDatabasesInfoResponce(const base_class& request) 
 
 LoadDatabaseContentRequest::LoadDatabaseContentRequest(initiator_type sender,
                                                        core::IDataBaseInfoSPtr inf,
-                                                       const std::string& pattern,
+                                                       const core::command_buffer_t& pattern,
                                                        core::keys_limit_t keys_count,
                                                        core::cursor_t cursor,
                                                        error_type er)

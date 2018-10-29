@@ -133,8 +133,8 @@ bool StreamTableModel::getStream(core::StreamValue::stream_id sid, core::StreamV
   std::vector<core::StreamValue::Entry> entries;
   for (size_t i = 0; i < data_.size() - 1; ++i) {
     KeyValueTableItem* node = static_cast<KeyValueTableItem*>(data_[i]);
-    const std::string key = common::ConvertToString(node->key());
-    const std::string val = common::ConvertToString(node->value());
+    const common::Value::string_t key = common::ConvertToCharBytes(node->key());
+    const common::Value::string_t val = common::ConvertToCharBytes(node->value());
     entries.push_back(core::StreamValue::Entry{key, val});
   }
 

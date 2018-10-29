@@ -108,7 +108,7 @@ class ExplorerDatabaseItem : public IExplorerTreeItem {
   proxy::IServerSPtr server() const;
   proxy::IDatabaseSPtr db() const;
 
-  void loadContent(const std::string& pattern, uint32_t keys_count);
+  void loadContent(const core::command_buffer_t& pattern, core::keys_limit_t keys_count);
   void setDefault();
   void removeDb();
 

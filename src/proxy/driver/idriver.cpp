@@ -334,7 +334,7 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
   events::ExecuteResponceEvent::value_type res(ev->value());
 
   const core::command_buffer_t input_line = res.text;
-  std::vector<core::command_buffer_t> commands;
+  std::vector<core::readable_string_t> commands;
   common::Error err = ParseCommands(input_line, &commands);
   if (err) {
     res.setErrorInfo(err);
@@ -364,7 +364,7 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
       cur_progress += step;
       NotifyProgress(sender, static_cast<int>(cur_progress));
 
-      core::command_buffer_t command = commands[i];
+      core::command_buffer_t command = common::ConvertToCharBytes(commands[i]);
       core::FastoObjectCommandIPtr cmd =
           silence ? CreateCommandFast(command, log_type) : CreateCommand(obj.get(), command, log_type);  //
       common::Error err = Execute(cmd);
@@ -425,7 +425,7 @@ void IDriver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestE
       }
 
       for (size_t i = 0; i < ar->GetSize(); ++i) {
-        std::string key_str;
+        core::command_buffer_t key_str;
         if (ar->GetString(i, &key_str)) {
           core::key_t key(key_str);
           core::NKey k(key);
@@ -499,7 +499,7 @@ void IDriver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent
   }
 
   auto tran = GetTranslator();
-  std::string get_dbs;
+  core::command_buffer_t get_dbs;
   err = tran->GetDatabasesCommand(&get_dbs);
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(get_dbs, core::C_INNER);
   if (err) {
@@ -527,9 +527,9 @@ void IDriver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent
   core::IDataBaseInfoSPtr curdb(info);
   if (!ar->IsEmpty()) {
     for (size_t i = 0; i < ar->GetSize(); ++i) {
-      std::string name;
+      core::command_buffer_t name;
       if (ar->GetString(i, &name)) {
-        core::IDataBaseInfoSPtr dbInf(CreateDatabaseInfo(name, false, 0));
+        core::IDataBaseInfoSPtr dbInf(CreateDatabaseInfo(common::ConvertToString(name), false, 0));  // #FIXME
         if (dbInf->GetName() == curdb->GetName()) {
           res.databases.push_back(curdb);
         } else {
@@ -677,7 +677,7 @@ common::Error IDriver::GetServerDiscoveryInfo(core::IDataBaseInfo** dbinfo,
   {                               // stabilization, DB_HELP_COMMAND available for all databases
     bool founded = false;
     for (size_t i = 0; i < lcommands.size(); ++i) {
-      if (lcommands[i]->IsEqualName(DB_HELP_COMMAND)) {
+      if (lcommands[i]->IsEqualName(GEN_CMD_STRING(DB_HELP_COMMAND))) {
         founded = true;
         break;
       }
@@ -685,7 +685,7 @@ common::Error IDriver::GetServerDiscoveryInfo(core::IDataBaseInfo** dbinfo,
     if (!founded) {
       const core::CommandHolder* cmd = nullptr;
       auto tran = GetTranslator();
-      common::Error err = tran->FindCommand(DB_HELP_COMMAND, &cmd);
+      common::Error err = tran->FindCommand(GEN_CMD_STRING(DB_HELP_COMMAND), &cmd);
       CHECK(!err);
       lcommands.push_back(cmd);
     }

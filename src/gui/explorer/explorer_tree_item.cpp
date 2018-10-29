@@ -171,7 +171,7 @@ proxy::IDatabaseSPtr ExplorerDatabaseItem::db() const {
   return db_;
 }
 
-void ExplorerDatabaseItem::loadContent(const std::string& pattern, uint32_t keys_count) {
+void ExplorerDatabaseItem::loadContent(const core::command_buffer_t& pattern, core::keys_limit_t keys_count) {
   proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
   proxy::events_info::LoadDatabaseContentRequest req(this, dbs->GetInfo(), pattern, keys_count);

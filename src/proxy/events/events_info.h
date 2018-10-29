@@ -178,13 +178,13 @@ struct LoadDatabaseContentRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
   LoadDatabaseContentRequest(initiator_type sender,
                              core::IDataBaseInfoSPtr inf,
-                             const std::string& pattern,
+                             const core::command_buffer_t& pattern,
                              core::keys_limit_t keys_count,
                              core::cursor_t cursor = 0,
                              error_type er = error_type());
 
   core::IDataBaseInfoSPtr inf;
-  const std::string pattern;
+  const core::command_buffer_t pattern;
   const core::keys_limit_t keys_count;  // requested
   const core::cursor_t cursor_in;
 };

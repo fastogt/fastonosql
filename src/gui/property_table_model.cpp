@@ -64,7 +64,7 @@ bool PropertyTableModel::setData(const QModelIndex& index, const QVariant& value
       QString new_value = value.toString();
       if (new_value != node->value()) {
         core::property_t pr = node->property();
-        pr.second = common::ConvertToString(new_value);
+        pr.second = common::ConvertToCharBytes(new_value);
         emit propertyChanged(pr);
       }
     }

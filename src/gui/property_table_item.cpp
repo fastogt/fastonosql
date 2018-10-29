@@ -27,13 +27,13 @@ PropertyTableItem::PropertyTableItem(const core::property_t& prop) : prop_(prop)
 
 QString PropertyTableItem::key() const {
   QString qkey;
-  common::ConvertFromString(prop_.first, &qkey);
+  common::ConvertFromBytes(prop_.first, &qkey);
   return qkey;
 }
 
 QString PropertyTableItem::value() const {
   QString qval;
-  common::ConvertFromString(prop_.second, &qval);
+  common::ConvertFromBytes(prop_.second, &qval);
   return qval;
 }
 

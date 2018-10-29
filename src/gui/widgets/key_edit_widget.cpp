@@ -160,7 +160,7 @@ common::Value* KeyEditWidget::createItem() const {
   } else if (type == core::StreamValue::TYPE_STREAM) {
     return stream_table_edit_->streamValue();
   } else if (type == core::JsonValue::TYPE_JSON || type == common::Value::TYPE_STRING) {
-    const std::string json_or_text_str = json_value_edit_->text();
+    const auto json_or_text_str = json_value_edit_->text();
     if (type == common::Value::TYPE_STRING) {
       if (json_or_text_str.empty()) {
         return nullptr;
@@ -300,13 +300,13 @@ void KeyEditWidget::syncControls(const core::NValue& item) {
     common::ArrayValue* arr = nullptr;
     if (item->GetAsList(&arr)) {
       for (auto it = arr->begin(); it != arr->end(); ++it) {
-        std::string val = core::ConvertValue(*it, DEFAULT_DELIMITER);
+        const auto val = core::ConvertValue(*it, DEFAULT_DELIMITER);
         if (val.empty()) {
           continue;
         }
 
         QString qval;
-        if (common::ConvertFromString(val, &qval)) {
+        if (common::ConvertFromBytes(val, &qval)) {
           value_list_edit_->insertRow(qval);
         }
       }
@@ -315,13 +315,13 @@ void KeyEditWidget::syncControls(const core::NValue& item) {
     common::SetValue* set = nullptr;
     if (item->GetAsSet(&set)) {
       for (auto it = set->begin(); it != set->end(); ++it) {
-        std::string val = core::ConvertValue(*it, DEFAULT_DELIMITER);
+        const auto  val = core::ConvertValue(*it, DEFAULT_DELIMITER);
         if (val.empty()) {
           continue;
         }
 
         QString qval;
-        if (common::ConvertFromString(val, &qval)) {
+        if (common::ConvertFromBytes(val, &qval)) {
           value_list_edit_->insertRow(qval);
         }
       }
@@ -332,20 +332,20 @@ void KeyEditWidget::syncControls(const core::NValue& item) {
       for (auto it = zset->begin(); it != zset->end(); ++it) {
         auto element = (*it);
         common::Value* key = element.first;
-        std::string key_str = core::ConvertValue(key, DEFAULT_DELIMITER);
+        const auto  key_str = core::ConvertValue(key, DEFAULT_DELIMITER);
         if (key_str.empty()) {
           continue;
         }
 
         common::Value* value = element.second;
-        std::string value_str = core::ConvertValue(value, DEFAULT_DELIMITER);
+        const auto  value_str = core::ConvertValue(value, DEFAULT_DELIMITER);
         if (value_str.empty()) {
           continue;
         }
 
         QString ftext;
         QString stext;
-        if (common::ConvertFromString(key_str, &ftext) && common::ConvertFromString(value_str, &stext)) {
+        if (common::ConvertFromBytes(key_str, &ftext) && common::ConvertFromBytes(value_str, &stext)) {
           value_table_edit_->insertRow(ftext, stext);
         }
       }
@@ -356,20 +356,20 @@ void KeyEditWidget::syncControls(const core::NValue& item) {
       for (auto it = hash->begin(); it != hash->end(); ++it) {
         auto element = (*it);
         common::Value* key = element.first;
-        std::string key_str = core::ConvertValue(key, DEFAULT_DELIMITER);
+        const auto  key_str = core::ConvertValue(key, DEFAULT_DELIMITER);
         if (key_str.empty()) {
           continue;
         }
 
         common::Value* value = element.second;
-        std::string value_str = core::ConvertValue(value, DEFAULT_DELIMITER);
+        const auto  value_str = core::ConvertValue(value, DEFAULT_DELIMITER);
         if (value_str.empty()) {
           continue;
         }
 
         QString ftext;
         QString stext;
-        if (common::ConvertFromString(key_str, &ftext) && common::ConvertFromString(value_str, &stext)) {
+        if (common::ConvertFromBytes(key_str, &ftext) && common::ConvertFromBytes(value_str, &stext)) {
           value_table_edit_->insertRow(ftext, stext);
         }
       }
@@ -382,7 +382,7 @@ void KeyEditWidget::syncControls(const core::NValue& item) {
       stream_table_edit_->insertStream(ent);
     }
   } else if (type == core::JsonValue::TYPE_JSON || type == common::Value::TYPE_STRING) {
-    std::string text;
+    common::Value::string_t text;
     if (item->GetAsString(&text)) {
       if (type == core::JsonValue::TYPE_JSON) {
         json_value_edit_->setView(JSON_VIEW);
@@ -399,10 +399,10 @@ void KeyEditWidget::syncControls(const core::NValue& item) {
       bool_value_edit_->setCurrentIndex(val ? 0 : 1);
     }
   } else {
-    std::string text;
+    common::Value::string_t text;
     if (item->GetAsString(&text)) {
       QString qval;
-      if (common::ConvertFromString(text, &qval)) {
+      if (common::ConvertFromBytes(text, &qval)) {
         value_edit_->setText(qval);
       }
     }
