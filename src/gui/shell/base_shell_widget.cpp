@@ -360,7 +360,7 @@ void BaseShellWidget::retranslateUi() {
 
 common::Error BaseShellWidget::validate(const QString& text) {
   core::translator_t tran = server_->GetTranslator();
-  std::vector<core::readable_string_t> cmds;
+  std::vector<core::command_buffer_t> cmds;
   core::command_buffer_t text_cmd = common::ConvertToCharBytes(text);
   common::Error err = proxy::ParseCommands(text_cmd, &cmds);
   if (err) {

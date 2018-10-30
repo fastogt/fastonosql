@@ -25,7 +25,7 @@ FirstChildUpdateRootLocker::FirstChildUpdateRootLocker(IDriver* parent,
                                                        QObject* receiver,
                                                        const core::command_buffer_t& text,
                                                        bool silence,
-                                                       const std::vector<core::readable_string_t>& commands)
+                                                       const std::vector<core::command_buffer_t>& commands)
     : RootLocker(parent, receiver, text, silence), commands_(commands), watched_cmds_() {}
 
 void FirstChildUpdateRootLocker::ChildrenAdded(core::FastoObjectIPtr child) {

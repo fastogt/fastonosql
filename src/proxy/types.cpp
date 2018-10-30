@@ -29,7 +29,17 @@ const std::vector<const char*> g_display_strategy_types = {"FULL_KEY", "KEY_NAME
 
 const std::vector<const char*> g_supported_views_text = {"Tree", "Table", "Text"};
 
-common::Error ParseCommands(const core::command_buffer_t& cmd, std::vector<core::readable_string_t>* cmds) {
+core::command_buffer_t StableCommand(core::command_buffer_t command) {
+  if (!command.empty()) {
+    if (command[command.size() - 1] == CARRIGE_RETURN_CHAR) {
+      command.pop_back();
+    }
+  }
+
+  return command;
+}
+
+common::Error ParseCommands(const core::command_buffer_t& cmd, std::vector<core::command_buffer_t>* cmds) {
   if (cmd.empty()) {
     DNOTREACHED();
     return common::make_error("Empty command line.");
@@ -42,9 +52,9 @@ common::Error ParseCommands(const core::command_buffer_t& cmd, std::vector<core:
     return common::make_error("Invaid command line.");
   }
 
-  std::vector<core::readable_string_t> stable_commands;
+  std::vector<core::command_buffer_t> stable_commands;
   for (core::command_buffer_t input : commands) {
-    const auto stable_input = core::StableCommand(input);
+    const auto stable_input = StableCommand(input);
     if (stable_input.empty()) {
       continue;
     }

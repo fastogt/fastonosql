@@ -334,7 +334,7 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
   events::ExecuteResponceEvent::value_type res(ev->value());
 
   const core::command_buffer_t input_line = res.text;
-  std::vector<core::readable_string_t> commands;
+  std::vector<core::command_buffer_t> commands;
   common::Error err = ParseCommands(input_line, &commands);
   if (err) {
     res.setErrorInfo(err);
@@ -364,7 +364,7 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
       cur_progress += step;
       NotifyProgress(sender, static_cast<int>(cur_progress));
 
-      core::command_buffer_t command = common::ConvertToCharBytes(commands[i]);
+      core::command_buffer_t command = commands[i];
       core::FastoObjectCommandIPtr cmd =
           silence ? CreateCommandFast(command, log_type) : CreateCommand(obj.get(), command, log_type);  //
       common::Error err = Execute(cmd);

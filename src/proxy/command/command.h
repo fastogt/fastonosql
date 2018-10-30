@@ -20,6 +20,8 @@
 
 #include <fastonosql/core/global.h>  // for FastoObjectCommandIPtr, FastoObject (ptr ...
 
+#include "proxy/types.h"
+
 namespace fastonosql {
 namespace proxy {
 
@@ -32,13 +34,13 @@ core::FastoObjectCommandIPtr CreateCommand(core::FastoObject* parent,
     return nullptr;
   }
 
-  auto stable_input = core::StableCommand(input);
+  auto stable_input = StableCommand(input);
   if (stable_input.empty()) {
     DNOTREACHED();
     return nullptr;
   }
 
-  common::StringValue* cmd = common::Value::CreateStringValueFromBasicString(stable_input);
+  common::StringValue* cmd = common::Value::CreateStringValue(stable_input);
   core::FastoObjectCommandIPtr fs = new Command(parent, cmd, ct, parent->GetDelimiter());
   parent->AddChildren(fs);
   return fs;
@@ -46,13 +48,13 @@ core::FastoObjectCommandIPtr CreateCommand(core::FastoObject* parent,
 
 template <typename Command>
 core::FastoObjectCommandIPtr CreateCommandFast(const core::command_buffer_t& input, core::CmdLoggingType ct) {
-  auto stable_input = core::StableCommand(input);
+  auto stable_input = StableCommand(input);
   if (stable_input.empty()) {
     DNOTREACHED();
     return nullptr;
   }
 
-  common::StringValue* cmd = common::Value::CreateStringValueFromBasicString(stable_input);
+  common::StringValue* cmd = common::Value::CreateStringValue(stable_input);
   return new Command(nullptr, cmd, ct, std::string());
 }
 

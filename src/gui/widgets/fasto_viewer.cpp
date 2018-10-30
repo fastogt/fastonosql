@@ -47,7 +47,7 @@ bool convertFromViewImplRoutine(OutputView view_method, const convert_in_t& val,
   if (view_method == JSON_VIEW) {
     return string_from_json(val, out);
   } else if (view_method == RAW_VIEW) {
-    *out = common::ConvertToCharBytes(val);
+    *out = val;
     return true;
   } else if (view_method == TO_HEX_VIEW) {
     return string_from_hex(val, out);
@@ -68,7 +68,7 @@ bool convertFromViewImplRoutine(OutputView view_method, const convert_in_t& val,
   } else if (view_method == SNAPPY_VIEW) {
     return string_to_snappy(val, out);
   } else if (view_method == XML_VIEW) {
-    *out = common::ConvertToCharBytes(val);
+    *out = val;
     return true;
   }
 
@@ -88,7 +88,7 @@ bool convertToViewImpl(OutputView view_method, const convert_in_t& text, convert
   if (view_method == JSON_VIEW) {  // raw
     return string_to_json(text, out);
   } else if (view_method == RAW_VIEW) {  // raw
-    *out = common::ConvertToCharBytes(text);
+    *out = text;
     return true;
   } else if (view_method == TO_HEX_VIEW) {
     return string_to_hex(text, out);
@@ -109,7 +109,7 @@ bool convertToViewImpl(OutputView view_method, const convert_in_t& text, convert
   } else if (view_method == SNAPPY_VIEW) {
     return string_from_snappy(text, out);
   } else if (view_method == XML_VIEW) {  // raw
-    *out = common::ConvertToCharBytes(text);
+    *out = text;
     return true;
   }
 
