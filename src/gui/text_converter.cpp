@@ -45,8 +45,8 @@ bool string_from_json(const convert_in_t& value, convert_out_t* out) {
 
   size_t len = 0;
   const char* jstring = json_object_to_json_string_length(obj, JSON_C_TO_STRING_PLAIN, &len);
-  json_object_put(obj);
   *out = GEN_CMD_STRING_SIZE(jstring, len);
+  json_object_put(obj);
   return true;
 }
 
@@ -63,8 +63,8 @@ bool string_to_json(const convert_in_t& data, convert_out_t* out) {
 
   size_t len = 0;
   const char* jstring = json_object_to_json_string_length(obj, JSON_C_TO_STRING_PRETTY, &len);
-  json_object_put(obj);
   *out = GEN_CMD_STRING_SIZE(jstring, len);
+  json_object_put(obj);
   return true;
 }
 
