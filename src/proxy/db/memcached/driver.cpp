@@ -179,7 +179,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
           core::FastoObjectCommandIPtr cmd_ttl = CreateCommandFast(wr.str(), core::C_INNER);
           LOG_COMMAND(cmd_ttl);
           core::ttl_t ttl = NO_TTL;
-          common::Error err = impl_->TTL(key, &ttl);
+          common::Error err = impl_->GetTTL(k, &ttl);
           if (err) {
             k.SetTTL(NO_TTL);
           } else {

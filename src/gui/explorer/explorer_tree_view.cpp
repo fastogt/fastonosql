@@ -25,6 +25,8 @@
 #include <QMenu>
 #include <QMessageBox>
 
+#include <common/convert2string.h>
+
 #include <common/qt/convert2string.h>  // for ConvertToString
 #include <common/qt/utils_qt.h>        // for item
 
@@ -792,7 +794,7 @@ void ExplorerTreeView::addKeyToBranch() {
     }
 
     proxy::IServerSPtr server = node->server();
-    std::string full_name_str = node->generateKeyTemplate("test");
+    const auto full_name_str = node->generateKeyTemplate(GEN_CMD_STRING("test"));
     core::NKey raw_key(full_name_str);
     core::NValue val(common::Value::CreateEmptyStringValue());
     core::NDbKValue nkey(raw_key, val);
@@ -1065,7 +1067,7 @@ void ExplorerTreeView::finishLoadDatabaseContent(const proxy::events_info::LoadD
   proxy::NsDisplayStrategy ns_strategy = serv->GetNsDisplayStrategy();
   for (size_t i = 0; i < keys.size(); ++i) {
     core::NDbKValue key = keys[i];
-    source_model_->addKey(serv, res.inf, key, ns, ns_strategy);
+    source_model_->addKey(serv, res.inf, key, common::ConvertToCharBytes(ns), ns_strategy);
   }
 
   source_model_->updateDb(serv, res.inf);
@@ -1120,7 +1122,7 @@ void ExplorerTreeView::addKey(core::IDataBaseInfoSPtr db, core::NDbKValue key) {
 
   const std::string ns = serv->GetNsSeparator();
   const proxy::NsDisplayStrategy ns_strategy = serv->GetNsDisplayStrategy();
-  source_model_->addKey(serv, db, key, ns, ns_strategy);
+  source_model_->addKey(serv, db, key, common::ConvertToCharBytes(ns), ns_strategy);
 }
 
 void ExplorerTreeView::renameKey(core::IDataBaseInfoSPtr db, core::NKey key, core::key_t new_name) {

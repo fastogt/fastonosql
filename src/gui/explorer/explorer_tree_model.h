@@ -68,7 +68,7 @@ class ExplorerTreeModel : public common::qt::gui::TreeModel {
   void addKey(proxy::IServer* server,
               core::IDataBaseInfoSPtr db,
               const core::NDbKValue& dbv,
-              const std::string& ns_separator,
+              const core::readable_string_t& ns_separator,
               proxy::NsDisplayStrategy ns_strategy);
   void removeKey(proxy::IServer* server, core::IDataBaseInfoSPtr db, const core::NKey& key);
   void updateKey(proxy::IServer* server,

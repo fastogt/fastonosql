@@ -131,7 +131,7 @@ void KeyEditWidget::initialize(const core::NDbKValue& key) {
   QString qkey;
   core::NKey nkey = key.GetKey();
   core::key_t raw_key = nkey.GetKey();
-  if (common::ConvertFromString(raw_key.GetHumanReadable(), &qkey)) {
+  if (common::ConvertFromBytes(raw_key.GetHumanReadable(), &qkey)) {
     key_edit_->setText(qkey);
   }
 
@@ -414,7 +414,7 @@ bool KeyEditWidget::getKey(core::NDbKValue* key) const {
     return false;
   }
 
-  QString key_name = key_edit_->text();
+  const QString key_name = key_edit_->text();
   if (key_name.isEmpty()) {
     return false;
   }
@@ -424,7 +424,7 @@ bool KeyEditWidget::getKey(core::NDbKValue* key) const {
     return false;
   }
 
-  core::key_t ks = common::ConvertToString(key_name);
+  const core::key_t ks = common::ConvertToCharBytes(key_name);
   *key = core::NDbKValue(core::NKey(ks), core::NValue(obj));
   return true;
 }

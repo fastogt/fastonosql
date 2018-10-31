@@ -36,7 +36,7 @@ QString FastoCommonItem::key() const {
   QString qkey;
   const core::NKey key = key_.GetKey();
   const core::key_t raw_key = key.GetKey();
-  common::ConvertFromString(raw_key.GetHumanReadable(), &qkey);
+  common::ConvertFromBytes(raw_key.GetHumanReadable(), &qkey);
   return qkey;
 }
 

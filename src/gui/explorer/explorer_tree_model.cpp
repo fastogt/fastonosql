@@ -350,7 +350,7 @@ void ExplorerTreeModel::updateDb(proxy::IServer* server, core::IDataBaseInfoSPtr
 void ExplorerTreeModel::addKey(proxy::IServer* server,
                                core::IDataBaseInfoSPtr db,
                                const core::NDbKValue& dbv,
-                               const std::string& ns_separator,
+                               const core::readable_string_t& ns_separator,
                                proxy::NsDisplayStrategy ns_strategy) {
   ExplorerServerItem* parent = findServerItem(server);
   if (!parent) {
@@ -547,12 +547,12 @@ ExplorerKeyItem* ExplorerTreeModel::findKeyItem(IExplorerTreeItem* db_or_ns, con
 
 ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_ns, const KeyInfo& kinf) {
   auto nspaces = kinf.namespaces();
-  std::string separator = kinf.nsSeparator();
+  auto separator = kinf.nsSeparator();
   IExplorerTreeItem* par = db_or_ns;
   ExplorerNSItem* founded_item = nullptr;
   for (size_t i = 0; i < nspaces.size(); ++i) {
     ExplorerNSItem* item = nullptr;
-    std::string cur_ns = nspaces[i];
+    const auto cur_ns = nspaces[i];
 
     for (size_t j = 0; j < par->childrenCount(); ++j) {
       ExplorerNSItem* ns_item = static_cast<ExplorerNSItem*>(par->child(j));

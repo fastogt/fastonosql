@@ -25,21 +25,22 @@ namespace gui {
 
 class KeyInfo {
  public:
-  typedef std::vector<std::string> splited_namespaces_t;
-  KeyInfo(const core::key_t& key, std::string ns_separator);
+  typedef core::readable_string_t string_t;
+  typedef std::vector<string_t> splited_namespaces_t;
+  KeyInfo(const core::key_t& key, const string_t& ns_separator);
 
-  std::string keyName() const;
-  std::string key() const;
+  string_t keyName() const;
+  string_t key() const;
   bool hasNamespace() const;
   size_t nsSplitedSize() const;
   splited_namespaces_t namespaces() const;
-  std::string nsSeparator() const;
+  string_t nsSeparator() const;
 
  private:
   core::key_t key_;
   splited_namespaces_t splited_namespaces_;
-  std::string key_name_;
-  std::string ns_separator_;
+  string_t key_name_;
+  string_t ns_separator_;
 };
 
 }  // namespace gui
