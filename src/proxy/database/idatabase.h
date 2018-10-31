@@ -38,7 +38,7 @@ class IDatabase {
   core::IDataBaseInfoSPtr GetInfo() const;
 
   bool IsDefault() const;
-  std::string GetName() const;
+  core::db_name_t GetName() const;
 
   void LoadContent(const events_info::LoadDatabaseContentRequest& req);
   void Execute(const events_info::ExecuteInfoRequest& req);

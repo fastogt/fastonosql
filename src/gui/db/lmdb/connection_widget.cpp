@@ -101,7 +101,7 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
     }
 
     QString qdb_name;
-    if (common::ConvertFromString(config.db_name, &qdb_name)) {
+    if (common::ConvertFromString(config.db_name, &qdb_name)) {  // convert from qstring
       db_name_edit_->setText(qdb_name);
     }
     max_dbs_count_edit_->setValue(config.max_dbs);
@@ -154,7 +154,7 @@ proxy::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(const pro
   } else {
     config.db_path = common::ConvertToString(directory_path_widget_->path());
   }
-  config.db_name = common::ConvertToString(db_name_edit_->text());
+  config.db_name = common::ConvertToString(db_name_edit_->text());  // convert to string
   config.SetSingleFileDB(is_file_path);
   config.max_dbs = max_dbs_count_edit_->value();
   conn->SetInfo(config);

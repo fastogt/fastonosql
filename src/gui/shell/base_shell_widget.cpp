@@ -677,9 +677,9 @@ void BaseShellWidget::updateDefaultDatabase(core::IDataBaseInfoSPtr dbs) {
     return;
   }
 
-  std::string name = dbs->GetName();
+  const core::db_name_t name = dbs->GetName();
   QString qname;
-  common::ConvertFromString(name, &qname);
+  common::ConvertFromBytes(name, &qname);
   updateDBLabel(qname);
 }
 

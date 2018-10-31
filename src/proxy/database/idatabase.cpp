@@ -38,7 +38,7 @@ bool IDatabase::IsDefault() const {
   return info_->IsDefault();
 }
 
-std::string IDatabase::GetName() const {
+core::db_name_t IDatabase::GetName() const {
   return info_->GetName();
 }
 

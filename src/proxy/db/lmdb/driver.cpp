@@ -75,7 +75,7 @@ core::FastoObjectCommandIPtr Driver::CreateCommandFast(const core::command_buffe
   return proxy::CreateCommandFast<lmdb::Command>(input, logging_type);
 }
 
-core::IDataBaseInfoSPtr Driver::CreateDatabaseInfo(const std::string& name, bool is_default, size_t size) {
+core::IDataBaseInfoSPtr Driver::CreateDatabaseInfo(const core::db_name_t& name, bool is_default, size_t size) {
   return std::make_shared<core::lmdb::DataBaseInfo>(name, is_default, size);
 }
 

@@ -66,7 +66,7 @@ void ExplorerServerItem::loadDatabases() {
 void ExplorerServerItem::createDatabase(const QString& name) {
   core::translator_t tran = server_->GetTranslator();
   core::command_buffer_t cmd_str;
-  std::string name_str = common::ConvertToString(name);
+  const auto name_str = common::ConvertToCharBytes(name);
   common::Error err = tran->CreateDBCommand(name_str, &cmd_str);
   if (err) {
     LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
@@ -80,7 +80,7 @@ void ExplorerServerItem::createDatabase(const QString& name) {
 void ExplorerServerItem::removeDatabase(const QString& name) {
   core::translator_t tran = server_->GetTranslator();
   core::command_buffer_t cmd_str;
-  std::string name_str = common::ConvertToString(name);
+  const auto name_str = common::ConvertToCharBytes(name);
   common::Error err = tran->RemoveDBCommand(name_str, &cmd_str);
   if (err) {
     LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
@@ -139,7 +139,7 @@ ExplorerDatabaseItem::ExplorerDatabaseItem(proxy::IDatabaseSPtr db, ExplorerServ
 }
 
 IExplorerTreeItem::string_t ExplorerDatabaseItem::basicStringName() const {
-  return common::ConvertToCharBytes(db_->GetName());
+  return db_->GetName();
 }
 
 bool ExplorerDatabaseItem::isDefault() const {

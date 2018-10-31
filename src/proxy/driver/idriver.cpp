@@ -527,9 +527,9 @@ void IDriver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent
   core::IDataBaseInfoSPtr curdb(info);
   if (!ar->IsEmpty()) {
     for (size_t i = 0; i < ar->GetSize(); ++i) {
-      core::command_buffer_t name;
+      common::Value::string_t name;
       if (ar->GetString(i, &name)) {
-        core::IDataBaseInfoSPtr dbInf(CreateDatabaseInfo(common::ConvertToString(name), false, 0));  // #FIXME
+        core::IDataBaseInfoSPtr dbInf(CreateDatabaseInfo(name, false, 0));
         if (dbInf->GetName() == curdb->GetName()) {
           res.databases.push_back(curdb);
         } else {

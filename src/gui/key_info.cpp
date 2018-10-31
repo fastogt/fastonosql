@@ -23,7 +23,7 @@
 namespace fastonosql {
 namespace gui {
 
-KeyInfo::KeyInfo(const core::key_t& key, const string_t &ns_separator)
+KeyInfo::KeyInfo(const core::key_t& key, const string_t& ns_separator)
     : key_(key), splited_namespaces_(), key_name_(), ns_separator_(ns_separator) {
   common::Tokenize(key.GetHumanReadable(), ns_separator, &splited_namespaces_);
   key_name_ = splited_namespaces_.back();

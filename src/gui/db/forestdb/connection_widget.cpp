@@ -46,7 +46,7 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
   if (forestdb) {
     core::forestdb::Config config = forestdb->GetInfo();
     QString qdb_name;
-    if (common::ConvertFromString(config.db_name, &qdb_name)) {
+    if (common::ConvertFromString(config.db_name, &qdb_name)) {  // convert from qstring
       db_name_edit_->setText(qdb_name);
     }
   }
@@ -63,7 +63,7 @@ proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
   proxy::forestdb::ConnectionSettings* conn =
       proxy::ConnectionSettingsFactory::GetInstance().CreateFORESTDBConnection(path);
   core::forestdb::Config config = conn->GetInfo();
-  config.db_name = common::ConvertToString(db_name_edit_->text());
+  config.db_name = common::ConvertToString(db_name_edit_->text());  // convert to string
   conn->SetInfo(config);
   return conn;
 }

@@ -80,7 +80,7 @@ core::FastoObjectCommandIPtr Driver::CreateCommandFast(const core::command_buffe
   return proxy::CreateCommandFast<memcached::Command>(input, ct);
 }
 
-core::IDataBaseInfoSPtr Driver::CreateDatabaseInfo(const std::string& name, bool is_default, size_t size) {
+core::IDataBaseInfoSPtr Driver::CreateDatabaseInfo(const core::db_name_t& name, bool is_default, size_t size) {
   return std::make_shared<core::memcached::DataBaseInfo>(name, is_default, size);
 }
 

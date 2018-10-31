@@ -129,7 +129,7 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   virtual core::FastoObjectCommandIPtr CreateCommandFast(const core::command_buffer_t& input,
                                                          core::CmdLoggingType ct) = 0;
 
-  virtual core::IDataBaseInfoSPtr CreateDatabaseInfo(const std::string& name, bool is_default, size_t size) = 0;
+  virtual core::IDataBaseInfoSPtr CreateDatabaseInfo(const core::db_name_t& name, bool is_default, size_t size) = 0;
 
   common::Error GetServerDiscoveryInfo(core::IDataBaseInfo** dbinfo, std::vector<const core::CommandInfo*>* commands);
 
