@@ -29,6 +29,26 @@
 
 #include <common/convert2string.h>
 
+namespace {
+struct json_object* json_tokener_parse_hacked(const char* str, int len) {
+  struct json_tokener* tok;
+  struct json_object* obj;
+
+  tok = json_tokener_new();
+  if (!tok)
+    return NULL;
+  obj = json_tokener_parse_ex(tok, str, len);
+  if (tok->err != json_tokener_success) {
+    if (obj != NULL)
+      json_object_put(obj);
+    obj = NULL;
+  }
+
+  json_tokener_free(tok);
+  return obj;
+}
+}  // namespace
+
 namespace fastonosql {
 namespace gui {
 
@@ -37,8 +57,7 @@ bool string_from_json(const convert_in_t& value, convert_out_t* out) {
     return false;
   }
 
-  const char* data_raw = reinterpret_cast<const char*>(value.data());
-  json_object* obj = json_tokener_parse(data_raw);
+  json_object* obj = json_tokener_parse_hacked(value.data(), value.size());
   if (!obj) {
     return false;
   }
@@ -55,8 +74,7 @@ bool string_to_json(const convert_in_t& data, convert_out_t* out) {
     return false;
   }
 
-  const char* data_raw = data.data();
-  json_object* obj = json_tokener_parse(data_raw);
+  json_object* obj = json_tokener_parse_hacked(data.data(), data.size());
   if (!obj) {
     return false;
   }

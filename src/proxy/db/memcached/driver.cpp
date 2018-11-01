@@ -105,7 +105,7 @@ common::Error Driver::GetCurrentServerInfo(core::IServerInfo** info) {
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(GEN_CMD_STRING(MEMCACHED_INFO_REQUEST), core::C_INNER);
   LOG_COMMAND(cmd);
   core::memcached::ServerInfo::Stats cm;
-  common::Error err = impl_->Info(core::command_buffer_t(), &cm);
+  common::Error err = impl_->Info(std::string(), &cm);
   if (err) {
     return err;
   }
