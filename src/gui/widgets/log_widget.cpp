@@ -55,7 +55,7 @@ void LogWidget::addLogMessage(const QString& message, common::logging::LOG_LEVEL
 
 void LogWidget::showContextMenu(const QPoint& pt) {
   QMenu* menu = log_text_edit_->createStandardContextMenu();
-  QAction* clear = new QAction(translations::trClearAll, this);
+  QAction* clear = new QAction(translations::trClearAll, menu);
   VERIFY(connect(clear, &QAction::triggered, log_text_edit_, &QTextEdit::clear));
   menu->addAction(clear);
   clear->setEnabled(!log_text_edit_->toPlainText().isEmpty());

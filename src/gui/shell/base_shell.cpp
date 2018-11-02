@@ -63,7 +63,7 @@
 #endif
 
 namespace {
-const QSize image_size = QSize(64, 64);
+const QSize kImageSize = QSize(64, 64);
 }
 
 namespace fastonosql {
@@ -129,7 +129,7 @@ BaseShell::BaseShell(core::ConnectionType type, bool show_auto_complete, QWidget
     : gui::FastoEditorShell(show_auto_complete, parent) {
   VERIFY(connect(this, &BaseShell::customContextMenuRequested, this, &BaseShell::showContextMenu));
   const QIcon& ic = gui::GuiFactory::GetInstance().commandIcon(type);
-  QPixmap pix = ic.pixmap(image_size);
+  QPixmap pix = ic.pixmap(kImageSize);
   registerImage(BaseQsciLexer::Command, pix);
   registerImage(BaseQsciLexer::ExCommand, pix);
 
@@ -146,12 +146,12 @@ BaseQsciLexer* BaseShell::lexer() const {
 
 QString BaseShell::version() const {
   BaseQsciLexer* lex = lexer();
-  return QString(lex->version());
+  return lex->version();
 }
 
 QString BaseShell::basedOn() const {
   BaseQsciLexer* lex = lexer();
-  return QString(lex->basedOn());
+  return lex->basedOn();
 }
 
 std::vector<uint32_t> BaseShell::supportedVersions() const {

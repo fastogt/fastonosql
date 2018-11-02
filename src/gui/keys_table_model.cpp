@@ -149,10 +149,7 @@ void KeysTableModel::updateKey(const core::NKey& key) {
 
 void KeysTableModel::clear() {
   beginResetModel();
-  for (size_t i = 0; i < data_.size(); ++i) {
-    delete data_[i];
-  }
-  data_.clear();
+  clearData();
   endResetModel();
 }
 

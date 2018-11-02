@@ -230,18 +230,18 @@ MainWindow::MainWindow() : QMainWindow() {
   helpMenu->addSeparator();
   helpMenu->addAction(about_action_);
 
-  MainWidget* mainW = new MainWidget;
-  setCentralWidget(mainW);
+  MainWidget* main_widget = new MainWidget;
+  setCentralWidget(main_widget);
 
-  exp_ = new ExplorerTreeWidget(this);
-  VERIFY(connect(exp_, &ExplorerTreeWidget::consoleOpened, mainW, &MainWidget::openConsole));
-  VERIFY(connect(exp_, &ExplorerTreeWidget::consoleOpenedAndExecute, mainW, &MainWidget::openConsoleAndExecute));
+  exp_ = new ExplorerTreeWidget;
+  VERIFY(connect(exp_, &ExplorerTreeWidget::consoleOpened, main_widget, &MainWidget::openConsole));
+  VERIFY(connect(exp_, &ExplorerTreeWidget::consoleOpenedAndExecute, main_widget, &MainWidget::openConsoleAndExecute));
   VERIFY(connect(exp_, &ExplorerTreeWidget::serverClosed, this, &MainWindow::closeServer, Qt::DirectConnection));
 #if defined(PRO_VERSION)
   VERIFY(connect(exp_, &ExplorerTreeWidget::clusterClosed, this, &MainWindow::closeCluster, Qt::DirectConnection));
   VERIFY(connect(exp_, &ExplorerTreeWidget::sentinelClosed, this, &MainWindow::closeSentinel, Qt::DirectConnection));
 #endif
-  exp_dock_ = new QDockWidget(this);
+  exp_dock_ = new QDockWidget;
   explorer_action_ = exp_dock_->toggleViewAction();
   explorer_action_->setShortcut(kExplorerKeySequence);
   explorer_action_->setChecked(true);
@@ -254,11 +254,11 @@ MainWindow::MainWindow() : QMainWindow() {
   exp_dock_->setVisible(true);
   addDockWidget(Qt::LeftDockWidgetArea, exp_dock_);
 
-  LogTabWidget* log = new LogTabWidget(this);
+  LogTabWidget* log = new LogTabWidget;
   VERIFY(connect(&common::qt::Logger::GetInstance(), &common::qt::Logger::printed, log, &LogTabWidget::addLogMessage));
   VERIFY(connect(&proxy::CommandLogger::GetInstance(), &proxy::CommandLogger::Printed, log, &LogTabWidget::addCommand));
   SET_LOG_WATCHER(&LogWatcherRedirect);
-  log_dock_ = new QDockWidget(this);
+  log_dock_ = new QDockWidget;
   logs_action_ = log_dock_->toggleViewAction();
   logs_action_->setShortcut(kLogsKeySequence);
   logs_action_->setChecked(true);
@@ -733,7 +733,7 @@ void MainWindow::clearRecentConnectionsMenu() {
 void MainWindow::createServer(proxy::IConnectionSettingsBaseSPtr settings) {
   CHECK(settings);
 
-  std::string path = settings->GetPath().ToString();
+  const std::string path = settings->GetPath().ToString();
   QString rcon;
   common::ConvertFromString(path, &rcon);
   proxy::SettingsManager::GetInstance()->RemoveRConnection(rcon);

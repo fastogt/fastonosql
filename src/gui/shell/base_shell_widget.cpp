@@ -112,39 +112,39 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server, const QString& fileP
 
 QToolBar* BaseShellWidget::createToolBar() {
   QToolBar* savebar = new QToolBar;
-  load_action_ = new QAction;
+  load_action_ = new QAction(this);
   load_action_->setIcon(gui::GuiFactory::GetInstance().loadIcon());
   typedef void (BaseShellWidget::*lf)();
   VERIFY(connect(load_action_, &QAction::triggered, this, static_cast<lf>(&BaseShellWidget::loadFromFile)));
   savebar->addAction(load_action_);
 
-  save_action_ = new QAction;
+  save_action_ = new QAction(this);
   save_action_->setIcon(gui::GuiFactory::GetInstance().saveIcon());
   VERIFY(connect(save_action_, &QAction::triggered, this, &BaseShellWidget::saveToFile));
   savebar->addAction(save_action_);
 
-  save_as_action_ = new QAction;
+  save_as_action_ = new QAction(this);
   save_as_action_->setIcon(gui::GuiFactory::GetInstance().saveAsIcon());
   VERIFY(connect(save_as_action_, &QAction::triggered, this, &BaseShellWidget::saveToFileAs));
   savebar->addAction(save_as_action_);
 
-  connect_action_ = new QAction;
+  connect_action_ = new QAction(this);
   connect_action_->setIcon(gui::GuiFactory::GetInstance().connectIcon());
   VERIFY(connect(connect_action_, &QAction::triggered, this, &BaseShellWidget::connectToServer));
   savebar->addAction(connect_action_);
 
-  disconnect_action_ = new QAction;
+  disconnect_action_ = new QAction(this);
   disconnect_action_->setIcon(gui::GuiFactory::GetInstance().disConnectIcon());
   VERIFY(connect(disconnect_action_, &QAction::triggered, this, &BaseShellWidget::disconnectFromServer));
   savebar->addAction(disconnect_action_);
 
-  execute_action_ = new QAction;
+  execute_action_ = new QAction(this);
   execute_action_->setIcon(gui::GuiFactory::GetInstance().executeIcon());
   execute_action_->setShortcut(gui::g_execute_key);
   VERIFY(connect(execute_action_, &QAction::triggered, this, &BaseShellWidget::execute));
   savebar->addAction(execute_action_);
 
-  stop_action_ = new QAction;
+  stop_action_ = new QAction(this);
   stop_action_->setIcon(gui::GuiFactory::GetInstance().stopIcon());
   VERIFY(connect(stop_action_, &QAction::triggered, this, &BaseShellWidget::stop));
   savebar->addAction(stop_action_);

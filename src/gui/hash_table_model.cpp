@@ -29,7 +29,7 @@ namespace fastonosql {
 namespace gui {
 
 HashTableModel::HashTableModel(QObject* parent) : common::qt::gui::TableModel(parent) {
-  data_.push_back(createEmptyRow());
+  insertItem(createEmptyRow());
 }
 
 HashTableModel::~HashTableModel() {}
@@ -117,11 +117,8 @@ int HashTableModel::columnCount(const QModelIndex& parent) const {
 
 void HashTableModel::clear() {
   beginResetModel();
-  for (size_t i = 0; i < data_.size(); ++i) {
-    delete data_[i];
-  }
-  data_.clear();
-  data_.push_back(createEmptyRow());
+  clearData();
+  insertItem(createEmptyRow());
   endResetModel();
 }
 

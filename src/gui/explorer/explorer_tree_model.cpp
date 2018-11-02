@@ -210,7 +210,7 @@ void ExplorerTreeModel::addCluster(proxy::IClusterSPtr cluster) {
 
   ExplorerClusterItem* cl = findClusterItem(cluster);
   if (!cl) {
-    common::qt::gui::TreeItem* parent = root_;
+    common::qt::gui::TreeItem* parent = root();
     CHECK(parent);
 
     ExplorerClusterItem* item = new ExplorerClusterItem(cluster, parent);
@@ -237,7 +237,7 @@ void ExplorerTreeModel::addServer(proxy::IServerSPtr server) {
 
   ExplorerServerItem* serv = findServerItem(server.get());
   if (!serv) {
-    common::qt::gui::TreeItem* parent = root_;
+    common::qt::gui::TreeItem* parent = root();
     CHECK(parent);
 
     ExplorerServerItem* item = new ExplorerServerItem(server, parent);
@@ -264,7 +264,7 @@ void ExplorerTreeModel::addSentinel(proxy::ISentinelSPtr sentinel) {
 
   ExplorerSentinelItem* cl = findSentinelItem(sentinel);
   if (!cl) {
-    common::qt::gui::TreeItem* parent = root_;
+    common::qt::gui::TreeItem* parent = root();
     CHECK(parent);
 
     ExplorerSentinelItem* item = new ExplorerSentinelItem(sentinel, parent);
@@ -325,7 +325,8 @@ void ExplorerTreeModel::setDefaultDb(proxy::IServer* server, core::IDataBaseInfo
     return;
   }
 
-  QModelIndex parent_index = createIndex(root_->indexOf(parent), ExplorerDatabaseItem::eName, parent);
+  common::qt::gui::TreeItem* current_root = root();
+  QModelIndex parent_index = createIndex(current_root->indexOf(parent), ExplorerDatabaseItem::eName, parent);
   QModelIndex dbs_last_index = index(parent->childrenCount(), ExplorerDatabaseItem::eCountColumns, parent_index);
   updateItem(parent_index, dbs_last_index);
 }
@@ -350,7 +351,7 @@ void ExplorerTreeModel::updateDb(proxy::IServer* server, core::IDataBaseInfoSPtr
 void ExplorerTreeModel::addKey(proxy::IServer* server,
                                core::IDataBaseInfoSPtr db,
                                const core::NDbKValue& dbv,
-                               const core::readable_string_t& ns_separator,
+                               const std::string& ns_separator,
                                proxy::NsDisplayStrategy ns_strategy) {
   ExplorerServerItem* parent = findServerItem(server);
   if (!parent) {
@@ -362,11 +363,12 @@ void ExplorerTreeModel::addKey(proxy::IServer* server,
     return;
   }
 
-  core::NKey key = dbv.GetKey();
+  const core::NKey key = dbv.GetKey();
   ExplorerKeyItem* keyit = findKeyItem(dbs, key);
   if (!keyit) {
     IExplorerTreeItem* nitem = dbs;
-    KeyInfo kinf(key.GetKey(), ns_separator);
+    const auto key_str = key.GetKey();
+    KeyInfo kinf(key_str.GetHumanReadable(), ns_separator);
     if (kinf.hasNamespace()) {
       nitem = findOrCreateNSItem(dbs, kinf);
     }
@@ -461,7 +463,7 @@ void ExplorerTreeModel::removeAllKeys(proxy::IServer* server, core::IDataBaseInf
 
 #if defined(PRO_VERSION)
 ExplorerClusterItem* ExplorerTreeModel::findClusterItem(proxy::IClusterSPtr cl) {
-  common::qt::gui::TreeItem* parent = root_;
+  common::qt::gui::TreeItem* parent = root();
   if (!parent) {
     return nullptr;
   }
@@ -480,7 +482,7 @@ ExplorerClusterItem* ExplorerTreeModel::findClusterItem(proxy::IClusterSPtr cl) 
 }
 
 ExplorerSentinelItem* ExplorerTreeModel::findSentinelItem(proxy::ISentinelSPtr sentinel) {
-  common::qt::gui::TreeItem* parent = root_;
+  common::qt::gui::TreeItem* parent = root();
   if (!parent) {
     return nullptr;
   }
@@ -501,7 +503,7 @@ ExplorerSentinelItem* ExplorerTreeModel::findSentinelItem(proxy::ISentinelSPtr s
 
 ExplorerServerItem* ExplorerTreeModel::findServerItem(proxy::IServer* server) const {
   return static_cast<ExplorerServerItem*>(
-      common::qt::gui::findItemRecursive(root_, [server](common::qt::gui::TreeItem* item) -> bool {
+      common::qt::gui::findItemRecursive(root(), [server](common::qt::gui::TreeItem* item) -> bool {
         ExplorerServerItem* server_item = static_cast<ExplorerServerItem*>(item);
         if (server_item->type() != IExplorerTreeItem::eServer) {
           return false;

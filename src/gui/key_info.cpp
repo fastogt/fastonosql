@@ -23,9 +23,10 @@
 namespace fastonosql {
 namespace gui {
 
-KeyInfo::KeyInfo(const core::key_t& key, const string_t& ns_separator)
+KeyInfo::KeyInfo(const core::raw_key_t& key, const ns_separator_t& ns_separator)
     : key_(key), splited_namespaces_(), key_name_(), ns_separator_(ns_separator) {
-  common::Tokenize(key.GetHumanReadable(), ns_separator, &splited_namespaces_);
+  const core::readable_string_t rns = GEN_READABLE_STRING_SIZE(ns_separator.data(), ns_separator.size());
+  common::Tokenize(key, rns, &splited_namespaces_);
   key_name_ = splited_namespaces_.back();
   splited_namespaces_.pop_back();
 }
@@ -35,7 +36,7 @@ KeyInfo::string_t KeyInfo::keyName() const {
 }
 
 KeyInfo::string_t KeyInfo::key() const {
-  return key_.GetHumanReadable();
+  return key_;
 }
 
 bool KeyInfo::hasNamespace() const {
@@ -51,7 +52,7 @@ KeyInfo::splited_namespaces_t KeyInfo::namespaces() const {
   return splited_namespaces_;
 }
 
-KeyInfo::string_t KeyInfo::nsSeparator() const {
+KeyInfo::ns_separator_t KeyInfo::nsSeparator() const {
   return ns_separator_;
 }
 

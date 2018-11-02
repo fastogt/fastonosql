@@ -28,6 +28,7 @@ namespace gui {
 class KeysTableModel : public common::qt::gui::TableModel {
   Q_OBJECT
  public:
+  typedef common::qt::gui::TableModel base_class;
   explicit KeysTableModel(QObject* parent = Q_NULLPTR);
   virtual ~KeysTableModel() override;
 

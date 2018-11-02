@@ -73,8 +73,37 @@ ConnectionsDialog::ConnectionsDialog(const QString& title, const QIcon& icon, QW
 
   // list_widget_->setDragEnabled(true);
   // list_widget_->setDragDropMode(QAbstractItemView::InternalMove);
-  setMinimumSize(QSize(min_width, min_height));
   VERIFY(connect(list_widget_, &QTreeWidget::itemDoubleClicked, this, &ConnectionsDialog::accept));
+
+  QToolBar* savebar = new QToolBar;
+
+  QAction* addB = new QAction(GuiFactory::GetInstance().addIcon(), translations::trAddConnection, this);
+  VERIFY(connect(addB, &QAction::triggered, this, &ConnectionsDialog::add));
+  savebar->addAction(addB);
+
+  QAction* addc = new QAction(GuiFactory::GetInstance().clusterIcon(), translations::trAddClusterConnection, this);
+  VERIFY(connect(addc, &QAction::triggered, this, &ConnectionsDialog::addCls));
+  savebar->addAction(addc);
+
+  QAction* adds = new QAction(GuiFactory::GetInstance().sentinelIcon(), translations::trAddSentinelConnection, this);
+  VERIFY(connect(adds, &QAction::triggered, this, &ConnectionsDialog::addSent));
+  savebar->addAction(adds);
+
+  QAction* editB = new QAction(GuiFactory::GetInstance().editIcon(), translations::trEditConnection, this);
+  VERIFY(connect(editB, &QAction::triggered, this, &ConnectionsDialog::edit));
+  savebar->addAction(editB);
+
+  QAction* clone = new QAction(GuiFactory::GetInstance().cloneIcon(), translations::trCloneConnection, this);
+  VERIFY(connect(clone, &QAction::triggered, this, &ConnectionsDialog::clone));
+  savebar->addAction(clone);
+
+  QAction* rmB = new QAction(GuiFactory::GetInstance().removeIcon(), translations::trRemoveConnection, this);
+  VERIFY(connect(rmB, &QAction::triggered, this, &ConnectionsDialog::remove));
+  savebar->addAction(rmB);
+
+  QVBoxLayout* main_layout = new QVBoxLayout;
+  main_layout->addWidget(savebar);
+  main_layout->addWidget(list_widget_);
 
   QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   buttonBox->setOrientation(Qt::Horizontal);
@@ -84,42 +113,10 @@ ConnectionsDialog::ConnectionsDialog(const QString& title, const QIcon& icon, QW
   VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &ConnectionsDialog::accept));
   VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &ConnectionsDialog::reject));
 
-  QHBoxLayout* bottomLayout = new QHBoxLayout;
-  bottomLayout->addWidget(buttonBox);
+  QHBoxLayout* bottom_layout = new QHBoxLayout;
+  bottom_layout->addWidget(buttonBox);
 
-  QToolBar* savebar = new QToolBar;
-
-  QAction* addB = new QAction(GuiFactory::GetInstance().addIcon(), translations::trAddConnection, savebar);
-  VERIFY(connect(addB, &QAction::triggered, this, &ConnectionsDialog::add));
-  savebar->addAction(addB);
-
-  QAction* addc = new QAction(GuiFactory::GetInstance().clusterIcon(), translations::trAddClusterConnection, savebar);
-  VERIFY(connect(addc, &QAction::triggered, this, &ConnectionsDialog::addCls));
-  savebar->addAction(addc);
-
-  QAction* adds = new QAction(GuiFactory::GetInstance().sentinelIcon(), translations::trAddSentinelConnection, savebar);
-  VERIFY(connect(adds, &QAction::triggered, this, &ConnectionsDialog::addSent));
-  savebar->addAction(adds);
-
-  QAction* editB = new QAction(GuiFactory::GetInstance().editIcon(), translations::trEditConnection, savebar);
-  VERIFY(connect(editB, &QAction::triggered, this, &ConnectionsDialog::edit));
-  savebar->addAction(editB);
-
-  QAction* clone = new QAction(GuiFactory::GetInstance().cloneIcon(), translations::trCloneConnection, savebar);
-  VERIFY(connect(clone, &QAction::triggered, this, &ConnectionsDialog::clone));
-  savebar->addAction(clone);
-
-  QAction* rmB = new QAction(GuiFactory::GetInstance().removeIcon(), translations::trRemoveConnection, savebar);
-  VERIFY(connect(rmB, &QAction::triggered, this, &ConnectionsDialog::remove));
-  savebar->addAction(rmB);
-
-  QVBoxLayout* firstColumnLayout = new QVBoxLayout;
-  firstColumnLayout->addWidget(savebar);
-  firstColumnLayout->addWidget(list_widget_);
-  firstColumnLayout->addLayout(bottomLayout);
-
-  QHBoxLayout* mainLayout = new QHBoxLayout(this);
-  mainLayout->addLayout(firstColumnLayout, 1);
+  main_layout->addLayout(bottom_layout);
 
   // Populate list with connections
   auto connections = proxy::SettingsManager::GetInstance()->GetConnections();
@@ -147,6 +144,9 @@ ConnectionsDialog::ConnectionsDialog(const QString& title, const QIcon& icon, QW
   if (list_widget_->topLevelItemCount() > 0) {
     list_widget_->setCurrentItem(list_widget_->topLevelItem(0));
   }
+
+  setMinimumSize(QSize(min_width, min_height));
+  setLayout(main_layout);
   retranslateUi();
 }
 

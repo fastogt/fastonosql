@@ -63,11 +63,11 @@ void MainWidget::openConsole(proxy::IServerSPtr server, const QString& text) {
     return;
   }
 
-  QueryWidget* queryWidget = new QueryWidget(server);
+  QueryWidget* query_widget = new QueryWidget(server);
   QString name;
   common::ConvertFromString(server->GetName(), &name);
-  addWidgetToTab(queryWidget, name);
-  queryWidget->setInputText(text);
+  addWidgetToTab(query_widget, name);
+  query_widget->setInputText(text);
 }
 
 void MainWidget::openConsoleAndExecute(proxy::IServerSPtr server, const QString& text) {

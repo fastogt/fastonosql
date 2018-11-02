@@ -36,19 +36,18 @@ namespace gui {
 
 IExplorerTreeItem::IExplorerTreeItem(TreeItem* parent, eType type) : TreeItem(parent, nullptr), type_(type) {}
 
-QString IExplorerTreeItem::name() const {
-  QString qname;
-  auto name = basicStringName();
-  common::ConvertFromBytes(name, &qname);
-  return qname;
-}
-
 ExplorerServerItem::eType IExplorerTreeItem::type() const {
   return type_;
 }
 
 ExplorerServerItem::ExplorerServerItem(proxy::IServerSPtr server, TreeItem* parent)
     : IExplorerTreeItem(parent, eServer), server_(server) {}
+
+QString ExplorerServerItem::name() const {
+  QString qname;
+  common::ConvertFromString(server_->GetName(), &qname);
+  return qname;
+}
 
 IExplorerTreeItem::string_t ExplorerServerItem::basicStringName() const {
   return common::ConvertToCharBytes(server_->GetName());
@@ -107,6 +106,12 @@ ExplorerSentinelItem::ExplorerSentinelItem(proxy::ISentinelSPtr sentinel, TreeIt
   }
 }
 
+QString ExplorerSentinelItem::name() const {
+  QString qname;
+  common::ConvertFromString(sentinel_->GetName(), &qname);
+  return qname;
+}
+
 IExplorerTreeItem::string_t ExplorerSentinelItem::basicStringName() const {
   return common::ConvertToCharBytes(sentinel_->GetName());
 }
@@ -124,6 +129,12 @@ ExplorerClusterItem::ExplorerClusterItem(proxy::IClusterSPtr cluster, TreeItem* 
   }
 }
 
+QString ExplorerClusterItem::name() const {
+  QString qname;
+  common::ConvertFromString(cluster_->GetName(), &qname);
+  return qname;
+}
+
 IExplorerTreeItem::string_t ExplorerClusterItem::basicStringName() const {
   return common::ConvertToCharBytes(cluster_->GetName());
 }
@@ -136,6 +147,12 @@ proxy::IClusterSPtr ExplorerClusterItem::cluster() const {
 ExplorerDatabaseItem::ExplorerDatabaseItem(proxy::IDatabaseSPtr db, ExplorerServerItem* parent)
     : IExplorerTreeItem(parent, eDatabase), db_(db) {
   DCHECK(db_);
+}
+
+QString ExplorerDatabaseItem::name() const {
+  QString qname;
+  common::ConvertFromBytes(db_->GetName(), &qname);
+  return qname;
 }
 
 IExplorerTreeItem::string_t ExplorerDatabaseItem::basicStringName() const {
@@ -336,7 +353,7 @@ void ExplorerDatabaseItem::removeAllKeys() {
 }
 
 ExplorerKeyItem::ExplorerKeyItem(const core::NDbKValue& dbv,
-                                 const string_t& ns_separator,
+                                 const std::string& ns_separator,
                                  proxy::NsDisplayStrategy ns_strategy,
                                  IExplorerTreeItem* parent)
     : IExplorerTreeItem(parent, eKey), dbv_(dbv), ns_separator_(ns_separator), ns_strategy_(ns_strategy) {}
@@ -375,13 +392,20 @@ void ExplorerKeyItem::setKey(const core::NKey& key) {
   dbv_.SetKey(key);
 }
 
+QString ExplorerKeyItem::name() const {
+  QString qname;
+  common::ConvertFromBytes(basicStringName(), &qname);
+  return qname;
+}
+
 IExplorerTreeItem::string_t ExplorerKeyItem::basicStringName() const {
   if (ns_strategy_ == proxy::FULL_KEY) {
     return fullName();
   }
 
   const core::NKey key = dbv_.GetKey();
-  KeyInfo kinf(key.GetKey(), ns_separator_);
+  const auto key_str = key.GetKey();
+  KeyInfo kinf(key_str.GetHumanReadable(), ns_separator_);
   if (!kinf.hasNamespace()) {
     return fullName();
   }
@@ -440,7 +464,7 @@ void ExplorerKeyItem::setTTL(core::ttl_t ttl) {
   }
 }
 
-IExplorerTreeItem::string_t ExplorerKeyItem::nsSeparator() const {
+std::string ExplorerKeyItem::nsSeparator() const {
   return ns_separator_;
 }
 
@@ -450,8 +474,14 @@ ExplorerKeyItem::string_t ExplorerKeyItem::fullName() const {
   return raw_key.GetHumanReadable();
 }
 
-ExplorerNSItem::ExplorerNSItem(const string_t& name, const string_t& separator, IExplorerTreeItem* parent)
+ExplorerNSItem::ExplorerNSItem(const string_t& name, const std::string& separator, IExplorerTreeItem* parent)
     : IExplorerTreeItem(parent, eNamespace), name_(name), ns_separator_(separator) {}
+
+QString ExplorerNSItem::name() const {
+  QString qname;
+  common::ConvertFromBytes(name_, &qname);
+  return qname;
+}
 
 IExplorerTreeItem::string_t ExplorerNSItem::basicStringName() const {
   return name_;

@@ -150,16 +150,16 @@ SentinelDialog::SentinelDialog(QWidget* parent, proxy::ISentinelSettingsBase* co
   savebar_ = new QToolBar;
   toolBarLayout->addWidget(savebar_);
 
-  QAction* addB = new QAction(GuiFactory::GetInstance().addIcon(), translations::trAddConnection, savebar_);
+  QAction* addB = new QAction(GuiFactory::GetInstance().addIcon(), translations::trAddConnection, this);
   typedef void (QAction::*trig)(bool);
   VERIFY(connect(addB, static_cast<trig>(&QAction::triggered), this, &SentinelDialog::addConnectionSettings));
   savebar_->addAction(addB);
 
-  QAction* rmB = new QAction(GuiFactory::GetInstance().removeIcon(), translations::trRemoveConnection, savebar_);
+  QAction* rmB = new QAction(GuiFactory::GetInstance().removeIcon(), translations::trRemoveConnection, this);
   VERIFY(connect(rmB, static_cast<trig>(&QAction::triggered), this, &SentinelDialog::remove));
   savebar_->addAction(rmB);
 
-  QAction* editB = new QAction(GuiFactory::GetInstance().editIcon(), translations::trEditConnection, savebar_);
+  QAction* editB = new QAction(GuiFactory::GetInstance().editIcon(), translations::trEditConnection, this);
   VERIFY(connect(editB, static_cast<trig>(&QAction::triggered), this, &SentinelDialog::edit));
   savebar_->addAction(editB);
 

@@ -204,12 +204,9 @@ void BaseCommandsQsciLexer::paintCommands(const QString& source, int start) {
 }
 
 QString makeCallTip(const core::CommandInfo& info) {
-  std::string since_str = core::ConvertVersionNumberToReadableString(info.since);
-
-  std::string res = common::MemSPrintf(
-      "Arguments: %s\nSummary: %s\nSince: "
-      "%s\nExample: %s",
-      info.params, info.summary, since_str, info.example);
+  const std::string since_str = core::ConvertVersionNumberToReadableString(info.since);
+  const std::string res = common::MemSPrintf("Arguments: %s\nSummary: %s\nSince: %s\nExample: %s", info.params,
+                                             info.summary, since_str, info.example);
   QString qres;
   common::ConvertFromString(res, &qres);
   return qres;

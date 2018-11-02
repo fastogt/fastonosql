@@ -28,6 +28,7 @@ namespace gui {
 class PropertyTableModel : public common::qt::gui::TableModel {
   Q_OBJECT
  public:
+  typedef common::qt::gui::TableModel base_class;
   explicit PropertyTableModel(QObject* parent = Q_NULLPTR);
 
   virtual QVariant data(const QModelIndex& index, int role) const override;

@@ -48,7 +48,7 @@ class IExplorerTreeItem : public common::qt::gui::TreeItem {
 
   IExplorerTreeItem(TreeItem* parent, eType type);
 
-  QString name() const;
+  virtual QString name() const = 0;
   virtual string_t basicStringName() const = 0;
   eType type() const;
 
@@ -60,6 +60,7 @@ class ExplorerServerItem : public IExplorerTreeItem {
  public:
   ExplorerServerItem(proxy::IServerSPtr server, TreeItem* parent);
 
+  virtual QString name() const override;
   virtual string_t basicStringName() const override;
   proxy::IServerSPtr server() const;
 
@@ -76,6 +77,7 @@ class ExplorerSentinelItem : public IExplorerTreeItem {
  public:
   ExplorerSentinelItem(proxy::ISentinelSPtr sentinel, TreeItem* parent);
 
+  virtual QString name() const override;
   virtual string_t basicStringName() const override;
 
   proxy::ISentinelSPtr sentinel() const;
@@ -88,6 +90,7 @@ class ExplorerClusterItem : public IExplorerTreeItem {
  public:
   ExplorerClusterItem(proxy::IClusterSPtr cluster, TreeItem* parent);
 
+  virtual QString name() const override;
   virtual string_t basicStringName() const override;
 
   proxy::IClusterSPtr cluster() const;
@@ -101,7 +104,9 @@ class ExplorerDatabaseItem : public IExplorerTreeItem {
  public:
   ExplorerDatabaseItem(proxy::IDatabaseSPtr db, ExplorerServerItem* parent);
 
+  virtual QString name() const override;
   virtual string_t basicStringName() const override;
+
   bool isDefault() const;
   size_t totalKeysCount() const;
   size_t loadedKeysCount() const;
@@ -130,7 +135,7 @@ class ExplorerDatabaseItem : public IExplorerTreeItem {
 class ExplorerKeyItem : public IExplorerTreeItem {
  public:
   ExplorerKeyItem(const core::NDbKValue& dbv,
-                  const string_t& ns_separator,
+                  const std::string& ns_separator,
                   proxy::NsDisplayStrategy ns_strategy,
                   IExplorerTreeItem* parent);
   ExplorerDatabaseItem* db() const;
@@ -143,7 +148,9 @@ class ExplorerKeyItem : public IExplorerTreeItem {
   core::NKey key() const;
   void setKey(const core::NKey& key);
 
+  virtual QString name() const override;
   virtual string_t basicStringName() const override;
+
   proxy::IServerSPtr server() const;
 
   void renameKey(const QString& newName);
@@ -153,22 +160,24 @@ class ExplorerKeyItem : public IExplorerTreeItem {
   void loadValueFromDb();
   void setTTL(core::ttl_t ttl);
 
-  string_t nsSeparator() const;
+  std::string nsSeparator() const;
 
  private:
   string_t fullName() const;
 
   core::NDbKValue dbv_;
-  const string_t ns_separator_;
+  const std::string ns_separator_;
   const proxy::NsDisplayStrategy ns_strategy_;
 };
 
 class ExplorerNSItem : public IExplorerTreeItem {
  public:
-  ExplorerNSItem(const string_t& name, const string_t& separator, IExplorerTreeItem* parent);
+  ExplorerNSItem(const string_t& name, const std::string& separator, IExplorerTreeItem* parent);
   ExplorerDatabaseItem* db() const;
 
+  virtual QString name() const override;
   virtual string_t basicStringName() const override;
+
   proxy::IServerSPtr server() const;
   size_t keysCount() const;
   std::vector<const ExplorerKeyItem*> getKeys() const;
@@ -179,7 +188,7 @@ class ExplorerNSItem : public IExplorerTreeItem {
 
  private:
   const string_t name_;
-  const string_t ns_separator_;
+  const std::string ns_separator_;
 };
 
 }  // namespace gui

@@ -44,9 +44,8 @@ namespace gui {
 
 KeyEditWidget::KeyEditWidget(const std::vector<common::Value::Type>& availible_types, QWidget* parent)
     : base_class(parent) {
-  QGridLayout* kvLayout = new QGridLayout;
+  QGridLayout* main_layout = new QGridLayout;
   type_label_ = new QLabel;
-  kvLayout->addWidget(type_label_, 0, 0);
   types_combo_box_ = new QComboBox;
   for (size_t i = 0; i < availible_types.size(); ++i) {
     common::Value::Type t = availible_types[i];
@@ -57,56 +56,55 @@ KeyEditWidget::KeyEditWidget(const std::vector<common::Value::Type>& availible_t
   typedef void (QComboBox::*ind)(int);
   VERIFY(
       connect(types_combo_box_, static_cast<ind>(&QComboBox::currentIndexChanged), this, &KeyEditWidget::changeType));
-  kvLayout->addWidget(types_combo_box_, 0, 1);
 
   // key layout
   key_label_ = new QLabel;
-  kvLayout->addWidget(key_label_, 1, 0);
   key_edit_ = new QLineEdit;
   key_edit_->setPlaceholderText("[key]");
-  kvLayout->addWidget(key_edit_, 1, 1);
 
   // value layout
   value_label_ = new QLabel;
-  kvLayout->addWidget(value_label_, 2, 0);
   value_edit_ = new QLineEdit;
   value_edit_->setPlaceholderText("[value]");
-  kvLayout->addWidget(value_edit_, 2, 1);
-  value_edit_->setVisible(true);
   VERIFY(connect(value_edit_, &QLineEdit::textChanged, this, &KeyEditWidget::keyChanged));
 
   json_value_edit_ = new FastoViewer;
-  kvLayout->addWidget(json_value_edit_, 2, 1);
-  json_value_edit_->setVisible(false);
   VERIFY(connect(json_value_edit_, &FastoViewer::textChanged, this, &KeyEditWidget::keyChanged));
 
   bool_value_edit_ = new QComboBox;
   bool_value_edit_->addItem("true");
   bool_value_edit_->addItem("false");
-  kvLayout->addWidget(bool_value_edit_, 2, 1);
-  bool_value_edit_->setVisible(false);
   VERIFY(connect(bool_value_edit_, &QComboBox::currentTextChanged, this, &KeyEditWidget::keyChanged));
 
   value_list_edit_ = new ListTypeWidget;
   // value_list_edit_->horizontalHeader()->hide();
   // value_list_edit_->verticalHeader()->hide();
-  kvLayout->addWidget(value_list_edit_, 2, 1);
-  value_list_edit_->setVisible(false);
-  VERIFY(connect(value_list_edit_, &ListTypeWidget::dataChangedSignal, this, &KeyEditWidget::keyChanged));
 
+  VERIFY(connect(value_list_edit_, &ListTypeWidget::dataChangedSignal, this, &KeyEditWidget::keyChanged));
   value_table_edit_ = new HashTypeWidget;
   // value_table_edit_->horizontalHeader()->hide();
   // value_table_edit_->verticalHeader()->hide();
-  kvLayout->addWidget(value_table_edit_, 2, 1);
-  value_table_edit_->setVisible(false);
+
   VERIFY(connect(value_table_edit_, &HashTypeWidget::dataChangedSignal, this, &KeyEditWidget::keyChanged));
 
   stream_table_edit_ = new StreamTypeWidget;
-  kvLayout->addWidget(stream_table_edit_, 2, 1);
-  stream_table_edit_->setVisible(false);
   VERIFY(connect(stream_table_edit_, &StreamTypeWidget::dataChangedSignal, this, &KeyEditWidget::keyChanged));
 
-  setLayout(kvLayout);
+  main_layout->addWidget(type_label_, 0, 0);
+  main_layout->addWidget(types_combo_box_, 0, 1);
+  main_layout->addWidget(key_label_, 1, 0);
+  main_layout->addWidget(key_edit_, 1, 1);
+  main_layout->addWidget(value_label_, 2, 0);
+  main_layout->addWidget(value_edit_, 2, 1);
+  main_layout->addWidget(json_value_edit_, 2, 1);
+  main_layout->addWidget(bool_value_edit_, 2, 1);
+  main_layout->addWidget(value_list_edit_, 2, 1);
+  main_layout->addWidget(value_table_edit_, 2, 1);
+  main_layout->addWidget(stream_table_edit_, 2, 1);
+
+  setLayout(main_layout);
+  // sync
+  changeType(0);
   retranslateUi();
 }
 

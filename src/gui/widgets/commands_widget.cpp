@@ -60,7 +60,7 @@ void CommandsWidget::addCommand(core::FastoObjectCommandIPtr command) {
 
 void CommandsWidget::showContextMenu(const QPoint& pt) {
   QMenu* menu = log_text_edit_->createStandardContextMenu();
-  QAction* clear = new QAction(translations::trClearAll, this);
+  QAction* clear = new QAction(translations::trClearAll, menu);
   VERIFY(connect(clear, &QAction::triggered, log_text_edit_, &QTextEdit::clear));
   menu->addAction(clear);
   clear->setEnabled(!log_text_edit_->toPlainText().isEmpty());

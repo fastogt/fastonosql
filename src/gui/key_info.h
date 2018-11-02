@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <fastonosql/core/db_key.h>
+#include <fastonosql/core/basic_types.h>
 
 namespace fastonosql {
 namespace gui {
@@ -27,20 +27,22 @@ class KeyInfo {
  public:
   typedef core::readable_string_t string_t;
   typedef std::vector<string_t> splited_namespaces_t;
-  KeyInfo(const core::key_t& key, const string_t& ns_separator);
+  typedef std::string ns_separator_t;
+
+  KeyInfo(const core::raw_key_t& key, const ns_separator_t& ns_separator);
 
   string_t keyName() const;
   string_t key() const;
   bool hasNamespace() const;
   size_t nsSplitedSize() const;
   splited_namespaces_t namespaces() const;
-  string_t nsSeparator() const;
+  ns_separator_t nsSeparator() const;
 
  private:
-  core::key_t key_;
+  core::raw_key_t key_;
   splited_namespaces_t splited_namespaces_;
   string_t key_name_;
-  string_t ns_separator_;
+  ns_separator_t ns_separator_;
 };
 
 }  // namespace gui

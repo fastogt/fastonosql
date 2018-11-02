@@ -27,7 +27,7 @@ namespace gui {
 
 class BaseQsciLexer;
 
-class BaseShell : public gui::FastoEditorShell {
+class BaseShell : public FastoEditorShell {
   Q_OBJECT
  public:
   std::vector<uint32_t> supportedVersions() const;

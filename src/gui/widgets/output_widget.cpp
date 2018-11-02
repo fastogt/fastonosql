@@ -117,7 +117,7 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget
   text_view_->setModel(common_model_);
 
   std::vector<common::Value::Type> types = core::GetSupportedValueTypes(server->GetType());
-  key_editor_ = new SaveKeyEditWidget(types, this);
+  key_editor_ = new SaveKeyEditWidget(types);
   key_editor_->setEnableKeyEdit(false);
   VERIFY(connect(key_editor_, &SaveKeyEditWidget::keyReadyToSave, this, &OutputWidget::createKeyFromEditor,
                  Qt::DirectConnection));

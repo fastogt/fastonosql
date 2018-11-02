@@ -241,6 +241,7 @@ common::Error GenSubscriptionStateRequest(const UserInfo& user_info, std::string
 
   const char* command_json_string = json_object_get_string(is_subscribed_json);
   *request = command_json_string;
+  json_object_put(cred_json);
   json_object_put(is_subscribed_json);
   return common::Error();
 }

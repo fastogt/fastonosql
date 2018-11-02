@@ -28,7 +28,7 @@
 namespace fastonosql {
 namespace gui {
 
-PropertyTableModel::PropertyTableModel(QObject* parent) : TableModel(parent) {}
+PropertyTableModel::PropertyTableModel(QObject* parent) : base_class(parent) {}
 
 QVariant PropertyTableModel::data(const QModelIndex& index, int role) const {
   if (!index.isValid()) {
