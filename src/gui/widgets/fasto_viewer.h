@@ -20,7 +20,7 @@
 
 #include "gui/widgets/fasto_editor.h"
 
-#include <common/types.h>
+#include <fastonosql/core/basic_types.h>
 
 class QLabel;
 class QComboBox;
@@ -38,12 +38,13 @@ enum OutputView : uint8_t {
   TO_UNICODE_VIEW,
   FROM_UNICODE_VIEW,
 
-  MSGPACK_VIEW,  // from
-  ZLIB_VIEW,     // from
-  LZ4_VIEW,      // from
-  BZIP2_VIEW,    // from
-  SNAPPY_VIEW,   // from
-  XML_VIEW       // raw
+  MSGPACK_VIEW,     // from
+  ZLIB_VIEW,        // from
+  SIZED_ZLIB_VIEW,  // from
+  LZ4_VIEW,         // from
+  BZIP2_VIEW,       // from
+  SNAPPY_VIEW,      // from
+  XML_VIEW          // raw
 };
 
 extern const std::vector<const char*> g_output_views_text;
@@ -51,8 +52,9 @@ extern const std::vector<const char*> g_output_views_text;
 class FastoViewer : public QWidget {
   Q_OBJECT
  public:
-  typedef common::char_buffer_t view_input_text_t;
-  typedef common::char_buffer_t view_output_text_t;
+  enum { is_lower_hex = true };
+  typedef core::readable_string_t view_input_text_t;
+  typedef core::readable_string_t view_output_text_t;
 
   explicit FastoViewer(QWidget* parent = Q_NULLPTR);
   virtual ~FastoViewer() override;
@@ -62,7 +64,6 @@ class FastoViewer : public QWidget {
 
   bool setText(const view_input_text_t& text);
 
-  void setViewText(const QString& text);
   void setError(const QString& error);
   void clearError();
 
@@ -87,6 +88,8 @@ class FastoViewer : public QWidget {
   virtual void changeEvent(QEvent* ev) override;
 
  private:
+  void setViewText(const view_input_text_t& text);
+
   bool isError() const;
 
   bool convertToView(const view_input_text_t& text, view_output_text_t* out) const;
@@ -104,8 +107,10 @@ class FastoViewer : public QWidget {
   QLabel* views_label_;
   QComboBox* views_combo_box_;
   QLabel* error_box_;
+  QLabel* note_box_;
 
-  mutable view_input_text_t last_valid_text_;
+  view_input_text_t last_valid_text_;
+  bool is_binary_;
 };
 
 }  // namespace gui

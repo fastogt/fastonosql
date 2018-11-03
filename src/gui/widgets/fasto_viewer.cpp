@@ -30,16 +30,22 @@
 #include <common/qt/convert2string.h>
 #include <common/qt/utils_qt.h>  // for item
 
+#include <fastonosql/core/types.h>
+
 #include "gui/text_converter.h"
 
 #include "translations/global.h"
+
+namespace {
+const QString trNoteInHexedView = QObject::tr("Note: value is hexed (contains unreadable symbols).");
+}
 
 namespace fastonosql {
 namespace gui {
 
 namespace {
 
-bool convertFromViewImplRoutine(OutputView view_method, const convert_in_t& val, convert_out_t* out) {
+bool convertFromViewImplRoutine(OutputView view_method, const convert_in_t& val, convert_in_t* out) {
   if (!out || val.empty()) {
     return false;
   }
@@ -61,6 +67,8 @@ bool convertFromViewImplRoutine(OutputView view_method, const convert_in_t& val,
     return string_to_msgpack(val, out);
   } else if (view_method == ZLIB_VIEW) {
     return string_to_zlib(val, out);
+  } else if (view_method == SIZED_ZLIB_VIEW) {
+    return string_to_sized_zlib(val, out);
   } else if (view_method == LZ4_VIEW) {
     return string_to_lz4(val, out);
   } else if (view_method == BZIP2_VIEW) {
@@ -76,8 +84,8 @@ bool convertFromViewImplRoutine(OutputView view_method, const convert_in_t& val,
   return false;
 }
 
-bool convertFromViewImpl(OutputView view_method, const QString& val, convert_out_t* out) {
-  return convertFromViewImplRoutine(view_method, common::ConvertToCharBytes(val), out);
+bool convertFromViewImpl(OutputView view_method, const convert_out_t& val, convert_in_t* out) {
+  return convertFromViewImplRoutine(view_method, val, out);
 }
 
 bool convertToViewImpl(OutputView view_method, const convert_in_t& text, convert_out_t* out) {
@@ -102,6 +110,8 @@ bool convertToViewImpl(OutputView view_method, const convert_in_t& text, convert
     return string_from_msgpack(text, out);
   } else if (view_method == ZLIB_VIEW) {
     return string_from_zlib(text, out);
+  } else if (view_method == SIZED_ZLIB_VIEW) {
+    return string_from_sized_zlib(text, out);
   } else if (view_method == LZ4_VIEW) {
     return string_from_lz4(text, out);
   } else if (view_method == BZIP2_VIEW) {
@@ -119,11 +129,17 @@ bool convertToViewImpl(OutputView view_method, const convert_in_t& text, convert
 
 }  // namespace
 
-const std::vector<const char*> g_output_views_text = {"Raw",        "Json",         "To Hex",         "From Hex",
-                                                      "To Unicode", "From Unicode", "MsgPack (Beta)", "Gzip",
-                                                      "LZ4",        "BZip2",        "Snappy",         "Xml"};
+const std::vector<const char*> g_output_views_text = {
+    "Raw",  "Json",       "To Hex", "From Hex", "To Unicode", "From Unicode", "MsgPack (Beta)",
+    "Zlib", "Sized Zlib", "LZ4",    "BZip2",    "Snappy",     "Xml"};
 
-FastoViewer::FastoViewer(QWidget* parent) : QWidget(parent), view_method_(RAW_VIEW), last_valid_text_() {
+FastoViewer::FastoViewer(QWidget* parent)
+    : QWidget(parent),
+      view_method_(RAW_VIEW),
+      error_box_(nullptr),
+      note_box_(nullptr),
+      last_valid_text_(),
+      is_binary_(false) {
   text_json_editor_ = new FastoEditor;
   json_lexer_ = new QsciLexerJSON;
   xml_lexer_ = new QsciLexerXML;
@@ -136,6 +152,9 @@ FastoViewer::FastoViewer(QWidget* parent) : QWidget(parent), view_method_(RAW_VI
 
   error_box_ = new QLabel;
   error_box_->setVisible(false);
+
+  note_box_ = new QLabel(trNoteInHexedView);
+  note_box_->setVisible(false);
 
   views_label_ = new QLabel;
   views_combo_box_ = new QComboBox;
@@ -154,6 +173,7 @@ FastoViewer::FastoViewer(QWidget* parent) : QWidget(parent), view_method_(RAW_VI
   hlayout->addWidget(views_label_);
   hlayout->addWidget(views_combo_box_);
 
+  ehlayout->addWidget(note_box_);
   ehlayout->addWidget(error_box_);
   ehlayout->addLayout(hlayout);
   main->addLayout(ehlayout);
@@ -189,19 +209,17 @@ void FastoViewer::setReadOnly(bool ro) {
 }
 
 void FastoViewer::viewChange(int view_method) {
-  view_input_text_t last_valid = text();
   view_method_ = static_cast<OutputView>(view_method);
   syncEditors();
-  setText(last_valid);
+  setText(last_valid_text_);
   emit viewChanged(view_method);
 }
 
 void FastoViewer::textChange() {
-  if (isError()) {
-    view_output_text_t str_text;
-    if (convertFromView(&str_text)) {
-      clearError();
-    }
+  view_output_text_t str_text;
+  if (convertFromView(&str_text)) {
+    clearError();
+    last_valid_text_ = str_text;
   }
   emit textChanged();
 }
@@ -210,6 +228,7 @@ void FastoViewer::clear() {
   text_json_editor_->clear();
   clearError();
   last_valid_text_.clear();
+  is_binary_ = false;
 }
 
 OutputView FastoViewer::viewMethod() const {
@@ -217,13 +236,6 @@ OutputView FastoViewer::viewMethod() const {
 }
 
 FastoViewer::view_input_text_t FastoViewer::text() const {
-  if (!isError()) {
-    view_output_text_t str_text;
-    if (convertFromView(&str_text)) {
-      last_valid_text_ = str_text;
-    }
-  }
-
   return last_valid_text_;
 }
 
@@ -232,18 +244,30 @@ bool FastoViewer::setText(const view_input_text_t& text) {
   if (!convertToView(text, &result_str)) {
     QString method_text = g_output_views_text[view_method_];
     setError(translations::trCannotConvertPattern1ArgsS.arg(method_text));
+    note_box_->setVisible(false);
     return false;
   }
 
-  QString result;
-  common::ConvertFromBytes(result_str, &result);
-  setViewText(result);
+  last_valid_text_ = text;
+  setViewText(result_str);
   return true;
 }
 
-void FastoViewer::setViewText(const QString& text) {
+void FastoViewer::setViewText(const view_input_text_t& text) {
   clearError();
-  text_json_editor_->setText(text);
+  QString qtext;
+  is_binary_ = core::detail::is_binary_data(text);
+  if (is_binary_) {
+    convert_in_t hexed;
+    bool is_ok = common::utils::xhex::encode(text, is_lower_hex, &hexed);
+    DCHECK(is_ok) << "Can't hexed: " << text;
+    common::ConvertFromBytes(hexed, &qtext);
+    note_box_->setVisible(true);
+  } else {
+    common::ConvertFromBytes(text, &qtext);
+    note_box_->setVisible(false);
+  }
+  text_json_editor_->setText(qtext);
 }
 
 bool FastoViewer::isReadOnly() const {
@@ -281,8 +305,16 @@ bool FastoViewer::convertToView(const view_input_text_t& text, view_output_text_
 }
 
 bool FastoViewer::convertFromView(view_output_text_t* out) const {
-  QString text = text_json_editor_->text();
-  return convertFromViewImpl(view_method_, text, out);
+  QString cur_text = text_json_editor_->text();
+  convert_out_t cout;
+  if (is_binary_) {
+    convert_in_t cin = common::ConvertToCharBytes(cur_text);
+    common::utils::xhex::decode(cin, &cout);
+  } else {
+    cout = common::ConvertToCharBytes(cur_text);
+  }
+
+  return convertFromViewImpl(view_method_, cout, out);
 }
 
 }  // namespace gui

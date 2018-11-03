@@ -199,9 +199,7 @@ void FastoEditorModelOutput::layoutChanged() {
     return;
   }
 
-  int vm = editor_->viewMethod();
-  QString methodText = g_output_views_text[vm];
-  QString result;
+  core::readable_string_t result;
   for (size_t i = 0; i < root->childrenCount(); ++i) {
     FastoCommonItem* child = dynamic_cast<FastoCommonItem*>(root->child(i));  // +
     if (!child) {
@@ -209,51 +207,17 @@ void FastoEditorModelOutput::layoutChanged() {
       continue;
     }
 
-    if (vm == JSON_VIEW) {
-      QString json = toJson(child);
-      result += common::EscapedText(json);
-    } else if (vm == RAW_VIEW) {
-      QString raw = toRaw(child);
-      result += common::EscapedText(raw);
-    } else if (vm == TO_HEX_VIEW) {
-      QString qhexed = toHex(child);
-      result += qhexed;
-    } else if (vm == FROM_HEX_VIEW) {
-      QString qhexed = fromHex(child);
-      result += qhexed;
-    } else if (vm == TO_UNICODE_VIEW) {
-      QString qunicoded = toUnicode(child);
-      result += qunicoded;
-    } else if (vm == FROM_UNICODE_VIEW) {
-      QString qunicoded = fromUnicode(child);
-      result += qunicoded;
-    } else if (vm == MSGPACK_VIEW) {
-      QString msgp = fromMsgPack(child);
-      result += common::EscapedText(msgp);
-    } else if (vm == ZLIB_VIEW) {
-      QString gzip = fromGzip(child);
-      result += common::EscapedText(gzip);
-    } else if (vm == LZ4_VIEW) {
-      QString lz4 = fromLZ4(child);
-      result += common::EscapedText(lz4);
-    } else if (vm == BZIP2_VIEW) {
-      QString bzip2 = fromBZip2(child);
-      result += common::EscapedText(bzip2);
-    } else if (vm == SNAPPY_VIEW) {
-      QString snap = fromSnappy(child);
-      result += common::EscapedText(snap);
-    } else if (vm == XML_VIEW) {
-      QString raw = toXml(child);
-      result += common::EscapedText(raw);
-    }
+    result += toRaw(child);
+    result += END_LINE_CHAR;
   }
 
-  if (result.isEmpty()) {
-    result = translations::trCannotConvertPattern1ArgsS.arg(methodText);
-    editor_->setError(result);
-  } else {
-    editor_->setViewText(result);
+  int vm = editor_->viewMethod();
+  if (result.empty()) {
+    editor_->setError(translations::trCannotConvertPattern1ArgsS.arg(QString(g_output_views_text[vm])));
+    return;
   }
+
+  editor_->setText(result);
 }
 
 }  // namespace gui

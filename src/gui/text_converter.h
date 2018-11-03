@@ -18,13 +18,13 @@
 
 #pragma once
 
-#include <fastonosql/core/types.h>
+#include <fastonosql/core/basic_types.h>
 
 namespace fastonosql {
 namespace gui {
 
-typedef core::command_buffer_t convert_in_t;
-typedef core::command_buffer_t convert_out_t;
+typedef core::readable_string_t convert_in_t;
+typedef core::readable_string_t convert_out_t;
 
 bool string_from_json(const convert_in_t& value, convert_out_t* out);
 bool string_to_json(const convert_in_t& data, convert_out_t* out);
@@ -37,6 +37,9 @@ bool string_to_unicode(const convert_in_t& data, convert_out_t* out);
 
 bool string_from_snappy(const convert_in_t& value, convert_out_t* out);
 bool string_to_snappy(const convert_in_t& data, convert_out_t* out);
+
+bool string_from_sized_zlib(const convert_in_t& value, convert_out_t* out);
+bool string_to_sized_zlib(const convert_in_t& data, convert_out_t* out);
 
 bool string_from_zlib(const convert_in_t& value, convert_out_t* out);
 bool string_to_zlib(const convert_in_t& data, convert_out_t* out);
