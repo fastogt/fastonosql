@@ -67,8 +67,8 @@ bool convertFromViewImplRoutine(OutputView view_method, const convert_in_t& val,
     return string_to_msgpack(val, out);
   } else if (view_method == ZLIB_VIEW) {
     return string_to_zlib(val, out);
-  } else if (view_method == SIZED_ZLIB_VIEW) {
-    return string_to_sized_zlib(val, out);
+  } else if (view_method == GZIP_VIEW) {
+    return string_to_gzip(val, out);
   } else if (view_method == LZ4_VIEW) {
     return string_to_lz4(val, out);
   } else if (view_method == BZIP2_VIEW) {
@@ -110,8 +110,8 @@ bool convertToViewImpl(OutputView view_method, const convert_in_t& text, convert
     return string_from_msgpack(text, out);
   } else if (view_method == ZLIB_VIEW) {
     return string_from_zlib(text, out);
-  } else if (view_method == SIZED_ZLIB_VIEW) {
-    return string_from_sized_zlib(text, out);
+  } else if (view_method == GZIP_VIEW) {
+    return string_from_gzip(text, out);
   } else if (view_method == LZ4_VIEW) {
     return string_from_lz4(text, out);
   } else if (view_method == BZIP2_VIEW) {
@@ -130,8 +130,8 @@ bool convertToViewImpl(OutputView view_method, const convert_in_t& text, convert
 }  // namespace
 
 const std::vector<const char*> g_output_views_text = {
-    "Raw",  "Json",       "To Hex", "From Hex", "To Unicode", "From Unicode", "MsgPack (Beta)",
-    "Zlib", "Sized Zlib", "LZ4",    "BZip2",    "Snappy",     "Xml"};
+    "Raw",  "Json", "To Hex", "From Hex", "To Unicode", "From Unicode", "MsgPack (Beta)",
+    "Zlib", "GZip", "LZ4",    "BZip2",    "Snappy",     "Xml"};
 
 FastoViewer::FastoViewer(QWidget* parent)
     : QWidget(parent),

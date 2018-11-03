@@ -1,6 +1,7 @@
-1.21.2 /
+1.21.2 / November 2, 2018
 [Alexandr Topilski]
 - Hexed values if symbols can't be displayed
+- Zlib/GZip views
 
 1.21.1 / November 2, 2018
 [Alexandr Topilski]

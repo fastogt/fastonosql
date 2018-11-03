@@ -196,34 +196,6 @@ bool string_to_snappy(const convert_in_t& data, convert_out_t* out) {
   return true;
 }
 
-bool string_from_sized_zlib(const convert_in_t& value, convert_out_t* out) {
-  common::CompressZlibEDcoder enc;
-  common::StringPiece piece_data(value.data(), value.size());
-
-  std::string sout;
-  common::Error err = enc.Decode(piece_data, &sout);
-  if (err) {
-    return false;
-  }
-
-  *out = common::ConvertToCharBytes(sout);
-  return true;
-}
-
-bool string_to_sized_zlib(const convert_in_t& data, convert_out_t* out) {
-  common::CompressZlibEDcoder enc;
-  common::StringPiece piece_data(data.data(), data.size());
-
-  std::string sout;
-  common::Error err = enc.Encode(piece_data, &sout);
-  if (err) {
-    return false;
-  }
-
-  *out = common::ConvertToCharBytes(sout);
-  return true;
-}
-
 bool string_from_zlib(const convert_in_t& value, convert_out_t* out) {
   common::CompressZlibEDcoder enc(false, common::CompressZlibEDcoder::ZLIB_DEFLATE);
   common::StringPiece piece_data(value.data(), value.size());
@@ -252,6 +224,33 @@ bool string_to_zlib(const convert_in_t& data, convert_out_t* out) {
   return true;
 }
 
+bool string_from_gzip(const convert_in_t& value, convert_out_t* out) {
+  common::CompressZlibEDcoder enc(false, common::CompressZlibEDcoder::GZIP_DEFLATE);
+  common::StringPiece piece_data(value.data(), value.size());
+
+  std::string sout;
+  common::Error err = enc.Decode(piece_data, &sout);
+  if (err) {
+    return false;
+  }
+
+  *out = common::ConvertToCharBytes(sout);
+  return true;
+}
+
+bool string_to_gzip(const convert_in_t& data, convert_out_t* out) {
+  common::CompressZlibEDcoder enc(false, common::CompressZlibEDcoder::GZIP_DEFLATE);
+  common::StringPiece piece_data(data.data(), data.size());
+
+  std::string sout;
+  common::Error err = enc.Encode(piece_data, &sout);
+  if (err) {
+    return false;
+  }
+
+  *out = common::ConvertToCharBytes(sout);
+  return true;
+}
 
 bool string_from_lz4(const convert_in_t& value, convert_out_t* out) {
   common::CompressLZ4EDcoder enc;
@@ -282,7 +281,7 @@ bool string_to_lz4(const convert_in_t& data, convert_out_t* out) {
 }
 
 bool string_from_bzip2(const convert_in_t& value, convert_out_t* out) {
-  common::CompressBZip2EDcoder enc;
+  common::CompressBZip2EDcoder enc(false);
   common::StringPiece piece_data(value.data(), value.size());
 
   std::string sout;
@@ -296,7 +295,7 @@ bool string_from_bzip2(const convert_in_t& value, convert_out_t* out) {
 }
 
 bool string_to_bzip2(const convert_in_t& data, convert_out_t* out) {
-  common::CompressBZip2EDcoder enc;
+  common::CompressBZip2EDcoder enc(false);
   common::StringPiece piece_data(data.data(), data.size());
 
   std::string sout;
