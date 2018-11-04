@@ -35,6 +35,7 @@ bool string_to_hex(const convert_in_t& data, convert_out_t* out);
 bool string_from_unicode(const convert_in_t& value, convert_out_t* out);
 bool string_to_unicode(const convert_in_t& data, convert_out_t* out);
 
+// snappy
 bool string_from_snappy(const convert_in_t& value, convert_out_t* out);
 bool string_to_snappy(const convert_in_t& data, convert_out_t* out);
 
@@ -46,6 +47,7 @@ bool string_to_zlib(const convert_in_t& data, convert_out_t* out);
 bool string_from_gzip(const convert_in_t& value, convert_out_t* out);
 bool string_to_gzip(const convert_in_t& data, convert_out_t* out);
 
+// lz4
 bool string_from_lz4(const convert_in_t& value, convert_out_t* out);
 bool string_to_lz4(const convert_in_t& data, convert_out_t* out);
 

@@ -1,4 +1,8 @@
-1.21.2 / November 2, 2018
+1.21.3 /
+[Alexandr Topilski]
+- LZ4/Snappy/Bzip2 views
+
+1.21.2 / November 3, 2018
 [Alexandr Topilski]
 - Hexed values if symbols can't be displayed
 - Zlib/GZip views
