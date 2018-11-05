@@ -191,6 +191,16 @@ def test():
             bzip2_little, bzip2_big, lz4_little, lz4_big, snappy_little, snappy_big, space_value, simple_value,
             bytes_value, unicode_value)
 
+    # set
+    set_key = 'set'
+    r.delete(set_key)
+    r.sadd(set_key, 'one', 'two', 'three', 4)
+
+    # zset
+    zset_key = 'zset'
+    r.delete(zset_key)
+    r.zadd(zset_key, 2, 'two', 3, 'three')
+
     # hash
     hash_key = 'hash'
     hash2_key = 'hash2'
@@ -204,11 +214,6 @@ def test():
     r.incr(incr_key)
     decr_key = 'dec'
     r.incr(decr_key)
-
-    # set
-    set_key = 'set'
-    r.delete(set_key)
-    r.zadd(set_key, 2, 'two', 3, 'three')
 
     # stream
     stream_key = 'stream'
