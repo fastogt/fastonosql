@@ -648,7 +648,7 @@ void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
     return;
   }
 
-  bool updatedComboIndex = false;
+  bool updated_combo_index = false;
   for (int i = 0; i < commands_version_api_->count(); ++i) {
     QVariant var = commands_version_api_->itemData(i);
     uint32_t version = qvariant_cast<uint32_t>(var);
@@ -658,10 +658,15 @@ void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
     }
 
     if (version >= serv_vers) {
-      if (!updatedComboIndex) {
-        updatedComboIndex = true;
-        commands_version_api_->setCurrentIndex(i);
-        commands_version_api_->setItemIcon(i, gui::GuiFactory::GetInstance().successIcon());
+      if (!updated_combo_index) {
+        updated_combo_index = true;
+        if (version == serv_vers) {
+          commands_version_api_->setCurrentIndex(i);
+          commands_version_api_->setItemIcon(i, gui::GuiFactory::GetInstance().successIcon());
+        } else {
+          commands_version_api_->setCurrentIndex(i - 1);
+          commands_version_api_->setItemIcon(i, gui::GuiFactory::GetInstance().failIcon());
+        }
       } else {
         commands_version_api_->setItemIcon(i, gui::GuiFactory::GetInstance().failIcon());
       }

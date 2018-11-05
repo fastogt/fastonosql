@@ -159,5 +159,59 @@ def test():
     snappy_big = test_routine(snappy_compress, big_data)
     r.set('snappy_big', snappy_big)
 
+    # double name
+    space_key = 'hello motto'
+    space_value = 'hello motto'
+    r.set(space_key, space_value)
+
+    # namespaces
+    namespace_value = 'test:test'
+    simple_value = 'pest'
+    r.set(namespace_value, simple_value)
+
+    # binary
+    bytes_key = b'\x11\x12\x13\x14\x15\x01'
+    bytes_value = b'\x11\x12\x13\x14\x15\x01'
+    r.set(bytes_key, bytes_value)
+
+    # unicode
+    unicode_key = '\u751f\u3080\u304e\u3000\u751f\u3054\u3081\u3000\u751f\u305f\u307e\u3054'
+    unicode_value = '\u751f\u3080\u304e\u3000\u751f\u3054\u3081\u3000\u751f\u305f\u307e\u3054'
+    r.set(unicode_key, unicode_value)
+
+    # json
+    json_key = 'json'
+    json_value = '{"count" : 1}'
+    r.set(json_key, json_value)
+
+    # array
+    array_key = 'array'
+    r.delete(array_key)
+    r.lpush(array_key, zlib_little, zlib_big, gzip_little, gzip_big,
+            bzip2_little, bzip2_big, lz4_little, lz4_big, snappy_little, snappy_big, space_value, simple_value,
+            bytes_value, unicode_value)
+
+    # hash
+    hash_key = 'hash'
+    hash2_key = 'hash2'
+    r.delete(hash_key)
+    r.delete(hash2_key)
+    r.hset(hash_key, 'some', simple_value)
+    r.hmset(hash2_key, {'some': simple_value, 'pam': json_value})
+
+    # incr/decr
+    incr_key = 'inc'
+    r.incr(incr_key)
+    decr_key = 'dec'
+    r.incr(decr_key)
+
+    # set
+    set_key = 'set'
+    r.delete(set_key)
+    r.zadd(set_key, 2, 'two', 3, 'three')
+
+    # stream
+    stream_key = 'stream'
+
 
 test()
