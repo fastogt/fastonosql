@@ -38,9 +38,13 @@ QString FastoCommonItem::key() const {
   return qkey;
 }
 
-core::ReadableString FastoCommonItem::coreValue() const {
-  core::NValue nval = key_.GetValue();
-  return nval.GetReadableValue(delimiter_);
+QString FastoCommonItem::readableValue() const {
+  const core::NValue nval = key_.GetValue();
+  const core::readable_string_t readable = nval.GetForCommandLine(delimiter_);
+
+  QString qval;
+  common::ConvertFromBytes(readable, &qval);
+  return qval;
 }
 
 void FastoCommonItem::setValue(core::NValue val) {
@@ -74,7 +78,7 @@ core::readable_string_t toRaw(FastoCommonItem* item) {
   }
 
   if (!item->childrenCount()) {
-    const auto val = item->coreValue();
+    const auto val = item->nvalue();
     return val.GetData();
   }
 

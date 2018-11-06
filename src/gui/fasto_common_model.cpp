@@ -68,10 +68,7 @@ QVariant FastoCommonModel::data(const QModelIndex& index, int role) const {
     if (col == FastoCommonItem::eKey) {
       result = node->key();
     } else if (col == FastoCommonItem::eValue) {
-      const auto val = node->coreValue();
-      QString res;
-      common::ConvertFromBytes(val.GetHumanReadable(), &res);
-      result = res;
+      result = node->readableValue();
     } else if (col == FastoCommonItem::eType) {
       QString qtype = core::GetTypeName(node->type());
       result = qtype;

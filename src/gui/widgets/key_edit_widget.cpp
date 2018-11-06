@@ -129,7 +129,7 @@ void KeyEditWidget::initialize(const core::NDbKValue& key) {
   QString qkey;
   core::NKey nkey = key.GetKey();
   core::key_t raw_key = nkey.GetKey();
-  if (common::ConvertFromBytes(raw_key.GetHumanReadable(), &qkey)) {
+  if (common::ConvertFromBytes(raw_key.GetForCommandLine(), &qkey)) {
     key_edit_->setText(qkey);
   }
 

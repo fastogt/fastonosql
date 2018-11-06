@@ -37,7 +37,7 @@ class FastoCommonItem : public common::qt::gui::TreeItem {
                   void* internalPointer);
 
   QString key() const;
-  core::ReadableString coreValue() const;
+  QString readableValue() const;
 
   common::Value::Type type() const;
   core::NValue nvalue() const;

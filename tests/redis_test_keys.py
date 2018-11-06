@@ -187,8 +187,9 @@ def test():
     # array
     array_key = 'array'
     r.delete(array_key)
+    # don't wanna for array: snappy_little
     r.lpush(array_key, zlib_little, zlib_big, gzip_little, gzip_big,
-            bzip2_little, bzip2_big, lz4_little, lz4_big, snappy_little, snappy_big, space_value, simple_value,
+            bzip2_little, bzip2_big, lz4_little, lz4_big, snappy_big, space_value, simple_value,
             bytes_value, unicode_value)
 
     # set
