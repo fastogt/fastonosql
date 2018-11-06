@@ -58,5 +58,8 @@ bool string_to_bzip2(const convert_in_t& data, convert_out_t* out);
 bool string_from_msgpack(const convert_in_t& value, convert_out_t* out);
 bool string_to_msgpack(const convert_in_t& data, convert_out_t* out);
 
+bool string_from_base64(const convert_in_t& value, convert_out_t* out);
+bool string_to_base64(const convert_in_t& data, convert_out_t* out);
+
 }  // namespace gui
 }  // namespace fastonosql

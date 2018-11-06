@@ -4,6 +4,7 @@ import zlib
 import bz2
 import lz4.block
 import snappy
+import base64
 import redis
 
 from abc import ABCMeta, abstractmethod
@@ -173,6 +174,16 @@ def test():
     bytes_key = b'\x11\x12\x13\x14\x15\x01'
     bytes_value = b'\x11\x12\x13\x14\x15\x01'
     r.set(bytes_key, bytes_value)
+
+    # hex
+    hex_key = 'hex'
+    hex_value = '\\x64\\x65\\x61\\x64\\x62\\x65\\x65\\x66'
+    r.set(hex_key, hex_value)
+
+    # base64
+    base64_key = 'base64'
+    base64_value = base64.b64encode(base64_key)
+    r.set(base64_key, base64_value)
 
     # unicode
     unicode_key = '\u751f\u3080\u304e\u3000\u751f\u3054\u3081\u3000\u751f\u305f\u307e\u3054'

@@ -20,6 +20,7 @@
 
 #include <json-c/json_tokener.h>
 
+#include <common/text_decoders/base64_edcoder.h>
 #include <common/text_decoders/compress_bzip2_edcoder.h>   // for CompressEDcoder
 #include <common/text_decoders/compress_lz4_edcoder.h>     // for CompressEDcoder
 #include <common/text_decoders/compress_snappy_edcoder.h>  // for CompressEDcoder
@@ -324,6 +325,34 @@ bool string_from_msgpack(const convert_in_t& value, convert_out_t* out) {
 
 bool string_to_msgpack(const convert_in_t& data, convert_out_t* out) {
   common::MsgPackEDcoder enc;
+  common::StringPiece piece_data(data.data(), data.size());
+
+  std::string sout;
+  common::Error err = enc.Encode(piece_data, &sout);
+  if (err) {
+    return false;
+  }
+
+  *out = common::ConvertToCharBytes(sout);
+  return true;
+}
+
+bool string_from_base64(const convert_in_t& value, convert_out_t* out) {
+  common::Base64EDcoder enc;
+  common::StringPiece piece_data(value.data(), value.size());
+
+  std::string sout;
+  common::Error err = enc.Decode(piece_data, &sout);
+  if (err) {
+    return false;
+  }
+
+  *out = common::ConvertToCharBytes(sout);
+  return true;
+}
+
+bool string_to_base64(const convert_in_t& data, convert_out_t* out) {
+  common::Base64EDcoder enc;
   common::StringPiece piece_data(data.data(), data.size());
 
   std::string sout;

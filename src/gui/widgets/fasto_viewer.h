@@ -35,6 +35,9 @@ enum OutputView : uint8_t {
   TO_HEX_VIEW,
   FROM_HEX_VIEW,
 
+  TO_BASE64_VIEW,
+  FROM_BASE64_VIEW,
+
   TO_UNICODE_VIEW,
   FROM_UNICODE_VIEW,
 

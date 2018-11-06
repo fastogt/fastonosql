@@ -59,6 +59,10 @@ bool convertFromViewImplRoutine(OutputView view_method, const convert_in_t& val,
     return string_from_hex(val, out);
   } else if (view_method == FROM_HEX_VIEW) {
     return string_to_hex(val, out);
+  } else if (view_method == TO_BASE64_VIEW) {
+    return string_from_base64(val, out);
+  } else if (view_method == FROM_BASE64_VIEW) {
+    return string_to_base64(val, out);
   } else if (view_method == TO_UNICODE_VIEW) {
     return string_from_unicode(val, out);
   } else if (view_method == FROM_UNICODE_VIEW) {
@@ -102,6 +106,10 @@ bool convertToViewImpl(OutputView view_method, const convert_in_t& text, convert
     return string_to_hex(text, out);
   } else if (view_method == FROM_HEX_VIEW) {
     return string_from_hex(text, out);
+  } else if (view_method == TO_BASE64_VIEW) {
+    return string_to_base64(text, out);
+  } else if (view_method == FROM_BASE64_VIEW) {
+    return string_from_base64(text, out);
   } else if (view_method == TO_UNICODE_VIEW) {
     return string_to_unicode(text, out);
   } else if (view_method == FROM_UNICODE_VIEW) {
@@ -130,8 +138,8 @@ bool convertToViewImpl(OutputView view_method, const convert_in_t& text, convert
 }  // namespace
 
 const std::vector<const char*> g_output_views_text = {
-    "Raw",  "Json", "To Hex", "From Hex", "To Unicode", "From Unicode", "MsgPack (Beta)",
-    "Zlib", "GZip", "LZ4",    "BZip2",    "Snappy",     "Xml"};
+    "Raw",  "Json", "To Hex", "From Hex", "To Base64", "From Base64", "To Unicode", "From Unicode", "MsgPack (Beta)",
+    "Zlib", "GZip", "LZ4",    "BZip2",    "Snappy",    "Xml"};
 
 FastoViewer::FastoViewer(QWidget* parent)
     : QWidget(parent),
