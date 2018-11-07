@@ -81,7 +81,7 @@ class IDriver : public QObject, public core::CDBConnectionClient {
 
   void KeyRemoved(core::NKey key);
   void KeyAdded(core::NDbKValue key);
-  void KeyRenamed(core::NKey key, core::key_t new_name);
+  void KeyRenamed(core::NKey key, core::nkey_t new_name);
   void KeyLoaded(core::NDbKValue key);
   void KeyTTLChanged(core::NKey key, core::ttl_t ttl);
   void KeyTTLLoaded(core::NKey key, core::ttl_t ttl);
@@ -154,7 +154,7 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   virtual void OnRemovedKeys(const core::NKeys& keys) override;
   virtual void OnAddedKey(const core::NDbKValue& key) override;
   virtual void OnLoadedKey(const core::NDbKValue& key) override;
-  virtual void OnRenamedKey(const core::NKey& key, const core::key_t& new_key) override;
+  virtual void OnRenamedKey(const core::NKey& key, const core::nkey_t& new_key) override;
   virtual void OnChangedKeyTTL(const core::NKey& key, core::ttl_t ttl) override;
   virtual void OnLoadedKeyTTL(const core::NKey& key, core::ttl_t ttl) override;
   virtual void OnQuited() override;

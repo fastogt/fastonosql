@@ -252,9 +252,9 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         core::command_buffer_t key;
         bool isok = ar->GetString(i, &key);
         if (isok) {
-          core::key_t key_str(key);
-          core::NKey k(key_str);
-          core::NDbKValue dbv(k, core::NValue());
+          const core::nkey_t key_str(key);
+          const core::NKey k(key_str);
+          const core::NDbKValue dbv(k, core::NValue());
           core::command_buffer_writer_t wr_type;
           wr_type << REDIS_TYPE_COMMAND " " << key_str.GetForCommandLine();
           cmds.push_back(CreateCommandFast(wr_type.str(), core::C_INNER));

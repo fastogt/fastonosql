@@ -127,8 +127,8 @@ void KeyEditWidget::initialize(const core::NDbKValue& key) {
 
   // sync keyname box
   QString qkey;
-  core::NKey nkey = key.GetKey();
-  core::key_t raw_key = nkey.GetKey();
+  const auto nkey = key.GetKey();
+  const auto raw_key = nkey.GetKey();
   if (common::ConvertFromBytes(raw_key.GetForCommandLine(), &qkey)) {
     key_edit_->setText(qkey);
   }
@@ -422,7 +422,7 @@ bool KeyEditWidget::getKey(core::NDbKValue* key) const {
     return false;
   }
 
-  const core::key_t ks = common::ConvertToCharBytes(key_name);
+  const core::nkey_t ks = common::ConvertToCharBytes(key_name);
   *key = core::NDbKValue(core::NKey(ks), core::NValue(obj));
   return true;
 }

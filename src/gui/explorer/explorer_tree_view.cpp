@@ -1125,7 +1125,7 @@ void ExplorerTreeView::addKey(core::IDataBaseInfoSPtr db, core::NDbKValue key) {
   source_model_->addKey(serv, db, key, ns, ns_strategy);
 }
 
-void ExplorerTreeView::renameKey(core::IDataBaseInfoSPtr db, core::NKey key, core::key_t new_name) {
+void ExplorerTreeView::renameKey(core::IDataBaseInfoSPtr db, core::NKey key, core::nkey_t new_name) {
   proxy::IServer* serv = qobject_cast<proxy::IServer*>(sender());
   CHECK(serv);
 

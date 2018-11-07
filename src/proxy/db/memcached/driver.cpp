@@ -172,7 +172,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
       for (size_t i = 0; i < ar->GetSize(); ++i) {
         core::command_buffer_t key_str;
         if (ar->GetString(i, &key_str)) {
-          core::key_t key(key_str);
+          const core::nkey_t key(key_str);
           core::NKey k(key);
           core::command_buffer_writer_t wr;
           wr << DB_GET_TTL_COMMAND " " << key.GetHumanReadable();  // emulate log execution

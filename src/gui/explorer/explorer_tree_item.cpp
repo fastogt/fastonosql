@@ -470,8 +470,8 @@ std::string ExplorerKeyItem::nsSeparator() const {
 
 ExplorerKeyItem::string_t ExplorerKeyItem::fullName() const {
   const core::NKey key = dbv_.GetKey();
-  const core::key_t raw_key = key.GetKey();
-  return raw_key.GetHumanReadable();
+  const auto nkey = key.GetKey();
+  return nkey.GetHumanReadable();
 }
 
 ExplorerNSItem::ExplorerNSItem(const string_t& name, const std::string& separator, IExplorerTreeItem* parent)

@@ -78,7 +78,7 @@ const struct RegisterTypes {
     qRegisterMetaType<core::IDataBaseInfoSPtr>("core::IDataBaseInfoSPtr");
     qRegisterMetaType<core::ttl_t>("core::ttl_t");
     qRegisterMetaType<core::command_buffer_t>("core::command_buffer_t");
-    qRegisterMetaType<core::key_t>("core::key_t");
+    qRegisterMetaType<core::nkey_t>("core::nkey_t");
     qRegisterMetaType<core::ServerInfoSnapShoot>("core::ServerInfoSnapShoot");
   }
 } reg_type;
@@ -427,10 +427,10 @@ void IDriver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestE
       for (size_t i = 0; i < ar->GetSize(); ++i) {
         core::command_buffer_t key_str;
         if (ar->GetString(i, &key_str)) {
-          core::key_t key(key_str);
-          core::NKey k(key);
-          core::NValue empty_val(common::Value::CreateEmptyStringValue());
-          core::NDbKValue ress(k, empty_val);
+          const core::nkey_t key(key_str);
+          const core::NKey k(key);
+          const core::NValue empty_val(common::Value::CreateEmptyStringValue());
+          const core::NDbKValue ress(k, empty_val);
           res.keys.push_back(ress);
         }
       }
@@ -740,7 +740,7 @@ void IDriver::OnLoadedKey(const core::NDbKValue& key) {
   emit KeyLoaded(key);
 }
 
-void IDriver::OnRenamedKey(const core::NKey& key, const core::key_t& new_key) {
+void IDriver::OnRenamedKey(const core::NKey& key, const core::nkey_t& new_key) {
   emit KeyRenamed(key, new_key);
 }
 

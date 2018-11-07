@@ -161,7 +161,7 @@ void FastoCommonModel::changeValue(const core::NDbKValue& value) {
 
   QString key;
   const core::NKey dbv_key = value.GetKey();
-  core::key_t raw_key = dbv_key.GetKey();
+  const auto raw_key = dbv_key.GetKey();
   common::ConvertFromBytes(raw_key.GetHumanReadable(), &key);
   for (size_t i = 0; i < root->childrenCount(); ++i) {
     FastoCommonItem* child = dynamic_cast<FastoCommonItem*>(root->child(i));  // +
