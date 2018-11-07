@@ -1,8 +1,8 @@
-1.20.3 /
+1.20.3 / November 8, 2018
 [Alexandr Topilski]
 - LZ4/Snappy/Bzip2 views
-- JSON.DEL command UI handling
 - BASE64 view
+- JSON.DEL command UI handling
 
 1.20.2 / November 3, 2018
 [Alexandr Topilski]
