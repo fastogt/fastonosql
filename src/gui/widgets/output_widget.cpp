@@ -149,12 +149,13 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget
 
   QVBoxLayout* main_layout = new QVBoxLayout;
   main_layout->addWidget(fixed_height_widget);
-  QSplitter* split = new QSplitter(Qt::Vertical);
-  main_layout->addWidget(split);
-  main_layout->addWidget(tree_view_);
-  main_layout->addWidget(table_view_);
-  main_layout->addWidget(text_view_);
-  main_layout->addWidget(key_editor_);
+  QSplitter* splitter = new QSplitter(Qt::Vertical);
+  splitter->addWidget(tree_view_);
+  splitter->addWidget(table_view_);
+  splitter->addWidget(text_view_);
+  splitter->addWidget(key_editor_);
+
+  main_layout->addWidget(splitter);
 
   current_view_ = proxy::SettingsManager::GetInstance()->GetDefaultView();
 
