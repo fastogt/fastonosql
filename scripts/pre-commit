@@ -6,7 +6,7 @@ for file in `git diff-index --name-only --diff-filter=d HEAD`; do
     case "${file#*.}" in
     cpp|c|h)
         clang-format -i "${file}"
-        #cpplint "${file}"
+        cpplint "${file}"
         TOTAL_ERRORS=$(expr $TOTAL_ERRORS + $?);
         ;;
     esac
