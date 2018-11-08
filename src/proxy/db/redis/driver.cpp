@@ -204,7 +204,7 @@ common::Error Driver::GetCurrentServerInfo(core::IServerInfo** info) {
     return err;
   }
 
-  core::command_buffer_t content = common::ConvertToString(cmd.get());
+  const auto content = common::ConvertToString(cmd.get());
   core::IServerInfo* linfo = core::redis::MakeRedisServerInfo(common::ConvertToString(content));  // #FIXME
 
   if (!linfo) {

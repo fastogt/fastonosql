@@ -41,14 +41,12 @@ core::command_buffer_t StableCommand(core::command_buffer_t command) {
 
 common::Error ParseCommands(const core::command_buffer_t& cmd, std::vector<core::command_buffer_t>* cmds) {
   if (cmd.empty()) {
-    DNOTREACHED();
     return common::make_error("Empty command line.");
   }
 
   std::vector<core::command_buffer_t> commands;
   const size_t commands_count = common::Tokenize(cmd, {END_COMMAND_CHAR}, &commands);
   if (!commands_count) {
-    DNOTREACHED();
     return common::make_error("Invaid command line.");
   }
 

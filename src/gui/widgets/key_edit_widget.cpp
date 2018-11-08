@@ -196,6 +196,38 @@ common::Value* KeyEditWidget::createItem() const {
       return nullptr;
     }
     return common::Value::CreateUIntegerValue(res);
+  } else if (type == common::Value::TYPE_LONG_INTEGER) {
+    int res;
+    bool is_ok = common::ConvertFromString(text_str, &res);
+    if (!is_ok) {
+      DNOTREACHED() << "Conversion to int failed, text: " << text_str;
+      return nullptr;
+    }
+    return common::Value::CreateLongIntegerValue(res);
+  } else if (type == common::Value::TYPE_ULONG_INTEGER) {
+    unsigned int res;
+    bool is_ok = common::ConvertFromString(text_str, &res);
+    if (!is_ok) {
+      DNOTREACHED() << "Conversion to unsigned int failed, text: " << text_str;
+      return nullptr;
+    }
+    return common::Value::CreateULongIntegerValue(res);
+  } else if (type == common::Value::TYPE_LONG_LONG_INTEGER) {
+    int res;
+    bool is_ok = common::ConvertFromString(text_str, &res);
+    if (!is_ok) {
+      DNOTREACHED() << "Conversion to int failed, text: " << text_str;
+      return nullptr;
+    }
+    return common::Value::CreateLongLongIntegerValue(res);
+  } else if (type == common::Value::TYPE_ULONG_LONG_INTEGER) {
+    unsigned int res;
+    bool is_ok = common::ConvertFromString(text_str, &res);
+    if (!is_ok) {
+      DNOTREACHED() << "Conversion to unsigned int failed, text: " << text_str;
+      return nullptr;
+    }
+    return common::Value::CreateULongLongIntegerValue(res);
   } else if (type == common::Value::TYPE_DOUBLE) {
     double res;
     bool is_ok = common::ConvertFromString(text_str, &res);
@@ -270,6 +302,10 @@ void KeyEditWidget::changeType(int index) {
     value_table_edit_->setVisible(false);
     stream_table_edit_->setVisible(false);
     if (type == common::Value::TYPE_INTEGER || type == common::Value::TYPE_UINTEGER) {
+      value_edit_->setValidator(new QIntValidator(this));
+    } else if (type == common::Value::TYPE_LONG_INTEGER || type == common::Value::TYPE_ULONG_INTEGER) {
+      value_edit_->setValidator(new QIntValidator(this));
+    } else if (type == common::Value::TYPE_LONG_LONG_INTEGER || type == common::Value::TYPE_ULONG_LONG_INTEGER) {
       value_edit_->setValidator(new QIntValidator(this));
     } else if (type == common::Value::TYPE_DOUBLE) {
       value_edit_->setValidator(new QDoubleValidator(this));
@@ -395,6 +431,21 @@ void KeyEditWidget::syncControls(const core::NValue& item) {
     bool val;
     if (item->GetAsBoolean(&val)) {
       bool_value_edit_->setCurrentIndex(val ? 0 : 1);
+    }
+  } else if (type == common::Value::TYPE_INTEGER || type == common::Value::TYPE_UINTEGER) {
+    int val;
+    if (item->GetAsInteger(&val)) {
+      value_edit_->setText(QString::number(val));
+    }
+  } else if (type == common::Value::TYPE_LONG_INTEGER || type == common::Value::TYPE_ULONG_INTEGER) {
+    long val;
+    if (item->GetAsLongInteger(&val)) {
+      value_edit_->setText(QString::number(val));
+    }
+  } else if (type == common::Value::TYPE_LONG_LONG_INTEGER || type == common::Value::TYPE_ULONG_LONG_INTEGER) {
+    long long val;
+    if (item->GetAsLongLongInteger(&val)) {
+      value_edit_->setText(QString::number(val));
     }
   } else {
     common::Value::string_t text;

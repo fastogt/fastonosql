@@ -2,6 +2,7 @@
 [Alexandr Topilski]
 - LZ4/Snappy/Bzip2 views
 - BASE64 view
+- Db types review
 - [Redis] JSON.DEL command UI handling
 
 1.21.2 / November 3, 2018
