@@ -18,6 +18,9 @@
 
 #include "gui/widgets/key_edit_widget.h"
 
+#include <string>
+#include <vector>
+
 #include <QComboBox>
 #include <QEvent>
 #include <QGridLayout>
@@ -473,7 +476,7 @@ bool KeyEditWidget::getKey(core::NDbKValue* key) const {
     return false;
   }
 
-  const core::nkey_t ks = common::ConvertToCharBytes(key_name);
+  const core::nkey_t ks(common::ConvertToCharBytes(key_name));
   *key = core::NDbKValue(core::NKey(ks), core::NValue(obj));
   return true;
 }

@@ -18,6 +18,8 @@
 
 #include "gui/explorer/explorer_tree_view.h"
 
+#include <string>
+
 #include <QFileDialog>
 #include <QHeaderView>
 #include <QInputDialog>
@@ -794,10 +796,10 @@ void ExplorerTreeView::addKeyToBranch() {
     }
 
     proxy::IServerSPtr server = node->server();
-    const auto full_name_str = node->generateKeyTemplate(GEN_CMD_STRING("test"));
-    core::NKey raw_key(full_name_str);
-    core::NValue val(common::Value::CreateEmptyStringValue());
-    core::NDbKValue nkey(raw_key, val);
+    const core::nkey_t full_name_str(node->generateKeyTemplate(GEN_CMD_STRING("test")));
+    const core::NKey raw_key(full_name_str);
+    const core::NValue val(common::Value::CreateEmptyStringValue());
+    const core::NDbKValue nkey(raw_key, val);
     ExplorerDatabaseItem* node_db = node->db();
     core::ConnectionType type = server->GetType();
     DbKeyDialog loadDb(trCreateKeyForDbTemplate_1S.arg(node_db->name()), GuiFactory::GetInstance().keyIcon(), type,

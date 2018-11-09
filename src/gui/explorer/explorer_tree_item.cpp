@@ -18,6 +18,10 @@
 
 #include "gui/explorer/explorer_tree_item.h"
 
+#include <limits>
+#include <string>
+#include <vector>
+
 #include <common/convert2string.h>
 
 #include <common/qt/convert2string.h>
@@ -237,7 +241,7 @@ void ExplorerDatabaseItem::renameKey(const core::NKey& key, const QString& new_n
   proxy::IServerSPtr server = dbs->GetServer();
   core::translator_t tran = server->GetTranslator();
   core::command_buffer_t cmd_str;
-  core::readable_string_t key_str = common::ConvertToCharBytes(new_name);  // convert from QString
+  const core::nkey_t key_str(common::ConvertToCharBytes(new_name));  // convert from QString
   common::Error err = tran->RenameKeyCommand(key, key_str, &cmd_str);
   if (err) {
     LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
