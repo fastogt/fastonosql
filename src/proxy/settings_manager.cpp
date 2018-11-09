@@ -18,8 +18,11 @@
 
 #include "proxy/settings_manager.h"
 
+#include <string>
+
 #include <QSettings>
 
+#include <common/convert2string.h>
 #include <common/qt/convert2string.h>  // for ConvertToString
 #include <common/utils.h>              // for decode64, encode64
 
@@ -70,9 +73,9 @@
 namespace {
 
 #if defined(PRO_VERSION)
-const std::string ini_path("~/.config/" PROJECT_NAME "/config_new_pro.ini");
+const char kIniPath[] = "~/.config/" PROJECT_NAME "/config_new_pro.ini";
 #else
-const std::string ini_path("~/.config/" PROJECT_NAME "/config_new.ini");
+const char kIniPath[] = "~/.config/" PROJECT_NAME "/config_new.ini";
 #endif
 
 QFont default_font() {
@@ -119,11 +122,11 @@ SettingsManager::SettingsManager()
 SettingsManager::~SettingsManager() {}
 
 std::string SettingsManager::GetSettingsDirPath() {
-  return common::file_system::get_dir_path(ini_path);
+  return common::file_system::get_dir_path(kIniPath);
 }
 
 std::string SettingsManager::GetSettingsFilePath() {
-  return common::file_system::prepare_path(ini_path);
+  return common::file_system::prepare_path(kIniPath);
 }
 
 uint32_t SettingsManager::GetConfigVersion() const {
@@ -385,25 +388,27 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
   const QList<QVariant> clusters = settings.value(CLUSTERS).toList();
   for (const auto& cluster : clusters) {
     QString string = cluster.toString();
-    std::string encoded = common::ConvertToString(string);
-    std::string raw = common::utils::base64::decode64(encoded);
-
-    IClusterSettingsBaseSPtr sett(ClusterConnectionSettingsFactory::GetInstance().CreateFromStringCluster(raw));
-    if (sett) {
-      clusters_.push_back(sett);
+    common::char_buffer_t raw;
+    if (common::utils::base64::decode64(common::ConvertToCharBytes(string), &raw)) {
+      const std::string raw_str = common::ConvertToString(raw);
+      IClusterSettingsBaseSPtr sett(ClusterConnectionSettingsFactory::GetInstance().CreateFromStringCluster(raw_str));
+      if (sett) {
+        clusters_.push_back(sett);
+      }
     }
   }
 
   const QList<QVariant> sentinels = settings.value(SENTINELS).toList();
   for (const auto& sentinel : sentinels) {
     QString string = sentinel.toString();
-    std::string encoded = common::ConvertToString(string);
-    std::string raw = common::utils::base64::decode64(encoded);
-
-    ISentinelSettingsBase* sentinel_settings =
-        SentinelConnectionSettingsFactory::GetInstance().CreateFromStringSentinel(raw);
-    if (sentinel_settings) {
-      sentinels_.push_back(ISentinelSettingsBaseSPtr(sentinel_settings));
+    common::char_buffer_t raw;
+    if (common::utils::base64::decode64(common::ConvertToCharBytes(string), &raw)) {
+      const std::string raw_str = common::ConvertToString(raw);
+      ISentinelSettingsBase* sentinel_settings =
+          SentinelConnectionSettingsFactory::GetInstance().CreateFromStringSentinel(raw_str);
+      if (sentinel_settings) {
+        sentinels_.push_back(ISentinelSettingsBaseSPtr(sentinel_settings));
+      }
     }
   }
   last_login_ = settings.value(LAST_LOGIN, QString()).toString();
@@ -412,12 +417,13 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
   const QList<QVariant> connections = settings.value(CONNECTIONS).toList();
   for (const auto& connection : connections) {
     QString string = connection.toString();
-    std::string encoded = common::ConvertToString(string);
-    std::string raw = common::utils::base64::decode64(encoded);
-
-    IConnectionSettingsBaseSPtr sett(ConnectionSettingsFactory::GetInstance().CreateSettingsFromString(raw));
-    if (sett) {
-      connections_.push_back(sett);
+    common::char_buffer_t raw;
+    if (common::utils::base64::decode64(common::ConvertToCharBytes(string), &raw)) {
+      const std::string raw_str = common::ConvertToString(raw);
+      IConnectionSettingsBaseSPtr sett(ConnectionSettingsFactory::GetInstance().CreateSettingsFromString(raw_str));
+      if (sett) {
+        connections_.push_back(sett);
+      }
     }
   }
 
@@ -443,7 +449,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
 }
 
 void SettingsManager::Load() {
-  ReloadFromPath(ini_path, false);
+  ReloadFromPath(kIniPath, false);
 }
 
 void SettingsManager::Save() {
@@ -464,10 +470,12 @@ void SettingsManager::Save() {
   for (const auto& cluster : clusters_) {
     if (cluster) {
       std::string raw = ClusterConnectionSettingsFactory::GetInstance().ConvertSettingsToString(cluster.get());
-      std::string enc = common::utils::base64::encode64(raw);
-      QString qdata;
-      common::ConvertFromString(enc, &qdata);
-      clusters.push_back(qdata);
+      std::string enc;
+      if (common::utils::base64::encode64(raw, &enc)) {
+        QString qdata;
+        common::ConvertFromString(enc, &qdata);
+        clusters.push_back(qdata);
+      }
     }
   }
   settings.setValue(CLUSTERS, clusters);
@@ -476,10 +484,12 @@ void SettingsManager::Save() {
   for (const auto& sentinel : sentinels_) {
     if (sentinel) {
       std::string raw = SentinelConnectionSettingsFactory::GetInstance().ConvertSettingsToString(sentinel.get());
-      std::string enc = common::utils::base64::encode64(raw);
-      QString qdata;
-      common::ConvertFromString(enc, &qdata);
-      sentinels.push_back(qdata);
+      std::string enc;
+      if (common::utils::base64::encode64(raw, &enc)) {
+        QString qdata;
+        common::ConvertFromString(enc, &qdata);
+        sentinels.push_back(qdata);
+      }
     }
   }
   settings.setValue(SENTINELS, sentinels);
@@ -489,10 +499,12 @@ void SettingsManager::Save() {
   for (const auto& connection : connections_) {
     if (connection) {
       std::string raw = ConnectionSettingsFactory::GetInstance().ConvertSettingsToString(connection.get());
-      std::string enc = common::utils::base64::encode64(raw);
-      QString qdata;
-      common::ConvertFromString(enc, &qdata);
-      connections.push_back(qdata);
+      std::string enc;
+      if (common::utils::base64::encode64(raw, &enc)) {
+        QString qdata;
+        common::ConvertFromString(enc, &qdata);
+        connections.push_back(qdata);
+      }
     }
   }
   settings.setValue(CONNECTIONS, connections);

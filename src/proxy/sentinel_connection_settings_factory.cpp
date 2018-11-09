@@ -40,7 +40,9 @@ namespace {
 serialize_t SentinelSettingsToString(const SentinelSettings& sent) {
   std::ostringstream str;
   serialize_t sent_raw = ConnectionSettingsFactory::GetInstance().ConvertSettingsToString(sent.sentinel.get());
-  str << common::utils::base64::encode64(sent_raw) << setting_value_delemitr;
+  common::char_buffer_t sent_raw_buff;
+  common::utils::base64::encode64(sent_raw, &sent_raw_buff);
+  str << sent_raw_buff << setting_value_delemitr;
 
   std::ostringstream sents_raw;
   for (size_t i = 0; i < sent.sentinel_nodes.size(); ++i) {
@@ -51,7 +53,9 @@ serialize_t SentinelSettingsToString(const SentinelSettings& sent) {
     }
   }
 
-  str << common::utils::base64::encode64(sents_raw.str());
+  common::char_buffer_t buff;
+  common::utils::base64::encode64(sents_raw.str(), &buff);
+  str << buff;
   return str.str();
 }
 
@@ -69,8 +73,14 @@ bool SentinelSettingsfromString(const serialize_t& text, SentinelSettings* sent)
     serialize_t::value_type ch = text[i];
     if (ch == setting_value_delemitr || i == value_len - 1) {
       if (comma_count == 0) {
-        serialize_t sent_raw = common::utils::base64::decode64(element_text);
-        IConnectionSettingsBaseSPtr sent(ConnectionSettingsFactory::GetInstance().CreateSettingsFromString(sent_raw));
+        common::char_buffer_t sent_raw;
+        if (!common::utils::base64::decode64(element_text, &sent_raw)) {
+          return false;
+        }
+
+        const serialize_t sent_raw_str = common::ConvertToString(sent_raw);
+        IConnectionSettingsBaseSPtr sent(
+            ConnectionSettingsFactory::GetInstance().CreateSettingsFromString(sent_raw_str));
         if (!sent) {
           return false;
         }
@@ -79,7 +89,9 @@ bool SentinelSettingsfromString(const serialize_t& text, SentinelSettings* sent)
 
         serialize_t server_text;
         serialize_t end_text(text.begin() + i + 1, text.end());
-        serialize_t raw_sent = common::utils::base64::decode64(end_text);
+
+        common::char_buffer_t raw_sent;
+        common::utils::base64::decode64(end_text, &raw_sent);
         size_t len = raw_sent.size();
         for (size_t j = 0; j < len; ++j) {
           ch = raw_sent[j];

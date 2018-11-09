@@ -115,8 +115,8 @@ void EncodeDecodeDialog::decodeOrEncode() {
     return;
   }
 
-  std::string input_str = common::ConvertToString(input);
-  std::string out;
+  common::char_buffer_t input_str = common::ConvertToCharBytes(input);
+  common::char_buffer_t out;
   common::Error err = encode_button_->isChecked() ? dec->Encode(input_str, &out) : dec->Decode(input_str, &out);
   if (err) {
     delete dec;
@@ -124,7 +124,7 @@ void EncodeDecodeDialog::decodeOrEncode() {
   }
 
   QString qout;
-  if (common::ConvertFromString(out, &qout)) {
+  if (common::ConvertFromBytes(out, &qout)) {
     output_->setText(qout);
   }
   delete dec;

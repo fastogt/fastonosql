@@ -18,6 +18,8 @@
 
 #include "gui/text_converter.h"
 
+#include <string>
+
 #include <json-c/json_tokener.h>
 
 #include <common/text_decoders/base64_edcoder.h>
@@ -91,28 +93,27 @@ bool string_to_json(const convert_in_t& data, convert_out_t* out) {
 
 bool string_from_hex(const convert_in_t& value, convert_out_t* out) {
   common::XHexEDcoder enc(core::ReadableString::is_lower_hex);
-  common::StringPiece piece_data(value.data(), value.size());
 
-  std::string sout;
-  common::Error err = enc.Decode(piece_data, &sout);
+  convert_out_t sout;
+  common::Error err = enc.Decode(value, &sout);
   if (err) {
     return false;
   }
 
-  *out = common::ConvertToCharBytes(sout);
+  *out = sout;
   return true;
 }
 
 bool string_to_hex(const convert_in_t& data, convert_out_t* out) {
   common::XHexEDcoder enc(core::ReadableString::is_lower_hex);
-  common::StringPiece piece_data(data.data(), data.size());
-  std::string sout;
-  common::Error err = enc.Encode(piece_data, &sout);
+
+  convert_out_t sout;
+  common::Error err = enc.Encode(data, &sout);
   if (err) {
     return false;
   }
 
-  *out = common::ConvertToCharBytes(sout);
+  *out = sout;
   return true;
 }
 
@@ -123,7 +124,7 @@ bool string_to_unicode(const convert_in_t& data, convert_out_t* out) {
 
   core::command_buffer_writer_t wr;
   common::string16 s16 = common::ConvertToString16(data);
-  std::string unicoded;
+  convert_out_t unicoded;
   common::utils::unicode::encode(s16, true, &unicoded);
   for (size_t i = 0; i < unicoded.size(); i += 4) {
     wr << "\\u";
@@ -171,43 +172,40 @@ bool string_from_unicode(const convert_in_t& value, convert_out_t* out) {
 
 bool string_from_snappy(const convert_in_t& value, convert_out_t* out) {
   common::CompressSnappyEDcoder enc;
-  common::StringPiece piece_data(value.data(), value.size());
 
-  std::string sout;
-  common::Error err = enc.Decode(piece_data, &sout);
+  convert_out_t sout;
+  common::Error err = enc.Decode(value, &sout);
   if (err) {
     return false;
   }
 
-  *out = common::ConvertToCharBytes(sout);
+  *out = sout;
   return true;
 }
 
 bool string_to_snappy(const convert_in_t& data, convert_out_t* out) {
   common::CompressSnappyEDcoder enc;
-  common::StringPiece piece_data(data.data(), data.size());
 
-  std::string sout;
-  common::Error err = enc.Encode(piece_data, &sout);
+  convert_out_t sout;
+  common::Error err = enc.Encode(data, &sout);
   if (err) {
     return false;
   }
 
-  *out = common::ConvertToCharBytes(sout);
+  *out = sout;
   return true;
 }
 
 bool string_from_zlib(const convert_in_t& value, convert_out_t* out) {
   common::CompressZlibEDcoder enc(false, common::CompressZlibEDcoder::ZLIB_DEFLATE);
-  common::StringPiece piece_data(value.data(), value.size());
 
-  std::string sout;
-  common::Error err = enc.Decode(piece_data, &sout);
+  convert_out_t sout;
+  common::Error err = enc.Decode(value, &sout);
   if (err) {
     return false;
   }
 
-  *out = common::ConvertToCharBytes(sout);
+  *out = sout;
   return true;
 }
 
@@ -215,13 +213,13 @@ bool string_to_zlib(const convert_in_t& data, convert_out_t* out) {
   common::CompressZlibEDcoder enc(false, common::CompressZlibEDcoder::ZLIB_DEFLATE);
   common::StringPiece piece_data(data.data(), data.size());
 
-  std::string sout;
+  convert_out_t sout;
   common::Error err = enc.Encode(piece_data, &sout);
   if (err) {
     return false;
   }
 
-  *out = common::ConvertToCharBytes(sout);
+  *out = sout;
   return true;
 }
 
@@ -229,55 +227,52 @@ bool string_from_gzip(const convert_in_t& value, convert_out_t* out) {
   common::CompressZlibEDcoder enc(false, common::CompressZlibEDcoder::GZIP_DEFLATE);
   common::StringPiece piece_data(value.data(), value.size());
 
-  std::string sout;
-  common::Error err = enc.Decode(piece_data, &sout);
+  convert_out_t sout;
+  common::Error err = enc.Decode(value, &sout);
   if (err) {
     return false;
   }
 
-  *out = common::ConvertToCharBytes(sout);
+  *out = sout;
   return true;
 }
 
 bool string_to_gzip(const convert_in_t& data, convert_out_t* out) {
   common::CompressZlibEDcoder enc(false, common::CompressZlibEDcoder::GZIP_DEFLATE);
-  common::StringPiece piece_data(data.data(), data.size());
 
-  std::string sout;
-  common::Error err = enc.Encode(piece_data, &sout);
+  convert_out_t sout;
+  common::Error err = enc.Encode(data, &sout);
   if (err) {
     return false;
   }
 
-  *out = common::ConvertToCharBytes(sout);
+  *out = sout;
   return true;
 }
 
 bool string_from_lz4(const convert_in_t& value, convert_out_t* out) {
   common::CompressLZ4EDcoder enc;
-  common::StringPiece piece_data(value.data(), value.size());
 
-  std::string sout;
-  common::Error err = enc.Decode(piece_data, &sout);
+  convert_out_t sout;
+  common::Error err = enc.Decode(value, &sout);
   if (err) {
     return false;
   }
 
-  *out = common::ConvertToCharBytes(sout);
+  *out = sout;
   return true;
 }
 
 bool string_to_lz4(const convert_in_t& data, convert_out_t* out) {
   common::CompressLZ4EDcoder enc;
-  common::StringPiece piece_data(data.data(), data.size());
 
-  std::string sout;
-  common::Error err = enc.Encode(piece_data, &sout);
+  convert_out_t sout;
+  common::Error err = enc.Encode(data, &sout);
   if (err) {
     return false;
   }
 
-  *out = common::ConvertToCharBytes(sout);
+  *out = sout;
   return true;
 }
 
@@ -285,13 +280,13 @@ bool string_from_bzip2(const convert_in_t& value, convert_out_t* out) {
   common::CompressBZip2EDcoder enc(false);
   common::StringPiece piece_data(value.data(), value.size());
 
-  std::string sout;
+  convert_out_t sout;
   common::Error err = enc.Decode(piece_data, &sout);
   if (err) {
     return false;
   }
 
-  *out = common::ConvertToCharBytes(sout);
+  *out = sout;
   return true;
 }
 
@@ -299,69 +294,65 @@ bool string_to_bzip2(const convert_in_t& data, convert_out_t* out) {
   common::CompressBZip2EDcoder enc(false);
   common::StringPiece piece_data(data.data(), data.size());
 
-  std::string sout;
+  convert_out_t sout;
   common::Error err = enc.Encode(piece_data, &sout);
   if (err) {
     return false;
   }
 
-  *out = common::ConvertToCharBytes(sout);
+  *out = sout;
   return true;
 }
 
 bool string_from_msgpack(const convert_in_t& value, convert_out_t* out) {
   common::MsgPackEDcoder enc;
-  common::StringPiece piece_data(value.data(), value.size());
 
-  std::string sout;
-  common::Error err = enc.Decode(piece_data, &sout);
+  convert_out_t sout;
+  common::Error err = enc.Decode(value, &sout);
   if (err) {
     return false;
   }
 
-  *out = common::ConvertToCharBytes(sout);
+  *out = sout;
   return true;
 }
 
 bool string_to_msgpack(const convert_in_t& data, convert_out_t* out) {
   common::MsgPackEDcoder enc;
-  common::StringPiece piece_data(data.data(), data.size());
 
-  std::string sout;
-  common::Error err = enc.Encode(piece_data, &sout);
+  convert_out_t sout;
+  common::Error err = enc.Encode(data, &sout);
   if (err) {
     return false;
   }
 
-  *out = common::ConvertToCharBytes(sout);
+  *out = sout;
   return true;
 }
 
 bool string_from_base64(const convert_in_t& value, convert_out_t* out) {
   common::Base64EDcoder enc;
-  common::StringPiece piece_data(value.data(), value.size());
 
-  std::string sout;
-  common::Error err = enc.Decode(piece_data, &sout);
+  convert_out_t sout;
+  common::Error err = enc.Decode(value, &sout);
   if (err) {
     return false;
   }
 
-  *out = common::ConvertToCharBytes(sout);
+  *out = sout;
   return true;
 }
 
 bool string_to_base64(const convert_in_t& data, convert_out_t* out) {
   common::Base64EDcoder enc;
-  common::StringPiece piece_data(data.data(), data.size());
 
-  std::string sout;
-  common::Error err = enc.Encode(piece_data, &sout);
+  convert_out_t sout;
+  common::Error err = enc.Encode(data, &sout);
   if (err) {
     return false;
   }
 
-  *out = common::ConvertToCharBytes(sout);
+  *out = sout;
   return true;
 }
 

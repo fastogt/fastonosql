@@ -18,6 +18,9 @@
 
 #include "gui/main_window.h"
 
+#include <algorithm>
+#include <string>
+
 #include <QAction>
 #include <QDateTime>
 #include <QDesktopServices>
@@ -485,7 +488,7 @@ void MainWindow::importConnection() {
       continue;
     }
 
-    std::string edata;
+    common::char_buffer_t edata;
     common::Error err = hexEnc->Decode(data, &edata);
     if (err) {
       readFile.Close();
@@ -564,8 +567,8 @@ void MainWindow::exportConnection() {
       continue;
     }
 
-    std::string edata;
-    common::Error er = hexEnc->Encode(data, &edata);
+    common::char_buffer_t edata;
+    common::Error err = hexEnc->Encode(data, &edata);
     if (err) {
       readFile.Close();
       writeFile.Close();
