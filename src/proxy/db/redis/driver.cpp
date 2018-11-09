@@ -18,12 +18,17 @@
 
 #include "proxy/db/redis/driver.h"
 
+#include <string>
+#include <vector>
+#include <algorithm>
+
 #include <common/convert2string.h>           // for ConvertFromString, etc
 #include <common/file_system/file_system.h>  // for copy_file
 
 #include <fastonosql/core/db/redis/db_connection.h>  // for DBConnection, INFO_REQUEST, etc
 #include <fastonosql/core/db/redis/server_info.h>
 #include <fastonosql/core/db/redis_compatible/database_info.h>
+
 #include <fastonosql/core/value.h>
 
 #include "proxy/command/command.h"  // for CreateCommand, etc
@@ -52,40 +57,6 @@
 #define EXPORT_DEFAULT_PATH "/var/lib/redis/dump.rdb"
 
 namespace fastonosql {
-namespace {
-
-common::Value::Type ConvertFromStringRType(const core::command_buffer_t& type) {
-  if (type.empty()) {
-    return common::Value::TYPE_NULL;
-  }
-
-  if (type == GEN_CMD_STRING("string")) {
-    return common::Value::TYPE_STRING;
-  } else if (type == GEN_CMD_STRING("list")) {
-    return common::Value::TYPE_ARRAY;
-  } else if (type == GEN_CMD_STRING("set")) {
-    return common::Value::TYPE_SET;
-  } else if (type == GEN_CMD_STRING("hash")) {
-    return common::Value::TYPE_HASH;
-  } else if (type == GEN_CMD_STRING("zset")) {
-    return common::Value::TYPE_ZSET;
-  } else if (type == GEN_CMD_STRING("stream")) {
-    return core::StreamValue::TYPE_STREAM;
-  } else if (type == GEN_CMD_STRING("ReJSON-RL")) {
-    return core::JsonValue::TYPE_JSON;
-  } else if (type == GEN_CMD_STRING("trietype1")) {
-    return core::GraphValue::TYPE_GRAPH;
-  } else if (type == GEN_CMD_STRING("MBbloom--")) {
-    return core::BloomValue::TYPE_BLOOM;
-  } else if (type == GEN_CMD_STRING("ft_invidx")) {
-    return core::SearchValue::TYPE_FT_TERM;
-  } else if (type == GEN_CMD_STRING("ft_index0")) {
-    return core::SearchValue::TYPE_FT_INDEX;
-  }
-  return common::Value::TYPE_NULL;
-}
-
-}  // namespace
 namespace core {
 namespace {
 
@@ -470,8 +441,9 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         if (tchildrens.size()) {
           DCHECK_EQ(tchildrens.size(), 1);
           if (tchildrens.size() == 1) {
-            common::Value::string_t typeRedis = tchildrens[0]->ToString();
-            common::Value::Type ctype = ConvertFromStringRType(typeRedis);
+            common::Value::string_t type_redis_str = tchildrens[0]->ToString();
+            common::Value::Type ctype;
+            core::redis_compatible::ConvertFromString(type_redis_str, &ctype);
             core::NValue empty_val(core::CreateEmptyValueFromType(ctype));
             res.keys[i].SetValue(empty_val);
           }
