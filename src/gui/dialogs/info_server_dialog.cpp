@@ -202,21 +202,36 @@ const QString trSsdbTextServerTemplate = QObject::tr(
 #ifdef BUILD_WITH_LEVELDB
 const QString trLeveldbTextServerTemplate = QObject::tr(
     "<b>Stats:</b><br/>"
-    "Compactions level: %1<br/>"
-    "File size mb: %2<br/>"
-    "Time sec: %3<br/>"
-    "Read mb: %4<br/>"
-    "Write mb: %5");
+    "Level: %1<br/>"
+    "Files: %2<br/>"
+    "Size mb: %3<br/>"
+    "Time sec: %4<br/>"
+    "Read mb: %5<br/>"
+    "Write mb: %6");
 #endif
 
 #ifdef BUILD_WITH_ROCKSDB
 const QString trRocksdbTextServerTemplate = QObject::tr(
     "<b>Stats:</b><br/>"
-    "Compactions level: %1<br/>"
-    "File size mb: %2<br/>"
-    "Time sec: %3<br/>"
-    "Read mb: %4<br/>"
-    "Write mb: %5");
+    "Level: %1<br/>"
+    "Files: %2<br/>"
+    "Size: %3<br/>"
+    "Score: %4<br/>"
+    "Read(GB): %5<br/>"
+    "Rn(GB): %6<br/>"
+    "Rnp1(GB): %7<br/>"
+    "Write(GB): %8<br/>"
+    "Wnew(GB): %9<br/>"
+    "Moved(GB): %10<br/>"
+    "W-Amp: %11<br/>"
+    "Rd(MB/s): %12<br/>"
+    "Wr(MB/s): %13<br/>"
+    "Comp(sec): %14<br/>"
+    "Comp(cnt): %15<br/>"
+    "Avg(sec): %16<br/>"
+    "KeyIn: %17<br/>"
+    "KeyDrop: %18");
+
 #endif
 
 #ifdef BUILD_WITH_UNQLITE
@@ -694,8 +709,9 @@ void InfoServerDialog::updateText(const core::ssdb::ServerInfo& serv) {
 #ifdef BUILD_WITH_LEVELDB
 void InfoServerDialog::updateText(const core::leveldb::ServerInfo& serv) {
   core::leveldb::ServerInfo::Stats stats = serv.stats_;
-  QString textServ = trLeveldbTextServerTemplate.arg(stats.compactions_level)
-                         .arg(stats.file_size_mb)
+  QString textServ = trLeveldbTextServerTemplate.arg(stats.level)
+                         .arg(stats.files)
+                         .arg(stats.size_mb)
                          .arg(stats.time_sec)
                          .arg(stats.read_mb)
                          .arg(stats.write_mb);
@@ -706,11 +722,29 @@ void InfoServerDialog::updateText(const core::leveldb::ServerInfo& serv) {
 #ifdef BUILD_WITH_ROCKSDB
 void InfoServerDialog::updateText(const core::rocksdb::ServerInfo& serv) {
   core::rocksdb::ServerInfo::Stats stats = serv.stats_;
-  QString textServ = trRocksdbTextServerTemplate.arg(stats.compactions_level)
-                         .arg(stats.file_size_mb)
-                         .arg(stats.time_sec)
-                         .arg(stats.read_mb)
-                         .arg(stats.write_mb);
+  QString qlevel;
+  common::ConvertFromString(stats.level, &qlevel);
+  QString qfiles;
+  common::ConvertFromString(stats.files, &qfiles);
+
+  QString textServ = trRocksdbTextServerTemplate.arg(qlevel)
+                         .arg(qfiles)
+                         .arg(stats.size)
+                         .arg(stats.score)
+                         .arg(stats.read_gb)
+                         .arg(stats.rn_gb)
+                         .arg(stats.rn_p1)
+                         .arg(stats.write_gb)
+                         .arg(stats.wnew_gb)
+                         .arg(stats.moved_gb)
+                         .arg(stats.wamp)
+                         .arg(stats.rd_mbs)
+                         .arg(stats.wr_mbs)
+                         .arg(stats.comp_cnt)
+                         .arg(stats.comp_sec)
+                         .arg(stats.avg_sec)
+                         .arg(stats.key_in)
+                         .arg(stats.key_drop);
 
   server_text_info_->setText(textServ);
 }

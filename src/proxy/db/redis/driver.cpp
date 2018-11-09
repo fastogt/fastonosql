@@ -18,9 +18,9 @@
 
 #include "proxy/db/redis/driver.h"
 
+#include <algorithm>
 #include <string>
 #include <vector>
-#include <algorithm>
 
 #include <common/convert2string.h>           // for ConvertFromString, etc
 #include <common/file_system/file_system.h>  // for copy_file
