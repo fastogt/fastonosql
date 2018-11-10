@@ -742,7 +742,7 @@ void ExplorerTreeView::loadContentDb() {
     LoadContentDbDialog loadDb(trLoadContentTemplate_1S.arg(node->name()), dialog_icon, this);
     int result = loadDb.exec();
     if (result == QDialog::Accepted) {
-      node->loadContent(common::ConvertToCharBytes(loadDb.pattern()), loadDb.count());
+      node->loadContent(common::ConvertToString(loadDb.pattern()), loadDb.count());
     }
   }
 }

@@ -220,13 +220,13 @@ void ViewKeysDialog::search(bool forward) {
 
   DCHECK_EQ(cursor_stack_[0], 0);
   if (forward) {
-    proxy::events_info::LoadDatabaseContentRequest req(this, db_->GetInfo(), common::ConvertToCharBytes(pattern),
+    proxy::events_info::LoadDatabaseContentRequest req(this, db_->GetInfo(), common::ConvertToString(pattern),
                                                        count_spin_edit_->value(), cursor_stack_[cur_pos_]);
     db_->LoadContent(req);
     ++cur_pos_;
   } else {
     if (cur_pos_ > 0) {
-      proxy::events_info::LoadDatabaseContentRequest req(this, db_->GetInfo(), common::ConvertToCharBytes(pattern),
+      proxy::events_info::LoadDatabaseContentRequest req(this, db_->GetInfo(), common::ConvertToString(pattern),
                                                          count_spin_edit_->value(), cursor_stack_[--cur_pos_]);
       db_->LoadContent(req);
     }

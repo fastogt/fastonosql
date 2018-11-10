@@ -60,7 +60,7 @@ namespace fastonosql {
 namespace core {
 namespace {
 
-command_buffer_t GetKeysOldPattern(const command_buffer_t& pattern) {
+command_buffer_t GetKeysOldPattern(const pattern_t& pattern) {
   command_buffer_writer_t wr;
   wr << "KEYS " << pattern;
   return wr.str();

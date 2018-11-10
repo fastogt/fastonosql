@@ -18,6 +18,9 @@
 
 #pragma once
 
+#include <string>
+#include <vector>
+
 #include <QString>
 
 #include <common/qt/gui/base/tree_item.h>  // for TreeItem
@@ -60,8 +63,8 @@ class ExplorerServerItem : public IExplorerTreeItem {
  public:
   ExplorerServerItem(proxy::IServerSPtr server, TreeItem* parent);
 
-  virtual QString name() const override;
-  virtual string_t basicStringName() const override;
+  QString name() const override;
+  string_t basicStringName() const override;
   proxy::IServerSPtr server() const;
 
   void loadDatabases();
@@ -77,8 +80,8 @@ class ExplorerSentinelItem : public IExplorerTreeItem {
  public:
   ExplorerSentinelItem(proxy::ISentinelSPtr sentinel, TreeItem* parent);
 
-  virtual QString name() const override;
-  virtual string_t basicStringName() const override;
+  QString name() const override;
+  string_t basicStringName() const override;
 
   proxy::ISentinelSPtr sentinel() const;
 
@@ -90,8 +93,8 @@ class ExplorerClusterItem : public IExplorerTreeItem {
  public:
   ExplorerClusterItem(proxy::IClusterSPtr cluster, TreeItem* parent);
 
-  virtual QString name() const override;
-  virtual string_t basicStringName() const override;
+  QString name() const override;
+  string_t basicStringName() const override;
 
   proxy::IClusterSPtr cluster() const;
 
@@ -104,8 +107,8 @@ class ExplorerDatabaseItem : public IExplorerTreeItem {
  public:
   ExplorerDatabaseItem(proxy::IDatabaseSPtr db, ExplorerServerItem* parent);
 
-  virtual QString name() const override;
-  virtual string_t basicStringName() const override;
+  QString name() const override;
+  string_t basicStringName() const override;
 
   bool isDefault() const;
   size_t totalKeysCount() const;
@@ -114,7 +117,7 @@ class ExplorerDatabaseItem : public IExplorerTreeItem {
   proxy::IServerSPtr server() const;
   proxy::IDatabaseSPtr db() const;
 
-  void loadContent(const core::command_buffer_t& pattern, core::keys_limit_t keys_count);
+  void loadContent(const core::pattern_t& pattern, core::keys_limit_t keys_count);
   void setDefault();
   void removeDb();
 
@@ -148,8 +151,8 @@ class ExplorerKeyItem : public IExplorerTreeItem {
   core::NKey key() const;
   void setKey(const core::NKey& key);
 
-  virtual QString name() const override;
-  virtual string_t basicStringName() const override;
+  QString name() const override;
+  string_t basicStringName() const override;
 
   proxy::IServerSPtr server() const;
 
@@ -175,8 +178,8 @@ class ExplorerNSItem : public IExplorerTreeItem {
   ExplorerNSItem(const string_t& name, const std::string& separator, IExplorerTreeItem* parent);
   ExplorerDatabaseItem* db() const;
 
-  virtual QString name() const override;
-  virtual string_t basicStringName() const override;
+  QString name() const override;
+  string_t basicStringName() const override;
 
   proxy::IServerSPtr server() const;
   size_t keysCount() const;
