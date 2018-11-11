@@ -22,7 +22,7 @@
 
 #include <common/qt/utils_qt.h>
 
-#include "gui/key_value_table_item.h"
+#include "gui/action_table_item.h"
 
 #include "gui/gui_factory.h"
 
@@ -47,7 +47,7 @@ void ActionDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option
     return;
   }
 
-  KeyValueTableItem* node = common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
+  ActionTableItem* node = common::qt::item<common::qt::gui::TableItem*, ActionTableItem*>(index);
   QStyleOptionViewItem opt = option;
   initStyleOption(&opt, index);
 
@@ -60,12 +60,14 @@ void ActionDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option
   pb_Style.features |= QStyleOptionButton::Flat;
   pb_Style.text = QString();
   pb_Style.iconSize = kIconSize;
-  if (node->actionState() == KeyValueTableItem::AddAction) {
+  if (node->actionState() == ActionTableItem::AddAction) {
     pb_Style.icon = GuiFactory::GetInstance().addIcon();
-  } else if (node->actionState() == KeyValueTableItem::EditAction) {
+  } else if (node->actionState() == ActionTableItem::EditAction) {
     pb_Style.icon = GuiFactory::GetInstance().editIcon();
-  } else {
+  } else if (node->actionState() == ActionTableItem::RemoveAction) {
     pb_Style.icon = GuiFactory::GetInstance().removeIcon();
+  } else {
+    NOTREACHED();
   }
 
   if (current_index_.row() == index.row()) {
@@ -91,13 +93,15 @@ bool ActionDelegate::editorEvent(QEvent* event,
   if (event->type() == QEvent::MouseButtonPress) {
     current_index_ = index;
   } else if (event->type() == QEvent::MouseButtonRelease) {
-    KeyValueTableItem* node = common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
-    if (node->actionState() == KeyValueTableItem::AddAction) {
+    ActionTableItem* node = common::qt::item<common::qt::gui::TableItem*, ActionTableItem*>(index);
+    if (node->actionState() == ActionTableItem::AddAction) {
       emit addClicked(index);
-    } else if (node->actionState() == KeyValueTableItem::EditAction) {
+    } else if (node->actionState() == ActionTableItem::EditAction) {
       emit editClicked(index);
-    } else {
+    } else if (node->actionState() == ActionTableItem::RemoveAction) {
       emit removeClicked(index);
+    } else {
+      NOTREACHED();
     }
     current_index_ = QModelIndex();
   }

@@ -25,21 +25,17 @@
 namespace fastonosql {
 namespace gui {
 
-class KeyValueTableItem : public ActionTableItem {
+class ValueTableItem : public ActionTableItem {
  public:
   typedef ActionTableItem base_class;
-  enum eColumn : uint8_t { kKey = 0, kValue = 1, kAction = 2, kCountColumns = 3 };
+  enum eColumn : uint8_t { kValue = 0, kAction = 1, kCountColumns = 2 };
 
-  KeyValueTableItem(const QString& key, const QString& value, Mode state);
-
-  QString key() const;
-  void setKey(const QString& key);
+  ValueTableItem(const QString& value, Mode state);
 
   QString value() const;
   void setValue(const QString& val);
 
  private:
-  QString key_;
   QString value_;
 };
 

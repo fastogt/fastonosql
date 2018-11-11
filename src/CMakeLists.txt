@@ -350,7 +350,9 @@ SET(HEADERS_GUI
   ${CMAKE_SOURCE_DIR}/src/gui/property_table_item.h
   ${CMAKE_SOURCE_DIR}/src/gui/shortcuts.h
   ${CMAKE_SOURCE_DIR}/src/gui/connection_widgets_factory.h
+  ${CMAKE_SOURCE_DIR}/src/gui/action_table_item.h
   ${CMAKE_SOURCE_DIR}/src/gui/key_value_table_item.h
+  ${CMAKE_SOURCE_DIR}/src/gui/value_table_item.h
   ${CMAKE_SOURCE_DIR}/src/gui/key_table_item.h
   ${CMAKE_SOURCE_DIR}/src/gui/utils.h
   ${CMAKE_SOURCE_DIR}/src/gui/text_converter.h
@@ -367,6 +369,7 @@ SET(HEADERS_GUI
   ${CMAKE_SOURCE_DIR}/src/gui/fasto_table_view.h
   ${CMAKE_SOURCE_DIR}/src/gui/keys_table_view.h
   ${CMAKE_SOURCE_DIR}/src/gui/hash_table_model.h
+  ${CMAKE_SOURCE_DIR}/src/gui/list_table_model.h
   ${CMAKE_SOURCE_DIR}/src/gui/stream_table_model.h
   ${CMAKE_SOURCE_DIR}/src/gui/action_cell_delegate.h
 )
@@ -396,10 +399,13 @@ SET(SOURCES_GUI
   ${CMAKE_SOURCE_DIR}/src/gui/fasto_common_item.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/shortcuts.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/connection_widgets_factory.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/list_table_model.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/hash_table_model.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/stream_table_model.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/action_cell_delegate.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/action_table_item.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/key_value_table_item.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/value_table_item.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/utils.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/text_converter.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/key_info.cpp

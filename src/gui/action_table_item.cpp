@@ -16,32 +16,16 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
-#include <QString>
-
 #include "gui/action_table_item.h"
 
 namespace fastonosql {
 namespace gui {
 
-class KeyValueTableItem : public ActionTableItem {
- public:
-  typedef ActionTableItem base_class;
-  enum eColumn : uint8_t { kKey = 0, kValue = 1, kAction = 2, kCountColumns = 3 };
+ActionTableItem::ActionTableItem(Mode state) : TableItem(), state_(state) {}
 
-  KeyValueTableItem(const QString& key, const QString& value, Mode state);
-
-  QString key() const;
-  void setKey(const QString& key);
-
-  QString value() const;
-  void setValue(const QString& val);
-
- private:
-  QString key_;
-  QString value_;
-};
+ActionTableItem::Mode ActionTableItem::actionState() const {
+  return state_;
+}
 
 }  // namespace gui
 }  // namespace fastonosql

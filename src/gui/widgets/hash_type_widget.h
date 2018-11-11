@@ -30,6 +30,8 @@ class HashTableModel;
 class HashTypeWidget : public QTableView {
   Q_OBJECT
  public:
+  enum Mode : uint8_t { kHash = 0, kZset };
+
   explicit HashTypeWidget(QWidget* parent = Q_NULLPTR);
   virtual ~HashTypeWidget();
 
@@ -38,6 +40,9 @@ class HashTypeWidget : public QTableView {
 
   common::ZSetValue* zsetValue() const;  // alocate memory
   common::HashValue* hashValue() const;  // alocate memory
+
+  Mode currentMode() const;
+  void setCurrentMode(Mode mode);
 
  Q_SIGNALS:
   void dataChangedSignal();
@@ -48,6 +53,7 @@ class HashTypeWidget : public QTableView {
 
  private:
   HashTableModel* model_;
+  Mode mode_;
 };
 
 }  // namespace gui

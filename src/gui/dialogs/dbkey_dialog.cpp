@@ -18,6 +18,8 @@
 
 #include "gui/dialogs/dbkey_dialog.h"
 
+#include <vector>
+
 #include <QComboBox>
 #include <QDialogButtonBox>
 #include <QEvent>
@@ -39,13 +41,13 @@ const QString trInput = QObject::tr("Key/Value input");
 const QSize kPrefListSize = QSize(600, 300);
 const QSize kPrefHashSize = QSize(600, 300);
 const QSize kPrefStreamSize = QSize(600, 300);
-const QSize kPrefJsonSize = QSize(600, 300);
+const QSize kPrefJsonSize = QSize(640, 300);
 }  // namespace
 
 namespace fastonosql {
 namespace gui {
 
-const QSize DbKeyDialog::min_dialog_size = QSize(360, 240);
+const QSize DbKeyDialog::min_dialog_size = QSize(400, 300);
 
 DbKeyDialog::DbKeyDialog(const QString& title,
                          const QIcon& icon,

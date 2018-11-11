@@ -22,7 +22,7 @@ namespace fastonosql {
 namespace gui {
 
 KeyValueTableItem::KeyValueTableItem(const QString& key, const QString& value, Mode state)
-    : TableItem(), key_(key), value_(value), state_(state) {}
+    : base_class(state), key_(key), value_(value) {}
 
 QString KeyValueTableItem::key() const {
   return key_;
@@ -38,10 +38,6 @@ QString KeyValueTableItem::value() const {
 
 void KeyValueTableItem::setValue(const QString& val) {
   value_ = val;
-}
-
-KeyValueTableItem::Mode KeyValueTableItem::actionState() const {
-  return state_;
 }
 
 }  // namespace gui

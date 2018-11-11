@@ -25,19 +25,24 @@
 namespace fastonosql {
 namespace gui {
 
-class HashTableModel;
+class ListTableModel;
 
 class ListTypeWidget : public QTableView {
   Q_OBJECT
  public:
   typedef QTableView base_class;
+  enum Mode : uint8_t { kArray = 0, kSet };
+
   explicit ListTypeWidget(QWidget* parent = Q_NULLPTR);
 
   common::ArrayValue* arrayValue() const;  // alocate memory
   common::SetValue* setValue() const;      // alocate memory
 
-  void insertRow(const QString& first);
+  void insertRow(const QString& value);
   void clear();
+
+  Mode currentMode() const;
+  void setCurrentMode(Mode mode);
 
  Q_SIGNALS:
   void dataChangedSignal();
@@ -47,7 +52,8 @@ class ListTypeWidget : public QTableView {
   void removeRow(const QModelIndex& index);
 
  private:
-  HashTableModel* model_;
+  ListTableModel* model_;
+  Mode mode_;
 };
 
 }  // namespace gui

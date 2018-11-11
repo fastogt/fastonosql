@@ -20,27 +20,20 @@
 
 #include <QString>
 
-#include "gui/action_table_item.h"
+#include <common/qt/gui/base/table_item.h>
 
 namespace fastonosql {
 namespace gui {
 
-class KeyValueTableItem : public ActionTableItem {
+class ActionTableItem : public common::qt::gui::TableItem {
  public:
-  typedef ActionTableItem base_class;
-  enum eColumn : uint8_t { kKey = 0, kValue = 1, kAction = 2, kCountColumns = 3 };
+  enum Mode : uint8_t { AddAction = 0, EditAction = 1, RemoveAction = 3 };
+  explicit ActionTableItem(Mode state);
 
-  KeyValueTableItem(const QString& key, const QString& value, Mode state);
-
-  QString key() const;
-  void setKey(const QString& key);
-
-  QString value() const;
-  void setValue(const QString& val);
+  Mode actionState() const;
 
  private:
-  QString key_;
-  QString value_;
+  const Mode state_;
 };
 
 }  // namespace gui

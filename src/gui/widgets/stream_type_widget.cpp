@@ -36,7 +36,10 @@ namespace gui {
 namespace {
 class StreamTableModelInner : public HashTableModel {
  public:
-  explicit StreamTableModelInner(QObject* parent = Q_NULLPTR) : HashTableModel(parent) {}
+  explicit StreamTableModelInner(QObject* parent = Q_NULLPTR) : HashTableModel(parent) {
+    setFirstColumnName("ID");
+    setSecondColumnName(translations::trValue);
+  }
 
   Qt::ItemFlags flags(const QModelIndex& index) const override {
     if (!index.isValid()) {
@@ -44,24 +47,6 @@ class StreamTableModelInner : public HashTableModel {
     }
 
     return Qt::NoItemFlags;
-  }
-
-  QVariant headerData(int section, Qt::Orientation orientation, int role) const override {
-    if (role != Qt::DisplayRole) {
-      return QVariant();
-    }
-
-    if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-      if (section == KeyValueTableItem::kKey) {
-        return "ID";
-      } else if (section == KeyValueTableItem::kValue) {
-        return translations::trValue;
-      } else if (section == KeyValueTableItem::kAction) {
-        return translations::trAction;
-      }
-    }
-
-    return TableModel::headerData(section, orientation, role);
   }
 };
 }  // namespace

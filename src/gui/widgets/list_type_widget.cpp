@@ -23,42 +23,18 @@
 #include <common/qt/utils_qt.h>
 
 #include "gui/action_cell_delegate.h"
-#include "gui/hash_table_model.h"
-#include "gui/key_value_table_item.h"
+#include "gui/list_table_model.h"
+#include "gui/value_table_item.h"
 
 #include "translations/global.h"
 
 namespace fastonosql {
 namespace gui {
 
-namespace {
-class ListTableModelInner : public HashTableModel {
- public:
-  explicit ListTableModelInner(QObject* parent = Q_NULLPTR) : HashTableModel(parent) {}
-
-  QVariant headerData(int section, Qt::Orientation orientation, int role) const override {
-    if (role != Qt::DisplayRole) {
-      return QVariant();
-    }
-
-    if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-      if (section == KeyValueTableItem::kKey) {
-        return translations::trValue;
-      } else if (section == KeyValueTableItem::kAction) {
-        return translations::trAction;
-      }
-    }
-
-    return TableModel::headerData(section, orientation, role);
-  }
-};
-}  // namespace
-
-ListTypeWidget::ListTypeWidget(QWidget* parent) : QTableView(parent) {
-  model_ = new ListTableModelInner(this);
+ListTypeWidget::ListTypeWidget(QWidget* parent) : QTableView(parent), model_(nullptr), mode_(kArray) {
+  model_ = new ListTableModel(this);
+  model_->setFirstColumnName(translations::trValue);
   setModel(model_);
-
-  setColumnHidden(KeyValueTableItem::kValue, true);
 
   ActionDelegate* del = new ActionDelegate(this);
   VERIFY(connect(del, &ActionDelegate::addClicked, this, &ListTypeWidget::addRow));
@@ -66,12 +42,15 @@ ListTypeWidget::ListTypeWidget(QWidget* parent) : QTableView(parent) {
   QAbstractItemDelegate* default_del = itemDelegate();
   VERIFY(connect(default_del, &QAbstractItemDelegate::closeEditor, this, &ListTypeWidget::dataChangedSignal));
 
-  setItemDelegateForColumn(KeyValueTableItem::kAction, del);
+  setItemDelegateForColumn(ValueTableItem::kAction, del);
   setContextMenuPolicy(Qt::ActionsContextMenu);
   setSelectionBehavior(QAbstractItemView::SelectRows);
 
   QHeaderView* header = horizontalHeader();
   header->setSectionResizeMode(QHeaderView::Stretch);
+
+  // sync
+  setCurrentMode(mode_);
 }
 
 common::ArrayValue* ListTypeWidget::arrayValue() const {
@@ -82,8 +61,8 @@ common::SetValue* ListTypeWidget::setValue() const {
   return model_->setValue();
 }
 
-void ListTypeWidget::insertRow(const QString& first) {
-  model_->insertRow(first, QString());
+void ListTypeWidget::insertRow(const QString& value) {
+  model_->insertRow(value);
   emit dataChangedSignal();
 }
 
@@ -92,9 +71,24 @@ void ListTypeWidget::clear() {
   emit dataChangedSignal();
 }
 
+ListTypeWidget::Mode ListTypeWidget::currentMode() const {
+  return mode_;
+}
+
+void ListTypeWidget::setCurrentMode(Mode mode) {
+  mode_ = mode;
+  if (mode == kArray) {
+    model_->setFirstColumnName(translations::trValue);
+  } else if (mode == kSet) {
+    model_->setFirstColumnName(translations::trMember);
+  } else {
+    NOTREACHED() << "Unhandled mode: " << mode;
+  }
+}
+
 void ListTypeWidget::addRow(const QModelIndex& index) {
-  KeyValueTableItem* node = common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
-  model_->insertRow(node->key(), node->value());
+  ValueTableItem* node = common::qt::item<common::qt::gui::TableItem*, ValueTableItem*>(index);
+  model_->insertRow(node->value());
   emit dataChangedSignal();
 }
 

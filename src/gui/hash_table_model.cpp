@@ -28,7 +28,8 @@
 namespace fastonosql {
 namespace gui {
 
-HashTableModel::HashTableModel(QObject* parent) : common::qt::gui::TableModel(parent) {
+HashTableModel::HashTableModel(QObject* parent)
+    : common::qt::gui::TableModel(parent), first_column_name_(), second_column_name_() {
   insertItem(createEmptyRow());
 }
 
@@ -99,9 +100,9 @@ QVariant HashTableModel::headerData(int section, Qt::Orientation orientation, in
 
   if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
     if (section == KeyValueTableItem::kKey) {
-      return translations::trField;
+      return first_column_name_;
     } else if (section == KeyValueTableItem::kValue) {
-      return translations::trValue;
+      return second_column_name_;
     } else if (section == KeyValueTableItem::kAction) {
       return translations::trAction;
     }
@@ -120,36 +121,6 @@ void HashTableModel::clear() {
   clearData();
   insertItem(createEmptyRow());
   endResetModel();
-}
-
-common::ArrayValue* HashTableModel::arrayValue() const {
-  if (data_.size() < 2) {
-    return nullptr;
-  }
-
-  common::ArrayValue* ar = common::Value::CreateArrayValue();
-  for (size_t i = 0; i < data_.size() - 1; ++i) {
-    KeyValueTableItem* node = static_cast<KeyValueTableItem*>(data_[i]);
-    common::Value::string_t key = common::ConvertToCharBytes(node->key());
-    ar->AppendString(key);
-  }
-
-  return ar;
-}
-
-common::SetValue* HashTableModel::setValue() const {
-  if (data_.size() < 2) {
-    return nullptr;
-  }
-
-  common::SetValue* ar = common::Value::CreateSetValue();
-  for (size_t i = 0; i < data_.size() - 1; ++i) {
-    KeyValueTableItem* node = static_cast<KeyValueTableItem*>(data_[i]);
-    common::Value::string_t key = common::ConvertToCharBytes(node->key());
-    ar->Insert(key);
-  }
-
-  return ar;
 }
 
 common::ZSetValue* HashTableModel::zsetValue() const {
@@ -205,6 +176,14 @@ void HashTableModel::removeRow(int row) {
   data_.erase(data_.begin() + row);
   delete child;
   endRemoveRows();
+}
+
+void HashTableModel::setFirstColumnName(const QString& name) {
+  first_column_name_ = name;
+}
+
+void HashTableModel::setSecondColumnName(const QString& name) {
+  second_column_name_ = name;
 }
 
 common::qt::gui::TableItem* HashTableModel::createEmptyRow() const {

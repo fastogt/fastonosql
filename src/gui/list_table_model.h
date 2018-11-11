@@ -24,11 +24,11 @@
 namespace fastonosql {
 namespace gui {
 
-class HashTableModel : public common::qt::gui::TableModel {
+class ListTableModel : public common::qt::gui::TableModel {
   Q_OBJECT
  public:
-  explicit HashTableModel(QObject* parent = Q_NULLPTR);
-  ~HashTableModel() override;
+  explicit ListTableModel(QObject* parent = Q_NULLPTR);
+  ~ListTableModel() override;
 
   QVariant data(const QModelIndex& index, int role) const override;
   bool setData(const QModelIndex& index, const QVariant& value, int role) override;
@@ -38,14 +38,13 @@ class HashTableModel : public common::qt::gui::TableModel {
   int columnCount(const QModelIndex& parent) const override;
   void clear();
 
-  common::ZSetValue* zsetValue() const;  // alocate memory
-  common::HashValue* hashValue() const;  // alocate memory
+  common::ArrayValue* arrayValue() const;  // alocate memory
+  common::SetValue* setValue() const;      // alocate memory
 
-  void insertRow(const QString& key, const QString& value);
+  void insertRow(const QString& value);
   void removeRow(int row);
 
   void setFirstColumnName(const QString& name);
-  void setSecondColumnName(const QString& name);
 
  private:
   using TableModel::insertItem;
@@ -54,7 +53,6 @@ class HashTableModel : public common::qt::gui::TableModel {
   common::qt::gui::TableItem* createEmptyRow() const;
 
   QString first_column_name_;
-  QString second_column_name_;
 };
 
 }  // namespace gui
