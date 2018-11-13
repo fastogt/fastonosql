@@ -18,6 +18,9 @@
 
 #include "gui/dialogs/cluster_dialog.h"
 
+#include <string>
+#include <vector>
+
 #include <QAction>
 #include <QCheckBox>
 #include <QComboBox>
@@ -339,7 +342,7 @@ void ClusterDialog::remove() {
 
   // Ask user
   int answer = QMessageBox::question(this, translations::trConnections,
-                                     translations::trDeleteConnectionTemplate_1S.arg(currentItem->text(0)),
+                                     translations::trRemoveConnectionTemplate_1S.arg(currentItem->text(0)),
                                      QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
   if (answer != QMessageBox::Yes) {

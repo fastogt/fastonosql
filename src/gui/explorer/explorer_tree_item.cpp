@@ -573,5 +573,20 @@ void ExplorerNSItem::removeBranch() {
   });
 }
 
+void ExplorerNSItem::renameBranch(const QString& old_branch_name, const QString& new_branch_name) {
+  ExplorerDatabaseItem* par = db();
+  CHECK(par);
+  common::qt::gui::forEachRecursive(this, [par, old_branch_name, new_branch_name](common::qt::gui::TreeItem* item) {
+    const ExplorerKeyItem* key_item = static_cast<const ExplorerKeyItem*>(item);
+    if (key_item->type() != eKey) {
+      return;
+    }
+
+    QString key_name = key_item->name();
+    key_name = key_name.replace(old_branch_name, new_branch_name);
+    par->renameKey(key_item->key(), key_name);
+  });
+}
+
 }  // namespace gui
 }  // namespace fastonosql

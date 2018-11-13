@@ -412,7 +412,7 @@ void ConnectionsDialog::removeConnection(ConnectionListWidgetItem* connectionIte
 
   // Ask user
   int answer = QMessageBox::question(this, translations::trConnections,
-                                     translations::trDeleteConnectionTemplate_1S.arg(connectionItem->text(0)),
+                                     translations::trRemoveConnectionTemplate_1S.arg(connectionItem->text(0)),
                                      QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
   if (answer != QMessageBox::Yes) {
@@ -430,7 +430,7 @@ void ConnectionsDialog::removeCluster(ClusterConnectionListWidgetItemContainer* 
 
   // Ask user
   int answer = QMessageBox::question(this, translations::trConnections,
-                                     translations::trDeleteClusterTemplate_1S.arg(clusterItem->text(0)),
+                                     translations::trRemoveClusterTemplate_1S.arg(clusterItem->text(0)),
                                      QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
   if (answer != QMessageBox::Yes) {
@@ -447,7 +447,7 @@ void ConnectionsDialog::removeSentinel(SentinelConnectionListWidgetItemContainer
 
   // Ask user
   int answer = QMessageBox::question(this, translations::trConnections,
-                                     translations::trDeleteSentinelTemplate_1S.arg(sentinelItem->text(0)),
+                                     translations::trRemoveSentinelTemplate_1S.arg(sentinelItem->text(0)),
                                      QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
   if (answer != QMessageBox::Yes) {

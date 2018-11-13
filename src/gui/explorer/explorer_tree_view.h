@@ -33,6 +33,7 @@ class ExplorerTreeModel;
 
 class ExplorerTreeView : public QTreeView {
   Q_OBJECT
+
  public:
   typedef QTreeView base_class;
   enum { min_width = 120, min_height = 360 };
@@ -84,6 +85,7 @@ class ExplorerTreeView : public QTreeView {
   void loadContentDb();
   void removeAllKeys();
   void remBranch();
+  void renameBranch();
   void addKeyToBranch();
   void setDefaultDb();
   void removeDb();
@@ -122,9 +124,9 @@ class ExplorerTreeView : public QTreeView {
   void changeTTLKey(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl);
 
  protected:
-  virtual void changeEvent(QEvent* ev) override;
-  virtual void mouseDoubleClickEvent(QMouseEvent* ev) override;
-  virtual void keyPressEvent(QKeyEvent* event) override;
+  void changeEvent(QEvent* ev) override;
+  void mouseDoubleClickEvent(QMouseEvent* ev) override;
+  void keyPressEvent(QKeyEvent* event) override;
 
  private:
   void syncWithServer(proxy::IServer* server);

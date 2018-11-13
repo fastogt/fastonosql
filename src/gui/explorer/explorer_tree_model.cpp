@@ -18,6 +18,8 @@
 
 #include "gui/explorer/explorer_tree_model.h"
 
+#include <string>
+
 #include <QIcon>
 
 #include <common/net/types.h>  // for ConvertToString
@@ -396,6 +398,57 @@ void ExplorerTreeModel::removeKey(proxy::IServer* server, core::IDataBaseInfoSPt
     common::qt::gui::TreeItem* par = keyit->parent();
     QModelIndex index = createIndex(par->indexOf(keyit), 0, keyit);
     removeItem(index.parent(), keyit);
+
+    IExplorerTreeItem* node = static_cast<IExplorerTreeItem*>(par);
+    if (node->type() == IExplorerTreeItem::eNamespace) {
+      ExplorerNSItem* ns = static_cast<ExplorerNSItem*>(node);
+      if (ns->childrenCount() == 0) {
+        QModelIndex dindex = createIndex(dbs->indexOf(ns), 0, ns);
+        removeItem(dindex.parent(), ns);
+      }
+    }
+  }
+}
+
+void ExplorerTreeModel::renameKey(proxy::IServer* server,
+                                  core::IDataBaseInfoSPtr db,
+                                  const core::NKey& old_key,
+                                  const core::NKey& new_key,
+                                  const std::string& ns_separator,
+                                  proxy::NsDisplayStrategy ns_strategy) {
+  ExplorerServerItem* parent = findServerItem(server);
+  if (!parent) {
+    return;
+  }
+
+  ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
+  if (!dbs) {
+    return;
+  }
+
+  ExplorerKeyItem* keyit = findKeyItem(dbs, old_key);
+  core::NDbKValue dbv;
+  if (keyit) {
+    dbv = keyit->dbv();
+    common::qt::gui::TreeItem* par = keyit->parent();
+    QModelIndex index = createIndex(par->indexOf(keyit), 0, keyit);
+    removeItem(index.parent(), keyit);
+  }
+
+  dbv.SetKey(new_key);
+  ExplorerKeyItem* new_keyit = findKeyItem(dbs, new_key);
+  if (!new_keyit) {
+    IExplorerTreeItem* nitem = dbs;
+    const auto key_str = new_key.GetKey();
+    KeyInfo kinf(key_str.GetHumanReadable(), ns_separator);
+    if (kinf.hasNamespace()) {
+      nitem = findOrCreateNSItem(dbs, kinf);
+    }
+
+    common::qt::gui::TreeItem* parent_nitem = nitem->parent();
+    QModelIndex parent_index = createIndex(parent_nitem->indexOf(nitem), 0, nitem);
+    ExplorerKeyItem* item = new ExplorerKeyItem(dbv, ns_separator, ns_strategy, nitem);
+    insertItem(parent_index, item);
   }
 }
 
@@ -455,7 +508,7 @@ void ExplorerTreeModel::removeAllKeys(proxy::IServer* server, core::IDataBaseInf
   ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
   if (!dbs) {
     return;
-  };
+  }
 
   QModelIndex parentdb = createIndex(parent->indexOf(dbs), 0, dbs);
   removeAllItems(parentdb);

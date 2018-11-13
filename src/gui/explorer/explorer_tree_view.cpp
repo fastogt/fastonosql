@@ -73,8 +73,8 @@ const QString trSetIntervalOnKeyTemplate_1S = QObject::tr("Set watch interval fo
 const QString trIntervalValue = QObject::tr("Interval msec:");
 const QString trSetTTL = QObject::tr("Set TTL");
 const QString trRemoveTTL = QObject::tr("Remove TTL");
-const QString trRenameKey = QObject::tr("Rename key");
-const QString trRenameKeyLabel = QObject::tr("New key name:");
+const QString trRenameKeyLabel = QObject::tr("New branch name:");
+const QString trRenameBranchLabel = QObject::tr("New branch name:");
 const QString trCreateDatabase_1S = QObject::tr("Create database on %1 server");
 const QString trRemoveDatabase_1S = QObject::tr("Remove database from %1 server");
 const QString trPropertiesTemplate_1S = QObject::tr("%1 properties");
@@ -349,7 +349,7 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
     setDefaultDbAction->setEnabled(!is_default && is_connected);
 
     if (server->IsCanCreateDatabase()) {
-      QAction* removeDatabaseAction = new QAction(translations::trDelete, this);
+      QAction* removeDatabaseAction = new QAction(translations::trRemove, this);
       VERIFY(connect(removeDatabaseAction, &QAction::triggered, this, &ExplorerTreeView::removeDb));
       removeDatabaseAction->setEnabled(!is_default && is_connected);
       menu.addAction(removeDatabaseAction);
@@ -359,11 +359,15 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
     ExplorerNSItem* ns = static_cast<ExplorerNSItem*>(node);
 
     QMenu menu(this);
-    QAction* removeBranchAction = new QAction(translations::trRemoveBranch, this);
-    VERIFY(connect(removeBranchAction, &QAction::triggered, this, &ExplorerTreeView::remBranch));
 
     QAction* addKeyToBranchAction = new QAction(translations::trCreateKey, this);
     VERIFY(connect(addKeyToBranchAction, &QAction::triggered, this, &ExplorerTreeView::addKeyToBranch));
+
+    QAction* renameBranchAction = new QAction(translations::trRename, this);
+    VERIFY(connect(renameBranchAction, &QAction::triggered, this, &ExplorerTreeView::renameBranch));
+
+    QAction* removeBranchAction = new QAction(translations::trRemove, this);
+    VERIFY(connect(removeBranchAction, &QAction::triggered, this, &ExplorerTreeView::remBranch));
 
     proxy::IServerSPtr server = ns->server();
     ExplorerDatabaseItem* db = ns->db();
@@ -372,6 +376,8 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
 
     menu.addAction(addKeyToBranchAction);
     addKeyToBranchAction->setEnabled(is_default && is_connected);
+    menu.addAction(renameBranchAction);
+    renameBranchAction->setEnabled(is_default && is_connected);
     menu.addAction(removeBranchAction);
     removeBranchAction->setEnabled(is_default && is_connected);
     menu.exec(menuPoint);
@@ -385,10 +391,10 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
     QAction* editKeyAction = new QAction(translations::trEditValue, this);
     VERIFY(connect(editKeyAction, &QAction::triggered, this, &ExplorerTreeView::editKey));
 
-    QAction* renameKeyAction = new QAction(trRenameKey, this);
+    QAction* renameKeyAction = new QAction(translations::trRename, this);
     VERIFY(connect(renameKeyAction, &QAction::triggered, this, &ExplorerTreeView::renKey));
 
-    QAction* deleteKeyAction = new QAction(translations::trDelete, this);
+    QAction* deleteKeyAction = new QAction(translations::trRemove, this);
     VERIFY(connect(deleteKeyAction, &QAction::triggered, this, &ExplorerTreeView::remKey));
 
     QAction* watchKeyAction = new QAction(translations::trWatch, this);
@@ -786,6 +792,39 @@ void ExplorerTreeView::remBranch() {
   }
 }
 
+void ExplorerTreeView::renameBranch() {
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerNSItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerNSItem*>(ind);
+    if (!node) {
+      continue;
+    }
+
+    QString name = node->name();
+    common::qt::gui::RegExpInputDialog reg_dialog(this);
+    reg_dialog.setWindowTitle(translations::trRenameBranch);
+    reg_dialog.setLabelText(trRenameBranchLabel);
+    reg_dialog.setText(name);
+    QRegExp regExp(".*");
+    reg_dialog.setRegExp(regExp);
+    int result = reg_dialog.exec();
+    if (result != QDialog::Accepted) {
+      continue;
+    }
+
+    QString new_ns_name = reg_dialog.text();
+    if (new_ns_name.isEmpty()) {
+      continue;
+    }
+
+    if (new_ns_name == name) {
+      continue;
+    }
+
+    node->renameBranch(name, new_ns_name);
+  }
+}
+
 void ExplorerTreeView::addKeyToBranch() {
   QModelIndexList selected = selectedEqualTypeIndexes();
   for (QModelIndex ind : selected) {
@@ -919,7 +958,7 @@ void ExplorerTreeView::renKey() {
 
     QString name = node->name();
     common::qt::gui::RegExpInputDialog reg_dialog(this);
-    reg_dialog.setWindowTitle(trRenameKey);
+    reg_dialog.setWindowTitle(translations::trRenameKey);
     reg_dialog.setLabelText(trRenameKeyLabel);
     reg_dialog.setText(name);
     QRegExp regExp(".*");
@@ -1133,7 +1172,9 @@ void ExplorerTreeView::renameKey(core::IDataBaseInfoSPtr db, core::NKey key, cor
 
   core::NKey new_key = key;
   new_key.SetKey(new_name);
-  source_model_->updateKey(serv, db, key, new_key);
+  const std::string ns = serv->GetNsSeparator();
+  const proxy::NsDisplayStrategy ns_strategy = serv->GetNsDisplayStrategy();
+  source_model_->renameKey(serv, db, key, new_key, ns, ns_strategy);
 }
 
 void ExplorerTreeView::loadKey(core::IDataBaseInfoSPtr db, core::NDbKValue key) {

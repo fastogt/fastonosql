@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <string>
+
 #include <common/qt/gui/base/tree_model.h>  // for TreeModel
 
 #include "proxy/database/idatabase.h"
@@ -41,13 +43,14 @@ class IExplorerTreeItem;
 
 class ExplorerTreeModel : public common::qt::gui::TreeModel {
   Q_OBJECT
+
  public:
   explicit ExplorerTreeModel(QObject* parent = Q_NULLPTR);
 
-  virtual QVariant data(const QModelIndex& index, int role) const override;
-  virtual Qt::ItemFlags flags(const QModelIndex& index) const override;
-  virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
-  virtual int columnCount(const QModelIndex& parent) const override;
+  QVariant data(const QModelIndex& index, int role) const override;
+  Qt::ItemFlags flags(const QModelIndex& index) const override;
+  QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+  int columnCount(const QModelIndex& parent) const override;
 
 #if defined(PRO_VERSION)
   void addCluster(proxy::IClusterSPtr cluster);
@@ -71,6 +74,12 @@ class ExplorerTreeModel : public common::qt::gui::TreeModel {
               const std::string& ns_separator,
               proxy::NsDisplayStrategy ns_strategy);
   void removeKey(proxy::IServer* server, core::IDataBaseInfoSPtr db, const core::NKey& key);
+  void renameKey(proxy::IServer* server,
+                 core::IDataBaseInfoSPtr db,
+                 const core::NKey& old_key,
+                 const core::NKey& new_key,
+                 const std::string& ns_separator,
+                 proxy::NsDisplayStrategy ns_strategy);
   void updateKey(proxy::IServer* server,
                  core::IDataBaseInfoSPtr db,
                  const core::NKey& old_key,

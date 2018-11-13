@@ -188,6 +188,7 @@ class ExplorerNSItem : public IExplorerTreeItem {
 
   void createKey(const core::NDbKValue& key);
   void removeBranch();
+  void renameBranch(const QString& old_branch_name, const QString& new_branch_name);
 
  private:
   const string_t name_;

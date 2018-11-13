@@ -18,6 +18,9 @@
 
 #include "gui/dialogs/sentinel_dialog.h"
 
+#include <string>
+#include <vector>
+
 #include <QAction>
 #include <QCheckBox>
 #include <QComboBox>
@@ -300,7 +303,7 @@ void SentinelDialog::remove() {
 
   // Ask user
   int answer = QMessageBox::question(this, translations::trConnections,
-                                     translations::trDeleteConnectionTemplate_1S.arg(current_item->text(0)),
+                                     translations::trRemoveConnectionTemplate_1S.arg(current_item->text(0)),
                                      QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
   if (answer != QMessageBox::Yes) {

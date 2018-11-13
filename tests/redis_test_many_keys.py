@@ -4,7 +4,7 @@ import redis
 import string
 import random
 
-KEYS_COUNT = 1000
+KEYS_COUNT = 10000
 
 
 def random_string(length):
@@ -14,8 +14,12 @@ def random_string(length):
 def test():
     r = redis.StrictRedis(host='localhost', port=6379, db=0)
 
-    for x in range(KEYS_COUNT):
+    for x in range(KEYS_COUNT / 2):
         r.set(random_string(random.randint(1, 9)), random_string(random.randint(1, 9)))
+
+    for x in range(KEYS_COUNT / 2):
+        ns = random_string(random.randint(1, 9)) + ':' + random_string(random.randint(1, 9))
+        r.set(ns, random_string(random.randint(1, 9)))
 
 
 test()
