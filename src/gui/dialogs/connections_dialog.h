@@ -42,6 +42,7 @@ class DirectoryListWidgetItem;
 
 class ConnectionsDialog : public QDialog {
   Q_OBJECT
+
  public:
   enum { min_width = 640, min_height = 480 };
 
@@ -54,17 +55,17 @@ class ConnectionsDialog : public QDialog {
 #endif
 
  private Q_SLOTS:
-  virtual void accept() override;
-  void add();
-  void addCls();
-  void addSent();
-  void remove();
-  void clone();
-  void edit();
+  void accept() override;
+  void addConnectionAction();
+  void addClusterAction();
+  void addSentinelAction();
+  void removeItemAction();
+  void cloneItemAction();
+  void editItemAction();
   void itemSelectionChange();
 
  protected:
-  virtual void changeEvent(QEvent* ev) override;
+  void changeEvent(QEvent* ev) override;
 
  private:
   void editItem(QTreeWidgetItem* qitem, bool remove_origin);

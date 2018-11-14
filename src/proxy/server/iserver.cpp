@@ -18,6 +18,8 @@
 
 #include "proxy/server/iserver.h"
 
+#include <string>
+
 #include <QApplication>
 
 #include <common/qt/logger.h>  // for LOG_ERROR
@@ -29,6 +31,8 @@ namespace fastonosql {
 namespace proxy {
 
 IServer::IServer(IDriver* drv) : drv_(drv), current_database_info_(), timer_check_key_exists_id_(0) {
+  CHECK(drv_);
+
   VERIFY(QObject::connect(drv_, &IDriver::ChildAdded, this, &IServer::ChildAdded));
   VERIFY(QObject::connect(drv_, &IDriver::ItemUpdated, this, &IServer::ItemUpdated));
   VERIFY(QObject::connect(drv_, &IDriver::ServerInfoSnapShooted, this, &IServer::ServerInfoSnapShooted));
@@ -57,7 +61,7 @@ IServer::~IServer() {
 
 void IServer::StartCheckKeyExistTimer() {
   timer_check_key_exists_id_ = startTimer(1000);
-  DCHECK(timer_check_key_exists_id_ != 0);
+  DCHECK_NE(timer_check_key_exists_id_, 0);
 }
 
 void IServer::StopCheckKeyExistTimer() {
@@ -427,8 +431,8 @@ void IServer::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoResponceEven
   } else {
     events_info::LoadDatabasesInfoResponce::database_info_cont_type dbs = v.databases;
     events_info::LoadDatabasesInfoResponce::database_info_cont_type tmp;
-    for (size_t j = 0; j < dbs.size(); ++j) {
-      core::IDataBaseInfoSPtr db = dbs[j];
+    for (size_t i = 0; i < dbs.size(); ++i) {
+      core::IDataBaseInfoSPtr db = dbs[i];
       database_t dbs = FindDatabase(db);
       if (!dbs) {
         DCHECK(!db->IsDefault());

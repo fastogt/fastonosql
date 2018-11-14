@@ -18,6 +18,8 @@
 
 #include "gui/dialogs/about_dialog.h"
 
+#include <string>
+
 #include <QDialogButtonBox>
 #include <QFile>
 #include <QGridLayout>
@@ -73,25 +75,25 @@ const QString trAvailibleDatabases = QObject::tr("Availible databases");
 const QString trExternalLibraries = QObject::tr("External libraries");
 const QString trLicenseAgreement = QObject::tr("License agreement");
 
-void add_db_item(QTreeWidget* dblist_widget, const std::string& name, const char* lib_name, const char* version) {
-  QTreeWidgetItem* treeItem = new QTreeWidgetItem;
+QTreeWidgetItem* createDbItem(const std::string& name, const char* lib_name, const char* version) {
+  QTreeWidgetItem* tree_item = new QTreeWidgetItem;
   QString qname;
   if (common::ConvertFromString(name, &qname)) {
-    treeItem->setText(0, qname);
+    tree_item->setText(0, qname);
   }
-  treeItem->setText(1, lib_name);
-  treeItem->setText(2, version);
-  dblist_widget->addTopLevelItem(treeItem);
+  tree_item->setText(1, lib_name);
+  tree_item->setText(2, version);
+  return tree_item;
 }
 
-void add_lib_item(QTreeWidget* libs_list_widget, const std::string& name, const char* version) {
-  QTreeWidgetItem* treeItem = new QTreeWidgetItem;
+QTreeWidgetItem* createLibItem(const std::string& name, const char* version) {
+  QTreeWidgetItem* tree_item = new QTreeWidgetItem;
   QString qname;
   if (common::ConvertFromString(name, &qname)) {
-    treeItem->setText(0, qname);
+    tree_item->setText(0, qname);
   }
-  treeItem->setText(1, version);
-  libs_list_widget->addTopLevelItem(treeItem);
+  tree_item->setText(1, version);
+  return tree_item;
 }
 }  // namespace
 
@@ -108,10 +110,10 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
   // about content
   QVBoxLayout* glayout = new QVBoxLayout;
   about_tab->setLayout(glayout);
-  QLabel* copyRightLabel = new QLabel(trDescription);
-  copyRightLabel->setWordWrap(true);
-  copyRightLabel->setOpenExternalLinks(true);
-  copyRightLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
+  QLabel* copy_right_label = new QLabel(trDescription);
+  copy_right_label->setWordWrap(true);
+  copy_right_label->setOpenExternalLinks(true);
+  copy_right_label->setTextInteractionFlags(Qt::TextBrowserInteraction);
 
   QDialogButtonBox* button_box = new QDialogButtonBox(QDialogButtonBox::Close);
   QPushButton* close_button = button_box->button(QDialogButtonBox::Close);
@@ -126,7 +128,7 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
   QLabel* logoLabel = new QLabel;
   logoLabel->setPixmap(iconPixmap);
   copy_rights_layout->addWidget(logoLabel, 0, 0, 1, 1);
-  copy_rights_layout->addWidget(copyRightLabel, 0, 1, 4, 4);
+  copy_rights_layout->addWidget(copy_right_label, 0, 1, 4, 4);
 
   QTabWidget* main_tab = new QTabWidget;
   QTreeWidget* dblist_widget = new QTreeWidget;
@@ -137,50 +139,53 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
   dblist_widget->setHeaderLabels(dbcolums);
 #if defined(BUILD_WITH_REDIS) && defined(HAVE_REDIS)
   typedef core::ConnectionTraits<core::REDIS> redis_traits_t;
-  add_db_item(dblist_widget, redis_traits_t::GetDBName(), redis_traits_t::GetBasedOn(),
-              redis_traits_t::GetVersionApi());
+  dblist_widget->addTopLevelItem(
+      createDbItem(redis_traits_t::GetDBName(), redis_traits_t::GetBasedOn(), redis_traits_t::GetVersionApi()));
 #endif
 #if defined(BUILD_WITH_MEMCACHED) && defined(HAVE_MEMCACHED)
   typedef core::ConnectionTraits<core::MEMCACHED> memcached_traits_t;
-  add_db_item(dblist_widget, memcached_traits_t::GetDBName(), memcached_traits_t::GetBasedOn(),
-              memcached_traits_t::GetVersionApi());
+  dblist_widget->addTopLevelItem(createDbItem(memcached_traits_t::GetDBName(), memcached_traits_t::GetBasedOn(),
+                                              memcached_traits_t::GetVersionApi()));
 #endif
 #if defined(BUILD_WITH_SSDB) && defined(HAVE_SSDB)
   typedef core::ConnectionTraits<core::SSDB> ssdb_traits_t;
-  add_db_item(dblist_widget, ssdb_traits_t::GetDBName(), ssdb_traits_t::GetBasedOn(), ssdb_traits_t::GetVersionApi());
+  dblist_widget->addTopLevelItem(
+      createDbItem(ssdb_traits_t::GetDBName(), ssdb_traits_t::GetBasedOn(), ssdb_traits_t::GetVersionApi()));
 #endif
 #if defined(BUILD_WITH_LEVELDB) && defined(HAVE_LEVELDB)
   typedef core::ConnectionTraits<core::LEVELDB> leveldb_traits_t;
-  add_db_item(dblist_widget, leveldb_traits_t::GetDBName(), leveldb_traits_t::GetBasedOn(),
-              leveldb_traits_t::GetVersionApi());
+  dblist_widget->addTopLevelItem(
+      createDbItem(leveldb_traits_t::GetDBName(), leveldb_traits_t::GetBasedOn(), leveldb_traits_t::GetVersionApi()));
 #endif
 #if defined(BUILD_WITH_ROCKSDB) && defined(HAVE_ROCKSDB)
   typedef core::ConnectionTraits<core::ROCKSDB> rocksdb_traits_t;
-  add_db_item(dblist_widget, rocksdb_traits_t::GetDBName(), rocksdb_traits_t::GetBasedOn(),
-              rocksdb_traits_t::GetVersionApi());
+  dblist_widget->addTopLevelItem(
+      createDbItem(rocksdb_traits_t::GetDBName(), rocksdb_traits_t::GetBasedOn(), rocksdb_traits_t::GetVersionApi()));
 #endif
 #if defined(BUILD_WITH_UNQLITE) && defined(HAVE_UNQLITE)
   typedef core::ConnectionTraits<core::UNQLITE> unqlite_traits_t;
-  add_db_item(dblist_widget, unqlite_traits_t::GetDBName(), unqlite_traits_t::GetBasedOn(),
-              unqlite_traits_t::GetVersionApi());
+  dblist_widget->addTopLevelItem(
+      createDbItem(unqlite_traits_t::GetDBName(), unqlite_traits_t::GetBasedOn(), unqlite_traits_t::GetVersionApi()));
 #endif
 #if defined(BUILD_WITH_LMDB) && defined(HAVE_LMDB)
   typedef core::ConnectionTraits<core::LMDB> lmdb_traits_t;
-  add_db_item(dblist_widget, lmdb_traits_t::GetDBName(), lmdb_traits_t::GetBasedOn(), lmdb_traits_t::GetVersionApi());
+  dblist_widget->addTopLevelItem(
+      createDbItem(lmdb_traits_t::GetDBName(), lmdb_traits_t::GetBasedOn(), lmdb_traits_t::GetVersionApi()));
 #endif
 #if defined(BUILD_WITH_UPSCALEDB) && defined(HAVE_UPSCALEDB)
   typedef core::ConnectionTraits<core::UPSCALEDB> upscaledb_traits_t;
-  add_db_item(dblist_widget, upscaledb_traits_t::GetDBName(), upscaledb_traits_t::GetBasedOn(),
-              upscaledb_traits_t::GetVersionApi());
+  dblist_widget->addTopLevelItem(createDbItem(upscaledb_traits_t::GetDBName(), upscaledb_traits_t::GetBasedOn(),
+                                              upscaledb_traits_t::GetVersionApi()));
 #endif
 #if defined(BUILD_WITH_FORESTDB) && defined(HAVE_FORESTDB)
   typedef core::ConnectionTraits<core::FORESTDB> forestdb_traits_t;
-  add_db_item(dblist_widget, forestdb_traits_t::GetDBName(), forestdb_traits_t::GetBasedOn(),
-              forestdb_traits_t::GetVersionApi());
+  dblist_widget->addTopLevelItem(createDbItem(forestdb_traits_t::GetDBName(), forestdb_traits_t::GetBasedOn(),
+                                              forestdb_traits_t::GetVersionApi()));
 #endif
 #if defined(BUILD_WITH_PIKA) && defined(HAVE_PIKA)
   typedef core::ConnectionTraits<core::PIKA> pika_traits_t;
-  add_db_item(dblist_widget, pika_traits_t::GetDBName(), pika_traits_t::GetBasedOn(), pika_traits_t::GetVersionApi());
+  dblist_widget->addTopLevelItem(
+      createDbItem(pika_traits_t::GetDBName(), pika_traits_t::GetBasedOn(), pika_traits_t::GetVersionApi()));
 #endif
   main_tab->addTab(dblist_widget, trAvailibleDatabases);
 
@@ -190,14 +195,14 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
   QStringList libscolums;
   libscolums << translations::trName << trVersion;
   libs_list_widget->setHeaderLabels(libscolums);
-  add_lib_item(libs_list_widget, "Qt", QT_VERSION_STR);
-  add_lib_item(libs_list_widget, "QScintilla", QSCINTILLA_VERSION_STR);
-  add_lib_item(libs_list_widget, "libssh2", LIBSSH2_VERSION);
-  add_lib_item(libs_list_widget, "OpenSSL", OPENSSL_VERSION_TEXT);
-  add_lib_item(libs_list_widget, "FastoNoSQL Core", FASTONOSQL_CORE_VERSION_STRING);
-  add_lib_item(libs_list_widget, "common", COMMON_VERSION_STRING);
-  add_lib_item(libs_list_widget, "Snappy", SNAPPY_VERSION_TEXT);
-  add_lib_item(libs_list_widget, "json-c", JSON_C_VERSION);
+  libs_list_widget->addTopLevelItem(createLibItem("Qt", QT_VERSION_STR));
+  libs_list_widget->addTopLevelItem(createLibItem("QScintilla", QSCINTILLA_VERSION_STR));
+  libs_list_widget->addTopLevelItem(createLibItem("libssh2", LIBSSH2_VERSION));
+  libs_list_widget->addTopLevelItem(createLibItem("OpenSSL", OPENSSL_VERSION_TEXT));
+  libs_list_widget->addTopLevelItem(createLibItem("FastoNoSQL Core", FASTONOSQL_CORE_VERSION_TEXT));
+  libs_list_widget->addTopLevelItem(createLibItem("common", COMMON_VERSION_TEXT));
+  libs_list_widget->addTopLevelItem(createLibItem("Snappy", SNAPPY_VERSION_TEXT));
+  libs_list_widget->addTopLevelItem(createLibItem("json-c", JSON_C_VERSION));
   main_tab->addTab(libs_list_widget, trExternalLibraries);
 
   copy_rights_layout->addWidget(main_tab, 4, 1, 1, 5);

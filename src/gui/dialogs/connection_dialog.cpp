@@ -45,7 +45,7 @@ namespace fastonosql {
 namespace gui {
 
 ConnectionDialog::ConnectionDialog(core::ConnectionType type, const QString& connection_name, QWidget* parent)
-    : QDialog(parent), connection_widget_(nullptr), test_button_(nullptr), button_box_(nullptr), connection_() {
+    : QDialog(parent), connection_widget_(nullptr), test_button_(nullptr), connection_() {
   proxy::connection_path_t path(kDefaultNameConnectionFolder + common::ConvertToString(connection_name));
   proxy::IConnectionSettingsBase* connection =
       proxy::ConnectionSettingsFactory::GetInstance().CreateSettingsFromTypeConnection(type, path);
@@ -97,23 +97,23 @@ void ConnectionDialog::init(proxy::IConnectionSettingsBase* connection) {
   QMargins mar = connection_widget_layout->contentsMargins();
   connection_widget_layout->setContentsMargins(0, 0, 0, mar.bottom());
 
-  QHBoxLayout* bottomLayout = new QHBoxLayout;
+  QHBoxLayout* bottom_layout = new QHBoxLayout;
   test_button_ = new QPushButton;
   test_button_->setIcon(GuiFactory::GetInstance().messageBoxInformationIcon());
   VERIFY(connect(test_button_, &QPushButton::clicked, this, &ConnectionDialog::testConnection));
 
-  bottomLayout->addWidget(test_button_, 1, Qt::AlignLeft);
-  button_box_ = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Save);
-  button_box_->setOrientation(Qt::Horizontal);
-  VERIFY(connect(button_box_, &QDialogButtonBox::accepted, this, &ConnectionDialog::accept));
-  VERIFY(connect(button_box_, &QDialogButtonBox::rejected, this, &ConnectionDialog::reject));
-  bottomLayout->addWidget(button_box_);
+  bottom_layout->addWidget(test_button_, 1, Qt::AlignLeft);
+  QDialogButtonBox* button_box = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Save);
+  button_box->setOrientation(Qt::Horizontal);
+  VERIFY(connect(button_box, &QDialogButtonBox::accepted, this, &ConnectionDialog::accept));
+  VERIFY(connect(button_box, &QDialogButtonBox::rejected, this, &ConnectionDialog::reject));
+  bottom_layout->addWidget(button_box);
 
-  QVBoxLayout* mainLayout = new QVBoxLayout;
-  mainLayout->addWidget(connection_widget_);
-  mainLayout->addLayout(bottomLayout);
-  mainLayout->setSizeConstraint(QLayout::SetFixedSize);
-  setLayout(mainLayout);
+  QVBoxLayout* main_layout = new QVBoxLayout;
+  main_layout->addWidget(connection_widget_);
+  main_layout->addLayout(bottom_layout);
+  main_layout->setSizeConstraint(QLayout::SetFixedSize);
+  setLayout(main_layout);
 
   retranslateUi();
 }

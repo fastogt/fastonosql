@@ -601,8 +601,9 @@ ExplorerKeyItem* ExplorerTreeModel::findKeyItem(IExplorerTreeItem* db_or_ns, con
 }
 
 ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_ns, const KeyInfo& kinf) {
-  auto nspaces = kinf.namespaces();
-  auto separator = kinf.nsSeparator();
+  const auto nspaces = kinf.namespaces();
+  const auto separator = kinf.nsSeparator();
+
   IExplorerTreeItem* par = db_or_ns;
   ExplorerNSItem* founded_item = nullptr;
   for (size_t i = 0; i < nspaces.size(); ++i) {

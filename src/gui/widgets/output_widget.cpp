@@ -18,6 +18,8 @@
 
 #include "gui/widgets/output_widget.h"
 
+#include <vector>
+
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QPushButton>
@@ -49,7 +51,7 @@ core::FastoObjectCommand* FindCommand(core::FastoObject* obj) {
     return nullptr;
   }
 
-  core::FastoObjectCommand* command = dynamic_cast<core::FastoObjectCommand*>(obj);
+  core::FastoObjectCommand* command = dynamic_cast<core::FastoObjectCommand*>(obj);  // +
   if (command) {
     return command;
   }

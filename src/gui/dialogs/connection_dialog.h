@@ -24,8 +24,6 @@
 
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
 
-class QDialogButtonBox;
-
 namespace fastonosql {
 namespace gui {
 
@@ -33,21 +31,22 @@ class ConnectionBaseWidget;
 
 class ConnectionDialog : public QDialog {
   Q_OBJECT
+
  public:
   ConnectionDialog(core::ConnectionType type, const QString& connection_name, QWidget* parent = Q_NULLPTR);
-  ConnectionDialog(proxy::IConnectionSettingsBase* connection, QWidget* parent = Q_NULLPTR);
+  explicit ConnectionDialog(proxy::IConnectionSettingsBase* connection, QWidget* parent = Q_NULLPTR);
 
   void setFolderEnabled(bool val);
   proxy::IConnectionSettingsBaseSPtr connection() const;
 
  public Q_SLOTS:
-  virtual void accept() override;
+  void accept() override;
 
  private Q_SLOTS:
   void testConnection();
 
  protected:
-  virtual void changeEvent(QEvent* ev) override;
+  void changeEvent(QEvent* ev) override;
 
  private:
   void init(proxy::IConnectionSettingsBase* connection);
@@ -58,7 +57,6 @@ class ConnectionDialog : public QDialog {
   ConnectionBaseWidget* connection_widget_;
 
   QPushButton* test_button_;
-  QDialogButtonBox* button_box_;
 
   proxy::IConnectionSettingsBaseSPtr connection_;
 };

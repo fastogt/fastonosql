@@ -30,9 +30,9 @@ class KeyEditWidget;
 
 class DbKeyDialog : public QDialog {
   Q_OBJECT
+
  public:
   typedef QDialog base_class;
-  static const QSize min_dialog_size;
 
   DbKeyDialog(const QString& title,
               const QIcon& icon,
@@ -43,13 +43,13 @@ class DbKeyDialog : public QDialog {
   core::NDbKValue key() const;
 
  public Q_SLOTS:
-  virtual void accept() override;
+  void accept() override;
 
  private Q_SLOTS:
   void changeType(common::Value::Type type);
 
  protected:
-  virtual void changeEvent(QEvent* ev) override;
+  void changeEvent(QEvent* ev) override;
 
  private:
   bool validateAndApply();

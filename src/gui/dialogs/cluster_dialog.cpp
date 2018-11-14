@@ -80,24 +80,24 @@ ClusterDialog::ClusterDialog(QWidget* parent, proxy::IClusterSettingsBase* conne
   connection_folder_->setValidator(new QRegExpValidator(rxf, this));
 
   folder_label_ = new QLabel;
-  QHBoxLayout* folderLayout = new QHBoxLayout;
-  folderLayout->addWidget(folder_label_);
-  folderLayout->addWidget(connection_folder_);
-  QString conFolder = kDefaultNameConnectionFolder;
-  QString conName = trDefaultNameConnection;
+  QHBoxLayout* folder_layout = new QHBoxLayout;
+  folder_layout->addWidget(folder_label_);
+  folder_layout->addWidget(connection_folder_);
+  QString connection_folder = kDefaultNameConnectionFolder;
+  QString connection_name = trDefaultNameConnection;
 
   if (cluster_connection_) {
     proxy::connection_path_t path = cluster_connection_->GetPath();
     QString qstr;
     if (common::ConvertFromString(path.GetName(), &qstr)) {
-      conName = qstr;
+      connection_name = qstr;
     }
     if (common::ConvertFromString(path.GetDirectory(), &qstr)) {
-      conFolder = qstr;
+      connection_folder = qstr;
     }
   }
-  connection_name_->setText(conName);
-  connection_folder_->setText(conFolder);
+  connection_name_->setText(connection_name);
+  connection_folder_->setText(connection_folder);
 
   type_connection_ = new QComboBox;
 
@@ -118,7 +118,7 @@ ClusterDialog::ClusterDialog(QWidget* parent, proxy::IClusterSettingsBase* conne
   VERIFY(connect(type_connection_, static_cast<qind>(&QComboBox::currentIndexChanged), this,
                  &ClusterDialog::typeConnectionChange));
 
-  QHBoxLayout* loggingLayout = new QHBoxLayout;
+  QHBoxLayout* logging_layout = new QHBoxLayout;
   logging_ = new QCheckBox;
   logging_msec_ = new QSpinBox;
   logging_msec_->setRange(0, INT32_MAX);
@@ -132,8 +132,8 @@ ClusterDialog::ClusterDialog(QWidget* parent, proxy::IClusterSettingsBase* conne
   }
   VERIFY(connect(logging_, &QCheckBox::stateChanged, this, &ClusterDialog::loggingStateChange));
 
-  loggingLayout->addWidget(logging_);
-  loggingLayout->addWidget(logging_msec_);
+  logging_layout->addWidget(logging_);
+  logging_layout->addWidget(logging_msec_);
 
   list_widget_ = new QTreeWidget;
   list_widget_->setIndentation(5);
@@ -160,33 +160,33 @@ ClusterDialog::ClusterDialog(QWidget* parent, proxy::IClusterSettingsBase* conne
 
   VERIFY(connect(list_widget_, &QTreeWidget::itemSelectionChanged, this, &ClusterDialog::itemSelectionChanged));
 
-  QHBoxLayout* toolBarLayout = new QHBoxLayout;
+  QHBoxLayout* tool_bar_layout = new QHBoxLayout;
   savebar_ = new QToolBar;
-  toolBarLayout->addWidget(savebar_);
+  tool_bar_layout->addWidget(savebar_);
 
-  QAction* addB = new QAction(GuiFactory::GetInstance().addIcon(), translations::trAddConnection, this);
+  QAction* add_action = new QAction(GuiFactory::GetInstance().addIcon(), translations::trAddConnection, this);
   typedef void (QAction::*trig)(bool);
-  VERIFY(connect(addB, static_cast<trig>(&QAction::triggered), this, &ClusterDialog::add));
-  savebar_->addAction(addB);
+  VERIFY(connect(add_action, static_cast<trig>(&QAction::triggered), this, &ClusterDialog::add));
+  savebar_->addAction(add_action);
 
-  QAction* rmB = new QAction(GuiFactory::GetInstance().removeIcon(), translations::trRemoveConnection, this);
-  VERIFY(connect(rmB, static_cast<trig>(&QAction::triggered), this, &ClusterDialog::remove));
-  savebar_->addAction(rmB);
+  QAction* remove_action = new QAction(GuiFactory::GetInstance().removeIcon(), translations::trRemoveConnection, this);
+  VERIFY(connect(remove_action, static_cast<trig>(&QAction::triggered), this, &ClusterDialog::remove));
+  savebar_->addAction(remove_action);
 
-  QAction* editB = new QAction(GuiFactory::GetInstance().editIcon(), translations::trEditConnection, this);
-  VERIFY(connect(editB, static_cast<trig>(&QAction::triggered), this, &ClusterDialog::edit));
-  savebar_->addAction(editB);
+  QAction* edit_action = new QAction(GuiFactory::GetInstance().editIcon(), translations::trEditConnection, this);
+  VERIFY(connect(edit_action, static_cast<trig>(&QAction::triggered), this, &ClusterDialog::edit));
+  savebar_->addAction(edit_action);
 
-  QSpacerItem* hSpacer = new QSpacerItem(300, 0, QSizePolicy::Expanding);
-  toolBarLayout->addSpacerItem(hSpacer);
+  QSpacerItem* hspacer = new QSpacerItem(300, 0, QSizePolicy::Expanding);
+  tool_bar_layout->addSpacerItem(hspacer);
 
-  QVBoxLayout* inputLayout = new QVBoxLayout;
-  inputLayout->addWidget(connection_name_);
-  inputLayout->addLayout(folderLayout);
-  inputLayout->addWidget(type_connection_);
-  inputLayout->addLayout(loggingLayout);
-  inputLayout->addLayout(toolBarLayout);
-  inputLayout->addWidget(list_widget_);
+  QVBoxLayout* input_layout = new QVBoxLayout;
+  input_layout->addWidget(connection_name_);
+  input_layout->addLayout(folder_layout);
+  input_layout->addWidget(type_connection_);
+  input_layout->addLayout(logging_layout);
+  input_layout->addLayout(tool_bar_layout);
+  input_layout->addWidget(list_widget_);
 
   test_button_ = new QPushButton("&Test");
   test_button_->setIcon(GuiFactory::GetInstance().messageBoxInformationIcon());
@@ -198,20 +198,20 @@ ClusterDialog::ClusterDialog(QWidget* parent, proxy::IClusterSettingsBase* conne
   VERIFY(connect(discovery_button_, &QPushButton::clicked, this, &ClusterDialog::discoveryCluster));
   discovery_button_->setEnabled(false);
 
-  QHBoxLayout* bottomLayout = new QHBoxLayout;
-  bottomLayout->addWidget(test_button_, 0, Qt::AlignLeft);
-  bottomLayout->addWidget(discovery_button_, 0, Qt::AlignLeft);
+  QHBoxLayout* bottom_layout = new QHBoxLayout;
+  bottom_layout->addWidget(test_button_, 0, Qt::AlignLeft);
+  bottom_layout->addWidget(discovery_button_, 0, Qt::AlignLeft);
   button_box_ = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Save);
   button_box_->setOrientation(Qt::Horizontal);
   VERIFY(connect(button_box_, &QDialogButtonBox::accepted, this, &ClusterDialog::accept));
   VERIFY(connect(button_box_, &QDialogButtonBox::rejected, this, &ClusterDialog::reject));
-  bottomLayout->addWidget(button_box_);
+  bottom_layout->addWidget(button_box_);
 
-  QVBoxLayout* mainLayout = new QVBoxLayout;
-  mainLayout->addLayout(inputLayout);
-  mainLayout->addLayout(bottomLayout);
-  mainLayout->setSizeConstraint(QLayout::SetFixedSize);
-  setLayout(mainLayout);
+  QVBoxLayout* main_layout = new QVBoxLayout;
+  main_layout->addLayout(input_layout);
+  main_layout->addLayout(bottom_layout);
+  main_layout->setSizeConstraint(QLayout::SetFixedSize);
+  setLayout(main_layout);
 
   // update controls
   typeConnectionChange(type_connection_->currentIndex());
@@ -230,15 +230,16 @@ void ClusterDialog::accept() {
 }
 
 void ClusterDialog::typeConnectionChange(int index) {
-  QVariant var = type_connection_->itemData(index);
-  core::ConnectionType currentType = static_cast<core::ConnectionType>(qvariant_cast<unsigned char>(var));
-  bool isValidType = currentType == core::REDIS;
-  connection_name_->setEnabled(isValidType);
-  button_box_->button(QDialogButtonBox::Save)->setEnabled(isValidType);
-  savebar_->setEnabled(isValidType);
+  const QVariant var = type_connection_->itemData(index);
+  const core::ConnectionType current_type = static_cast<core::ConnectionType>(qvariant_cast<unsigned char>(var));
+  const bool is_valid_type = current_type == core::REDIS;
+
+  connection_name_->setEnabled(is_valid_type);
+  button_box_->button(QDialogButtonBox::Save)->setEnabled(is_valid_type);
+  savebar_->setEnabled(is_valid_type);
   list_widget_->selectionModel()->clear();
-  list_widget_->setEnabled(isValidType);
-  logging_->setEnabled(isValidType);
+  list_widget_->setEnabled(is_valid_type);
+  logging_->setEnabled(is_valid_type);
   itemSelectionChanged();
 }
 
@@ -254,8 +255,8 @@ void ClusterDialog::testConnection() {
     return;
   }
 
-  ConnectionDiagnosticDialog diag(translations::trConnectionDiagnostic, current_item->connection(), this);
-  diag.exec();
+  ConnectionDiagnosticDialog diagnostic_dialog(translations::trConnectionDiagnostic, current_item->connection(), this);
+  diagnostic_dialog.exec();
 }
 
 void ClusterDialog::discoveryCluster() {
@@ -270,53 +271,53 @@ void ClusterDialog::discoveryCluster() {
     return;
   }
 
-  DiscoveryClusterDiagnosticDialog diag(translations::trConnectionDiscovery, GuiFactory::GetInstance().serverIcon(),
-                                        current_item->connection(), cluster_connection_, this);
-  int result = diag.exec();
+  DiscoveryClusterDiagnosticDialog cdiagnostic_dialog(translations::trConnectionDiscovery,
+                                                      GuiFactory::GetInstance().serverIcon(),
+                                                      current_item->connection(), cluster_connection_, this);
+  int result = cdiagnostic_dialog.exec();
   if (result == QDialog::Accepted) {
-    std::vector<ConnectionListWidgetItemDiscovered*> conns = diag.selectedConnections();
-    for (size_t i = 0; i < conns.size(); ++i) {
-      proxy::IConnectionSettingsBaseSPtr it = conns[i]->connection();
-      addConnection(it);
+    std::vector<ConnectionListWidgetItemDiscovered*> conns = cdiagnostic_dialog.selectedConnections();
+    for (ConnectionListWidgetItemDiscovered* connection : conns) {
+      addConnection(connection->connection());
     }
   }
 }
 
 void ClusterDialog::showContextMenu(const QPoint& point) {
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(list_widget_->currentItem());  // +
+  ConnectionListWidgetItem* current_item = dynamic_cast<ConnectionListWidgetItem*>(list_widget_->currentItem());  // +
 
   // Do nothing if no item selected
-  if (!currentItem) {
+  if (!current_item) {
     return;
   }
 
   QMenu menu(this);
-  bool is_primary = list_widget_->topLevelItem(0) == currentItem;
-  QAction* setDefault = new QAction(translations::trSetAsStartNode, this);
-  VERIFY(connect(setDefault, &QAction::triggered, this, &ClusterDialog::setStartNode));
-  setDefault->setEnabled(!is_primary);
-  menu.addAction(setDefault);
+  bool is_primary = list_widget_->topLevelItem(0) == current_item;
+  QAction* set_default_action = new QAction(translations::trSetAsStartNode, this);
+  VERIFY(connect(set_default_action, &QAction::triggered, this, &ClusterDialog::setStartNode));
+  set_default_action->setEnabled(!is_primary);
+  menu.addAction(set_default_action);
 
-  QPoint menuPoint = list_widget_->mapToGlobal(point);
-  menu.exec(menuPoint);
+  QPoint menu_point = list_widget_->mapToGlobal(point);
+  menu.exec(menu_point);
 }
 
 void ClusterDialog::setStartNode() {
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(list_widget_->currentItem());  // +
+  ConnectionListWidgetItem* current_item = dynamic_cast<ConnectionListWidgetItem*>(list_widget_->currentItem());  // +
 
   // Do nothing if no item selected
-  if (!currentItem) {
+  if (!current_item) {
     return;
   }
 
   ConnectionListWidgetItem* top = dynamic_cast<ConnectionListWidgetItem*>(list_widget_->topLevelItem(0));  // +
-  if (top == currentItem) {
+  if (top == current_item) {
     return;
   }
 
   proxy::IConnectionSettingsBaseSPtr tc = top->connection();
-  proxy::IConnectionSettingsBaseSPtr cc = currentItem->connection();
-  currentItem->setConnection(tc);
+  proxy::IConnectionSettingsBaseSPtr cc = current_item->connection();
+  current_item->setConnection(tc);
   top->setConnection(cc);
 }
 
@@ -333,41 +334,41 @@ void ClusterDialog::add() {
 }
 
 void ClusterDialog::remove() {
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(list_widget_->currentItem());  // +
+  ConnectionListWidgetItem* current_item = dynamic_cast<ConnectionListWidgetItem*>(list_widget_->currentItem());  // +
 
   // Do nothing if no item selected
-  if (!currentItem) {
+  if (!current_item) {
     return;
   }
 
   // Ask user
   int answer = QMessageBox::question(this, translations::trConnections,
-                                     translations::trRemoveConnectionTemplate_1S.arg(currentItem->text(0)),
+                                     translations::trRemoveConnectionTemplate_1S.arg(current_item->text(0)),
                                      QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
   if (answer != QMessageBox::Yes) {
     return;
   }
 
-  delete currentItem;
+  delete current_item;
 }
 
 void ClusterDialog::edit() {
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(list_widget_->currentItem());  // +
+  ConnectionListWidgetItem* current_item = dynamic_cast<ConnectionListWidgetItem*>(list_widget_->currentItem());  // +
 
   // Do nothing if no item selected
-  if (!currentItem) {
+  if (!current_item) {
     return;
   }
 
 #ifdef BUILD_WITH_REDIS
-  proxy::IConnectionSettingsBaseSPtr oldConnection = currentItem->connection();
+  proxy::IConnectionSettingsBaseSPtr oldConnection = current_item->connection();
   ConnectionDialog dlg(oldConnection->Clone(), this);
   dlg.setFolderEnabled(false);
   int result = dlg.exec();
   proxy::IConnectionSettingsBaseSPtr newConnection = dlg.connection();
   if (result == QDialog::Accepted && newConnection) {
-    currentItem->setConnection(newConnection);
+    current_item->setConnection(newConnection);
   }
 #endif
 }

@@ -38,6 +38,8 @@
 
 namespace {
 const QString trInput = QObject::tr("Key/Value input");
+
+const QSize kMinSize = QSize(400, 300);
 const QSize kPrefListSize = QSize(600, 300);
 const QSize kPrefHashSize = QSize(600, 300);
 const QSize kPrefStreamSize = QSize(600, 300);
@@ -46,8 +48,6 @@ const QSize kPrefJsonSize = QSize(640, 300);
 
 namespace fastonosql {
 namespace gui {
-
-const QSize DbKeyDialog::min_dialog_size = QSize(400, 300);
 
 DbKeyDialog::DbKeyDialog(const QString& title,
                          const QIcon& icon,
@@ -60,26 +60,24 @@ DbKeyDialog::DbKeyDialog(const QString& title,
   setWindowIcon(icon);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
-  std::vector<common::Value::Type> types = core::GetSupportedValueTypes(type);
+  const std::vector<common::Value::Type> types = core::GetSupportedValueTypes(type);
   general_box_ = new KeyEditWidget(types, this);
 
-  // main layout
-  QVBoxLayout* layout = new QVBoxLayout;
-  layout->addWidget(general_box_);
+  QDialogButtonBox* button_box = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
+  button_box->setOrientation(Qt::Horizontal);
+  VERIFY(connect(button_box, &QDialogButtonBox::accepted, this, &DbKeyDialog::accept));
+  VERIFY(connect(button_box, &QDialogButtonBox::rejected, this, &DbKeyDialog::reject));
 
-  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
-  buttonBox->setOrientation(Qt::Horizontal);
-  VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &DbKeyDialog::accept));
-  VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &DbKeyDialog::reject));
-  layout->addWidget(buttonBox);
-
-  setMinimumSize(min_dialog_size);
+  QVBoxLayout* main_layout = new QVBoxLayout;
+  main_layout->addWidget(general_box_);
+  main_layout->addWidget(button_box);
+  setLayout(main_layout);
+  setMinimumSize(kMinSize);
 
   VERIFY(connect(general_box_, &KeyEditWidget::typeChanged, this, &DbKeyDialog::changeType));
   general_box_->initialize(key_);
   general_box_->setEnableKeyEdit(!is_edit);
 
-  setLayout(layout);
   retranslateUi();
 }
 
@@ -121,7 +119,7 @@ void DbKeyDialog::changeType(common::Value::Type type) {
   } else if (type == core::JsonValue::TYPE_JSON || type == core::JsonValue::TYPE_STRING) {
     resize(kPrefJsonSize);
   } else {
-    resize(min_dialog_size);
+    resize(kMinSize);
   }
 }
 

@@ -18,6 +18,8 @@
 
 #include "proxy/connection_settings_factory.h"
 
+#include <string>
+
 #include <common/convert2string.h>
 
 #ifdef BUILD_WITH_REDIS
@@ -77,8 +79,8 @@ serialize_t ConnectionSettingsFactory::ConvertSettingsToString(IConnectionSettin
   wr << ConvertSettingsToString(static_cast<IConnectionSettings*>(settings));
   wr << setting_value_delemitr << settings->GetNsSeparator() << setting_value_delemitr
      << settings->GetNsDisplayStrategy() << setting_value_delemitr << settings->GetCommandLine();
-  IConnectionSettingsRemoteSSH* ssh_settings = dynamic_cast<IConnectionSettingsRemoteSSH*>(settings);
-  if (ssh_settings) {
+  if (core::IsCanSSHConnection(settings->GetType())) {
+    IConnectionSettingsRemoteSSH* ssh_settings = static_cast<IConnectionSettingsRemoteSSH*>(settings);
     wr << setting_value_delemitr << common::ConvertToString(ssh_settings->GetSSHInfo());
   }
   return wr.str();
@@ -191,7 +193,8 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateSettingsFromString(con
       } else if (comma_count == 5) {
         const std::string cmd_str = common::ConvertToString(element_text);
         result->SetCommandLine(cmd_str);
-        if (IConnectionSettingsRemoteSSH* remote = dynamic_cast<IConnectionSettingsRemoteSSH*>(result)) {
+        if (core::IsCanSSHConnection(result->GetType())) {
+          IConnectionSettingsRemoteSSH* remote = static_cast<IConnectionSettingsRemoteSSH*>(result);
           std::string ssh_str(value.begin() + i + 1, value.end());
           core::SSHInfo sinf;
           if (common::ConvertFromString(ssh_str, &sinf)) {

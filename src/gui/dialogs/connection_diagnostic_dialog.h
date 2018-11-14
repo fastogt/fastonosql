@@ -37,16 +37,17 @@ namespace gui {
 
 class ConnectionDiagnosticDialog : public QDialog {
   Q_OBJECT
+
  public:
   ConnectionDiagnosticDialog(const QString& title,
                              proxy::IConnectionSettingsBaseSPtr connection,
                              QWidget* parent = Q_NULLPTR);
 
  private Q_SLOTS:
-  void connectionResult(bool suc, qint64 mstimeExecute, const QString& resultText);
+  void connectionResult(bool suc, qint64 exec_mstime, const QString& result_text);
 
  protected:
-  virtual void showEvent(QShowEvent* e) override;
+  void showEvent(QShowEvent* e) override;
 
  private:
   void startTestConnection(proxy::IConnectionSettingsBaseSPtr connection);

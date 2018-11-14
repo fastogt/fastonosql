@@ -18,6 +18,8 @@
 
 #include "gui/dialogs/connection_select_type_dialog.h"
 
+#include <string>
+
 #include <QComboBox>
 #include <QDialogButtonBox>
 #include <QEvent>
@@ -53,30 +55,29 @@ ConnectionSelectTypeDialog::ConnectionSelectTypeDialog(const QString& title, QWi
     }
   }
 
-  QVBoxLayout* mainLayout = new QVBoxLayout;
-  QHBoxLayout* typeLayout = new QHBoxLayout;
-  typeLayout->addWidget(type_connection_label_);
-  typeLayout->addWidget(type_connection_);
-  mainLayout->addLayout(typeLayout);
+  QHBoxLayout* type_layout = new QHBoxLayout;
+  type_layout->addWidget(type_connection_label_);
+  type_layout->addWidget(type_connection_);
 
-  QHBoxLayout* bottomLayout = new QHBoxLayout;
+  QHBoxLayout* bottom_layout = new QHBoxLayout;
   button_box_ = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   button_box_->setOrientation(Qt::Horizontal);
   VERIFY(connect(button_box_, &QDialogButtonBox::accepted, this, &ConnectionSelectTypeDialog::accept));
   VERIFY(connect(button_box_, &QDialogButtonBox::rejected, this, &ConnectionSelectTypeDialog::reject));
-  bottomLayout->addWidget(button_box_);
-  mainLayout->addLayout(bottomLayout);
+  bottom_layout->addWidget(button_box_);
 
-  mainLayout->setSizeConstraint(QLayout::SetFixedSize);
-
-  setLayout(mainLayout);
+  QVBoxLayout* main_layout = new QVBoxLayout;
+  main_layout->addLayout(type_layout);
+  main_layout->addLayout(bottom_layout);
+  main_layout->setSizeConstraint(QLayout::SetFixedSize);
+  setLayout(main_layout);
 
   retranslateUi();
 }
 
 core::ConnectionType ConnectionSelectTypeDialog::connectionType() const {
-  QVariant var = type_connection_->currentData();
-  return static_cast<core::ConnectionType>(qvariant_cast<unsigned char>(var));
+  const QVariant var = type_connection_->currentData();
+  return static_cast<core::ConnectionType>(qvariant_cast<uint8_t>(var));
 }
 
 void ConnectionSelectTypeDialog::changeEvent(QEvent* e) {
