@@ -48,7 +48,7 @@ class FastoScintilla : public QsciScintilla {
   void updateLineNumbersMarginWidth();
 
  protected:
-  virtual void keyPressEvent(QKeyEvent* e) override;
+  void keyPressEvent(QKeyEvent* e) override;
 
  private:
   int lineNumberMarginWidth() const;

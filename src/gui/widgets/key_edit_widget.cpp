@@ -47,7 +47,6 @@ namespace gui {
 
 KeyEditWidget::KeyEditWidget(const std::vector<common::Value::Type>& availible_types, QWidget* parent)
     : base_class(parent) {
-  QGridLayout* main_layout = new QGridLayout;
   type_label_ = new QLabel;
   types_combo_box_ = new QComboBox;
   for (size_t i = 0; i < availible_types.size(); ++i) {
@@ -93,6 +92,7 @@ KeyEditWidget::KeyEditWidget(const std::vector<common::Value::Type>& availible_t
   stream_table_edit_ = new StreamTypeWidget;
   VERIFY(connect(stream_table_edit_, &StreamTypeWidget::dataChangedSignal, this, &KeyEditWidget::keyChanged));
 
+  QGridLayout* main_layout = new QGridLayout;
   main_layout->addWidget(type_label_, 0, 0);
   main_layout->addWidget(types_combo_box_, 0, 1);
   main_layout->addWidget(key_label_, 1, 0);
@@ -104,8 +104,8 @@ KeyEditWidget::KeyEditWidget(const std::vector<common::Value::Type>& availible_t
   main_layout->addWidget(value_list_edit_, 2, 1);
   main_layout->addWidget(value_table_edit_, 2, 1);
   main_layout->addWidget(stream_table_edit_, 2, 1);
-
   setLayout(main_layout);
+
   // sync
   changeType(0);
   retranslateUi();

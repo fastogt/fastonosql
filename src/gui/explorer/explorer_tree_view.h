@@ -37,7 +37,7 @@ class ExplorerTreeView : public QTreeView {
  public:
   typedef QTreeView base_class;
   enum { min_width = 120, min_height = 360 };
-  explicit ExplorerTreeView(QWidget* parent);
+  explicit ExplorerTreeView(QWidget* parent = Q_NULLPTR);
 
  Q_SIGNALS:
   void consoleOpened(proxy::IServerSPtr server, const QString& text);

@@ -32,6 +32,7 @@ class BaseShellWidget;
 
 class QueryWidget : public QWidget {
   Q_OBJECT
+
  public:
   enum { min_width = 640, min_height = 480 };
   explicit QueryWidget(proxy::IServerSPtr server, QWidget* parent = Q_NULLPTR);
@@ -48,7 +49,7 @@ class QueryWidget : public QWidget {
   void reload();
 
  protected:
-  virtual void changeEvent(QEvent* ev) override;
+  void changeEvent(QEvent* ev) override;
 
  private:
   void retranslateUi();

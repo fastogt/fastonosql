@@ -42,11 +42,12 @@ class KeyEditWidget;
 
 class SaveKeyEditWidget : public QWidget {
   Q_OBJECT
+
  public:
   typedef QWidget base_class;
 
   explicit SaveKeyEditWidget(const std::vector<common::Value::Type>& availible_types, QWidget* parent = Q_NULLPTR);
-  virtual ~SaveKeyEditWidget() override;
+  ~SaveKeyEditWidget() override;
 
   void initialize(const core::NDbKValue& key);
   void setEnableKeyEdit(bool enable);
@@ -62,7 +63,7 @@ class SaveKeyEditWidget : public QWidget {
   void syncControls();
 
  protected:
-  virtual void changeEvent(QEvent* ev) override;
+  void changeEvent(QEvent* ev) override;
 
  private:
   void retranslateUi();

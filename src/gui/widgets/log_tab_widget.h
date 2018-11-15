@@ -29,6 +29,7 @@ class LogWidget;
 
 class LogTabWidget : public QTabWidget {
   Q_OBJECT
+
  public:
   explicit LogTabWidget(QWidget* parent = Q_NULLPTR);
 
@@ -37,7 +38,7 @@ class LogTabWidget : public QTabWidget {
   void addCommand(core::FastoObjectCommandIPtr command);
 
  protected:
-  virtual void changeEvent(QEvent* ev) override;
+  void changeEvent(QEvent* ev) override;
 
  private:
   void retranslateUi();

@@ -29,6 +29,7 @@ class HashTableModel;
 
 class HashTypeWidget : public QTableView {
   Q_OBJECT
+
  public:
   enum Mode : uint8_t { kHash = 0, kZset };
 

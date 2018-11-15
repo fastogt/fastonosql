@@ -28,6 +28,7 @@ namespace gui {
 class QueryWidget;
 class MainWidget : public QTabWidget {
   Q_OBJECT
+
  public:
   explicit MainWidget(QWidget* parent = Q_NULLPTR);
 

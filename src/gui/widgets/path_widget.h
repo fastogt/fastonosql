@@ -28,6 +28,7 @@ namespace gui {
 
 class IPathWidget : public QWidget {
   Q_OBJECT
+
  public:
   IPathWidget(const QString& pathTitle, const QString& filter, const QString& caption, QWidget* parent = Q_NULLPTR);
 
@@ -42,7 +43,7 @@ class IPathWidget : public QWidget {
   void selectPathDialog();
 
  protected:
-  virtual void changeEvent(QEvent* ev) override;
+  void changeEvent(QEvent* ev) override;
 
  private:
   void selectPathDialogRoutine(const QString& caption, const QString& filter, int mode);
@@ -60,14 +61,14 @@ class FilePathWidget : public IPathWidget {
  public:
   FilePathWidget(const QString& pathTitle, const QString& filter, const QString& caption, QWidget* parent = Q_NULLPTR);
 
-  virtual int mode() const override;
+  int mode() const override;
 };
 
 class DirectoryPathWidget : public IPathWidget {
  public:
   DirectoryPathWidget(const QString& pathTitle, const QString& caption, QWidget* parent = Q_NULLPTR);
 
-  virtual int mode() const override;
+  int mode() const override;
 };
 
 }  // namespace gui

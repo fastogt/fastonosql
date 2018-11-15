@@ -34,11 +34,10 @@ namespace gui {
 class IPathWidget;
 
 class ConnectionLocalWidget : public ConnectionBaseWidget {
-  Q_OBJECT
  public:
-  virtual void syncControls(proxy::IConnectionSettingsBase* connection) override;
-  virtual void retranslateUi() override;
-  virtual bool validated() const override;
+  void syncControls(proxy::IConnectionSettingsBase* connection) override;
+  void retranslateUi() override;
+  bool validated() const override;
 
  protected:
   explicit ConnectionLocalWidget(IPathWidget* path_widget, QWidget* parent = Q_NULLPTR);
@@ -46,8 +45,7 @@ class ConnectionLocalWidget : public ConnectionBaseWidget {
   virtual proxy::IConnectionSettingsLocal* createConnectionLocalImpl(const proxy::connection_path_t& path) const = 0;
 
  private:
-  virtual proxy::IConnectionSettingsBase* createConnectionImpl(
-      const proxy::connection_path_t& path) const override final;
+  proxy::IConnectionSettingsBase* createConnectionImpl(const proxy::connection_path_t& path) const override final;
   IPathWidget* const path_widget_;
 };
 
@@ -56,8 +54,7 @@ class ConnectionLocalWidgetDirectoryPath : public ConnectionLocalWidget {
   ConnectionLocalWidgetDirectoryPath(const QString& path_title, const QString& caption, QWidget* parent = Q_NULLPTR);
 
  protected:
-  virtual proxy::IConnectionSettingsLocal* createConnectionLocalImpl(
-      const proxy::connection_path_t& path) const override = 0;
+  proxy::IConnectionSettingsLocal* createConnectionLocalImpl(const proxy::connection_path_t& path) const override = 0;
 };
 
 class ConnectionLocalWidgetFilePath : public ConnectionLocalWidget {
@@ -68,8 +65,7 @@ class ConnectionLocalWidgetFilePath : public ConnectionLocalWidget {
                                 QWidget* parent = Q_NULLPTR);
 
  protected:
-  virtual proxy::IConnectionSettingsLocal* createConnectionLocalImpl(
-      const proxy::connection_path_t& path) const override = 0;
+  proxy::IConnectionSettingsLocal* createConnectionLocalImpl(const proxy::connection_path_t& path) const override = 0;
 };
 
 }  // namespace gui

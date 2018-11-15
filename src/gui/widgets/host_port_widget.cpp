@@ -31,15 +31,16 @@ namespace fastonosql {
 namespace gui {
 
 HostPortWidget::HostPortWidget(QWidget* parent) : QWidget(parent) {
-  QHBoxLayout* hostAndPasswordLayout = new QHBoxLayout;
   host_edit_box_ = new QLineEdit;
   port_ = new QSpinBox;
   port_->setRange(0, std::numeric_limits<common::net::HostAndPort::port_t>::max());
   port_->setFixedWidth(80);
-  hostAndPasswordLayout->addWidget(host_edit_box_);
-  hostAndPasswordLayout->addWidget(new QLabel(":"));
-  hostAndPasswordLayout->addWidget(port_);
-  setLayout(hostAndPasswordLayout);
+
+  QHBoxLayout* host_and_password_layout = new QHBoxLayout;
+  host_and_password_layout->addWidget(host_edit_box_);
+  host_and_password_layout->addWidget(new QLabel(":"));
+  host_and_password_layout->addWidget(port_);
+  setLayout(host_and_password_layout);
 
   retranslateUi();
 }

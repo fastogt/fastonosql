@@ -29,6 +29,7 @@ namespace gui {
 
 class UserPasswordWidget : public QWidget {
   Q_OBJECT
+
  public:
   UserPasswordWidget(const QString& user_title, const QString& password_title, QWidget* parent = Q_NULLPTR);
 
@@ -44,7 +45,7 @@ class UserPasswordWidget : public QWidget {
   void togglePasswordEchoMode();
 
  protected:
-  virtual void changeEvent(QEvent* ev) override;
+  void changeEvent(QEvent* ev) override;
 
  private:
   void retranslateUi();

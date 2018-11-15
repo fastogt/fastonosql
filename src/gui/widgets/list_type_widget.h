@@ -29,6 +29,7 @@ class ListTableModel;
 
 class ListTypeWidget : public QTableView {
   Q_OBJECT
+
  public:
   typedef QTableView base_class;
   enum Mode : uint8_t { kArray = 0, kSet };

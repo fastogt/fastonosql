@@ -43,6 +43,7 @@ namespace gui {
 
 class ConnectionBaseWidget : public QWidget {
   Q_OBJECT
+
  public:
   explicit ConnectionBaseWidget(QWidget* parent = Q_NULLPTR);
 

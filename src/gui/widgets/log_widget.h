@@ -30,6 +30,7 @@ namespace gui {
 
 class LogWidget : public QWidget {
   Q_OBJECT
+
  public:
   explicit LogWidget(QWidget* parent = Q_NULLPTR);
 
@@ -40,7 +41,7 @@ class LogWidget : public QWidget {
   void showContextMenu(const QPoint& pt);
 
  protected:
-  virtual void changeEvent(QEvent* ev) override;
+  void changeEvent(QEvent* ev) override;
 
  private:
   void retranslateUi();

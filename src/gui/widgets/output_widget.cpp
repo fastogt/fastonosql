@@ -46,19 +46,6 @@ namespace fastonosql {
 namespace gui {
 namespace {
 
-core::FastoObjectCommand* FindCommand(core::FastoObject* obj) {
-  if (!obj) {
-    return nullptr;
-  }
-
-  core::FastoObjectCommand* command = dynamic_cast<core::FastoObjectCommand*>(obj);  // +
-  if (command) {
-    return command;
-  }
-
-  return FindCommand(obj->GetParent());
-}
-
 FastoCommonItem* CreateItem(common::qt::gui::TreeItem* parent,
                             core::command_buffer_t key,
                             bool read_only,
@@ -149,17 +136,17 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget
   fixed_height_widget->setLayout(top_layout);
   fixed_height_widget->setFixedHeight(icon_size.height() * 2);
 
-  QVBoxLayout* main_layout = new QVBoxLayout;
-  main_layout->addWidget(fixed_height_widget);
   QSplitter* splitter = new QSplitter(Qt::Vertical);
   splitter->addWidget(tree_view_);
   splitter->addWidget(table_view_);
   splitter->addWidget(text_view_);
   splitter->addWidget(key_editor_);
 
-  main_layout->addWidget(splitter);
-
   current_view_ = proxy::SettingsManager::GetInstance()->GetDefaultView();
+
+  QVBoxLayout* main_layout = new QVBoxLayout;
+  main_layout->addWidget(fixed_height_widget);
+  main_layout->addWidget(splitter);
 
   setLayout(main_layout);
   syncWithView(current_view_);

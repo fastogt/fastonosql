@@ -54,6 +54,7 @@ extern const std::vector<const char*> g_output_views_text;
 
 class FastoViewer : public QWidget {
   Q_OBJECT
+
  public:
   enum { is_lower_hex = true };
   typedef core::readable_string_t view_input_text_t;
@@ -88,7 +89,7 @@ class FastoViewer : public QWidget {
   void textChange();
 
  protected:
-  virtual void changeEvent(QEvent* ev) override;
+  void changeEvent(QEvent* ev) override;
 
  private:
   void setViewText(const view_input_text_t& text);

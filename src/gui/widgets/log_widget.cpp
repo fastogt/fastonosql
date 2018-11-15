@@ -38,10 +38,11 @@ LogWidget::LogWidget(QWidget* parent) : QWidget(parent), log_text_edit_(new QTex
   log_text_edit_->setContextMenuPolicy(Qt::CustomContextMenu);
   VERIFY(connect(log_text_edit_, &QTextEdit::customContextMenuRequested, this, &LogWidget::showContextMenu));
 
-  QHBoxLayout* hlayout = new QHBoxLayout;
-  hlayout->setContentsMargins(0, 0, 0, 0);
-  hlayout->addWidget(log_text_edit_);
-  setLayout(hlayout);
+  QHBoxLayout* main_layout = new QHBoxLayout;
+  main_layout->setContentsMargins(0, 0, 0, 0);
+  main_layout->addWidget(log_text_edit_);
+  setLayout(main_layout);
+
   retranslateUi();
 }
 

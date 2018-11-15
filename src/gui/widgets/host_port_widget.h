@@ -30,6 +30,7 @@ namespace gui {
 
 class HostPortWidget : public QWidget {
   Q_OBJECT
+
  public:
   explicit HostPortWidget(QWidget* parent = Q_NULLPTR);
 
@@ -39,7 +40,7 @@ class HostPortWidget : public QWidget {
   bool isValidHost() const;
 
  protected:
-  virtual void changeEvent(QEvent* ev) override;
+  void changeEvent(QEvent* ev) override;
 
  private:
   void retranslateUi();

@@ -25,6 +25,7 @@ namespace gui {
 
 class HowToUseWidget : public QTabWidget {
   Q_OBJECT
+
  public:
   HowToUseWidget(const QSize& scale_size, QWidget* parent = Q_NULLPTR);
 };

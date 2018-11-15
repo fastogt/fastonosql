@@ -29,6 +29,7 @@ class HashTableModel;
 
 class StreamTypeWidget : public QTableView {
   Q_OBJECT
+
  public:
   explicit StreamTypeWidget(QWidget* parent = Q_NULLPTR);
 

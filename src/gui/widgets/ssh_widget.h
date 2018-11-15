@@ -36,6 +36,7 @@ class IPathWidget;
 
 class SSHWidget : public QWidget {
   Q_OBJECT
+
  public:
   explicit SSHWidget(QWidget* parent = Q_NULLPTR);
 
@@ -60,7 +61,7 @@ class SSHWidget : public QWidget {
   void togglePassphraseEchoMode();
 
  protected:
-  virtual void changeEvent(QEvent* ev) override;
+  void changeEvent(QEvent* ev) override;
 
  private:
   void retranslateUi();

@@ -220,6 +220,7 @@ void PubSubDialog::searchLineChanged(const QString& text) {
 
 void PubSubDialog::retranslateUi() {
   search_button_->setText(translations::trSearch);
+  base_class::retranslateUi();
 }
 
 }  // namespace gui

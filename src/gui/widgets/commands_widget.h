@@ -29,6 +29,7 @@ namespace gui {
 
 class CommandsWidget : public QWidget {
   Q_OBJECT
+
  public:
   explicit CommandsWidget(QWidget* parent = Q_NULLPTR);
 
@@ -39,7 +40,7 @@ class CommandsWidget : public QWidget {
   void showContextMenu(const QPoint& pt);
 
  protected:
-  virtual void changeEvent(QEvent* ev) override;
+  void changeEvent(QEvent* ev) override;
 
  private:
   void retranslateUi();

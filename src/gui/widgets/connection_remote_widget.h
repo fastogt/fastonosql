@@ -28,19 +28,19 @@ class HostPortWidget;
 
 class ConnectionRemoteWidget : public ConnectionBaseWidget {
   Q_OBJECT
+
  public:
   explicit ConnectionRemoteWidget(QWidget* parent = Q_NULLPTR);
 
-  virtual void syncControls(proxy::IConnectionSettingsBase* connection) override;
-  virtual void retranslateUi() override;
-  virtual bool validated() const override;
+  void syncControls(proxy::IConnectionSettingsBase* connection) override;
+  void retranslateUi() override;
+  bool validated() const override;
 
  protected:
   virtual proxy::IConnectionSettingsRemote* createConnectionRemoteImpl(const proxy::connection_path_t& path) const = 0;
 
  private:
-  virtual proxy::IConnectionSettingsBase* createConnectionImpl(
-      const proxy::connection_path_t& path) const override final;
+  proxy::IConnectionSettingsBase* createConnectionImpl(const proxy::connection_path_t& path) const override final;
   HostPortWidget* host_widget_;
 };
 

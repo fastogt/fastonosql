@@ -37,22 +37,28 @@ CommandsWidget::CommandsWidget(QWidget* parent) : QWidget(parent), log_text_edit
   log_text_edit_->setContextMenuPolicy(Qt::CustomContextMenu);
   VERIFY(connect(log_text_edit_, &QTextEdit::customContextMenuRequested, this, &CommandsWidget::showContextMenu));
 
-  QHBoxLayout* hlayout = new QHBoxLayout;
-  hlayout->setContentsMargins(0, 0, 0, 0);
-  hlayout->addWidget(log_text_edit_);
-  setLayout(hlayout);
+  QHBoxLayout* main_layout = new QHBoxLayout;
+  main_layout->setContentsMargins(0, 0, 0, 0);
+  main_layout->addWidget(log_text_edit_);
+  setLayout(main_layout);
   retranslateUi();
 }
 
 void CommandsWidget::addCommand(core::FastoObjectCommandIPtr command) {
+  QString mess;
+  if (!common::ConvertFromBytes(command->GetInputCommand(), &mess)) {
+    return;
+  }
+
+  std::string stype = core::ConnectionTypeToString(command->GetConnectionType());
+  QString qstype;
+  if (!common::ConvertFromString(stype, &qstype)) {
+    return;
+  }
+
   QTime time = QTime::currentTime();
   log_text_edit_->setTextColor(command->GetCommandLoggingType() == core::C_INNER ? QColor(Qt::gray)
                                                                                  : QColor(Qt::black));
-  QString mess;
-  common::ConvertFromBytes(command->GetInputCommand(), &mess);
-  std::string stype = core::ConnectionTypeToString(command->GetConnectionType());
-  QString qstype;
-  common::ConvertFromString(stype, &qstype);
   log_text_edit_->append(time.toString("[%1] hh:mm:ss.zzz: %2").arg(qstype.toUpper(), mess));
   QScrollBar* sb = log_text_edit_->verticalScrollBar();
   sb->setValue(sb->maximum());

@@ -31,14 +31,10 @@ namespace fastonosql {
 namespace gui {
 
 ExplorerTreeWidget::ExplorerTreeWidget(QWidget* parent) : QWidget(parent) {
-  QVBoxLayout* main_layout = new QVBoxLayout;
-
   view_ = new ExplorerTreeView(this);
   filter_edit_ = new QLineEdit;
   filter_edit_->setClearButtonEnabled(true);
   filter_edit_->addAction(GuiFactory::GetInstance().search16Icon(), QLineEdit::LeadingPosition);
-  main_layout->addWidget(view_);
-  main_layout->addWidget(filter_edit_);
 
   VERIFY(connect(filter_edit_, &QLineEdit::textChanged, view_, &ExplorerTreeView::changeTextFilter));
   VERIFY(connect(view_, &ExplorerTreeView::consoleOpened, this, &ExplorerTreeWidget::consoleOpened));
@@ -52,6 +48,10 @@ ExplorerTreeWidget::ExplorerTreeWidget(QWidget* parent) : QWidget(parent) {
   VERIFY(connect(view_, &ExplorerTreeView::sentinelClosed, this, &ExplorerTreeWidget::sentinelClosed,
                  Qt::DirectConnection));
 #endif
+
+  QVBoxLayout* main_layout = new QVBoxLayout;
+  main_layout->addWidget(view_);
+  main_layout->addWidget(filter_edit_);
   setLayout(main_layout);
 }
 

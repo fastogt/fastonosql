@@ -34,10 +34,12 @@ class FastoScintilla;
 
 class FastoEditor : public QWidget {
   Q_OBJECT
+
  public:
   enum { find_panel_height = 40 };
+
   explicit FastoEditor(QWidget* parent = Q_NULLPTR);
-  virtual ~FastoEditor() override;
+  ~FastoEditor() override;
 
   void registerImage(int id, const QPixmap& im);
 
@@ -70,9 +72,9 @@ class FastoEditor : public QWidget {
   void setCallTipsStyle(int style);
   void sendScintilla(unsigned int msg, unsigned long wParam = 0, long lParam = 0);
 
-  virtual void keyPressEvent(QKeyEvent* e) override;
-  virtual bool eventFilter(QObject* object, QEvent* event) override;
-  virtual void changeEvent(QEvent* ev) override;
+  void keyPressEvent(QKeyEvent* e) override;
+  bool eventFilter(QObject* object, QEvent* event) override;
+  void changeEvent(QEvent* ev) override;
 
  private:
   void retranslateUi();
