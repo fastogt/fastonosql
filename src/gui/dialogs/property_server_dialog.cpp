@@ -65,9 +65,9 @@ PropertyServerDialog::PropertyServerDialog(const QString& title,
 
   QHBoxLayout* main_layout = new QHBoxLayout;
   main_layout->addWidget(properties_table_);
-
-  setMinimumSize(QSize(min_width, min_height));
   setLayout(main_layout);
+  setMinimumSize(QSize(min_width, min_height));
+
   retranslateUi();
 }
 

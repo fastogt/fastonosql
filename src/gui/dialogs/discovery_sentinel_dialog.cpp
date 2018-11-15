@@ -18,6 +18,8 @@
 
 #include "gui/dialogs/discovery_sentinel_dialog.h"
 
+#include <vector>
+
 #include <QDialogButtonBox>
 #include <QLabel>
 #include <QThread>
@@ -56,11 +58,8 @@ DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(const QStri
   setWindowIcon(icon);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
-  QVBoxLayout* mainLayout = new QVBoxLayout;
-
   execute_time_label_ = new QLabel;
   execute_time_label_->setText(translations::trConnectionStatusTemplate_1S.arg("execute..."));
-  mainLayout->addWidget(execute_time_label_);
 
   status_label_ = new QLabel(translations::trTimeTemplate_1S.arg("calculate..."));
   icon_label_ = new QLabel;
@@ -68,12 +67,8 @@ DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(const QStri
   const QPixmap pm = fail_icon.pixmap(kStateIconSize);
   icon_label_->setPixmap(pm);
 
-  mainLayout->addWidget(status_label_);
-  mainLayout->addWidget(icon_label_, 1, Qt::AlignCenter);
-
   list_widget_ = new QTreeWidget;
   list_widget_->setIndentation(5);
-
   QStringList colums;
   colums << translations::trName << translations::trAddress << translations::trType << translations::trState;
   list_widget_->setHeaderLabels(colums);
@@ -85,17 +80,21 @@ DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(const QStri
                                                                       // droped
   list_widget_->setSelectionBehavior(QAbstractItemView::SelectRows);
 
-  mainLayout->addWidget(list_widget_);
   list_widget_->setEnabled(false);
   list_widget_->setToolTip(tr("Select items which you want add to sentinel."));
 
-  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
-  buttonBox->setOrientation(Qt::Horizontal);
-  VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &DiscoverySentinelDiagnosticDialog::accept));
+  QDialogButtonBox* button_box = new QDialogButtonBox(QDialogButtonBox::Ok);
+  button_box->setOrientation(Qt::Horizontal);
+  VERIFY(connect(button_box, &QDialogButtonBox::accepted, this, &DiscoverySentinelDiagnosticDialog::accept));
 
-  mainLayout->addWidget(buttonBox);
+  QVBoxLayout* main_layout = new QVBoxLayout;
+  main_layout->addWidget(execute_time_label_);
+  main_layout->addWidget(status_label_);
+  main_layout->addWidget(icon_label_, 1, Qt::AlignCenter);
+  main_layout->addWidget(list_widget_);
+  main_layout->addWidget(button_box);
+  setLayout(main_layout);
   setFixedSize(QSize(fix_width, fix_height));
-  setLayout(mainLayout);
 
   glass_widget_ =
       new common::qt::gui::GlassWidget(GuiFactory::GetInstance().pathToLoadingGif(),
@@ -119,12 +118,12 @@ std::vector<ConnectionListWidgetItemDiscovered*> DiscoverySentinelDiagnosticDial
 
 void DiscoverySentinelDiagnosticDialog::connectionResultReady(
     bool suc,
-    qint64 mstimeExecute,
-    const QString& resultText,
+    qint64 exec_mstime,
+    const QString& result_text,
     std::vector<core::ServerDiscoverySentinelInfoSPtr> infos) {
   glass_widget_->stop();
 
-  execute_time_label_->setText(translations::trTimeTemplate_1S.arg(mstimeExecute));
+  execute_time_label_->setText(translations::trTimeTemplate_1S.arg(exec_mstime));
   list_widget_->setEnabled(suc);
   list_widget_->clear();
   if (suc) {
@@ -132,21 +131,18 @@ void DiscoverySentinelDiagnosticDialog::connectionResultReady(
     QPixmap pm = icon.pixmap(kStateIconSize);
     icon_label_->setPixmap(pm);
 
-    for (size_t i = 0; i < infos.size(); ++i) {
-      core::ServerDiscoverySentinelInfoSPtr inf = infos[i];
+    for (core::ServerDiscoverySentinelInfoSPtr inf : infos) {
       common::net::HostAndPort host = inf->GetHost();
       proxy::connection_path_t path(common::file_system::get_separator_string<char>() + inf->GetName());
       proxy::IConnectionSettingsRemote* remote =
           proxy::ConnectionSettingsFactory::GetInstance().CreateSettingsFromTypeConnection(inf->GetConnectionType(),
                                                                                            path, host);
-      proxy::IConnectionSettingsBaseSPtr con(remote);
-
       ConnectionListWidgetItemDiscovered* item = new ConnectionListWidgetItemDiscovered(inf->GetInfo(), nullptr);
-      item->setConnection(con);
+      item->setConnection(proxy::IConnectionSettingsBaseSPtr(remote));
       list_widget_->addTopLevelItem(item);
     }
   }
-  status_label_->setText(translations::trConnectionStatusTemplate_1S.arg(resultText));
+  status_label_->setText(translations::trConnectionStatusTemplate_1S.arg(result_text));
 }
 
 void DiscoverySentinelDiagnosticDialog::showEvent(QShowEvent* e) {

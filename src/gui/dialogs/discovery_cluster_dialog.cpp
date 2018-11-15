@@ -37,7 +37,8 @@
 
 namespace {
 const QSize kStateIconSize = QSize(64, 64);
-}
+const QString trTooltip = QObject::tr("Select items which you want add to cluster.");
+}  // namespace
 
 namespace fastonosql {
 namespace gui {
@@ -58,11 +59,8 @@ DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(const QString
   setWindowIcon(icon);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
-  QVBoxLayout* mainLayout = new QVBoxLayout;
-
   execute_time_label_ = new QLabel;
   execute_time_label_->setText(translations::trConnectionStatusTemplate_1S.arg("execute..."));
-  mainLayout->addWidget(execute_time_label_);
 
   status_label_ = new QLabel(translations::trTimeTemplate_1S.arg("calculate..."));
   icon_label_ = new QLabel;
@@ -70,34 +68,30 @@ DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(const QString
   const QPixmap pm = fail_icon.pixmap(kStateIconSize);
   icon_label_->setPixmap(pm);
 
-  mainLayout->addWidget(status_label_);
-  mainLayout->addWidget(icon_label_, 1, Qt::AlignCenter);
-
   list_widget_ = new QTreeWidget;
   list_widget_->setIndentation(5);
-
   QStringList colums;
   colums << translations::trName << translations::trAddress << translations::trType << translations::trState;
   list_widget_->setHeaderLabels(colums);
   list_widget_->setContextMenuPolicy(Qt::ActionsContextMenu);
   list_widget_->setIndentation(15);
-  list_widget_->setSelectionMode(QAbstractItemView::MultiSelection);  // single item
-                                                                      // can be draged
-                                                                      // or
-                                                                      // droped
+  list_widget_->setSelectionMode(QAbstractItemView::MultiSelection);
   list_widget_->setSelectionBehavior(QAbstractItemView::SelectRows);
-
-  mainLayout->addWidget(list_widget_);
   list_widget_->setEnabled(false);
-  list_widget_->setToolTip(tr("Select items which you want add to cluster."));
+  list_widget_->setToolTip(trTooltip);
 
-  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
-  buttonBox->setOrientation(Qt::Horizontal);
-  VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &DiscoveryClusterDiagnosticDialog::accept));
+  QDialogButtonBox* button_box = new QDialogButtonBox(QDialogButtonBox::Ok);
+  button_box->setOrientation(Qt::Horizontal);
+  VERIFY(connect(button_box, &QDialogButtonBox::accepted, this, &DiscoveryClusterDiagnosticDialog::accept));
 
-  mainLayout->addWidget(buttonBox);
+  QVBoxLayout* main_layout = new QVBoxLayout;
+  main_layout->addWidget(execute_time_label_);
+  main_layout->addWidget(status_label_);
+  main_layout->addWidget(icon_label_, 1, Qt::AlignCenter);
+  main_layout->addWidget(list_widget_);
+  main_layout->addWidget(button_box);
+  setLayout(main_layout);
   setFixedSize(QSize(fix_width, fix_height));
-  setLayout(mainLayout);
 
   glass_widget_ =
       new common::qt::gui::GlassWidget(GuiFactory::GetInstance().pathToLoadingGif(),
@@ -120,12 +114,12 @@ std::vector<ConnectionListWidgetItemDiscovered*> DiscoveryClusterDiagnosticDialo
 }
 
 void DiscoveryClusterDiagnosticDialog::connectionResult(bool suc,
-                                                        qint64 mstimeExecute,
-                                                        const QString& resultText,
+                                                        qint64 exec_mstime,
+                                                        const QString& result_text,
                                                         std::vector<core::ServerDiscoveryClusterInfoSPtr> infos) {
   glass_widget_->stop();
 
-  execute_time_label_->setText(translations::trTimeTemplate_1S.arg(mstimeExecute));
+  execute_time_label_->setText(translations::trTimeTemplate_1S.arg(exec_mstime));
   list_widget_->setEnabled(suc);
   list_widget_->clear();
   if (suc) {
@@ -133,21 +127,19 @@ void DiscoveryClusterDiagnosticDialog::connectionResult(bool suc,
     const QPixmap pm = icon.pixmap(kStateIconSize);
     icon_label_->setPixmap(pm);
 
-    for (size_t i = 0; i < infos.size(); ++i) {
-      core::ServerDiscoveryClusterInfoSPtr inf = infos[i];
+    for (core::ServerDiscoveryClusterInfoSPtr inf : infos) {
       common::net::HostAndPortAndSlot host = inf->GetHost();
       proxy::connection_path_t path(common::file_system::get_separator_string<char>() + inf->GetName());
       proxy::IConnectionSettingsRemote* remote =
           proxy::ConnectionSettingsFactory::GetInstance().CreateSettingsFromTypeConnection(inf->GetConnectionType(),
                                                                                            path, host);
-      proxy::IConnectionSettingsBaseSPtr con(remote);
       ConnectionListWidgetItemDiscovered* item = new ConnectionListWidgetItemDiscovered(inf->GetInfo(), nullptr);
-      item->setConnection(con);
+      item->setConnection(proxy::IConnectionSettingsBaseSPtr(remote));
       item->setDisabled(inf->Self() || cluster_->FindSettingsByHost(host));
       list_widget_->addTopLevelItem(item);
     }
   }
-  status_label_->setText(translations::trConnectionStatusTemplate_1S.arg(resultText));
+  status_label_->setText(translations::trConnectionStatusTemplate_1S.arg(result_text));
 }
 
 void DiscoveryClusterDiagnosticDialog::showEvent(QShowEvent* e) {

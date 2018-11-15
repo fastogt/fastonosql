@@ -77,14 +77,14 @@ PasswordDialog::PasswordDialog(QWidget* parent)
   status_label_->setOpenExternalLinks(true);
   status_label_->setVisible(false);
 
-  QVBoxLayout* mainLayout = new QVBoxLayout;
-  mainLayout->addWidget(description_);
-  mainLayout->addLayout(profile_layout);
-  mainLayout->addLayout(password_layout);
-  mainLayout->addWidget(status_label_, 0, Qt::AlignCenter);
-  mainLayout->addWidget(buttonBox);
-  mainLayout->setSizeConstraint(QLayout::SetFixedSize);
-  setLayout(mainLayout);
+  QVBoxLayout* main_layout = new QVBoxLayout;
+  main_layout->addWidget(description_);
+  main_layout->addLayout(profile_layout);
+  main_layout->addLayout(password_layout);
+  main_layout->addWidget(status_label_, 0, Qt::AlignCenter);
+  main_layout->addWidget(buttonBox);
+  main_layout->setSizeConstraint(QLayout::SetFixedSize);
+  setLayout(main_layout);
   retranslateUi();
 }
 

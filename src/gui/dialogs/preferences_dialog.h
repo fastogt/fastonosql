@@ -35,18 +35,19 @@ class IPathWidget;
 
 class PreferencesDialog : public QDialog {
   Q_OBJECT
+
  public:
   explicit PreferencesDialog(const QString& title, QWidget* parent);
   enum { min_width = 640, min_height = 480 };
 
  public Q_SLOTS:
-  virtual void accept() override;
+  void accept() override;
 
  private:
   void syncWithSettings();
 
  protected:
-  virtual void changeEvent(QEvent* ev) override;
+  void changeEvent(QEvent* ev) override;
 
  private:
   QWidget* createMainTab();

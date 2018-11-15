@@ -19,12 +19,14 @@
 #pragma once
 
 #include <QDialog>
-#include <QLabel>
-#include <QTableView>
 
 #include <fastonosql/core/value.h>
 
 #define DEFAILT_ID "*"
+
+class QLabel;
+class QLineEdit;
+class QTableView;
 
 namespace fastonosql {
 namespace gui {
@@ -33,6 +35,7 @@ class StreamTableModel;
 
 class StreamEntryDialog : public QDialog {
   Q_OBJECT
+
  public:
   enum { min_width = 360, min_height = 240 };
 

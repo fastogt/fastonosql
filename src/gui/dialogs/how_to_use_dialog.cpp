@@ -22,6 +22,10 @@
 
 #include "gui/widgets/how_to_use_widget.h"
 
+namespace {
+const QSize kFixedSize = QSize(1280 / 2, 720 / 2);  // 2x smaller than original
+}
+
 namespace fastonosql {
 namespace gui {
 
@@ -29,12 +33,12 @@ HowToUseDialog::HowToUseDialog(const QString& title, QWidget* parent) : QDialog(
   setWindowTitle(title);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
-  const QSize fixed_size(fix_width, fix_height);
+  HowToUseWidget* hw = new HowToUseWidget(kFixedSize);
+
   QVBoxLayout* main_layout = new QVBoxLayout;
-  HowToUseWidget* hw = new HowToUseWidget(fixed_size);
   main_layout->addWidget(hw);
-  setFixedSize(fixed_size);
   setLayout(main_layout);
+  setFixedSize(kFixedSize);
 }
 
 }  // namespace gui

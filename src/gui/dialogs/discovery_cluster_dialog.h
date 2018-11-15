@@ -44,8 +44,9 @@ namespace gui {
 class ConnectionListWidgetItemDiscovered;
 class DiscoveryClusterDiagnosticDialog : public QDialog {
   Q_OBJECT
+
  public:
-  enum { fix_height = 320, fix_width = 480 };
+  enum { fix_width = 480, fix_height = 320 };
 
   DiscoveryClusterDiagnosticDialog(const QString& title,
                                    const QIcon& icon,
@@ -56,12 +57,12 @@ class DiscoveryClusterDiagnosticDialog : public QDialog {
 
  private Q_SLOTS:
   void connectionResult(bool suc,
-                        qint64 mstimeExecute,
-                        const QString& resultText,
+                        qint64 exec_mstime,
+                        const QString& result_text,
                         std::vector<core::ServerDiscoveryClusterInfoSPtr> infos);
 
  protected:
-  virtual void showEvent(QShowEvent* e) override;
+  void showEvent(QShowEvent* e) override;
 
  private:
   void testConnection(proxy::IConnectionSettingsBaseSPtr connection);

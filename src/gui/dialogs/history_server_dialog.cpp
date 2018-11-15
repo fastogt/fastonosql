@@ -18,6 +18,8 @@
 
 #include "gui/dialogs/history_server_dialog.h"
 
+#include <vector>
+
 #include <QComboBox>
 #include <QHBoxLayout>
 #include <QPushButton>
@@ -80,18 +82,17 @@ ServerHistoryDialog::ServerHistoryDialog(const QString& title,
                  &ServerHistoryDialog::refreshGraph));
 
   const auto fields = core::GetInfoFieldsFromType(server_->GetType());
-  for (size_t i = 0; i < fields.size(); ++i) {
-    core::info_field_t field = fields[i];
+  for (const auto field : fields) {
     QString qitem;
     if (common::ConvertFromString(field.first, &qitem)) {
       server_info_groups_names_->addItem(qitem);
     }
   }
-  QVBoxLayout* setingsLayout = new QVBoxLayout;
-  setingsLayout->addWidget(clear_history_);
-  setingsLayout->addWidget(server_info_groups_names_);
-  setingsLayout->addWidget(server_info_fields_);
-  settings_graph_->setLayout(setingsLayout);
+  QVBoxLayout* settings_layout = new QVBoxLayout;
+  settings_layout->addWidget(clear_history_);
+  settings_layout->addWidget(server_info_groups_names_);
+  settings_layout->addWidget(server_info_fields_);
+  settings_graph_->setLayout(settings_layout);
 
   QSplitter* splitter = new QSplitter(Qt::Horizontal);
   splitter->addWidget(settings_graph_);
@@ -100,9 +101,10 @@ ServerHistoryDialog::ServerHistoryDialog(const QString& title,
   splitter->setCollapsible(1, false);
   splitter->setHandleWidth(1);
   setMinimumSize(QSize(min_width, min_height));
-  QHBoxLayout* mainL = new QHBoxLayout;
-  mainL->addWidget(splitter);
-  setLayout(mainL);
+
+  QHBoxLayout* main_layout = new QHBoxLayout;
+  main_layout->addWidget(splitter);
+  setLayout(main_layout);
 
   glass_widget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().pathToLoadingGif(),
                                                    translations::trLoad + "...", 0.5, QColor(111, 111, 100), this);
@@ -174,21 +176,20 @@ void ServerHistoryDialog::refreshGraph(int index) {
     return;
   }
 
-  int serverIndex = server_info_groups_names_->currentIndex();
+  const int server_index = server_info_groups_names_->currentIndex();
   QVariant var = server_info_fields_->itemData(index);
-  uint32_t indexIn = qvariant_cast<uint32_t>(var);
+  uint32_t index_in = qvariant_cast<uint32_t>(var);
   common::qt::gui::GraphWidget::nodes_container_type nodes;
-  for (auto it = infos_.begin(); it != infos_.end(); ++it) {
-    auto val = *it;
+  for (const auto val : infos_) {
     if (!val.IsValid()) {
       continue;
     }
 
-    common::Value* value = val.info->GetValueByIndexes(serverIndex, indexIn);  // allocate
+    common::Value* value = val.info->GetValueByIndexes(server_index, index_in);  // allocate
     if (value) {
-      qreal graphY = 0.0f;
-      if (value->GetAsDouble(&graphY)) {
-        nodes.push_back(std::make_pair(val.msec, graphY));
+      qreal graphy = 0.0f;
+      if (value->GetAsDouble(&graphy)) {
+        nodes.push_back(std::make_pair(val.msec, graphy));
       }
       delete value;
     }

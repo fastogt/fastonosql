@@ -20,7 +20,9 @@
 
 #include <QDialogButtonBox>
 #include <QHeaderView>
+#include <QLabel>
 #include <QLineEdit>
+#include <QTableView>
 #include <QVBoxLayout>
 
 #include <common/qt/convert2string.h>
@@ -35,7 +37,7 @@ namespace gui {
 
 StreamEntryDialog::StreamEntryDialog(const QString& sid, QWidget* parent)
     : QDialog(parent), entry_label_(nullptr), id_edit_(nullptr), table_(nullptr), model_(nullptr) {
-  QVBoxLayout* layout = new QVBoxLayout;
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   QHBoxLayout* id_layout = new QHBoxLayout;
   entry_label_ = new QLabel("ID");
@@ -45,7 +47,6 @@ StreamEntryDialog::StreamEntryDialog(const QString& sid, QWidget* parent)
   QRegExp rx(".+");
   id_edit_->setValidator(new QRegExpValidator(rx, this));
   id_layout->addWidget(id_edit_);
-  layout->addLayout(id_layout);
 
   table_ = new QTableView(this);
   // table_->horizontalHeader()->hide();
@@ -62,16 +63,18 @@ StreamEntryDialog::StreamEntryDialog(const QString& sid, QWidget* parent)
   table_->setSelectionBehavior(QAbstractItemView::SelectRows);
   QHeaderView* header = table_->horizontalHeader();
   header->setSectionResizeMode(QHeaderView::Stretch);
-  layout->addWidget(table_);
 
-  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
-  buttonBox->setOrientation(Qt::Horizontal);
-  VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &StreamEntryDialog::accept));
-  VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &StreamEntryDialog::reject));
-  layout->addWidget(buttonBox);
+  QDialogButtonBox* button_box = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
+  button_box->setOrientation(Qt::Horizontal);
+  VERIFY(connect(button_box, &QDialogButtonBox::accepted, this, &StreamEntryDialog::accept));
+  VERIFY(connect(button_box, &QDialogButtonBox::rejected, this, &StreamEntryDialog::reject));
 
+  QVBoxLayout* main_layout = new QVBoxLayout;
+  main_layout->addLayout(id_layout);
+  main_layout->addWidget(table_);
+  main_layout->addWidget(button_box);
+  setLayout(main_layout);
   setMinimumSize(QSize(min_height, min_width));
-  setLayout(layout);
 }
 
 StreamEntryDialog::~StreamEntryDialog() {}

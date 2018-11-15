@@ -356,12 +356,12 @@ InfoServerDialog::InfoServerDialog(const QString& title, const QIcon& icon, prox
 
   server_text_info_ = new QTextEdit;
   server_text_info_->setReadOnly(true);
-  QHBoxLayout* mainL = new QHBoxLayout;
-  mainL->setContentsMargins(0, 0, 0, 0);
-  mainL->addWidget(server_text_info_);
 
+  QHBoxLayout* main_layout = new QHBoxLayout;
+  main_layout->setContentsMargins(0, 0, 0, 0);
+  main_layout->addWidget(server_text_info_);
+  setLayout(main_layout);
   setMinimumSize(QSize(min_width, min_height));
-  setLayout(mainL);
 
   glass_widget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().pathToLoadingGif(),
                                                    translations::trLoad + "...", 0.5, QColor(111, 111, 100), this);
@@ -555,27 +555,27 @@ void InfoServerDialog::updateText(const core::redis::ServerInfo& serv) {
   QString qrun_id;
   common::ConvertFromString(ser.run_id_, &qrun_id);
 
-  QString textServ = trRedisTextServerTemplate.arg(qredis_version)
-                         .arg(qredis_git_sha1)
-                         .arg(qredis_git_dirty)
-                         .arg(qredis_mode)
-                         .arg(qos)
-                         .arg(ser.arch_bits_)
-                         .arg(qmultiplexing_api)
-                         .arg(qgcc_version)
-                         .arg(ser.process_id_)
-                         .arg(qrun_id)
-                         .arg(ser.tcp_port_)
-                         .arg(ser.uptime_in_seconds_)
-                         .arg(ser.uptime_in_days_)
-                         .arg(ser.hz_)
-                         .arg(ser.lru_clock_);
+  QString text_serv = trRedisTextServerTemplate.arg(qredis_version)
+                          .arg(qredis_git_sha1)
+                          .arg(qredis_git_dirty)
+                          .arg(qredis_mode)
+                          .arg(qos)
+                          .arg(ser.arch_bits_)
+                          .arg(qmultiplexing_api)
+                          .arg(qgcc_version)
+                          .arg(ser.process_id_)
+                          .arg(qrun_id)
+                          .arg(ser.tcp_port_)
+                          .arg(ser.uptime_in_seconds_)
+                          .arg(ser.uptime_in_days_)
+                          .arg(ser.hz_)
+                          .arg(ser.lru_clock_);
 
   core::redis::ServerInfo::Clients cl = serv.clients_;
-  QString textCl = trRedisTextClientsTemplate.arg(cl.connected_clients_)
-                       .arg(cl.client_longest_output_list_)
-                       .arg(cl.client_biggest_input_buf_)
-                       .arg(cl.blocked_clients_);
+  QString text_cl = trRedisTextClientsTemplate.arg(cl.connected_clients_)
+                        .arg(cl.client_longest_output_list_)
+                        .arg(cl.client_biggest_input_buf_)
+                        .arg(cl.blocked_clients_);
 
   core::redis::ServerInfo::Memory mem = serv.memory_;
   QString qused_memory_human;
@@ -587,14 +587,14 @@ void InfoServerDialog::updateText(const core::redis::ServerInfo& serv) {
   QString qmem_allocator;
   common::ConvertFromString(mem.mem_allocator_, &qmem_allocator);
 
-  QString textMem = trRedisTextMemoryTemplate.arg(mem.used_memory_)
-                        .arg(qused_memory_human)
-                        .arg(mem.used_memory_rss_)
-                        .arg(mem.used_memory_peak_)
-                        .arg(qused_memory_peak_human)
-                        .arg(mem.used_memory_lua_)
-                        .arg(mem.mem_fragmentation_ratio_)
-                        .arg(qmem_allocator);
+  QString text_mem = trRedisTextMemoryTemplate.arg(mem.used_memory_)
+                         .arg(qused_memory_human)
+                         .arg(mem.used_memory_rss_)
+                         .arg(mem.used_memory_peak_)
+                         .arg(qused_memory_peak_human)
+                         .arg(mem.used_memory_lua_)
+                         .arg(mem.mem_fragmentation_ratio_)
+                         .arg(qmem_allocator);
 
   core::redis::ServerInfo::Persistence per = serv.persistence_;
   QString qrdb_last_bgsave_status;
@@ -606,55 +606,55 @@ void InfoServerDialog::updateText(const core::redis::ServerInfo& serv) {
   QString qaof_last_write_status;
   common::ConvertFromString(per.aof_last_write_status_, &qaof_last_write_status);
 
-  QString textPer = trRedisTextPersistenceTemplate.arg(per.loading_)
-                        .arg(per.rdb_changes_since_last_save_)
-                        .arg(per.rdb_bgsave_in_progress_)
-                        .arg(per.rdb_last_save_time_)
-                        .arg(qrdb_last_bgsave_status)
-                        .arg(per.rdb_last_bgsave_time_sec_)
-                        .arg(per.rdb_current_bgsave_time_sec_)
-                        .arg(per.aof_enabled_)
-                        .arg(per.aof_rewrite_in_progress_)
-                        .arg(per.aof_rewrite_scheduled_)
-                        .arg(per.aof_last_rewrite_time_sec_)
-                        .arg(per.aof_current_rewrite_time_sec_)
-                        .arg(qaof_last_bgrewrite_status)
-                        .arg(qaof_last_write_status);
+  QString text_per = trRedisTextPersistenceTemplate.arg(per.loading_)
+                         .arg(per.rdb_changes_since_last_save_)
+                         .arg(per.rdb_bgsave_in_progress_)
+                         .arg(per.rdb_last_save_time_)
+                         .arg(qrdb_last_bgsave_status)
+                         .arg(per.rdb_last_bgsave_time_sec_)
+                         .arg(per.rdb_current_bgsave_time_sec_)
+                         .arg(per.aof_enabled_)
+                         .arg(per.aof_rewrite_in_progress_)
+                         .arg(per.aof_rewrite_scheduled_)
+                         .arg(per.aof_last_rewrite_time_sec_)
+                         .arg(per.aof_current_rewrite_time_sec_)
+                         .arg(qaof_last_bgrewrite_status)
+                         .arg(qaof_last_write_status);
 
   core::redis::ServerInfo::Stats stat = serv.stats_;
-  QString textStat = trRedisTextStatsTemplate.arg(stat.total_connections_received_)
-                         .arg(stat.total_commands_processed_)
-                         .arg(stat.instantaneous_ops_per_sec_)
-                         .arg(stat.rejected_connections_)
-                         .arg(stat.sync_full_)
-                         .arg(stat.sync_partial_ok_)
-                         .arg(stat.sync_partial_err_)
-                         .arg(stat.expired_keys_)
-                         .arg(stat.evicted_keys_)
-                         .arg(stat.keyspace_hits_)
-                         .arg(stat.keyspace_misses_)
-                         .arg(stat.pubsub_channels_)
-                         .arg(stat.pubsub_patterns_)
-                         .arg(stat.latest_fork_usec_);
+  QString text_stat = trRedisTextStatsTemplate.arg(stat.total_connections_received_)
+                          .arg(stat.total_commands_processed_)
+                          .arg(stat.instantaneous_ops_per_sec_)
+                          .arg(stat.rejected_connections_)
+                          .arg(stat.sync_full_)
+                          .arg(stat.sync_partial_ok_)
+                          .arg(stat.sync_partial_err_)
+                          .arg(stat.expired_keys_)
+                          .arg(stat.evicted_keys_)
+                          .arg(stat.keyspace_hits_)
+                          .arg(stat.keyspace_misses_)
+                          .arg(stat.pubsub_channels_)
+                          .arg(stat.pubsub_patterns_)
+                          .arg(stat.latest_fork_usec_);
 
   core::redis::ServerInfo::Replication repl = serv.replication_;
   QString qrole;
   common::ConvertFromString(repl.role_, &qrole);
 
-  QString textRepl = trRedisTextReplicationTemplate.arg(qrole)
-                         .arg(repl.connected_slaves_)
-                         .arg(repl.master_repl_offset_)
-                         .arg(repl.backlog_active_)
-                         .arg(repl.backlog_size_)
-                         .arg(repl.backlog_first_byte_offset_)
-                         .arg(repl.backlog_histen_);
+  QString text_repl = trRedisTextReplicationTemplate.arg(qrole)
+                          .arg(repl.connected_slaves_)
+                          .arg(repl.master_repl_offset_)
+                          .arg(repl.backlog_active_)
+                          .arg(repl.backlog_size_)
+                          .arg(repl.backlog_first_byte_offset_)
+                          .arg(repl.backlog_histen_);
 
   core::redis::ServerInfo::Cpu cpu = serv.cpu_;
-  QString textCpu = trRedisTextCpuTemplate.arg(cpu.used_cpu_sys_)
-                        .arg(cpu.used_cpu_user_)
-                        .arg(cpu.used_cpu_sys_children_)
-                        .arg(cpu.used_cpu_user_children_);
-  server_text_info_->setText(textServ + textMem + textCpu + textCl + textPer + textStat + textRepl);
+  QString text_cpu = trRedisTextCpuTemplate.arg(cpu.used_cpu_sys_)
+                         .arg(cpu.used_cpu_user_)
+                         .arg(cpu.used_cpu_sys_children_)
+                         .arg(cpu.used_cpu_user_children_);
+  server_text_info_->setText(text_serv + text_mem + text_cpu + text_cl + text_per + text_stat + text_repl);
 }
 #endif
 
@@ -664,30 +664,30 @@ void InfoServerDialog::updateText(const core::memcached::ServerInfo& serv) {
   QString qverson;
   common::ConvertFromString(com.version, &qverson);
 
-  QString textServ = trMemcachedTextServerTemplate.arg(com.pid)
-                         .arg(com.uptime)
-                         .arg(com.time)
-                         .arg(qverson)
-                         .arg(com.pointer_size)
-                         .arg(com.rusage_user)
-                         .arg(com.rusage_system)
-                         .arg(com.curr_items)
-                         .arg(com.total_items)
-                         .arg(com.bytes)
-                         .arg(com.curr_connections)
-                         .arg(com.total_connections)
-                         .arg(com.connection_structures)
-                         .arg(com.cmd_get)
-                         .arg(com.cmd_set)
-                         .arg(com.get_hits)
-                         .arg(com.get_misses)
-                         .arg(com.evictions)
-                         .arg(com.bytes_read)
-                         .arg(com.bytes_written)
-                         .arg(com.limit_maxbytes)
-                         .arg(com.threads);
+  QString text_serv = trMemcachedTextServerTemplate.arg(com.pid)
+                          .arg(com.uptime)
+                          .arg(com.time)
+                          .arg(qverson)
+                          .arg(com.pointer_size)
+                          .arg(com.rusage_user)
+                          .arg(com.rusage_system)
+                          .arg(com.curr_items)
+                          .arg(com.total_items)
+                          .arg(com.bytes)
+                          .arg(com.curr_connections)
+                          .arg(com.total_connections)
+                          .arg(com.connection_structures)
+                          .arg(com.cmd_get)
+                          .arg(com.cmd_set)
+                          .arg(com.get_hits)
+                          .arg(com.get_misses)
+                          .arg(com.evictions)
+                          .arg(com.bytes_read)
+                          .arg(com.bytes_written)
+                          .arg(com.limit_maxbytes)
+                          .arg(com.threads);
 
-  server_text_info_->setText(textServ);
+  server_text_info_->setText(text_serv);
 }
 #endif
 
@@ -699,24 +699,24 @@ void InfoServerDialog::updateText(const core::ssdb::ServerInfo& serv) {
   QString qbinlogs;
   common::ConvertFromString(com.binlogs, &qbinlogs);
 
-  QString textServ =
+  QString text_serv =
       trSsdbTextServerTemplate.arg(qverson).arg(com.links).arg(com.total_calls).arg(com.dbsize).arg(qbinlogs);
 
-  server_text_info_->setText(textServ);
+  server_text_info_->setText(text_serv);
 }
 #endif
 
 #ifdef BUILD_WITH_LEVELDB
 void InfoServerDialog::updateText(const core::leveldb::ServerInfo& serv) {
   core::leveldb::ServerInfo::Stats stats = serv.stats_;
-  QString textServ = trLeveldbTextServerTemplate.arg(stats.level)
-                         .arg(stats.files)
-                         .arg(stats.size_mb)
-                         .arg(stats.time_sec)
-                         .arg(stats.read_mb)
-                         .arg(stats.write_mb);
+  QString text_serv = trLeveldbTextServerTemplate.arg(stats.level)
+                          .arg(stats.files)
+                          .arg(stats.size_mb)
+                          .arg(stats.time_sec)
+                          .arg(stats.read_mb)
+                          .arg(stats.write_mb);
 
-  server_text_info_->setText(textServ);
+  server_text_info_->setText(text_serv);
 }
 #endif
 #ifdef BUILD_WITH_ROCKSDB
@@ -727,26 +727,26 @@ void InfoServerDialog::updateText(const core::rocksdb::ServerInfo& serv) {
   QString qfiles;
   common::ConvertFromString(stats.files, &qfiles);
 
-  QString textServ = trRocksdbTextServerTemplate.arg(qlevel)
-                         .arg(qfiles)
-                         .arg(stats.size)
-                         .arg(stats.score)
-                         .arg(stats.read_gb)
-                         .arg(stats.rn_gb)
-                         .arg(stats.rn_p1)
-                         .arg(stats.write_gb)
-                         .arg(stats.wnew_gb)
-                         .arg(stats.moved_gb)
-                         .arg(stats.wamp)
-                         .arg(stats.rd_mbs)
-                         .arg(stats.wr_mbs)
-                         .arg(stats.comp_cnt)
-                         .arg(stats.comp_sec)
-                         .arg(stats.avg_sec)
-                         .arg(stats.key_in)
-                         .arg(stats.key_drop);
+  QString text_serv = trRocksdbTextServerTemplate.arg(qlevel)
+                          .arg(qfiles)
+                          .arg(stats.size)
+                          .arg(stats.score)
+                          .arg(stats.read_gb)
+                          .arg(stats.rn_gb)
+                          .arg(stats.rn_p1)
+                          .arg(stats.write_gb)
+                          .arg(stats.wnew_gb)
+                          .arg(stats.moved_gb)
+                          .arg(stats.wamp)
+                          .arg(stats.rd_mbs)
+                          .arg(stats.wr_mbs)
+                          .arg(stats.comp_cnt)
+                          .arg(stats.comp_sec)
+                          .arg(stats.avg_sec)
+                          .arg(stats.key_in)
+                          .arg(stats.key_drop);
 
-  server_text_info_->setText(textServ);
+  server_text_info_->setText(text_serv);
 }
 #endif
 #ifdef BUILD_WITH_UNQLITE
@@ -755,8 +755,8 @@ void InfoServerDialog::updateText(const core::unqlite::ServerInfo& serv) {
   QString qfile_name;
   common::ConvertFromString(stats.db_path, &qfile_name);
 
-  QString textServ = trUnqliteTextServerTemplate.arg(qfile_name).arg(stats.db_size);
-  server_text_info_->setText(textServ);
+  QString text_serv = trUnqliteTextServerTemplate.arg(qfile_name).arg(stats.db_size);
+  server_text_info_->setText(text_serv);
 }
 #endif
 #ifdef BUILD_WITH_LMDB
@@ -765,8 +765,8 @@ void InfoServerDialog::updateText(const core::lmdb::ServerInfo& serv) {
   QString qdb_path;
   common::ConvertFromString(stats.db_path, &qdb_path);
 
-  QString textServ = trLmdbTextServerTemplate.arg(qdb_path);
-  server_text_info_->setText(textServ);
+  QString text_serv = trLmdbTextServerTemplate.arg(qdb_path);
+  server_text_info_->setText(text_serv);
 }
 #endif
 #ifdef BUILD_WITH_UPSCALEDB
@@ -775,8 +775,8 @@ void InfoServerDialog::updateText(const core::upscaledb::ServerInfo& serv) {
   QString qdb_path;
   common::ConvertFromString(stats.db_path, &qdb_path);
 
-  QString textServ = trUpscaledbTextServerTemplate.arg(qdb_path);
-  server_text_info_->setText(textServ);
+  QString text_serv = trUpscaledbTextServerTemplate.arg(qdb_path);
+  server_text_info_->setText(text_serv);
 }
 #endif
 #ifdef BUILD_WITH_FORESTDB
@@ -785,8 +785,8 @@ void InfoServerDialog::updateText(const core::forestdb::ServerInfo& serv) {
   QString qdb_path;
   common::ConvertFromString(stats.db_path, &qdb_path);
 
-  QString textServ = trForestdbTextServerTemplate.arg(qdb_path).arg(stats.db_size);
-  server_text_info_->setText(textServ);
+  QString text_serv = trForestdbTextServerTemplate.arg(qdb_path).arg(stats.db_size);
+  server_text_info_->setText(text_serv);
 }
 #endif
 
@@ -809,19 +809,19 @@ void InfoServerDialog::updateText(const core::pika::ServerInfo& serv) {
   QString qconfig_file;
   common::ConvertFromString(ser.config_file_, &qconfig_file);
 
-  QString textServ = trPikaTextServerTemplate.arg(qpika_version)
-                         .arg(qpika_git_sha)
-                         .arg(qpika_build_compile_date)
-                         .arg(qos)
-                         .arg(ser.arch_bits_)
-                         .arg(ser.process_id_)
-                         .arg(ser.tcp_port_)
-                         .arg(ser.thread_num_)
-                         .arg(ser.sync_thread_num_)
-                         .arg(ser.uptime_in_seconds_)
-                         .arg(ser.uptime_in_days_)
-                         .arg(qconfig_file)
-                         .arg(ser.server_id_);
+  QString text_serv = trPikaTextServerTemplate.arg(qpika_version)
+                          .arg(qpika_git_sha)
+                          .arg(qpika_build_compile_date)
+                          .arg(qos)
+                          .arg(ser.arch_bits_)
+                          .arg(ser.process_id_)
+                          .arg(ser.tcp_port_)
+                          .arg(ser.thread_num_)
+                          .arg(ser.sync_thread_num_)
+                          .arg(ser.uptime_in_seconds_)
+                          .arg(ser.uptime_in_days_)
+                          .arg(qconfig_file)
+                          .arg(ser.server_id_);
 
   // Data
   core::pika::ServerInfo::Data data = serv.data_;
@@ -832,13 +832,13 @@ void InfoServerDialog::updateText(const core::pika::ServerInfo& serv) {
   QString qused_memory_human;
   common::ConvertFromString(data.used_memory_human_, &qused_memory_human);
 
-  QString textData = trPikaTextDataTemplate.arg(data.db_size_)
-                         .arg(qdb_size_human)
-                         .arg(qcompression)
-                         .arg(data.used_memory_)
-                         .arg(qused_memory_human)
-                         .arg(data.db_memtable_usage_)
-                         .arg(data.db_tablereader_usage_);
+  QString text_data = trPikaTextDataTemplate.arg(data.db_size_)
+                          .arg(qdb_size_human)
+                          .arg(qcompression)
+                          .arg(data.used_memory_)
+                          .arg(qused_memory_human)
+                          .arg(data.db_memtable_usage_)
+                          .arg(data.db_tablereader_usage_);
 
   // Log
   core::pika::ServerInfo::Log log = serv.log_;
@@ -849,17 +849,17 @@ void InfoServerDialog::updateText(const core::pika::ServerInfo& serv) {
   QString qbinlog_offset;
   common::ConvertFromString(log.binlog_offset_, &qbinlog_offset);
 
-  QString textLog = trPikaTextLogTemplate.arg(log.log_size_)
-                        .arg(qlog_size_human)
-                        .arg(qsafety_purge)
-                        .arg(log.expire_logs_days_)
-                        .arg(log.expire_logs_nums_)
-                        .arg(qbinlog_offset);
+  QString text_log = trPikaTextLogTemplate.arg(log.log_size_)
+                         .arg(qlog_size_human)
+                         .arg(qsafety_purge)
+                         .arg(log.expire_logs_days_)
+                         .arg(log.expire_logs_nums_)
+                         .arg(qbinlog_offset);
 
   // Clients
   core::pika::ServerInfo::Clients clients = serv.clients_;
 
-  QString textClients = trPikaTextClientsTemplate.arg(clients.connected_clients_);
+  QString text_clients = trPikaTextClientsTemplate.arg(clients.connected_clients_);
 
   // Hub
   core::pika::ServerInfo::Hub hub = serv.hub_;
@@ -883,47 +883,47 @@ void InfoServerDialog::updateText(const core::pika::ServerInfo& serv) {
   QString qcompact_interval;
   common::ConvertFromString(stats.compact_interval_, &qcompact_interval);
 
-  QString textStats = trPikaTextStatsTemplate.arg(stats.total_connections_received_)
-                          .arg(stats.instantaneous_ops_per_sec_)
-                          .arg(stats.total_commands_processed_)
-                          .arg(qis_bgsaving)
-                          .arg(qis_slots_reloading)
-                          .arg(qis_slots_cleanuping)
-                          .arg(qis_scaning_keyspace)
-                          .arg(qis_compact)
-                          .arg(qcompact_cron)
-                          .arg(qcompact_interval);
+  QString text_stats = trPikaTextStatsTemplate.arg(stats.total_connections_received_)
+                           .arg(stats.instantaneous_ops_per_sec_)
+                           .arg(stats.total_commands_processed_)
+                           .arg(qis_bgsaving)
+                           .arg(qis_slots_reloading)
+                           .arg(qis_slots_cleanuping)
+                           .arg(qis_scaning_keyspace)
+                           .arg(qis_compact)
+                           .arg(qcompact_cron)
+                           .arg(qcompact_interval);
 
   // CPU
   core::pika::ServerInfo::Cpu cpu = serv.cpu_;
 
-  QString textCpu = trPikaTextCpuTemplate.arg(cpu.used_cpu_sys_)
-                        .arg(cpu.used_cpu_user_)
-                        .arg(cpu.used_cpu_sys_children_)
-                        .arg(cpu.used_cpu_user_children_);
+  QString text_cpu = trPikaTextCpuTemplate.arg(cpu.used_cpu_sys_)
+                         .arg(cpu.used_cpu_user_)
+                         .arg(cpu.used_cpu_sys_children_)
+                         .arg(cpu.used_cpu_user_children_);
 
   // Replication
   core::pika::ServerInfo::Replication repl = serv.replication_;
   QString qrole;
   common::ConvertFromString(repl.role_, &qrole);
 
-  QString textRepl = trPikaTextReplicationTemplate.arg(qrole).arg(repl.connected_slaves_);
+  QString text_repl = trPikaTextReplicationTemplate.arg(qrole).arg(repl.connected_slaves_);
 
   // Keyspace
   core::pika::ServerInfo::KeySpace key_space = serv.key_space_;
-  QString textKeyspace = trPikaTextKeyspaceTemplate.arg(key_space.kv_)
-                             .arg(key_space.hash_)
-                             .arg(key_space.list_)
-                             .arg(key_space.zset_)
-                             .arg(key_space.set_);
+  QString text_keyspace = trPikaTextKeyspaceTemplate.arg(key_space.kv_)
+                              .arg(key_space.hash_)
+                              .arg(key_space.list_)
+                              .arg(key_space.zset_)
+                              .arg(key_space.set_);
 
   // DoubleMaster
   core::pika::ServerInfo::DoubleMaster doub_master = serv.double_master_;
   UNUSED(doub_master);
-  QString textDoubleMaster = trPikaTextDoubleMasterTemplate;
+  QString text_double_master = trPikaTextDoubleMasterTemplate;
 
-  server_text_info_->setText(textServ + textData + textLog + textClients + textHub + textStats + textCpu + textRepl +
-                             textKeyspace + textDoubleMaster);
+  server_text_info_->setText(text_serv + text_data + text_log + text_clients + textHub + text_stats + text_cpu +
+                             text_repl + text_keyspace + text_double_master);
 }
 #endif
 

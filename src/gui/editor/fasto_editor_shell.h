@@ -25,6 +25,7 @@ namespace gui {
 
 class FastoEditorShell : public FastoEditor {
   Q_OBJECT
+
  protected Q_SLOTS:
   void showContextMenu(const QPoint& point);
 

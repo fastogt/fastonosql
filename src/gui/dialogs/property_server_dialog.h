@@ -46,6 +46,7 @@ namespace gui {
 
 class PropertyServerDialog : public QDialog {
   Q_OBJECT
+
  public:
   explicit PropertyServerDialog(const QString& title,
                                 const QIcon& icon,
@@ -63,8 +64,8 @@ class PropertyServerDialog : public QDialog {
   void changeProperty(const core::property_t& prop);
 
  protected:
-  virtual void changeEvent(QEvent* e) override;
-  virtual void showEvent(QShowEvent* e) override;
+  void changeEvent(QEvent* e) override;
+  void showEvent(QShowEvent* e) override;
 
  private:
   void retranslateUi();

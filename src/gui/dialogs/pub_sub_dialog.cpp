@@ -65,8 +65,6 @@ PubSubDialog::PubSubDialog(const QString& title, const QIcon& icon, proxy::IServ
   VERIFY(connect(server.get(), &proxy::IServer::LoadServerChannelsFinished, this,
                  &PubSubDialog::finishLoadServerChannels));
 
-  // main layout
-  QVBoxLayout* main_layout = new QVBoxLayout;
   QHBoxLayout* search_layout = new QHBoxLayout;
   search_box_ = new QLineEdit;
   search_box_->setText(ALL_PUBSUB_CHANNELS);
@@ -76,7 +74,6 @@ PubSubDialog::PubSubDialog(const QString& title, const QIcon& icon, proxy::IServ
   search_button_ = new QPushButton;
   VERIFY(connect(search_button_, &QPushButton::clicked, this, &PubSubDialog::searchClicked));
   search_layout->addWidget(search_button_);
-  main_layout->addLayout(search_layout);
 
   channels_model_ = new ChannelsTableModel(this);
   proxy_model_ = new QSortFilterProxyModel(this);
@@ -92,15 +89,18 @@ PubSubDialog::PubSubDialog(const QString& title, const QIcon& icon, proxy::IServ
   channels_table_->sortByColumn(0, Qt::AscendingOrder);
   channels_table_->setModel(proxy_model_);
 
-  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
-  buttonBox->setOrientation(Qt::Horizontal);
-  VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &PubSubDialog::accept));
-  VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &PubSubDialog::reject));
-  main_layout->addWidget(channels_table_);
-  main_layout->addWidget(buttonBox);
+  QDialogButtonBox* button_box = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
+  button_box->setOrientation(Qt::Horizontal);
+  VERIFY(connect(button_box, &QDialogButtonBox::accepted, this, &PubSubDialog::accept));
+  VERIFY(connect(button_box, &QDialogButtonBox::rejected, this, &PubSubDialog::reject));
 
-  setMinimumSize(QSize(min_width, min_height));
+  QVBoxLayout* main_layout = new QVBoxLayout;
+  main_layout->addLayout(search_layout);
+  main_layout->addWidget(channels_table_);
+  main_layout->addWidget(button_box);
   setLayout(main_layout);
+  setMinimumSize(QSize(min_width, min_height));
+
   retranslateUi();
 }
 
@@ -226,6 +226,7 @@ void PubSubDialog::changeEvent(QEvent* e) {
   if (e->type() == QEvent::LanguageChange) {
     retranslateUi();
   }
+
   QDialog::changeEvent(e);
 }
 

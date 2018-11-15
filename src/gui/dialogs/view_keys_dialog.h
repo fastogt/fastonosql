@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include <QDialog>
 
 #include <fastonosql/core/database/idatabase_info.h>
@@ -38,9 +40,11 @@ struct LoadDatabaseContentResponce;
 }  // namespace events_info
 }  // namespace proxy
 namespace gui {
+
 class KeysTableView;
 class ViewKeysDialog : public QDialog {
   Q_OBJECT
+
  public:
   enum {
     min_width = 640,
@@ -68,7 +72,7 @@ class ViewKeysDialog : public QDialog {
   void rightPageClicked();
 
  protected:
-  virtual void changeEvent(QEvent* ev) override;
+  void changeEvent(QEvent* ev) override;
 
  private:
   void search(bool forward);

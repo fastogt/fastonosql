@@ -37,8 +37,10 @@ class GraphWidget;
 
 namespace fastonosql {
 namespace gui {
+
 class ServerHistoryDialog : public QDialog {
   Q_OBJECT
+
  public:
   explicit ServerHistoryDialog(const QString& title,
                                const QIcon& icon,
@@ -59,8 +61,8 @@ class ServerHistoryDialog : public QDialog {
   void refreshGraph(int index);
 
  protected:
-  virtual void changeEvent(QEvent* e) override;
-  virtual void showEvent(QShowEvent* e) override;
+  void changeEvent(QEvent* e) override;
+  void showEvent(QShowEvent* e) override;
 
  private:
   void reset();
@@ -78,5 +80,6 @@ class ServerHistoryDialog : public QDialog {
   proxy::events_info::ServerInfoHistoryResponce::infos_container_type infos_;
   const proxy::IServerSPtr server_;
 };
+
 }  // namespace gui
 }  // namespace fastonosql

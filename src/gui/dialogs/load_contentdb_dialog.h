@@ -29,6 +29,7 @@ namespace gui {
 
 class LoadContentDbDialog : public QDialog {
   Q_OBJECT
+
  public:
   enum { min_key_on_page = 1, max_key_on_page = 1000000, defaults_key = 1000, step_keys_on_page = defaults_key };
 
@@ -38,10 +39,10 @@ class LoadContentDbDialog : public QDialog {
   QString pattern() const;
 
  public Q_SLOTS:
-  virtual void accept() override;
+  void accept() override;
 
  protected:
-  virtual void changeEvent(QEvent* e) override;
+  void changeEvent(QEvent* e) override;
 
  private:
   void retranslateUi();

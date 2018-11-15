@@ -30,6 +30,7 @@ class FastoViewer;
 
 class FastoEditorModelOutput : public QWidget {
   Q_OBJECT
+
  public:
   explicit FastoEditorModelOutput(QWidget* parent = Q_NULLPTR);
   virtual ~FastoEditorModelOutput();

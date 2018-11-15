@@ -149,33 +149,34 @@ SentinelDialog::SentinelDialog(QWidget* parent, proxy::ISentinelSettingsBase* co
 
   VERIFY(connect(list_widget_, &QTreeWidget::itemSelectionChanged, this, &SentinelDialog::itemSelectionChanged));
 
-  QHBoxLayout* toolBarLayout = new QHBoxLayout;
   savebar_ = new QToolBar;
-  toolBarLayout->addWidget(savebar_);
 
-  QAction* addB = new QAction(GuiFactory::GetInstance().addIcon(), translations::trAddConnection, this);
+  QAction* add_action = new QAction(GuiFactory::GetInstance().addIcon(), translations::trAddConnection, this);
   typedef void (QAction::*trig)(bool);
-  VERIFY(connect(addB, static_cast<trig>(&QAction::triggered), this, &SentinelDialog::addConnectionSettings));
-  savebar_->addAction(addB);
+  VERIFY(connect(add_action, static_cast<trig>(&QAction::triggered), this, &SentinelDialog::addConnectionSettings));
+  savebar_->addAction(add_action);
 
-  QAction* rmB = new QAction(GuiFactory::GetInstance().removeIcon(), translations::trRemoveConnection, this);
-  VERIFY(connect(rmB, static_cast<trig>(&QAction::triggered), this, &SentinelDialog::remove));
-  savebar_->addAction(rmB);
+  QAction* rm_action = new QAction(GuiFactory::GetInstance().removeIcon(), translations::trRemoveConnection, this);
+  VERIFY(connect(rm_action, static_cast<trig>(&QAction::triggered), this, &SentinelDialog::remove));
+  savebar_->addAction(rm_action);
 
-  QAction* editB = new QAction(GuiFactory::GetInstance().editIcon(), translations::trEditConnection, this);
-  VERIFY(connect(editB, static_cast<trig>(&QAction::triggered), this, &SentinelDialog::edit));
-  savebar_->addAction(editB);
+  QAction* edit_action = new QAction(GuiFactory::GetInstance().editIcon(), translations::trEditConnection, this);
+  VERIFY(connect(edit_action, static_cast<trig>(&QAction::triggered), this, &SentinelDialog::edit));
+  savebar_->addAction(edit_action);
 
   QSpacerItem* hSpacer = new QSpacerItem(300, 0, QSizePolicy::Expanding);
-  toolBarLayout->addSpacerItem(hSpacer);
 
-  QVBoxLayout* inputLayout = new QVBoxLayout;
-  inputLayout->addWidget(connection_name_);
-  inputLayout->addLayout(folderLayout);
-  inputLayout->addWidget(type_connection_);
-  inputLayout->addLayout(loggingLayout);
-  inputLayout->addLayout(toolBarLayout);
-  inputLayout->addWidget(list_widget_);
+  QHBoxLayout* tool_bar_layout = new QHBoxLayout;
+  tool_bar_layout->addWidget(savebar_);
+  tool_bar_layout->addSpacerItem(hSpacer);
+
+  QVBoxLayout* input_layout = new QVBoxLayout;
+  input_layout->addWidget(connection_name_);
+  input_layout->addLayout(folderLayout);
+  input_layout->addWidget(type_connection_);
+  input_layout->addLayout(loggingLayout);
+  input_layout->addLayout(tool_bar_layout);
+  input_layout->addWidget(list_widget_);
 
   test_button_ = new QPushButton("&Test");
   test_button_->setIcon(GuiFactory::GetInstance().messageBoxInformationIcon());
@@ -186,20 +187,20 @@ SentinelDialog::SentinelDialog(QWidget* parent, proxy::ISentinelSettingsBase* co
   discovery_button_->setIcon(GuiFactory::GetInstance().discoveryIcon());
   VERIFY(connect(discovery_button_, &QPushButton::clicked, this, &SentinelDialog::discoverySentinel));
 
-  QHBoxLayout* bottomLayout = new QHBoxLayout;
-  bottomLayout->addWidget(test_button_, 0, Qt::AlignLeft);
-  bottomLayout->addWidget(discovery_button_, 0, Qt::AlignLeft);
+  QHBoxLayout* bottom_layout = new QHBoxLayout;
+  bottom_layout->addWidget(test_button_, 0, Qt::AlignLeft);
+  bottom_layout->addWidget(discovery_button_, 0, Qt::AlignLeft);
   button_box_ = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Save);
   button_box_->setOrientation(Qt::Horizontal);
   VERIFY(connect(button_box_, &QDialogButtonBox::accepted, this, &SentinelDialog::accept));
   VERIFY(connect(button_box_, &QDialogButtonBox::rejected, this, &SentinelDialog::reject));
-  bottomLayout->addWidget(button_box_);
+  bottom_layout->addWidget(button_box_);
 
-  QVBoxLayout* mainLayout = new QVBoxLayout;
-  mainLayout->addLayout(inputLayout);
-  mainLayout->addLayout(bottomLayout);
-  mainLayout->setSizeConstraint(QLayout::SetFixedSize);
-  setLayout(mainLayout);
+  QVBoxLayout* main_layout = new QVBoxLayout;
+  main_layout->addLayout(input_layout);
+  main_layout->addLayout(bottom_layout);
+  main_layout->setSizeConstraint(QLayout::SetFixedSize);
+  setLayout(main_layout);
 
   // update controls
   typeConnectionChange(type_connection_->currentIndex());

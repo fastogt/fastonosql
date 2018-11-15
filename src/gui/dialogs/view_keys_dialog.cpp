@@ -76,9 +76,6 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QW
   VERIFY(connect(serv.get(), &proxy::IServer::LoadDatabaseContentFinished, this,
                  &ViewKeysDialog::finishLoadDatabaseContent));
 
-  // main layout
-  QVBoxLayout* main_layout = new QVBoxLayout;
-
   QHBoxLayout* search_layout = new QHBoxLayout;
   search_box_ = new QLineEdit;
   search_box_->setText(ALL_KEYS_PATTERNS);
@@ -109,19 +106,13 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QW
   keys_table_ = new KeysTableView;
   VERIFY(connect(keys_table_, &KeysTableView::changedTTL, this, &ViewKeysDialog::changeTTL, Qt::DirectConnection));
 
-  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
-  buttonBox->setOrientation(Qt::Horizontal);
-  VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &ViewKeysDialog::accept));
-  VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &ViewKeysDialog::reject));
-  main_layout->addLayout(search_layout);
-  main_layout->addWidget(keys_table_);
-
   left_button_list_ = createButtonWithIcon(GuiFactory::GetInstance().leftIcon());
   right_button_list_ = createButtonWithIcon(GuiFactory::GetInstance().rightIcon());
   VERIFY(connect(left_button_list_, &QPushButton::clicked, this, &ViewKeysDialog::leftPageClicked));
   VERIFY(connect(right_button_list_, &QPushButton::clicked, this, &ViewKeysDialog::rightPageClicked));
-  QHBoxLayout* pagingLayout = new QHBoxLayout;
-  pagingLayout->addWidget(left_button_list_);
+
+  QHBoxLayout* paging_layout = new QHBoxLayout;
+  paging_layout->addWidget(left_button_list_);
   core::IDataBaseInfoSPtr inf = db_->GetInfo();
   size_t keysCount = inf->GetDBKeysCount();
   current_key_ = new QSpinBox;
@@ -132,17 +123,24 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QW
   count_key_ = new QSpinBox;
   count_key_->setEnabled(false);
   count_key_->setValue(keysCount);
-  pagingLayout->addWidget(new QSplitter(Qt::Horizontal));
-  pagingLayout->addWidget(current_key_);
-  pagingLayout->addWidget(count_key_);
-  pagingLayout->addWidget(new QSplitter(Qt::Horizontal));
-  pagingLayout->addWidget(right_button_list_);
+  paging_layout->addWidget(new QSplitter(Qt::Horizontal));
+  paging_layout->addWidget(current_key_);
+  paging_layout->addWidget(count_key_);
+  paging_layout->addWidget(new QSplitter(Qt::Horizontal));
+  paging_layout->addWidget(right_button_list_);
 
-  main_layout->addLayout(pagingLayout);
-  main_layout->addWidget(buttonBox);
+  QDialogButtonBox* button_box = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
+  button_box->setOrientation(Qt::Horizontal);
+  VERIFY(connect(button_box, &QDialogButtonBox::accepted, this, &ViewKeysDialog::accept));
+  VERIFY(connect(button_box, &QDialogButtonBox::rejected, this, &ViewKeysDialog::reject));
 
-  setMinimumSize(QSize(min_width, min_height));
+  QVBoxLayout* main_layout = new QVBoxLayout;
+  main_layout->addLayout(search_layout);
+  main_layout->addWidget(keys_table_);
+  main_layout->addLayout(paging_layout);
+  main_layout->addWidget(button_box);
   setLayout(main_layout);
+  setMinimumSize(QSize(min_width, min_height));
 
   updateControls();
   retranslateUi();

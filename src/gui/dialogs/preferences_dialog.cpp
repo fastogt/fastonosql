@@ -18,6 +18,8 @@
 
 #include "gui/dialogs/preferences_dialog.h"
 
+#include <string>
+
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDialogButtonBox>
@@ -107,15 +109,16 @@ PreferencesDialog::PreferencesDialog(const QString& title, QWidget* parent)
   preferences_tabs->addTab(general_tab, trGeneral);
   preferences_tabs->addTab(external_tab, trExternal);
 
-  QVBoxLayout* layout = new QVBoxLayout;
-  layout->addWidget(preferences_tabs);
   QDialogButtonBox* button_box = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Save);
   button_box->setOrientation(Qt::Horizontal);
   VERIFY(connect(button_box, &QDialogButtonBox::accepted, this, &PreferencesDialog::accept));
   VERIFY(connect(button_box, &QDialogButtonBox::rejected, this, &PreferencesDialog::reject));
-  layout->addWidget(button_box);
+
+  QVBoxLayout* main_layout = new QVBoxLayout;
+  main_layout->addWidget(preferences_tabs);
+  main_layout->addWidget(button_box);
+  setLayout(main_layout);
   setMinimumSize(QSize(min_width, min_height));
-  setLayout(layout);
 
   syncWithSettings();
   retranslateUi();

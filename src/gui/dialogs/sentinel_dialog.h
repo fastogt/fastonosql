@@ -38,13 +38,14 @@ namespace gui {
 
 class SentinelDialog : public QDialog {
   Q_OBJECT
+
  public:
   explicit SentinelDialog(QWidget* parent,
                           proxy::ISentinelSettingsBase* connection = nullptr);  // get ownerships connection
   proxy::ISentinelSettingsBaseSPtr connection() const;
 
  public Q_SLOTS:
-  virtual void accept() override;
+  void accept() override;
 
  private Q_SLOTS:
   void typeConnectionChange(int index);
@@ -57,7 +58,7 @@ class SentinelDialog : public QDialog {
   void itemSelectionChanged();
 
  protected:
-  virtual void changeEvent(QEvent* ev) override;
+  void changeEvent(QEvent* ev) override;
 
  private:
   void retranslateUi();

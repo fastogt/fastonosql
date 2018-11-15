@@ -39,10 +39,10 @@ FastoEditorModelOutput::FastoEditorModelOutput(QWidget* parent) : QWidget(parent
   editor_ = new FastoViewer;
   VERIFY(connect(editor_, &FastoViewer::viewChanged, this, &FastoEditorModelOutput::layoutChanged));
 
-  QVBoxLayout* main = new QVBoxLayout;
-  main->addWidget(editor_);
-  main->setContentsMargins(0, 0, 0, 0);
-  setLayout(main);
+  QVBoxLayout* main_layout = new QVBoxLayout;
+  main_layout->addWidget(editor_);
+  main_layout->setContentsMargins(0, 0, 0, 0);
+  setLayout(main_layout);
 }
 
 FastoEditorModelOutput::~FastoEditorModelOutput() {}

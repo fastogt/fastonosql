@@ -39,6 +39,7 @@ class ChannelsTableModel;
 
 class PubSubDialog : public QDialog {
   Q_OBJECT
+
  public:
   enum { min_width = 640, min_height = 480 };
 
@@ -60,7 +61,7 @@ class PubSubDialog : public QDialog {
   void subscribeInNewConsole();
 
  protected:
-  virtual void changeEvent(QEvent* ev) override;
+  void changeEvent(QEvent* ev) override;
   QModelIndex selectedIndex() const;
 
  private:

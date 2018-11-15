@@ -18,15 +18,15 @@
 
 #pragma once
 
+#include <vector>
+
 #include <QDialog>
 
 #include <fastonosql/core/server/iserver_info.h>
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 
-class QLabel;  // lines 29-29
-class QShowEvent;
+class QLabel;       // lines 29-29
 class QTreeWidget;  // lines 30-30
-class QWidget;
 
 namespace common {
 namespace qt {
@@ -42,8 +42,9 @@ class ConnectionListWidgetItemDiscovered;
 
 class DiscoverySentinelDiagnosticDialog : public QDialog {
   Q_OBJECT
+
  public:
-  enum { fix_height = 320, fix_width = 480 };
+  enum { fix_width = 480, fix_height = 320 };
 
   DiscoverySentinelDiagnosticDialog(const QString& title,
                                     const QIcon& icon,
@@ -53,12 +54,12 @@ class DiscoverySentinelDiagnosticDialog : public QDialog {
 
  private Q_SLOTS:
   void connectionResultReady(bool suc,
-                             qint64 mstimeExecute,
-                             const QString& resultText,
+                             qint64 exec_mstime,
+                             const QString& result_text,
                              std::vector<core::ServerDiscoverySentinelInfoSPtr> infos);
 
  protected:
-  virtual void showEvent(QShowEvent* e) override;
+  void showEvent(QShowEvent* e) override;
 
  private:
   void testConnection(proxy::IConnectionSettingsBaseSPtr connection);

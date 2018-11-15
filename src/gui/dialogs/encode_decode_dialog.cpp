@@ -49,13 +49,6 @@ EncodeDecodeDialog::EncodeDecodeDialog(const QString& title, const QIcon& icon, 
   setWindowIcon(icon);
   setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
-  QVBoxLayout* layout = new QVBoxLayout;
-  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
-  QPushButton* closeButton = buttonBox->button(QDialogButtonBox::Close);
-  buttonBox->addButton(closeButton,
-                       QDialogButtonBox::ButtonRole(QDialogButtonBox::RejectRole | QDialogButtonBox::AcceptRole));
-  VERIFY(connect(buttonBox, &QDialogButtonBox::rejected, this, &EncodeDecodeDialog::reject));
-
   QToolButton* decode = new QToolButton;
   decode->setIcon(GuiFactory::GetInstance().executeIcon());
   VERIFY(connect(decode, &QToolButton::clicked, this, &EncodeDecodeDialog::decodeOrEncode));
@@ -69,26 +62,32 @@ EncodeDecodeDialog::EncodeDecodeDialog(const QString& title, const QIcon& icon, 
     }
   }
 
-  QHBoxLayout* toolBarLayout = new QHBoxLayout;
-  toolBarLayout->addWidget(decode);
-  toolBarLayout->addWidget(decoders_);
+  QHBoxLayout* tool_bar_layout = new QHBoxLayout;
+  tool_bar_layout->addWidget(decode);
+  tool_bar_layout->addWidget(decoders_);
 
   encode_button_ = new QRadioButton;
   decode_button_ = new QRadioButton;
-  toolBarLayout->addWidget(encode_button_);
-  toolBarLayout->addWidget(decode_button_);
-  toolBarLayout->addWidget(new QSplitter(Qt::Horizontal));
+  tool_bar_layout->addWidget(encode_button_);
+  tool_bar_layout->addWidget(decode_button_);
+  tool_bar_layout->addWidget(new QSplitter(Qt::Horizontal));
 
   input_ = new FastoEditor;
   output_ = new FastoEditor;
 
-  layout->addWidget(input_);
-  layout->addLayout(toolBarLayout);
-  layout->addWidget(output_);
-  layout->addWidget(buttonBox);
+  QDialogButtonBox* button_box = new QDialogButtonBox(QDialogButtonBox::Close);
+  QPushButton* close_button = button_box->button(QDialogButtonBox::Close);
+  button_box->addButton(close_button,
+                        QDialogButtonBox::ButtonRole(QDialogButtonBox::RejectRole | QDialogButtonBox::AcceptRole));
+  VERIFY(connect(button_box, &QDialogButtonBox::rejected, this, &EncodeDecodeDialog::reject));
 
+  QVBoxLayout* main_layout = new QVBoxLayout;
+  main_layout->addWidget(input_);
+  main_layout->addLayout(tool_bar_layout);
+  main_layout->addWidget(output_);
+  main_layout->addWidget(button_box);
+  setLayout(main_layout);
   setMinimumSize(QSize(min_width, min_height));
-  setLayout(layout);
 
   retranslateUi();
 }
@@ -102,7 +101,7 @@ void EncodeDecodeDialog::changeEvent(QEvent* e) {
 }
 
 void EncodeDecodeDialog::decodeOrEncode() {
-  QString input = input_->text();
+  const QString input = input_->text();
   if (input.isEmpty()) {
     return;
   }
