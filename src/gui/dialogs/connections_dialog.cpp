@@ -20,7 +20,6 @@
 
 #include <QAction>
 #include <QDialogButtonBox>
-#include <QEvent>
 #include <QHeaderView>
 #include <QLabel>
 #include <QMessageBox>
@@ -48,10 +47,8 @@ namespace fastonosql {
 namespace gui {
 
 ConnectionsDialog::ConnectionsDialog(const QString& title, const QIcon& icon, QWidget* parent)
-    : QDialog(parent), list_widget_(nullptr), ok_button_(nullptr) {
-  setWindowTitle(title);
+    : base_class(title, parent), list_widget_(nullptr), ok_button_(nullptr) {
   setWindowIcon(icon);
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   list_widget_ = new QTreeWidget;
   list_widget_->setIndentation(5);
@@ -143,8 +140,6 @@ ConnectionsDialog::ConnectionsDialog(const QString& title, const QIcon& icon, QW
   setLayout(main_layout);
 
   setMinimumSize(QSize(min_width, min_height));
-
-  retranslateUi();
 }
 
 proxy::IConnectionSettingsBaseSPtr ConnectionsDialog::selectedConnection() const {
@@ -179,17 +174,17 @@ proxy::IClusterSettingsBaseSPtr ConnectionsDialog::selectedCluster() const {
 #endif
 
 void ConnectionsDialog::addConnectionAction() {
-  ConnectionSelectTypeDialog sel(trSelectConTypeTitle, this);
-  int result = sel.exec();
+  auto sel = createDialog<ConnectionSelectTypeDialog>(trSelectConTypeTitle, this);  // +
+  int result = sel->exec();
   if (result != QDialog::Accepted) {
     return;
   }
 
-  core::ConnectionType t = sel.connectionType();
-  ConnectionDialog dlg(t, translations::trNewConnection, this);
-  result = dlg.exec();
-  proxy::IConnectionSettingsBaseSPtr p = dlg.connection();
-  if (result == QDialog::Accepted && p) {
+  core::ConnectionType t = sel->connectionType();
+  auto dlg = createDialog<ConnectionDialog>(t, translations::trNewConnection, this);  // +
+  result = dlg->exec();
+  if (result == QDialog::Accepted) {
+    proxy::IConnectionSettingsBaseSPtr p = dlg->connection();
     proxy::SettingsManager::GetInstance()->AddConnection(p);
     addConnection(p);
   }
@@ -197,10 +192,10 @@ void ConnectionsDialog::addConnectionAction() {
 
 void ConnectionsDialog::addClusterAction() {
 #if defined(PRO_VERSION)
-  ClusterDialog dlg(this);
-  int result = dlg.exec();
-  proxy::IClusterSettingsBaseSPtr p = dlg.connection();
-  if (result == QDialog::Accepted && p) {
+  auto dlg = createDialog<ClusterDialog>(nullptr, this);  // +
+  int result = dlg->exec();
+  if (result == QDialog::Accepted) {
+    proxy::IClusterSettingsBaseSPtr p = dlg->connection();
     proxy::SettingsManager::GetInstance()->AddCluster(p);
     addCluster(p);
   }
@@ -211,10 +206,10 @@ void ConnectionsDialog::addClusterAction() {
 
 void ConnectionsDialog::addSentinelAction() {
 #if defined(PRO_VERSION)
-  SentinelDialog dlg(this);
-  int result = dlg.exec();
-  proxy::ISentinelSettingsBaseSPtr p = dlg.connection();
-  if (result == QDialog::Accepted && p) {
+  auto dlg = createDialog<SentinelDialog>(nullptr, this);  // +
+  int result = dlg->exec();
+  proxy::ISentinelSettingsBaseSPtr p = dlg->connection();
+  if (result == QDialog::Accepted) {
     proxy::SettingsManager::GetInstance()->AddSentinel(p);
     addSentinel(p);
   }
@@ -348,58 +343,58 @@ void ConnectionsDialog::editItem(QTreeWidgetItem* qitem, bool remove_origin) {
 #endif
 }
 
-void ConnectionsDialog::editConnection(ConnectionListWidgetItem* connectionItem, bool remove_origin) {
-  CHECK(connectionItem);
+void ConnectionsDialog::editConnection(ConnectionListWidgetItem* connection_item, bool remove_origin) {
+  CHECK(connection_item);
 
-  proxy::IConnectionSettingsBaseSPtr con = connectionItem->connection();
-  ConnectionDialog dlg(con->Clone(), this);
-  int result = dlg.exec();
-  proxy::IConnectionSettingsBaseSPtr newConnection = dlg.connection();
-  if (result == QDialog::Accepted && newConnection) {
+  proxy::IConnectionSettingsBaseSPtr con = connection_item->connection();
+  auto dlg = createDialog<ConnectionDialog>(con->Clone(), this);  // +
+  int result = dlg->exec();
+  if (result == QDialog::Accepted) {
+    proxy::IConnectionSettingsBaseSPtr connection = dlg->connection();
     proxy::SettingsManager::GetInstance()->RemoveConnection(con);
-    proxy::SettingsManager::GetInstance()->AddConnection(newConnection);
+    proxy::SettingsManager::GetInstance()->AddConnection(connection);
 
     if (remove_origin) {
-      delete connectionItem;
+      delete connection_item;
     }
-    addConnection(newConnection);
+    addConnection(connection);
   }
 }
 
 #if defined(PRO_VERSION)
-void ConnectionsDialog::editCluster(ClusterConnectionListWidgetItemContainer* clusterItem, bool remove_origin) {
-  CHECK(clusterItem);
+void ConnectionsDialog::editCluster(ClusterConnectionListWidgetItemContainer* cluster_item, bool remove_origin) {
+  CHECK(cluster_item);
 
-  proxy::IClusterSettingsBaseSPtr con = clusterItem->connection();
-  ClusterDialog dlg(this, con->Clone());
-  int result = dlg.exec();
-  proxy::IClusterSettingsBaseSPtr newConnection = dlg.connection();
-  if (result == QDialog::Accepted && newConnection) {
+  proxy::IClusterSettingsBaseSPtr con = cluster_item->connection();
+  auto dlg = createDialog<ClusterDialog>(con->Clone(), this);  // +
+  int result = dlg->exec();
+  if (result == QDialog::Accepted) {
+    proxy::IClusterSettingsBaseSPtr new_connection = dlg->connection();
     proxy::SettingsManager::GetInstance()->RemoveCluster(con);
-    proxy::SettingsManager::GetInstance()->AddCluster(newConnection);
+    proxy::SettingsManager::GetInstance()->AddCluster(new_connection);
 
     if (remove_origin) {
-      delete clusterItem;
+      delete cluster_item;
     }
-    addCluster(newConnection);
+    addCluster(new_connection);
   }
 }
 
-void ConnectionsDialog::editSentinel(SentinelConnectionListWidgetItemContainer* sentinelItem, bool remove_origin) {
-  CHECK(sentinelItem);
+void ConnectionsDialog::editSentinel(SentinelConnectionListWidgetItemContainer* sentinel_item, bool remove_origin) {
+  CHECK(sentinel_item);
 
-  proxy::ISentinelSettingsBaseSPtr con = sentinelItem->connection();
-  SentinelDialog dlg(this, con->Clone());
-  int result = dlg.exec();
-  proxy::ISentinelSettingsBaseSPtr newConnection = dlg.connection();
-  if (result == QDialog::Accepted && newConnection) {
+  proxy::ISentinelSettingsBaseSPtr con = sentinel_item->connection();
+  auto dlg = createDialog<SentinelDialog>(con->Clone(), this);  // +
+  int result = dlg->exec();
+  if (result == QDialog::Accepted) {
+    proxy::ISentinelSettingsBaseSPtr new_connection = dlg->connection();
     proxy::SettingsManager::GetInstance()->RemoveSentinel(con);
-    proxy::SettingsManager::GetInstance()->AddSentinel(newConnection);
+    proxy::SettingsManager::GetInstance()->AddSentinel(new_connection);
 
     if (remove_origin) {
-      delete sentinelItem;
+      delete sentinel_item;
     }
-    addSentinel(newConnection);
+    addSentinel(new_connection);
   }
 }
 #endif
@@ -468,18 +463,12 @@ void ConnectionsDialog::accept() {
     return;
   }
 
-  QDialog::accept();
-}
-
-void ConnectionsDialog::changeEvent(QEvent* e) {
-  if (e->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-  QDialog::changeEvent(e);
+  base_class::accept();
 }
 
 void ConnectionsDialog::retranslateUi() {
   ok_button_->setText(translations::trOpen);
+  base_class::retranslateUi();
 }
 
 void ConnectionsDialog::addConnection(proxy::IConnectionSettingsBaseSPtr con) {

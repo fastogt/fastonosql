@@ -32,13 +32,15 @@
 #include "gui/key_value_table_item.h"
 #include "gui/stream_table_model.h"
 
+namespace {
+const QString trTitle = "Create stream entry";
+}
+
 namespace fastonosql {
 namespace gui {
 
 StreamEntryDialog::StreamEntryDialog(const QString& sid, QWidget* parent)
-    : QDialog(parent), entry_label_(nullptr), id_edit_(nullptr), table_(nullptr), model_(nullptr) {
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
-
+    : base_class(trTitle, parent), entry_label_(nullptr), id_edit_(nullptr), table_(nullptr), model_(nullptr) {
   QHBoxLayout* id_layout = new QHBoxLayout;
   entry_label_ = new QLabel("ID");
   id_layout->addWidget(entry_label_);

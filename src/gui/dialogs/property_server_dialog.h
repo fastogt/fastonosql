@@ -18,10 +18,11 @@
 
 #pragma once
 
-#include <QDialog>
-
 #include <fastonosql/core/server_property_info.h>  // for property_t
-#include "proxy/proxy_fwd.h"                       // for IServerSPtr
+
+#include "gui/dialogs/base_dialog.h"
+
+#include "proxy/proxy_fwd.h"  // for IServerSPtr
 
 class QTableView;  // lines 26-26
 
@@ -44,14 +45,14 @@ struct ChangeServerPropertyInfoResponce;
 }  // namespace proxy
 namespace gui {
 
-class PropertyServerDialog : public QDialog {
+class PropertyServerDialog : public BaseDialog {
   Q_OBJECT
 
  public:
-  explicit PropertyServerDialog(const QString& title,
-                                const QIcon& icon,
-                                proxy::IServerSPtr server,
-                                QWidget* parent = Q_NULLPTR);
+  typedef BaseDialog base_class;
+  template <typename T, typename... Args>
+  friend T* createDialog(Args&&... args);
+
   enum { min_width = 240, min_height = 200 };
 
  private Q_SLOTS:
@@ -64,12 +65,14 @@ class PropertyServerDialog : public QDialog {
   void changeProperty(const core::property_t& prop);
 
  protected:
-  void changeEvent(QEvent* e) override;
+  explicit PropertyServerDialog(const QString& title,
+                                const QIcon& icon,
+                                proxy::IServerSPtr server,
+                                QWidget* parent = Q_NULLPTR);
+
   void showEvent(QShowEvent* e) override;
 
  private:
-  void retranslateUi();
-
   common::qt::gui::GlassWidget* glass_widget_;
   QTableView* properties_table_;
   const proxy::IServerSPtr server_;

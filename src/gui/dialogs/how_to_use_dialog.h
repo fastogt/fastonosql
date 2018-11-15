@@ -18,16 +18,21 @@
 
 #pragma once
 
-#include <QDialog>
+#include "gui/dialogs/base_dialog.h"
 
 namespace fastonosql {
 namespace gui {
 
-class HowToUseDialog : public QDialog {
+class HowToUseDialog : public BaseDialog {
   Q_OBJECT
 
  public:
-  explicit HowToUseDialog(const QString& title, QWidget* parent = Q_NULLPTR);
+  typedef BaseDialog base_class;
+  template <typename T, typename... Args>
+  friend T* createDialog(Args&&... args);
+
+ protected:
+  explicit HowToUseDialog(QWidget* parent = Q_NULLPTR);
 };
 
 }  // namespace gui

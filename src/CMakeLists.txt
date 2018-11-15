@@ -186,6 +186,7 @@ IF(PRO_VERSION)
 ENDIF(PRO_VERSION)
 
 SET(HEADERS_GUI_DIALOGS
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/base_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/eula_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/about_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/password_dialog.h
@@ -207,6 +208,7 @@ SET(HEADERS_GUI_DIALOGS
 )
 
 SET(SOURCES_GUI_DIALOGS
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/base_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/eula_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/password_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/about_dialog.cpp

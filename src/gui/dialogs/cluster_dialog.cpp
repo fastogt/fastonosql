@@ -25,7 +25,6 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDialogButtonBox>
-#include <QEvent>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
@@ -50,6 +49,8 @@
 #include "translations/global.h"  // for trAddConnection, trAddress, etc
 
 namespace {
+const QString trCreateCluster = QObject::tr("Create cluster");
+const QString trEditCluster = QObject::tr("Edit cluster");
 const QString trDefaultNameConnection = QObject::tr("New Cluster Connection");
 const char* kDefaultNameConnectionFolder = "/";
 }  // namespace
@@ -57,8 +58,8 @@ const char* kDefaultNameConnectionFolder = "/";
 namespace fastonosql {
 namespace gui {
 
-ClusterDialog::ClusterDialog(QWidget* parent, proxy::IClusterSettingsBase* connection)
-    : QDialog(parent),
+ClusterDialog::ClusterDialog(proxy::IClusterSettingsBase* connection, QWidget* parent)
+    : base_class(connection ? trEditCluster : trCreateCluster, parent),
       connection_name_(nullptr),
       folder_label_(nullptr),
       connection_folder_(nullptr),
@@ -72,7 +73,6 @@ ClusterDialog::ClusterDialog(QWidget* parent, proxy::IClusterSettingsBase* conne
       button_box_(nullptr),
       cluster_connection_(connection) {
   setWindowIcon(GuiFactory::GetInstance().clusterIcon());
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   connection_name_ = new QLineEdit;
   connection_folder_ = new QLineEdit;
@@ -216,16 +216,16 @@ ClusterDialog::ClusterDialog(QWidget* parent, proxy::IClusterSettingsBase* conne
   // update controls
   typeConnectionChange(type_connection_->currentIndex());
   loggingStateChange(logging_->checkState());
-  retranslateUi();
 }
 
 proxy::IClusterSettingsBaseSPtr ClusterDialog::connection() const {
+  CHECK(cluster_connection_);
   return cluster_connection_;
 }
 
 void ClusterDialog::accept() {
   if (validateAndApply()) {
-    QDialog::accept();
+    base_class::accept();
   }
 }
 
@@ -255,8 +255,9 @@ void ClusterDialog::testConnection() {
     return;
   }
 
-  ConnectionDiagnosticDialog diagnostic_dialog(translations::trConnectionDiagnostic, current_item->connection(), this);
-  diagnostic_dialog.exec();
+  auto diagnostic_dialog = createDialog<ConnectionDiagnosticDialog>(translations::trConnectionDiagnostic,
+                                                                    current_item->connection(), this);  // +
+  diagnostic_dialog->exec();
 }
 
 void ClusterDialog::discoveryCluster() {
@@ -271,12 +272,12 @@ void ClusterDialog::discoveryCluster() {
     return;
   }
 
-  DiscoveryClusterDiagnosticDialog cdiagnostic_dialog(translations::trConnectionDiscovery,
-                                                      GuiFactory::GetInstance().serverIcon(),
-                                                      current_item->connection(), cluster_connection_, this);
-  int result = cdiagnostic_dialog.exec();
+  auto cdiagnostic_dialog = createDialog<DiscoveryClusterDiagnosticDialog>(
+      translations::trConnectionDiscovery, GuiFactory::GetInstance().serverIcon(), current_item->connection(),
+      cluster_connection_, this);  // +
+  int result = cdiagnostic_dialog->exec();
   if (result == QDialog::Accepted) {
-    std::vector<ConnectionListWidgetItemDiscovered*> conns = cdiagnostic_dialog.selectedConnections();
+    std::vector<ConnectionListWidgetItemDiscovered*> conns = cdiagnostic_dialog->selectedConnections();
     for (ConnectionListWidgetItemDiscovered* connection : conns) {
       addConnection(connection->connection());
     }
@@ -323,12 +324,11 @@ void ClusterDialog::setStartNode() {
 
 void ClusterDialog::add() {
 #ifdef BUILD_WITH_REDIS
-  ConnectionDialog dlg(core::REDIS, translations::trNewConnection, this);
-  dlg.setFolderEnabled(false);
-  int result = dlg.exec();
-  proxy::IConnectionSettingsBaseSPtr p = dlg.connection();
-  if (result == QDialog::Accepted && p) {
-    addConnection(p);
+  auto dlg = createDialog<ConnectionDialog>(core::REDIS, translations::trNewConnection, this);  // +
+  dlg->setFolderEnabled(false);
+  int result = dlg->exec();
+  if (result == QDialog::Accepted) {
+    addConnection(dlg->connection());
   }
 #endif
 }
@@ -362,13 +362,12 @@ void ClusterDialog::edit() {
   }
 
 #ifdef BUILD_WITH_REDIS
-  proxy::IConnectionSettingsBaseSPtr oldConnection = current_item->connection();
-  ConnectionDialog dlg(oldConnection->Clone(), this);
-  dlg.setFolderEnabled(false);
-  int result = dlg.exec();
-  proxy::IConnectionSettingsBaseSPtr newConnection = dlg.connection();
-  if (result == QDialog::Accepted && newConnection) {
-    current_item->setConnection(newConnection);
+  proxy::IConnectionSettingsBaseSPtr old_connection = current_item->connection();
+  auto dlg = createDialog<ConnectionDialog>(old_connection->Clone(), this);  // +
+  dlg->setFolderEnabled(false);
+  int result = dlg->exec();
+  if (result == QDialog::Accepted) {
+    current_item->setConnection(dlg->connection());
   }
 #endif
 }
@@ -381,17 +380,10 @@ void ClusterDialog::itemSelectionChanged() {
   discovery_button_->setEnabled(isValidConnection);
 }
 
-void ClusterDialog::changeEvent(QEvent* e) {
-  if (e->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-
-  QDialog::changeEvent(e);
-}
-
 void ClusterDialog::retranslateUi() {
   logging_->setText(translations::trLoggingEnabled);
   folder_label_->setText(translations::trFolder);
+  base_class::retranslateUi();
 }
 
 bool ClusterDialog::validateAndApply() {

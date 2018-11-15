@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <QDialog>
+#include "gui/dialogs/base_dialog.h"
 
 #include "proxy/proxy_fwd.h"  // for IDatabaseSPtr
 
@@ -37,16 +37,15 @@ namespace gui {
 class FastoTableView;
 class ChannelsTableModel;
 
-class PubSubDialog : public QDialog {
+class PubSubDialog : public BaseDialog {
   Q_OBJECT
 
  public:
+  typedef BaseDialog base_class;
+  template <typename T, typename... Args>
+  friend T* createDialog(Args&&... args);
   enum { min_width = 640, min_height = 480 };
 
-  explicit PubSubDialog(const QString& title,
-                        const QIcon& icon,
-                        proxy::IServerSPtr server,
-                        QWidget* parent = Q_NULLPTR);
  Q_SIGNALS:
   void consoleOpenedAndExecute(proxy::IServerSPtr server, const QString& text);
 
@@ -61,12 +60,15 @@ class PubSubDialog : public QDialog {
   void subscribeInNewConsole();
 
  protected:
-  void changeEvent(QEvent* ev) override;
+  explicit PubSubDialog(const QString& title,
+                        const QIcon& icon,
+                        proxy::IServerSPtr server,
+                        QWidget* parent = Q_NULLPTR);
+
+  void retranslateUi() override;
   QModelIndex selectedIndex() const;
 
  private:
-  void retranslateUi();
-
   QLineEdit* search_box_;
   QPushButton* search_button_;
 

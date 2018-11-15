@@ -53,7 +53,7 @@ namespace fastonosql {
 namespace gui {
 
 ViewKeysDialog::ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QWidget* parent)
-    : QDialog(parent),
+    : base_class(title, parent),
       cursor_stack_(),
       cur_pos_(0),
       search_box_(nullptr),
@@ -67,8 +67,6 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QW
       keys_table_(nullptr),
       db_(db) {
   CHECK(db_) << "Must be database.";
-  setWindowTitle(title);
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   proxy::IServerSPtr serv = db_->GetServer();
   VERIFY(connect(serv.get(), &proxy::IServer::LoadDataBaseContentStarted, this,
@@ -143,7 +141,6 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QW
   setMinimumSize(QSize(min_width, min_height));
 
   updateControls();
-  retranslateUi();
 }
 
 void ViewKeysDialog::startLoadDatabaseContent(const proxy::events_info::LoadDatabaseContentRequest& req) {
@@ -248,16 +245,10 @@ void ViewKeysDialog::rightPageClicked() {
   search(true);
 }
 
-void ViewKeysDialog::changeEvent(QEvent* e) {
-  if (e->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-  QDialog::changeEvent(e);
-}
-
 void ViewKeysDialog::retranslateUi() {
   key_count_label_->setText(translations::trKeyCountOnThePage);
   search_button_->setText(translations::trSearch);
+  base_class::retranslateUi();
 }
 
 void ViewKeysDialog::updateControls() {

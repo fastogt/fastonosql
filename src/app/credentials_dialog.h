@@ -38,9 +38,11 @@ class IVerifyUser;
 
 class CredentialsDialog : public gui::PasswordDialog {
   Q_OBJECT
+
  public:
   typedef gui::PasswordDialog base_class;
-  explicit CredentialsDialog(QWidget* parent = Q_NULLPTR);
+  template <typename T, typename... Args>
+  friend T* createDialog(Args&&... args);
 
   proxy::UserInfo userInfo() const;  // if success verification
 
@@ -49,6 +51,9 @@ class CredentialsDialog : public gui::PasswordDialog {
 
  private Q_SLOTS:
   void verifyUserResult(common::Error err, const proxy::UserInfo& user);
+
+ protected:
+  explicit CredentialsDialog(const QString& title, QWidget* parent = Q_NULLPTR);
 
  private:
   virtual IVerifyUser* createChecker() const = 0;

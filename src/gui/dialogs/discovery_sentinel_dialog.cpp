@@ -48,15 +48,13 @@ DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(const QStri
                                                                      const QIcon& icon,
                                                                      proxy::IConnectionSettingsBaseSPtr connection,
                                                                      QWidget* parent)
-    : QDialog(parent),
+    : BaseDialog(title, parent),
       glass_widget_(nullptr),
       execute_time_label_(nullptr),
       status_label_(nullptr),
       list_widget_(nullptr),
       icon_label_(nullptr) {
-  setWindowTitle(title);
   setWindowIcon(icon);
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   execute_time_label_ = new QLabel;
   execute_time_label_->setText(translations::trConnectionStatusTemplate_1S.arg("execute..."));
@@ -146,7 +144,7 @@ void DiscoverySentinelDiagnosticDialog::connectionResultReady(
 }
 
 void DiscoverySentinelDiagnosticDialog::showEvent(QShowEvent* e) {
-  QDialog::showEvent(e);
+  base_class::showEvent(e);
   glass_widget_->start();
 }
 

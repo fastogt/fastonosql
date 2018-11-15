@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <QDialog>
+#include "gui/dialogs/base_dialog.h"
 
 class QComboBox;     // lines 23-23
 class QRadioButton;  // lines 24-24
@@ -28,22 +28,25 @@ namespace gui {
 
 class FastoEditor;
 
-class EncodeDecodeDialog : public QDialog {
+class EncodeDecodeDialog : public BaseDialog {
   Q_OBJECT
+
  public:
-  explicit EncodeDecodeDialog(const QString& title, const QIcon& icon, QWidget* parent = Q_NULLPTR);
+  typedef BaseDialog base_class;
+  template <typename T, typename... Args>
+  friend T* createDialog(Args&&... args);
 
   enum { min_width = 640, min_height = 480 };
 
  protected:
-  virtual void changeEvent(QEvent* ev) override;
+  explicit EncodeDecodeDialog(const QString& title, const QIcon& icon, QWidget* parent = Q_NULLPTR);
+
+  void retranslateUi() override;
 
  private Q_SLOTS:
   void decodeOrEncode();
 
  private:
-  void retranslateUi();
-
   FastoEditor* input_;
   FastoEditor* output_;
   QComboBox* decoders_;

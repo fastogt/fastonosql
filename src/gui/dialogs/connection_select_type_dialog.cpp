@@ -39,10 +39,7 @@ namespace fastonosql {
 namespace gui {
 
 ConnectionSelectTypeDialog::ConnectionSelectTypeDialog(const QString& title, QWidget* parent)
-    : QDialog(parent), type_connection_label_(nullptr), type_connection_(nullptr), button_box_(nullptr) {
-  setWindowTitle(title);
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-
+    : base_class(title, parent), type_connection_label_(nullptr), type_connection_(nullptr), button_box_(nullptr) {
   type_connection_label_ = new QLabel;
   type_connection_ = new QComboBox;
 
@@ -71,8 +68,6 @@ ConnectionSelectTypeDialog::ConnectionSelectTypeDialog(const QString& title, QWi
   main_layout->addLayout(bottom_layout);
   main_layout->setSizeConstraint(QLayout::SetFixedSize);
   setLayout(main_layout);
-
-  retranslateUi();
 }
 
 core::ConnectionType ConnectionSelectTypeDialog::connectionType() const {
@@ -80,15 +75,9 @@ core::ConnectionType ConnectionSelectTypeDialog::connectionType() const {
   return static_cast<core::ConnectionType>(qvariant_cast<uint8_t>(var));
 }
 
-void ConnectionSelectTypeDialog::changeEvent(QEvent* e) {
-  if (e->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-  QDialog::changeEvent(e);
-}
-
 void ConnectionSelectTypeDialog::retranslateUi() {
   type_connection_label_->setText(trDatabase + ":");
+  base_class::retranslateUi();
 }
 
 }  // namespace gui

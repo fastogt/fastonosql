@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <QDialog>
+#include "gui/dialogs/base_dialog.h"
 
 #include "proxy/connection_settings/iconnection_settings.h"
 
@@ -40,13 +40,15 @@ class SentinelConnectionListWidgetItemContainer;
 class ConnectionListWidgetItem;
 class DirectoryListWidgetItem;
 
-class ConnectionsDialog : public QDialog {
+class ConnectionsDialog : public BaseDialog {
   Q_OBJECT
 
  public:
-  enum { min_width = 640, min_height = 480 };
+  typedef BaseDialog base_class;
+  template <typename T, typename... Args>
+  friend T* createDialog(Args&&... args);
 
-  explicit ConnectionsDialog(const QString& title, const QIcon& icon, QWidget* parent = Q_NULLPTR);
+  enum { min_width = 640, min_height = 480 };
 
   proxy::IConnectionSettingsBaseSPtr selectedConnection() const;
 #if defined(PRO_VERSION)
@@ -65,14 +67,16 @@ class ConnectionsDialog : public QDialog {
   void itemSelectionChange();
 
  protected:
-  void changeEvent(QEvent* ev) override;
+  explicit ConnectionsDialog(const QString& title, const QIcon& icon, QWidget* parent = Q_NULLPTR);
+
+  void retranslateUi() override;
 
  private:
   void editItem(QTreeWidgetItem* qitem, bool remove_origin);
-  void editConnection(ConnectionListWidgetItem* connectionItem, bool remove_origin);
+  void editConnection(ConnectionListWidgetItem* connection_item, bool remove_origin);
 #if defined(PRO_VERSION)
-  void editCluster(ClusterConnectionListWidgetItemContainer* clusterItem, bool remove_origin);
-  void editSentinel(SentinelConnectionListWidgetItemContainer* sentinelItem, bool remove_origin);
+  void editCluster(ClusterConnectionListWidgetItemContainer* cluster_item, bool remove_origin);
+  void editSentinel(SentinelConnectionListWidgetItemContainer* sentinel_item, bool remove_origin);
 #endif
 
   void removeConnection(ConnectionListWidgetItem* connectionItem);
@@ -80,8 +84,6 @@ class ConnectionsDialog : public QDialog {
   void removeCluster(ClusterConnectionListWidgetItemContainer* clusterItem);
   void removeSentinel(SentinelConnectionListWidgetItemContainer* sentinelItem);
 #endif
-
-  void retranslateUi();
 
   void addConnection(proxy::IConnectionSettingsBaseSPtr con);
 #if defined(PRO_VERSION)

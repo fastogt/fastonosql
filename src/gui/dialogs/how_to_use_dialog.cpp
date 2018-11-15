@@ -22,6 +22,8 @@
 
 #include "gui/widgets/how_to_use_widget.h"
 
+#include "translations/global.h"
+
 namespace {
 const QSize kFixedSize = QSize(1280 / 2, 720 / 2);  // 2x smaller than original
 }
@@ -29,10 +31,8 @@ const QSize kFixedSize = QSize(1280 / 2, 720 / 2);  // 2x smaller than original
 namespace fastonosql {
 namespace gui {
 
-HowToUseDialog::HowToUseDialog(const QString& title, QWidget* parent) : QDialog(parent) {
-  setWindowTitle(title);
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-
+HowToUseDialog::HowToUseDialog(QWidget* parent)
+    : base_class(translations::trHowToUse + " " PROJECT_NAME_TITLE, parent) {
   HowToUseWidget* hw = new HowToUseWidget(kFixedSize);
 
   QVBoxLayout* main_layout = new QVBoxLayout;

@@ -41,14 +41,12 @@ namespace gui {
 ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(const QString& title,
                                                        proxy::IConnectionSettingsBaseSPtr connection,
                                                        QWidget* parent)
-    : QDialog(parent),
+    : base_class(title, parent),
       glass_widget_(nullptr),
       execute_time_label_(nullptr),
       status_label_(nullptr),
       icon_label_(nullptr) {
-  setWindowTitle(title);
   setWindowIcon(GuiFactory::GetInstance().icon(connection->GetType()));
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   execute_time_label_ = new QLabel;
   execute_time_label_->setText(translations::trConnectionStatusTemplate_1S.arg("execute..."));
@@ -91,7 +89,7 @@ void ConnectionDiagnosticDialog::connectionResult(bool suc, qint64 exec_mstime, 
 }
 
 void ConnectionDiagnosticDialog::showEvent(QShowEvent* e) {
-  QDialog::showEvent(e);
+  base_class::showEvent(e);
   glass_widget_->start();
 }
 

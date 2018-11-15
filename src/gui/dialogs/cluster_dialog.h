@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <QDialog>
+#include "gui/dialogs/base_dialog.h"
 
 #include "proxy/connection_settings/icluster_connection_settings.h"
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
@@ -36,15 +36,18 @@ class QLabel;
 namespace fastonosql {
 namespace gui {
 
-class ClusterDialog : public QDialog {
+class ClusterDialog : public BaseDialog {
   Q_OBJECT
+
  public:
-  explicit ClusterDialog(QWidget* parent,
-                         proxy::IClusterSettingsBase* connection = nullptr);  // get ownerships connection
+  typedef BaseDialog base_class;
+  template <typename T, typename... Args>
+  friend T* createDialog(Args&&... args);
+
   proxy::IClusterSettingsBaseSPtr connection() const;
 
  public Q_SLOTS:
-  virtual void accept() override;
+  void accept() override;
 
  private Q_SLOTS:
   void typeConnectionChange(int index);
@@ -59,10 +62,11 @@ class ClusterDialog : public QDialog {
   void itemSelectionChanged();
 
  protected:
-  virtual void changeEvent(QEvent* ev) override;
+  explicit ClusterDialog(proxy::IClusterSettingsBase* connection, QWidget* parent = Q_NULLPTR);
+
+  void retranslateUi() override;
 
  private:
-  void retranslateUi();
   bool validateAndApply();  // always return true and init
                             // cluster_connection_
   void addConnection(proxy::IConnectionSettingsBaseSPtr con);

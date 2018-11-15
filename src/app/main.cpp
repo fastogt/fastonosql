@@ -165,7 +165,12 @@ common::ErrnoError ban_user(const fastonosql::proxy::UserInfo& user, const std::
 
 class MainCredentialsDialog : public fastonosql::CredentialsDialog {
  public:
-  MainCredentialsDialog() {}
+  typedef fastonosql::CredentialsDialog base_class;
+  template <typename T, typename... Args>
+  friend T* fastonosql::gui::createDialog(Args&&... args);
+
+ protected:
+  MainCredentialsDialog() : base_class(PROJECT_NAME_TITLE) {}
 
  private:
   fastonosql::IVerifyUser* createChecker() const override {
@@ -204,98 +209,102 @@ int main(int argc, char* argv[]) {
     settings_manager->SetAccpetedEula(true);
   }
 
+  {  // scope for password_dialog
 #if defined(PRO_VERSION)
-  MainCredentialsDialog password_dialog;
+    std::unique_ptr<MainCredentialsDialog> password_dialog(
+        fastonosql::gui::createDialog<MainCredentialsDialog>());  // +
 #if BUILD_STRATEGY == COMMUNITY_STRATEGY
-  const QString last_login = settings_manager->GetLastLogin();
-  if (!last_login.isEmpty()) {
-    password_dialog.setLogin(last_login);
-    password_dialog.setFocusInPassword();
-  }
-#elif BUILD_STRATEGY == PUBLIC_STRATEGY || BUILD_STRATEGY == PRIVATE_STRATEGY
-  password_dialog.setLogin(USER_LOGIN);
-  password_dialog.setLoginEnabled(false);
-#endif
-  int dialog_result = password_dialog.exec();
-  if (dialog_result == QDialog::Rejected) {
-    return EXIT_FAILURE;
-  }
-
-  const fastonosql::proxy::UserInfo user_info = password_dialog.userInfo();
-  // start application
-  const fastonosql::proxy::UserInfo::SubscriptionState user_sub_state = user_info.GetSubscriptionState();
-  const size_t exec_count = user_info.GetExecCount();
-  if (user_sub_state != fastonosql::proxy::UserInfo::SUBSCRIBED) {
-    fastonosql::proxy::user_id_t user_id = user_info.GetUserID();
-    const std::string runtime_dir_path = settings_manager->GetSettingsDirPath();  // stabled
-
-    common::ErrnoError err = prepare_to_start(runtime_dir_path);
-    DCHECK(!err) << "Create runtime directory error: " << err->GetDescription();
-    const std::string identity_path = runtime_dir_path + IDENTITY_FILE_NAME;
-
-    if (exec_count == 1 && !common::file_system::is_file_exist(identity_path)) {
-      common::file_system::File identity_file;
-      err = identity_file.Open(identity_path,
-                               common::file_system::File::FLAG_CREATE | common::file_system::File::FLAG_WRITE);
-      if (err) {
-        QMessageBox::critical(nullptr, fastonosql::translations::trTrial, trCantCreateIdentity);
-        return EXIT_FAILURE;
-      }
-
-      size_t writed;
-      err = identity_file.Write(user_id, &writed);
-      if (err) {
-        QMessageBox::critical(nullptr, fastonosql::translations::trTrial, trCantSaveIdentity);
-        return EXIT_FAILURE;
-      }
-
-      err = identity_file.Close();
-      if (err) {
-        QMessageBox::critical(nullptr, fastonosql::translations::trTrial, trCantSaveIdentity);
-        return EXIT_FAILURE;
-      }
-    } else {
-      common::file_system::ANSIFile read_file;
-      common::ErrnoError err = read_file.Open(identity_path, "rb");
-      if (err) {
-        QMessageBox::critical(nullptr, fastonosql::translations::trTrial, trCantVerifyIdentity);
-        return EXIT_FAILURE;
-      }
-
-      fastonosql::proxy::user_id_t readed_id;
-      if (!read_file.ReadLine(&readed_id)) {
-        read_file.Close();
-        QMessageBox::critical(nullptr, fastonosql::translations::trTrial, trCantVerifyIdentity);
-        return EXIT_FAILURE;
-      }
-
-      read_file.Close();
-
-      if (readed_id != user_info.GetUserID()) {
-        ban_user(user_info, readed_id);
-        QMessageBox::critical(nullptr, fastonosql::translations::trTrial, trIdentityMissmatch);
-        return EXIT_FAILURE;
-      }
+    const QString last_login = settings_manager->GetLastLogin();
+    if (!last_login.isEmpty()) {
+      password_dialog->setLogin(last_login);
+      password_dialog->setFocusInPassword();
     }
-
-    const time_t expire_application_utc_time = user_info.GetExpireTime();
-    const time_t current_time = common::time::current_utc_mstime() / 1000;
-    if (current_time > expire_application_utc_time) {
-      QMessageBox::critical(nullptr, fastonosql::translations::trTrial, trExpired);
+#elif BUILD_STRATEGY == PUBLIC_STRATEGY || BUILD_STRATEGY == PRIVATE_STRATEGY
+    password_dialog.setLogin(USER_LOGIN);
+    password_dialog.setLoginEnabled(false);
+#endif
+    int dialog_result = password_dialog->exec();
+    if (dialog_result == QDialog::Rejected) {
       return EXIT_FAILURE;
     }
-  }
 
-  if (exec_count == 1) {
-    fastonosql::gui::HowToUseDialog howto_use_dialog(fastonosql::translations::trHowToUse + " " PROJECT_NAME_TITLE);
-    howto_use_dialog.exec();
-  }
+    const fastonosql::proxy::UserInfo user_info = password_dialog->userInfo();
+    // start application
+    const fastonosql::proxy::UserInfo::SubscriptionState user_sub_state = user_info.GetSubscriptionState();
+    const size_t exec_count = user_info.GetExecCount();
+    if (user_sub_state != fastonosql::proxy::UserInfo::SUBSCRIBED) {
+      fastonosql::proxy::user_id_t user_id = user_info.GetUserID();
+      const std::string runtime_dir_path = settings_manager->GetSettingsDirPath();  // stabled
+
+      common::ErrnoError err = prepare_to_start(runtime_dir_path);
+      DCHECK(!err) << "Create runtime directory error: " << err->GetDescription();
+      const std::string identity_path = runtime_dir_path + IDENTITY_FILE_NAME;
+
+      if (exec_count == 1 && !common::file_system::is_file_exist(identity_path)) {
+        common::file_system::File identity_file;
+        err = identity_file.Open(identity_path,
+                                 common::file_system::File::FLAG_CREATE | common::file_system::File::FLAG_WRITE);
+        if (err) {
+          QMessageBox::critical(nullptr, fastonosql::translations::trTrial, trCantCreateIdentity);
+          return EXIT_FAILURE;
+        }
+
+        size_t writed;
+        err = identity_file.Write(user_id, &writed);
+        if (err) {
+          QMessageBox::critical(nullptr, fastonosql::translations::trTrial, trCantSaveIdentity);
+          return EXIT_FAILURE;
+        }
+
+        err = identity_file.Close();
+        if (err) {
+          QMessageBox::critical(nullptr, fastonosql::translations::trTrial, trCantSaveIdentity);
+          return EXIT_FAILURE;
+        }
+      } else {
+        common::file_system::ANSIFile read_file;
+        common::ErrnoError err = read_file.Open(identity_path, "rb");
+        if (err) {
+          QMessageBox::critical(nullptr, fastonosql::translations::trTrial, trCantVerifyIdentity);
+          return EXIT_FAILURE;
+        }
+
+        fastonosql::proxy::user_id_t readed_id;
+        if (!read_file.ReadLine(&readed_id)) {
+          read_file.Close();
+          QMessageBox::critical(nullptr, fastonosql::translations::trTrial, trCantVerifyIdentity);
+          return EXIT_FAILURE;
+        }
+
+        read_file.Close();
+
+        if (readed_id != user_info.GetUserID()) {
+          ban_user(user_info, readed_id);
+          QMessageBox::critical(nullptr, fastonosql::translations::trTrial, trIdentityMissmatch);
+          return EXIT_FAILURE;
+        }
+      }
+
+      const time_t expire_application_utc_time = user_info.GetExpireTime();
+      const time_t current_time = common::time::current_utc_mstime() / 1000;
+      if (current_time > expire_application_utc_time) {
+        QMessageBox::critical(nullptr, fastonosql::translations::trTrial, trExpired);
+        return EXIT_FAILURE;
+      }
+    }
+
+    if (exec_count == 1) {
+      std::unique_ptr<fastonosql::gui::HowToUseDialog> howto_use_dialog(
+          fastonosql::gui::createDialog<fastonosql::gui::HowToUseDialog>());  // +
+      howto_use_dialog->exec();
+    }
 
 #if BUILD_STRATEGY == COMMUNITY_STRATEGY
-  settings_manager->SetLastLogin(password_dialog.login());
+    settings_manager->SetLastLogin(password_dialog->login());
 #endif
-  settings_manager->SetUserInfo(user_info);
+    settings_manager->SetUserInfo(user_info);
 #endif
+  }
 
   QFile file(":" PROJECT_NAME_LOWERCASE "/default.qss");
   file.open(QFile::ReadOnly);

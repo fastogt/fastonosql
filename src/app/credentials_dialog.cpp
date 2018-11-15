@@ -39,7 +39,8 @@ const QSize kStatusLabelIconSize = QSize(24, 24);
 
 namespace fastonosql {
 
-CredentialsDialog::CredentialsDialog(QWidget* parent) : base_class(parent), glass_widget_(nullptr), user_info_() {
+CredentialsDialog::CredentialsDialog(const QString& title, QWidget* parent)
+    : base_class(title, parent), glass_widget_(nullptr), user_info_() {
   qRegisterMetaType<common::Error>("common::Error");
   qRegisterMetaType<proxy::UserInfo>("proxy::UserInfo");
 

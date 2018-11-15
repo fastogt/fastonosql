@@ -48,7 +48,7 @@ namespace fastonosql {
 namespace gui {
 
 PubSubDialog::PubSubDialog(const QString& title, const QIcon& icon, proxy::IServerSPtr server, QWidget* parent)
-    : QDialog(parent),
+    : base_class(title, parent),
       search_box_(nullptr),
       search_button_(nullptr),
       channels_table_(nullptr),
@@ -56,9 +56,7 @@ PubSubDialog::PubSubDialog(const QString& title, const QIcon& icon, proxy::IServ
       proxy_model_(nullptr),
       server_(server) {
   CHECK(server_);
-  setWindowTitle(title);
   setWindowIcon(icon);
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   VERIFY(
       connect(server.get(), &proxy::IServer::LoadServerChannelsStarted, this, &PubSubDialog::startLoadServerChannels));
@@ -100,8 +98,6 @@ PubSubDialog::PubSubDialog(const QString& title, const QIcon& icon, proxy::IServ
   main_layout->addWidget(button_box);
   setLayout(main_layout);
   setMinimumSize(QSize(min_width, min_height));
-
-  retranslateUi();
 }
 
 void PubSubDialog::startLoadServerChannels(const proxy::events_info::LoadServerChannelsRequest& req) {
@@ -220,14 +216,6 @@ QModelIndex PubSubDialog::selectedIndex() const {
 
 void PubSubDialog::searchLineChanged(const QString& text) {
   UNUSED(text);
-}
-
-void PubSubDialog::changeEvent(QEvent* e) {
-  if (e->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-
-  QDialog::changeEvent(e);
 }
 
 void PubSubDialog::retranslateUi() {

@@ -22,7 +22,6 @@
 
 #include <QComboBox>
 #include <QDialogButtonBox>
-#include <QEvent>
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QLabel>
@@ -55,10 +54,8 @@ DbKeyDialog::DbKeyDialog(const QString& title,
                          const core::NDbKValue& key,
                          bool is_edit,
                          QWidget* parent)
-    : base_class(parent), general_box_(nullptr), key_(key) {
-  setWindowTitle(title);
+    : base_class(title, parent), general_box_(nullptr), key_(key) {
   setWindowIcon(icon);
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   const std::vector<common::Value::Type> types = core::GetSupportedValueTypes(type);
   general_box_ = new KeyEditWidget(types, this);
@@ -77,8 +74,6 @@ DbKeyDialog::DbKeyDialog(const QString& title,
   VERIFY(connect(general_box_, &KeyEditWidget::typeChanged, this, &DbKeyDialog::changeType));
   general_box_->initialize(key_);
   general_box_->setEnableKeyEdit(!is_edit);
-
-  retranslateUi();
 }
 
 core::NDbKValue DbKeyDialog::key() const {
@@ -91,14 +86,7 @@ void DbKeyDialog::accept() {
     return;
   }
 
-  QDialog::accept();
-}
-
-void DbKeyDialog::changeEvent(QEvent* e) {
-  if (e->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-  base_class::changeEvent(e);
+  base_class::accept();
 }
 
 bool DbKeyDialog::validateAndApply() {
@@ -107,6 +95,7 @@ bool DbKeyDialog::validateAndApply() {
 
 void DbKeyDialog::retranslateUi() {
   general_box_->setTitle(trInput);
+  base_class::retranslateUi();
 }
 
 void DbKeyDialog::changeType(common::Value::Type type) {

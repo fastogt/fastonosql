@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <QDialog>
+#include "gui/dialogs/base_dialog.h"
 
 #include "proxy/events/events_info.h"
 #include "proxy/proxy_fwd.h"  // for IServerSPtr
@@ -38,14 +38,13 @@ class GraphWidget;
 namespace fastonosql {
 namespace gui {
 
-class ServerHistoryDialog : public QDialog {
+class ServerHistoryDialog : public BaseDialog {
   Q_OBJECT
 
  public:
-  explicit ServerHistoryDialog(const QString& title,
-                               const QIcon& icon,
-                               proxy::IServerSPtr server,
-                               QWidget* parent = Q_NULLPTR);
+  typedef BaseDialog base_class;
+  template <typename T, typename... Args>
+  friend T* createDialog(Args&&... args);
 
   enum { min_width = 640, min_height = 480 };
 
@@ -61,12 +60,17 @@ class ServerHistoryDialog : public QDialog {
   void refreshGraph(int index);
 
  protected:
-  void changeEvent(QEvent* e) override;
+  explicit ServerHistoryDialog(const QString& title,
+                               const QIcon& icon,
+                               proxy::IServerSPtr server,
+                               QWidget* parent = Q_NULLPTR);
+
   void showEvent(QShowEvent* e) override;
+
+  void retranslateUi() override;
 
  private:
   void reset();
-  void retranslateUi();
   void requestHistoryInfo();
 
   QWidget* settings_graph_;

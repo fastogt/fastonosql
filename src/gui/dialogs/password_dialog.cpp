@@ -38,22 +38,14 @@ const QString trSignIn = QObject::tr("Sign in");
 namespace fastonosql {
 namespace gui {
 
-PasswordDialog::PasswordDialog(QWidget* parent)
-    : QDialog(parent),
+PasswordDialog::PasswordDialog(const QString& title, QWidget* parent)
+    : base_class(title, parent),
       description_(nullptr),
       login_label_(nullptr),
       login_box_(nullptr),
       password_label_(nullptr),
       password_box_(nullptr),
       password_echo_mode_button_(nullptr) {
-  Qt::WindowFlags flags = windowFlags();
-  setWindowFlags(flags & ~Qt::WindowContextHelpButtonHint);
-
-  QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
-  buttonBox->setOrientation(Qt::Horizontal);
-  VERIFY(connect(buttonBox, &QDialogButtonBox::accepted, this, &PasswordDialog::accept));
-  buttonBox->button(QDialogButtonBox::Ok)->setText(trSignIn);
-
   description_ = new QLabel;
   description_->setOpenExternalLinks(true);
 
@@ -77,15 +69,19 @@ PasswordDialog::PasswordDialog(QWidget* parent)
   status_label_->setOpenExternalLinks(true);
   status_label_->setVisible(false);
 
+  QDialogButtonBox* button_box = new QDialogButtonBox(QDialogButtonBox::Ok);
+  button_box->setOrientation(Qt::Horizontal);
+  VERIFY(connect(button_box, &QDialogButtonBox::accepted, this, &PasswordDialog::accept));
+  button_box->button(QDialogButtonBox::Ok)->setText(trSignIn);
+
   QVBoxLayout* main_layout = new QVBoxLayout;
   main_layout->addWidget(description_);
   main_layout->addLayout(profile_layout);
   main_layout->addLayout(password_layout);
   main_layout->addWidget(status_label_, 0, Qt::AlignCenter);
-  main_layout->addWidget(buttonBox);
+  main_layout->addWidget(button_box);
   main_layout->setSizeConstraint(QLayout::SetFixedSize);
   setLayout(main_layout);
-  retranslateUi();
 }
 
 QString PasswordDialog::login() const {
@@ -143,7 +139,7 @@ void PasswordDialog::accept() {
     return;
   }
 
-  QDialog::accept();
+  base_class::accept();
 }
 
 void PasswordDialog::setVisibleStatus(bool visible) {
@@ -164,14 +160,6 @@ void PasswordDialog::togglePasswordEchoMode() {
   syncShowButton();
 }
 
-void PasswordDialog::changeEvent(QEvent* e) {
-  if (e->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-
-  QDialog::changeEvent(e);
-}
-
 void PasswordDialog::syncShowButton() {
   bool isPassword = password_box_->echoMode() == QLineEdit::Password;
   password_echo_mode_button_->setText(isPassword ? translations::trShow : translations::trHide);
@@ -181,6 +169,7 @@ void PasswordDialog::retranslateUi() {
   password_label_->setText(translations::trPassword + ":");
   login_label_->setText(translations::trLogin + ":");
   syncShowButton();
+  base_class::retranslateUi();
 }
 
 }  // namespace gui

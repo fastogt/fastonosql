@@ -18,49 +18,35 @@
 
 #pragma once
 
-#include "gui/dialogs/base_dialog.h"
-
-#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
-
-class QLabel;  // lines 28-28
-
-namespace common {
-namespace qt {
-namespace gui {
-class GlassWidget;
-}
-}  // namespace qt
-}  // namespace common
+#include <QDialog>
 
 namespace fastonosql {
 namespace gui {
 
-class ConnectionDiagnosticDialog : public BaseDialog {
+class BaseDialog : public QDialog {
   Q_OBJECT
 
  public:
-  typedef BaseDialog base_class;
+  typedef QDialog base_class;
   template <typename T, typename... Args>
   friend T* createDialog(Args&&... args);
 
- private Q_SLOTS:
-  void connectionResult(bool suc, qint64 exec_mstime, const QString& result_text);
+  ~BaseDialog() override;
 
  protected:
-  ConnectionDiagnosticDialog(const QString& title,
-                             proxy::IConnectionSettingsBaseSPtr connection,
-                             QWidget* parent = Q_NULLPTR);
+  explicit BaseDialog(const QString& title, QWidget* parent = Q_NULLPTR);
 
-  void showEvent(QShowEvent* e) override;
+  void changeEvent(QEvent* ev) override;
 
- private:
-  void startTestConnection(proxy::IConnectionSettingsBaseSPtr connection);
-
-  common::qt::gui::GlassWidget* glass_widget_;
-  QLabel* execute_time_label_;
-  QLabel* status_label_;
-  QLabel* icon_label_;
+  virtual void retranslateUi();
 };
+
+template <typename T, typename... Args>
+inline T* createDialog(Args&&... args) {
+  T* dialog = new T(std::forward<Args>(args)...);
+  dialog->retranslateUi();  // protected
+  return dialog;
+}
 
 }  // namespace gui
 }  // namespace fastonosql

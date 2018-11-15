@@ -18,9 +18,9 @@
 
 #pragma once
 
-#include <QDialog>
-
 #include <fastonosql/core/connection_types.h>
+
+#include "gui/dialogs/base_dialog.h"
 
 class QComboBox;
 class QLabel;
@@ -29,18 +29,19 @@ class QDialogButtonBox;
 namespace fastonosql {
 namespace gui {
 
-class ConnectionSelectTypeDialog : public QDialog {
+class ConnectionSelectTypeDialog : public BaseDialog {
   Q_OBJECT
+
  public:
-  explicit ConnectionSelectTypeDialog(const QString& title, QWidget* parent = Q_NULLPTR);
+  typedef BaseDialog base_class;
+  template <typename T, typename... Args>
+  friend T* createDialog(Args&&... args);
 
   core::ConnectionType connectionType() const;
 
  protected:
-  virtual void changeEvent(QEvent* ev) override;
-
- private:
-  void retranslateUi();
+  explicit ConnectionSelectTypeDialog(const QString& title, QWidget* parent = Q_NULLPTR);
+  void retranslateUi() override;
 
   QLabel* type_connection_label_;
   QComboBox* type_connection_;

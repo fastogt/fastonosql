@@ -100,10 +100,7 @@ QTreeWidgetItem* createLibItem(const std::string& name, const char* version) {
 namespace fastonosql {
 namespace gui {
 
-AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent) {
-  setWindowTitle(trAbout + " " PROJECT_NAME_TITLE);
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-
+AboutDialog::AboutDialog(QWidget* parent) : base_class(trAbout + " " PROJECT_NAME_TITLE, parent) {
   QTabWidget* about_tabs = new QTabWidget;
   QWidget* about_tab = new QWidget;
 

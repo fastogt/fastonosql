@@ -47,6 +47,8 @@
 #include "translations/global.h"  // for trAddConnection, trAddress, etc
 
 namespace {
+const QString trCreateSentinel = QObject::tr("Create sentinel");
+const QString trEditSentinel = QObject::tr("Edit sentinel");
 const char* kDefaultSentinelNameConnection = "New Sentinel Connection";
 const char* kDefaultNameConnectionFolder = "/";
 }  // namespace
@@ -54,8 +56,8 @@ const char* kDefaultNameConnectionFolder = "/";
 namespace fastonosql {
 namespace gui {
 
-SentinelDialog::SentinelDialog(QWidget* parent, proxy::ISentinelSettingsBase* connection)
-    : QDialog(parent),
+SentinelDialog::SentinelDialog(proxy::ISentinelSettingsBase* connection, QWidget* parent)
+    : base_class(connection ? trEditSentinel : trCreateSentinel, parent),
       sentinel_connection_(connection),
       connection_name_(nullptr),
       folder_label_(nullptr),
@@ -205,16 +207,16 @@ SentinelDialog::SentinelDialog(QWidget* parent, proxy::ISentinelSettingsBase* co
   // update controls
   typeConnectionChange(type_connection_->currentIndex());
   loggingStateChange(logging_->checkState());
-  retranslateUi();
 }
 
 proxy::ISentinelSettingsBaseSPtr SentinelDialog::connection() const {
+  CHECK(sentinel_connection_);
   return sentinel_connection_;
 }
 
 void SentinelDialog::accept() {
   if (validateAndApply()) {
-    QDialog::accept();
+    base_class::accept();
   }
 }
 
@@ -243,8 +245,9 @@ void SentinelDialog::testConnection() {
     return;
   }
 
-  ConnectionDiagnosticDialog diag(translations::trConnectionDiagnostic, current_item->connection(), this);
-  diag.exec();
+  auto diag = createDialog<ConnectionDiagnosticDialog>(translations::trConnectionDiagnostic, current_item->connection(),
+                                                       this);  // +
+  diag->exec();
 }
 
 void SentinelDialog::discoverySentinel() {
@@ -260,14 +263,14 @@ void SentinelDialog::discoverySentinel() {
     return;
   }
 
-  DiscoverySentinelDiagnosticDialog diag(translations::trConnectionDiscovery, GuiFactory::GetInstance().serverIcon(),
-                                         sent_item->connection(), this);
-  int result = diag.exec();
+  auto diag = createDialog<DiscoverySentinelDiagnosticDialog>(
+      translations::trConnectionDiscovery, GuiFactory::GetInstance().serverIcon(), sent_item->connection(), this);  // +
+  int result = diag->exec();
   if (result != QDialog::Accepted) {
     return;
   }
 
-  std::vector<ConnectionListWidgetItemDiscovered*> conns = diag.selectedConnections();
+  std::vector<ConnectionListWidgetItemDiscovered*> conns = diag->selectedConnections();
   for (size_t i = 0; i < conns.size(); ++i) {
     ConnectionListWidgetItemDiscovered* it = conns[i];
 
@@ -279,16 +282,14 @@ void SentinelDialog::discoverySentinel() {
 
 void SentinelDialog::addConnectionSettings() {
 #ifdef BUILD_WITH_REDIS
-  ConnectionDialog dlg(core::REDIS, translations::trNewConnection, this);
-  dlg.setFolderEnabled(false);
-  int result = dlg.exec();
+  auto dlg = createDialog<ConnectionDialog>(core::REDIS, translations::trNewConnection, this);  // +
+  dlg->setFolderEnabled(false);
+  int result = dlg->exec();
   if (result == QDialog::Accepted) {
-    proxy::IConnectionSettingsBaseSPtr sent_connection = dlg.connection();
-    if (sent_connection) {
-      proxy::SentinelSettings sent;
-      sent.sentinel = sent_connection;
-      addSentinel(sent);
-    }
+    proxy::IConnectionSettingsBaseSPtr sent_connection = dlg->connection();
+    proxy::SentinelSettings sent;
+    sent.sentinel = sent_connection;
+    addSentinel(sent);
   }
 #endif
 }
@@ -325,11 +326,11 @@ void SentinelDialog::edit() {
 
 #ifdef BUILD_WITH_REDIS
   const proxy::IConnectionSettingsBaseSPtr connection = current_item->connection();
-  ConnectionDialog dlg(connection->Clone(), this);
-  dlg.setFolderEnabled(false);
-  int result = dlg.exec();
-  proxy::IConnectionSettingsBaseSPtr new_connection = dlg.connection();
-  if (result == QDialog::Accepted && new_connection) {
+  auto dlg = createDialog<ConnectionDialog>(connection->Clone(), this);  // +
+  dlg->setFolderEnabled(false);
+  int result = dlg->exec();
+  if (result == QDialog::Accepted) {
+    proxy::IConnectionSettingsBaseSPtr new_connection = dlg->connection();
     current_item->setConnection(new_connection);
   }
 #endif
@@ -347,17 +348,10 @@ void SentinelDialog::itemSelectionChanged() {
   discovery_button_->setEnabled(is_valid_sent_connection);
 }
 
-void SentinelDialog::changeEvent(QEvent* e) {
-  if (e->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-
-  QDialog::changeEvent(e);
-}
-
 void SentinelDialog::retranslateUi() {
   logging_->setText(translations::trLoggingEnabled);
   folder_label_->setText(translations::trFolder);
+  base_class::retranslateUi();
 }
 
 bool SentinelDialog::validateAndApply() {

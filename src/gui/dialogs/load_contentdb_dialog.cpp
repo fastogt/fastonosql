@@ -43,14 +43,12 @@ namespace fastonosql {
 namespace gui {
 
 LoadContentDbDialog::LoadContentDbDialog(const QString& title, const QIcon& icon, QWidget* parent)
-    : QDialog(parent),
+    : base_class(title, parent),
       keys_count_label_(nullptr),
       key_pattern_label_(nullptr),
       pattern_edit_(nullptr),
       count_spin_edit_(nullptr) {
-  setWindowTitle(title);
   setWindowIcon(icon);
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   QDialogButtonBox* button_box = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   button_box->setOrientation(Qt::Horizontal);
@@ -80,8 +78,6 @@ LoadContentDbDialog::LoadContentDbDialog(const QString& title, const QIcon& icon
   main_layout->addWidget(button_box);
   main_layout->setSizeConstraint(QLayout::SetFixedSize);
   setLayout(main_layout);
-
-  retranslateUi();
 }
 
 int LoadContentDbDialog::count() const {
@@ -100,19 +96,13 @@ void LoadContentDbDialog::accept() {
     return;
   }
 
-  QDialog::accept();
-}
-
-void LoadContentDbDialog::changeEvent(QEvent* e) {
-  if (e->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-  QDialog::changeEvent(e);
+  base_class::accept();
 }
 
 void LoadContentDbDialog::retranslateUi() {
   keys_count_label_->setText(trKeysCount + ":");
   key_pattern_label_->setText(trPattern + ":");
+  base_class::retranslateUi();
 }
 
 }  // namespace gui

@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <QDialog>
+#include "gui/dialogs/base_dialog.h"
 
 #include "proxy/proxy_fwd.h"
 
@@ -76,13 +76,14 @@ struct ServerInfoRequest;
 }  // namespace proxy
 namespace gui {
 
-class InfoServerDialog : public QDialog {
+class InfoServerDialog : public BaseDialog {
   Q_OBJECT
+
  public:
-  explicit InfoServerDialog(const QString& title,
-                            const QIcon& icon,
-                            proxy::IServerSPtr server,
-                            QWidget* parent = Q_NULLPTR);
+  typedef BaseDialog base_class;
+  template <typename T, typename... Args>
+  friend T* createDialog(Args&&... args);
+
   enum { min_width = 420, min_height = 560 };
 
  private Q_SLOTS:
@@ -90,11 +91,14 @@ class InfoServerDialog : public QDialog {
   void finishServerInfo(const proxy::events_info::ServerInfoResponce& res);
 
  protected:
-  virtual void changeEvent(QEvent* e) override;
+  explicit InfoServerDialog(const QString& title,
+                            const QIcon& icon,
+                            proxy::IServerSPtr server,
+                            QWidget* parent = Q_NULLPTR);
+
   virtual void showEvent(QShowEvent* e) override;
 
  private:
-  void retranslateUi();
 #ifdef BUILD_WITH_REDIS
   void updateText(const core::redis::ServerInfo& serv);
 #endif

@@ -20,7 +20,6 @@
 
 #include <QComboBox>
 #include <QDialogButtonBox>
-#include <QEvent>
 #include <QPushButton>
 #include <QRadioButton>
 #include <QSplitter>
@@ -39,15 +38,13 @@ namespace fastonosql {
 namespace gui {
 
 EncodeDecodeDialog::EncodeDecodeDialog(const QString& title, const QIcon& icon, QWidget* parent)
-    : QDialog(parent),
+    : base_class(title, parent),
       input_(nullptr),
       output_(nullptr),
       decoders_(nullptr),
       encode_button_(nullptr),
       decode_button_(nullptr) {
-  setWindowTitle(title);
   setWindowIcon(icon);
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   QToolButton* decode = new QToolButton;
   decode->setIcon(GuiFactory::GetInstance().executeIcon());
@@ -88,16 +85,6 @@ EncodeDecodeDialog::EncodeDecodeDialog(const QString& title, const QIcon& icon, 
   main_layout->addWidget(button_box);
   setLayout(main_layout);
   setMinimumSize(QSize(min_width, min_height));
-
-  retranslateUi();
-}
-
-void EncodeDecodeDialog::changeEvent(QEvent* e) {
-  if (e->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-
-  QWidget::changeEvent(e);
 }
 
 void EncodeDecodeDialog::decodeOrEncode() {
@@ -132,6 +119,7 @@ void EncodeDecodeDialog::decodeOrEncode() {
 void EncodeDecodeDialog::retranslateUi() {
   encode_button_->setText(translations::trEncode);
   decode_button_->setText(translations::trDecode);
+  base_class::retranslateUi();
 }
 
 }  // namespace gui

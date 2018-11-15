@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <QDialog>
+#include "gui/dialogs/base_dialog.h"
 
 #include <fastonosql/core/value.h>
 
@@ -33,13 +33,15 @@ namespace gui {
 
 class StreamTableModel;
 
-class StreamEntryDialog : public QDialog {
+class StreamEntryDialog : public BaseDialog {
   Q_OBJECT
 
  public:
+  typedef BaseDialog base_class;
+  template <typename T, typename... Args>
+  friend T* createDialog(Args&&... args);
   enum { min_width = 360, min_height = 240 };
 
-  explicit StreamEntryDialog(const QString& sid = DEFAILT_ID, QWidget* parent = Q_NULLPTR);
   virtual ~StreamEntryDialog();
 
   bool getStream(core::StreamValue::Stream* out) const;
@@ -50,6 +52,9 @@ class StreamEntryDialog : public QDialog {
  private Q_SLOTS:
   void insertRow(const QModelIndex& index);
   void removeRow(const QModelIndex& index);
+
+ protected:
+  explicit StreamEntryDialog(const QString& sid = DEFAILT_ID, QWidget* parent = Q_NULLPTR);
 
  private:
   QLabel* entry_label_;

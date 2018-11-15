@@ -18,9 +18,9 @@
 
 #pragma once
 
-#include <QDialog>
-
 #include <fastonosql/core/connection_types.h>  // for ConnectionType
+
+#include "gui/dialogs/base_dialog.h"
 
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
 
@@ -29,12 +29,13 @@ namespace gui {
 
 class ConnectionBaseWidget;
 
-class ConnectionDialog : public QDialog {
+class ConnectionDialog : public BaseDialog {
   Q_OBJECT
 
  public:
-  ConnectionDialog(core::ConnectionType type, const QString& connection_name, QWidget* parent = Q_NULLPTR);
-  explicit ConnectionDialog(proxy::IConnectionSettingsBase* connection, QWidget* parent = Q_NULLPTR);
+  typedef BaseDialog base_class;
+  template <typename T, typename... Args>
+  friend T* createDialog(Args&&... args);
 
   void setFolderEnabled(bool val);
   proxy::IConnectionSettingsBaseSPtr connection() const;
@@ -46,12 +47,15 @@ class ConnectionDialog : public QDialog {
   void testConnection();
 
  protected:
-  void changeEvent(QEvent* ev) override;
+  ConnectionDialog(core::ConnectionType type, const QString& connection_name, QWidget* parent = Q_NULLPTR);
+  explicit ConnectionDialog(proxy::IConnectionSettingsBase* connection,
+                            QWidget* parent = Q_NULLPTR);  // take ownerships
+
+  void retranslateUi() override;
 
  private:
   void init(proxy::IConnectionSettingsBase* connection);
 
-  void retranslateUi();
   bool validateAndApply();
 
   ConnectionBaseWidget* connection_widget_;

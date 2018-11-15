@@ -345,12 +345,9 @@ namespace fastonosql {
 namespace gui {
 
 InfoServerDialog::InfoServerDialog(const QString& title, const QIcon& icon, proxy::IServerSPtr server, QWidget* parent)
-    : QDialog(parent), server_text_info_(nullptr), glass_widget_(nullptr), server_(server) {
+    : base_class(title, parent), server_text_info_(nullptr), glass_widget_(nullptr), server_(server) {
   CHECK(server_);
-
-  setWindowTitle(title);
   setWindowIcon(icon);
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   const core::ConnectionType type = server->GetType();
 
@@ -418,7 +415,6 @@ InfoServerDialog::InfoServerDialog(const QString& title, const QIcon& icon, prox
 
   VERIFY(connect(server.get(), &proxy::IServer::LoadServerInfoStarted, this, &InfoServerDialog::startServerInfo));
   VERIFY(connect(server.get(), &proxy::IServer::LoadServerInfoFinished, this, &InfoServerDialog::finishServerInfo));
-  retranslateUi();
 }
 
 void InfoServerDialog::startServerInfo(const proxy::events_info::ServerInfoRequest& req) {
@@ -514,19 +510,10 @@ void InfoServerDialog::finishServerInfo(const proxy::events_info::ServerInfoResp
 }
 
 void InfoServerDialog::showEvent(QShowEvent* e) {
-  QDialog::showEvent(e);
+  base_class::showEvent(e);
   proxy::events_info::ServerInfoRequest req(this);
   server_->LoadServerInfo(req);
 }
-
-void InfoServerDialog::changeEvent(QEvent* e) {
-  if (e->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-  QDialog::changeEvent(e);
-}
-
-void InfoServerDialog::retranslateUi() {}
 
 #ifdef BUILD_WITH_REDIS
 void InfoServerDialog::updateText(const core::redis::ServerInfo& serv) {

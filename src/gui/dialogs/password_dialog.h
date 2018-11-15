@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <QDialog>
+#include "gui/dialogs/base_dialog.h"
 
 class QLineEdit;
 class QPushButton;
@@ -35,10 +35,13 @@ class IconLabel;
 namespace fastonosql {
 namespace gui {
 
-class PasswordDialog : public QDialog {
+class PasswordDialog : public BaseDialog {
   Q_OBJECT
+
  public:
-  explicit PasswordDialog(QWidget* parent = Q_NULLPTR);
+  typedef BaseDialog base_class;
+  template <typename T, typename... Args>
+  friend T* createDialog(Args&&... args);
 
   QString login() const;
   void setLogin(const QString& login);
@@ -58,7 +61,7 @@ class PasswordDialog : public QDialog {
   void setFocusInLogin();
 
  public Q_SLOTS:
-  virtual void accept() override;
+  void accept() override;
 
   void setVisibleDescription(bool visible);
   void setVisibleStatus(bool visible);
@@ -69,10 +72,11 @@ class PasswordDialog : public QDialog {
   void togglePasswordEchoMode();
 
  protected:
-  virtual void changeEvent(QEvent* ev) override;
+  explicit PasswordDialog(const QString& title, QWidget* parent = Q_NULLPTR);
+
+  void retranslateUi() override;
 
  private:
-  void retranslateUi();
   void syncShowButton();
 
  private:

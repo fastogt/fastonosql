@@ -23,7 +23,6 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDialogButtonBox>
-#include <QEvent>
 #include <QFontComboBox>
 #include <QGroupBox>
 #include <QHBoxLayout>
@@ -62,13 +61,15 @@ const QString trExternal = QObject::tr("External");
 const QString trSelectPythonPath = QObject::tr("Select python executable");
 const QString trPythonExecutable = QObject::tr("Python executable (*)");
 const QString trPythonPath = QObject::tr("Python path:");
+
+const QString trPreferences = QObject::tr(PROJECT_NAME_TITLE " preferences");
 }  // namespace
 
 namespace fastonosql {
 namespace gui {
 
-PreferencesDialog::PreferencesDialog(const QString& title, QWidget* parent)
-    : QDialog(parent),
+PreferencesDialog::PreferencesDialog(QWidget* parent)
+    : base_class(trPreferences, parent),
 #if defined(PRO_VERSION)
       profile_box_(nullptr),
       first_name_label_(nullptr),
@@ -100,8 +101,6 @@ PreferencesDialog::PreferencesDialog(const QString& title, QWidget* parent)
       fast_view_keys_(nullptr),
       external_box_(nullptr),
       python_path_widget_(nullptr) {
-  setWindowTitle(title);
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   QTabWidget* preferences_tabs = new QTabWidget;
   QWidget* general_tab = createMainTab();
@@ -121,7 +120,6 @@ PreferencesDialog::PreferencesDialog(const QString& title, QWidget* parent)
   setMinimumSize(QSize(min_width, min_height));
 
   syncWithSettings();
-  retranslateUi();
 }
 
 void PreferencesDialog::accept() {
@@ -149,7 +147,7 @@ void PreferencesDialog::accept() {
   proxy::SettingsManager::GetInstance()->SetFastViewKeys(fast_view_keys_->isChecked());
   proxy::SettingsManager::GetInstance()->SetPythonPath(python_path_widget_->path());
 
-  return QDialog::accept();
+  return base_class::accept();
 }
 
 void PreferencesDialog::syncWithSettings() {
@@ -170,14 +168,6 @@ void PreferencesDialog::syncWithSettings() {
   fast_view_keys_->setChecked(proxy::SettingsManager::GetInstance()->GetFastViewKeys());
   QString python_path = proxy::SettingsManager::GetInstance()->GetPythonPath();
   python_path_widget_->setPath(python_path);
-}
-
-void PreferencesDialog::changeEvent(QEvent* e) {
-  if (e->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-
-  QDialog::changeEvent(e);
 }
 
 QWidget* PreferencesDialog::createMainTab() {
@@ -342,6 +332,7 @@ void PreferencesDialog::retranslateUi() {
   font_label_->setText(trSupportedFonts + ":");
   default_view_label_->setText(trDefaultViews + ":");
   log_dir_label_->setText(trHistoryDirectory + ":");
+  base_class::retranslateUi();
 }
 
 }  // namespace gui

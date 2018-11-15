@@ -43,7 +43,7 @@ ServerHistoryDialog::ServerHistoryDialog(const QString& title,
                                          const QIcon& icon,
                                          proxy::IServerSPtr server,
                                          QWidget* parent)
-    : QDialog(parent),
+    : base_class(title, parent),
       settings_graph_(nullptr),
       clear_history_(nullptr),
       server_info_groups_names_(nullptr),
@@ -53,9 +53,7 @@ ServerHistoryDialog::ServerHistoryDialog(const QString& title,
       infos_(),
       server_(server) {
   CHECK(server_);
-  setWindowTitle(title);
   setWindowIcon(icon);
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   VERIFY(connect(server.get(), &proxy::IServer::LoadServerHistoryInfoStarted, this,
                  &ServerHistoryDialog::startLoadServerHistoryInfo));
@@ -82,7 +80,7 @@ ServerHistoryDialog::ServerHistoryDialog(const QString& title,
                  &ServerHistoryDialog::refreshGraph));
 
   const auto fields = core::GetInfoFieldsFromType(server_->GetType());
-  for (const auto field : fields) {
+  for (auto field : fields) {
     QString qitem;
     if (common::ConvertFromString(field.first, &qitem)) {
       server_info_groups_names_->addItem(qitem);
@@ -108,7 +106,6 @@ ServerHistoryDialog::ServerHistoryDialog(const QString& title,
 
   glass_widget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().pathToLoadingGif(),
                                                    translations::trLoad + "...", 0.5, QColor(111, 111, 100), this);
-  retranslateUi();
 }
 
 void ServerHistoryDialog::startLoadServerHistoryInfo(const proxy::events_info::ServerInfoHistoryRequest& req) {
@@ -152,14 +149,15 @@ void ServerHistoryDialog::clearHistory() {
 }
 
 void ServerHistoryDialog::refreshInfoFields(int index) {
-  if (index == -1) {
+  if (index < 0) {
     return;
   }
 
+  const unsigned int stabled_index = static_cast<unsigned int>(index);
   server_info_fields_->clear();
 
   const auto fields = core::GetInfoFieldsFromType(server_->GetType());
-  std::vector<core::Field> field = fields[index].second;
+  std::vector<core::Field> field = fields[stabled_index].second;
   for (uint32_t i = 0; i < field.size(); ++i) {
     core::Field fl = field[i];
     if (fl.IsIntegral()) {
@@ -180,7 +178,7 @@ void ServerHistoryDialog::refreshGraph(int index) {
   QVariant var = server_info_fields_->itemData(index);
   uint32_t index_in = qvariant_cast<uint32_t>(var);
   common::qt::gui::GraphWidget::nodes_container_type nodes;
-  for (const auto val : infos_) {
+  for (auto val : infos_) {
     if (!val.IsValid()) {
       continue;
     }
@@ -198,15 +196,8 @@ void ServerHistoryDialog::refreshGraph(int index) {
   graph_widget_->setNodes(nodes);
 }
 
-void ServerHistoryDialog::changeEvent(QEvent* e) {
-  if (e->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-  QDialog::changeEvent(e);
-}
-
 void ServerHistoryDialog::showEvent(QShowEvent* e) {
-  QDialog::showEvent(e);
+  base_class::showEvent(e);
   requestHistoryInfo();
 }
 
@@ -216,6 +207,7 @@ void ServerHistoryDialog::reset() {
 
 void ServerHistoryDialog::retranslateUi() {
   clear_history_->setText(translations::trClearHistory);
+  base_class::retranslateUi();
 }
 
 void ServerHistoryDialog::requestHistoryInfo() {

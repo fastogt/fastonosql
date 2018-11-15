@@ -39,12 +39,10 @@ PropertyServerDialog::PropertyServerDialog(const QString& title,
                                            const QIcon& icon,
                                            proxy::IServerSPtr server,
                                            QWidget* parent)
-    : QDialog(parent), glass_widget_(nullptr), properties_table_(nullptr), server_(server) {
+    : base_class(title, parent), glass_widget_(nullptr), properties_table_(nullptr), server_(server) {
   CHECK(server_);
 
-  setWindowTitle(title);
   setWindowIcon(icon);
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   VERIFY(connect(server.get(), &proxy::IServer::LoadServerPropertyStarted, this,
                  &PropertyServerDialog::startLoadServerProperty));
@@ -67,8 +65,6 @@ PropertyServerDialog::PropertyServerDialog(const QString& title,
   main_layout->addWidget(properties_table_);
   setLayout(main_layout);
   setMinimumSize(QSize(min_width, min_height));
-
-  retranslateUi();
 }
 
 void PropertyServerDialog::startLoadServerProperty(const proxy::events_info::ServerPropertyInfoRequest& req) {
@@ -117,21 +113,11 @@ void PropertyServerDialog::changeProperty(const core::property_t& prop) {
   server_->ChangeProperty(req);
 }
 
-void PropertyServerDialog::changeEvent(QEvent* e) {
-  if (e->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-
-  QDialog::changeEvent(e);
-}
-
 void PropertyServerDialog::showEvent(QShowEvent* e) {
   proxy::events_info::ServerPropertyInfoRequest req(this);
   server_->LoadServerProperty(req);
-  QDialog::showEvent(e);
+  base_class::showEvent(e);
 }
-
-void PropertyServerDialog::retranslateUi() {}
 
 }  // namespace gui
 }  // namespace fastonosql

@@ -20,9 +20,10 @@
 
 #include <vector>
 
-#include <QDialog>
-
 #include <fastonosql/core/database/idatabase_info.h>
+
+#include "gui/dialogs/base_dialog.h"
+
 #include "proxy/proxy_fwd.h"  // for IDatabaseSPtr
 
 class QLabel;     // lines 30-30
@@ -42,10 +43,14 @@ struct LoadDatabaseContentResponce;
 namespace gui {
 
 class KeysTableView;
-class ViewKeysDialog : public QDialog {
+class ViewKeysDialog : public BaseDialog {
   Q_OBJECT
 
  public:
+  typedef BaseDialog base_class;
+  template <typename T, typename... Args>
+  friend T* createDialog(Args&&... args);
+
   enum {
     min_width = 640,
     min_height = 480,
@@ -54,8 +59,6 @@ class ViewKeysDialog : public QDialog {
     defaults_key = 100,
     step_keys_on_page = defaults_key
   };
-
-  explicit ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QWidget* parent = Q_NULLPTR);
 
  private Q_SLOTS:
   void startLoadDatabaseContent(const proxy::events_info::LoadDatabaseContentRequest& req);
@@ -72,11 +75,12 @@ class ViewKeysDialog : public QDialog {
   void rightPageClicked();
 
  protected:
-  void changeEvent(QEvent* ev) override;
+  explicit ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QWidget* parent = Q_NULLPTR);
+
+  void retranslateUi() override;
 
  private:
   void search(bool forward);
-  void retranslateUi();
   void updateControls();
   size_t keysCount() const;
 

@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <QDialog>
+#include "gui/dialogs/base_dialog.h"
 
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
 #include "proxy/connection_settings/isentinel_connection_settings.h"
@@ -36,12 +36,14 @@ class QTreeWidget;       // lines 31-31
 namespace fastonosql {
 namespace gui {
 
-class SentinelDialog : public QDialog {
+class SentinelDialog : public BaseDialog {
   Q_OBJECT
 
  public:
-  explicit SentinelDialog(QWidget* parent,
-                          proxy::ISentinelSettingsBase* connection = nullptr);  // get ownerships connection
+  typedef BaseDialog base_class;
+  template <typename T, typename... Args>
+  friend T* createDialog(Args&&... args);
+
   proxy::ISentinelSettingsBaseSPtr connection() const;
 
  public Q_SLOTS:
@@ -58,10 +60,12 @@ class SentinelDialog : public QDialog {
   void itemSelectionChanged();
 
  protected:
-  void changeEvent(QEvent* ev) override;
+  explicit SentinelDialog(proxy::ISentinelSettingsBase* connection,
+                          QWidget* parent = Q_NULLPTR);  // take ownerships connection
+
+  void retranslateUi() override;
 
  private:
-  void retranslateUi();
   bool validateAndApply();  // always return true and init
                             // sentinel_connection_
   void addSentinel(proxy::SentinelSettings sent);

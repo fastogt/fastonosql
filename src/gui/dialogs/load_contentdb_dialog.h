@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <QDialog>
+#include "gui/dialogs/base_dialog.h"
 
 class QLineEdit;  // lines 25-25
 class QSpinBox;   // lines 26-26
@@ -27,13 +27,15 @@ class QLabel;
 namespace fastonosql {
 namespace gui {
 
-class LoadContentDbDialog : public QDialog {
+class LoadContentDbDialog : public BaseDialog {
   Q_OBJECT
 
  public:
-  enum { min_key_on_page = 1, max_key_on_page = 1000000, defaults_key = 1000, step_keys_on_page = defaults_key };
+  typedef BaseDialog base_class;
+  template <typename T, typename... Args>
+  friend T* createDialog(Args&&... args);
 
-  explicit LoadContentDbDialog(const QString& title, const QIcon& icon, QWidget* parent = Q_NULLPTR);
+  enum { min_key_on_page = 1, max_key_on_page = 1000000, defaults_key = 1000, step_keys_on_page = defaults_key };
 
   int count() const;
   QString pattern() const;
@@ -42,11 +44,11 @@ class LoadContentDbDialog : public QDialog {
   void accept() override;
 
  protected:
-  void changeEvent(QEvent* e) override;
+  explicit LoadContentDbDialog(const QString& title, const QIcon& icon, QWidget* parent = Q_NULLPTR);
+
+  void retranslateUi() override;
 
  private:
-  void retranslateUi();
-
   QLabel* keys_count_label_;
   QLabel* key_pattern_label_;
   QLineEdit* pattern_edit_;

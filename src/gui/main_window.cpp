@@ -79,7 +79,6 @@ const QString trExportSettingsFailed = QObject::tr("Export settings failed!");
 const QString trSettingsLoadedS = QObject::tr("Settings successfully loaded!");
 const QString trSettingsImportedS = QObject::tr("Settings successfully imported!");
 const QString trSettingsExportedS = QObject::tr("Settings successfully encrypted and exported!");
-const QString trPreferences = QObject::tr(PROJECT_NAME_TITLE " preferences");
 
 bool IsNeedUpdate(uint32_t cver) {
   return PROJECT_VERSION_NUMBER < cver;
@@ -254,7 +253,6 @@ MainWindow::MainWindow() : QMainWindow() {
                              Qt::TopDockWidgetArea);
   exp_dock_->setWidget(exp_);
   exp_dock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
-  exp_dock_->setVisible(true);
   addDockWidget(Qt::LeftDockWidgetArea, exp_dock_);
 
   LogTabWidget* log = new LogTabWidget;
@@ -272,7 +270,6 @@ MainWindow::MainWindow() : QMainWindow() {
   log_dock_->setWidget(log);
   log_dock_->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
   log_dock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
-  log_dock_->setVisible(true);
   addDockWidget(Qt::BottomDockWidgetArea, log_dock_);
 
   setMinimumSize(QSize(min_width, min_height));
@@ -315,19 +312,20 @@ void MainWindow::sendStatisticAndCheckVersion() {
 }
 
 void MainWindow::open() {
-  ConnectionsDialog dlg(translations::trConnections, GuiFactory::GetInstance().connectIcon(), this);
-  int result = dlg.exec();
+  auto dlg =
+      createDialog<ConnectionsDialog>(translations::trConnections, GuiFactory::GetInstance().connectIcon(), this);  // +
+  int result = dlg->exec();
   if (result != QDialog::Accepted) {
     return;
   }
 
-  if (proxy::IConnectionSettingsBaseSPtr con = dlg.selectedConnection()) {
+  if (proxy::IConnectionSettingsBaseSPtr con = dlg->selectedConnection()) {
     createServer(con);
   }
 #if defined(PRO_VERSION)
-  else if (proxy::IClusterSettingsBaseSPtr clus = dlg.selectedCluster()) {
+  else if (proxy::IClusterSettingsBaseSPtr clus = dlg->selectedCluster()) {
     createCluster(clus);
-  } else if (proxy::ISentinelSettingsBaseSPtr sent = dlg.selectedSentinel()) {
+  } else if (proxy::ISentinelSettingsBaseSPtr sent = dlg->selectedSentinel()) {
     createSentinel(sent);
   }
 #endif
@@ -337,18 +335,18 @@ void MainWindow::open() {
 }
 
 void MainWindow::about() {
-  AboutDialog dlg(this);
-  dlg.exec();
+  auto dlg = createDialog<AboutDialog>(this);  // +
+  dlg->exec();
 }
 
 void MainWindow::howToUse() {
-  HowToUseDialog dlg(translations::trHowToUse + " " PROJECT_NAME_TITLE, this);
-  dlg.exec();
+  auto dlg = createDialog<HowToUseDialog>(this);  // +
+  dlg->exec();
 }
 
 void MainWindow::openPreferences() {
-  PreferencesDialog dlg(trPreferences, this);
-  dlg.exec();
+  auto dlg = createDialog<PreferencesDialog>(this);  // +
+  dlg->exec();
 }
 
 void MainWindow::checkUpdate() {
@@ -396,8 +394,9 @@ void MainWindow::enterLeaveFullScreen() {
 }
 
 void MainWindow::openEncodeDecodeDialog() {
-  EncodeDecodeDialog dlg(translations::trEncodeDecode, GuiFactory::GetInstance().encodeDecodeIcon(), this);
-  dlg.exec();
+  auto dlg = createDialog<EncodeDecodeDialog>(translations::trEncodeDecode,
+                                              GuiFactory::GetInstance().encodeDecodeIcon(), this);  // +
+  dlg->exec();
 }
 
 void MainWindow::openRecentConnection() {

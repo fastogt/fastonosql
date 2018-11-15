@@ -545,9 +545,9 @@ void ExplorerTreeView::openInfoServerDialog() {
     QString server_name;
     common::ConvertFromString(server->GetName(), &server_name);
     core::ConnectionType type = server->GetType();
-    InfoServerDialog infDialog(QObject::tr("%1 info").arg(server_name), GuiFactory::GetInstance().icon(type), server,
-                               this);
-    infDialog.exec();
+    auto infDialog = createDialog<InfoServerDialog>(QObject::tr("%1 info").arg(server_name),
+                                                    GuiFactory::GetInstance().icon(type), server, this);  // +
+    infDialog->exec();
   }
 }
 
@@ -568,8 +568,9 @@ void ExplorerTreeView::openPropertyServerDialog() {
     QString server_name;
     common::ConvertFromString(server->GetName(), &server_name);
     const QIcon dialog_icon = gui::GuiFactory::GetInstance().icon(node->server()->GetType());
-    PropertyServerDialog infDialog(trPropertiesTemplate_1S.arg(server_name), dialog_icon, server, this);
-    infDialog.exec();
+    auto dialog =
+        createDialog<PropertyServerDialog>(trPropertiesTemplate_1S.arg(server_name), dialog_icon, server, this);  // +
+    dialog->exec();
   }
 }
 
@@ -590,8 +591,9 @@ void ExplorerTreeView::openHistoryServerDialog() {
     QString server_name;
     common::ConvertFromString(server->GetName(), &server_name);
     const QIcon dialog_icon = GuiFactory::GetInstance().icon(server->GetType());
-    ServerHistoryDialog histDialog(trHistoryTemplate_1S.arg(server_name), dialog_icon, server, this);
-    histDialog.exec();
+    auto histDialog =
+        createDialog<ServerHistoryDialog>(trHistoryTemplate_1S.arg(server_name), dialog_icon, server, this);  // +
+    histDialog->exec();
   }
 }
 
@@ -681,10 +683,10 @@ void ExplorerTreeView::viewPubSub() {
     }
 
     proxy::IServerSPtr server = node->server();
-    PubSubDialog diag(trViewChannelsTemplate_1S.arg(node->name()), GuiFactory::GetInstance().icon(server->GetType()),
-                      server, this);
-    VERIFY(connect(&diag, &PubSubDialog::consoleOpenedAndExecute, this, &ExplorerTreeView::consoleOpenedAndExecute));
-    diag.exec();
+    auto diag = createDialog<PubSubDialog>(trViewChannelsTemplate_1S.arg(node->name()),
+                                           GuiFactory::GetInstance().icon(server->GetType()), server, this);  // +
+    VERIFY(connect(diag, &PubSubDialog::consoleOpenedAndExecute, this, &ExplorerTreeView::consoleOpenedAndExecute));
+    diag->exec();
   }
 }
 
@@ -745,10 +747,11 @@ void ExplorerTreeView::loadContentDb() {
     }
 
     const QIcon dialog_icon = gui::GuiFactory::GetInstance().icon(node->server()->GetType());
-    LoadContentDbDialog loadDb(trLoadContentTemplate_1S.arg(node->name()), dialog_icon, this);
-    int result = loadDb.exec();
+    auto loadDb =
+        createDialog<LoadContentDbDialog>(trLoadContentTemplate_1S.arg(node->name()), dialog_icon, this);  // +
+    int result = loadDb->exec();
     if (result == QDialog::Accepted) {
-      node->loadContent(common::ConvertToString(loadDb.pattern()), loadDb.count());
+      node->loadContent(common::ConvertToString(loadDb->pattern()), loadDb->count());
     }
   }
 }
@@ -841,11 +844,11 @@ void ExplorerTreeView::addKeyToBranch() {
     const core::NDbKValue nkey(raw_key, val);
     ExplorerDatabaseItem* node_db = node->db();
     core::ConnectionType type = server->GetType();
-    DbKeyDialog loadDb(trCreateKeyForDbTemplate_1S.arg(node_db->name()), GuiFactory::GetInstance().keyIcon(), type,
-                       nkey, false, this);
-    int result = loadDb.exec();
+    auto loadDb = createDialog<DbKeyDialog>(trCreateKeyForDbTemplate_1S.arg(node_db->name()),
+                                            GuiFactory::GetInstance().keyIcon(), type, nkey, false, this);  // +
+    int result = loadDb->exec();
     if (result == QDialog::Accepted) {
-      core::NDbKValue key = loadDb.key();
+      core::NDbKValue key = loadDb->key();
       node->createKey(key);
     }
   }
@@ -890,11 +893,11 @@ void ExplorerTreeView::createKey() {
     core::NValue val(common::Value::CreateEmptyStringValue());
     core::NDbKValue dbv(core::NKey(), val);
     core::ConnectionType type = server->GetType();
-    DbKeyDialog loadDb(trCreateKeyForDbTemplate_1S.arg(node->name()), GuiFactory::GetInstance().keyIcon(), type, dbv,
-                       false, this);
-    int result = loadDb.exec();
+    auto loadDb = createDialog<DbKeyDialog>(trCreateKeyForDbTemplate_1S.arg(node->name()),
+                                            GuiFactory::GetInstance().keyIcon(), type, dbv, false, this);  // +
+    int result = loadDb->exec();
     if (result == QDialog::Accepted) {
-      core::NDbKValue key = loadDb.key();
+      core::NDbKValue key = loadDb->key();
       node->createKey(key);
     }
   }
@@ -911,11 +914,11 @@ void ExplorerTreeView::editKey() {
 
     proxy::IServerSPtr server = node->server();
     core::ConnectionType type = server->GetType();
-    DbKeyDialog loadDb(trEditKey_1S.arg(node->name()), GuiFactory::GetInstance().keyIcon(), type, node->dbv(), true,
-                       this);
-    int result = loadDb.exec();
+    auto loadDb = createDialog<DbKeyDialog>(trEditKey_1S.arg(node->name()), GuiFactory::GetInstance().keyIcon(), type,
+                                            node->dbv(), true, this);  // +
+    int result = loadDb->exec();
     if (result == QDialog::Accepted) {
-      core::NDbKValue key = loadDb.key();
+      core::NDbKValue key = loadDb->key();
       node->editValue(key.GetValue());
     }
   }
@@ -930,8 +933,8 @@ void ExplorerTreeView::viewKeys() {
       continue;
     }
 
-    ViewKeysDialog diag(trViewKeyTemplate_1S.arg(node->name()), node->db(), this);
-    diag.exec();
+    auto diag = createDialog<ViewKeysDialog>(trViewKeyTemplate_1S.arg(node->name()), node->db(), this);  // +
+    diag->exec();
   }
 }
 

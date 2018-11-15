@@ -20,9 +20,10 @@
 
 #include <vector>
 
-#include <QDialog>
-
 #include <fastonosql/core/server/iserver_info.h>
+
+#include "gui/dialogs/base_dialog.h"
+
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 
 class QLabel;       // lines 29-29
@@ -40,16 +41,16 @@ namespace fastonosql {
 namespace gui {
 class ConnectionListWidgetItemDiscovered;
 
-class DiscoverySentinelDiagnosticDialog : public QDialog {
+class DiscoverySentinelDiagnosticDialog : public BaseDialog {
   Q_OBJECT
 
  public:
+  typedef BaseDialog base_class;
+  template <typename T, typename... Args>
+  friend T* createDialog(Args&&... args);
+
   enum { fix_width = 480, fix_height = 320 };
 
-  DiscoverySentinelDiagnosticDialog(const QString& title,
-                                    const QIcon& icon,
-                                    proxy::IConnectionSettingsBaseSPtr connection,
-                                    QWidget* parent = Q_NULLPTR);
   std::vector<ConnectionListWidgetItemDiscovered*> selectedConnections() const;
 
  private Q_SLOTS:
@@ -62,6 +63,10 @@ class DiscoverySentinelDiagnosticDialog : public QDialog {
   void showEvent(QShowEvent* e) override;
 
  private:
+  DiscoverySentinelDiagnosticDialog(const QString& title,
+                                    const QIcon& icon,
+                                    proxy::IConnectionSettingsBaseSPtr connection,
+                                    QWidget* parent = Q_NULLPTR);
   void testConnection(proxy::IConnectionSettingsBaseSPtr connection);
 
   common::qt::gui::GlassWidget* glass_widget_;

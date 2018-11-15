@@ -18,28 +18,24 @@
 
 #pragma once
 
-#include <QDialog>
-
 #include <fastonosql/core/connection_types.h>  // for ConnectionType
 #include <fastonosql/core/db_key.h>            // for NDbKValue, NValue
+
+#include "gui/dialogs/base_dialog.h"
 
 namespace fastonosql {
 namespace gui {
 
 class KeyEditWidget;
 
-class DbKeyDialog : public QDialog {
+class DbKeyDialog : public BaseDialog {
   Q_OBJECT
 
  public:
-  typedef QDialog base_class;
+  typedef BaseDialog base_class;
+  template <typename T, typename... Args>
+  friend T* createDialog(Args&&... args);
 
-  DbKeyDialog(const QString& title,
-              const QIcon& icon,
-              core::ConnectionType type,
-              const core::NDbKValue& key,
-              bool is_edit,
-              QWidget* parent = Q_NULLPTR);
   core::NDbKValue key() const;
 
  public Q_SLOTS:
@@ -49,11 +45,17 @@ class DbKeyDialog : public QDialog {
   void changeType(common::Value::Type type);
 
  protected:
-  void changeEvent(QEvent* ev) override;
+  DbKeyDialog(const QString& title,
+              const QIcon& icon,
+              core::ConnectionType type,
+              const core::NDbKValue& key,
+              bool is_edit,
+              QWidget* parent = Q_NULLPTR);
+
+  void retranslateUi() override;
 
  private:
   bool validateAndApply();
-  void retranslateUi();
 
   KeyEditWidget* general_box_;
   core::NDbKValue key_;

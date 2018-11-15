@@ -19,7 +19,6 @@
 #include "gui/dialogs/connection_dialog.h"
 
 #include <QDialogButtonBox>
-#include <QEvent>
 #include <QHBoxLayout>
 #include <QMessageBox>
 #include <QPushButton>
@@ -45,7 +44,7 @@ namespace fastonosql {
 namespace gui {
 
 ConnectionDialog::ConnectionDialog(core::ConnectionType type, const QString& connection_name, QWidget* parent)
-    : QDialog(parent), connection_widget_(nullptr), test_button_(nullptr), connection_() {
+    : base_class(trTitle, parent), connection_widget_(nullptr), test_button_(nullptr), connection_() {
   proxy::connection_path_t path(kDefaultNameConnectionFolder + common::ConvertToString(connection_name));
   proxy::IConnectionSettingsBase* connection =
       proxy::ConnectionSettingsFactory::GetInstance().CreateSettingsFromTypeConnection(type, path);
@@ -53,12 +52,13 @@ ConnectionDialog::ConnectionDialog(core::ConnectionType type, const QString& con
 }
 
 ConnectionDialog::ConnectionDialog(proxy::IConnectionSettingsBase* connection, QWidget* parent)
-    : QDialog(parent), connection_() {
+    : base_class(trTitle, parent), connection_() {
   CHECK(connection);
   init(connection);
 }
 
 proxy::IConnectionSettingsBaseSPtr ConnectionDialog::connection() const {
+  CHECK(connection_);
   return connection_;
 }
 
@@ -68,28 +68,19 @@ void ConnectionDialog::setFolderEnabled(bool val) {
 
 void ConnectionDialog::accept() {
   if (validateAndApply()) {
-    QDialog::accept();
+    base_class::accept();
   }
 }
 
 void ConnectionDialog::testConnection() {
   if (validateAndApply()) {
-    ConnectionDiagnosticDialog diag(translations::trConnectionDiagnostic, connection_, this);
-    diag.exec();
+    auto diag = createDialog<ConnectionDiagnosticDialog>(translations::trConnectionDiagnostic, connection_, this);  // +
+    diag->exec();
   }
-}
-
-void ConnectionDialog::changeEvent(QEvent* e) {
-  if (e->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-  QDialog::changeEvent(e);
 }
 
 void ConnectionDialog::init(proxy::IConnectionSettingsBase* connection) {
-  setWindowTitle(trTitle);
   setWindowIcon(GuiFactory::GetInstance().icon(connection->GetType()));
-  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
 
   connection_.reset(connection);
   connection_widget_ = ConnectionWidgetsFactory::GetInstance().createWidget(connection);
@@ -114,12 +105,11 @@ void ConnectionDialog::init(proxy::IConnectionSettingsBase* connection) {
   main_layout->addLayout(bottom_layout);
   main_layout->setSizeConstraint(QLayout::SetFixedSize);
   setLayout(main_layout);
-
-  retranslateUi();
 }
 
 void ConnectionDialog::retranslateUi() {
   test_button_->setText(trTest);
+  base_class::retranslateUi();
 }
 
 bool ConnectionDialog::validateAndApply() {

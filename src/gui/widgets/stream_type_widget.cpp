@@ -123,19 +123,21 @@ void StreamTypeWidget::editRow(const QModelIndex& index) {
   core::StreamValue::Stream stream = streams_[stabled_row_index];
   QString qsid;
   common::ConvertFromBytes(stream.sid, &qsid);
-  StreamEntryDialog diag(qsid, this);
+  auto diag = createDialog<StreamEntryDialog>(qsid, this);  // +
   for (size_t i = 0; i < stream.entries.size(); ++i) {
     core::StreamValue::Entry ent = stream.entries[i];
     QString ftext;
     QString stext;
     if (common::ConvertFromBytes(ent.name, &ftext) && common::ConvertFromBytes(ent.value, &stext)) {
-      diag.insertEntry(ftext, stext);
+      diag->insertEntry(ftext, stext);
     }
   }
-  int result = diag.exec();
-  core::StreamValue::Stream st;
-  if (result == QDialog::Accepted && diag.getStream(&st)) {
-    updateStream(index, st);
+  int result = diag->exec();
+  if (result == QDialog::Accepted) {
+    core::StreamValue::Stream st;
+    if (diag->getStream(&st)) {
+      updateStream(index, st);
+    }
   }
 }
 
@@ -143,11 +145,14 @@ void StreamTypeWidget::addRow(const QModelIndex& index) {
   KeyValueTableItem* node = common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
   UNUSED(node);
 
-  StreamEntryDialog diag(DEFAILT_ID, this);
-  int result = diag.exec();
+  auto diag = createDialog<StreamEntryDialog>(DEFAILT_ID, this);  // +
+  int result = diag->exec();
   core::StreamValue::Stream st;
-  if (result == QDialog::Accepted && diag.getStream(&st)) {
-    insertStream(st);
+  if (result == QDialog::Accepted) {
+    core::StreamValue::Stream st;
+    if (diag->getStream(&st)) {
+      insertStream(st);
+    }
   }
 }
 

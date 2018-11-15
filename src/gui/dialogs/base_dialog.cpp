@@ -16,24 +16,29 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
 #include "gui/dialogs/base_dialog.h"
+
+#include <QEvent>
 
 namespace fastonosql {
 namespace gui {
 
-class AboutDialog : public BaseDialog {
-  Q_OBJECT
+BaseDialog::BaseDialog(const QString& title, QWidget* parent) : base_class(parent) {
+  setWindowTitle(title);
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);  // Remove help button (?)
+}
 
- public:
-  typedef BaseDialog base_class;
-  template <typename T, typename... Args>
-  friend T* createDialog(Args&&... args);
+BaseDialog::~BaseDialog() {}
 
- protected:
-  explicit AboutDialog(QWidget* parent = Q_NULLPTR);
-};
+void BaseDialog::changeEvent(QEvent* e) {
+  if (e->type() == QEvent::LanguageChange) {
+    retranslateUi();
+  }
+
+  base_class::changeEvent(e);
+}
+
+void BaseDialog::retranslateUi() {}
 
 }  // namespace gui
 }  // namespace fastonosql

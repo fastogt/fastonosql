@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <QDialog>
+#include "gui/dialogs/base_dialog.h"
 
 class QCheckBox;      // lines 25-25
 class QComboBox;      // lines 23-23
@@ -33,11 +33,14 @@ namespace gui {
 
 class IPathWidget;
 
-class PreferencesDialog : public QDialog {
+class PreferencesDialog : public BaseDialog {
   Q_OBJECT
 
  public:
-  explicit PreferencesDialog(const QString& title, QWidget* parent);
+  typedef BaseDialog base_class;
+  template <typename T, typename... Args>
+  friend T* createDialog(Args&&... args);
+
   enum { min_width = 640, min_height = 480 };
 
  public Q_SLOTS:
@@ -47,12 +50,13 @@ class PreferencesDialog : public QDialog {
   void syncWithSettings();
 
  protected:
-  void changeEvent(QEvent* ev) override;
+  explicit PreferencesDialog(QWidget* parent = Q_NULLPTR);
+
+  void retranslateUi() override;
 
  private:
   QWidget* createMainTab();
   QWidget* createExternalTab();
-  void retranslateUi();
 
 #if defined(PRO_VERSION)
   // controls in profile_box
