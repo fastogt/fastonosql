@@ -18,6 +18,9 @@
 
 #pragma once
 
+#include <string>
+#include <vector>
+
 #include "proxy/driver/idriver_remote.h"  // for IDriverRemote
 
 namespace fastonosql {
@@ -34,53 +37,51 @@ namespace pika {
 
 class Driver : public IDriverRemote {
   Q_OBJECT
+
  public:
   explicit Driver(IConnectionSettingsBaseSPtr settings);
-  virtual ~Driver() override;
+  ~Driver() override;
 
-  virtual bool IsInterrupted() const override;
-  virtual void SetInterrupted(bool interrupted) override;
+  bool IsInterrupted() const override;
+  void SetInterrupted(bool interrupted) override;
 
-  virtual core::translator_t GetTranslator() const override;
+  core::translator_t GetTranslator() const override;
 
-  virtual bool IsConnected() const override;
-  virtual bool IsAuthenticated() const override;
+  bool IsConnected() const override;
+  bool IsAuthenticated() const override;
 
  private:
-  virtual void InitImpl() override;
-  virtual void ClearImpl() override;
+  void InitImpl() override;
+  void ClearImpl() override;
 
-  virtual core::FastoObjectCommandIPtr CreateCommand(core::FastoObject* parent,
-                                                     const core::command_buffer_t& input,
-                                                     core::CmdLoggingType logging_type) override;
+  core::FastoObjectCommandIPtr CreateCommand(core::FastoObject* parent,
+                                             const core::command_buffer_t& input,
+                                             core::CmdLoggingType logging_type) override;
 
-  virtual core::FastoObjectCommandIPtr CreateCommandFast(const core::command_buffer_t& input,
-                                                         core::CmdLoggingType logging_type) override;
+  core::FastoObjectCommandIPtr CreateCommandFast(const core::command_buffer_t& input,
+                                                 core::CmdLoggingType logging_type) override;
 
-  virtual core::IDataBaseInfoSPtr CreateDatabaseInfo(const core::db_name_t& name,
-                                                     bool is_default,
-                                                     size_t size) override;
+  core::IDataBaseInfoSPtr CreateDatabaseInfo(const core::db_name_t& name, bool is_default, size_t size) override;
 
-  virtual common::Error SyncConnect() override WARN_UNUSED_RESULT;
-  virtual common::Error SyncDisconnect() override WARN_UNUSED_RESULT;
+  common::Error SyncConnect() override WARN_UNUSED_RESULT;
+  common::Error SyncDisconnect() override WARN_UNUSED_RESULT;
 
-  virtual common::Error ExecuteImpl(const core::command_buffer_t& command,
-                                    core::FastoObject* out) override WARN_UNUSED_RESULT;
-  virtual common::Error DBkcountImpl(core::keys_limit_t* size) override WARN_UNUSED_RESULT;
+  common::Error ExecuteImpl(const core::command_buffer_t& command, core::FastoObject* out) override WARN_UNUSED_RESULT;
+  common::Error DBkcountImpl(core::keys_limit_t* size) override WARN_UNUSED_RESULT;
 
-  virtual common::Error GetCurrentServerInfo(core::IServerInfo** info) override;
-  virtual common::Error GetServerCommands(std::vector<const core::CommandInfo*>* commands) override;
-  virtual common::Error GetCurrentDataBaseInfo(core::IDataBaseInfo** info) override;
+  common::Error GetCurrentServerInfo(core::IServerInfo** info) override;
+  common::Error GetServerCommands(std::vector<const core::CommandInfo*>* commands) override;
+  common::Error GetCurrentDataBaseInfo(core::IDataBaseInfo** info) override;
 
-  virtual void HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev) override;
-  virtual void HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev) override;
-  virtual void HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequestEvent* ev) override;
-  virtual void HandleBackupEvent(events::BackupRequestEvent* ev) override;
-  virtual void HandleRestoreEvent(events::RestoreRequestEvent* ev) override;
+  void HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev) override;
+  void HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev) override;
+  void HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequestEvent* ev) override;
+  void HandleBackupEvent(events::BackupRequestEvent* ev) override;
+  void HandleRestoreEvent(events::RestoreRequestEvent* ev) override;
 
-  virtual void HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) override;
+  void HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) override;
 
-  virtual core::IServerInfoSPtr MakeServerInfoFromString(const std::string& val) override;
+  core::IServerInfoSPtr MakeServerInfoFromString(const std::string& val) override;
 
   core::pika::DBConnection* const impl_;
 };
