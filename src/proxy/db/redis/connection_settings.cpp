@@ -42,14 +42,16 @@ void ConnectionSettings::SetHost(const common::net::HostAndPort& host) {
 }
 
 void ConnectionSettings::SetCommandLine(const std::string& line) {
-  core::redis::Config lifo;
-  if (common::ConvertFromString(line, &lifo)) {
-    info_ = lifo;
+  core::config_args_t args;
+  if (core::ConvertToConfigArgsString(line, &args)) {
+    info_.Init(args);
   }
 }
 
 std::string ConnectionSettings::GetCommandLine() const {
-  return common::ConvertToString(info_);
+  std::string result;
+  core::ConvertToStringConfigArgs(info_.ToArgs(), &result);
+  return result;
 }
 
 core::redis::Config ConnectionSettings::GetInfo() const {

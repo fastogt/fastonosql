@@ -28,6 +28,7 @@ namespace gui {
 
 class BaseQsciApi : public QsciAbstractAPIs {
   Q_OBJECT
+
  public:
   explicit BaseQsciApi(QsciLexer* lexer);
   void setFilteredVersion(uint32_t version);
@@ -41,6 +42,7 @@ class BaseQsciApi : public QsciAbstractAPIs {
 
 class BaseQsciLexer : public QsciLexerCustom {
   Q_OBJECT
+
  public:
   enum { Default = 0, Command = 1, ExCommand = 2 };
 
@@ -62,6 +64,7 @@ class BaseQsciLexer : public QsciLexerCustom {
 
 class BaseCommandsQsciLexer : public BaseQsciLexer {
   Q_OBJECT
+
  public:
   typedef std::vector<core::CommandInfo> validated_commands_t;
 
@@ -85,6 +88,7 @@ class BaseCommandsQsciLexer : public BaseQsciLexer {
 
 class BaseCommandsQsciApi : public BaseQsciApi {
   Q_OBJECT
+
  public:
   virtual void updateAutoCompletionList(const QStringList& context, QStringList& list) override;
   virtual QStringList callTips(const QStringList& context,

@@ -640,8 +640,9 @@ void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
     server_label = lserver->GetPath();
   }
   QString qserver_label;
-  common::ConvertFromString(server_label, &qserver_label);
-  updateServerLabel(qserver_label);
+  if (common::ConvertFromString(server_label, &qserver_label)) {
+    updateServerLabel(qserver_label);
+  }
 
   uint32_t serv_vers = inf->GetVersion();
   if (serv_vers == UNDEFINED_SINCE) {
@@ -684,8 +685,9 @@ void BaseShellWidget::updateDefaultDatabase(core::IDataBaseInfoSPtr dbs) {
 
   const core::db_name_t name = dbs->GetName();
   QString qname;
-  common::ConvertFromBytes(name, &qname);
-  updateDBLabel(qname);
+  if (common::ConvertFromBytes(name, &qname)) {
+    updateDBLabel(qname);
+  }
 }
 
 void BaseShellWidget::updateCommands(const std::vector<const core::CommandInfo*>& commands) {

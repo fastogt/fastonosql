@@ -71,6 +71,7 @@ class BaseShell;
 
 class BaseShellWidget : public QWidget {
   Q_OBJECT
+
  public:
   static const QSize top_bar_icon_size;
   static const QSize shell_icon_size;
@@ -79,7 +80,7 @@ class BaseShellWidget : public QWidget {
                                        const QString& filePath = QString(),
                                        QWidget* parent = Q_NULLPTR);
 
-  virtual ~BaseShellWidget() override;
+  ~BaseShellWidget() override;
 
   QString text() const;
 

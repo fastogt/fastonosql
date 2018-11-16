@@ -42,13 +42,15 @@ void ConnectionSettings::SetHost(const common::net::HostAndPort& host) {
 }
 
 std::string ConnectionSettings::GetCommandLine() const {
-  return common::ConvertToString(info_);
+  std::string result;
+  core::ConvertToStringConfigArgs(info_.ToArgs(), &result);
+  return result;
 }
 
 void ConnectionSettings::SetCommandLine(const std::string& line) {
-  core::ssdb::Config linfo;
-  if (common::ConvertFromString(line, &linfo)) {
-    info_ = linfo;
+  core::config_args_t args;
+  if (core::ConvertToConfigArgsString(line, &args)) {
+    info_.Init(args);
   }
 }
 

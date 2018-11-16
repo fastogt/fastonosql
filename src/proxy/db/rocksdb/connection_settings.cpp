@@ -50,13 +50,15 @@ void ConnectionSettings::SetDBPath(const std::string& db_path) {
 }
 
 std::string ConnectionSettings::GetCommandLine() const {
-  return common::ConvertToString(info_);
+  std::string result;
+  core::ConvertToStringConfigArgs(info_.ToArgs(), &result);
+  return result;
 }
 
 void ConnectionSettings::SetCommandLine(const std::string& line) {
-  core::rocksdb::Config linfo;
-  if (common::ConvertFromString(line, &linfo)) {
-    info_ = linfo;
+  core::config_args_t args;
+  if (core::ConvertToConfigArgsString(line, &args)) {
+    info_.Init(args);
   }
 }
 
