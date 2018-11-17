@@ -220,8 +220,8 @@ int main(int argc, char* argv[]) {
       password_dialog->setFocusInPassword();
     }
 #elif BUILD_STRATEGY == PUBLIC_STRATEGY || BUILD_STRATEGY == PRIVATE_STRATEGY
-    password_dialog.setLogin(USER_LOGIN);
-    password_dialog.setLoginEnabled(false);
+    password_dialog->setLogin(USER_LOGIN);
+    password_dialog->setLoginEnabled(false);
 #endif
     int dialog_result = password_dialog->exec();
     if (dialog_result == QDialog::Rejected) {
