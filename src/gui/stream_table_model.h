@@ -29,14 +29,14 @@ class StreamTableModel : public common::qt::gui::TableModel {
   Q_OBJECT
  public:
   explicit StreamTableModel(QObject* parent = Q_NULLPTR);
-  virtual ~StreamTableModel() override;
+  ~StreamTableModel() override;
 
-  virtual QVariant data(const QModelIndex& index, int role) const override;
-  virtual bool setData(const QModelIndex& index, const QVariant& value, int role) override;
-  virtual Qt::ItemFlags flags(const QModelIndex& index) const override;
-  virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+  QVariant data(const QModelIndex& index, int role) const override;
+  bool setData(const QModelIndex& index, const QVariant& value, int role) override;
+  Qt::ItemFlags flags(const QModelIndex& index) const override;
+  QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
-  virtual int columnCount(const QModelIndex& parent) const override;
+  int columnCount(const QModelIndex& parent) const override;
   void clear();
 
   bool getStream(core::StreamValue::stream_id sid, core::StreamValue::Stream* out) const;

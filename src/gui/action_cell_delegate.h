@@ -25,11 +25,12 @@ namespace gui {
 
 class ActionDelegate : public QStyledItemDelegate {
   Q_OBJECT
+
  public:
   explicit ActionDelegate(QObject* parent = Q_NULLPTR);
 
-  virtual QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
-  virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
+  QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
+  void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 
  Q_SIGNALS:
   void editClicked(const QModelIndex& index);
@@ -37,10 +38,10 @@ class ActionDelegate : public QStyledItemDelegate {
   void removeClicked(const QModelIndex& index);
 
  protected:
-  virtual bool editorEvent(QEvent* event,
-                           QAbstractItemModel* model,
-                           const QStyleOptionViewItem& option,
-                           const QModelIndex& index) override;
+  bool editorEvent(QEvent* event,
+                   QAbstractItemModel* model,
+                   const QStyleOptionViewItem& option,
+                   const QModelIndex& index) override;
 
  private:
   QModelIndex current_index_;

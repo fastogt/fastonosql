@@ -54,7 +54,7 @@ class ExplorerTreeWidget : public QWidget {
   void removeCluster(proxy::IClusterSPtr cluster);
 #endif
  protected:
-  virtual void changeEvent(QEvent* e) override;
+  void changeEvent(QEvent* e) override;
 
  private:
   void retranslateUi();

@@ -25,14 +25,15 @@ namespace gui {
 
 class ChannelsTableModel : public common::qt::gui::TableModel {
   Q_OBJECT
+
  public:
   explicit ChannelsTableModel(QObject* parent = Q_NULLPTR);
-  virtual ~ChannelsTableModel() override;
+  ~ChannelsTableModel() override;
 
-  virtual QVariant data(const QModelIndex& index, int role) const override;
-  virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+  QVariant data(const QModelIndex& index, int role) const override;
+  QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
-  virtual int columnCount(const QModelIndex& parent) const override;
+  int columnCount(const QModelIndex& parent) const override;
   void clear();
 };
 

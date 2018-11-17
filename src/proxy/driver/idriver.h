@@ -42,7 +42,7 @@ namespace proxy {
 class IDriver : public QObject, public core::CDBConnectionClient {
   Q_OBJECT
  public:
-  virtual ~IDriver() override;
+  ~IDriver() override;
 
   static void Reply(QObject* reciver, QEvent* ev);
 
@@ -145,19 +145,19 @@ class IDriver : public QObject, public core::CDBConnectionClient {
                                     core::FastoObject* out) WARN_UNUSED_RESULT = 0;
   virtual common::Error DBkcountImpl(core::keys_limit_t* size) WARN_UNUSED_RESULT = 0;
 
-  virtual void OnCreatedDB(core::IDataBaseInfo* info) override;
-  virtual void OnRemovedDB(core::IDataBaseInfo* info) override;
+  void OnCreatedDB(core::IDataBaseInfo* info) override;
+  void OnRemovedDB(core::IDataBaseInfo* info) override;
 
-  virtual void OnFlushedCurrentDB() override;
-  virtual void OnChangedCurrentDB(core::IDataBaseInfo* info) override;
+  void OnFlushedCurrentDB() override;
+  void OnChangedCurrentDB(core::IDataBaseInfo* info) override;
 
-  virtual void OnRemovedKeys(const core::NKeys& keys) override;
-  virtual void OnAddedKey(const core::NDbKValue& key) override;
-  virtual void OnLoadedKey(const core::NDbKValue& key) override;
-  virtual void OnRenamedKey(const core::NKey& key, const core::nkey_t& new_key) override;
-  virtual void OnChangedKeyTTL(const core::NKey& key, core::ttl_t ttl) override;
-  virtual void OnLoadedKeyTTL(const core::NKey& key, core::ttl_t ttl) override;
-  virtual void OnQuited() override;
+  void OnRemovedKeys(const core::NKeys& keys) override;
+  void OnAddedKey(const core::NDbKValue& key) override;
+  void OnLoadedKey(const core::NDbKValue& key) override;
+  void OnRenamedKey(const core::NKey& key, const core::nkey_t& new_key) override;
+  void OnChangedKeyTTL(const core::NKey& key, core::ttl_t ttl) override;
+  void OnLoadedKeyTTL(const core::NKey& key, core::ttl_t ttl) override;
+  void OnQuited() override;
 
  private:
   virtual core::IServerInfoSPtr MakeServerInfoFromString(const std::string& val) = 0;

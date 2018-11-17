@@ -44,6 +44,7 @@ class ExplorerTreeWidget;
 
 class MainWindow : public QMainWindow {
   Q_OBJECT
+
  public:
   enum {
     min_width = 800,
@@ -54,11 +55,11 @@ class MainWindow : public QMainWindow {
   };
 
   MainWindow();
-  virtual ~MainWindow() override;
+  ~MainWindow() override;
 
  protected:
-  virtual void changeEvent(QEvent* ev) override;
-  virtual void showEvent(QShowEvent* ev) override;
+  void changeEvent(QEvent* ev) override;
+  void showEvent(QShowEvent* ev) override;
 
  private Q_SLOTS:
   void open();

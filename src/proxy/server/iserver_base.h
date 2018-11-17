@@ -25,9 +25,10 @@ namespace proxy {
 
 class IServerBase : public QObject {
   Q_OBJECT
+
  public:
   virtual std::string GetName() const = 0;
-  virtual ~IServerBase();
+  ~IServerBase() override;
 };
 
 }  // namespace proxy

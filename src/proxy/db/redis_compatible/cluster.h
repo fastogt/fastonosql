@@ -26,6 +26,7 @@ namespace redis_compatible {
 
 class Cluster : public ICluster {
   Q_OBJECT
+
  public:
   explicit Cluster(const std::string& name);
 };

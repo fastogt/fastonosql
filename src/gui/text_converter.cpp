@@ -40,13 +40,16 @@ struct json_object* json_tokener_parse_hacked(const char* str, int len) {
   struct json_object* obj;
 
   tok = json_tokener_new();
-  if (!tok)
-    return NULL;
+  if (!tok) {
+    return nullptr;
+  }
+
   obj = json_tokener_parse_ex(tok, str, len);
   if (tok->err != json_tokener_success) {
-    if (obj != NULL)
+    if (obj) {
       json_object_put(obj);
-    obj = NULL;
+    }
+    obj = nullptr;
   }
 
   json_tokener_free(tok);
@@ -62,7 +65,7 @@ bool string_from_json(const convert_in_t& value, convert_out_t* out) {
     return false;
   }
 
-  json_object* obj = json_tokener_parse_hacked(value.data(), value.size());
+  json_object* obj = json_tokener_parse_hacked(value.data(), static_cast<int>(value.size()));
   if (!obj) {
     return false;
   }
@@ -79,7 +82,7 @@ bool string_to_json(const convert_in_t& data, convert_out_t* out) {
     return false;
   }
 
-  json_object* obj = json_tokener_parse_hacked(data.data(), data.size());
+  json_object* obj = json_tokener_parse_hacked(data.data(), static_cast<int>(data.size()));
   if (!obj) {
     return false;
   }
@@ -123,7 +126,7 @@ bool string_to_unicode(const convert_in_t& data, convert_out_t* out) {
   }
 
   core::command_buffer_writer_t wr;
-  common::string16 s16 = common::ConvertToString16(data);
+  const common::string16 s16 = common::ConvertToString16(data);
   convert_out_t unicoded;
   common::utils::unicode::encode(s16, true, &unicoded);
   for (size_t i = 0; i < unicoded.size(); i += 4) {
@@ -144,7 +147,7 @@ bool string_to_unicode(const convert_in_t& data, convert_out_t* out) {
 }
 
 bool string_from_unicode(const convert_in_t& value, convert_out_t* out) {
-  size_t len = value.size();
+  const size_t len = value.size();
   if (!out || len % 6 != 0) {
     return false;
   }

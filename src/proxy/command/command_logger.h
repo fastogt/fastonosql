@@ -30,6 +30,7 @@ namespace proxy {
 class CommandLogger : public QObject, public common::patterns::LazySingleton<CommandLogger> {
   friend class common::patterns::LazySingleton<CommandLogger>;
   Q_OBJECT
+
  public:
   void Print(core::FastoObjectCommandIPtr command);
 

@@ -208,8 +208,8 @@ void ConnectionsDialog::addSentinelAction() {
 #if defined(PRO_VERSION)
   auto dlg = createDialog<SentinelDialog>(nullptr, this);  // +
   int result = dlg->exec();
-  proxy::ISentinelSettingsBaseSPtr p = dlg->connection();
   if (result == QDialog::Accepted) {
+    proxy::ISentinelSettingsBaseSPtr p = dlg->connection();
     proxy::SettingsManager::GetInstance()->AddSentinel(p);
     addSentinel(p);
   }

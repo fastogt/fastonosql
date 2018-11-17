@@ -25,18 +25,18 @@ namespace proxy {
 
 class IConnectionSettingsLocal : public IConnectionSettingsBase {
  public:
-  virtual std::string GetFullAddress() const override;
+  std::string GetFullAddress() const override;
 
-  virtual std::string GetDelimiter() const override = 0;
-  virtual void SetDelimiter(const std::string& delimiter) override = 0;
+  std::string GetDelimiter() const override = 0;
+  void SetDelimiter(const std::string& delimiter) override = 0;
 
   virtual std::string GetDBPath() const = 0;
   virtual void SetDBPath(const std::string& db_path) = 0;
 
-  virtual std::string GetCommandLine() const override = 0;
-  virtual void SetCommandLine(const std::string& line) override = 0;
+  std::string GetCommandLine() const override = 0;
+  void SetCommandLine(const std::string& line) override = 0;
 
-  virtual IConnectionSettingsBase* Clone() const override = 0;
+  IConnectionSettingsBase* Clone() const override = 0;
 
  protected:
   IConnectionSettingsLocal(const connection_path_t& connection_path,

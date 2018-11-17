@@ -26,6 +26,7 @@ namespace gui {
 
 class HashTableModel : public common::qt::gui::TableModel {
   Q_OBJECT
+
  public:
   explicit HashTableModel(QObject* parent = Q_NULLPTR);
   ~HashTableModel() override;

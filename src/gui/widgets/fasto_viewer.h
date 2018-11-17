@@ -61,7 +61,7 @@ class FastoViewer : public QWidget {
   typedef core::readable_string_t view_output_text_t;
 
   explicit FastoViewer(QWidget* parent = Q_NULLPTR);
-  virtual ~FastoViewer() override;
+  ~FastoViewer() override;
 
   OutputView viewMethod() const;
   view_input_text_t text() const;

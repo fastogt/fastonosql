@@ -30,6 +30,7 @@ class UserInfo {
   enum SubscriptionState : uint8_t { UNSUBSCIRBED = 0, SUBSCRIBED };
   enum Type : uint8_t { USER = 0, SUPPORT = 1, OPEN_SOURCE = 2, ENTERPRISE = 3 };
   enum BuildStrategy : uint8_t { COMMUNITY_BUILD = 0, PUBLIC_BUILD = 1, PRIVATE_BUILD = 2 };
+
   UserInfo();
   UserInfo(const std::string& login, const std::string& password, BuildStrategy strategy);
 

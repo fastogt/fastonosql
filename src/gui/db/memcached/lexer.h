@@ -32,9 +32,9 @@ class Lexer : public BaseCommandsQsciLexer {
   typedef core::ConnectionCommandsTraits<core::MEMCACHED> memcached_trait_t;
   explicit Lexer(QObject* parent = Q_NULLPTR);
 
-  virtual const char* language() const override;
-  virtual const char* version() const override;
-  virtual const char* basedOn() const override;
+  const char* language() const override;
+  const char* version() const override;
+  const char* basedOn() const override;
 };
 
 class MemcachedApi : public BaseCommandsQsciApi {

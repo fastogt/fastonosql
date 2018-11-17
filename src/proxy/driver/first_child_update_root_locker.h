@@ -33,7 +33,7 @@ class FirstChildUpdateRootLocker : public RootLocker {
 
  private:
   // notification of execute events
-  virtual void ChildrenAdded(core::FastoObjectIPtr child) override;
+  void ChildrenAdded(core::FastoObjectIPtr child) override;
 
   core::FastoObjectIPtr FindCmdChildNode(core::FastoObjectIPtr child) const;
   core::FastoObjectIPtr FindWatchedCmd(core::FastoObjectCommand* cmd) const;

@@ -30,17 +30,16 @@ class ConnectionWidget : public ConnectionRemoteWidget {
  public:
   explicit ConnectionWidget(QWidget* parent = Q_NULLPTR);
 
-  virtual void syncControls(proxy::IConnectionSettingsBase* connection) override;
-  virtual void retranslateUi() override;
-  virtual bool validated() const override;
+  void syncControls(proxy::IConnectionSettingsBase* connection) override;
+  void retranslateUi() override;
+  bool validated() const override;
   bool isValidCredential() const;
 
  private Q_SLOTS:
   void saslStateChange(int state);
 
  private:
-  virtual proxy::IConnectionSettingsRemote* createConnectionRemoteImpl(
-      const proxy::connection_path_t& path) const override;
+  proxy::IConnectionSettingsRemote* createConnectionRemoteImpl(const proxy::connection_path_t& path) const override;
 
   QCheckBox* useSasl_;
   UserPasswordWidget* userPasswordWidget_;

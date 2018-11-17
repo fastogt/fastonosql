@@ -27,20 +27,20 @@ namespace gui {
 
 class PropertyTableModel : public common::qt::gui::TableModel {
   Q_OBJECT
+
  public:
   typedef common::qt::gui::TableModel base_class;
   explicit PropertyTableModel(QObject* parent = Q_NULLPTR);
 
-  virtual QVariant data(const QModelIndex& index, int role) const override;
-  virtual bool setData(const QModelIndex& index, const QVariant& value, int role) override;
-  virtual Qt::ItemFlags flags(const QModelIndex& index) const override;
-  virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+  QVariant data(const QModelIndex& index, int role) const override;
+  bool setData(const QModelIndex& index, const QVariant& value, int role) override;
+  Qt::ItemFlags flags(const QModelIndex& index) const override;
+  QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
-  virtual int columnCount(const QModelIndex& parent) const override;
+  int columnCount(const QModelIndex& parent) const override;
 
  public Q_SLOTS:
   void changeProperty(const core::property_t& pr);
-
   void insertProperty(const core::property_t& property);
 
  Q_SIGNALS:

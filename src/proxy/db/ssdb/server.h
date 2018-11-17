@@ -27,17 +27,18 @@ namespace ssdb {
 
 class Server : public IServerRemote {
   Q_OBJECT
+
  public:
   explicit Server(IConnectionSettingsBaseSPtr settings);
-  virtual ~Server() override;
+  ~Server() override;
 
-  virtual core::ServerMode GetMode() const override;
-  virtual core::ServerType GetRole() const override;
-  virtual core::ServerState GetState() const override;
-  virtual common::net::HostAndPort GetHost() const override;
+  core::ServerMode GetMode() const override;
+  core::ServerType GetRole() const override;
+  core::ServerState GetState() const override;
+  common::net::HostAndPort GetHost() const override;
 
  private:
-  virtual IDatabaseSPtr CreateDatabase(core::IDataBaseInfoSPtr info) override;
+  IDatabaseSPtr CreateDatabase(core::IDataBaseInfoSPtr info) override;
 };
 
 }  // namespace ssdb

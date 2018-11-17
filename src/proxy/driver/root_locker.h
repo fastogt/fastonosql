@@ -29,15 +29,16 @@ class IDriver;
 class RootLocker : public core::FastoObject::IFastoObjectObserver {
  public:
   typedef core::FastoObject::IFastoObjectObserver base_class;
+
   RootLocker(IDriver* parent, QObject* receiver, const core::command_buffer_t& text, bool silence);
-  virtual ~RootLocker() override;
+  ~RootLocker() override;
 
   core::FastoObjectIPtr Root() const;
 
  protected:
   // notification of execute events
-  virtual void ChildrenAdded(core::FastoObjectIPtr child) override;
-  virtual void Updated(core::FastoObject* item, core::FastoObject::value_t val) override;
+  void ChildrenAdded(core::FastoObjectIPtr child) override;
+  void Updated(core::FastoObject* item, core::FastoObject::value_t val) override;
 
  private:
   core::FastoObjectIPtr root_;

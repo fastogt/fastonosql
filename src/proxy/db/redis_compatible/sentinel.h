@@ -26,6 +26,7 @@ namespace redis_compatible {
 
 class Sentinel : public ISentinel {
   Q_OBJECT
+
  public:
   explicit Sentinel(const std::string& name);
 };

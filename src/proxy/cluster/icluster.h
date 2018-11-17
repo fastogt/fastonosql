@@ -32,7 +32,7 @@ class ICluster : public IServerBase {
   typedef IServerSPtr node_t;
   typedef std::vector<node_t> nodes_t;
 
-  virtual std::string GetName() const override;
+  std::string GetName() const override;
   nodes_t GetNodes() const;
   void AddServer(node_t serv);
 

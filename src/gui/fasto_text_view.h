@@ -28,6 +28,7 @@ namespace gui {
 class FastoEditorModelOutput;
 class FastoTextView : public QWidget {
   Q_OBJECT
+
  public:
   explicit FastoTextView(QWidget* parent = Q_NULLPTR);
 

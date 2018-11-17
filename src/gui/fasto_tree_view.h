@@ -25,6 +25,7 @@ namespace gui {
 
 class FastoTreeView : public QTreeView {
   Q_OBJECT
+
  public:
   explicit FastoTreeView(QWidget* parent = Q_NULLPTR);
 

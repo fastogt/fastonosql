@@ -74,7 +74,7 @@ class ConnectionBaseWidget : public QWidget {
   void addWidget(QWidget* widget);
   void addLayout(QLayout* layout);
 
-  virtual void changeEvent(QEvent* ev) override;
+  void changeEvent(QEvent* ev) override;
 
   virtual proxy::IConnectionSettingsBase* createConnectionImpl(const proxy::connection_path_t& path) const = 0;
 

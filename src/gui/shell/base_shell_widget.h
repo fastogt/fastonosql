@@ -142,7 +142,7 @@ class BaseShellWidget : public QWidget {
   virtual void OnStartedLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoRequest& res);
   virtual void OnFinishedLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponce& res);
 
-  virtual void changeEvent(QEvent* ev) override;
+  void changeEvent(QEvent* ev) override;
 
  private:
   QToolBar* createToolBar();

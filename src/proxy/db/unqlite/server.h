@@ -27,12 +27,13 @@ namespace unqlite {
 
 class Server : public IServerLocal {
   Q_OBJECT
+
  public:
   explicit Server(IConnectionSettingsBaseSPtr settings);
-  virtual std::string GetPath() const override;
+  std::string GetPath() const override;
 
  private:
-  virtual IDatabaseSPtr CreateDatabase(core::IDataBaseInfoSPtr info) override;
+  IDatabaseSPtr CreateDatabase(core::IDataBaseInfoSPtr info) override;
 };
 
 }  // namespace unqlite

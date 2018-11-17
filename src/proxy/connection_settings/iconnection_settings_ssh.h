@@ -26,19 +26,19 @@ namespace proxy {
 
 class IConnectionSettingsRemoteSSH : public IConnectionSettingsRemote {
  public:
-  virtual std::string GetDelimiter() const override = 0;
-  virtual void SetDelimiter(const std::string& delimiter) override = 0;
+  std::string GetDelimiter() const override = 0;
+  void SetDelimiter(const std::string& delimiter) override = 0;
 
-  virtual common::net::HostAndPort GetHost() const override = 0;
-  virtual void SetHost(const common::net::HostAndPort& host) override = 0;
+  common::net::HostAndPort GetHost() const override = 0;
+  void SetHost(const common::net::HostAndPort& host) override = 0;
 
-  virtual std::string GetCommandLine() const override = 0;
-  virtual void SetCommandLine(const std::string& line) override = 0;
+  std::string GetCommandLine() const override = 0;
+  void SetCommandLine(const std::string& line) override = 0;
 
   struct core::SSHInfo GetSSHInfo() const;
   void SetSSHInfo(const struct core::SSHInfo& info);
 
-  virtual void PrepareInGuiIfNeeded() override;
+  void PrepareInGuiIfNeeded() override;
 
  protected:
   IConnectionSettingsRemoteSSH(const connection_path_t& connection_path,

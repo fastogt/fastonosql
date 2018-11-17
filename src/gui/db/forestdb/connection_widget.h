@@ -29,12 +29,11 @@ class ConnectionWidget : public ConnectionLocalWidgetFilePath {
  public:
   explicit ConnectionWidget(QWidget* parent = Q_NULLPTR);
 
-  virtual void syncControls(proxy::IConnectionSettingsBase* connection) override;
-  virtual void retranslateUi() override;
+  void syncControls(proxy::IConnectionSettingsBase* connection) override;
+  void retranslateUi() override;
 
  private:
-  virtual proxy::IConnectionSettingsLocal* createConnectionLocalImpl(
-      const proxy::connection_path_t& path) const override;
+  proxy::IConnectionSettingsLocal* createConnectionLocalImpl(const proxy::connection_path_t& path) const override;
 
   QLabel* db_name_label_;
   QLineEdit* db_name_edit_;

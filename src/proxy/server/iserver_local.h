@@ -25,9 +25,10 @@ namespace proxy {
 
 class IServerLocal : public IServer {
   Q_OBJECT
+
  public:
   virtual std::string GetPath() const = 0;
-  virtual IDatabaseSPtr CreateDatabase(core::IDataBaseInfoSPtr info) override = 0;
+  IDatabaseSPtr CreateDatabase(core::IDataBaseInfoSPtr info) override = 0;
 
  protected:
   explicit IServerLocal(IDriver* drv);

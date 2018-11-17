@@ -26,19 +26,19 @@ namespace unqlite {
 
 class ConnectionWidget : public ConnectionLocalWidgetFilePath {
   Q_OBJECT
+
  public:
   explicit ConnectionWidget(QWidget* parent = Q_NULLPTR);
 
-  virtual void syncControls(proxy::IConnectionSettingsBase* connection) override;
-  virtual void retranslateUi() override;
+  void syncControls(proxy::IConnectionSettingsBase* connection) override;
+  void retranslateUi() override;
 
  private Q_SLOTS:
   void createDBStateChange(int state);
   void readOnlyDBStateChange(int state);
 
  private:
-  virtual proxy::IConnectionSettingsLocal* createConnectionLocalImpl(
-      const proxy::connection_path_t& path) const override;
+  proxy::IConnectionSettingsLocal* createConnectionLocalImpl(const proxy::connection_path_t& path) const override;
 
   QCheckBox* create_db_if_missing_;
   QCheckBox* read_only_db_;

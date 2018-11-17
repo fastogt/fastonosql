@@ -46,15 +46,15 @@ class BaseQsciLexer : public QsciLexerCustom {
  public:
   enum { Default = 0, Command = 1, ExCommand = 2 };
 
-  virtual const char* language() const override = 0;
+  const char* language() const override = 0;
   virtual const char* version() const = 0;
   virtual const char* basedOn() const = 0;
 
   virtual std::vector<uint32_t> supportedVersions() const = 0;
   virtual size_t commandsCount() const = 0;
 
-  virtual QString description(int style) const override;
-  virtual QColor defaultColor(int style) const override;
+  QString description(int style) const override;
+  QColor defaultColor(int style) const override;
 
   BaseQsciApi* apis() const;
 
@@ -68,19 +68,19 @@ class BaseCommandsQsciLexer : public BaseQsciLexer {
  public:
   typedef std::vector<core::CommandInfo> validated_commands_t;
 
-  virtual const char* language() const override = 0;
-  virtual const char* version() const override = 0;
-  virtual const char* basedOn() const override = 0;
+  const char* language() const override = 0;
+  const char* version() const override = 0;
+  const char* basedOn() const override = 0;
 
-  virtual std::vector<uint32_t> supportedVersions() const override;
-  virtual size_t commandsCount() const override;
+  std::vector<uint32_t> supportedVersions() const override;
+  size_t commandsCount() const override;
   const validated_commands_t& commands() const;
 
  protected:
   explicit BaseCommandsQsciLexer(const std::vector<core::CommandHolder>& commands, QObject* parent = Q_NULLPTR);
 
  private:
-  virtual void styleText(int start, int end) override;
+  void styleText(int start, int end) override;
   void paintCommands(const QString& source, int start);
 
   const validated_commands_t commands_;
@@ -90,11 +90,11 @@ class BaseCommandsQsciApi : public BaseQsciApi {
   Q_OBJECT
 
  public:
-  virtual void updateAutoCompletionList(const QStringList& context, QStringList& list) override;
-  virtual QStringList callTips(const QStringList& context,
-                               int commas,
-                               QsciScintilla::CallTipsStyle style,
-                               QList<int>& shifts) override;
+  void updateAutoCompletionList(const QStringList& context, QStringList& list) override;
+  QStringList callTips(const QStringList& context,
+                       int commas,
+                       QsciScintilla::CallTipsStyle style,
+                       QList<int>& shifts) override;
 
  protected:
   explicit BaseCommandsQsciApi(BaseCommandsQsciLexer* lexer);

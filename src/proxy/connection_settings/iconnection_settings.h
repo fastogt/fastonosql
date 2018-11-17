@@ -32,7 +32,7 @@ class IConnectionSettings : public common::ClonableBase<IConnectionSettings> {
  public:
   static const char default_ns_separator[];
 
-  virtual ~IConnectionSettings() override;
+  ~IConnectionSettings() override;
 
   connection_path_t GetPath() const;
   void SetPath(const connection_path_t& path);
@@ -44,7 +44,7 @@ class IConnectionSettings : public common::ClonableBase<IConnectionSettings> {
   int GetLoggingMsTimeInterval() const;
   void SetLoggingMsTimeInterval(int mstime);
 
-  virtual IConnectionSettings* Clone() const override = 0;
+  IConnectionSettings* Clone() const override = 0;
 
  protected:
   IConnectionSettings(const connection_path_t& connection_path, core::ConnectionType type);
@@ -63,7 +63,7 @@ class IConnectionSettingsBase : public IConnectionSettings {
   std::string GetNsSeparator() const;
   void SetNsSeparator(const std::string& ns);
 
-  virtual ~IConnectionSettingsBase() override;
+  ~IConnectionSettingsBase() override;
   std::string GetHash() const;
 
   std::string GetLoggingPath() const;
@@ -78,7 +78,7 @@ class IConnectionSettingsBase : public IConnectionSettings {
 
   virtual std::string GetFullAddress() const = 0;
 
-  virtual IConnectionSettingsBase* Clone() const override = 0;
+  IConnectionSettingsBase* Clone() const override = 0;
 
   virtual void PrepareInGuiIfNeeded();
 

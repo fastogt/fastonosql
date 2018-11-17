@@ -27,18 +27,18 @@ namespace proxy {
 
 class IConnectionSettingsRemote : public IConnectionSettingsBase {
  public:
-  virtual std::string GetFullAddress() const override;
+  std::string GetFullAddress() const override;
 
-  virtual std::string GetDelimiter() const override = 0;
-  virtual void SetDelimiter(const std::string& delimiter) override = 0;
+  std::string GetDelimiter() const override = 0;
+  void SetDelimiter(const std::string& delimiter) override = 0;
 
   virtual common::net::HostAndPort GetHost() const = 0;
   virtual void SetHost(const common::net::HostAndPort& host) = 0;
 
-  virtual std::string GetCommandLine() const override = 0;
-  virtual void SetCommandLine(const std::string& line) override = 0;
+  std::string GetCommandLine() const override = 0;
+  void SetCommandLine(const std::string& line) override = 0;
 
-  virtual IConnectionSettingsBase* Clone() const override = 0;
+  IConnectionSettingsBase* Clone() const override = 0;
 
  protected:
   IConnectionSettingsRemote(const connection_path_t& connection_path,

@@ -29,18 +29,18 @@ class Server : public IServerRemote {
   Q_OBJECT
  public:
   explicit Server(IConnectionSettingsBaseSPtr settings);
-  virtual ~Server() override;
+  ~Server() override;
 
-  virtual core::ServerType GetRole() const override;
-  virtual core::ServerMode GetMode() const override;
-  virtual core::ServerState GetState() const override;
-  virtual common::net::HostAndPort GetHost() const override;
+  core::ServerType GetRole() const override;
+  core::ServerMode GetMode() const override;
+  core::ServerState GetState() const override;
+  common::net::HostAndPort GetHost() const override;
 
  protected:
-  virtual void HandleLoadServerInfoEvent(events::ServerInfoResponceEvent* ev) override;
+  void HandleLoadServerInfoEvent(events::ServerInfoResponceEvent* ev) override;
 
  private:
-  virtual IDatabaseSPtr CreateDatabase(core::IDataBaseInfoSPtr info) override;
+  IDatabaseSPtr CreateDatabase(core::IDataBaseInfoSPtr info) override;
   core::ServerType role_;
   core::ServerMode mode_;
 };

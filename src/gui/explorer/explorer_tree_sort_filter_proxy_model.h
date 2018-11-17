@@ -29,8 +29,8 @@ class ExplorerTreeSortFilterProxyModel : public QSortFilterProxyModel {
   explicit ExplorerTreeSortFilterProxyModel(QObject* parent = Q_NULLPTR);
 
  protected:
-  virtual bool lessThan(const QModelIndex& left, const QModelIndex& right) const override;
-  virtual bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const override;
+  bool lessThan(const QModelIndex& left, const QModelIndex& right) const override;
+  bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const override;
 };
 
 }  // namespace gui

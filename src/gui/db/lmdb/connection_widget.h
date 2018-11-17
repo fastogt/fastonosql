@@ -34,16 +34,16 @@ class ConnectionWidget : public ConnectionBaseWidget {
   typedef ConnectionBaseWidget base_class;
   explicit ConnectionWidget(QWidget* parent = Q_NULLPTR);
 
-  virtual void syncControls(proxy::IConnectionSettingsBase* connection) override;
-  virtual void retranslateUi() override;
-  virtual bool validated() const override;
+  void syncControls(proxy::IConnectionSettingsBase* connection) override;
+  void retranslateUi() override;
+  bool validated() const override;
 
  private Q_SLOTS:
   void selectFilePathDB(bool checked);
   void selectDirectoryPathDB(bool checked);
 
  private:
-  virtual proxy::IConnectionSettingsBase* createConnectionImpl(const proxy::connection_path_t& path) const override;
+  proxy::IConnectionSettingsBase* createConnectionImpl(const proxy::connection_path_t& path) const override;
 
   QCheckBox* read_only_db_;
   QGroupBox* group_box_;

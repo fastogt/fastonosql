@@ -34,7 +34,7 @@ class HashTypeWidget : public QTableView {
   enum Mode : uint8_t { kHash = 0, kZset };
 
   explicit HashTypeWidget(QWidget* parent = Q_NULLPTR);
-  virtual ~HashTypeWidget();
+  ~HashTypeWidget() override;
 
   void insertRow(const QString& first, const QString& second);
   void clear();

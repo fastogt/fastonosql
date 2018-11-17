@@ -39,10 +39,10 @@ class KeyInfo {
   ns_separator_t nsSeparator() const;
 
  private:
-  core::raw_key_t key_;
+  const core::raw_key_t key_;
   splited_namespaces_t splited_namespaces_;
   string_t key_name_;
-  ns_separator_t ns_separator_;
+  const ns_separator_t ns_separator_;
 };
 
 }  // namespace gui

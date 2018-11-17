@@ -42,10 +42,10 @@ class ShellWidget : public BaseShellWidget {
   ShellWidget(proxy::IServerSPtr server, const QString& filePath = QString(), QWidget* parent = Q_NULLPTR);
 
  protected:
-  virtual void init() override;
-  virtual QHBoxLayout* createTopLayout(core::ConnectionType ct) override;
-  virtual void OnServerDisconnected() override;
-  virtual void OnFinishedLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponce& res) override;
+  void init() override;
+  QHBoxLayout* createTopLayout(core::ConnectionType ct) override;
+  void OnServerDisconnected() override;
+  void OnFinishedLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponce& res) override;
 
  private:
   void updateModules(const std::vector<core::ModuleInfo>& modules);
