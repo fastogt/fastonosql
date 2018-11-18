@@ -44,6 +44,7 @@ class ExplorerTreeModel : public common::qt::gui::TreeModel {
   Q_OBJECT
 
  public:
+  enum eColumn : uint8_t { eName = 0, eCountColumns };
   typedef common::qt::gui::TreeModel base_class;
 
   explicit ExplorerTreeModel(QObject* parent = Q_NULLPTR);

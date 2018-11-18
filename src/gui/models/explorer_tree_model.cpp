@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/explorer/explorer_tree_model.h"
+#include "gui/models/explorer_tree_model.h"
 
 #include <string>
 
@@ -30,9 +30,9 @@
 #include "proxy/server/iserver_local.h"   // for IServer, IServerRemote, etc
 #include "proxy/server/iserver_remote.h"  // for IServer, IServerRemote, etc
 
-#include "gui/explorer/explorer_tree_item.h"
 #include "gui/gui_factory.h"  // for GuiFactory
 #include "gui/key_info.h"
+#include "gui/models/items/explorer_tree_item.h"
 
 #include "translations/global.h"  // for trName
 
@@ -113,7 +113,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
     return QVariant();
   }
 
-  if (role == Qt::DecorationRole && col == ExplorerServerItem::eName) {
+  if (role == Qt::DecorationRole && col == eName) {
     if (type == IExplorerTreeItem::eServer) {
       ExplorerServerItem* server_node = static_cast<ExplorerServerItem*>(node);
       proxy::IServerSPtr server = server_node->server();
@@ -143,7 +143,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
   }
 
   if (role == Qt::DisplayRole) {
-    if (col == IExplorerTreeItem::eName) {
+    if (col == eName) {
       if (type == IExplorerTreeItem::eKey) {
         return node->name();
       } else if (type == IExplorerTreeItem::eDatabase) {
@@ -191,7 +191,7 @@ QVariant ExplorerTreeModel::headerData(int section, Qt::Orientation orientation,
   }
 
   if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-    if (section == ExplorerServerItem::eName) {
+    if (section == eName) {
       return translations::trName;
     }
   }
@@ -202,7 +202,7 @@ QVariant ExplorerTreeModel::headerData(int section, Qt::Orientation orientation,
 int ExplorerTreeModel::columnCount(const QModelIndex& parent) const {
   UNUSED(parent);
 
-  return ExplorerServerItem::eCountColumns;
+  return eCountColumns;
 }
 
 #if defined(PRO_VERSION)
@@ -329,8 +329,8 @@ void ExplorerTreeModel::setDefaultDb(proxy::IServer* server, core::IDataBaseInfo
   }
 
   common::qt::gui::TreeItem* current_root = root();
-  QModelIndex parent_index = createIndex(current_root->indexOf(parent), ExplorerDatabaseItem::eName, parent);
-  QModelIndex dbs_last_index = index(parent->childrenCount(), ExplorerDatabaseItem::eCountColumns, parent_index);
+  QModelIndex parent_index = createIndex(current_root->indexOf(parent), eName, parent);
+  QModelIndex dbs_last_index = index(parent->childrenCount(), eCountColumns, parent_index);
   updateItem(parent_index, dbs_last_index);
 }
 
@@ -346,8 +346,8 @@ void ExplorerTreeModel::updateDb(proxy::IServer* server, core::IDataBaseInfoSPtr
   }
 
   int index_db = parent->indexOf(dbs);
-  QModelIndex dbs_index1 = createIndex(index_db, ExplorerDatabaseItem::eName, dbs);
-  QModelIndex dbs_index2 = createIndex(index_db, ExplorerDatabaseItem::eCountColumns, dbs);
+  QModelIndex dbs_index1 = createIndex(index_db, eName, dbs);
+  QModelIndex dbs_index2 = createIndex(index_db, eCountColumns, dbs);
   updateItem(dbs_index1, dbs_index2);
 }
 
@@ -445,8 +445,8 @@ void ExplorerTreeModel::updateKey(proxy::IServer* server,
     common::qt::gui::TreeItem* par = keyit->parent();
     int index_key = par->indexOf(keyit);
     keyit->setKey(new_key);
-    QModelIndex key_index1 = createIndex(index_key, ExplorerKeyItem::eName, dbs);
-    QModelIndex key_index2 = createIndex(index_key, ExplorerKeyItem::eCountColumns, dbs);
+    QModelIndex key_index1 = createIndex(index_key, eName, dbs);
+    QModelIndex key_index2 = createIndex(index_key, eCountColumns, dbs);
     updateItem(key_index1, key_index2);
   }
 }
@@ -467,8 +467,8 @@ void ExplorerTreeModel::updateValue(proxy::IServer* server, core::IDataBaseInfoS
     common::qt::gui::TreeItem* par = keyit->parent();
     int index_key = par->indexOf(keyit);
     keyit->setDbv(dbv);
-    QModelIndex key_index1 = createIndex(index_key, ExplorerKeyItem::eName, dbs);
-    QModelIndex key_index2 = createIndex(index_key, ExplorerKeyItem::eCountColumns, dbs);
+    QModelIndex key_index1 = createIndex(index_key, eName, dbs);
+    QModelIndex key_index2 = createIndex(index_key, eCountColumns, dbs);
     updateItem(key_index1, key_index2);
   }
 }

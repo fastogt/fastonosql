@@ -16,11 +16,11 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/explorer/explorer_tree_sort_filter_proxy_model.h"
+#include "gui/models/explorer_tree_sort_filter_proxy_model.h"
 
 #include <common/qt/utils_qt.h>
 
-#include "gui/explorer/explorer_tree_item.h"
+#include "gui/models/items/explorer_tree_item.h"
 
 namespace fastonosql {
 namespace gui {

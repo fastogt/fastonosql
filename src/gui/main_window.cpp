@@ -210,14 +210,14 @@ MainWindow::MainWindow() : QMainWindow() {
   QMenu* views = new QMenu(translations::trViews, this);
   window->addMenu(views);
 
-  QMenu* helpMenu = new QMenu(this);
+  QMenu* help_menu = new QMenu(this);
   about_action_ = new QAction(this);
   VERIFY(connect(about_action_, &QAction::triggered, this, &MainWindow::about));
 
   howtouse_action_ = new QAction(this);
   VERIFY(connect(howtouse_action_, &QAction::triggered, this, &MainWindow::howToUse));
 
-  help_action_ = menuBar()->addMenu(helpMenu);
+  help_action_ = menuBar()->addMenu(help_menu);
 
   check_update_action_ = new QAction(this);
   VERIFY(connect(check_update_action_, &QAction::triggered, this, &MainWindow::checkUpdate));
@@ -225,12 +225,12 @@ MainWindow::MainWindow() : QMainWindow() {
   report_bug_action_ = new QAction(this);
   VERIFY(connect(report_bug_action_, &QAction::triggered, this, &MainWindow::reportBug));
 
-  helpMenu->addAction(check_update_action_);
-  helpMenu->addSeparator();
-  helpMenu->addAction(report_bug_action_);
-  helpMenu->addAction(howtouse_action_);
-  helpMenu->addSeparator();
-  helpMenu->addAction(about_action_);
+  help_menu->addAction(check_update_action_);
+  help_menu->addSeparator();
+  help_menu->addAction(report_bug_action_);
+  help_menu->addAction(howtouse_action_);
+  help_menu->addSeparator();
+  help_menu->addAction(about_action_);
 
   MainWidget* main_widget = new MainWidget;
   setCentralWidget(main_widget);

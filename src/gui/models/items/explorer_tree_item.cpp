@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/explorer/explorer_tree_item.h"
+#include "gui/models/items/explorer_tree_item.h"
 
 #include <limits>
 #include <string>

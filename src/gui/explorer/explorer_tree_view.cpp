@@ -47,10 +47,10 @@
 #include "gui/dialogs/pub_sub_dialog.h"
 #include "gui/dialogs/view_keys_dialog.h"  // for ViewKeysDialog
 
-#include "gui/explorer/explorer_tree_item.h"
-#include "gui/explorer/explorer_tree_model.h"  // for ExplorerServerItem, etc
-#include "gui/explorer/explorer_tree_sort_filter_proxy_model.h"
 #include "gui/gui_factory.h"
+#include "gui/models/explorer_tree_model.h"  // for ExplorerServerItem, etc
+#include "gui/models/explorer_tree_sort_filter_proxy_model.h"
+#include "gui/models/items/explorer_tree_item.h"
 
 #include "translations/global.h"  // for trClose, trBackup, etc
 

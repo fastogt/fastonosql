@@ -36,7 +36,6 @@ namespace gui {
 class IExplorerTreeItem : public common::qt::gui::TreeItem {
  public:
   typedef core::readable_string_t string_t;
-  enum eColumn : uint8_t { eName = 0, eCountColumns };
 
   enum eType : uint8_t {
     eServer = 0,

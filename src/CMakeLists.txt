@@ -256,20 +256,13 @@ SET(SOURCES_GUI_EDITOR
 )
 
 SET(HEADERS_GUI_EXPLORER
-  ${CMAKE_SOURCE_DIR}/src/gui/explorer/explorer_tree_item.h
-
   ${CMAKE_SOURCE_DIR}/src/gui/explorer/explorer_tree_widget.h
   ${CMAKE_SOURCE_DIR}/src/gui/explorer/explorer_tree_view.h
-  ${CMAKE_SOURCE_DIR}/src/gui/explorer/explorer_tree_model.h
-  ${CMAKE_SOURCE_DIR}/src/gui/explorer/explorer_tree_sort_filter_proxy_model.h
 )
 
 SET(SOURCES_GUI_EXPLORER
   ${CMAKE_SOURCE_DIR}/src/gui/explorer/explorer_tree_widget.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/explorer/explorer_tree_view.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/explorer/explorer_tree_model.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/explorer/explorer_tree_sort_filter_proxy_model.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/explorer/explorer_tree_item.cpp
 )
 
 SET(HEADERS_GUI_SHELL
@@ -292,6 +285,8 @@ SET(HEADERS_MODELS
   ${CMAKE_SOURCE_DIR}/src/gui/models/keys_table_model.h
   ${CMAKE_SOURCE_DIR}/src/gui/models/fasto_common_model.h
   ${CMAKE_SOURCE_DIR}/src/gui/models/stream_table_model.h
+  ${CMAKE_SOURCE_DIR}/src/gui/models/explorer_tree_model.h
+  ${CMAKE_SOURCE_DIR}/src/gui/models/explorer_tree_sort_filter_proxy_model.h
 
   ${CMAKE_SOURCE_DIR}/src/gui/models/items/action_table_item.h
   ${CMAKE_SOURCE_DIR}/src/gui/models/items/value_table_item.h
@@ -300,6 +295,7 @@ SET(HEADERS_MODELS
   ${CMAKE_SOURCE_DIR}/src/gui/models/items/channel_table_item.h
   ${CMAKE_SOURCE_DIR}/src/gui/models/items/key_table_item.h
   ${CMAKE_SOURCE_DIR}/src/gui/models/items/fasto_common_item.h
+  ${CMAKE_SOURCE_DIR}/src/gui/models/items/explorer_tree_item.h
 )
 
 SET(SOURCES_MODELS
@@ -310,6 +306,8 @@ SET(SOURCES_MODELS
   ${CMAKE_SOURCE_DIR}/src/gui/models/keys_table_model.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/models/fasto_common_model.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/models/stream_table_model.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/models/explorer_tree_model.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/models/explorer_tree_sort_filter_proxy_model.cpp
 
   ${CMAKE_SOURCE_DIR}/src/gui/models/items/action_table_item.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/models/items/value_table_item.cpp
@@ -318,6 +316,7 @@ SET(SOURCES_MODELS
   ${CMAKE_SOURCE_DIR}/src/gui/models/items/channel_table_item.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/models/items/key_table_item.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/models/items/fasto_common_item.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/models/items/explorer_tree_item.cpp
 )
 
 SET(HEADERS_VIEWS

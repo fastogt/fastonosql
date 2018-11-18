@@ -36,15 +36,12 @@
 
 namespace {
 struct json_object* json_tokener_parse_hacked(const char* str, int len) {
-  struct json_tokener* tok;
-  struct json_object* obj;
-
-  tok = json_tokener_new();
+  struct json_tokener* tok = json_tokener_new();
   if (!tok) {
     return nullptr;
   }
 
-  obj = json_tokener_parse_ex(tok, str, len);
+  struct json_object* obj = json_tokener_parse_ex(tok, str, len);
   if (tok->err != json_tokener_success) {
     if (obj) {
       json_object_put(obj);
