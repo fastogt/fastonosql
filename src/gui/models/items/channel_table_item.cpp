@@ -16,42 +16,28 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "gui/models/items/channel_table_item.h"
 
-#include <vector>
-
-#include <QTableView>
-
-#include <fastonosql/core/value.h>
+#include <common/qt/convert2string.h>  // for ConvertFromString
 
 namespace fastonosql {
 namespace gui {
 
-class StreamTypeWidget : public QTableView {
-  Q_OBJECT
+ChannelTableItem::ChannelTableItem(const core::NDbPSChannel& chan) : channel_(chan) {}
 
- public:
-  explicit StreamTypeWidget(QWidget* parent = Q_NULLPTR);
+core::NDbPSChannel ChannelTableItem::channel() const {
+  return channel_;
+}
 
-  core::StreamValue* streamValue() const;  // alocate memory
+QString ChannelTableItem::name() const {
+  QString qname;
+  common::ConvertFromString(channel_.GetName(), &qname);
+  return qname;
+}
 
-  void insertStream(const core::StreamValue::Stream& stream);
-  void clear();
-
- Q_SIGNALS:
-  void dataChangedSignal();
-
- private Q_SLOTS:
-  void editRow(const QModelIndex& index);
-  void addRow(const QModelIndex& index);
-  void removeRow(const QModelIndex& index);
-
- private:
-  void updateStream(const QModelIndex& index, const core::StreamValue::Stream& stream);
-  class StreamTableModel;
-  StreamTableModel* model_;
-  std::vector<core::StreamValue::Stream> streams_;
-};
+size_t ChannelTableItem::numberOfSubscribers() const {
+  return channel_.GetNumberOfSubscribers();
+}
 
 }  // namespace gui
 }  // namespace fastonosql

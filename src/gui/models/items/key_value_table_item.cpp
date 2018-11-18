@@ -16,42 +16,29 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
-#include <vector>
-
-#include <QTableView>
-
-#include <fastonosql/core/value.h>
+#include "gui/models/items/key_value_table_item.h"
 
 namespace fastonosql {
 namespace gui {
 
-class StreamTypeWidget : public QTableView {
-  Q_OBJECT
+KeyValueTableItem::KeyValueTableItem(const QString& key, const QString& value, Mode state)
+    : base_class(state), key_(key), value_(value) {}
 
- public:
-  explicit StreamTypeWidget(QWidget* parent = Q_NULLPTR);
+QString KeyValueTableItem::key() const {
+  return key_;
+}
 
-  core::StreamValue* streamValue() const;  // alocate memory
+void KeyValueTableItem::setKey(const QString& key) {
+  key_ = key;
+}
 
-  void insertStream(const core::StreamValue::Stream& stream);
-  void clear();
+QString KeyValueTableItem::value() const {
+  return value_;
+}
 
- Q_SIGNALS:
-  void dataChangedSignal();
-
- private Q_SLOTS:
-  void editRow(const QModelIndex& index);
-  void addRow(const QModelIndex& index);
-  void removeRow(const QModelIndex& index);
-
- private:
-  void updateStream(const QModelIndex& index, const core::StreamValue::Stream& stream);
-  class StreamTableModel;
-  StreamTableModel* model_;
-  std::vector<core::StreamValue::Stream> streams_;
-};
+void KeyValueTableItem::setValue(const QString& val) {
+  value_ = val;
+}
 
 }  // namespace gui
 }  // namespace fastonosql

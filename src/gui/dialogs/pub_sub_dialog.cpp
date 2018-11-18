@@ -31,10 +31,10 @@
 
 #include "proxy/server/iserver.h"
 
-#include "gui/channel_table_item.h"
-#include "gui/channels_table_model.h"  // for KeysTableModel, etc
-#include "gui/fasto_table_view.h"      // for FastoTableView
-#include "gui/gui_factory.h"           // for GuiFactory
+#include "gui/gui_factory.h"                  // for GuiFactory
+#include "gui/models/channels_table_model.h"  // for KeysTableModel, etc
+#include "gui/models/items/channel_table_item.h"
+#include "gui/views/fasto_table_view.h"  // for FastoTableView
 
 #include "translations/global.h"  // for trKeyCountOnThePage, etc
 

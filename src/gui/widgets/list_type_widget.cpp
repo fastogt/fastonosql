@@ -22,9 +22,9 @@
 
 #include <common/qt/utils_qt.h>
 
-#include "gui/action_cell_delegate.h"
-#include "gui/list_table_model.h"
-#include "gui/value_table_item.h"
+#include "gui/models/items/value_table_item.h"
+#include "gui/models/list_table_model.h"
+#include "gui/widgets/delegate/action_cell_delegate.h"
 
 #include "translations/global.h"
 
@@ -42,7 +42,7 @@ ListTypeWidget::ListTypeWidget(QWidget* parent) : QTableView(parent), model_(nul
   QAbstractItemDelegate* default_del = itemDelegate();
   VERIFY(connect(default_del, &QAbstractItemDelegate::closeEditor, this, &ListTypeWidget::dataChangedSignal));
 
-  setItemDelegateForColumn(ValueTableItem::kAction, del);
+  setItemDelegateForColumn(ListTableModel::kAction, del);
   setContextMenuPolicy(Qt::ActionsContextMenu);
   setSelectionBehavior(QAbstractItemView::SelectRows);
 
@@ -88,8 +88,7 @@ void ListTypeWidget::setCurrentMode(Mode mode) {
 
 void ListTypeWidget::addRow(const QModelIndex& index) {
   ValueTableItem* node = common::qt::item<common::qt::gui::TableItem*, ValueTableItem*>(index);
-  model_->insertRow(node->value());
-  emit dataChangedSignal();
+  insertRow(node->value());
 }
 
 void ListTypeWidget::removeRow(const QModelIndex& index) {

@@ -18,39 +18,25 @@
 
 #pragma once
 
-#include <vector>
+#include <QString>
 
-#include <QTableView>
+#include <common/qt/gui/base/table_item.h>  // for TableItem
 
-#include <fastonosql/core/value.h>
+#include <fastonosql/core/db_ps_channel.h>
 
 namespace fastonosql {
 namespace gui {
 
-class StreamTypeWidget : public QTableView {
-  Q_OBJECT
-
+class ChannelTableItem : public common::qt::gui::TableItem {
  public:
-  explicit StreamTypeWidget(QWidget* parent = Q_NULLPTR);
+  explicit ChannelTableItem(const core::NDbPSChannel& chan);
 
-  core::StreamValue* streamValue() const;  // alocate memory
-
-  void insertStream(const core::StreamValue::Stream& stream);
-  void clear();
-
- Q_SIGNALS:
-  void dataChangedSignal();
-
- private Q_SLOTS:
-  void editRow(const QModelIndex& index);
-  void addRow(const QModelIndex& index);
-  void removeRow(const QModelIndex& index);
+  core::NDbPSChannel channel() const;
+  QString name() const;
+  size_t numberOfSubscribers() const;
 
  private:
-  void updateStream(const QModelIndex& index, const core::StreamValue::Stream& stream);
-  class StreamTableModel;
-  StreamTableModel* model_;
-  std::vector<core::StreamValue::Stream> streams_;
+  core::NDbPSChannel channel_;
 };
 
 }  // namespace gui

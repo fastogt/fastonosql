@@ -16,42 +16,28 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "gui/views/fasto_table_view.h"
 
-#include <vector>
-
-#include <QTableView>
-
-#include <fastonosql/core/value.h>
+#include <QHeaderView>
+#include <QMenu>
 
 namespace fastonosql {
 namespace gui {
 
-class StreamTypeWidget : public QTableView {
-  Q_OBJECT
+FastoTableView::FastoTableView(QWidget* parent) : QTableView(parent) {
+  verticalHeader()->setDefaultAlignment(Qt::AlignLeft);
+  horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
 
- public:
-  explicit StreamTypeWidget(QWidget* parent = Q_NULLPTR);
+  QHeaderView* header = horizontalHeader();
+  header->setSectionResizeMode(QHeaderView::Stretch);
+}
 
-  core::StreamValue* streamValue() const;  // alocate memory
-
-  void insertStream(const core::StreamValue::Stream& stream);
-  void clear();
-
- Q_SIGNALS:
-  void dataChangedSignal();
-
- private Q_SLOTS:
-  void editRow(const QModelIndex& index);
-  void addRow(const QModelIndex& index);
-  void removeRow(const QModelIndex& index);
-
- private:
-  void updateStream(const QModelIndex& index, const core::StreamValue::Stream& stream);
-  class StreamTableModel;
-  StreamTableModel* model_;
-  std::vector<core::StreamValue::Stream> streams_;
-};
+QPoint FastoTableView::calculateMenuPoint(const QPoint& point) const {
+  QPoint menuPoint = mapToGlobal(point);
+  menuPoint.setY(menuPoint.y() + horizontalHeader()->height());
+  menuPoint.setX(menuPoint.x() + verticalHeader()->width());
+  return menuPoint;
+}
 
 }  // namespace gui
 }  // namespace fastonosql

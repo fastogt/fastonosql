@@ -28,9 +28,9 @@
 #include <common/qt/convert2string.h>
 #include <common/qt/utils_qt.h>
 
-#include "gui/action_cell_delegate.h"
-#include "gui/key_value_table_item.h"
-#include "gui/stream_table_model.h"
+#include "gui/models/items/key_value_table_item.h"
+#include "gui/models/stream_table_model.h"
+#include "gui/widgets/delegate/action_cell_delegate.h"
 
 namespace {
 const QString trTitle = "Create stream entry";
@@ -60,7 +60,7 @@ StreamEntryDialog::StreamEntryDialog(const QString& sid, QWidget* parent)
   VERIFY(connect(del, &ActionDelegate::addClicked, this, &StreamEntryDialog::insertRow));
   VERIFY(connect(del, &ActionDelegate::removeClicked, this, &StreamEntryDialog::removeRow));
 
-  table_->setItemDelegateForColumn(KeyValueTableItem::kAction, del);
+  table_->setItemDelegateForColumn(StreamTableModel::kAction, del);
   table_->setContextMenuPolicy(Qt::ActionsContextMenu);
   table_->setSelectionBehavior(QAbstractItemView::SelectRows);
   QHeaderView* header = table_->horizontalHeader();
@@ -96,7 +96,7 @@ void StreamEntryDialog::clear() {
 
 void StreamEntryDialog::insertRow(const QModelIndex& index) {
   KeyValueTableItem* node = common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
-  model_->insertEntry(node->key(), node->value());
+  insertEntry(node->key(), node->value());
 }
 
 void StreamEntryDialog::removeRow(const QModelIndex& index) {

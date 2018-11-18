@@ -33,14 +33,14 @@
 #include "proxy/server/iserver.h"    // for IServer
 #include "proxy/settings_manager.h"  // for SettingsManager
 
-#include "gui/fasto_common_item.h"   // for FastoCommonItem
-#include "gui/fasto_common_model.h"  // for FastoCommonModel
-#include "gui/fasto_table_view.h"    // for FastoTableView
-#include "gui/fasto_text_view.h"     // for FastoTextView
-#include "gui/fasto_tree_view.h"     // for FastoTreeView
-#include "gui/gui_factory.h"         // for GuiFactory
+#include "gui/gui_factory.h"                     // for GuiFactory
+#include "gui/models/fasto_common_model.h"       // for FastoCommonModel
+#include "gui/models/items/fasto_common_item.h"  // for FastoCommonItem
+#include "gui/views/fasto_table_view.h"          // for FastoTableView
+#include "gui/views/fasto_text_view.h"           // for FastoTextView
+#include "gui/views/fasto_tree_view.h"           // for FastoTreeView
+#include "gui/widgets/delegate/type_delegate.h"
 #include "gui/widgets/save_key_edit_widget.h"
-#include "gui/widgets/type_delegate.h"
 
 namespace fastonosql {
 namespace gui {
@@ -93,14 +93,14 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget
   tree_view_->header()->setSectionResizeMode(0, QHeaderView::Stretch);
   tree_view_->header()->setSectionResizeMode(1, QHeaderView::Stretch);
   tree_view_->header()->setStretchLastSection(false);
-  tree_view_->setItemDelegateForColumn(FastoCommonItem::eValue, new TypeDelegate(this));
+  tree_view_->setItemDelegateForColumn(FastoCommonModel::eValue, new TypeDelegate(this));
 
   table_view_ = new QTableView;
   table_view_->setModel(common_model_);
   table_view_->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
   table_view_->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
   table_view_->horizontalHeader()->setStretchLastSection(false);
-  table_view_->setItemDelegateForColumn(FastoCommonItem::eValue, new TypeDelegate(this));
+  table_view_->setItemDelegateForColumn(FastoCommonModel::eValue, new TypeDelegate(this));
 
   text_view_ = new FastoTextView;
   text_view_->setModel(common_model_);

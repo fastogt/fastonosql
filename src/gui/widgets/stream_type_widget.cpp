@@ -23,20 +23,19 @@
 #include <common/qt/convert2string.h>
 #include <common/qt/utils_qt.h>
 
-#include "gui/action_cell_delegate.h"
 #include "gui/dialogs/stream_entry_dialog.h"
-#include "gui/hash_table_model.h"
-#include "gui/key_value_table_item.h"
+#include "gui/models/hash_table_model.h"
+#include "gui/models/items/key_value_table_item.h"
+#include "gui/widgets/delegate/action_cell_delegate.h"
 
 #include "translations/global.h"
 
 namespace fastonosql {
 namespace gui {
 
-namespace {
-class StreamTableModelInner : public HashTableModel {
+class StreamTypeWidget::StreamTableModel : public HashTableModel {
  public:
-  explicit StreamTableModelInner(QObject* parent = Q_NULLPTR) : HashTableModel(parent) {
+  explicit StreamTableModel(QObject* parent = Q_NULLPTR) : HashTableModel(parent) {
     setFirstColumnName("ID");
     setSecondColumnName(translations::trValue);
   }
@@ -49,13 +48,12 @@ class StreamTableModelInner : public HashTableModel {
     return Qt::NoItemFlags;
   }
 };
-}  // namespace
 
 StreamTypeWidget::StreamTypeWidget(QWidget* parent) : QTableView(parent) {
-  model_ = new StreamTableModelInner(this);
+  model_ = new StreamTableModel(this);
   setModel(model_);
 
-  setColumnHidden(KeyValueTableItem::kValue, true);
+  setColumnHidden(HashTableModel::kValue, true);
 
   ActionDelegate* del = new ActionDelegate(this);
   VERIFY(connect(del, &ActionDelegate::addClicked, this, &StreamTypeWidget::addRow));
@@ -64,7 +62,7 @@ StreamTypeWidget::StreamTypeWidget(QWidget* parent) : QTableView(parent) {
   QAbstractItemDelegate* default_del = itemDelegate();
   VERIFY(connect(default_del, &QAbstractItemDelegate::closeEditor, this, &StreamTypeWidget::dataChangedSignal));
 
-  setItemDelegateForColumn(KeyValueTableItem::kAction, del);
+  setItemDelegateForColumn(HashTableModel::kAction, del);
   setContextMenuPolicy(Qt::ActionsContextMenu);
   setSelectionBehavior(QAbstractItemView::SelectRows);
 
@@ -92,8 +90,8 @@ void StreamTypeWidget::updateStream(const QModelIndex& index, const core::Stream
   QString qsid;
   common::ConvertFromBytes(stream.sid, &qsid);
   node->setKey(qsid);
-  model_->updateItem(model_->index(row, KeyValueTableItem::kKey, QModelIndex()),
-                     model_->index(row, KeyValueTableItem::kAction, QModelIndex()));
+  model_->updateItem(model_->index(row, StreamTableModel::kKey, QModelIndex()),
+                     model_->index(row, StreamTableModel::kAction, QModelIndex()));
   emit dataChangedSignal();
 }
 
@@ -142,8 +140,7 @@ void StreamTypeWidget::editRow(const QModelIndex& index) {
 }
 
 void StreamTypeWidget::addRow(const QModelIndex& index) {
-  KeyValueTableItem* node = common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
-  UNUSED(node);
+  UNUSED(index);
 
   auto diag = createDialog<StreamEntryDialog>(DEFAILT_ID, this);  // +
   int result = diag->exec();

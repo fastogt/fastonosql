@@ -16,42 +16,26 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "gui/views/fasto_tree_view.h"
 
-#include <vector>
-
-#include <QTableView>
-
-#include <fastonosql/core/value.h>
+#include <QHeaderView>
+#include <QMenu>
 
 namespace fastonosql {
 namespace gui {
 
-class StreamTypeWidget : public QTableView {
-  Q_OBJECT
+FastoTreeView::FastoTreeView(QWidget* parent) : QTreeView(parent) {
+  QHeaderView* head = header();
+  head->setDefaultAlignment(Qt::AlignLeft);
+  head->setSectionResizeMode(QHeaderView::Stretch);
+}
 
- public:
-  explicit StreamTypeWidget(QWidget* parent = Q_NULLPTR);
-
-  core::StreamValue* streamValue() const;  // alocate memory
-
-  void insertStream(const core::StreamValue::Stream& stream);
-  void clear();
-
- Q_SIGNALS:
-  void dataChangedSignal();
-
- private Q_SLOTS:
-  void editRow(const QModelIndex& index);
-  void addRow(const QModelIndex& index);
-  void removeRow(const QModelIndex& index);
-
- private:
-  void updateStream(const QModelIndex& index, const core::StreamValue::Stream& stream);
-  class StreamTableModel;
-  StreamTableModel* model_;
-  std::vector<core::StreamValue::Stream> streams_;
-};
+QPoint FastoTreeView::calculateMenuPoint(const QPoint& point) const {
+  QPoint menu_point = mapToGlobal(point);
+  QHeaderView* head = header();
+  menu_point.setY(menu_point.y() + head->height());
+  return menu_point;
+}
 
 }  // namespace gui
 }  // namespace fastonosql

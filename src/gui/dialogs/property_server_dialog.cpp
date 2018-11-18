@@ -28,7 +28,7 @@
 
 #include "gui/gui_factory.h"
 
-#include "gui/property_table_model.h"  // for PropertyTableModel, etc
+#include "gui/models/property_table_model.h"  // for PropertyTableModel, etc
 
 #include "translations/global.h"
 

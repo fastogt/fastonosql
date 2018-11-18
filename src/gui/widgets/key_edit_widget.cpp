@@ -33,7 +33,7 @@
 #include <fastonosql/core/value.h>
 
 #include "gui/gui_factory.h"  // for GuiFactory
-#include "gui/hash_table_model.h"
+#include "gui/models/hash_table_model.h"
 
 #include "gui/widgets/fasto_viewer.h"
 #include "gui/widgets/hash_type_widget.h"

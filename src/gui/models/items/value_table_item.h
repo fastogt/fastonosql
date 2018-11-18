@@ -18,39 +18,24 @@
 
 #pragma once
 
-#include <vector>
+#include <QString>
 
-#include <QTableView>
-
-#include <fastonosql/core/value.h>
+#include "gui/models/items/action_table_item.h"
 
 namespace fastonosql {
 namespace gui {
 
-class StreamTypeWidget : public QTableView {
-  Q_OBJECT
-
+class ValueTableItem : public ActionTableItem {
  public:
-  explicit StreamTypeWidget(QWidget* parent = Q_NULLPTR);
+  typedef ActionTableItem base_class;
 
-  core::StreamValue* streamValue() const;  // alocate memory
+  ValueTableItem(const QString& value, Mode state);
 
-  void insertStream(const core::StreamValue::Stream& stream);
-  void clear();
-
- Q_SIGNALS:
-  void dataChangedSignal();
-
- private Q_SLOTS:
-  void editRow(const QModelIndex& index);
-  void addRow(const QModelIndex& index);
-  void removeRow(const QModelIndex& index);
+  QString value() const;
+  void setValue(const QString& val);
 
  private:
-  void updateStream(const QModelIndex& index, const core::StreamValue::Stream& stream);
-  class StreamTableModel;
-  StreamTableModel* model_;
-  std::vector<core::StreamValue::Stream> streams_;
+  QString value_;
 };
 
 }  // namespace gui

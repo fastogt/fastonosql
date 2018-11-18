@@ -18,39 +18,32 @@
 
 #pragma once
 
-#include <vector>
-
-#include <QTableView>
-
-#include <fastonosql/core/value.h>
+#include <common/qt/gui/base/tree_model.h>  // for TreeModel
 
 namespace fastonosql {
+namespace core {
+class NDbKValue;
+}
 namespace gui {
 
-class StreamTypeWidget : public QTableView {
+class FastoCommonModel : public common::qt::gui::TreeModel {
   Q_OBJECT
 
  public:
-  explicit StreamTypeWidget(QWidget* parent = Q_NULLPTR);
+  enum eColumn : uint8_t { eKey = 0, eValue = 1, eType = 2, eCountColumns = 3 };
+  explicit FastoCommonModel(QObject* parent = Q_NULLPTR);
 
-  core::StreamValue* streamValue() const;  // alocate memory
+  QVariant data(const QModelIndex& index, int role) const override;
+  bool setData(const QModelIndex& index, const QVariant& value, int role) override;
+  Qt::ItemFlags flags(const QModelIndex& index) const override;
+  QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
-  void insertStream(const core::StreamValue::Stream& stream);
-  void clear();
+  int columnCount(const QModelIndex& parent) const override;
+
+  void changeValue(const core::NDbKValue& value);
 
  Q_SIGNALS:
-  void dataChangedSignal();
-
- private Q_SLOTS:
-  void editRow(const QModelIndex& index);
-  void addRow(const QModelIndex& index);
-  void removeRow(const QModelIndex& index);
-
- private:
-  void updateStream(const QModelIndex& index, const core::StreamValue::Stream& stream);
-  class StreamTableModel;
-  StreamTableModel* model_;
-  std::vector<core::StreamValue::Stream> streams_;
+  void changedValue(const core::NDbKValue& value);
 };
 
 }  // namespace gui

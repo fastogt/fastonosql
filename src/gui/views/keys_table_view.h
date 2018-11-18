@@ -18,39 +18,39 @@
 
 #pragma once
 
-#include <vector>
+#include <fastonosql/core/db_key.h>
 
-#include <QTableView>
+#include "gui/views/fasto_table_view.h"
 
-#include <fastonosql/core/value.h>
+class QSortFilterProxyModel;
 
 namespace fastonosql {
 namespace gui {
 
-class StreamTypeWidget : public QTableView {
+class KeysTableModel;
+
+class KeysTableView : public FastoTableView {
   Q_OBJECT
 
  public:
-  explicit StreamTypeWidget(QWidget* parent = Q_NULLPTR);
+  explicit KeysTableView(QWidget* parent = Q_NULLPTR);
 
-  core::StreamValue* streamValue() const;  // alocate memory
+  void insertKey(const core::NDbKValue& key);
+  void updateKey(const core::NKey& key);
 
-  void insertStream(const core::StreamValue::Stream& stream);
-  void clear();
+  void clearItems();
 
  Q_SIGNALS:
-  void dataChangedSignal();
+  void changedTTL(const core::NDbKValue& value, int ttl);
 
  private Q_SLOTS:
-  void editRow(const QModelIndex& index);
-  void addRow(const QModelIndex& index);
-  void removeRow(const QModelIndex& index);
+  void showContextMenu(const QPoint& point);
 
  private:
-  void updateStream(const QModelIndex& index, const core::StreamValue::Stream& stream);
-  class StreamTableModel;
-  StreamTableModel* model_;
-  std::vector<core::StreamValue::Stream> streams_;
+  QModelIndex selectedIndex() const;
+
+  KeysTableModel* source_model_;
+  QSortFilterProxyModel* proxy_model_;
 };
 
 }  // namespace gui

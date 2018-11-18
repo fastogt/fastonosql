@@ -16,42 +16,29 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "gui/views/fasto_text_view.h"
 
-#include <vector>
+#include <QVBoxLayout>
 
-#include <QTableView>
-
-#include <fastonosql/core/value.h>
+#include "gui/views/fasto_editor_model_output.h"  // for FastoEditorModelOutput
 
 namespace fastonosql {
 namespace gui {
 
-class StreamTypeWidget : public QTableView {
-  Q_OBJECT
+FastoTextView::FastoTextView(QWidget* parent) : QWidget(parent) {
+  QVBoxLayout* main_layout = new QVBoxLayout;
 
- public:
-  explicit StreamTypeWidget(QWidget* parent = Q_NULLPTR);
+  editor_ = new FastoEditorModelOutput;
+  editor_->setReadOnly(true);
 
-  core::StreamValue* streamValue() const;  // alocate memory
+  main_layout->addWidget(editor_);
+  main_layout->setContentsMargins(0, 0, 0, 0);
+  setLayout(main_layout);
+}
 
-  void insertStream(const core::StreamValue::Stream& stream);
-  void clear();
-
- Q_SIGNALS:
-  void dataChangedSignal();
-
- private Q_SLOTS:
-  void editRow(const QModelIndex& index);
-  void addRow(const QModelIndex& index);
-  void removeRow(const QModelIndex& index);
-
- private:
-  void updateStream(const QModelIndex& index, const core::StreamValue::Stream& stream);
-  class StreamTableModel;
-  StreamTableModel* model_;
-  std::vector<core::StreamValue::Stream> streams_;
-};
+void FastoTextView::setModel(QAbstractItemModel* model) {
+  editor_->setModel(model);
+}
 
 }  // namespace gui
 }  // namespace fastonosql

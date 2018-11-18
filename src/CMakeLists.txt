@@ -249,12 +249,10 @@ ENDIF(PRO_VERSION)
 
 SET(HEADERS_GUI_EDITOR
   ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor_shell.h
-  ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor_model_output.h
 )
 
 SET(SOURCES_GUI_EDITOR
   ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor_shell.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor_model_output.cpp
 )
 
 SET(HEADERS_GUI_EXPLORER
@@ -286,6 +284,58 @@ SET(SOURCES_GUI_SHELL
   ${CMAKE_SOURCE_DIR}/src/gui/shell/base_shell.cpp
 )
 
+SET(HEADERS_MODELS
+  ${CMAKE_SOURCE_DIR}/src/gui/models/list_table_model.h
+  ${CMAKE_SOURCE_DIR}/src/gui/models/hash_table_model.h
+  ${CMAKE_SOURCE_DIR}/src/gui/models/property_table_model.h
+  ${CMAKE_SOURCE_DIR}/src/gui/models/channels_table_model.h
+  ${CMAKE_SOURCE_DIR}/src/gui/models/keys_table_model.h
+  ${CMAKE_SOURCE_DIR}/src/gui/models/fasto_common_model.h
+  ${CMAKE_SOURCE_DIR}/src/gui/models/stream_table_model.h
+
+  ${CMAKE_SOURCE_DIR}/src/gui/models/items/action_table_item.h
+  ${CMAKE_SOURCE_DIR}/src/gui/models/items/value_table_item.h
+  ${CMAKE_SOURCE_DIR}/src/gui/models/items/key_value_table_item.h
+  ${CMAKE_SOURCE_DIR}/src/gui/models/items/property_table_item.h
+  ${CMAKE_SOURCE_DIR}/src/gui/models/items/channel_table_item.h
+  ${CMAKE_SOURCE_DIR}/src/gui/models/items/key_table_item.h
+  ${CMAKE_SOURCE_DIR}/src/gui/models/items/fasto_common_item.h
+)
+
+SET(SOURCES_MODELS
+  ${CMAKE_SOURCE_DIR}/src/gui/models/list_table_model.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/models/hash_table_model.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/models/property_table_model.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/models/channels_table_model.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/models/keys_table_model.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/models/fasto_common_model.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/models/stream_table_model.cpp
+
+  ${CMAKE_SOURCE_DIR}/src/gui/models/items/action_table_item.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/models/items/value_table_item.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/models/items/key_value_table_item.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/models/items/property_table_item.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/models/items/channel_table_item.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/models/items/key_table_item.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/models/items/fasto_common_item.cpp
+)
+
+SET(HEADERS_VIEWS
+  ${CMAKE_SOURCE_DIR}/src/gui/views/fasto_text_view.h
+  ${CMAKE_SOURCE_DIR}/src/gui/views/fasto_tree_view.h
+  ${CMAKE_SOURCE_DIR}/src/gui/views/fasto_table_view.h
+  ${CMAKE_SOURCE_DIR}/src/gui/views/fasto_editor_model_output.h
+  ${CMAKE_SOURCE_DIR}/src/gui/views/keys_table_view.h
+)
+
+SET(SOURCES_VIEWS
+  ${CMAKE_SOURCE_DIR}/src/gui/views/fasto_text_view.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/views/fasto_tree_view.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/views/fasto_table_view.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/views/fasto_editor_model_output.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/views/keys_table_view.cpp
+)
+
 SET(HEADERS_GUI_WIDGETS
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/fasto_scintilla.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/fasto_editor.h
@@ -306,10 +356,12 @@ SET(HEADERS_GUI_WIDGETS
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/ssh_widget.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/user_password_widget.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/list_type_widget.h
-  ${CMAKE_SOURCE_DIR}/src/gui/widgets/type_delegate.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/stream_type_widget.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/hash_type_widget.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/how_to_use_widget.h
+
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/delegate/type_delegate.h
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/delegate/action_cell_delegate.h
 )
 
 SET(SOURCES_GUI_WIDGETS
@@ -332,10 +384,12 @@ SET(SOURCES_GUI_WIDGETS
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/ssh_widget.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/user_password_widget.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/list_type_widget.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/widgets/type_delegate.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/stream_type_widget.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/hash_type_widget.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/how_to_use_widget.cpp
+
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/delegate/type_delegate.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/delegate/action_cell_delegate.cpp
 )
 
 SET(HEADERS_GUI
@@ -345,35 +399,18 @@ SET(HEADERS_GUI
   ${HEADERS_GUI_WIDGETS}
   ${HEADERS_GUI_SHELL}
   ${HEADERS_GUI_EXPLORER}
+  ${HEADERS_VIEWS}
+  ${HEADERS_MODELS}
 
   ${CMAKE_SOURCE_DIR}/src/gui/gui_factory.h
-  ${CMAKE_SOURCE_DIR}/src/gui/channel_table_item.h
-  ${CMAKE_SOURCE_DIR}/src/gui/fasto_common_item.h
-  ${CMAKE_SOURCE_DIR}/src/gui/property_table_item.h
   ${CMAKE_SOURCE_DIR}/src/gui/shortcuts.h
   ${CMAKE_SOURCE_DIR}/src/gui/connection_widgets_factory.h
-  ${CMAKE_SOURCE_DIR}/src/gui/action_table_item.h
-  ${CMAKE_SOURCE_DIR}/src/gui/key_value_table_item.h
-  ${CMAKE_SOURCE_DIR}/src/gui/value_table_item.h
-  ${CMAKE_SOURCE_DIR}/src/gui/key_table_item.h
   ${CMAKE_SOURCE_DIR}/src/gui/utils.h
   ${CMAKE_SOURCE_DIR}/src/gui/text_converter.h
   ${CMAKE_SOURCE_DIR}/src/gui/key_info.h
   ${CMAKE_SOURCE_DIR}/src/gui/connection_listwidget_items.h
   ${CMAKE_SOURCE_DIR}/src/gui/main_window.h
-  ${CMAKE_SOURCE_DIR}/src/gui/property_table_model.h
   ${CMAKE_SOURCE_DIR}/src/gui/main_tab_bar.h
-  ${CMAKE_SOURCE_DIR}/src/gui/fasto_text_view.h
-  ${CMAKE_SOURCE_DIR}/src/gui/keys_table_model.h
-  ${CMAKE_SOURCE_DIR}/src/gui/channels_table_model.h
-  ${CMAKE_SOURCE_DIR}/src/gui/fasto_tree_view.h
-  ${CMAKE_SOURCE_DIR}/src/gui/fasto_common_model.h
-  ${CMAKE_SOURCE_DIR}/src/gui/fasto_table_view.h
-  ${CMAKE_SOURCE_DIR}/src/gui/keys_table_view.h
-  ${CMAKE_SOURCE_DIR}/src/gui/hash_table_model.h
-  ${CMAKE_SOURCE_DIR}/src/gui/list_table_model.h
-  ${CMAKE_SOURCE_DIR}/src/gui/stream_table_model.h
-  ${CMAKE_SOURCE_DIR}/src/gui/action_cell_delegate.h
 )
 SET(SOURCES_GUI
   ${SOURCES_GUI_WORKERS}
@@ -382,32 +419,15 @@ SET(SOURCES_GUI
   ${SOURCES_GUI_WIDGETS}
   ${SOURCES_GUI_SHELL}
   ${SOURCES_GUI_EXPLORER}
+  ${SOURCES_VIEWS}
+  ${SOURCES_MODELS}
 
   ${CMAKE_SOURCE_DIR}/src/gui/connection_listwidget_items.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/main_window.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/gui_factory.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/property_table_item.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/property_table_model.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/main_tab_bar.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/fasto_text_view.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/keys_table_model.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/key_table_item.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/channels_table_model.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/fasto_tree_view.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/fasto_common_model.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/fasto_table_view.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/keys_table_view.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/channel_table_item.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/fasto_common_item.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/shortcuts.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/connection_widgets_factory.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/list_table_model.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/hash_table_model.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/stream_table_model.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/action_cell_delegate.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/action_table_item.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/key_value_table_item.cpp
-  ${CMAKE_SOURCE_DIR}/src/gui/value_table_item.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/utils.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/text_converter.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/key_info.cpp

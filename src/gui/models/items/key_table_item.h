@@ -18,39 +18,32 @@
 
 #pragma once
 
-#include <vector>
+#include <common/qt/gui/base/table_item.h>  // for TableItem
 
-#include <QTableView>
+#include <QString>
 
-#include <fastonosql/core/value.h>
+#include <fastonosql/core/db_key.h>  // for NDbKValue, ttl_t
 
 namespace fastonosql {
 namespace gui {
 
-class StreamTypeWidget : public QTableView {
-  Q_OBJECT
-
+class KeyTableItem : public common::qt::gui::TableItem {
  public:
-  explicit StreamTypeWidget(QWidget* parent = Q_NULLPTR);
+  explicit KeyTableItem(const core::NDbKValue& dbv);
 
-  core::StreamValue* streamValue() const;  // alocate memory
+  QString keyString() const;
+  QString typeText() const;
+  core::ttl_t TTL() const;
+  common::Value::Type type() const;
 
-  void insertStream(const core::StreamValue::Stream& stream);
-  void clear();
+  core::NDbKValue dbv() const;
+  void setDbv(const core::NDbKValue& val);
 
- Q_SIGNALS:
-  void dataChangedSignal();
-
- private Q_SLOTS:
-  void editRow(const QModelIndex& index);
-  void addRow(const QModelIndex& index);
-  void removeRow(const QModelIndex& index);
+  core::NKey key() const;
+  void setKey(const core::NKey& key);
 
  private:
-  void updateStream(const QModelIndex& index, const core::StreamValue::Stream& stream);
-  class StreamTableModel;
-  StreamTableModel* model_;
-  std::vector<core::StreamValue::Stream> streams_;
+  core::NDbKValue dbv_;
 };
 
 }  // namespace gui

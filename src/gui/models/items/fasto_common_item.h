@@ -18,40 +18,43 @@
 
 #pragma once
 
-#include <vector>
+#include <string>
 
-#include <QTableView>
+#include <QString>
 
-#include <fastonosql/core/value.h>
+#include <common/qt/gui/base/tree_item.h>  // for TreeItem
+
+#include <fastonosql/core/db_key.h>  // for NDbKValue, NValue
 
 namespace fastonosql {
 namespace gui {
 
-class StreamTypeWidget : public QTableView {
-  Q_OBJECT
-
+class FastoCommonItem : public common::qt::gui::TreeItem {
  public:
-  explicit StreamTypeWidget(QWidget* parent = Q_NULLPTR);
+  FastoCommonItem(const core::NDbKValue& key,
+                  const std::string& delimiter,
+                  bool read_only,
+                  TreeItem* parent,
+                  void* internalPointer);
 
-  core::StreamValue* streamValue() const;  // alocate memory
+  QString key() const;
+  QString readableValue() const;
 
-  void insertStream(const core::StreamValue::Stream& stream);
-  void clear();
+  common::Value::Type type() const;
+  core::NValue nvalue() const;
+  core::NDbKValue dbv() const;
+  const char* delimiter() const;
 
- Q_SIGNALS:
-  void dataChangedSignal();
-
- private Q_SLOTS:
-  void editRow(const QModelIndex& index);
-  void addRow(const QModelIndex& index);
-  void removeRow(const QModelIndex& index);
+  bool isReadOnly() const;
+  void setValue(core::NValue val);
 
  private:
-  void updateStream(const QModelIndex& index, const core::StreamValue::Stream& stream);
-  class StreamTableModel;
-  StreamTableModel* model_;
-  std::vector<core::StreamValue::Stream> streams_;
+  core::NDbKValue key_;
+  const std::string delimiter_;
+  const bool read_only_;
 };
+
+core::readable_string_t toRaw(FastoCommonItem* item);
 
 }  // namespace gui
 }  // namespace fastonosql

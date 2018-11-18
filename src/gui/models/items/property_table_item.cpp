@@ -16,42 +16,34 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "gui/models/items/property_table_item.h"
 
-#include <vector>
-
-#include <QTableView>
-
-#include <fastonosql/core/value.h>
+#include <common/qt/convert2string.h>
 
 namespace fastonosql {
 namespace gui {
 
-class StreamTypeWidget : public QTableView {
-  Q_OBJECT
+PropertyTableItem::PropertyTableItem(const core::property_t& prop) : prop_(prop) {}
 
- public:
-  explicit StreamTypeWidget(QWidget* parent = Q_NULLPTR);
+QString PropertyTableItem::key() const {
+  QString qkey;
+  common::ConvertFromBytes(prop_.first, &qkey);
+  return qkey;
+}
 
-  core::StreamValue* streamValue() const;  // alocate memory
+QString PropertyTableItem::value() const {
+  QString qval;
+  common::ConvertFromBytes(prop_.second, &qval);
+  return qval;
+}
 
-  void insertStream(const core::StreamValue::Stream& stream);
-  void clear();
+core::property_t PropertyTableItem::property() const {
+  return prop_;
+}
 
- Q_SIGNALS:
-  void dataChangedSignal();
-
- private Q_SLOTS:
-  void editRow(const QModelIndex& index);
-  void addRow(const QModelIndex& index);
-  void removeRow(const QModelIndex& index);
-
- private:
-  void updateStream(const QModelIndex& index, const core::StreamValue::Stream& stream);
-  class StreamTableModel;
-  StreamTableModel* model_;
-  std::vector<core::StreamValue::Stream> streams_;
-};
+void PropertyTableItem::setProperty(const core::property_t& prop) {
+  prop_ = prop;
+}
 
 }  // namespace gui
 }  // namespace fastonosql

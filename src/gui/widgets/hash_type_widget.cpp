@@ -22,9 +22,9 @@
 
 #include <common/qt/utils_qt.h>
 
-#include "gui/action_cell_delegate.h"
-#include "gui/hash_table_model.h"
-#include "gui/key_value_table_item.h"
+#include "gui/models/hash_table_model.h"
+#include "gui/models/items/key_value_table_item.h"
+#include "gui/widgets/delegate/action_cell_delegate.h"
 
 #include "translations/global.h"
 
@@ -41,7 +41,7 @@ HashTypeWidget::HashTypeWidget(QWidget* parent) : QTableView(parent), model_(nul
   QAbstractItemDelegate* default_del = itemDelegate();
   VERIFY(connect(default_del, &QAbstractItemDelegate::closeEditor, this, &HashTypeWidget::dataChangedSignal));
 
-  setItemDelegateForColumn(KeyValueTableItem::kAction, del);
+  setItemDelegateForColumn(HashTableModel::kAction, del);
   setContextMenuPolicy(Qt::ActionsContextMenu);
   setSelectionBehavior(QAbstractItemView::SelectRows);
 
@@ -93,8 +93,7 @@ void HashTypeWidget::setCurrentMode(Mode mode) {
 
 void HashTypeWidget::addRow(const QModelIndex& index) {
   KeyValueTableItem* node = common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
-  model_->insertRow(node->key(), node->value());
-  emit dataChangedSignal();
+  insertRow(node->key(), node->value());
 }
 
 void HashTypeWidget::removeRow(const QModelIndex& index) {

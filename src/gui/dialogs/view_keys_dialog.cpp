@@ -34,7 +34,7 @@
 #include "proxy/server/iserver.h"      // for IServer
 
 #include "gui/gui_factory.h"  // for GuiFactory
-#include "gui/keys_table_view.h"
+#include "gui/views/keys_table_view.h"
 
 #include "translations/global.h"  // for trKeyCountOnThePage, etc
 
