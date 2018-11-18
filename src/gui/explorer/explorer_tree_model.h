@@ -19,14 +19,13 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include <common/qt/gui/base/tree_model.h>  // for TreeModel
 
 #include "proxy/database/idatabase.h"
 #include "proxy/proxy_fwd.h"
 #include "proxy/types.h"
-
-#include "gui/key_info.h"
 
 namespace fastonosql {
 namespace gui {
@@ -45,6 +44,8 @@ class ExplorerTreeModel : public common::qt::gui::TreeModel {
   Q_OBJECT
 
  public:
+  typedef common::qt::gui::TreeModel base_class;
+
   explicit ExplorerTreeModel(QObject* parent = Q_NULLPTR);
 
   QVariant data(const QModelIndex& index, int role) const override;
@@ -95,7 +96,17 @@ class ExplorerTreeModel : public common::qt::gui::TreeModel {
   ExplorerServerItem* findServerItem(proxy::IServer* server) const;
   ExplorerDatabaseItem* findDatabaseItem(ExplorerServerItem* server, core::IDataBaseInfoSPtr db) const;
   ExplorerKeyItem* findKeyItem(IExplorerTreeItem* db_or_ns, const core::NKey& key) const;
-  ExplorerNSItem* findOrCreateNSItem(IExplorerTreeItem* db_or_ns, const KeyInfo& kinf);
+  ExplorerNSItem* findOrCreateNSItem(IExplorerTreeItem* db_or_ns,
+                                     const std::vector<core::readable_string_t>& namespaces,
+                                     const std::string& separator);
+  ExplorerKeyItem* findOrCreateKey(ExplorerDatabaseItem* dbs,
+                                   const core::NDbKValue& dbv,
+                                   const std::string& separator,
+                                   proxy::NsDisplayStrategy strategy);
+  ExplorerKeyItem* createKey(ExplorerDatabaseItem* dbs,
+                             const core::NDbKValue& dbv,
+                             const std::string& separator,
+                             proxy::NsDisplayStrategy strategy);
 };
 
 }  // namespace gui

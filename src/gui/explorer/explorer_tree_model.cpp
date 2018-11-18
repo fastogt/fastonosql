@@ -32,6 +32,7 @@
 
 #include "gui/explorer/explorer_tree_item.h"
 #include "gui/gui_factory.h"  // for GuiFactory
+#include "gui/key_info.h"
 
 #include "translations/global.h"  // for trName
 
@@ -365,21 +366,7 @@ void ExplorerTreeModel::addKey(proxy::IServer* server,
     return;
   }
 
-  const core::NKey key = dbv.GetKey();
-  ExplorerKeyItem* keyit = findKeyItem(dbs, key);
-  if (!keyit) {
-    IExplorerTreeItem* nitem = dbs;
-    const auto key_str = key.GetKey();
-    KeyInfo kinf(key_str.GetHumanReadable(), ns_separator);
-    if (kinf.hasNamespace()) {
-      nitem = findOrCreateNSItem(dbs, kinf);
-    }
-
-    common::qt::gui::TreeItem* parent_nitem = nitem->parent();
-    QModelIndex parent_index = createIndex(parent_nitem->indexOf(nitem), 0, nitem);
-    ExplorerKeyItem* item = new ExplorerKeyItem(dbv, ns_separator, ns_strategy, nitem);
-    insertItem(parent_index, item);
-  }
+  findOrCreateKey(dbs, dbv, ns_separator, ns_strategy);
 }
 
 void ExplorerTreeModel::removeKey(proxy::IServer* server, core::IDataBaseInfoSPtr db, const core::NKey& key) {
@@ -436,20 +423,7 @@ void ExplorerTreeModel::renameKey(proxy::IServer* server,
   }
 
   dbv.SetKey(new_key);
-  ExplorerKeyItem* new_keyit = findKeyItem(dbs, new_key);
-  if (!new_keyit) {
-    IExplorerTreeItem* nitem = dbs;
-    const auto key_str = new_key.GetKey();
-    KeyInfo kinf(key_str.GetHumanReadable(), ns_separator);
-    if (kinf.hasNamespace()) {
-      nitem = findOrCreateNSItem(dbs, kinf);
-    }
-
-    common::qt::gui::TreeItem* parent_nitem = nitem->parent();
-    QModelIndex parent_index = createIndex(parent_nitem->indexOf(nitem), 0, nitem);
-    ExplorerKeyItem* item = new ExplorerKeyItem(dbv, ns_separator, ns_strategy, nitem);
-    insertItem(parent_index, item);
-  }
+  createKey(dbs, dbv, ns_separator, ns_strategy);
 }
 
 void ExplorerTreeModel::updateKey(proxy::IServer* server,
@@ -600,15 +574,14 @@ ExplorerKeyItem* ExplorerTreeModel::findKeyItem(IExplorerTreeItem* db_or_ns, con
       }));
 }
 
-ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_ns, const KeyInfo& kinf) {
-  const auto nspaces = kinf.namespaces();
-  const auto separator = kinf.nsSeparator();
-
+ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_ns,
+                                                      const std::vector<core::readable_string_t>& namespaces,
+                                                      const std::string& separator) {
   IExplorerTreeItem* par = db_or_ns;
   ExplorerNSItem* founded_item = nullptr;
-  for (size_t i = 0; i < nspaces.size(); ++i) {
+  for (size_t i = 0; i < namespaces.size(); ++i) {
     ExplorerNSItem* item = nullptr;
-    const auto cur_ns = nspaces[i];
+    const auto cur_ns = namespaces[i];
 
     for (size_t j = 0; j < par->childrenCount(); ++j) {
       ExplorerNSItem* ns_item = static_cast<ExplorerNSItem*>(par->child(j));
@@ -634,6 +607,38 @@ ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_n
 
   CHECK(founded_item);
   return founded_item;
+}
+
+ExplorerKeyItem* ExplorerTreeModel::findOrCreateKey(ExplorerDatabaseItem* dbs,
+                                                    const core::NDbKValue& dbv,
+                                                    const std::string& separator,
+                                                    proxy::NsDisplayStrategy strategy) {
+  const core::NKey key = dbv.GetKey();
+  ExplorerKeyItem* keyit = findKeyItem(dbs, key);
+  if (keyit) {
+    return keyit;
+  }
+
+  return createKey(dbs, dbv, separator, strategy);
+}
+
+ExplorerKeyItem* ExplorerTreeModel::createKey(ExplorerDatabaseItem* dbs,
+                                              const core::NDbKValue& dbv,
+                                              const std::string& separator,
+                                              proxy::NsDisplayStrategy strategy) {
+  const core::NKey key = dbv.GetKey();
+  IExplorerTreeItem* nitem = dbs;
+  const auto key_str = key.GetKey();
+  KeyInfo kinf(key_str.GetHumanReadable(), separator);
+  if (kinf.hasNamespace()) {
+    nitem = findOrCreateNSItem(dbs, kinf.namespaces(), kinf.nsSeparator());
+  }
+
+  common::qt::gui::TreeItem* parent_nitem = nitem->parent();
+  QModelIndex parent_index = createIndex(parent_nitem->indexOf(nitem), 0, nitem);
+  ExplorerKeyItem* item = new ExplorerKeyItem(dbv, separator, strategy, nitem);
+  insertItem(parent_index, item);
+  return item;
 }
 
 }  // namespace gui

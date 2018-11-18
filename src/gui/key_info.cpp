@@ -26,9 +26,13 @@ namespace gui {
 KeyInfo::KeyInfo(const core::raw_key_t& key, const ns_separator_t& ns_separator)
     : key_(key), splited_namespaces_(), key_name_(), ns_separator_(ns_separator) {
   const core::readable_string_t rns = GEN_READABLE_STRING_SIZE(ns_separator.data(), ns_separator.size());
-  common::Tokenize(key, rns, &splited_namespaces_);
-  key_name_ = splited_namespaces_.back();
-  splited_namespaces_.pop_back();
+  size_t tokens = common::Tokenize(key, rns, &splited_namespaces_);
+  if (tokens > 0) {
+    key_name_ = splited_namespaces_.back();
+    splited_namespaces_.pop_back();
+  } else {
+    DNOTREACHED() << "Invalid key: " << key;
+  }
 }
 
 KeyInfo::string_t KeyInfo::keyName() const {
@@ -40,12 +44,7 @@ KeyInfo::string_t KeyInfo::key() const {
 }
 
 bool KeyInfo::hasNamespace() const {
-  size_t ns_size = nsSplitedSize();
-  return ns_size > 0;
-}
-
-size_t KeyInfo::nsSplitedSize() const {
-  return splited_namespaces_.size();
+  return splited_namespaces_.size() > 0;
 }
 
 KeyInfo::splited_namespaces_t KeyInfo::namespaces() const {

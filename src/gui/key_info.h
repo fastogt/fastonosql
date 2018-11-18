@@ -18,6 +18,9 @@
 
 #pragma once
 
+#include <string>
+#include <vector>
+
 #include <fastonosql/core/basic_types.h>
 
 namespace fastonosql {
@@ -34,7 +37,6 @@ class KeyInfo {
   string_t keyName() const;
   string_t key() const;
   bool hasNamespace() const;
-  size_t nsSplitedSize() const;
   splited_namespaces_t namespaces() const;
   ns_separator_t nsSeparator() const;
 
