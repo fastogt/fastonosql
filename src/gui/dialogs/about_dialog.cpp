@@ -196,7 +196,7 @@ AboutDialog::AboutDialog(QWidget* parent) : base_class(trAbout + " " PROJECT_NAM
   libs_list_widget->addTopLevelItem(createLibItem("QScintilla", QSCINTILLA_VERSION_STR));
   libs_list_widget->addTopLevelItem(createLibItem("libssh2", LIBSSH2_VERSION));
   libs_list_widget->addTopLevelItem(createLibItem("OpenSSL", OPENSSL_VERSION_TEXT));
-  libs_list_widget->addTopLevelItem(createLibItem("FastoNoSQL Core", FASTONOSQL_CORE_VERSION_TEXT));
+  libs_list_widget->addTopLevelItem(createLibItem("FastoNoSQL core", FASTONOSQL_CORE_VERSION_TEXT));
   libs_list_widget->addTopLevelItem(createLibItem("common", COMMON_VERSION_TEXT));
   libs_list_widget->addTopLevelItem(createLibItem("Snappy", SNAPPY_VERSION_TEXT));
   libs_list_widget->addTopLevelItem(createLibItem("json-c", JSON_C_VERSION));
