@@ -217,26 +217,26 @@ void TypeDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, cons
     return;
   }
 
-  common::Value::Type t = node->type();
-  if (t == common::Value::TYPE_INTEGER) {
+  const common::Value::Type type = node->type();
+  if (type == common::Value::TYPE_INTEGER) {
     QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
     int value = spinBox->value();
     core::NValue val(common::Value::CreateIntegerValue(value));
     QVariant var = QVariant::fromValue(val);
     model->setData(index, var, Qt::EditRole);
-  } else if (t == common::Value::TYPE_UINTEGER) {
+  } else if (type == common::Value::TYPE_UINTEGER) {
     QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
     int value = spinBox->value();
     core::NValue val(common::Value::CreateUIntegerValue(static_cast<unsigned int>(value)));
     QVariant var = QVariant::fromValue(val);
     model->setData(index, var, Qt::EditRole);
-  } else if (t == common::Value::TYPE_BOOLEAN) {
+  } else if (type == common::Value::TYPE_BOOLEAN) {
     QComboBox* combobox = static_cast<QComboBox*>(editor);
     int cindex = combobox->currentIndex();
     core::NValue val(common::Value::CreateBooleanValue(cindex == 0));
     QVariant var = QVariant::fromValue(val);
     model->setData(index, var, Qt::EditRole);
-  } else if (t == common::Value::TYPE_STRING) {
+  } else if (type == common::Value::TYPE_STRING) {
     QLineEdit* lineedit = static_cast<QLineEdit*>(editor);
     QString text = lineedit->text();
     if (text.isEmpty()) {
@@ -246,7 +246,7 @@ void TypeDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, cons
     common::StringValue* string = common::Value::CreateStringValue(common::ConvertToCharBytes(text));
     QVariant var = QVariant::fromValue(core::NValue(string));
     model->setData(index, var, Qt::EditRole);
-  } else if (t == core::JsonValue::TYPE_JSON) {
+  } else if (type == core::JsonValue::TYPE_JSON) {
     QLineEdit* lineedit = static_cast<QLineEdit*>(editor);
     QString text = lineedit->text();
     if (text.isEmpty()) {
@@ -256,7 +256,7 @@ void TypeDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, cons
     core::JsonValue* string = new core::JsonValue(common::ConvertToCharBytes(text));
     QVariant var = QVariant::fromValue(core::NValue(string));
     model->setData(index, var, Qt::EditRole);
-  } else if (t == common::Value::TYPE_ARRAY) {
+  } else if (type == common::Value::TYPE_ARRAY) {
     ListTypeWidget* listwidget = static_cast<ListTypeWidget*>(editor);
     common::ArrayValue* arr = listwidget->arrayValue();
     if (!arr) {
@@ -265,7 +265,7 @@ void TypeDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, cons
 
     QVariant var = QVariant::fromValue(core::NValue(arr));
     model->setData(index, var, Qt::EditRole);
-  } else if (t == common::Value::TYPE_SET) {
+  } else if (type == common::Value::TYPE_SET) {
     ListTypeWidget* listwidget = static_cast<ListTypeWidget*>(editor);
     common::SetValue* set = listwidget->setValue();
     if (!set) {
@@ -274,7 +274,7 @@ void TypeDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, cons
 
     QVariant var = QVariant::fromValue(core::NValue(set));
     model->setData(index, var, Qt::EditRole);
-  } else if (t == common::Value::TYPE_ZSET) {
+  } else if (type == common::Value::TYPE_ZSET) {
     HashTypeWidget* hashwidget = static_cast<HashTypeWidget*>(editor);
     common::ZSetValue* zset = hashwidget->zsetValue();
     if (!zset) {
@@ -283,7 +283,7 @@ void TypeDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, cons
 
     QVariant var = QVariant::fromValue(core::NValue(zset));
     model->setData(index, var, Qt::EditRole);
-  } else if (t == common::Value::TYPE_HASH) {
+  } else if (type == common::Value::TYPE_HASH) {
     HashTypeWidget* hashwidget = static_cast<HashTypeWidget*>(editor);
     common::HashValue* hash = hashwidget->hashValue();
     if (!hash) {

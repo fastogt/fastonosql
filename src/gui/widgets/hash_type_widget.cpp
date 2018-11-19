@@ -65,12 +65,10 @@ void HashTypeWidget::clear() {
 }
 
 common::ZSetValue* HashTypeWidget::zsetValue() const {
-  CHECK_EQ(mode_, kZset) << "Must be in zset mode.";
   return model_->zsetValue();
 }
 
 common::HashValue* HashTypeWidget::hashValue() const {
-  CHECK_EQ(mode_, kHash) << "Must be in hash mode.";
   return model_->hashValue();
 }
 
