@@ -18,15 +18,21 @@
 
 #include "proxy/servers_manager.h"
 
+#include <vector>
+
+#if defined(PRO_VERSION)
 #include "proxy/cluster/icluster.h"
 #include "proxy/sentinel/isentinel.h"  // for Sentinel
+#endif
 
 #ifdef BUILD_WITH_REDIS
 #include <fastonosql/core/db/redis/db_connection.h>  // for DiscoveryClusterConnection, etc
 #include "proxy/db/redis/connection_settings.h"      // for ConnectionSettings
 #include "proxy/db/redis/server.h"                   // for Server
-#include "proxy/db/redis_compatible/cluster.h"       // for Cluster
-#include "proxy/db/redis_compatible/sentinel.h"      // for Sentinel
+#if defined(PRO_VERSION)
+#include "proxy/db/redis_compatible/cluster.h"   // for Cluster
+#include "proxy/db/redis_compatible/sentinel.h"  // for Sentinel
+#endif
 #endif
 
 #ifdef BUILD_WITH_MEMCACHED
@@ -81,8 +87,10 @@
 #include <fastonosql/core/db/pika/db_connection.h>  // for DiscoveryClusterConnection, etc
 #include "proxy/db/pika/connection_settings.h"      // for ConnectionSettings
 #include "proxy/db/pika/server.h"                   // for Server
-#include "proxy/db/redis_compatible/cluster.h"      // for Cluster
-#include "proxy/db/redis_compatible/sentinel.h"     // for Sentinel
+#if defined(PRO_VERSION)
+#include "proxy/db/redis_compatible/cluster.h"   // for Cluster
+#include "proxy/db/redis_compatible/sentinel.h"  // for Sentinel
+#endif
 #endif
 
 namespace fastonosql {

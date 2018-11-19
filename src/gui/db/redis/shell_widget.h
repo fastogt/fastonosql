@@ -37,6 +37,7 @@ namespace redis {
 
 class ShellWidget : public BaseShellWidget {
   Q_OBJECT
+
  public:
   typedef BaseShellWidget base_class;
   ShellWidget(proxy::IServerSPtr server, const QString& filePath = QString(), QWidget* parent = Q_NULLPTR);

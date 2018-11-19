@@ -26,6 +26,7 @@ namespace rocksdb {
 
 class ConnectionWidget : public ConnectionLocalWidgetDirectoryPath {
   Q_OBJECT
+
  public:
   explicit ConnectionWidget(QWidget* parent = Q_NULLPTR);
 

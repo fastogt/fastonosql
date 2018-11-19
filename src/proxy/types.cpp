@@ -20,7 +20,7 @@
 
 #include <common/string_util.h>
 
-#include <fastonosql/core/icommand_translator.h>
+#include <fastonosql/core/macros.h>
 
 namespace fastonosql {
 namespace proxy {

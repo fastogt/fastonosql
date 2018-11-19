@@ -33,16 +33,16 @@ class ConnectionSettings : public IConnectionSettingsLocal {
   core::forestdb::Config GetInfo() const;
   void SetInfo(const core::forestdb::Config& info);
 
-  virtual std::string GetDelimiter() const override;
-  virtual void SetDelimiter(const std::string& delimiter) override;
+  std::string GetDelimiter() const override;
+  void SetDelimiter(const std::string& delimiter) override;
 
-  virtual std::string GetDBPath() const override;
-  virtual void SetDBPath(const std::string& db_path) override;
+  std::string GetDBPath() const override;
+  void SetDBPath(const std::string& db_path) override;
 
-  virtual std::string GetCommandLine() const override;
-  virtual void SetCommandLine(const std::string& line) override;
+  std::string GetCommandLine() const override;
+  void SetCommandLine(const std::string& line) override;
 
-  virtual ConnectionSettings* Clone() const override;
+  ConnectionSettings* Clone() const override;
 
  private:
   core::forestdb::Config info_;

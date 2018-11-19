@@ -28,6 +28,7 @@ namespace ssdb {
 
 class Lexer : public BaseCommandsQsciLexer {
   Q_OBJECT
+
  public:
   typedef core::ConnectionCommandsTraits<core::SSDB> ssdb_trait_t;
   explicit Lexer(QObject* parent = Q_NULLPTR);

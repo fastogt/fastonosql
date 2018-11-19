@@ -42,13 +42,13 @@ serialize_t SentinelSettingsToString(const SentinelSettings& sent) {
   serialize_t sent_raw = ConnectionSettingsFactory::GetInstance().ConvertSettingsToString(sent.sentinel.get());
   common::char_buffer_t sent_raw_buff;
   common::utils::base64::encode64(sent_raw, &sent_raw_buff);
-  str << sent_raw_buff << setting_value_delemitr;
+  str << sent_raw_buff << kSettingValueDelemiter;
 
   std::ostringstream sents_raw;
   for (size_t i = 0; i < sent.sentinel_nodes.size(); ++i) {
     IConnectionSettingsBaseSPtr serv = sent.sentinel_nodes[i];
     if (serv) {
-      sents_raw << magic_number;
+      sents_raw << kMagicNumber;
       sents_raw << ConnectionSettingsFactory::GetInstance().ConvertSettingsToString(serv.get());
     }
   }
@@ -71,7 +71,7 @@ bool SentinelSettingsfromString(const serialize_t& text, SentinelSettings* sent)
   serialize_t element_text;
   for (size_t i = 0; i < value_len; ++i) {
     serialize_t::value_type ch = text[i];
-    if (ch == setting_value_delemitr || i == value_len - 1) {
+    if (ch == kSettingValueDelemiter || i == value_len - 1) {
       if (comma_count == 0) {
         common::char_buffer_t sent_raw;
         if (!common::utils::base64::decode64(element_text, &sent_raw)) {
@@ -95,7 +95,7 @@ bool SentinelSettingsfromString(const serialize_t& text, SentinelSettings* sent)
         size_t len = raw_sent.size();
         for (size_t j = 0; j < len; ++j) {
           ch = raw_sent[j];
-          if (ch == magic_number || j == len - 1) {
+          if (ch == kMagicNumber || j == len - 1) {
             IConnectionSettingsBaseSPtr ser(
                 ConnectionSettingsFactory::GetInstance().CreateSettingsFromString(server_text));
             if (ser) {
@@ -123,11 +123,11 @@ bool SentinelSettingsfromString(const serialize_t& text, SentinelSettings* sent)
 
 serialize_t SentinelConnectionSettingsFactory::ConvertSettingsToString(ISentinelSettingsBase* settings) {
   std::ostringstream str;
-  str << ConnectionSettingsFactory::GetInstance().ConvertSettingsToString(settings) << setting_value_delemitr;
+  str << ConnectionSettingsFactory::GetInstance().ConvertSettingsToString(settings) << kSettingValueDelemiter;
   auto nodes = settings->GetSentinels();
   for (size_t i = 0; i < nodes.size(); ++i) {
     auto sent = nodes[i];
-    str << magic_number << SentinelSettingsToString(sent);
+    str << kMagicNumber << SentinelSettingsToString(sent);
   }
 
   return str.str();
@@ -165,7 +165,7 @@ ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromStringSentin
 
   for (size_t i = 0; i < value_len; ++i) {
     serialize_t::value_type ch = value[i];
-    if (ch == setting_value_delemitr) {
+    if (ch == kSettingValueDelemiter) {
       if (comma_count == 0) {
         uint8_t connection_type;
         if (common::ConvertFromString(element_text, &connection_type)) {
@@ -188,7 +188,7 @@ ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromStringSentin
         serialize_t sentinel_text;
         for (size_t j = i + 2; j < value_len; ++j) {
           ch = value[j];
-          if (ch == magic_number || j == value_len - 1) {
+          if (ch == kMagicNumber || j == value_len - 1) {
             if (j == value_len - 1) {
               sentinel_text.push_back(ch);
             }

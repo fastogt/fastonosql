@@ -18,6 +18,8 @@
 
 #include "proxy/server_config.h"
 
+#include <string>
+
 #include <json-c/json_tokener.h>
 
 #include <common/convert2string.h>
@@ -55,7 +57,7 @@
 #define STATISTIC_PROJECT_VERSION_FIELD "version"
 #define STATISTIC_PROJECT_ARCH_FIELD "arch"
 
-// subs
+// subscription
 #define USER_FIRST_NAME "first_name"
 #define USER_LAST_NAME "last_name"
 #define USER_SUBSCRIPTION_STATE "subscription_state"

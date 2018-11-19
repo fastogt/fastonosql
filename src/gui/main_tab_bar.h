@@ -42,7 +42,7 @@ class MainTabBar : public QTabBar {
   void showContextMenu(const QPoint& point);
 
  protected:
-  virtual void changeEvent(QEvent*) override;
+  void changeEvent(QEvent*) override;
 
  private:
   void retranslateUi();

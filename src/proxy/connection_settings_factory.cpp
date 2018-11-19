@@ -66,10 +66,13 @@
 namespace fastonosql {
 namespace proxy {
 
+const char kMagicNumber = 0x1E;
+const char kSettingValueDelemiter = 0x1F;
+
 serialize_t ConnectionSettingsFactory::ConvertSettingsToString(IConnectionSettings* settings) {
   std::ostringstream wr;
   const connection_path_t path = settings->GetPath();
-  wr << settings->GetType() << setting_value_delemitr << path.ToString() << setting_value_delemitr
+  wr << settings->GetType() << kSettingValueDelemiter << path.ToString() << kSettingValueDelemiter
      << settings->GetLoggingMsTimeInterval();
   return wr.str();
 }
@@ -77,11 +80,11 @@ serialize_t ConnectionSettingsFactory::ConvertSettingsToString(IConnectionSettin
 serialize_t ConnectionSettingsFactory::ConvertSettingsToString(IConnectionSettingsBase* settings) {
   std::ostringstream wr;
   wr << ConvertSettingsToString(static_cast<IConnectionSettings*>(settings));
-  wr << setting_value_delemitr << settings->GetNsSeparator() << setting_value_delemitr
-     << settings->GetNsDisplayStrategy() << setting_value_delemitr << settings->GetCommandLine();
+  wr << kSettingValueDelemiter << settings->GetNsSeparator() << kSettingValueDelemiter
+     << settings->GetNsDisplayStrategy() << kSettingValueDelemiter << settings->GetCommandLine();
   if (core::IsCanSSHConnection(settings->GetType())) {
     IConnectionSettingsRemoteSSH* ssh_settings = static_cast<IConnectionSettingsRemoteSSH*>(settings);
-    wr << setting_value_delemitr << common::ConvertToString(ssh_settings->GetSSHInfo());
+    wr << kSettingValueDelemiter << common::ConvertToString(ssh_settings->GetSSHInfo());
   }
   return wr.str();
 }
@@ -157,7 +160,7 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateSettingsFromString(con
 
   for (size_t i = 0; i < value_len; ++i) {
     serialize_t::value_type ch = value[i];
-    if (ch == setting_value_delemitr) {
+    if (ch == kSettingValueDelemiter) {
       if (comma_count == 0) {
         uint8_t connection_type;
         if (common::ConvertFromString(element_text, &connection_type)) {

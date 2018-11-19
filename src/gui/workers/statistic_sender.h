@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <string>
+
 #include <QObject>
 
 namespace fastonosql {
@@ -25,6 +27,7 @@ namespace gui {
 
 class AnonymousStatisticSender : public QObject {
   Q_OBJECT
+
  public:
   explicit AnonymousStatisticSender(QObject* parent = Q_NULLPTR);
 
@@ -41,12 +44,13 @@ class AnonymousStatisticSender : public QObject {
 #if defined(PRO_VERSION)
 class StatisticSender : public AnonymousStatisticSender {
   Q_OBJECT
+
  public:
   typedef AnonymousStatisticSender base_class;
   explicit StatisticSender(const std::string& login, const std::string& build_strategy, QObject* parent = Q_NULLPTR);
 
  protected:
-  virtual void sendStatistic() override;
+  void sendStatistic() override;
 
  private:
   const std::string login_;

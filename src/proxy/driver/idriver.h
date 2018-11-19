@@ -18,6 +18,9 @@
 
 #pragma once
 
+#include <string>
+#include <vector>
+
 #include <QObject>
 
 #include <fastonosql/core/cdb_connection_client.h>  // for CDBConnectionClient
@@ -92,8 +95,8 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   void Clear();
 
  protected:
-  virtual void customEvent(QEvent* event) override;
-  virtual void timerEvent(QTimerEvent* event) override;
+  void customEvent(QEvent* event) override;
+  void timerEvent(QTimerEvent* event) override;
 
   void NotifyProgress(QObject* reciver, int value);
 

@@ -37,12 +37,12 @@ namespace proxy {
 
 serialize_t ClusterConnectionSettingsFactory::ConvertSettingsToString(IClusterSettingsBase* settings) {
   std::ostringstream str;
-  str << ConnectionSettingsFactory::GetInstance().ConvertSettingsToString(settings) << setting_value_delemitr;
+  str << ConnectionSettingsFactory::GetInstance().ConvertSettingsToString(settings) << kSettingValueDelemiter;
   auto nodes = settings->GetNodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
     IConnectionSettingsBaseSPtr serv = nodes[i];
     if (serv) {
-      str << magic_number << ConnectionSettingsFactory::GetInstance().ConvertSettingsToString(serv.get());
+      str << kMagicNumber << ConnectionSettingsFactory::GetInstance().ConvertSettingsToString(serv.get());
     }
   }
 
@@ -81,7 +81,7 @@ IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromStringCluster(
 
   for (size_t i = 0; i < value_len; ++i) {
     serialize_t::value_type ch = value[i];
-    if (ch == setting_value_delemitr) {
+    if (ch == kSettingValueDelemiter) {
       if (comma_count == 0) {
         uint8_t connection_type;
         if (common::ConvertFromString(element_text, &connection_type)) {
@@ -103,7 +103,7 @@ IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromStringCluster(
         serialize_t server_text;
         for (size_t j = i + 2; j < value_len; ++j) {
           ch = value[j];
-          if (ch == magic_number || j == value_len - 1) {
+          if (ch == kMagicNumber || j == value_len - 1) {
             if (j == value_len - 1) {
               server_text.push_back(ch);
             }

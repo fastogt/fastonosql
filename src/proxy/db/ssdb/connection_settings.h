@@ -33,16 +33,16 @@ class ConnectionSettings : public IConnectionSettingsRemote {
   core::ssdb::Config GetInfo() const;
   void SetInfo(const core::ssdb::Config& info);
 
-  virtual std::string GetDelimiter() const override;
-  virtual void SetDelimiter(const std::string& delimiter) override;
+  std::string GetDelimiter() const override;
+  void SetDelimiter(const std::string& delimiter) override;
 
-  virtual common::net::HostAndPort GetHost() const override;
-  virtual void SetHost(const common::net::HostAndPort& host) override;
+  common::net::HostAndPort GetHost() const override;
+  void SetHost(const common::net::HostAndPort& host) override;
 
-  virtual std::string GetCommandLine() const override;
-  virtual void SetCommandLine(const std::string& line) override;
+  std::string GetCommandLine() const override;
+  void SetCommandLine(const std::string& line) override;
 
-  virtual ConnectionSettings* Clone() const override;
+  ConnectionSettings* Clone() const override;
 
  private:
   core::ssdb::Config info_;

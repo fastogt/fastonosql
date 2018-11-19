@@ -18,19 +18,22 @@
 
 #pragma once
 
+#include <vector>
+
 #include <common/patterns/singleton_pattern.h>  // for LazySingleton
 
 #include <common/error.h>
 
-#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
+#include "proxy/connection_settings/iconnection_settings.h"
 
 #if defined(PRO_VERSION)
+#include <fastonosql/core/server/iserver_info.h>
+
 #include "proxy/connection_settings/icluster_connection_settings.h"
 #include "proxy/connection_settings/isentinel_connection_settings.h"
 #endif
 
-#include <fastonosql/core/server/iserver_info.h>
-#include "proxy/proxy_fwd.h"  // for IClusterSPtr, ISentinelSPtr, etc
+#include "proxy/proxy_fwd.h"
 
 namespace fastonosql {
 namespace proxy {

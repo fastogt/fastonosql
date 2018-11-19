@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
 
 namespace fastonosql {
@@ -39,7 +41,7 @@ class ISentinelSettingsBase : public IConnectionSettings {
   sentinel_connections_t GetSentinels() const;
   void AddSentinel(sentinel_connection_t sent);
 
-  virtual ISentinelSettingsBase* Clone() const override = 0;
+  ISentinelSettingsBase* Clone() const override = 0;
 
  protected:
   ISentinelSettingsBase(const connection_path_t& connection_path, core::ConnectionType type);

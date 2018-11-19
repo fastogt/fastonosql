@@ -18,6 +18,9 @@
 
 #include "proxy/driver/idriver.h"
 
+#include <string>
+#include <vector>
+
 #include <QApplication>
 #include <QThread>
 
@@ -34,9 +37,9 @@
 
 namespace {
 
-const char magicNumber = 0x1E;
-std::string createStamp(common::time64_t time) {
-  return magicNumber + common::ConvertToString(time) + '\n';
+const char kStampMagicNumber = 0x1E;
+std::string CreateStamp(common::time64_t time) {
+  return kStampMagicNumber + common::ConvertToString(time) + '\n';
 }
 
 bool GetStamp(common::buffer_t stamp, common::time64_t* time_out) {
@@ -44,7 +47,7 @@ bool GetStamp(common::buffer_t stamp, common::time64_t* time_out) {
     return false;
   }
 
-  if (stamp[0] != magicNumber) {
+  if (stamp[0] != kStampMagicNumber) {
     return false;
   }
 
@@ -176,7 +179,7 @@ void IDriver::Init() {
   if (settings_->IsHistoryEnabled()) {
     int interval = settings_->GetLoggingMsTimeInterval();
     timer_info_id_ = startTimer(interval);
-    DCHECK(timer_info_id_ != 0);
+    DCHECK_NE(timer_info_id_, 0);
   }
   InitImpl();
 }
@@ -275,7 +278,7 @@ void IDriver::timerEvent(QTimerEvent* event) {
 
     if (log_file_ && log_file_->IsOpen()) {
       common::time64_t time = common::time::current_mstime();
-      std::string stamp = createStamp(time);
+      std::string stamp = CreateStamp(time);
       core::IServerInfo* info = nullptr;
       common::Error err = GetCurrentServerInfo(&info);
       if (err) {

@@ -28,6 +28,7 @@ namespace rocksdb {
 
 class Lexer : public BaseCommandsQsciLexer {
   Q_OBJECT
+
  public:
   typedef core::ConnectionCommandsTraits<core::ROCKSDB> rocksdb_trait_t;
   explicit Lexer(QObject* parent = Q_NULLPTR);

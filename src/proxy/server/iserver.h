@@ -18,6 +18,9 @@
 
 #pragma once
 
+#include <string>
+#include <vector>
+
 #include <fastonosql/core/icommand_translator.h>  // for translator_t
 
 #include "proxy/events/events.h"        // for BackupResponceEvent, etc
@@ -31,6 +34,7 @@ namespace proxy {
 class IDriver;
 class IServer : public IServerBase, public std::enable_shared_from_this<IServer> {
   Q_OBJECT
+
  public:
   typedef core::IDataBaseInfoSPtr database_t;
   typedef std::vector<database_t> databases_t;
@@ -163,8 +167,8 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void StartCheckKeyExistTimer();
   void StopCheckKeyExistTimer();
 
-  virtual void customEvent(QEvent* event) override;
-  virtual void timerEvent(QTimerEvent* event) override;
+  void customEvent(QEvent* event) override;
+  void timerEvent(QTimerEvent* event) override;
 
   virtual IDatabaseSPtr CreateDatabase(core::IDataBaseInfoSPtr info) = 0;
   void NotifyStartEvent(QEvent* ev);

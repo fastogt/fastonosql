@@ -22,10 +22,7 @@ namespace fastonosql {
 namespace proxy {
 namespace upscaledb {
 
-Database::Database(IServerSPtr server, core::IDataBaseInfoSPtr info) : IDatabase(server, info) {
-  CHECK(server);
-  CHECK(info);
-}
+Database::Database(IServerSPtr server, core::IDataBaseInfoSPtr info) : IDatabase(server, info) {}
 
 }  // namespace upscaledb
 }  // namespace proxy

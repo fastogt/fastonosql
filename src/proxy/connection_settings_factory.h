@@ -28,8 +28,8 @@
 namespace fastonosql {
 namespace proxy {
 
-static const char magic_number = 0x1E;
-static const char setting_value_delemitr = 0x1F;
+extern const char kMagicNumber;
+extern const char kSettingValueDelemiter;
 
 class IConnectionSettings;
 class IConnectionSettingsBase;
