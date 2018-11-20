@@ -41,6 +41,8 @@ class ConnectionWidget : public ConnectionLocalWidgetDirectoryPath {
   QComboBox* type_comparators_;
   QLabel* compression_label_;
   QComboBox* type_compressions_;
+  QLabel* merge_operator_label_;
+  QComboBox* merge_operator_;
 };
 
 }  // namespace rocksdb

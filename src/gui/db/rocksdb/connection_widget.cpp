@@ -26,6 +26,10 @@
 #include "proxy/connection_settings_factory.h"
 #include "proxy/db/rocksdb/connection_settings.h"
 
+namespace {
+const QString trMergeOperator = QObject::tr("Merge operator");
+}
+
 namespace fastonosql {
 namespace gui {
 namespace rocksdb {
@@ -54,9 +58,21 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionLocalWidgetDirec
   }
 
   compression_label_ = new QLabel;
-  type_comp_layout->addWidget(compression_label_);
-  type_comp_layout->addWidget(type_compressions_);
+  type_compress_layout->addWidget(compression_label_);
+  type_compress_layout->addWidget(type_compressions_);
   addLayout(type_compress_layout);
+
+  QHBoxLayout* merge_operator_layout = new QHBoxLayout;
+  merge_operator_ = new QComboBox;
+  for (uint32_t i = 0; i < core::rocksdb::g_merge_operator_types.size(); ++i) {
+    const char* ct = core::rocksdb::g_merge_operator_types[i];
+    merge_operator_->addItem(ct, i);
+  }
+
+  merge_operator_label_ = new QLabel;
+  merge_operator_layout->addWidget(merge_operator_label_);
+  merge_operator_layout->addWidget(merge_operator_);
+  addLayout(merge_operator_layout);
 }
 
 void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
@@ -66,6 +82,7 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
     create_db_if_missing_->setChecked(config.create_if_missing);
     type_comparators_->setCurrentIndex(config.comparator);
     type_compressions_->setCurrentIndex(config.compression);
+    merge_operator_->setCurrentIndex(config.merge_operator);
   }
   ConnectionLocalWidget::syncControls(rock);
 }
@@ -74,6 +91,7 @@ void ConnectionWidget::retranslateUi() {
   create_db_if_missing_->setText(trCreateDBIfMissing);
   comparator_label_->setText(trComparator + ":");
   compression_label_->setText(trCompression + ":");
+  merge_operator_label_->setText(trMergeOperator + ":");
   ConnectionLocalWidget::retranslateUi();
 }
 
@@ -85,6 +103,7 @@ proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
   config.create_if_missing = create_db_if_missing_->isChecked();
   config.comparator = static_cast<core::rocksdb::ComparatorType>(type_comparators_->currentIndex());
   config.compression = static_cast<core::rocksdb::CompressionType>(type_compressions_->currentIndex());
+  config.merge_operator = static_cast<core::rocksdb::MergeOperatorType>(merge_operator_->currentIndex());
   conn->SetInfo(config);
   return conn;
 }
