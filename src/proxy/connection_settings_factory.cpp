@@ -193,7 +193,9 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateSettingsFromString(con
           result->SetCommandLine(cmd_str);
           break;
         }
-      } else if (comma_count == 5) {
+      }
+#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_PIKA)
+      else if (comma_count == 5) {
         const std::string cmd_str = common::ConvertToString(element_text);
         result->SetCommandLine(cmd_str);
         if (core::IsCanSSHConnection(result->GetType())) {
@@ -206,6 +208,7 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateSettingsFromString(con
         }
         break;
       }
+#endif
       comma_count++;
       element_text.clear();
     } else {
