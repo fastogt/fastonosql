@@ -23,43 +23,43 @@
 
 #include <common/qt/convert2string.h>
 
-#ifdef BUILD_WITH_REDIS
+#if defined(BUILD_WITH_REDIS)
 #include <fastonosql/core/db/redis/server_info.h>
 #endif
 
-#ifdef BUILD_WITH_MEMCACHED
+#if defined(BUILD_WITH_MEMCACHED)
 #include <fastonosql/core/db/memcached/server_info.h>
 #endif
 
-#ifdef BUILD_WITH_SSDB
+#if defined(BUILD_WITH_SSDB)
 #include <fastonosql/core/db/ssdb/server_info.h>
 #endif
 
-#ifdef BUILD_WITH_LEVELDB
+#if defined(BUILD_WITH_LEVELDB)
 #include <fastonosql/core/db/leveldb/server_info.h>
 #endif
 
-#ifdef BUILD_WITH_ROCKSDB
+#if defined(BUILD_WITH_ROCKSDB)
 #include <fastonosql/core/db/rocksdb/server_info.h>
 #endif
 
-#ifdef BUILD_WITH_UNQLITE
+#if defined(BUILD_WITH_UNQLITE)
 #include <fastonosql/core/db/unqlite/server_info.h>
 #endif
 
-#ifdef BUILD_WITH_LMDB
+#if defined(BUILD_WITH_LMDB)
 #include <fastonosql/core/db/lmdb/server_info.h>
 #endif
 
-#ifdef BUILD_WITH_UPSCALEDB
+#if defined(BUILD_WITH_UPSCALEDB)
 #include <fastonosql/core/db/upscaledb/server_info.h>
 #endif
 
-#ifdef BUILD_WITH_FORESTDB
+#if defined(BUILD_WITH_FORESTDB)
 #include <fastonosql/core/db/forestdb/server_info.h>
 #endif
 
-#ifdef BUILD_WITH_PIKA
+#if defined(BUILD_WITH_PIKA)
 #include <fastonosql/core/db/pika/server_info.h>
 #endif
 
@@ -73,7 +73,7 @@
 #include "translations/global.h"
 
 namespace {
-#ifdef BUILD_WITH_REDIS
+#if defined(BUILD_WITH_REDIS)
 const QString trRedisTextServerTemplate = QObject::tr(
     "<h3>Server:</h3>"
     "Redis version: %1<br/>"
@@ -162,7 +162,7 @@ const QString trRedisTextCpuTemplate = QObject::tr(
     "Used cpu user children: %4");
 #endif
 
-#ifdef BUILD_WITH_MEMCACHED
+#if defined(BUILD_WITH_MEMCACHED)
 const QString trMemcachedTextServerTemplate = QObject::tr(
     "<b>Common:</b><br/>"
     "Pid: %1<br/>"
@@ -189,7 +189,7 @@ const QString trMemcachedTextServerTemplate = QObject::tr(
     "Threads: %22");
 #endif
 
-#ifdef BUILD_WITH_SSDB
+#if defined(BUILD_WITH_SSDB)
 const QString trSsdbTextServerTemplate = QObject::tr(
     "<b>Common:</b><br/>"
     "Version: %1<br/>"
@@ -199,7 +199,7 @@ const QString trSsdbTextServerTemplate = QObject::tr(
     "Binlogs: %5");
 #endif
 
-#ifdef BUILD_WITH_LEVELDB
+#if defined(BUILD_WITH_LEVELDB)
 const QString trLeveldbTextServerTemplate = QObject::tr(
     "<b>Stats:</b><br/>"
     "Level: %1<br/>"
@@ -210,7 +210,7 @@ const QString trLeveldbTextServerTemplate = QObject::tr(
     "Write mb: %6");
 #endif
 
-#ifdef BUILD_WITH_ROCKSDB
+#if defined(BUILD_WITH_ROCKSDB)
 const QString trRocksdbTextServerTemplate = QObject::tr(
     "<b>Stats:</b><br/>"
     "Level: %1<br/>"
@@ -234,33 +234,33 @@ const QString trRocksdbTextServerTemplate = QObject::tr(
 
 #endif
 
-#ifdef BUILD_WITH_UNQLITE
+#if defined(BUILD_WITH_UNQLITE)
 const QString trUnqliteTextServerTemplate = QObject::tr(
     "<b>Stats:</b><br/>"
     "DB path: %1<br/>"
     "DB size: %2 bytes<br/>");
 #endif
 
-#ifdef BUILD_WITH_LMDB
+#if defined(BUILD_WITH_LMDB)
 const QString trLmdbTextServerTemplate = QObject::tr(
     "<b>Stats:</b><br/>"
     "DB path: %1<br/>");
 #endif
 
-#ifdef BUILD_WITH_UPSCALEDB
+#if defined(BUILD_WITH_UPSCALEDB)
 const QString trUpscaledbTextServerTemplate = QObject::tr(
     "<b>Stats:</b><br/>"
     "DB path: %1<br/>");
 #endif
 
-#ifdef BUILD_WITH_FORESTDB
+#if defined(BUILD_WITH_FORESTDB)
 const QString trForestdbTextServerTemplate = QObject::tr(
     "<b>Stats:</b><br/>"
     "DB path: %1<br/>"
     "DB size: %2 bytes<br/>");
 #endif
 
-#ifdef BUILD_WITH_PIKA
+#if defined(BUILD_WITH_PIKA)
 const QString trPikaTextServerTemplate = QObject::tr(
     "<h3>Server:</h3>"
     "Pika version: %1<br/>"
@@ -362,52 +362,52 @@ InfoServerDialog::InfoServerDialog(const QString& title, const QIcon& icon, prox
 
   glass_widget_ = new common::qt::gui::GlassWidget(GuiFactory::GetInstance().pathToLoadingGif(),
                                                    translations::trLoad + "...", 0.5, QColor(111, 111, 100), this);
-#ifdef BUILD_WITH_REDIS
+#if defined(BUILD_WITH_REDIS)
   if (type == core::REDIS) {
     updateText(core::redis::ServerInfo());
   }
 #endif
-#ifdef BUILD_WITH_MEMCACHED
+#if defined(BUILD_WITH_MEMCACHED)
   if (type == core::MEMCACHED) {
     updateText(core::memcached::ServerInfo());
   }
 #endif
-#ifdef BUILD_WITH_SSDB
+#if defined(BUILD_WITH_SSDB)
   if (type == core::SSDB) {
     updateText(core::ssdb::ServerInfo());
   }
 #endif
-#ifdef BUILD_WITH_LEVELDB
+#if defined(BUILD_WITH_LEVELDB)
   if (type == core::LEVELDB) {
     updateText(core::leveldb::ServerInfo());
   }
 #endif
-#ifdef BUILD_WITH_ROCKSDB
+#if defined(BUILD_WITH_ROCKSDB)
   if (type == core::ROCKSDB) {
     updateText(core::rocksdb::ServerInfo());
   }
 #endif
-#ifdef BUILD_WITH_UNQLITE
+#if defined(BUILD_WITH_UNQLITE)
   if (type == core::UNQLITE) {
     updateText(core::unqlite::ServerInfo());
   }
 #endif
-#ifdef BUILD_WITH_LMDB
+#if defined(BUILD_WITH_LMDB)
   if (type == core::LMDB) {
     updateText(core::lmdb::ServerInfo());
   }
 #endif
-#ifdef BUILD_WITH_UPSCALEDB
+#if defined(BUILD_WITH_UPSCALEDB)
   if (type == core::UPSCALEDB) {
     updateText(core::upscaledb::ServerInfo());
   }
 #endif
-#ifdef BUILD_WITH_FORESTDB
+#if defined(BUILD_WITH_FORESTDB)
   if (type == core::FORESTDB) {
     updateText(core::forestdb::ServerInfo());
   }
 #endif
-#ifdef BUILD_WITH_PIKA
+#if defined(BUILD_WITH_PIKA)
   if (type == core::PIKA) {
     updateText(core::pika::ServerInfo());
   }
@@ -437,73 +437,63 @@ void InfoServerDialog::finishServerInfo(const proxy::events_info::ServerInfoResp
 
   core::ConnectionType type = server_->GetType();
   CHECK(type == inf->GetType());
-#ifdef BUILD_WITH_REDIS
+#if defined(BUILD_WITH_REDIS)
   if (type == core::REDIS) {
     core::redis::ServerInfo* infr = static_cast<core::redis::ServerInfo*>(inf.get());
-    CHECK(infr);
     updateText(*infr);
   }
 #endif
-#ifdef BUILD_WITH_MEMCACHED
+#if defined(BUILD_WITH_MEMCACHED)
   if (type == core::MEMCACHED) {
     core::memcached::ServerInfo* infr = static_cast<core::memcached::ServerInfo*>(inf.get());
-    CHECK(infr);
     updateText(*infr);
   }
 #endif
-#ifdef BUILD_WITH_SSDB
+#if defined(BUILD_WITH_SSDB)
   if (type == core::SSDB) {
     core::ssdb::ServerInfo* infr = static_cast<core::ssdb::ServerInfo*>(inf.get());
-    CHECK(infr);
     updateText(*infr);
   }
 #endif
-#ifdef BUILD_WITH_LEVELDB
+#if defined(BUILD_WITH_LEVELDB)
   if (type == core::LEVELDB) {
     core::leveldb::ServerInfo* infr = static_cast<core::leveldb::ServerInfo*>(inf.get());
-    CHECK(infr);
     updateText(*infr);
   }
 #endif
-#ifdef BUILD_WITH_ROCKSDB
+#if defined(BUILD_WITH_ROCKSDB)
   if (type == core::ROCKSDB) {
     core::rocksdb::ServerInfo* infr = static_cast<core::rocksdb::ServerInfo*>(inf.get());
-    CHECK(infr);
     updateText(*infr);
   }
 #endif
-#ifdef BUILD_WITH_UNQLITE
+#if defined(BUILD_WITH_UNQLITE)
   if (type == core::UNQLITE) {
     core::unqlite::ServerInfo* infr = static_cast<core::unqlite::ServerInfo*>(inf.get());
-    CHECK(infr);
     updateText(*infr);
   }
 #endif
-#ifdef BUILD_WITH_LMDB
+#if defined(BUILD_WITH_LMDB)
   if (type == core::LMDB) {
     core::lmdb::ServerInfo* infr = static_cast<core::lmdb::ServerInfo*>(inf.get());
-    CHECK(infr);
     updateText(*infr);
   }
 #endif
-#ifdef BUILD_WITH_UPSCALEDB
+#if defined(BUILD_WITH_UPSCALEDB)
   if (type == core::UPSCALEDB) {
     core::upscaledb::ServerInfo* infr = static_cast<core::upscaledb::ServerInfo*>(inf.get());
-    CHECK(infr);
     updateText(*infr);
   }
 #endif
-#ifdef BUILD_WITH_FORESTDB
+#if defined(BUILD_WITH_FORESTDB)
   if (type == core::FORESTDB) {
     core::forestdb::ServerInfo* infr = static_cast<core::forestdb::ServerInfo*>(inf.get());
-    CHECK(infr);
     updateText(*infr);
   }
 #endif
-#ifdef BUILD_WITH_PIKA
+#if defined(BUILD_WITH_PIKA)
   if (type == core::PIKA) {
     core::pika::ServerInfo* infr = static_cast<core::pika::ServerInfo*>(inf.get());
-    CHECK(infr);
     updateText(*infr);
   }
 #endif
@@ -515,7 +505,7 @@ void InfoServerDialog::showEvent(QShowEvent* e) {
   server_->LoadServerInfo(req);
 }
 
-#ifdef BUILD_WITH_REDIS
+#if defined(BUILD_WITH_REDIS)
 void InfoServerDialog::updateText(const core::redis::ServerInfo& serv) {
   core::redis::ServerInfo::Server ser = serv.server_;
   QString qredis_version;
@@ -645,7 +635,7 @@ void InfoServerDialog::updateText(const core::redis::ServerInfo& serv) {
 }
 #endif
 
-#ifdef BUILD_WITH_MEMCACHED
+#if defined(BUILD_WITH_MEMCACHED)
 void InfoServerDialog::updateText(const core::memcached::ServerInfo& serv) {
   core::memcached::ServerInfo::Stats com = serv.stats_;
   QString qverson;
@@ -678,7 +668,7 @@ void InfoServerDialog::updateText(const core::memcached::ServerInfo& serv) {
 }
 #endif
 
-#ifdef BUILD_WITH_SSDB
+#if defined(BUILD_WITH_SSDB)
 void InfoServerDialog::updateText(const core::ssdb::ServerInfo& serv) {
   core::ssdb::ServerInfo::Stats com = serv.stats_;
   QString qverson;
@@ -693,7 +683,7 @@ void InfoServerDialog::updateText(const core::ssdb::ServerInfo& serv) {
 }
 #endif
 
-#ifdef BUILD_WITH_LEVELDB
+#if defined(BUILD_WITH_LEVELDB)
 void InfoServerDialog::updateText(const core::leveldb::ServerInfo& serv) {
   core::leveldb::ServerInfo::Stats stats = serv.stats_;
   QString text_serv = trLeveldbTextServerTemplate.arg(stats.level)
@@ -706,7 +696,7 @@ void InfoServerDialog::updateText(const core::leveldb::ServerInfo& serv) {
   server_text_info_->setText(text_serv);
 }
 #endif
-#ifdef BUILD_WITH_ROCKSDB
+#if defined(BUILD_WITH_ROCKSDB)
 void InfoServerDialog::updateText(const core::rocksdb::ServerInfo& serv) {
   core::rocksdb::ServerInfo::Stats stats = serv.stats_;
   QString qlevel;
@@ -736,7 +726,7 @@ void InfoServerDialog::updateText(const core::rocksdb::ServerInfo& serv) {
   server_text_info_->setText(text_serv);
 }
 #endif
-#ifdef BUILD_WITH_UNQLITE
+#if defined(BUILD_WITH_UNQLITE)
 void InfoServerDialog::updateText(const core::unqlite::ServerInfo& serv) {
   core::unqlite::ServerInfo::Stats stats = serv.stats_;
   QString qfile_name;
@@ -746,7 +736,7 @@ void InfoServerDialog::updateText(const core::unqlite::ServerInfo& serv) {
   server_text_info_->setText(text_serv);
 }
 #endif
-#ifdef BUILD_WITH_LMDB
+#if defined(BUILD_WITH_LMDB)
 void InfoServerDialog::updateText(const core::lmdb::ServerInfo& serv) {
   core::lmdb::ServerInfo::Stats stats = serv.stats_;
   QString qdb_path;
@@ -756,7 +746,7 @@ void InfoServerDialog::updateText(const core::lmdb::ServerInfo& serv) {
   server_text_info_->setText(text_serv);
 }
 #endif
-#ifdef BUILD_WITH_UPSCALEDB
+#if defined(BUILD_WITH_UPSCALEDB)
 void InfoServerDialog::updateText(const core::upscaledb::ServerInfo& serv) {
   core::upscaledb::ServerInfo::Stats stats = serv.stats_;
   QString qdb_path;
@@ -766,7 +756,7 @@ void InfoServerDialog::updateText(const core::upscaledb::ServerInfo& serv) {
   server_text_info_->setText(text_serv);
 }
 #endif
-#ifdef BUILD_WITH_FORESTDB
+#if defined(BUILD_WITH_FORESTDB)
 void InfoServerDialog::updateText(const core::forestdb::ServerInfo& serv) {
   core::forestdb::ServerInfo::Stats stats = serv.stats_;
   QString qdb_path;
@@ -777,7 +767,7 @@ void InfoServerDialog::updateText(const core::forestdb::ServerInfo& serv) {
 }
 #endif
 
-#ifdef BUILD_WITH_PIKA
+#if defined(BUILD_WITH_PIKA)
 void InfoServerDialog::updateText(const core::pika::ServerInfo& serv) {
   // Server
   core::pika::ServerInfo::Server ser = serv.server_;

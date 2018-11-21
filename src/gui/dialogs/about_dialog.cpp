@@ -37,8 +37,6 @@
 #include <common/config.h>
 #include <common/qt/convert2string.h>
 
-#include <fastonosql/config.h>
-
 #include "gui/gui_factory.h"  // for GuiFactory
 
 #include "translations/global.h"

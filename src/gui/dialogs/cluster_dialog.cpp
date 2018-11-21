@@ -101,14 +101,15 @@ ClusterDialog::ClusterDialog(proxy::IClusterSettingsBase* connection, QWidget* p
 
   type_connection_ = new QComboBox;
 
-  for (size_t i = 0; i < core::g_compiled_types.size(); ++i) {
-    core::ConnectionType ct = core::g_compiled_types[i];
-    std::string str = core::ConnectionTypeToString(ct);
-    QString qstr;
-    if (common::ConvertFromString(str, &qstr)) {
-      type_connection_->addItem(GuiFactory::GetInstance().icon(ct), qstr, ct);
-    }
-  }
+  const auto updateCombobox = [this](core::ConnectionType type) {
+    type_connection_->addItem(GuiFactory::GetInstance().icon(type), core::ConnectionTypeToString(type), type);
+  };
+#if defined(BUILD_WITH_REDIS)
+  updateCombobox(core::REDIS);
+#endif
+#if defined(BUILD_WITH_PIKA)
+  updateCombobox(core::PIKA);
+#endif
 
   if (cluster_connection_) {
     type_connection_->setCurrentIndex(cluster_connection_->GetType());
@@ -323,7 +324,7 @@ void ClusterDialog::setStartNode() {
 }
 
 void ClusterDialog::add() {
-#ifdef BUILD_WITH_REDIS
+#if defined(BUILD_WITH_REDIS)
   auto dlg = createDialog<ConnectionDialog>(core::REDIS, translations::trNewConnection, this);  // +
   dlg->setFolderEnabled(false);
   int result = dlg->exec();
@@ -361,7 +362,6 @@ void ClusterDialog::edit() {
     return;
   }
 
-#ifdef BUILD_WITH_REDIS
   proxy::IConnectionSettingsBaseSPtr old_connection = current_item->connection();
   auto dlg = createDialog<ConnectionDialog>(old_connection->Clone(), this);  // +
   dlg->setFolderEnabled(false);
@@ -369,7 +369,6 @@ void ClusterDialog::edit() {
   if (result == QDialog::Accepted) {
     current_item->setConnection(dlg->connection());
   }
-#endif
 }
 
 void ClusterDialog::itemSelectionChanged() {

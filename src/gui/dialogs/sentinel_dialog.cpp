@@ -95,14 +95,15 @@ SentinelDialog::SentinelDialog(proxy::ISentinelSettingsBase* connection, QWidget
 
   type_connection_ = new QComboBox;
 
-  for (size_t i = 0; i < core::g_compiled_types.size(); ++i) {
-    core::ConnectionType ct = core::g_compiled_types[i];
-    std::string str = core::ConnectionTypeToString(ct);
-    QString qstr;
-    if (common::ConvertFromString(str, &qstr)) {
-      type_connection_->addItem(GuiFactory::GetInstance().icon(ct), qstr, ct);
-    }
-  }
+  const auto updateCombobox = [this](core::ConnectionType type) {
+    type_connection_->addItem(GuiFactory::GetInstance().icon(type), core::ConnectionTypeToString(type), type);
+  };
+#if defined(BUILD_WITH_REDIS)
+  updateCombobox(core::REDIS);
+#endif
+#if defined(BUILD_WITH_PIKA)
+  updateCombobox(core::PIKA);
+#endif
 
   if (sentinel_connection_) {
     type_connection_->setCurrentIndex(sentinel_connection_->GetType());

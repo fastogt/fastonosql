@@ -18,34 +18,34 @@
 
 #include "gui/connection_widgets_factory.h"
 
-#ifdef BUILD_WITH_REDIS
+#if defined(BUILD_WITH_REDIS)
 #include "gui/db/redis/connection_widget.h"
 #endif
-#ifdef BUILD_WITH_MEMCACHED
+#if defined(BUILD_WITH_MEMCACHED)
 #include "gui/db/memcached/connection_widget.h"
 #endif
-#ifdef BUILD_WITH_SSDB
+#if defined(BUILD_WITH_SSDB)
 #include "gui/db/ssdb/connection_widget.h"
 #endif
-#ifdef BUILD_WITH_LEVELDB
+#if defined(BUILD_WITH_LEVELDB)
 #include "gui/db/leveldb/connection_widget.h"
 #endif
-#ifdef BUILD_WITH_ROCKSDB
+#if defined(BUILD_WITH_ROCKSDB)
 #include "gui/db/rocksdb/connection_widget.h"
 #endif
-#ifdef BUILD_WITH_UNQLITE
+#if defined(BUILD_WITH_UNQLITE)
 #include "gui/db/unqlite/connection_widget.h"
 #endif
-#ifdef BUILD_WITH_LMDB
+#if defined(BUILD_WITH_LMDB)
 #include "gui/db/lmdb/connection_widget.h"
 #endif
-#ifdef BUILD_WITH_UPSCALEDB
+#if defined(BUILD_WITH_UPSCALEDB)
 #include "gui/db/upscaledb/connection_widget.h"
 #endif
-#ifdef BUILD_WITH_FORESTDB
+#if defined(BUILD_WITH_FORESTDB)
 #include "gui/db/forestdb/connection_widget.h"
 #endif
-#ifdef BUILD_WITH_PIKA
+#if defined(BUILD_WITH_PIKA)
 #include "gui/db/pika/connection_widget.h"
 #endif
 
@@ -53,52 +53,52 @@ namespace fastonosql {
 namespace gui {
 namespace {
 ConnectionBaseWidget* createWidgetImpl(core::ConnectionType type, QWidget* parent) {
-#ifdef BUILD_WITH_REDIS
+#if defined(BUILD_WITH_REDIS)
   if (type == core::REDIS) {
     return new redis::ConnectionWidget(parent);
   }
 #endif
-#ifdef BUILD_WITH_MEMCACHED
+#if defined(BUILD_WITH_MEMCACHED)
   if (type == core::MEMCACHED) {
     return new memcached::ConnectionWidget(parent);
   }
 #endif
-#ifdef BUILD_WITH_SSDB
+#if defined(BUILD_WITH_SSDB)
   if (type == core::SSDB) {
     return new ssdb::ConnectionWidget(parent);
   }
 #endif
-#ifdef BUILD_WITH_LEVELDB
+#if defined(BUILD_WITH_LEVELDB)
   if (type == core::LEVELDB) {
     return new leveldb::ConnectionWidget(parent);
   }
 #endif
-#ifdef BUILD_WITH_ROCKSDB
+#if defined(BUILD_WITH_ROCKSDB)
   if (type == core::ROCKSDB) {
     return new rocksdb::ConnectionWidget(parent);
   }
 #endif
-#ifdef BUILD_WITH_UNQLITE
+#if defined(BUILD_WITH_UNQLITE)
   if (type == core::UNQLITE) {
     return new unqlite::ConnectionWidget(parent);
   }
 #endif
-#ifdef BUILD_WITH_LMDB
+#if defined(BUILD_WITH_LMDB)
   if (type == core::LMDB) {
     return new lmdb::ConnectionWidget(parent);
   }
 #endif
-#ifdef BUILD_WITH_UPSCALEDB
+#if defined(BUILD_WITH_UPSCALEDB)
   if (type == core::UPSCALEDB) {
     return new upscaledb::ConnectionWidget(parent);
   }
 #endif
-#ifdef BUILD_WITH_FORESTDB
+#if defined(BUILD_WITH_FORESTDB)
   if (type == core::FORESTDB) {
     return new forestdb::ConnectionWidget(parent);
   }
 #endif
-#ifdef BUILD_WITH_PIKA
+#if defined(BUILD_WITH_PIKA)
   if (type == core::PIKA) {
     return new pika::ConnectionWidget(parent);
   }

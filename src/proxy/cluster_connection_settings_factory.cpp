@@ -22,11 +22,11 @@
 
 #include <common/convert2string.h>
 
-#ifdef BUILD_WITH_REDIS
+#if defined(BUILD_WITH_REDIS)
 #include "proxy/db/redis/cluster_settings.h"  // for ClusterSettings
 #endif
 
-#ifdef BUILD_WITH_PIKA
+#if defined(BUILD_WITH_PIKA)
 #include "proxy/db/pika/cluster_settings.h"  // for ClusterSettings
 #endif
 
@@ -52,12 +52,12 @@ serialize_t ClusterConnectionSettingsFactory::ConvertSettingsToString(IClusterSe
 IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromTypeCluster(
     core::ConnectionType type,
     const connection_path_t& connection_path) {
-#ifdef BUILD_WITH_REDIS
+#if defined(BUILD_WITH_REDIS)
   if (type == core::REDIS) {
     return new redis::ClusterSettings(connection_path);
   }
 #endif
-#ifdef BUILD_WITH_PIKA
+#if defined(BUILD_WITH_PIKA)
   if (type == core::PIKA) {
     return new pika::ClusterSettings(connection_path);
   }

@@ -102,16 +102,36 @@ class GuiFactory : public common::patterns::LazySingleton<GuiFactory> {
 
  private:
   GuiFactory();
+#if defined(BUILD_WITH_REDIS)
   const QIcon& redisConnectionIcon() const;
+#endif
+#if defined(BUILD_WITH_PIKA)
   const QIcon& pikaConnectionIcon() const;
+#endif
+#if defined(BUILD_WITH_MEMCACHED)
   const QIcon& memcachedConnectionIcon() const;
+#endif
+#if defined(BUILD_WITH_SSDB)
   const QIcon& ssdbConnectionIcon() const;
+#endif
+#if defined(BUILD_WITH_LEVELDB)
   const QIcon& leveldbConnectionIcon() const;
+#endif
+#if defined(BUILD_WITH_ROCKSDB)
   const QIcon& rocksdbConnectionIcon() const;
+#endif
+#if defined(BUILD_WITH_UNQLITE)
   const QIcon& unqliteConnectionIcon() const;
+#endif
+#if defined(BUILD_WITH_LMDB)
   const QIcon& lmdbConnectionIcon() const;
+#endif
+#if defined(BUILD_WITH_UPSCALEDB)
   const QIcon& upscaledbConnectionIcon() const;
+#endif
+#if defined(BUILD_WITH_FORESTDB)
   const QIcon& forestdbConnectionIcon() const;
+#endif
 };
 
 }  // namespace gui

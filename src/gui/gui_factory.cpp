@@ -18,6 +18,8 @@
 
 #include "gui/gui_factory.h"
 
+#include <string>
+
 #include <QApplication>
 #include <QIcon>
 #include <QStyle>
@@ -153,29 +155,58 @@ const QIcon& GuiFactory::keyTTLIcon() const {
 }
 
 const QIcon& GuiFactory::icon(core::ConnectionType type) const {
+#if defined(BUILD_WITH_REDIS)
   if (type == core::REDIS) {
     return redisConnectionIcon();
-  } else if (type == core::MEMCACHED) {
-    return memcachedConnectionIcon();
-  } else if (type == core::SSDB) {
-    return ssdbConnectionIcon();
-  } else if (type == core::LEVELDB) {
-    return leveldbConnectionIcon();
-  } else if (type == core::ROCKSDB) {
-    return rocksdbConnectionIcon();
-  } else if (type == core::UNQLITE) {
-    return unqliteConnectionIcon();
-  } else if (type == core::LMDB) {
-    return lmdbConnectionIcon();
-  } else if (type == core::UPSCALEDB) {
-    return upscaledbConnectionIcon();
-  } else if (type == core::FORESTDB) {
-    return forestdbConnectionIcon();
-  } else if (type == core::PIKA) {
-    return pikaConnectionIcon();
-  } else {
-    return serverIcon();
   }
+#endif
+#if defined(BUILD_WITH_MEMCACHED)
+  if (type == core::MEMCACHED) {
+    return memcachedConnectionIcon();
+  }
+#endif
+#if defined(BUILD_WITH_SSDB)
+  if (type == core::SSDB) {
+    return ssdbConnectionIcon();
+  }
+#endif
+#if defined(BUILD_WITH_LEVELDB)
+  if (type == core::LEVELDB) {
+    return leveldbConnectionIcon();
+  }
+#endif
+#if defined(BUILD_WITH_ROCKSDB)
+  if (type == core::ROCKSDB) {
+    return rocksdbConnectionIcon();
+  }
+#endif
+#if defined(BUILD_WITH_UNQLITE)
+  if (type == core::UNQLITE) {
+    return unqliteConnectionIcon();
+  }
+#endif
+#if defined(BUILD_WITH_LMDB)
+  if (type == core::LMDB) {
+    return lmdbConnectionIcon();
+  }
+#endif
+#if defined(BUILD_WITH_UPSCALEDB)
+  if (type == core::UPSCALEDB) {
+    return upscaledbConnectionIcon();
+  }
+#endif
+#if defined(BUILD_WITH_FORESTDB)
+  if (type == core::FORESTDB) {
+    return forestdbConnectionIcon();
+  }
+#endif
+#if defined(BUILD_WITH_PIKA)
+  if (type == core::PIKA) {
+    return pikaConnectionIcon();
+  }
+#endif
+
+  return serverIcon();
 }
 
 const QIcon& GuiFactory::modeIcon(core::ConnectionMode mode) const {
@@ -363,29 +394,7 @@ const QIcon& GuiFactory::search16Icon() const {
 }
 
 const QIcon& GuiFactory::commandIcon(core::ConnectionType type) const {
-  if (type == core::REDIS) {
-    return redisConnectionIcon();
-  } else if (type == core::MEMCACHED) {
-    return memcachedConnectionIcon();
-  } else if (type == core::SSDB) {
-    return ssdbConnectionIcon();
-  } else if (type == core::LEVELDB) {
-    return leveldbConnectionIcon();
-  } else if (type == core::ROCKSDB) {
-    return rocksdbConnectionIcon();
-  } else if (type == core::UNQLITE) {
-    return unqliteConnectionIcon();
-  } else if (type == core::LMDB) {
-    return lmdbConnectionIcon();
-  } else if (type == core::UPSCALEDB) {
-    return upscaledbConnectionIcon();
-  } else if (type == core::FORESTDB) {
-    return forestdbConnectionIcon();
-  } else if (type == core::PIKA) {
-    return pikaConnectionIcon();
-  } else {
-    return serverIcon();
-  }
+  return icon(type);
 }
 
 const QIcon& GuiFactory::successIcon() const {
@@ -442,55 +451,75 @@ QString GuiFactory::pathToWorkflowGif() const {
   return path;
 }
 
+#if defined(BUILD_WITH_REDIS)
 const QIcon& GuiFactory::redisConnectionIcon() const {
   static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/redis.png");
   return main;
 }
+#endif
 
+#if defined(BUILD_WITH_PIKA)
 const QIcon& GuiFactory::pikaConnectionIcon() const {
   static QIcon pika(":" PROJECT_NAME_LOWERCASE "/images/64x64/pika.png");
   return pika;
 }
+#endif
 
+#if defined(BUILD_WITH_MEMCACHED)
 const QIcon& GuiFactory::memcachedConnectionIcon() const {
   static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/memcached.png");
   return main;
 }
+#endif
 
+#if defined(BUILD_WITH_SSDB)
 const QIcon& GuiFactory::ssdbConnectionIcon() const {
   static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/ssdb.png");
   return main;
 }
+#endif
 
+#if defined(BUILD_WITH_LEVELDB)
 const QIcon& GuiFactory::leveldbConnectionIcon() const {
   static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/leveldb.png");
   return main;
 }
+#endif
 
+#if defined(BUILD_WITH_ROCKSDB)
 const QIcon& GuiFactory::rocksdbConnectionIcon() const {
   static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/rocksdb.png");
   return main;
 }
+#endif
 
+#if defined(BUILD_WITH_UNQLITE)
 const QIcon& GuiFactory::unqliteConnectionIcon() const {
   static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/unqlite.png");
   return main;
 }
+#endif
 
+#if defined(BUILD_WITH_LMDB)
 const QIcon& GuiFactory::lmdbConnectionIcon() const {
   static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/lmdb.png");
   return main;
 }
+#endif
 
+#if defined(BUILD_WITH_UPSCALEDB)
 const QIcon& GuiFactory::upscaledbConnectionIcon() const {
   static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/upscaledb.png");
   return main;
 }
+#endif
 
+#if defined(BUILD_WITH_FORESTDB)
 const QIcon& GuiFactory::forestdbConnectionIcon() const {
   static QIcon main(":" PROJECT_NAME_LOWERCASE "/images/64x64/forestdb.png");
   return main;
 }
+#endif
 
 }  // namespace gui
 }  // namespace fastonosql

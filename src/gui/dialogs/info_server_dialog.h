@@ -96,37 +96,37 @@ class InfoServerDialog : public BaseDialog {
                             proxy::IServerSPtr server,
                             QWidget* parent = Q_NULLPTR);
 
-  virtual void showEvent(QShowEvent* e) override;
+  void showEvent(QShowEvent* e) override;
 
  private:
-#ifdef BUILD_WITH_REDIS
+#if defined(BUILD_WITH_REDIS)
   void updateText(const core::redis::ServerInfo& serv);
 #endif
-#ifdef BUILD_WITH_MEMCACHED
+#if defined(BUILD_WITH_MEMCACHED)
   void updateText(const core::memcached::ServerInfo& serv);
 #endif
-#ifdef BUILD_WITH_SSDB
+#if defined(BUILD_WITH_SSDB)
   void updateText(const core::ssdb::ServerInfo& serv);
 #endif
-#ifdef BUILD_WITH_LEVELDB
+#if defined(BUILD_WITH_LEVELDB)
   void updateText(const core::leveldb::ServerInfo& serv);
 #endif
-#ifdef BUILD_WITH_ROCKSDB
+#if defined(BUILD_WITH_ROCKSDB)
   void updateText(const core::rocksdb::ServerInfo& serv);
 #endif
-#ifdef BUILD_WITH_UNQLITE
+#if defined(BUILD_WITH_UNQLITE)
   void updateText(const core::unqlite::ServerInfo& serv);
 #endif
-#ifdef BUILD_WITH_LMDB
+#if defined(BUILD_WITH_LMDB)
   void updateText(const core::lmdb::ServerInfo& serv);
 #endif
-#ifdef BUILD_WITH_UPSCALEDB
+#if defined(BUILD_WITH_UPSCALEDB)
   void updateText(const core::upscaledb::ServerInfo& serv);
 #endif
-#ifdef BUILD_WITH_FORESTDB
+#if defined(BUILD_WITH_FORESTDB)
   void updateText(const core::forestdb::ServerInfo& serv);
 #endif
-#ifdef BUILD_WITH_PIKA
+#if defined(BUILD_WITH_PIKA)
   void updateText(const core::pika::ServerInfo& serv);
 #endif
 

@@ -42,15 +42,39 @@ ConnectionSelectTypeDialog::ConnectionSelectTypeDialog(const QString& title, QWi
     : base_class(title, parent), type_connection_label_(nullptr), type_connection_(nullptr), button_box_(nullptr) {
   type_connection_label_ = new QLabel;
   type_connection_ = new QComboBox;
-
-  for (size_t i = 0; i < core::g_compiled_types.size(); ++i) {
-    core::ConnectionType ct = core::g_compiled_types[i];
-    std::string str = core::ConnectionTypeToString(ct);
-    QString qstr;
-    if (common::ConvertFromString(str, &qstr)) {
-      type_connection_->addItem(GuiFactory::GetInstance().icon(ct), qstr, ct);
-    }
-  }
+  const auto updateCombobox = [this](core::ConnectionType type) {
+    type_connection_->addItem(GuiFactory::GetInstance().icon(type), core::ConnectionTypeToString(type), type);
+  };
+#if defined(BUILD_WITH_REDIS)
+  updateCombobox(core::REDIS);
+#endif
+#if defined(BUILD_WITH_MEMCACHED)
+  updateCombobox(core::MEMCACHED);
+#endif
+#if defined(BUILD_WITH_SSDB)
+  updateCombobox(core::SSDB);
+#endif
+#if defined(BUILD_WITH_LEVELDB)
+  updateCombobox(core::LEVELDB);
+#endif
+#if defined(BUILD_WITH_ROCKSDB)
+  updateCombobox(core::ROCKSDB);
+#endif
+#if defined(BUILD_WITH_UNQLITE)
+  updateCombobox(core::UNQLITE);
+#endif
+#if defined(BUILD_WITH_LMDB)
+  updateCombobox(core::LMDB);
+#endif
+#if defined(BUILD_WITH_UPSCALEDB)
+  updateCombobox(core::UPSCALEDB);
+#endif
+#if defined(BUILD_WITH_FORESTDB)
+  updateCombobox(core::FORESTDB);
+#endif
+#if defined(BUILD_WITH_PIKA)
+  updateCombobox(core::PIKA);
+#endif
 
   QHBoxLayout* type_layout = new QHBoxLayout;
   type_layout->addWidget(type_connection_label_);
