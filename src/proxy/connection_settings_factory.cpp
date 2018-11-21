@@ -92,52 +92,52 @@ serialize_t ConnectionSettingsFactory::ConvertSettingsToString(IConnectionSettin
 IConnectionSettingsBase* ConnectionSettingsFactory::CreateSettingsFromTypeConnection(
     core::ConnectionType type,
     const connection_path_t& connection_path) {
-#ifdef BUILD_WITH_REDIS
+#if defined(BUILD_WITH_REDIS)
   if (type == core::REDIS) {
     return CreateREDISConnection(connection_path);
   }
 #endif
-#ifdef BUILD_WITH_MEMCACHED
+#if defined(BUILD_WITH_MEMCACHED)
   if (type == core::MEMCACHED) {
     return CreateMEMCACHEDConnection(connection_path);
   }
 #endif
-#ifdef BUILD_WITH_SSDB
+#if defined(BUILD_WITH_SSDB)
   if (type == core::SSDB) {
     return CreateSSDBConnection(connection_path);
   }
 #endif
-#ifdef BUILD_WITH_LEVELDB
+#if defined(BUILD_WITH_LEVELDB)
   if (type == core::LEVELDB) {
     return CreateLEVELDBConnection(connection_path);
   }
 #endif
-#ifdef BUILD_WITH_ROCKSDB
+#if defined(BUILD_WITH_ROCKSDB)
   if (type == core::ROCKSDB) {
     return CreateROCKSDBConnection(connection_path);
   }
 #endif
-#ifdef BUILD_WITH_UNQLITE
+#if defined(BUILD_WITH_UNQLITE)
   if (type == core::UNQLITE) {
     return CreateUNQLITEConnection(connection_path);
   }
 #endif
-#ifdef BUILD_WITH_LMDB
+#if defined(BUILD_WITH_LMDB)
   if (type == core::LMDB) {
     return CreateLMDBConnection(connection_path);
   }
 #endif
-#ifdef BUILD_WITH_UPSCALEDB
+#if defined(BUILD_WITH_UPSCALEDB)
   if (type == core::UPSCALEDB) {
     return CreateUPSCALEDBConnection(connection_path);
   }
 #endif
-#ifdef BUILD_WITH_FORESTDB
+#if defined(BUILD_WITH_FORESTDB)
   if (type == core::FORESTDB) {
     return CreateFORESTDBConnection(connection_path);
   }
 #endif
-#ifdef BUILD_WITH_PIKA
+#if defined(BUILD_WITH_PIKA)
   if (type == core::PIKA) {
     return CreatePIKAConnection(connection_path);
   }
