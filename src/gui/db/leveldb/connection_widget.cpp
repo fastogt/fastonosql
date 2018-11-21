@@ -54,8 +54,8 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionLocalWidgetDirec
   }
 
   compression_label_ = new QLabel;
-  type_comp_layout->addWidget(compression_label_);
-  type_comp_layout->addWidget(type_compressions_);
+  type_compress_layout->addWidget(compression_label_);
+  type_compress_layout->addWidget(type_compressions_);
   addLayout(type_compress_layout);
 }
 

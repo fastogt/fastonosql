@@ -18,7 +18,7 @@
 
 #include "gui/db/ssdb/connection_widget.h"
 
-#include "proxy/db/ssdb/connection_settings.h"
+#include <string>
 
 #include <QCheckBox>
 #include <QHBoxLayout>
@@ -28,6 +28,7 @@
 #include <common/qt/convert2string.h>
 
 #include "proxy/connection_settings_factory.h"
+#include "proxy/db/ssdb/connection_settings.h"
 
 #include "translations/global.h"
 
@@ -36,9 +37,9 @@ namespace gui {
 namespace ssdb {
 
 ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionRemoteWidget(parent) {
-  useAuth_ = new QCheckBox;
-  VERIFY(connect(useAuth_, &QCheckBox::stateChanged, this, &ConnectionWidget::authStateChange));
-  addWidget(useAuth_);
+  use_auth_ = new QCheckBox;
+  VERIFY(connect(use_auth_, &QCheckBox::stateChanged, this, &ConnectionWidget::authStateChange));
+  addWidget(use_auth_);
 
   QHBoxLayout* passwordLayout = new QHBoxLayout;
   password_box_ = new QLineEdit;
@@ -49,7 +50,7 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionRemoteWidget(par
   passwordLayout->addWidget(password_echo_mode_button_);
   addLayout(passwordLayout);
 
-  useAuth_->setChecked(false);
+  use_auth_->setChecked(false);
   password_box_->setEnabled(false);
   password_echo_mode_button_->setEnabled(false);
 }
@@ -60,12 +61,12 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
     core::ssdb::Config config = ssdb->GetInfo();
     std::string auth = config.auth;
     if (!auth.empty()) {
-      useAuth_->setChecked(true);
+      use_auth_->setChecked(true);
       QString qauth;
       common::ConvertFromString(auth, &qauth);
       password_box_->setText(qauth);
     } else {
-      useAuth_->setChecked(false);
+      use_auth_->setChecked(false);
       password_box_->clear();
     }
   }
@@ -73,7 +74,7 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
 }
 
 void ConnectionWidget::retranslateUi() {
-  useAuth_->setText(trUseAuth);
+  use_auth_->setText(trUseAuth);
   ConnectionRemoteWidget::retranslateUi();
 }
 
@@ -86,7 +87,7 @@ bool ConnectionWidget::validated() const {
 }
 
 bool ConnectionWidget::isValidCredential() const {
-  if (useAuth_->isChecked()) {
+  if (use_auth_->isChecked()) {
     QString pass = password_box_->text();
     return !pass.isEmpty();
   }
@@ -109,7 +110,7 @@ proxy::IConnectionSettingsRemote* ConnectionWidget::createConnectionRemoteImpl(
     const proxy::connection_path_t& path) const {
   proxy::ssdb::ConnectionSettings* conn = proxy::ConnectionSettingsFactory::GetInstance().CreateSSDBConnection(path);
   core::ssdb::Config config = conn->GetInfo();
-  if (useAuth_->isChecked() && isValidCredential()) {
+  if (use_auth_->isChecked() && isValidCredential()) {
     config.auth = common::ConvertToString(password_box_->text());
   }
   conn->SetInfo(config);

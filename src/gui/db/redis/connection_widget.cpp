@@ -18,6 +18,8 @@
 
 #include "gui/db/redis/connection_widget.h"
 
+#include <string>
+
 #include <QCheckBox>
 #include <QEvent>
 #include <QFileDialog>
@@ -55,18 +57,18 @@ namespace redis {
 
 ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(parent) {
   QVBoxLayout* vbox = new QVBoxLayout;
-  groupBox_ = new QGroupBox;
+  group_box_ = new QGroupBox;
   remote_ = new QRadioButton;
   local_ = new QRadioButton;
   VERIFY(connect(remote_, &QRadioButton::toggled, this, &ConnectionWidget::selectRemoteDBPath));
   VERIFY(connect(local_, &QRadioButton::toggled, this, &ConnectionWidget::selectLocalDBPath));
 
-  isSSLConnection_ = new QCheckBox;
-  VERIFY(connect(isSSLConnection_, &QCheckBox::stateChanged, this, &ConnectionWidget::sslStateChange));
+  is_ssl_connection_ = new QCheckBox;
+  VERIFY(connect(is_ssl_connection_, &QCheckBox::stateChanged, this, &ConnectionWidget::sslStateChange));
 
   QHBoxLayout* hbox = new QHBoxLayout;
   hbox->addWidget(remote_);
-  hbox->addWidget(isSSLConnection_);
+  hbox->addWidget(is_ssl_connection_);
 
   host_widget_ = new HostPortWidget;
   QLayout* host_layout = host_widget_->layout();
@@ -74,18 +76,18 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(paren
   vbox->addLayout(hbox);
   vbox->addWidget(host_widget_);
 
-  pathWidget_ = new FilePathWidget(trUnixPath, trFilter, trCaption);
-  QLayout* path_layout = pathWidget_->layout();
+  path_widget_ = new FilePathWidget(trUnixPath, trFilter, trCaption);
+  QLayout* path_layout = path_widget_->layout();
   path_layout->setContentsMargins(0, 0, 0, 0);
   vbox->addWidget(local_);
-  vbox->addWidget(pathWidget_);
+  vbox->addWidget(path_widget_);
 
-  groupBox_->setLayout(vbox);
-  addWidget(groupBox_);
+  group_box_->setLayout(vbox);
+  addWidget(group_box_);
 
-  useAuth_ = new QCheckBox;
-  VERIFY(connect(useAuth_, &QCheckBox::stateChanged, this, &ConnectionWidget::authStateChange));
-  addWidget(useAuth_);
+  use_auth_ = new QCheckBox;
+  VERIFY(connect(use_auth_, &QCheckBox::stateChanged, this, &ConnectionWidget::authStateChange));
+  addWidget(use_auth_);
 
   QHBoxLayout* passwordLayout = new QHBoxLayout;
   password_box_ = new QLineEdit;
@@ -107,14 +109,14 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(paren
 
   // ssh
 
-  sshWidget_ = new SSHWidget;
-  QLayout* ssh_layout = sshWidget_->layout();
+  ssh_widget_ = new SSHWidget;
+  QLayout* ssh_layout = ssh_widget_->layout();
   ssh_layout->setContentsMargins(0, 0, 0, 0);
-  addWidget(sshWidget_);
+  addWidget(ssh_widget_);
 
   remote_->setChecked(true);
   selectRemoteDBPath(true);
-  useAuth_->setChecked(false);
+  use_auth_->setChecked(false);
   password_box_->setEnabled(false);
   password_echo_mode_button_->setEnabled(false);
 }
@@ -127,37 +129,37 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
     if (is_remote) {
       host_widget_->setHost(config.host);
       remote_->setChecked(true);
-      isSSLConnection_->setChecked(config.is_ssl);
+      is_ssl_connection_->setChecked(config.is_ssl);
     } else {
       QString qhostsocket;
       common::ConvertFromString(config.hostsocket, &qhostsocket);
-      pathWidget_->setPath(qhostsocket);
+      path_widget_->setPath(qhostsocket);
       local_->setChecked(true);
     }
 
     std::string auth = config.auth;
     if (!auth.empty()) {
-      useAuth_->setChecked(true);
+      use_auth_->setChecked(true);
       QString qauth;
       common::ConvertFromString(auth, &qauth);
       password_box_->setText(qauth);
     } else {
-      useAuth_->setChecked(false);
+      use_auth_->setChecked(false);
       password_box_->clear();
     }
     default_db_num_->setValue(config.db_num);
     core::SSHInfo ssh_info = redis->GetSSHInfo();
-    sshWidget_->setInfo(ssh_info);
+    ssh_widget_->setInfo(ssh_info);
   }
   ConnectionBaseWidget::syncControls(redis);
 }
 
 void ConnectionWidget::retranslateUi() {
-  groupBox_->setTitle(trDBPath);
+  group_box_->setTitle(trDBPath);
   remote_->setText(trRemote);
-  isSSLConnection_->setText(trSSL);
+  is_ssl_connection_->setText(trSSL);
   local_->setText(trLocal);
-  useAuth_->setText(trUseAuth);
+  use_auth_->setText(trUseAuth);
   default_db_label_->setText(trDefaultDb);
   ConnectionBaseWidget::retranslateUi();
 }
@@ -174,26 +176,26 @@ void ConnectionWidget::authStateChange(int state) {
 }
 
 void ConnectionWidget::sslStateChange(int state) {
-  sshWidget_->setEnabled(!state);
+  ssh_widget_->setEnabled(!state);
 }
 
 void ConnectionWidget::selectRemoteDBPath(bool checked) {
   host_widget_->setEnabled(checked);
-  pathWidget_->setEnabled(!checked);
-  isSSLConnection_->setEnabled(checked);
-  sshWidget_->setEnabled(checked);
+  path_widget_->setEnabled(!checked);
+  is_ssl_connection_->setEnabled(checked);
+  ssh_widget_->setEnabled(checked);
 }
 
 void ConnectionWidget::selectLocalDBPath(bool checked) {
   host_widget_->setEnabled(!checked);
-  pathWidget_->setEnabled(checked);
-  isSSLConnection_->setEnabled(!checked);
-  sshWidget_->setEnabled(!checked);
+  path_widget_->setEnabled(checked);
+  is_ssl_connection_->setEnabled(!checked);
+  ssh_widget_->setEnabled(!checked);
 }
 
 bool ConnectionWidget::validated() const {
-  if (sshWidget_->isEnabled() && sshWidget_->isSSHChecked()) {
-    if (!sshWidget_->isValidSSHInfo()) {
+  if (ssh_widget_->isEnabled() && ssh_widget_->isSSHChecked()) {
+    if (!ssh_widget_->isValidSSHInfo()) {
       return false;
     }
   }
@@ -208,7 +210,7 @@ bool ConnectionWidget::validated() const {
       return false;
     }
   } else {
-    if (!pathWidget_->isValidPath()) {
+    if (!path_widget_->isValidPath()) {
       return false;
     }
   }
@@ -217,7 +219,7 @@ bool ConnectionWidget::validated() const {
 }
 
 bool ConnectionWidget::isValidCredential() const {
-  if (useAuth_->isChecked()) {
+  if (use_auth_->isChecked()) {
     QString pass = password_box_->text();
     return !pass.isEmpty();
   }
@@ -231,20 +233,20 @@ proxy::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(const pro
   bool is_remote = remote_->isChecked();
   if (is_remote) {
     config.host = host_widget_->host();
-    config.is_ssl = isSSLConnection_->isChecked();
+    config.is_ssl = is_ssl_connection_->isChecked();
   } else {
-    config.hostsocket = common::ConvertToString(pathWidget_->path());
+    config.hostsocket = common::ConvertToString(path_widget_->path());
   }
 
-  if (useAuth_->isChecked() && isValidCredential()) {
+  if (use_auth_->isChecked() && isValidCredential()) {
     config.auth = common::ConvertToString(password_box_->text());
   }
   config.db_num = default_db_num_->value();
   conn->SetInfo(config);
 
   core::SSHInfo info;
-  if (sshWidget_->isEnabled() && sshWidget_->isSSHChecked()) {
-    info = sshWidget_->info();
+  if (ssh_widget_->isEnabled() && ssh_widget_->isSSHChecked()) {
+    info = ssh_widget_->info();
   }
   conn->SetSSHInfo(info);
   return conn;

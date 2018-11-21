@@ -51,22 +51,22 @@ class ConnectionWidget : public ConnectionBaseWidget {
 
  private:
   proxy::IConnectionSettingsBase* createConnectionImpl(const proxy::connection_path_t& path) const override;
-  QGroupBox* groupBox_;
+  QGroupBox* group_box_;
   QRadioButton* remote_;
   QRadioButton* local_;
 
   HostPortWidget* host_widget_;
-  QCheckBox* isSSLConnection_;
-  IPathWidget* pathWidget_;
+  QCheckBox* is_ssl_connection_;
+  IPathWidget* path_widget_;
 
-  QCheckBox* useAuth_;
+  QCheckBox* use_auth_;
   QLineEdit* password_box_;
   QPushButton* password_echo_mode_button_;
 
   QLabel* default_db_label_;
   QSpinBox* default_db_num_;
 
-  SSHWidget* sshWidget_;
+  SSHWidget* ssh_widget_;
 };
 
 }  // namespace redis

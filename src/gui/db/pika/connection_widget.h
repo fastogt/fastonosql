@@ -50,16 +50,16 @@ class ConnectionWidget : public ConnectionBaseWidget {
  private:
   proxy::IConnectionSettingsBase* createConnectionImpl(const proxy::connection_path_t& path) const override;
   HostPortWidget* host_widget_;
-  QCheckBox* isSSLConnection_;
+  QCheckBox* is_ssl_connection_;
 
-  QCheckBox* useAuth_;
+  QCheckBox* use_auth_;
   QLineEdit* password_box_;
   QPushButton* password_echo_mode_button_;
 
   QLabel* default_db_label_;
   QSpinBox* default_db_num_;
 
-  SSHWidget* sshWidget_;
+  SSHWidget* ssh_widget_;
 };
 
 }  // namespace pika

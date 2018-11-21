@@ -18,6 +18,8 @@
 
 #include "gui/db/pika/connection_widget.h"
 
+#include <string>
+
 #include <QCheckBox>
 #include <QEvent>
 #include <QFileDialog>
@@ -54,11 +56,11 @@ namespace pika {
 ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(parent) {
   QVBoxLayout* vbox = new QVBoxLayout;
 
-  isSSLConnection_ = new QCheckBox;
-  VERIFY(connect(isSSLConnection_, &QCheckBox::stateChanged, this, &ConnectionWidget::sslStateChange));
+  is_ssl_connection_ = new QCheckBox;
+  VERIFY(connect(is_ssl_connection_, &QCheckBox::stateChanged, this, &ConnectionWidget::sslStateChange));
 
   QHBoxLayout* hbox = new QHBoxLayout;
-  hbox->addWidget(isSSLConnection_);
+  hbox->addWidget(is_ssl_connection_);
 
   host_widget_ = new HostPortWidget;
   QLayout* host_layout = host_widget_->layout();
@@ -67,9 +69,9 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(paren
   vbox->addWidget(host_widget_);
   addLayout(vbox);
 
-  useAuth_ = new QCheckBox;
-  VERIFY(connect(useAuth_, &QCheckBox::stateChanged, this, &ConnectionWidget::authStateChange));
-  addWidget(useAuth_);
+  use_auth_ = new QCheckBox;
+  VERIFY(connect(use_auth_, &QCheckBox::stateChanged, this, &ConnectionWidget::authStateChange));
+  addWidget(use_auth_);
 
   QHBoxLayout* passwordLayout = new QHBoxLayout;
   password_box_ = new QLineEdit;
@@ -92,12 +94,12 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(paren
 
   // ssh
 
-  sshWidget_ = new SSHWidget;
-  QLayout* ssh_layout = sshWidget_->layout();
+  ssh_widget_ = new SSHWidget;
+  QLayout* ssh_layout = ssh_widget_->layout();
   ssh_layout->setContentsMargins(0, 0, 0, 0);
-  addWidget(sshWidget_);
+  addWidget(ssh_widget_);
 
-  useAuth_->setChecked(false);
+  use_auth_->setChecked(false);
   password_box_->setEnabled(false);
   password_echo_mode_button_->setEnabled(false);
 }
@@ -107,28 +109,28 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
   if (pika) {
     core::pika::Config config = pika->GetInfo();
     host_widget_->setHost(config.host);
-    isSSLConnection_->setChecked(config.is_ssl);
+    is_ssl_connection_->setChecked(config.is_ssl);
 
     std::string auth = config.auth;
     if (!auth.empty()) {
-      useAuth_->setChecked(true);
+      use_auth_->setChecked(true);
       QString qauth;
       common::ConvertFromString(auth, &qauth);
       password_box_->setText(qauth);
     } else {
-      useAuth_->setChecked(false);
+      use_auth_->setChecked(false);
       password_box_->clear();
     }
     default_db_num_->setValue(config.db_num);
     core::SSHInfo ssh_info = pika->GetSSHInfo();
-    sshWidget_->setInfo(ssh_info);
+    ssh_widget_->setInfo(ssh_info);
   }
   ConnectionBaseWidget::syncControls(pika);
 }
 
 void ConnectionWidget::retranslateUi() {
-  isSSLConnection_->setText(trSSL);
-  useAuth_->setText(trUseAuth);
+  is_ssl_connection_->setText(trSSL);
+  use_auth_->setText(trUseAuth);
   default_db_label_->setText(trDefaultDb);
   ConnectionBaseWidget::retranslateUi();
 }
@@ -145,12 +147,12 @@ void ConnectionWidget::authStateChange(int state) {
 }
 
 void ConnectionWidget::sslStateChange(int state) {
-  sshWidget_->setEnabled(!state);
+  ssh_widget_->setEnabled(!state);
 }
 
 bool ConnectionWidget::validated() const {
-  if (sshWidget_->isEnabled() && sshWidget_->isSSHChecked()) {
-    if (!sshWidget_->isValidSSHInfo()) {
+  if (ssh_widget_->isEnabled() && ssh_widget_->isSSHChecked()) {
+    if (!ssh_widget_->isValidSSHInfo()) {
       return false;
     }
   }
@@ -167,7 +169,7 @@ bool ConnectionWidget::validated() const {
 }
 
 bool ConnectionWidget::isValidCredential() const {
-  if (useAuth_->isChecked()) {
+  if (use_auth_->isChecked()) {
     QString pass = password_box_->text();
     return !pass.isEmpty();
   }
@@ -179,17 +181,17 @@ proxy::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(const pro
   proxy::pika::ConnectionSettings* conn = proxy::ConnectionSettingsFactory::GetInstance().CreatePIKAConnection(path);
   core::pika::Config config = conn->GetInfo();
   config.host = host_widget_->host();
-  config.is_ssl = isSSLConnection_->isChecked();
+  config.is_ssl = is_ssl_connection_->isChecked();
 
-  if (useAuth_->isChecked() && isValidCredential()) {
+  if (use_auth_->isChecked() && isValidCredential()) {
     config.auth = common::ConvertToString(password_box_->text());
   }
   config.db_num = default_db_num_->value();
   conn->SetInfo(config);
 
   core::SSHInfo info;
-  if (sshWidget_->isEnabled() && sshWidget_->isSSHChecked()) {
-    info = sshWidget_->info();
+  if (ssh_widget_->isEnabled() && ssh_widget_->isSSHChecked()) {
+    info = ssh_widget_->info();
   }
   conn->SetSSHInfo(info);
   return conn;
