@@ -153,7 +153,13 @@ core::IDataBaseInfoSPtr Driver::CreateDatabaseInfo(const core::db_name_t& name, 
 common::Error Driver::SyncConnect() {
   auto redis_settings = GetSpecificSettings<ConnectionSettings>();
   core::redis::RConfig rconf(redis_settings->GetInfo(), redis_settings->GetSSHInfo());
-  return impl_->Connect(rconf);
+  common::Error err = impl_->Connect(rconf);
+  if (err) {
+    return err;
+  }
+
+  err = impl_->SetClientName(PROJECT_NAME_LOWERCASE);
+  return common::Error();
 }
 
 common::Error Driver::SyncDisconnect() {

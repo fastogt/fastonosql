@@ -22,6 +22,9 @@
 #include <QComboBox>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QLineEdit>
+
+#include <common/qt/convert2string.h>
 
 #include "proxy/connection_settings_factory.h"
 #include "proxy/db/rocksdb/connection_settings.h"
@@ -37,6 +40,13 @@ namespace rocksdb {
 ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionLocalWidgetDirectoryPath(trDBPath, trCaption, parent) {
   create_db_if_missing_ = new QCheckBox;
   addWidget(create_db_if_missing_);
+
+  QHBoxLayout* name_layout = new QHBoxLayout;
+  db_name_label_ = new QLabel;
+  name_layout->addWidget(db_name_label_);
+  db_name_edit_ = new QLineEdit;
+  name_layout->addWidget(db_name_edit_);
+  addLayout(name_layout);
 
   QHBoxLayout* type_comp_layout = new QHBoxLayout;
   type_comparators_ = new QComboBox;
@@ -80,6 +90,10 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
   if (rock) {
     core::rocksdb::Config config = rock->GetInfo();
     create_db_if_missing_->setChecked(config.create_if_missing);
+    QString qdb_name;
+    if (common::ConvertFromString(config.db_name, &qdb_name)) {  // convert from qstring
+      db_name_edit_->setText(qdb_name);
+    }
     type_comparators_->setCurrentIndex(config.comparator);
     type_compressions_->setCurrentIndex(config.compression);
     merge_operator_->setCurrentIndex(config.merge_operator);
@@ -89,6 +103,7 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
 
 void ConnectionWidget::retranslateUi() {
   create_db_if_missing_->setText(trCreateDBIfMissing);
+  db_name_label_->setText(trDBName);
   comparator_label_->setText(trComparator + ":");
   compression_label_->setText(trCompression + ":");
   merge_operator_label_->setText(trMergeOperator + ":");
@@ -101,6 +116,7 @@ proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
       proxy::ConnectionSettingsFactory::GetInstance().CreateROCKSDBConnection(path);
   core::rocksdb::Config config = conn->GetInfo();
   config.create_if_missing = create_db_if_missing_->isChecked();
+  config.db_name = common::ConvertToString(db_name_edit_->text());  // convert to string
   config.comparator = static_cast<core::rocksdb::ComparatorType>(type_comparators_->currentIndex());
   config.compression = static_cast<core::rocksdb::CompressionType>(type_compressions_->currentIndex());
   config.merge_operator = static_cast<core::rocksdb::MergeOperatorType>(merge_operator_->currentIndex());
