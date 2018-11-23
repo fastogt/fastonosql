@@ -55,16 +55,17 @@
 #include "translations/global.h"  // for trClose, trBackup, etc
 
 namespace {
+const QString trRemoveKeyTemplate_1S = QObject::tr("Really remove key %1?");
+const QString trRemoveBranchTemplate_1S = QObject::tr("Really remove branch %1?");
+const QString trRemoveDatabaseTemplate_1S = QObject::tr("Really remove database %1?");
+const QString trRealyRemoveAllKeysTemplate_1S = QObject::tr("Really remove all keys from %1 database?");
+
 const QString trCreateKeyForDbTemplate_1S = QObject::tr("Create key for %1 database");
 const QString trEditKey_1S = QObject::tr("Edit key %1");
 const QString trRemoveAllKeysTemplate_1S = QObject::tr("Really remove all keys from branch %1?");
-const QString trRemoveKeyTemplate_1S = QObject::tr("Really remove key %1?");
 const QString trViewKeyTemplate_1S = QObject::tr("View keys in %1 database");
 const QString trViewChannelsTemplate_1S = QObject::tr("View channels in %1 server");
-const QString trConnectDisconnect = QObject::tr("Connect/Disconnect");
 const QString trClearDb = QObject::tr("Clear database");
-const QString trRealyRemoveAllKeysTemplate_1S = QObject::tr("Really remove all keys from %1 database?");
-const QString trRemoveBranchTemplate_1S = QObject::tr("Really remove branch %1 database?");
 const QString trLoadContentTemplate_1S = QObject::tr("Load keys in %1 database");
 const QString trSetMaxConnectionOnServerTemplate_1S = QObject::tr("Set max connection on %1 server");
 const QString trSetTTLOnKeyTemplate_1S = QObject::tr("Set ttl for %1 key");
@@ -76,7 +77,6 @@ const QString trRemoveTTL = QObject::tr("Remove TTL");
 const QString trRenameKeyLabel = QObject::tr("New branch name:");
 const QString trRenameBranchLabel = QObject::tr("New branch name:");
 const QString trCreateDatabase_1S = QObject::tr("Create database on %1 server");
-const QString trRemoveDatabase_1S = QObject::tr("Remove database from %1 server");
 const QString trPropertiesTemplate_1S = QObject::tr("%1 properties");
 const QString trHistoryTemplate_1S = QObject::tr("%1 history");
 }  // namespace
@@ -218,8 +218,12 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
   if (node->type() == IExplorerTreeItem::eServer) {
     ExplorerServerItem* server_node = static_cast<ExplorerServerItem*>(node);
 
+    proxy::IServerSPtr server = server_node->server();
+    const bool is_connected = server->IsConnected();
+    const bool is_redis_compatible = core::IsRedisCompatible(server->GetType());
+
     QMenu menu(this);
-    QAction* connectAction = new QAction(trConnectDisconnect, this);
+    QAction* connectAction = new QAction(is_connected ? translations::trDisconnect : translations::trConnect, this);
     VERIFY(connect(connectAction, &QAction::triggered, this, &ExplorerTreeView::connectDisconnectToServer));
 
     QAction* openConsoleAction = new QAction(translations::trOpenConsole, this);
@@ -227,9 +231,6 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
 
     menu.addAction(connectAction);
     menu.addAction(openConsoleAction);
-    proxy::IServerSPtr server = server_node->server();
-    bool is_connected = server->IsConnected();
-    bool is_redis_compatible = core::IsRedisCompatible(server->GetType());
 
     QAction* loadDatabaseAction = new QAction(translations::trLoadDataBases, this);
     VERIFY(connect(loadDatabaseAction, &QAction::triggered, this, &ExplorerTreeView::loadDatabases));
@@ -245,13 +246,6 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       VERIFY(connect(createDatabaseAction, &QAction::triggered, this, &ExplorerTreeView::createDb));
       createDatabaseAction->setEnabled(is_connected);
       menu.addAction(createDatabaseAction);
-    }
-
-    if (server->IsCanRemoveDatabase()) {
-      QAction* removeDatabaseAction = new QAction(translations::trRemoveDatabase, this);
-      VERIFY(connect(removeDatabaseAction, &QAction::triggered, this, &ExplorerTreeView::removeDB));
-      removeDatabaseAction->setEnabled(is_connected);
-      menu.addAction(removeDatabaseAction);
     }
 
     infoServerAction->setEnabled(is_connected);
@@ -348,7 +342,7 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
     menu.addAction(setDefaultDbAction);
     setDefaultDbAction->setEnabled(!is_default && is_connected);
 
-    if (server->IsCanCreateDatabase()) {
+    if (server->IsCanRemoveDatabase()) {
       QAction* removeDatabaseAction = new QAction(translations::trRemove, this);
       VERIFY(connect(removeDatabaseAction, &QAction::triggered, this, &ExplorerTreeView::removeDb));
       removeDatabaseAction->setEnabled(!is_default && is_connected);
@@ -507,23 +501,6 @@ void ExplorerTreeView::createDb() {
                                          QLineEdit::Normal, QString(), &ok, Qt::WindowCloseButtonHint);
     if (ok && !name.isEmpty()) {
       node->createDatabase(name);
-    }
-  }
-}
-
-void ExplorerTreeView::removeDB() {
-  QModelIndexList selected = selectedEqualTypeIndexes();
-  for (QModelIndex ind : selected) {
-    ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(ind);
-    if (!node) {
-      DNOTREACHED();
-      continue;
-    }
-    bool ok;
-    QString name = QInputDialog::getText(this, trRemoveDatabase_1S.arg(node->name()), translations::trName + ":",
-                                         QLineEdit::Normal, QString(), &ok, Qt::WindowCloseButtonHint);
-    if (ok && !name.isEmpty()) {
-      node->removeDatabase(name);
     }
   }
 }
@@ -876,6 +853,14 @@ void ExplorerTreeView::removeDb() {
       continue;
     }
 
+    int answer =
+        QMessageBox::question(this, translations::trRemoveDatabase, trRemoveDatabaseTemplate_1S.arg(node->name()),
+                              QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
+
+    if (answer != QMessageBox::Yes) {
+      continue;
+    }
+
     node->removeDb();
   }
 }
@@ -1124,6 +1109,7 @@ void ExplorerTreeView::startExecuteCommand(const proxy::events_info::ExecuteInfo
 void ExplorerTreeView::finishExecuteCommand(const proxy::events_info::ExecuteInfoResponce& res) {
   UNUSED(res);
 }
+
 void ExplorerTreeView::createDatabase(core::IDataBaseInfoSPtr db) {
   proxy::IServer* serv = qobject_cast<proxy::IServer*>(sender());
   CHECK(serv);

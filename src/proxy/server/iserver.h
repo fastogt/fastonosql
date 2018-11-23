@@ -196,9 +196,9 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
 
  private Q_SLOTS:
   void CreateDB(core::IDataBaseInfoSPtr db);
-  void RemoveDatabase(core::IDataBaseInfoSPtr db);
-  void FlushCurrentDatabase();
-  void ChangeCurrentDatabase(core::IDataBaseInfoSPtr db);
+  void RemoveDB(core::IDataBaseInfoSPtr db);
+  void FlushCurrentDB();
+  void ChangeCurrentDB(core::IDataBaseInfoSPtr db);
 
   void RemoveKey(core::NKey key);
   void AddKey(core::NDbKValue key);

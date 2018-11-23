@@ -37,10 +37,10 @@ IServer::IServer(IDriver* drv) : drv_(drv), current_database_info_(), timer_chec
   VERIFY(QObject::connect(drv_, &IDriver::ItemUpdated, this, &IServer::ItemUpdated));
   VERIFY(QObject::connect(drv_, &IDriver::ServerInfoSnapShooted, this, &IServer::ServerInfoSnapShooted));
 
-  VERIFY(QObject::connect(drv_, &IDriver::DBCreated, this, &IServer::CreateDatabase));
-  VERIFY(QObject::connect(drv_, &IDriver::DBRemoved, this, &IServer::RemoveDatabase));
-  VERIFY(QObject::connect(drv_, &IDriver::DBFlushed, this, &IServer::FlushCurrentDatabase));
-  VERIFY(QObject::connect(drv_, &IDriver::DBChanged, this, &IServer::ChangeCurrentDatabase));
+  VERIFY(QObject::connect(drv_, &IDriver::DBCreated, this, &IServer::CreateDB));
+  VERIFY(QObject::connect(drv_, &IDriver::DBRemoved, this, &IServer::RemoveDB));
+  VERIFY(QObject::connect(drv_, &IDriver::DBFlushed, this, &IServer::FlushCurrentDB));
+  VERIFY(QObject::connect(drv_, &IDriver::DBChanged, this, &IServer::ChangeCurrentDB));
 
   VERIFY(QObject::connect(drv_, &IDriver::KeyRemoved, this, &IServer::RemoveKey));
   VERIFY(QObject::connect(drv_, &IDriver::KeyAdded, this, &IServer::AddKey));
@@ -471,13 +471,13 @@ void IServer::CreateDB(core::IDataBaseInfoSPtr db) {
   emit DatabaseCreated(db);
 }
 
-void IServer::RemoveDatabase(core::IDataBaseInfoSPtr db) {
+void IServer::RemoveDB(core::IDataBaseInfoSPtr db) {
   databases_.erase(std::remove_if(databases_.begin(), databases_.end(),
                                   [db](database_t edb) { return db->GetName() == edb->GetName(); }));
   emit DatabaseRemoved(db);
 }
 
-void IServer::FlushCurrentDatabase() {
+void IServer::FlushCurrentDB() {
   database_t cdb = GetCurrentDatabaseInfo();
   if (!cdb) {
     return;
@@ -488,7 +488,7 @@ void IServer::FlushCurrentDatabase() {
   emit DatabaseFlushed(cdb);
 }
 
-void IServer::ChangeCurrentDatabase(core::IDataBaseInfoSPtr db) {
+void IServer::ChangeCurrentDB(core::IDataBaseInfoSPtr db) {
   database_t cdb = GetCurrentDatabaseInfo();
   if (cdb) {
     if (db->GetName() == cdb->GetName()) {

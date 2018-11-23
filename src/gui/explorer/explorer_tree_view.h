@@ -67,8 +67,6 @@ class ExplorerTreeView : public QTreeView {
   void connectDisconnectToServer();
   void openConsole();
   void loadDatabases();
-  void createDb();
-  void removeDB();
   void openInfoServerDialog();
   void openPropertyServerDialog();
   void openHistoryServerDialog();
@@ -88,6 +86,7 @@ class ExplorerTreeView : public QTreeView {
   void renameBranch();
   void addKeyToBranch();
   void setDefaultDb();
+  void createDb();
   void removeDb();
   void createKey();
   void editKey();
