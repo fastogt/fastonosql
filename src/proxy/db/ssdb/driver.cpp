@@ -184,7 +184,19 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
             k.SetTTL(ttl);
           }
 
-          core::NValue empty_val(core::CreateEmptyValueFromType(common::Value::TYPE_STRING));
+          core::command_buffer_writer_t wr2;
+          wr2 << DB_KEY_TYPE_COMMAND " " << key.GetHumanReadable();  // emulate log execution
+          core::FastoObjectCommandIPtr cmd_type = CreateCommandFast(wr2.str(), core::C_INNER);
+          LOG_COMMAND(cmd_type);
+          core::readable_string_t type_str;
+          impl_->GetType(k, &type_str);
+          core::NValue empty_val;
+          if (type_str == GEN_READABLE_STRING("list")) {
+            empty_val.reset(core::CreateEmptyValueFromType(common::Value::TYPE_ARRAY));
+          } else {
+            empty_val.reset(core::CreateEmptyValueFromType(common::Value::TYPE_STRING));
+          }
+
           core::NDbKValue ress(k, empty_val);
           res.keys.push_back(ress);
         }
