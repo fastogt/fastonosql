@@ -18,47 +18,50 @@
 
 #include "gui/shell/base_shell.h"
 
+#include <string>
+#include <vector>
+
 #include <QIcon>
 
 #include "gui/gui_factory.h"  // for GuiFactory
 
-#ifdef BUILD_WITH_REDIS
+#if defined(BUILD_WITH_REDIS)
 #include "gui/db/redis/lexer.h"
 #endif
 
-#ifdef BUILD_WITH_MEMCACHED
+#if defined(BUILD_WITH_MEMCACHED)
 #include "gui/db/memcached/lexer.h"
 #endif
 
-#ifdef BUILD_WITH_SSDB
+#if defined(BUILD_WITH_SSDB)
 #include "gui/db/ssdb/lexer.h"
 #endif
 
-#ifdef BUILD_WITH_LEVELDB
+#if defined(BUILD_WITH_LEVELDB)
 #include "gui/db/leveldb/lexer.h"
 #endif
 
-#ifdef BUILD_WITH_ROCKSDB
+#if defined(BUILD_WITH_ROCKSDB)
 #include "gui/db/rocksdb/lexer.h"
 #endif
 
-#ifdef BUILD_WITH_UNQLITE
+#if defined(BUILD_WITH_UNQLITE)
 #include "gui/db/unqlite/lexer.h"
 #endif
 
-#ifdef BUILD_WITH_LMDB
+#if defined(BUILD_WITH_LMDB)
 #include "gui/db/lmdb/lexer.h"
 #endif
 
-#ifdef BUILD_WITH_UPSCALEDB
+#if defined(BUILD_WITH_UPSCALEDB)
 #include "gui/db/upscaledb/lexer.h"
 #endif
 
-#ifdef BUILD_WITH_FORESTDB
+#if defined(BUILD_WITH_FORESTDB)
 #include "gui/db/forestdb/lexer.h"
 #endif
 
-#ifdef BUILD_WITH_PIKA
+#if defined(BUILD_WITH_PIKA)
 #include "gui/db/pika/lexer.h"
 #endif
 
@@ -70,52 +73,52 @@ namespace fastonosql {
 namespace gui {
 namespace {
 BaseQsciLexer* createLexer(core::ConnectionType type, QObject* parent) {
-#ifdef BUILD_WITH_REDIS
+#if defined(BUILD_WITH_REDIS)
   if (type == core::REDIS) {
     return new redis::Lexer(parent);
   }
 #endif
-#ifdef BUILD_WITH_MEMCACHED
+#if defined(BUILD_WITH_MEMCACHED)
   if (type == core::MEMCACHED) {
     return new memcached::Lexer(parent);
   }
 #endif
-#ifdef BUILD_WITH_SSDB
+#if defined(BUILD_WITH_SSDB)
   if (type == core::SSDB) {
     return new ssdb::Lexer(parent);
   }
 #endif
-#ifdef BUILD_WITH_LEVELDB
+#if defined(BUILD_WITH_LEVELDB)
   if (type == core::LEVELDB) {
     return new leveldb::Lexer(parent);
   }
 #endif
-#ifdef BUILD_WITH_ROCKSDB
+#if defined(BUILD_WITH_ROCKSDB)
   if (type == core::ROCKSDB) {
     return new rocksdb::Lexer(parent);
   }
 #endif
-#ifdef BUILD_WITH_UNQLITE
+#if defined(BUILD_WITH_UNQLITE)
   if (type == core::UNQLITE) {
     return new unqlite::Lexer(parent);
   }
 #endif
-#ifdef BUILD_WITH_LMDB
+#if defined(BUILD_WITH_LMDB)
   if (type == core::LMDB) {
     return new lmdb::Lexer(parent);
   }
 #endif
-#ifdef BUILD_WITH_UPSCALEDB
+#if defined(BUILD_WITH_UPSCALEDB)
   if (type == core::UPSCALEDB) {
     return new upscaledb::Lexer(parent);
   }
 #endif
-#ifdef BUILD_WITH_FORESTDB
+#if defined(BUILD_WITH_FORESTDB)
   if (type == core::FORESTDB) {
     return new forestdb::Lexer(parent);
   }
 #endif
-#ifdef BUILD_WITH_PIKA
+#if defined(BUILD_WITH_PIKA)
   if (type == core::PIKA) {
     return new pika::Lexer(parent);
   }

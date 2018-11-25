@@ -18,6 +18,9 @@
 
 #include "gui/shell/base_shell_widget.h"
 
+#include <string>
+#include <vector>
+
 #include <QAction>
 #include <QCheckBox>
 #include <QComboBox>
@@ -44,7 +47,7 @@
 
 #include "translations/global.h"  // for trError, trSaveAs, etc
 
-#ifdef BUILD_WITH_REDIS
+#if defined(BUILD_WITH_REDIS) && defined(PRO_VERSION)
 #include "gui/db/redis/shell_widget.h"
 #endif
 #include "gui/shell/base_shell.h"

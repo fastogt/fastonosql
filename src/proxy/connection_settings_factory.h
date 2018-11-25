@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <string>
+
 #include <common/net/types.h>
 #include <common/patterns/singleton_pattern.h>
 
@@ -35,61 +37,61 @@ class IConnectionSettings;
 class IConnectionSettingsBase;
 class IConnectionSettingsRemote;
 
-#ifdef BUILD_WITH_REDIS
+#if defined(BUILD_WITH_REDIS)
 namespace redis {
 class ConnectionSettings;
 }
 #endif
 
-#ifdef BUILD_WITH_MEMCACHED
+#if defined(BUILD_WITH_MEMCACHED)
 namespace memcached {
 class ConnectionSettings;
 }
 #endif
 
-#ifdef BUILD_WITH_SSDB
+#if defined(BUILD_WITH_SSDB)
 namespace ssdb {
 class ConnectionSettings;
 }
 #endif
 
-#ifdef BUILD_WITH_LEVELDB
+#if defined(BUILD_WITH_LEVELDB)
 namespace leveldb {
 class ConnectionSettings;
 }
 #endif
 
-#ifdef BUILD_WITH_ROCKSDB
+#if defined(BUILD_WITH_ROCKSDB)
 namespace rocksdb {
 class ConnectionSettings;
 }
 #endif
 
-#ifdef BUILD_WITH_UNQLITE
+#if defined(BUILD_WITH_UNQLITE)
 namespace unqlite {
 class ConnectionSettings;
 }
 #endif
 
-#ifdef BUILD_WITH_LMDB
+#if defined(BUILD_WITH_LMDB)
 namespace lmdb {
 class ConnectionSettings;
 }
 #endif
 
-#ifdef BUILD_WITH_UPSCALEDB
+#if defined(BUILD_WITH_UPSCALEDB)
 namespace upscaledb {
 class ConnectionSettings;
 }
 #endif
 
-#ifdef BUILD_WITH_FORESTDB
+#if defined(BUILD_WITH_FORESTDB)
 namespace forestdb {
 class ConnectionSettings;
 }
 #endif
 
-#ifdef BUILD_WITH_PIKA
+#if defined(BUILD_WITH_PIKA)
 namespace pika {
 class ConnectionSettings;
 }
@@ -106,47 +108,47 @@ class ConnectionSettingsFactory : public common::patterns::LazySingleton<Connect
                                                             const connection_path_t& connection_path);
   IConnectionSettingsBase* CreateSettingsFromString(const serialize_t& value);
 
-  IConnectionSettingsRemote* CreateSettingsFromTypeConnection(core::ConnectionType type,
-                                                              const connection_path_t& connection_path,
-                                                              const common::net::HostAndPort& host);
+  IConnectionSettingsRemote* CreateRemoteSettingsFromTypeConnection(core::ConnectionType type,
+                                                                    const connection_path_t& connection_path,
+                                                                    const common::net::HostAndPort& host);
 
-#ifdef BUILD_WITH_REDIS
+#if defined(BUILD_WITH_REDIS)
   redis::ConnectionSettings* CreateREDISConnection(const connection_path_t& connection_path) const;
 #endif
 
-#ifdef BUILD_WITH_MEMCACHED
+#if defined(BUILD_WITH_MEMCACHED)
   memcached::ConnectionSettings* CreateMEMCACHEDConnection(const connection_path_t& connection_path) const;
 #endif
 
-#ifdef BUILD_WITH_SSDB
+#if defined(BUILD_WITH_SSDB)
   ssdb::ConnectionSettings* CreateSSDBConnection(const connection_path_t& connection_path) const;
 #endif
 
-#ifdef BUILD_WITH_LEVELDB
+#if defined(BUILD_WITH_LEVELDB)
   leveldb::ConnectionSettings* CreateLEVELDBConnection(const connection_path_t& connection_path) const;
 #endif
 
-#ifdef BUILD_WITH_ROCKSDB
+#if defined(BUILD_WITH_ROCKSDB)
   rocksdb::ConnectionSettings* CreateROCKSDBConnection(const connection_path_t& connection_path) const;
 #endif
 
-#ifdef BUILD_WITH_UNQLITE
+#if defined(BUILD_WITH_UNQLITE)
   unqlite::ConnectionSettings* CreateUNQLITEConnection(const connection_path_t& connection_path) const;
 #endif
 
-#ifdef BUILD_WITH_LMDB
+#if defined(BUILD_WITH_LMDB)
   lmdb::ConnectionSettings* CreateLMDBConnection(const connection_path_t& connection_path) const;
 #endif
 
-#ifdef BUILD_WITH_UPSCALEDB
+#if defined(BUILD_WITH_UPSCALEDB)
   upscaledb::ConnectionSettings* CreateUPSCALEDBConnection(const connection_path_t& connection_path) const;
 #endif
 
-#ifdef BUILD_WITH_FORESTDB
+#if defined(BUILD_WITH_FORESTDB)
   forestdb::ConnectionSettings* CreateFORESTDBConnection(const connection_path_t& connection_path) const;
 #endif
 
-#ifdef BUILD_WITH_PIKA
+#if defined(BUILD_WITH_PIKA)
   pika::ConnectionSettings* CreatePIKAConnection(const connection_path_t& connection_path) const;
 #endif
   std::string GetLoggingDirectory() const;

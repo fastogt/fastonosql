@@ -18,89 +18,91 @@
 
 #include "proxy/connection_settings/iconnection_settings.h"
 
+#include <string>
+
 #include <common/convert2string.h>  // for ConvertFromString, etc
 #include <common/utils.h>           // for decode64, encode64, crc64
 
-#ifdef BUILD_WITH_REDIS
+#if defined(BUILD_WITH_REDIS)
 #define LOGGING_REDIS_FILE_EXTENSION ".red"
 #endif
-#ifdef BUILD_WITH_MEMCACHED
+#if defined(BUILD_WITH_MEMCACHED)
 #define LOGGING_MEMCACHED_FILE_EXTENSION ".mem"
 #endif
-#ifdef BUILD_WITH_SSDB
+#if defined(BUILD_WITH_SSDB)
 #define LOGGING_SSDB_FILE_EXTENSION ".ssdb"
 #endif
-#ifdef BUILD_WITH_LEVELDB
+#if defined(BUILD_WITH_LEVELDB)
 #define LOGGING_LEVELDB_FILE_EXTENSION ".leveldb"
 #endif
-#ifdef BUILD_WITH_ROCKSDB
+#if defined(BUILD_WITH_ROCKSDB)
 #define LOGGING_ROCKSDB_FILE_EXTENSION ".rocksdb"
 #endif
-#ifdef BUILD_WITH_UNQLITE
+#if defined(BUILD_WITH_UNQLITE)
 #define LOGGING_UNQLITE_FILE_EXTENSION ".unq"
 #endif
-#ifdef BUILD_WITH_LMDB
+#if defined(BUILD_WITH_LMDB)
 #define LOGGING_LMDB_FILE_EXTENSION ".lmdb"
 #endif
-#ifdef BUILD_WITH_UPSCALEDB
+#if defined(BUILD_WITH_UPSCALEDB)
 #define LOGGING_UPSCALEDB_FILE_EXTENSION ".upscaledb"
 #endif
-#ifdef BUILD_WITH_FORESTDB
+#if defined(BUILD_WITH_FORESTDB)
 #define LOGGING_FORESTDB_FILE_EXTENSION ".forestdb"
 #endif
-#ifdef BUILD_WITH_REDIS
+#if defined(BUILD_WITH_REDIS)
 #define LOGGING_PIKA_FILE_EXTENSION ".pika"
 #endif
 
 namespace fastonosql {
 namespace {
 const char* GetLoggingFileExtensionByConnectionType(core::ConnectionType type) {
-#ifdef BUILD_WITH_REDIS
+#if defined(BUILD_WITH_REDIS)
   if (type == core::REDIS) {
     return LOGGING_REDIS_FILE_EXTENSION;
   }
 #endif
-#ifdef BUILD_WITH_MEMCACHED
+#if defined(BUILD_WITH_MEMCACHED)
   if (type == core::MEMCACHED) {
     return LOGGING_MEMCACHED_FILE_EXTENSION;
   }
 #endif
-#ifdef BUILD_WITH_SSDB
+#if defined(BUILD_WITH_SSDB)
   if (type == core::SSDB) {
     return LOGGING_SSDB_FILE_EXTENSION;
   }
 #endif
-#ifdef BUILD_WITH_LEVELDB
+#if defined(BUILD_WITH_LEVELDB)
   if (type == core::LEVELDB) {
     return LOGGING_LEVELDB_FILE_EXTENSION;
   }
 #endif
-#ifdef BUILD_WITH_ROCKSDB
+#if defined(BUILD_WITH_ROCKSDB)
   if (type == core::ROCKSDB) {
     return LOGGING_ROCKSDB_FILE_EXTENSION;
   }
 #endif
-#ifdef BUILD_WITH_UNQLITE
+#if defined(BUILD_WITH_UNQLITE)
   if (type == core::UNQLITE) {
     return LOGGING_UNQLITE_FILE_EXTENSION;
   }
 #endif
-#ifdef BUILD_WITH_LMDB
+#if defined(BUILD_WITH_LMDB)
   if (type == core::LMDB) {
     return LOGGING_LMDB_FILE_EXTENSION;
   }
 #endif
-#ifdef BUILD_WITH_UPSCALEDB
+#if defined(BUILD_WITH_UPSCALEDB)
   if (type == core::UPSCALEDB) {
     return LOGGING_UPSCALEDB_FILE_EXTENSION;
   }
 #endif
-#ifdef BUILD_WITH_FORESTDB
+#if defined(BUILD_WITH_FORESTDB)
   if (type == core::FORESTDB) {
     return LOGGING_FORESTDB_FILE_EXTENSION;
   }
 #endif
-#ifdef BUILD_WITH_PIKA
+#if defined(BUILD_WITH_PIKA)
   if (type == core::PIKA) {
     return LOGGING_PIKA_FILE_EXTENSION;
   }

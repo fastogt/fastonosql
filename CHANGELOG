@@ -3,6 +3,7 @@
 - Set client name
 - Fixed create database update tree action
 - [RocksDB] Default db name
+- [SSDB] QPUSH, QRANGE commands
 
 1.22.3 / November 22, 2018
 [Alexandr Topilski]

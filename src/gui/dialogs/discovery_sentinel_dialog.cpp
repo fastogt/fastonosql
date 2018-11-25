@@ -133,8 +133,8 @@ void DiscoverySentinelDiagnosticDialog::connectionResultReady(
       common::net::HostAndPort host = inf->GetHost();
       proxy::connection_path_t path(common::file_system::get_separator_string<char>() + inf->GetName());
       proxy::IConnectionSettingsRemote* remote =
-          proxy::ConnectionSettingsFactory::GetInstance().CreateSettingsFromTypeConnection(inf->GetConnectionType(),
-                                                                                           path, host);
+          proxy::ConnectionSettingsFactory::GetInstance().CreateRemoteSettingsFromTypeConnection(
+              inf->GetConnectionType(), path, host);
       ConnectionListWidgetItemDiscovered* item = new ConnectionListWidgetItemDiscovered(inf->GetInfo(), nullptr);
       item->setConnection(proxy::IConnectionSettingsBaseSPtr(remote));
       list_widget_->addTopLevelItem(item);

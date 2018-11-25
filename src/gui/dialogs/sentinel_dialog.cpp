@@ -282,7 +282,7 @@ void SentinelDialog::discoverySentinel() {
 }
 
 void SentinelDialog::addConnectionSettings() {
-#ifdef BUILD_WITH_REDIS
+#if defined(BUILD_WITH_REDIS)
   auto dlg = createDialog<ConnectionDialog>(core::REDIS, translations::trNewConnection, this);  // +
   dlg->setFolderEnabled(false);
   int result = dlg->exec();
@@ -325,7 +325,7 @@ void SentinelDialog::edit() {
     return;
   }
 
-#ifdef BUILD_WITH_REDIS
+#if defined(BUILD_WITH_REDIS)
   const proxy::IConnectionSettingsBaseSPtr connection = current_item->connection();
   auto dlg = createDialog<ConnectionDialog>(connection->Clone(), this);  // +
   dlg->setFolderEnabled(false);
