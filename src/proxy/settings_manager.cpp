@@ -64,7 +64,7 @@
 #define PYTHON_PATH PREFIX "python_path"
 #define CONFIG_VERSION PREFIX "version"
 
-#ifdef OS_WIN
+#if defined(OS_WIN)
 #define PYTHON_FILE_NAME "python.exe"
 #else
 #define PYTHON_FILE_NAME "python"

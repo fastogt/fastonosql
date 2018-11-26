@@ -18,6 +18,8 @@
 
 #include "gui/widgets/fasto_viewer.h"
 
+#include <vector>
+
 #include <QComboBox>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -251,7 +253,7 @@ bool FastoViewer::setText(const view_input_text_t& text) {
   view_output_text_t result_str;
   if (!convertToView(text, &result_str)) {
     QString method_text = g_output_views_text[view_method_];
-    setError(translations::trCannotConvertPattern1ArgsS.arg(method_text));
+    setError(translations::trCannotConvertPattern_1S.arg(method_text));
     note_box_->setVisible(false);
     return false;
   }

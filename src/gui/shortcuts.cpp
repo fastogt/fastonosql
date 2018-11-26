@@ -47,7 +47,7 @@ const common::qt::gui::FastoQKeySequence g_refresh_key = common::qt::gui::FastoQ
 const common::qt::gui::FastoQKeySequence g_execute_key =
     common::qt::gui::FastoQKeySequence(Qt::ControlModifier, Qt::Key_Return);
 
-#ifdef OS_MAC
+#if defined(OS_MAC)
 const common::qt::gui::FastoQKeySequence g_full_screen_key =
     common::qt::gui::FastoQKeySequence(QKeySequence::FullScreen);
 const common::qt::gui::FastoQKeySequence g_quit_key = common::qt::gui::FastoQKeySequence(QKeySequence::Quit);

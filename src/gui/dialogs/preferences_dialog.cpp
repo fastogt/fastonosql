@@ -51,9 +51,9 @@ const QString trAutoOpenConsole = QObject::tr("Automatically open console");
 const QString trAutoConnectDb = QObject::tr("Automatically connect to DB");
 const QString trFastViewValues = QObject::tr("Fast view values");
 const QString trLanguage = QObject::tr("Language");
-const QString trSupportedUiStyles = QObject::tr("Supported UI styles");
-const QString trSupportedFonts = QObject::tr("Supported fonts");
-const QString trDefaultViews = QObject::tr("Default views");
+const QString trUiStyle = QObject::tr("UI style");
+const QString trFont = QObject::tr("Font");
+const QString trDefaultView = QObject::tr("Default view");
 const QString trHistoryDirectory = QObject::tr("History directory");
 const QString trGeneral = QObject::tr("General");
 const QString trExternal = QObject::tr("External");
@@ -101,7 +101,6 @@ PreferencesDialog::PreferencesDialog(QWidget* parent)
       fast_view_keys_(nullptr),
       external_box_(nullptr),
       python_path_widget_(nullptr) {
-
   QTabWidget* preferences_tabs = new QTabWidget;
   QWidget* general_tab = createMainTab();
   QWidget* external_tab = createExternalTab();
@@ -328,9 +327,9 @@ void PreferencesDialog::retranslateUi() {
   auto_connect_db_->setText(trAutoConnectDb);
   fast_view_keys_->setText(trFastViewValues);
   languages_label_->setText(trLanguage + ":");
-  styles_label_->setText(trSupportedUiStyles + ":");
-  font_label_->setText(trSupportedFonts + ":");
-  default_view_label_->setText(trDefaultViews + ":");
+  styles_label_->setText(trUiStyle + ":");
+  font_label_->setText(trFont + ":");
+  default_view_label_->setText(trDefaultView + ":");
   log_dir_label_->setText(trHistoryDirectory + ":");
   base_class::retranslateUi();
 }

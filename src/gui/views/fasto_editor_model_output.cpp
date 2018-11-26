@@ -213,7 +213,7 @@ void FastoEditorModelOutput::layoutChanged() {
 
   int vm = editor_->viewMethod();
   if (result.empty()) {
-    editor_->setError(translations::trCannotConvertPattern1ArgsS.arg(QString(g_output_views_text[vm])));
+    editor_->setError(translations::trCannotConvertPattern_1S.arg(QString(g_output_views_text[vm])));
     return;
   }
 

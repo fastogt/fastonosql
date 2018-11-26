@@ -31,7 +31,7 @@
 
 class QAction;      // lines 27-27
 class QDockWidget;  // lines 28-28
-#ifdef OS_ANDROID
+#if defined(OS_ANDROID)
 class QGestureEvent;
 class QSwipeGesture;
 class QTapAndHoldGesture;
@@ -87,7 +87,7 @@ class MainWindow : public QMainWindow {
 #endif
 
  protected:
-#ifdef OS_ANDROID
+#if defined(OS_ANDROID)
   virtual bool event(QEvent* event);
   bool gestureEvent(QGestureEvent* event);
   void swipeTriggered(QSwipeGesture* swipeEvent);

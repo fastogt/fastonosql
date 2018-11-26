@@ -18,12 +18,12 @@
 
 #pragma once
 
+#include <string>
+
 #include <common/file_system/path.h>
 
 namespace fastonosql {
 namespace proxy {
-
-typedef std::string serialize_t;  // #FIXME
 
 class ConnectionSettingsPath {
  public:

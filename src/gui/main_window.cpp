@@ -32,7 +32,7 @@
 #include <QTimer>
 #include <QUrl>
 
-#ifdef OS_ANDROID
+#if defined(OS_ANDROID)
 #include <QApplication>
 #include <QGestureEvent>
 #endif
@@ -97,7 +97,7 @@ namespace fastonosql {
 namespace gui {
 
 MainWindow::MainWindow() : QMainWindow() {
-#ifdef OS_ANDROID
+#if defined(OS_ANDROID)
   setAttribute(Qt::WA_AcceptTouchEvents);
   // setAttribute(Qt::WA_StaticContents);
 
@@ -634,7 +634,7 @@ void MainWindow::closeCluster(proxy::IClusterSPtr cluster) {
 }
 #endif
 
-#ifdef OS_ANDROID
+#if defined(OS_ANDROID)
 bool MainWindow::event(QEvent* event) {
   if (event->type() == QEvent::Gesture) {
     QGestureEvent* gest = static_cast<QGestureEvent*>(event);

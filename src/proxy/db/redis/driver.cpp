@@ -597,9 +597,9 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
         if (isok) {
           core::command_buffer_writer_t wr2;
           wr2 << REDIS_PUBSUB_NUMSUB_COMMAND " " << channel;
-          core::NDbPSChannel c(common::ConvertToString(channel), 0);  // #FIXME
+          core::NDbPSChannel ch(common::ConvertToString(channel), 0);  // #FIXME
           cmds.push_back(CreateCommandFast(wr2.str(), core::C_INNER));
-          res.channels.push_back(c);
+          res.channels.push_back(ch);
         }
       }
 

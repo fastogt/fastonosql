@@ -7,6 +7,7 @@ SET(CMAKE_AUTOMOC ON)
 
 # proxy
 SET(HEADERS_PROXY_CONNECTION_SETTINGS
+  ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/types.h
   ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/settings_fwd.h
   ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/connection_settings_path.h
   ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/iconnection_settings.h
@@ -15,6 +16,7 @@ SET(HEADERS_PROXY_CONNECTION_SETTINGS
   ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/iconnection_settings_ssh.h
 )
 SET(SOURCES_PROXY_CONNECTION_SETTINGS
+  ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/types.cpp
   ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/connection_settings_path.cpp
   ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/iconnection_settings.cpp
   ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/iconnection_settings_local.cpp

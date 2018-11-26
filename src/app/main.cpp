@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifdef OS_WIN
+#if defined(OS_WIN)
 #include <winsock2.h>
 #else
 #include <signal.h>
@@ -60,7 +60,7 @@
 #endif
 
 namespace {
-#ifdef OS_WIN
+#if defined(OS_WIN)
 struct WinsockInit {
   WinsockInit() {
     WSADATA d;
@@ -332,7 +332,7 @@ int main(int argc, char* argv[]) {
     const QRect screen_geometry = app.desktop()->availableGeometry();
     const QSize screen_size(screen_geometry.width(), screen_geometry.height());
 
-#ifdef OS_ANDROID
+#if defined(OS_ANDROID)
     main_window.resize(screen_size);
 #else
     const QSize preferred_size =

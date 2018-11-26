@@ -26,6 +26,7 @@
 #include <fastonosql/core/connection_types.h>
 
 #include "proxy/connection_settings/connection_settings_path.h"
+#include "proxy/connection_settings/types.h"
 
 namespace fastonosql {
 namespace proxy {
