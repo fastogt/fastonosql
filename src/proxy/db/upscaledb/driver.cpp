@@ -32,7 +32,7 @@ namespace upscaledb {
 
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
     : IDriverLocal(settings), impl_(new core::upscaledb::DBConnection(this)) {
-  COMPILE_ASSERT(core::upscaledb::DBConnection::connection_t == core::UPSCALEDB,
+  COMPILE_ASSERT(core::upscaledb::DBConnection::GetConnectionType() == core::UPSCALEDB,
                  "DBConnection must be the same type as Driver!");
   CHECK(GetType() == core::UPSCALEDB);
 }
@@ -93,14 +93,14 @@ common::Error Driver::ExecuteImpl(const core::command_buffer_t& command, core::F
 }
 
 common::Error Driver::DBkcountImpl(core::keys_limit_t* size) {
-  return impl_->DBkcount(size);
+  return impl_->DBKeysCount(size);
 }
 
 common::Error Driver::GetCurrentServerInfo(core::IServerInfo** info) {
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(GEN_CMD_STRING(DB_INFO_COMMAND), core::C_INNER);
   LOG_COMMAND(cmd);
   core::upscaledb::ServerInfo::Stats cm;
-  common::Error err = impl_->Info(core::command_buffer_t(), &cm);
+  common::Error err = impl_->Info(&cm);
   if (err) {
     return err;
   }

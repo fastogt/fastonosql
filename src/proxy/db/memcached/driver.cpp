@@ -37,7 +37,7 @@ namespace memcached {
 
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
     : IDriverRemote(settings), impl_(new core::memcached::DBConnection(this)) {
-  COMPILE_ASSERT(core::memcached::DBConnection::connection_t == core::MEMCACHED,
+  COMPILE_ASSERT(core::memcached::DBConnection::GetConnectionType() == core::MEMCACHED,
                  "DBConnection must be the same type as Driver!");
   CHECK(GetType() == core::MEMCACHED);
 }
@@ -98,7 +98,7 @@ common::Error Driver::ExecuteImpl(const core::command_buffer_t& command, core::F
 }
 
 common::Error Driver::DBkcountImpl(core::keys_limit_t* size) {
-  return impl_->DBkcount(size);
+  return impl_->DBKeysCount(size);
 }
 
 common::Error Driver::GetCurrentServerInfo(core::IServerInfo** info) {

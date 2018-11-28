@@ -32,7 +32,7 @@ namespace rocksdb {
 
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
     : IDriverLocal(settings), impl_(new core::rocksdb::DBConnection(this)) {
-  COMPILE_ASSERT(core::rocksdb::DBConnection::connection_t == core::ROCKSDB,
+  COMPILE_ASSERT(core::rocksdb::DBConnection::GetConnectionType() == core::ROCKSDB,
                  "DBConnection must be the same type as Driver!");
   CHECK(GetType() == core::ROCKSDB);
 }
@@ -94,14 +94,14 @@ common::Error Driver::ExecuteImpl(const core::command_buffer_t& command, core::F
 }
 
 common::Error Driver::DBkcountImpl(core::keys_limit_t* size) {
-  return impl_->DBkcount(size);
+  return impl_->DBKeysCount(size);
 }
 
 common::Error Driver::GetCurrentServerInfo(core::IServerInfo** info) {
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(GEN_CMD_STRING(DB_INFO_COMMAND), core::C_INNER);
   LOG_COMMAND(cmd);
   core::rocksdb::ServerInfo::Stats cm;
-  common::Error err = impl_->Info(core::command_buffer_t(), &cm);
+  common::Error err = impl_->Info(&cm);
   if (err) {
     return err;
   }

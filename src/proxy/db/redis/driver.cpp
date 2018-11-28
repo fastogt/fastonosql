@@ -99,7 +99,7 @@ Driver::Driver(IConnectionSettingsBaseSPtr settings)
 #else
   impl_ = new core::redis::DBConnection(this);
 #endif
-  COMPILE_ASSERT(core::redis::DBConnection::connection_t == core::REDIS,
+  COMPILE_ASSERT(core::redis::DBConnection::GetConnectionType() == core::REDIS,
                  "DBConnection must be the same type as Driver!");
   CHECK(GetType() == core::REDIS);
 }
@@ -171,7 +171,7 @@ common::Error Driver::ExecuteImpl(const core::command_buffer_t& command, core::F
 }
 
 common::Error Driver::DBkcountImpl(core::keys_limit_t* size) {
-  return impl_->DBkcount(size);
+  return impl_->DBKeysCount(size);
 }
 
 common::Error Driver::GetCurrentServerInfo(core::IServerInfo** info) {

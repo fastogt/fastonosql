@@ -74,7 +74,8 @@ namespace pika {
 
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
     : IDriverRemote(settings), impl_(new core::pika::DBConnection(this)) {
-  COMPILE_ASSERT(core::pika::DBConnection::connection_t == core::PIKA, "DBConnection must be the same type as Driver!");
+  COMPILE_ASSERT(core::pika::DBConnection::GetConnectionType() == core::PIKA,
+                 "DBConnection must be the same type as Driver!");
   CHECK(GetType() == core::PIKA);
 }
 
@@ -136,7 +137,7 @@ common::Error Driver::ExecuteImpl(const core::command_buffer_t& command, core::F
 }
 
 common::Error Driver::DBkcountImpl(core::keys_limit_t* size) {
-  return impl_->DBkcount(size);
+  return impl_->DBKeysCount(size);
 }
 
 common::Error Driver::GetCurrentServerInfo(core::IServerInfo** info) {

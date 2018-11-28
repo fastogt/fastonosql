@@ -32,7 +32,7 @@ namespace unqlite {
 
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
     : IDriverLocal(settings), impl_(new core::unqlite::DBConnection(this)) {
-  COMPILE_ASSERT(core::unqlite::DBConnection::connection_t == core::UNQLITE,
+  COMPILE_ASSERT(core::unqlite::DBConnection::GetConnectionType() == core::UNQLITE,
                  "DBConnection must be the same type as Driver!");
   CHECK(GetType() == core::UNQLITE);
 }
@@ -94,14 +94,14 @@ common::Error Driver::ExecuteImpl(const core::command_buffer_t& command, core::F
 }
 
 common::Error Driver::DBkcountImpl(core::keys_limit_t* size) {
-  return impl_->DBkcount(size);
+  return impl_->DBKeysCount(size);
 }
 
 common::Error Driver::GetCurrentServerInfo(core::IServerInfo** info) {
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(GEN_CMD_STRING(DB_INFO_COMMAND), core::C_INNER);
   LOG_COMMAND(cmd);
   core::unqlite::ServerInfo::Stats cm;
-  common::Error err = impl_->Info(core::command_buffer_t(), &cm);
+  common::Error err = impl_->Info(&cm);
   if (err) {
     return err;
   }
