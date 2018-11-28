@@ -28,6 +28,7 @@ namespace pika {
 
 class Lexer : public BaseCommandsQsciLexer {
   Q_OBJECT
+
  public:
   typedef core::ConnectionCommandsTraits<core::PIKA> pika_trait_t;
   explicit Lexer(QObject* parent = Q_NULLPTR);
@@ -39,6 +40,7 @@ class Lexer : public BaseCommandsQsciLexer {
 
 class PikaApi : public BaseCommandsQsciApi {
   Q_OBJECT
+
  public:
   explicit PikaApi(Lexer* lexer);
 };

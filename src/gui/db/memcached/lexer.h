@@ -28,6 +28,7 @@ namespace memcached {
 
 class Lexer : public BaseCommandsQsciLexer {
   Q_OBJECT
+
  public:
   typedef core::ConnectionCommandsTraits<core::MEMCACHED> memcached_trait_t;
   explicit Lexer(QObject* parent = Q_NULLPTR);
@@ -39,6 +40,7 @@ class Lexer : public BaseCommandsQsciLexer {
 
 class MemcachedApi : public BaseCommandsQsciApi {
   Q_OBJECT
+
  public:
   explicit MemcachedApi(Lexer* lexer);
 };

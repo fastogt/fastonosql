@@ -30,6 +30,7 @@ class ExplorerTreeView;
 
 class ExplorerTreeWidget : public QWidget {
   Q_OBJECT
+
  public:
   explicit ExplorerTreeWidget(QWidget* parent = Q_NULLPTR);
 

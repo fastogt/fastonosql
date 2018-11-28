@@ -144,7 +144,6 @@ void StreamTypeWidget::addRow(const QModelIndex& index) {
 
   auto diag = createDialog<StreamEntryDialog>(DEFAILT_ID, this);  // +
   int result = diag->exec();
-  core::StreamValue::Stream st;
   if (result == QDialog::Accepted) {
     core::StreamValue::Stream st;
     if (diag->getStream(&st)) {

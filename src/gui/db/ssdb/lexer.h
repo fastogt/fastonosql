@@ -40,6 +40,7 @@ class Lexer : public BaseCommandsQsciLexer {
 
 class SsdbApi : public BaseCommandsQsciApi {
   Q_OBJECT
+
  public:
   explicit SsdbApi(Lexer* lexer);
 };

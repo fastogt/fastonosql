@@ -30,6 +30,7 @@ namespace gui {
 
 class DiscoveryConnection : public QObject {
   Q_OBJECT
+
  public:
   explicit DiscoveryConnection(proxy::IConnectionSettingsBaseSPtr conn, QObject* parent = Q_NULLPTR);
 

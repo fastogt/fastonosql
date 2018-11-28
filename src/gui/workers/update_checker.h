@@ -25,6 +25,7 @@ namespace gui {
 
 class UpdateChecker : public QObject {
   Q_OBJECT
+
  public:
   explicit UpdateChecker(QObject* parent = Q_NULLPTR);
 

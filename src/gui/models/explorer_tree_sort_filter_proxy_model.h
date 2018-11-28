@@ -25,6 +25,7 @@ namespace gui {
 
 class ExplorerTreeSortFilterProxyModel : public QSortFilterProxyModel {
   Q_OBJECT
+
  public:
   explicit ExplorerTreeSortFilterProxyModel(QObject* parent = Q_NULLPTR);
 

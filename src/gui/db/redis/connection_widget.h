@@ -34,6 +34,7 @@ namespace redis {
 
 class ConnectionWidget : public ConnectionBaseWidget {
   Q_OBJECT
+
  public:
   explicit ConnectionWidget(QWidget* parent = Q_NULLPTR);
 

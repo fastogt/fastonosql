@@ -39,6 +39,7 @@ class Lexer : public BaseCommandsQsciLexer {
 
 class UpscaleDBApi : public BaseCommandsQsciApi {
   Q_OBJECT
+
  public:
   explicit UpscaleDBApi(Lexer* lexer);
 };

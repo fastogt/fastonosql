@@ -27,6 +27,7 @@ namespace forestdb {
 
 class Lexer : public BaseCommandsQsciLexer {
   Q_OBJECT
+
  public:
   typedef core::ConnectionCommandsTraits<core::FORESTDB> forestdb_trait_t;
   explicit Lexer(QObject* parent = Q_NULLPTR);
@@ -38,6 +39,7 @@ class Lexer : public BaseCommandsQsciLexer {
 
 class ForestDBApi : public BaseCommandsQsciApi {
   Q_OBJECT
+
  public:
   explicit ForestDBApi(Lexer* lexer);
 };

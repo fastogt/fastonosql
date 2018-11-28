@@ -27,6 +27,7 @@ namespace memcached {
 
 class ConnectionWidget : public ConnectionRemoteWidget {
   Q_OBJECT
+
  public:
   explicit ConnectionWidget(QWidget* parent = Q_NULLPTR);
 

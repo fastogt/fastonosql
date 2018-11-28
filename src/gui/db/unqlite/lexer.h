@@ -40,6 +40,7 @@ class Lexer : public BaseCommandsQsciLexer {
 
 class UnqliteApi : public BaseCommandsQsciApi {
   Q_OBJECT
+
  public:
   explicit UnqliteApi(Lexer* lexer);
 };

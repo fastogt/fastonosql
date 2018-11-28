@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include <QObject>
 
 #include <fastonosql/core/server/iserver_info.h>
@@ -28,6 +30,7 @@ namespace gui {
 
 class DiscoverySentinelConnection : public QObject {
   Q_OBJECT
+
  public:
   explicit DiscoverySentinelConnection(proxy::IConnectionSettingsBaseSPtr conn, QObject* parent = Q_NULLPTR);
 

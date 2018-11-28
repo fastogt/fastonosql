@@ -27,6 +27,7 @@ namespace gui {
 
 class StreamTableModel : public common::qt::gui::TableModel {
   Q_OBJECT
+
  public:
   enum eColumn : uint8_t { kKey = 0, kValue = 1, kAction = 2, kCountColumns = 3 };
 

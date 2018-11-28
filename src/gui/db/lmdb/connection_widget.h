@@ -30,6 +30,7 @@ namespace lmdb {
 
 class ConnectionWidget : public ConnectionBaseWidget {
   Q_OBJECT
+
  public:
   typedef ConnectionBaseWidget base_class;
   explicit ConnectionWidget(QWidget* parent = Q_NULLPTR);

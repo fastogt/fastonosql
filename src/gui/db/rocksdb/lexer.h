@@ -40,6 +40,7 @@ class Lexer : public BaseCommandsQsciLexer {
 
 class RocksDBApi : public BaseCommandsQsciApi {
   Q_OBJECT
+
  public:
   explicit RocksDBApi(Lexer* lexer);
 };

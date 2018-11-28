@@ -44,6 +44,7 @@ namespace proxy {
 
 class IDriver : public QObject, public core::CDBConnectionClient {
   Q_OBJECT
+
  public:
   ~IDriver() override;
 

@@ -26,6 +26,7 @@ namespace forestdb {
 
 class ConnectionWidget : public ConnectionLocalWidgetFilePath {
   Q_OBJECT
+
  public:
   explicit ConnectionWidget(QWidget* parent = Q_NULLPTR);
 

@@ -28,6 +28,7 @@ namespace redis {
 
 class Lexer : public BaseCommandsQsciLexer {
   Q_OBJECT
+
  public:
   typedef core::ConnectionCommandsTraits<core::REDIS> redis_trait_t;
   explicit Lexer(QObject* parent = Q_NULLPTR);
@@ -39,6 +40,7 @@ class Lexer : public BaseCommandsQsciLexer {
 
 class RedisApi : public BaseCommandsQsciApi {
   Q_OBJECT
+
  public:
   explicit RedisApi(Lexer* lexer);
 };

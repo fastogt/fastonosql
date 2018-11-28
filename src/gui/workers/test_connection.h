@@ -27,6 +27,7 @@ namespace gui {
 
 class TestConnection : public QObject {
   Q_OBJECT
+
  public:
   explicit TestConnection(proxy::IConnectionSettingsBaseSPtr conn, QObject* parent = Q_NULLPTR);
 

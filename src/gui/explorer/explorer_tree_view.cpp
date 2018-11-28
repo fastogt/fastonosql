@@ -205,8 +205,6 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
   }
 
   const QModelIndex index = selected[0];
-  const bool is_multi = selected.size() > 1;
-  UNUSED(is_multi);
   IExplorerTreeItem* node = common::qt::item<common::qt::gui::TreeItem*, IExplorerTreeItem*>(index);
   if (!node) {
     DNOTREACHED();

@@ -28,6 +28,7 @@ namespace leveldb {
 
 class Lexer : public BaseCommandsQsciLexer {
   Q_OBJECT
+
  public:
   typedef core::ConnectionCommandsTraits<core::LEVELDB> leveldb_trait_t;
   explicit Lexer(QObject* parent = Q_NULLPTR);
@@ -39,6 +40,7 @@ class Lexer : public BaseCommandsQsciLexer {
 
 class LeveldbApi : public BaseCommandsQsciApi {
   Q_OBJECT
+
  public:
   explicit LeveldbApi(Lexer* lexer);
 };
