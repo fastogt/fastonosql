@@ -71,6 +71,7 @@ extern const QString trString;
 extern const QString trAction;
 extern const QString trType;
 extern const QString trGetValue;
+extern const QString trGetType;
 extern const QString trEditValue;
 extern const QString trMember;
 extern const QString trScore;

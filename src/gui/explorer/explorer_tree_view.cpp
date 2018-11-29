@@ -380,6 +380,9 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
     QAction* getValueAction = new QAction(translations::trGetValue, this);
     VERIFY(connect(getValueAction, &QAction::triggered, this, &ExplorerTreeView::loadValue));
 
+    QAction* getTypeAction = new QAction(translations::trGetType, this);
+    VERIFY(connect(getTypeAction, &QAction::triggered, this, &ExplorerTreeView::loadType));
+
     QAction* editKeyAction = new QAction(translations::trEditValue, this);
     VERIFY(connect(editKeyAction, &QAction::triggered, this, &ExplorerTreeView::editKey));
 
@@ -397,6 +400,8 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
     bool is_connected = server->IsConnected();
     menu.addAction(getValueAction);
     getValueAction->setEnabled(is_connected);
+    menu.addAction(getTypeAction);
+    getTypeAction->setEnabled(is_connected);
     bool is_ttl_supported = server->IsSupportTTLKeys();
     if (is_ttl_supported) {
       QAction* setTTLKeyAction = new QAction(trSetTTL, this);
@@ -930,6 +935,18 @@ void ExplorerTreeView::loadValue() {
     }
 
     node->loadValueFromDb();
+  }
+}
+
+void ExplorerTreeView::loadType() {
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerKeyItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerKeyItem*>(ind);
+    if (!node) {
+      continue;
+    }
+
+    node->loadTypeFromDb();
   }
 }
 

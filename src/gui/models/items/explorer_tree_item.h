@@ -123,6 +123,7 @@ class ExplorerDatabaseItem : public IExplorerTreeItem {
   void renameKey(const core::NKey& key, const QString& new_name);
   void removeKey(const core::NKey& key);
   void loadValue(const core::NDbKValue& key);
+  void loadType(const core::NDbKValue& key);
   void watchKey(const core::NDbKValue& key, int interval);
   void createKey(const core::NDbKValue& key);
   void editValue(const core::NDbKValue& key, const core::NValue& value);
@@ -160,6 +161,7 @@ class ExplorerKeyItem : public IExplorerTreeItem {
   void removeFromDb();
   void watchKey(int interval);
   void loadValueFromDb();
+  void loadTypeFromDb();
   void setTTL(core::ttl_t ttl);
 
   std::string nsSeparator() const;

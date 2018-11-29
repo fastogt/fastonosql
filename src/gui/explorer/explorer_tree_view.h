@@ -96,6 +96,7 @@ class ExplorerTreeView : public QTreeView {
   void deleteItem();  // branch or key
 
   void loadValue();
+  void loadType();
   void renKey();
   void remKey();
   void watchKey();

@@ -284,6 +284,22 @@ void ExplorerDatabaseItem::loadValue(const core::NDbKValue& key) {
   dbs->Execute(req);
 }
 
+void ExplorerDatabaseItem::loadType(const core::NDbKValue& key) {
+  proxy::IDatabaseSPtr dbs = db();
+  CHECK(dbs);
+  proxy::IServerSPtr server = dbs->GetServer();
+  core::translator_t tran = server->GetTranslator();
+  core::command_buffer_t cmd_str;
+  common::Error err = tran->GetTypeCommand(key.GetKey(), &cmd_str);
+  if (err) {
+    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
+    return;
+  }
+
+  proxy::events_info::ExecuteInfoRequest req(this, cmd_str);
+  dbs->Execute(req);
+}
+
 void ExplorerDatabaseItem::watchKey(const core::NDbKValue& key, int interval) {
   proxy::IDatabaseSPtr dbs = db();
   CHECK(dbs);
@@ -458,6 +474,13 @@ void ExplorerKeyItem::loadValueFromDb() {
   ExplorerDatabaseItem* par = db();
   if (par) {
     par->loadValue(dbv_);
+  }
+}
+
+void ExplorerKeyItem::loadTypeFromDb() {
+  ExplorerDatabaseItem* par = db();
+  if (par) {
+    par->loadType(dbv_);
   }
 }
 
