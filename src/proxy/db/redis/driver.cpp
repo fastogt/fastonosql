@@ -415,7 +415,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
           }
         }
       } else {
-        keys_count = std::min<core::keys_limit_t>(keys_count, arm->GetSize());
+        keys_count = std::min<core::keys_limit_t>(keys_count, static_cast<core::keys_limit_t>(arm->GetSize()));
         cmds.reserve(keys_count * 2);
         for (size_t i = 0; i < keys_count; ++i) {
           common::Value::string_t key;
