@@ -50,8 +50,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
 
   core::translator_t GetTranslator() const;
 
-  std::vector<common::Value::Type> GetSupportedValueTypes() const;
-  uint32_t GetVersion() const;
+  std::vector<common::Value::Type> GetSupportedValueTypes(uint32_t server_version) const;
   core::ConnectionType GetType() const;
   std::string GetName() const override;
 

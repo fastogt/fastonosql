@@ -103,7 +103,7 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget
   text_view_ = new FastoTextView;
   text_view_->setModel(common_model_);
 
-  key_editor_ = new SaveKeyEditWidget(server->GetSupportedValueTypes());
+  key_editor_ = new SaveKeyEditWidget;
   key_editor_->setEnableKeyEdit(false);
   VERIFY(connect(key_editor_, &SaveKeyEditWidget::keyReadyToSave, this, &OutputWidget::createKeyFromEditor,
                  Qt::DirectConnection));
@@ -177,13 +177,15 @@ void OutputWidget::rootCompleate(const proxy::events_info::CommandRootCompleated
 
 void OutputWidget::addKey(core::IDataBaseInfoSPtr db, core::NDbKValue key) {
   UNUSED(db);
-  key_editor_->initialize(key);
+  const auto inf = server_->GetCurrentServerInfo();
+  key_editor_->initialize(server_->GetSupportedValueTypes(inf->GetVersion()), key);
   common_model_->changeValue(key);
 }
 
 void OutputWidget::updateKey(core::IDataBaseInfoSPtr db, core::NDbKValue key) {
   UNUSED(db);
-  key_editor_->initialize(key);
+  const auto inf = server_->GetCurrentServerInfo();
+  key_editor_->initialize(server_->GetSupportedValueTypes(inf->GetVersion()), key);
   common_model_->changeValue(key);
 }
 
@@ -234,16 +236,16 @@ void OutputWidget::addChild(core::FastoObjectIPtr child) {
     return;
   }
 
-  FastoCommonItem* comChild = CreateItem(par, core::command_buffer_t(), true, child.get());
-  common_model_->insertItem(parent, comChild);
+  FastoCommonItem* com_child = CreateItem(par, core::command_buffer_t(), true, child.get());
+  common_model_->insertItem(parent, com_child);
 }
 
 void OutputWidget::addCommand(core::FastoObjectCommand* command, core::FastoObject* child) {
   void* parentinner = command->GetParent();
 
   QModelIndex parent;
-  bool isFound = common_model_->findItem(parentinner, &parent);
-  if (!isFound) {
+  bool is_found = common_model_->findItem(parentinner, &parent);
+  if (!is_found) {
     return;
   }
 

@@ -56,7 +56,7 @@ DbKeyDialog::DbKeyDialog(const QString& title,
     : base_class(title, parent), general_box_(nullptr), key_(key) {
   setWindowIcon(icon);
 
-  general_box_ = new KeyEditWidget(types, this);
+  general_box_ = new KeyEditWidget(this);
 
   QDialogButtonBox* button_box = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   button_box->setOrientation(Qt::Horizontal);
@@ -70,7 +70,7 @@ DbKeyDialog::DbKeyDialog(const QString& title,
   setMinimumSize(kMinSize);
 
   VERIFY(connect(general_box_, &KeyEditWidget::typeChanged, this, &DbKeyDialog::changeType));
-  general_box_->initialize(key_);
+  general_box_->initialize(types, key_);
   general_box_->setEnableKeyEdit(!is_edit);
 }
 

@@ -33,11 +33,10 @@
 namespace fastonosql {
 namespace gui {
 
-SaveKeyEditWidget::SaveKeyEditWidget(const std::vector<common::Value::Type>& availible_types, QWidget* parent)
-    : base_class(parent), init_key_() {
+SaveKeyEditWidget::SaveKeyEditWidget(QWidget* parent) : base_class(parent), init_key_() {
   QHBoxLayout* main_layout = new QHBoxLayout;
 
-  editor_ = new KeyEditWidget(availible_types);
+  editor_ = new KeyEditWidget;
 
   save_changes_button_ = new QPushButton;
   save_changes_button_->setIcon(GuiFactory::GetInstance().saveIcon());
@@ -61,8 +60,9 @@ SaveKeyEditWidget::SaveKeyEditWidget(const std::vector<common::Value::Type>& ava
 
 SaveKeyEditWidget::~SaveKeyEditWidget() {}
 
-void SaveKeyEditWidget::initialize(const core::NDbKValue& key) {
-  editor_->initialize(key);
+void SaveKeyEditWidget::initialize(const std::vector<common::Value::Type>& availible_types,
+                                   const core::NDbKValue& key) {
+  editor_->initialize(availible_types, key);
   init_key_ = key;
   syncControls();
 }

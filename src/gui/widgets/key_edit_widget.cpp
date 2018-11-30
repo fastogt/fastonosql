@@ -45,16 +45,9 @@
 namespace fastonosql {
 namespace gui {
 
-KeyEditWidget::KeyEditWidget(const std::vector<common::Value::Type>& availible_types, QWidget* parent)
-    : base_class(parent) {
+KeyEditWidget::KeyEditWidget(QWidget* parent) : base_class(parent) {
   type_label_ = new QLabel;
   types_combo_box_ = new QComboBox;
-  for (size_t i = 0; i < availible_types.size(); ++i) {
-    common::Value::Type t = availible_types[i];
-    QString type = core::GetTypeName(t);
-    types_combo_box_->addItem(GuiFactory::GetInstance().icon(t), type, t);
-  }
-
   typedef void (QComboBox::*ind)(int);
   VERIFY(
       connect(types_combo_box_, static_cast<ind>(&QComboBox::currentIndexChanged), this, &KeyEditWidget::changeType));
@@ -107,23 +100,25 @@ KeyEditWidget::KeyEditWidget(const std::vector<common::Value::Type>& availible_t
   setLayout(main_layout);
 
   // sync
-  changeType(0);
+  syncControls(core::NValue());
   retranslateUi();
 }
 
-void KeyEditWidget::initialize(const core::NDbKValue& key) {
+void KeyEditWidget::initialize(const std::vector<common::Value::Type>& availible_types, const core::NDbKValue& key) {
+  types_combo_box_->clear();
+
   core::NValue val = key.GetValue();
   CHECK(val) << "Value of key must be inited!";
   common::Value::Type current_type = key.GetType();
 
   int current_index = -1;
-  for (int i = 0; i < types_combo_box_->count(); ++i) {
-    QVariant cur = types_combo_box_->itemData(i);
-    common::Value::Type type = static_cast<common::Value::Type>(qvariant_cast<unsigned char>(cur));
-    if (current_type == type) {
+  for (size_t i = 0; i < availible_types.size(); ++i) {
+    common::Value::Type t = availible_types[i];
+    if (t == current_type) {
       current_index = static_cast<int>(i);
-      break;
     }
+    QString type = core::GetTypeName(t);
+    types_combo_box_->addItem(GuiFactory::GetInstance().icon(t), type, t);
   }
 
   CHECK_NE(current_index, -1) << "Type should be in availible_types array!";
@@ -336,6 +331,7 @@ void KeyEditWidget::changeType(int index) {
 }
 
 void KeyEditWidget::syncControls(const core::NValue& item) {
+  setEnabled(item ? true : false);
   if (!item) {
     return;
   }

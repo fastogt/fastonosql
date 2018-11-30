@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include <QWidget>
 
 #include <common/optional.h>
@@ -46,10 +48,10 @@ class SaveKeyEditWidget : public QWidget {
  public:
   typedef QWidget base_class;
 
-  explicit SaveKeyEditWidget(const std::vector<common::Value::Type>& availible_types, QWidget* parent = Q_NULLPTR);
+  explicit SaveKeyEditWidget(QWidget* parent = Q_NULLPTR);
   ~SaveKeyEditWidget() override;
 
-  void initialize(const core::NDbKValue& key);
+  void initialize(const std::vector<common::Value::Type>& availible_types, const core::NDbKValue& key);
   void setEnableKeyEdit(bool enable);
 
   void startSaveKey();

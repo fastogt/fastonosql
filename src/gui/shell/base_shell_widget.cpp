@@ -544,16 +544,16 @@ void BaseShellWidget::leaveMode(const proxy::events_info::LeaveModeInfo& res) {
   UNUSED(res);
 }
 
-void BaseShellWidget::startLoadServerInfo(const proxy::events_info::ServerInfoRequest& res) {
-  OnStartedLoadServerInfo(res);
+void BaseShellWidget::startLoadServerInfo(const proxy::events_info::ServerInfoRequest& req) {
+  OnStartedLoadServerInfo(req);
 }
 
 void BaseShellWidget::finishLoadServerInfo(const proxy::events_info::ServerInfoResponce& res) {
   OnFinishedLoadServerInfo(res);
 }
 
-void BaseShellWidget::startLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoRequest& res) {
-  OnStartedLoadDiscoveryInfo(res);
+void BaseShellWidget::startLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoRequest& req) {
+  OnStartedLoadDiscoveryInfo(req);
 }
 
 void BaseShellWidget::finishLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponce& res) {

@@ -101,17 +101,8 @@ core::translator_t IServer::GetTranslator() const {
   return drv_->GetTranslator();
 }
 
-std::vector<common::Value::Type> IServer::GetSupportedValueTypes() const {
-  return core::GetSupportedValueTypes(GetType(), GetVersion());
-}
-
-uint32_t IServer::GetVersion() const {
-  core::IServerInfoSPtr inf = GetCurrentServerInfo();
-  if (!inf) {
-    return UNDEFINED_SINCE;
-  }
-
-  return inf->GetVersion();
+std::vector<common::Value::Type> IServer::GetSupportedValueTypes(uint32_t server_version) const {
+  return core::GetSupportedValueTypes(GetType(), server_version);
 }
 
 core::ConnectionType IServer::GetType() const {

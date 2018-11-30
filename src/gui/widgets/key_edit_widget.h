@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include <QGroupBox>
 
 #include <fastonosql/core/db_key.h>  // for NDbKValue, NValue
@@ -40,9 +42,9 @@ class KeyEditWidget : public QGroupBox {
  public:
   typedef QGroupBox base_class;
 
-  explicit KeyEditWidget(const std::vector<common::Value::Type>& availible_types, QWidget* parent = Q_NULLPTR);
+  explicit KeyEditWidget(QWidget* parent = Q_NULLPTR);
 
-  void initialize(const core::NDbKValue& key);
+  void initialize(const std::vector<common::Value::Type>& availible_types, const core::NDbKValue& key);
 
   ~KeyEditWidget() override;
 

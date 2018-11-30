@@ -344,7 +344,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
   core::command_buffer_t pattern_result;
   bool new_behavior = true;
-  auto serv = GetCurrentServerInfoIfConnected();
+  const auto serv = GetCurrentServerInfoIfConnected();
   if (!serv) {
     NotifyProgress(sender, 50);
     res.setErrorInfo(common::make_error("Not connected"));

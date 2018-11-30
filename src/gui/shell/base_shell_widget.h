@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include <QWidget>
 
 #include <common/error.h>
@@ -115,10 +117,10 @@ class BaseShellWidget : public QWidget {
   void enterMode(const proxy::events_info::EnterModeInfo& res);
   void leaveMode(const proxy::events_info::LeaveModeInfo& res);
 
-  void startLoadServerInfo(const proxy::events_info::ServerInfoRequest& res);
+  void startLoadServerInfo(const proxy::events_info::ServerInfoRequest& req);
   void finishLoadServerInfo(const proxy::events_info::ServerInfoResponce& res);
 
-  void startLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoRequest& res);
+  void startLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoRequest& req);
   void finishLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponce& res);
 
   void startExecute(const proxy::events_info::ExecuteInfoRequest& req);
@@ -128,7 +130,7 @@ class BaseShellWidget : public QWidget {
   void serverDisconnect();
 
  protected:
-  BaseShellWidget(proxy::IServerSPtr server, const QString& filePath = QString(), QWidget* parent = Q_NULLPTR);
+  explicit BaseShellWidget(proxy::IServerSPtr server, const QString& filePath = QString(), QWidget* parent = Q_NULLPTR);
   virtual void init();
   virtual QHBoxLayout* createTopLayout(core::ConnectionType ct);
 
