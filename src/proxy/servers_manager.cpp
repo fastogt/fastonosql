@@ -85,7 +85,7 @@
 #include "proxy/db/pika/server.h"                   // for Server
 #endif
 
-#if defined(PRO_VERSION) && (defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_PIKA))
+#if defined(PRO_VERSION) && defined(BUILD_WITH_REDIS)
 #include "proxy/db/redis_compatible/cluster.h"   // for Cluster
 #include "proxy/db/redis_compatible/sentinel.h"  // for Sentinel
 #endif
@@ -334,13 +334,6 @@ common::Error ServersManager::DiscoveryClusterConnection(IConnectionSettingsBase
     return core::redis::DiscoveryClusterConnection(rconfig, out);
   }
 #endif
-#if defined(BUILD_WITH_PIKA)
-  if (connection_type == core::PIKA) {
-    pika::ConnectionSettings* settings = static_cast<pika::ConnectionSettings*>(connection.get());
-    core::pika::RConfig rconfig(settings->GetInfo(), settings->GetSSHInfo());
-    return core::pika::DiscoveryClusterConnection(rconfig, out);
-  }
-#endif
 
   NOTREACHED() << "Can't find discovery cluster implementation for: " << connection_type;
   return common::make_error("Invalid setting type");
@@ -359,13 +352,6 @@ common::Error ServersManager::DiscoverySentinelConnection(IConnectionSettingsBas
     redis::ConnectionSettings* settings = static_cast<redis::ConnectionSettings*>(connection.get());
     core::redis::RConfig rconfig(settings->GetInfo(), settings->GetSSHInfo());
     return core::redis::DiscoverySentinelConnection(rconfig, out);
-  }
-#endif
-#if defined(BUILD_WITH_PIKA)
-  if (connection_type == core::PIKA) {
-    pika::ConnectionSettings* settings = static_cast<pika::ConnectionSettings*>(connection.get());
-    core::pika::RConfig rconfig(settings->GetInfo(), settings->GetSSHInfo());
-    return core::pika::DiscoverySentinelConnection(rconfig, out);
   }
 #endif
 

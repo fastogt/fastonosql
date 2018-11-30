@@ -553,17 +553,6 @@ IF(BUILD_WITH_PIKA)
     ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/driver.cpp
   )
 
-IF(PRO_VERSION)
-  SET(HEADERS_PROXY_DB_PIKA ${HEADERS_PROXY_DB_PIKA}
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/cluster_settings.h
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/sentinel_settings.h
-  )
-  SET(SOURCES_PROXY_DB_PIKA ${SOURCES_PROXY_DB_PIKA}
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/cluster_settings.cpp
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/pika/sentinel_settings.cpp
-  )
-ENDIF(PRO_VERSION)
-
   #gui pika
   SET(HEADERS_PIKA_GUI
     ${CMAKE_SOURCE_DIR}/src/gui/db/pika/connection_widget.h

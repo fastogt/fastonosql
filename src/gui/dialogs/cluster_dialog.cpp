@@ -107,9 +107,6 @@ ClusterDialog::ClusterDialog(proxy::IClusterSettingsBase* connection, QWidget* p
 #if defined(BUILD_WITH_REDIS)
   updateCombobox(core::REDIS);
 #endif
-#if defined(BUILD_WITH_PIKA)
-  updateCombobox(core::PIKA);
-#endif
 
   if (cluster_connection_) {
     type_connection_->setCurrentIndex(cluster_connection_->GetType());

@@ -101,9 +101,6 @@ SentinelDialog::SentinelDialog(proxy::ISentinelSettingsBase* connection, QWidget
 #if defined(BUILD_WITH_REDIS)
   updateCombobox(core::REDIS);
 #endif
-#if defined(BUILD_WITH_PIKA)
-  updateCombobox(core::PIKA);
-#endif
 
   if (sentinel_connection_) {
     type_connection_->setCurrentIndex(sentinel_connection_->GetType());
