@@ -18,8 +18,9 @@
 
 #pragma once
 
-#include <fastonosql/core/connection_types.h>  // for ConnectionType
-#include <fastonosql/core/db_key.h>            // for NDbKValue, NValue
+#include <vector>
+
+#include <fastonosql/core/db_key.h>  // for NDbKValue, NValue
 
 #include "gui/dialogs/base_dialog.h"
 
@@ -47,7 +48,7 @@ class DbKeyDialog : public BaseDialog {
  protected:
   DbKeyDialog(const QString& title,
               const QIcon& icon,
-              core::ConnectionType type,
+              std::vector<common::Value::Type> types,
               const core::NDbKValue& key,
               bool is_edit,
               QWidget* parent = Q_NULLPTR);

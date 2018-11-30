@@ -28,7 +28,6 @@
 #include <QLineEdit>
 #include <QMessageBox>
 
-#include <fastonosql/core/db_traits.h>
 #include <fastonosql/core/value.h>
 
 #include "gui/widgets/key_edit_widget.h"
@@ -50,14 +49,13 @@ namespace gui {
 
 DbKeyDialog::DbKeyDialog(const QString& title,
                          const QIcon& icon,
-                         core::ConnectionType type,
+                         std::vector<common::Value::Type> types,
                          const core::NDbKValue& key,
                          bool is_edit,
                          QWidget* parent)
     : base_class(title, parent), general_box_(nullptr), key_(key) {
   setWindowIcon(icon);
 
-  const std::vector<common::Value::Type> types = core::GetSupportedValueTypes(type);
   general_box_ = new KeyEditWidget(types, this);
 
   QDialogButtonBox* button_box = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);

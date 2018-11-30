@@ -25,6 +25,8 @@
 #include <common/qt/logger.h>  // for LOG_ERROR
 #include <common/sprintf.h>
 
+#include <fastonosql/core/db_traits.h>
+
 #include "proxy/driver/idriver.h"  // for IDriver
 
 namespace fastonosql {
@@ -97,6 +99,19 @@ bool IServer::IsCanRemoveDatabase() const {
 
 core::translator_t IServer::GetTranslator() const {
   return drv_->GetTranslator();
+}
+
+std::vector<common::Value::Type> IServer::GetSupportedValueTypes() const {
+  return core::GetSupportedValueTypes(GetType(), GetVersion());
+}
+
+uint32_t IServer::GetVersion() const {
+  core::IServerInfoSPtr inf = GetCurrentServerInfo();
+  if (!inf) {
+    return UNDEFINED_SINCE;
+  }
+
+  return inf->GetVersion();
 }
 
 core::ConnectionType IServer::GetType() const {

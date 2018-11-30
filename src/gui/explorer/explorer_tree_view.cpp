@@ -823,9 +823,9 @@ void ExplorerTreeView::addKeyToBranch() {
     const core::NValue val(common::Value::CreateEmptyStringValue());
     const core::NDbKValue nkey(raw_key, val);
     ExplorerDatabaseItem* node_db = node->db();
-    core::ConnectionType type = server->GetType();
-    auto loadDb = createDialog<DbKeyDialog>(trCreateKeyForDbTemplate_1S.arg(node_db->name()),
-                                            GuiFactory::GetInstance().keyIcon(), type, nkey, false, this);  // +
+    auto loadDb =
+        createDialog<DbKeyDialog>(trCreateKeyForDbTemplate_1S.arg(node_db->name()), GuiFactory::GetInstance().keyIcon(),
+                                  server->GetSupportedValueTypes(), nkey, false, this);  // +
     int result = loadDb->exec();
     if (result == QDialog::Accepted) {
       core::NDbKValue key = loadDb->key();
@@ -880,9 +880,9 @@ void ExplorerTreeView::createKey() {
     proxy::IServerSPtr server = node->server();
     core::NValue val(common::Value::CreateEmptyStringValue());
     core::NDbKValue dbv(core::NKey(), val);
-    core::ConnectionType type = server->GetType();
-    auto loadDb = createDialog<DbKeyDialog>(trCreateKeyForDbTemplate_1S.arg(node->name()),
-                                            GuiFactory::GetInstance().keyIcon(), type, dbv, false, this);  // +
+    auto loadDb =
+        createDialog<DbKeyDialog>(trCreateKeyForDbTemplate_1S.arg(node->name()), GuiFactory::GetInstance().keyIcon(),
+                                  server->GetSupportedValueTypes(), dbv, false, this);  // +
     int result = loadDb->exec();
     if (result == QDialog::Accepted) {
       core::NDbKValue key = loadDb->key();
@@ -901,9 +901,8 @@ void ExplorerTreeView::editKey() {
     }
 
     proxy::IServerSPtr server = node->server();
-    core::ConnectionType type = server->GetType();
-    auto loadDb = createDialog<DbKeyDialog>(trEditKey_1S.arg(node->name()), GuiFactory::GetInstance().keyIcon(), type,
-                                            node->dbv(), true, this);  // +
+    auto loadDb = createDialog<DbKeyDialog>(trEditKey_1S.arg(node->name()), GuiFactory::GetInstance().keyIcon(),
+                                            server->GetSupportedValueTypes(), node->dbv(), true, this);  // +
     int result = loadDb->exec();
     if (result == QDialog::Accepted) {
       core::NDbKValue key = loadDb->key();

@@ -28,8 +28,6 @@
 #include <common/qt/gui/icon_label.h>  // for IconLabel
 #include <common/qt/logger.h>
 
-#include <fastonosql/core/db_traits.h>
-
 #include "proxy/server/iserver.h"    // for IServer
 #include "proxy/settings_manager.h"  // for SettingsManager
 
@@ -105,8 +103,7 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget
   text_view_ = new FastoTextView;
   text_view_->setModel(common_model_);
 
-  std::vector<common::Value::Type> types = core::GetSupportedValueTypes(server->GetType());
-  key_editor_ = new SaveKeyEditWidget(types);
+  key_editor_ = new SaveKeyEditWidget(server->GetSupportedValueTypes());
   key_editor_->setEnableKeyEdit(false);
   VERIFY(connect(key_editor_, &SaveKeyEditWidget::keyReadyToSave, this, &OutputWidget::createKeyFromEditor,
                  Qt::DirectConnection));
