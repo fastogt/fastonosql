@@ -57,6 +57,7 @@ class SaveKeyEditWidget;
 class OutputWidget : public QWidget {
   Q_OBJECT
  public:
+  typedef QWidget base_class;
   static const QSize icon_size;
 
   explicit OutputWidget(proxy::IServerSPtr server, QWidget* parent = Q_NULLPTR);
@@ -83,7 +84,12 @@ class OutputWidget : public QWidget {
   void setTextView();
   void setEditKeyView();
 
+ protected:
+  void changeEvent(QEvent* ev) override;
+
  private:
+  void retranslateUi();
+
   void createKeyImpl(const core::NDbKValue& dbv, void* initiator);
 
   void syncWithView(proxy::SupportedView view);
@@ -92,7 +98,7 @@ class OutputWidget : public QWidget {
   QPushButton* tree_button_;
   QPushButton* table_button_;
   QPushButton* text_button_;
-  QPushButton* edit_key_button_;
+  QPushButton* key_button_;
 
   FastoCommonModel* common_model_;
   QTreeView* tree_view_;

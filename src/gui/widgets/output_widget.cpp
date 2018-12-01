@@ -40,6 +40,13 @@
 #include "gui/widgets/delegate/type_delegate.h"
 #include "gui/widgets/save_key_edit_widget.h"
 
+namespace {
+const QString trTreeViewTooltip = QObject::tr("Tree view");
+const QString trTableViewTooltip = QObject::tr("Table view");
+const QString trTextViewTooltip = QObject::tr("Text view");
+const QString trKeyViewTooltip = QObject::tr("Key view");
+}  // namespace
+
 namespace fastonosql {
 namespace gui {
 namespace {
@@ -66,7 +73,7 @@ FastoCommonItem* CreateRootItem(core::FastoObject* item) {
 
 const QSize OutputWidget::icon_size = QSize(24, 24);
 
-OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget(parent), server_(server) {
+OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : base_class(parent), server_(server) {
   CHECK(server_);
 
   common_model_ = new FastoCommonModel(this);
@@ -113,7 +120,7 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget
   tree_button_ = new QPushButton;
   table_button_ = new QPushButton;
   text_button_ = new QPushButton;
-  edit_key_button_ = new QPushButton;
+  key_button_ = new QPushButton;
   time_label_ = new common::qt::gui::IconLabel(GuiFactory::GetInstance().timeIcon(), icon_size, "0");
   tree_button_->setIcon(GuiFactory::GetInstance().treeIcon());
   VERIFY(connect(tree_button_, &QPushButton::clicked, this, &OutputWidget::setTreeView));
@@ -121,12 +128,12 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget
   VERIFY(connect(table_button_, &QPushButton::clicked, this, &OutputWidget::setTableView));
   text_button_->setIcon(GuiFactory::GetInstance().textIcon());
   VERIFY(connect(text_button_, &QPushButton::clicked, this, &OutputWidget::setTextView));
-  edit_key_button_->setIcon(GuiFactory::GetInstance().keyIcon());
-  VERIFY(connect(edit_key_button_, &QPushButton::clicked, this, &OutputWidget::setEditKeyView));
+  key_button_->setIcon(GuiFactory::GetInstance().keyIcon());
+  VERIFY(connect(key_button_, &QPushButton::clicked, this, &OutputWidget::setEditKeyView));
   top_layout->addWidget(tree_button_);
   top_layout->addWidget(table_button_);
   top_layout->addWidget(text_button_);
-  top_layout->addWidget(edit_key_button_);
+  top_layout->addWidget(key_button_);
   top_layout->addWidget(new QSplitter(Qt::Horizontal));
   top_layout->addWidget(time_label_);
   top_layout->setContentsMargins(0, 0, 0, 0);
@@ -147,6 +154,8 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget
 
   setLayout(main_layout);
   syncWithView(current_view_);
+
+  retranslateUi();
 }
 
 void OutputWidget::rootCreate(const proxy::events_info::CommandRootCreatedInfo& res) {
@@ -327,6 +336,21 @@ void OutputWidget::setEditKeyView() {
   table_view_->setVisible(false);
   text_view_->setVisible(false);
   key_editor_->setVisible(true);
+}
+
+void OutputWidget::changeEvent(QEvent* e) {
+  if (e->type() == QEvent::LanguageChange) {
+    retranslateUi();
+  }
+
+  base_class::changeEvent(e);
+}
+
+void OutputWidget::retranslateUi() {
+  tree_button_->setToolTip(trTreeViewTooltip);
+  table_button_->setToolTip(trTableViewTooltip);
+  text_button_->setToolTip(trTextViewTooltip);
+  key_button_->setToolTip(trKeyViewTooltip);
 }
 
 void OutputWidget::createKeyImpl(const core::NDbKValue& dbv, void* initiator) {
