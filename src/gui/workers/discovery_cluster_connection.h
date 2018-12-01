@@ -22,7 +22,8 @@
 
 #include <QObject>
 
-#include <fastonosql/core/server/iserver_info.h>
+#include <fastonosql/core/cluster/cluster_discovery_info.h>
+
 #include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
 
 namespace fastonosql {

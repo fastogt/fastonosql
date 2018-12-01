@@ -20,7 +20,7 @@
 
 #include <vector>
 
-#include <fastonosql/core/server/iserver_info.h>
+#include <fastonosql/core/sentinel/sentinel_discovery_info.h>
 
 #include "gui/dialogs/base_dialog.h"
 

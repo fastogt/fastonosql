@@ -20,7 +20,7 @@
 
 #include <vector>  // for vector
 
-#include <fastonosql/core/server/iserver_info.h>
+#include <fastonosql/core/cluster/cluster_discovery_info.h>
 
 #include "gui/dialogs/base_dialog.h"
 

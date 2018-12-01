@@ -27,7 +27,8 @@
 #include "proxy/connection_settings/iconnection_settings.h"
 
 #if defined(PRO_VERSION)
-#include <fastonosql/core/server/iserver_info.h>
+#include <fastonosql/core/cluster/cluster_discovery_info.h>
+#include <fastonosql/core/sentinel/sentinel_discovery_info.h>
 
 #include "proxy/connection_settings/icluster_connection_settings.h"
 #include "proxy/connection_settings/isentinel_connection_settings.h"
