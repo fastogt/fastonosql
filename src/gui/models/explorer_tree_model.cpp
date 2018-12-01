@@ -390,7 +390,9 @@ void ExplorerTreeModel::removeKey(proxy::IServer* server, core::IDataBaseInfoSPt
     if (node->type() == IExplorerTreeItem::eNamespace) {
       ExplorerNSItem* ns = static_cast<ExplorerNSItem*>(node);
       if (ns->childrenCount() == 0) {
-        QModelIndex dindex = createIndex(dbs->indexOf(ns), 0, ns);
+        auto gpa = ns->parent();
+        const int pos = gpa->indexOf(ns);
+        QModelIndex dindex = createIndex(pos, 0, ns);
         removeItem(dindex.parent(), ns);
       }
     }
