@@ -1,7 +1,8 @@
-1.23.0 /
+1.23.1 /
 [Alexandr Topilski]
 - Get key type context menu item
 - Get value types by server version
+- [Redis] Unlink command
 
 1.23.0 / November 26, 2018
 [Alexandr Topilski]
