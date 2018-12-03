@@ -98,6 +98,12 @@ class ConnectionSettings;
 }
 #endif
 
+#if defined(BUILD_WITH_DYNOMITE_REDIS)
+namespace dynomite_redis {
+class ConnectionSettings;
+}
+#endif
+
 class ConnectionSettingsFactory : public common::patterns::LazySingleton<ConnectionSettingsFactory> {
  public:
   friend class common::patterns::LazySingleton<ConnectionSettingsFactory>;
@@ -151,6 +157,10 @@ class ConnectionSettingsFactory : public common::patterns::LazySingleton<Connect
 
 #if defined(BUILD_WITH_PIKA)
   pika::ConnectionSettings* CreatePIKAConnection(const connection_path_t& connection_path) const;
+#endif
+
+#if defined(BUILD_WITH_DYNOMITE_REDIS)
+  dynomite_redis::ConnectionSettings* CreateDynomiteRedisConnection(const connection_path_t& connection_path) const;
 #endif
   std::string GetLoggingDirectory() const;
   void SetLoggingDirectory(const std::string& dir);

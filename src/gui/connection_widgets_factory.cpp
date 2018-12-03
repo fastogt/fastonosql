@@ -48,6 +48,9 @@
 #if defined(BUILD_WITH_PIKA)
 #include "gui/db/pika/connection_widget.h"
 #endif
+#if defined(BUILD_WITH_DYNOMITE_REDIS)
+#include "gui/db/dynomite_redis/connection_widget.h"
+#endif
 
 namespace fastonosql {
 namespace gui {
@@ -101,6 +104,11 @@ ConnectionBaseWidget* createWidgetImpl(core::ConnectionType type, QWidget* paren
 #if defined(BUILD_WITH_PIKA)
   if (type == core::PIKA) {
     return new pika::ConnectionWidget(parent);
+  }
+#endif
+#if defined(BUILD_WITH_DYNOMITE_REDIS)
+  if (type == core::DYNOMITE_REDIS) {
+    return new dynomite_redis::ConnectionWidget(parent);
   }
 #endif
 

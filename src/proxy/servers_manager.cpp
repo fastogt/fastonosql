@@ -85,6 +85,12 @@
 #include "proxy/db/pika/server.h"                   // for Server
 #endif
 
+#if defined(BUILD_WITH_PIKA)
+#include <fastonosql/core/db/dynomite_redis/db_connection.h>  // for DiscoveryClusterConnection, etc
+#include "proxy/db/dynomite_redis/connection_settings.h"      // for ConnectionSettings
+#include "proxy/db/dynomite_redis/server.h"                   // for Server
+#endif
+
 #if defined(PRO_VERSION) && defined(BUILD_WITH_REDIS)
 #include "proxy/db/redis_compatible/cluster.h"   // for Cluster
 #include "proxy/db/redis_compatible/sentinel.h"  // for Sentinel
@@ -146,6 +152,11 @@ IServerSPtr CreateServerImpl(IConnectionSettingsBaseSPtr settings) {
     return std::make_shared<pika::Server>(settings);
   }
 #endif
+#if defined(BUILD_WITH_DYNOMITE_REDIS)
+  if (connection_type == core::DYNOMITE_REDIS) {
+    return std::make_shared<dynomite_redis::Server>(settings);
+  }
+#endif
 
   NOTREACHED() << "Server should be allocated, type: " << connection_type;
   return IServerSPtr();
@@ -186,25 +197,6 @@ ServersManager::sentinel_t ServersManager::CreateSentinel(ISentinelSettingsBaseS
     return sent;
   }
 #endif
-#if defined(BUILD_WITH_PIKA)
-  if (connection_type == core::PIKA) {
-    sentinel_t sent = std::make_shared<redis_compatible::Sentinel>(settings->GetPath().ToString());
-    auto nodes = settings->GetSentinels();
-    for (size_t i = 0; i < nodes.size(); ++i) {
-      SentinelSettings nd = nodes[i];
-      Sentinel sentt;
-      IServerSPtr sent_serv = CreateServer(nd.sentinel);
-      sentt.sentinel = sent_serv;
-      for (size_t j = 0; j < nd.sentinel_nodes.size(); ++j) {
-        IServerSPtr serv = CreateServer(nd.sentinel_nodes[j]);
-        sentt.sentinels_nodes.push_back(serv);
-      }
-
-      sent->AddSentinel(sentt);
-    }
-    return sent;
-  }
-#endif
 
   NOTREACHED() << "Sentinel should be allocated, type: " << connection_type;
   return sentinel_t();
@@ -216,18 +208,6 @@ ServersManager::cluster_t ServersManager::CreateCluster(IClusterSettingsBaseSPtr
   const core::ConnectionType connection_type = settings->GetType();
 #if defined(BUILD_WITH_REDIS)
   if (connection_type == core::REDIS) {
-    cluster_t cl = std::make_shared<redis_compatible::Cluster>(settings->GetPath().ToString());
-    auto nodes = settings->GetNodes();
-    for (size_t i = 0; i < nodes.size(); ++i) {
-      IConnectionSettingsBaseSPtr nd = nodes[i];
-      IServerSPtr serv = CreateServer(nd);
-      cl->AddServer(serv);
-    }
-    return cl;
-  }
-#endif
-#if defined(BUILD_WITH_PIKA)
-  if (connection_type == core::PIKA) {
     cluster_t cl = std::make_shared<redis_compatible::Cluster>(settings->GetPath().ToString());
     auto nodes = settings->GetNodes();
     for (size_t i = 0; i < nodes.size(); ++i) {
@@ -311,6 +291,13 @@ common::Error ServersManager::TestConnection(IConnectionSettingsBaseSPtr connect
     pika::ConnectionSettings* settings = static_cast<pika::ConnectionSettings*>(connection.get());
     core::pika::RConfig rconfig(settings->GetInfo(), settings->GetSSHInfo());
     return core::pika::TestConnection(rconfig);
+  }
+#endif
+#if defined(BUILD_WITH_DYNOMITE_REDIS)
+  if (connection_type == core::DYNOMITE_REDIS) {
+    dynomite_redis::ConnectionSettings* settings = static_cast<dynomite_redis::ConnectionSettings*>(connection.get());
+    core::dynomite_redis::RConfig rconfig(settings->GetInfo(), settings->GetSSHInfo());
+    return core::dynomite_redis::TestConnection(rconfig);
   }
 #endif
 

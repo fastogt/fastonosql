@@ -2,8 +2,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.6.3) # OPENSSL_USE_STATIC_LIBS
 ###################### Branding ##########################
 
 SET(BRANDING_PROJECT_NAME "FastoNoSQL" CACHE STRING "Branding for ${BRANDING_PROJECT_NAME}") #default
-SET(BRANDING_PROJECT_VERSION "1.23.1.0" CACHE STRING "Branding version for ${BRANDING_PROJECT_NAME}") #default
-SET(BRANDING_PROJECT_BUILD_TYPE_VERSION "release" CACHE STRING "Build version type for ${BRANDING_PROJECT_NAME}") #default
+SET(BRANDING_PROJECT_VERSION "1.24.0.0" CACHE STRING "Branding version for ${BRANDING_PROJECT_NAME}") #default
+SET(BRANDING_PROJECT_BUILD_TYPE_VERSION "alfa" CACHE STRING "Build version type for ${BRANDING_PROJECT_NAME}") #default
   #possible variables: alfa, beta, rc, release
 
 SET(BRANDING_PROJECT_DOMAIN "https://www.fastonosql.com" CACHE STRING "Branding domain url for ${BRANDING_PROJECT_NAME}") #default
@@ -17,7 +17,7 @@ SET(BRANDING_PROJECT_MAINTAINER_NAME "Alexandr Topilski" CACHE STRING "Name of m
 SET(BRANDING_PROJECT_GITHUB_FORK "https://www.github.com/fastogt/fastonosql" CACHE STRING "Branding fork url for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_GITHUB_ISSUES "https://www.github.com/fastogt/fastonosql/issues" CACHE STRING "Branding issues url for ${BRANDING_PROJECT_NAME}") #default
 
-SET(BRANDING_PROJECT_SUMMARY "Cross-platform open source Redis, Memcached, SSDB, LevelDB, RocksDB, UnQLite, LMDB, UpscaleDB, ForestDB, Pika GUI management tool."
+SET(BRANDING_PROJECT_SUMMARY "Cross-platform open source Redis, Memcached, SSDB, LevelDB, RocksDB, UnQLite, LMDB, UpscaleDB, ForestDB, Pika, Dynomite Redis GUI management tool."
   CACHE STRING "Short description of ${BRANDING_PROJECT_NAME}"
 )
 SET(BRANDING_PROJECT_DESCRIPTION "${BRANDING_PROJECT_NAME} it is GUI platform for NoSQL databases. Currently we support next databases: \
@@ -31,6 +31,7 @@ SET(BRANDING_PROJECT_DESCRIPTION "${BRANDING_PROJECT_NAME} it is GUI platform fo
   * UpscaleDB \
   * ForestDB \
   * Pika \
+  * Dynomite Redis \
   For all this databases you can connect and use them in any way you need. \
   Also ${BRANDING_PROJECT_NAME} is IDE tool for NoSQL which works on the most famous platforms like:\
   Windows, Linux, MacOSX, Android, FreeBSD."
@@ -123,6 +124,7 @@ ENDIF(MSVC)
 
 OPTION(BUILD_WITH_REDIS "Build with Redis support" ON)
 OPTION(BUILD_WITH_PIKA "Build with Pika support" OFF)
+OPTION(BUILD_WITH_DYNOMITE_REDIS "Build with Dynomite Redis support" ON)
 OPTION(BUILD_WITH_MEMCACHED "Build with Memcached support" ON)
 OPTION(BUILD_WITH_SSDB "Build with SSDB support" OFF)
 OPTION(BUILD_WITH_LEVELDB "Build with LevelDB support" ON)
@@ -147,6 +149,7 @@ MESSAGE(STATUS "BUILD_64X: ${BUILD_64X}")
 MESSAGE(STATUS "PRO_VERSION: ${PRO_VERSION}")
 MESSAGE(STATUS "BUILD_WITH_REDIS: ${BUILD_WITH_REDIS}")
 MESSAGE(STATUS "BUILD_WITH_PIKA: ${BUILD_WITH_PIKA}")
+MESSAGE(STATUS "BUILD_WITH_DYNOMITE_REDIS: ${BUILD_WITH_DYNOMITE_REDIS}")
 MESSAGE(STATUS "BUILD_WITH_MEMCACHED: ${BUILD_WITH_MEMCACHED}")
 MESSAGE(STATUS "BUILD_WITH_SSDB: ${BUILD_WITH_SSDB}")
 MESSAGE(STATUS "BUILD_WITH_LEVELDB: ${BUILD_WITH_LEVELDB}")
@@ -282,6 +285,9 @@ ENDIF(BUILD_WITH_REDIS)
 IF(BUILD_WITH_PIKA)
   ADD_DEFINITIONS(-DBUILD_WITH_PIKA)
 ENDIF(BUILD_WITH_PIKA)
+IF(BUILD_WITH_DYNOMITE_REDIS)
+  ADD_DEFINITIONS(-DBUILD_WITH_DYNOMITE_REDIS)
+ENDIF(BUILD_WITH_DYNOMITE_REDIS)
 IF(BUILD_WITH_MEMCACHED)
   ADD_DEFINITIONS(-DBUILD_WITH_MEMCACHED)
 ENDIF(BUILD_WITH_MEMCACHED)

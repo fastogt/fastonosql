@@ -24,43 +24,36 @@
 
 #if defined(BUILD_WITH_REDIS)
 #include "proxy/db/redis/connection_settings.h"  // for ConnectionSettings
-#define LOGGING_REDIS_FILE_EXTENSION ".red"
 #endif
 #if defined(BUILD_WITH_MEMCACHED)
 #include "proxy/db/memcached/connection_settings.h"  // for ConnectionSettings
-#define LOGGING_MEMCACHED_FILE_EXTENSION ".mem"
 #endif
 #if defined(BUILD_WITH_SSDB)
 #include "proxy/db/ssdb/connection_settings.h"  // for ConnectionSettings
-#define LOGGING_SSDB_FILE_EXTENSION ".ssdb"
 #endif
 #if defined(BUILD_WITH_LEVELDB)
 #include "proxy/db/leveldb/connection_settings.h"  // for ConnectionSettings
-#define LOGGING_LEVELDB_FILE_EXTENSION ".leveldb"
 #endif
 #if defined(BUILD_WITH_ROCKSDB)
 #include "proxy/db/rocksdb/connection_settings.h"  // for ConnectionSettings
-#define LOGGING_ROCKSDB_FILE_EXTENSION ".rocksdb"
 #endif
 #if defined(BUILD_WITH_UNQLITE)
 #include "proxy/db/unqlite/connection_settings.h"  // for ConnectionSettings
-#define LOGGING_UNQLITE_FILE_EXTENSION ".unq"
 #endif
 #if defined(BUILD_WITH_LMDB)
 #include "proxy/db/lmdb/connection_settings.h"  // for ConnectionSettings
-#define LOGGING_LMDB_FILE_EXTENSION ".lmdb"
 #endif
 #if defined(BUILD_WITH_UPSCALEDB)
 #include "proxy/db/upscaledb/connection_settings.h"  // for ConnectionSettings
-#define LOGGING_UPSCALEDB_FILE_EXTENSION ".upscaledb"
 #endif
 #if defined(BUILD_WITH_FORESTDB)
 #include "proxy/db/forestdb/connection_settings.h"  // for ConnectionSettings
-#define LOGGING_FORESTDB_FILE_EXTENSION ".forestdb"
 #endif
 #if defined(BUILD_WITH_PIKA)
 #include "proxy/db/pika/connection_settings.h"  // for ConnectionSettings
-#define LOGGING_PIKA_FILE_EXTENSION ".pika"
+#endif
+#if defined(BUILD_WITH_DYNOMITE_REDIS)
+#include "proxy/db/dynomite_redis/connection_settings.h"  // for ConnectionSettings
 #endif
 
 namespace fastonosql {
@@ -142,6 +135,11 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateSettingsFromTypeConnec
     return CreatePIKAConnection(connection_path);
   }
 #endif
+#if defined(BUILD_WITH_DYNOMITE_REDIS)
+  if (type == core::DYNOMITE_REDIS) {
+    return CreateDynomiteRedisConnection(connection_path);
+  }
+#endif
 
   NOTREACHED() << "Unknown type: " << type;
   return nullptr;
@@ -194,7 +192,7 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateSettingsFromString(con
           break;
         }
       }
-#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_PIKA)
+#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_PIKA) || defined(BUILD_WITH_DYNOMITE_REDIS)
       else if (comma_count == 5) {
         const std::string cmd_str = common::ConvertToString(element_text);
         result->SetCommandLine(cmd_str);
@@ -243,6 +241,11 @@ IConnectionSettingsRemote* ConnectionSettingsFactory::CreateRemoteSettingsFromTy
 #if defined(BUILD_WITH_PIKA)
   if (type == core::PIKA) {
     remote = CreatePIKAConnection(connection_path);
+  }
+#endif
+#if defined(BUILD_WITH_DYNOMITE_REDIS)
+  if (type == core::DYNOMITE_REDIS) {
+    remote = CreateDynomiteRedisConnection(connection_path);
   }
 #endif
 
@@ -320,6 +323,13 @@ forestdb::ConnectionSettings* ConnectionSettingsFactory::CreateFORESTDBConnectio
 pika::ConnectionSettings* ConnectionSettingsFactory::CreatePIKAConnection(
     const connection_path_t& connection_path) const {
   return new pika::ConnectionSettings(connection_path, logging_dir_);
+}
+#endif
+
+#if defined(BUILD_WITH_DYNOMITE_REDIS)
+dynomite_redis::ConnectionSettings* ConnectionSettingsFactory::CreateDynomiteRedisConnection(
+    const connection_path_t& connection_path) const {
+  return new dynomite_redis::ConnectionSettings(connection_path, logging_dir_);
 }
 #endif
 

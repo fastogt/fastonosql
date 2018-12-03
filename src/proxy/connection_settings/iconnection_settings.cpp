@@ -50,8 +50,11 @@
 #if defined(BUILD_WITH_FORESTDB)
 #define LOGGING_FORESTDB_FILE_EXTENSION ".forestdb"
 #endif
-#if defined(BUILD_WITH_REDIS)
+#if defined(BUILD_WITH_PIKA)
 #define LOGGING_PIKA_FILE_EXTENSION ".pika"
+#endif
+#if defined(BUILD_WITH_DYNOMITE_REDIS)
+#define LOGGING_DYNOMITE_REDIS_FILE_EXTENSION ".dynred"
 #endif
 
 namespace fastonosql {
@@ -105,6 +108,11 @@ const char* GetLoggingFileExtensionByConnectionType(core::ConnectionType type) {
 #if defined(BUILD_WITH_PIKA)
   if (type == core::PIKA) {
     return LOGGING_PIKA_FILE_EXTENSION;
+  }
+#endif
+#if defined(BUILD_WITH_DYNOMITE_REDIS)
+  if (type == core::DYNOMITE_REDIS) {
+    return LOGGING_DYNOMITE_REDIS_FILE_EXTENSION;
   }
 #endif
 

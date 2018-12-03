@@ -64,6 +64,9 @@ class ServerInfo;
 namespace pika {
 class ServerInfo;
 }
+namespace dynomite_redis {
+class ServerInfo;
+}
 }  // namespace core
 }  // namespace fastonosql
 
@@ -128,6 +131,13 @@ class InfoServerDialog : public BaseDialog {
 #endif
 #if defined(BUILD_WITH_PIKA)
   void updateText(const core::pika::ServerInfo& serv);
+#endif
+#if defined(BUILD_WITH_DYNOMITE_REDIS)
+  void updateText(const core::dynomite_redis::ServerInfo& serv);
+#endif
+
+#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_DYNOMITE_REDIS)
+  void updateTextRedis(const core::redis::ServerInfo& serv);
 #endif
 
   QTextEdit* server_text_info_;

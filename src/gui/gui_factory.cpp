@@ -205,7 +205,13 @@ const QIcon& GuiFactory::icon(core::ConnectionType type) const {
     return pikaConnectionIcon();
   }
 #endif
+#if defined(BUILD_WITH_DYNOMITE_REDIS)
+  if (type == core::DYNOMITE_REDIS) {
+    return dynamiteRedisConnectionIcon();
+  }
+#endif
 
+  NOTREACHED() << "Unhandled type: " << type;
   return serverIcon();
 }
 
@@ -462,6 +468,13 @@ const QIcon& GuiFactory::redisConnectionIcon() const {
 const QIcon& GuiFactory::pikaConnectionIcon() const {
   static QIcon pika(":" PROJECT_NAME_LOWERCASE "/images/64x64/pika.png");
   return pika;
+}
+#endif
+
+#if defined(BUILD_WITH_DYNOMITE_REDIS)
+const QIcon& GuiFactory::dynamiteRedisConnectionIcon() const {
+  static QIcon dynomite_redis(":" PROJECT_NAME_LOWERCASE "/images/64x64/dynomite_redis.png");
+  return dynomite_redis;
 }
 #endif
 
