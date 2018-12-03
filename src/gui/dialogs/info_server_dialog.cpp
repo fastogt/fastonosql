@@ -63,8 +63,8 @@
 #include <fastonosql/core/db/pika/server_info.h>
 #endif
 
-#if defined(BUILD_WITH_DYNOMITE_REDIS)
-#include <fastonosql/core/db/dynomite_redis/server_info.h>
+#if defined(BUILD_WITH_DYNOMITEDB)
+#include <fastonosql/core/db/dynomitedb/server_info.h>
 #endif
 
 #include "proxy/events/events_info.h"  // for ServerInfoResponce, etc
@@ -416,9 +416,9 @@ InfoServerDialog::InfoServerDialog(const QString& title, const QIcon& icon, prox
     updateText(core::pika::ServerInfo());
   }
 #endif
-#if defined(BUILD_WITH_DYNOMITE_REDIS)
-  if (type == core::DYNOMITE_REDIS) {
-    updateText(core::dynomite_redis::ServerInfo());
+#if defined(BUILD_WITH_DYNOMITEDB)
+  if (type == core::DYNOMITEDB) {
+    updateText(core::dynomitedb::ServerInfo());
   }
 #endif
 
@@ -506,9 +506,9 @@ void InfoServerDialog::finishServerInfo(const proxy::events_info::ServerInfoResp
     updateText(*infr);
   }
 #endif
-#if defined(BUILD_WITH_DYNOMITE_REDIS)
-  if (type == core::DYNOMITE_REDIS) {
-    core::dynomite_redis::ServerInfo* infr = static_cast<core::dynomite_redis::ServerInfo*>(inf.get());
+#if defined(BUILD_WITH_DYNOMITEDB)
+  if (type == core::DYNOMITEDB) {
+    core::dynomitedb::ServerInfo* infr = static_cast<core::dynomitedb::ServerInfo*>(inf.get());
     updateText(*infr);
   }
 #endif
@@ -795,13 +795,13 @@ void InfoServerDialog::updateText(const core::pika::ServerInfo& serv) {
 }
 #endif
 
-#if defined(BUILD_WITH_DYNOMITE_REDIS)
-void InfoServerDialog::updateText(const core::dynomite_redis::ServerInfo& serv) {
+#if defined(BUILD_WITH_DYNOMITEDB)
+void InfoServerDialog::updateText(const core::dynomitedb::ServerInfo& serv) {
   updateTextRedis(serv);
 }
 #endif
 
-#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_DYNOMITE_REDIS)
+#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_DYNOMITEDB)
 void InfoServerDialog::updateTextRedis(const core::redis::ServerInfo& serv) {
   core::redis::ServerInfo::Server ser = serv.server_;
   QString qredis_version;

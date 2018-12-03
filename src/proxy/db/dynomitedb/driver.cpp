@@ -16,20 +16,20 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "proxy/db/dynomite_redis/driver.h"
+#include "proxy/db/dynomitedb/driver.h"
 
 #include <common/convert2string.h>           // for ConvertFromString, etc
 #include <common/file_system/file_system.h>  // for copy_file
 
-#include <fastonosql/core/db/dynomite_redis/db_connection.h>  // for DBConnection, INFO_REQUEST, etc
-#include <fastonosql/core/db/dynomite_redis/server_info.h>
+#include <fastonosql/core/db/dynomitedb/db_connection.h>  // for DBConnection, INFO_REQUEST, etc
+#include <fastonosql/core/db/dynomitedb/server_info.h>
 #include <fastonosql/core/db/redis_compatible/database_info.h>
 #include <fastonosql/core/value.h>
 
 #include "proxy/command/command.h"  // for CreateCommand, etc
 #include "proxy/command/command_logger.h"
-#include "proxy/db/dynomite_redis/command.h"              // for Command
-#include "proxy/db/dynomite_redis/connection_settings.h"  // for ConnectionSettings
+#include "proxy/db/dynomitedb/command.h"              // for Command
+#include "proxy/db/dynomitedb/connection_settings.h"  // for ConnectionSettings
 
 #define REDIS_TYPE_COMMAND "TYPE"
 #define REDIS_SHUTDOWN_COMMAND "SHUTDOWN"
@@ -70,13 +70,13 @@ common::Value::Type ConvertFromStringRType(const fastonosql::core::command_buffe
 
 namespace fastonosql {
 namespace proxy {
-namespace dynomite_redis {
+namespace dynomitedb {
 
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
-    : IDriverRemote(settings), impl_(new core::dynomite_redis::DBConnection(this)) {
-  COMPILE_ASSERT(core::dynomite_redis::DBConnection::GetConnectionType() == core::DYNOMITE_REDIS,
+    : IDriverRemote(settings), impl_(new core::dynomitedb::DBConnection(this)) {
+  COMPILE_ASSERT(core::dynomitedb::DBConnection::GetConnectionType() == core::DYNOMITEDB,
                  "DBConnection must be the same type as Driver!");
-  CHECK(GetType() == core::DYNOMITE_REDIS);
+  CHECK(GetType() == core::DYNOMITEDB);
 }
 
 Driver::~Driver() {
@@ -124,7 +124,7 @@ core::IDataBaseInfoSPtr Driver::CreateDatabaseInfo(const core::db_name_t& name, 
 
 common::Error Driver::SyncConnect() {
   auto dynomite_redis_settings = GetSpecificSettings<ConnectionSettings>();
-  core::dynomite_redis::RConfig rconf(dynomite_redis_settings->GetInfo(), dynomite_redis_settings->GetSSHInfo());
+  core::dynomitedb::RConfig rconf(dynomite_redis_settings->GetInfo(), dynomite_redis_settings->GetSSHInfo());
   return impl_->Connect(rconf);
 }
 
@@ -148,8 +148,7 @@ common::Error Driver::GetCurrentServerInfo(core::IServerInfo** info) {
   }
 
   core::command_buffer_t content = common::ConvertToString(cmd.get());
-  core::IServerInfo* linfo =
-      core::dynomite_redis::MakeDynomiteRedisServerInfo(common::ConvertToString(content));  // #FIXME
+  core::IServerInfo* linfo = core::dynomitedb::MakeDynomiteRedisServerInfo(common::ConvertToString(content));  // #FIXME
 
   if (!linfo) {
     return common::make_error("Invalid " DB_INFO_COMMAND " command output");
@@ -161,7 +160,7 @@ common::Error Driver::GetCurrentServerInfo(core::IServerInfo** info) {
 
 common::Error Driver::GetServerCommands(std::vector<const core::CommandInfo*>* commands) {
   std::vector<const core::CommandInfo*> lcommands;
-  const core::ConstantCommandsArray& origin = core::dynomite_redis::DBConnection::GetCommands();
+  const core::ConstantCommandsArray& origin = core::dynomitedb::DBConnection::GetCommands();
   for (size_t i = 0; i < origin.size(); ++i) {
     lcommands.push_back(&origin[i]);
   }
@@ -446,10 +445,10 @@ done:
 }
 
 core::IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
-  core::IServerInfoSPtr res(core::dynomite_redis::MakeDynomiteRedisServerInfo(val));
+  core::IServerInfoSPtr res(core::dynomitedb::MakeDynomiteRedisServerInfo(val));
   return res;
 }
 
-}  // namespace dynomite_redis
+}  // namespace dynomitedb
 }  // namespace proxy
 }  // namespace fastonosql

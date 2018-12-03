@@ -16,14 +16,14 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "proxy/db/dynomite_redis/connection_settings.h"
+#include "proxy/db/dynomitedb/connection_settings.h"
 
 namespace fastonosql {
 namespace proxy {
-namespace dynomite_redis {
+namespace dynomitedb {
 
 ConnectionSettings::ConnectionSettings(const connection_path_t& connection_path, const std::string& log_directory)
-    : IConnectionSettingsRemoteSSH(connection_path, log_directory, core::DYNOMITE_REDIS), info_() {}
+    : IConnectionSettingsRemoteSSH(connection_path, log_directory, core::DYNOMITEDB), info_() {}
 
 std::string ConnectionSettings::GetDelimiter() const {
   return info_.delimiter;
@@ -54,11 +54,11 @@ std::string ConnectionSettings::GetCommandLine() const {
   return result;
 }
 
-core::dynomite_redis::Config ConnectionSettings::GetInfo() const {
+core::dynomitedb::Config ConnectionSettings::GetInfo() const {
   return info_;
 }
 
-void ConnectionSettings::SetInfo(const core::dynomite_redis::Config& info) {
+void ConnectionSettings::SetInfo(const core::dynomitedb::Config& info) {
   info_ = info;
 }
 
@@ -66,6 +66,6 @@ ConnectionSettings* ConnectionSettings::Clone() const {
   return new ConnectionSettings(*this);
 }
 
-}  // namespace dynomite_redis
+}  // namespace dynomitedb
 }  // namespace proxy
 }  // namespace fastonosql

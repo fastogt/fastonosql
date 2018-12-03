@@ -30,7 +30,7 @@ class SSHWidget;
 class HostPortWidget;
 class IPathWidget;
 
-namespace dynomite_redis {
+namespace dynomitedb {
 
 class ConnectionWidget : public ConnectionBaseWidget {
   Q_OBJECT
@@ -63,6 +63,6 @@ class ConnectionWidget : public ConnectionBaseWidget {
   SSHWidget* ssh_widget_;
 };
 
-}  // namespace dynomite_redis
+}  // namespace dynomitedb
 }  // namespace gui
 }  // namespace fastonosql

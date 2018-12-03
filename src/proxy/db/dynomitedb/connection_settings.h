@@ -18,20 +18,36 @@
 
 #pragma once
 
-#include <fastonosql/core/global.h>  // for FastoObject (ptr only), etc
+#include "proxy/connection_settings/iconnection_settings_ssh.h"
+
+#include <fastonosql/core/db/dynomitedb/config.h>  // for Config
 
 namespace fastonosql {
 namespace proxy {
-namespace dynomite_redis {
+namespace dynomitedb {
 
-class Command : public core::FastoObjectCommand {
+class ConnectionSettings : public IConnectionSettingsRemoteSSH {
  public:
-  Command(core::FastoObject* parent,
-          common::StringValue* cmd,
-          core::CmdLoggingType logging_type,
-          const std::string& delimiter);
+  ConnectionSettings(const connection_path_t& connection_path, const std::string& log_directory);
+
+  core::dynomitedb::Config GetInfo() const;
+  void SetInfo(const core::dynomitedb::Config& info);
+
+  std::string GetDelimiter() const override;
+  void SetDelimiter(const std::string& delimiter) override;
+
+  common::net::HostAndPort GetHost() const override;
+  void SetHost(const common::net::HostAndPort& host) override;
+
+  std::string GetCommandLine() const override;
+  void SetCommandLine(const std::string& line) override;
+
+  ConnectionSettings* Clone() const override;
+
+ private:
+  core::dynomitedb::Config info_;
 };
 
-}  // namespace dynomite_redis
+}  // namespace dynomitedb
 }  // namespace proxy
 }  // namespace fastonosql

@@ -182,8 +182,8 @@ AboutDialog::AboutDialog(QWidget* parent) : base_class(trAbout + " " PROJECT_NAM
   dblist_widget->addTopLevelItem(
       createDbItem(pika_traits_t::GetDBName(), pika_traits_t::GetBasedOn(), pika_traits_t::GetVersionApi()));
 #endif
-#if defined(BUILD_WITH_DYNOMITE_REDIS) && defined(HAVE_DYNOMITE_REDIS)
-  typedef core::ConnectionTraits<core::DYNOMITE_REDIS> dynomite_redis_traits_t;
+#if defined(BUILD_WITH_DYNOMITEDB) && defined(HAVE_DYNOMITE_REDIS)
+  typedef core::ConnectionTraits<core::DYNOMITEDB> dynomite_redis_traits_t;
   dblist_widget->addTopLevelItem(createDbItem(dynomite_redis_traits_t::GetDBName(),
                                               dynomite_redis_traits_t::GetBasedOn(),
                                               dynomite_redis_traits_t::GetVersionApi()));

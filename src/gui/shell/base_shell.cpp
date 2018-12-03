@@ -65,8 +65,8 @@
 #include "gui/db/pika/lexer.h"
 #endif
 
-#if defined(BUILD_WITH_DYNOMITE_REDIS)
-#include "gui/db/dynomite_redis/lexer.h"
+#if defined(BUILD_WITH_DYNOMITEDB)
+#include "gui/db/dynomitedb/lexer.h"
 #endif
 
 namespace {
@@ -127,9 +127,9 @@ BaseQsciLexer* createLexer(core::ConnectionType type, QObject* parent) {
     return new pika::Lexer(parent);
   }
 #endif
-#if defined(BUILD_WITH_DYNOMITE_REDIS)
-  if (type == core::DYNOMITE_REDIS) {
-    return new dynomite_redis::Lexer(parent);
+#if defined(BUILD_WITH_DYNOMITEDB)
+  if (type == core::DYNOMITEDB) {
+    return new dynomitedb::Lexer(parent);
   }
 #endif
 

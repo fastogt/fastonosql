@@ -64,7 +64,7 @@ class ServerInfo;
 namespace pika {
 class ServerInfo;
 }
-namespace dynomite_redis {
+namespace dynomitedb {
 class ServerInfo;
 }
 }  // namespace core
@@ -132,11 +132,11 @@ class InfoServerDialog : public BaseDialog {
 #if defined(BUILD_WITH_PIKA)
   void updateText(const core::pika::ServerInfo& serv);
 #endif
-#if defined(BUILD_WITH_DYNOMITE_REDIS)
-  void updateText(const core::dynomite_redis::ServerInfo& serv);
+#if defined(BUILD_WITH_DYNOMITEDB)
+  void updateText(const core::dynomitedb::ServerInfo& serv);
 #endif
 
-#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_DYNOMITE_REDIS)
+#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_DYNOMITEDB)
   void updateTextRedis(const core::redis::ServerInfo& serv);
 #endif
 

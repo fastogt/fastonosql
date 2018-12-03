@@ -16,11 +16,11 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/db/dynomite_redis/lexer.h"
+#include "gui/db/dynomitedb/lexer.h"
 
 namespace fastonosql {
 namespace gui {
-namespace dynomite_redis {
+namespace dynomitedb {
 
 DynomiteRedisApi::DynomiteRedisApi(Lexer* lexer) : BaseCommandsQsciApi(lexer) {}
 
@@ -40,6 +40,6 @@ const char* Lexer::basedOn() const {
   return dynomite_redis_trait_t::GetBasedOn();
 }
 
-}  // namespace dynomite_redis
+}  // namespace dynomitedb
 }  // namespace gui
 }  // namespace fastonosql

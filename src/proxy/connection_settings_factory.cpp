@@ -52,8 +52,8 @@
 #if defined(BUILD_WITH_PIKA)
 #include "proxy/db/pika/connection_settings.h"  // for ConnectionSettings
 #endif
-#if defined(BUILD_WITH_DYNOMITE_REDIS)
-#include "proxy/db/dynomite_redis/connection_settings.h"  // for ConnectionSettings
+#if defined(BUILD_WITH_DYNOMITEDB)
+#include "proxy/db/dynomitedb/connection_settings.h"  // for ConnectionSettings
 #endif
 
 namespace fastonosql {
@@ -135,8 +135,8 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateSettingsFromTypeConnec
     return CreatePIKAConnection(connection_path);
   }
 #endif
-#if defined(BUILD_WITH_DYNOMITE_REDIS)
-  if (type == core::DYNOMITE_REDIS) {
+#if defined(BUILD_WITH_DYNOMITEDB)
+  if (type == core::DYNOMITEDB) {
     return CreateDynomiteRedisConnection(connection_path);
   }
 #endif
@@ -192,7 +192,7 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateSettingsFromString(con
           break;
         }
       }
-#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_PIKA) || defined(BUILD_WITH_DYNOMITE_REDIS)
+#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_PIKA) || defined(BUILD_WITH_DYNOMITEDB)
       else if (comma_count == 5) {
         const std::string cmd_str = common::ConvertToString(element_text);
         result->SetCommandLine(cmd_str);
@@ -243,8 +243,8 @@ IConnectionSettingsRemote* ConnectionSettingsFactory::CreateRemoteSettingsFromTy
     remote = CreatePIKAConnection(connection_path);
   }
 #endif
-#if defined(BUILD_WITH_DYNOMITE_REDIS)
-  if (type == core::DYNOMITE_REDIS) {
+#if defined(BUILD_WITH_DYNOMITEDB)
+  if (type == core::DYNOMITEDB) {
     remote = CreateDynomiteRedisConnection(connection_path);
   }
 #endif
@@ -326,10 +326,10 @@ pika::ConnectionSettings* ConnectionSettingsFactory::CreatePIKAConnection(
 }
 #endif
 
-#if defined(BUILD_WITH_DYNOMITE_REDIS)
-dynomite_redis::ConnectionSettings* ConnectionSettingsFactory::CreateDynomiteRedisConnection(
+#if defined(BUILD_WITH_DYNOMITEDB)
+dynomitedb::ConnectionSettings* ConnectionSettingsFactory::CreateDynomiteRedisConnection(
     const connection_path_t& connection_path) const {
-  return new dynomite_redis::ConnectionSettings(connection_path, logging_dir_);
+  return new dynomitedb::ConnectionSettings(connection_path, logging_dir_);
 }
 #endif
 

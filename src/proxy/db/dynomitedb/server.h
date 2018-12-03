@@ -23,7 +23,7 @@
 
 namespace fastonosql {
 namespace proxy {
-namespace dynomite_redis {
+namespace dynomitedb {
 
 class Server : public IServerRemote {
   Q_OBJECT
@@ -45,6 +45,6 @@ class Server : public IServerRemote {
   core::ServerMode mode_;
 };
 
-}  // namespace dynomite_redis
+}  // namespace dynomitedb
 }  // namespace proxy
 }  // namespace fastonosql

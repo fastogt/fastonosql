@@ -24,13 +24,13 @@
 
 namespace fastonosql {
 namespace gui {
-namespace dynomite_redis {
+namespace dynomitedb {
 
 class Lexer : public BaseCommandsQsciLexer {
   Q_OBJECT
 
  public:
-  typedef core::ConnectionCommandsTraits<core::DYNOMITE_REDIS> dynomite_redis_trait_t;
+  typedef core::ConnectionCommandsTraits<core::DYNOMITEDB> dynomite_redis_trait_t;
   explicit Lexer(QObject* parent = Q_NULLPTR);
 
   const char* language() const override;
@@ -45,6 +45,6 @@ class DynomiteRedisApi : public BaseCommandsQsciApi {
   explicit DynomiteRedisApi(Lexer* lexer);
 };
 
-}  // namespace dynomite_redis
+}  // namespace dynomitedb
 }  // namespace gui
 }  // namespace fastonosql

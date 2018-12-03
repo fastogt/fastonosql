@@ -108,7 +108,7 @@ class GuiFactory : public common::patterns::LazySingleton<GuiFactory> {
 #if defined(BUILD_WITH_PIKA)
   const QIcon& pikaConnectionIcon() const;
 #endif
-#if defined(BUILD_WITH_DYNOMITE_REDIS)
+#if defined(BUILD_WITH_DYNOMITEDB)
   const QIcon& dynamiteRedisConnectionIcon() const;
 #endif
 #if defined(BUILD_WITH_MEMCACHED)

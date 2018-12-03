@@ -205,8 +205,8 @@ const QIcon& GuiFactory::icon(core::ConnectionType type) const {
     return pikaConnectionIcon();
   }
 #endif
-#if defined(BUILD_WITH_DYNOMITE_REDIS)
-  if (type == core::DYNOMITE_REDIS) {
+#if defined(BUILD_WITH_DYNOMITEDB)
+  if (type == core::DYNOMITEDB) {
     return dynamiteRedisConnectionIcon();
   }
 #endif
@@ -471,10 +471,10 @@ const QIcon& GuiFactory::pikaConnectionIcon() const {
 }
 #endif
 
-#if defined(BUILD_WITH_DYNOMITE_REDIS)
+#if defined(BUILD_WITH_DYNOMITEDB)
 const QIcon& GuiFactory::dynamiteRedisConnectionIcon() const {
-  static QIcon dynomite_redis(":" PROJECT_NAME_LOWERCASE "/images/64x64/dynomite_redis.png");
-  return dynomite_redis;
+  static QIcon dynomitedb(":" PROJECT_NAME_LOWERCASE "/images/64x64/dynomitedb.png");
+  return dynomitedb;
 }
 #endif
 
