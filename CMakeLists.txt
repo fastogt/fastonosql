@@ -17,7 +17,7 @@ SET(BRANDING_PROJECT_MAINTAINER_NAME "Alexandr Topilski" CACHE STRING "Name of m
 SET(BRANDING_PROJECT_GITHUB_FORK "https://www.github.com/fastogt/fastonosql" CACHE STRING "Branding fork url for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_GITHUB_ISSUES "https://www.github.com/fastogt/fastonosql/issues" CACHE STRING "Branding issues url for ${BRANDING_PROJECT_NAME}") #default
 
-SET(BRANDING_PROJECT_SUMMARY "Cross-platform open source Redis, Memcached, SSDB, LevelDB, RocksDB, UnQLite, LMDB, UpscaleDB, ForestDB, Pika, Dynomite Redis GUI management tool."
+SET(BRANDING_PROJECT_SUMMARY "Cross-platform open source Redis, Memcached, SSDB, LevelDB, RocksDB, UnQLite, LMDB, UpscaleDB, ForestDB, Pika, DynomiteDB GUI management tool."
   CACHE STRING "Short description of ${BRANDING_PROJECT_NAME}"
 )
 SET(BRANDING_PROJECT_DESCRIPTION "${BRANDING_PROJECT_NAME} it is GUI platform for NoSQL databases. Currently we support next databases: \
@@ -31,7 +31,7 @@ SET(BRANDING_PROJECT_DESCRIPTION "${BRANDING_PROJECT_NAME} it is GUI platform fo
   * UpscaleDB \
   * ForestDB \
   * Pika \
-  * Dynomite Redis \
+  * DynomiteDB \
   For all this databases you can connect and use them in any way you need. \
   Also ${BRANDING_PROJECT_NAME} is IDE tool for NoSQL which works on the most famous platforms like:\
   Windows, Linux, MacOSX, Android, FreeBSD."

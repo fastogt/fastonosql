@@ -18,7 +18,6 @@
 
 #include "proxy/db/lmdb/driver.h"
 
-#include <fastonosql/core/db/lmdb/database_info.h>
 #include <fastonosql/core/db/lmdb/db_connection.h>  // for DBConnection
 
 #include "proxy/command/command.h"              // for CreateCommand, etc
@@ -77,7 +76,7 @@ core::FastoObjectCommandIPtr Driver::CreateCommandFast(const core::command_buffe
 }
 
 core::IDataBaseInfoSPtr Driver::CreateDatabaseInfo(const core::db_name_t& name, bool is_default, size_t size) {
-  return std::make_shared<core::lmdb::DataBaseInfo>(name, is_default, size);
+  return core::IDataBaseInfoSPtr(impl_->MakeDatabaseInfo(name, is_default, size));
 }
 
 common::Error Driver::SyncConnect() {
@@ -130,8 +129,7 @@ common::Error Driver::GetCurrentDataBaseInfo(core::IDataBaseInfo** info) {
 }
 
 core::IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
-  core::IServerInfoSPtr res(core::lmdb::MakeLmdbServerInfo(val));
-  return res;
+  return core::IServerInfoSPtr(impl_->MakeServerInfo(val));
 }
 
 }  // namespace lmdb

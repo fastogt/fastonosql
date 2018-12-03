@@ -20,7 +20,6 @@
 
 #include <common/convert2string.h>
 
-#include <fastonosql/core/db/memcached/database_info.h>
 #include <fastonosql/core/db/memcached/db_connection.h>  // for DBConnection
 #include <fastonosql/core/value.h>
 
@@ -81,7 +80,7 @@ core::FastoObjectCommandIPtr Driver::CreateCommandFast(const core::command_buffe
 }
 
 core::IDataBaseInfoSPtr Driver::CreateDatabaseInfo(const core::db_name_t& name, bool is_default, size_t size) {
-  return std::make_shared<core::memcached::DataBaseInfo>(name, is_default, size);
+  return core::IDataBaseInfoSPtr(impl_->MakeDatabaseInfo(name, is_default, size));
 }
 
 common::Error Driver::SyncConnect() {
@@ -202,8 +201,7 @@ done:
 }
 
 core::IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
-  core::IServerInfoSPtr res(core::memcached::MakeMemcachedServerInfo(val));
-  return res;
+  return core::IServerInfoSPtr(impl_->MakeServerInfo(val));
 }
 
 }  // namespace memcached

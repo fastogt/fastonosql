@@ -26,8 +26,6 @@
 #include <common/file_system/file_system.h>  // for copy_file
 
 #include <fastonosql/core/db/redis/db_connection.h>  // for DBConnection, INFO_REQUEST, etc
-#include <fastonosql/core/db/redis/server_info.h>
-#include <fastonosql/core/db/redis_compatible/database_info.h>
 
 #include <fastonosql/core/value.h>
 
@@ -147,7 +145,7 @@ core::FastoObjectCommandIPtr Driver::CreateCommandFast(const core::command_buffe
 }
 
 core::IDataBaseInfoSPtr Driver::CreateDatabaseInfo(const core::db_name_t& name, bool is_default, size_t size) {
-  return std::make_shared<core::redis_compatible::DataBaseInfo>(name, is_default, size);
+  return core::IDataBaseInfoSPtr(impl_->MakeDatabaseInfo(name, is_default, size));
 }
 
 common::Error Driver::SyncConnect() {
@@ -182,7 +180,7 @@ common::Error Driver::GetCurrentServerInfo(core::IServerInfo** info) {
   }
 
   const auto content = common::ConvertToString(cmd.get());
-  core::IServerInfo* linfo = core::redis::MakeRedisServerInfo(common::ConvertToString(content));  // #FIXME
+  core::IServerInfo* linfo = impl_->MakeServerInfo(common::ConvertToString(content));  // #FIXME
 
   if (!linfo) {
     return common::make_error("Invalid " DB_INFO_COMMAND " command output");
@@ -649,8 +647,7 @@ done:
 }
 
 core::IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
-  core::IServerInfoSPtr res(core::redis::MakeRedisServerInfo(val));
-  return res;
+  return core::IServerInfoSPtr(impl_->MakeServerInfo(val));
 }
 
 }  // namespace redis
