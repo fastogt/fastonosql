@@ -52,8 +52,8 @@
 #if defined(BUILD_WITH_PIKA)
 #include "proxy/db/pika/connection_settings.h"  // for ConnectionSettings
 #endif
-#if defined(BUILD_WITH_DYNOMITEDB)
-#include "proxy/db/dynomitedb/connection_settings.h"  // for ConnectionSettings
+#if defined(BUILD_WITH_DYNOMITE)
+#include "proxy/db/dynomite/connection_settings.h"  // for ConnectionSettings
 #endif
 
 namespace fastonosql {
@@ -135,9 +135,9 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateSettingsFromTypeConnec
     return new pika::ConnectionSettings(connection_path, logging_dir_);
   }
 #endif
-#if defined(BUILD_WITH_DYNOMITEDB)
-  if (type == core::DYNOMITEDB) {
-    return new dynomitedb::ConnectionSettings(connection_path, logging_dir_);
+#if defined(BUILD_WITH_DYNOMITE)
+  if (type == core::DYNOMITE) {
+    return new dynomite::ConnectionSettings(connection_path, logging_dir_);
   }
 #endif
 
@@ -192,7 +192,7 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateSettingsFromString(con
           break;
         }
       }
-#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_PIKA) || defined(BUILD_WITH_DYNOMITEDB)
+#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_PIKA) || defined(BUILD_WITH_DYNOMITE)
       else if (comma_count == 5) {
         const std::string cmd_str = common::ConvertToString(element_text);
         result->SetCommandLine(cmd_str);
@@ -243,9 +243,9 @@ IConnectionSettingsRemote* ConnectionSettingsFactory::CreateRemoteSettingsFromTy
     remote = new pika::ConnectionSettings(connection_path, logging_dir_);
   }
 #endif
-#if defined(BUILD_WITH_DYNOMITEDB)
-  if (type == core::DYNOMITEDB) {
-    remote = new dynomitedb::ConnectionSettings(connection_path, logging_dir_);
+#if defined(BUILD_WITH_DYNOMITE)
+  if (type == core::DYNOMITE) {
+    remote = new dynomite::ConnectionSettings(connection_path, logging_dir_);
   }
 #endif
 

@@ -53,7 +53,7 @@
 #if defined(BUILD_WITH_PIKA)
 #define LOGGING_PIKA_FILE_EXTENSION ".pika"
 #endif
-#if defined(BUILD_WITH_DYNOMITEDB)
+#if defined(BUILD_WITH_DYNOMITE)
 #define LOGGING_DYNOMITE_REDIS_FILE_EXTENSION ".dynred"
 #endif
 
@@ -110,8 +110,8 @@ const char* GetLoggingFileExtensionByConnectionType(core::ConnectionType type) {
     return LOGGING_PIKA_FILE_EXTENSION;
   }
 #endif
-#if defined(BUILD_WITH_DYNOMITEDB)
-  if (type == core::DYNOMITEDB) {
+#if defined(BUILD_WITH_DYNOMITE)
+  if (type == core::DYNOMITE) {
     return LOGGING_DYNOMITE_REDIS_FILE_EXTENSION;
   }
 #endif

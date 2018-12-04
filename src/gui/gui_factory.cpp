@@ -215,8 +215,8 @@ const QIcon& GuiFactory::icon(core::ConnectionType type) const {
     return pika;
   }
 #endif
-#if defined(BUILD_WITH_DYNOMITEDB)
-  if (type == core::DYNOMITEDB) {
+#if defined(BUILD_WITH_DYNOMITE)
+  if (type == core::DYNOMITE) {
     static QIcon dynomite(":" PROJECT_NAME_LOWERCASE "/images/64x64/dynomite.png");
     return dynomite;
   }

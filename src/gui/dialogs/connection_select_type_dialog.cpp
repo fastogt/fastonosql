@@ -75,8 +75,8 @@ ConnectionSelectTypeDialog::ConnectionSelectTypeDialog(const QString& title, QWi
 #if defined(BUILD_WITH_PIKA)
   updateCombobox(core::PIKA);
 #endif
-#if defined(BUILD_WITH_DYNOMITEDB)
-  updateCombobox(core::DYNOMITEDB);
+#if defined(BUILD_WITH_DYNOMITE)
+  updateCombobox(core::DYNOMITE);
 #endif
 
   QHBoxLayout* type_layout = new QHBoxLayout;

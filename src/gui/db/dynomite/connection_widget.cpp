@@ -16,7 +16,7 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/db/dynomitedb/connection_widget.h"
+#include "gui/db/dynomite/connection_widget.h"
 
 #include <string>
 
@@ -36,7 +36,7 @@
 #include <common/qt/convert2string.h>
 
 #include "proxy/connection_settings_factory.h"
-#include "proxy/db/dynomitedb/connection_settings.h"
+#include "proxy/db/dynomite/connection_settings.h"
 
 #include "gui/widgets/host_port_widget.h"
 #include "gui/widgets/path_widget.h"
@@ -51,7 +51,7 @@ const QString trSSL = QObject::tr("SSL");
 
 namespace fastonosql {
 namespace gui {
-namespace dynomitedb {
+namespace dynomite {
 
 ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(parent) {
   QVBoxLayout* vbox = new QVBoxLayout;
@@ -106,9 +106,9 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(paren
 }
 
 void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
-  proxy::dynomitedb::ConnectionSettings* dynomitedb = static_cast<proxy::dynomitedb::ConnectionSettings*>(connection);
-  if (dynomitedb) {
-    core::dynomitedb::Config config = dynomitedb->GetInfo();
+  proxy::dynomite::ConnectionSettings* dynomite = static_cast<proxy::dynomite::ConnectionSettings*>(connection);
+  if (dynomite) {
+    core::dynomite::Config config = dynomite->GetInfo();
     host_widget_->setHost(config.host);
     is_ssl_connection_->setChecked(config.is_ssl);
 
@@ -123,10 +123,10 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
       password_box_->clear();
     }
     default_db_num_->setValue(config.db_num);
-    core::SSHInfo ssh_info = dynomitedb->GetSSHInfo();
+    core::SSHInfo ssh_info = dynomite->GetSSHInfo();
     ssh_widget_->setInfo(ssh_info);
   }
-  ConnectionBaseWidget::syncControls(dynomitedb);
+  ConnectionBaseWidget::syncControls(dynomite);
 }
 
 void ConnectionWidget::retranslateUi() {
@@ -179,9 +179,9 @@ bool ConnectionWidget::isValidCredential() const {
 }
 
 proxy::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(const proxy::connection_path_t& path) const {
-  proxy::dynomitedb::ConnectionSettings* conn = static_cast<proxy::dynomitedb::ConnectionSettings*>(
-      proxy::ConnectionSettingsFactory::GetInstance().CreateSettingsFromTypeConnection(core::DYNOMITEDB, path));
-  core::dynomitedb::Config config = conn->GetInfo();
+  proxy::dynomite::ConnectionSettings* conn = static_cast<proxy::dynomite::ConnectionSettings*>(
+      proxy::ConnectionSettingsFactory::GetInstance().CreateSettingsFromTypeConnection(core::DYNOMITE, path));
+  core::dynomite::Config config = conn->GetInfo();
   config.host = host_widget_->host();
   config.is_ssl = is_ssl_connection_->isChecked();
 
@@ -199,6 +199,6 @@ proxy::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(const pro
   return conn;
 }
 
-}  // namespace dynomitedb
+}  // namespace dynomite
 }  // namespace gui
 }  // namespace fastonosql

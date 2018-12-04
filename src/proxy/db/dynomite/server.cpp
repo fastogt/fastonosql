@@ -16,11 +16,11 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "proxy/db/dynomitedb/server.h"
+#include "proxy/db/dynomite/server.h"
 
-#include <fastonosql/core/db/dynomitedb/server_info.h>  // for ServerInfo, etc
+#include <fastonosql/core/db/dynomite/server_info.h>  // for ServerInfo, etc
 
-#include "proxy/db/dynomitedb/driver.h"          // for Driver
+#include "proxy/db/dynomite/driver.h"            // for Driver
 #include "proxy/db/redis_compatible/database.h"  // for Database
 
 #define MASTER_ROLE "master"
@@ -31,7 +31,7 @@
 
 namespace fastonosql {
 namespace proxy {
-namespace dynomitedb {
+namespace dynomite {
 
 Server::Server(IConnectionSettingsBaseSPtr settings)
     : IServerRemote(new Driver(settings)), role_(core::MASTER), mode_(core::STANDALONE) {
@@ -72,7 +72,7 @@ void Server::HandleLoadServerInfoEvent(events::ServerInfoResponceEvent* ev) {
   }
 
   core::IServerInfoSPtr serv_info = v.info();
-  core::dynomitedb::ServerInfo* rinf = static_cast<core::dynomitedb::ServerInfo*>(serv_info.get());
+  core::dynomite::ServerInfo* rinf = static_cast<core::dynomite::ServerInfo*>(serv_info.get());
   if (rinf->replication_.role_ == MASTER_ROLE) {
     role_ = core::MASTER;
   } else if (rinf->replication_.role_ == SLAVE_ROLE) {
@@ -82,6 +82,6 @@ void Server::HandleLoadServerInfoEvent(events::ServerInfoResponceEvent* ev) {
   IServer::HandleLoadServerInfoEvent(ev);
 }
 
-}  // namespace dynomitedb
+}  // namespace dynomite
 }  // namespace proxy
 }  // namespace fastonosql

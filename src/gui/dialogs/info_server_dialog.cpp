@@ -63,8 +63,8 @@
 #include <fastonosql/core/db/pika/server_info.h>
 #endif
 
-#if defined(BUILD_WITH_DYNOMITEDB)
-#include <fastonosql/core/db/dynomitedb/server_info.h>
+#if defined(BUILD_WITH_DYNOMITE)
+#include <fastonosql/core/db/dynomite/server_info.h>
 #endif
 
 #include "proxy/events/events_info.h"  // for ServerInfoResponce, etc
@@ -78,7 +78,7 @@
 
 namespace fastonosql {
 namespace {
-#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_DYNOMITEDB)
+#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_DYNOMITE)
 const QString trRedisTextServerTemplate = QObject::tr(
     "<h3>Server:</h3>"
     "Redis version: %1<br/>"
@@ -764,8 +764,8 @@ void InfoServerDialog::showEvent(QShowEvent* e) {
 
 void InfoServerDialog::updateText(core::IServerInfo* serv) {
   const core::ConnectionType type = server_->GetType();
-#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_DYNOMITEDB)
-  if (type == core::REDIS || type == core::DYNOMITEDB) {
+#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_DYNOMITE)
+  if (type == core::REDIS || type == core::DYNOMITE) {
     core::redis::ServerInfo local;
     core::redis::ServerInfo* stabled_server_info = serv ? static_cast<core::redis::ServerInfo*>(serv) : &local;
     server_text_info_->setText(generateText(stabled_server_info));

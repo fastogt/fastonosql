@@ -18,33 +18,22 @@
 
 #pragma once
 
-#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
-#include "proxy/server/iserver_remote.h"                     // for IServerRemote
+#include <string>
+
+#include <fastonosql/core/global.h>  // for FastoObject (ptr only), etc
 
 namespace fastonosql {
 namespace proxy {
-namespace dynomitedb {
+namespace dynomite {
 
-class Server : public IServerRemote {
-  Q_OBJECT
+class Command : public core::FastoObjectCommand {
  public:
-  explicit Server(IConnectionSettingsBaseSPtr settings);
-  ~Server() override;
-
-  core::ServerType GetRole() const override;
-  core::ServerMode GetMode() const override;
-  core::ServerState GetState() const override;
-  common::net::HostAndPort GetHost() const override;
-
- protected:
-  void HandleLoadServerInfoEvent(events::ServerInfoResponceEvent* ev) override;
-
- private:
-  IDatabaseSPtr CreateDatabase(core::IDataBaseInfoSPtr info) override;
-  core::ServerType role_;
-  core::ServerMode mode_;
+  Command(core::FastoObject* parent,
+          common::StringValue* cmd,
+          core::CmdLoggingType logging_type,
+          const std::string& delimiter);
 };
 
-}  // namespace dynomitedb
+}  // namespace dynomite
 }  // namespace proxy
 }  // namespace fastonosql

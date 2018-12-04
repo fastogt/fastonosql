@@ -25,7 +25,7 @@
 
 namespace fastonosql {
 namespace core {
-namespace dynomitedb {
+namespace dynomite {
 class DBConnection;
 }
 }  // namespace core
@@ -33,7 +33,7 @@ class DBConnection;
 
 namespace fastonosql {
 namespace proxy {
-namespace dynomitedb {
+namespace dynomite {
 
 class Driver : public IDriverRemote {
   Q_OBJECT
@@ -83,9 +83,9 @@ class Driver : public IDriverRemote {
 
   core::IServerInfoSPtr MakeServerInfoFromString(const std::string& val) override;
 
-  core::dynomitedb::DBConnection* const impl_;
+  core::dynomite::DBConnection* const impl_;
 };
 
-}  // namespace dynomitedb
+}  // namespace dynomite
 }  // namespace proxy
 }  // namespace fastonosql

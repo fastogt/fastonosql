@@ -86,9 +86,9 @@
 #endif
 
 #if defined(BUILD_WITH_PIKA)
-#include <fastonosql/core/db/dynomitedb/db_connection.h>  // for DiscoveryClusterConnection, etc
-#include "proxy/db/dynomitedb/connection_settings.h"      // for ConnectionSettings
-#include "proxy/db/dynomitedb/server.h"                   // for Server
+#include <fastonosql/core/db/dynomite/db_connection.h>  // for DiscoveryClusterConnection, etc
+#include "proxy/db/dynomite/connection_settings.h"      // for ConnectionSettings
+#include "proxy/db/dynomite/server.h"                   // for Server
 #endif
 
 #if defined(PRO_VERSION)
@@ -152,9 +152,9 @@ IServerSPtr CreateServerImpl(IConnectionSettingsBaseSPtr settings) {
     return std::make_shared<pika::Server>(settings);
   }
 #endif
-#if defined(BUILD_WITH_DYNOMITEDB)
-  if (connection_type == core::DYNOMITEDB) {
-    return std::make_shared<dynomitedb::Server>(settings);
+#if defined(BUILD_WITH_DYNOMITE)
+  if (connection_type == core::DYNOMITE) {
+    return std::make_shared<dynomite::Server>(settings);
   }
 #endif
 
@@ -242,11 +242,11 @@ common::Error ServersManager::TestConnection(IConnectionSettingsBaseSPtr connect
     return core::pika::TestConnection(rconfig);
   }
 #endif
-#if defined(BUILD_WITH_DYNOMITEDB)
-  if (connection_type == core::DYNOMITEDB) {
-    dynomitedb::ConnectionSettings* settings = static_cast<dynomitedb::ConnectionSettings*>(connection.get());
-    core::dynomitedb::RConfig rconfig(settings->GetInfo(), settings->GetSSHInfo());
-    return core::dynomitedb::TestConnection(rconfig);
+#if defined(BUILD_WITH_DYNOMITE)
+  if (connection_type == core::DYNOMITE) {
+    dynomite::ConnectionSettings* settings = static_cast<dynomite::ConnectionSettings*>(connection.get());
+    core::dynomite::RConfig rconfig(settings->GetInfo(), settings->GetSSHInfo());
+    return core::dynomite::TestConnection(rconfig);
   }
 #endif
 

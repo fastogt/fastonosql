@@ -16,22 +16,20 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "proxy/db/dynomite/command.h"
 
-#include <fastonosql/core/global.h>  // for FastoObject (ptr only), etc
+#include <string>
 
 namespace fastonosql {
 namespace proxy {
-namespace dynomitedb {
+namespace dynomite {
 
-class Command : public core::FastoObjectCommand {
- public:
-  Command(core::FastoObject* parent,
-          common::StringValue* cmd,
-          core::CmdLoggingType logging_type,
-          const std::string& delimiter);
-};
+Command::Command(core::FastoObject* parent,
+                 common::StringValue* cmd,
+                 core::CmdLoggingType logging_type,
+                 const std::string& delimiter)
+    : core::FastoObjectCommand(parent, cmd, logging_type, delimiter, core::DYNOMITE) {}
 
-}  // namespace dynomitedb
+}  // namespace dynomite
 }  // namespace proxy
 }  // namespace fastonosql

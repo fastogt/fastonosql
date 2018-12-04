@@ -16,18 +16,18 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "proxy/db/dynomitedb/driver.h"
+#include "proxy/db/dynomite/driver.h"
 
 #include <common/convert2string.h>           // for ConvertFromString, etc
 #include <common/file_system/file_system.h>  // for copy_file
 
-#include <fastonosql/core/db/dynomitedb/db_connection.h>  // for DBConnection, INFO_REQUEST, etc
+#include <fastonosql/core/db/dynomite/db_connection.h>  // for DBConnection, INFO_REQUEST, etc
 #include <fastonosql/core/value.h>
 
 #include "proxy/command/command.h"  // for CreateCommand, etc
 #include "proxy/command/command_logger.h"
-#include "proxy/db/dynomitedb/command.h"              // for Command
-#include "proxy/db/dynomitedb/connection_settings.h"  // for ConnectionSettings
+#include "proxy/db/dynomite/command.h"              // for Command
+#include "proxy/db/dynomite/connection_settings.h"  // for ConnectionSettings
 
 #define REDIS_TYPE_COMMAND "TYPE"
 #define REDIS_SHUTDOWN_COMMAND "SHUTDOWN"
@@ -68,13 +68,13 @@ common::Value::Type ConvertFromStringRType(const fastonosql::core::command_buffe
 
 namespace fastonosql {
 namespace proxy {
-namespace dynomitedb {
+namespace dynomite {
 
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
-    : IDriverRemote(settings), impl_(new core::dynomitedb::DBConnection(this)) {
-  COMPILE_ASSERT(core::dynomitedb::DBConnection::GetConnectionType() == core::DYNOMITEDB,
+    : IDriverRemote(settings), impl_(new core::dynomite::DBConnection(this)) {
+  COMPILE_ASSERT(core::dynomite::DBConnection::GetConnectionType() == core::DYNOMITE,
                  "DBConnection must be the same type as Driver!");
-  CHECK(GetType() == core::DYNOMITEDB);
+  CHECK(GetType() == core::DYNOMITE);
 }
 
 Driver::~Driver() {
@@ -122,7 +122,7 @@ core::IDataBaseInfoSPtr Driver::CreateDatabaseInfo(const core::db_name_t& name, 
 
 common::Error Driver::SyncConnect() {
   auto dynomite_redis_settings = GetSpecificSettings<ConnectionSettings>();
-  core::dynomitedb::RConfig rconf(dynomite_redis_settings->GetInfo(), dynomite_redis_settings->GetSSHInfo());
+  core::dynomite::RConfig rconf(dynomite_redis_settings->GetInfo(), dynomite_redis_settings->GetSSHInfo());
   return impl_->Connect(rconf);
 }
 
@@ -158,7 +158,7 @@ common::Error Driver::GetCurrentServerInfo(core::IServerInfo** info) {
 
 common::Error Driver::GetServerCommands(std::vector<const core::CommandInfo*>* commands) {
   std::vector<const core::CommandInfo*> lcommands;
-  const core::ConstantCommandsArray& origin = core::dynomitedb::DBConnection::GetCommands();
+  const core::ConstantCommandsArray& origin = core::dynomite::DBConnection::GetCommands();
   for (size_t i = 0; i < origin.size(); ++i) {
     lcommands.push_back(&origin[i]);
   }
@@ -446,6 +446,6 @@ core::IServerInfoSPtr Driver::MakeServerInfoFromString(const std::string& val) {
   return core::IServerInfoSPtr(impl_->MakeServerInfo(val));
 }
 
-}  // namespace dynomitedb
+}  // namespace dynomite
 }  // namespace proxy
 }  // namespace fastonosql

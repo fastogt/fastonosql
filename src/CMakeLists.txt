@@ -448,7 +448,7 @@ SET(PLATFORM_LIBRARIES ${PLATFORM_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_LIST_DIR})
 
 #redis or pika or dynomite (compatible with redis protocol)
-IF(BUILD_WITH_REDIS OR BUILD_WITH_PIKA OR BUILD_WITH_DYNOMITEDB)
+IF(BUILD_WITH_REDIS OR BUILD_WITH_PIKA OR BUILD_WITH_DYNOMITE)
   FIND_PACKAGE(OpenSSL REQUIRED)
   FIND_PACKAGE(Libssh2 REQUIRED CONFIG)
   FIND_PACKAGE(Hiredis REQUIRED)
@@ -464,7 +464,7 @@ IF(BUILD_WITH_REDIS OR BUILD_WITH_PIKA OR BUILD_WITH_DYNOMITEDB)
   IF(OS_WINDOWS)
     SET(DB_LIBS ${DB_LIBS} crypt32)
   ENDIF(OS_WINDOWS)
-ENDIF(BUILD_WITH_REDIS OR BUILD_WITH_PIKA OR BUILD_WITH_DYNOMITEDB)
+ENDIF(BUILD_WITH_REDIS OR BUILD_WITH_PIKA OR BUILD_WITH_DYNOMITE)
 
 #redis
 IF(BUILD_WITH_REDIS)
@@ -558,38 +558,38 @@ IF(BUILD_WITH_PIKA)
 ENDIF(BUILD_WITH_PIKA)
 
 #dynomite redis
-IF(BUILD_WITH_DYNOMITEDB)
+IF(BUILD_WITH_DYNOMITE)
   # proxy dynomite redis
-  SET(HEADERS_PROXY_DB_DYNOMITEDB ${HEADERS_PROXY_DB_REDIS_COMPATIBLE}
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/dynomitedb/command.h
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/dynomitedb/connection_settings.h
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/dynomitedb/server.h
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/dynomitedb/driver.h
+  SET(HEADERS_PROXY_DB_DYNOMITE ${HEADERS_PROXY_DB_REDIS_COMPATIBLE}
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/dynomite/command.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/dynomite/connection_settings.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/dynomite/server.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/dynomite/driver.h
   )
-  SET(SOURCES_PROXY_DB_DYNOMITEDB ${SOURCES_PROXY_DB_REDIS_COMPATIBLE}
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/dynomitedb/command.cpp
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/dynomitedb/connection_settings.cpp
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/dynomitedb/server.cpp
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/dynomitedb/driver.cpp
+  SET(SOURCES_PROXY_DB_DYNOMITE ${SOURCES_PROXY_DB_REDIS_COMPATIBLE}
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/dynomite/command.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/dynomite/connection_settings.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/dynomite/server.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/dynomite/driver.cpp
   )
 
   #gui dynomite redis
-  SET(HEADERS_DYNOMITEDB_GUI
-    ${CMAKE_SOURCE_DIR}/src/gui/db/dynomitedb/connection_widget.h
-    ${CMAKE_SOURCE_DIR}/src/gui/db/dynomitedb/lexer.h
+  SET(HEADERS_DYNOMITE_GUI
+    ${CMAKE_SOURCE_DIR}/src/gui/db/dynomite/connection_widget.h
+    ${CMAKE_SOURCE_DIR}/src/gui/db/dynomite/lexer.h
   )
-  SET(SOURCES_DYNOMITEDB_GUI
-    ${CMAKE_SOURCE_DIR}/src/gui/db/dynomitedb/connection_widget.cpp
-    ${CMAKE_SOURCE_DIR}/src/gui/db/dynomitedb/lexer.cpp
+  SET(SOURCES_DYNOMITE_GUI
+    ${CMAKE_SOURCE_DIR}/src/gui/db/dynomite/connection_widget.cpp
+    ${CMAKE_SOURCE_DIR}/src/gui/db/dynomite/lexer.cpp
   )
 
   #update common variables
-  SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_DYNOMITEDB})
-  SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_DYNOMITEDB})
+  SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_DYNOMITE})
+  SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_DYNOMITE})
 
-  SET(HEADERS_GUI ${HEADERS_GUI} ${HEADERS_DYNOMITEDB_GUI})
-  SET(SOURCES_GUI ${SOURCES_GUI} ${SOURCES_DYNOMITEDB_GUI})
-ENDIF(BUILD_WITH_DYNOMITEDB)
+  SET(HEADERS_GUI ${HEADERS_GUI} ${HEADERS_DYNOMITE_GUI})
+  SET(SOURCES_GUI ${SOURCES_GUI} ${SOURCES_DYNOMITE_GUI})
+ENDIF(BUILD_WITH_DYNOMITE)
 
 #memcached
 IF(BUILD_WITH_MEMCACHED)

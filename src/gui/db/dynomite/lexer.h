@@ -16,30 +16,35 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/db/dynomitedb/lexer.h"
+#pragma once
+
+#include "gui/shell/base_lexer.h"
+
+#include <fastonosql/core/connection_commands_traits.h>
 
 namespace fastonosql {
 namespace gui {
-namespace dynomitedb {
+namespace dynomite {
 
-DynomiteRedisApi::DynomiteRedisApi(Lexer* lexer) : BaseCommandsQsciApi(lexer) {}
+class Lexer : public BaseCommandsQsciLexer {
+  Q_OBJECT
 
-Lexer::Lexer(QObject* parent) : BaseCommandsQsciLexer(dynomite_redis_trait_t::GetCommands(), parent) {
-  setAPIs(new DynomiteRedisApi(this));
-}
+ public:
+  typedef core::ConnectionCommandsTraits<core::DYNOMITE> dynomite_redis_trait_t;
+  explicit Lexer(QObject* parent = Q_NULLPTR);
 
-const char* Lexer::language() const {
-  return dynomite_redis_trait_t::GetDBName();
-}
+  const char* language() const override;
+  const char* version() const override;
+  const char* basedOn() const override;
+};
 
-const char* Lexer::version() const {
-  return dynomite_redis_trait_t::GetVersionApi();
-}
+class DynomiteRedisApi : public BaseCommandsQsciApi {
+  Q_OBJECT
 
-const char* Lexer::basedOn() const {
-  return dynomite_redis_trait_t::GetBasedOn();
-}
+ public:
+  explicit DynomiteRedisApi(Lexer* lexer);
+};
 
-}  // namespace dynomitedb
+}  // namespace dynomite
 }  // namespace gui
 }  // namespace fastonosql
