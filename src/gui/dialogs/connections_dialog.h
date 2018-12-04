@@ -74,22 +74,18 @@ class ConnectionsDialog : public BaseDialog {
  private:
   void editItem(QTreeWidgetItem* qitem, bool remove_origin);
   void editConnection(ConnectionListWidgetItem* connection_item, bool remove_origin);
+  void removeConnection(ConnectionListWidgetItem* connectionItem);
+  void addConnection(proxy::IConnectionSettingsBaseSPtr con);
+
 #if defined(PRO_VERSION)
   void editCluster(ClusterConnectionListWidgetItemContainer* cluster_item, bool remove_origin);
   void editSentinel(SentinelConnectionListWidgetItemContainer* sentinel_item, bool remove_origin);
-#endif
-
-  void removeConnection(ConnectionListWidgetItem* connectionItem);
-#if defined(PRO_VERSION)
   void removeCluster(ClusterConnectionListWidgetItemContainer* clusterItem);
   void removeSentinel(SentinelConnectionListWidgetItemContainer* sentinelItem);
-#endif
-
-  void addConnection(proxy::IConnectionSettingsBaseSPtr con);
-#if defined(PRO_VERSION)
   void addCluster(proxy::IClusterSettingsBaseSPtr con);
   void addSentinel(proxy::ISentinelSettingsBaseSPtr con);
 #endif
+
   DirectoryListWidgetItem* findFolderByPath(const proxy::connection_path_t& path) const;
 
   QTreeWidget* list_widget_;

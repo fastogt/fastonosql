@@ -108,7 +108,8 @@ void ConnectionWidget::authStateChange(int state) {
 
 proxy::IConnectionSettingsRemote* ConnectionWidget::createConnectionRemoteImpl(
     const proxy::connection_path_t& path) const {
-  proxy::ssdb::ConnectionSettings* conn = proxy::ConnectionSettingsFactory::GetInstance().CreateSSDBConnection(path);
+  proxy::ssdb::ConnectionSettings* conn = static_cast<proxy::ssdb::ConnectionSettings*>(
+      proxy::ConnectionSettingsFactory::GetInstance().CreateSettingsFromTypeConnection(core::SSDB, path));
   core::ssdb::Config config = conn->GetInfo();
   if (use_auth_->isChecked() && isValidCredential()) {
     config.auth = common::ConvertToString(password_box_->text());

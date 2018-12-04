@@ -18,19 +18,19 @@
 
 #pragma once
 
+#include <string>
+
 #include "proxy/sentinel/isentinel.h"  // for ISentinel
 
 namespace fastonosql {
 namespace proxy {
-namespace redis_compatible {
+namespace redis {
 
 class Sentinel : public ISentinel {
-  Q_OBJECT
-
  public:
   explicit Sentinel(const std::string& name);
 };
 
-}  // namespace redis_compatible
+}  // namespace redis
 }  // namespace proxy
 }  // namespace fastonosql

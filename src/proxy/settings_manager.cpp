@@ -357,6 +357,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
 
   if (!merge) {
 #if defined(PRO_VERSION)
+    sentinels_.clear();
     clusters_.clear();
 #endif
     connections_.clear();
@@ -420,9 +421,9 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
     common::char_buffer_t raw;
     if (common::utils::base64::decode64(common::ConvertToCharBytes(string), &raw)) {
       const std::string raw_str = common::ConvertToString(raw);
-      IConnectionSettingsBaseSPtr sett(ConnectionSettingsFactory::GetInstance().CreateSettingsFromString(raw_str));
+      IConnectionSettingsBase* sett = ConnectionSettingsFactory::GetInstance().CreateSettingsFromString(raw_str);
       if (sett) {
-        connections_.push_back(sett);
+        connections_.push_back(IConnectionSettingsBaseSPtr(sett));
       }
     }
   }

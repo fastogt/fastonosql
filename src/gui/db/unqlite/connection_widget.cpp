@@ -65,8 +65,8 @@ void ConnectionWidget::readOnlyDBStateChange(int state) {
 
 proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
     const proxy::connection_path_t& path) const {
-  proxy::unqlite::ConnectionSettings* conn =
-      proxy::ConnectionSettingsFactory::GetInstance().CreateUNQLITEConnection(path);
+  proxy::unqlite::ConnectionSettings* conn = static_cast<proxy::unqlite::ConnectionSettings*>(
+      proxy::ConnectionSettingsFactory::GetInstance().CreateSettingsFromTypeConnection(core::UNQLITE, path));
   core::unqlite::Config config = conn->GetInfo();
   config.SetCreateIfMissingDB(create_db_if_missing_->isChecked());
   config.SetReadOnlyDB(read_only_db_->isChecked());

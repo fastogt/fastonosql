@@ -397,26 +397,7 @@ void ConnectionsDialog::editSentinel(SentinelConnectionListWidgetItemContainer* 
     addSentinel(new_connection);
   }
 }
-#endif
 
-void ConnectionsDialog::removeConnection(ConnectionListWidgetItem* connectionItem) {
-  CHECK(connectionItem);
-
-  // Ask user
-  int answer = QMessageBox::question(this, translations::trConnections,
-                                     translations::trRemoveConnectionTemplate_1S.arg(connectionItem->text(0)),
-                                     QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
-
-  if (answer != QMessageBox::Yes) {
-    return;
-  }
-
-  proxy::IConnectionSettingsBaseSPtr connection = connectionItem->connection();
-  delete connectionItem;
-  proxy::SettingsManager::GetInstance()->RemoveConnection(connection);
-}
-
-#if defined(PRO_VERSION)
 void ConnectionsDialog::removeCluster(ClusterConnectionListWidgetItemContainer* clusterItem) {
   CHECK(clusterItem);
 
@@ -450,7 +431,62 @@ void ConnectionsDialog::removeSentinel(SentinelConnectionListWidgetItemContainer
   delete sentinelItem;
   proxy::SettingsManager::GetInstance()->RemoveSentinel(connection);
 }
+
+void ConnectionsDialog::addCluster(proxy::IClusterSettingsBaseSPtr con) {
+  proxy::connection_path_t path = con->GetPath();
+  proxy::connection_path_t dir(path.GetDirectory());
+  if (dir == proxy::connection_path_t::GetRoot()) {
+    ClusterConnectionListWidgetItemContainer* item = new ClusterConnectionListWidgetItemContainer(con, nullptr);
+    list_widget_->addTopLevelItem(item);
+    return;
+  }
+
+  DirectoryListWidgetItem* dirItem = findFolderByPath(dir);
+  if (!dirItem) {
+    dirItem = new DirectoryListWidgetItem(dir);
+  }
+
+  ClusterConnectionListWidgetItemContainer* item = new ClusterConnectionListWidgetItemContainer(con, dirItem);
+  dirItem->addChild(item);
+  list_widget_->addTopLevelItem(dirItem);
+}
+
+void ConnectionsDialog::addSentinel(proxy::ISentinelSettingsBaseSPtr con) {
+  proxy::connection_path_t path = con->GetPath();
+  proxy::connection_path_t dir(path.GetDirectory());
+  if (dir == proxy::connection_path_t::GetRoot()) {
+    SentinelConnectionListWidgetItemContainer* item = new SentinelConnectionListWidgetItemContainer(con, nullptr);
+    list_widget_->addTopLevelItem(item);
+    return;
+  }
+
+  DirectoryListWidgetItem* dirItem = findFolderByPath(dir);
+  if (!dirItem) {
+    dirItem = new DirectoryListWidgetItem(dir);
+  }
+
+  SentinelConnectionListWidgetItemContainer* item = new SentinelConnectionListWidgetItemContainer(con, dirItem);
+  dirItem->addChild(item);
+  list_widget_->addTopLevelItem(dirItem);
+}
 #endif
+
+void ConnectionsDialog::removeConnection(ConnectionListWidgetItem* connectionItem) {
+  CHECK(connectionItem);
+
+  // Ask user
+  int answer = QMessageBox::question(this, translations::trConnections,
+                                     translations::trRemoveConnectionTemplate_1S.arg(connectionItem->text(0)),
+                                     QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
+
+  if (answer != QMessageBox::Yes) {
+    return;
+  }
+
+  proxy::IConnectionSettingsBaseSPtr connection = connectionItem->connection();
+  delete connectionItem;
+  proxy::SettingsManager::GetInstance()->RemoveConnection(connection);
+}
 
 void ConnectionsDialog::accept() {
   QTreeWidgetItem* qitem = list_widget_->currentItem();
@@ -491,46 +527,6 @@ void ConnectionsDialog::addConnection(proxy::IConnectionSettingsBaseSPtr con) {
   dirItem->addChild(item);
   list_widget_->addTopLevelItem(dirItem);
 }
-
-#if defined(PRO_VERSION)
-void ConnectionsDialog::addCluster(proxy::IClusterSettingsBaseSPtr con) {
-  proxy::connection_path_t path = con->GetPath();
-  proxy::connection_path_t dir(path.GetDirectory());
-  if (dir == proxy::connection_path_t::GetRoot()) {
-    ClusterConnectionListWidgetItemContainer* item = new ClusterConnectionListWidgetItemContainer(con, nullptr);
-    list_widget_->addTopLevelItem(item);
-    return;
-  }
-
-  DirectoryListWidgetItem* dirItem = findFolderByPath(dir);
-  if (!dirItem) {
-    dirItem = new DirectoryListWidgetItem(dir);
-  }
-
-  ClusterConnectionListWidgetItemContainer* item = new ClusterConnectionListWidgetItemContainer(con, dirItem);
-  dirItem->addChild(item);
-  list_widget_->addTopLevelItem(dirItem);
-}
-
-void ConnectionsDialog::addSentinel(proxy::ISentinelSettingsBaseSPtr con) {
-  proxy::connection_path_t path = con->GetPath();
-  proxy::connection_path_t dir(path.GetDirectory());
-  if (dir == proxy::connection_path_t::GetRoot()) {
-    SentinelConnectionListWidgetItemContainer* item = new SentinelConnectionListWidgetItemContainer(con, nullptr);
-    list_widget_->addTopLevelItem(item);
-    return;
-  }
-
-  DirectoryListWidgetItem* dirItem = findFolderByPath(dir);
-  if (!dirItem) {
-    dirItem = new DirectoryListWidgetItem(dir);
-  }
-
-  SentinelConnectionListWidgetItemContainer* item = new SentinelConnectionListWidgetItemContainer(con, dirItem);
-  dirItem->addChild(item);
-  list_widget_->addTopLevelItem(dirItem);
-}
-#endif
 
 DirectoryListWidgetItem* ConnectionsDialog::findFolderByPath(const proxy::connection_path_t& path) const {
   int count = list_widget_->topLevelItemCount();

@@ -72,21 +72,6 @@ SET(SOURCES_PROXY_EVENTS
   ${CMAKE_SOURCE_DIR}/src/proxy/events/events_info.cpp
 )
 
-IF(PRO_VERSION)
-  SET(HEADERS_PROXY_CLUSTER
-    ${CMAKE_SOURCE_DIR}/src/proxy/cluster/icluster.h
-  )
-  SET(SOURCES_PROXY_CLUSTER
-    ${CMAKE_SOURCE_DIR}/src/proxy/cluster/icluster.cpp
-  )
-  SET(HEADERS_PROXY_SENTINEL
-    ${CMAKE_SOURCE_DIR}/src/proxy/sentinel/isentinel.h
-  )
-  SET(SOURCES_PROXY_SENTINEL
-    ${CMAKE_SOURCE_DIR}/src/proxy/sentinel/isentinel.cpp
-  )
-ENDIF(PRO_VERSION)
-
 SET(HEADERS_PROXY_DATABASE
   ${CMAKE_SOURCE_DIR}/src/proxy/database/idatabase.h
 )
@@ -138,19 +123,25 @@ SET(SOURCES_PROXY
 )
 
 IF(PRO_VERSION)
+  # cluster, sentinel
   SET(HEADERS_PROXY ${HEADERS_PROXY}
-    ${HEADERS_PROXY_CLUSTER}
+    ${CMAKE_SOURCE_DIR}/src/proxy/cluster/icluster.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/sentinel/isentinel.h
     ${CMAKE_SOURCE_DIR}/src/proxy/cluster_connection_settings_factory.h
     ${CMAKE_SOURCE_DIR}/src/proxy/sentinel_connection_settings_factory.h
-
-    ${CMAKE_SOURCE_DIR}/src/proxy/user_info.h
   )
-
   SET(SOURCES_PROXY ${SOURCES_PROXY}
-    ${SOURCES_PROXY_CLUSTER}
+    ${CMAKE_SOURCE_DIR}/src/proxy/cluster/icluster.cpp
     ${CMAKE_SOURCE_DIR}/src/proxy/cluster_connection_settings_factory.cpp
     ${CMAKE_SOURCE_DIR}/src/proxy/sentinel_connection_settings_factory.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/sentinel/isentinel.cpp
+  )
 
+  #
+  SET(HEADERS_PROXY ${HEADERS_PROXY}
+    ${CMAKE_SOURCE_DIR}/src/proxy/user_info.h
+  )
+  SET(SOURCES_PROXY ${SOURCES_PROXY}
     ${CMAKE_SOURCE_DIR}/src/proxy/user_info.cpp
   )
 ENDIF(PRO_VERSION)
@@ -469,17 +460,6 @@ IF(BUILD_WITH_REDIS OR BUILD_WITH_PIKA OR BUILD_WITH_DYNOMITEDB)
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis_compatible/database.cpp
   )
 
-IF(PRO_VERSION)
-  SET(HEADERS_PROXY_DB_REDIS_COMPATIBLE ${HEADERS_PROXY_DB_REDIS_COMPATIBLE}
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis_compatible/cluster.h
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis_compatible/sentinel.h
-  )
-  SET(SOURCES_PROXY_DB_REDIS_COMPATIBLE ${SOURCES_PROXY_DB_REDIS_COMPATIBLE}
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis_compatible/cluster.cpp
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis_compatible/sentinel.cpp
-  )
-ENDIF(PRO_VERSION)
-
   SET(DB_LIBS ${DB_LIBS} ${HIREDIS_LIBRARIES} Libssh2::libssh2 ${OPENSSL_LIBRARIES})
   IF(OS_WINDOWS)
     SET(DB_LIBS ${DB_LIBS} crypt32)
@@ -520,12 +500,18 @@ IF(PRO_VERSION)
     ${CMAKE_SOURCE_DIR}/src/gui/db/redis/shell_widget.cpp
   )
   SET(HEADERS_PROXY_DB_REDIS ${HEADERS_PROXY_DB_REDIS}
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/cluster.h
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/sentinel.h
+
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/cluster_settings.h
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/sentinel_settings.h
   )
   SET(SOURCES_PROXY_DB_REDIS ${SOURCES_PROXY_DB_REDIS}
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/cluster_settings.cpp
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/sentinel_settings.cpp
+
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/cluster.cpp
+    ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/sentinel.cpp
   )
 ENDIF(PRO_VERSION)
 

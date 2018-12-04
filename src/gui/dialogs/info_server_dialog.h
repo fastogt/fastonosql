@@ -34,43 +34,8 @@ class GlassWidget;
 
 namespace fastonosql {
 namespace core {
-namespace leveldb {
-class ServerInfo;
+class IServerInfo;
 }
-namespace lmdb {
-class ServerInfo;
-}
-namespace memcached {
-class ServerInfo;
-}
-namespace redis {
-class ServerInfo;
-}
-namespace rocksdb {
-class ServerInfo;
-}
-namespace ssdb {
-class ServerInfo;
-}
-namespace unqlite {
-class ServerInfo;
-}
-namespace upscaledb {
-class ServerInfo;
-}
-namespace forestdb {
-class ServerInfo;
-}
-namespace pika {
-class ServerInfo;
-}
-namespace dynomitedb {
-class ServerInfo;
-}
-}  // namespace core
-}  // namespace fastonosql
-
-namespace fastonosql {
 namespace proxy {
 namespace events_info {
 class ServerInfoResponce;
@@ -99,43 +64,7 @@ class InfoServerDialog : public BaseDialog {
   void showEvent(QShowEvent* e) override;
 
  private:
-#if defined(BUILD_WITH_REDIS)
-  void updateText(const core::redis::ServerInfo& serv);
-#endif
-#if defined(BUILD_WITH_MEMCACHED)
-  void updateText(const core::memcached::ServerInfo& serv);
-#endif
-#if defined(BUILD_WITH_SSDB)
-  void updateText(const core::ssdb::ServerInfo& serv);
-#endif
-#if defined(BUILD_WITH_LEVELDB)
-  void updateText(const core::leveldb::ServerInfo& serv);
-#endif
-#if defined(BUILD_WITH_ROCKSDB)
-  void updateText(const core::rocksdb::ServerInfo& serv);
-#endif
-#if defined(BUILD_WITH_UNQLITE)
-  void updateText(const core::unqlite::ServerInfo& serv);
-#endif
-#if defined(BUILD_WITH_LMDB)
-  void updateText(const core::lmdb::ServerInfo& serv);
-#endif
-#if defined(BUILD_WITH_UPSCALEDB)
-  void updateText(const core::upscaledb::ServerInfo& serv);
-#endif
-#if defined(BUILD_WITH_FORESTDB)
-  void updateText(const core::forestdb::ServerInfo& serv);
-#endif
-#if defined(BUILD_WITH_PIKA)
-  void updateText(const core::pika::ServerInfo& serv);
-#endif
-#if defined(BUILD_WITH_DYNOMITEDB)
-  void updateText(const core::dynomitedb::ServerInfo& serv);
-#endif
-
-#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_DYNOMITEDB)
-  void updateTextRedis(const core::redis::ServerInfo& serv);
-#endif
+  void updateText(core::IServerInfo* serv);
 
   QTextEdit* server_text_info_;
   common::qt::gui::GlassWidget* glass_widget_;

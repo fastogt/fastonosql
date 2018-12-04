@@ -16,21 +16,16 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "proxy/db/redis/cluster.h"
 
-#include "proxy/cluster/icluster.h"
+#include <string>
 
 namespace fastonosql {
 namespace proxy {
-namespace redis_compatible {
+namespace redis {
 
-class Cluster : public ICluster {
-  Q_OBJECT
+Cluster::Cluster(const std::string& name) : ICluster(name) {}
 
- public:
-  explicit Cluster(const std::string& name);
-};
-
-}  // namespace redis_compatible
+}  // namespace redis
 }  // namespace proxy
 }  // namespace fastonosql

@@ -44,20 +44,15 @@ class ServersManager : public common::patterns::LazySingleton<ServersManager> {
 
  public:
   typedef IServerSPtr server_t;
+  typedef std::vector<server_t> servers_t;
+  server_t CreateServer(IConnectionSettingsBaseSPtr settings);
+  common::Error TestConnection(IConnectionSettingsBaseSPtr connection) WARN_UNUSED_RESULT;
+
 #if defined(PRO_VERSION)
   typedef IClusterSPtr cluster_t;
   typedef ISentinelSPtr sentinel_t;
-#endif
-  typedef std::vector<server_t> servers_t;
-
-  server_t CreateServer(IConnectionSettingsBaseSPtr settings);
-#if defined(PRO_VERSION)
   sentinel_t CreateSentinel(ISentinelSettingsBaseSPtr settings);
   cluster_t CreateCluster(IClusterSettingsBaseSPtr settings);
-#endif
-
-  common::Error TestConnection(IConnectionSettingsBaseSPtr connection) WARN_UNUSED_RESULT;
-#if defined(PRO_VERSION)
   common::Error DiscoveryClusterConnection(IConnectionSettingsBaseSPtr connection,
                                            std::vector<core::ServerDiscoveryClusterInfoSPtr>* out) WARN_UNUSED_RESULT;
   common::Error DiscoverySentinelConnection(IConnectionSettingsBaseSPtr connection,

@@ -65,8 +65,8 @@ void ConnectionWidget::retranslateUi() {
 
 proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
     const proxy::connection_path_t& path) const {
-  proxy::upscaledb::ConnectionSettings* conn =
-      proxy::ConnectionSettingsFactory::GetInstance().CreateUPSCALEDBConnection(path);
+  proxy::upscaledb::ConnectionSettings* conn = static_cast<proxy::upscaledb::ConnectionSettings*>(
+      proxy::ConnectionSettingsFactory::GetInstance().CreateSettingsFromTypeConnection(core::UPSCALEDB, path));
   core::upscaledb::Config config = conn->GetInfo();
   config.create_if_missing = create_db_if_missing_->isChecked();
   config.dbnum = default_db_num_->value();

@@ -20,15 +20,15 @@
 
 #include <vector>
 
-#if defined(PRO_VERSION)
-#include "proxy/cluster/icluster.h"
-#include "proxy/sentinel/isentinel.h"  // for Sentinel
-#endif
-
 #if defined(BUILD_WITH_REDIS)
 #include <fastonosql/core/db/redis/db_connection.h>  // for DiscoveryClusterConnection, etc
 #include "proxy/db/redis/connection_settings.h"      // for ConnectionSettings
 #include "proxy/db/redis/server.h"                   // for Server
+
+#if defined(PRO_VERSION)
+#include "proxy/db/redis/cluster.h"   // for Cluster
+#include "proxy/db/redis/sentinel.h"  // for Sentinel
+#endif
 #endif
 
 #if defined(BUILD_WITH_MEMCACHED)
@@ -91,9 +91,9 @@
 #include "proxy/db/dynomitedb/server.h"                   // for Server
 #endif
 
-#if defined(PRO_VERSION) && defined(BUILD_WITH_REDIS)
-#include "proxy/db/redis_compatible/cluster.h"   // for Cluster
-#include "proxy/db/redis_compatible/sentinel.h"  // for Sentinel
+#if defined(PRO_VERSION)
+#include "proxy/cluster/icluster.h"
+#include "proxy/sentinel/isentinel.h"  // for Sentinel
 #endif
 
 namespace fastonosql {
@@ -172,57 +172,6 @@ ServersManager::server_t ServersManager::CreateServer(IConnectionSettingsBaseSPt
   servers_.push_back(server);
   return server;
 }
-
-#if defined(PRO_VERSION)
-ServersManager::sentinel_t ServersManager::CreateSentinel(ISentinelSettingsBaseSPtr settings) {
-  CHECK(settings);
-
-  const core::ConnectionType connection_type = settings->GetType();
-#if defined(BUILD_WITH_REDIS)
-  if (connection_type == core::REDIS) {
-    sentinel_t sent = std::make_shared<redis_compatible::Sentinel>(settings->GetPath().ToString());
-    auto nodes = settings->GetSentinels();
-    for (size_t i = 0; i < nodes.size(); ++i) {
-      SentinelSettings nd = nodes[i];
-      Sentinel sentt;
-      IServerSPtr sent_serv = CreateServer(nd.sentinel);
-      sentt.sentinel = sent_serv;
-      for (size_t j = 0; j < nd.sentinel_nodes.size(); ++j) {
-        IServerSPtr serv = CreateServer(nd.sentinel_nodes[j]);
-        sentt.sentinels_nodes.push_back(serv);
-      }
-
-      sent->AddSentinel(sentt);
-    }
-    return sent;
-  }
-#endif
-
-  NOTREACHED() << "Sentinel should be allocated, type: " << connection_type;
-  return sentinel_t();
-}
-
-ServersManager::cluster_t ServersManager::CreateCluster(IClusterSettingsBaseSPtr settings) {
-  CHECK(settings);
-
-  const core::ConnectionType connection_type = settings->GetType();
-#if defined(BUILD_WITH_REDIS)
-  if (connection_type == core::REDIS) {
-    cluster_t cl = std::make_shared<redis_compatible::Cluster>(settings->GetPath().ToString());
-    auto nodes = settings->GetNodes();
-    for (size_t i = 0; i < nodes.size(); ++i) {
-      IConnectionSettingsBaseSPtr nd = nodes[i];
-      IServerSPtr serv = CreateServer(nd);
-      cl->AddServer(serv);
-    }
-    return cl;
-  }
-#endif
-
-  NOTREACHED() << "Cluster should be allocated, type: " << connection_type;
-  return cluster_t();
-}
-#endif
 
 common::Error ServersManager::TestConnection(IConnectionSettingsBaseSPtr connection) {
   if (!connection) {
@@ -305,6 +254,16 @@ common::Error ServersManager::TestConnection(IConnectionSettingsBaseSPtr connect
   return common::make_error("Invalid setting type");
 }
 
+void ServersManager::Clear() {
+  servers_.clear();
+}
+
+void ServersManager::CloseServer(server_t server) {
+  CHECK(server);
+
+  servers_.erase(std::remove(servers_.begin(), servers_.end(), server));
+}
+
 #if defined(PRO_VERSION)
 common::Error ServersManager::DiscoveryClusterConnection(IConnectionSettingsBaseSPtr connection,
                                                          std::vector<core::ServerDiscoveryClusterInfoSPtr>* out) {
@@ -345,19 +304,56 @@ common::Error ServersManager::DiscoverySentinelConnection(IConnectionSettingsBas
   NOTREACHED() << "Can't find discovery cluster implementation for: " << connection_type;
   return common::make_error("Invalid setting type");
 }
+
+ServersManager::sentinel_t ServersManager::CreateSentinel(ISentinelSettingsBaseSPtr settings) {
+  CHECK(settings);
+
+  const core::ConnectionType connection_type = settings->GetType();
+#if defined(BUILD_WITH_REDIS)
+  if (connection_type == core::REDIS) {
+    sentinel_t sent = std::make_shared<redis::Sentinel>(settings->GetPath().ToString());
+    auto nodes = settings->GetSentinels();
+    for (size_t i = 0; i < nodes.size(); ++i) {
+      SentinelSettings nd = nodes[i];
+      Sentinel sentt;
+      IServerSPtr sent_serv = CreateServer(nd.sentinel);
+      sentt.sentinel = sent_serv;
+      for (size_t j = 0; j < nd.sentinel_nodes.size(); ++j) {
+        IServerSPtr serv = CreateServer(nd.sentinel_nodes[j]);
+        sentt.sentinels_nodes.push_back(serv);
+      }
+
+      sent->AddSentinel(sentt);
+    }
+    return sent;
+  }
 #endif
 
-void ServersManager::Clear() {
-  servers_.clear();
+  NOTREACHED() << "Sentinel should be allocated, type: " << connection_type;
+  return sentinel_t();
 }
 
-void ServersManager::CloseServer(server_t server) {
-  CHECK(server);
+ServersManager::cluster_t ServersManager::CreateCluster(IClusterSettingsBaseSPtr settings) {
+  CHECK(settings);
 
-  servers_.erase(std::remove(servers_.begin(), servers_.end(), server));
+  const core::ConnectionType connection_type = settings->GetType();
+#if defined(BUILD_WITH_REDIS)
+  if (connection_type == core::REDIS) {
+    cluster_t cl = std::make_shared<redis::Cluster>(settings->GetPath().ToString());
+    auto nodes = settings->GetNodes();
+    for (size_t i = 0; i < nodes.size(); ++i) {
+      IConnectionSettingsBaseSPtr nd = nodes[i];
+      IServerSPtr serv = CreateServer(nd);
+      cl->AddServer(serv);
+    }
+    return cl;
+  }
+#endif
+
+  NOTREACHED() << "Cluster should be allocated, type: " << connection_type;
+  return cluster_t();
 }
 
-#if defined(PRO_VERSION)
 void ServersManager::CloseCluster(cluster_t cluster) {
   CHECK(cluster);
 

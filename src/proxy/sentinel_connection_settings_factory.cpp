@@ -23,6 +23,7 @@
 #include <common/convert2string.h>
 #include <common/utils.h>
 
+#include "proxy/connection_settings/isentinel_connection_settings.h"
 #include "proxy/connection_settings_factory.h"
 
 #if defined(BUILD_WITH_REDIS)

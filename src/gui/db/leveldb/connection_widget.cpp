@@ -79,8 +79,8 @@ void ConnectionWidget::retranslateUi() {
 
 proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
     const proxy::connection_path_t& path) const {
-  proxy::leveldb::ConnectionSettings* conn =
-      proxy::ConnectionSettingsFactory::GetInstance().CreateLEVELDBConnection(path);
+  proxy::leveldb::ConnectionSettings* conn = static_cast<proxy::leveldb::ConnectionSettings*>(
+      proxy::ConnectionSettingsFactory::GetInstance().CreateSettingsFromTypeConnection(core::LEVELDB, path));
   core::leveldb::Config config = conn->GetInfo();
   config.create_if_missing = create_db_if_missing_->isChecked();
   config.comparator = static_cast<core::leveldb::ComparatorType>(typeComparators_->currentIndex());

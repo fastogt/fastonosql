@@ -87,57 +87,57 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateSettingsFromTypeConnec
     const connection_path_t& connection_path) {
 #if defined(BUILD_WITH_REDIS)
   if (type == core::REDIS) {
-    return CreateREDISConnection(connection_path);
+    return new redis::ConnectionSettings(connection_path, logging_dir_);
   }
 #endif
 #if defined(BUILD_WITH_MEMCACHED)
   if (type == core::MEMCACHED) {
-    return CreateMEMCACHEDConnection(connection_path);
+    return new memcached::ConnectionSettings(connection_path, logging_dir_);
   }
 #endif
 #if defined(BUILD_WITH_SSDB)
   if (type == core::SSDB) {
-    return CreateSSDBConnection(connection_path);
+    return new ssdb::ConnectionSettings(connection_path, logging_dir_);
   }
 #endif
 #if defined(BUILD_WITH_LEVELDB)
   if (type == core::LEVELDB) {
-    return CreateLEVELDBConnection(connection_path);
+    return new leveldb::ConnectionSettings(connection_path, logging_dir_);
   }
 #endif
 #if defined(BUILD_WITH_ROCKSDB)
   if (type == core::ROCKSDB) {
-    return CreateROCKSDBConnection(connection_path);
+    return new rocksdb::ConnectionSettings(connection_path, logging_dir_);
   }
 #endif
 #if defined(BUILD_WITH_UNQLITE)
   if (type == core::UNQLITE) {
-    return CreateUNQLITEConnection(connection_path);
+    return new unqlite::ConnectionSettings(connection_path, logging_dir_);
   }
 #endif
 #if defined(BUILD_WITH_LMDB)
   if (type == core::LMDB) {
-    return CreateLMDBConnection(connection_path);
+    return new lmdb::ConnectionSettings(connection_path, logging_dir_);
   }
 #endif
 #if defined(BUILD_WITH_UPSCALEDB)
   if (type == core::UPSCALEDB) {
-    return CreateUPSCALEDBConnection(connection_path);
+    return new upscaledb::ConnectionSettings(connection_path, logging_dir_);
   }
 #endif
 #if defined(BUILD_WITH_FORESTDB)
   if (type == core::FORESTDB) {
-    return CreateFORESTDBConnection(connection_path);
+    return new forestdb::ConnectionSettings(connection_path, logging_dir_);
   }
 #endif
 #if defined(BUILD_WITH_PIKA)
   if (type == core::PIKA) {
-    return CreatePIKAConnection(connection_path);
+    return new pika::ConnectionSettings(connection_path, logging_dir_);
   }
 #endif
 #if defined(BUILD_WITH_DYNOMITEDB)
   if (type == core::DYNOMITEDB) {
-    return CreateDynomiteRedisConnection(connection_path);
+    return new dynomitedb::ConnectionSettings(connection_path, logging_dir_);
   }
 #endif
 
@@ -225,27 +225,27 @@ IConnectionSettingsRemote* ConnectionSettingsFactory::CreateRemoteSettingsFromTy
   IConnectionSettingsRemote* remote = nullptr;
 #if defined(BUILD_WITH_REDIS)
   if (type == core::REDIS) {
-    remote = CreateREDISConnection(connection_path);
+    remote = new redis::ConnectionSettings(connection_path, logging_dir_);
   }
 #endif
 #if defined(BUILD_WITH_MEMCACHED)
   if (type == core::MEMCACHED) {
-    remote = CreateMEMCACHEDConnection(connection_path);
+    remote = new memcached::ConnectionSettings(connection_path, logging_dir_);
   }
 #endif
 #if defined(BUILD_WITH_SSDB)
   if (type == core::SSDB) {
-    remote = CreateSSDBConnection(connection_path);
+    remote = new ssdb::ConnectionSettings(connection_path, logging_dir_);
   }
 #endif
 #if defined(BUILD_WITH_PIKA)
   if (type == core::PIKA) {
-    remote = CreatePIKAConnection(connection_path);
+    remote = new pika::ConnectionSettings(connection_path, logging_dir_);
   }
 #endif
 #if defined(BUILD_WITH_DYNOMITEDB)
   if (type == core::DYNOMITEDB) {
-    remote = CreateDynomiteRedisConnection(connection_path);
+    remote = new dynomitedb::ConnectionSettings(connection_path, logging_dir_);
   }
 #endif
 
@@ -255,83 +255,6 @@ IConnectionSettingsRemote* ConnectionSettingsFactory::CreateRemoteSettingsFromTy
 }
 
 ConnectionSettingsFactory::ConnectionSettingsFactory() {}
-
-#if defined(BUILD_WITH_REDIS)
-redis::ConnectionSettings* ConnectionSettingsFactory::CreateREDISConnection(
-    const connection_path_t& connection_path) const {
-  return new redis::ConnectionSettings(connection_path, logging_dir_);
-}
-#endif
-
-#if defined(BUILD_WITH_MEMCACHED)
-memcached::ConnectionSettings* ConnectionSettingsFactory::CreateMEMCACHEDConnection(
-    const connection_path_t& connection_path) const {
-  return new memcached::ConnectionSettings(connection_path, logging_dir_);
-}
-#endif
-
-#if defined(BUILD_WITH_SSDB)
-ssdb::ConnectionSettings* ConnectionSettingsFactory::CreateSSDBConnection(
-    const connection_path_t& connection_path) const {
-  return new ssdb::ConnectionSettings(connection_path, logging_dir_);
-}
-#endif
-
-#if defined(BUILD_WITH_LEVELDB)
-leveldb::ConnectionSettings* ConnectionSettingsFactory::CreateLEVELDBConnection(
-    const connection_path_t& connection_path) const {
-  return new leveldb::ConnectionSettings(connection_path, logging_dir_);
-}
-#endif
-
-#if defined(BUILD_WITH_ROCKSDB)
-rocksdb::ConnectionSettings* ConnectionSettingsFactory::CreateROCKSDBConnection(
-    const connection_path_t& connection_path) const {
-  return new rocksdb::ConnectionSettings(connection_path, logging_dir_);
-}
-#endif
-
-#if defined(BUILD_WITH_UNQLITE)
-unqlite::ConnectionSettings* ConnectionSettingsFactory::CreateUNQLITEConnection(
-    const connection_path_t& connection_path) const {
-  return new unqlite::ConnectionSettings(connection_path, logging_dir_);
-}
-#endif
-
-#if defined(BUILD_WITH_LMDB)
-lmdb::ConnectionSettings* ConnectionSettingsFactory::CreateLMDBConnection(
-    const connection_path_t& connection_path) const {
-  return new lmdb::ConnectionSettings(connection_path, logging_dir_);
-}
-#endif
-
-#if defined(BUILD_WITH_UPSCALEDB)
-upscaledb::ConnectionSettings* ConnectionSettingsFactory::CreateUPSCALEDBConnection(
-    const connection_path_t& connection_path) const {
-  return new upscaledb::ConnectionSettings(connection_path, logging_dir_);
-}
-#endif
-
-#if defined(BUILD_WITH_FORESTDB)
-forestdb::ConnectionSettings* ConnectionSettingsFactory::CreateFORESTDBConnection(
-    const connection_path_t& connection_path) const {
-  return new forestdb::ConnectionSettings(connection_path, logging_dir_);
-}
-#endif
-
-#if defined(BUILD_WITH_PIKA)
-pika::ConnectionSettings* ConnectionSettingsFactory::CreatePIKAConnection(
-    const connection_path_t& connection_path) const {
-  return new pika::ConnectionSettings(connection_path, logging_dir_);
-}
-#endif
-
-#if defined(BUILD_WITH_DYNOMITEDB)
-dynomitedb::ConnectionSettings* ConnectionSettingsFactory::CreateDynomiteRedisConnection(
-    const connection_path_t& connection_path) const {
-  return new dynomitedb::ConnectionSettings(connection_path, logging_dir_);
-}
-#endif
 
 std::string ConnectionSettingsFactory::GetLoggingDirectory() const {
   return logging_dir_;

@@ -38,72 +38,6 @@ class IConnectionSettings;
 class IConnectionSettingsBase;
 class IConnectionSettingsRemote;
 
-#if defined(BUILD_WITH_REDIS)
-namespace redis {
-class ConnectionSettings;
-}
-#endif
-
-#if defined(BUILD_WITH_MEMCACHED)
-namespace memcached {
-class ConnectionSettings;
-}
-#endif
-
-#if defined(BUILD_WITH_SSDB)
-namespace ssdb {
-class ConnectionSettings;
-}
-#endif
-
-#if defined(BUILD_WITH_LEVELDB)
-namespace leveldb {
-class ConnectionSettings;
-}
-#endif
-
-#if defined(BUILD_WITH_ROCKSDB)
-namespace rocksdb {
-class ConnectionSettings;
-}
-#endif
-
-#if defined(BUILD_WITH_UNQLITE)
-namespace unqlite {
-class ConnectionSettings;
-}
-#endif
-
-#if defined(BUILD_WITH_LMDB)
-namespace lmdb {
-class ConnectionSettings;
-}
-#endif
-
-#if defined(BUILD_WITH_UPSCALEDB)
-namespace upscaledb {
-class ConnectionSettings;
-}
-#endif
-
-#if defined(BUILD_WITH_FORESTDB)
-namespace forestdb {
-class ConnectionSettings;
-}
-#endif
-
-#if defined(BUILD_WITH_PIKA)
-namespace pika {
-class ConnectionSettings;
-}
-#endif
-
-#if defined(BUILD_WITH_DYNOMITEDB)
-namespace dynomitedb {
-class ConnectionSettings;
-}
-#endif
-
 class ConnectionSettingsFactory : public common::patterns::LazySingleton<ConnectionSettingsFactory> {
  public:
   friend class common::patterns::LazySingleton<ConnectionSettingsFactory>;
@@ -113,55 +47,12 @@ class ConnectionSettingsFactory : public common::patterns::LazySingleton<Connect
 
   IConnectionSettingsBase* CreateSettingsFromTypeConnection(core::ConnectionType type,
                                                             const connection_path_t& connection_path);
-  IConnectionSettingsBase* CreateSettingsFromString(const serialize_t& value);
+  IConnectionSettingsBase* CreateSettingsFromString(const serialize_t& value);  // can return nullptr
 
   IConnectionSettingsRemote* CreateRemoteSettingsFromTypeConnection(core::ConnectionType type,
                                                                     const connection_path_t& connection_path,
                                                                     const common::net::HostAndPort& host);
 
-#if defined(BUILD_WITH_REDIS)
-  redis::ConnectionSettings* CreateREDISConnection(const connection_path_t& connection_path) const;
-#endif
-
-#if defined(BUILD_WITH_MEMCACHED)
-  memcached::ConnectionSettings* CreateMEMCACHEDConnection(const connection_path_t& connection_path) const;
-#endif
-
-#if defined(BUILD_WITH_SSDB)
-  ssdb::ConnectionSettings* CreateSSDBConnection(const connection_path_t& connection_path) const;
-#endif
-
-#if defined(BUILD_WITH_LEVELDB)
-  leveldb::ConnectionSettings* CreateLEVELDBConnection(const connection_path_t& connection_path) const;
-#endif
-
-#if defined(BUILD_WITH_ROCKSDB)
-  rocksdb::ConnectionSettings* CreateROCKSDBConnection(const connection_path_t& connection_path) const;
-#endif
-
-#if defined(BUILD_WITH_UNQLITE)
-  unqlite::ConnectionSettings* CreateUNQLITEConnection(const connection_path_t& connection_path) const;
-#endif
-
-#if defined(BUILD_WITH_LMDB)
-  lmdb::ConnectionSettings* CreateLMDBConnection(const connection_path_t& connection_path) const;
-#endif
-
-#if defined(BUILD_WITH_UPSCALEDB)
-  upscaledb::ConnectionSettings* CreateUPSCALEDBConnection(const connection_path_t& connection_path) const;
-#endif
-
-#if defined(BUILD_WITH_FORESTDB)
-  forestdb::ConnectionSettings* CreateFORESTDBConnection(const connection_path_t& connection_path) const;
-#endif
-
-#if defined(BUILD_WITH_PIKA)
-  pika::ConnectionSettings* CreatePIKAConnection(const connection_path_t& connection_path) const;
-#endif
-
-#if defined(BUILD_WITH_DYNOMITEDB)
-  dynomitedb::ConnectionSettings* CreateDynomiteRedisConnection(const connection_path_t& connection_path) const;
-#endif
   std::string GetLoggingDirectory() const;
   void SetLoggingDirectory(const std::string& dir);
 

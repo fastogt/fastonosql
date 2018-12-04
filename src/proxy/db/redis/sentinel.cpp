@@ -16,14 +16,14 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "proxy/db/redis_compatible/sentinel.h"
+#include "proxy/db/redis/sentinel.h"
 
 namespace fastonosql {
 namespace proxy {
-namespace redis_compatible {
+namespace redis {
 
 Sentinel::Sentinel(const std::string& name) : ISentinel(name) {}
 
-}  // namespace redis_compatible
+}  // namespace redis
 }  // namespace proxy
 }  // namespace fastonosql

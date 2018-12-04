@@ -228,7 +228,8 @@ bool ConnectionWidget::isValidCredential() const {
 }
 
 proxy::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(const proxy::connection_path_t& path) const {
-  proxy::redis::ConnectionSettings* conn = proxy::ConnectionSettingsFactory::GetInstance().CreateREDISConnection(path);
+  proxy::redis::ConnectionSettings* conn = static_cast<proxy::redis::ConnectionSettings*>(
+      proxy::ConnectionSettingsFactory::GetInstance().CreateSettingsFromTypeConnection(core::REDIS, path));
   core::redis::Config config = conn->GetInfo();
   bool is_remote = remote_->isChecked();
   if (is_remote) {

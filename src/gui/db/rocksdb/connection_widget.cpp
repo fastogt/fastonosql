@@ -112,8 +112,8 @@ void ConnectionWidget::retranslateUi() {
 
 proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(
     const proxy::connection_path_t& path) const {
-  proxy::rocksdb::ConnectionSettings* conn =
-      proxy::ConnectionSettingsFactory::GetInstance().CreateROCKSDBConnection(path);
+  proxy::rocksdb::ConnectionSettings* conn = static_cast<proxy::rocksdb::ConnectionSettings*>(
+      proxy::ConnectionSettingsFactory::GetInstance().CreateSettingsFromTypeConnection(core::ROCKSDB, path));
   core::rocksdb::Config config = conn->GetInfo();
   config.create_if_missing = create_db_if_missing_->isChecked();
   config.db_name = common::ConvertToString(db_name_edit_->text());  // convert to string

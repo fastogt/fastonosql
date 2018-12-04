@@ -145,7 +145,8 @@ void ConnectionWidget::selectDirectoryPathDB(bool checked) {
 }
 
 proxy::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(const proxy::connection_path_t& path) const {
-  proxy::lmdb::ConnectionSettings* conn = proxy::ConnectionSettingsFactory::GetInstance().CreateLMDBConnection(path);
+  proxy::lmdb::ConnectionSettings* conn = static_cast<proxy::lmdb::ConnectionSettings*>(
+      proxy::ConnectionSettingsFactory::GetInstance().CreateSettingsFromTypeConnection(core::LMDB, path));
   core::lmdb::Config config = conn->GetInfo();
   config.SetReadOnlyDB(read_only_db_->isChecked());
   bool is_file_path = file_path_selection_->isChecked();

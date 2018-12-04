@@ -179,8 +179,8 @@ bool ConnectionWidget::isValidCredential() const {
 }
 
 proxy::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(const proxy::connection_path_t& path) const {
-  proxy::dynomitedb::ConnectionSettings* conn =
-      proxy::ConnectionSettingsFactory::GetInstance().CreateDynomiteRedisConnection(path);
+  proxy::dynomitedb::ConnectionSettings* conn = static_cast<proxy::dynomitedb::ConnectionSettings*>(
+      proxy::ConnectionSettingsFactory::GetInstance().CreateSettingsFromTypeConnection(core::DYNOMITEDB, path));
   core::dynomitedb::Config config = conn->GetInfo();
   config.host = host_widget_->host();
   config.is_ssl = is_ssl_connection_->isChecked();

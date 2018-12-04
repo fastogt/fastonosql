@@ -18,6 +18,8 @@
 
 #include "gui/db/memcached/connection_widget.h"
 
+#include <string>
+
 #include <QCheckBox>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -103,8 +105,8 @@ bool ConnectionWidget::isValidCredential() const {
 
 proxy::IConnectionSettingsRemote* ConnectionWidget::createConnectionRemoteImpl(
     const proxy::connection_path_t& path) const {
-  proxy::memcached::ConnectionSettings* conn =
-      proxy::ConnectionSettingsFactory::GetInstance().CreateMEMCACHEDConnection(path);
+  proxy::memcached::ConnectionSettings* conn = static_cast<proxy::memcached::ConnectionSettings*>(
+      proxy::ConnectionSettingsFactory::GetInstance().CreateSettingsFromTypeConnection(core::MEMCACHED, path));
   core::memcached::Config config = conn->GetInfo();
   if (useSasl_->isChecked() && isValidCredential()) {
     config.user = common::ConvertToString(userPasswordWidget_->userName());

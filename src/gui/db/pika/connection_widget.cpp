@@ -178,7 +178,8 @@ bool ConnectionWidget::isValidCredential() const {
 }
 
 proxy::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(const proxy::connection_path_t& path) const {
-  proxy::pika::ConnectionSettings* conn = proxy::ConnectionSettingsFactory::GetInstance().CreatePIKAConnection(path);
+  proxy::pika::ConnectionSettings* conn = static_cast<proxy::pika::ConnectionSettings*>(
+      proxy::ConnectionSettingsFactory::GetInstance().CreateSettingsFromTypeConnection(core::PIKA, path));
   core::pika::Config config = conn->GetInfo();
   config.host = host_widget_->host();
   config.is_ssl = is_ssl_connection_->isChecked();
