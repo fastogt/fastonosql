@@ -24,6 +24,7 @@
 
 #include <common/error.h>
 
+#include <fastonosql/core/connection_types.h>
 #include <fastonosql/core/database/idatabase_info.h>
 #include <fastonosql/core/server/iserver_info.h>
 

@@ -21,6 +21,7 @@
 #include <string>
 #include <vector>
 
+#include <fastonosql/core/db_traits.h>
 #include <fastonosql/core/icommand_translator.h>  // for translator_t
 
 #include "proxy/events/events.h"        // for BackupResponceEvent, etc
@@ -52,6 +53,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
 
   std::vector<common::Value::Type> GetSupportedValueTypes(uint32_t server_version) const;
   core::ConnectionType GetType() const;
+  std::vector<core::info_field_t> GetInfoFields() const;
   std::string GetName() const override;
 
   database_t GetCurrentDatabaseInfo() const;

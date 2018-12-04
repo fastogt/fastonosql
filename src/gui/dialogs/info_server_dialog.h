@@ -94,10 +94,7 @@ class InfoServerDialog : public BaseDialog {
   void finishServerInfo(const proxy::events_info::ServerInfoResponce& res);
 
  protected:
-  explicit InfoServerDialog(const QString& title,
-                            const QIcon& icon,
-                            proxy::IServerSPtr server,
-                            QWidget* parent = Q_NULLPTR);
+  explicit InfoServerDialog(const QString& title, proxy::IServerSPtr server, QWidget* parent = Q_NULLPTR);
 
   void showEvent(QShowEvent* e) override;
 

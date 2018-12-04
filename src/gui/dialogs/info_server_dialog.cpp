@@ -348,12 +348,11 @@ const QString trPikaTextDoubleMasterTemplate = QObject::tr("<h3>DoubleMaster:</h
 namespace fastonosql {
 namespace gui {
 
-InfoServerDialog::InfoServerDialog(const QString& title, const QIcon& icon, proxy::IServerSPtr server, QWidget* parent)
+InfoServerDialog::InfoServerDialog(const QString& title, proxy::IServerSPtr server, QWidget* parent)
     : base_class(title, parent), server_text_info_(nullptr), glass_widget_(nullptr), server_(server) {
   CHECK(server_);
-  setWindowIcon(icon);
-
   const core::ConnectionType type = server->GetType();
+  setWindowIcon(GuiFactory::GetInstance().icon(type));
 
   server_text_info_ = new QTextEdit;
   server_text_info_->setReadOnly(true);
@@ -444,8 +443,7 @@ void InfoServerDialog::finishServerInfo(const proxy::events_info::ServerInfoResp
     return;
   }
 
-  core::ConnectionType type = server_->GetType();
-  CHECK(type == inf->GetType());
+  const core::ConnectionType type = server_->GetType();
 #if defined(BUILD_WITH_REDIS)
   if (type == core::REDIS) {
     core::redis::ServerInfo* infr = static_cast<core::redis::ServerInfo*>(inf.get());

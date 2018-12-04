@@ -109,6 +109,10 @@ core::ConnectionType IServer::GetType() const {
   return drv_->GetType();
 }
 
+std::vector<core::info_field_t> IServer::GetInfoFields() const {
+  return core::GetInfoFieldsFromType(GetType());
+}
+
 std::string IServer::GetName() const {
   const connection_path_t path = drv_->GetConnectionPath();
   return path.GetName();

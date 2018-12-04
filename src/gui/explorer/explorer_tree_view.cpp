@@ -524,9 +524,7 @@ void ExplorerTreeView::openInfoServerDialog() {
 
     QString server_name;
     common::ConvertFromString(server->GetName(), &server_name);
-    core::ConnectionType type = server->GetType();
-    auto infDialog = createDialog<InfoServerDialog>(QObject::tr("%1 info").arg(server_name),
-                                                    GuiFactory::GetInstance().icon(type), server, this);  // +
+    auto infDialog = createDialog<InfoServerDialog>(QObject::tr("%1 info").arg(server_name), server, this);  // +
     infDialog->exec();
   }
 }

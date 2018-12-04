@@ -29,7 +29,6 @@
 #include <common/qt/gui/base/graph_widget.h>  // for GraphWidget, etc
 #include <common/qt/gui/glass_widget.h>       // for GlassWidget
 
-#include <fastonosql/core/db_traits.h>
 #include "proxy/server/iserver.h"  // for IServer
 
 #include "gui/gui_factory.h"  // for GuiFactory
@@ -79,7 +78,7 @@ ServerHistoryDialog::ServerHistoryDialog(const QString& title,
   VERIFY(connect(server_info_fields_, static_cast<curc>(&QComboBox::currentIndexChanged), this,
                  &ServerHistoryDialog::refreshGraph));
 
-  const auto fields = core::GetInfoFieldsFromType(server_->GetType());
+  const auto fields = server_->GetInfoFields();
   for (auto field : fields) {
     QString qitem;
     if (common::ConvertFromString(field.first, &qitem)) {
@@ -156,7 +155,7 @@ void ServerHistoryDialog::refreshInfoFields(int index) {
   const unsigned int stabled_index = static_cast<unsigned int>(index);
   server_info_fields_->clear();
 
-  const auto fields = core::GetInfoFieldsFromType(server_->GetType());
+  const auto fields = server_->GetInfoFields();
   std::vector<core::Field> field = fields[stabled_index].second;
   for (uint32_t i = 0; i < field.size(); ++i) {
     core::Field fl = field[i];
