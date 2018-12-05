@@ -49,8 +49,8 @@ class MainWindow : public QMainWindow {
   enum {
     min_width = 800,
     min_height = 600,
-    preferred_width = 1280,
-    preferred_height = 800,
+    preferred_width = 1024,
+    preferred_height = 768,
     max_recent_connections = 10
   };
 

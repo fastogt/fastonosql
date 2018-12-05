@@ -47,6 +47,10 @@ LogTabWidget::LogTabWidget(QWidget* parent) : QTabWidget(parent) {
   retranslateUi();
 }
 
+QSize LogTabWidget::sizeHint() const {
+  return QSize(800, 120);
+}
+
 void LogTabWidget::addLogMessage(const QString& message, common::logging::LOG_LEVEL level) {
   log_->addLogMessage(message, level);
 }

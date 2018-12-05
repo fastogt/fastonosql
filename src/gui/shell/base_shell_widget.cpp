@@ -196,7 +196,8 @@ void BaseShellWidget::init() {
       new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().modeIcon(mode), top_bar_icon_size, qmode_str);
 
   hlayout->addWidget(savebar);
-  hlayout->addWidget(new QSplitter(Qt::Horizontal));
+  QSplitter* savebar_splitter = new QSplitter(Qt::Horizontal);
+  hlayout->addWidget(savebar_splitter);
 
   hlayout->addWidget(connection_mode_);
   work_progressbar_ = new QProgressBar;
@@ -213,7 +214,7 @@ void BaseShellWidget::init() {
   VERIFY(connect(help_action, &QAction::triggered, this, &BaseShellWidget::helpClick));
   helpbar->addAction(help_action);
   hlayout->addWidget(helpbar);
-  main_layout->addLayout(hlayout);
+  main_layout->addLayout(hlayout, 0);
 
   advanced_options_ = new QCheckBox;
   VERIFY(connect(advanced_options_, &QCheckBox::stateChanged, this, &BaseShellWidget::advancedOptionsChange));
@@ -247,24 +248,22 @@ void BaseShellWidget::init() {
   history_call_->setChecked(true);
   adv_opt_layout->addLayout(repeat_layout);
   adv_opt_layout->addLayout(interval_layout);
+  adv_opt_layout->addWidget(new QSplitter(Qt::Vertical));
   adv_opt_layout->addWidget(history_call_);
   advanced_options_widget_->setLayout(adv_opt_layout);
 
-  QWidget* fixed_height_widget = new QWidget;  // #FIXME
   QHBoxLayout* top_layout = createTopLayout(ct);
   QSplitter* spliter_info_and_options = new QSplitter(Qt::Horizontal);
   spliter_info_and_options->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
   top_layout->addWidget(spliter_info_and_options);
   top_layout->addWidget(advanced_options_);
   top_layout->setContentsMargins(0, 0, 0, 0);
-  fixed_height_widget->setLayout(top_layout);
-  fixed_height_widget->setFixedHeight(shell_icon_size.height() * 2);  //
-  main_layout->addWidget(fixed_height_widget);
+  main_layout->addLayout(top_layout, 0);
 
   QHBoxLayout* input_layout = new QHBoxLayout;
   input_layout->addWidget(input_);
   input_layout->addWidget(advanced_options_widget_);
-  main_layout->addLayout(input_layout);
+  main_layout->addLayout(input_layout, 1);
 
   QHBoxLayout* apilayout = new QHBoxLayout;
   supported_commands_count_ = new QLabel;
@@ -290,7 +289,7 @@ void BaseShellWidget::init() {
   QLabel* version = new QLabel(trCommandsVersion);
   apilayout->addWidget(version);
   apilayout->addWidget(commands_version_api_);
-  main_layout->addLayout(apilayout);
+  main_layout->addLayout(apilayout, 0);
 
   setLayout(main_layout);
 

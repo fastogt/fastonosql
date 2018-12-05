@@ -33,6 +33,8 @@ class LogTabWidget : public QTabWidget {
  public:
   explicit LogTabWidget(QWidget* parent = Q_NULLPTR);
 
+  QSize sizeHint() const override;
+
  public Q_SLOTS:
   void addLogMessage(const QString& message, common::logging::LOG_LEVEL level);
   void addCommand(core::FastoObjectCommandIPtr command);
