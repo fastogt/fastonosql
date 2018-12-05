@@ -248,7 +248,9 @@ void BaseShellWidget::init() {
   history_call_->setChecked(true);
   adv_opt_layout->addLayout(repeat_layout);
   adv_opt_layout->addLayout(interval_layout);
-  adv_opt_layout->addWidget(new QSplitter(Qt::Vertical));
+  QSplitter* hs = new QSplitter(Qt::Vertical);
+  hs->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+  adv_opt_layout->addWidget(hs);
   adv_opt_layout->addWidget(history_call_);
   advanced_options_widget_->setLayout(adv_opt_layout);
 
