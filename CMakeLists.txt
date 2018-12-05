@@ -3,7 +3,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.6.3) # OPENSSL_USE_STATIC_LIBS
 
 SET(BRANDING_PROJECT_NAME "FastoNoSQL" CACHE STRING "Branding for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_VERSION "1.24.0.0" CACHE STRING "Branding version for ${BRANDING_PROJECT_NAME}") #default
-SET(BRANDING_PROJECT_BUILD_TYPE_VERSION "beta" CACHE STRING "Build version type for ${BRANDING_PROJECT_NAME}") #default
+SET(BRANDING_PROJECT_BUILD_TYPE_VERSION "rc" CACHE STRING "Build version type for ${BRANDING_PROJECT_NAME}") #default
   #possible variables: alfa, beta, rc, release
 
 SET(BRANDING_PROJECT_DOMAIN "https://www.fastonosql.com" CACHE STRING "Branding domain url for ${BRANDING_PROJECT_NAME}") #default
@@ -17,7 +17,7 @@ SET(BRANDING_PROJECT_MAINTAINER_NAME "Alexandr Topilski" CACHE STRING "Name of m
 SET(BRANDING_PROJECT_GITHUB_FORK "https://www.github.com/fastogt/fastonosql" CACHE STRING "Branding fork url for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_GITHUB_ISSUES "https://www.github.com/fastogt/fastonosql/issues" CACHE STRING "Branding issues url for ${BRANDING_PROJECT_NAME}") #default
 
-SET(BRANDING_PROJECT_SUMMARY "Cross-platform open source Redis, Memcached, SSDB, LevelDB, RocksDB, UnQLite, LMDB, UpscaleDB, ForestDB, Pika, DynomiteDB GUI management tool."
+SET(BRANDING_PROJECT_SUMMARY "Cross-platform open source Redis, Memcached, SSDB, LevelDB, RocksDB, UnQLite, LMDB, UpscaleDB, ForestDB, Pika, Dynomite GUI management tool."
   CACHE STRING "Short description of ${BRANDING_PROJECT_NAME}"
 )
 SET(BRANDING_PROJECT_DESCRIPTION "${BRANDING_PROJECT_NAME} it is GUI platform for NoSQL databases. Currently we support next databases: \
@@ -31,7 +31,7 @@ SET(BRANDING_PROJECT_DESCRIPTION "${BRANDING_PROJECT_NAME} it is GUI platform fo
   * UpscaleDB \
   * ForestDB \
   * Pika \
-  * DynomiteDB \
+  * Dynomite \
   For all this databases you can connect and use them in any way you need. \
   Also ${BRANDING_PROJECT_NAME} is IDE tool for NoSQL which works on the most famous platforms like:\
   Windows, Linux, MacOSX, Android, FreeBSD."
@@ -286,7 +286,7 @@ IF(BUILD_WITH_PIKA)
   ADD_DEFINITIONS(-DBUILD_WITH_PIKA)
 ENDIF(BUILD_WITH_PIKA)
 IF(BUILD_WITH_DYNOMITE)
-  ADD_DEFINITIONS(-DBUILD_WITH_DYNOMITEDB)
+  ADD_DEFINITIONS(-DBUILD_WITH_DYNOMITE)
 ENDIF(BUILD_WITH_DYNOMITE)
 IF(BUILD_WITH_MEMCACHED)
   ADD_DEFINITIONS(-DBUILD_WITH_MEMCACHED)
