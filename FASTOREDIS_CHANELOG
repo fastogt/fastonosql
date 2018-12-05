@@ -1,5 +1,6 @@
 1.22.2 /
 [Alexandr Topilski]
+- ZPOPMAX, ZPOPMIN commands
 
 1.22.1 / December 2, 2018
 [Alexandr Topilski]
