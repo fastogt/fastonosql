@@ -70,7 +70,7 @@
 #endif
 
 namespace {
-const QSize kImageSize = QSize(64, 64);
+const QSize kImageSize = QSize(32, 32);
 }
 
 namespace fastonosql {

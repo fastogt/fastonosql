@@ -35,8 +35,6 @@
 #include "translations/global.h"
 
 namespace {
-const QString trInput = QObject::tr("Key/Value input");
-
 const QSize kMinSize = QSize(400, 300);
 const QSize kPrefListSize = QSize(600, 300);
 const QSize kPrefHashSize = QSize(600, 300);
@@ -53,10 +51,10 @@ DbKeyDialog::DbKeyDialog(const QString& title,
                          const core::NDbKValue& key,
                          bool is_edit,
                          QWidget* parent)
-    : base_class(title, parent), general_box_(nullptr), key_(key) {
+    : base_class(title, parent), editor_(nullptr), key_(key) {
   setWindowIcon(icon);
 
-  general_box_ = new KeyEditWidget(this);
+  editor_ = new KeyEditWidget(this);
 
   QDialogButtonBox* button_box = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   button_box->setOrientation(Qt::Horizontal);
@@ -64,14 +62,14 @@ DbKeyDialog::DbKeyDialog(const QString& title,
   VERIFY(connect(button_box, &QDialogButtonBox::rejected, this, &DbKeyDialog::reject));
 
   QVBoxLayout* main_layout = new QVBoxLayout;
-  main_layout->addWidget(general_box_);
+  main_layout->addWidget(editor_);
   main_layout->addWidget(button_box);
   setLayout(main_layout);
   setMinimumSize(kMinSize);
 
-  VERIFY(connect(general_box_, &KeyEditWidget::typeChanged, this, &DbKeyDialog::changeType));
-  general_box_->initialize(types, key_);
-  general_box_->setEnableKeyEdit(!is_edit);
+  VERIFY(connect(editor_, &KeyEditWidget::typeChanged, this, &DbKeyDialog::changeType));
+  editor_->initialize(types, key_);
+  editor_->setEnableKeyEdit(!is_edit);
 }
 
 core::NDbKValue DbKeyDialog::key() const {
@@ -88,12 +86,7 @@ void DbKeyDialog::accept() {
 }
 
 bool DbKeyDialog::validateAndApply() {
-  return general_box_->getKey(&key_);
-}
-
-void DbKeyDialog::retranslateUi() {
-  general_box_->setTitle(trInput);
-  base_class::retranslateUi();
+  return editor_->getKey(&key_);
 }
 
 void DbKeyDialog::changeType(common::Value::Type type) {

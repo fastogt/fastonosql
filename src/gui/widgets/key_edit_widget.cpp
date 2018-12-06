@@ -97,6 +97,7 @@ KeyEditWidget::KeyEditWidget(QWidget* parent) : base_class(parent) {
   main_layout->addWidget(value_list_edit_, 2, 1);
   main_layout->addWidget(value_table_edit_, 2, 1);
   main_layout->addWidget(stream_table_edit_, 2, 1);
+  main_layout->setContentsMargins(0, 0, 0, 0);
   setLayout(main_layout);
 
   // sync

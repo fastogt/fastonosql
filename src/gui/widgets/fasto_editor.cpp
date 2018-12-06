@@ -64,11 +64,11 @@ FastoEditor::FastoEditor(QWidget* parent) : QWidget(parent), scin_(nullptr) {
 
   scin_->installEventFilter(this);
 
-  QVBoxLayout* mainL = new QVBoxLayout;
-  mainL->addWidget(scin_);
-  mainL->addWidget(find_panel_);
-  mainL->setContentsMargins(0, 0, 0, 0);
-  setLayout(mainL);
+  QVBoxLayout* main_layout = new QVBoxLayout;
+  main_layout->addWidget(scin_);
+  main_layout->addWidget(find_panel_);
+  main_layout->setContentsMargins(0, 0, 0, 0);
+  setLayout(main_layout);
 
   find_panel_->hide();
 
@@ -147,21 +147,21 @@ void FastoEditor::sendScintilla(unsigned int msg, unsigned long wParam, long lPa
   scin_->SendScintilla(msg, wParam, lParam);
 }
 
-void FastoEditor::keyPressEvent(QKeyEvent* keyEvent) {
-  bool isFocusScin = scin_->isActiveWindow();
-  bool isShowFind = find_panel_->isVisible();
-  if (keyEvent->key() == Qt::Key_Escape && isFocusScin && isShowFind) {
+void FastoEditor::keyPressEvent(QKeyEvent* key_event) {
+  bool is_focus_scin = scin_->isActiveWindow();
+  bool is_show_find = find_panel_->isVisible();
+  if (key_event->key() == Qt::Key_Escape && is_focus_scin && is_show_find) {
     find_panel_->hide();
     scin_->setFocus();
-    keyEvent->accept();
-  } else if (keyEvent->key() == Qt::Key_Return && (keyEvent->modifiers() & Qt::ShiftModifier) && isFocusScin &&
-             isShowFind) {
+    key_event->accept();
+  } else if (key_event->key() == Qt::Key_Return && (key_event->modifiers() & Qt::ShiftModifier) && is_focus_scin &&
+             is_show_find) {
     goToPrevElement();
-  } else if (keyEvent->key() == Qt::Key_Return && isFocusScin && isShowFind) {
+  } else if (key_event->key() == Qt::Key_Return && is_focus_scin && is_show_find) {
     goToNextElement();
   }
 
-  QWidget::keyPressEvent(keyEvent);
+  QWidget::keyPressEvent(key_event);
 }
 
 bool FastoEditor::eventFilter(QObject* object, QEvent* event) {

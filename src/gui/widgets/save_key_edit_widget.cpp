@@ -34,8 +34,6 @@ namespace fastonosql {
 namespace gui {
 
 SaveKeyEditWidget::SaveKeyEditWidget(QWidget* parent) : base_class(parent), init_key_() {
-  QHBoxLayout* main_layout = new QHBoxLayout;
-
   editor_ = new KeyEditWidget;
 
   save_changes_button_ = new QPushButton;
@@ -46,14 +44,17 @@ SaveKeyEditWidget::SaveKeyEditWidget(QWidget* parent) : base_class(parent), init
   VERIFY(connect(save_changes_button_, &QPushButton::clicked, this, &SaveKeyEditWidget::keySave));
   VERIFY(connect(editor_, &KeyEditWidget::keyChanged, this, &SaveKeyEditWidget::syncControls));
 
-  main_layout->addWidget(editor_);
-  QVBoxLayout* save_layout = new QVBoxLayout;
-  save_layout->addWidget(new QSplitter(Qt::Vertical));
+  QHBoxLayout* save_layout = new QHBoxLayout;
+  QSplitter* hs = new QSplitter(Qt::Horizontal);
+  save_layout->addWidget(hs);
   save_layout->addWidget(save_changes_button_);
+
+  QVBoxLayout* main_layout = new QVBoxLayout;
+  main_layout->addWidget(editor_);
   main_layout->addLayout(save_layout);
   main_layout->setContentsMargins(0, 0, 0, 0);
-
   setLayout(main_layout);
+
   syncControls();
   retranslateUi();
 }

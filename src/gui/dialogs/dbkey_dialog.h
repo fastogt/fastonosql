@@ -53,12 +53,10 @@ class DbKeyDialog : public BaseDialog {
               bool is_edit,
               QWidget* parent = Q_NULLPTR);
 
-  void retranslateUi() override;
-
  private:
   bool validateAndApply();
 
-  KeyEditWidget* general_box_;
+  KeyEditWidget* editor_;
   core::NDbKValue key_;
 };
 

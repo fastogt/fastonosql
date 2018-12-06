@@ -115,7 +115,6 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : base_cl
   VERIFY(connect(key_editor_, &SaveKeyEditWidget::keyReadyToSave, this, &OutputWidget::createKeyFromEditor,
                  Qt::DirectConnection));
 
-  QWidget* fixed_height_widget = new QWidget;  // #FIXME
   QHBoxLayout* top_layout = new QHBoxLayout;
   tree_button_ = new QPushButton;
   table_button_ = new QPushButton;
@@ -137,8 +136,6 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : base_cl
   top_layout->addWidget(new QSplitter(Qt::Horizontal));
   top_layout->addWidget(time_label_);
   top_layout->setContentsMargins(0, 0, 0, 0);
-  fixed_height_widget->setLayout(top_layout);
-  fixed_height_widget->setFixedHeight(icon_size.height() * 2);
 
   QSplitter* splitter = new QSplitter(Qt::Vertical);
   splitter->addWidget(tree_view_);
@@ -149,12 +146,11 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : base_cl
   current_view_ = proxy::SettingsManager::GetInstance()->GetDefaultView();
 
   QVBoxLayout* main_layout = new QVBoxLayout;
-  main_layout->addWidget(fixed_height_widget);
-  main_layout->addWidget(splitter);
-
+  main_layout->addLayout(top_layout, 0);
+  main_layout->addWidget(splitter, 1);
   setLayout(main_layout);
-  syncWithView(current_view_);
 
+  syncWithView(current_view_);
   retranslateUi();
 }
 

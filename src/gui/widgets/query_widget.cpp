@@ -57,7 +57,7 @@ QueryWidget::QueryWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget(p
   splitter->setCollapsible(0, false);
   splitter->setCollapsible(1, false);
   splitter->setStretchFactor(0, 1);
-  splitter->setStretchFactor(1, 3);
+  splitter->setStretchFactor(1, 4);
   splitter->setHandleWidth(1);
   main_layout->addWidget(splitter);
 

@@ -20,7 +20,7 @@
 
 #include <vector>
 
-#include <QGroupBox>
+#include <QWidget>
 
 #include <fastonosql/core/db_key.h>  // for NDbKValue, NValue
 
@@ -37,10 +37,10 @@ class HashTypeWidget;
 class StreamTypeWidget;
 class ListTypeWidget;
 
-class KeyEditWidget : public QGroupBox {
+class KeyEditWidget : public QWidget {
   Q_OBJECT
  public:
-  typedef QGroupBox base_class;
+  typedef QWidget base_class;
 
   explicit KeyEditWidget(QWidget* parent = Q_NULLPTR);
 

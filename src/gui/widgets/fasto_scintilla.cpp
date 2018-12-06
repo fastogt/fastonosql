@@ -91,7 +91,7 @@ namespace gui {
 FastoScintilla::FastoScintilla(QWidget* parent) : QsciScintilla(parent), line_number_margin_width_(0) {
   setAutoIndent(true);
   setIndentationsUseTabs(false);
-  setIndentationWidth(indentationWidth);
+  setIndentationWidth(indentation_width);
   setUtf8(true);
   setMarginWidth(1, 0);
 
@@ -135,10 +135,10 @@ bool FastoScintilla::isShowAutoCompletion() const {
 }
 
 void FastoScintilla::updateLineNumbersMarginWidth() {
-  int numberOfDigits = GetNumberOfDigits(lines());
+  const int number_of_digits = GetNumberOfDigits(lines());
 
   int tw = textWidth(QsciScintilla::STYLE_LINENUMBER, "0");
-  line_number_margin_width_ = numberOfDigits * tw + rowNumberWidth;
+  line_number_margin_width_ = number_of_digits * tw + row_number_width;
 
   // If line numbers margin already displayed, update its width
   if (lineNumberMarginWidth()) {
@@ -146,24 +146,24 @@ void FastoScintilla::updateLineNumbersMarginWidth() {
   }
 }
 
-void FastoScintilla::keyPressEvent(QKeyEvent* keyEvent) {
-  if (keyEvent->key() == Qt::Key_F11) {
-    keyEvent->ignore();
+void FastoScintilla::keyPressEvent(QKeyEvent* key_event) {
+  if (key_event->key() == Qt::Key_F11) {
+    key_event->ignore();
     toggleLinesNumbers();
     return;
   }
 
   if (isShowAutoCompletion()) {
-    if (common::qt::gui::isAutoCompleteShortcut(keyEvent)) {
+    if (common::qt::gui::isAutoCompleteShortcut(key_event)) {
       showAutocompletion();
       return;
-    } else if (common::qt::gui::isHideAutoCompleteShortcut(keyEvent)) {
+    } else if (common::qt::gui::isHideAutoCompleteShortcut(key_event)) {
       hideAutocompletion();
       return;
     }
   }
 
-  QsciScintilla::keyPressEvent(keyEvent);
+  QsciScintilla::keyPressEvent(key_event);
 }
 
 int FastoScintilla::lineNumberMarginWidth() const {
@@ -172,8 +172,8 @@ int FastoScintilla::lineNumberMarginWidth() const {
 
 int FastoScintilla::textWidth(int style, const QString& text) {
   const QByteArray utf8 = text.toUtf8();
-  const char* byteArray = utf8.constData();
-  return SendScintilla(QsciScintilla::SCI_TEXTWIDTH, style, byteArray);
+  const char* byte_array = utf8.constData();
+  return SendScintilla(QsciScintilla::SCI_TEXTWIDTH, style, byte_array);
 }
 
 void FastoScintilla::toggleLinesNumbers() {

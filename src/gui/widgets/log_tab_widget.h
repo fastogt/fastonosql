@@ -31,6 +31,7 @@ class LogTabWidget : public QTabWidget {
   Q_OBJECT
 
  public:
+  enum { size_hint_width = 800, size_hint_height = 120 };
   explicit LogTabWidget(QWidget* parent = Q_NULLPTR);
 
   QSize sizeHint() const override;

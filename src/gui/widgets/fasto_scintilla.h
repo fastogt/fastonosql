@@ -37,7 +37,7 @@ namespace gui {
 class FastoScintilla : public QsciScintilla {
   Q_OBJECT
  public:
-  enum { rowNumberWidth = 6, indentationWidth = 4 };
+  enum { row_number_width = 6, indentation_width = 4 };
 
   explicit FastoScintilla(QWidget* parent = Q_NULLPTR);
 
@@ -48,7 +48,7 @@ class FastoScintilla : public QsciScintilla {
   void updateLineNumbersMarginWidth();
 
  protected:
-  void keyPressEvent(QKeyEvent* e) override;
+  void keyPressEvent(QKeyEvent* key_event) override;
 
  private:
   int lineNumberMarginWidth() const;
