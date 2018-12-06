@@ -89,6 +89,7 @@ class Driver : public IDriverRemote {
   void HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev) override;
   void HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev) override;
   void HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequestEvent* ev) override;
+  void HandleLoadServerClientsRequestEvent(events::LoadServerClientsRequestEvent* ev) override;
   void HandleBackupEvent(events::BackupRequestEvent* ev) override;
   void HandleRestoreEvent(events::RestoreRequestEvent* ev) override;
 

@@ -25,6 +25,7 @@
 
 #include <fastonosql/core/command_info.h>
 #include <fastonosql/core/database/idatabase_info.h>
+#include <fastonosql/core/db_client.h>
 #include <fastonosql/core/db_key.h>  // for NDbKValue
 #include <fastonosql/core/db_ps_channel.h>
 #include <fastonosql/core/server/iserver_info.h>   // for IDataBaseInfoSPtr, IServerInf...
@@ -215,6 +216,19 @@ struct LoadServerChannelsResponce : LoadServerChannelsRequest {
   explicit LoadServerChannelsResponce(const base_class& request);
 
   channels_container_t channels;
+};
+
+struct LoadServerClientsRequest : public EventInfoBase {
+  typedef EventInfoBase base_class;
+  LoadServerClientsRequest(initiator_type sender, error_type er = error_type());
+};
+
+struct LoadServerClientsResponce : LoadServerClientsRequest {
+  typedef LoadServerClientsRequest base_class;
+  typedef std::vector<core::NDbClient> clients_container_t;
+  explicit LoadServerClientsResponce(const base_class& request);
+
+  clients_container_t clients;
 };
 
 struct ServerInfoRequest : public EventInfoBase {

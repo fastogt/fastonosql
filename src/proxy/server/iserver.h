@@ -102,6 +102,9 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void LoadServerChannelsStarted(const events_info::LoadServerChannelsRequest& req);
   void LoadServerChannelsFinished(const events_info::LoadServerChannelsResponce& res);
 
+  void LoadServerClientsStarted(const events_info::LoadServerClientsRequest& req);
+  void LoadServerClientsFinished(const events_info::LoadServerClientsResponce& res);
+
   void ProgressChanged(const events_info::ProgressInfoResponce& res);
 
   void ModeEntered(const events_info::EnterModeInfo& res);
@@ -163,6 +166,8 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
 
   void LoadChannels(const events_info::LoadServerChannelsRequest& req);  // signals: LoadServerChannelsStarted,
                                                                          // LoadServerChannelsFinished
+  void LoadClients(const events_info::LoadServerClientsRequest& req);    // signals: LoadServerClientsStarted,
+                                                                         // LoadServerClientsFinished
 
  protected:
   explicit IServer(IDriver* drv);  // take ownerships

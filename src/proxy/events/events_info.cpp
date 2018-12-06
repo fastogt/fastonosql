@@ -112,6 +112,10 @@ LoadServerChannelsRequest::LoadServerChannelsRequest(initiator_type sender, cons
 
 LoadServerChannelsResponce::LoadServerChannelsResponce(const base_class& request) : base_class(request), channels() {}
 
+LoadServerClientsRequest::LoadServerClientsRequest(initiator_type sender, error_type er) : base_class(sender, er) {}
+
+LoadServerClientsResponce::LoadServerClientsResponce(const base_class& request) : base_class(request), clients() {}
+
 ServerInfoRequest::ServerInfoRequest(initiator_type sender, error_type er) : base_class(sender, er) {}
 
 ServerInfoResponce::ServerInfoResponce(const base_class& request) : base_class(request), info_() {}

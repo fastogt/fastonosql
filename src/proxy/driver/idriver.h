@@ -115,6 +115,7 @@ class IDriver : public QObject, public core::CDBConnectionClient {
   virtual void HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev);
   virtual void HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev);
   virtual void HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequestEvent* ev);
+  virtual void HandleLoadServerClientsRequestEvent(events::LoadServerClientsRequestEvent* ev);
   virtual void HandleBackupEvent(events::BackupRequestEvent* ev);
   virtual void HandleRestoreEvent(events::RestoreRequestEvent* ev);
   virtual void HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev);

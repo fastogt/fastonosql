@@ -242,6 +242,12 @@ void IServer::LoadChannels(const events_info::LoadServerChannelsRequest& req) {
   NotifyStartEvent(ev);
 }
 
+void IServer::LoadClients(const events_info::LoadServerClientsRequest& req) {
+  emit LoadServerClientsStarted(req);
+  QEvent* ev = new events::LoadServerClientsRequestEvent(this, req);
+  NotifyStartEvent(ev);
+}
+
 void IServer::customEvent(QEvent* event) {
   QEvent::Type type = event->type();
   if (type == static_cast<QEvent::Type>(events::ConnectResponceEvent::EventType)) {

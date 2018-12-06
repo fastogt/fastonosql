@@ -196,6 +196,7 @@ SET(HEADERS_GUI_DIALOGS
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/dbkey_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/view_keys_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/pub_sub_dialog.h
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/clients_monitor_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/stream_entry_dialog.h
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/how_to_use_dialog.h
 )
@@ -218,6 +219,7 @@ SET(SOURCES_GUI_DIALOGS
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/dbkey_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/view_keys_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/pub_sub_dialog.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/dialogs/clients_monitor_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/stream_entry_dialog.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/how_to_use_dialog.cpp
 )
@@ -275,6 +277,7 @@ SET(HEADERS_MODELS
   ${CMAKE_SOURCE_DIR}/src/gui/models/hash_table_model.h
   ${CMAKE_SOURCE_DIR}/src/gui/models/property_table_model.h
   ${CMAKE_SOURCE_DIR}/src/gui/models/channels_table_model.h
+  ${CMAKE_SOURCE_DIR}/src/gui/models/clients_table_model.h
   ${CMAKE_SOURCE_DIR}/src/gui/models/keys_table_model.h
   ${CMAKE_SOURCE_DIR}/src/gui/models/fasto_common_model.h
   ${CMAKE_SOURCE_DIR}/src/gui/models/stream_table_model.h
@@ -286,6 +289,7 @@ SET(HEADERS_MODELS
   ${CMAKE_SOURCE_DIR}/src/gui/models/items/key_value_table_item.h
   ${CMAKE_SOURCE_DIR}/src/gui/models/items/property_table_item.h
   ${CMAKE_SOURCE_DIR}/src/gui/models/items/channel_table_item.h
+  ${CMAKE_SOURCE_DIR}/src/gui/models/items/client_table_item.h
   ${CMAKE_SOURCE_DIR}/src/gui/models/items/key_table_item.h
   ${CMAKE_SOURCE_DIR}/src/gui/models/items/fasto_common_item.h
   ${CMAKE_SOURCE_DIR}/src/gui/models/items/explorer_tree_item.h
@@ -296,6 +300,7 @@ SET(SOURCES_MODELS
   ${CMAKE_SOURCE_DIR}/src/gui/models/hash_table_model.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/models/property_table_model.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/models/channels_table_model.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/models/clients_table_model.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/models/keys_table_model.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/models/fasto_common_model.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/models/stream_table_model.cpp
@@ -307,6 +312,7 @@ SET(SOURCES_MODELS
   ${CMAKE_SOURCE_DIR}/src/gui/models/items/key_value_table_item.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/models/items/property_table_item.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/models/items/channel_table_item.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/models/items/client_table_item.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/models/items/key_table_item.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/models/items/fasto_common_item.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/models/items/explorer_tree_item.cpp

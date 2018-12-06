@@ -42,6 +42,7 @@
 #define REDIS_GET_PROPERTY_SERVER_COMMAND "CONFIG GET *"
 #define REDIS_PUBSUB_CHANNELS_COMMAND "PUBSUB CHANNELS"
 #define REDIS_PUBSUB_NUMSUB_COMMAND "PUBSUB NUMSUB"
+#define REDIS_CLIENT_LIST_COMMAND "CLIENT LIST"
 #define REDIS_GET_COMMANDS "COMMAND"
 
 #if defined(PRO_VERSION)
@@ -643,6 +644,26 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
 done:
   NotifyProgress(sender, 75);
   Reply(sender, new events::LoadServerChannelsResponceEvent(this, res));
+  NotifyProgress(sender, 100);
+}
+
+void Driver::HandleLoadServerClientsRequestEvent(events::LoadServerClientsRequestEvent* ev) {
+  QObject* sender = ev->sender();
+  NotifyProgress(sender, 0);
+  events::LoadServerClientsResponceEvent::value_type res(ev->value());
+
+  NotifyProgress(sender, 50);
+  core::FastoObjectCommandIPtr cmd = CreateCommandFast(GEN_CMD_STRING(REDIS_CLIENT_LIST_COMMAND), core::C_INNER);
+  common::Error err = Execute(cmd);
+  if (err) {
+    res.setErrorInfo(err);
+    goto done;
+  } else {
+  }
+
+done:
+  NotifyProgress(sender, 75);
+  Reply(sender, new events::LoadServerClientsResponceEvent(this, res));
   NotifyProgress(sender, 100);
 }
 
