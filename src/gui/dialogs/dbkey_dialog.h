@@ -53,6 +53,8 @@ class DbKeyDialog : public BaseDialog {
               bool is_edit,
               QWidget* parent = Q_NULLPTR);
 
+  void keyPressEvent(QKeyEvent* event) override;
+
  private:
   bool validateAndApply();
 

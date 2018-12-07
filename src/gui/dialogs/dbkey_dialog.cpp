@@ -30,6 +30,7 @@
 
 #include <fastonosql/core/value.h>
 
+#include "gui/shortcuts.h"
 #include "gui/widgets/key_edit_widget.h"
 
 #include "translations/global.h"
@@ -83,6 +84,14 @@ void DbKeyDialog::accept() {
   }
 
   base_class::accept();
+}
+
+void DbKeyDialog::keyPressEvent(QKeyEvent* event) {
+  if (IsAcceptShortcut(event)) {
+    accept();
+    return;
+  }
+  return base_class::keyPressEvent(event);
 }
 
 bool DbKeyDialog::validateAndApply() {

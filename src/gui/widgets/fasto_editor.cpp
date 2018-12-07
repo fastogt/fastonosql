@@ -167,12 +167,12 @@ void FastoEditor::keyPressEvent(QKeyEvent* key_event) {
 bool FastoEditor::eventFilter(QObject* object, QEvent* event) {
   if (object == scin_) {
     if (event->type() == QEvent::KeyPress) {
-      QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
-      if (((keyEvent->modifiers() & Qt::ControlModifier) && keyEvent->key() == Qt::Key_F)) {
+      QKeyEvent* key_event = static_cast<QKeyEvent*>(event);
+      if (((key_event->modifiers() & Qt::ControlModifier) && key_event->key() == Qt::Key_F)) {
         find_panel_->show();
         find_line_->setFocus();
         // find_panel_->selectAll();
-        keyEvent->accept();
+        key_event->accept();
         return true;
       }
     }

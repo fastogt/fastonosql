@@ -23,11 +23,11 @@
 namespace fastonosql {
 namespace gui {
 
-/*bool isDuplicateTabShortcut(QKeyEvent* keyEvent) {
-  bool ctrlShiftT = (keyEvent->modifiers() &
+/*bool isDuplicateTabShortcut(QKeyEvent* key_event) {
+  bool ctrlShiftT = (key_event->modifiers() &
 Qt::ControlModifier) &&
-      (keyEvent->modifiers() & Qt::ShiftModifier) &&
-      (keyEvent->key() == Qt::Key_T);
+      (key_event->modifiers() & Qt::ShiftModifier) &&
+      (key_event->key() == Qt::Key_T);
 
   return ctrlShiftT;
 }*/
@@ -58,57 +58,61 @@ const common::qt::gui::FastoQKeySequence g_quit_key =
     common::qt::gui::FastoQKeySequence(Qt::ControlModifier, Qt::Key_Q);
 #endif
 
-bool IsOpenShortcut(QKeyEvent* keyEvent) {
-  return g_open_key == keyEvent;
+bool IsOpenShortcut(QKeyEvent* key_event) {
+  return g_open_key == key_event;
 }
 
-bool IsSaveShortcut(QKeyEvent* keyEvent) {
-  return g_save_key == keyEvent;
+bool IsSaveShortcut(QKeyEvent* key_event) {
+  return g_save_key == key_event;
 }
 
-bool IsSaveAsShortcut(QKeyEvent* keyEvent) {
-  return g_save_as_key == keyEvent;
+bool IsSaveAsShortcut(QKeyEvent* key_event) {
+  return g_save_as_key == key_event;
 }
 
-bool IsQuitShortcut(QKeyEvent* keyEvent) {
-  return g_quit_key == keyEvent;
+bool IsQuitShortcut(QKeyEvent* key_event) {
+  return g_quit_key == key_event;
 }
 
-bool IsCloseShortcut(QKeyEvent* keyEvent) {
-  return g_close_key == keyEvent;
+bool IsCloseShortcut(QKeyEvent* key_event) {
+  return g_close_key == key_event;
 }
 
-bool IsNewTabShortcut(QKeyEvent* keyEvent) {
-  return g_new_tab_key == keyEvent;
+bool IsNewTabShortcut(QKeyEvent* key_event) {
+  return g_new_tab_key == key_event;
 }
 
-bool IsNextTabShortcut(QKeyEvent* keyEvent) {
-  return g_next_tab_key == keyEvent;
+bool IsNextTabShortcut(QKeyEvent* key_event) {
+  return g_next_tab_key == key_event;
 }
 
-bool IsPreviousTabShortcut(QKeyEvent* keyEvent) {
-  return g_prev_tab_key == keyEvent;
+bool IsPreviousTabShortcut(QKeyEvent* key_event) {
+  return g_prev_tab_key == key_event;
 }
 
-bool IsRefreshShortcut(QKeyEvent* keyEvent) {
-  return g_refresh_key == keyEvent;
+bool IsRefreshShortcut(QKeyEvent* key_event) {
+  return g_refresh_key == key_event;
 }
 
-bool IsFullScreenShortcut(QKeyEvent* keyEvent) {
-  return g_full_screen_key == keyEvent;
+bool IsFullScreenShortcut(QKeyEvent* key_event) {
+  return g_full_screen_key == key_event;
 }
 
-bool IsExecuteScriptShortcut(QKeyEvent* keyEvent) {
-  return g_execute_key == keyEvent;
+bool IsExecuteScriptShortcut(QKeyEvent* key_event) {
+  return g_execute_key == key_event;
 }
 
-/*bool isToggleCommentsShortcut(QKeyEvent* keyEvent) {
-  return ((keyEvent->modifiers() & Qt::ControlModifier) &&
-(keyEvent->key() ==
+bool IsAcceptShortcut(QKeyEvent* key_event) {
+  return IsExecuteScriptShortcut(key_event);
+}
+
+/*bool isToggleCommentsShortcut(QKeyEvent* key_event) {
+  return ((key_event->modifiers() & Qt::ControlModifier) &&
+(key_event->key() ==
 Qt::Key_Slash)) ||
-         ((keyEvent->modifiers() & Qt::ControlModifier) &&
-(keyEvent->modifiers() &
-Qt::ShiftModifier) && (keyEvent->key() == Qt::Key_C));
+         ((key_event->modifiers() & Qt::ControlModifier) &&
+(key_event->modifiers() &
+Qt::ShiftModifier) && (key_event->key() == Qt::Key_C));
 }*/
 
 }  // namespace gui

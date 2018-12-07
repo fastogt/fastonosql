@@ -44,7 +44,7 @@ class ClientsMonitorDialog : public BaseDialog {
   typedef BaseDialog base_class;
   template <typename T, typename... Args>
   friend T* createDialog(Args&&... args);
-  enum { min_width = 640, min_height = 480 };
+  enum { min_width = 800, min_height = 600 };
 
  private Q_SLOTS:
   void startLoadServerClients(const proxy::events_info::LoadServerClientsRequest& req);

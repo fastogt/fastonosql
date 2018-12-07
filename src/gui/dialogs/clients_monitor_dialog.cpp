@@ -72,6 +72,13 @@ ClientsMonitorDialog::ClientsMonitorDialog(const QString& title,
   clients_table_->sortByColumn(0, Qt::AscendingOrder);
   clients_table_->setModel(proxy_model_);
 
+  clients_table_->setColumnHidden(ClientsTableModel::kSub, true);
+  clients_table_->setColumnHidden(ClientsTableModel::kPsub, true);
+  clients_table_->setColumnHidden(ClientsTableModel::kQbufFree, true);
+  clients_table_->setColumnHidden(ClientsTableModel::kOdl, true);
+  clients_table_->setColumnHidden(ClientsTableModel::kOll, true);
+  clients_table_->setColumnHidden(ClientsTableModel::kOmem, true);
+
   QDialogButtonBox* button_box = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   button_box->setOrientation(Qt::Horizontal);
   VERIFY(connect(button_box, &QDialogButtonBox::accepted, this, &ClientsMonitorDialog::accept));

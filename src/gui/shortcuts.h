@@ -38,17 +38,18 @@ extern const common::qt::gui::FastoQKeySequence g_refresh_key;
 extern const common::qt::gui::FastoQKeySequence g_full_screen_key;
 extern const common::qt::gui::FastoQKeySequence g_execute_key;
 
-bool IsOpenShortcut(QKeyEvent* keyEvent);
-bool IsSaveShortcut(QKeyEvent* keyEvent);
-bool IsSaveAsShortcut(QKeyEvent* keyEvent);
-bool IsQuitShortcut(QKeyEvent* keyEvent);
-bool IsCloseShortcut(QKeyEvent* keyEvent);
-bool IsNewTabShortcut(QKeyEvent* keyEvent);
-bool IsNextTabShortcut(QKeyEvent* keyEvent);
-bool IsPreviousTabShortcut(QKeyEvent* keyEvent);
-bool IsRefreshShortcut(QKeyEvent* keyEvent);
-bool IsFullScreenShortcut(QKeyEvent* keyEvent);
-bool IsExecuteScriptShortcut(QKeyEvent* keyEvent);
+bool IsOpenShortcut(QKeyEvent* key_event);
+bool IsSaveShortcut(QKeyEvent* key_event);
+bool IsSaveAsShortcut(QKeyEvent* key_event);
+bool IsQuitShortcut(QKeyEvent* key_event);
+bool IsCloseShortcut(QKeyEvent* key_event);
+bool IsNewTabShortcut(QKeyEvent* key_event);
+bool IsNextTabShortcut(QKeyEvent* key_event);
+bool IsPreviousTabShortcut(QKeyEvent* key_event);
+bool IsRefreshShortcut(QKeyEvent* key_event);
+bool IsFullScreenShortcut(QKeyEvent* key_event);
+bool IsExecuteScriptShortcut(QKeyEvent* key_event);
+bool IsAcceptShortcut(QKeyEvent* key_event);
 
 }  // namespace gui
 }  // namespace fastonosql
