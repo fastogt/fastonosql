@@ -25,9 +25,7 @@
 
 #include <fastonosql/core/command_info.h>
 #include <fastonosql/core/database/idatabase_info.h>
-#include <fastonosql/core/db_client.h>
-#include <fastonosql/core/db_key.h>  // for NDbKValue
-#include <fastonosql/core/db_ps_channel.h>
+#include <fastonosql/core/db_key.h>                // for NDbKValue
 #include <fastonosql/core/server/iserver_info.h>   // for IDataBaseInfoSPtr, IServerInf...
 #include <fastonosql/core/server_property_info.h>  // for property_t, ServerPropertiesInfo
 
@@ -36,6 +34,9 @@
 #endif
 
 #include <fastonosql/core/global.h>  // for FastoObjectIPtr
+
+#include "proxy/db_client.h"
+#include "proxy/db_ps_channel.h"
 
 namespace fastonosql {
 namespace proxy {
@@ -212,7 +213,7 @@ struct LoadServerChannelsRequest : public EventInfoBase {
 
 struct LoadServerChannelsResponce : LoadServerChannelsRequest {
   typedef LoadServerChannelsRequest base_class;
-  typedef std::vector<core::NDbPSChannel> channels_container_t;
+  typedef std::vector<proxy::NDbPSChannel> channels_container_t;
   explicit LoadServerChannelsResponce(const base_class& request);
 
   channels_container_t channels;
@@ -220,12 +221,12 @@ struct LoadServerChannelsResponce : LoadServerChannelsRequest {
 
 struct LoadServerClientsRequest : public EventInfoBase {
   typedef EventInfoBase base_class;
-  LoadServerClientsRequest(initiator_type sender, error_type er = error_type());
+  explicit LoadServerClientsRequest(initiator_type sender, error_type er = error_type());
 };
 
 struct LoadServerClientsResponce : LoadServerClientsRequest {
   typedef LoadServerClientsRequest base_class;
-  typedef std::vector<core::NDbClient> clients_container_t;
+  typedef std::vector<proxy::NDbClient> clients_container_t;
   explicit LoadServerClientsResponce(const base_class& request);
 
   clients_container_t clients;

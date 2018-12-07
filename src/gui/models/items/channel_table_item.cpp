@@ -18,25 +18,13 @@
 
 #include "gui/models/items/channel_table_item.h"
 
-#include <common/qt/convert2string.h>  // for ConvertFromString
-
 namespace fastonosql {
 namespace gui {
 
-ChannelTableItem::ChannelTableItem(const core::NDbPSChannel& chan) : channel_(chan) {}
+ChannelTableItem::ChannelTableItem(const proxy::NDbPSChannel& chan) : channel_(chan) {}
 
-core::NDbPSChannel ChannelTableItem::channel() const {
+proxy::NDbPSChannel ChannelTableItem::channel() const {
   return channel_;
-}
-
-QString ChannelTableItem::name() const {
-  QString qname;
-  common::ConvertFromString(channel_.GetName(), &qname);
-  return qname;
-}
-
-size_t ChannelTableItem::numberOfSubscribers() const {
-  return channel_.GetNumberOfSubscribers();
 }
 
 }  // namespace gui

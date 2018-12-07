@@ -26,7 +26,6 @@
 #include <common/file_system/file_system.h>  // for copy_file
 
 #include <fastonosql/core/db/redis/db_connection.h>  // for DBConnection, INFO_REQUEST, etc
-#include <fastonosql/core/db_client.h>
 
 #include <fastonosql/core/value.h>
 
@@ -34,6 +33,7 @@
 #include "proxy/command/command_logger.h"
 #include "proxy/db/redis/command.h"              // for Command
 #include "proxy/db/redis/connection_settings.h"  // for ConnectionSettings
+#include "proxy/db_client.h"
 
 #define REDIS_TYPE_COMMAND "TYPE"
 #define REDIS_SHUTDOWN_COMMAND "SHUTDOWN"
@@ -598,7 +598,7 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
         if (isok) {
           core::command_buffer_writer_t wr2;
           wr2 << REDIS_PUBSUB_NUMSUB_COMMAND " " << channel;
-          core::NDbPSChannel ch(common::ConvertToString(channel), 0);  // #FIXME
+          proxy::NDbPSChannel ch(core::ReadableString(channel), 0);
           cmds.push_back(CreateCommandFast(wr2.str(), core::C_INNER));
           res.channels.push_back(ch);
         }
@@ -676,7 +676,7 @@ void Driver::HandleLoadServerClientsRequestEvent(events::LoadServerClientsReques
       std::string clients_text = common::ConvertToString(string_value);  // #FIXME
       while ((pos = clients_text.find(REDIS_NEW_LINE_MARKER, start)) != std::string::npos) {
         std::string line = clients_text.substr(start, pos - start);
-        core::NDbClient cl(line);
+        NDbClient cl(line);
         if (cl.IsValid()) {
           res.clients.push_back(cl);
         }

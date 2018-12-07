@@ -22,21 +22,19 @@
 
 #include <common/qt/gui/base/table_item.h>  // for TableItem
 
-#include <fastonosql/core/db_ps_channel.h>
+#include "proxy/db_ps_channel.h"
 
 namespace fastonosql {
 namespace gui {
 
 class ChannelTableItem : public common::qt::gui::TableItem {
  public:
-  explicit ChannelTableItem(const core::NDbPSChannel& chan);
+  explicit ChannelTableItem(const proxy::NDbPSChannel& chan);
 
-  core::NDbPSChannel channel() const;
-  QString name() const;
-  size_t numberOfSubscribers() const;
+  proxy::NDbPSChannel channel() const;
 
  private:
-  core::NDbPSChannel channel_;
+  proxy::NDbPSChannel channel_;
 };
 
 }  // namespace gui

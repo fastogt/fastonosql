@@ -103,6 +103,8 @@ SET(HEADERS_PROXY
   ${CMAKE_SOURCE_DIR}/src/proxy/proxy_fwd.h
   ${CMAKE_SOURCE_DIR}/src/proxy/settings_manager.h
   ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings_factory.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/db_client.h
+  ${CMAKE_SOURCE_DIR}/src/proxy/db_ps_channel.h
 )
 
 SET(SOURCES_PROXY
@@ -120,6 +122,8 @@ SET(SOURCES_PROXY
   ${CMAKE_SOURCE_DIR}/src/proxy/servers_manager.cpp
   ${CMAKE_SOURCE_DIR}/src/proxy/settings_manager.cpp
   ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings_factory.cpp
+  ${CMAKE_SOURCE_DIR}/src/proxy/db_client.cpp
+  ${CMAKE_SOURCE_DIR}/src/proxy/db_ps_channel.cpp
 )
 
 IF(PRO_VERSION)

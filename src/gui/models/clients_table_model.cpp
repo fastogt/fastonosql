@@ -67,7 +67,7 @@ QVariant ClientsTableModel::data(const QModelIndex& index, int role) const {
   int col = index.column();
   QVariant result;
   if (role == Qt::DisplayRole) {
-    const core::NDbClient client = node->client();
+    const proxy::NDbClient client = node->client();
     if (col == kId) {
       result = client.GetId();
     } else if (col == kAddr) {

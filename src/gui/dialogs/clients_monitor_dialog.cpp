@@ -97,7 +97,7 @@ void ClientsMonitorDialog::finishLoadServerClients(const proxy::events_info::Loa
     return;
   }
 
-  for (core::NDbClient client : res.clients) {
+  for (auto client : res.clients) {
     clients_model_->insertItem(new ClientTableItem(client));
   }
 }

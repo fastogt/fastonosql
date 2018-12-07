@@ -20,6 +20,7 @@
 
 #include <QIcon>
 
+#include <common/qt/convert2string.h>
 #include <common/qt/utils_qt.h>
 
 #include "gui/gui_factory.h"
@@ -51,10 +52,14 @@ QVariant ChannelsTableModel::data(const QModelIndex& index, int role) const {
 
   QVariant result;
   if (role == Qt::DisplayRole) {
+    const proxy::NDbPSChannel channel = node->channel();
     if (col == kName) {
-      result = node->name();
+      const auto name = channel.GetName();
+      QString qname;
+      common::ConvertFromBytes(name.GetHumanReadable(), &qname);
+      result = qname;
     } else if (col == kNOS) {
-      result = static_cast<uint32_t>(node->numberOfSubscribers());
+      result = static_cast<uint32_t>(channel.GetNumberOfSubscribers());
     }
   }
 

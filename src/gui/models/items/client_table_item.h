@@ -20,19 +20,19 @@
 
 #include <common/qt/gui/base/table_item.h>  // for TableItem
 
-#include <fastonosql/core/db_client.h>
+#include "proxy/db_client.h"
 
 namespace fastonosql {
 namespace gui {
 
 class ClientTableItem : public common::qt::gui::TableItem {
  public:
-  explicit ClientTableItem(const core::NDbClient& client);
+  explicit ClientTableItem(const proxy::NDbClient& client);
 
-  core::NDbClient client() const;
+  proxy::NDbClient client() const;
 
  private:
-  core::NDbClient client_;
+  proxy::NDbClient client_;
 };
 
 }  // namespace gui

@@ -16,18 +16,30 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/models/items/client_table_item.h"
+#pragma once
 
-#include <common/qt/convert2string.h>  // for ConvertFromString
+#include <fastonosql/core/types.h>
 
 namespace fastonosql {
-namespace gui {
+namespace proxy {
 
-ClientTableItem::ClientTableItem(const proxy::NDbClient& client) : client_(client) {}
+class NDbPSChannel {
+ public:
+  typedef core::ReadableString name_t;
 
-proxy::NDbClient ClientTableItem::client() const {
-  return client_;
-}
+  NDbPSChannel();
+  NDbPSChannel(const name_t& name, size_t nos);
 
-}  // namespace gui
+  name_t GetName() const;
+  void SetName(const name_t& name);
+
+  size_t GetNumberOfSubscribers() const;
+  void SetNumberOfSubscribers(size_t nos);
+
+ private:
+  name_t name_;
+  size_t number_of_subscribers_;
+};
+
+}  // namespace proxy
 }  // namespace fastonosql

@@ -113,7 +113,7 @@ void PubSubDialog::finishLoadServerChannels(const proxy::events_info::LoadServer
   }
 
   proxy::events_info::LoadServerChannelsResponce::channels_container_t channels = res.channels;
-  for (core::NDbPSChannel channel : channels) {
+  for (auto channel : channels) {
     channels_model_->insertItem(new ChannelTableItem(channel));
   }
 }
@@ -162,12 +162,16 @@ void PubSubDialog::publish() {
   }
 
   bool ok;
-  QString publish_text = QInputDialog::getText(this, trPublishToChannel_1S.arg(node->name()), trEnterWhatYoWantToSend,
+  const auto channel = node->channel();
+  const auto name = channel.GetName();
+  QString qname;
+  common::ConvertFromBytes(name.GetHumanReadable(), &qname);
+  QString publish_text = QInputDialog::getText(this, trPublishToChannel_1S.arg(qname), trEnterWhatYoWantToSend,
                                                QLineEdit::Normal, QString(), &ok, Qt::WindowCloseButtonHint);
   if (ok && !publish_text.isEmpty()) {
     const core::translator_t trans = server_->GetTranslator();
     core::command_buffer_t cmd_str;
-    common::Error err = trans->PublishCommand(node->channel(), common::ConvertToString(publish_text), &cmd_str);
+    common::Error err = trans->PublishCommand(name, common::ConvertToString(publish_text), &cmd_str);
     if (err) {
       LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
       return;
@@ -191,8 +195,9 @@ void PubSubDialog::subscribeInNewConsole() {
   }
 
   const core::translator_t trans = server_->GetTranslator();
+  const auto channel = node->channel();
   core::command_buffer_t cmd_str;
-  common::Error err = trans->SubscribeCommand(node->channel(), &cmd_str);
+  common::Error err = trans->SubscribeCommand(channel.GetName(), &cmd_str);
   if (err) {
     LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
     return;
