@@ -39,6 +39,7 @@
 #include "proxy/server/iserver_remote.h"  // for IServer, IServerRemote
 #include "proxy/settings_manager.h"       // for SettingsManager
 
+#include "gui/dialogs/clients_monitor_dialog.h"
 #include "gui/dialogs/dbkey_dialog.h"           // for DbKeyDialog
 #include "gui/dialogs/history_server_dialog.h"  // for ServerHistoryDialog
 #include "gui/dialogs/info_server_dialog.h"     // for InfoServerDialog
@@ -65,6 +66,7 @@ const QString trEditKey_1S = QObject::tr("Edit key %1");
 const QString trRemoveAllKeysTemplate_1S = QObject::tr("Really remove all keys from branch %1?");
 const QString trViewKeyTemplate_1S = QObject::tr("View keys in %1 database");
 const QString trViewChannelsTemplate_1S = QObject::tr("View channels in %1 server");
+const QString trViewClientsTemplate_1S = QObject::tr("View clients in %1 server");
 const QString trClearDb = QObject::tr("Clear database");
 const QString trLoadContentTemplate_1S = QObject::tr("Load keys in %1 database");
 const QString trSetMaxConnectionOnServerTemplate_1S = QObject::tr("Set max connection on %1 server");
@@ -218,7 +220,7 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
 
     proxy::IServerSPtr server = server_node->server();
     const bool is_connected = server->IsConnected();
-    const bool is_redis_compatible = core::IsRedisCompatible(server->GetType());
+    const bool is_redis = server->GetType() == core::REDIS;
 
     QMenu menu(this);
     QAction* connectAction = new QAction(is_connected ? translations::trDisconnect : translations::trConnect, this);
@@ -249,18 +251,24 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
     infoServerAction->setEnabled(is_connected);
     menu.addAction(infoServerAction);
 
-    if (is_redis_compatible) {
+    if (is_redis) {
       QAction* propertyServerAction = new QAction(translations::trProperty, this);
       VERIFY(connect(propertyServerAction, &QAction::triggered, this, &ExplorerTreeView::openPropertyServerDialog));
 
       QAction* pubSubAction = new QAction(translations::trPubSubDialog, this);
       VERIFY(connect(pubSubAction, &QAction::triggered, this, &ExplorerTreeView::viewPubSub));
 
+      QAction* clients_monitor_action = new QAction(translations::trClientsMonitorDialog, this);
+      VERIFY(connect(clients_monitor_action, &QAction::triggered, this, &ExplorerTreeView::viewClientsMonitor));
+
       propertyServerAction->setEnabled(is_connected);
       menu.addAction(propertyServerAction);
 
       pubSubAction->setEnabled(is_connected);
       menu.addAction(pubSubAction);
+
+      clients_monitor_action->setEnabled(is_connected);
+      menu.addAction(clients_monitor_action);
 
       bool is_local = true;
       bool is_can_remote = server->IsCanRemote();
@@ -664,6 +672,23 @@ void ExplorerTreeView::viewPubSub() {
     auto diag = createDialog<PubSubDialog>(trViewChannelsTemplate_1S.arg(node->name()),
                                            GuiFactory::GetInstance().icon(server->GetType()), server, this);  // +
     VERIFY(connect(diag, &PubSubDialog::consoleOpenedAndExecute, this, &ExplorerTreeView::consoleOpenedAndExecute));
+    diag->exec();
+  }
+}
+
+void ExplorerTreeView::viewClientsMonitor() {
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (QModelIndex ind : selected) {
+    ExplorerServerItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerServerItem*>(ind);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
+
+    proxy::IServerSPtr server = node->server();
+    auto diag =
+        createDialog<ClientsMonitorDialog>(trViewClientsTemplate_1S.arg(node->name()),
+                                           GuiFactory::GetInstance().icon(server->GetType()), server, this);  // +
     diag->exec();
   }
 }

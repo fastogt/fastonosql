@@ -302,6 +302,9 @@ void IServer::customEvent(QEvent* event) {
   } else if (type == static_cast<QEvent::Type>(events::LoadServerChannelsResponceEvent::EventType)) {
     events::LoadServerChannelsResponceEvent* ev = static_cast<events::LoadServerChannelsResponceEvent*>(event);
     HandleLoadServerChannelsEvent(ev);
+  } else if (type == static_cast<QEvent::Type>(events::LoadServerClientsResponceEvent::EventType)) {
+    events::LoadServerClientsResponceEvent* ev = static_cast<events::LoadServerClientsResponceEvent*>(event);
+    HandleLoadServerClientsEvent(ev);
   } else if (type == static_cast<QEvent::Type>(events::BackupResponceEvent::EventType)) {
     events::BackupResponceEvent* ev = static_cast<events::BackupResponceEvent*>(event);
     HandleBackupEvent(ev);
@@ -392,6 +395,15 @@ void IServer::HandleLoadServerChannelsEvent(events::LoadServerChannelsResponceEv
     LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
   }
   emit LoadServerChannelsFinished(v);
+}
+
+void IServer::HandleLoadServerClientsEvent(events::LoadServerClientsResponceEvent* ev) {
+  auto v = ev->value();
+  common::Error err = v.errorInfo();
+  if (err) {
+    LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
+  }
+  emit LoadServerClientsFinished(v);
 }
 
 void IServer::HandleBackupEvent(events::BackupResponceEvent* ev) {

@@ -65,10 +65,6 @@ QVariant ClientsTableModel::data(const QModelIndex& index, int role) const {
   }
 
   int col = index.column();
-  if (role == Qt::DecorationRole && col == kName) {
-    return GuiFactory::GetInstance().channelIcon();
-  }
-
   QVariant result;
   if (role == Qt::DisplayRole) {
     const core::NDbClient client = node->client();

@@ -188,6 +188,7 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   virtual void HandleLoadServerPropertyEvent(events::ServerPropertyInfoResponceEvent* ev);
   virtual void HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoResponceEvent* ev);
   virtual void HandleLoadServerChannelsEvent(events::LoadServerChannelsResponceEvent* ev);
+  virtual void HandleLoadServerClientsEvent(events::LoadServerClientsResponceEvent* ev);
   virtual void HandleBackupEvent(events::BackupResponceEvent* ev);
   virtual void HandleRestoreEvent(events::RestoreResponceEvent* ev);
   virtual void HandleExecuteEvent(events::ExecuteResponceEvent* ev);

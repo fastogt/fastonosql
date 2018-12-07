@@ -92,6 +92,7 @@ class ExplorerTreeView : public QTreeView {
   void editKey();
   void viewKeys();
   void viewPubSub();
+  void viewClientsMonitor();
 
   void deleteItem();  // branch or key
 

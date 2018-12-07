@@ -23,12 +23,15 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QSortFilterProxyModel>
+#include <QSplitter>
 
 #include "proxy/server/iserver.h"
 
 #include "gui/models/clients_table_model.h"
 #include "gui/models/items/client_table_item.h"
 #include "gui/views/fasto_table_view.h"
+
+#include "translations/global.h"
 
 namespace fastonosql {
 namespace gui {
@@ -59,6 +62,7 @@ ClientsMonitorDialog::ClientsMonitorDialog(const QString& title,
   QHBoxLayout* search_layout = new QHBoxLayout;
   update_button_ = new QPushButton;
   VERIFY(connect(update_button_, &QPushButton::clicked, this, &ClientsMonitorDialog::updateClicked));
+  search_layout->addWidget(new QSplitter(Qt::Horizontal));
   search_layout->addWidget(update_button_);
 
   clients_table_ = new FastoTableView;
@@ -98,9 +102,18 @@ void ClientsMonitorDialog::finishLoadServerClients(const proxy::events_info::Loa
   }
 }
 
+void ClientsMonitorDialog::showEvent(QShowEvent* e) {
+  base_class::showEvent(e);
+  updateClicked();
+}
+
 void ClientsMonitorDialog::updateClicked() {
   proxy::events_info::LoadServerClientsRequest req(this);
   server_->LoadClients(req);
+}
+
+void ClientsMonitorDialog::retranslateUi() {
+  update_button_->setText(translations::trRefresh);
 }
 
 QModelIndex ClientsMonitorDialog::selectedIndex() const {

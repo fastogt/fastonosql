@@ -1,6 +1,7 @@
 1.24.0 /
 [Alexandr Topilski]
 - [Redis] ZPOPMAX, ZPOPMIN commands
+- [Redis] Clients monitor
 - [DynomiteDB] Added support
 
 1.23.1 / December 2, 2018

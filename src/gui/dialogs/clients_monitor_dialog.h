@@ -58,6 +58,10 @@ class ClientsMonitorDialog : public BaseDialog {
                                 proxy::IServerSPtr server,
                                 QWidget* parent = Q_NULLPTR);
 
+  void showEvent(QShowEvent* e) override;
+
+  void retranslateUi() override;
+
   QModelIndex selectedIndex() const;
 
  private:

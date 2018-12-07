@@ -26,6 +26,7 @@
 #include <common/file_system/file_system.h>  // for copy_file
 
 #include <fastonosql/core/db/redis/db_connection.h>  // for DBConnection, INFO_REQUEST, etc
+#include <fastonosql/core/db_client.h>
 
 #include <fastonosql/core/value.h>
 
@@ -55,10 +56,11 @@
 #define BACKUP_DEFAULT_PATH "/var/lib/redis/dump.rdb"
 #define EXPORT_DEFAULT_PATH "/var/lib/redis/dump.rdb"
 
+#define REDIS_NEW_LINE_MARKER "\n"
+
 namespace fastonosql {
 namespace core {
 namespace {
-
 command_buffer_t GetKeysOldPattern(const pattern_t& pattern) {
   command_buffer_writer_t wr;
   wr << "KEYS " << pattern;
@@ -659,6 +661,28 @@ void Driver::HandleLoadServerClientsRequestEvent(events::LoadServerClientsReques
     res.setErrorInfo(err);
     goto done;
   } else {
+    core::FastoObject::childs_t rchildrens = cmd->GetChildrens();
+    if (rchildrens.size()) {
+      CHECK_EQ(rchildrens.size(), 1);
+      core::FastoObject* string = rchildrens[0].get();
+      CHECK(string);
+      common::Value::string_t string_value;
+      if (!string->GetValue()->GetAsString(&string_value)) {
+        goto done;
+      }
+
+      size_t pos = 0;
+      size_t start = 0;
+      std::string clients_text = common::ConvertToString(string_value);  // #FIXME
+      while ((pos = clients_text.find(REDIS_NEW_LINE_MARKER, start)) != std::string::npos) {
+        std::string line = clients_text.substr(start, pos - start);
+        core::NDbClient cl(line);
+        if (cl.IsValid()) {
+          res.clients.push_back(cl);
+        }
+        start = pos + SIZEOFMASS(REDIS_NEW_LINE_MARKER) - 1;
+      }
+    }
   }
 
 done:
