@@ -44,6 +44,7 @@ extern const QString trClose;
 extern const QString trSave;
 extern const QString trSaveChanges;
 extern const QString trExit;
+extern const QString trKill;
 extern const QString trFilter;
 extern const QString trViews;
 extern const QString trHistory;

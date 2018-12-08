@@ -18,12 +18,17 @@
 
 #include "gui/dialogs/clients_monitor_dialog.h"
 
+#include <QAction>
 #include <QDialogButtonBox>
 #include <QHBoxLayout>
 #include <QLineEdit>
+#include <QMenu>
 #include <QPushButton>
 #include <QSortFilterProxyModel>
 #include <QSplitter>
+
+#include <common/convert2string.h>
+#include <common/string_util.h>
 
 #include "proxy/server/iserver.h"
 
@@ -32,6 +37,11 @@
 #include "gui/views/fasto_table_view.h"
 
 #include "translations/global.h"
+
+#define CLIENT_COMMAND "CLIENT"
+#define KILL_ARG "KILL"
+#define CLIENT_KILL_COMMAND CLIENT_COMMAND SPACE_STR KILL_ARG
+#define ID_ARG "ID"
 
 namespace fastonosql {
 namespace gui {
@@ -53,6 +63,8 @@ ClientsMonitorDialog::ClientsMonitorDialog(const QString& title,
                  &ClientsMonitorDialog::startLoadServerClients));
   VERIFY(connect(server.get(), &proxy::IServer::LoadServerClientsFinished, this,
                  &ClientsMonitorDialog::finishLoadServerClients));
+  VERIFY(connect(server.get(), &proxy::IServer::ExecuteStarted, this, &ClientsMonitorDialog::startExecuteCommand));
+  VERIFY(connect(server.get(), &proxy::IServer::ExecuteFinished, this, &ClientsMonitorDialog::finishExecuteCommand));
 
   clients_model_ = new ClientsTableModel(this);
   proxy_model_ = new QSortFilterProxyModel(this);
@@ -69,6 +81,9 @@ ClientsMonitorDialog::ClientsMonitorDialog(const QString& title,
   clients_table_->setSortingEnabled(true);
   clients_table_->setSelectionBehavior(QAbstractItemView::SelectRows);
   clients_table_->setSelectionMode(QAbstractItemView::SingleSelection);
+  clients_table_->setContextMenuPolicy(Qt::CustomContextMenu);
+  VERIFY(connect(clients_table_, &FastoTableView::customContextMenuRequested, this,
+                 &ClientsMonitorDialog::showContextMenu));
   clients_table_->sortByColumn(0, Qt::AscendingOrder);
   clients_table_->setModel(proxy_model_);
 
@@ -109,14 +124,106 @@ void ClientsMonitorDialog::finishLoadServerClients(const proxy::events_info::Loa
   }
 }
 
+void ClientsMonitorDialog::startExecuteCommand(const proxy::events_info::ExecuteInfoRequest& req) {
+  UNUSED(req);
+}
+
+void ClientsMonitorDialog::finishExecuteCommand(const proxy::events_info::ExecuteInfoResponce& res) {
+  // some commands can be executed
+  /*common::Error err = res.errorInfo();
+  if (err) {
+    return;
+  }*/
+
+  for (core::FastoObjectCommandIPtr command : res.executed_commands) {
+    size_t off;
+    core::commands_args_t argv;
+    const core::CommandHolder* cmd = nullptr;
+    const core::translator_t trans = server_->GetTranslator();
+    const core::command_buffer_t command_str = command->GetInputCommand();
+    common::Error err = trans->FindCommand(command_str, &cmd, &argv, &off);
+    if (err) {
+      continue;
+    }
+
+    if (argv.size() < 4) {
+      continue;
+    }
+
+    if (!(common::FullEqualsASCII(argv[0], GEN_CMD_STRING(CLIENT_COMMAND), false) &&
+          common::FullEqualsASCII(argv[1], GEN_CMD_STRING(KILL_ARG), false))) {
+      continue;
+    }
+
+    const auto childs = command->GetChildrens();
+    CHECK_EQ(childs.size(), 1);
+    const auto child = childs[0];
+    const auto value = child->GetValue();
+    long long res;
+    if (value->GetAsLongLongInteger(&res) && res != 0) {
+      if (res == 1) {
+        const auto field = argv[2];
+        if (field == GEN_CMD_STRING(ID_ARG)) {
+          int iden;
+          if (common::ConvertFromBytes(argv[3], &iden)) {
+            ClientTableItem* ch = static_cast<ClientTableItem*>(clients_model_->findChildById(iden));
+            if (ch) {
+              clients_model_->removeItem(ch);
+            }
+          }
+        }
+      } else {
+        updateClicked();
+      }
+    }
+  }
+}
+
 void ClientsMonitorDialog::showEvent(QShowEvent* e) {
   base_class::showEvent(e);
   updateClicked();
 }
 
+void ClientsMonitorDialog::showContextMenu(const QPoint& point) {
+  const QModelIndex selected = selectedIndex();
+  if (!selected.isValid()) {
+    return;
+  }
+
+  QPoint menu_point = clients_table_->calculateMenuPoint(point);
+  QMenu* menu = new QMenu(clients_table_);
+
+  QAction* kill_action = new QAction(translations::trKill, this);
+  VERIFY(connect(kill_action, &QAction::triggered, this, &ClientsMonitorDialog::killClient));
+
+  menu->addAction(kill_action);
+  menu->exec(menu_point);
+  delete menu;
+}
+
 void ClientsMonitorDialog::updateClicked() {
   proxy::events_info::LoadServerClientsRequest req(this);
   server_->LoadClients(req);
+}
+
+void ClientsMonitorDialog::killClient() {
+  QModelIndex sel = selectedIndex();
+  if (!sel.isValid()) {
+    return;
+  }
+
+  ClientTableItem* node = common::qt::item<common::qt::gui::TableItem*, ClientTableItem*>(sel);
+  if (!node) {
+    DNOTREACHED();
+    return;
+  }
+
+  const auto client = node->client();
+
+  core::command_buffer_writer_t wr;
+  wr << CLIENT_KILL_COMMAND SPACE_STR ID_ARG SPACE_STR << common::ConvertToCharBytes(client.GetId());
+  proxy::events_info::ExecuteInfoRequest req(this, wr.str());
+  server_->Execute(req);
 }
 
 void ClientsMonitorDialog::retranslateUi() {

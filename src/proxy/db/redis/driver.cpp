@@ -207,6 +207,11 @@ common::Error Driver::GetServerCommands(std::vector<const core::CommandInfo*>* c
   core::FastoObject* array = rchildrens[0].get();
   CHECK(array);
   std::vector<const core::CommandInfo*> lcommands;
+  const core::CommandHolder* cmd_help = nullptr;
+  err = tran->FindCommand(GEN_CMD_STRING(DB_HELP_COMMAND), &cmd_help);
+  CHECK(!err);
+  lcommands.push_back(cmd_help);
+
   auto array_value = array->GetValue();
   common::ArrayValue* commands_array = nullptr;
   if (array_value->GetAsList(&commands_array)) {
@@ -230,13 +235,11 @@ common::Error Driver::GetServerCommands(std::vector<const core::CommandInfo*>* c
         }
 
         const core::CommandHolder* cmd = nullptr;
-        common::Error err = tran->FindCommand(command_name, &cmd);
+        common::Error err = tran->FindCommandFirstName(command_name, &cmd);  // #FIXME
         if (err) {
-#if defined(PRO_VERSION)
           if (!impl_->IsInternalCommand(command_name)) {
             WARNING_LOG() << "Found not handled command: " << command_name;
           }
-#endif
           continue;
         }
 

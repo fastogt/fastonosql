@@ -44,6 +44,7 @@ const QString trClose = QObject::tr("Close");
 const QString trSave = QObject::tr("Save");
 const QString trSaveChanges = QObject::tr("Save changes");
 const QString trExit = QObject::tr("Exit");
+const QString trKill = QObject::tr("Kill");
 const QString trFilter = QObject::tr("Filter");
 const QString trViews = QObject::tr("Views");
 const QString trHistory = QObject::tr("History");

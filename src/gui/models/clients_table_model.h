@@ -57,6 +57,8 @@ class ClientsTableModel : public common::qt::gui::TableModel {
 
   int columnCount(const QModelIndex& parent) const override;
   void clear();
+
+  common::qt::gui::TableItem* findChildById(int iden) const;
 };
 
 }  // namespace gui

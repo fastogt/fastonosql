@@ -265,8 +265,7 @@ void IDriver::timerEvent(QTimerEvent* event) {
     if (!log_file_) {
       std::string dir = common::file_system::get_dir_path(path);
       common::ErrnoError err = common::file_system::create_directory(dir, true);
-      if (err) {
-      }
+      UNUSED(err);
       if (common::file_system::is_directory(dir) == common::SUCCESS) {
         log_file_ = new common::file_system::ANSIFile;
       }
@@ -357,7 +356,7 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
   RootLocker* lock = history ? new RootLocker(this, sender, input_line, silence)
                              : new FirstChildUpdateRootLocker(this, sender, input_line, silence, commands);
   core::FastoObjectIPtr obj = lock->Root();
-  const double step = 99.0 / double(commands.size() * (repeat + 1));
+  const double step = 99.0 / static_cast<double>(commands.size() * (repeat + 1));
   double cur_progress = 0.0;
   for (size_t r = 0; r < repeat + 1; ++r) {
     common::time64_t start_ts = common::time::current_mstime();
@@ -378,12 +377,13 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
         res.setErrorInfo(err);
         goto done;
       }
+      res.executed_commands.push_back(cmd);
     }
 
     common::time64_t finished_ts = common::time::current_mstime();
     common::time64_t diff = finished_ts - start_ts;
-    if (msec_repeat_interval > diff) {
-      common::time64_t sleep_time = msec_repeat_interval - diff;
+    const common::time64_t sleep_time = msec_repeat_interval - diff;
+    if (sleep_time > 0) {
       common::threads::PlatformThread::Sleep(sleep_time);
     }
   }
@@ -685,22 +685,6 @@ common::Error IDriver::GetServerDiscoveryInfo(core::IDataBaseInfo** dbinfo,
                                               std::vector<const core::CommandInfo*>* commands) {
   std::vector<const core::CommandInfo*> lcommands;
   GetServerCommands(&lcommands);  // can be failed
-  {                               // stabilization, DB_HELP_COMMAND available for all databases
-    bool founded = false;
-    for (size_t i = 0; i < lcommands.size(); ++i) {
-      if (lcommands[i]->IsEqualName(GEN_CMD_STRING(DB_HELP_COMMAND))) {
-        founded = true;
-        break;
-      }
-    }
-    if (!founded) {
-      const core::CommandHolder* cmd = nullptr;
-      auto tran = GetTranslator();
-      common::Error err = tran->FindCommand(GEN_CMD_STRING(DB_HELP_COMMAND), &cmd);
-      CHECK(!err);
-      lcommands.push_back(cmd);
-    }
-  }
 
   core::IDataBaseInfo* ldbinfo = nullptr;
   common::Error err = GetCurrentDataBaseInfo(&ldbinfo);

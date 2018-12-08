@@ -31,6 +31,8 @@ namespace proxy {
 namespace events_info {
 struct LoadServerClientsRequest;
 struct LoadServerClientsResponce;
+struct ExecuteInfoRequest;
+struct ExecuteInfoResponce;
 }  // namespace events_info
 }  // namespace proxy
 namespace gui {
@@ -50,7 +52,12 @@ class ClientsMonitorDialog : public BaseDialog {
   void startLoadServerClients(const proxy::events_info::LoadServerClientsRequest& req);
   void finishLoadServerClients(const proxy::events_info::LoadServerClientsResponce& res);
 
+  void startExecuteCommand(const proxy::events_info::ExecuteInfoRequest& req);
+  void finishExecuteCommand(const proxy::events_info::ExecuteInfoResponce& res);
+
+  void showContextMenu(const QPoint& point);
   void updateClicked();
+  void killClient();
 
  protected:
   explicit ClientsMonitorDialog(const QString& title,

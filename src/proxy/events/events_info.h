@@ -164,6 +164,8 @@ struct ExecuteInfoRequest : public EventInfoBase {
 struct ExecuteInfoResponce : ExecuteInfoRequest {
   typedef ExecuteInfoRequest base_class;
   explicit ExecuteInfoResponce(const base_class& request);
+
+  std::vector<core::FastoObjectCommandIPtr> executed_commands;
 };
 
 struct LoadDatabasesInfoRequest : public EventInfoBase {

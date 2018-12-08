@@ -180,5 +180,17 @@ void ClientsTableModel::clear() {
   endResetModel();
 }
 
+common::qt::gui::TableItem* ClientsTableModel::findChildById(int iden) const {
+  for (size_t i = 0; i < data_.size(); ++i) {
+    ClientTableItem* item = static_cast<ClientTableItem*>(data_[i]);
+    const auto client = item->client();
+    if (client.GetId() == iden) {
+      return item;
+    }
+  }
+
+  return nullptr;
+}
+
 }  // namespace gui
 }  // namespace fastonosql
