@@ -255,10 +255,10 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       QAction* propertyServerAction = new QAction(translations::trProperty, this);
       VERIFY(connect(propertyServerAction, &QAction::triggered, this, &ExplorerTreeView::openPropertyServerDialog));
 
-      QAction* pubSubAction = new QAction(translations::trPubSubDialog, this);
+      QAction* pubSubAction = new QAction(translations::trPublishSubscribe, this);
       VERIFY(connect(pubSubAction, &QAction::triggered, this, &ExplorerTreeView::viewPubSub));
 
-      QAction* clients_monitor_action = new QAction(translations::trClientsMonitorDialog, this);
+      QAction* clients_monitor_action = new QAction(translations::trClientsMonitor, this);
       VERIFY(connect(clients_monitor_action, &QAction::triggered, this, &ExplorerTreeView::viewClientsMonitor));
 
       propertyServerAction->setEnabled(is_connected);
@@ -320,7 +320,7 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
     QAction* createKeyAction = new QAction(translations::trCreateKey, this);
     VERIFY(connect(createKeyAction, &QAction::triggered, this, &ExplorerTreeView::createKey));
 
-    QAction* viewKeysAction = new QAction(translations::trViewKeysDialog, this);
+    QAction* viewKeysAction = new QAction(translations::trViewKeys, this);
     VERIFY(connect(viewKeysAction, &QAction::triggered, this, &ExplorerTreeView::viewKeys));
 
     QAction* removeAllKeysAction = new QAction(translations::trRemoveAllKeys, this);
