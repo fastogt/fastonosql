@@ -51,7 +51,6 @@ ConnectionsDialog::ConnectionsDialog(const QString& title, const QIcon& icon, QW
   setWindowIcon(icon);
 
   list_widget_ = new QTreeWidget;
-  list_widget_->setIndentation(5);
 
   QStringList colums;
   colums << translations::trName << translations::trAddress;
@@ -67,6 +66,8 @@ ConnectionsDialog::ConnectionsDialog(const QString& title, const QIcon& icon, QW
   list_widget_->setIndentation(15);
   list_widget_->setSelectionMode(QAbstractItemView::SingleSelection);  // single item can be draged or droped
   list_widget_->setSelectionBehavior(QAbstractItemView::SelectRows);
+
+  list_widget_->header()->resizeSection(0, min_width / 3);
 
   // list_widget_->setDragEnabled(true);
   // list_widget_->setDragDropMode(QAbstractItemView::InternalMove);
