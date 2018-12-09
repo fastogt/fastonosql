@@ -85,7 +85,7 @@
 #include "proxy/db/pika/server.h"                   // for Server
 #endif
 
-#if defined(BUILD_WITH_PIKA)
+#if defined(BUILD_WITH_DYNOMITE)
 #include <fastonosql/core/db/dynomite/db_connection.h>  // for DiscoveryClusterConnection, etc
 #include "proxy/db/dynomite/connection_settings.h"      // for ConnectionSettings
 #include "proxy/db/dynomite/server.h"                   // for Server
