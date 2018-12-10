@@ -30,13 +30,15 @@
 
 #include "translations/global.h"
 
+#define FIRST_COLUMN_NAME "ID"
+
 namespace fastonosql {
 namespace gui {
 
 class StreamTypeWidget::StreamTableModel : public HashTableModel {
  public:
   explicit StreamTableModel(QObject* parent = Q_NULLPTR) : HashTableModel(parent) {
-    setFirstColumnName("ID");
+    setFirstColumnName(FIRST_COLUMN_NAME);
     setSecondColumnName(translations::trValue);
   }
 

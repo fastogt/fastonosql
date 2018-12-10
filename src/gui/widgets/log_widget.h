@@ -22,7 +22,6 @@
 
 #include <common/log_levels.h>  // for LOG_LEVEL
 
-class QPoint;
 class QTextEdit;  // lines 23-23
 
 namespace fastonosql {

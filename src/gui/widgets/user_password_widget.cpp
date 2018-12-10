@@ -33,25 +33,25 @@ namespace gui {
 
 UserPasswordWidget::UserPasswordWidget(const QString& user_title, const QString& password_title, QWidget* parent)
     : QWidget(parent), user_title_(user_title), password_title_(password_title) {
-  QVBoxLayout* userPasswordLayout = new QVBoxLayout;
-  QHBoxLayout* userLayout = new QHBoxLayout;
+  QVBoxLayout* user_password_layout = new QVBoxLayout;
+  QHBoxLayout* user_layout = new QHBoxLayout;
   user_name_label_ = new QLabel;
   user_name_textbox_ = new QLineEdit;
-  userLayout->addWidget(user_name_label_);
-  userLayout->addWidget(user_name_textbox_);
-  userPasswordLayout->addLayout(userLayout);
+  user_layout->addWidget(user_name_label_);
+  user_layout->addWidget(user_name_textbox_);
+  user_password_layout->addLayout(user_layout);
 
-  QHBoxLayout* passwordLayout = new QHBoxLayout;
+  QHBoxLayout* password_layout = new QHBoxLayout;
   password_label_ = new QLabel;
   password_textbox_ = new QLineEdit;
   password_textbox_->setEchoMode(QLineEdit::Password);
   password_echomode_button_ = new QPushButton(translations::trShow);
   VERIFY(connect(password_echomode_button_, &QPushButton::clicked, this, &UserPasswordWidget::togglePasswordEchoMode));
-  passwordLayout->addWidget(password_label_);
-  passwordLayout->addWidget(password_textbox_);
-  passwordLayout->addWidget(password_echomode_button_);
-  userPasswordLayout->addLayout(passwordLayout);
-  setLayout(userPasswordLayout);
+  password_layout->addWidget(password_label_);
+  password_layout->addWidget(password_textbox_);
+  password_layout->addWidget(password_echomode_button_);
+  user_password_layout->addLayout(password_layout);
+  setLayout(user_password_layout);
 
   retranslateUi();
 }

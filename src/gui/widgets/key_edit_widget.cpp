@@ -72,14 +72,8 @@ KeyEditWidget::KeyEditWidget(QWidget* parent) : base_class(parent) {
   VERIFY(connect(bool_value_edit_, &QComboBox::currentTextChanged, this, &KeyEditWidget::keyChanged));
 
   value_list_edit_ = new ListTypeWidget;
-  // value_list_edit_->horizontalHeader()->hide();
-  // value_list_edit_->verticalHeader()->hide();
-
   VERIFY(connect(value_list_edit_, &ListTypeWidget::dataChangedSignal, this, &KeyEditWidget::keyChanged));
   value_table_edit_ = new HashTypeWidget;
-  // value_table_edit_->horizontalHeader()->hide();
-  // value_table_edit_->verticalHeader()->hide();
-
   VERIFY(connect(value_table_edit_, &HashTypeWidget::dataChangedSignal, this, &KeyEditWidget::keyChanged));
 
   stream_table_edit_ = new StreamTypeWidget;

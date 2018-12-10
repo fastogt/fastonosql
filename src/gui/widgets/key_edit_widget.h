@@ -32,7 +32,6 @@ namespace fastonosql {
 namespace gui {
 
 class FastoViewer;
-class FastoEditor;
 class HashTypeWidget;
 class StreamTypeWidget;
 class ListTypeWidget;

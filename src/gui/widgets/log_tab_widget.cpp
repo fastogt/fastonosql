@@ -37,10 +37,12 @@ LogTabWidget::LogTabWidget(QWidget* parent) : QTabWidget(parent) {
   setTabsClosable(false);
   setElideMode(Qt::ElideRight);
   setMovable(true);
-  // setDocumentMode(true);
 
+  // logs
   log_ = new LogWidget;
   addTab(log_, GuiFactory::GetInstance().loggingIcon(), QString());
+
+  // commands
   commands_ = new CommandsWidget;
   addTab(commands_, GuiFactory::GetInstance().commandIcon(), QString());
 

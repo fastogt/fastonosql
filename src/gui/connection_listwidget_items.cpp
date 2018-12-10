@@ -18,6 +18,8 @@
 
 #include "gui/connection_listwidget_items.h"
 
+#include <string>
+
 #include <common/qt/convert2string.h>
 
 #include <fastonosql/core/connection_types.h>  // for ConvertToString, etc
@@ -80,16 +82,6 @@ IConnectionListWidgetItem::itemConnectionType ConnectionListWidgetItem::type() c
 }
 
 #if defined(PRO_VERSION)
-SentinelConnectionWidgetItem::SentinelConnectionWidgetItem(const core::ServerCommonInfo& info,
-                                                           SentinelConnectionListWidgetItemContainer* parent)
-    : ConnectionListWidgetItemDiscovered(info,
-                                         parent) {  // core::SENTINEL
-}
-
-IConnectionListWidgetItem::itemConnectionType SentinelConnectionWidgetItem::type() const {
-  return Sentinel;
-}
-
 ConnectionListWidgetItemDiscovered::ConnectionListWidgetItemDiscovered(const core::ServerCommonInfo& info,
                                                                        QTreeWidgetItem* parent)
     : ConnectionListWidgetItem(parent), info_(info) {
@@ -108,6 +100,15 @@ ConnectionListWidgetItemDiscovered::ConnectionListWidgetItemDiscovered(const cor
 
 IConnectionListWidgetItem::itemConnectionType ConnectionListWidgetItemDiscovered::type() const {
   return Discovered;
+}
+
+SentinelConnectionWidgetItem::SentinelConnectionWidgetItem(const core::ServerCommonInfo& info,
+                                                           SentinelConnectionListWidgetItemContainer* parent)
+    : ConnectionListWidgetItemDiscovered(info, parent) {  // core::SENTINEL
+}
+
+IConnectionListWidgetItem::itemConnectionType SentinelConnectionWidgetItem::type() const {
+  return Sentinel;
 }
 
 SentinelConnectionListWidgetItemContainer::SentinelConnectionListWidgetItemContainer(

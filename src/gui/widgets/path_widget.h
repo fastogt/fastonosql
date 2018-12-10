@@ -30,7 +30,7 @@ class IPathWidget : public QWidget {
   Q_OBJECT
 
  public:
-  IPathWidget(const QString& pathTitle, const QString& filter, const QString& caption, QWidget* parent = Q_NULLPTR);
+  IPathWidget(const QString& path_title, const QString& filter, const QString& caption, QWidget* parent = Q_NULLPTR);
 
   QString path() const;
   void setPath(const QString& path);
@@ -49,24 +49,24 @@ class IPathWidget : public QWidget {
   void selectPathDialogRoutine(const QString& caption, const QString& filter, int mode);
   void retranslateUi();
 
-  QLabel* pathLabel_;
-  QLineEdit* pathEdit_;
+  QLabel* path_label_;
+  QLineEdit* path_edit_;
 
-  QString pathTitle_;
+  QString path_title_;
   QString filter_;
   QString caption_;
 };
 
 class FilePathWidget : public IPathWidget {
  public:
-  FilePathWidget(const QString& pathTitle, const QString& filter, const QString& caption, QWidget* parent = Q_NULLPTR);
+  FilePathWidget(const QString& path_title, const QString& filter, const QString& caption, QWidget* parent = Q_NULLPTR);
 
   int mode() const override;
 };
 
 class DirectoryPathWidget : public IPathWidget {
  public:
-  DirectoryPathWidget(const QString& pathTitle, const QString& caption, QWidget* parent = Q_NULLPTR);
+  DirectoryPathWidget(const QString& path_title, const QString& caption, QWidget* parent = Q_NULLPTR);
 
   int mode() const override;
 };

@@ -18,6 +18,8 @@
 
 #include "gui/widgets/path_widget.h"
 
+#include <string>
+
 #include <QFileDialog>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -29,21 +31,27 @@
 #include <common/file_system/types.h>
 #include <common/qt/convert2string.h>
 
+namespace {
+const QSize kPathButtonSize = QSize(26, 26);
+}
+
 namespace fastonosql {
 namespace gui {
 
-IPathWidget::IPathWidget(const QString& pathTitle, const QString& filter, const QString& caption, QWidget* parent)
-    : QWidget(parent), pathTitle_(pathTitle), filter_(filter), caption_(caption) {
-  QHBoxLayout* dbNameLayout = new QHBoxLayout;
-  pathLabel_ = new QLabel;
-  pathEdit_ = new QLineEdit;
-  QPushButton* selectPathButton = new QPushButton("...");
-  selectPathButton->setFixedSize(26, 26);
-  VERIFY(connect(selectPathButton, &QPushButton::clicked, this, &IPathWidget::selectPathDialog));
-  dbNameLayout->addWidget(pathLabel_);
-  dbNameLayout->addWidget(pathEdit_);
-  dbNameLayout->addWidget(selectPathButton);
-  setLayout(dbNameLayout);
+IPathWidget::IPathWidget(const QString& path_title, const QString& filter, const QString& caption, QWidget* parent)
+    : QWidget(parent), path_title_(path_title), filter_(filter), caption_(caption) {
+  path_label_ = new QLabel;
+  path_edit_ = new QLineEdit;
+
+  QPushButton* select_path_button = new QPushButton("...");
+  select_path_button->setFixedSize(kPathButtonSize);
+  VERIFY(connect(select_path_button, &QPushButton::clicked, this, &IPathWidget::selectPathDialog));
+
+  QHBoxLayout* db_name_layout = new QHBoxLayout;
+  db_name_layout->addWidget(path_label_);
+  db_name_layout->addWidget(path_edit_);
+  db_name_layout->addWidget(select_path_button);
+  setLayout(db_name_layout);
 
   retranslateUi();
 }
@@ -66,11 +74,11 @@ void IPathWidget::selectPathDialogRoutine(const QString& caption, const QString&
 }
 
 QString IPathWidget::path() const {
-  return pathEdit_->text();
+  return path_edit_->text();
 }
 
 void IPathWidget::setPath(const QString& path) {
-  pathEdit_->setText(path);
+  path_edit_->setText(path);
 }
 
 bool IPathWidget::isValidPath() const {
@@ -79,7 +87,7 @@ bool IPathWidget::isValidPath() const {
 }
 
 void IPathWidget::retranslateUi() {
-  pathLabel_->setText(pathTitle_);
+  path_label_->setText(path_title_);
 }
 
 void IPathWidget::changeEvent(QEvent* ev) {
@@ -90,15 +98,18 @@ void IPathWidget::changeEvent(QEvent* ev) {
   QWidget::changeEvent(ev);
 }
 
-FilePathWidget::FilePathWidget(const QString& pathTitle, const QString& filter, const QString& caption, QWidget* parent)
-    : IPathWidget(pathTitle, filter, caption, parent) {}
+FilePathWidget::FilePathWidget(const QString& path_title,
+                               const QString& filter,
+                               const QString& caption,
+                               QWidget* parent)
+    : IPathWidget(path_title, filter, caption, parent) {}
 
 int FilePathWidget::mode() const {
   return QFileDialog::ExistingFile;
 }
 
-DirectoryPathWidget::DirectoryPathWidget(const QString& pathTitle, const QString& caption, QWidget* parent)
-    : IPathWidget(pathTitle, QString(), caption, parent) {}
+DirectoryPathWidget::DirectoryPathWidget(const QString& path_title, const QString& caption, QWidget* parent)
+    : IPathWidget(path_title, QString(), caption, parent) {}
 
 int DirectoryPathWidget::mode() const {
   return QFileDialog::DirectoryOnly;

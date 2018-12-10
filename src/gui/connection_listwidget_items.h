@@ -65,8 +65,8 @@ class ConnectionListWidgetItem  // common connection
   itemConnectionType type() const override;
 };
 
-class ConnectionListWidgetItemDiscovered  // returned after
-                                          // discovered
+#if defined(PRO_VERSION)
+class ConnectionListWidgetItemDiscovered  // returned after discovered
     : public ConnectionListWidgetItem {
  public:
   ConnectionListWidgetItemDiscovered(const core::ServerCommonInfo& info, QTreeWidgetItem* parent);
@@ -76,11 +76,7 @@ class ConnectionListWidgetItemDiscovered  // returned after
   core::ServerCommonInfo info_;
 };
 
-#if defined(PRO_VERSION)
-class SentinelConnectionListWidgetItemContainer  // can hold
-                                                 // many
-                                                 // sentinel
-    // connections
+class SentinelConnectionListWidgetItemContainer  // can hold many sentinel connections
     : public QTreeWidgetItem {
  public:
   explicit SentinelConnectionListWidgetItemContainer(proxy::ISentinelSettingsBaseSPtr connection,
@@ -99,9 +95,7 @@ class SentinelConnectionWidgetItem  // sentinel connection
   itemConnectionType type() const override;
 };
 
-class ClusterConnectionListWidgetItemContainer  // can hold
-                                                // many
-                                                // connections
+class ClusterConnectionListWidgetItemContainer  // can hold many connections
     : public QTreeWidgetItem {
  public:
   explicit ClusterConnectionListWidgetItemContainer(proxy::IClusterSettingsBaseSPtr connection,

@@ -45,6 +45,7 @@ const QString trTreeViewTooltip = QObject::tr("Tree view");
 const QString trTableViewTooltip = QObject::tr("Table view");
 const QString trTextViewTooltip = QObject::tr("Text view");
 const QString trKeyViewTooltip = QObject::tr("Key view");
+const QString trMsecTemplate_1S = QObject::tr("%1 msec");
 }  // namespace
 
 namespace fastonosql {
@@ -375,8 +376,7 @@ void OutputWidget::syncWithView(proxy::SupportedView view) {
 }
 
 void OutputWidget::updateTimeLabel(const proxy::events_info::EventInfoBase& evinfo) {
-  static const QString msec_template("%1 msec");
-  time_label_->setText(msec_template.arg(evinfo.ElapsedTime()));
+  time_label_->setText(trMsecTemplate_1S.arg(evinfo.ElapsedTime()));
 }
 
 }  // namespace gui
