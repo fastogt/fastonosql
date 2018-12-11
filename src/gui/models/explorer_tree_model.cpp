@@ -27,8 +27,8 @@
 #include <common/qt/convert2string.h>
 #include <common/qt/utils_qt.h>  // for item
 
-#include "proxy/server/iserver_local.h"   // for IServer, IServerRemote, etc
-#include "proxy/server/iserver_remote.h"  // for IServer, IServerRemote, etc
+#include "proxy/server/iserver_local.h"
+#include "proxy/server/iserver_remote.h"
 
 #include "gui/gui_factory.h"  // for GuiFactory
 #include "gui/key_info.h"

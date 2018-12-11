@@ -18,7 +18,7 @@
 
 #include "proxy/command/command_logger.h"
 
-#include <QMetaType>  // for qRegisterMetaType
+#include <QMetaType>
 
 namespace fastonosql {
 namespace proxy {

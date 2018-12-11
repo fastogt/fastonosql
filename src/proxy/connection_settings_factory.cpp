@@ -63,18 +63,19 @@ const char kMagicNumber = 0x1E;
 const char kSettingValueDelemiter = 0x1F;
 
 serialize_t ConnectionSettingsFactory::ConvertSettingsToString(IConnectionSettings* settings) {
-  std::ostringstream wr;
+  common::char_writer<512> wr;
   const connection_path_t path = settings->GetPath();
-  wr << settings->GetType() << kSettingValueDelemiter << path.ToString() << kSettingValueDelemiter
-     << settings->GetLoggingMsTimeInterval();
+  wr << common::ConvertToCharBytes(settings->GetType()) << kSettingValueDelemiter << path.ToString()
+     << kSettingValueDelemiter << common::ConvertToCharBytes(settings->GetLoggingMsTimeInterval());
   return wr.str();
 }
 
 serialize_t ConnectionSettingsFactory::ConvertSettingsToString(IConnectionSettingsBase* settings) {
-  std::ostringstream wr;
+  common::char_writer<512> wr;
   wr << ConvertSettingsToString(static_cast<IConnectionSettings*>(settings));
   wr << kSettingValueDelemiter << settings->GetNsSeparator() << kSettingValueDelemiter
-     << settings->GetNsDisplayStrategy() << kSettingValueDelemiter << settings->GetCommandLine();
+     << common::ConvertToCharBytes(settings->GetNsDisplayStrategy()) << kSettingValueDelemiter
+     << settings->GetCommandLine();
   if (core::IsCanSSHConnection(settings->GetType())) {
     IConnectionSettingsRemoteSSH* ssh_settings = static_cast<IConnectionSettingsRemoteSSH*>(settings);
     wr << kSettingValueDelemiter << common::ConvertToString(ssh_settings->GetSSHInfo());
@@ -161,7 +162,7 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateSettingsFromString(con
     if (ch == kSettingValueDelemiter) {
       if (comma_count == 0) {
         uint8_t connection_type;
-        if (common::ConvertFromString(element_text, &connection_type)) {
+        if (common::ConvertFromBytes(element_text, &connection_type)) {
           result =
               CreateSettingsFromTypeConnection(static_cast<core::ConnectionType>(connection_type), connection_path_t());
         }
@@ -175,7 +176,7 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateSettingsFromString(con
         result->SetConnectionPathAndUpdateHash(path);
       } else if (comma_count == 2) {
         int ms_time = 0;
-        if (common::ConvertFromString(element_text, &ms_time)) {
+        if (common::ConvertFromBytes(element_text, &ms_time)) {
           result->SetLoggingMsTimeInterval(ms_time);
         }
       } else if (comma_count == 3) {
@@ -183,7 +184,7 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateSettingsFromString(con
         result->SetNsSeparator(ns_separator_str);
       } else if (comma_count == 4) {
         uint8_t ns_strategy;
-        if (common::ConvertFromString(element_text, &ns_strategy)) {
+        if (common::ConvertFromBytes(element_text, &ns_strategy)) {
           result->SetNsDisplayStrategy(static_cast<NsDisplayStrategy>(ns_strategy));
         }
         if (!IsCanSSHConnection(result->GetType())) {

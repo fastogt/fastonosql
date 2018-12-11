@@ -391,8 +391,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
     QString string = cluster.toString();
     common::char_buffer_t raw;
     if (common::utils::base64::decode64(common::ConvertToCharBytes(string), &raw)) {
-      const std::string raw_str = common::ConvertToString(raw);
-      IClusterSettingsBaseSPtr sett(ClusterConnectionSettingsFactory::GetInstance().CreateFromStringCluster(raw_str));
+      IClusterSettingsBaseSPtr sett(ClusterConnectionSettingsFactory::GetInstance().CreateFromStringCluster(raw));
       if (sett) {
         clusters_.push_back(sett);
       }
@@ -404,9 +403,8 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
     QString string = sentinel.toString();
     common::char_buffer_t raw;
     if (common::utils::base64::decode64(common::ConvertToCharBytes(string), &raw)) {
-      const std::string raw_str = common::ConvertToString(raw);
       ISentinelSettingsBase* sentinel_settings =
-          SentinelConnectionSettingsFactory::GetInstance().CreateFromStringSentinel(raw_str);
+          SentinelConnectionSettingsFactory::GetInstance().CreateFromStringSentinel(raw);
       if (sentinel_settings) {
         sentinels_.push_back(ISentinelSettingsBaseSPtr(sentinel_settings));
       }
@@ -420,8 +418,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
     QString string = connection.toString();
     common::char_buffer_t raw;
     if (common::utils::base64::decode64(common::ConvertToCharBytes(string), &raw)) {
-      const std::string raw_str = common::ConvertToString(raw);
-      IConnectionSettingsBase* sett = ConnectionSettingsFactory::GetInstance().CreateSettingsFromString(raw_str);
+      IConnectionSettingsBase* sett = ConnectionSettingsFactory::GetInstance().CreateSettingsFromString(raw);
       if (sett) {
         connections_.push_back(IConnectionSettingsBaseSPtr(sett));
       }
@@ -470,11 +467,11 @@ void SettingsManager::Save() {
   QList<QVariant> clusters;
   for (const auto& cluster : clusters_) {
     if (cluster) {
-      std::string raw = ClusterConnectionSettingsFactory::GetInstance().ConvertSettingsToString(cluster.get());
-      std::string enc;
+      const serialize_t raw = ClusterConnectionSettingsFactory::GetInstance().ConvertSettingsToString(cluster.get());
+      serialize_t enc;
       if (common::utils::base64::encode64(raw, &enc)) {
         QString qdata;
-        common::ConvertFromString(enc, &qdata);
+        common::ConvertFromBytes(enc, &qdata);
         clusters.push_back(qdata);
       }
     }
@@ -484,11 +481,11 @@ void SettingsManager::Save() {
   QList<QVariant> sentinels;
   for (const auto& sentinel : sentinels_) {
     if (sentinel) {
-      std::string raw = SentinelConnectionSettingsFactory::GetInstance().ConvertSettingsToString(sentinel.get());
-      std::string enc;
+      const serialize_t raw = SentinelConnectionSettingsFactory::GetInstance().ConvertSettingsToString(sentinel.get());
+      serialize_t enc;
       if (common::utils::base64::encode64(raw, &enc)) {
         QString qdata;
-        common::ConvertFromString(enc, &qdata);
+        common::ConvertFromBytes(enc, &qdata);
         sentinels.push_back(qdata);
       }
     }
@@ -499,11 +496,11 @@ void SettingsManager::Save() {
   QList<QVariant> connections;
   for (const auto& connection : connections_) {
     if (connection) {
-      std::string raw = ConnectionSettingsFactory::GetInstance().ConvertSettingsToString(connection.get());
-      std::string enc;
+      const serialize_t raw = ConnectionSettingsFactory::GetInstance().ConvertSettingsToString(connection.get());
+      serialize_t enc;
       if (common::utils::base64::encode64(raw, &enc)) {
         QString qdata;
-        common::ConvertFromString(enc, &qdata);
+        common::ConvertFromBytes(enc, &qdata);
         connections.push_back(qdata);
       }
     }

@@ -18,12 +18,12 @@
 
 #pragma once
 
-#include <string>
+#include <common/types.h>
 
 namespace fastonosql {
 namespace proxy {
 
-typedef std::string serialize_t;
+typedef common::char_buffer_t serialize_t;
 
 }  // namespace proxy
 }  // namespace fastonosql

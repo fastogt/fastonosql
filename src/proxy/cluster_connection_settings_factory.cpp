@@ -30,7 +30,7 @@ namespace fastonosql {
 namespace proxy {
 
 serialize_t ClusterConnectionSettingsFactory::ConvertSettingsToString(IClusterSettingsBase* settings) {
-  std::ostringstream str;
+  common::char_writer<1024> str;
   str << ConnectionSettingsFactory::GetInstance().ConvertSettingsToString(settings) << kSettingValueDelemiter;
   auto nodes = settings->GetNodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
@@ -73,7 +73,7 @@ IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromStringCluster(
     if (ch == kSettingValueDelemiter) {
       if (comma_count == 0) {
         uint8_t connection_type;
-        if (common::ConvertFromString(element_text, &connection_type)) {
+        if (common::ConvertFromBytes(element_text, &connection_type)) {
           result = CreateFromTypeCluster(static_cast<core::ConnectionType>(connection_type), connection_path_t());
         }
         if (!result) {
@@ -86,7 +86,7 @@ IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromStringCluster(
         result->SetPath(path);
       } else if (comma_count == 2) {
         int ms_time;
-        if (common::ConvertFromString(element_text, &ms_time)) {
+        if (common::ConvertFromBytes(element_text, &ms_time)) {
           result->SetLoggingMsTimeInterval(ms_time);
         }
         serialize_t server_text;

@@ -35,7 +35,7 @@ namespace proxy {
 
 namespace {
 serialize_t SentinelSettingsToString(const SentinelSettings& sent) {
-  std::ostringstream str;
+  common::char_writer<1024> str;
   serialize_t sent_raw = ConnectionSettingsFactory::GetInstance().ConvertSettingsToString(sent.sentinel.get());
   common::char_buffer_t sent_raw_buff;
   common::utils::base64::encode64(sent_raw, &sent_raw_buff);
@@ -75,9 +75,7 @@ bool SentinelSettingsfromString(const serialize_t& text, SentinelSettings* sent)
           return false;
         }
 
-        const serialize_t sent_raw_str = common::ConvertToString(sent_raw);
-        IConnectionSettingsBaseSPtr sent(
-            ConnectionSettingsFactory::GetInstance().CreateSettingsFromString(sent_raw_str));
+        IConnectionSettingsBaseSPtr sent(ConnectionSettingsFactory::GetInstance().CreateSettingsFromString(sent_raw));
         if (!sent) {
           return false;
         }
@@ -119,7 +117,7 @@ bool SentinelSettingsfromString(const serialize_t& text, SentinelSettings* sent)
 }  // namespace
 
 serialize_t SentinelConnectionSettingsFactory::ConvertSettingsToString(ISentinelSettingsBase* settings) {
-  std::ostringstream str;
+  common::char_writer<1024> str;
   str << ConnectionSettingsFactory::GetInstance().ConvertSettingsToString(settings) << kSettingValueDelemiter;
   auto nodes = settings->GetSentinels();
   for (size_t i = 0; i < nodes.size(); ++i) {
@@ -160,7 +158,7 @@ ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromStringSentin
     if (ch == kSettingValueDelemiter) {
       if (comma_count == 0) {
         uint8_t connection_type;
-        if (common::ConvertFromString(element_text, &connection_type)) {
+        if (common::ConvertFromBytes(element_text, &connection_type)) {
           result = CreateFromTypeSentinel(static_cast<core::ConnectionType>(connection_type), connection_path_t());
         }
         if (!result) {
@@ -173,7 +171,7 @@ ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromStringSentin
         result->SetPath(path);
       } else if (comma_count == 2) {
         int ms_time;
-        if (common::ConvertFromString(element_text, &ms_time)) {
+        if (common::ConvertFromBytes(element_text, &ms_time)) {
           result->SetLoggingMsTimeInterval(ms_time);
         }
 

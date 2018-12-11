@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <string>
+
 #include <fastonosql/core/global.h>  // for FastoObjectCommandIPtr, FastoObject (ptr ...
 
 #include "proxy/types.h"
@@ -34,7 +36,7 @@ core::FastoObjectCommandIPtr CreateCommand(core::FastoObject* parent,
     return nullptr;
   }
 
-  auto stable_input = StableCommand(input);
+  const auto stable_input = StableCommand(input);
   if (stable_input.empty()) {
     DNOTREACHED();
     return nullptr;
@@ -48,7 +50,7 @@ core::FastoObjectCommandIPtr CreateCommand(core::FastoObject* parent,
 
 template <typename Command>
 core::FastoObjectCommandIPtr CreateCommandFast(const core::command_buffer_t& input, core::CmdLoggingType ct) {
-  auto stable_input = StableCommand(input);
+  const auto stable_input = StableCommand(input);
   if (stable_input.empty()) {
     DNOTREACHED();
     return nullptr;
