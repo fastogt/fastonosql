@@ -18,6 +18,8 @@
 
 #include "gui/workers/update_checker.h"
 
+#include <string>
+
 #include <common/net/socket_tcp.h>  // for ClientSocketTcp
 #include <common/qt/convert2string.h>
 
@@ -49,16 +51,15 @@ common::Error GetVersion(uint32_t* version) {
   }
 
   size_t nwrite = 0;
-  err = client.Write(get_version_request, &nwrite);
+  err = client.Write(get_version_request.data(), get_version_request.size(), &nwrite);
   if (err) {
     common::ErrnoError lerr = client.Close();
     DCHECK(!lerr) << "Close client error: " << lerr->GetDescription();
     return common::make_error_from_errno(err);
   }
 
-  std::string version_reply;
-  size_t nread = 0;
-  err = client.Read(&version_reply, 256, &nread);
+  common::char_buffer_t version_reply;
+  err = client.ReadToBuffer(&version_reply, 256);
   if (err) {
     common::ErrnoError lerr = client.Close();
     DCHECK(!lerr) << "Close client error: " << lerr->GetDescription();
@@ -66,7 +67,7 @@ common::Error GetVersion(uint32_t* version) {
   }
 
   uint32_t version_result;
-  common::Error parse_error = proxy::ParseVersionResponce(version_reply, &version_result);
+  common::Error parse_error = proxy::ParseVersionResponce(version_reply.as_string(), &version_result);
   if (parse_error) {
     err = client.Close();
     DCHECK(!err) << "Close client error: " << err->GetDescription();

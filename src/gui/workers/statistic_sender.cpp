@@ -49,23 +49,22 @@ common::Error sendStatisticRoutine(const std::string& login, const std::string& 
   }
 
   size_t nwrite = 0;
-  err = client.Write(request, &nwrite);
+  err = client.Write(request.data(), request.size(), &nwrite);
   if (err) {
     common::ErrnoError lerr = client.Close();
     DCHECK(!lerr) << "Close client error: " << err->GetDescription();
     return common::make_error_from_errno(err);
   }
 
-  std::string stat_reply;
-  size_t nread = 0;
-  err = client.Read(&stat_reply, 256, &nread);
+  common::char_buffer_t stat_reply;
+  err = client.ReadToBuffer(&stat_reply, 256);
   if (err) {
     common::ErrnoError lerr = client.Close();
     DCHECK(!lerr) << "Close client error: " << err->GetDescription();
     return common::make_error_from_errno(err);
   }
 
-  common::Error jerror = proxy::ParseSendStatisticResponce(stat_reply);
+  common::Error jerror = proxy::ParseSendStatisticResponce(stat_reply.as_string());
   err = client.Close();
   DCHECK(!err) << "Close client error: " << err->GetDescription();
 
@@ -95,23 +94,22 @@ common::Error sendAnonymousStatisticRoutine() {
   }
 
   size_t nwrite = 0;
-  err = client.Write(request, &nwrite);
+  err = client.Write(request.data(), request.size(), &nwrite);
   if (err) {
     common::ErrnoError lerr = client.Close();
     DCHECK(!lerr) << "Close client error: " << err->GetDescription();
     return common::make_error_from_errno(err);
   }
 
-  std::string stat_reply;
-  size_t nread = 0;
-  err = client.Read(&stat_reply, 256, &nread);
+  common::char_buffer_t stat_reply;
+  err = client.ReadToBuffer(&stat_reply, 256);
   if (err) {
     common::ErrnoError lerr = client.Close();
     DCHECK(!lerr) << "Close client error: " << err->GetDescription();
     return common::make_error_from_errno(err);
   }
 
-  common::Error jerror = proxy::ParseSendStatisticResponce(stat_reply);
+  common::Error jerror = proxy::ParseSendStatisticResponce(stat_reply.as_string());
   err = client.Close();
   DCHECK(!err) << "Close client error: " << err->GetDescription();
 

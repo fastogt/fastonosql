@@ -56,23 +56,22 @@ common::Error OnlineVerifyUser::startVerificationImpl(const std::string& login,
   }
 
   size_t nwrite;
-  err = client.Write(request, &nwrite);
+  err = client.Write(request.data(), request.size(), &nwrite);
   if (err) {
     err = client.Close();
     DCHECK(!err) << "Close client error: " << err->GetDescription();
     return common::make_error("Sorry can't write request, for checking your credentials.");
   }
 
-  std::string subscribe_reply;
-  size_t nread = 0;
-  err = client.Read(&subscribe_reply, 256, &nread);
+  common::char_buffer_t subscribe_reply;
+  err = client.ReadToBuffer(&subscribe_reply, 256);
   if (err) {
     err = client.Close();
     DCHECK(!err) << "Close client error: " << err->GetDescription();
     return common::make_error("Sorry can't get responce, for checking your credentials.");
   }
 
-  common::Error jerror = proxy::ParseSubscriptionStateResponce(subscribe_reply, &user_info);
+  common::Error jerror = proxy::ParseSubscriptionStateResponce(subscribe_reply.as_string(), &user_info);
   if (jerror) {
     err = client.Close();
     DCHECK(!err) << "Close client error: " << err->GetDescription();

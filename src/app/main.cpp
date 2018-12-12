@@ -135,7 +135,7 @@ common::ErrnoError ban_user(const fastonosql::proxy::UserInfo& user, const std::
   }
 
   size_t nwrite;
-  err = client.Write(request, &nwrite);
+  err = client.WriteBuffer(request, &nwrite);
   if (err) {
     common::ErrnoError close_err = client.Close();
     DCHECK(!close_err) << "Close client error: " << close_err->GetDescription();
@@ -250,7 +250,7 @@ int main(int argc, char* argv[]) {
         }
 
         size_t writed;
-        err = identity_file.Write(user_id, &writed);
+        err = identity_file.WriteBuffer(user_id, &writed);
         if (err) {
           QMessageBox::critical(nullptr, fastonosql::translations::trTrial, trCantSaveIdentity);
           return EXIT_FAILURE;

@@ -444,18 +444,18 @@ void MainWindow::importConnection() {
   std::string tmp = proxy::SettingsManager::GetSettingsFilePath() + ".tmp";
 
   common::file_system::ascii_string_path wp(tmp);
-  common::file_system::ANSIFile writeFile;
-  common::ErrnoError err = writeFile.Open(wp, "wb");
+  common::file_system::ANSIFile write_file;
+  common::ErrnoError err = write_file.Open(wp, "wb");
   if (err) {
     QMessageBox::critical(this, translations::trError, trImportSettingsFailed);
     return;
   }
 
   common::file_system::ascii_string_path rp(common::ConvertToString(filepathR));
-  common::file_system::ANSIFile readFile;
-  err = readFile.Open(rp, "rb");
+  common::file_system::ANSIFile read_file;
+  err = read_file.Open(rp, "rb");
   if (err) {
-    writeFile.Close();
+    write_file.Close();
     err = common::file_system::remove_file(wp.GetPath());
     if (err) {
       DNOTREACHED();
@@ -466,8 +466,8 @@ void MainWindow::importConnection() {
 
   common::IEDcoder* hexEnc = common::CreateEDCoder(common::ED_HEX);
   if (!hexEnc) {
-    readFile.Close();
-    writeFile.Close();
+    read_file.Close();
+    write_file.Close();
     err = common::file_system::remove_file(wp.GetPath());
     if (err) {
       DNOTREACHED();
@@ -476,9 +476,9 @@ void MainWindow::importConnection() {
     return;
   }
 
-  while (!readFile.IsEOF()) {
+  while (!read_file.IsEOF()) {
     std::string data;
-    bool res = readFile.Read(&data, 1024);
+    bool res = read_file.Read(&data, 1024);
     if (!res) {
       break;
     }
@@ -490,8 +490,8 @@ void MainWindow::importConnection() {
     common::char_buffer_t edata;
     common::Error err = hexEnc->Decode(data, &edata);
     if (err) {
-      readFile.Close();
-      writeFile.Close();
+      read_file.Close();
+      write_file.Close();
       common::ErrnoError err = common::file_system::remove_file(wp.GetPath());
       if (err) {
         DNOTREACHED();
@@ -499,12 +499,12 @@ void MainWindow::importConnection() {
       QMessageBox::critical(this, translations::trError, trImportSettingsFailed);
       return;
     } else {
-      writeFile.Write(edata);
+      write_file.Write(edata);
     }
   }
 
-  readFile.Close();
-  writeFile.Close();
+  read_file.Close();
+  write_file.Close();
   proxy::SettingsManager::GetInstance()->ReloadFromPath(tmp, false);
   err = common::file_system::remove_file(tmp);
   if (err) {
