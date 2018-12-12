@@ -257,12 +257,11 @@ common::Error ParseSubscriptionStateResponce(const std::string& data, UserInfo* 
   common::protocols::json_rpc::JsonRPCResponce jres;
   common::Error err = common::protocols::json_rpc::ParseJsonRPCResponce(data, &jres);
   if (err) {
-    DNOTREACHED();
+    DNOTREACHED() << err->GetDescription();
     return err;
   }
 
   if (jres.IsError()) {
-    DNOTREACHED();
     return common::make_error(jres.error->message);
   }
 

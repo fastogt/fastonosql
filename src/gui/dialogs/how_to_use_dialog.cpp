@@ -19,6 +19,9 @@
 #include "gui/dialogs/how_to_use_dialog.h"
 
 #include <QVBoxLayout>
+#include <QDialogButtonBox>
+
+#include <common/macros.h>
 
 #include "gui/widgets/how_to_use_widget.h"
 
@@ -35,8 +38,12 @@ HowToUseDialog::HowToUseDialog(QWidget* parent)
     : base_class(translations::trHowToUse + " " PROJECT_NAME_TITLE, parent) {
   HowToUseWidget* hw = new HowToUseWidget(kFixedSize);
 
+  QDialogButtonBox* button_box = new QDialogButtonBox(QDialogButtonBox::Ok);
+  VERIFY(connect(button_box, &QDialogButtonBox::accepted, this, &HowToUseDialog::accept));
+
   QVBoxLayout* main_layout = new QVBoxLayout;
   main_layout->addWidget(hw);
+  main_layout->addWidget(button_box);
   setLayout(main_layout);
   setFixedSize(kFixedSize);
 }
