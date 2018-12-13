@@ -131,7 +131,7 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
     if (val->GetAsList(&arr)) {
       ListTypeWidget* listwidget = static_cast<ListTypeWidget*>(editor);
       for (auto it = arr->begin(); it != arr->end(); ++it) {
-        common::Value::string_t val = core::ConvertValue(*it, DEFAULT_DELIMITER);
+        common::Value::string_t val = core::ConvertValue(*it, core::NValue::default_delimiter);
         if (val.empty()) {
           continue;
         }
@@ -146,7 +146,7 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
     if (val->GetAsSet(&set)) {
       ListTypeWidget* listwidget = static_cast<ListTypeWidget*>(editor);
       for (auto it = set->begin(); it != set->end(); ++it) {
-        common::Value::string_t val = core::ConvertValue(*it, DEFAULT_DELIMITER);
+        common::Value::string_t val = core::ConvertValue(*it, core::NValue::default_delimiter);
         if (val.empty()) {
           continue;
         }
@@ -163,13 +163,13 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
       for (auto it = zset->begin(); it != zset->end(); ++it) {
         auto element = (*it);
         common::Value* key = element.first;
-        common::Value::string_t key_str = core::ConvertValue(key, DEFAULT_DELIMITER);
+        common::Value::string_t key_str = core::ConvertValue(key, core::NValue::default_delimiter);
         if (key_str.empty()) {
           continue;
         }
 
         common::Value* value = element.second;
-        common::Value::string_t value_str = core::ConvertValue(value, DEFAULT_DELIMITER);
+        common::Value::string_t value_str = core::ConvertValue(value, core::NValue::default_delimiter);
         if (value_str.empty()) {
           continue;
         }
@@ -188,13 +188,13 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
       for (auto it = hash->begin(); it != hash->end(); ++it) {
         auto element = (*it);
         common::Value* key = element.first;
-        common::Value::string_t key_str = core::ConvertValue(key, DEFAULT_DELIMITER);
+        common::Value::string_t key_str = core::ConvertValue(key, core::NValue::default_delimiter);
         if (key_str.empty()) {
           continue;
         }
 
         common::Value* value = element.second;
-        common::Value::string_t value_str = core::ConvertValue(value, DEFAULT_DELIMITER);
+        common::Value::string_t value_str = core::ConvertValue(value, core::NValue::default_delimiter);
         if (value_str.empty()) {
           continue;
         }

@@ -20,6 +20,8 @@
 
 #include <common/qt/convert2string.h>
 
+#include <fastonosql/core/value.h>
+
 namespace fastonosql {
 namespace gui {
 
@@ -27,8 +29,8 @@ FastoCommonItem::FastoCommonItem(const core::NDbKValue& key,
                                  const std::string& delimiter,
                                  bool read_only,
                                  TreeItem* parent,
-                                 void* internalPointer)
-    : TreeItem(parent, internalPointer), key_(key), delimiter_(delimiter), read_only_(read_only) {}
+                                 void* internal_pointer)
+    : TreeItem(parent, internal_pointer), key_(key), delimiter_(delimiter), read_only_(read_only) {}
 
 QString FastoCommonItem::key() const {
   QString qkey;
@@ -40,7 +42,7 @@ QString FastoCommonItem::key() const {
 
 QString FastoCommonItem::readableValue() const {
   const core::NValue nval = key_.GetValue();
-  const core::readable_string_t readable = nval.GetForCommandLine(delimiter_);
+  const core::readable_string_t readable = core::ConvertValueForCommandLine(nval.get(), delimiter_);
 
   QString qval;
   common::ConvertFromBytes(readable, &qval);
@@ -57,10 +59,6 @@ core::NValue FastoCommonItem::nvalue() const {
 
 core::NDbKValue FastoCommonItem::dbv() const {
   return key_;
-}
-
-const char* FastoCommonItem::delimiter() const {
-  return delimiter_.c_str();
 }
 
 common::Value::Type FastoCommonItem::type() const {

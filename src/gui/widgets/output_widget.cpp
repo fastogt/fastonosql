@@ -54,20 +54,17 @@ namespace {
 
 FastoCommonItem* CreateItem(common::qt::gui::TreeItem* parent,
                             core::command_buffer_t key,
-                            bool read_only,
-                            core::FastoObject* item) {
+                            core::FastoObject* item,
+                            bool read_only) {
   const core::NValue value(item->GetValue());
   const core::nkey_t raw_key(key);
-  const core::NDbKValue nkey(core::NKey(raw_key), value);
+  const core::NKey nk(raw_key);
+  const core::NDbKValue nkey(nk, value);
   return new FastoCommonItem(nkey, item->GetDelimiter(), read_only, parent, item);
 }
 
 FastoCommonItem* CreateRootItem(core::FastoObject* item) {
-  const core::NValue value(item->GetValue());
-  const core::nkey_t raw_key;
-  const core::NKey nk(raw_key);
-  const core::NDbKValue nkey(nk, value);
-  return new FastoCommonItem(nkey, item->GetDelimiter(), true, nullptr, item);
+  return CreateItem(nullptr, core::command_buffer_t(), item, true);
 }
 
 }  // namespace
@@ -221,61 +218,44 @@ void OutputWidget::addChild(core::FastoObjectIPtr child) {
     return;
   }
 
-  core::FastoObject* arr = dynamic_cast<core::FastoObject*>(child->GetParent());  // +
-  CHECK(arr);
-
+  core::FastoObject* arr = child->GetParent();
   QModelIndex parent;
-  bool isFound = common_model_->findItem(arr, &parent);
-  if (!isFound) {
+  bool is_found = common_model_->findItem(arr, &parent);
+  if (!is_found) {
     return;
   }
 
-  FastoCommonItem* par = nullptr;
-  if (!parent.isValid()) {
-    par = static_cast<FastoCommonItem*>(common_model_->root());
-  } else {
-    par = common::qt::item<common::qt::gui::TreeItem*, FastoCommonItem*>(parent);
-  }
-
+  FastoCommonItem* par = parent.isValid() ? common::qt::item<common::qt::gui::TreeItem*, FastoCommonItem*>(parent)
+                                          : static_cast<FastoCommonItem*>(common_model_->root());
   if (!par) {
     DNOTREACHED();
     return;
   }
 
-  FastoCommonItem* com_child = CreateItem(par, core::command_buffer_t(), true, child.get());
+  FastoCommonItem* com_child = CreateItem(par, core::command_buffer_t(), child.get(), true);
   common_model_->insertItem(parent, com_child);
 }
 
 void OutputWidget::addCommand(core::FastoObjectCommand* command, core::FastoObject* child) {
-  void* parentinner = command->GetParent();
-
+  core::FastoObject* parentinner = command->GetParent();
   QModelIndex parent;
   bool is_found = common_model_->findItem(parentinner, &parent);
   if (!is_found) {
     return;
   }
 
-  FastoCommonItem* par = nullptr;
-  if (!parent.isValid()) {
-    par = static_cast<FastoCommonItem*>(common_model_->root());
-  } else {
-    par = common::qt::item<common::qt::gui::TreeItem*, FastoCommonItem*>(parent);
-  }
-
+  FastoCommonItem* par = parent.isValid() ? common::qt::item<common::qt::gui::TreeItem*, FastoCommonItem*>(parent)
+                                          : static_cast<FastoCommonItem*>(common_model_->root());
   if (!par) {
     DNOTREACHED();
     return;
   }
 
-  FastoCommonItem* common_child = nullptr;
-  core::translator_t tr = server_->GetTranslator();
-  core::command_buffer_t input_cmd = command->GetInputCommand();
+  const core::translator_t tr = server_->GetTranslator();
+  const core::command_buffer_t input_cmd = command->GetInputCommand();
   core::command_buffer_t key;
-  if (tr->IsLoadKeyCommand(input_cmd, &key)) {
-    common_child = CreateItem(par, key, false, child);
-  } else {
-    common_child = CreateItem(par, input_cmd, true, child);
-  }
+  FastoCommonItem* common_child = tr->IsLoadKeyCommand(input_cmd, &key) ? CreateItem(par, key, child, false)
+                                                                        : CreateItem(par, input_cmd, child, true);
   common_model_->insertItem(parent, common_child);
 }
 

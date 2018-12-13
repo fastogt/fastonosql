@@ -35,7 +35,7 @@ class FastoCommonItem : public common::qt::gui::TreeItem {
                   const std::string& delimiter,
                   bool read_only,
                   TreeItem* parent,
-                  void* internalPointer);
+                  void* internal_pointer);
 
   QString key() const;
   QString readableValue() const;
@@ -43,7 +43,6 @@ class FastoCommonItem : public common::qt::gui::TreeItem {
   common::Value::Type type() const;
   core::NValue nvalue() const;
   core::NDbKValue dbv() const;
-  const char* delimiter() const;
 
   bool isReadOnly() const;
   void setValue(core::NValue val);
