@@ -18,42 +18,48 @@
 
 #pragma once
 
-#include <QTabWidget>
+#include <QWidget>
 
-#include "proxy/proxy_fwd.h"  // for IServerSPtr
+class QToolBar;
+class QLabel;
 
 namespace fastonosql {
 namespace gui {
 
-class QueryWidget;
-class MainWidget : public QTabWidget {
+class WelcomeWidget : public QWidget {
   Q_OBJECT
 
  public:
-  explicit MainWidget(QWidget* parent = Q_NULLPTR);
+  typedef QWidget base_class;
+  enum { min_width = 640, min_height = 480 };
+  explicit WelcomeWidget(QWidget* parent = Q_NULLPTR);
 
-  QueryWidget* getQueryWidget(int index) const;
-
- public Q_SLOTS:
-  void openConsole(proxy::IServerSPtr server, const QString& text);
-  void openConsoleAndExecute(proxy::IServerSPtr server, const QString& text);
+ protected:
+  void showEvent(QShowEvent* ev) override;
+  void changeEvent(QEvent* ev) override;
 
  private Q_SLOTS:
-  void createNewTab();
-  void nextTab();
-  void previousTab();
-
-  void reloadCurrentTab();
-  void duplicateCurrentTab();
-  void closeTab(int index);
-  void closeCurrentTab();
-  void closedOtherTabs();
+  void pageLoad(const QString& content, const QString& error_message);
+  void openGithub() const;
+  void openTwitter() const;
+  void openFacebook() const;
+  void openYoutube() const;
+  void openInstagram() const;
 
  private:
-  void addWidgetToTab(QueryWidget* wid, const QString& title);
-  void openNewTab(QueryWidget* src, const QString& title, const QString& text);
+  void retranslateUi();
+  void loadPage();
+  void setHtml(const QString& html);
+  QToolBar* createToolBar();
 
-  void createWelcomeTab();
+  QLabel* page_label_;
+  QLabel* help_title_;
+
+  QAction* open_github_action_;
+  QAction* open_twitter_action_;
+  QAction* open_facebook_action_;
+  QAction* open_youtube_action_;
+  QAction* open_instagram_action_;
 };
 
 }  // namespace gui

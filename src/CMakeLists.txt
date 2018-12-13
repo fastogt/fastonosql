@@ -162,12 +162,14 @@ SET(HEADERS_GUI_WORKERS
   ${CMAKE_SOURCE_DIR}/src/gui/workers/test_connection.h
   ${CMAKE_SOURCE_DIR}/src/gui/workers/update_checker.h
   ${CMAKE_SOURCE_DIR}/src/gui/workers/statistic_sender.h
+  ${CMAKE_SOURCE_DIR}/src/gui/workers/load_welcome_page.h
 )
 
 SET(SOURCES_GUI_WORKERS
   ${CMAKE_SOURCE_DIR}/src/gui/workers/test_connection.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/workers/update_checker.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/workers/statistic_sender.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/workers/load_welcome_page.cpp
 )
 
 IF(PRO_VERSION)
@@ -348,6 +350,7 @@ SET(HEADERS_GUI_WIDGETS
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/log_widget.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/commands_widget.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/query_widget.h
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/welcome_widget.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/output_widget.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/main_widget.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/connection_base_widget.h
@@ -377,6 +380,7 @@ SET(SOURCES_GUI_WIDGETS
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/commands_widget.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/main_widget.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/query_widget.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/welcome_widget.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/output_widget.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/connection_base_widget.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/connection_local_widget.cpp
@@ -408,6 +412,7 @@ SET(HEADERS_GUI
   ${CMAKE_SOURCE_DIR}/src/gui/shortcuts.h
   ${CMAKE_SOURCE_DIR}/src/gui/connection_widgets_factory.h
   ${CMAKE_SOURCE_DIR}/src/gui/utils.h
+  ${CMAKE_SOURCE_DIR}/src/gui/socket_tls.h
   ${CMAKE_SOURCE_DIR}/src/gui/text_converter.h
   ${CMAKE_SOURCE_DIR}/src/gui/key_info.h
   ${CMAKE_SOURCE_DIR}/src/gui/connection_listwidget_items.h
@@ -431,6 +436,7 @@ SET(SOURCES_GUI
   ${CMAKE_SOURCE_DIR}/src/gui/shortcuts.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/connection_widgets_factory.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/utils.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/socket_tls.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/text_converter.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/key_info.cpp
 )

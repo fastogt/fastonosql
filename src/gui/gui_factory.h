@@ -94,6 +94,13 @@ class GuiFactory : public common::patterns::LazySingleton<GuiFactory> {
   const QIcon& unknownIcon() const;
   const QIcon& infoIcon() const;
 
+  const QIcon& welcomeTabIcon() const;
+  const QIcon& githubIcon() const;
+  const QIcon& twitterIcon() const;
+  const QIcon& facebookIcon() const;
+  const QIcon& instagramIcon() const;
+  const QIcon& youtubeIcon() const;
+
   QFont font() const;
   const QString& pathToLoadingGif() const;
   QString pathToIndividualBuilds() const;

@@ -12,12 +12,16 @@
 -DBRANDING_PROJECT_BUILD_TYPE_VERSION:STRING=release
 -DBRANDING_PROJECT_NAME:STRING=FastoRedis
 -DBRANDING_PROJECT_VERSION:STRING=1.22.3.0
--DBRANDING_PROJECT_DOMAIN:STRING=https://www.fastoredis.com
--DBRANDING_PROJECT_DOWNLOAD_LINK:STRING=https://www.fastoredis.com/anonim_users_downloads
--DBRANDING_PROJECT_DOWNLOAD_LINK_PRO:STRING=https://www.fastoredis.com/login
--DBRANDING_PROJECT_COMPANYNAME_DOMAIN:STRING=http://www.fastogt.com
--DBRANDING_PROJECT_GITHUB_FORK:STRING=https://www.github.com/fastogt/fastoredis
--DBRANDING_PROJECT_GITHUB_ISSUES:STRING=https://www.github.com/fastogt/fastoredis/issues
+-DBRANDING_PROJECT_DOMAIN:STRING=https://fastoredis.com
+-DBRANDING_PROJECT_DOWNLOAD_LINK:STRING=https://fastoredis.com/anonim_users_downloads
+-DBRANDING_PROJECT_DOWNLOAD_LINK_PRO:STRING=https://fastoredis.com/login
+-DBRANDING_PROJECT_COMPANYNAME_DOMAIN:STRING=http://fastogt.com
+-DBRANDING_PROJECT_TWITTER_URL:STRING=https://twitter.com/Fastoredis
+-DBRANDING_PROJECT_FACEBOOK_URL:STRING=https://facebook.com/profile.php?id=100004938436506
+-DBRANDING_PROJECT_YOUTUBE_URL:STRING=https://youtube.com/channel/UCdUnh74gr6-HmKa8S6C3viA
+-DBRANDING_PROJECT_INSTAGRAM_URL:STRING=https://instagram.com/fastoredis
+-DBRANDING_PROJECT_GITHUB_URL:STRING=https://github.com/fastogt/fastoredis
+-DBRANDING_PROJECT_GITHUB_ISSUES:STRING=https://github.com/fastogt/fastoredis/issues
 -DBRANDING_PROJECT_CHANGELOG_FILE:STRING=FASTOREDIS_CHANELOG
 -DBRANDING_PROJECT_SUMMARY:STRING=Cross-platform open source Redis GUI management tool.
 -DBRANDING_PROJECT_DESCRIPTION:STRING=FastoRedis (fork of FastoNoSQL) - is a cross-platforms open source Redis management tool (i.e. Admin GUI). It put the same engine that powers Redis's redis-cli shell. Everything you can write in redis-cli shell - you can write in FastoRedis! Our program works on the most amount of Linux systems, also on Windows, Mac OS X, FreeBSD and Android platforms.

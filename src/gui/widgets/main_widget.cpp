@@ -25,6 +25,9 @@
 #include "gui/gui_factory.h"           // for GuiFactory
 #include "gui/main_tab_bar.h"          // for MainTabBar
 #include "gui/widgets/query_widget.h"  // for QueryWidget
+#include "gui/widgets/welcome_widget.h"
+
+#include "translations/global.h"
 
 namespace fastonosql {
 namespace gui {
@@ -32,12 +35,12 @@ namespace gui {
 MainWidget::MainWidget(QWidget* parent) : QTabWidget(parent) {
   MainTabBar* tab = new MainTabBar(this);
 
-  VERIFY(connect(tab, &MainTabBar::createdNewTab, this, &MainWidget::createNewTab));
+  VERIFY(connect(tab, &MainTabBar::createdNewTab, this, &MainWidget::createNewTab));  //
   VERIFY(connect(tab, &MainTabBar::nextTab, this, &MainWidget::nextTab));
   VERIFY(connect(tab, &MainTabBar::prevTab, this, &MainWidget::previousTab));
 
-  VERIFY(connect(tab, &MainTabBar::reloadedTab, this, &MainWidget::reloadeCurrentTab));
-  VERIFY(connect(tab, &MainTabBar::duplicatedTab, this, &MainWidget::duplicateCurrentTab));
+  VERIFY(connect(tab, &MainTabBar::reloadedTab, this, &MainWidget::reloadCurrentTab));       //
+  VERIFY(connect(tab, &MainTabBar::duplicatedTab, this, &MainWidget::duplicateCurrentTab));  //
   VERIFY(connect(tab, &MainTabBar::closedOtherTabs, this, &MainWidget::closedOtherTabs));
   VERIFY(connect(tab, &MainTabBar::closedTab, this, &MainWidget::closeCurrentTab));
   VERIFY(connect(tab, &MainTabBar::tabCloseRequested, this, &MainWidget::closeTab));
@@ -46,13 +49,15 @@ MainWidget::MainWidget(QWidget* parent) : QTabWidget(parent) {
   setTabsClosable(true);
   setElideMode(Qt::ElideRight);
   setMovable(true);
+
+  createWelcomeTab();
 }
 
-QueryWidget* MainWidget::currentWidget() const {
-  return qobject_cast<QueryWidget*>(QTabWidget::currentWidget());
-}
+QueryWidget* MainWidget::getQueryWidget(int index) const {
+  if (index == 0) {
+    return nullptr;
+  }
 
-QueryWidget* MainWidget::widget(int index) const {
   return qobject_cast<QueryWidget*>(QTabWidget::widget(index));
 }
 
@@ -84,7 +89,7 @@ void MainWidget::openConsoleAndExecute(proxy::IServerSPtr server, const QString&
 
 void MainWidget::createNewTab() {
   int current_index = currentIndex();
-  QueryWidget* shw = widget(current_index);
+  QueryWidget* shw = getQueryWidget(current_index);
   if (shw) {
     openNewTab(shw, tabText(current_index), QString());
   }
@@ -117,9 +122,9 @@ void MainWidget::previousTab() {
   }
 }
 
-void MainWidget::reloadeCurrentTab() {
+void MainWidget::reloadCurrentTab() {
   int current_index = currentIndex();
-  QueryWidget* shw = widget(current_index);
+  QueryWidget* shw = getQueryWidget(current_index);
   if (shw) {
     shw->reload();
   }
@@ -127,17 +132,17 @@ void MainWidget::reloadeCurrentTab() {
 
 void MainWidget::duplicateCurrentTab() {
   int current_index = currentIndex();
-  QueryWidget* shw = widget(current_index);
+  QueryWidget* shw = getQueryWidget(current_index);
   if (shw) {
     openNewTab(shw, tabText(current_index), shw->inputText());
   }
 }
 
 void MainWidget::closeTab(int index) {
-  QueryWidget* shw = widget(index);
-  if (shw) {
+  QWidget* wid = widget(index);
+  if (wid) {
     removeTab(index);
-    delete shw;
+    delete wid;
   }
 }
 
@@ -166,6 +171,12 @@ void MainWidget::addWidgetToTab(QueryWidget* wid, const QString& title) {
 void MainWidget::openNewTab(QueryWidget* src, const QString& title, const QString& text) {
   QueryWidget* new_widget = src->clone(text);
   addWidgetToTab(new_widget, title);
+}
+
+void MainWidget::createWelcomeTab() {
+  WelcomeWidget* welcome_tab = new WelcomeWidget;
+  addTab(welcome_tab, GuiFactory::GetInstance().welcomeTabIcon(), translations::trWelcome);
+  setCurrentWidget(welcome_tab);
 }
 
 }  // namespace gui

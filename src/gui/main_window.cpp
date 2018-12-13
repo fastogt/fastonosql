@@ -376,7 +376,7 @@ void MainWindow::sendStatistic() {
   VERIFY(connect(th, &QThread::started, sender, &AnonymousStatisticSender::routine));
   VERIFY(connect(sender, &AnonymousStatisticSender::statisticSended, this, &MainWindow::statitsticSent));
   VERIFY(connect(sender, &AnonymousStatisticSender::statisticSended, th, &QThread::quit));
-  VERIFY(connect(th, &QThread::finished, sender, &UpdateChecker::deleteLater));
+  VERIFY(connect(th, &QThread::finished, sender, &AnonymousStatisticSender::deleteLater));
   VERIFY(connect(th, &QThread::finished, th, &QThread::deleteLater));
   th->start();
 }

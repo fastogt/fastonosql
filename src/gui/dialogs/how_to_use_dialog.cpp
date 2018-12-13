@@ -18,8 +18,8 @@
 
 #include "gui/dialogs/how_to_use_dialog.h"
 
-#include <QVBoxLayout>
 #include <QDialogButtonBox>
+#include <QVBoxLayout>
 
 #include <common/macros.h>
 

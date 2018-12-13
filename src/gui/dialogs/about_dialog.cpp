@@ -51,7 +51,7 @@ const QString trDescription = QObject::tr("<h3>" PROJECT_NAME_TITLE " " PROJECT_
                                           "Visit our website: <a href=\"" PROJECT_DOMAIN "\">" PROJECT_NAME_TITLE
                                           "</a> <br/>"
                                           "<br/>"
-                                          "<a href=\"" PROJECT_GITHUB_FORK
+                                          "<a href=\"" PROJECT_GITHUB_URL
                                           "\">Fork</a> project or <a "
                                           "href=" PROJECT_GITHUB_ISSUES
                                           ">submit</a> issues/proposals on GitHub.  <br/>"

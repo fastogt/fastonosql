@@ -54,6 +54,12 @@
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/command.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/logging.png</file>
 
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/facebook.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/instagram.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/youtube.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/twitter.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/github.png</file>
+
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/interactive_mode.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/encode_decode.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/preferences.png</file>

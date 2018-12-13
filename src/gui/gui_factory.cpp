@@ -434,6 +434,35 @@ const QIcon& GuiFactory::infoIcon() const {
   return unknown;
 }
 
+const QIcon& GuiFactory::welcomeTabIcon() const {
+  return mainWindowIcon();
+}
+
+const QIcon& GuiFactory::githubIcon() const {
+  static QIcon github(":" PROJECT_NAME_LOWERCASE "/images/64x64/github.png");
+  return github;
+}
+
+const QIcon& GuiFactory::twitterIcon() const {
+  static QIcon twitter(":" PROJECT_NAME_LOWERCASE "/images/64x64/twitter.png");
+  return twitter;
+}
+
+const QIcon& GuiFactory::facebookIcon() const {
+  static QIcon facebook(":" PROJECT_NAME_LOWERCASE "/images/64x64/facebook.png");
+  return facebook;
+}
+
+const QIcon& GuiFactory::instagramIcon() const {
+  static QIcon instagram(":" PROJECT_NAME_LOWERCASE "/images/64x64/instagram.png");
+  return instagram;
+}
+
+const QIcon& GuiFactory::youtubeIcon() const {
+  static QIcon youtube(":" PROJECT_NAME_LOWERCASE "/images/64x64/youtube.png");
+  return youtube;
+}
+
 QFont GuiFactory::font() const {
   return proxy::SettingsManager::GetInstance()->GetCurrentFont();
 }
