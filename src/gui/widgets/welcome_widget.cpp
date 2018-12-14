@@ -22,6 +22,7 @@
 #include <QEvent>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QPushButton>
 #include <QSplitter>
 #include <QThread>
 #include <QToolBar>
@@ -34,7 +35,9 @@
 
 namespace {
 const QString trDontKnowHowToUse = QObject::tr("<b>Don't know how to use?</b>");
-}
+const QString trLearHowTo = QObject::tr("Learn how to use <b>" PROJECT_NAME_TITLE "</b>.");
+const QString trGetStartedNow = QObject::tr("Get Started Now");
+}  // namespace
 
 namespace fastonosql {
 namespace gui {
@@ -46,11 +49,18 @@ WelcomeWidget::WelcomeWidget(QWidget* parent) : base_class(parent) {
   page_label_->setOpenExternalLinks(true);
 
   help_title_ = new QLabel;
-  help_title_->setFixedWidth(min_width / 4);
-  help_title_->setAlignment(Qt::AlignHCenter);
+  help_title_->setFixedWidth(min_width / 3);
+
+  help_description_ = new QLabel;
+
+  get_started_now_button_ = new QPushButton;
+  VERIFY(connect(get_started_now_button_, &QPushButton::clicked, this, &WelcomeWidget::openGetStartedNow));
 
   QVBoxLayout* help_panel = new QVBoxLayout;
+  help_panel->setContentsMargins(25, 25, 25, 25);
   help_panel->addWidget(help_title_);
+  help_panel->addWidget(help_description_);
+  help_panel->addWidget(get_started_now_button_);
   QSplitter* hs = new QSplitter(Qt::Vertical);
   help_panel->addWidget(hs);
   QToolBar* help_bar = createToolBar();
@@ -84,6 +94,8 @@ void WelcomeWidget::changeEvent(QEvent* ev) {
 
 void WelcomeWidget::retranslateUi() {
   help_title_->setText(trDontKnowHowToUse);
+  help_description_->setText(trLearHowTo);
+  get_started_now_button_->setText(trGetStartedNow);
 }
 
 void WelcomeWidget::pageLoad(const QString& content, const QString& error_message) {
@@ -112,6 +124,10 @@ void WelcomeWidget::openYoutube() const {
 
 void WelcomeWidget::openInstagram() const {
   QDesktopServices::openUrl(QUrl(PROJECT_INSTAGRAM_URL));
+}
+
+void WelcomeWidget::openGetStartedNow() const {
+  QDesktopServices::openUrl(QUrl(PROJECT_HOW_TO_USE_URL));
 }
 
 void WelcomeWidget::loadPage() {

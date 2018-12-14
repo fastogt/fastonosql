@@ -22,6 +22,7 @@
 
 class QToolBar;
 class QLabel;
+class QPushButton;
 
 namespace fastonosql {
 namespace gui {
@@ -45,6 +46,7 @@ class WelcomeWidget : public QWidget {
   void openFacebook() const;
   void openYoutube() const;
   void openInstagram() const;
+  void openGetStartedNow() const;
 
  private:
   void retranslateUi();
@@ -54,6 +56,8 @@ class WelcomeWidget : public QWidget {
 
   QLabel* page_label_;
   QLabel* help_title_;
+  QLabel* help_description_;
+  QPushButton* get_started_now_button_;
 
   QAction* open_github_action_;
   QAction* open_twitter_action_;

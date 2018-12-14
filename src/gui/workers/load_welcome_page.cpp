@@ -24,7 +24,7 @@
 
 #include "gui/socket_tls.h"
 
-#define CONTENT_PORT 80
+#define CONTENT_PORT 443
 #define CONTENT_PATH "/welcome_app/" PROJECT_VERSION ".html"
 
 namespace {
@@ -64,7 +64,7 @@ namespace gui {
 LoadWelcomePage::LoadWelcomePage(QObject* parent) : QObject(parent) {}
 
 void LoadWelcomePage::routine() {
-  const auto hs = common::net::HostAndPort(kContentUrl.GetHost(), 443);
+  const auto hs = common::net::HostAndPort(kContentUrl.GetHost(), CONTENT_PORT);
   HttpsClient cl(hs);
   common::ErrnoError errn = cl.Connect();
   if (errn) {
