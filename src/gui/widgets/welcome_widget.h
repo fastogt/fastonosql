@@ -60,6 +60,7 @@ class WelcomeWidget : public QWidget {
   QLabel* help_title_;
   QLabel* help_description_;
   QPushButton* get_started_now_button_;
+  QLabel* social_title_;
 
   QAction* open_github_action_;
   QAction* open_twitter_action_;

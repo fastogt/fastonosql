@@ -20,6 +20,7 @@
 
 #include <QDesktopServices>
 #include <QEvent>
+#include <QFile>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
@@ -37,6 +38,7 @@ namespace {
 const QString trDontKnowHowToUse = QObject::tr("<b>Don't know how to use?</b>");
 const QString trLearHowTo = QObject::tr("Learn how to use <b>" PROJECT_NAME_TITLE "</b>.");
 const QString trGetStartedNow = QObject::tr("Get Started Now");
+const QString trSocial = QObject::tr("<b>Do you wanna to know more about us?</b>");
 }  // namespace
 
 namespace fastonosql {
@@ -56,6 +58,8 @@ WelcomeWidget::WelcomeWidget(QWidget* parent) : base_class(parent) {
   get_started_now_button_ = new QPushButton;
   VERIFY(connect(get_started_now_button_, &QPushButton::clicked, this, &WelcomeWidget::openGetStartedNow));
 
+  social_title_ = new QLabel;
+
   QVBoxLayout* help_panel = new QVBoxLayout;
   help_panel->setContentsMargins(25, 25, 25, 25);
   help_panel->addWidget(help_title_);
@@ -63,6 +67,7 @@ WelcomeWidget::WelcomeWidget(QWidget* parent) : base_class(parent) {
   help_panel->addWidget(get_started_now_button_);
   QSplitter* hs = new QSplitter(Qt::Vertical);
   help_panel->addWidget(hs);
+  help_panel->addWidget(social_title_);
   QToolBar* help_bar = createToolBar();
   help_panel->addWidget(help_bar);
 
@@ -96,10 +101,15 @@ void WelcomeWidget::retranslateUi() {
   help_title_->setText(trDontKnowHowToUse);
   help_description_->setText(trLearHowTo);
   get_started_now_button_->setText(trGetStartedNow);
+  social_title_->setText(trSocial);
 }
 
 void WelcomeWidget::pageLoad(const QString& content, const QString& error_message) {
   if (!error_message.isEmpty()) {
+    QFile file(":" PROJECT_NAME_LOWERCASE "/welcome.html");
+    file.open(QFile::ReadOnly);
+    const QString file_content = file.readAll();
+    setHtml(file_content);
     return;
   }
 

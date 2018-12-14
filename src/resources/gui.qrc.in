@@ -2,6 +2,7 @@
     <qresource prefix="/">
     <file>@PROJECT_NAME_LOWERCASE@/LICENSE</file>
     <file>@PROJECT_NAME_LOWERCASE@/default.qss</file>
+    <file>@PROJECT_NAME_LOWERCASE@/welcome.html</file>
 
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/connect_db.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/open.png</file>
