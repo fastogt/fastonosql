@@ -8,7 +8,7 @@ SET(BRANDING_PROJECT_BUILD_TYPE_VERSION "alfa" CACHE STRING "Build version type 
 
 SET(BRANDING_PROJECT_DOMAIN "https://fastonosql.com" CACHE STRING "Branding domain url for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_DOWNLOAD_LINK "https://fastonosql.com/anonim_users_downloads" CACHE STRING "Branding download root url for ${BRANDING_PROJECT_NAME}")
-SET(BRANDING_PROJECT_DOWNLOAD_LINK_PRO "https://fastonosql.com/login" CACHE STRING "Branding download root url for ${BRANDING_PROJECT_NAME}")
+SET(BRANDING_PROJECT_DOWNLOAD_LINK_PRO "https://fastonosql.com/pro_users_downloads" CACHE STRING "Branding download root url for ${BRANDING_PROJECT_NAME}")
 SET(BRANDING_PROJECT_COMPANYNAME "FastoGT" CACHE STRING "Company name for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_COMPANYNAME_DOMAIN "http://fastogt.com" CACHE STRING "Internet domain name company for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_MAINTAINER_MAIL "support@fastogt.com" CACHE STRING "Internet mail address mainteiner of ${BRANDING_PROJECT_NAME}") #default
