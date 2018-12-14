@@ -100,6 +100,8 @@ class GuiFactory : public common::patterns::LazySingleton<GuiFactory> {
   const QIcon& facebookIcon() const;
   const QIcon& instagramIcon() const;
   const QIcon& youtubeIcon() const;
+  const QIcon& emailIcon() const;
+  const QIcon& homePageIcon() const;
 
   QFont font() const;
   const QString& pathToLoadingGif() const;

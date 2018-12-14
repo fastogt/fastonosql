@@ -47,6 +47,8 @@ class WelcomeWidget : public QWidget {
   void openYoutube() const;
   void openInstagram() const;
   void openGetStartedNow() const;
+  void openEmail() const;
+  void openHomePage() const;
 
  private:
   void retranslateUi();
@@ -64,6 +66,8 @@ class WelcomeWidget : public QWidget {
   QAction* open_facebook_action_;
   QAction* open_youtube_action_;
   QAction* open_instagram_action_;
+  QAction* open_email_action_;
+  QAction* open_home_page_action_;
 };
 
 }  // namespace gui

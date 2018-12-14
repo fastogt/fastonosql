@@ -463,6 +463,15 @@ const QIcon& GuiFactory::youtubeIcon() const {
   return youtube;
 }
 
+const QIcon& GuiFactory::emailIcon() const {
+  static QIcon email(":" PROJECT_NAME_LOWERCASE "/images/64x64/email.png");
+  return email;
+}
+
+const QIcon& GuiFactory::homePageIcon() const {
+  return mainWindowIcon();
+}
+
 QFont GuiFactory::font() const {
   return proxy::SettingsManager::GetInstance()->GetCurrentFont();
 }

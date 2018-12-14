@@ -21,6 +21,7 @@
 -DBRANDING_PROJECT_YOUTUBE_URL:STRING=https://youtube.com/channel/UCdUnh74gr6-HmKa8S6C3viA
 -DBRANDING_PROJECT_INSTAGRAM_URL:STRING=https://instagram.com/fastoredis
 -DBRANDING_PROJECT_HOW_TO_USE_URL:STRING=https://github.com/fastogt/fastonosql/wiki
+-DBRANDING_PROJECT_EMAIL_URL:STRING=mailto:support@fastogt.com
 -DBRANDING_PROJECT_GITHUB_URL:STRING=https://github.com/fastogt/fastoredis
 -DBRANDING_PROJECT_GITHUB_ISSUES:STRING=https://github.com/fastogt/fastoredis/issues
 -DBRANDING_PROJECT_CHANGELOG_FILE:STRING=FASTOREDIS_CHANELOG

@@ -59,6 +59,7 @@
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/youtube.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/twitter.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/github.png</file>
+    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/email.png</file>
 
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/interactive_mode.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/encode_decode.png</file>

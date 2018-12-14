@@ -130,6 +130,14 @@ void WelcomeWidget::openGetStartedNow() const {
   QDesktopServices::openUrl(QUrl(PROJECT_HOW_TO_USE_URL));
 }
 
+void WelcomeWidget::openEmail() const {
+  QDesktopServices::openUrl(QUrl(PROJECT_EMAIL_URL));
+}
+
+void WelcomeWidget::openHomePage() const {
+  QDesktopServices::openUrl(QUrl(PROJECT_DOMAIN));
+}
+
 void WelcomeWidget::loadPage() {
   QThread* th = new QThread;
   LoadWelcomePage* sender = new LoadWelcomePage;
@@ -162,6 +170,16 @@ QToolBar* WelcomeWidget::createToolBar() {
   open_twitter_action_->setIcon(gui::GuiFactory::GetInstance().twitterIcon());
   VERIFY(connect(open_twitter_action_, &QAction::triggered, this, &WelcomeWidget::openTwitter));
   help->addAction(open_twitter_action_);
+
+  open_home_page_action_ = new QAction(this);
+  open_home_page_action_->setIcon(gui::GuiFactory::GetInstance().homePageIcon());
+  VERIFY(connect(open_home_page_action_, &QAction::triggered, this, &WelcomeWidget::openHomePage));
+  help->addAction(open_home_page_action_);
+
+  open_email_action_ = new QAction(this);
+  open_email_action_->setIcon(gui::GuiFactory::GetInstance().emailIcon());
+  VERIFY(connect(open_email_action_, &QAction::triggered, this, &WelcomeWidget::openEmail));
+  help->addAction(open_email_action_);
 
   open_youtube_action_ = new QAction(this);
   open_youtube_action_->setIcon(gui::GuiFactory::GetInstance().youtubeIcon());
