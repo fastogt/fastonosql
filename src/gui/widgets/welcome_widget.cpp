@@ -38,7 +38,7 @@ namespace {
 const QString trDontKnowHowToUse = QObject::tr("<b>Don't know how to use?</b>");
 const QString trLearHowTo = QObject::tr("Learn how to use <b>" PROJECT_NAME_TITLE "</b>.");
 const QString trGetStartedNow = QObject::tr("Get Started Now");
-const QString trSocial = QObject::tr("<b>Do you wanna to know more about us?</b>");
+const QString trSocial = QObject::tr("<b>Do you want to know more about us?</b>");
 }  // namespace
 
 namespace fastonosql {
@@ -51,8 +51,6 @@ WelcomeWidget::WelcomeWidget(QWidget* parent) : base_class(parent) {
   page_label_->setOpenExternalLinks(true);
 
   help_title_ = new QLabel;
-  help_title_->setFixedWidth(min_width / 3);
-
   help_description_ = new QLabel;
 
   get_started_now_button_ = new QPushButton;
@@ -61,7 +59,6 @@ WelcomeWidget::WelcomeWidget(QWidget* parent) : base_class(parent) {
   social_title_ = new QLabel;
 
   QVBoxLayout* help_panel = new QVBoxLayout;
-  help_panel->setContentsMargins(25, 25, 25, 25);
   help_panel->addWidget(help_title_);
   help_panel->addWidget(help_description_);
   help_panel->addWidget(get_started_now_button_);

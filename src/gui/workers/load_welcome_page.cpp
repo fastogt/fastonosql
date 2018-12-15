@@ -60,6 +60,37 @@ class HttpsClient : public common::net::IHttpClient {
   }
 };
 
+common::Error loadPageRoutine(common::http::HttpResponse* resp) {
+  if (!resp) {
+    return common::make_error_inval();
+  }
+
+  const auto hs = common::net::HostAndPort(kContentUrl.GetHost(), CONTENT_PORT);
+  HttpsClient cl(hs);
+  common::ErrnoError errn = cl.Connect();
+  if (errn) {
+    return common::make_error_from_errno(errn);
+  }
+
+  const auto path = kContentUrl.GetPath();
+  common::Error err = cl.Get(path);
+  if (err) {
+    return err;
+  }
+
+  common::http::HttpResponse lresp;
+  err = cl.ReadResponce(&lresp);
+  if (err) {
+    return err;
+  }
+
+  if (lresp.IsEmptyBody()) {
+    return common::make_error("Empty body");
+  }
+
+  *resp = lresp;
+  return common::Error();
+}
 }  // namespace
 
 namespace fastonosql {
@@ -68,36 +99,12 @@ namespace gui {
 LoadWelcomePage::LoadWelcomePage(QObject* parent) : QObject(parent) {}
 
 void LoadWelcomePage::routine() {
-  const auto hs = common::net::HostAndPort(kContentUrl.GetHost(), CONTENT_PORT);
-  HttpsClient cl(hs);
-  common::ErrnoError errn = cl.Connect();
-  if (errn) {
-    QString qerror_message;
-    common::ConvertFromString(errn->GetDescription(), &qerror_message);
-    emit pageLoaded(QString(), qerror_message);
-    return;
-  }
-
-  const auto path = kContentUrl.GetPath();
-  common::Error err = cl.Get(path);
-  if (err) {
-    QString qerror_message;
-    common::ConvertFromString(err->GetDescription(), &qerror_message);
-    emit pageLoaded(QString(), qerror_message);
-    return;
-  }
-
   common::http::HttpResponse resp;
-  err = cl.ReadResponce(&resp);
+  common::Error err = loadPageRoutine(&resp);
   if (err) {
     QString qerror_message;
     common::ConvertFromString(err->GetDescription(), &qerror_message);
     emit pageLoaded(QString(), qerror_message);
-    return;
-  }
-
-  if (resp.IsEmptyBody()) {
-    emit pageLoaded(QString(), "Empty body.");
     return;
   }
 
