@@ -23,6 +23,7 @@
 class QToolBar;
 class QLabel;
 class QPushButton;
+class QHBoxLayout;
 
 namespace fastonosql {
 namespace gui {
@@ -32,6 +33,7 @@ class WelcomeWidget : public QWidget {
 
  public:
   typedef QWidget base_class;
+  static const QSize kIconSize;
   enum { min_width = 640, min_height = 480 };
   explicit WelcomeWidget(QWidget* parent = Q_NULLPTR);
 
@@ -54,7 +56,7 @@ class WelcomeWidget : public QWidget {
   void retranslateUi();
   void loadPage();
   void setHtml(const QString& html);
-  QToolBar* createToolBar();
+  QHBoxLayout* createToolBar();
 
   QLabel* page_label_;
   QLabel* help_title_;
@@ -62,13 +64,13 @@ class WelcomeWidget : public QWidget {
   QPushButton* get_started_now_button_;
   QLabel* social_title_;
 
-  QAction* open_github_action_;
-  QAction* open_twitter_action_;
-  QAction* open_facebook_action_;
-  QAction* open_youtube_action_;
-  QAction* open_instagram_action_;
-  QAction* open_email_action_;
-  QAction* open_home_page_action_;
+  QPushButton* open_github_action_;
+  QPushButton* open_twitter_action_;
+  QPushButton* open_facebook_action_;
+  QPushButton* open_youtube_action_;
+  QPushButton* open_instagram_action_;
+  QPushButton* open_email_action_;
+  QPushButton* open_home_page_action_;
 };
 
 }  // namespace gui

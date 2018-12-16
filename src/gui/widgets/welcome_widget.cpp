@@ -44,6 +44,8 @@ const QString trSocial = QObject::tr("<b>Do you want to know more about us?</b>"
 namespace fastonosql {
 namespace gui {
 
+const QSize WelcomeWidget::kIconSize = QSize(24, 24);
+
 WelcomeWidget::WelcomeWidget(QWidget* parent) : base_class(parent) {
   page_label_ = new QLabel;
   page_label_->setTextFormat(Qt::RichText);
@@ -65,8 +67,8 @@ WelcomeWidget::WelcomeWidget(QWidget* parent) : base_class(parent) {
   QSplitter* hs = new QSplitter(Qt::Vertical);
   help_panel->addWidget(hs);
   help_panel->addWidget(social_title_);
-  QToolBar* help_bar = createToolBar();
-  help_panel->addWidget(help_bar);
+  QHBoxLayout* help_bar = createToolBar();
+  help_panel->addLayout(help_bar);
 
   QHBoxLayout* main_layout = new QHBoxLayout;
   main_layout->addWidget(page_label_, 1);
@@ -161,42 +163,49 @@ void WelcomeWidget::setHtml(const QString& html) {
   page_label_->setText(html);
 }
 
-QToolBar* WelcomeWidget::createToolBar() {
-  QToolBar* help = new QToolBar;
-  open_facebook_action_ = new QAction(this);
+QHBoxLayout* WelcomeWidget::createToolBar() {
+  QHBoxLayout* help = new QHBoxLayout;
+  open_facebook_action_ = new QPushButton;
   open_facebook_action_->setIcon(gui::GuiFactory::GetInstance().facebookIcon());
-  VERIFY(connect(open_facebook_action_, &QAction::triggered, this, &WelcomeWidget::openFacebook));
-  help->addAction(open_facebook_action_);
+  open_facebook_action_->setIconSize(kIconSize);
+  VERIFY(connect(open_facebook_action_, &QPushButton::clicked, this, &WelcomeWidget::openFacebook));
+  help->addWidget(open_facebook_action_);
 
-  open_github_action_ = new QAction(this);
+  open_github_action_ = new QPushButton;
   open_github_action_->setIcon(gui::GuiFactory::GetInstance().githubIcon());
-  VERIFY(connect(open_github_action_, &QAction::triggered, this, &WelcomeWidget::openGithub));
-  help->addAction(open_github_action_);
+  open_github_action_->setIconSize(kIconSize);
+  VERIFY(connect(open_github_action_, &QPushButton::clicked, this, &WelcomeWidget::openGithub));
+  help->addWidget(open_github_action_);
 
-  open_twitter_action_ = new QAction(this);
+  open_twitter_action_ = new QPushButton;
   open_twitter_action_->setIcon(gui::GuiFactory::GetInstance().twitterIcon());
-  VERIFY(connect(open_twitter_action_, &QAction::triggered, this, &WelcomeWidget::openTwitter));
-  help->addAction(open_twitter_action_);
+  open_twitter_action_->setIconSize(kIconSize);
+  VERIFY(connect(open_twitter_action_, &QPushButton::clicked, this, &WelcomeWidget::openTwitter));
+  help->addWidget(open_twitter_action_);
 
-  open_home_page_action_ = new QAction(this);
+  open_home_page_action_ = new QPushButton;
   open_home_page_action_->setIcon(gui::GuiFactory::GetInstance().homePageIcon());
-  VERIFY(connect(open_home_page_action_, &QAction::triggered, this, &WelcomeWidget::openHomePage));
-  help->addAction(open_home_page_action_);
+  open_home_page_action_->setIconSize(kIconSize);
+  VERIFY(connect(open_home_page_action_, &QPushButton::clicked, this, &WelcomeWidget::openHomePage));
+  help->addWidget(open_home_page_action_);
 
-  open_email_action_ = new QAction(this);
+  open_email_action_ = new QPushButton;
   open_email_action_->setIcon(gui::GuiFactory::GetInstance().emailIcon());
-  VERIFY(connect(open_email_action_, &QAction::triggered, this, &WelcomeWidget::openEmail));
-  help->addAction(open_email_action_);
+  open_email_action_->setIconSize(kIconSize);
+  VERIFY(connect(open_email_action_, &QPushButton::clicked, this, &WelcomeWidget::openEmail));
+  help->addWidget(open_email_action_);
 
-  open_youtube_action_ = new QAction(this);
+  open_youtube_action_ = new QPushButton;
   open_youtube_action_->setIcon(gui::GuiFactory::GetInstance().youtubeIcon());
-  VERIFY(connect(open_youtube_action_, &QAction::triggered, this, &WelcomeWidget::openYoutube));
-  help->addAction(open_youtube_action_);
+  open_youtube_action_->setIconSize(kIconSize);
+  VERIFY(connect(open_youtube_action_, &QPushButton::clicked, this, &WelcomeWidget::openYoutube));
+  help->addWidget(open_youtube_action_);
 
-  open_instagram_action_ = new QAction(this);
+  open_instagram_action_ = new QPushButton;
   open_instagram_action_->setIcon(gui::GuiFactory::GetInstance().instagramIcon());
-  VERIFY(connect(open_instagram_action_, &QAction::triggered, this, &WelcomeWidget::openInstagram));
-  help->addAction(open_instagram_action_);
+  open_instagram_action_->setIconSize(kIconSize);
+  VERIFY(connect(open_instagram_action_, &QPushButton::clicked, this, &WelcomeWidget::openInstagram));
+  help->addWidget(open_instagram_action_);
   return help;
 }
 
