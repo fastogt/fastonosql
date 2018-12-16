@@ -38,6 +38,7 @@
 #include "gui/views/fasto_text_view.h"           // for FastoTextView
 #include "gui/views/fasto_tree_view.h"           // for FastoTreeView
 #include "gui/widgets/delegate/type_delegate.h"
+#include "gui/widgets/icon_button.h"
 #include "gui/widgets/save_key_edit_widget.h"
 
 namespace {
@@ -114,23 +115,15 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : base_cl
                  Qt::DirectConnection));
 
   QHBoxLayout* top_layout = new QHBoxLayout;
-  tree_button_ = new QPushButton;
-  tree_button_->setFixedSize(kIconSize);
-  table_button_ = new QPushButton;
-  table_button_->setFixedSize(kIconSize);
-  text_button_ = new QPushButton;
-  text_button_->setFixedSize(kIconSize);
-  key_button_ = new QPushButton;
-  key_button_->setFixedSize(kIconSize);
+  tree_button_ = new IconButton(GuiFactory::GetInstance().treeIcon(), kIconSize);
+  table_button_ = new IconButton(GuiFactory::GetInstance().tableIcon(), kIconSize);
+  text_button_ = new IconButton(GuiFactory::GetInstance().textIcon(), kIconSize);
+  key_button_ = new IconButton(GuiFactory::GetInstance().keyIcon(), kIconSize);
   time_label_ = new common::qt::gui::IconLabel(GuiFactory::GetInstance().timeIcon(), kIconSize, "0");
-  tree_button_->setIcon(GuiFactory::GetInstance().treeIcon());
-  VERIFY(connect(tree_button_, &QPushButton::clicked, this, &OutputWidget::setTreeView));
-  table_button_->setIcon(GuiFactory::GetInstance().tableIcon());
-  VERIFY(connect(table_button_, &QPushButton::clicked, this, &OutputWidget::setTableView));
-  text_button_->setIcon(GuiFactory::GetInstance().textIcon());
-  VERIFY(connect(text_button_, &QPushButton::clicked, this, &OutputWidget::setTextView));
-  key_button_->setIcon(GuiFactory::GetInstance().keyIcon());
-  VERIFY(connect(key_button_, &QPushButton::clicked, this, &OutputWidget::setEditKeyView));
+  VERIFY(connect(tree_button_, &IconButton::clicked, this, &OutputWidget::setTreeView));
+  VERIFY(connect(table_button_, &IconButton::clicked, this, &OutputWidget::setTableView));
+  VERIFY(connect(text_button_, &IconButton::clicked, this, &OutputWidget::setTextView));
+  VERIFY(connect(key_button_, &IconButton::clicked, this, &OutputWidget::setEditKeyView));
   top_layout->addWidget(tree_button_);
   top_layout->addWidget(table_button_);
   top_layout->addWidget(text_button_);

@@ -98,6 +98,7 @@ class BaseShellWidget : public QWidget {
   void connectToServer();
   void disconnectFromServer();
   void loadFromFile();
+  void loadFromFileEmptyPath();
   bool loadFromFile(const QString& path);
   void saveToFileAs();
   void saveToFile();

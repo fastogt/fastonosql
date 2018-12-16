@@ -47,6 +47,7 @@ class ViewKeysDialog : public BaseDialog {
   Q_OBJECT
 
  public:
+  static const QSize kIconSize;
   typedef BaseDialog base_class;
   template <typename T, typename... Args>
   friend T* createDialog(Args&&... args);

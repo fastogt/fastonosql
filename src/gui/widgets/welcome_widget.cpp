@@ -23,7 +23,6 @@
 #include <QFile>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QPushButton>
 #include <QSplitter>
 #include <QThread>
 #include <QToolBar>
@@ -32,6 +31,7 @@
 #include <common/macros.h>
 
 #include "gui/gui_factory.h"
+#include "gui/widgets/icon_button.h"
 #include "gui/workers/load_welcome_page.h"
 
 namespace {
@@ -165,46 +165,32 @@ void WelcomeWidget::setHtml(const QString& html) {
 
 QHBoxLayout* WelcomeWidget::createSocialButtons() {
   QHBoxLayout* help = new QHBoxLayout;
-  open_facebook_action_ = new QPushButton;
-  open_facebook_action_->setIcon(gui::GuiFactory::GetInstance().facebookIcon());
-  open_facebook_action_->setFixedSize(kIconSize);
-  VERIFY(connect(open_facebook_action_, &QPushButton::clicked, this, &WelcomeWidget::openFacebook));
+  open_facebook_action_ = new IconButton(gui::GuiFactory::GetInstance().facebookIcon(), kIconSize);
+  VERIFY(connect(open_facebook_action_, &IconButton::clicked, this, &WelcomeWidget::openFacebook));
   help->addWidget(open_facebook_action_);
 
-  open_github_action_ = new QPushButton;
-  open_github_action_->setIcon(gui::GuiFactory::GetInstance().githubIcon());
-  open_github_action_->setFixedSize(kIconSize);
-  VERIFY(connect(open_github_action_, &QPushButton::clicked, this, &WelcomeWidget::openGithub));
+  open_github_action_ = new IconButton(gui::GuiFactory::GetInstance().githubIcon(), kIconSize);
+  VERIFY(connect(open_github_action_, &IconButton::clicked, this, &WelcomeWidget::openGithub));
   help->addWidget(open_github_action_);
 
-  open_twitter_action_ = new QPushButton;
-  open_twitter_action_->setIcon(gui::GuiFactory::GetInstance().twitterIcon());
-  open_twitter_action_->setFixedSize(kIconSize);
-  VERIFY(connect(open_twitter_action_, &QPushButton::clicked, this, &WelcomeWidget::openTwitter));
+  open_twitter_action_ = new IconButton(gui::GuiFactory::GetInstance().twitterIcon(), kIconSize);
+  VERIFY(connect(open_twitter_action_, &IconButton::clicked, this, &WelcomeWidget::openTwitter));
   help->addWidget(open_twitter_action_);
 
-  open_home_page_action_ = new QPushButton;
-  open_home_page_action_->setIcon(gui::GuiFactory::GetInstance().homePageIcon());
-  open_home_page_action_->setFixedSize(kIconSize);
-  VERIFY(connect(open_home_page_action_, &QPushButton::clicked, this, &WelcomeWidget::openHomePage));
+  open_home_page_action_ = new IconButton(gui::GuiFactory::GetInstance().homePageIcon(), kIconSize);
+  VERIFY(connect(open_home_page_action_, &IconButton::clicked, this, &WelcomeWidget::openHomePage));
   help->addWidget(open_home_page_action_);
 
-  open_email_action_ = new QPushButton;
-  open_email_action_->setIcon(gui::GuiFactory::GetInstance().emailIcon());
-  open_email_action_->setFixedSize(kIconSize);
-  VERIFY(connect(open_email_action_, &QPushButton::clicked, this, &WelcomeWidget::openEmail));
+  open_email_action_ = new IconButton(gui::GuiFactory::GetInstance().emailIcon(), kIconSize);
+  VERIFY(connect(open_email_action_, &IconButton::clicked, this, &WelcomeWidget::openEmail));
   help->addWidget(open_email_action_);
 
-  open_youtube_action_ = new QPushButton;
-  open_youtube_action_->setIcon(gui::GuiFactory::GetInstance().youtubeIcon());
-  open_youtube_action_->setFixedSize(kIconSize);
-  VERIFY(connect(open_youtube_action_, &QPushButton::clicked, this, &WelcomeWidget::openYoutube));
+  open_youtube_action_ = new IconButton(gui::GuiFactory::GetInstance().youtubeIcon(), kIconSize);
+  VERIFY(connect(open_youtube_action_, &IconButton::clicked, this, &WelcomeWidget::openYoutube));
   help->addWidget(open_youtube_action_);
 
-  open_instagram_action_ = new QPushButton;
-  open_instagram_action_->setIcon(gui::GuiFactory::GetInstance().instagramIcon());
-  open_instagram_action_->setFixedSize(kIconSize);
-  VERIFY(connect(open_instagram_action_, &QPushButton::clicked, this, &WelcomeWidget::openInstagram));
+  open_instagram_action_ = new IconButton(gui::GuiFactory::GetInstance().instagramIcon(), kIconSize);
+  VERIFY(connect(open_instagram_action_, &IconButton::clicked, this, &WelcomeWidget::openInstagram));
   help->addWidget(open_instagram_action_);
   return help;
 }

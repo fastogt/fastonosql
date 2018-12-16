@@ -27,7 +27,6 @@
 #include <QLabel>
 #include <QMessageBox>
 #include <QProgressBar>
-#include <QPushButton>
 #include <QSpinBox>
 #include <QSplitter>
 #include <QToolBar>
@@ -44,6 +43,7 @@
 #include "gui/gui_factory.h"  // for GuiFactory
 #include "gui/shortcuts.h"    // for g_execute_key
 #include "gui/utils.h"
+#include "gui/widgets/icon_button.h"
 
 #include "translations/global.h"  // for trError, trSaveAs, etc
 
@@ -115,48 +115,33 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server, const QString& fileP
 
 QHBoxLayout* BaseShellWidget::createActionBar() {
   QHBoxLayout* savebar = new QHBoxLayout;
-  load_action_ = new QPushButton;
-  load_action_->setFixedSize(kIconSize);
-  load_action_->setIcon(gui::GuiFactory::GetInstance().loadIcon());
-  typedef void (BaseShellWidget::*lf)();
-  VERIFY(connect(load_action_, &QPushButton::clicked, this, static_cast<lf>(&BaseShellWidget::loadFromFile)));
+  load_action_ = new IconButton(gui::GuiFactory::GetInstance().loadIcon(), kIconSize);
+  VERIFY(connect(load_action_, &IconButton::clicked, this, &BaseShellWidget::loadFromFileEmptyPath));
   savebar->addWidget(load_action_);
 
-  save_action_ = new QPushButton;
-  save_action_->setFixedSize(kIconSize);
-  save_action_->setIcon(gui::GuiFactory::GetInstance().saveIcon());
-  VERIFY(connect(save_action_, &QPushButton::clicked, this, &BaseShellWidget::saveToFile));
+  save_action_ = new IconButton(gui::GuiFactory::GetInstance().saveIcon(), kIconSize);
+  VERIFY(connect(save_action_, &IconButton::clicked, this, &BaseShellWidget::saveToFile));
   savebar->addWidget(save_action_);
 
-  save_as_action_ = new QPushButton;
-  save_as_action_->setFixedSize(kIconSize);
-  save_as_action_->setIcon(gui::GuiFactory::GetInstance().saveAsIcon());
-  VERIFY(connect(save_as_action_, &QPushButton::clicked, this, &BaseShellWidget::saveToFileAs));
+  save_as_action_ = new IconButton(gui::GuiFactory::GetInstance().saveAsIcon(), kIconSize);
+  VERIFY(connect(save_as_action_, &IconButton::clicked, this, &BaseShellWidget::saveToFileAs));
   savebar->addWidget(save_as_action_);
 
-  connect_action_ = new QPushButton;
-  connect_action_->setFixedSize(kIconSize);
-  connect_action_->setIcon(gui::GuiFactory::GetInstance().connectIcon());
-  VERIFY(connect(connect_action_, &QPushButton::clicked, this, &BaseShellWidget::connectToServer));
+  connect_action_ = new IconButton(gui::GuiFactory::GetInstance().connectIcon(), kIconSize);
+  VERIFY(connect(connect_action_, &IconButton::clicked, this, &BaseShellWidget::connectToServer));
   savebar->addWidget(connect_action_);
 
-  disconnect_action_ = new QPushButton;
-  disconnect_action_->setFixedSize(kIconSize);
-  disconnect_action_->setIcon(gui::GuiFactory::GetInstance().disConnectIcon());
-  VERIFY(connect(disconnect_action_, &QPushButton::clicked, this, &BaseShellWidget::disconnectFromServer));
+  disconnect_action_ = new IconButton(gui::GuiFactory::GetInstance().disConnectIcon(), kIconSize);
+  VERIFY(connect(disconnect_action_, &IconButton::clicked, this, &BaseShellWidget::disconnectFromServer));
   savebar->addWidget(disconnect_action_);
 
-  execute_action_ = new QPushButton;
-  execute_action_->setFixedSize(kIconSize);
-  execute_action_->setIcon(gui::GuiFactory::GetInstance().executeIcon());
+  execute_action_ = new IconButton(gui::GuiFactory::GetInstance().executeIcon(), kIconSize);
   execute_action_->setShortcut(gui::g_execute_key);
-  VERIFY(connect(execute_action_, &QPushButton::clicked, this, &BaseShellWidget::execute));
+  VERIFY(connect(execute_action_, &IconButton::clicked, this, &BaseShellWidget::execute));
   savebar->addWidget(execute_action_);
 
-  stop_action_ = new QPushButton;
-  stop_action_->setFixedSize(kIconSize);
-  stop_action_->setIcon(gui::GuiFactory::GetInstance().stopIcon());
-  VERIFY(connect(stop_action_, &QPushButton::clicked, this, &BaseShellWidget::stop));
+  stop_action_ = new IconButton(gui::GuiFactory::GetInstance().stopIcon(), kIconSize);
+  VERIFY(connect(stop_action_, &IconButton::clicked, this, &BaseShellWidget::stop));
   savebar->addWidget(stop_action_);
   return savebar;
 }
@@ -210,16 +195,12 @@ void BaseShellWidget::init() {
   hlayout->addWidget(work_progressbar_);
 
   QHBoxLayout* helpbar = new QHBoxLayout;
-  validate_action_ = new QPushButton;
-  validate_action_->setFixedSize(kIconSize);
-  validate_action_->setIcon(gui::GuiFactory::GetInstance().failIcon());
-  VERIFY(connect(validate_action_, &QPushButton::clicked, this, &BaseShellWidget::validateClick));
+  validate_action_ = new IconButton(gui::GuiFactory::GetInstance().failIcon(), kIconSize);
+  VERIFY(connect(validate_action_, &IconButton::clicked, this, &BaseShellWidget::validateClick));
   helpbar->addWidget(validate_action_);
 
-  help_action_ = new QPushButton;
-  help_action_->setFixedSize(kIconSize);
-  help_action_->setIcon(gui::GuiFactory::GetInstance().helpIcon());
-  VERIFY(connect(help_action_, &QPushButton::clicked, this, &BaseShellWidget::helpClick));
+  help_action_ = new IconButton(gui::GuiFactory::GetInstance().helpIcon(), kIconSize);
+  VERIFY(connect(help_action_, &IconButton::clicked, this, &BaseShellWidget::helpClick));
   helpbar->addWidget(help_action_);
   hlayout->addLayout(helpbar);
   main_layout->addLayout(hlayout, 0);
@@ -425,6 +406,10 @@ void BaseShellWidget::disconnectFromServer() {
 
 void BaseShellWidget::loadFromFile() {
   loadFromFile(file_path_);
+}
+
+void BaseShellWidget::loadFromFileEmptyPath() {
+  loadFromFile(QString());
 }
 
 bool BaseShellWidget::loadFromFile(const QString& path) {

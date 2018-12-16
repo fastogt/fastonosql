@@ -21,7 +21,6 @@
 #include <QDialogButtonBox>
 #include <QLabel>
 #include <QLineEdit>
-#include <QPushButton>
 #include <QSortFilterProxyModel>
 #include <QSpinBox>
 #include <QSplitter>
@@ -35,22 +34,14 @@
 
 #include "gui/gui_factory.h"  // for GuiFactory
 #include "gui/views/keys_table_view.h"
+#include "gui/widgets/icon_button.h"
 
 #include "translations/global.h"  // for trKeyCountOnThePage, etc
 
-namespace {
-QPushButton* createButtonWithIcon(const QIcon& icon) {
-  QPushButton* button = new QPushButton;
-  button->setIcon(icon);
-  button->setFixedSize(24, 24);
-  button->setFlat(true);
-  return button;
-}
-
-}  // namespace
-
 namespace fastonosql {
 namespace gui {
+
+const QSize ViewKeysDialog::kIconSize = QSize(24, 24);
 
 ViewKeysDialog::ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QWidget* parent)
     : base_class(title, parent),
@@ -104,8 +95,8 @@ ViewKeysDialog::ViewKeysDialog(const QString& title, proxy::IDatabaseSPtr db, QW
   keys_table_ = new KeysTableView;
   VERIFY(connect(keys_table_, &KeysTableView::changedTTL, this, &ViewKeysDialog::changeTTL, Qt::DirectConnection));
 
-  left_button_list_ = createButtonWithIcon(GuiFactory::GetInstance().leftIcon());
-  right_button_list_ = createButtonWithIcon(GuiFactory::GetInstance().rightIcon());
+  left_button_list_ = new IconButton(GuiFactory::GetInstance().leftIcon(), kIconSize);
+  right_button_list_ = new IconButton(GuiFactory::GetInstance().rightIcon(), kIconSize);
   VERIFY(connect(left_button_list_, &QPushButton::clicked, this, &ViewKeysDialog::leftPageClicked));
   VERIFY(connect(right_button_list_, &QPushButton::clicked, this, &ViewKeysDialog::rightPageClicked));
 
