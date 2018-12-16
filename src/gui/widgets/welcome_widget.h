@@ -56,7 +56,7 @@ class WelcomeWidget : public QWidget {
   void retranslateUi();
   void loadPage();
   void setHtml(const QString& html);
-  QHBoxLayout* createToolBar();
+  QHBoxLayout* createSocialButtons();
 
   QLabel* page_label_;
   QLabel* help_title_;
