@@ -74,8 +74,8 @@ serialize_t ConnectionSettingsFactory::ConvertSettingsToString(IConnectionSettin
   common::char_writer<512> wr;
   wr << ConvertSettingsToString(static_cast<IConnectionSettings*>(settings));
   wr << kSettingValueDelemiter << settings->GetNsSeparator() << kSettingValueDelemiter
-     << common::ConvertToCharBytes(settings->GetNsDisplayStrategy()) << kSettingValueDelemiter
-     << settings->GetCommandLine();
+     << common::ConvertToCharBytes(static_cast<unsigned char>(settings->GetNsDisplayStrategy()))
+     << kSettingValueDelemiter << settings->GetCommandLine();
   if (core::IsCanSSHConnection(settings->GetType())) {
     IConnectionSettingsRemoteSSH* ssh_settings = static_cast<IConnectionSettingsRemoteSSH*>(settings);
     wr << kSettingValueDelemiter << common::ConvertToString(ssh_settings->GetSSHInfo());
