@@ -65,8 +65,8 @@ const char kSettingValueDelemiter = 0x1F;
 serialize_t ConnectionSettingsFactory::ConvertSettingsToString(IConnectionSettings* settings) {
   common::char_writer<512> wr;
   const connection_path_t path = settings->GetPath();
-  wr << common::ConvertToCharBytes(settings->GetType()) << kSettingValueDelemiter << path.ToString()
-     << kSettingValueDelemiter << common::ConvertToCharBytes(settings->GetLoggingMsTimeInterval());
+  wr << common::ConvertToCharBytes(static_cast<unsigned char>(settings->GetType())) << kSettingValueDelemiter
+     << path.ToString() << kSettingValueDelemiter << common::ConvertToCharBytes(settings->GetLoggingMsTimeInterval());
   return wr.str();
 }
 
