@@ -69,7 +69,7 @@ FastoCommonItem* CreateRootItem(core::FastoObject* item) {
 
 }  // namespace
 
-const QSize OutputWidget::icon_size = QSize(24, 24);
+const QSize OutputWidget::kIconSize = QSize(24, 24);
 
 OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : base_class(parent), server_(server) {
   CHECK(server_);
@@ -115,10 +115,14 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : base_cl
 
   QHBoxLayout* top_layout = new QHBoxLayout;
   tree_button_ = new QPushButton;
+  tree_button_->setFixedSize(kIconSize);
   table_button_ = new QPushButton;
+  table_button_->setFixedSize(kIconSize);
   text_button_ = new QPushButton;
+  text_button_->setFixedSize(kIconSize);
   key_button_ = new QPushButton;
-  time_label_ = new common::qt::gui::IconLabel(GuiFactory::GetInstance().timeIcon(), icon_size, "0");
+  key_button_->setFixedSize(kIconSize);
+  time_label_ = new common::qt::gui::IconLabel(GuiFactory::GetInstance().timeIcon(), kIconSize, "0");
   tree_button_->setIcon(GuiFactory::GetInstance().treeIcon());
   VERIFY(connect(tree_button_, &QPushButton::clicked, this, &OutputWidget::setTreeView));
   table_button_->setIcon(GuiFactory::GetInstance().tableIcon());

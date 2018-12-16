@@ -21,13 +21,13 @@
 #include <string>
 #include <vector>
 
-#include <QAction>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QFileDialog>
 #include <QLabel>
 #include <QMessageBox>
 #include <QProgressBar>
+#include <QPushButton>
 #include <QSpinBox>
 #include <QSplitter>
 #include <QToolBar>
@@ -69,8 +69,8 @@ const QString trBasedOn_2S = QObject::tr("Based on <b>%1</b> version: <b>%2</b>"
 namespace fastonosql {
 namespace gui {
 
-const QSize BaseShellWidget::top_bar_icon_size = QSize(24, 24);
-const QSize BaseShellWidget::shell_icon_size = QSize(32, 32);
+const QSize BaseShellWidget::kIconSize = QSize(24, 24);
+const QSize BaseShellWidget::kShellIconSize = QSize(32, 32);
 
 BaseShellWidget* BaseShellWidget::createWidget(proxy::IServerSPtr server, const QString& filePath, QWidget* parent) {
 #if defined(BUILD_WITH_REDIS) && defined(PRO_VERSION)
@@ -113,44 +113,51 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server, const QString& fileP
       history_call_(nullptr),
       file_path_(filePath) {}
 
-QToolBar* BaseShellWidget::createToolBar() {
-  QToolBar* savebar = new QToolBar;
-  load_action_ = new QAction(this);
+QHBoxLayout* BaseShellWidget::createActionBar() {
+  QHBoxLayout* savebar = new QHBoxLayout;
+  load_action_ = new QPushButton;
+  load_action_->setFixedSize(kIconSize);
   load_action_->setIcon(gui::GuiFactory::GetInstance().loadIcon());
   typedef void (BaseShellWidget::*lf)();
-  VERIFY(connect(load_action_, &QAction::triggered, this, static_cast<lf>(&BaseShellWidget::loadFromFile)));
-  savebar->addAction(load_action_);
+  VERIFY(connect(load_action_, &QPushButton::clicked, this, static_cast<lf>(&BaseShellWidget::loadFromFile)));
+  savebar->addWidget(load_action_);
 
-  save_action_ = new QAction(this);
+  save_action_ = new QPushButton;
+  save_action_->setFixedSize(kIconSize);
   save_action_->setIcon(gui::GuiFactory::GetInstance().saveIcon());
-  VERIFY(connect(save_action_, &QAction::triggered, this, &BaseShellWidget::saveToFile));
-  savebar->addAction(save_action_);
+  VERIFY(connect(save_action_, &QPushButton::clicked, this, &BaseShellWidget::saveToFile));
+  savebar->addWidget(save_action_);
 
-  save_as_action_ = new QAction(this);
+  save_as_action_ = new QPushButton;
+  save_as_action_->setFixedSize(kIconSize);
   save_as_action_->setIcon(gui::GuiFactory::GetInstance().saveAsIcon());
-  VERIFY(connect(save_as_action_, &QAction::triggered, this, &BaseShellWidget::saveToFileAs));
-  savebar->addAction(save_as_action_);
+  VERIFY(connect(save_as_action_, &QPushButton::clicked, this, &BaseShellWidget::saveToFileAs));
+  savebar->addWidget(save_as_action_);
 
-  connect_action_ = new QAction(this);
+  connect_action_ = new QPushButton;
+  connect_action_->setFixedSize(kIconSize);
   connect_action_->setIcon(gui::GuiFactory::GetInstance().connectIcon());
-  VERIFY(connect(connect_action_, &QAction::triggered, this, &BaseShellWidget::connectToServer));
-  savebar->addAction(connect_action_);
+  VERIFY(connect(connect_action_, &QPushButton::clicked, this, &BaseShellWidget::connectToServer));
+  savebar->addWidget(connect_action_);
 
-  disconnect_action_ = new QAction(this);
+  disconnect_action_ = new QPushButton;
+  disconnect_action_->setFixedSize(kIconSize);
   disconnect_action_->setIcon(gui::GuiFactory::GetInstance().disConnectIcon());
-  VERIFY(connect(disconnect_action_, &QAction::triggered, this, &BaseShellWidget::disconnectFromServer));
-  savebar->addAction(disconnect_action_);
+  VERIFY(connect(disconnect_action_, &QPushButton::clicked, this, &BaseShellWidget::disconnectFromServer));
+  savebar->addWidget(disconnect_action_);
 
-  execute_action_ = new QAction(this);
+  execute_action_ = new QPushButton;
+  execute_action_->setFixedSize(kIconSize);
   execute_action_->setIcon(gui::GuiFactory::GetInstance().executeIcon());
   execute_action_->setShortcut(gui::g_execute_key);
-  VERIFY(connect(execute_action_, &QAction::triggered, this, &BaseShellWidget::execute));
-  savebar->addAction(execute_action_);
+  VERIFY(connect(execute_action_, &QPushButton::clicked, this, &BaseShellWidget::execute));
+  savebar->addWidget(execute_action_);
 
-  stop_action_ = new QAction(this);
+  stop_action_ = new QPushButton;
+  stop_action_->setFixedSize(kIconSize);
   stop_action_->setIcon(gui::GuiFactory::GetInstance().stopIcon());
-  VERIFY(connect(stop_action_, &QAction::triggered, this, &BaseShellWidget::stop));
-  savebar->addAction(stop_action_);
+  VERIFY(connect(stop_action_, &QPushButton::clicked, this, &BaseShellWidget::stop));
+  savebar->addWidget(stop_action_);
   return savebar;
 }
 
@@ -185,17 +192,15 @@ void BaseShellWidget::init() {
   QVBoxLayout* main_layout = new QVBoxLayout;
   QHBoxLayout* hlayout = new QHBoxLayout;
 
-  QToolBar* savebar = createToolBar();
-  savebar->setMovable(false);
-
+  QHBoxLayout* savebar = createActionBar();
   static const core::ConnectionMode mode = core::InteractiveMode;
   const std::string mode_str = common::ConvertToString(mode);
   QString qmode_str;
   common::ConvertFromString(mode_str, &qmode_str);
   connection_mode_ =
-      new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().modeIcon(mode), top_bar_icon_size, qmode_str);
+      new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().modeIcon(mode), kIconSize, qmode_str);
 
-  hlayout->addWidget(savebar);
+  hlayout->addLayout(savebar);
   QSplitter* savebar_splitter = new QSplitter(Qt::Horizontal);
   hlayout->addWidget(savebar_splitter);
 
@@ -204,16 +209,19 @@ void BaseShellWidget::init() {
   work_progressbar_->setTextVisible(true);
   hlayout->addWidget(work_progressbar_);
 
-  QToolBar* helpbar = new QToolBar;
-  helpbar->setMovable(false);
-  validate_action_ = new QAction(gui::GuiFactory::GetInstance().failIcon(), translations::trValidate, helpbar);
-  VERIFY(connect(validate_action_, &QAction::triggered, this, &BaseShellWidget::validateClick));
-  helpbar->addAction(validate_action_);
+  QHBoxLayout* helpbar = new QHBoxLayout;
+  validate_action_ = new QPushButton;
+  validate_action_->setFixedSize(kIconSize);
+  validate_action_->setIcon(gui::GuiFactory::GetInstance().failIcon());
+  VERIFY(connect(validate_action_, &QPushButton::clicked, this, &BaseShellWidget::validateClick));
+  helpbar->addWidget(validate_action_);
 
-  QAction* help_action = new QAction(gui::GuiFactory::GetInstance().helpIcon(), translations::trHelp, helpbar);
-  VERIFY(connect(help_action, &QAction::triggered, this, &BaseShellWidget::helpClick));
-  helpbar->addAction(help_action);
-  hlayout->addWidget(helpbar);
+  help_action_ = new QPushButton;
+  help_action_->setFixedSize(kIconSize);
+  help_action_->setIcon(gui::GuiFactory::GetInstance().helpIcon());
+  VERIFY(connect(help_action_, &QPushButton::clicked, this, &BaseShellWidget::helpClick));
+  helpbar->addWidget(help_action_);
+  hlayout->addLayout(helpbar);
   main_layout->addLayout(hlayout, 0);
 
   advanced_options_ = new QCheckBox;
@@ -306,11 +314,11 @@ void BaseShellWidget::init() {
 
 QHBoxLayout* BaseShellWidget::createTopLayout(core::ConnectionType ct) {
   QHBoxLayout* top_layout = new QHBoxLayout;
-  server_name_ = new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().icon(ct), shell_icon_size,
+  server_name_ = new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().icon(ct), kShellIconSize,
                                                 translations::trCalculate + "...");
   server_name_->setElideMode(Qt::ElideRight);
   top_layout->addWidget(server_name_);
-  db_name_ = new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().databaseIcon(), shell_icon_size,
+  db_name_ = new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().databaseIcon(), kShellIconSize,
                                             translations::trCalculate + "...");
   top_layout->addWidget(db_name_);
   QSplitter* padding = new QSplitter(Qt::Horizontal);
@@ -347,13 +355,15 @@ void BaseShellWidget::changeEvent(QEvent* ev) {
 }
 
 void BaseShellWidget::retranslateUi() {
-  load_action_->setText(translations::trLoad);
-  save_action_->setText(translations::trSave);
-  save_as_action_->setText(translations::trSaveAs);
-  connect_action_->setText(translations::trConnect);
-  disconnect_action_->setText(translations::trDisconnect);
-  execute_action_->setText(translations::trExecute);
-  stop_action_->setText(translations::trStop);
+  validate_action_->setToolTip(translations::trValidate);
+  help_action_->setToolTip(translations::trHelp);
+  load_action_->setToolTip(translations::trLoad);
+  save_action_->setToolTip(translations::trSave);
+  save_as_action_->setToolTip(translations::trSaveAs);
+  connect_action_->setToolTip(translations::trConnect);
+  disconnect_action_->setToolTip(translations::trDisconnect);
+  execute_action_->setToolTip(translations::trExecute);
+  stop_action_->setToolTip(translations::trStop);
 
   history_call_->setText(translations::trHistory);
   setToolTip(trBasedOn_2S.arg(input_->basedOn(), input_->version()));
@@ -534,7 +544,7 @@ void BaseShellWidget::progressChange(const proxy::events_info::ProgressInfoRespo
 
 void BaseShellWidget::enterMode(const proxy::events_info::EnterModeInfo& res) {
   core::ConnectionMode mode = res.mode;
-  connection_mode_->setIcon(gui::GuiFactory::GetInstance().modeIcon(mode), top_bar_icon_size);
+  connection_mode_->setIcon(gui::GuiFactory::GetInstance().modeIcon(mode), kIconSize);
   std::string modeText = common::ConvertToString(mode);
   QString qmodeText;
   common::ConvertFromString(modeText, &qmodeText);

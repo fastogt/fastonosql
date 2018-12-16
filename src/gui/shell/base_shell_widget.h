@@ -30,7 +30,7 @@
 
 #include "proxy/proxy_fwd.h"  // for IServerSPtr
 
-class QAction;       // lines 26-26
+class QPushButton;   // lines 26-26
 class QComboBox;     // lines 29-29
 class QProgressBar;  // lines 27-27
 class QCheckBox;
@@ -76,8 +76,8 @@ class BaseShellWidget : public QWidget {
   Q_OBJECT
 
  public:
-  static const QSize top_bar_icon_size;
-  static const QSize shell_icon_size;
+  static const QSize kIconSize;
+  static const QSize kShellIconSize;
 
   static BaseShellWidget* createWidget(proxy::IServerSPtr server,
                                        const QString& filePath = QString(),
@@ -148,7 +148,7 @@ class BaseShellWidget : public QWidget {
   void changeEvent(QEvent* ev) override;
 
  private:
-  QToolBar* createToolBar();
+  QHBoxLayout* createActionBar();
 
   void retranslateUi();
 
@@ -163,14 +163,15 @@ class BaseShellWidget : public QWidget {
   void updateDBLabel(const QString& text);
 
   const proxy::IServerSPtr server_;
-  QAction* execute_action_;
-  QAction* stop_action_;
-  QAction* connect_action_;
-  QAction* disconnect_action_;
-  QAction* load_action_;
-  QAction* save_action_;
-  QAction* save_as_action_;
-  QAction* validate_action_;
+  QPushButton* execute_action_;
+  QPushButton* stop_action_;
+  QPushButton* connect_action_;
+  QPushButton* disconnect_action_;
+  QPushButton* load_action_;
+  QPushButton* save_action_;
+  QPushButton* save_as_action_;
+  QPushButton* validate_action_;
+  QPushButton* help_action_;
   QLabel* supported_commands_count_;
   QLabel* validated_commands_count_;
   QComboBox* commands_version_api_;

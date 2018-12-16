@@ -58,7 +58,7 @@ class OutputWidget : public QWidget {
   Q_OBJECT
  public:
   typedef QWidget base_class;
-  static const QSize icon_size;
+  static const QSize kIconSize;
 
   explicit OutputWidget(proxy::IServerSPtr server, QWidget* parent = Q_NULLPTR);
 
