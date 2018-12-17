@@ -75,20 +75,24 @@ common::Error loadPageRoutine(common::http::HttpResponse* resp) {
   const auto path = kContentUrl.GetPath();
   common::Error err = cl.Get(path);
   if (err) {
+    cl.Disconnect();
     return err;
   }
 
   common::http::HttpResponse lresp;
   err = cl.ReadResponce(&lresp);
   if (err) {
+    cl.Disconnect();
     return err;
   }
 
   if (lresp.IsEmptyBody()) {
+    cl.Disconnect();
     return common::make_error("Empty body");
   }
 
   *resp = lresp;
+  cl.Disconnect();
   return common::Error();
 }
 }  // namespace
