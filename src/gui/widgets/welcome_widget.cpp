@@ -39,6 +39,14 @@ const QString trDontKnowHowToUse = QObject::tr("<b>Don't know how to use?</b>");
 const QString trLearHowTo = QObject::tr("Learn how to use <b>" PROJECT_NAME_TITLE "</b>.");
 const QString trGetStartedNow = QObject::tr("Get Started Now");
 const QString trSocial = QObject::tr("<b>Do you want to know more about us?</b>");
+
+const QString trFacebook = QObject::tr("Facebook");
+const QString trInstagram = QObject::tr("Instagram");
+const QString trTwitter = QObject::tr("Twitter");
+const QString trGithub = QObject::tr("Github");
+const QString trHome = QObject::tr("Home");
+const QString trYoutube = QObject::tr("Youtube");
+const QString trEmail = QObject::tr("Email");
 }  // namespace
 
 namespace fastonosql {
@@ -101,6 +109,14 @@ void WelcomeWidget::retranslateUi() {
   help_description_->setText(trLearHowTo);
   get_started_now_button_->setText(trGetStartedNow);
   social_title_->setText(trSocial);
+
+  open_email_action_->setToolTip(trEmail);
+  open_facebook_action_->setToolTip(trFacebook);
+  open_home_page_action_->setToolTip(trHome);
+  open_instagram_action_->setToolTip(trInstagram);
+  open_twitter_action_->setToolTip(trTwitter);
+  open_youtube_action_->setToolTip(trYoutube);
+  open_github_action_->setToolTip(trGithub);
 }
 
 void WelcomeWidget::pageLoad(const QString& content, const QString& error_message) {

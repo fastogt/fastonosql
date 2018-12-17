@@ -62,6 +62,7 @@ const QString trProperty = QObject::tr("Property");
 const QString trStop = QObject::tr("Stop");
 const QString trError = QObject::tr("Error");
 const QString trNewConnection = QObject::tr("New Connection");
+const QString trAvailibleOnlyInProVersion = QObject::tr("Availible only in PRO version!");
 const QString trClustersAvailibleOnlyInProVersion = QObject::tr("Clusters availible only in PRO version!");
 const QString trSentinelsAvailibleOnlyInProVersion = QObject::tr("Sentinels availible only in PRO version!");
 const QString trProLimitations = QObject::tr("PRO version limitations");

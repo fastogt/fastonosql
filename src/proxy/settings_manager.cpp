@@ -55,12 +55,12 @@
 #define RCONNECTIONS PREFIX "rconnections"
 #define AUTOOPENCONSOLE PREFIX "auto_open_console"
 #define AUTOCONNECTDB PREFIX "auto_connect_db"
-#define FASTVIEWKEYS PREFIX "fast_view_keys"
 #define WINDOW_SETTINGS PREFIX "window_settings"
 #define SEND_STATISTIC PREFIX "send_statistic"
 #if defined(PRO_VERSION)
 #define LAST_LOGIN PREFIX "last_login"
 #endif
+#define SHOW_WELCOME_PAGE PREFIX "show_welcome_page"
 #define PYTHON_PATH PREFIX "python_path"
 #define CONFIG_VERSION PREFIX "version"
 
@@ -110,11 +110,11 @@ SettingsManager::SettingsManager()
       user_info_(),
 #endif
       recent_connections_(),
+      show_welcome_page_(),
       auto_check_updates_(),
       auto_completion_(),
       auto_open_console_(),
       auto_connect_db_(),
-      fast_view_keys_(),
       window_settings_(),
       python_path_() {
 }
@@ -326,14 +326,6 @@ void SettingsManager::SetAutoConnectDB(bool open_db) {
   auto_connect_db_ = open_db;
 }
 
-bool SettingsManager::GetFastViewKeys() const {
-  return fast_view_keys_;
-}
-
-void SettingsManager::SetFastViewKeys(bool fast_view) {
-  fast_view_keys_ = fast_view;
-}
-
 QByteArray SettingsManager::GetMainWindowSettings() const {
   return window_settings_;
 }
@@ -430,11 +422,11 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
     recent_connections_.push_back(rconnection);
   }
 
+  show_welcome_page_ = settings.value(SHOW_WELCOME_PAGE, true).toBool();
   auto_check_updates_ = settings.value(CHECKUPDATES, true).toBool();
   auto_completion_ = settings.value(AUTOCOMPLETION, true).toBool();
   auto_open_console_ = settings.value(AUTOOPENCONSOLE, true).toBool();
   auto_connect_db_ = settings.value(AUTOCONNECTDB, true).toBool();
-  fast_view_keys_ = settings.value(FASTVIEWKEYS, true).toBool();
   window_settings_ = settings.value(WINDOW_SETTINGS, QByteArray()).toByteArray();
 
   QString qpython_path;
@@ -517,11 +509,11 @@ void SettingsManager::Save() {
 
   const QString logging_dir = GetLoggingDirectory();
   settings.setValue(LOGGINGDIR, logging_dir);
+  settings.setValue(SHOW_WELCOME_PAGE, show_welcome_page_);
   settings.setValue(CHECKUPDATES, auto_check_updates_);
   settings.setValue(AUTOCOMPLETION, auto_completion_);
   settings.setValue(AUTOOPENCONSOLE, auto_open_console_);
   settings.setValue(AUTOCONNECTDB, auto_connect_db_);
-  settings.setValue(FASTVIEWKEYS, fast_view_keys_);
   settings.setValue(WINDOW_SETTINGS, window_settings_);
 #if defined(PRO_VERSION)
   settings.setValue(LAST_LOGIN, last_login_);
@@ -547,6 +539,14 @@ void SettingsManager::SetUserInfo(const UserInfo& uinfo) {
   user_info_ = uinfo;
 }
 #endif
+
+bool SettingsManager::GetShowWelcomePage() const {
+  return show_welcome_page_;
+}
+
+void SettingsManager::SetShowWelcomePage(bool show) {
+  show_welcome_page_ = show;
+}
 
 }  // namespace proxy
 }  // namespace fastonosql

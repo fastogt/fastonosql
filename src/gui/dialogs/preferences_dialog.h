@@ -90,7 +90,7 @@ class PreferencesDialog : public BaseDialog {
   QLineEdit* log_dir_path_;
   QCheckBox* auto_open_console_;
   QCheckBox* auto_connect_db_;
-  QCheckBox* fast_view_keys_;
+  QCheckBox* show_welcome_page_;
 
   QGroupBox* external_box_;
   IPathWidget* python_path_widget_;

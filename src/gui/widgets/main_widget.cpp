@@ -21,6 +21,7 @@
 #include <common/qt/convert2string.h>
 
 #include "proxy/server/iserver.h"  // for IServer
+#include "proxy/settings_manager.h"
 
 #include "gui/gui_factory.h"           // for GuiFactory
 #include "gui/main_tab_bar.h"          // for MainTabBar
@@ -50,7 +51,9 @@ MainWidget::MainWidget(QWidget* parent) : QTabWidget(parent) {
   setElideMode(Qt::ElideRight);
   setMovable(true);
 
-  createWelcomeTab();
+  if (proxy::SettingsManager::GetInstance()->GetShowWelcomePage()) {
+    createWelcomeTab();
+  }
 }
 
 QueryWidget* MainWidget::getQueryWidget(int index) const {

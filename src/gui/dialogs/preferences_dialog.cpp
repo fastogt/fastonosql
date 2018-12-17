@@ -49,7 +49,7 @@ const QString trAutoCheckUpd = QObject::tr("Automatically check for updates");
 const QString trShowAutoCompletion = QObject::tr("Show autocompletion");
 const QString trAutoOpenConsole = QObject::tr("Automatically open console");
 const QString trAutoConnectDb = QObject::tr("Automatically connect to DB");
-const QString trFastViewValues = QObject::tr("Fast view values");
+const QString trShowWelcomePage = QObject::tr("Show welcome page");
 const QString trLanguage = QObject::tr("Language");
 const QString trUiStyle = QObject::tr("UI style");
 const QString trFont = QObject::tr("Font");
@@ -98,7 +98,7 @@ PreferencesDialog::PreferencesDialog(QWidget* parent)
       log_dir_path_(nullptr),
       auto_open_console_(nullptr),
       auto_connect_db_(nullptr),
-      fast_view_keys_(nullptr),
+      show_welcome_page_(nullptr),
       external_box_(nullptr),
       python_path_widget_(nullptr) {
   QTabWidget* preferences_tabs = new QTabWidget;
@@ -143,7 +143,7 @@ void PreferencesDialog::accept() {
   proxy::SettingsManager::GetInstance()->SetLoggingDirectory(log_dir_path_->text());
   proxy::SettingsManager::GetInstance()->SetAutoOpenConsole(auto_open_console_->isChecked());
   proxy::SettingsManager::GetInstance()->SetAutoConnectDB(auto_connect_db_->isChecked());
-  proxy::SettingsManager::GetInstance()->SetFastViewKeys(fast_view_keys_->isChecked());
+  proxy::SettingsManager::GetInstance()->SetShowWelcomePage(show_welcome_page_->isChecked());
   proxy::SettingsManager::GetInstance()->SetPythonPath(python_path_widget_->path());
 
   return base_class::accept();
@@ -164,7 +164,7 @@ void PreferencesDialog::syncWithSettings() {
   log_dir_path_->setText(proxy::SettingsManager::GetInstance()->GetLoggingDirectory());
   auto_open_console_->setChecked(proxy::SettingsManager::GetInstance()->AutoOpenConsole());
   auto_connect_db_->setChecked(proxy::SettingsManager::GetInstance()->GetAutoConnectDB());
-  fast_view_keys_->setChecked(proxy::SettingsManager::GetInstance()->GetFastViewKeys());
+  show_welcome_page_->setChecked(proxy::SettingsManager::GetInstance()->GetShowWelcomePage());
   QString python_path = proxy::SettingsManager::GetInstance()->GetPythonPath();
   python_path_widget_->setPath(python_path);
 }
@@ -243,8 +243,9 @@ QWidget* PreferencesDialog::createMainTab() {
   auto_comletion_ = new QCheckBox;
   general_layout->addWidget(auto_comletion_, 1, 1);
 
-  fast_view_keys_ = new QCheckBox;
-  general_layout->addWidget(fast_view_keys_, 2, 0);
+  show_welcome_page_ = new QCheckBox;
+
+  general_layout->addWidget(show_welcome_page_, 2, 0);
   auto_connect_db_ = new QCheckBox;
   general_layout->addWidget(auto_connect_db_, 2, 1);
 
@@ -325,7 +326,7 @@ void PreferencesDialog::retranslateUi() {
   auto_comletion_->setText(trShowAutoCompletion);
   auto_open_console_->setText(trAutoOpenConsole);
   auto_connect_db_->setText(trAutoConnectDb);
-  fast_view_keys_->setText(trFastViewValues);
+  show_welcome_page_->setText(trShowWelcomePage);
   languages_label_->setText(trLanguage + ":");
   styles_label_->setText(trUiStyle + ":");
   font_label_->setText(trFont + ":");

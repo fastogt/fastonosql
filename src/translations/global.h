@@ -62,6 +62,7 @@ extern const QString trProperty;
 extern const QString trStop;
 extern const QString trError;
 extern const QString trNewConnection;
+extern const QString trAvailibleOnlyInProVersion;
 extern const QString trClustersAvailibleOnlyInProVersion;
 extern const QString trSentinelsAvailibleOnlyInProVersion;
 extern const QString trProLimitations;

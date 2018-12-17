@@ -18,6 +18,9 @@
 
 #pragma once
 
+#include <string>
+#include <vector>
+
 #include <QFont>
 #include <QStringList>
 
@@ -106,9 +109,6 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
   bool GetAutoConnectDB() const;
   void SetAutoConnectDB(bool open_db);
 
-  bool GetFastViewKeys() const;
-  void SetFastViewKeys(bool fast_view);
-
   QByteArray GetMainWindowSettings() const;
   void SetMainWindowSettings(const QByteArray& settings);
 
@@ -127,6 +127,9 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
   UserInfo GetUserInfo() const;
   void SetUserInfo(const UserInfo& uinfo);
 #endif
+
+  bool GetShowWelcomePage() const;
+  void SetShowWelcomePage(bool show);
 
  private:
   SettingsManager();
@@ -149,11 +152,11 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
   UserInfo user_info_;
 #endif
   QStringList recent_connections_;
+  bool show_welcome_page_;
   bool auto_check_updates_;
   bool auto_completion_;
   bool auto_open_console_;
   bool auto_connect_db_;
-  bool fast_view_keys_;
   QByteArray window_settings_;
   QString python_path_;
 };

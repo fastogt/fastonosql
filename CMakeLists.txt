@@ -3,7 +3,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.6.3) # OPENSSL_USE_STATIC_LIBS
 
 SET(BRANDING_PROJECT_NAME "FastoNoSQL" CACHE STRING "Branding for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_VERSION "1.24.2.0" CACHE STRING "Branding version for ${BRANDING_PROJECT_NAME}") #default
-SET(BRANDING_PROJECT_BUILD_TYPE_VERSION "alfa" CACHE STRING "Build version type for ${BRANDING_PROJECT_NAME}") #default
+SET(BRANDING_PROJECT_BUILD_TYPE_VERSION "rc" CACHE STRING "Build version type for ${BRANDING_PROJECT_NAME}") #default
   #possible variables: alfa, beta, rc, release
 
 SET(BRANDING_PROJECT_DOMAIN "https://fastonosql.com" CACHE STRING "Branding domain url for ${BRANDING_PROJECT_NAME}") #default
@@ -138,7 +138,7 @@ ENDIF(MSVC)
 
 OPTION(BUILD_WITH_REDIS "Build with Redis support" ON)
 OPTION(BUILD_WITH_PIKA "Build with Pika support" OFF)
-OPTION(BUILD_WITH_DYNOMITE "Build with Dynomite Redis support" ON)
+OPTION(BUILD_WITH_DYNOMITE "Build with Dynomite Redis support" OFF)
 OPTION(BUILD_WITH_MEMCACHED "Build with Memcached support" ON)
 OPTION(BUILD_WITH_SSDB "Build with SSDB support" OFF)
 OPTION(BUILD_WITH_LEVELDB "Build with LevelDB support" ON)
