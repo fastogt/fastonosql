@@ -23,8 +23,6 @@
 
 #include "proxy/servers_manager.h"  // for ServersManager
 
-#include "translations/global.h"  // for trSuccess
-
 namespace fastonosql {
 namespace gui {
 
@@ -48,7 +46,7 @@ void TestConnection::routine() {
     common::ConvertFromString(err->GetDescription(), &qdesc);
     emit connectionResult(false, msec_exec, qdesc);
   } else {
-    emit connectionResult(true, msec_exec, translations::trSuccess);
+    emit connectionResult(true, msec_exec, QString());
   }
 }
 

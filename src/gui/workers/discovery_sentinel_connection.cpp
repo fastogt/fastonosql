@@ -23,8 +23,6 @@
 
 #include "proxy/servers_manager.h"  // for ServersManager
 
-#include "translations/global.h"  // for trSuccess
-
 namespace fastonosql {
 namespace gui {
 
@@ -48,7 +46,7 @@ void DiscoverySentinelConnection::routine() {
     common::ConvertFromString(err->GetDescription(), &qdesc);
     emit connectionResult(false, common::time::current_mstime() - startTime_, qdesc, inf);
   } else {
-    emit connectionResult(true, common::time::current_mstime() - startTime_, translations::trSuccess, inf);
+    emit connectionResult(true, common::time::current_mstime() - startTime_, QString(), inf);
   }
 }
 

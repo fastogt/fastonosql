@@ -6,6 +6,7 @@ import lz4.block
 import snappy
 import base64
 import redis
+import pickle
 
 from abc import ABCMeta, abstractmethod
 
@@ -159,6 +160,12 @@ def test():
     r.set('snappy_little', snappy_little)
     snappy_big = test_routine(snappy_compress, big_data)
     r.set('snappy_big', snappy_big)
+
+    # pickle
+    pickled_object = pickle.dumps([{'type': 'big', 'url': '....'},
+                                   {'type': 'big', 'url': '....'},
+                                   {'type': 'big', 'url': '....'}])
+    r.set('pickled_object', pickled_object)
 
     # double name
     space_key = 'hello motto'

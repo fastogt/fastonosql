@@ -76,7 +76,7 @@ ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(const QString& title,
   startTestConnection(connection);
 }
 
-void ConnectionDiagnosticDialog::connectionResult(bool suc, qint64 exec_mstime, const QString& result_text) {
+void ConnectionDiagnosticDialog::connectionResultReady(bool suc, qint64 exec_mstime, const QString& result_text) {
   glass_widget_->stop();
 
   execute_time_label_->setText(translations::trTimeTemplate_1S.arg(exec_mstime));
@@ -84,6 +84,8 @@ void ConnectionDiagnosticDialog::connectionResult(bool suc, qint64 exec_mstime, 
     QIcon icon = GuiFactory::GetInstance().successIcon();
     QPixmap pm = icon.pixmap(kStateIconSize);
     icon_label_->setPixmap(pm);
+    status_label_->setText(translations::trConnectionStatusTemplate_1S.arg(translations::trSuccess));
+    return;
   }
   status_label_->setText(translations::trConnectionStatusTemplate_1S.arg(result_text));
 }
@@ -98,7 +100,7 @@ void ConnectionDiagnosticDialog::startTestConnection(proxy::IConnectionSettingsB
   TestConnection* cheker = new TestConnection(connection);
   cheker->moveToThread(th);
   VERIFY(connect(th, &QThread::started, cheker, &TestConnection::routine));
-  VERIFY(connect(cheker, &TestConnection::connectionResult, this, &ConnectionDiagnosticDialog::connectionResult));
+  VERIFY(connect(cheker, &TestConnection::connectionResult, this, &ConnectionDiagnosticDialog::connectionResultReady));
   VERIFY(connect(cheker, &TestConnection::connectionResult, th, &QThread::quit));
   VERIFY(connect(th, &QThread::finished, cheker, &TestConnection::deleteLater));
   VERIFY(connect(th, &QThread::finished, th, &QThread::deleteLater));

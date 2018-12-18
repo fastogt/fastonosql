@@ -25,7 +25,7 @@
 
 #include "gui/shortcuts.h"  // for g_close_key, g_new_tab_key, etc
 
-#include "translations/global.h"  // for trCloseOtherTabs, trCloseTab, etc
+#include "translations/global.h"
 
 namespace fastonosql {
 namespace gui {

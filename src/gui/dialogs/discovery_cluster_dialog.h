@@ -56,10 +56,10 @@ class DiscoveryClusterDiagnosticDialog : public BaseDialog {
   std::vector<ConnectionListWidgetItemDiscovered*> selectedConnections() const;
 
  private Q_SLOTS:
-  void connectionResult(bool suc,
-                        qint64 exec_mstime,
-                        const QString& result_text,
-                        std::vector<core::ServerDiscoveryClusterInfoSPtr> infos);
+  void connectionResultReady(bool suc,
+                             qint64 exec_mstime,
+                             const QString& result_text,
+                             std::vector<core::ServerDiscoveryClusterInfoSPtr> infos);
 
  protected:
   DiscoveryClusterDiagnosticDialog(const QString& title,

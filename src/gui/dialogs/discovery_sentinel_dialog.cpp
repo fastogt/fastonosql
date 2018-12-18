@@ -139,7 +139,10 @@ void DiscoverySentinelDiagnosticDialog::connectionResultReady(
       item->setConnection(proxy::IConnectionSettingsBaseSPtr(remote));
       list_widget_->addTopLevelItem(item);
     }
+    status_label_->setText(translations::trConnectionStatusTemplate_1S.arg(translations::trSuccess));
+    return;
   }
+
   status_label_->setText(translations::trConnectionStatusTemplate_1S.arg(result_text));
 }
 

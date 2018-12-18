@@ -44,7 +44,7 @@ class ConnectionDiagnosticDialog : public BaseDialog {
   friend T* createDialog(Args&&... args);
 
  private Q_SLOTS:
-  void connectionResult(bool suc, qint64 exec_mstime, const QString& result_text);
+  void connectionResultReady(bool suc, qint64 exec_mstime, const QString& result_text);
 
  protected:
   ConnectionDiagnosticDialog(const QString& title,

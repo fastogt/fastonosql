@@ -212,8 +212,8 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
     return;
   }
 
-  QPoint menuPoint = mapToGlobal(point);
-  menuPoint.setY(menuPoint.y() + header()->height());
+  QPoint menu_point = mapToGlobal(point);
+  menu_point.setY(menu_point.y() + header()->height());
   if (node->type() == IExplorerTreeItem::eServer) {
     ExplorerServerItem* server_node = static_cast<ExplorerServerItem*>(node);
 
@@ -222,23 +222,23 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
     const bool is_redis = server->GetType() == core::REDIS;
 
     QMenu menu(this);
-    QAction* connectAction = new QAction(is_connected ? translations::trDisconnect : translations::trConnect, this);
-    VERIFY(connect(connectAction, &QAction::triggered, this, &ExplorerTreeView::connectDisconnectToServer));
+    QAction* connect_action = new QAction(is_connected ? translations::trDisconnect : translations::trConnect, this);
+    VERIFY(connect(connect_action, &QAction::triggered, this, &ExplorerTreeView::connectDisconnectToServer));
 
-    QAction* openConsoleAction = new QAction(translations::trOpenConsole, this);
-    VERIFY(connect(openConsoleAction, &QAction::triggered, this, &ExplorerTreeView::openConsole));
+    QAction* open_console_action = new QAction(translations::trOpenConsole, this);
+    VERIFY(connect(open_console_action, &QAction::triggered, this, &ExplorerTreeView::openConsole));
 
-    menu.addAction(connectAction);
-    menu.addAction(openConsoleAction);
+    menu.addAction(connect_action);
+    menu.addAction(open_console_action);
 
-    QAction* loadDatabaseAction = new QAction(translations::trLoadDataBases, this);
-    VERIFY(connect(loadDatabaseAction, &QAction::triggered, this, &ExplorerTreeView::loadDatabases));
+    QAction* load_database_action = new QAction(translations::trLoadDataBases, this);
+    VERIFY(connect(load_database_action, &QAction::triggered, this, &ExplorerTreeView::loadDatabases));
 
-    QAction* infoServerAction = new QAction(translations::trInfo, this);
-    VERIFY(connect(infoServerAction, &QAction::triggered, this, &ExplorerTreeView::openInfoServerDialog));
+    QAction* info_server_action = new QAction(translations::trInfo, this);
+    VERIFY(connect(info_server_action, &QAction::triggered, this, &ExplorerTreeView::openInfoServerDialog));
 
-    loadDatabaseAction->setEnabled(is_connected);
-    menu.addAction(loadDatabaseAction);
+    load_database_action->setEnabled(is_connected);
+    menu.addAction(load_database_action);
 
     if (server->IsCanCreateDatabase()) {
       QAction* createDatabaseAction = new QAction(translations::trCreateDatabase, this);
@@ -247,24 +247,24 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       menu.addAction(createDatabaseAction);
     }
 
-    infoServerAction->setEnabled(is_connected);
-    menu.addAction(infoServerAction);
+    info_server_action->setEnabled(is_connected);
+    menu.addAction(info_server_action);
 
     if (is_redis) {
-      QAction* propertyServerAction = new QAction(translations::trProperty, this);
-      VERIFY(connect(propertyServerAction, &QAction::triggered, this, &ExplorerTreeView::openPropertyServerDialog));
+      QAction* property_server_action = new QAction(translations::trProperty, this);
+      VERIFY(connect(property_server_action, &QAction::triggered, this, &ExplorerTreeView::openPropertyServerDialog));
 
-      QAction* pubSubAction = new QAction(translations::trPublishSubscribe, this);
-      VERIFY(connect(pubSubAction, &QAction::triggered, this, &ExplorerTreeView::viewPubSub));
+      QAction* pub_sub_action = new QAction(translations::trPublishSubscribe, this);
+      VERIFY(connect(pub_sub_action, &QAction::triggered, this, &ExplorerTreeView::viewPubSub));
 
       QAction* clients_monitor_action = new QAction(translations::trClientsMonitor, this);
       VERIFY(connect(clients_monitor_action, &QAction::triggered, this, &ExplorerTreeView::viewClientsMonitor));
 
-      propertyServerAction->setEnabled(is_connected);
-      menu.addAction(propertyServerAction);
+      property_server_action->setEnabled(is_connected);
+      menu.addAction(property_server_action);
 
-      pubSubAction->setEnabled(is_connected);
-      menu.addAction(pubSubAction);
+      pub_sub_action->setEnabled(is_connected);
+      menu.addAction(pub_sub_action);
 
       clients_monitor_action->setEnabled(is_connected);
       menu.addAction(clients_monitor_action);
@@ -278,82 +278,82 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
         is_local = host.IsLocalHost();  // failed if ssh connection
       }
 
-      QAction* exportAction = new QAction(translations::trBackup, this);
-      VERIFY(connect(exportAction, &QAction::triggered, this, &ExplorerTreeView::exportServer));
+      QAction* export_action = new QAction(translations::trBackup, this);
+      VERIFY(connect(export_action, &QAction::triggered, this, &ExplorerTreeView::exportServer));
 
-      QAction* importAction = new QAction(translations::trRestore, this);
-      VERIFY(connect(importAction, &QAction::triggered, this, &ExplorerTreeView::importServer));
+      QAction* import_action = new QAction(translations::trRestore, this);
+      VERIFY(connect(import_action, &QAction::triggered, this, &ExplorerTreeView::importServer));
 
-      exportAction->setEnabled(!is_connected && is_local);
-      menu.addAction(exportAction);
-      importAction->setEnabled(is_connected && is_local);
-      menu.addAction(importAction);
+      export_action->setEnabled(!is_connected && is_local);
+      menu.addAction(export_action);
+      import_action->setEnabled(is_connected && is_local);
+      menu.addAction(import_action);
     }
 
-    QAction* historyServerAction = new QAction(translations::trHistory, this);
-    VERIFY(connect(historyServerAction, &QAction::triggered, this, &ExplorerTreeView::openHistoryServerDialog));
+    QAction* history_server_action = new QAction(translations::trHistory, this);
+    VERIFY(connect(history_server_action, &QAction::triggered, this, &ExplorerTreeView::openHistoryServerDialog));
 
-    QAction* clearHistoryServerAction = new QAction(translations::trClearHistory, this);
-    VERIFY(connect(clearHistoryServerAction, &QAction::triggered, this, &ExplorerTreeView::clearHistory));
+    QAction* clear_history_server_action = new QAction(translations::trClearHistory, this);
+    VERIFY(connect(clear_history_server_action, &QAction::triggered, this, &ExplorerTreeView::clearHistory));
 
-    QAction* closeServerAction = new QAction(translations::trClose, this);
-    VERIFY(connect(closeServerAction, &QAction::triggered, this, &ExplorerTreeView::closeServerConnection));
+    QAction* close_server_action = new QAction(translations::trClose, this);
+    VERIFY(connect(close_server_action, &QAction::triggered, this, &ExplorerTreeView::closeServerConnection));
 
-    menu.addAction(historyServerAction);
-    menu.addAction(clearHistoryServerAction);
+    menu.addAction(history_server_action);
+    menu.addAction(clear_history_server_action);
 #if defined(PRO_VERSION)
     common::qt::gui::TreeItem* par = node->parent();
     bool is_cluster_member = dynamic_cast<ExplorerClusterItem*>(par) != nullptr;  // +
-    closeServerAction->setEnabled(!is_cluster_member);
+    close_server_action->setEnabled(!is_cluster_member);
 #endif
-    menu.addAction(closeServerAction);
+    menu.addAction(close_server_action);
 
-    menu.exec(menuPoint);
+    menu.exec(menu_point);
   } else if (node->type() == IExplorerTreeItem::eDatabase) {
     ExplorerDatabaseItem* db = static_cast<ExplorerDatabaseItem*>(node);
 
     QMenu menu(this);
-    QAction* loadContentAction = new QAction(translations::trLoadContOfDataBases, this);
-    VERIFY(connect(loadContentAction, &QAction::triggered, this, &ExplorerTreeView::loadContentDb));
+    QAction* load_content_action = new QAction(translations::trLoadContOfDataBases, this);
+    VERIFY(connect(load_content_action, &QAction::triggered, this, &ExplorerTreeView::loadContentDb));
 
-    QAction* createKeyAction = new QAction(translations::trCreateKey, this);
-    VERIFY(connect(createKeyAction, &QAction::triggered, this, &ExplorerTreeView::createKey));
+    QAction* create_key_action = new QAction(translations::trCreateKey, this);
+    VERIFY(connect(create_key_action, &QAction::triggered, this, &ExplorerTreeView::createKey));
 
-    QAction* viewKeysAction = new QAction(translations::trViewKeys, this);
-    VERIFY(connect(viewKeysAction, &QAction::triggered, this, &ExplorerTreeView::viewKeys));
+    QAction* view_keys_action = new QAction(translations::trViewKeys, this);
+    VERIFY(connect(view_keys_action, &QAction::triggered, this, &ExplorerTreeView::viewKeys));
 
-    QAction* removeAllKeysAction = new QAction(translations::trRemoveAllKeys, this);
-    VERIFY(connect(removeAllKeysAction, &QAction::triggered, this, &ExplorerTreeView::removeAllKeys));
+    QAction* remove_all_keys_action = new QAction(translations::trRemoveAllKeys, this);
+    VERIFY(connect(remove_all_keys_action, &QAction::triggered, this, &ExplorerTreeView::removeAllKeys));
 
-    QAction* setDefaultDbAction = new QAction(translations::trSetDefault, this);
-    VERIFY(connect(setDefaultDbAction, &QAction::triggered, this, &ExplorerTreeView::setDefaultDb));
+    QAction* set_default_db_action = new QAction(translations::trSetDefault, this);
+    VERIFY(connect(set_default_db_action, &QAction::triggered, this, &ExplorerTreeView::setDefaultDb));
 
-    menu.addAction(loadContentAction);
+    menu.addAction(load_content_action);
     bool is_default = db->isDefault();
     proxy::IServerSPtr server = db->server();
 
     bool is_connected = server->IsConnected();
-    loadContentAction->setEnabled(is_default && is_connected);
+    load_content_action->setEnabled(is_default && is_connected);
 
-    menu.addAction(createKeyAction);
-    createKeyAction->setEnabled(is_default && is_connected);
+    menu.addAction(create_key_action);
+    create_key_action->setEnabled(is_default && is_connected);
 
-    menu.addAction(viewKeysAction);
-    viewKeysAction->setEnabled(is_default && is_connected);
+    menu.addAction(view_keys_action);
+    view_keys_action->setEnabled(is_default && is_connected);
 
-    menu.addAction(removeAllKeysAction);
-    removeAllKeysAction->setEnabled(is_default && is_connected);
+    menu.addAction(remove_all_keys_action);
+    remove_all_keys_action->setEnabled(is_default && is_connected);
 
-    menu.addAction(setDefaultDbAction);
-    setDefaultDbAction->setEnabled(!is_default && is_connected);
+    menu.addAction(set_default_db_action);
+    set_default_db_action->setEnabled(!is_default && is_connected);
 
     if (server->IsCanRemoveDatabase()) {
-      QAction* removeDatabaseAction = new QAction(translations::trRemove, this);
-      VERIFY(connect(removeDatabaseAction, &QAction::triggered, this, &ExplorerTreeView::removeDb));
-      removeDatabaseAction->setEnabled(!is_default && is_connected);
-      menu.addAction(removeDatabaseAction);
+      QAction* remove_database_action = new QAction(translations::trRemove, this);
+      VERIFY(connect(remove_database_action, &QAction::triggered, this, &ExplorerTreeView::removeDb));
+      remove_database_action->setEnabled(!is_default && is_connected);
+      menu.addAction(remove_database_action);
     }
-    menu.exec(menuPoint);
+    menu.exec(menu_point);
   } else if (node->type() == IExplorerTreeItem::eNamespace) {
     ExplorerNSItem* ns = static_cast<ExplorerNSItem*>(node);
 
@@ -379,71 +379,71 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
     renameBranchAction->setEnabled(is_default && is_connected);
     menu.addAction(removeBranchAction);
     removeBranchAction->setEnabled(is_default && is_connected);
-    menu.exec(menuPoint);
+    menu.exec(menu_point);
   } else if (node->type() == IExplorerTreeItem::eKey) {
     ExplorerKeyItem* key = static_cast<ExplorerKeyItem*>(node);
 
     QMenu menu(this);
-    QAction* getValueAction = new QAction(translations::trGetValue, this);
-    VERIFY(connect(getValueAction, &QAction::triggered, this, &ExplorerTreeView::loadValue));
+    QAction* get_value_action = new QAction(translations::trGetValue, this);
+    VERIFY(connect(get_value_action, &QAction::triggered, this, &ExplorerTreeView::loadValue));
 
-    QAction* getTypeAction = new QAction(translations::trGetType, this);
-    VERIFY(connect(getTypeAction, &QAction::triggered, this, &ExplorerTreeView::loadType));
+    QAction* get_type_action = new QAction(translations::trGetType, this);
+    VERIFY(connect(get_type_action, &QAction::triggered, this, &ExplorerTreeView::loadType));
 
-    QAction* editKeyAction = new QAction(translations::trEditValue, this);
-    VERIFY(connect(editKeyAction, &QAction::triggered, this, &ExplorerTreeView::editKey));
+    QAction* edit_key_action = new QAction(translations::trEditValue, this);
+    VERIFY(connect(edit_key_action, &QAction::triggered, this, &ExplorerTreeView::editKey));
 
-    QAction* renameKeyAction = new QAction(translations::trRename, this);
-    VERIFY(connect(renameKeyAction, &QAction::triggered, this, &ExplorerTreeView::renKey));
+    QAction* rename_key_action = new QAction(translations::trRename, this);
+    VERIFY(connect(rename_key_action, &QAction::triggered, this, &ExplorerTreeView::renKey));
 
-    QAction* deleteKeyAction = new QAction(translations::trRemove, this);
-    VERIFY(connect(deleteKeyAction, &QAction::triggered, this, &ExplorerTreeView::remKey));
+    QAction* delete_key_action = new QAction(translations::trRemove, this);
+    VERIFY(connect(delete_key_action, &QAction::triggered, this, &ExplorerTreeView::remKey));
 
-    QAction* watchKeyAction = new QAction(translations::trWatch, this);
-    VERIFY(connect(watchKeyAction, &QAction::triggered, this, &ExplorerTreeView::watchKey));
+    QAction* watch_key_action = new QAction(translations::trWatch, this);
+    VERIFY(connect(watch_key_action, &QAction::triggered, this, &ExplorerTreeView::watchKey));
 
     proxy::IServerSPtr server = key->server();
 
     bool is_connected = server->IsConnected();
-    menu.addAction(getValueAction);
-    getValueAction->setEnabled(is_connected);
-    menu.addAction(getTypeAction);
-    getTypeAction->setEnabled(is_connected);
+    menu.addAction(get_value_action);
+    get_value_action->setEnabled(is_connected);
+    menu.addAction(get_type_action);
+    get_type_action->setEnabled(is_connected);
     bool is_ttl_supported = server->IsSupportTTLKeys();
     if (is_ttl_supported) {
-      QAction* setTTLKeyAction = new QAction(trSetTTL, this);
-      setTTLKeyAction->setEnabled(is_connected);
-      VERIFY(connect(setTTLKeyAction, &QAction::triggered, this, &ExplorerTreeView::setTTL));
-      menu.addAction(setTTLKeyAction);
+      QAction* set_ttl_key_action = new QAction(trSetTTL, this);
+      set_ttl_key_action->setEnabled(is_connected);
+      VERIFY(connect(set_ttl_key_action, &QAction::triggered, this, &ExplorerTreeView::setTTL));
+      menu.addAction(set_ttl_key_action);
 
-      QAction* removeTTLKeyAction = new QAction(trRemoveTTL, this);
-      removeTTLKeyAction->setEnabled(is_connected);
-      VERIFY(connect(removeTTLKeyAction, &QAction::triggered, this, &ExplorerTreeView::removeTTL));
-      menu.addAction(removeTTLKeyAction);
+      QAction* remove_ttl_key_action = new QAction(trRemoveTTL, this);
+      remove_ttl_key_action->setEnabled(is_connected);
+      VERIFY(connect(remove_ttl_key_action, &QAction::triggered, this, &ExplorerTreeView::removeTTL));
+      menu.addAction(remove_ttl_key_action);
     }
-    menu.addAction(renameKeyAction);
-    renameKeyAction->setEnabled(is_connected);
-    menu.addAction(editKeyAction);
-    editKeyAction->setEnabled(is_connected);
-    menu.addAction(deleteKeyAction);
-    deleteKeyAction->setEnabled(is_connected);
-    menu.addAction(watchKeyAction);
-    watchKeyAction->setEnabled(is_connected);
-    menu.exec(menuPoint);
+    menu.addAction(rename_key_action);
+    rename_key_action->setEnabled(is_connected);
+    menu.addAction(edit_key_action);
+    edit_key_action->setEnabled(is_connected);
+    menu.addAction(delete_key_action);
+    delete_key_action->setEnabled(is_connected);
+    menu.addAction(watch_key_action);
+    watch_key_action->setEnabled(is_connected);
+    menu.exec(menu_point);
   }
 #if defined(PRO_VERSION)
   else if (node->type() == IExplorerTreeItem::eCluster) {
     QMenu menu(this);
-    QAction* closeClusterAction = new QAction(translations::trClose, this);
-    VERIFY(connect(closeClusterAction, &QAction::triggered, this, &ExplorerTreeView::closeClusterConnection));
-    menu.addAction(closeClusterAction);
-    menu.exec(menuPoint);
+    QAction* close_cluster_action = new QAction(translations::trClose, this);
+    VERIFY(connect(close_cluster_action, &QAction::triggered, this, &ExplorerTreeView::closeClusterConnection));
+    menu.addAction(close_cluster_action);
+    menu.exec(menu_point);
   } else if (node->type() == IExplorerTreeItem::eSentinel) {
     QMenu menu(this);
-    QAction* closeSentinelAction = new QAction(translations::trClose, this);
-    VERIFY(connect(closeSentinelAction, &QAction::triggered, this, &ExplorerTreeView::closeSentinelConnection));
-    menu.addAction(closeSentinelAction);
-    menu.exec(menuPoint);
+    QAction* close_sentinel_action = new QAction(translations::trClose, this);
+    VERIFY(connect(close_sentinel_action, &QAction::triggered, this, &ExplorerTreeView::closeSentinelConnection));
+    menu.addAction(close_sentinel_action);
+    menu.exec(menu_point);
   }
 #endif
 }

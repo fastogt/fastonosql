@@ -111,10 +111,10 @@ std::vector<ConnectionListWidgetItemDiscovered*> DiscoveryClusterDiagnosticDialo
   return res;
 }
 
-void DiscoveryClusterDiagnosticDialog::connectionResult(bool suc,
-                                                        qint64 exec_mstime,
-                                                        const QString& result_text,
-                                                        std::vector<core::ServerDiscoveryClusterInfoSPtr> infos) {
+void DiscoveryClusterDiagnosticDialog::connectionResultReady(bool suc,
+                                                             qint64 exec_mstime,
+                                                             const QString& result_text,
+                                                             std::vector<core::ServerDiscoveryClusterInfoSPtr> infos) {
   glass_widget_->stop();
 
   execute_time_label_->setText(translations::trTimeTemplate_1S.arg(exec_mstime));
@@ -136,6 +136,8 @@ void DiscoveryClusterDiagnosticDialog::connectionResult(bool suc,
       item->setDisabled(inf->Self() || cluster_->FindSettingsByHost(host));
       list_widget_->addTopLevelItem(item);
     }
+    status_label_->setText(translations::trConnectionStatusTemplate_1S.arg(translations::trSuccess));
+    return;
   }
   status_label_->setText(translations::trConnectionStatusTemplate_1S.arg(result_text));
 }
@@ -151,7 +153,7 @@ void DiscoveryClusterDiagnosticDialog::testConnection(proxy::IConnectionSettings
   cheker->moveToThread(th);
   VERIFY(connect(th, &QThread::started, cheker, &DiscoveryConnection::routine));
   VERIFY(connect(cheker, &DiscoveryConnection::connectionResult, this,
-                 &DiscoveryClusterDiagnosticDialog::connectionResult));
+                 &DiscoveryClusterDiagnosticDialog::connectionResultReady));
   VERIFY(connect(cheker, &DiscoveryConnection::connectionResult, th, &QThread::quit));
   VERIFY(connect(th, &QThread::finished, cheker, &DiscoveryConnection::deleteLater));
   VERIFY(connect(th, &QThread::finished, th, &QThread::deleteLater));

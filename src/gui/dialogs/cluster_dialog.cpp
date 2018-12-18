@@ -46,7 +46,7 @@
 #include "gui/dialogs/discovery_cluster_dialog.h"
 #include "gui/gui_factory.h"  // for GuiFactory
 
-#include "translations/global.h"  // for trAddConnection, trAddress, etc
+#include "translations/global.h"
 
 namespace {
 const QString trCreateCluster = QObject::tr("Create cluster");

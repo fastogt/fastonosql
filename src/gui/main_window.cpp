@@ -158,27 +158,27 @@ MainWindow::MainWindow() : QMainWindow() {
   VERIFY(connect(exit_action_, &QAction::triggered, this, &MainWindow::close));
 
   // File menu
-  QMenu* fileMenu = new QMenu(this);
-  file_action_ = menuBar()->addMenu(fileMenu);
-  fileMenu->addAction(connect_action_);
-  fileMenu->addAction(load_from_file_action_);
-  fileMenu->addAction(import_action_);
-  fileMenu->addAction(export_action_);
-  QMenu* recentMenu = new QMenu(this);
-  recent_connections_ = fileMenu->addMenu(recentMenu);
+  QMenu* file_menu = new QMenu(this);
+  file_action_ = menuBar()->addMenu(file_menu);
+  file_menu->addAction(connect_action_);
+  file_menu->addAction(load_from_file_action_);
+  file_menu->addAction(import_action_);
+  file_menu->addAction(export_action_);
+  QMenu* recent_menu = new QMenu(this);
+  recent_connections_ = file_menu->addMenu(recent_menu);
   for (auto i = 0; i < max_recent_connections; ++i) {
     recent_connections_acts_[i] = new QAction(this);
     VERIFY(connect(recent_connections_acts_[i], &QAction::triggered, this, &MainWindow::openRecentConnection));
-    recentMenu->addAction(recent_connections_acts_[i]);
+    recent_menu->addAction(recent_connections_acts_[i]);
   }
 
   clear_menu_ = new QAction(this);
-  recentMenu->addSeparator();
+  recent_menu->addSeparator();
   VERIFY(connect(clear_menu_, &QAction::triggered, this, &MainWindow::clearRecentConnectionsMenu));
-  recentMenu->addAction(clear_menu_);
+  recent_menu->addAction(clear_menu_);
 
-  fileMenu->addSeparator();
-  fileMenu->addAction(exit_action_);
+  file_menu->addSeparator();
+  file_menu->addAction(exit_action_);
   updateRecentConnectionActions();
 
   preferences_action_ = new QAction(this);
@@ -186,9 +186,9 @@ MainWindow::MainWindow() : QMainWindow() {
   VERIFY(connect(preferences_action_, &QAction::triggered, this, &MainWindow::openPreferences));
 
   // edit menu
-  QMenu* editMenu = new QMenu(this);
-  edit_action_ = menuBar()->addMenu(editMenu);
-  editMenu->addAction(preferences_action_);
+  QMenu* edit_menu = new QMenu(this);
+  edit_action_ = menuBar()->addMenu(edit_menu);
+  edit_menu->addAction(preferences_action_);
 
   // tools menu
   QMenu* tools = new QMenu(this);
@@ -696,7 +696,7 @@ void MainWindow::retranslateUi() {
   window_action_->setText(translations::trWindow);
   full_screan_action_->setText(translations::trFullScreen);
   report_bug_action_->setText(translations::trReportBug + "...");
-  about_action_->setText(tr("About %1...").arg(PROJECT_NAME_TITLE));
+  about_action_->setText(translations::trAbout + QString(" " PROJECT_NAME_TITLE "..."));
   howtouse_action_->setText(translations::trHowToUse + "...");
   help_action_->setText(translations::trHelp);
   explorer_action_->setText(translations::trExpTree);
