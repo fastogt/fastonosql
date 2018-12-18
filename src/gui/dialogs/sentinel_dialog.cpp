@@ -65,7 +65,6 @@ SentinelDialog::SentinelDialog(proxy::ISentinelSettingsBase* connection, QWidget
       type_connection_(nullptr),
       logging_(nullptr),
       logging_msec_(nullptr),
-      savebar_(nullptr),
       list_widget_(nullptr),
       test_button_(nullptr),
       discovery_button_(nullptr),
@@ -79,19 +78,19 @@ SentinelDialog::SentinelDialog(proxy::ISentinelSettingsBase* connection, QWidget
   connection_folder_->setValidator(new QRegExpValidator(rxf, this));
 
   folder_label_ = new QLabel;
-  QHBoxLayout* folderLayout = new QHBoxLayout;
-  folderLayout->addWidget(folder_label_);
-  folderLayout->addWidget(connection_folder_);
-  QString conFolder = kDefaultNameConnectionFolder;
-  QString conName = kDefaultSentinelNameConnection;
+  QHBoxLayout* folder_layout = new QHBoxLayout;
+  folder_layout->addWidget(folder_label_);
+  folder_layout->addWidget(connection_folder_);
+  QString con_folder = kDefaultNameConnectionFolder;
+  QString con_name = kDefaultSentinelNameConnection;
 
   if (sentinel_connection_) {
     proxy::connection_path_t path = sentinel_connection_->GetPath();
-    common::ConvertFromString(path.GetName(), &conName);
-    common::ConvertFromString(path.GetDirectory(), &conFolder);
+    common::ConvertFromString(path.GetName(), &con_name);
+    common::ConvertFromString(path.GetDirectory(), &con_folder);
   }
-  connection_name_->setText(conName);
-  connection_folder_->setText(conFolder);
+  connection_name_->setText(con_name);
+  connection_folder_->setText(con_folder);
 
   type_connection_ = new QComboBox;
 
@@ -110,7 +109,7 @@ SentinelDialog::SentinelDialog(proxy::ISentinelSettingsBase* connection, QWidget
   VERIFY(connect(type_connection_, static_cast<qind>(&QComboBox::currentIndexChanged), this,
                  &SentinelDialog::typeConnectionChange));
 
-  QHBoxLayout* loggingLayout = new QHBoxLayout;
+  QHBoxLayout* logging_layout = new QHBoxLayout;
   logging_ = new QCheckBox;
   logging_msec_ = new QSpinBox;
   logging_msec_->setRange(0, INT32_MAX);
@@ -124,8 +123,8 @@ SentinelDialog::SentinelDialog(proxy::ISentinelSettingsBase* connection, QWidget
   }
   VERIFY(connect(logging_, &QCheckBox::stateChanged, this, &SentinelDialog::loggingStateChange));
 
-  loggingLayout->addWidget(logging_);
-  loggingLayout->addWidget(logging_msec_);
+  logging_layout->addWidget(logging_);
+  logging_layout->addWidget(logging_msec_);
 
   list_widget_ = new QTreeWidget;
   list_widget_->setIndentation(5);
@@ -149,32 +148,16 @@ SentinelDialog::SentinelDialog(proxy::ISentinelSettingsBase* connection, QWidget
 
   VERIFY(connect(list_widget_, &QTreeWidget::itemSelectionChanged, this, &SentinelDialog::itemSelectionChanged));
 
-  savebar_ = new QToolBar;
-
-  QAction* add_action = new QAction(GuiFactory::GetInstance().addIcon(), translations::trAddConnection, this);
-  typedef void (QAction::*trig)(bool);
-  VERIFY(connect(add_action, static_cast<trig>(&QAction::triggered), this, &SentinelDialog::addConnectionSettings));
-  savebar_->addAction(add_action);
-
-  QAction* rm_action = new QAction(GuiFactory::GetInstance().removeIcon(), translations::trRemoveConnection, this);
-  VERIFY(connect(rm_action, static_cast<trig>(&QAction::triggered), this, &SentinelDialog::remove));
-  savebar_->addAction(rm_action);
-
-  QAction* edit_action = new QAction(GuiFactory::GetInstance().editIcon(), translations::trEditConnection, this);
-  VERIFY(connect(edit_action, static_cast<trig>(&QAction::triggered), this, &SentinelDialog::edit));
-  savebar_->addAction(edit_action);
-
-  QSpacerItem* hSpacer = new QSpacerItem(300, 0, QSizePolicy::Expanding);
-
+  QSpacerItem* spacer = new QSpacerItem(300, 0, QSizePolicy::Expanding);
   QHBoxLayout* tool_bar_layout = new QHBoxLayout;
-  tool_bar_layout->addWidget(savebar_);
-  tool_bar_layout->addSpacerItem(hSpacer);
+  tool_bar_layout->addWidget(createToolBar());
+  tool_bar_layout->addSpacerItem(spacer);
 
   QVBoxLayout* input_layout = new QVBoxLayout;
   input_layout->addWidget(connection_name_);
-  input_layout->addLayout(folderLayout);
+  input_layout->addLayout(folder_layout);
   input_layout->addWidget(type_connection_);
-  input_layout->addLayout(loggingLayout);
+  input_layout->addLayout(logging_layout);
   input_layout->addLayout(tool_bar_layout);
   input_layout->addWidget(list_widget_);
 
@@ -219,15 +202,10 @@ void SentinelDialog::accept() {
 }
 
 void SentinelDialog::typeConnectionChange(int index) {
-  QVariant var = type_connection_->itemData(index);
-  core::ConnectionType currentType = static_cast<core::ConnectionType>(qvariant_cast<unsigned char>(var));
-  bool isValidType = currentType == core::REDIS;
-  connection_name_->setEnabled(isValidType);
-  button_box_->button(QDialogButtonBox::Save)->setEnabled(isValidType);
-  savebar_->setEnabled(isValidType);
-  list_widget_->selectionModel()->clear();
-  list_widget_->setEnabled(isValidType);
-  logging_->setEnabled(isValidType);
+  const QVariant var = type_connection_->itemData(index);
+  const core::ConnectionType current_type = static_cast<core::ConnectionType>(qvariant_cast<unsigned char>(var));
+  UNUSED(current_type);
+
   itemSelectionChanged();
 }
 
@@ -349,7 +327,32 @@ void SentinelDialog::itemSelectionChanged() {
 void SentinelDialog::retranslateUi() {
   logging_->setText(translations::trLoggingEnabled);
   folder_label_->setText(translations::trFolder);
+  add_action_->setToolTip(translations::trAddConnection);
+  remove_action_->setToolTip(translations::trRemoveConnection);
+  edit_action_->setToolTip(translations::trEditConnection);
+
   base_class::retranslateUi();
+}
+
+QToolBar* SentinelDialog::createToolBar() {
+  QToolBar* savebar = new QToolBar;
+
+  add_action_ = new QAction;
+  add_action_->setIcon(GuiFactory::GetInstance().addIcon());
+  VERIFY(connect(add_action_, &QAction::triggered, this, &SentinelDialog::addConnectionSettings));
+  savebar->addAction(add_action_);
+
+  remove_action_ = new QAction;
+  remove_action_->setIcon(GuiFactory::GetInstance().removeIcon());
+  VERIFY(connect(remove_action_, &QAction::triggered, this, &SentinelDialog::remove));
+  savebar->addAction(remove_action_);
+
+  edit_action_ = new QAction;
+  edit_action_->setIcon(GuiFactory::GetInstance().editIcon());
+  VERIFY(connect(edit_action_, &QAction::triggered, this, &SentinelDialog::edit));
+  savebar->addAction(edit_action_);
+
+  return savebar;
 }
 
 bool SentinelDialog::validateAndApply() {

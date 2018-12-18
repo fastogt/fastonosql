@@ -73,35 +73,6 @@ ConnectionsDialog::ConnectionsDialog(const QString& title, const QIcon& icon, QW
   // list_widget_->setDragDropMode(QAbstractItemView::InternalMove);
   VERIFY(connect(list_widget_, &QTreeWidget::itemDoubleClicked, this, &ConnectionsDialog::accept));
 
-  QToolBar* savebar = new QToolBar;
-
-  QAction* add_connection_action =
-      new QAction(GuiFactory::GetInstance().addIcon(), translations::trAddConnection, this);
-  VERIFY(connect(add_connection_action, &QAction::triggered, this, &ConnectionsDialog::addConnectionAction));
-  savebar->addAction(add_connection_action);
-
-  QAction* add_cluster_action =
-      new QAction(GuiFactory::GetInstance().clusterIcon(), translations::trAddClusterConnection, this);
-  VERIFY(connect(add_cluster_action, &QAction::triggered, this, &ConnectionsDialog::addClusterAction));
-  savebar->addAction(add_cluster_action);
-
-  QAction* add_sentinel_action =
-      new QAction(GuiFactory::GetInstance().sentinelIcon(), translations::trAddSentinelConnection, this);
-  VERIFY(connect(add_sentinel_action, &QAction::triggered, this, &ConnectionsDialog::addSentinelAction));
-  savebar->addAction(add_sentinel_action);
-
-  QAction* edit_action = new QAction(GuiFactory::GetInstance().editIcon(), translations::trEditConnection, this);
-  VERIFY(connect(edit_action, &QAction::triggered, this, &ConnectionsDialog::editItemAction));
-  savebar->addAction(edit_action);
-
-  QAction* clone_action = new QAction(GuiFactory::GetInstance().cloneIcon(), translations::trCloneConnection, this);
-  VERIFY(connect(clone_action, &QAction::triggered, this, &ConnectionsDialog::cloneItemAction));
-  savebar->addAction(clone_action);
-
-  QAction* remove_action = new QAction(GuiFactory::GetInstance().removeIcon(), translations::trRemoveConnection, this);
-  VERIFY(connect(remove_action, &QAction::triggered, this, &ConnectionsDialog::removeItemAction));
-  savebar->addAction(remove_action);
-
   QDialogButtonBox* button_box = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   button_box->setOrientation(Qt::Horizontal);
   button_box->button(QDialogButtonBox::Ok)->setIcon(GuiFactory::GetInstance().serverIcon());
@@ -133,6 +104,8 @@ ConnectionsDialog::ConnectionsDialog(const QString& title, const QIcon& icon, QW
   if (list_widget_->topLevelItemCount() > 0) {
     list_widget_->setCurrentItem(list_widget_->topLevelItem(0));
   }
+
+  QToolBar* savebar = createToolBar();
 
   QVBoxLayout* main_layout = new QVBoxLayout;
   main_layout->addWidget(savebar);
@@ -296,6 +269,41 @@ void ConnectionsDialog::removeItemAction() {
     return;
   }
 #endif
+}
+
+QToolBar* ConnectionsDialog::createToolBar() {
+  QToolBar* savebar = new QToolBar;
+
+  add_connection_action_ = new QAction;
+  add_connection_action_->setIcon(GuiFactory::GetInstance().addIcon());
+  VERIFY(connect(add_connection_action_, &QAction::triggered, this, &ConnectionsDialog::addConnectionAction));
+  savebar->addAction(add_connection_action_);
+
+  add_cluster_action_ = new QAction;
+  add_cluster_action_->setIcon(GuiFactory::GetInstance().clusterIcon());
+  VERIFY(connect(add_cluster_action_, &QAction::triggered, this, &ConnectionsDialog::addClusterAction));
+  savebar->addAction(add_cluster_action_);
+
+  add_sentinel_action_ = new QAction;
+  add_sentinel_action_->setIcon(GuiFactory::GetInstance().sentinelIcon());
+  VERIFY(connect(add_sentinel_action_, &QAction::triggered, this, &ConnectionsDialog::addSentinelAction));
+  savebar->addAction(add_sentinel_action_);
+
+  edit_action_ = new QAction;
+  edit_action_->setIcon(GuiFactory::GetInstance().editIcon());
+  VERIFY(connect(edit_action_, &QAction::triggered, this, &ConnectionsDialog::editItemAction));
+  savebar->addAction(edit_action_);
+
+  clone_action_ = new QAction;
+  clone_action_->setIcon(GuiFactory::GetInstance().cloneIcon());
+  VERIFY(connect(clone_action_, &QAction::triggered, this, &ConnectionsDialog::cloneItemAction));
+  savebar->addAction(clone_action_);
+
+  remove_action_ = new QAction;
+  remove_action_->setIcon(GuiFactory::GetInstance().removeIcon());
+  VERIFY(connect(remove_action_, &QAction::triggered, this, &ConnectionsDialog::removeItemAction));
+  savebar->addAction(remove_action_);
+  return savebar;
 }
 
 void ConnectionsDialog::editItem(QTreeWidgetItem* qitem, bool remove_origin) {
@@ -504,6 +512,13 @@ void ConnectionsDialog::accept() {
 }
 
 void ConnectionsDialog::retranslateUi() {
+  add_connection_action_->setToolTip(translations::trAddConnection);
+  add_cluster_action_->setToolTip(translations::trAddClusterConnection);
+  add_sentinel_action_->setToolTip(translations::trAddSentinelConnection);
+  edit_action_->setToolTip(translations::trEditConnection);
+  clone_action_->setToolTip(translations::trCloneConnection);
+  remove_action_->setToolTip(translations::trRemoveConnection);
+
   ok_button_->setText(translations::trOpen);
   base_class::retranslateUi();
 }

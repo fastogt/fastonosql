@@ -66,7 +66,6 @@ ClusterDialog::ClusterDialog(proxy::IClusterSettingsBase* connection, QWidget* p
       type_connection_(nullptr),
       logging_(nullptr),
       logging_msec_(nullptr),
-      savebar_(nullptr),
       list_widget_(nullptr),
       test_button_(nullptr),
       discovery_button_(nullptr),
@@ -159,23 +158,8 @@ ClusterDialog::ClusterDialog(proxy::IClusterSettingsBase* connection, QWidget* p
   VERIFY(connect(list_widget_, &QTreeWidget::itemSelectionChanged, this, &ClusterDialog::itemSelectionChanged));
 
   QHBoxLayout* tool_bar_layout = new QHBoxLayout;
-  savebar_ = new QToolBar;
-  tool_bar_layout->addWidget(savebar_);
-
-  QAction* add_action = new QAction(GuiFactory::GetInstance().addIcon(), translations::trAddConnection, this);
-  typedef void (QAction::*trig)(bool);
-  VERIFY(connect(add_action, static_cast<trig>(&QAction::triggered), this, &ClusterDialog::add));
-  savebar_->addAction(add_action);
-
-  QAction* remove_action = new QAction(GuiFactory::GetInstance().removeIcon(), translations::trRemoveConnection, this);
-  VERIFY(connect(remove_action, static_cast<trig>(&QAction::triggered), this, &ClusterDialog::remove));
-  savebar_->addAction(remove_action);
-
-  QAction* edit_action = new QAction(GuiFactory::GetInstance().editIcon(), translations::trEditConnection, this);
-  VERIFY(connect(edit_action, static_cast<trig>(&QAction::triggered), this, &ClusterDialog::edit));
-  savebar_->addAction(edit_action);
-
   QSpacerItem* hspacer = new QSpacerItem(300, 0, QSizePolicy::Expanding);
+  tool_bar_layout->addWidget(createToolBar());
   tool_bar_layout->addSpacerItem(hspacer);
 
   QVBoxLayout* input_layout = new QVBoxLayout;
@@ -230,14 +214,8 @@ void ClusterDialog::accept() {
 void ClusterDialog::typeConnectionChange(int index) {
   const QVariant var = type_connection_->itemData(index);
   const core::ConnectionType current_type = static_cast<core::ConnectionType>(qvariant_cast<unsigned char>(var));
-  const bool is_valid_type = current_type == core::REDIS;
+  UNUSED(current_type);
 
-  connection_name_->setEnabled(is_valid_type);
-  button_box_->button(QDialogButtonBox::Save)->setEnabled(is_valid_type);
-  savebar_->setEnabled(is_valid_type);
-  list_widget_->selectionModel()->clear();
-  list_widget_->setEnabled(is_valid_type);
-  logging_->setEnabled(is_valid_type);
   itemSelectionChanged();
 }
 
@@ -369,17 +347,40 @@ void ClusterDialog::edit() {
 }
 
 void ClusterDialog::itemSelectionChanged() {
-  ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(list_widget_->currentItem());  // +
-  bool isValidConnection = currentItem != nullptr;
+  ConnectionListWidgetItem* current_item = dynamic_cast<ConnectionListWidgetItem*>(list_widget_->currentItem());  // +
+  bool is_valid_connection = current_item != nullptr;
 
-  test_button_->setEnabled(isValidConnection);
-  discovery_button_->setEnabled(isValidConnection);
+  test_button_->setEnabled(is_valid_connection);
+  discovery_button_->setEnabled(is_valid_connection);
 }
 
 void ClusterDialog::retranslateUi() {
   logging_->setText(translations::trLoggingEnabled);
   folder_label_->setText(translations::trFolder);
+
+  add_action_->setToolTip(translations::trAddConnection);
+  remove_action_->setToolTip(translations::trRemoveConnection);
+  edit_action_->setToolTip(translations::trEditConnection);
   base_class::retranslateUi();
+}
+
+QToolBar* ClusterDialog::createToolBar() {
+  QToolBar* savebar = new QToolBar;
+  add_action_ = new QAction;
+  add_action_->setIcon(GuiFactory::GetInstance().addIcon());
+  VERIFY(connect(add_action_, &QAction::triggered, this, &ClusterDialog::add));
+  savebar->addAction(add_action_);
+
+  remove_action_ = new QAction;
+  remove_action_->setIcon(GuiFactory::GetInstance().removeIcon());
+  VERIFY(connect(remove_action_, &QAction::triggered, this, &ClusterDialog::remove));
+  savebar->addAction(remove_action_);
+
+  edit_action_ = new QAction;
+  edit_action_->setIcon(GuiFactory::GetInstance().editIcon());
+  VERIFY(connect(edit_action_, &QAction::triggered, this, &ClusterDialog::edit));
+  savebar->addAction(edit_action_);
+  return savebar;
 }
 
 bool ClusterDialog::validateAndApply() {

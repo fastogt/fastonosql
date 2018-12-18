@@ -166,8 +166,11 @@ void PasswordDialog::syncShowButton() {
 }
 
 void PasswordDialog::retranslateUi() {
-  password_label_->setText(translations::trPassword + ":");
   login_label_->setText(translations::trLogin + ":");
+  login_box_->setToolTip(translations::trPleaseEnterYourLogin);
+  password_label_->setText(translations::trPassword + ":");
+  password_box_->setToolTip(translations::trPleaseEnterYourPassword);
+
   syncShowButton();
   base_class::retranslateUi();
 }

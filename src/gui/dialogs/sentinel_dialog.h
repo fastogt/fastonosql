@@ -66,6 +66,8 @@ class SentinelDialog : public BaseDialog {
   void retranslateUi() override;
 
  private:
+  QToolBar* createToolBar();
+
   bool validateAndApply();  // always return true and init
                             // sentinel_connection_
   void addSentinel(proxy::SentinelSettings sent);
@@ -78,7 +80,9 @@ class SentinelDialog : public BaseDialog {
   QCheckBox* logging_;
   QSpinBox* logging_msec_;
 
-  QToolBar* savebar_;
+  QAction* add_action_;
+  QAction* remove_action_;
+  QAction* edit_action_;
   QTreeWidget* list_widget_;
 
   QPushButton* test_button_;

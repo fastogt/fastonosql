@@ -29,6 +29,7 @@
 
 class QTreeWidget;
 class QTreeWidgetItem;
+class QToolBar;
 
 namespace fastonosql {
 namespace gui {
@@ -72,6 +73,8 @@ class ConnectionsDialog : public BaseDialog {
   void retranslateUi() override;
 
  private:
+  QToolBar* createToolBar();
+
   void editItem(QTreeWidgetItem* qitem, bool remove_origin);
   void editConnection(ConnectionListWidgetItem* connection_item, bool remove_origin);
   void removeConnection(ConnectionListWidgetItem* connectionItem);
@@ -87,6 +90,13 @@ class ConnectionsDialog : public BaseDialog {
 #endif
 
   DirectoryListWidgetItem* findFolderByPath(const proxy::connection_path_t& path) const;
+
+  QAction* add_connection_action_;
+  QAction* add_cluster_action_;
+  QAction* add_sentinel_action_;
+  QAction* edit_action_;
+  QAction* clone_action_;
+  QAction* remove_action_;
 
   QTreeWidget* list_widget_;
   QPushButton* ok_button_;
