@@ -18,38 +18,48 @@
 
 #pragma once
 
-#include "gui/widgets/list_type_view.h"
+#include <QTableView>
+
+#include <common/value.h>
 
 namespace fastonosql {
 namespace gui {
 
-class FastoViewer;
+class ListTableModel;
 
-class ListTypeWidget : public QWidget {
+class ListTypeView : public QTableView {
   Q_OBJECT
 
  public:
-  typedef QWidget base_class;
-  explicit ListTypeWidget(QWidget* parent = Q_NULLPTR);
+  typedef QTableView base_class;
+  typedef common::Value::string_t row_t;
+  enum Mode : uint8_t { kArray = 0, kSet };
+
+  explicit ListTypeView(QWidget* parent = Q_NULLPTR);
 
   common::ArrayValue* arrayValue() const;  // alocate memory
   common::SetValue* setValue() const;      // alocate memory
 
-  void insertRow(const ListTypeView::row_t& value);
+  void insertRow(const row_t& value);
   void clear();
 
-  ListTypeView::Mode currentMode() const;
-  void setCurrentMode(ListTypeView::Mode mode);
+  Mode currentMode() const;
+  void setCurrentMode(Mode mode);
 
  Q_SIGNALS:
   void dataChangedSignal();
+  void rowChanged(const row_t& value);
 
  private Q_SLOTS:
-  void valueUpdate(const ListTypeView::row_t& value);
+  void addRow(const QModelIndex& index);
+  void removeRow(const QModelIndex& index);
+
+ protected:
+  void currentChanged(const QModelIndex& current, const QModelIndex& previous) override;
 
  private:
-  ListTypeView* view_;
-  FastoViewer* value_edit_;
+  ListTableModel* model_;
+  Mode mode_;
 };
 
 }  // namespace gui

@@ -47,9 +47,15 @@ QVariant StreamTableModel::data(const QModelIndex& index, int role) const {
   QVariant result;
   if (role == Qt::DisplayRole) {
     if (col == kKey) {
-      result = node->key();
+      QString key;
+      if (common::ConvertFromBytes(node->key(), &key)) {
+        result = key;
+      }
     } else if (col == kValue) {
-      result = node->value();
+      QString value;
+      if (common::ConvertFromBytes(node->value(), &value)) {
+        result = value;
+      }
     } else if (col == kAction) {
       result = node->actionState();
     }
@@ -70,9 +76,11 @@ bool StreamTableModel::setData(const QModelIndex& index, const QVariant& value, 
     }
 
     if (col == kKey) {
-      node->setKey(value.toString());
+      const QString val = value.toString();
+      node->setKey(common::ConvertToCharBytes(val));
     } else if (col == kValue) {
-      node->setValue(value.toString());
+      const QString val = value.toString();
+      node->setValue(common::ConvertToCharBytes(val));
     }
   }
 
@@ -135,8 +143,8 @@ bool StreamTableModel::getStream(core::StreamValue::stream_id sid, core::StreamV
   std::vector<core::StreamValue::Entry> entries;
   for (size_t i = 0; i < data_.size() - 1; ++i) {
     KeyValueTableItem* node = static_cast<KeyValueTableItem*>(data_[i]);
-    const common::Value::string_t key = common::ConvertToCharBytes(node->key());
-    const common::Value::string_t val = common::ConvertToCharBytes(node->value());
+    const common::Value::string_t key = node->key();
+    const common::Value::string_t val = node->value();
     entries.push_back(core::StreamValue::Entry{key, val});
   }
 
@@ -144,13 +152,13 @@ bool StreamTableModel::getStream(core::StreamValue::stream_id sid, core::StreamV
   return true;
 }
 
-void StreamTableModel::insertEntry(const QString& key, const QString& value) {
+void StreamTableModel::insertEntry(const key_t& key, const value_t& value) {
   const size_t size = data_.size();
   beginInsertRows(QModelIndex(), size, size);
   data_.insert(data_.begin() + size - 1, new KeyValueTableItem(key, value, KeyValueTableItem::RemoveAction));
   KeyValueTableItem* last = static_cast<KeyValueTableItem*>(data_.back());
-  last->setKey(QString());
-  last->setValue(QString());
+  last->setKey(KeyValueTableItem::key_t());
+  last->setValue(KeyValueTableItem::value_t());
   endInsertRows();
 }
 
@@ -168,7 +176,7 @@ void StreamTableModel::removeEntry(int row) {
 }
 
 common::qt::gui::TableItem* StreamTableModel::createEmptyEntry() const {
-  return new KeyValueTableItem(QString(), QString(), KeyValueTableItem::AddAction);
+  return new KeyValueTableItem(KeyValueTableItem::key_t(), KeyValueTableItem::value_t(), KeyValueTableItem::AddAction);
 }
 
 }  // namespace gui

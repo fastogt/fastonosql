@@ -27,16 +27,17 @@ namespace gui {
 
 class HashTableModel;
 
-class HashTypeWidget : public QTableView {
+class HashTypeView : public QTableView {
   Q_OBJECT
 
  public:
+  typedef common::Value::string_t row_t;
   enum Mode : uint8_t { kHash = 0, kZset };
 
-  explicit HashTypeWidget(QWidget* parent = Q_NULLPTR);
-  ~HashTypeWidget() override;
+  explicit HashTypeView(QWidget* parent = Q_NULLPTR);
+  ~HashTypeView() override;
 
-  void insertRow(const QString& first, const QString& second);
+  void insertRow(const row_t& first, const row_t& second);
   void clear();
 
   common::ZSetValue* zsetValue() const;  // alocate memory

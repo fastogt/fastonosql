@@ -32,7 +32,7 @@ namespace fastonosql {
 namespace gui {
 
 class FastoViewer;
-class HashTypeWidget;
+class HashTypeView;
 class StreamTypeWidget;
 class ListTypeWidget;
 
@@ -76,7 +76,7 @@ class KeyEditWidget : public QWidget {
   FastoViewer* json_value_edit_;
   QComboBox* bool_value_edit_;
   ListTypeWidget* value_list_edit_;
-  HashTypeWidget* value_table_edit_;
+  HashTypeView* value_table_edit_;
   StreamTypeWidget* stream_table_edit_;
 };
 

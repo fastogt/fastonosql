@@ -31,15 +31,15 @@
 namespace fastonosql {
 namespace gui {
 
-HashTypeWidget::HashTypeWidget(QWidget* parent) : QTableView(parent), model_(nullptr), mode_(kHash) {
+HashTypeView::HashTypeView(QWidget* parent) : QTableView(parent), model_(nullptr), mode_(kHash) {
   model_ = new HashTableModel(this);
   setModel(model_);
 
   ActionDelegate* del = new ActionDelegate(this);
-  VERIFY(connect(del, &ActionDelegate::addClicked, this, &HashTypeWidget::addRow));
-  VERIFY(connect(del, &ActionDelegate::removeClicked, this, &HashTypeWidget::removeRow));
+  VERIFY(connect(del, &ActionDelegate::addClicked, this, &HashTypeView::addRow));
+  VERIFY(connect(del, &ActionDelegate::removeClicked, this, &HashTypeView::removeRow));
   QAbstractItemDelegate* default_del = itemDelegate();
-  VERIFY(connect(default_del, &QAbstractItemDelegate::closeEditor, this, &HashTypeWidget::dataChangedSignal));
+  VERIFY(connect(default_del, &QAbstractItemDelegate::closeEditor, this, &HashTypeView::dataChangedSignal));
 
   setItemDelegateForColumn(HashTableModel::kAction, del);
   setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -52,31 +52,31 @@ HashTypeWidget::HashTypeWidget(QWidget* parent) : QTableView(parent), model_(nul
   setCurrentMode(mode_);
 }
 
-HashTypeWidget::~HashTypeWidget() {}
+HashTypeView::~HashTypeView() {}
 
-void HashTypeWidget::insertRow(const QString& first, const QString& second) {
+void HashTypeView::insertRow(const row_t& first, const row_t& second) {
   model_->insertRow(first, second);
   emit dataChangedSignal();
 }
 
-void HashTypeWidget::clear() {
+void HashTypeView::clear() {
   model_->clear();
   emit dataChangedSignal();
 }
 
-common::ZSetValue* HashTypeWidget::zsetValue() const {
+common::ZSetValue* HashTypeView::zsetValue() const {
   return model_->zsetValue();
 }
 
-common::HashValue* HashTypeWidget::hashValue() const {
+common::HashValue* HashTypeView::hashValue() const {
   return model_->hashValue();
 }
 
-HashTypeWidget::Mode HashTypeWidget::currentMode() const {
+HashTypeView::Mode HashTypeView::currentMode() const {
   return mode_;
 }
 
-void HashTypeWidget::setCurrentMode(Mode mode) {
+void HashTypeView::setCurrentMode(Mode mode) {
   mode_ = mode;
   if (mode == kHash) {
     model_->setFirstColumnName(translations::trField);
@@ -89,12 +89,12 @@ void HashTypeWidget::setCurrentMode(Mode mode) {
   }
 }
 
-void HashTypeWidget::addRow(const QModelIndex& index) {
+void HashTypeView::addRow(const QModelIndex& index) {
   KeyValueTableItem* node = common::qt::item<common::qt::gui::TableItem*, KeyValueTableItem*>(index);
   insertRow(node->key(), node->value());
 }
 
-void HashTypeWidget::removeRow(const QModelIndex& index) {
+void HashTypeView::removeRow(const QModelIndex& index) {
   model_->removeRow(index.row());
   emit dataChangedSignal();
 }

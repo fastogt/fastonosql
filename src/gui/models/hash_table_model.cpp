@@ -46,9 +46,15 @@ QVariant HashTableModel::data(const QModelIndex& index, int role) const {
   QVariant result;
   if (role == Qt::DisplayRole) {
     if (col == kKey) {
-      result = node->key();
+      QString key;
+      if (common::ConvertFromBytes(node->key(), &key)) {
+        result = key;
+      }
     } else if (col == kValue) {
-      result = node->value();
+      QString value;
+      if (common::ConvertFromBytes(node->value(), &value)) {
+        result = value;
+      }
     } else if (col == kAction) {
       result = node->actionState();
     }
@@ -69,9 +75,11 @@ bool HashTableModel::setData(const QModelIndex& index, const QVariant& value, in
     }
 
     if (col == kKey) {
-      node->setKey(value.toString());
+      const QString val = value.toString();
+      node->setKey(common::ConvertToCharBytes(val));
     } else if (col == kValue) {
-      node->setValue(value.toString());
+      const QString val = value.toString();
+      node->setValue(common::ConvertToCharBytes(val));
     }
   }
 
@@ -131,8 +139,8 @@ common::ZSetValue* HashTableModel::zsetValue() const {
   common::ZSetValue* ar = common::Value::CreateZSetValue();
   for (size_t i = 0; i < data_.size() - 1; ++i) {
     KeyValueTableItem* node = static_cast<KeyValueTableItem*>(data_[i]);
-    common::Value::string_t key = common::ConvertToCharBytes(node->key());
-    common::Value::string_t val = common::ConvertToCharBytes(node->value());
+    common::Value::string_t key = node->key();
+    common::Value::string_t val = node->value();
     ar->Insert(key, val);
   }
 
@@ -147,21 +155,21 @@ common::HashValue* HashTableModel::hashValue() const {
   common::HashValue* ar = common::Value::CreateHashValue();
   for (size_t i = 0; i < data_.size() - 1; ++i) {
     KeyValueTableItem* node = static_cast<KeyValueTableItem*>(data_[i]);
-    common::Value::string_t key = common::ConvertToCharBytes(node->key());
-    common::Value::string_t val = common::ConvertToCharBytes(node->value());
+    common::Value::string_t key = node->key();
+    common::Value::string_t val = node->value();
     ar->Insert(key, val);
   }
 
   return ar;
 }
 
-void HashTableModel::insertRow(const QString& key, const QString& value) {
+void HashTableModel::insertRow(const key_t& key, const value_t& value) {
   size_t size = data_.size();
   beginInsertRows(QModelIndex(), size, size);
   data_.insert(data_.begin() + size - 1, new KeyValueTableItem(key, value, KeyValueTableItem::RemoveAction));
   KeyValueTableItem* last = static_cast<KeyValueTableItem*>(data_.back());
-  last->setKey(QString());
-  last->setValue(QString());
+  last->setKey(key_t());
+  last->setValue(value_t());
   endInsertRows();
 }
 
@@ -187,7 +195,7 @@ void HashTableModel::setSecondColumnName(const QString& name) {
 }
 
 common::qt::gui::TableItem* HashTableModel::createEmptyRow() const {
-  return new KeyValueTableItem(QString(), QString(), KeyValueTableItem::AddAction);
+  return new KeyValueTableItem(KeyValueTableItem::key_t(), KeyValueTableItem::value_t(), KeyValueTableItem::AddAction);
 }
 
 }  // namespace gui

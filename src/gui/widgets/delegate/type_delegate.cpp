@@ -32,7 +32,7 @@
 
 #include "gui/models/items/fasto_common_item.h"
 #include "gui/widgets/hash_type_widget.h"
-#include "gui/widgets/list_type_widget.h"
+#include "gui/widgets/list_type_view.h"
 
 Q_DECLARE_METATYPE(fastonosql::core::NValue)
 
@@ -69,12 +69,12 @@ QWidget* TypeDelegate::createEditor(QWidget* parent,
     QLineEdit* editor = new QLineEdit(parent);
     return editor;
   } else if (t == common::Value::TYPE_ARRAY || t == common::Value::TYPE_SET) {
-    ListTypeWidget* editor = new ListTypeWidget(parent);
+    ListTypeView* editor = new ListTypeView(parent);
     editor->horizontalHeader()->hide();
     editor->verticalHeader()->hide();
     return editor;
   } else if (t == common::Value::TYPE_ZSET || t == common::Value::TYPE_HASH) {
-    HashTypeWidget* editor = new HashTypeWidget(parent);
+    HashTypeView* editor = new HashTypeView(parent);
     editor->horizontalHeader()->hide();
     editor->verticalHeader()->hide();
     return editor;
@@ -129,37 +129,33 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
   } else if (t == common::Value::TYPE_ARRAY) {
     common::ArrayValue* arr = nullptr;
     if (val->GetAsList(&arr)) {
-      ListTypeWidget* listwidget = static_cast<ListTypeWidget*>(editor);
+      ListTypeView* listwidget = static_cast<ListTypeView*>(editor);
       for (auto it = arr->begin(); it != arr->end(); ++it) {
-        common::Value::string_t val = core::ConvertValue(*it, core::NValue::default_delimiter);
+        const auto val = core::ConvertValue(*it, core::NValue::default_delimiter);
         if (val.empty()) {
           continue;
         }
 
-        QString qvalue;
-        common::ConvertFromBytes(val, &qvalue);
-        listwidget->insertRow(qvalue);
+        listwidget->insertRow(val);
       }
     }
   } else if (t == common::Value::TYPE_SET) {
     common::SetValue* set = nullptr;
     if (val->GetAsSet(&set)) {
-      ListTypeWidget* listwidget = static_cast<ListTypeWidget*>(editor);
+      ListTypeView* listwidget = static_cast<ListTypeView*>(editor);
       for (auto it = set->begin(); it != set->end(); ++it) {
-        common::Value::string_t val = core::ConvertValue(*it, core::NValue::default_delimiter);
+        const auto val = core::ConvertValue(*it, core::NValue::default_delimiter);
         if (val.empty()) {
           continue;
         }
 
-        QString qvalue;
-        common::ConvertFromBytes(val, &qvalue);
-        listwidget->insertRow(qvalue);
+        listwidget->insertRow(val);
       }
     }
   } else if (t == common::Value::TYPE_ZSET) {
     common::ZSetValue* zset = nullptr;
     if (val->GetAsZSet(&zset)) {
-      HashTypeWidget* hashwidget = static_cast<HashTypeWidget*>(editor);
+      HashTypeView* hashwidget = static_cast<HashTypeView*>(editor);
       for (auto it = zset->begin(); it != zset->end(); ++it) {
         auto element = (*it);
         common::Value* key = element.first;
@@ -174,17 +170,13 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
           continue;
         }
 
-        QString ftext;
-        QString stext;
-        if (common::ConvertFromBytes(key_str, &ftext) && common::ConvertFromBytes(value_str, &stext)) {
-          hashwidget->insertRow(ftext, stext);
-        }
+        hashwidget->insertRow(key_str, value_str);
       }
     }
   } else if (t == common::Value::TYPE_HASH) {
     common::HashValue* hash = nullptr;
     if (val->GetAsHash(&hash)) {
-      HashTypeWidget* hashwidget = static_cast<HashTypeWidget*>(editor);
+      HashTypeView* hashwidget = static_cast<HashTypeView*>(editor);
       for (auto it = hash->begin(); it != hash->end(); ++it) {
         auto element = (*it);
         common::Value* key = element.first;
@@ -199,11 +191,7 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
           continue;
         }
 
-        QString ftext;
-        QString stext;
-        if (common::ConvertFromBytes(key_str, &ftext) && common::ConvertFromBytes(value_str, &stext)) {
-          hashwidget->insertRow(ftext, stext);
-        }
+        hashwidget->insertRow(key_str, value_str);
       }
     }
   } else {
@@ -257,7 +245,7 @@ void TypeDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, cons
     QVariant var = QVariant::fromValue(core::NValue(string));
     model->setData(index, var, Qt::EditRole);
   } else if (type == common::Value::TYPE_ARRAY) {
-    ListTypeWidget* listwidget = static_cast<ListTypeWidget*>(editor);
+    ListTypeView* listwidget = static_cast<ListTypeView*>(editor);
     common::ArrayValue* arr = listwidget->arrayValue();
     if (!arr) {
       return;
@@ -266,7 +254,7 @@ void TypeDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, cons
     QVariant var = QVariant::fromValue(core::NValue(arr));
     model->setData(index, var, Qt::EditRole);
   } else if (type == common::Value::TYPE_SET) {
-    ListTypeWidget* listwidget = static_cast<ListTypeWidget*>(editor);
+    ListTypeView* listwidget = static_cast<ListTypeView*>(editor);
     common::SetValue* set = listwidget->setValue();
     if (!set) {
       return;
@@ -275,7 +263,7 @@ void TypeDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, cons
     QVariant var = QVariant::fromValue(core::NValue(set));
     model->setData(index, var, Qt::EditRole);
   } else if (type == common::Value::TYPE_ZSET) {
-    HashTypeWidget* hashwidget = static_cast<HashTypeWidget*>(editor);
+    HashTypeView* hashwidget = static_cast<HashTypeView*>(editor);
     common::ZSetValue* zset = hashwidget->zsetValue();
     if (!zset) {
       return;
@@ -284,7 +272,7 @@ void TypeDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, cons
     QVariant var = QVariant::fromValue(core::NValue(zset));
     model->setData(index, var, Qt::EditRole);
   } else if (type == common::Value::TYPE_HASH) {
-    HashTypeWidget* hashwidget = static_cast<HashTypeWidget*>(editor);
+    HashTypeView* hashwidget = static_cast<HashTypeView*>(editor);
     common::HashValue* hash = hashwidget->hashValue();
     if (!hash) {
       return;

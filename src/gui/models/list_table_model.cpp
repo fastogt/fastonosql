@@ -45,7 +45,10 @@ QVariant ListTableModel::data(const QModelIndex& index, int role) const {
   QVariant result;
   if (role == Qt::DisplayRole) {
     if (col == kValue) {
-      result = node->value();
+      QString qval;
+      if (common::ConvertFromBytes(node->value(), &qval)) {
+        result = qval;
+      }
     } else if (col == kAction) {
       result = node->actionState();
     }
@@ -66,7 +69,8 @@ bool ListTableModel::setData(const QModelIndex& index, const QVariant& value, in
     }
 
     if (col == kValue) {
-      node->setValue(value.toString());
+      const QString val = value.toString();
+      node->setValue(common::ConvertToCharBytes(val));
     }
   }
 
@@ -124,7 +128,7 @@ common::ArrayValue* ListTableModel::arrayValue() const {
   common::ArrayValue* ar = common::Value::CreateArrayValue();
   for (size_t i = 0; i < data_.size() - 1; ++i) {
     ValueTableItem* node = static_cast<ValueTableItem*>(data_[i]);
-    common::Value::string_t key = common::ConvertToCharBytes(node->value());
+    common::Value::string_t key = node->value();
     ar->AppendString(key);
   }
 
@@ -139,19 +143,19 @@ common::SetValue* ListTableModel::setValue() const {
   common::SetValue* ar = common::Value::CreateSetValue();
   for (size_t i = 0; i < data_.size() - 1; ++i) {
     ValueTableItem* node = static_cast<ValueTableItem*>(data_[i]);
-    common::Value::string_t key = common::ConvertToCharBytes(node->value());
+    common::Value::string_t key = node->value();
     ar->Insert(key);
   }
 
   return ar;
 }
 
-void ListTableModel::insertRow(const QString& value) {
+void ListTableModel::insertRow(const row_t& value) {
   size_t size = data_.size();
   beginInsertRows(QModelIndex(), size, size);
   data_.insert(data_.begin() + size - 1, new ValueTableItem(value, ValueTableItem::RemoveAction));
   ValueTableItem* last = static_cast<ValueTableItem*>(data_.back());
-  last->setValue(QString());
+  last->setValue(row_t());
   endInsertRows();
 }
 
@@ -173,7 +177,7 @@ void ListTableModel::setFirstColumnName(const QString& name) {
 }
 
 common::qt::gui::TableItem* ListTableModel::createEmptyRow() const {
-  return new ValueTableItem(QString(), ValueTableItem::AddAction);
+  return new ValueTableItem(row_t(), ValueTableItem::AddAction);
 }
 
 }  // namespace gui

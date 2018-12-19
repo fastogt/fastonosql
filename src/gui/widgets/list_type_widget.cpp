@@ -18,82 +18,56 @@
 
 #include "gui/widgets/list_type_widget.h"
 
-#include <QHeaderView>
+#include <QVBoxLayout>
 
-#include <common/qt/utils_qt.h>
+#include <common/qt/convert2string.h>
 
-#include "gui/models/items/value_table_item.h"
-#include "gui/models/list_table_model.h"
-#include "gui/widgets/delegate/action_cell_delegate.h"
-
-#include "translations/global.h"
+#include "gui/widgets/fasto_viewer.h"
 
 namespace fastonosql {
 namespace gui {
 
-ListTypeWidget::ListTypeWidget(QWidget* parent) : QTableView(parent), model_(nullptr), mode_(kArray) {
-  model_ = new ListTableModel(this);
-  model_->setFirstColumnName(translations::trValue);
-  setModel(model_);
+ListTypeWidget::ListTypeWidget(QWidget* parent) : base_class(parent), view_(nullptr) {
+  view_ = new ListTypeView;
+  value_edit_ = new FastoViewer;
 
-  ActionDelegate* del = new ActionDelegate(this);
-  VERIFY(connect(del, &ActionDelegate::addClicked, this, &ListTypeWidget::addRow));
-  VERIFY(connect(del, &ActionDelegate::removeClicked, this, &ListTypeWidget::removeRow));
-  QAbstractItemDelegate* default_del = itemDelegate();
-  VERIFY(connect(default_del, &QAbstractItemDelegate::closeEditor, this, &ListTypeWidget::dataChangedSignal));
+  VERIFY(connect(view_, &ListTypeView::dataChangedSignal, this, &ListTypeWidget::dataChangedSignal));
+  VERIFY(connect(view_, &ListTypeView::rowChanged, this, &ListTypeWidget::valueUpdate, Qt::DirectConnection));
 
-  setItemDelegateForColumn(ListTableModel::kAction, del);
-  setContextMenuPolicy(Qt::ActionsContextMenu);
-  setSelectionBehavior(QAbstractItemView::SelectRows);
-
-  QHeaderView* header = horizontalHeader();
-  header->setSectionResizeMode(QHeaderView::Stretch);
-
-  // sync
-  setCurrentMode(mode_);
+  QVBoxLayout* main = new QVBoxLayout;
+  main->setContentsMargins(0, 0, 0, 0);
+  main->addWidget(view_);
+  main->addWidget(value_edit_);
+  setLayout(main);
 }
 
 common::ArrayValue* ListTypeWidget::arrayValue() const {
-  return model_->arrayValue();
+  return view_->arrayValue();
 }
 
 common::SetValue* ListTypeWidget::setValue() const {
-  return model_->setValue();
+  return view_->setValue();
 }
 
-void ListTypeWidget::insertRow(const QString& value) {
-  model_->insertRow(value);
-  emit dataChangedSignal();
+void ListTypeWidget::insertRow(const ListTypeView::row_t& value) {
+  view_->insertRow(value);
 }
 
 void ListTypeWidget::clear() {
-  model_->clear();
-  emit dataChangedSignal();
+  view_->clear();
 }
 
-ListTypeWidget::Mode ListTypeWidget::currentMode() const {
-  return mode_;
+ListTypeView::Mode ListTypeWidget::currentMode() const {
+  return view_->currentMode();
 }
 
-void ListTypeWidget::setCurrentMode(Mode mode) {
-  mode_ = mode;
-  if (mode == kArray) {
-    model_->setFirstColumnName(translations::trValue);
-  } else if (mode == kSet) {
-    model_->setFirstColumnName(translations::trMember);
-  } else {
-    NOTREACHED() << "Unhandled mode: " << mode;
-  }
+void ListTypeWidget::setCurrentMode(ListTypeView::Mode mode) {
+  view_->setCurrentMode(mode);
 }
 
-void ListTypeWidget::addRow(const QModelIndex& index) {
-  ValueTableItem* node = common::qt::item<common::qt::gui::TableItem*, ValueTableItem*>(index);
-  insertRow(node->value());
-}
-
-void ListTypeWidget::removeRow(const QModelIndex& index) {
-  model_->removeRow(index.row());
-  emit dataChangedSignal();
+void ListTypeWidget::valueUpdate(const ListTypeView::row_t& value) {
+  value_edit_->clear();
+  value_edit_->setText(value);
 }
 
 }  // namespace gui

@@ -21,13 +21,13 @@
 namespace fastonosql {
 namespace gui {
 
-ValueTableItem::ValueTableItem(const QString& value, Mode state) : base_class(state), value_(value) {}
+ValueTableItem::ValueTableItem(const value_t& value, Mode state) : base_class(state), value_(value) {}
 
-QString ValueTableItem::value() const {
+ValueTableItem::value_t ValueTableItem::value() const {
   return value_;
 }
 
-void ValueTableItem::setValue(const QString& val) {
+void ValueTableItem::setValue(const value_t& val) {
   value_ = val;
 }
 

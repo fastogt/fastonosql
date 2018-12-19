@@ -86,8 +86,8 @@ bool StreamEntryDialog::getStream(core::StreamValue::Stream* out) const {
   return model_->getStream(sid, out);
 }
 
-void StreamEntryDialog::insertEntry(const QString& first, const QString& second) {
-  model_->insertEntry(first, second);
+void StreamEntryDialog::insertEntry(const key_t& key, const value_t& value) {
+  model_->insertEntry(key, value);
 }
 
 void StreamEntryDialog::clear() {

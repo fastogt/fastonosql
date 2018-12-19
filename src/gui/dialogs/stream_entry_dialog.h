@@ -38,6 +38,8 @@ class StreamEntryDialog : public BaseDialog {
 
  public:
   typedef BaseDialog base_class;
+  typedef common::Value::string_t key_t;
+  typedef common::Value::string_t value_t;
   template <typename T, typename... Args>
   friend T* createDialog(Args&&... args);
   enum { min_width = 360, min_height = 240 };
@@ -46,7 +48,7 @@ class StreamEntryDialog : public BaseDialog {
 
   bool getStream(core::StreamValue::Stream* out) const;
 
-  void insertEntry(const QString& first, const QString& second);
+  void insertEntry(const key_t& key, const value_t& value);
   void clear();
 
  private Q_SLOTS:

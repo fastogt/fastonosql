@@ -28,6 +28,8 @@ class HashTableModel : public common::qt::gui::TableModel {
   Q_OBJECT
 
  public:
+  typedef common::Value::string_t key_t;
+  typedef common::Value::string_t value_t;
   enum eColumn : uint8_t { kKey = 0, kValue = 1, kAction = 2, kCountColumns = 3 };
 
   explicit HashTableModel(QObject* parent = Q_NULLPTR);
@@ -44,7 +46,7 @@ class HashTableModel : public common::qt::gui::TableModel {
   common::ZSetValue* zsetValue() const;  // alocate memory
   common::HashValue* hashValue() const;  // alocate memory
 
-  void insertRow(const QString& key, const QString& value);
+  void insertRow(const key_t& key, const value_t& value);
   void removeRow(int row);
 
   void setFirstColumnName(const QString& name);

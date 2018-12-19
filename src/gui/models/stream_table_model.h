@@ -29,6 +29,8 @@ class StreamTableModel : public common::qt::gui::TableModel {
   Q_OBJECT
 
  public:
+  typedef common::Value::string_t key_t;
+  typedef common::Value::string_t value_t;
   enum eColumn : uint8_t { kKey = 0, kValue = 1, kAction = 2, kCountColumns = 3 };
 
   explicit StreamTableModel(QObject* parent = Q_NULLPTR);
@@ -44,7 +46,7 @@ class StreamTableModel : public common::qt::gui::TableModel {
 
   bool getStream(core::StreamValue::stream_id sid, core::StreamValue::Stream* out) const;
 
-  void insertEntry(const QString& key, const QString& value);
+  void insertEntry(const key_t& key, const value_t& value);
   void removeEntry(int row);
 
  private:

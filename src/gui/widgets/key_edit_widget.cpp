@@ -73,8 +73,8 @@ KeyEditWidget::KeyEditWidget(QWidget* parent) : base_class(parent) {
 
   value_list_edit_ = new ListTypeWidget;
   VERIFY(connect(value_list_edit_, &ListTypeWidget::dataChangedSignal, this, &KeyEditWidget::keyChanged));
-  value_table_edit_ = new HashTypeWidget;
-  VERIFY(connect(value_table_edit_, &HashTypeWidget::dataChangedSignal, this, &KeyEditWidget::keyChanged));
+  value_table_edit_ = new HashTypeView;
+  VERIFY(connect(value_table_edit_, &HashTypeView::dataChangedSignal, this, &KeyEditWidget::keyChanged));
 
   stream_table_edit_ = new StreamTypeWidget;
   VERIFY(connect(stream_table_edit_, &StreamTypeWidget::dataChangedSignal, this, &KeyEditWidget::keyChanged));
@@ -254,9 +254,9 @@ void KeyEditWidget::changeType(int index) {
 
   if (type == common::Value::TYPE_ARRAY || type == common::Value::TYPE_SET) {
     if (type == common::Value::TYPE_ARRAY) {
-      value_list_edit_->setCurrentMode(ListTypeWidget::kArray);
+      value_list_edit_->setCurrentMode(ListTypeView::kArray);
     } else if (type == common::Value::TYPE_SET) {
-      value_list_edit_->setCurrentMode(ListTypeWidget::kSet);
+      value_list_edit_->setCurrentMode(ListTypeView::kSet);
     } else {
       NOTREACHED();
     }
@@ -268,9 +268,9 @@ void KeyEditWidget::changeType(int index) {
     stream_table_edit_->setVisible(false);
   } else if (type == common::Value::TYPE_ZSET || type == common::Value::TYPE_HASH) {
     if (type == common::Value::TYPE_HASH) {
-      value_table_edit_->setCurrentMode(HashTypeWidget::kHash);
+      value_table_edit_->setCurrentMode(HashTypeView::kHash);
     } else if (type == common::Value::TYPE_ZSET) {
-      value_table_edit_->setCurrentMode(HashTypeWidget::kZset);
+      value_table_edit_->setCurrentMode(HashTypeView::kZset);
     } else {
       NOTREACHED();
     }
@@ -347,10 +347,7 @@ void KeyEditWidget::syncControls(const core::NValue& item) {
           continue;
         }
 
-        QString qval;
-        if (common::ConvertFromBytes(val, &qval)) {
-          value_list_edit_->insertRow(qval);
-        }
+        value_list_edit_->insertRow(val);
       }
     }
   } else if (type == common::Value::TYPE_SET) {
@@ -362,10 +359,7 @@ void KeyEditWidget::syncControls(const core::NValue& item) {
           continue;
         }
 
-        QString qval;
-        if (common::ConvertFromBytes(val, &qval)) {
-          value_list_edit_->insertRow(qval);
-        }
+        value_list_edit_->insertRow(val);
       }
     }
   } else if (type == common::Value::TYPE_ZSET) {
@@ -385,11 +379,7 @@ void KeyEditWidget::syncControls(const core::NValue& item) {
           continue;
         }
 
-        QString ftext;
-        QString stext;
-        if (common::ConvertFromBytes(key_str, &ftext) && common::ConvertFromBytes(value_str, &stext)) {
-          value_table_edit_->insertRow(ftext, stext);
-        }
+        value_table_edit_->insertRow(key_str, value_str);
       }
     }
   } else if (type == common::Value::TYPE_HASH) {
@@ -409,11 +399,7 @@ void KeyEditWidget::syncControls(const core::NValue& item) {
           continue;
         }
 
-        QString ftext;
-        QString stext;
-        if (common::ConvertFromBytes(key_str, &ftext) && common::ConvertFromBytes(value_str, &stext)) {
-          value_table_edit_->insertRow(ftext, stext);
-        }
+        value_table_edit_->insertRow(key_str, value_str);
       }
     }
   } else if (type == core::StreamValue::TYPE_STREAM) {

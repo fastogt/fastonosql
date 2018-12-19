@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <QString>
+#include <common/value.h>
 
 #include "gui/models/items/action_table_item.h"
 
@@ -27,15 +27,16 @@ namespace gui {
 
 class ValueTableItem : public ActionTableItem {
  public:
+  typedef common::Value::string_t value_t;
   typedef ActionTableItem base_class;
 
-  ValueTableItem(const QString& value, Mode state);
+  ValueTableItem(const value_t& value, Mode state);
 
-  QString value() const;
-  void setValue(const QString& val);
+  value_t value() const;
+  void setValue(const value_t& val);
 
  private:
-  QString value_;
+  value_t value_;
 };
 
 }  // namespace gui

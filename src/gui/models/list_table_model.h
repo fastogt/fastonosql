@@ -28,6 +28,7 @@ class ListTableModel : public common::qt::gui::TableModel {
   Q_OBJECT
 
  public:
+  typedef common::Value::string_t row_t;
   enum eColumn : uint8_t { kValue = 0, kAction = 1, kCountColumns = 2 };
 
   explicit ListTableModel(QObject* parent = Q_NULLPTR);
@@ -44,7 +45,7 @@ class ListTableModel : public common::qt::gui::TableModel {
   common::ArrayValue* arrayValue() const;  // alocate memory
   common::SetValue* setValue() const;      // alocate memory
 
-  void insertRow(const QString& value);
+  void insertRow(const row_t& value);
   void removeRow(int row);
 
   void setFirstColumnName(const QString& name);

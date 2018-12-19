@@ -74,9 +74,7 @@ StreamTypeWidget::StreamTypeWidget(QWidget* parent) : QTableView(parent) {
 
 void StreamTypeWidget::insertStream(const core::StreamValue::Stream& stream) {
   streams_.push_back(stream);
-  QString qsid;
-  common::ConvertFromBytes(stream.sid, &qsid);
-  model_->insertRow(qsid, QString());
+  model_->insertRow(stream.sid, StreamTableModel::value_t());
   emit dataChangedSignal();
 }
 
@@ -89,9 +87,7 @@ void StreamTypeWidget::updateStream(const QModelIndex& index, const core::Stream
   int row = index.row();
   size_t stabled_row_index = static_cast<size_t>(row);
   streams_[stabled_row_index] = stream;
-  QString qsid;
-  common::ConvertFromBytes(stream.sid, &qsid);
-  node->setKey(qsid);
+  node->setKey(stream.sid);
   model_->updateItem(model_->index(row, StreamTableModel::kKey, QModelIndex()),
                      model_->index(row, StreamTableModel::kAction, QModelIndex()));
   emit dataChangedSignal();
@@ -126,11 +122,7 @@ void StreamTypeWidget::editRow(const QModelIndex& index) {
   auto diag = createDialog<StreamEntryDialog>(qsid, this);  // +
   for (size_t i = 0; i < stream.entries.size(); ++i) {
     core::StreamValue::Entry ent = stream.entries[i];
-    QString ftext;
-    QString stext;
-    if (common::ConvertFromBytes(ent.name, &ftext) && common::ConvertFromBytes(ent.value, &stext)) {
-      diag->insertEntry(ftext, stext);
-    }
+    diag->insertEntry(ent.name, ent.value);
   }
   int result = diag->exec();
   if (result == QDialog::Accepted) {
