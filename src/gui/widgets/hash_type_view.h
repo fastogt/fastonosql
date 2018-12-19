@@ -18,39 +18,50 @@
 
 #pragma once
 
-#include "gui/widgets/hash_type_view.h"
+#include <QTableView>
+
+#include <common/value.h>
 
 namespace fastonosql {
 namespace gui {
 
-class FastoViewer;
+class HashTableModel;
 
-class HashTypeWidget : public QWidget {
+class HashTypeView : public QTableView {
   Q_OBJECT
 
  public:
-  typedef QWidget base_class;
-  explicit HashTypeWidget(QWidget* parent = Q_NULLPTR);
+  typedef common::Value::string_t key_t;
+  typedef common::Value::string_t value_t;
+  typedef QTableView base_class;
+  enum Mode : uint8_t { kHash = 0, kZset };
 
-  void insertRow(const HashTypeView::key_t& key, const HashTypeView::value_t& value);
+  explicit HashTypeView(QWidget* parent = Q_NULLPTR);
+  ~HashTypeView() override;
+
+  void insertRow(const key_t& key, const value_t& value);
   void clear();
 
   common::ZSetValue* zsetValue() const;  // alocate memory
   common::HashValue* hashValue() const;  // alocate memory
 
-  HashTypeView::Mode currentMode() const;
-  void setCurrentMode(HashTypeView::Mode mode);
+  Mode currentMode() const;
+  void setCurrentMode(Mode mode);
 
  Q_SIGNALS:
   void dataChangedSignal();
+  void rowChanged(const key_t& key, const value_t& value);
 
  private Q_SLOTS:
-  void valueUpdate(const HashTypeView::key_t& key, const HashTypeView::value_t& value);
+  void addRow(const QModelIndex& index);
+  void removeRow(const QModelIndex& index);
+
+ protected:
+  void currentChanged(const QModelIndex& current, const QModelIndex& previous) override;
 
  private:
-  HashTypeView* view_;
-  FastoViewer* key_edit_;
-  FastoViewer* value_edit_;
+  HashTableModel* model_;
+  Mode mode_;
 };
 
 }  // namespace gui

@@ -364,6 +364,7 @@ SET(HEADERS_GUI_WIDGETS
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/list_type_view.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/list_type_widget.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/stream_type_widget.h
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/hash_type_view.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/hash_type_widget.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/how_to_use_widget.h
 
@@ -395,6 +396,7 @@ SET(SOURCES_GUI_WIDGETS
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/list_type_view.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/list_type_widget.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/stream_type_widget.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/hash_type_view.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/hash_type_widget.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/how_to_use_widget.cpp
 

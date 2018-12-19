@@ -20,8 +20,6 @@
 
 #include <QVBoxLayout>
 
-#include <common/qt/convert2string.h>
-
 #include "gui/widgets/fasto_viewer.h"
 
 namespace fastonosql {

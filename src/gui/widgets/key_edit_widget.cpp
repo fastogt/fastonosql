@@ -73,8 +73,8 @@ KeyEditWidget::KeyEditWidget(QWidget* parent) : base_class(parent) {
 
   value_list_edit_ = new ListTypeWidget;
   VERIFY(connect(value_list_edit_, &ListTypeWidget::dataChangedSignal, this, &KeyEditWidget::keyChanged));
-  value_table_edit_ = new HashTypeView;
-  VERIFY(connect(value_table_edit_, &HashTypeView::dataChangedSignal, this, &KeyEditWidget::keyChanged));
+  value_table_edit_ = new HashTypeWidget;
+  VERIFY(connect(value_table_edit_, &HashTypeWidget::dataChangedSignal, this, &KeyEditWidget::keyChanged));
 
   stream_table_edit_ = new StreamTypeWidget;
   VERIFY(connect(stream_table_edit_, &StreamTypeWidget::dataChangedSignal, this, &KeyEditWidget::keyChanged));

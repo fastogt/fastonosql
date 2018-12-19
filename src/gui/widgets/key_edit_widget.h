@@ -35,6 +35,7 @@ class FastoViewer;
 class HashTypeView;
 class StreamTypeWidget;
 class ListTypeWidget;
+class HashTypeWidget;
 
 class KeyEditWidget : public QWidget {
   Q_OBJECT
@@ -76,7 +77,7 @@ class KeyEditWidget : public QWidget {
   FastoViewer* json_value_edit_;
   QComboBox* bool_value_edit_;
   ListTypeWidget* value_list_edit_;
-  HashTypeView* value_table_edit_;
+  HashTypeWidget* value_table_edit_;
   StreamTypeWidget* stream_table_edit_;
 };
 
