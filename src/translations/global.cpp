@@ -93,6 +93,8 @@ const QString trReload = QObject::tr("Reload");
 const QString trDuplicate = QObject::tr("Duplicate");
 const QString trCloseOtherTabs = QObject::tr("Close other tabs");
 const QString trSuccess = QObject::tr("Success");
+const QString trLess = QObject::tr("Less");
+const QString trMore = QObject::tr("More");
 //
 
 const QString trfilterForScripts = QObject::tr("Text Files (*.txt);; All Files (*)");

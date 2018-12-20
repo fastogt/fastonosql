@@ -20,6 +20,8 @@
 
 #include "gui/widgets/hash_type_view.h"
 
+class QPushButton;
+
 namespace fastonosql {
 namespace gui {
 
@@ -46,9 +48,17 @@ class HashTypeWidget : public QWidget {
 
  private Q_SLOTS:
   void valueUpdate(const HashTypeView::key_t& key, const HashTypeView::value_t& value);
+  void toggleVisibleValueView();
+
+ protected:
+  void changeEvent(QEvent* ev) override;
 
  private:
+  void retranslateUi();
+  void syncMoreButton();
+
   HashTypeView* view_;
+  QPushButton* more_less_button_;
   FastoViewer* key_edit_;
   FastoViewer* value_edit_;
 };

@@ -93,6 +93,8 @@ extern const QString trReload;
 extern const QString trDuplicate;
 extern const QString trCloseOtherTabs;
 extern const QString trSuccess;
+extern const QString trLess;
+extern const QString trMore;
 //
 
 extern const QString trfilterForScripts;

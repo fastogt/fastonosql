@@ -18,30 +18,56 @@
 
 #include "gui/widgets/hash_type_widget.h"
 
+#include <QEvent>
+#include <QPushButton>
+#include <QSplitter>
 #include <QVBoxLayout>
 
 #include "gui/widgets/fasto_viewer.h"
+#include "translations/global.h"
 
 namespace fastonosql {
 namespace gui {
 
-HashTypeWidget::HashTypeWidget(QWidget* parent) : base_class(parent), view_(nullptr) {
+HashTypeWidget::HashTypeWidget(QWidget* parent)
+    : base_class(parent), view_(nullptr), more_less_button_(nullptr), key_edit_(nullptr), value_edit_(nullptr) {
   view_ = new HashTypeView;
+  more_less_button_ = new QPushButton;
   value_edit_ = new FastoViewer;
   key_edit_ = new FastoViewer;
 
   VERIFY(connect(view_, &HashTypeView::dataChangedSignal, this, &HashTypeWidget::dataChangedSignal));
   VERIFY(connect(view_, &HashTypeView::rowChanged, this, &HashTypeWidget::valueUpdate, Qt::DirectConnection));
+  VERIFY(connect(more_less_button_, &QPushButton::clicked, this, &HashTypeWidget::toggleVisibleValueView));
 
-  QVBoxLayout* main = new QVBoxLayout;
+  // controls
   QHBoxLayout* kv_layout = new QHBoxLayout;
+  kv_layout->setContentsMargins(0, 0, 0, 0);
   kv_layout->addWidget(key_edit_);
   kv_layout->addWidget(value_edit_);
 
+  QVBoxLayout* viewer_layout = new QVBoxLayout;
+  viewer_layout->setContentsMargins(0, 0, 0, 0);
+  viewer_layout->addWidget(view_);
+  viewer_layout->addLayout(kv_layout);
+
+  // options
+  QVBoxLayout* options_layout = new QVBoxLayout;
+  QSplitter* splitter = new QSplitter(Qt::Vertical);
+  options_layout->addWidget(splitter);
+  options_layout->addWidget(more_less_button_);
+
+  // main
+  QHBoxLayout* main = new QHBoxLayout;
   main->setContentsMargins(0, 0, 0, 0);
-  main->addWidget(view_);
-  main->addLayout(kv_layout);
+  main->addLayout(viewer_layout);
+  main->addLayout(options_layout);
   setLayout(main);
+
+  // sync
+  value_edit_->setVisible(false);
+  key_edit_->setVisible(false);
+  retranslateUi();
 }
 
 void HashTypeWidget::insertRow(const HashTypeView::key_t& key, const HashTypeView::value_t& value) {
@@ -74,6 +100,27 @@ void HashTypeWidget::valueUpdate(const HashTypeView::key_t& key, const HashTypeV
 
   value_edit_->clear();
   value_edit_->setText(value);
+}
+
+void HashTypeWidget::toggleVisibleValueView() {
+  key_edit_->setVisible(!key_edit_->isVisible());
+  value_edit_->setVisible(!value_edit_->isVisible());
+  syncMoreButton();
+}
+
+void HashTypeWidget::changeEvent(QEvent* e) {
+  if (e->type() == QEvent::LanguageChange) {
+    retranslateUi();
+  }
+  base_class::changeEvent(e);
+}
+
+void HashTypeWidget::syncMoreButton() {
+  more_less_button_->setText(value_edit_->isVisible() ? translations::trLess : translations::trMore);
+}
+
+void HashTypeWidget::retranslateUi() {
+  syncMoreButton();
 }
 
 }  // namespace gui

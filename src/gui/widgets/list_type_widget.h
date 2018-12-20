@@ -20,6 +20,8 @@
 
 #include "gui/widgets/list_type_view.h"
 
+class QPushButton;
+
 namespace fastonosql {
 namespace gui {
 
@@ -46,9 +48,17 @@ class ListTypeWidget : public QWidget {
 
  private Q_SLOTS:
   void valueUpdate(const ListTypeView::row_t& value);
+  void toggleVisibleValueView();
+
+ protected:
+  void changeEvent(QEvent* ev) override;
 
  private:
+  void retranslateUi();
+  void syncMoreButton();
+
   ListTypeView* view_;
+  QPushButton* more_less_button_;
   FastoViewer* value_edit_;
 };
 
