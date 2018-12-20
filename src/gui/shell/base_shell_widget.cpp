@@ -45,7 +45,7 @@
 #include "gui/utils.h"
 #include "gui/widgets/icon_button.h"
 
-#include "translations/global.h"  // for trError, trSaveAs, etc
+#include "translations/global.h"
 
 #if defined(BUILD_WITH_REDIS) && defined(PRO_VERSION)
 #include "gui/db/redis/shell_widget.h"
@@ -61,7 +61,6 @@ const QString trCantReadTemplate_2S = QObject::tr(PROJECT_NAME_TITLE " can't rea
 const QString trCantSaveTemplate_2S = QObject::tr(PROJECT_NAME_TITLE " can't save to %1:\n%2.");
 const QString trAdvancedOptions = QObject::tr("Advanced options");
 const QString trIntervalMsec = QObject::tr("Interval msec:");
-const QString trRepeat = QObject::tr("Repeat:");
 const QString trBasedOn_2S = QObject::tr("Based on <b>%1</b> version: <b>%2</b>");
 
 }  // namespace
@@ -218,7 +217,7 @@ void BaseShellWidget::init() {
   QVBoxLayout* adv_opt_layout = new QVBoxLayout;
 
   QHBoxLayout* repeat_layout = new QHBoxLayout;
-  QLabel* repeat_label = new QLabel(trRepeat);
+  QLabel* repeat_label = new QLabel(translations::trRepeat + ":");
   repeat_count_ = new QSpinBox;
   repeat_count_->setRange(0, INT32_MAX);
   repeat_count_->setSingleStep(1);

@@ -38,8 +38,6 @@ const QString trSelectPrivateKey = QObject::tr("Select private key file");
 const QString trPrivateKeyFiles = QObject::tr("Private key files (*)");
 const QString trSelectPublicKey = QObject::tr("Select public key file");
 const QString trPublicKeyFiles = QObject::tr("Public key files (*)");
-const QString trPrivateKey = QObject::tr("Private key:");
-const QString trPublicKey = QObject::tr("Public key:");
 }  // namespace
 
 namespace fastonosql {
@@ -59,13 +57,13 @@ SSHWidget::SSHWidget(QWidget* parent) : QWidget(parent) {
   QLayout* host_layout = sshhost_widget_->layout();
   host_layout->setContentsMargins(0, 0, 0, 0);
 
-  private_key_widget_ = new FilePathWidget(trPrivateKey, trPrivateKeyFiles, trSelectPrivateKey);
+  private_key_widget_ = new FilePathWidget(translations::trPrivateKey + ":", trPrivateKeyFiles, trSelectPrivateKey);
   QLayout* pub_layout = private_key_widget_->layout();
   pub_layout->setContentsMargins(0, 0, 0, 0);
 
   use_public_key_ = new QCheckBox;
 
-  public_key_widget_ = new FilePathWidget(trPublicKey, trPublicKeyFiles, trSelectPublicKey);
+  public_key_widget_ = new FilePathWidget(translations::trPublicKey + ":", trPublicKeyFiles, trSelectPublicKey);
   QLayout* priv_layout = public_key_widget_->layout();
   priv_layout->setContentsMargins(0, 0, 0, 0);
 
