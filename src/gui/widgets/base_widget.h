@@ -18,51 +18,35 @@
 
 #pragma once
 
-#include "gui/widgets/base_widget.h"
-#include "gui/widgets/list_type_view.h"
-
-class QPushButton;
+#include <QWidget>
 
 namespace fastonosql {
 namespace gui {
 
-class FastoViewer;
-
-class ListTypeWidget : public BaseWidget {
+class BaseWidget : public QWidget {
   Q_OBJECT
 
  public:
-  typedef BaseWidget base_class;
+  typedef QWidget base_class;
   template <typename T, typename... Args>
-  friend T* createWidget(Args&&... args);
+  friend T* createDialog(Args&&... args);
 
-  common::ArrayValue* arrayValue() const;  // alocate memory
-  common::SetValue* setValue() const;      // alocate memory
-
-  void insertRow(const ListTypeView::row_t& value);
-  void clear();
-
-  ListTypeView::Mode currentMode() const;
-  void setCurrentMode(ListTypeView::Mode mode);
-
- Q_SIGNALS:
-  void dataChangedSignal();
-
- private Q_SLOTS:
-  void valueUpdate(const ListTypeView::row_t& value);
-  void toggleVisibleValueView();
+  ~BaseWidget() override;
 
  protected:
-  explicit ListTypeWidget(QWidget* parent = Q_NULLPTR);
-  void retranslateUi() override;
+  explicit BaseWidget(QWidget* parent = Q_NULLPTR);
 
- private:
-  void syncMoreButton();
+  void changeEvent(QEvent* ev) override;
 
-  ListTypeView* view_;
-  QPushButton* more_less_button_;
-  FastoViewer* value_edit_;
+  virtual void retranslateUi();
 };
+
+template <typename T, typename... Args>
+inline T* createWidget(Args&&... args) {
+  T* widget = new T(std::forward<Args>(args)...);
+  widget->retranslateUi();  // protected
+  return widget;
+}
 
 }  // namespace gui
 }  // namespace fastonosql

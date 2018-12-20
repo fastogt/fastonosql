@@ -69,8 +69,8 @@ EncodeDecodeDialog::EncodeDecodeDialog(const QString& title, const QIcon& icon, 
   tool_bar_layout->addWidget(decode_button_);
   tool_bar_layout->addWidget(new QSplitter(Qt::Horizontal));
 
-  input_ = new FastoEditor;
-  output_ = new FastoEditor;
+  input_ = createWidget<FastoEditor>();
+  output_ = createWidget<FastoEditor>();
 
   QDialogButtonBox* button_box = new QDialogButtonBox(QDialogButtonBox::Close);
   QPushButton* close_button = button_box->button(QDialogButtonBox::Close);

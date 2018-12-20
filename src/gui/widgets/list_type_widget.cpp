@@ -18,7 +18,6 @@
 
 #include "gui/widgets/list_type_widget.h"
 
-#include <QEvent>
 #include <QPushButton>
 #include <QSplitter>
 #include <QVBoxLayout>
@@ -34,7 +33,7 @@ ListTypeWidget::ListTypeWidget(QWidget* parent)
     : base_class(parent), view_(nullptr), more_less_button_(nullptr), value_edit_(nullptr) {
   view_ = new ListTypeView;
   more_less_button_ = new QPushButton;
-  value_edit_ = new FastoViewer;
+  value_edit_ = createWidget<FastoViewer>();
 
   VERIFY(connect(view_, &ListTypeView::dataChangedSignal, this, &ListTypeWidget::dataChangedSignal));
   VERIFY(connect(view_, &ListTypeView::rowChanged, this, &ListTypeWidget::valueUpdate, Qt::DirectConnection));
@@ -61,7 +60,6 @@ ListTypeWidget::ListTypeWidget(QWidget* parent)
 
   // sync
   value_edit_->setVisible(false);
-  retranslateUi();
 }
 
 common::ArrayValue* ListTypeWidget::arrayValue() const {
@@ -98,19 +96,13 @@ void ListTypeWidget::toggleVisibleValueView() {
   syncMoreButton();
 }
 
-void ListTypeWidget::changeEvent(QEvent* e) {
-  if (e->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-  base_class::changeEvent(e);
-}
-
 void ListTypeWidget::syncMoreButton() {
   more_less_button_->setText(value_edit_->isVisible() ? translations::trLess : translations::trMore);
 }
 
 void ListTypeWidget::retranslateUi() {
   syncMoreButton();
+  base_class::retranslateUi();
 }
 
 }  // namespace gui

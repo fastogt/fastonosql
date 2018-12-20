@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <QWidget>
+#include "gui/widgets/base_widget.h"
 
 class QToolBar;
 class QLabel;
@@ -28,18 +28,21 @@ class QHBoxLayout;
 namespace fastonosql {
 namespace gui {
 
-class WelcomeWidget : public QWidget {
+class WelcomeWidget : public BaseWidget {
   Q_OBJECT
 
  public:
-  typedef QWidget base_class;
+  typedef BaseWidget base_class;
+  template <typename T, typename... Args>
+  friend T* createWidget(Args&&... args);
+
   static const QSize kIconSize;
   enum { min_width = 640, min_height = 480 };
-  explicit WelcomeWidget(QWidget* parent = Q_NULLPTR);
 
  protected:
+  explicit WelcomeWidget(QWidget* parent = Q_NULLPTR);
+  void retranslateUi() override;
   void showEvent(QShowEvent* ev) override;
-  void changeEvent(QEvent* ev) override;
 
  private Q_SLOTS:
   void pageLoad(const QString& content, const QString& error_message);
@@ -53,7 +56,6 @@ class WelcomeWidget : public QWidget {
   void openHomePage() const;
 
  private:
-  void retranslateUi();
   void loadPage();
   void setHtml(const QString& html);
   QHBoxLayout* createSocialButtons();

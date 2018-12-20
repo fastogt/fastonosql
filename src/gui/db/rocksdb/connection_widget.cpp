@@ -37,7 +37,7 @@ namespace fastonosql {
 namespace gui {
 namespace rocksdb {
 
-ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionLocalWidgetDirectoryPath(trDBPath, trCaption, parent) {
+ConnectionWidget::ConnectionWidget(QWidget* parent) : base_class(trDBPath, trCaption, parent) {
   create_db_if_missing_ = new QCheckBox;
   addWidget(create_db_if_missing_);
 
@@ -98,7 +98,7 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
     type_compressions_->setCurrentIndex(config.compression);
     merge_operator_->setCurrentIndex(config.merge_operator);
   }
-  ConnectionLocalWidget::syncControls(rock);
+  base_class::syncControls(rock);
 }
 
 void ConnectionWidget::retranslateUi() {
@@ -107,7 +107,7 @@ void ConnectionWidget::retranslateUi() {
   comparator_label_->setText(trComparator + ":");
   compression_label_->setText(trCompression + ":");
   merge_operator_label_->setText(trMergeOperator + ":");
-  ConnectionLocalWidget::retranslateUi();
+  base_class::retranslateUi();
 }
 
 proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(

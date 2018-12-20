@@ -144,13 +144,13 @@ const std::vector<const char*> g_output_views_text = {
     "Zlib", "GZip", "LZ4",    "BZip2",    "Snappy",    "Xml"};
 
 FastoViewer::FastoViewer(QWidget* parent)
-    : QWidget(parent),
+    : base_class(parent),
       view_method_(RAW_VIEW),
       error_box_(nullptr),
       note_box_(nullptr),
       last_valid_text_(),
       is_binary_(false) {
-  text_json_editor_ = new FastoEditor;
+  text_json_editor_ = createWidget<FastoEditor>();
   json_lexer_ = new QsciLexerJSON;
   xml_lexer_ = new QsciLexerXML;
   VERIFY(connect(text_json_editor_, &FastoEditor::textChanged, this, &FastoViewer::textChange));
@@ -284,16 +284,9 @@ bool FastoViewer::isReadOnly() const {
   return text_json_editor_->isReadOnly();
 }
 
-void FastoViewer::changeEvent(QEvent* ev) {
-  if (ev->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-
-  QWidget::changeEvent(ev);
-}
-
 void FastoViewer::retranslateUi() {
   views_label_->setText(translations::trViews + ":");
+  base_class::retranslateUi();
 }
 
 void FastoViewer::setError(const QString& error) {

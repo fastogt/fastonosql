@@ -20,12 +20,12 @@
 
 #include <vector>
 
-#include <QWidget>
-
 #include <common/optional.h>
 #include <common/value.h>
 
 #include <fastonosql/core/db_key.h>
+
+#include "gui/widgets/base_widget.h"
 
 class QPushButton;
 
@@ -42,13 +42,14 @@ namespace gui {
 
 class KeyEditWidget;
 
-class SaveKeyEditWidget : public QWidget {
+class SaveKeyEditWidget : public BaseWidget {
   Q_OBJECT
 
  public:
-  typedef QWidget base_class;
+  typedef BaseWidget base_class;
+  template <typename T, typename... Args>
+  friend T* createWidget(Args&&... args);
 
-  explicit SaveKeyEditWidget(QWidget* parent = Q_NULLPTR);
   ~SaveKeyEditWidget() override;
 
   void initialize(const std::vector<common::Value::Type>& availible_types, const core::NDbKValue& key);
@@ -65,10 +66,8 @@ class SaveKeyEditWidget : public QWidget {
   void syncControls();
 
  protected:
-  void changeEvent(QEvent* ev) override;
-
- private:
-  void retranslateUi();
+  explicit SaveKeyEditWidget(QWidget* parent = Q_NULLPTR);
+  void retranslateUi() override;
 
   KeyEditWidget* editor_;
   QPushButton* save_changes_button_;

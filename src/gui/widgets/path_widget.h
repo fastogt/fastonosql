@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <QWidget>
+#include "gui/widgets/base_widget.h"
 
 class QLineEdit;
 class QLabel;
@@ -26,11 +26,13 @@ class QLabel;
 namespace fastonosql {
 namespace gui {
 
-class IPathWidget : public QWidget {
+class IPathWidget : public BaseWidget {
   Q_OBJECT
 
  public:
-  IPathWidget(const QString& path_title, const QString& filter, const QString& caption, QWidget* parent = Q_NULLPTR);
+  typedef BaseWidget base_class;
+  template <typename T, typename... Args>
+  friend T* createWidget(Args&&... args);
 
   QString path() const;
   void setPath(const QString& path);
@@ -43,11 +45,11 @@ class IPathWidget : public QWidget {
   void selectPathDialog();
 
  protected:
-  void changeEvent(QEvent* ev) override;
+  IPathWidget(const QString& path_title, const QString& filter, const QString& caption, QWidget* parent = Q_NULLPTR);
+  void retranslateUi() override;
 
  private:
   void selectPathDialogRoutine(const QString& caption, const QString& filter, int mode);
-  void retranslateUi();
 
   QLabel* path_label_;
   QLineEdit* path_edit_;
@@ -59,16 +61,26 @@ class IPathWidget : public QWidget {
 
 class FilePathWidget : public IPathWidget {
  public:
-  FilePathWidget(const QString& path_title, const QString& filter, const QString& caption, QWidget* parent = Q_NULLPTR);
+  typedef BaseWidget base_class;
+  template <typename T, typename... Args>
+  friend T* createWidget(Args&&... args);
 
   int mode() const override;
+
+ protected:
+  FilePathWidget(const QString& path_title, const QString& filter, const QString& caption, QWidget* parent = Q_NULLPTR);
 };
 
 class DirectoryPathWidget : public IPathWidget {
  public:
-  DirectoryPathWidget(const QString& path_title, const QString& caption, QWidget* parent = Q_NULLPTR);
+  typedef BaseWidget base_class;
+  template <typename T, typename... Args>
+  friend T* createWidget(Args&&... args);
 
   int mode() const override;
+
+ protected:
+  DirectoryPathWidget(const QString& path_title, const QString& caption, QWidget* parent = Q_NULLPTR);
 };
 
 }  // namespace gui

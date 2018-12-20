@@ -18,10 +18,10 @@
 
 #pragma once
 
-#include <QWidget>
-
 #include <fastonosql/core/database/idatabase_info.h>
 #include <fastonosql/core/global.h>  // for FastoObject, etc
+
+#include "gui/widgets/base_widget.h"
 
 #include "proxy/proxy_fwd.h"  // for IServerSPtr
 #include "proxy/types.h"
@@ -54,13 +54,14 @@ class FastoTextView;
 class FastoCommonModel;
 class SaveKeyEditWidget;
 
-class OutputWidget : public QWidget {
+class OutputWidget : public BaseWidget {
   Q_OBJECT
  public:
-  typedef QWidget base_class;
-  static const QSize kIconSize;
+  typedef BaseWidget base_class;
+  template <typename T, typename... Args>
+  friend T* createWidget(Args&&... args);
 
-  explicit OutputWidget(proxy::IServerSPtr server, QWidget* parent = Q_NULLPTR);
+  static const QSize kIconSize;
 
  private Q_SLOTS:
   void createKey(const core::NDbKValue& dbv);
@@ -85,11 +86,10 @@ class OutputWidget : public QWidget {
   void setEditKeyView();
 
  protected:
-  void changeEvent(QEvent* ev) override;
+  explicit OutputWidget(proxy::IServerSPtr server, QWidget* parent = Q_NULLPTR);
+  void retranslateUi() override;
 
  private:
-  void retranslateUi();
-
   void createKeyImpl(const core::NDbKValue& dbv, void* initiator);
 
   void syncWithView(proxy::SupportedView view);

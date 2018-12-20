@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <QWidget>
+#include "gui/widgets/base_widget.h"
 
 #include <fastonosql/core/global.h>
 
@@ -27,11 +27,13 @@ class QTextEdit;  // lines 23-23
 namespace fastonosql {
 namespace gui {
 
-class CommandsWidget : public QWidget {
+class CommandsWidget : public BaseWidget {
   Q_OBJECT
 
  public:
-  explicit CommandsWidget(QWidget* parent = Q_NULLPTR);
+  typedef BaseWidget base_class;
+  template <typename T, typename... Args>
+  friend T* createWidget(Args&&... args);
 
  public Q_SLOTS:
   void addCommand(core::FastoObjectCommandIPtr command);
@@ -40,10 +42,9 @@ class CommandsWidget : public QWidget {
   void showContextMenu(const QPoint& pt);
 
  protected:
-  void changeEvent(QEvent* ev) override;
+  explicit CommandsWidget(QWidget* parent = Q_NULLPTR);
 
  private:
-  void retranslateUi();
   QTextEdit* const log_text_edit_;
 };
 

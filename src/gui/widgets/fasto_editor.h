@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <QWidget>
+#include "gui/widgets/base_widget.h"
 
 class QMenu;
 class QsciLexer;
@@ -32,13 +32,15 @@ namespace fastonosql {
 namespace gui {
 class FastoScintilla;
 
-class FastoEditor : public QWidget {
+class FastoEditor : public BaseWidget {
   Q_OBJECT
 
  public:
   enum { find_panel_height = 40 };
+  typedef BaseWidget base_class;
+  template <typename T, typename... Args>
+  friend T* createWidget(Args&&... args);
 
-  explicit FastoEditor(QWidget* parent = Q_NULLPTR);
   ~FastoEditor() override;
 
   void registerImage(int id, const QPixmap& im);
@@ -66,6 +68,9 @@ class FastoEditor : public QWidget {
   void goToPrevElement();
 
  protected:
+  explicit FastoEditor(QWidget* parent = Q_NULLPTR);
+  void retranslateUi() override;
+
   void setShowAutoCompletion(bool show);
   QMenu* createStandardContextMenu();
 
@@ -74,10 +79,8 @@ class FastoEditor : public QWidget {
 
   void keyPressEvent(QKeyEvent* key_event) override;
   bool eventFilter(QObject* object, QEvent* event) override;
-  void changeEvent(QEvent* ev) override;
 
  private:
-  void retranslateUi();
   void findElement(bool forward);
 
   FastoScintilla* scin_;

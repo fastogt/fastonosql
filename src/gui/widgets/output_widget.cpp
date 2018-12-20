@@ -109,7 +109,7 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : base_cl
   text_view_ = new FastoTextView;
   text_view_->setModel(common_model_);
 
-  key_editor_ = new SaveKeyEditWidget;
+  key_editor_ = createWidget<SaveKeyEditWidget>();
   key_editor_->setEnableKeyEdit(false);
   VERIFY(connect(key_editor_, &SaveKeyEditWidget::keyReadyToSave, this, &OutputWidget::createKeyFromEditor,
                  Qt::DirectConnection));
@@ -146,7 +146,6 @@ OutputWidget::OutputWidget(proxy::IServerSPtr server, QWidget* parent) : base_cl
   setLayout(main_layout);
 
   syncWithView(current_view_);
-  retranslateUi();
 }
 
 void OutputWidget::rootCreate(const proxy::events_info::CommandRootCreatedInfo& res) {
@@ -312,19 +311,12 @@ void OutputWidget::setEditKeyView() {
   key_editor_->setVisible(true);
 }
 
-void OutputWidget::changeEvent(QEvent* e) {
-  if (e->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-
-  base_class::changeEvent(e);
-}
-
 void OutputWidget::retranslateUi() {
   tree_button_->setToolTip(trTreeViewTooltip);
   table_button_->setToolTip(trTableViewTooltip);
   text_button_->setToolTip(trTextViewTooltip);
   key_button_->setToolTip(trKeyViewTooltip);
+  base_class::retranslateUi();
 }
 
 void OutputWidget::createKeyImpl(const core::NDbKValue& dbv, void* initiator) {

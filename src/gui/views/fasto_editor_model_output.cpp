@@ -36,7 +36,7 @@ namespace fastonosql {
 namespace gui {
 
 FastoEditorModelOutput::FastoEditorModelOutput(QWidget* parent) : QWidget(parent), editor_(nullptr), model_(nullptr) {
-  editor_ = new FastoViewer;
+  editor_ = createWidget<FastoViewer>();
   VERIFY(connect(editor_, &FastoViewer::viewChanged, this, &FastoEditorModelOutput::layoutChanged));
 
   QVBoxLayout* main_layout = new QVBoxLayout;

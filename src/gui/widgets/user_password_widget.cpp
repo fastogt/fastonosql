@@ -18,7 +18,6 @@
 
 #include "gui/widgets/user_password_widget.h"
 
-#include <QEvent>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
@@ -32,7 +31,7 @@ namespace fastonosql {
 namespace gui {
 
 UserPasswordWidget::UserPasswordWidget(const QString& user_title, const QString& password_title, QWidget* parent)
-    : QWidget(parent), user_title_(user_title), password_title_(password_title) {
+    : base_class(parent), user_title_(user_title), password_title_(password_title) {
   QVBoxLayout* user_password_layout = new QVBoxLayout;
   QHBoxLayout* user_layout = new QHBoxLayout;
   user_name_label_ = new QLabel;
@@ -52,8 +51,6 @@ UserPasswordWidget::UserPasswordWidget(const QString& user_title, const QString&
   password_layout->addWidget(password_echomode_button_);
   user_password_layout->addLayout(password_layout);
   setLayout(user_password_layout);
-
-  retranslateUi();
 }
 
 QString UserPasswordWidget::userName() const {
@@ -87,14 +84,7 @@ void UserPasswordWidget::togglePasswordEchoMode() {
 void UserPasswordWidget::retranslateUi() {
   user_name_label_->setText(user_title_);
   password_label_->setText(password_title_);
-}
-
-void UserPasswordWidget::changeEvent(QEvent* ev) {
-  if (ev->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-
-  QWidget::changeEvent(ev);
+  base_class::retranslateUi();
 }
 
 }  // namespace gui

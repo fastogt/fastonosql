@@ -341,6 +341,7 @@ SET(SOURCES_VIEWS
 )
 
 SET(HEADERS_GUI_WIDGETS
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/base_widget.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/icon_button.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/fasto_scintilla.h
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/fasto_editor.h
@@ -373,6 +374,7 @@ SET(HEADERS_GUI_WIDGETS
 )
 
 SET(SOURCES_GUI_WIDGETS
+  ${CMAKE_SOURCE_DIR}/src/gui/widgets/base_widget.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/icon_button.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/fasto_scintilla.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/widgets/fasto_editor.cpp

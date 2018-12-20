@@ -18,10 +18,11 @@
 
 #pragma once
 
-#include <QWidget>
-
 #include <fastonosql/core/connection_types.h>  // for ConnectionType
-#include "proxy/proxy_fwd.h"                   // for IServerSPtr
+
+#include "gui/widgets/base_widget.h"
+
+#include "proxy/proxy_fwd.h"  // for IServerSPtr
 
 class QGroupBox;
 
@@ -30,12 +31,15 @@ namespace gui {
 class OutputWidget;
 class BaseShellWidget;
 
-class QueryWidget : public QWidget {
+class QueryWidget : public BaseWidget {
   Q_OBJECT
 
  public:
+  typedef BaseWidget base_class;
+  template <typename T, typename... Args>
+  friend T* createWidget(Args&&... args);
+
   enum { min_width = 640, min_height = 480 };
-  explicit QueryWidget(proxy::IServerSPtr server, QWidget* parent = Q_NULLPTR);
 
   QueryWidget* clone(const QString& text);
   core::ConnectionType connectionType() const;
@@ -49,10 +53,8 @@ class QueryWidget : public QWidget {
   void reload();
 
  protected:
-  void changeEvent(QEvent* ev) override;
-
- private:
-  void retranslateUi();
+  explicit QueryWidget(proxy::IServerSPtr server, QWidget* parent = Q_NULLPTR);
+  void retranslateUi() override;
 
   QGroupBox* console_gb_;
   QGroupBox* output_gb_;

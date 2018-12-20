@@ -34,7 +34,7 @@ namespace fastonosql {
 namespace gui {
 
 SaveKeyEditWidget::SaveKeyEditWidget(QWidget* parent) : base_class(parent), init_key_() {
-  editor_ = new KeyEditWidget;
+  editor_ = createWidget<KeyEditWidget>();
 
   save_changes_button_ = new QPushButton;
   save_changes_button_->setIcon(GuiFactory::GetInstance().saveIcon());
@@ -56,7 +56,6 @@ SaveKeyEditWidget::SaveKeyEditWidget(QWidget* parent) : base_class(parent), init
   setLayout(main_layout);
 
   syncControls();
-  retranslateUi();
 }
 
 SaveKeyEditWidget::~SaveKeyEditWidget() {}
@@ -97,15 +96,9 @@ void SaveKeyEditWidget::finishSaveKey() {
   glass_widget_->stop();
 }
 
-void SaveKeyEditWidget::changeEvent(QEvent* e) {
-  if (e->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-  base_class::changeEvent(e);
-}
-
 void SaveKeyEditWidget::retranslateUi() {
   save_changes_button_->setText(translations::trSaveChanges);
+  base_class::retranslateUi();
 }
 
 void SaveKeyEditWidget::syncControls() {

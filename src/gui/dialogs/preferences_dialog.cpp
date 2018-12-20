@@ -301,7 +301,7 @@ QWidget* PreferencesDialog::createExternalTab() {
 
   external_box_ = new QGroupBox;
   QHBoxLayout* external_layout = new QHBoxLayout;
-  python_path_widget_ = new FilePathWidget(trPythonPath, trPythonExecutable, trSelectPythonPath);
+  python_path_widget_ = createWidget<FilePathWidget>(trPythonPath, trPythonExecutable, trSelectPythonPath);
   external_layout->addWidget(python_path_widget_);
   external_box_->setLayout(external_layout);
 

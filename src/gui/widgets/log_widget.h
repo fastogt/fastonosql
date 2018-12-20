@@ -18,20 +18,22 @@
 
 #pragma once
 
-#include <QWidget>
-
 #include <common/log_levels.h>  // for LOG_LEVEL
+
+#include "gui/widgets/base_widget.h"
 
 class QTextEdit;  // lines 23-23
 
 namespace fastonosql {
 namespace gui {
 
-class LogWidget : public QWidget {
+class LogWidget : public BaseWidget {
   Q_OBJECT
 
  public:
-  explicit LogWidget(QWidget* parent = Q_NULLPTR);
+  typedef BaseWidget base_class;
+  template <typename T, typename... Args>
+  friend T* createWidget(Args&&... args);
 
  public Q_SLOTS:
   void addLogMessage(const QString& message, common::logging::LOG_LEVEL level);
@@ -40,10 +42,9 @@ class LogWidget : public QWidget {
   void showContextMenu(const QPoint& pt);
 
  protected:
-  void changeEvent(QEvent* ev) override;
+  explicit LogWidget(QWidget* parent = Q_NULLPTR);
 
  private:
-  void retranslateUi();
   QTextEdit* const log_text_edit_;
 };
 

@@ -29,8 +29,7 @@ namespace fastonosql {
 namespace gui {
 namespace unqlite {
 
-ConnectionWidget::ConnectionWidget(QWidget* parent)
-    : ConnectionLocalWidgetFilePath(trDBPath, trFilter, trCaption, parent) {
+ConnectionWidget::ConnectionWidget(QWidget* parent) : base_class(trDBPath, trFilter, trCaption, parent) {
   create_db_if_missing_ = new QCheckBox;
   VERIFY(connect(create_db_if_missing_, &QCheckBox::stateChanged, this, &ConnectionWidget::createDBStateChange));
   addWidget(create_db_if_missing_);
@@ -46,13 +45,13 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
     create_db_if_missing_->setChecked(config.CreateIfMissingDB());
     read_only_db_->setChecked(config.ReadOnlyDB());
   }
-  ConnectionLocalWidget::syncControls(unq);
+  base_class::syncControls(unq);
 }
 
 void ConnectionWidget::retranslateUi() {
   create_db_if_missing_->setText(trCreateDBIfMissing);
   read_only_db_->setText(trReadOnlyDB);
-  ConnectionLocalWidget::retranslateUi();
+  base_class::retranslateUi();
 }
 
 void ConnectionWidget::createDBStateChange(int state) {

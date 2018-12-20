@@ -37,7 +37,7 @@
 namespace fastonosql {
 namespace gui {
 
-FastoEditor::FastoEditor(QWidget* parent) : QWidget(parent), scin_(nullptr) {
+FastoEditor::FastoEditor(QWidget* parent) : base_class(parent), scin_(nullptr) {
   scin_ = new FastoScintilla;
 
   find_panel_ = new QFrame;
@@ -76,7 +76,6 @@ FastoEditor::FastoEditor(QWidget* parent) : QWidget(parent), scin_(nullptr) {
   VERIFY(connect(scin_, &FastoScintilla::textChanged, this, &FastoEditor::textChanged));
   VERIFY(connect(next_, &QPushButton::clicked, this, &FastoEditor::goToNextElement));
   VERIFY(connect(prev_, &QPushButton::clicked, this, &FastoEditor::goToPrevElement));
-  retranslateUi();
 }
 
 FastoEditor::~FastoEditor() {}
@@ -161,7 +160,7 @@ void FastoEditor::keyPressEvent(QKeyEvent* key_event) {
     goToNextElement();
   }
 
-  QWidget::keyPressEvent(key_event);
+  base_class::keyPressEvent(key_event);
 }
 
 bool FastoEditor::eventFilter(QObject* object, QEvent* event) {
@@ -178,21 +177,14 @@ bool FastoEditor::eventFilter(QObject* object, QEvent* event) {
     }
   }
 
-  return QWidget::eventFilter(object, event);
-}
-
-void FastoEditor::changeEvent(QEvent* ev) {
-  if (ev->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-
-  QWidget::changeEvent(ev);
+  return base_class::eventFilter(object, event);
 }
 
 void FastoEditor::retranslateUi() {
   next_->setText(translations::trNext);
   prev_->setText(translations::trPrevious);
   case_sensitive_->setText(translations::trMatchCase);
+  base_class::retranslateUi();
 }
 
 void FastoEditor::findElement(bool forward) {

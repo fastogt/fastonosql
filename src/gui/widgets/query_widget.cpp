@@ -33,9 +33,9 @@
 namespace fastonosql {
 namespace gui {
 
-QueryWidget::QueryWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget(parent), server_(server) {
-  shell_widget_ = BaseShellWidget::createWidget(server);
-  output_widget_ = new OutputWidget(server);
+QueryWidget::QueryWidget(proxy::IServerSPtr server, QWidget* parent) : base_class(parent), server_(server) {
+  shell_widget_ = BaseShellWidget::createWidgetFactory(server);
+  output_widget_ = createWidget<OutputWidget>(server);
 
   QVBoxLayout* main_layout = new QVBoxLayout;
   QSplitter* splitter = new QSplitter(Qt::Vertical);
@@ -63,11 +63,10 @@ QueryWidget::QueryWidget(proxy::IServerSPtr server, QWidget* parent) : QWidget(p
 
   setMinimumSize(QSize(min_width, min_height));
   setLayout(main_layout);
-  retranslateUi();
 }
 
 QueryWidget* QueryWidget::clone(const QString& text) {
-  QueryWidget* result = new QueryWidget(server_, parentWidget());
+  QueryWidget* result = createWidget<QueryWidget>(server_, parentWidget());
   result->setInputText(text);
   return result;
 }
@@ -94,17 +93,10 @@ void QueryWidget::executeArgs(const QString& text, size_t repeat, int interval, 
 
 void QueryWidget::reload() {}
 
-void QueryWidget::changeEvent(QEvent* ev) {
-  if (ev->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-
-  QWidget::changeEvent(ev);
-}
-
 void QueryWidget::retranslateUi() {
   console_gb_->setTitle(translations::trConsole);
   output_gb_->setTitle(translations::trOutput);
+  base_class::retranslateUi();
 }
 
 }  // namespace gui

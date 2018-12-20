@@ -30,16 +30,21 @@ class ConnectionWidget : public ConnectionRemoteWidget {
   Q_OBJECT
 
  public:
-  explicit ConnectionWidget(QWidget* parent = Q_NULLPTR);
+  typedef ConnectionBaseWidget base_class;
+  template <typename T, typename... Args>
+  friend T* gui::createWidget(Args&&... args);
 
   void syncControls(proxy::IConnectionSettingsBase* connection) override;
-  void retranslateUi() override;
   bool validated() const override;
   bool isValidCredential() const;
 
  private Q_SLOTS:
   void togglePasswordEchoMode();
   void authStateChange(int state);
+
+ protected:
+  explicit ConnectionWidget(QWidget* parent = Q_NULLPTR);
+  void retranslateUi() override;
 
  private:
   proxy::IConnectionSettingsRemote* createConnectionRemoteImpl(const proxy::connection_path_t& path) const override;

@@ -31,8 +31,7 @@ namespace fastonosql {
 namespace gui {
 namespace forestdb {
 
-ConnectionWidget::ConnectionWidget(QWidget* parent)
-    : ConnectionLocalWidgetFilePath(trDBPath, trFilter, trCaption, parent) {
+ConnectionWidget::ConnectionWidget(QWidget* parent) : base_class(trDBPath, trFilter, trCaption, parent) {
   QHBoxLayout* name_layout = new QHBoxLayout;
   db_name_label_ = new QLabel;
   name_layout->addWidget(db_name_label_);
@@ -50,12 +49,12 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
       db_name_edit_->setText(qdb_name);
     }
   }
-  ConnectionLocalWidget::syncControls(forestdb);
+  base_class::syncControls(forestdb);
 }
 
 void ConnectionWidget::retranslateUi() {
   db_name_label_->setText(trDBName);
-  ConnectionLocalWidget::retranslateUi();
+  base_class::retranslateUi();
 }
 
 proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(

@@ -20,7 +20,6 @@
 
 #include <QCheckBox>
 #include <QComboBox>
-#include <QEvent>
 #include <QLabel>
 #include <QLineEdit>
 #include <QSpinBox>
@@ -74,7 +73,7 @@ class UniqueCharValidator : public QValidator {
 namespace fastonosql {
 namespace gui {
 
-ConnectionBaseWidget::ConnectionBaseWidget(QWidget* parent) : QWidget(parent) {
+ConnectionBaseWidget::ConnectionBaseWidget(QWidget* parent) : base_class(parent) {
   connection_name_ = new QLineEdit;
 
   QVBoxLayout* basicLayout = new QVBoxLayout;
@@ -160,14 +159,6 @@ void ConnectionBaseWidget::addWidget(QWidget* widget) {
 void ConnectionBaseWidget::addLayout(QLayout* l) {
   QVBoxLayout* mainLayout = static_cast<QVBoxLayout*>(layout());
   mainLayout->addLayout(l);
-}
-
-void ConnectionBaseWidget::changeEvent(QEvent* ev) {
-  if (ev->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-
-  QWidget::changeEvent(ev);
 }
 
 QString ConnectionBaseWidget::connectionName() const {

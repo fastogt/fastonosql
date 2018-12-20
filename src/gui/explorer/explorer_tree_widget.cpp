@@ -18,7 +18,6 @@
 
 #include "gui/explorer/explorer_tree_widget.h"
 
-#include <QEvent>
 #include <QLineEdit>
 #include <QVBoxLayout>
 
@@ -30,7 +29,7 @@
 namespace fastonosql {
 namespace gui {
 
-ExplorerTreeWidget::ExplorerTreeWidget(QWidget* parent) : QWidget(parent) {
+ExplorerTreeWidget::ExplorerTreeWidget(QWidget* parent) : base_class(parent) {
   view_ = new ExplorerTreeView(this);
   filter_edit_ = new QLineEdit;
   filter_edit_->setClearButtonEnabled(true);
@@ -81,16 +80,9 @@ void ExplorerTreeWidget::removeCluster(proxy::IClusterSPtr cluster) {
 }
 #endif
 
-void ExplorerTreeWidget::changeEvent(QEvent* e) {
-  if (e->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-
-  QWidget::changeEvent(e);
-}
-
 void ExplorerTreeWidget::retranslateUi() {
   filter_edit_->setPlaceholderText(translations::trSearch + "...");
+  base_class::retranslateUi();
 }
 
 }  // namespace gui

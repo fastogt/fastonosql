@@ -33,15 +33,19 @@ class ConnectionWidget : public ConnectionBaseWidget {
 
  public:
   typedef ConnectionBaseWidget base_class;
-  explicit ConnectionWidget(QWidget* parent = Q_NULLPTR);
+  template <typename T, typename... Args>
+  friend T* gui::createWidget(Args&&... args);
 
   void syncControls(proxy::IConnectionSettingsBase* connection) override;
-  void retranslateUi() override;
   bool validated() const override;
 
  private Q_SLOTS:
   void selectFilePathDB(bool checked);
   void selectDirectoryPathDB(bool checked);
+
+ protected:
+  explicit ConnectionWidget(QWidget* parent = Q_NULLPTR);
+  void retranslateUi() override;
 
  private:
   proxy::IConnectionSettingsBase* createConnectionImpl(const proxy::connection_path_t& path) const override;

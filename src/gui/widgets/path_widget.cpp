@@ -39,7 +39,7 @@ namespace fastonosql {
 namespace gui {
 
 IPathWidget::IPathWidget(const QString& path_title, const QString& filter, const QString& caption, QWidget* parent)
-    : QWidget(parent), path_title_(path_title), filter_(filter), caption_(caption) {
+    : base_class(parent), path_title_(path_title), filter_(filter), caption_(caption) {
   path_label_ = new QLabel;
   path_edit_ = new QLineEdit;
 
@@ -52,8 +52,6 @@ IPathWidget::IPathWidget(const QString& path_title, const QString& filter, const
   db_name_layout->addWidget(path_edit_);
   db_name_layout->addWidget(select_path_button);
   setLayout(db_name_layout);
-
-  retranslateUi();
 }
 
 void IPathWidget::selectPathDialog() {
@@ -88,14 +86,7 @@ bool IPathWidget::isValidPath() const {
 
 void IPathWidget::retranslateUi() {
   path_label_->setText(path_title_);
-}
-
-void IPathWidget::changeEvent(QEvent* ev) {
-  if (ev->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-
-  QWidget::changeEvent(ev);
+  base_class::retranslateUi();
 }
 
 FilePathWidget::FilePathWidget(const QString& path_title,

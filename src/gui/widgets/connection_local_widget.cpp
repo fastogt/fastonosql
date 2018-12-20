@@ -42,11 +42,7 @@ void ConnectionLocalWidget::syncControls(proxy::IConnectionSettingsBase* connect
     common::ConvertFromString(local->GetDBPath(), &db_path);
     path_widget_->setPath(db_path);
   }
-  ConnectionBaseWidget::syncControls(local);
-}
-
-void ConnectionLocalWidget::retranslateUi() {
-  ConnectionBaseWidget::retranslateUi();
+  base_class::syncControls(local);
 }
 
 bool ConnectionLocalWidget::validated() const {
@@ -54,7 +50,7 @@ bool ConnectionLocalWidget::validated() const {
     return false;
   }
 
-  return ConnectionBaseWidget::validated();
+  return base_class::validated();
 }
 
 proxy::IConnectionSettingsBase* ConnectionLocalWidget::createConnectionImpl(
@@ -67,13 +63,13 @@ proxy::IConnectionSettingsBase* ConnectionLocalWidget::createConnectionImpl(
 ConnectionLocalWidgetDirectoryPath::ConnectionLocalWidgetDirectoryPath(const QString& path_title,
                                                                        const QString& caption,
                                                                        QWidget* parent)
-    : ConnectionLocalWidget(new DirectoryPathWidget(path_title, caption), parent) {}
+    : ConnectionLocalWidget(createWidget<DirectoryPathWidget>(path_title, caption), parent) {}
 
 ConnectionLocalWidgetFilePath::ConnectionLocalWidgetFilePath(const QString& path_title,
                                                              const QString& filter,
                                                              const QString& caption,
                                                              QWidget* parent)
-    : ConnectionLocalWidget(new FilePathWidget(path_title, filter, caption), parent) {}
+    : ConnectionLocalWidget(createWidget<FilePathWidget>(path_title, filter, caption), parent) {}
 
 }  // namespace gui
 }  // namespace fastonosql

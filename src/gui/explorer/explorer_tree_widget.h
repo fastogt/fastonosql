@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <QWidget>
+#include "gui/widgets/base_widget.h"
 
 #include "proxy/proxy_fwd.h"
 
@@ -28,11 +28,13 @@ namespace fastonosql {
 namespace gui {
 class ExplorerTreeView;
 
-class ExplorerTreeWidget : public QWidget {
+class ExplorerTreeWidget : public BaseWidget {
   Q_OBJECT
 
  public:
-  explicit ExplorerTreeWidget(QWidget* parent = Q_NULLPTR);
+  typedef BaseWidget base_class;
+  template <typename T, typename... Args>
+  friend T* createWidget(Args&&... args);
 
  Q_SIGNALS:
   void consoleOpened(proxy::IServerSPtr server, const QString& text);
@@ -55,11 +57,10 @@ class ExplorerTreeWidget : public QWidget {
   void removeCluster(proxy::IClusterSPtr cluster);
 #endif
  protected:
-  void changeEvent(QEvent* e) override;
+  explicit ExplorerTreeWidget(QWidget* parent = Q_NULLPTR);
+  void retranslateUi() override;
 
  private:
-  void retranslateUi();
-
   QLineEdit* filter_edit_;
   ExplorerTreeView* view_;
 };

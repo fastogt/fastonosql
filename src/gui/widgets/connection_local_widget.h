@@ -35,8 +35,11 @@ class IPathWidget;
 
 class ConnectionLocalWidget : public ConnectionBaseWidget {
  public:
+  typedef ConnectionBaseWidget base_class;
+  template <typename T, typename... Args>
+  friend T* createWidget(Args&&... args);
+
   void syncControls(proxy::IConnectionSettingsBase* connection) override;
-  void retranslateUi() override;
   bool validated() const override;
 
  protected:
@@ -51,20 +54,26 @@ class ConnectionLocalWidget : public ConnectionBaseWidget {
 
 class ConnectionLocalWidgetDirectoryPath : public ConnectionLocalWidget {
  public:
-  ConnectionLocalWidgetDirectoryPath(const QString& path_title, const QString& caption, QWidget* parent = Q_NULLPTR);
+  typedef ConnectionLocalWidget base_class;
+  template <typename T, typename... Args>
+  friend T* createWidget(Args&&... args);
 
  protected:
+  ConnectionLocalWidgetDirectoryPath(const QString& path_title, const QString& caption, QWidget* parent = Q_NULLPTR);
   proxy::IConnectionSettingsLocal* createConnectionLocalImpl(const proxy::connection_path_t& path) const override = 0;
 };
 
 class ConnectionLocalWidgetFilePath : public ConnectionLocalWidget {
  public:
+  typedef ConnectionLocalWidget base_class;
+  template <typename T, typename... Args>
+  friend T* createWidget(Args&&... args);
+
+ protected:
   ConnectionLocalWidgetFilePath(const QString& path_title,
                                 const QString& filter,
                                 const QString& caption,
                                 QWidget* parent = Q_NULLPTR);
-
- protected:
   proxy::IConnectionSettingsLocal* createConnectionLocalImpl(const proxy::connection_path_t& path) const override = 0;
 };
 

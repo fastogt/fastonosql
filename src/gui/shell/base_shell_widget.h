@@ -76,12 +76,13 @@ class BaseShellWidget : public QWidget {
   Q_OBJECT
 
  public:
+  typedef QWidget base_class;
   static const QSize kIconSize;
   static const QSize kShellIconSize;
 
-  static BaseShellWidget* createWidget(proxy::IServerSPtr server,
-                                       const QString& filePath = QString(),
-                                       QWidget* parent = Q_NULLPTR);
+  static BaseShellWidget* createWidgetFactory(proxy::IServerSPtr server,
+                                              const QString& file_path = QString(),
+                                              QWidget* parent = Q_NULLPTR);
 
   ~BaseShellWidget() override;
 
@@ -132,7 +133,11 @@ class BaseShellWidget : public QWidget {
   void serverDisconnect();
 
  protected:
-  explicit BaseShellWidget(proxy::IServerSPtr server, const QString& filePath = QString(), QWidget* parent = Q_NULLPTR);
+  explicit BaseShellWidget(proxy::IServerSPtr server,
+                           const QString& file_path = QString(),
+                           QWidget* parent = Q_NULLPTR);
+  void retranslateUi();
+
   virtual void init();
   virtual QHBoxLayout* createTopLayout(core::ConnectionType ct);
 
@@ -146,12 +151,8 @@ class BaseShellWidget : public QWidget {
   virtual void OnStartedLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoRequest& res);
   virtual void OnFinishedLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponce& res);
 
-  void changeEvent(QEvent* ev) override;
-
  private:
   QHBoxLayout* createActionBar();
-
-  void retranslateUi();
 
   common::Error validate(const QString& text);
 

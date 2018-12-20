@@ -58,57 +58,57 @@ namespace {
 ConnectionBaseWidget* createWidgetImpl(core::ConnectionType type, QWidget* parent) {
 #if defined(BUILD_WITH_REDIS)
   if (type == core::REDIS) {
-    return new redis::ConnectionWidget(parent);
+    return createWidget<redis::ConnectionWidget>(parent);
   }
 #endif
 #if defined(BUILD_WITH_MEMCACHED)
   if (type == core::MEMCACHED) {
-    return new memcached::ConnectionWidget(parent);
+    return createWidget<memcached::ConnectionWidget>(parent);
   }
 #endif
 #if defined(BUILD_WITH_SSDB)
   if (type == core::SSDB) {
-    return new ssdb::ConnectionWidget(parent);
+    return createWidget<ssdb::ConnectionWidget>(parent);
   }
 #endif
 #if defined(BUILD_WITH_LEVELDB)
   if (type == core::LEVELDB) {
-    return new leveldb::ConnectionWidget(parent);
+    return createWidget<leveldb::ConnectionWidget>(parent);
   }
 #endif
 #if defined(BUILD_WITH_ROCKSDB)
   if (type == core::ROCKSDB) {
-    return new rocksdb::ConnectionWidget(parent);
+    return createWidget<rocksdb::ConnectionWidget>(parent);
   }
 #endif
 #if defined(BUILD_WITH_UNQLITE)
   if (type == core::UNQLITE) {
-    return new unqlite::ConnectionWidget(parent);
+    return createWidget<unqlite::ConnectionWidget>(parent);
   }
 #endif
 #if defined(BUILD_WITH_LMDB)
   if (type == core::LMDB) {
-    return new lmdb::ConnectionWidget(parent);
+    return createWidget<lmdb::ConnectionWidget>(parent);
   }
 #endif
 #if defined(BUILD_WITH_UPSCALEDB)
   if (type == core::UPSCALEDB) {
-    return new upscaledb::ConnectionWidget(parent);
+    return createWidget<upscaledb::ConnectionWidget>(parent);
   }
 #endif
 #if defined(BUILD_WITH_FORESTDB)
   if (type == core::FORESTDB) {
-    return new forestdb::ConnectionWidget(parent);
+    return createWidget<forestdb::ConnectionWidget>(parent);
   }
 #endif
 #if defined(BUILD_WITH_PIKA)
   if (type == core::PIKA) {
-    return new pika::ConnectionWidget(parent);
+    return createWidget<pika::ConnectionWidget>(parent);
   }
 #endif
 #if defined(BUILD_WITH_DYNOMITE)
   if (type == core::DYNOMITE) {
-    return new dynomite::ConnectionWidget(parent);
+    return createWidget<dynomite::ConnectionWidget>(parent);
   }
 #endif
 
@@ -124,7 +124,6 @@ ConnectionBaseWidget* ConnectionWidgetsFactory::createWidget(proxy::IConnectionS
   core::ConnectionType type = connection->GetType();
   ConnectionBaseWidget* widget = createWidgetImpl(type, parent);
   widget->syncControls(connection);
-  widget->retranslateUi();
   return widget;
 }
 

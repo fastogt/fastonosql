@@ -55,7 +55,7 @@ namespace fastonosql {
 namespace gui {
 namespace redis {
 
-ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(parent) {
+ConnectionWidget::ConnectionWidget(QWidget* parent) : base_class(parent) {
   QVBoxLayout* vbox = new QVBoxLayout;
   group_box_ = new QGroupBox;
   remote_ = new QRadioButton;
@@ -70,13 +70,13 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(paren
   hbox->addWidget(remote_);
   hbox->addWidget(is_ssl_connection_);
 
-  host_widget_ = new HostPortWidget;
+  host_widget_ = createWidget<HostPortWidget>();
   QLayout* host_layout = host_widget_->layout();
   host_layout->setContentsMargins(0, 0, 0, 0);
   vbox->addLayout(hbox);
   vbox->addWidget(host_widget_);
 
-  path_widget_ = new FilePathWidget(trUnixPath, trFilter, trCaption);
+  path_widget_ = createWidget<FilePathWidget>(trUnixPath, trFilter, trCaption);
   QLayout* path_layout = path_widget_->layout();
   path_layout->setContentsMargins(0, 0, 0, 0);
   vbox->addWidget(local_);
@@ -109,7 +109,7 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(paren
 
   // ssh
 
-  ssh_widget_ = new SSHWidget;
+  ssh_widget_ = createWidget<SSHWidget>();
   QLayout* ssh_layout = ssh_widget_->layout();
   ssh_layout->setContentsMargins(0, 0, 0, 0);
   addWidget(ssh_widget_);
@@ -151,7 +151,7 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
     core::SSHInfo ssh_info = redis->GetSSHInfo();
     ssh_widget_->setInfo(ssh_info);
   }
-  ConnectionBaseWidget::syncControls(redis);
+  base_class::syncControls(redis);
 }
 
 void ConnectionWidget::retranslateUi() {
@@ -161,7 +161,7 @@ void ConnectionWidget::retranslateUi() {
   local_->setText(trLocal);
   use_auth_->setText(trUseAuth);
   default_db_label_->setText(trDefaultDb);
-  ConnectionBaseWidget::retranslateUi();
+  base_class::retranslateUi();
 }
 
 void ConnectionWidget::togglePasswordEchoMode() {
@@ -215,7 +215,7 @@ bool ConnectionWidget::validated() const {
     }
   }
 
-  return ConnectionBaseWidget::validated();
+  return base_class::validated();
 }
 
 bool ConnectionWidget::isValidCredential() const {

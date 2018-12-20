@@ -18,7 +18,6 @@
 
 #include "gui/widgets/commands_widget.h"
 
-#include <QEvent>
 #include <QHBoxLayout>
 #include <QMenu>
 #include <QScrollBar>
@@ -32,7 +31,7 @@
 namespace fastonosql {
 namespace gui {
 
-CommandsWidget::CommandsWidget(QWidget* parent) : QWidget(parent), log_text_edit_(new QTextEdit) {
+CommandsWidget::CommandsWidget(QWidget* parent) : base_class(parent), log_text_edit_(new QTextEdit) {
   log_text_edit_->setReadOnly(true);
   log_text_edit_->setContextMenuPolicy(Qt::CustomContextMenu);
   VERIFY(connect(log_text_edit_, &QTextEdit::customContextMenuRequested, this, &CommandsWidget::showContextMenu));
@@ -41,7 +40,6 @@ CommandsWidget::CommandsWidget(QWidget* parent) : QWidget(parent), log_text_edit
   main_layout->setContentsMargins(0, 0, 0, 0);
   main_layout->addWidget(log_text_edit_);
   setLayout(main_layout);
-  retranslateUi();
 }
 
 void CommandsWidget::addCommand(core::FastoObjectCommandIPtr command) {
@@ -74,15 +72,6 @@ void CommandsWidget::showContextMenu(const QPoint& pt) {
   menu->exec(log_text_edit_->mapToGlobal(pt));
   delete menu;
 }
-
-void CommandsWidget::changeEvent(QEvent* ev) {
-  if (ev->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-  QWidget::changeEvent(ev);
-}
-
-void CommandsWidget::retranslateUi() {}
 
 }  // namespace gui
 }  // namespace fastonosql

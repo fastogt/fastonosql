@@ -63,7 +63,7 @@ KeyEditWidget::KeyEditWidget(QWidget* parent) : base_class(parent) {
   value_edit_->setPlaceholderText("[value]");
   VERIFY(connect(value_edit_, &QLineEdit::textChanged, this, &KeyEditWidget::keyChanged));
 
-  json_value_edit_ = new FastoViewer;
+  json_value_edit_ = createWidget<FastoViewer>();
   VERIFY(connect(json_value_edit_, &FastoViewer::textChanged, this, &KeyEditWidget::keyChanged));
 
   bool_value_edit_ = new QComboBox;
@@ -71,9 +71,9 @@ KeyEditWidget::KeyEditWidget(QWidget* parent) : base_class(parent) {
   bool_value_edit_->addItem("false");
   VERIFY(connect(bool_value_edit_, &QComboBox::currentTextChanged, this, &KeyEditWidget::keyChanged));
 
-  value_list_edit_ = new ListTypeWidget;
+  value_list_edit_ = createWidget<ListTypeWidget>();
   VERIFY(connect(value_list_edit_, &ListTypeWidget::dataChangedSignal, this, &KeyEditWidget::keyChanged));
-  value_table_edit_ = new HashTypeWidget;
+  value_table_edit_ = createWidget<HashTypeWidget>();
   VERIFY(connect(value_table_edit_, &HashTypeWidget::dataChangedSignal, this, &KeyEditWidget::keyChanged));
 
   stream_table_edit_ = new StreamTypeWidget;
@@ -96,7 +96,6 @@ KeyEditWidget::KeyEditWidget(QWidget* parent) : base_class(parent) {
 
   // sync
   syncControls(core::NValue());
-  retranslateUi();
 }
 
 void KeyEditWidget::initialize(const std::vector<common::Value::Type>& availible_types, const core::NDbKValue& key) {
@@ -233,13 +232,6 @@ common::Value* KeyEditWidget::createItem() const {
 
   NOTREACHED() << "Not handled type: " << type;
   return nullptr;
-}
-
-void KeyEditWidget::changeEvent(QEvent* e) {
-  if (e->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-  base_class::changeEvent(e);
 }
 
 void KeyEditWidget::changeType(int index) {
@@ -476,6 +468,7 @@ void KeyEditWidget::retranslateUi() {
   value_label_->setText(translations::trValue + ":");
   key_label_->setText(translations::trKey + ":");
   type_label_->setText(translations::trType + ":");
+  base_class::retranslateUi();
 }
 
 }  // namespace gui

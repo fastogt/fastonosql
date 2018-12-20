@@ -71,23 +71,27 @@ namespace gui {
 const QSize BaseShellWidget::kIconSize = QSize(24, 24);
 const QSize BaseShellWidget::kShellIconSize = QSize(32, 32);
 
-BaseShellWidget* BaseShellWidget::createWidget(proxy::IServerSPtr server, const QString& filePath, QWidget* parent) {
+BaseShellWidget* BaseShellWidget::createWidgetFactory(proxy::IServerSPtr server,
+                                                      const QString& file_path,
+                                                      QWidget* parent) {
 #if defined(BUILD_WITH_REDIS) && defined(PRO_VERSION)
   core::ConnectionType ct = server->GetType();
   if (ct == core::REDIS) {
-    BaseShellWidget* widget = new redis::ShellWidget(server, filePath, parent);
+    BaseShellWidget* widget = new redis::ShellWidget(server, file_path, parent);
     widget->init();
+    widget->retranslateUi();
     return widget;
   }
 #endif
 
-  BaseShellWidget* widget = new BaseShellWidget(server, filePath, parent);
+  BaseShellWidget* widget = new BaseShellWidget(server, file_path, parent);
   widget->init();
+  widget->retranslateUi();
   return widget;
 }
 
-BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server, const QString& filePath, QWidget* parent)
-    : QWidget(parent),
+BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server, const QString& file_path, QWidget* parent)
+    : base_class(parent),
       server_(server),
       execute_action_(nullptr),
       stop_action_(nullptr),
@@ -110,7 +114,7 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server, const QString& fileP
       repeat_count_(nullptr),
       interval_msec_(nullptr),
       history_call_(nullptr),
-      file_path_(filePath) {}
+      file_path_(file_path) {}
 
 QHBoxLayout* BaseShellWidget::createActionBar() {
   QHBoxLayout* savebar = new QHBoxLayout;
@@ -288,8 +292,6 @@ void BaseShellWidget::init() {
   updateServerInfo(server_->GetCurrentServerInfo());
   updateDefaultDatabase(server_->GetCurrentDatabaseInfo());
   updateCommands(std::vector<const core::CommandInfo*>());
-
-  retranslateUi();
 }
 
 QHBoxLayout* BaseShellWidget::createTopLayout(core::ConnectionType ct) {
@@ -324,14 +326,6 @@ void BaseShellWidget::setText(const QString& text) {
 void BaseShellWidget::executeText(const QString& text) {
   input_->setText(text);
   execute();
-}
-
-void BaseShellWidget::changeEvent(QEvent* ev) {
-  if (ev->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-
-  QWidget::changeEvent(ev);
 }
 
 void BaseShellWidget::retranslateUi() {

@@ -20,9 +20,9 @@
 
 #include <vector>
 
-#include <QWidget>
-
 #include <fastonosql/core/db_key.h>  // for NDbKValue, NValue
+
+#include "gui/widgets/base_widget.h"
 
 class QLineEdit;
 class QComboBox;
@@ -37,12 +37,12 @@ class StreamTypeWidget;
 class ListTypeWidget;
 class HashTypeWidget;
 
-class KeyEditWidget : public QWidget {
+class KeyEditWidget : public BaseWidget {
   Q_OBJECT
  public:
-  typedef QWidget base_class;
-
-  explicit KeyEditWidget(QWidget* parent = Q_NULLPTR);
+  typedef BaseWidget base_class;
+  template <typename T, typename... Args>
+  friend T* createWidget(Args&&... args);
 
   void initialize(const std::vector<common::Value::Type>& availible_types, const core::NDbKValue& key);
 
@@ -60,10 +60,8 @@ class KeyEditWidget : public QWidget {
   void changeType(int index);
 
  protected:
-  void changeEvent(QEvent* ev) override;
-
- private:
-  void retranslateUi();
+  explicit KeyEditWidget(QWidget* parent = Q_NULLPTR);
+  void retranslateUi() override;
 
   common::Value* createItem() const;
   void syncControls(const core::NValue& item);

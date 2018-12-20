@@ -49,7 +49,7 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionRemoteWidget(par
   VERIFY(connect(useSasl_, &QCheckBox::stateChanged, this, &ConnectionWidget::saslStateChange));
   addWidget(useSasl_);
 
-  userPasswordWidget_ = new UserPasswordWidget(trUserName, trUserPassword);
+  userPasswordWidget_ = createWidget<UserPasswordWidget>(trUserName, trUserPassword);
   QLayout* user_layout = userPasswordWidget_->layout();
   user_layout->setContentsMargins(0, 0, 0, 0);
   addWidget(userPasswordWidget_);
@@ -75,12 +75,12 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
     common::ConvertFromString(pass, &qpass);
     userPasswordWidget_->setPassword(qpass);
   }
-  ConnectionRemoteWidget::syncControls(memc);
+  base_class::syncControls(memc);
 }
 
 void ConnectionWidget::retranslateUi() {
   useSasl_->setText(trUseSasl);
-  ConnectionRemoteWidget::retranslateUi();
+  base_class::retranslateUi();
 }
 
 void ConnectionWidget::saslStateChange(int state) {
@@ -92,7 +92,7 @@ bool ConnectionWidget::validated() const {
     return false;
   }
 
-  return ConnectionRemoteWidget::validated();
+  return base_class::validated();
 }
 
 bool ConnectionWidget::isValidCredential() const {

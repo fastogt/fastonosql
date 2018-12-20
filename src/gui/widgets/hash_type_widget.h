@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include "gui/widgets/base_widget.h"
 #include "gui/widgets/hash_type_view.h"
 
 class QPushButton;
@@ -27,12 +28,13 @@ namespace gui {
 
 class FastoViewer;
 
-class HashTypeWidget : public QWidget {
+class HashTypeWidget : public BaseWidget {
   Q_OBJECT
 
  public:
-  typedef QWidget base_class;
-  explicit HashTypeWidget(QWidget* parent = Q_NULLPTR);
+  typedef BaseWidget base_class;
+  template <typename T, typename... Args>
+  friend T* createWidget(Args&&... args);
 
   void insertRow(const HashTypeView::key_t& key, const HashTypeView::value_t& value);
   void clear();
@@ -51,10 +53,10 @@ class HashTypeWidget : public QWidget {
   void toggleVisibleValueView();
 
  protected:
-  void changeEvent(QEvent* ev) override;
+  explicit HashTypeWidget(QWidget* parent = Q_NULLPTR);
+  void retranslateUi() override;
 
  private:
-  void retranslateUi();
   void syncMoreButton();
 
   HashTypeView* view_;

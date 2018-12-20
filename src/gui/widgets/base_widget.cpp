@@ -16,39 +16,26 @@
     along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "gui/widgets/base_widget.h"
 
-#include "gui/widgets/connection_local_widget.h"
+#include <QEvent>
 
 namespace fastonosql {
 namespace gui {
-namespace unqlite {
 
-class ConnectionWidget : public ConnectionLocalWidgetFilePath {
-  Q_OBJECT
+BaseWidget::BaseWidget(QWidget* parent) : base_class(parent) {}
 
- public:
-  typedef ConnectionLocalWidgetFilePath base_class;
-  template <typename T, typename... Args>
-  friend T* gui::createWidget(Args&&... args);
+BaseWidget::~BaseWidget() {}
 
-  void syncControls(proxy::IConnectionSettingsBase* connection) override;
+void BaseWidget::changeEvent(QEvent* e) {
+  if (e->type() == QEvent::LanguageChange) {
+    retranslateUi();
+  }
 
- protected:
-  explicit ConnectionWidget(QWidget* parent = Q_NULLPTR);
-  void retranslateUi() override;
+  base_class::changeEvent(e);
+}
 
- private Q_SLOTS:
-  void createDBStateChange(int state);
-  void readOnlyDBStateChange(int state);
+void BaseWidget::retranslateUi() {}
 
- private:
-  proxy::IConnectionSettingsLocal* createConnectionLocalImpl(const proxy::connection_path_t& path) const override;
-
-  QCheckBox* create_db_if_missing_;
-  QCheckBox* read_only_db_;
-};
-
-}  // namespace unqlite
 }  // namespace gui
 }  // namespace fastonosql

@@ -70,7 +70,7 @@ void MainWidget::openConsole(proxy::IServerSPtr server, const QString& text) {
     return;
   }
 
-  QueryWidget* query_widget = new QueryWidget(server);
+  QueryWidget* query_widget = createWidget<QueryWidget>(server);
   QString name;
   common::ConvertFromString(server->GetName(), &name);
   addWidgetToTab(query_widget, name);
@@ -83,7 +83,7 @@ void MainWidget::openConsoleAndExecute(proxy::IServerSPtr server, const QString&
     return;
   }
 
-  QueryWidget* queryWidget = new QueryWidget(server);
+  QueryWidget* queryWidget = createWidget<QueryWidget>(server);
   QString name;
   common::ConvertFromString(server->GetName(), &name);
   addWidgetToTab(queryWidget, name);
@@ -177,7 +177,7 @@ void MainWidget::openNewTab(QueryWidget* src, const QString& title, const QStrin
 }
 
 void MainWidget::createWelcomeTab() {
-  WelcomeWidget* welcome_tab = new WelcomeWidget;
+  WelcomeWidget* welcome_tab = createWidget<WelcomeWidget>();
   addTab(welcome_tab, GuiFactory::GetInstance().welcomeTabIcon(), translations::trWelcome);
   setCurrentWidget(welcome_tab);
 }

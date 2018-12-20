@@ -18,9 +18,9 @@
 
 #pragma once
 
-#include <QWidget>
-
 #include <common/net/net.h>
+
+#include "gui/widgets/base_widget.h"
 
 class QLineEdit;
 class QSpinBox;
@@ -28,11 +28,13 @@ class QSpinBox;
 namespace fastonosql {
 namespace gui {
 
-class HostPortWidget : public QWidget {
+class HostPortWidget : public BaseWidget {
   Q_OBJECT
 
  public:
-  explicit HostPortWidget(QWidget* parent = Q_NULLPTR);
+  typedef BaseWidget base_class;
+  template <typename T, typename... Args>
+  friend T* createWidget(Args&&... args);
 
   common::net::HostAndPort host() const;
   void setHost(const common::net::HostAndPort& host);
@@ -40,10 +42,7 @@ class HostPortWidget : public QWidget {
   bool isValidHost() const;
 
  protected:
-  void changeEvent(QEvent* ev) override;
-
- private:
-  void retranslateUi();
+  explicit HostPortWidget(QWidget* parent = Q_NULLPTR);
 
   QLineEdit* host_edit_box_;
   QSpinBox* port_;

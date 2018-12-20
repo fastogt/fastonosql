@@ -30,13 +30,12 @@ class ConnectionRemoteWidget : public ConnectionBaseWidget {
   Q_OBJECT
 
  public:
-  explicit ConnectionRemoteWidget(QWidget* parent = Q_NULLPTR);
-
+  typedef ConnectionBaseWidget base_class;
   void syncControls(proxy::IConnectionSettingsBase* connection) override;
-  void retranslateUi() override;
   bool validated() const override;
 
  protected:
+  explicit ConnectionRemoteWidget(QWidget* parent = Q_NULLPTR);
   virtual proxy::IConnectionSettingsRemote* createConnectionRemoteImpl(const proxy::connection_path_t& path) const = 0;
 
  private:

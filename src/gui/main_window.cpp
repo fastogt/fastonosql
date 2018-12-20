@@ -235,7 +235,7 @@ MainWindow::MainWindow() : QMainWindow() {
   MainWidget* main_widget = new MainWidget;
   setCentralWidget(main_widget);
 
-  exp_ = new ExplorerTreeWidget;
+  exp_ = createWidget<ExplorerTreeWidget>();
   VERIFY(connect(exp_, &ExplorerTreeWidget::consoleOpened, main_widget, &MainWidget::openConsole));
   VERIFY(connect(exp_, &ExplorerTreeWidget::consoleOpenedAndExecute, main_widget, &MainWidget::openConsoleAndExecute));
   VERIFY(connect(exp_, &ExplorerTreeWidget::serverClosed, this, &MainWindow::closeServer, Qt::DirectConnection));

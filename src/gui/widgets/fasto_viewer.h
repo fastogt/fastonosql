@@ -18,9 +18,10 @@
 
 #pragma once
 
-#include "gui/widgets/fasto_editor.h"
-
 #include <fastonosql/core/basic_types.h>
+
+#include "gui/widgets/base_widget.h"
+#include "gui/widgets/fasto_editor.h"
 
 class QLabel;
 class QComboBox;
@@ -52,15 +53,18 @@ enum OutputView : uint8_t {
 
 extern const std::vector<const char*> g_output_views_text;
 
-class FastoViewer : public QWidget {
+class FastoViewer : public BaseWidget {
   Q_OBJECT
 
  public:
+  typedef BaseWidget base_class;
+  template <typename T, typename... Args>
+  friend T* createWidget(Args&&... args);
+
   enum { is_lower_hex = true };
   typedef core::readable_string_t view_input_text_t;
   typedef core::readable_string_t view_output_text_t;
 
-  explicit FastoViewer(QWidget* parent = Q_NULLPTR);
   ~FastoViewer() override;
 
   OutputView viewMethod() const;
@@ -89,7 +93,8 @@ class FastoViewer : public QWidget {
   void textChange();
 
  protected:
-  void changeEvent(QEvent* ev) override;
+  explicit FastoViewer(QWidget* parent = Q_NULLPTR);
+  void retranslateUi() override;
 
  private:
   void setViewText(const view_input_text_t& text);
@@ -99,7 +104,6 @@ class FastoViewer : public QWidget {
   bool convertToView(const view_input_text_t& text, view_output_text_t* out) const;
   bool convertFromView(view_output_text_t* out) const;
 
-  void retranslateUi();
   void syncEditors();
 
   FastoEditor* text_json_editor_;

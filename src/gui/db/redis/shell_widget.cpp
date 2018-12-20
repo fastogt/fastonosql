@@ -33,8 +33,8 @@ namespace fastonosql {
 namespace gui {
 namespace redis {
 
-ShellWidget::ShellWidget(proxy::IServerSPtr server, const QString& filePath, QWidget* parent)
-    : base_class(server, filePath, parent), modules_(nullptr) {}
+ShellWidget::ShellWidget(proxy::IServerSPtr server, const QString& file_path, QWidget* parent)
+    : base_class(server, file_path, parent), modules_(nullptr) {}
 
 void ShellWidget::init() {
   base_class::init();

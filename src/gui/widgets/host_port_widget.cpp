@@ -30,7 +30,7 @@
 namespace fastonosql {
 namespace gui {
 
-HostPortWidget::HostPortWidget(QWidget* parent) : QWidget(parent) {
+HostPortWidget::HostPortWidget(QWidget* parent) : base_class(parent) {
   host_edit_box_ = new QLineEdit;
   port_ = new QSpinBox;
   port_->setRange(0, std::numeric_limits<common::net::HostAndPort::port_t>::max());
@@ -41,8 +41,6 @@ HostPortWidget::HostPortWidget(QWidget* parent) : QWidget(parent) {
   host_and_password_layout->addWidget(new QLabel(":"));
   host_and_password_layout->addWidget(port_);
   setLayout(host_and_password_layout);
-
-  retranslateUi();
 }
 
 common::net::HostAndPort HostPortWidget::host() const {
@@ -60,16 +58,6 @@ void HostPortWidget::setHost(const common::net::HostAndPort& host) {
 bool HostPortWidget::isValidHost() const {
   common::net::HostAndPort hs = host();
   return hs.IsValid();
-}
-
-void HostPortWidget::retranslateUi() {}
-
-void HostPortWidget::changeEvent(QEvent* ev) {
-  if (ev->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-
-  QWidget::changeEvent(ev);
 }
 
 }  // namespace gui

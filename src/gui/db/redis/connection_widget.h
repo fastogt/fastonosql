@@ -36,10 +36,11 @@ class ConnectionWidget : public ConnectionBaseWidget {
   Q_OBJECT
 
  public:
-  explicit ConnectionWidget(QWidget* parent = Q_NULLPTR);
+  typedef ConnectionBaseWidget base_class;
+  template <typename T, typename... Args>
+  friend T* gui::createWidget(Args&&... args);
 
   void syncControls(proxy::IConnectionSettingsBase* connection) override;
-  void retranslateUi() override;
   bool validated() const override;
   bool isValidCredential() const;
 
@@ -49,6 +50,10 @@ class ConnectionWidget : public ConnectionBaseWidget {
   void sslStateChange(int state);
   void selectRemoteDBPath(bool checked);
   void selectLocalDBPath(bool checked);
+
+ protected:
+  explicit ConnectionWidget(QWidget* parent = Q_NULLPTR);
+  void retranslateUi() override;
 
  private:
   proxy::IConnectionSettingsBase* createConnectionImpl(const proxy::connection_path_t& path) const override;

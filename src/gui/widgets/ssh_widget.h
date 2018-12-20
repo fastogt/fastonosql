@@ -18,9 +18,9 @@
 
 #pragma once
 
-#include <QWidget>
-
 #include <fastonosql/core/ssh_info.h>
+
+#include "gui/widgets/base_widget.h"
 
 class QLabel;
 class QLineEdit;
@@ -34,11 +34,13 @@ namespace gui {
 class HostPortWidget;
 class IPathWidget;
 
-class SSHWidget : public QWidget {
+class SSHWidget : public BaseWidget {
   Q_OBJECT
 
  public:
-  explicit SSHWidget(QWidget* parent = Q_NULLPTR);
+  typedef BaseWidget base_class;
+  template <typename T, typename... Args>
+  friend T* createWidget(Args&&... args);
 
   bool isValidSSHInfo() const;
 
@@ -61,11 +63,10 @@ class SSHWidget : public QWidget {
   void togglePassphraseEchoMode();
 
  protected:
-  void changeEvent(QEvent* ev) override;
+  explicit SSHWidget(QWidget* parent = Q_NULLPTR);
+  void retranslateUi() override;
 
  private:
-  void retranslateUi();
-
   QCheckBox* use_ssh_;
   QWidget* use_ssh_widget_;
 

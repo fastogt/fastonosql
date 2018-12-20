@@ -28,9 +28,14 @@ class ConnectionWidget : public ConnectionLocalWidgetDirectoryPath {
   Q_OBJECT
 
  public:
-  explicit ConnectionWidget(QWidget* parent = Q_NULLPTR);
+  typedef ConnectionBaseWidget base_class;
+  template <typename T, typename... Args>
+  friend T* gui::createWidget(Args&&... args);
 
   void syncControls(proxy::IConnectionSettingsBase* connection) override;
+
+ protected:
+  explicit ConnectionWidget(QWidget* parent = Q_NULLPTR);
   void retranslateUi() override;
 
  private:

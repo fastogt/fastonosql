@@ -67,14 +67,14 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
     typeComparators_->setCurrentIndex(config.comparator);
     type_compressions_->setCurrentIndex(config.compression);
   }
-  ConnectionLocalWidget::syncControls(lev);
+  base_class::syncControls(lev);
 }
 
 void ConnectionWidget::retranslateUi() {
   create_db_if_missing_->setText(trCreateDBIfMissing);
   compLabel_->setText(trComparator + ":");
   compression_label_->setText(trCompression + ":");
-  ConnectionLocalWidget::retranslateUi();
+  base_class::retranslateUi();
 }
 
 proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(

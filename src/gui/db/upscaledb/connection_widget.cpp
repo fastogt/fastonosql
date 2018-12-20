@@ -32,8 +32,7 @@ namespace fastonosql {
 namespace gui {
 namespace upscaledb {
 
-ConnectionWidget::ConnectionWidget(QWidget* parent)
-    : ConnectionLocalWidgetFilePath(trDBPath, trFilter, trCaption, parent) {
+ConnectionWidget::ConnectionWidget(QWidget* parent) : base_class(trDBPath, trFilter, trCaption, parent) {
   create_db_if_missing_ = new QCheckBox;
   addWidget(create_db_if_missing_);
 
@@ -54,13 +53,13 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
     create_db_if_missing_->setChecked(config.create_if_missing);
     default_db_num_->setValue(config.dbnum);
   }
-  ConnectionLocalWidget::syncControls(ups);
+  base_class::syncControls(ups);
 }
 
 void ConnectionWidget::retranslateUi() {
   create_db_if_missing_->setText(trCreateDBIfMissing);
   default_db_label_->setText(trDefaultDb);
-  ConnectionLocalWidget::retranslateUi();
+  base_class::retranslateUi();
 }
 
 proxy::IConnectionSettingsLocal* ConnectionWidget::createConnectionLocalImpl(

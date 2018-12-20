@@ -70,12 +70,12 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
       password_box_->clear();
     }
   }
-  ConnectionRemoteWidget::syncControls(ssdb);
+  base_class::syncControls(ssdb);
 }
 
 void ConnectionWidget::retranslateUi() {
   use_auth_->setText(trUseAuth);
-  ConnectionRemoteWidget::retranslateUi();
+  base_class::retranslateUi();
 }
 
 bool ConnectionWidget::validated() const {
@@ -83,7 +83,7 @@ bool ConnectionWidget::validated() const {
     return false;
   }
 
-  return ConnectionBaseWidget::validated();
+  return base_class::validated();
 }
 
 bool ConnectionWidget::isValidCredential() const {

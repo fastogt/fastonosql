@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <QWidget>
+#include "gui/widgets/base_widget.h"
 
 #include "proxy/connection_settings/iconnection_settings.h"
 
@@ -41,14 +41,15 @@ const QString trDefaultDb = QObject::tr("Default database:");
 namespace fastonosql {
 namespace gui {
 
-class ConnectionBaseWidget : public QWidget {
+class ConnectionBaseWidget : public BaseWidget {
   Q_OBJECT
 
  public:
-  explicit ConnectionBaseWidget(QWidget* parent = Q_NULLPTR);
+  typedef BaseWidget base_class;
+  template <typename T, typename... Args>
+  friend T* createWidget(Args&&... args);
 
   virtual void syncControls(proxy::IConnectionSettingsBase* connection);
-  virtual void retranslateUi();
   virtual bool validated() const;
 
   proxy::IConnectionSettingsBase* createConnection() const;
@@ -71,10 +72,12 @@ class ConnectionBaseWidget : public QWidget {
   void loggingStateChange(int value);
 
  protected:
+  explicit ConnectionBaseWidget(QWidget* parent = Q_NULLPTR);
+
+  void retranslateUi() override;
+
   void addWidget(QWidget* widget);
   void addLayout(QLayout* layout);
-
-  void changeEvent(QEvent* ev) override;
 
   virtual proxy::IConnectionSettingsBase* createConnectionImpl(const proxy::connection_path_t& path) const = 0;
 

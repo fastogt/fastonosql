@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <QWidget>
+#include "gui/widgets/base_widget.h"
 
 class QLineEdit;
 class QLabel;
@@ -27,11 +27,13 @@ class QPushButton;
 namespace fastonosql {
 namespace gui {
 
-class UserPasswordWidget : public QWidget {
+class UserPasswordWidget : public BaseWidget {
   Q_OBJECT
 
  public:
-  UserPasswordWidget(const QString& user_title, const QString& password_title, QWidget* parent = Q_NULLPTR);
+  typedef BaseWidget base_class;
+  template <typename T, typename... Args>
+  friend T* createWidget(Args&&... args);
 
   QString userName() const;
   void setUserName(const QString& user) const;
@@ -45,11 +47,10 @@ class UserPasswordWidget : public QWidget {
   void togglePasswordEchoMode();
 
  protected:
-  void changeEvent(QEvent* ev) override;
+  UserPasswordWidget(const QString& user_title, const QString& password_title, QWidget* parent = Q_NULLPTR);
+  void retranslateUi() override;
 
  private:
-  void retranslateUi();
-
   QLabel* user_name_label_;
   QLineEdit* user_name_textbox_;
 

@@ -53,7 +53,7 @@ namespace fastonosql {
 namespace gui {
 namespace dynomite {
 
-ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(parent) {
+ConnectionWidget::ConnectionWidget(QWidget* parent) : base_class(parent) {
   QVBoxLayout* vbox = new QVBoxLayout;
 
   is_ssl_connection_ = new QCheckBox;
@@ -62,7 +62,7 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(paren
   QHBoxLayout* hbox = new QHBoxLayout;
   hbox->addWidget(is_ssl_connection_);
 
-  host_widget_ = new HostPortWidget;
+  host_widget_ = createWidget<HostPortWidget>();
   QLayout* host_layout = host_widget_->layout();
   host_layout->setContentsMargins(0, 0, 0, 0);
   vbox->addLayout(hbox);
@@ -95,7 +95,7 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : ConnectionBaseWidget(paren
 
   // ssh
 
-  ssh_widget_ = new SSHWidget;
+  ssh_widget_ = createWidget<SSHWidget>();
   QLayout* ssh_layout = ssh_widget_->layout();
   ssh_layout->setContentsMargins(0, 0, 0, 0);
   addWidget(ssh_widget_);
@@ -126,14 +126,14 @@ void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) 
     core::SSHInfo ssh_info = dynomite->GetSSHInfo();
     ssh_widget_->setInfo(ssh_info);
   }
-  ConnectionBaseWidget::syncControls(dynomite);
+  base_class::syncControls(dynomite);
 }
 
 void ConnectionWidget::retranslateUi() {
   is_ssl_connection_->setText(trSSL);
   use_auth_->setText(trUseAuth);
   default_db_label_->setText(trDefaultDb);
-  ConnectionBaseWidget::retranslateUi();
+  base_class::retranslateUi();
 }
 
 void ConnectionWidget::togglePasswordEchoMode() {
@@ -166,7 +166,7 @@ bool ConnectionWidget::validated() const {
     return false;
   }
 
-  return ConnectionBaseWidget::validated();
+  return base_class::validated();
 }
 
 bool ConnectionWidget::isValidCredential() const {

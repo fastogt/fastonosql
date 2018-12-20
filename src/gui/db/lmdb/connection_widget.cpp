@@ -50,13 +50,13 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : base_class(parent) {
   VERIFY(connect(file_path_selection_, &QRadioButton::toggled, this, &ConnectionWidget::selectFilePathDB));
   VERIFY(connect(directory_path_selection_, &QRadioButton::toggled, this, &ConnectionWidget::selectDirectoryPathDB));
 
-  file_path_widget_ = new FilePathWidget(trDBPath, trFilter, trCaption);
+  file_path_widget_ = createWidget<FilePathWidget>(trDBPath, trFilter, trCaption);
   QLayout* path_layout = file_path_widget_->layout();
   path_layout->setContentsMargins(0, 0, 0, 0);
   vbox->addWidget(file_path_selection_);
   vbox->addWidget(file_path_widget_);
 
-  directory_path_widget_ = new DirectoryPathWidget(trDBPath, trCaption);
+  directory_path_widget_ = createWidget<DirectoryPathWidget>(trDBPath, trCaption);
   path_layout = directory_path_widget_->layout();
   path_layout->setContentsMargins(0, 0, 0, 0);
   vbox->addWidget(directory_path_selection_);
@@ -131,7 +131,7 @@ bool ConnectionWidget::validated() const {
     }
   }
 
-  return ConnectionBaseWidget::validated();
+  return base_class::validated();
 }
 
 void ConnectionWidget::selectFilePathDB(bool checked) {

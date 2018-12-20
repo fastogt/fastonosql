@@ -55,7 +55,7 @@ DbKeyDialog::DbKeyDialog(const QString& title,
     : base_class(title, parent), editor_(nullptr), key_(key) {
   setWindowIcon(icon);
 
-  editor_ = new KeyEditWidget(this);
+  editor_ = createWidget<KeyEditWidget>();
 
   QDialogButtonBox* button_box = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
   button_box->setOrientation(Qt::Horizontal);

@@ -39,11 +39,11 @@ LogTabWidget::LogTabWidget(QWidget* parent) : QTabWidget(parent) {
   setMovable(true);
 
   // logs
-  log_ = new LogWidget;
+  log_ = createWidget<LogWidget>();
   addTab(log_, GuiFactory::GetInstance().loggingIcon(), QString());
 
   // commands
-  commands_ = new CommandsWidget;
+  commands_ = createWidget<CommandsWidget>();
   addTab(commands_, GuiFactory::GetInstance().commandIcon(), QString());
 
   retranslateUi();

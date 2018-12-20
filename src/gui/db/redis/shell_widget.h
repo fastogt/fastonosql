@@ -40,7 +40,7 @@ class ShellWidget : public BaseShellWidget {
 
  public:
   typedef BaseShellWidget base_class;
-  ShellWidget(proxy::IServerSPtr server, const QString& filePath = QString(), QWidget* parent = Q_NULLPTR);
+  ShellWidget(proxy::IServerSPtr server, const QString& file_path = QString(), QWidget* parent = Q_NULLPTR);
 
  protected:
   void init() override;

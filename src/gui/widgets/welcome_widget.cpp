@@ -19,7 +19,6 @@
 #include "gui/widgets/welcome_widget.h"
 
 #include <QDesktopServices>
-#include <QEvent>
 #include <QFile>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -84,7 +83,6 @@ WelcomeWidget::WelcomeWidget(QWidget* parent) : base_class(parent) {
 
   setLayout(main_layout);
   setMinimumSize(QSize(min_width, min_height));
-  retranslateUi();
 }
 
 void WelcomeWidget::showEvent(QShowEvent* ev) {
@@ -94,14 +92,6 @@ void WelcomeWidget::showEvent(QShowEvent* ev) {
     loadPage();
     page_loaded = true;
   }
-}
-
-void WelcomeWidget::changeEvent(QEvent* ev) {
-  if (ev->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-
-  base_class::changeEvent(ev);
 }
 
 void WelcomeWidget::retranslateUi() {
@@ -117,6 +107,7 @@ void WelcomeWidget::retranslateUi() {
   open_twitter_action_->setToolTip(trTwitter);
   open_youtube_action_->setToolTip(trYoutube);
   open_github_action_->setToolTip(trGithub);
+  base_class::retranslateUi();
 }
 
 void WelcomeWidget::pageLoad(const QString& content, const QString& error_message) {

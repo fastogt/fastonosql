@@ -49,21 +49,23 @@ core::SSHInfo::AuthenticationMethod ConvertIndexToSSHMethod(int index) {
 }  // namespace
 namespace gui {
 
-SSHWidget::SSHWidget(QWidget* parent) : QWidget(parent) {
+SSHWidget::SSHWidget(QWidget* parent) : base_class(parent) {
   use_ssh_ = new QCheckBox;
   user_name_ = new QLineEdit;
 
-  sshhost_widget_ = new HostPortWidget;
+  sshhost_widget_ = createWidget<HostPortWidget>();
   QLayout* host_layout = sshhost_widget_->layout();
   host_layout->setContentsMargins(0, 0, 0, 0);
 
-  private_key_widget_ = new FilePathWidget(translations::trPrivateKey + ":", trPrivateKeyFiles, trSelectPrivateKey);
+  private_key_widget_ =
+      createWidget<FilePathWidget>(translations::trPrivateKey + ":", trPrivateKeyFiles, trSelectPrivateKey);
   QLayout* pub_layout = private_key_widget_->layout();
   pub_layout->setContentsMargins(0, 0, 0, 0);
 
   use_public_key_ = new QCheckBox;
 
-  public_key_widget_ = new FilePathWidget(translations::trPublicKey + ":", trPublicKeyFiles, trSelectPublicKey);
+  public_key_widget_ =
+      createWidget<FilePathWidget>(translations::trPublicKey + ":", trPublicKeyFiles, trSelectPublicKey);
   QLayout* priv_layout = public_key_widget_->layout();
   priv_layout->setContentsMargins(0, 0, 0, 0);
 
@@ -144,7 +146,6 @@ SSHWidget::SSHWidget(QWidget* parent) : QWidget(parent) {
   use_ssh_widget_->setEnabled(false);
   securityChange(security_->currentIndex());
   publicKeyStateChange(0);
-  retranslateUi();
 }
 
 bool SSHWidget::isSSHChecked() const {
@@ -268,14 +269,6 @@ bool SSHWidget::isValidSSHInfo() const {
   return true;
 }
 
-void SSHWidget::changeEvent(QEvent* ev) {
-  if (ev->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-
-  QWidget::changeEvent(ev);
-}
-
 void SSHWidget::retranslateUi() {
   use_ssh_->setText(tr("Use SSH tunnel"));
   use_public_key_->setText(tr("Use public key"));
@@ -284,6 +277,7 @@ void SSHWidget::retranslateUi() {
   ssh_address_label_->setText(tr("SSH Address:"));
   ssh_user_name_label_->setText(tr("SSH User Name:"));
   ssh_auth_method_label_->setText(tr("SSH Auth Method:"));
+  base_class::retranslateUi();
 }
 
 }  // namespace gui

@@ -33,8 +33,8 @@ HashTypeWidget::HashTypeWidget(QWidget* parent)
     : base_class(parent), view_(nullptr), more_less_button_(nullptr), key_edit_(nullptr), value_edit_(nullptr) {
   view_ = new HashTypeView;
   more_less_button_ = new QPushButton;
-  value_edit_ = new FastoViewer;
-  key_edit_ = new FastoViewer;
+  value_edit_ = createWidget<FastoViewer>();
+  key_edit_ = createWidget<FastoViewer>();
 
   VERIFY(connect(view_, &HashTypeView::dataChangedSignal, this, &HashTypeWidget::dataChangedSignal));
   VERIFY(connect(view_, &HashTypeView::rowChanged, this, &HashTypeWidget::valueUpdate, Qt::DirectConnection));
@@ -67,7 +67,6 @@ HashTypeWidget::HashTypeWidget(QWidget* parent)
   // sync
   value_edit_->setVisible(false);
   key_edit_->setVisible(false);
-  retranslateUi();
 }
 
 void HashTypeWidget::insertRow(const HashTypeView::key_t& key, const HashTypeView::value_t& value) {
@@ -108,19 +107,13 @@ void HashTypeWidget::toggleVisibleValueView() {
   syncMoreButton();
 }
 
-void HashTypeWidget::changeEvent(QEvent* e) {
-  if (e->type() == QEvent::LanguageChange) {
-    retranslateUi();
-  }
-  base_class::changeEvent(e);
-}
-
 void HashTypeWidget::syncMoreButton() {
   more_less_button_->setText(value_edit_->isVisible() ? translations::trLess : translations::trMore);
 }
 
 void HashTypeWidget::retranslateUi() {
   syncMoreButton();
+  base_class::retranslateUi();
 }
 
 }  // namespace gui
