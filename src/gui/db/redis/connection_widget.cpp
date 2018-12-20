@@ -21,7 +21,6 @@
 #include <string>
 
 #include <QCheckBox>
-#include <QEvent>
 #include <QFileDialog>
 #include <QGroupBox>
 #include <QHBoxLayout>

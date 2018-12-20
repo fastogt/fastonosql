@@ -18,7 +18,8 @@
 
 #include "gui/widgets/host_port_widget.h"
 
-#include <QEvent>
+#include <limits>
+
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>

@@ -18,7 +18,6 @@
 
 #include "gui/widgets/hash_type_widget.h"
 
-#include <QEvent>
 #include <QPushButton>
 #include <QSplitter>
 #include <QVBoxLayout>

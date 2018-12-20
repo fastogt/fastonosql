@@ -18,7 +18,6 @@
 
 #include "gui/widgets/save_key_edit_widget.h"
 
-#include <QEvent>
 #include <QPushButton>
 #include <QSplitter>
 #include <QVBoxLayout>

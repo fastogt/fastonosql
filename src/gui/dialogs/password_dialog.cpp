@@ -19,7 +19,6 @@
 #include "gui/dialogs/password_dialog.h"
 
 #include <QDialogButtonBox>
-#include <QEvent>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>

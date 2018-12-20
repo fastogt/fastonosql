@@ -21,7 +21,7 @@
 #include <common/macros.h>
 
 namespace {
-const char* kUserTypes[] = {"USER", "SUPPORT", "OPEN_SOURCE", "ENTERPRISE"};
+const char* kUserTypes[] = {"USER", "SUPPORT", "OPEN_SOURCE", "ENTERPRISE", "PERMANENT"};
 const char* kBuildStrategy[] = {"community", "public", "private"};
 }  // namespace
 

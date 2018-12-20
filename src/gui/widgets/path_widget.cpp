@@ -26,8 +26,6 @@
 #include <QLineEdit>
 #include <QPushButton>
 
-#include <QEvent>
-
 #include <common/file_system/types.h>
 #include <common/qt/convert2string.h>
 

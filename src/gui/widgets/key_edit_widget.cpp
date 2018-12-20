@@ -22,7 +22,6 @@
 #include <vector>
 
 #include <QComboBox>
-#include <QEvent>
 #include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>

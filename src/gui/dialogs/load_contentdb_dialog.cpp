@@ -19,7 +19,6 @@
 #include "gui/dialogs/load_contentdb_dialog.h"
 
 #include <QDialogButtonBox>
-#include <QEvent>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>

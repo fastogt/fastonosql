@@ -29,7 +29,7 @@ class BaseWidget : public QWidget {
  public:
   typedef QWidget base_class;
   template <typename T, typename... Args>
-  friend T* createDialog(Args&&... args);
+  friend T* createWidget(Args&&... args);
 
   ~BaseWidget() override;
 
