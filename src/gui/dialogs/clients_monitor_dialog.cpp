@@ -13,7 +13,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with FastoNoSQL.  If not, see <http://www.gnu.org/licenses/>.
+    along with FastoNoSQL. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "gui/dialogs/clients_monitor_dialog.h"
@@ -89,6 +89,8 @@ ClientsMonitorDialog::ClientsMonitorDialog(const QString& title,
 
   clients_table_->setColumnHidden(ClientsTableModel::kSub, true);
   clients_table_->setColumnHidden(ClientsTableModel::kPsub, true);
+  clients_table_->setColumnHidden(ClientsTableModel::kMulti, true);
+  clients_table_->setColumnHidden(ClientsTableModel::kQbuf, true);
   clients_table_->setColumnHidden(ClientsTableModel::kQbufFree, true);
   clients_table_->setColumnHidden(ClientsTableModel::kOdl, true);
   clients_table_->setColumnHidden(ClientsTableModel::kOll, true);
