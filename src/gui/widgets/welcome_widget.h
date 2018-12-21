@@ -20,6 +20,8 @@
 
 #include "gui/widgets/base_widget.h"
 
+#include <common/error.h>
+
 class QToolBar;
 class QLabel;
 class QPushButton;
@@ -45,7 +47,7 @@ class WelcomeWidget : public BaseWidget {
   void showEvent(QShowEvent* ev) override;
 
  private Q_SLOTS:
-  void pageLoad(const QString& content, const QString& error_message);
+  void pageLoad(common::Error err, const QString& content);
   void openGithub() const;
   void openTwitter() const;
   void openFacebook() const;

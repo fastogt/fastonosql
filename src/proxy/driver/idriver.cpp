@@ -80,7 +80,6 @@ const struct RegisterTypes {
     qRegisterMetaType<core::NDbKValue>("core::NDbKValue");
     qRegisterMetaType<core::IDataBaseInfoSPtr>("core::IDataBaseInfoSPtr");
     qRegisterMetaType<core::ttl_t>("core::ttl_t");
-    qRegisterMetaType<core::command_buffer_t>("core::command_buffer_t");
     qRegisterMetaType<core::nkey_t>("core::nkey_t");
     qRegisterMetaType<core::ServerInfoSnapShoot>("core::ServerInfoSnapShoot");
   }

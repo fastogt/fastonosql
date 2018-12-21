@@ -23,6 +23,7 @@
 #include <QThread>
 #include <QVBoxLayout>
 
+#include <common/qt/convert2string.h>
 #include <common/qt/gui/glass_widget.h>  // for GlassWidget
 
 #include "proxy/connection_settings/iconnection_settings_remote.h"
@@ -62,9 +63,7 @@ DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(const QString
 
   status_label_ = new QLabel(translations::trTimeTemplate_1S.arg("calculate..."));
   icon_label_ = new QLabel;
-  const QIcon fail_icon = GuiFactory::GetInstance().failIcon();
-  const QPixmap pm = fail_icon.pixmap(kStateIconSize);
-  icon_label_->setPixmap(pm);
+  setIcon(GuiFactory::GetInstance().failIcon());
 
   list_widget_ = new QTreeWidget;
   list_widget_->setIndentation(5);
@@ -111,40 +110,45 @@ std::vector<ConnectionListWidgetItemDiscovered*> DiscoveryClusterDiagnosticDialo
   return res;
 }
 
-void DiscoveryClusterDiagnosticDialog::connectionResultReady(bool suc,
+void DiscoveryClusterDiagnosticDialog::connectionResultReady(common::Error err,
                                                              qint64 exec_mstime,
-                                                             const QString& result_text,
                                                              std::vector<core::ServerDiscoveryClusterInfoSPtr> infos) {
   glass_widget_->stop();
 
   execute_time_label_->setText(translations::trTimeTemplate_1S.arg(exec_mstime));
-  list_widget_->setEnabled(suc);
+  list_widget_->setEnabled(!err);
   list_widget_->clear();
-  if (suc) {
-    QIcon icon = GuiFactory::GetInstance().successIcon();
-    const QPixmap pm = icon.pixmap(kStateIconSize);
-    icon_label_->setPixmap(pm);
-
-    for (core::ServerDiscoveryClusterInfoSPtr inf : infos) {
-      common::net::HostAndPortAndSlot host = inf->GetHost();
-      proxy::connection_path_t path(common::file_system::get_separator_string<char>() + inf->GetName());
-      proxy::IConnectionSettingsRemote* remote =
-          proxy::ConnectionSettingsFactory::GetInstance().CreateRemoteSettingsFromTypeConnection(
-              inf->GetConnectionType(), path, host);
-      ConnectionListWidgetItemDiscovered* item = new ConnectionListWidgetItemDiscovered(inf->GetInfo(), nullptr);
-      item->setConnection(proxy::IConnectionSettingsBaseSPtr(remote));
-      item->setDisabled(inf->Self() || cluster_->FindSettingsByHost(host));
-      list_widget_->addTopLevelItem(item);
-    }
-    status_label_->setText(translations::trConnectionStatusTemplate_1S.arg(translations::trSuccess));
+  if (err) {
+    QString qerror;
+    common::ConvertFromString(err->GetDescription(), &qerror);
+    setIcon(GuiFactory::GetInstance().failIcon());
+    status_label_->setText(translations::trConnectionStatusTemplate_1S.arg(qerror));
     return;
   }
-  status_label_->setText(translations::trConnectionStatusTemplate_1S.arg(result_text));
+
+  setIcon(GuiFactory::GetInstance().successIcon());
+  for (core::ServerDiscoveryClusterInfoSPtr inf : infos) {
+    common::net::HostAndPortAndSlot host = inf->GetHost();
+    proxy::connection_path_t path(common::file_system::get_separator_string<char>() + inf->GetName());
+    proxy::IConnectionSettingsRemote* remote =
+        proxy::ConnectionSettingsFactory::GetInstance().CreateRemoteSettingsFromTypeConnection(inf->GetConnectionType(),
+                                                                                               path, host);
+    ConnectionListWidgetItemDiscovered* item = new ConnectionListWidgetItemDiscovered(inf->GetInfo(), nullptr);
+    item->setConnection(proxy::IConnectionSettingsBaseSPtr(remote));
+    item->setDisabled(inf->Self() || cluster_->FindSettingsByHost(host));
+    list_widget_->addTopLevelItem(item);
+  }
+  status_label_->setText(translations::trConnectionStatusTemplate_1S.arg(translations::trSuccess));
 }
 
 void DiscoveryClusterDiagnosticDialog::showEvent(QShowEvent* e) {
   base_class::showEvent(e);
   glass_widget_->start();
+}
+
+void DiscoveryClusterDiagnosticDialog::setIcon(const QIcon& icon) {
+  QPixmap pm = icon.pixmap(kStateIconSize);
+  icon_label_->setPixmap(pm);
 }
 
 void DiscoveryClusterDiagnosticDialog::testConnection(proxy::IConnectionSettingsBaseSPtr connection) {

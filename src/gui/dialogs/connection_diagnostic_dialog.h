@@ -44,7 +44,7 @@ class ConnectionDiagnosticDialog : public BaseDialog {
   friend T* createDialog(Args&&... args);
 
  private Q_SLOTS:
-  void connectionResultReady(bool suc, qint64 exec_mstime, const QString& result_text);
+  void connectionResultReady(common::Error err, qint64 exec_mstime);
 
  protected:
   ConnectionDiagnosticDialog(const QString& title,
@@ -54,6 +54,7 @@ class ConnectionDiagnosticDialog : public BaseDialog {
   void showEvent(QShowEvent* e) override;
 
  private:
+  void setIcon(const QIcon& icon);
   void startTestConnection(proxy::IConnectionSettingsBaseSPtr connection);
 
   common::qt::gui::GlassWidget* glass_widget_;

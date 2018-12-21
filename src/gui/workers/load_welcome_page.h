@@ -22,6 +22,8 @@
 
 #include <QObject>
 
+#include <common/error.h>
+
 namespace fastonosql {
 namespace gui {
 
@@ -32,7 +34,7 @@ class LoadWelcomePage : public QObject {
   explicit LoadWelcomePage(QObject* parent = Q_NULLPTR);
 
  Q_SIGNALS:
-  void pageLoaded(const QString& content, const QString& error_message);
+  void pageLoaded(common::Error err, const QString& content);
 
  public Q_SLOTS:
   void routine();

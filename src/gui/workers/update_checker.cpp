@@ -21,7 +21,6 @@
 #include <string>
 
 #include <common/net/socket_tcp.h>  // for ClientSocketTcp
-#include <common/qt/convert2string.h>
 
 #include "proxy/server_config.h"
 
@@ -82,19 +81,14 @@ common::Error GetVersion(uint32_t* version) {
 }  // namespace
 namespace gui {
 
-UpdateChecker::UpdateChecker(QObject* parent) : QObject(parent) {}
+UpdateChecker::UpdateChecker(QObject* parent) : QObject(parent) {
+  qRegisterMetaType<common::Error>("common::Error");
+}
 
 void UpdateChecker::routine() {
   uint32_t version;
-  common::Error err = GetVersion(&version);
-  if (err) {
-    QString qerror_message;
-    common::ConvertFromString(err->GetDescription(), &qerror_message);
-    versionAvailibled(qerror_message, version);
-    return;
-  }
-
-  versionAvailibled(QString(), version);
+  const common::Error err = GetVersion(&version);
+  versionAvailibled(err, version);
 }
 
 }  // namespace gui

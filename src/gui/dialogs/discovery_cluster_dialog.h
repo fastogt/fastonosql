@@ -56,9 +56,8 @@ class DiscoveryClusterDiagnosticDialog : public BaseDialog {
   std::vector<ConnectionListWidgetItemDiscovered*> selectedConnections() const;
 
  private Q_SLOTS:
-  void connectionResultReady(bool suc,
+  void connectionResultReady(common::Error err,
                              qint64 exec_mstime,
-                             const QString& result_text,
                              std::vector<core::ServerDiscoveryClusterInfoSPtr> infos);
 
  protected:
@@ -70,6 +69,7 @@ class DiscoveryClusterDiagnosticDialog : public BaseDialog {
   void showEvent(QShowEvent* e) override;
 
  private:
+  void setIcon(const QIcon& icon);
   void testConnection(proxy::IConnectionSettingsBaseSPtr connection);
 
   common::qt::gui::GlassWidget* glass_widget_;

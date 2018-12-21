@@ -32,7 +32,7 @@ class TestConnection : public QObject {
   explicit TestConnection(proxy::IConnectionSettingsBaseSPtr conn, QObject* parent = Q_NULLPTR);
 
  Q_SIGNALS:
-  void connectionResult(bool suc, qint64 mstime_exec, const QString& result_text);
+  void connectionResult(common::Error err, qint64 mstime_exec);
 
  public Q_SLOTS:
   void routine();

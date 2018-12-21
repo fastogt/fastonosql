@@ -587,9 +587,11 @@ void MainWindow::exportConnection() {
   QMessageBox::information(this, translations::trInfo, trSettingsExportedS);
 }
 
-void MainWindow::versionAvailible(const QString& error_message, unsigned version) {
-  if (!error_message.isEmpty()) {
-    QMessageBox::information(this, translations::trCheckVersion, error_message);
+void MainWindow::versionAvailible(common::Error err, unsigned version) {
+  if (err) {
+    QString qerror;
+    common::ConvertFromString(err->GetDescription(), &qerror);
+    QMessageBox::information(this, translations::trCheckVersion, qerror);
     check_update_action_->setEnabled(true);
     return;
   }
@@ -616,8 +618,8 @@ void MainWindow::versionAvailible(const QString& error_message, unsigned version
   check_update_action_->setEnabled(is_need_update);
 }
 
-void MainWindow::statitsticSent(const QString& error_message) {
-  UNUSED(error_message);
+void MainWindow::statitsticSent(common::Error err) {
+  UNUSED(err);
 }
 
 void MainWindow::closeServer(proxy::IServerSPtr server) {

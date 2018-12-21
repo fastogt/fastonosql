@@ -20,6 +20,8 @@
 
 #include <QObject>
 
+#include <common/error.h>
+
 namespace fastonosql {
 namespace gui {
 
@@ -30,7 +32,7 @@ class UpdateChecker : public QObject {
   explicit UpdateChecker(QObject* parent = Q_NULLPTR);
 
  Q_SIGNALS:
-  void versionAvailibled(const QString& error_message, unsigned version);
+  void versionAvailibled(common::Error err, unsigned version);
 
  public Q_SLOTS:
   void routine();

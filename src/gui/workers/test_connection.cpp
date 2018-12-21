@@ -18,8 +18,7 @@
 
 #include "gui/workers/test_connection.h"
 
-#include <common/qt/convert2string.h>  // for ConvertFromString
-#include <common/time.h>               // for current_mstime
+#include <common/time.h>  // for current_mstime
 
 #include "proxy/servers_manager.h"  // for ServersManager
 
@@ -27,7 +26,9 @@ namespace fastonosql {
 namespace gui {
 
 TestConnection::TestConnection(proxy::IConnectionSettingsBaseSPtr conn, QObject* parent)
-    : QObject(parent), connection_(conn), start_time_(common::time::current_mstime()) {}
+    : QObject(parent), connection_(conn), start_time_(common::time::current_mstime()) {
+  qRegisterMetaType<common::Error>("common::Error");
+}
 
 common::time64_t TestConnection::elipsedTime() const {
   return common::time::current_mstime() - start_time_;
@@ -35,19 +36,13 @@ common::time64_t TestConnection::elipsedTime() const {
 
 void TestConnection::routine() {
   if (!connection_) {
-    emit connectionResult(false, elipsedTime(), "Invalid connection settings");
+    emit connectionResult(common::make_error_inval(), elipsedTime());
     return;
   }
 
-  common::Error err = proxy::ServersManager::GetInstance().TestConnection(connection_);
-  const common::time64_t msec_exec = elipsedTime();
-  if (err) {
-    QString qdesc;
-    common::ConvertFromString(err->GetDescription(), &qdesc);
-    emit connectionResult(false, msec_exec, qdesc);
-  } else {
-    emit connectionResult(true, msec_exec, QString());
-  }
+  const common::Error err = proxy::ServersManager::GetInstance().TestConnection(connection_);
+  const qint64 msec_exec = elipsedTime();
+  emit connectionResult(err, msec_exec);
 }
 
 }  // namespace gui

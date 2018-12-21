@@ -54,19 +54,19 @@ class DiscoverySentinelDiagnosticDialog : public BaseDialog {
   std::vector<ConnectionListWidgetItemDiscovered*> selectedConnections() const;
 
  private Q_SLOTS:
-  void connectionResultReady(bool suc,
+  void connectionResultReady(common::Error err,
                              qint64 exec_mstime,
-                             const QString& result_text,
                              std::vector<core::ServerDiscoverySentinelInfoSPtr> infos);
 
  protected:
-  void showEvent(QShowEvent* e) override;
-
- private:
   DiscoverySentinelDiagnosticDialog(const QString& title,
                                     const QIcon& icon,
                                     proxy::IConnectionSettingsBaseSPtr connection,
                                     QWidget* parent = Q_NULLPTR);
+  void showEvent(QShowEvent* e) override;
+
+ private:
+  void setIcon(const QIcon& icon);
   void testConnection(proxy::IConnectionSettingsBaseSPtr connection);
 
   common::qt::gui::GlassWidget* glass_widget_;

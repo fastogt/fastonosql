@@ -28,26 +28,25 @@ namespace gui {
 
 DiscoveryConnection::DiscoveryConnection(proxy::IConnectionSettingsBaseSPtr conn, QObject* parent)
     : QObject(parent), connection_(conn), start_time_(common::time::current_mstime()) {
+  qRegisterMetaType<common::Error>("common::Error");
   qRegisterMetaType<std::vector<core::ServerDiscoveryClusterInfoSPtr>>(
       "std::vector<core::ServerDiscoveryClusterInfoSPtr>");
+}
+
+common::time64_t DiscoveryConnection::elipsedTime() const {
+  return common::time::current_mstime() - start_time_;
 }
 
 void DiscoveryConnection::routine() {
   std::vector<core::ServerDiscoveryClusterInfoSPtr> inf;
 
   if (!connection_) {
-    emit connectionResult(false, common::time::current_mstime() - start_time_, "Invalid connection settings", inf);
+    emit connectionResult(common::make_error_inval(), elipsedTime(), inf);
     return;
   }
 
   common::Error err = proxy::ServersManager::GetInstance().DiscoveryClusterConnection(connection_, &inf);
-  if (err) {
-    QString qdesc;
-    common::ConvertFromString(err->GetDescription(), &qdesc);
-    emit connectionResult(false, common::time::current_mstime() - start_time_, qdesc, inf);
-  } else {
-    emit connectionResult(true, common::time::current_mstime() - start_time_, QString(), inf);
-  }
+  emit connectionResult(err, elipsedTime(), inf);
 }
 
 }  // namespace gui

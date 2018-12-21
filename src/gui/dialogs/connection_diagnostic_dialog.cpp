@@ -24,6 +24,7 @@
 #include <QThread>
 #include <QVBoxLayout>
 
+#include <common/qt/convert2string.h>
 #include <common/qt/gui/glass_widget.h>  // for GlassWidget
 
 #include "gui/gui_factory.h"              // for GuiFactory
@@ -54,9 +55,7 @@ ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(const QString& title,
   status_label_ = new QLabel(translations::trTimeTemplate_1S.arg("calculate..."));
   status_label_->setWordWrap(true);
   icon_label_ = new QLabel;
-  QIcon icon = GuiFactory::GetInstance().failIcon();
-  const QPixmap pm = icon.pixmap(kStateIconSize);
-  icon_label_->setPixmap(pm);
+  setIcon(GuiFactory::GetInstance().failIcon());
 
   QDialogButtonBox* button_box = new QDialogButtonBox(QDialogButtonBox::Ok);
   button_box->setOrientation(Qt::Horizontal);
@@ -76,23 +75,31 @@ ConnectionDiagnosticDialog::ConnectionDiagnosticDialog(const QString& title,
   startTestConnection(connection);
 }
 
-void ConnectionDiagnosticDialog::connectionResultReady(bool suc, qint64 exec_mstime, const QString& result_text) {
+void ConnectionDiagnosticDialog::connectionResultReady(common::Error err, qint64 exec_mstime) {
   glass_widget_->stop();
 
   execute_time_label_->setText(translations::trTimeTemplate_1S.arg(exec_mstime));
-  if (suc) {
-    QIcon icon = GuiFactory::GetInstance().successIcon();
-    QPixmap pm = icon.pixmap(kStateIconSize);
-    icon_label_->setPixmap(pm);
-    status_label_->setText(translations::trConnectionStatusTemplate_1S.arg(translations::trSuccess));
+
+  if (err) {
+    QString qerror;
+    common::ConvertFromString(err->GetDescription(), &qerror);
+    setIcon(GuiFactory::GetInstance().failIcon());
+    status_label_->setText(translations::trConnectionStatusTemplate_1S.arg(qerror));
     return;
   }
-  status_label_->setText(translations::trConnectionStatusTemplate_1S.arg(result_text));
+
+  setIcon(GuiFactory::GetInstance().successIcon());
+  status_label_->setText(translations::trConnectionStatusTemplate_1S.arg(translations::trSuccess));
 }
 
 void ConnectionDiagnosticDialog::showEvent(QShowEvent* e) {
   base_class::showEvent(e);
   glass_widget_->start();
+}
+
+void ConnectionDiagnosticDialog::setIcon(const QIcon& icon) {
+  QPixmap pm = icon.pixmap(kStateIconSize);
+  icon_label_->setPixmap(pm);
 }
 
 void ConnectionDiagnosticDialog::startTestConnection(proxy::IConnectionSettingsBaseSPtr connection) {

@@ -77,8 +77,8 @@ class MainWindow : public QMainWindow {
   void importConnection();
   void exportConnection();
 
-  void versionAvailible(const QString& error_message, unsigned version);
-  void statitsticSent(const QString& error_message);
+  void versionAvailible(common::Error err, unsigned version);
+  void statitsticSent(common::Error err);
 
   void closeServer(proxy::IServerSPtr server);
 #if defined(PRO_VERSION)

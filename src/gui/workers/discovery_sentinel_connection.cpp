@@ -27,27 +27,26 @@ namespace fastonosql {
 namespace gui {
 
 DiscoverySentinelConnection::DiscoverySentinelConnection(proxy::IConnectionSettingsBaseSPtr conn, QObject* parent)
-    : QObject(parent), connection_(conn), startTime_(common::time::current_mstime()) {
+    : QObject(parent), connection_(conn), start_time_(common::time::current_mstime()) {
+  qRegisterMetaType<common::Error>("common::Error");
   qRegisterMetaType<std::vector<core::ServerDiscoverySentinelInfoSPtr>>(
       "std::vector<core::ServerDiscoverySentinelInfoSPtr>");
+}
+
+common::time64_t DiscoverySentinelConnection::elipsedTime() const {
+  return common::time::current_mstime() - start_time_;
 }
 
 void DiscoverySentinelConnection::routine() {
   std::vector<core::ServerDiscoverySentinelInfoSPtr> inf;
 
   if (!connection_) {
-    emit connectionResult(false, common::time::current_mstime() - startTime_, "Invalid connection settings", inf);
+    emit connectionResult(common::make_error_inval(), elipsedTime(), inf);
     return;
   }
 
-  common::Error err = proxy::ServersManager::GetInstance().DiscoverySentinelConnection(connection_, &inf);
-  if (err) {
-    QString qdesc;
-    common::ConvertFromString(err->GetDescription(), &qdesc);
-    emit connectionResult(false, common::time::current_mstime() - startTime_, qdesc, inf);
-  } else {
-    emit connectionResult(true, common::time::current_mstime() - startTime_, QString(), inf);
-  }
+  const common::Error err = proxy::ServersManager::GetInstance().DiscoverySentinelConnection(connection_, &inf);
+  emit connectionResult(err, elipsedTime(), inf);
 }
 
 }  // namespace gui

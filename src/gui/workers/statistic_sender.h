@@ -22,6 +22,8 @@
 
 #include <QObject>
 
+#include <common/error.h>
+
 namespace fastonosql {
 namespace gui {
 
@@ -32,7 +34,7 @@ class AnonymousStatisticSender : public QObject {
   explicit AnonymousStatisticSender(QObject* parent = Q_NULLPTR);
 
  Q_SIGNALS:
-  void statisticSended(const QString& error_message);
+  void statisticSended(common::Error err);
 
  public Q_SLOTS:
   void routine();

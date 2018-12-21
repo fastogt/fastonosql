@@ -100,21 +100,21 @@ common::Error loadPageRoutine(common::http::HttpResponse* resp) {
 namespace fastonosql {
 namespace gui {
 
-LoadWelcomePage::LoadWelcomePage(QObject* parent) : QObject(parent) {}
+LoadWelcomePage::LoadWelcomePage(QObject* parent) : QObject(parent) {
+  qRegisterMetaType<common::Error>("common::Error");
+}
 
 void LoadWelcomePage::routine() {
   common::http::HttpResponse resp;
   common::Error err = loadPageRoutine(&resp);
   if (err) {
-    QString qerror_message;
-    common::ConvertFromString(err->GetDescription(), &qerror_message);
-    emit pageLoaded(QString(), qerror_message);
+    emit pageLoaded(err, QString());
     return;
   }
 
   QString body;
   common::ConvertFromString(resp.GetBody(), &body);
-  emit pageLoaded(body, QString());
+  emit pageLoaded(common::Error(), body);
 }
 
 }  // namespace gui

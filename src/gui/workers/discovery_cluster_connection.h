@@ -36,15 +36,16 @@ class DiscoveryConnection : public QObject {
   explicit DiscoveryConnection(proxy::IConnectionSettingsBaseSPtr conn, QObject* parent = Q_NULLPTR);
 
  Q_SIGNALS:
-  void connectionResult(bool suc,
-                        qint64 msTimeExecute,
-                        const QString& resultText,
+  void connectionResult(common::Error err,
+                        qint64 ms_time_execute,
                         std::vector<core::ServerDiscoveryClusterInfoSPtr> infos);
 
  public Q_SLOTS:
   void routine();
 
  private:
+  common::time64_t elipsedTime() const;
+
   proxy::IConnectionSettingsBaseSPtr connection_;
   common::time64_t start_time_;
 };

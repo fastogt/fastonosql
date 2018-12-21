@@ -110,8 +110,8 @@ void WelcomeWidget::retranslateUi() {
   base_class::retranslateUi();
 }
 
-void WelcomeWidget::pageLoad(const QString& content, const QString& error_message) {
-  if (!error_message.isEmpty()) {
+void WelcomeWidget::pageLoad(common::Error err, const QString& content) {
+  if (err) {
     QFile file(":" PROJECT_NAME_LOWERCASE "/welcome.html");
     file.open(QFile::ReadOnly);
     const QString file_content = file.readAll();

@@ -19,14 +19,13 @@
 #include "gui/workers/statistic_sender.h"
 
 #include <common/net/socket_tcp.h>  // for ClientSocketTcp
-#include <common/qt/convert2string.h>
 
 #include "proxy/server_config.h"  // for FASTONOSQL_URL, etc
 
 namespace fastonosql {
 namespace {
 #if defined(PRO_VERSION)
-common::Error sendStatisticRoutine(const std::string& login, const std::string& build_strategy) {
+common::Error sendUserStatisticRoutine(const std::string& login, const std::string& build_strategy) {
   CHECK(!login.empty());
 #if defined(FASTONOSQL)
   common::net::ClientSocketTcp client(common::net::HostAndPort(FASTONOSQL_HOST, SERVER_REQUESTS_PORT));
@@ -119,22 +118,17 @@ common::Error sendAnonymousStatisticRoutine() {
 
 namespace gui {
 
-AnonymousStatisticSender::AnonymousStatisticSender(QObject* parent) : QObject(parent) {}
+AnonymousStatisticSender::AnonymousStatisticSender(QObject* parent) : QObject(parent) {
+  qRegisterMetaType<common::Error>("common::Error");
+}
 
 void AnonymousStatisticSender::routine() {
   sendStatistic();
 }
 
 void AnonymousStatisticSender::sendStatistic() {
-  common::Error err = sendAnonymousStatisticRoutine();
-  if (err) {
-    QString qerror_message;
-    common::ConvertFromString(err->GetDescription(), &qerror_message);
-    statisticSended(qerror_message);
-    return;
-  }
-
-  statisticSended(QString());
+  const common::Error err = sendAnonymousStatisticRoutine();
+  statisticSended(err);
 }
 
 #if defined(PRO_VERSION)
@@ -142,15 +136,8 @@ StatisticSender::StatisticSender(const std::string& login, const std::string& bu
     : base_class(parent), login_(login), build_strategy_(build_strategy) {}
 
 void StatisticSender::sendStatistic() {
-  common::Error err = sendStatisticRoutine(login_, build_strategy_);
-  if (err) {
-    QString qerror_message;
-    common::ConvertFromString(err->GetDescription(), &qerror_message);
-    statisticSended(qerror_message);
-    return;
-  }
-
-  statisticSended(QString());
+  const common::Error err = sendUserStatisticRoutine(login_, build_strategy_);
+  statisticSended(err);
 }
 #endif
 
