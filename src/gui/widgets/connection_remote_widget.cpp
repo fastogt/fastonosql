@@ -25,7 +25,7 @@
 namespace fastonosql {
 namespace gui {
 
-ConnectionRemoteWidget::ConnectionRemoteWidget(QWidget* parent) : ConnectionBaseWidget(parent), host_widget_(nullptr) {
+ConnectionRemoteWidget::ConnectionRemoteWidget(QWidget* parent) : base_class(parent), host_widget_(nullptr) {
   host_widget_ = createWidget<HostPortWidget>();
   QLayout* host_layout = host_widget_->layout();
   host_layout->setContentsMargins(0, 0, 0, 0);

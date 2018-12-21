@@ -28,8 +28,9 @@ namespace fastonosql {
 namespace gui {
 
 ConnectionLocalWidget::ConnectionLocalWidget(IPathWidget* path_widget, QWidget* parent)
-    : ConnectionBaseWidget(parent), path_widget_(path_widget) {
+    : base_class(parent), path_widget_(path_widget) {
   CHECK(path_widget);
+
   QLayout* path_layout = path_widget_->layout();
   path_layout->setContentsMargins(0, 0, 0, 0);
   addWidget(path_widget_);
