@@ -33,7 +33,6 @@ class FastoEditorModelOutput : public QWidget {
 
  public:
   explicit FastoEditorModelOutput(QWidget* parent = Q_NULLPTR);
-  virtual ~FastoEditorModelOutput();
 
   void setModel(QAbstractItemModel* model);
 

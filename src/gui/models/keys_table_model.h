@@ -32,7 +32,6 @@ class KeysTableModel : public common::qt::gui::TableModel {
   enum eColumn : uint8_t { kKey = 0, kType = 1, kTTL = 2, kCountColumns = 3 };
   typedef common::qt::gui::TableModel base_class;
   explicit KeysTableModel(QObject* parent = Q_NULLPTR);
-  ~KeysTableModel() override;
 
   QVariant data(const QModelIndex& index, int role) const override;
   bool setData(const QModelIndex& index, const QVariant& value, int role) override;

@@ -27,6 +27,10 @@ BaseWidget::BaseWidget(QWidget* parent) : base_class(parent) {}
 
 BaseWidget::~BaseWidget() {}
 
+void BaseWidget::init() {}
+
+void BaseWidget::retranslateUi() {}
+
 void BaseWidget::changeEvent(QEvent* e) {
   if (e->type() == QEvent::LanguageChange) {
     retranslateUi();
@@ -34,8 +38,6 @@ void BaseWidget::changeEvent(QEvent* e) {
 
   base_class::changeEvent(e);
 }
-
-void BaseWidget::retranslateUi() {}
 
 }  // namespace gui
 }  // namespace fastonosql

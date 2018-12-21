@@ -50,8 +50,6 @@ class SaveKeyEditWidget : public BaseWidget {
   template <typename T, typename... Args>
   friend T* createWidget(Args&&... args);
 
-  ~SaveKeyEditWidget() override;
-
   void initialize(const std::vector<common::Value::Type>& availible_types, const core::NDbKValue& key);
   void setEnableKeyEdit(bool enable);
 

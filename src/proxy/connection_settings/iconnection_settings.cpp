@@ -127,8 +127,6 @@ const char IConnectionSettings::default_ns_separator[] = ":";
 IConnectionSettings::IConnectionSettings(const connection_path_t& connection_path, core::ConnectionType type)
     : connection_path_(connection_path), type_(type), msinterval_(0) {}
 
-IConnectionSettings::~IConnectionSettings() {}
-
 void IConnectionSettings::SetPath(const connection_path_t& path) {
   connection_path_ = path;
 }
@@ -163,8 +161,6 @@ IConnectionSettingsBase::IConnectionSettingsBase(const connection_path_t& connec
       ns_display_strategy_(FULL_KEY) {
   SetConnectionPathAndUpdateHash(connection_path);
 }
-
-IConnectionSettingsBase::~IConnectionSettingsBase() {}
 
 NsDisplayStrategy IConnectionSettingsBase::GetNsDisplayStrategy() const {
   return ns_display_strategy_;

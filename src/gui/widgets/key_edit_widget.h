@@ -46,8 +46,6 @@ class KeyEditWidget : public BaseWidget {
 
   void initialize(const std::vector<common::Value::Type>& availible_types, const core::NDbKValue& key);
 
-  ~KeyEditWidget() override;
-
   void setEnableKeyEdit(bool key_edit);
 
   bool getKey(core::NDbKValue* key) const;

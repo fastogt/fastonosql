@@ -33,8 +33,6 @@ namespace gui {
 
 KeysTableModel::KeysTableModel(QObject* parent) : TableModel(parent) {}
 
-KeysTableModel::~KeysTableModel() {}
-
 QVariant KeysTableModel::data(const QModelIndex& index, int role) const {
   if (!index.isValid()) {
     return QVariant();

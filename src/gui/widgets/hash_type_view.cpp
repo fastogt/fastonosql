@@ -53,8 +53,6 @@ HashTypeView::HashTypeView(QWidget* parent) : QTableView(parent), model_(nullptr
   setCurrentMode(mode_);
 }
 
-HashTypeView::~HashTypeView() {}
-
 void HashTypeView::insertRow(const key_t& key, const value_t& value) {
   model_->insertRow(key, value);
   emit dataChangedSignal();

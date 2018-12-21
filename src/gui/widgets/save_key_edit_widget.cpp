@@ -57,8 +57,6 @@ SaveKeyEditWidget::SaveKeyEditWidget(QWidget* parent) : base_class(parent), init
   syncControls();
 }
 
-SaveKeyEditWidget::~SaveKeyEditWidget() {}
-
 void SaveKeyEditWidget::initialize(const std::vector<common::Value::Type>& availible_types,
                                    const core::NDbKValue& key) {
   editor_->initialize(availible_types, key);

@@ -32,7 +32,7 @@ class MainWidget : public QTabWidget {
  public:
   explicit MainWidget(QWidget* parent = Q_NULLPTR);
 
-  QueryWidget* getQueryWidget(int index) const;
+  QueryWidget* queryWidget(int index) const;
 
  public Q_SLOTS:
   void openConsole(proxy::IServerSPtr server, const QString& text);

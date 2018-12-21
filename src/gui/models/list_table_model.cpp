@@ -32,8 +32,6 @@ ListTableModel::ListTableModel(QObject* parent) : common::qt::gui::TableModel(pa
   insertItem(createEmptyRow());
 }
 
-ListTableModel::~ListTableModel() {}
-
 QVariant ListTableModel::data(const QModelIndex& index, int role) const {
   if (!index.isValid()) {
     return QVariant();

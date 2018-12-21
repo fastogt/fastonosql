@@ -26,6 +26,11 @@ namespace gui {
 class FastoEditorShell : public FastoEditor {
   Q_OBJECT
 
+ public:
+  typedef BaseWidget base_class;
+  template <typename T, typename... Args>
+  friend T* createWidget(Args&&... args);
+
  protected Q_SLOTS:
   void showContextMenu(const QPoint& point);
 

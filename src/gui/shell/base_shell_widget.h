@@ -20,14 +20,13 @@
 
 #include <vector>
 
-#include <QWidget>
-
 #include <common/error.h>
 
 #include <fastonosql/core/connection_types.h>
 #include <fastonosql/core/database/idatabase_info.h>
 #include <fastonosql/core/server/iserver_info.h>
 
+#include "gui/widgets/base_widget.h"
 #include "proxy/proxy_fwd.h"  // for IServerSPtr
 
 class QPushButton;   // lines 26-26
@@ -72,19 +71,20 @@ namespace gui {
 
 class BaseShell;
 
-class BaseShellWidget : public QWidget {
+class BaseShellWidget : public BaseWidget {
   Q_OBJECT
 
  public:
-  typedef QWidget base_class;
+  typedef BaseWidget base_class;
+  template <typename T, typename... Args>
+  friend T* createWidget(Args&&... args);
+
   static const QSize kIconSize;
   static const QSize kShellIconSize;
 
   static BaseShellWidget* createWidgetFactory(proxy::IServerSPtr server,
                                               const QString& file_path = QString(),
                                               QWidget* parent = Q_NULLPTR);
-
-  ~BaseShellWidget() override;
 
   QString text() const;
 
@@ -136,9 +136,9 @@ class BaseShellWidget : public QWidget {
   explicit BaseShellWidget(proxy::IServerSPtr server,
                            const QString& file_path = QString(),
                            QWidget* parent = Q_NULLPTR);
-  void retranslateUi();
+  void retranslateUi() override;
+  void init() override;
 
-  virtual void init();
   virtual QHBoxLayout* createTopLayout(core::ConnectionType ct);
 
   // notify methods for derived classes

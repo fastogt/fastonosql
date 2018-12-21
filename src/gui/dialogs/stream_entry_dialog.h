@@ -44,8 +44,6 @@ class StreamEntryDialog : public BaseDialog {
   friend T* createDialog(Args&&... args);
   enum { min_width = 360, min_height = 240 };
 
-  virtual ~StreamEntryDialog();
-
   bool getStream(core::StreamValue::Stream* out) const;
 
   void insertEntry(const key_t& key, const value_t& value);

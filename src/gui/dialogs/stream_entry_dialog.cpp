@@ -79,8 +79,6 @@ StreamEntryDialog::StreamEntryDialog(const QString& sid, QWidget* parent)
   setMinimumSize(QSize(min_height, min_width));
 }
 
-StreamEntryDialog::~StreamEntryDialog() {}
-
 bool StreamEntryDialog::getStream(core::StreamValue::Stream* out) const {
   core::StreamValue::stream_id sid = common::ConvertToCharBytes(id_edit_->text());
   return model_->getStream(sid, out);

@@ -77,16 +77,12 @@ BaseShellWidget* BaseShellWidget::createWidgetFactory(proxy::IServerSPtr server,
 #if defined(BUILD_WITH_REDIS) && defined(PRO_VERSION)
   core::ConnectionType ct = server->GetType();
   if (ct == core::REDIS) {
-    BaseShellWidget* widget = new redis::ShellWidget(server, file_path, parent);
-    widget->init();
-    widget->retranslateUi();
+    BaseShellWidget* widget = createWidget<redis::ShellWidget>(server, file_path, parent);
     return widget;
   }
 #endif
 
-  BaseShellWidget* widget = new BaseShellWidget(server, file_path, parent);
-  widget->init();
-  widget->retranslateUi();
+  BaseShellWidget* widget = createWidget<BaseShellWidget>(server, file_path, parent);
   return widget;
 }
 
@@ -177,9 +173,6 @@ void BaseShellWidget::init() {
   VERIFY(connect(server_.get(), &proxy::IServer::DatabaseChanged, this, &BaseShellWidget::updateDefaultDatabase));
   VERIFY(connect(server_.get(), &proxy::IServer::Disconnected, this, &BaseShellWidget::serverDisconnect));
 
-  QVBoxLayout* main_layout = new QVBoxLayout;
-  QHBoxLayout* hlayout = new QHBoxLayout;
-
   QHBoxLayout* savebar = createActionBar();
   static const core::ConnectionMode mode = core::InteractiveMode;
   const std::string mode_str = common::ConvertToString(mode);
@@ -188,25 +181,14 @@ void BaseShellWidget::init() {
   connection_mode_ =
       new common::qt::gui::IconLabel(gui::GuiFactory::GetInstance().modeIcon(mode), kIconSize, qmode_str);
 
-  hlayout->addLayout(savebar);
-  QSplitter* savebar_splitter = new QSplitter(Qt::Horizontal);
-  hlayout->addWidget(savebar_splitter);
-
-  hlayout->addWidget(connection_mode_);
   work_progressbar_ = new QProgressBar;
   work_progressbar_->setTextVisible(true);
-  hlayout->addWidget(work_progressbar_);
 
-  QHBoxLayout* helpbar = new QHBoxLayout;
   validate_action_ = new IconButton(gui::GuiFactory::GetInstance().failIcon(), kIconSize);
   VERIFY(connect(validate_action_, &IconButton::clicked, this, &BaseShellWidget::validateClick));
-  helpbar->addWidget(validate_action_);
 
   help_action_ = new IconButton(gui::GuiFactory::GetInstance().helpIcon(), kIconSize);
   VERIFY(connect(help_action_, &IconButton::clicked, this, &BaseShellWidget::helpClick));
-  helpbar->addWidget(help_action_);
-  hlayout->addLayout(helpbar);
-  main_layout->addLayout(hlayout, 0);
 
   advanced_options_ = new QCheckBox;
   VERIFY(connect(advanced_options_, &QCheckBox::stateChanged, this, &BaseShellWidget::advancedOptionsChange));
@@ -246,25 +228,8 @@ void BaseShellWidget::init() {
   adv_opt_layout->addWidget(history_call_);
   advanced_options_widget_->setLayout(adv_opt_layout);
 
-  QHBoxLayout* top_layout = createTopLayout(ct);
-  QSplitter* spliter_info_and_options = new QSplitter(Qt::Horizontal);
-  spliter_info_and_options->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-  top_layout->addWidget(spliter_info_and_options);
-  top_layout->addWidget(advanced_options_);
-  top_layout->setContentsMargins(0, 0, 0, 0);
-  main_layout->addLayout(top_layout, 0);
-
-  QHBoxLayout* input_layout = new QHBoxLayout;
-  input_layout->addWidget(input_);
-  input_layout->addWidget(advanced_options_widget_);
-  main_layout->addLayout(input_layout, 1);
-
-  QHBoxLayout* apilayout = new QHBoxLayout;
   supported_commands_count_ = new QLabel;
-  apilayout->addWidget(supported_commands_count_);
   validated_commands_count_ = new QLabel;
-  apilayout->addWidget(validated_commands_count_);
-  apilayout->addWidget(new QSplitter(Qt::Horizontal));
 
   commands_version_api_ = new QComboBox;
   typedef void (QComboBox::*curc)(int);
@@ -280,11 +245,41 @@ void BaseShellWidget::init() {
     commands_version_api_->addItem(gui::GuiFactory::GetInstance().unknownIcon(), qcur_vers, current);
     commands_version_api_->setCurrentIndex(i);
   }
-  QLabel* version = new QLabel(trCommandsVersion);
-  apilayout->addWidget(version);
-  apilayout->addWidget(commands_version_api_);
-  main_layout->addLayout(apilayout, 0);
 
+  QHBoxLayout* hlayout = new QHBoxLayout;
+  hlayout->addLayout(savebar);
+  QSplitter* savebar_splitter = new QSplitter(Qt::Horizontal);
+  hlayout->addWidget(savebar_splitter);
+  hlayout->addWidget(connection_mode_);
+  hlayout->addWidget(work_progressbar_);
+  QHBoxLayout* helpbar = new QHBoxLayout;
+  helpbar->addWidget(validate_action_);
+  helpbar->addWidget(help_action_);
+  hlayout->addLayout(helpbar);
+
+  QHBoxLayout* top_layout = createTopLayout(ct);
+  QSplitter* spliter_info_and_options = new QSplitter(Qt::Horizontal);
+  spliter_info_and_options->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+  top_layout->addWidget(spliter_info_and_options);
+  top_layout->addWidget(advanced_options_);
+  top_layout->setContentsMargins(0, 0, 0, 0);
+
+  QHBoxLayout* input_layout = new QHBoxLayout;
+  input_layout->addWidget(input_, 3);
+  input_layout->addWidget(advanced_options_widget_, 1);
+
+  QHBoxLayout* api_layout = new QHBoxLayout;
+  api_layout->addWidget(supported_commands_count_);
+  api_layout->addWidget(validated_commands_count_);
+  api_layout->addWidget(new QSplitter(Qt::Horizontal));
+  api_layout->addWidget(new QLabel(trCommandsVersion));
+  api_layout->addWidget(commands_version_api_);
+
+  QVBoxLayout* main_layout = new QVBoxLayout;
+  main_layout->addLayout(hlayout, 0);
+  main_layout->addLayout(top_layout, 0);
+  main_layout->addLayout(input_layout, 1);
+  main_layout->addLayout(api_layout, 0);
   setLayout(main_layout);
 
   // sync controls
@@ -312,8 +307,6 @@ QHBoxLayout* BaseShellWidget::createTopLayout(core::ConnectionType ct) {
 void BaseShellWidget::advancedOptionsChange(int state) {
   advanced_options_widget_->setVisible(state);
 }
-
-BaseShellWidget::~BaseShellWidget() {}
 
 QString BaseShellWidget::text() const {
   return input_->text();

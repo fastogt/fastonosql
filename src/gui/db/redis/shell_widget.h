@@ -40,10 +40,13 @@ class ShellWidget : public BaseShellWidget {
 
  public:
   typedef BaseShellWidget base_class;
-  ShellWidget(proxy::IServerSPtr server, const QString& file_path = QString(), QWidget* parent = Q_NULLPTR);
+  template <typename T, typename... Args>
+  friend T* gui::createWidget(Args&&... args);
 
  protected:
+  ShellWidget(proxy::IServerSPtr server, const QString& file_path = QString(), QWidget* parent = Q_NULLPTR);
   void init() override;
+
   QHBoxLayout* createTopLayout(core::ConnectionType ct) override;
   void OnServerDisconnected() override;
   void OnFinishedLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponce& res) override;

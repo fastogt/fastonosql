@@ -81,6 +81,7 @@ class ConnectionBaseWidget : public BaseWidget {
 
   virtual proxy::IConnectionSettingsBase* createConnectionImpl(const proxy::connection_path_t& path) const = 0;
 
+ private:
   QLabel* connection_name_label_;
   QLineEdit* connection_name_;
 

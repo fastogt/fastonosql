@@ -33,8 +33,6 @@ HashTableModel::HashTableModel(QObject* parent)
   insertItem(createEmptyRow());
 }
 
-HashTableModel::~HashTableModel() {}
-
 QVariant HashTableModel::data(const QModelIndex& index, int role) const {
   if (!index.isValid()) {
     return QVariant();

@@ -45,8 +45,6 @@ FastoEditorModelOutput::FastoEditorModelOutput(QWidget* parent) : QWidget(parent
   setLayout(main_layout);
 }
 
-FastoEditorModelOutput::~FastoEditorModelOutput() {}
-
 void FastoEditorModelOutput::setModel(QAbstractItemModel* model) {
   if (model == model_) {
     return;

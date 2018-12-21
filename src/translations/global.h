@@ -23,7 +23,6 @@
 namespace fastonosql {
 namespace translations {
 
-// checked
 extern const QString trPassword;
 extern const QString trPleaseEnterYourPassword;
 extern const QString trLogin;

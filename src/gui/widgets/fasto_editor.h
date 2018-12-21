@@ -41,8 +41,6 @@ class FastoEditor : public BaseWidget {
   template <typename T, typename... Args>
   friend T* createWidget(Args&&... args);
 
-  ~FastoEditor() override;
-
   void registerImage(int id, const QPixmap& im);
 
   QString text() const;

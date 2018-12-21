@@ -56,11 +56,7 @@ MainWidget::MainWidget(QWidget* parent) : QTabWidget(parent) {
   }
 }
 
-QueryWidget* MainWidget::getQueryWidget(int index) const {
-  if (index == 0) {
-    return nullptr;
-  }
-
+QueryWidget* MainWidget::queryWidget(int index) const {
   return qobject_cast<QueryWidget*>(QTabWidget::widget(index));
 }
 
@@ -92,7 +88,7 @@ void MainWidget::openConsoleAndExecute(proxy::IServerSPtr server, const QString&
 
 void MainWidget::createNewTab() {
   int current_index = currentIndex();
-  QueryWidget* shw = getQueryWidget(current_index);
+  QueryWidget* shw = queryWidget(current_index);
   if (shw) {
     openNewTab(shw, tabText(current_index), QString());
   }
@@ -127,7 +123,7 @@ void MainWidget::previousTab() {
 
 void MainWidget::reloadCurrentTab() {
   int current_index = currentIndex();
-  QueryWidget* shw = getQueryWidget(current_index);
+  QueryWidget* shw = queryWidget(current_index);
   if (shw) {
     shw->reload();
   }
@@ -135,7 +131,7 @@ void MainWidget::reloadCurrentTab() {
 
 void MainWidget::duplicateCurrentTab() {
   int current_index = currentIndex();
-  QueryWidget* shw = getQueryWidget(current_index);
+  QueryWidget* shw = queryWidget(current_index);
   if (shw) {
     openNewTab(shw, tabText(current_index), shw->inputText());
   }

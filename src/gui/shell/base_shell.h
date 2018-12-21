@@ -31,6 +31,10 @@ class BaseShell : public FastoEditorShell {
   Q_OBJECT
 
  public:
+  typedef BaseWidget base_class;
+  template <typename T, typename... Args>
+  friend T* createWidget(Args&&... args);
+
   std::vector<uint32_t> supportedVersions() const;
   size_t commandsCount() const;
   size_t validateCommandsCount() const;

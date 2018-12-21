@@ -39,6 +39,7 @@ namespace gui {
 
 FastoEditor::FastoEditor(QWidget* parent) : base_class(parent), scin_(nullptr) {
   scin_ = new FastoScintilla;
+  scin_->installEventFilter(this);
 
   find_panel_ = new QFrame;
   find_line_ = new QLineEdit;
@@ -52,33 +53,27 @@ FastoEditor::FastoEditor(QWidget* parent) : base_class(parent), scin_(nullptr) {
   close_->setIconSize(QSize(16, 16));
   find_line_->setAlignment(Qt::AlignLeft | Qt::AlignAbsolute);
 
+  VERIFY(connect(close_, &QToolButton::clicked, find_panel_, &QFrame::hide));
+  VERIFY(connect(scin_, &FastoScintilla::textChanged, this, &FastoEditor::textChanged));
+  VERIFY(connect(next_, &QPushButton::clicked, this, &FastoEditor::goToNextElement));
+  VERIFY(connect(prev_, &QPushButton::clicked, this, &FastoEditor::goToPrevElement));
+
   QHBoxLayout* layout = new QHBoxLayout;
   layout->addWidget(close_);
   layout->addWidget(find_line_);
   layout->addWidget(next_);
   layout->addWidget(prev_);
   layout->addWidget(case_sensitive_);
-
-  find_panel_->setFixedHeight(find_panel_height);
   find_panel_->setLayout(layout);
-
-  scin_->installEventFilter(this);
+  find_panel_->setFixedHeight(find_panel_height);
+  find_panel_->setVisible(false);
 
   QVBoxLayout* main_layout = new QVBoxLayout;
   main_layout->addWidget(scin_);
   main_layout->addWidget(find_panel_);
   main_layout->setContentsMargins(0, 0, 0, 0);
   setLayout(main_layout);
-
-  find_panel_->hide();
-
-  VERIFY(connect(close_, &QToolButton::clicked, find_panel_, &QFrame::hide));
-  VERIFY(connect(scin_, &FastoScintilla::textChanged, this, &FastoEditor::textChanged));
-  VERIFY(connect(next_, &QPushButton::clicked, this, &FastoEditor::goToNextElement));
-  VERIFY(connect(prev_, &QPushButton::clicked, this, &FastoEditor::goToPrevElement));
 }
-
-FastoEditor::~FastoEditor() {}
 
 void FastoEditor::registerImage(int id, const QPixmap& im) {
   scin_->registerImage(id, im);
@@ -189,27 +184,26 @@ void FastoEditor::retranslateUi() {
 
 void FastoEditor::findElement(bool forward) {
   const QString& text = find_line_->text();
-  if (!text.isEmpty()) {
-    bool re = false;
-    bool wo = false;
-    bool looped = true;
-    int index = 0;
-    int line = 0;
-    scin_->getCursorPosition(&line, &index);
+  if (text.isEmpty()) {
+    return;
+  }
 
-    if (!forward) {
-      index -= scin_->selectedText().length();
-    }
+  int index = 0;
+  int line = 0;
+  scin_->getCursorPosition(&line, &index);
 
-    scin_->setCursorPosition(line, 0);
-    bool isFounded =
-        scin_->findFirst(text, re, case_sensitive_->checkState() == Qt::Checked, wo, looped, forward, line, index);
+  if (!forward) {
+    index -= scin_->selectedText().length();
+  }
 
-    if (isFounded) {
-      scin_->ensureCursorVisible();
-    } else {
-      QMessageBox::warning(this, translations::trSearch, tr("The specified text was not found."));
-    }
+  scin_->setCursorPosition(line, 0);
+  bool is_founded =
+      scin_->findFirst(text, false, case_sensitive_->checkState() == Qt::Checked, false, true, forward, line, index);
+
+  if (is_founded) {
+    scin_->ensureCursorVisible();
+  } else {
+    QMessageBox::warning(this, translations::trSearch, tr("The specified text was not found."));
   }
 }
 

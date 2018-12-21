@@ -33,7 +33,6 @@ class HashTableModel : public common::qt::gui::TableModel {
   enum eColumn : uint8_t { kKey = 0, kValue = 1, kAction = 2, kCountColumns = 3 };
 
   explicit HashTableModel(QObject* parent = Q_NULLPTR);
-  ~HashTableModel() override;
 
   QVariant data(const QModelIndex& index, int role) const override;
   bool setData(const QModelIndex& index, const QVariant& value, int role) override;

@@ -36,7 +36,7 @@ class IVerifyUser : public QObject {
               const QString& password,
               proxy::UserInfo::BuildStrategy build_strategy,
               QObject* parent = Q_NULLPTR);
-  virtual ~IVerifyUser();
+  ~IVerifyUser() override;
 
  Q_SIGNALS:
   void verifyUserResult(common::Error err, const proxy::UserInfo& user);

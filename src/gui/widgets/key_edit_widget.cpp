@@ -128,8 +128,6 @@ void KeyEditWidget::initialize(const std::vector<common::Value::Type>& availible
   syncControls(val);
 }
 
-KeyEditWidget::~KeyEditWidget() {}
-
 void KeyEditWidget::setEnableKeyEdit(bool key_edit) {
   key_edit_->setEnabled(key_edit);
 }

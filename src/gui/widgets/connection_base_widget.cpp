@@ -44,8 +44,8 @@ QString fromRawCommandLine(QString input) {
   return input.replace("\n", "\\n").replace("\r", "\\r");
 }
 
-const QStringList separators = {":", ";", ",", "[", "]"};
-const QStringList delimiters = {"\\n", "\\r\\n"};
+const QStringList kSeparators = {":", ";", ",", "[", "]"};
+const QStringList kDelimiters = {"\\n", "\\r\\n"};
 
 class UniqueCharValidator : public QValidator {
  public:
@@ -75,80 +75,79 @@ namespace gui {
 
 ConnectionBaseWidget::ConnectionBaseWidget(QWidget* parent) : base_class(parent) {
   connection_name_ = new QLineEdit;
-
-  QVBoxLayout* basicLayout = new QVBoxLayout;
-  QHBoxLayout* connectionNameLayout = new QHBoxLayout;
   connection_name_label_ = new QLabel;
-  connectionNameLayout->addWidget(connection_name_label_);
-  connectionNameLayout->addWidget(connection_name_);
-  basicLayout->addLayout(connectionNameLayout);
 
-  QHBoxLayout* namespaceDelimiterLayout = new QHBoxLayout;
-  // namesapce
-  QVBoxLayout* namespaceLayout = new QVBoxLayout;
-  // ns
-  QHBoxLayout* namespaceSeparatorLayout = new QHBoxLayout;
   namespace_separator_label_ = new QLabel;
   namespace_separator_ = new QComboBox;
-  namespace_separator_->addItems(separators);
+  namespace_separator_->addItems(kSeparators);
   namespace_separator_->setEditable(true);
   namespace_separator_->setValidator(new UniqueCharValidator(this));
-  namespaceSeparatorLayout->addWidget(namespace_separator_label_);
-  namespaceSeparatorLayout->addWidget(namespace_separator_);
-  namespaceLayout->addLayout(namespaceSeparatorLayout);
-  // ns strategy
-  QHBoxLayout* namespaceStrategyLayout = new QHBoxLayout;
   namespace_displaying_strategy_label_ = new QLabel;
   namespace_displaying_strategy_ = new QComboBox;
   for (uint32_t i = 0; i < proxy::g_display_strategy_types.size(); ++i) {
     namespace_displaying_strategy_->addItem(proxy::g_display_strategy_types[i], i);
   }
-  namespaceStrategyLayout->addWidget(namespace_displaying_strategy_label_);
-  namespaceStrategyLayout->addWidget(namespace_displaying_strategy_);
-  namespaceLayout->addLayout(namespaceStrategyLayout);
-
-  namespaceDelimiterLayout->addLayout(namespaceLayout);
-
-  QHBoxLayout* delimiterLayout = new QHBoxLayout;
   delimiter_label_ = new QLabel;
   delimiter_ = new QComboBox;
-  delimiter_->addItems(delimiters);
-  delimiterLayout->addWidget(delimiter_label_);
-  delimiterLayout->addWidget(delimiter_);
-  namespaceDelimiterLayout->addLayout(delimiterLayout);
-
-  basicLayout->addLayout(namespaceDelimiterLayout);
+  delimiter_->addItems(kDelimiters);
 
   connection_folder_ = new QLineEdit;
   QRegExp rxf("^/[A-z0-9]+/$");
   connection_folder_->setValidator(new QRegExpValidator(rxf, this));
-
   folder_label_ = new QLabel;
+
+  logging_ = new QCheckBox;
+  logging_msec_ = new QSpinBox;
+  logging_msec_->setRange(0, INT32_MAX);
+  logging_msec_->setSingleStep(1000);
+  VERIFY(connect(logging_, &QCheckBox::stateChanged, this, &ConnectionBaseWidget::loggingStateChange));
+  logging_msec_->setEnabled(false);
+
+  QHBoxLayout* connection_name_layout = new QHBoxLayout;
+  connection_name_layout->addWidget(connection_name_label_);
+  connection_name_layout->addWidget(connection_name_);
+
+  // ns
+  QHBoxLayout* namespace_separator_layout = new QHBoxLayout;
+  namespace_separator_layout->addWidget(namespace_separator_label_);
+  namespace_separator_layout->addWidget(namespace_separator_);
+
+  // ns strategy
+  QHBoxLayout* namespace_strategy_layout = new QHBoxLayout;
+  namespace_strategy_layout->addWidget(namespace_displaying_strategy_label_);
+  namespace_strategy_layout->addWidget(namespace_displaying_strategy_);
+
+  QVBoxLayout* namespace_start_layout = new QVBoxLayout;
+  namespace_start_layout->addLayout(namespace_separator_layout);
+  namespace_start_layout->addLayout(namespace_strategy_layout);
+
+  QHBoxLayout* namespace_delimiter_layout = new QHBoxLayout;
+  namespace_delimiter_layout->addWidget(delimiter_label_);
+  namespace_delimiter_layout->addWidget(delimiter_);
+
+  // namesapce
+  QHBoxLayout* namespace_layout = new QHBoxLayout;
+  namespace_layout->addLayout(namespace_start_layout);
+  namespace_layout->addLayout(namespace_delimiter_layout);
+
   QHBoxLayout* folderLayout = new QHBoxLayout;
   folderLayout->addWidget(folder_label_);
   folderLayout->addWidget(connection_folder_);
 
-  QHBoxLayout* loggingLayout = new QHBoxLayout;
-  logging_ = new QCheckBox;
+  QHBoxLayout* logging_layout = new QHBoxLayout;
+  logging_layout->addWidget(logging_);
+  QHBoxLayout* logging_vlayout = new QHBoxLayout;
+  logging_vlayout->addWidget(new QLabel(QObject::tr("msec:")));
+  logging_vlayout->addWidget(logging_msec_);
+  logging_layout->addWidget(new QSplitter(Qt::Horizontal));
+  logging_layout->addLayout(logging_vlayout);
 
-  logging_msec_ = new QSpinBox;
-  logging_msec_->setRange(0, INT32_MAX);
-  logging_msec_->setSingleStep(1000);
-
-  VERIFY(connect(logging_, &QCheckBox::stateChanged, this, &ConnectionBaseWidget::loggingStateChange));
-  logging_msec_->setEnabled(false);
-
-  loggingLayout->addWidget(logging_);
-
-  QHBoxLayout* loggingVLayout = new QHBoxLayout;
-  loggingVLayout->addWidget(new QLabel(QObject::tr("msec:")));
-  loggingVLayout->addWidget(logging_msec_);
-  loggingLayout->addWidget(new QSplitter(Qt::Horizontal));
-  loggingLayout->addLayout(loggingVLayout);
-
-  basicLayout->addLayout(folderLayout);
-  basicLayout->addLayout(loggingLayout);
-  setLayout(basicLayout);
+  QVBoxLayout* main = new QVBoxLayout;
+  main->addLayout(connection_name_layout);
+  main->addLayout(namespace_layout);
+  main->addLayout(folderLayout);
+  main->addLayout(logging_layout);
+  setLayout(main);
 }
 
 void ConnectionBaseWidget::addWidget(QWidget* widget) {

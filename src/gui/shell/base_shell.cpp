@@ -187,7 +187,7 @@ void BaseShell::setFilteredVersion(uint32_t version) {
 }
 
 BaseShell* BaseShell::createFromType(core::ConnectionType type, bool show_auto_complete) {
-  return new BaseShell(type, show_auto_complete);
+  return createWidget<BaseShell>(type, show_auto_complete);
 }
 
 }  // namespace gui

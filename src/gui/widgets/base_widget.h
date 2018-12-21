@@ -36,14 +36,16 @@ class BaseWidget : public QWidget {
  protected:
   explicit BaseWidget(QWidget* parent = Q_NULLPTR);
 
-  void changeEvent(QEvent* ev) override;
-
+  virtual void init();
   virtual void retranslateUi();
+
+  void changeEvent(QEvent* ev) override;
 };
 
 template <typename T, typename... Args>
 inline T* createWidget(Args&&... args) {
   T* widget = new T(std::forward<Args>(args)...);
+  widget->init();
   widget->retranslateUi();  // protected
   return widget;
 }

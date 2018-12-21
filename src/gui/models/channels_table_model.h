@@ -29,7 +29,6 @@ class ChannelsTableModel : public common::qt::gui::TableModel {
  public:
   enum eColumn { kName = 0, kNOS = 1, kCountColumns = 2 };
   explicit ChannelsTableModel(QObject* parent = Q_NULLPTR);
-  ~ChannelsTableModel() override;
 
   QVariant data(const QModelIndex& index, int role) const override;
   QVariant headerData(int section, Qt::Orientation orientation, int role) const override;

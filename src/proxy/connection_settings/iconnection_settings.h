@@ -32,8 +32,6 @@ class IConnectionSettings : public common::ClonableBase<IConnectionSettings> {
  public:
   static const char default_ns_separator[];
 
-  ~IConnectionSettings() override;
-
   connection_path_t GetPath() const;
   void SetPath(const connection_path_t& path);
 
@@ -63,7 +61,6 @@ class IConnectionSettingsBase : public IConnectionSettings {
   std::string GetNsSeparator() const;
   void SetNsSeparator(const std::string& ns);
 
-  ~IConnectionSettingsBase() override;
   std::string GetHash() const;
 
   std::string GetLoggingPath() const;

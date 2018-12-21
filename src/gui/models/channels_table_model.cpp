@@ -33,8 +33,6 @@ namespace gui {
 
 ChannelsTableModel::ChannelsTableModel(QObject* parent) : TableModel(parent) {}
 
-ChannelsTableModel::~ChannelsTableModel() {}
-
 QVariant ChannelsTableModel::data(const QModelIndex& index, int role) const {
   if (!index.isValid()) {
     return QVariant();

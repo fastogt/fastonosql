@@ -34,8 +34,6 @@ StreamTableModel::StreamTableModel(QObject* parent) : common::qt::gui::TableMode
   data_.push_back(createEmptyEntry());
 }
 
-StreamTableModel::~StreamTableModel() {}
-
 QVariant StreamTableModel::data(const QModelIndex& index, int role) const {
   if (!index.isValid()) {
     return QVariant();

@@ -345,7 +345,7 @@ void OutputWidget::syncWithView(proxy::SupportedView view) {
 }
 
 void OutputWidget::updateTimeLabel(const proxy::events_info::EventInfoBase& evinfo) {
-  time_label_->setText(trMsecTemplate_1S.arg(evinfo.ElapsedTime()));
+  time_label_->setText(trMsecTemplate_1S.arg(evinfo.elapsedTime()));
 }
 
 }  // namespace gui

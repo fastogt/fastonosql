@@ -52,8 +52,6 @@ namespace gui {
 
 ClientsTableModel::ClientsTableModel(QObject* parent) : TableModel(parent) {}
 
-ClientsTableModel::~ClientsTableModel() {}
-
 QVariant ClientsTableModel::data(const QModelIndex& index, int role) const {
   if (!index.isValid()) {
     return QVariant();

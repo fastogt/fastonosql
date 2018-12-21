@@ -37,32 +37,32 @@ QueryWidget::QueryWidget(proxy::IServerSPtr server, QWidget* parent) : base_clas
   shell_widget_ = BaseShellWidget::createWidgetFactory(server);
   output_widget_ = createWidget<OutputWidget>(server);
 
-  QVBoxLayout* main_layout = new QVBoxLayout;
-  QSplitter* splitter = new QSplitter(Qt::Vertical);
-
   console_gb_ = new QGroupBox;
   QVBoxLayout* console_layout = new QVBoxLayout;
   console_layout->setContentsMargins(0, 0, 0, 0);
   console_layout->addWidget(shell_widget_);
   console_gb_->setLayout(console_layout);
-  splitter->addWidget(console_gb_);
 
   output_gb_ = new QGroupBox;
   QVBoxLayout* output_layout = new QVBoxLayout;
   output_layout->setContentsMargins(0, 0, 0, 0);
   output_layout->addWidget(output_widget_);
   output_gb_->setLayout(output_layout);
-  splitter->addWidget(output_gb_);
 
+  QSplitter* splitter = new QSplitter(Qt::Vertical);
+  splitter->addWidget(console_gb_);
+  splitter->addWidget(output_gb_);
   splitter->setCollapsible(0, false);
   splitter->setCollapsible(1, false);
   splitter->setStretchFactor(0, 1);
   splitter->setStretchFactor(1, 4);
   splitter->setHandleWidth(1);
+
+  QVBoxLayout* main_layout = new QVBoxLayout;
   main_layout->addWidget(splitter);
+  setLayout(main_layout);
 
   setMinimumSize(QSize(min_width, min_height));
-  setLayout(main_layout);
 }
 
 QueryWidget* QueryWidget::clone(const QString& text) {

@@ -151,14 +151,10 @@ FastoViewer::FastoViewer(QWidget* parent)
       last_valid_text_(),
       is_binary_(false) {
   text_json_editor_ = createWidget<FastoEditor>();
-  json_lexer_ = new QsciLexerJSON;
-  xml_lexer_ = new QsciLexerXML;
+  json_lexer_ = new QsciLexerJSON(this);
+  xml_lexer_ = new QsciLexerXML(this);
   VERIFY(connect(text_json_editor_, &FastoEditor::textChanged, this, &FastoViewer::textChange));
   VERIFY(connect(text_json_editor_, &FastoEditor::readOnlyChanged, this, &FastoViewer::readOnlyChanged));
-
-  QVBoxLayout* main = new QVBoxLayout;
-  main->addWidget(text_json_editor_);
-  main->setContentsMargins(0, 0, 0, 0);
 
   error_box_ = new QLabel;
   error_box_->setVisible(false);
@@ -175,25 +171,23 @@ FastoViewer::FastoViewer(QWidget* parent)
   typedef void (QComboBox::*ind)(int);
   VERIFY(connect(views_combo_box_, static_cast<ind>(&QComboBox::currentIndexChanged), this, &FastoViewer::viewChange));
 
-  QHBoxLayout* ehlayout = new QHBoxLayout;
-
   QHBoxLayout* hlayout = new QHBoxLayout;
   QSplitter* spliter_save_and_view = new QSplitter(Qt::Horizontal);
   hlayout->addWidget(spliter_save_and_view);
   hlayout->addWidget(views_label_);
   hlayout->addWidget(views_combo_box_);
 
+  QHBoxLayout* ehlayout = new QHBoxLayout;
   ehlayout->addWidget(note_box_);
   ehlayout->addWidget(error_box_);
   ehlayout->addLayout(hlayout);
+
+  QVBoxLayout* main = new QVBoxLayout;
+  main->addWidget(text_json_editor_);
+  main->setContentsMargins(0, 0, 0, 0);
   main->addLayout(ehlayout);
   setLayout(main);
   syncEditors();
-}
-
-FastoViewer::~FastoViewer() {
-  delete json_lexer_;
-  delete xml_lexer_;
 }
 
 void FastoViewer::syncEditors() {
