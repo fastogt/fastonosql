@@ -293,7 +293,8 @@ void ExplorerTreeModel::addDatabase(proxy::IServer* server, core::IDataBaseInfoS
     return;
   }
 
-  ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
+  int db_index = 0;
+  ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db, &db_index);
   if (!dbs) {
     common::qt::gui::TreeItem* parent_server = parent->parent();
     QModelIndex parent_index = createIndex(parent_server->indexOf(parent), 0, parent);
@@ -308,7 +309,8 @@ void ExplorerTreeModel::removeDatabase(proxy::IServer* server, core::IDataBaseIn
     return;
   }
 
-  ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
+  int db_index = 0;
+  ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db, &db_index);
   if (dbs) {
     common::qt::gui::TreeItem* parent_server = parent->parent();
     QModelIndex index = createIndex(parent_server->indexOf(parent), 0, dbs);
@@ -322,16 +324,16 @@ void ExplorerTreeModel::setDefaultDb(proxy::IServer* server, core::IDataBaseInfo
     return;
   }
 
-  ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
+  int db_index = 0;
+  ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db, &db_index);
   if (!dbs) {
     DNOTREACHED();
     return;
   }
 
-  common::qt::gui::TreeItem* current_root = root();
-  QModelIndex parent_index = createIndex(current_root->indexOf(parent), eName, parent);
-  QModelIndex dbs_last_index = index(parent->childrenCount(), eCountColumns, parent_index);
-  updateItem(parent_index, dbs_last_index);
+  QModelIndex dbs_first_index = createIndex(0, eName, parent);
+  QModelIndex dbs_last_index = createIndex(parent->childrenCount() - 1, eCountColumns - 1, parent);
+  updateItem(dbs_first_index, dbs_last_index);
 }
 
 void ExplorerTreeModel::updateDb(proxy::IServer* server, core::IDataBaseInfoSPtr db) {
@@ -340,14 +342,14 @@ void ExplorerTreeModel::updateDb(proxy::IServer* server, core::IDataBaseInfoSPtr
     return;
   }
 
-  ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
+  int db_index = 0;
+  ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db, &db_index);
   if (!dbs) {
     return;
   }
 
-  int index_db = parent->indexOf(dbs);
-  QModelIndex dbs_index1 = createIndex(index_db, eName, dbs);
-  QModelIndex dbs_index2 = createIndex(index_db, eCountColumns, dbs);
+  QModelIndex dbs_index1 = createIndex(db_index, eName, dbs);
+  QModelIndex dbs_index2 = createIndex(db_index, eCountColumns - 1, dbs);
   updateItem(dbs_index1, dbs_index2);
 }
 
@@ -361,7 +363,8 @@ void ExplorerTreeModel::addKey(proxy::IServer* server,
     return;
   }
 
-  ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
+  int db_index = 0;
+  ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db, &db_index);
   if (!dbs) {
     return;
   }
@@ -375,7 +378,8 @@ void ExplorerTreeModel::removeKey(proxy::IServer* server, core::IDataBaseInfoSPt
     return;
   }
 
-  ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
+  int db_index = 0;
+  ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db, &db_index);
   if (!dbs) {
     return;
   }
@@ -410,7 +414,8 @@ void ExplorerTreeModel::renameKey(proxy::IServer* server,
     return;
   }
 
-  ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
+  int db_index = 0;
+  ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db, &db_index);
   if (!dbs) {
     return;
   }
@@ -437,7 +442,8 @@ void ExplorerTreeModel::updateKey(proxy::IServer* server,
     return;
   }
 
-  ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
+  int db_index = 0;
+  ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db, &db_index);
   if (!dbs) {
     return;
   }
@@ -448,7 +454,7 @@ void ExplorerTreeModel::updateKey(proxy::IServer* server,
     int index_key = par->indexOf(keyit);
     keyit->setKey(new_key);
     QModelIndex key_index1 = createIndex(index_key, eName, dbs);
-    QModelIndex key_index2 = createIndex(index_key, eCountColumns, dbs);
+    QModelIndex key_index2 = createIndex(index_key, eCountColumns - 1, dbs);
     updateItem(key_index1, key_index2);
   }
 }
@@ -459,7 +465,8 @@ void ExplorerTreeModel::updateValue(proxy::IServer* server, core::IDataBaseInfoS
     return;
   }
 
-  ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
+  int db_index = 0;
+  ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db, &db_index);
   if (!dbs) {
     return;
   }
@@ -470,7 +477,7 @@ void ExplorerTreeModel::updateValue(proxy::IServer* server, core::IDataBaseInfoS
     int index_key = par->indexOf(keyit);
     keyit->setDbv(dbv);
     QModelIndex key_index1 = createIndex(index_key, eName, dbs);
-    QModelIndex key_index2 = createIndex(index_key, eCountColumns, dbs);
+    QModelIndex key_index2 = createIndex(index_key, eCountColumns - 1, dbs);
     updateItem(key_index1, key_index2);
   }
 }
@@ -481,12 +488,13 @@ void ExplorerTreeModel::removeAllKeys(proxy::IServer* server, core::IDataBaseInf
     return;
   }
 
-  ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db);
+  int db_index = 0;
+  ExplorerDatabaseItem* dbs = findDatabaseItem(parent, db, &db_index);
   if (!dbs) {
     return;
   }
 
-  QModelIndex parentdb = createIndex(parent->indexOf(dbs), 0, dbs);
+  QModelIndex parentdb = createIndex(db_index, eName, dbs);
   removeAllItems(parentdb);
 }
 
@@ -533,18 +541,19 @@ ExplorerSentinelItem* ExplorerTreeModel::findSentinelItem(proxy::ISentinelSPtr s
 ExplorerServerItem* ExplorerTreeModel::findServerItem(proxy::IServer* server) const {
   return static_cast<ExplorerServerItem*>(
       common::qt::gui::findItemRecursive(root(), [server](common::qt::gui::TreeItem* item) -> bool {
-        ExplorerServerItem* server_item = static_cast<ExplorerServerItem*>(item);
-        if (server_item->type() != IExplorerTreeItem::eServer) {
+        IExplorerTreeItem* exp_item = static_cast<IExplorerTreeItem*>(item);
+        if (exp_item->type() != IExplorerTreeItem::eServer) {
           return false;
         }
 
-        return server_item->server().get() == server;
+        return static_cast<ExplorerServerItem*>(exp_item)->server().get() == server;
       }));
 }
 
 ExplorerDatabaseItem* ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* server,
-                                                          core::IDataBaseInfoSPtr db) const {
-  if (!server) {
+                                                          core::IDataBaseInfoSPtr db,
+                                                          int* index) const {
+  if (!server || !index) {
     DNOTREACHED();
     return nullptr;
   }
@@ -557,6 +566,7 @@ ExplorerDatabaseItem* ExplorerTreeModel::findDatabaseItem(ExplorerServerItem* se
 
     proxy::IDatabaseSPtr inf = db_item->db();
     if (inf && inf->GetName() == db->GetName()) {
+      *index = i;
       return db_item;
     }
   }
@@ -598,7 +608,7 @@ ExplorerNSItem* ExplorerTreeModel::findOrCreateNSItem(IExplorerTreeItem* db_or_n
 
     if (!item) {
       common::qt::gui::TreeItem* gpar = par->parent();
-      QModelIndex parentdb = createIndex(gpar->indexOf(par), 0, par);
+      QModelIndex parentdb = createIndex(gpar->indexOf(par), eName, par);
       item = new ExplorerNSItem(cur_ns, separator, par);
       insertItem(parentdb, item);
     }
@@ -637,9 +647,10 @@ ExplorerKeyItem* ExplorerTreeModel::createKey(ExplorerDatabaseItem* dbs,
   }
 
   common::qt::gui::TreeItem* parent_nitem = nitem->parent();
-  QModelIndex parent_index = createIndex(parent_nitem->indexOf(nitem), 0, nitem);
+  QModelIndex parent_index = createIndex(parent_nitem->indexOf(nitem), eName, nitem);
   ExplorerKeyItem* item = new ExplorerKeyItem(dbv, separator, strategy, nitem);
   insertItem(parent_index, item);
+  updateItem(parent_index, parent_index);  // refresh counters
   return item;
 }
 

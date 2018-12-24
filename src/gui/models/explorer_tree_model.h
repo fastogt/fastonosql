@@ -95,7 +95,7 @@ class ExplorerTreeModel : public common::qt::gui::TreeModel {
   ExplorerSentinelItem* findSentinelItem(proxy::ISentinelSPtr sentinel);
 #endif
   ExplorerServerItem* findServerItem(proxy::IServer* server) const;
-  ExplorerDatabaseItem* findDatabaseItem(ExplorerServerItem* server, core::IDataBaseInfoSPtr db) const;
+  ExplorerDatabaseItem* findDatabaseItem(ExplorerServerItem* server, core::IDataBaseInfoSPtr db, int* index) const;
   ExplorerKeyItem* findKeyItem(IExplorerTreeItem* db_or_ns, const core::NKey& key) const;
   ExplorerNSItem* findOrCreateNSItem(IExplorerTreeItem* db_or_ns,
                                      const std::vector<core::readable_string_t>& namespaces,
