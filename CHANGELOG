@@ -1,5 +1,7 @@
 1.25.2 /
 [Alexandr Topilski]
+- Fixed rendering issues in explorer tree
+- [UpscaleDB] Removed api
 
 1.25.1 / December 25, 2018
 [Alexandr Topilski]

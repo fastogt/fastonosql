@@ -167,11 +167,6 @@ AboutDialog::AboutDialog(QWidget* parent) : base_class(trAbout + " " PROJECT_NAM
   dblist_widget->addTopLevelItem(
       createDbItem(lmdb_traits_t::GetDBName(), lmdb_traits_t::GetBasedOn(), lmdb_traits_t::GetVersionApi()));
 #endif
-#if defined(BUILD_WITH_UPSCALEDB) && defined(HAVE_UPSCALEDB)
-  typedef core::ConnectionTraits<core::UPSCALEDB> upscaledb_traits_t;
-  dblist_widget->addTopLevelItem(createDbItem(upscaledb_traits_t::GetDBName(), upscaledb_traits_t::GetBasedOn(),
-                                              upscaledb_traits_t::GetVersionApi()));
-#endif
 #if defined(BUILD_WITH_FORESTDB) && defined(HAVE_FORESTDB)
   typedef core::ConnectionTraits<core::FORESTDB> forestdb_traits_t;
   dblist_widget->addTopLevelItem(createDbItem(forestdb_traits_t::GetDBName(), forestdb_traits_t::GetBasedOn(),

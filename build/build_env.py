@@ -96,7 +96,7 @@ class BuildRequest(object):
     def build_snappy(self, cmake_line, make_install):
         abs_dir_path = self.build_dir_path_
         try:
-            cloned_dir = utils.git_clone('https://github.com/fastogt/snappy.git', abs_dir_path)
+            cloned_dir = utils.git_clone('git@github.com:fastogt/snappy.git', abs_dir_path)
             os.chdir(cloned_dir)
 
             os.mkdir('build_cmake_release')
@@ -116,7 +116,7 @@ class BuildRequest(object):
     def build_common(self, cmake_line, make_install):
         abs_dir_path = self.build_dir_path_
         try:
-            cloned_dir = utils.git_clone('https://github.com/fastogt/common.git', abs_dir_path)
+            cloned_dir = utils.git_clone('git@github.com:fastogt/common.git', abs_dir_path)
             os.chdir(cloned_dir)
 
             os.mkdir('build_cmake_release')
@@ -148,7 +148,7 @@ class BuildRequest(object):
     def build_libssh2(self, cmake_line, prefix_path, make_install):
         abs_dir_path = self.build_dir_path_
         try:
-            cloned_dir = utils.git_clone('https://github.com/topilski/libssh2.git', abs_dir_path)
+            cloned_dir = utils.git_clone('git@github.com:fastogt/libssh2.git', abs_dir_path)
             os.chdir(cloned_dir)
 
             os.mkdir('build_cmake_release')
@@ -174,7 +174,7 @@ class BuildRequest(object):
     def build_jsonc(self, prefix_path):
         abs_dir_path = self.build_dir_path_
         try:
-            cloned_dir = utils.git_clone('https://github.com/fastogt/json-c.git', abs_dir_path)
+            cloned_dir = utils.git_clone('git@github.com:fastogt/json-c.git', abs_dir_path)
             os.chdir(cloned_dir)
 
             autogen_policy = run_command.CommonPolicy(print_message)
@@ -197,7 +197,7 @@ class BuildRequest(object):
     def build_qscintilla(self, cmake_line, make_install):
         abs_dir_path = self.build_dir_path_
         try:
-            cloned_dir = utils.git_clone('https://github.com/fastogt/qscintilla.git', abs_dir_path)
+            cloned_dir = utils.git_clone('git@github.com:fastogt/qscintilla.git', abs_dir_path)
             qsci_src_path = os.path.join(cloned_dir, 'Qt4Qt5')
             os.chdir(qsci_src_path)
 
@@ -216,7 +216,7 @@ class BuildRequest(object):
     def build_hiredis(self, prefix_path):
         abs_dir_path = self.build_dir_path_
         try:
-            cloned_dir = utils.git_clone('https://github.com/fastogt/hiredis.git', abs_dir_path)
+            cloned_dir = utils.git_clone('git@github.com:fastogt/hiredis.git', abs_dir_path)
             os.chdir(cloned_dir)
 
             make_hiredis = ['make', 'LIBSSH2_ENABLED=ON', 'OPENSSL_ROOT_DIR={0}'.format(prefix_path),
@@ -231,7 +231,7 @@ class BuildRequest(object):
     def build_libmemcached(self, prefix_path):
         abs_dir_path = self.build_dir_path_
         try:
-            cloned_dir = utils.git_clone('https://github.com/fastogt/libmemcached.git', abs_dir_path)
+            cloned_dir = utils.git_clone('git@github.com:fastogt/libmemcached.git', abs_dir_path)
             os.chdir(cloned_dir)
 
             bootstrap_policy = run_command.CommonPolicy(print_message)
@@ -254,7 +254,7 @@ class BuildRequest(object):
     def build_unqlite(self, cmake_line, make_install):
         abs_dir_path = self.build_dir_path_
         try:
-            cloned_dir = utils.git_clone('https://github.com/fastogt/unqlite.git', abs_dir_path)
+            cloned_dir = utils.git_clone('git@github.com:fastogt/unqlite.git', abs_dir_path)
             os.chdir(cloned_dir)
 
             os.mkdir('build_cmake_release')
@@ -272,7 +272,7 @@ class BuildRequest(object):
     def build_lmdb(self, prefix_path):
         abs_dir_path = self.build_dir_path_
         try:
-            cloned_dir = utils.git_clone('https://github.com/fastogt/lmdb.git', abs_dir_path)
+            cloned_dir = utils.git_clone('git@github.com:fastogt/lmdb.git', abs_dir_path)
             os.chdir(cloned_dir)
 
             os.chdir('libraries/liblmdb')
@@ -287,7 +287,7 @@ class BuildRequest(object):
     def build_leveldb(self, cmake_line, make_install):
         abs_dir_path = self.build_dir_path_
         try:
-            cloned_dir = utils.git_clone('https://github.com/fastogt/leveldb.git', abs_dir_path)
+            cloned_dir = utils.git_clone('git@github.com:fastogt/leveldb.git', abs_dir_path)
             os.chdir(cloned_dir)
 
             os.mkdir('build_cmake_release')
@@ -308,7 +308,7 @@ class BuildRequest(object):
     def build_rocksdb(self, cmake_line, make_install):
         abs_dir_path = self.build_dir_path_
         try:
-            cloned_dir = utils.git_clone('https://github.com/fastogt/rocksdb.git', abs_dir_path)
+            cloned_dir = utils.git_clone('git@github.com:fastogt/rocksdb.git', abs_dir_path)
             os.chdir(cloned_dir)
 
             os.mkdir('build_cmake_release')
@@ -333,33 +333,10 @@ class BuildRequest(object):
             os.chdir(abs_dir_path)
             raise ex
 
-    def build_upscaledb(self, prefix_path):
-        abs_dir_path = self.build_dir_path_
-        try:
-            cloned_dir = utils.git_clone('https://github.com/fastogt/upscaledb.git', abs_dir_path)
-            os.chdir(cloned_dir)
-            bootstrap_policy = run_command.CommonPolicy(print_message)
-            bootstrap_upscaledb = ['sh', 'bootstrap.sh']
-            run_command.run_command_cb(bootstrap_upscaledb, bootstrap_policy)
-
-            configure_upscaledb = ['./configure', '--prefix={0}'.format(prefix_path), '--disable-remote',
-                                   '--enable-static-boost', '--disable-shared', '--disable-java', '--disable-simd',
-                                   '--disable-encryption']
-            configure_policy = run_command.CommonPolicy(print_message)
-            run_command.run_command_cb(configure_upscaledb, configure_policy)
-
-            make_install_upscaledb = ['make', 'install']  # FIXME
-            make_policy = run_command.CommonPolicy(print_message)
-            run_command.run_command_cb(make_install_upscaledb, make_policy)
-            os.chdir(abs_dir_path)
-        except Exception as ex:
-            os.chdir(abs_dir_path)
-            raise ex
-
     def build_forestdb(self, cmake_line, make_install):
         abs_dir_path = self.build_dir_path_
         try:
-            cloned_dir = utils.git_clone('https://github.com/fastogt/forestdb.git', abs_dir_path, None, False)
+            cloned_dir = utils.git_clone('git@github.com:fastogt/forestdb.git', abs_dir_path, None, False)
             os.chdir(cloned_dir)
 
             os.mkdir('build_cmake_release')
@@ -378,7 +355,7 @@ class BuildRequest(object):
     def build_fastonosql_core(self, cmake_line, make_install):
         abs_dir_path = self.build_dir_path_
         try:
-            cloned_dir = utils.git_clone('https://github.com/fastogt/fastonosql_core.git', abs_dir_path, None, False)
+            cloned_dir = utils.git_clone('git@github.com:fastogt/fastonosql_core.git', abs_dir_path, None, False)
             os.chdir(cloned_dir)
 
             os.mkdir('build_cmake_release')
@@ -434,7 +411,6 @@ class BuildRequest(object):
         self.build_lmdb(prefix_path)
         self.build_leveldb(cmake_line, make_install)
         self.build_rocksdb(cmake_line, make_install)
-        # self.build_upscaledb(prefix_path)  #
         self.build_forestdb(cmake_line, make_install)  #
         self.build_fastonosql_core(cmake_line, make_install)
 

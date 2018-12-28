@@ -44,9 +44,6 @@
 #if defined(BUILD_WITH_LMDB)
 #define LOGGING_LMDB_FILE_EXTENSION ".lmdb"
 #endif
-#if defined(BUILD_WITH_UPSCALEDB)
-#define LOGGING_UPSCALEDB_FILE_EXTENSION ".upscaledb"
-#endif
 #if defined(BUILD_WITH_FORESTDB)
 #define LOGGING_FORESTDB_FILE_EXTENSION ".forestdb"
 #endif
@@ -93,11 +90,6 @@ const char* GetLoggingFileExtensionByConnectionType(core::ConnectionType type) {
 #if defined(BUILD_WITH_LMDB)
   if (type == core::LMDB) {
     return LOGGING_LMDB_FILE_EXTENSION;
-  }
-#endif
-#if defined(BUILD_WITH_UPSCALEDB)
-  if (type == core::UPSCALEDB) {
-    return LOGGING_UPSCALEDB_FILE_EXTENSION;
   }
 #endif
 #if defined(BUILD_WITH_FORESTDB)

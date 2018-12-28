@@ -53,10 +53,6 @@
 #include "gui/db/lmdb/lexer.h"
 #endif
 
-#if defined(BUILD_WITH_UPSCALEDB)
-#include "gui/db/upscaledb/lexer.h"
-#endif
-
 #if defined(BUILD_WITH_FORESTDB)
 #include "gui/db/forestdb/lexer.h"
 #endif
@@ -110,11 +106,6 @@ BaseQsciLexer* createLexer(core::ConnectionType type, QObject* parent) {
 #if defined(BUILD_WITH_LMDB)
   if (type == core::LMDB) {
     return new lmdb::Lexer(parent);
-  }
-#endif
-#if defined(BUILD_WITH_UPSCALEDB)
-  if (type == core::UPSCALEDB) {
-    return new upscaledb::Lexer(parent);
   }
 #endif
 #if defined(BUILD_WITH_FORESTDB)
