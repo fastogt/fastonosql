@@ -64,7 +64,7 @@ class BuildRequest(object):
                             'libz-dev', 'libbz2-dev', 'libpng12-dev',
                             'qt5']
             elif distribution == 'RHEL':
-                dep_libs = ['git', 'gcc', 'gcc-c++', 'yasm', 'pkgconfig', 'libtoolize', 'rpm-build',
+                dep_libs = ['git', 'gcc', 'gcc-c++', 'yasm', 'pkgconfig', 'libtool', 'rpm-build',
                             'autogen', 'autoconf',
                             'cmake', 'make', 'ninja-build',
                             'zlib-devel', 'bzip2-devel', 'libpng12-devel',
@@ -434,7 +434,7 @@ class BuildRequest(object):
         self.build_lmdb(prefix_path)
         self.build_leveldb(cmake_line, make_install)
         self.build_rocksdb(cmake_line, make_install)
-        self.build_upscaledb(prefix_path)  #
+        # self.build_upscaledb(prefix_path)  #
         self.build_forestdb(cmake_line, make_install)  #
         self.build_fastonosql_core(cmake_line, make_install)
 
