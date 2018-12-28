@@ -80,8 +80,6 @@ class BuildRequest(object):
         else:
             raise NotImplemented("Unknown platform '%s'" % platform_name)
 
-        device_specific_libs = self.device_.system_libs(platform)
-        dep_libs.extend(device_specific_libs)
         return dep_libs
 
     def build_system(self):
