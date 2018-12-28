@@ -872,52 +872,6 @@ IF(BUILD_WITH_LMDB)
   ENDIF(OS_WINDOWS)
 ENDIF(BUILD_WITH_LMDB)
 
-#upscaledb
-IF(BUILD_WITH_UPSCALEDB)
-  SET(Boost_USE_MULTITHREADED ON)
-  SET(Boost_USE_STATIC_LIBS ON)
-  FIND_PACKAGE(Boost COMPONENTS thread system REQUIRED)
-  FIND_LIBRARY(UPSCALEDB_LIBRARY upscaledb)
-
-  #proxy
-  SET(HEADERS_PROXY_DB_UPSCALEDB
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/upscaledb/connection_settings.h
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/upscaledb/database.h
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/upscaledb/command.h
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/upscaledb/server.h
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/upscaledb/driver.h
-  )
-  SET(SOURCES_PROXY_DB_UPSCALEDB
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/upscaledb/connection_settings.cpp
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/upscaledb/database.cpp
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/upscaledb/server.cpp
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/upscaledb/driver.cpp
-    ${CMAKE_SOURCE_DIR}/src/proxy/db/upscaledb/command.cpp
-  )
-
-  #gui
-  SET(HEADERS_UPSCALEDB_GUI
-    ${CMAKE_SOURCE_DIR}/src/gui/db/upscaledb/connection_widget.h
-    ${CMAKE_SOURCE_DIR}/src/gui/db/upscaledb/lexer.h
-  )
-  SET(SOURCES_UPSCALEDB_GUI
-    ${CMAKE_SOURCE_DIR}/src/gui/db/upscaledb/connection_widget.cpp
-    ${CMAKE_SOURCE_DIR}/src/gui/db/upscaledb/lexer.cpp
-  )
-
-  #update common variables
-  SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_UPSCALEDB})
-  SET(SOURCES_PROXY ${SOURCES_PROXY} ${SOURCES_PROXY_DB_UPSCALEDB})
-
-  SET(HEADERS_GUI ${HEADERS_GUI} ${HEADERS_UPSCALEDB_GUI})
-  SET(SOURCES_GUI ${SOURCES_GUI} ${SOURCES_UPSCALEDB_GUI})
-
-  SET(DB_LIBS ${DB_LIBS} ${UPSCALEDB_LIBRARY} ${Boost_LIBRARIES})
-  IF(ZLIB_FOUND)
-    SET(DB_LIBS ${DB_LIBS} ${ZLIB_LIBRARIES})
-  ENDIF(ZLIB_FOUND)
-ENDIF(BUILD_WITH_UPSCALEDB)
-
 #forestdb
 IF(BUILD_WITH_FORESTDB)
   FIND_LIBRARY(FORESTDB_LIBRARY forestdb)

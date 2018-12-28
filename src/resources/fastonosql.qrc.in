@@ -8,7 +8,6 @@
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/rocksdb.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/unqlite.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/lmdb.png</file>
-    <file>@PROJECT_NAME_LOWERCASE@/images/64x64/upscaledb.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/forestdb.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/pika.png</file>
     <file>@PROJECT_NAME_LOWERCASE@/images/64x64/dynomite.png</file>

@@ -43,9 +43,6 @@
 #if defined(BUILD_WITH_LMDB)
 #include "proxy/db/lmdb/connection_settings.h"  // for ConnectionSettings
 #endif
-#if defined(BUILD_WITH_UPSCALEDB)
-#include "proxy/db/upscaledb/connection_settings.h"  // for ConnectionSettings
-#endif
 #if defined(BUILD_WITH_FORESTDB)
 #include "proxy/db/forestdb/connection_settings.h"  // for ConnectionSettings
 #endif
@@ -119,11 +116,6 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateSettingsFromTypeConnec
 #if defined(BUILD_WITH_LMDB)
   if (type == core::LMDB) {
     return new lmdb::ConnectionSettings(connection_path, logging_dir_);
-  }
-#endif
-#if defined(BUILD_WITH_UPSCALEDB)
-  if (type == core::UPSCALEDB) {
-    return new upscaledb::ConnectionSettings(connection_path, logging_dir_);
   }
 #endif
 #if defined(BUILD_WITH_FORESTDB)

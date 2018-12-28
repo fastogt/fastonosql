@@ -39,9 +39,6 @@
 #if defined(BUILD_WITH_LMDB)
 #include "gui/db/lmdb/connection_widget.h"
 #endif
-#if defined(BUILD_WITH_UPSCALEDB)
-#include "gui/db/upscaledb/connection_widget.h"
-#endif
 #if defined(BUILD_WITH_FORESTDB)
 #include "gui/db/forestdb/connection_widget.h"
 #endif
@@ -89,11 +86,6 @@ ConnectionBaseWidget* createWidgetImpl(core::ConnectionType type, QWidget* paren
 #if defined(BUILD_WITH_LMDB)
   if (type == core::LMDB) {
     return createWidget<lmdb::ConnectionWidget>(parent);
-  }
-#endif
-#if defined(BUILD_WITH_UPSCALEDB)
-  if (type == core::UPSCALEDB) {
-    return createWidget<upscaledb::ConnectionWidget>(parent);
   }
 #endif
 #if defined(BUILD_WITH_FORESTDB)

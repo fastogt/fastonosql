@@ -289,29 +289,6 @@ class BuildRequest(object):
             os.chdir(abs_dir_path)
             raise ex
 
-    def build_upscaledb(self, prefix_path):
-        abs_dir_path = self.build_dir_path_
-        try:
-            cloned_dir = utils.git_clone('https://github.com/fastogt/upscaledb.git', abs_dir_path)
-            os.chdir(cloned_dir)
-            bootstrap_policy = run_command.CommonPolicy(print_message)
-            bootstrap_upscaledb = ['sh', 'bootstrap.sh']
-            run_command.run_command_cb(bootstrap_upscaledb, bootstrap_policy)
-
-            configure_upscaledb = ['./configure', '--prefix={0}'.format(prefix_path), '--disable-remote',
-                                   '--enable-static-boost', '--disable-shared', '--disable-java', '--disable-simd',
-                                   '--disable-encryption']
-            configure_policy = run_command.CommonPolicy(print_message)
-            run_command.run_command_cb(configure_upscaledb, configure_policy)
-
-            make_install_upscaledb = ['make', 'install']  # FIXME
-            make_policy = run_command.CommonPolicy(print_message)
-            run_command.run_command_cb(make_install_upscaledb, make_policy)
-            os.chdir(abs_dir_path)
-        except Exception as ex:
-            os.chdir(abs_dir_path)
-            raise ex
-
     def build_forestdb(self, cmake_line, make_install):
         abs_dir_path = self.build_dir_path_
         try:
@@ -389,7 +366,6 @@ class BuildRequest(object):
         self.build_lmdb(prefix_path)
         self.build_leveldb(cmake_line, make_install)
         self.build_rocksdb(cmake_line, make_install)
-        self.build_upscaledb(prefix_path) #
         self.build_forestdb(cmake_line, make_install) #
         self.build_fastonosql_core(cmake_line, make_install)
 

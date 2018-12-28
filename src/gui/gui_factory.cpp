@@ -197,12 +197,6 @@ const QIcon& GuiFactory::icon(core::ConnectionType type) const {
     return lmdb;
   }
 #endif
-#if defined(BUILD_WITH_UPSCALEDB)
-  if (type == core::UPSCALEDB) {
-    static QIcon ups(":" PROJECT_NAME_LOWERCASE "/images/64x64/upscaledb.png");
-    return ups;
-  }
-#endif
 #if defined(BUILD_WITH_FORESTDB)
   if (type == core::FORESTDB) {
     static QIcon forestdb(":" PROJECT_NAME_LOWERCASE "/images/64x64/forestdb.png");

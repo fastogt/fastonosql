@@ -67,12 +67,6 @@
 #include "proxy/db/lmdb/server.h"                   // for Server
 #endif
 
-#if defined(BUILD_WITH_UPSCALEDB)
-#include <fastonosql/core/db/upscaledb/db_connection.h>  // for TestConnection
-#include "proxy/db/upscaledb/connection_settings.h"      // for ConnectionSettings
-#include "proxy/db/upscaledb/server.h"                   // for Server
-#endif
-
 #if defined(BUILD_WITH_FORESTDB)
 #include <fastonosql/core/db/forestdb/db_connection.h>  // for TestConnection
 #include "proxy/db/forestdb/connection_settings.h"      // for ConnectionSettings
@@ -135,11 +129,6 @@ IServerSPtr CreateServerImpl(IConnectionSettingsBaseSPtr settings) {
 #if defined(BUILD_WITH_LMDB)
   if (connection_type == core::LMDB) {
     return std::make_shared<lmdb::Server>(settings);
-  }
-#endif
-#if defined(BUILD_WITH_UPSCALEDB)
-  if (connection_type == core::UPSCALEDB) {
-    return std::make_shared<upscaledb::Server>(settings);
   }
 #endif
 #if defined(BUILD_WITH_FORESTDB)
@@ -221,12 +210,6 @@ common::Error ServersManager::TestConnection(IConnectionSettingsBaseSPtr connect
   if (connection_type == core::LMDB) {
     lmdb::ConnectionSettings* settings = static_cast<lmdb::ConnectionSettings*>(connection.get());
     return core::lmdb::TestConnection(settings->GetInfo());
-  }
-#endif
-#if defined(BUILD_WITH_UPSCALEDB)
-  if (connection_type == core::UPSCALEDB) {
-    upscaledb::ConnectionSettings* settings = static_cast<upscaledb::ConnectionSettings*>(connection.get());
-    return core::upscaledb::TestConnection(settings->GetInfo());
   }
 #endif
 #if defined(BUILD_WITH_FORESTDB)

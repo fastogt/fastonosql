@@ -51,10 +51,6 @@
 #include <fastonosql/core/db/lmdb/server_info.h>
 #endif
 
-#if defined(BUILD_WITH_UPSCALEDB)
-#include <fastonosql/core/db/upscaledb/server_info.h>
-#endif
-
 #if defined(BUILD_WITH_FORESTDB)
 #include <fastonosql/core/db/forestdb/server_info.h>
 #endif
@@ -467,20 +463,6 @@ QString generateText(core::lmdb::ServerInfo* serv) {
 }
 #endif
 
-#if defined(BUILD_WITH_UPSCALEDB)
-const QString trUpscaledbTextServerTemplate = QObject::tr(
-    "<b>Stats:</b><br/>"
-    "DB path: %1<br/>");
-
-QString generateText(core::upscaledb::ServerInfo* serv) {
-  core::upscaledb::ServerInfo::Stats stats = serv->stats_;
-  QString qdb_path;
-  common::ConvertFromString(stats.db_path, &qdb_path);
-
-  return trUpscaledbTextServerTemplate.arg(qdb_path);
-}
-#endif
-
 #if defined(BUILD_WITH_FORESTDB)
 const QString trForestdbTextServerTemplate = QObject::tr(
     "<b>Stats:</b><br/>"
@@ -810,13 +792,6 @@ void InfoServerDialog::updateText(core::IServerInfo* serv) {
   if (type == core::LMDB) {
     core::lmdb::ServerInfo local;
     core::lmdb::ServerInfo* stabled_server_info = serv ? static_cast<core::lmdb::ServerInfo*>(serv) : &local;
-    server_text_info_->setText(generateText(stabled_server_info));
-  }
-#endif
-#if defined(BUILD_WITH_UPSCALEDB)
-  if (type == core::UPSCALEDB) {
-    core::upscaledb::ServerInfo local;
-    core::upscaledb::ServerInfo* stabled_server_info = serv ? static_cast<core::upscaledb::ServerInfo*>(serv) : &local;
     server_text_info_->setText(generateText(stabled_server_info));
   }
 #endif

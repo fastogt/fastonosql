@@ -65,9 +65,6 @@ ConnectionSelectTypeDialog::ConnectionSelectTypeDialog(const QString& title, QWi
 #if defined(BUILD_WITH_LMDB)
   updateCombobox(core::LMDB);
 #endif
-#if defined(BUILD_WITH_UPSCALEDB)
-  updateCombobox(core::UPSCALEDB);
-#endif
 #if defined(BUILD_WITH_FORESTDB)
   updateCombobox(core::FORESTDB);
 #endif
