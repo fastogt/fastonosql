@@ -67,8 +67,8 @@ class BuildRequest(object):
                 dep_libs = ['git', 'gcc', 'gcc-c++', 'yasm', 'pkgconfig', 'libtool', 'rpm-build',
                             'autogen', 'autoconf',
                             'cmake', 'make', 'ninja-build',
-                            'zlib-devel', 'zlib-static', 'bzip2-devel', 'lz4-devel',
-                            'qt5']
+                            'zlib-devel', 'bzip2-devel', 'lz4-devel',
+                            'qt5-qtbase-devel', 'qt5-linguist']
         elif platform_name == 'windows':
             if arch.name() == 'x86_64':
                 dep_libs = ['git', 'make', 'mingw-w64-x86_64-gcc', 'mingw-w64-x86_64-yasm',
