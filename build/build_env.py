@@ -49,6 +49,50 @@ class BuildRequest(object):
         self.platform_ = platform_or_none.make_platform_by_arch(arch, platform_or_none.package_types())
         print("Build request for platform: {0}, arch: {1} created".format(platform, arch.name()))
 
+    def __get_system_libs(self):
+        platform = self.platform_
+        platform_name = platform.name()
+        arch = platform.arch()
+        dep_libs = []
+
+        if platform_name == 'linux':
+            distribution = system_info.linux_get_dist()
+            if distribution == 'DEBIAN':
+                dep_libs = ['git', 'gcc', 'g++', 'yasm', 'pkg-config', 'libtool', 'rpm',
+                            'autogen', 'autoconf',
+                            'cmake', 'make', 'ninja-build',
+                            'libz-dev', 'libbz2-dev', 'lz4-dev',
+                            'qt5']
+            elif distribution == 'RHEL':
+                dep_libs = ['git', 'gcc', 'gcc-c++', 'yasm', 'pkgconfig', 'libtool', 'rpm-build',
+                            'autogen', 'autoconf',
+                            'cmake', 'make', 'ninja-build',
+                            'zlib-devel', 'bzip2-devel', 'lz4-devel',
+                            'qt5-qtbase-devel', 'qt5-linguist']
+        elif platform_name == 'windows':
+            if arch.name() == 'x86_64':
+                dep_libs = ['git', 'make', 'mingw-w64-x86_64-gcc', 'mingw-w64-x86_64-yasm',
+                            'mingw-w64-x86_64-ninja', 'mingw-w64-x86_64-make', 'mingw-w64-x86_64-cmake',
+                            'mingw-w64-x86_64-qt5']
+            elif arch.name() == 'i386':
+                dep_libs = ['git', 'make', 'mingw-w64-i686-gcc', 'mingw-w64-i686-yasm',
+                            'mingw-w64-i686-ninja', 'mingw-w64-i686-make', 'mingw-w64-i686-cmake',
+                            'mingw-w64-i686-qt5']
+        elif platform_name == 'macosx':
+            dep_libs = ['git', 'yasm', 'make', 'ninja', 'cmake', 'qt5']
+        else:
+            raise NotImplemented("Unknown platform '%s'" % platform_name)
+
+        return dep_libs
+
+    def build_system(self):
+        platform = self.platform_
+        dep_libs = self.__get_system_libs()
+        for lib in dep_libs:
+            platform.install_package(lib)
+
+        # post install step
+
     def build_snappy(self, cmake_line, make_install):
         abs_dir_path = self.build_dir_path_
         try:
@@ -352,6 +396,7 @@ class BuildRequest(object):
 
         # abs_dir_path = self.build_dir_path_
 
+        # self.build_system()
         self.build_snappy(cmake_line, make_install)
         self.build_openssl(prefix_path)  #
         self.build_libssh2(cmake_line, prefix_path, make_install)

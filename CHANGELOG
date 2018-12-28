@@ -1,9 +1,13 @@
-1.25.1 /
+1.25.2 /
 [Alexandr Topilski]
 - Fixed rendering issues in explorer tree
 - [UpscaleDB] Removed api
 
-1.25.0 / December 23, 2017
+1.25.1 / December 25, 2018
+[Alexandr Topilski]
+- Fixed rendering tree issues
+
+1.25.0 / December 23, 2018
 [Alexandr Topilski]
 - Viewer for LIST and HASH types
 
