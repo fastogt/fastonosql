@@ -61,22 +61,25 @@ class BuildRequest(object):
                 dep_libs = ['git', 'gcc', 'g++', 'yasm', 'pkg-config', 'libtool', 'rpm',
                             'autogen', 'autoconf',
                             'cmake', 'make', 'ninja-build',
-                            'libz-dev', 'libbz2-dev', 'libpng12-dev']
+                            'libz-dev', 'libbz2-dev', 'libpng12-dev',
+                            'qt5']
             elif distribution == 'RHEL':
                 dep_libs = ['git', 'gcc', 'gcc-c++', 'yasm', 'pkgconfig', 'libtoolize', 'rpm-build',
                             'autogen', 'autoconf',
                             'cmake', 'make', 'ninja-build',
-                            'zlib-devel', 'bzip2-devel', 'libpng12-devel']
+                            'zlib-devel', 'bzip2-devel', 'libpng12-devel',
+                            'qt5']
         elif platform_name == 'windows':
             if arch.name() == 'x86_64':
                 dep_libs = ['git', 'make', 'mingw-w64-x86_64-gcc', 'mingw-w64-x86_64-yasm',
-                            'mingw-w64-x86_64-ninja',
-                            'mingw-w64-x86_64-make', 'mingw-w64-x86_64-cmake']
+                            'mingw-w64-x86_64-ninja', 'mingw-w64-x86_64-make', 'mingw-w64-x86_64-cmake',
+                            'mingw-w64-x86_64-qt5']
             elif arch.name() == 'i386':
-                dep_libs = ['git', 'make', 'mingw-w64-i686-gcc', 'mingw-w64-i686-yasm', 'mingw-w64-i686-ninja',
-                            'mingw-w64-i686-make', 'mingw-w64-i686-cmake']
+                dep_libs = ['git', 'make', 'mingw-w64-i686-gcc', 'mingw-w64-i686-yasm',
+                            'mingw-w64-i686-ninja', 'mingw-w64-i686-make', 'mingw-w64-i686-cmake',
+                            'mingw-w64-i686-qt5']
         elif platform_name == 'macosx':
-            dep_libs = ['git', 'yasm', 'make', 'ninja']
+            dep_libs = ['git', 'yasm', 'make', 'ninja', 'cmake', 'qt5']
         else:
             raise NotImplemented("Unknown platform '%s'" % platform_name)
 
@@ -89,11 +92,6 @@ class BuildRequest(object):
             platform.install_package(lib)
 
         # post install step
-        platform_name = platform.name()
-        if platform_name == 'linux':
-            distribution = system_info.linux_get_dist()
-            if distribution == 'RHEL':
-                subprocess.call(['ln', '-sf', '/usr/bin/ninja-build', '/usr/bin/ninja'])
 
     def build_snappy(self, cmake_line, make_install):
         abs_dir_path = self.build_dir_path_
