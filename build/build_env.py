@@ -67,7 +67,7 @@ class BuildRequest(object):
                 dep_libs = ['git', 'gcc', 'gcc-c++', 'yasm', 'pkgconfig', 'libtool', 'rpm-build',
                             'autogen', 'autoconf',
                             'cmake', 'make', 'ninja-build',
-                            'zlib-devel', 'bzip2-devel', 'lz4-devel',
+                            'zlib-devel', 'zlib-static', 'bzip2-devel', 'lz4-devel',
                             'qt5']
         elif platform_name == 'windows':
             if arch.name() == 'x86_64':
@@ -419,7 +419,7 @@ class BuildRequest(object):
 
         # abs_dir_path = self.build_dir_path_
 
-        self.build_system()
+        # self.build_system()
         self.build_snappy(cmake_line, make_install)
         self.build_openssl(prefix_path)  #
         self.build_libssh2(cmake_line, prefix_path, make_install)
