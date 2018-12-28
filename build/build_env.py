@@ -61,13 +61,13 @@ class BuildRequest(object):
                 dep_libs = ['git', 'gcc', 'g++', 'yasm', 'pkg-config', 'libtool', 'rpm',
                             'autogen', 'autoconf',
                             'cmake', 'make', 'ninja-build',
-                            'libz-dev', 'libbz2-dev', 'libpng12-dev',
+                            'libz-dev', 'libbz2-dev', 'lz4-dev',
                             'qt5']
             elif distribution == 'RHEL':
                 dep_libs = ['git', 'gcc', 'gcc-c++', 'yasm', 'pkgconfig', 'libtool', 'rpm-build',
                             'autogen', 'autoconf',
                             'cmake', 'make', 'ninja-build',
-                            'zlib-devel', 'bzip2-devel', 'libpng12-devel',
+                            'zlib-devel', 'bzip2-devel', 'lz4-devel',
                             'qt5']
         elif platform_name == 'windows':
             if arch.name() == 'x86_64':
