@@ -49,44 +49,44 @@ class BuildRequest(object):
         self.platform_ = platform_or_none.make_platform_by_arch(arch, platform_or_none.package_types())
         print("Build request for platform: {0}, arch: {1} created".format(platform, arch.name()))
 
-        def get_system_libs(self):
-            platform = self.platform_
-            platform_name = platform.name()
-            arch = platform.arch()
-            dep_libs = []
+    def __get_system_libs(self):
+        platform = self.platform_
+        platform_name = platform.name()
+        arch = platform.arch()
+        dep_libs = []
 
-            if platform_name == 'linux':
-                distribution = system_info.linux_get_dist()
-                if distribution == 'DEBIAN':
-                    dep_libs = ['git', 'gcc', 'g++', 'yasm', 'pkg-config', 'libtool', 'rpm',
-                                'autogen', 'autoconf',
-                                'cmake', 'make', 'ninja-build',
-                                'libz-dev', 'libbz2-dev', 'libpng12-dev']
-                elif distribution == 'RHEL':
-                    dep_libs = ['git', 'gcc', 'gcc-c++', 'yasm', 'pkgconfig', 'libtoolize', 'rpm-build',
-                                'autogen', 'autoconf',
-                                'cmake', 'make', 'ninja-build',
-                                'zlib-devel', 'bzip2-devel', 'libpng12-devel']
-            elif platform_name == 'windows':
-                if arch.name() == 'x86_64':
-                    dep_libs = ['git', 'make', 'mingw-w64-x86_64-gcc', 'mingw-w64-x86_64-yasm',
-                                'mingw-w64-x86_64-ninja',
-                                'mingw-w64-x86_64-make', 'mingw-w64-x86_64-cmake']
-                elif arch.name() == 'i386':
-                    dep_libs = ['git', 'make', 'mingw-w64-i686-gcc', 'mingw-w64-i686-yasm', 'mingw-w64-i686-ninja',
-                                'mingw-w64-i686-make', 'mingw-w64-i686-cmake']
-            elif platform_name == 'macosx':
-                dep_libs = ['git', 'yasm', 'make', 'ninja']
-            else:
-                raise NotImplemented("Unknown platform '%s'" % platform_name)
+        if platform_name == 'linux':
+            distribution = system_info.linux_get_dist()
+            if distribution == 'DEBIAN':
+                dep_libs = ['git', 'gcc', 'g++', 'yasm', 'pkg-config', 'libtool', 'rpm',
+                            'autogen', 'autoconf',
+                            'cmake', 'make', 'ninja-build',
+                            'libz-dev', 'libbz2-dev', 'libpng12-dev']
+            elif distribution == 'RHEL':
+                dep_libs = ['git', 'gcc', 'gcc-c++', 'yasm', 'pkgconfig', 'libtoolize', 'rpm-build',
+                            'autogen', 'autoconf',
+                            'cmake', 'make', 'ninja-build',
+                            'zlib-devel', 'bzip2-devel', 'libpng12-devel']
+        elif platform_name == 'windows':
+            if arch.name() == 'x86_64':
+                dep_libs = ['git', 'make', 'mingw-w64-x86_64-gcc', 'mingw-w64-x86_64-yasm',
+                            'mingw-w64-x86_64-ninja',
+                            'mingw-w64-x86_64-make', 'mingw-w64-x86_64-cmake']
+            elif arch.name() == 'i386':
+                dep_libs = ['git', 'make', 'mingw-w64-i686-gcc', 'mingw-w64-i686-yasm', 'mingw-w64-i686-ninja',
+                            'mingw-w64-i686-make', 'mingw-w64-i686-cmake']
+        elif platform_name == 'macosx':
+            dep_libs = ['git', 'yasm', 'make', 'ninja']
+        else:
+            raise NotImplemented("Unknown platform '%s'" % platform_name)
 
-            device_specific_libs = self.device_.system_libs(platform)
-            dep_libs.extend(device_specific_libs)
-            return dep_libs
+        device_specific_libs = self.device_.system_libs(platform)
+        dep_libs.extend(device_specific_libs)
+        return dep_libs
 
     def build_system(self):
         platform = self.platform_
-        dep_libs = self.get_system_libs()
+        dep_libs = self.__get_system_libs()
         for lib in dep_libs:
             platform.install_package(lib)
 
