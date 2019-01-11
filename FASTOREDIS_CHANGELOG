@@ -1,4 +1,8 @@
-1.24.0 / December 29, 2018
+1.23.3 /
+[Alexandr Topilski]
+- Deleting multiple keys UI #92
+
+1.23.2 / December 29, 2018
 [Alexandr Topilski]
 - Fixed rendering issues in explorer tree
 

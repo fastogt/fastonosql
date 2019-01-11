@@ -55,8 +55,6 @@
 #include "translations/global.h"  // for trClose, trBackup, etc
 
 namespace {
-const QString trRemoveKeyTemplate_1S = QObject::tr("Really remove key %1?");
-const QString trRemoveBranchTemplate_1S = QObject::tr("Really remove branch %1?");
 const QString trRemoveDatabaseTemplate_1S = QObject::tr("Really remove database %1?");
 const QString trRealyRemoveAllKeysTemplate_1S = QObject::tr("Really remove all keys from %1 database?");
 
@@ -786,13 +784,6 @@ void ExplorerTreeView::remBranch() {
       continue;
     }
 
-    int answer = QMessageBox::question(this, translations::trRemoveBranch, trRemoveBranchTemplate_1S.arg(node->name()),
-                                       QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
-
-    if (answer != QMessageBox::Yes) {
-      continue;
-    }
-
     node->removeBranch();
   }
 }
@@ -1015,13 +1006,6 @@ void ExplorerTreeView::remKey() {
     ExplorerKeyItem* node = common::qt::item<common::qt::gui::TreeItem*, ExplorerKeyItem*>(ind);
     if (!node) {
       DNOTREACHED();
-      continue;
-    }
-
-    int answer = QMessageBox::question(this, translations::trRemoveKey, trRemoveKeyTemplate_1S.arg(node->name()),
-                                       QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
-
-    if (answer != QMessageBox::Yes) {
       continue;
     }
 
