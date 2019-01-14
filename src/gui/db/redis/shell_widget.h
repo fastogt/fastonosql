@@ -49,7 +49,7 @@ class ShellWidget : public BaseShellWidget {
 
   QHBoxLayout* createTopLayout(core::ConnectionType ct) override;
   void OnServerDisconnected() override;
-  void OnFinishedLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponce& res) override;
+  void OnFinishedLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponse& res) override;
 
  private:
   void updateModules(const std::vector<core::ModuleInfo>& modules);

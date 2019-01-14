@@ -24,7 +24,7 @@
 
 #include <common/convert2string.h>
 #include <common/protocols/json_rpc/json_rpc.h>
-#include <common/protocols/json_rpc/json_rpc_responce.h>
+#include <common/protocols/json_rpc/json_rpc_response.h>
 
 #include <common/system_info/system_info.h>  // for SystemInfo, etc
 
@@ -91,14 +91,14 @@ common::Error GenVersionRequest(std::string* request) {
   return common::Error();
 }
 
-common::Error ParseVersionResponce(const std::string& data, uint32_t* version) {
+common::Error ParseVersionResponse(const std::string& data, uint32_t* version) {
   if (data.empty() || !version) {
     DNOTREACHED();
     return common::make_error_inval();
   }
 
-  common::protocols::json_rpc::JsonRPCResponce jres;
-  common::Error err = common::protocols::json_rpc::ParseJsonRPCResponce(data, &jres);
+  common::protocols::json_rpc::JsonRPCResponse jres;
+  common::Error err = common::protocols::json_rpc::ParseJsonRPCResponse(data, &jres);
   if (err) {
     DNOTREACHED();
     return err;
@@ -206,14 +206,14 @@ common::Error GenStatisticRequest(const std::string& login, const std::string& b
   return common::Error();
 }
 
-common::Error ParseSendStatisticResponce(const std::string& data) {
+common::Error ParseSendStatisticResponse(const std::string& data) {
   if (data.empty()) {
     DNOTREACHED();
     return common::make_error_inval();
   }
 
-  common::protocols::json_rpc::JsonRPCResponce jres;
-  return common::protocols::json_rpc::ParseJsonRPCResponce(data, &jres);
+  common::protocols::json_rpc::JsonRPCResponse jres;
+  return common::protocols::json_rpc::ParseJsonRPCResponse(data, &jres);
 }
 
 #if defined(PRO_VERSION)
@@ -248,14 +248,14 @@ common::Error GenSubscriptionStateRequest(const UserInfo& user_info, std::string
   return common::Error();
 }
 
-common::Error ParseSubscriptionStateResponce(const std::string& data, UserInfo* update) {
+common::Error ParseSubscriptionStateResponse(const std::string& data, UserInfo* update) {
   if (data.empty() || !update || !update->IsValid()) {
     DNOTREACHED();
     return common::make_error_inval();
   }
 
-  common::protocols::json_rpc::JsonRPCResponce jres;
-  common::Error err = common::protocols::json_rpc::ParseJsonRPCResponce(data, &jres);
+  common::protocols::json_rpc::JsonRPCResponse jres;
+  common::Error err = common::protocols::json_rpc::ParseJsonRPCResponse(data, &jres);
   if (err) {
     DNOTREACHED() << err->GetDescription();
     return err;
@@ -380,14 +380,14 @@ common::Error GenBanUserRequest(const UserInfo& user_info, user_id_t collision_i
   return common::Error();
 }
 
-common::Error ParseGenBanUserResponce(const std::string& data) {
+common::Error ParseGenBanUserResponse(const std::string& data) {
   if (data.empty()) {
     DNOTREACHED();
     return common::make_error_inval();
   }
 
-  common::protocols::json_rpc::JsonRPCResponce jres;
-  return common::protocols::json_rpc::ParseJsonRPCResponce(data, &jres);
+  common::protocols::json_rpc::JsonRPCResponse jres;
+  return common::protocols::json_rpc::ParseJsonRPCResponse(data, &jres);
 }
 #endif
 

@@ -63,7 +63,7 @@ common::Error sendUserStatisticRoutine(const std::string& login, const std::stri
     return common::make_error_from_errno(err);
   }
 
-  common::Error jerror = proxy::ParseSendStatisticResponce(stat_reply.as_string());
+  common::Error jerror = proxy::ParseSendStatisticResponse(stat_reply.as_string());
   err = client.Close();
   DCHECK(!err) << "Close client error: " << err->GetDescription();
 
@@ -108,7 +108,7 @@ common::Error sendAnonymousStatisticRoutine() {
     return common::make_error_from_errno(err);
   }
 
-  common::Error jerror = proxy::ParseSendStatisticResponce(stat_reply.as_string());
+  common::Error jerror = proxy::ParseSendStatisticResponse(stat_reply.as_string());
   err = client.Close();
   DCHECK(!err) << "Close client error: " << err->GetDescription();
 

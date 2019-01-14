@@ -250,11 +250,11 @@ void IServer::LoadClients(const events_info::LoadServerClientsRequest& req) {
 
 void IServer::customEvent(QEvent* event) {
   QEvent::Type type = event->type();
-  if (type == static_cast<QEvent::Type>(events::ConnectResponceEvent::EventType)) {
-    events::ConnectResponceEvent* ev = static_cast<events::ConnectResponceEvent*>(event);
+  if (type == static_cast<QEvent::Type>(events::ConnectResponseEvent::EventType)) {
+    events::ConnectResponseEvent* ev = static_cast<events::ConnectResponseEvent*>(event);
     HandleConnectEvent(ev);
 
-    events::ConnectResponceEvent::value_type v = ev->value();
+    events::ConnectResponseEvent::value_type v = ev->value();
     common::Error err = v.errorInfo();
     if (!err) {
       events_info::ServerInfoRequest sreq(this);
@@ -277,52 +277,52 @@ void IServer::customEvent(QEvent* event) {
     events::CommandRootCompleatedEvent* ev = static_cast<events::CommandRootCompleatedEvent*>(event);
     events::CommandRootCompleatedEvent::value_type v = ev->value();
     emit RootCompleated(v);
-  } else if (type == static_cast<QEvent::Type>(events::DisconnectResponceEvent::EventType)) {
-    events::DisconnectResponceEvent* ev = static_cast<events::DisconnectResponceEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::DisconnectResponseEvent::EventType)) {
+    events::DisconnectResponseEvent* ev = static_cast<events::DisconnectResponseEvent*>(event);
     HandleDisconnectEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::LoadDatabasesInfoResponceEvent::EventType)) {
-    events::LoadDatabasesInfoResponceEvent* ev = static_cast<events::LoadDatabasesInfoResponceEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::LoadDatabasesInfoResponseEvent::EventType)) {
+    events::LoadDatabasesInfoResponseEvent* ev = static_cast<events::LoadDatabasesInfoResponseEvent*>(event);
     HandleLoadDatabaseInfosEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::ServerInfoResponceEvent::EventType)) {
-    events::ServerInfoResponceEvent* ev = static_cast<events::ServerInfoResponceEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::ServerInfoResponseEvent::EventType)) {
+    events::ServerInfoResponseEvent* ev = static_cast<events::ServerInfoResponseEvent*>(event);
     HandleLoadServerInfoEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::ServerInfoHistoryResponceEvent::EventType)) {
-    events::ServerInfoHistoryResponceEvent* ev = static_cast<events::ServerInfoHistoryResponceEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::ServerInfoHistoryResponseEvent::EventType)) {
+    events::ServerInfoHistoryResponseEvent* ev = static_cast<events::ServerInfoHistoryResponseEvent*>(event);
     HandleLoadServerInfoHistoryEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::ClearServerHistoryResponceEvent::EventType)) {
-    events::ClearServerHistoryResponceEvent* ev = static_cast<events::ClearServerHistoryResponceEvent*>(event);
-    HandleClearServerHistoryResponceEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::ServerPropertyInfoResponceEvent::EventType)) {
-    events::ServerPropertyInfoResponceEvent* ev = static_cast<events::ServerPropertyInfoResponceEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::ClearServerHistoryResponseEvent::EventType)) {
+    events::ClearServerHistoryResponseEvent* ev = static_cast<events::ClearServerHistoryResponseEvent*>(event);
+    HandleClearServerHistoryResponseEvent(ev);
+  } else if (type == static_cast<QEvent::Type>(events::ServerPropertyInfoResponseEvent::EventType)) {
+    events::ServerPropertyInfoResponseEvent* ev = static_cast<events::ServerPropertyInfoResponseEvent*>(event);
     HandleLoadServerPropertyEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::ChangeServerPropertyInfoResponceEvent::EventType)) {
-    events::ChangeServerPropertyInfoResponceEvent* ev =
-        static_cast<events::ChangeServerPropertyInfoResponceEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::ChangeServerPropertyInfoResponseEvent::EventType)) {
+    events::ChangeServerPropertyInfoResponseEvent* ev =
+        static_cast<events::ChangeServerPropertyInfoResponseEvent*>(event);
     HandleServerPropertyChangeEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::LoadServerChannelsResponceEvent::EventType)) {
-    events::LoadServerChannelsResponceEvent* ev = static_cast<events::LoadServerChannelsResponceEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::LoadServerChannelsResponseEvent::EventType)) {
+    events::LoadServerChannelsResponseEvent* ev = static_cast<events::LoadServerChannelsResponseEvent*>(event);
     HandleLoadServerChannelsEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::LoadServerClientsResponceEvent::EventType)) {
-    events::LoadServerClientsResponceEvent* ev = static_cast<events::LoadServerClientsResponceEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::LoadServerClientsResponseEvent::EventType)) {
+    events::LoadServerClientsResponseEvent* ev = static_cast<events::LoadServerClientsResponseEvent*>(event);
     HandleLoadServerClientsEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::BackupResponceEvent::EventType)) {
-    events::BackupResponceEvent* ev = static_cast<events::BackupResponceEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::BackupResponseEvent::EventType)) {
+    events::BackupResponseEvent* ev = static_cast<events::BackupResponseEvent*>(event);
     HandleBackupEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::RestoreResponceEvent::EventType)) {
-    events::RestoreResponceEvent* ev = static_cast<events::RestoreResponceEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::RestoreResponseEvent::EventType)) {
+    events::RestoreResponseEvent* ev = static_cast<events::RestoreResponseEvent*>(event);
     HandleRestoreEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::LoadDatabaseContentResponceEvent::EventType)) {
-    events::LoadDatabaseContentResponceEvent* ev = static_cast<events::LoadDatabaseContentResponceEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::LoadDatabaseContentResponseEvent::EventType)) {
+    events::LoadDatabaseContentResponseEvent* ev = static_cast<events::LoadDatabaseContentResponseEvent*>(event);
     HandleLoadDatabaseContentEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::ExecuteResponceEvent::EventType)) {
-    events::ExecuteResponceEvent* ev = static_cast<events::ExecuteResponceEvent*>(event);
+  } else if (type == static_cast<QEvent::Type>(events::ExecuteResponseEvent::EventType)) {
+    events::ExecuteResponseEvent* ev = static_cast<events::ExecuteResponseEvent*>(event);
     HandleExecuteEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::DiscoveryInfoResponceEvent::EventType)) {
-    events::DiscoveryInfoResponceEvent* ev = static_cast<events::DiscoveryInfoResponceEvent*>(event);
-    HandleDiscoveryInfoResponceEvent(ev);
-  } else if (type == static_cast<QEvent::Type>(events::ProgressResponceEvent::EventType)) {
-    events::ProgressResponceEvent* ev = static_cast<events::ProgressResponceEvent*>(event);
-    events::ProgressResponceEvent::value_type v = ev->value();
+  } else if (type == static_cast<QEvent::Type>(events::DiscoveryInfoResponseEvent::EventType)) {
+    events::DiscoveryInfoResponseEvent* ev = static_cast<events::DiscoveryInfoResponseEvent*>(event);
+    HandleDiscoveryInfoResponseEvent(ev);
+  } else if (type == static_cast<QEvent::Type>(events::ProgressResponseEvent::EventType)) {
+    events::ProgressResponseEvent* ev = static_cast<events::ProgressResponseEvent*>(event);
+    events::ProgressResponseEvent::value_type v = ev->value();
     emit ProgressChanged(v);
   }
 
@@ -338,12 +338,12 @@ void IServer::timerEvent(QTimerEvent* event) {
 }
 
 void IServer::NotifyStartEvent(QEvent* ev) {
-  events_info::ProgressInfoResponce resp(0);
+  events_info::ProgressInfoResponse resp(0);
   emit ProgressChanged(resp);
   qApp->postEvent(drv_, ev);
 }
 
-void IServer::HandleConnectEvent(events::ConnectResponceEvent* ev) {
+void IServer::HandleConnectEvent(events::ConnectResponseEvent* ev) {
   auto v = ev->value();
   common::Error err = v.errorInfo();
   if (err) {
@@ -352,7 +352,7 @@ void IServer::HandleConnectEvent(events::ConnectResponceEvent* ev) {
   emit ConnectFinished(v);
 }
 
-void IServer::HandleDisconnectEvent(events::DisconnectResponceEvent* ev) {
+void IServer::HandleDisconnectEvent(events::DisconnectResponseEvent* ev) {
   auto v = ev->value();
   common::Error err = v.errorInfo();
   if (err) {
@@ -361,7 +361,7 @@ void IServer::HandleDisconnectEvent(events::DisconnectResponceEvent* ev) {
   emit DisconnectFinished(v);
 }
 
-void IServer::HandleLoadServerInfoEvent(events::ServerInfoResponceEvent* ev) {
+void IServer::HandleLoadServerInfoEvent(events::ServerInfoResponseEvent* ev) {
   auto v = ev->value();
   common::Error err = v.errorInfo();
   if (err) {
@@ -370,7 +370,7 @@ void IServer::HandleLoadServerInfoEvent(events::ServerInfoResponceEvent* ev) {
   emit LoadServerInfoFinished(v);
 }
 
-void IServer::HandleLoadServerPropertyEvent(events::ServerPropertyInfoResponceEvent* ev) {
+void IServer::HandleLoadServerPropertyEvent(events::ServerPropertyInfoResponseEvent* ev) {
   auto v = ev->value();
   common::Error err = v.errorInfo();
   if (err) {
@@ -379,7 +379,7 @@ void IServer::HandleLoadServerPropertyEvent(events::ServerPropertyInfoResponceEv
   emit LoadServerPropertyFinished(v);
 }
 
-void IServer::HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoResponceEvent* ev) {
+void IServer::HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoResponseEvent* ev) {
   auto v = ev->value();
   common::Error err = v.errorInfo();
   if (err) {
@@ -388,7 +388,7 @@ void IServer::HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRe
   emit ChangeServerPropertyFinished(v);
 }
 
-void IServer::HandleLoadServerChannelsEvent(events::LoadServerChannelsResponceEvent* ev) {
+void IServer::HandleLoadServerChannelsEvent(events::LoadServerChannelsResponseEvent* ev) {
   auto v = ev->value();
   common::Error err = v.errorInfo();
   if (err) {
@@ -397,7 +397,7 @@ void IServer::HandleLoadServerChannelsEvent(events::LoadServerChannelsResponceEv
   emit LoadServerChannelsFinished(v);
 }
 
-void IServer::HandleLoadServerClientsEvent(events::LoadServerClientsResponceEvent* ev) {
+void IServer::HandleLoadServerClientsEvent(events::LoadServerClientsResponseEvent* ev) {
   auto v = ev->value();
   common::Error err = v.errorInfo();
   if (err) {
@@ -406,7 +406,7 @@ void IServer::HandleLoadServerClientsEvent(events::LoadServerClientsResponceEven
   emit LoadServerClientsFinished(v);
 }
 
-void IServer::HandleBackupEvent(events::BackupResponceEvent* ev) {
+void IServer::HandleBackupEvent(events::BackupResponseEvent* ev) {
   auto v = ev->value();
   common::Error err = v.errorInfo();
   if (err) {
@@ -415,7 +415,7 @@ void IServer::HandleBackupEvent(events::BackupResponceEvent* ev) {
   emit BackupFinished(v);
 }
 
-void IServer::HandleRestoreEvent(events::RestoreResponceEvent* ev) {
+void IServer::HandleRestoreEvent(events::RestoreResponseEvent* ev) {
   auto v = ev->value();
   common::Error err = v.errorInfo();
   if (err) {
@@ -424,7 +424,7 @@ void IServer::HandleRestoreEvent(events::RestoreResponceEvent* ev) {
   emit ExportFinished(v);
 }
 
-void IServer::HandleExecuteEvent(events::ExecuteResponceEvent* ev) {
+void IServer::HandleExecuteEvent(events::ExecuteResponseEvent* ev) {
   auto v = ev->value();
   common::Error err = v.errorInfo();
   if (!err) {
@@ -451,14 +451,14 @@ void IServer::HandleExecuteEvent(events::ExecuteResponceEvent* ev) {
   emit ExecuteFinished(v);
 }
 
-void IServer::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoResponceEvent* ev) {
+void IServer::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoResponseEvent* ev) {
   auto v = ev->value();
   common::Error err = v.errorInfo();
   if (err) {
     LOG_ERROR(err, common::logging::LOG_LEVEL_ERR, true);
   } else {
-    events_info::LoadDatabasesInfoResponce::database_info_cont_type dbs = v.databases;
-    events_info::LoadDatabasesInfoResponce::database_info_cont_type tmp;
+    events_info::LoadDatabasesInfoResponse::database_info_cont_type dbs = v.databases;
+    events_info::LoadDatabasesInfoResponse::database_info_cont_type tmp;
     for (size_t i = 0; i < dbs.size(); ++i) {
       core::IDataBaseInfoSPtr db = dbs[i];
       database_t dbs = FindDatabase(db);
@@ -474,7 +474,7 @@ void IServer::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoResponceEven
   emit LoadDatabasesFinished(v);
 }
 
-void IServer::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentResponceEvent* ev) {
+void IServer::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentResponseEvent* ev) {
   auto v = ev->value();
   common::Error err = v.errorInfo();
   if (err) {
@@ -677,7 +677,7 @@ void IServer::HandleLeaveModeEvent(events::LeaveModeEvent* ev) {
   emit ModeLeaved(v);
 }
 
-void IServer::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryResponceEvent* ev) {
+void IServer::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryResponseEvent* ev) {
   auto v = ev->value();
   common::Error err = v.errorInfo();
   if (err) {
@@ -687,7 +687,7 @@ void IServer::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryResponce
   emit LoadServerHistoryInfoFinished(v);
 }
 
-void IServer::HandleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev) {
+void IServer::HandleDiscoveryInfoResponseEvent(events::DiscoveryInfoResponseEvent* ev) {
   auto v = ev->value();
   common::Error err = v.errorInfo();
   if (err) {
@@ -702,7 +702,7 @@ void IServer::HandleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEven
   emit LoadDiscoveryInfoFinished(v);
 }
 
-void IServer::HandleClearServerHistoryResponceEvent(events::ClearServerHistoryResponceEvent* ev) {
+void IServer::HandleClearServerHistoryResponseEvent(events::ClearServerHistoryResponseEvent* ev) {
   auto v = ev->value();
   common::Error err = v.errorInfo();
   if (err) {

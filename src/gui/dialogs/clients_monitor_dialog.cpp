@@ -115,7 +115,7 @@ void ClientsMonitorDialog::startLoadServerClients(const proxy::events_info::Load
   clients_model_->clear();
 }
 
-void ClientsMonitorDialog::finishLoadServerClients(const proxy::events_info::LoadServerClientsResponce& res) {
+void ClientsMonitorDialog::finishLoadServerClients(const proxy::events_info::LoadServerClientsResponse& res) {
   common::Error err = res.errorInfo();
   if (err) {
     return;
@@ -130,7 +130,7 @@ void ClientsMonitorDialog::startExecuteCommand(const proxy::events_info::Execute
   UNUSED(req);
 }
 
-void ClientsMonitorDialog::finishExecuteCommand(const proxy::events_info::ExecuteInfoResponce& res) {
+void ClientsMonitorDialog::finishExecuteCommand(const proxy::events_info::ExecuteInfoResponse& res) {
   // some commands can be executed
   /*common::Error err = res.errorInfo();
   if (err) {

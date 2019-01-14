@@ -68,10 +68,10 @@ common::Error OnlineVerifyUser::startVerificationImpl(const std::string& login,
   if (err) {
     err = client.Close();
     DCHECK(!err) << "Close client error: " << err->GetDescription();
-    return common::make_error("Sorry can't get responce, for checking your credentials.");
+    return common::make_error("Sorry can't get response, for checking your credentials.");
   }
 
-  common::Error jerror = proxy::ParseSubscriptionStateResponce(subscribe_reply.as_string(), &user_info);
+  common::Error jerror = proxy::ParseSubscriptionStateResponse(subscribe_reply.as_string(), &user_info);
   if (jerror) {
     err = client.Close();
     DCHECK(!err) << "Close client error: " << err->GetDescription();

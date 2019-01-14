@@ -63,7 +63,7 @@
 #include <fastonosql/core/db/dynomite/server_info.h>
 #endif
 
-#include "proxy/events/events_info.h"  // for ServerInfoResponce, etc
+#include "proxy/events/events_info.h"  // for ServerInfoResponse, etc
 #include "proxy/server/iserver.h"      // for IServer
 
 #include <common/qt/gui/glass_widget.h>  // for GlassWidget
@@ -722,7 +722,7 @@ void InfoServerDialog::startServerInfo(const proxy::events_info::ServerInfoReque
   glass_widget_->start();
 }
 
-void InfoServerDialog::finishServerInfo(const proxy::events_info::ServerInfoResponce& res) {
+void InfoServerDialog::finishServerInfo(const proxy::events_info::ServerInfoResponse& res) {
   glass_widget_->stop();
   common::Error err = res.errorInfo();
   if (err) {

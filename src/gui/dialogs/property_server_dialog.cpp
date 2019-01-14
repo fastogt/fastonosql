@@ -73,7 +73,7 @@ void PropertyServerDialog::startLoadServerProperty(const proxy::events_info::Ser
   glass_widget_->start();
 }
 
-void PropertyServerDialog::finishLoadServerProperty(const proxy::events_info::ServerPropertyInfoResponce& res) {
+void PropertyServerDialog::finishLoadServerProperty(const proxy::events_info::ServerPropertyInfoResponse& res) {
   glass_widget_->stop();
   common::Error err = res.errorInfo();
   if (err) {
@@ -93,7 +93,7 @@ void PropertyServerDialog::startServerChangeProperty(const proxy::events_info::C
   UNUSED(req);
 }
 
-void PropertyServerDialog::finishServerChangeProperty(const proxy::events_info::ChangeServerPropertyInfoResponce& res) {
+void PropertyServerDialog::finishServerChangeProperty(const proxy::events_info::ChangeServerPropertyInfoResponse& res) {
   common::Error err = res.errorInfo();
   if (err) {
     return;

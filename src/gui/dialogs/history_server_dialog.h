@@ -50,9 +50,9 @@ class ServerHistoryDialog : public BaseDialog {
 
  private Q_SLOTS:
   void startLoadServerHistoryInfo(const proxy::events_info::ServerInfoHistoryRequest& req);
-  void finishLoadServerHistoryInfo(const proxy::events_info::ServerInfoHistoryResponce& res);
+  void finishLoadServerHistoryInfo(const proxy::events_info::ServerInfoHistoryResponse& res);
   void startClearServerHistory(const proxy::events_info::ClearServerHistoryRequest& req);
-  void finishClearServerHistory(const proxy::events_info::ClearServerHistoryResponce& res);
+  void finishClearServerHistory(const proxy::events_info::ClearServerHistoryResponse& res);
   void snapShotAdd(core::ServerInfoSnapShoot snapshot);
   void clearHistory();
 
@@ -81,7 +81,7 @@ class ServerHistoryDialog : public BaseDialog {
   common::qt::gui::GraphWidget* graph_widget_;
 
   common::qt::gui::GlassWidget* glass_widget_;
-  proxy::events_info::ServerInfoHistoryResponce::infos_container_type infos_;
+  proxy::events_info::ServerInfoHistoryResponse::infos_container_type infos_;
   const proxy::IServerSPtr server_;
 };
 

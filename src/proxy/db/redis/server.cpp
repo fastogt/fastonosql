@@ -79,8 +79,8 @@ void Server::UnLoadModule(core::ModuleInfo module) {
 }
 #endif
 
-void Server::HandleLoadServerInfoEvent(events::ServerInfoResponceEvent* ev) {
-  const events_info::ServerInfoResponce v = ev->value();
+void Server::HandleLoadServerInfoEvent(events::ServerInfoResponseEvent* ev) {
+  const events_info::ServerInfoResponse v = ev->value();
   common::Error err = v.errorInfo();
   if (err) {
     IServer::HandleLoadServerInfoEvent(ev);

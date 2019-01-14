@@ -151,7 +151,7 @@ common::ErrnoError ban_user(const fastonosql::proxy::UserInfo& user, const std::
     return err;
   }
 
-  common::Error jerror = fastonosql::proxy::ParseGenBanUserResponce(ban_reply);
+  common::Error jerror = fastonosql::proxy::ParseGenBanUserResponse(ban_reply);
   if (jerror) {
     common::ErrnoError close_err = client.Close();
     DCHECK(!close_err) << "Close client error: " << close_err->GetDescription();

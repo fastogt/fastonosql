@@ -66,7 +66,7 @@ common::Error GetVersion(uint32_t* version) {
   }
 
   uint32_t version_result;
-  common::Error parse_error = proxy::ParseVersionResponce(version_reply.as_string(), &version_result);
+  common::Error parse_error = proxy::ParseVersionResponse(version_reply.as_string(), &version_result);
   if (parse_error) {
     err = client.Close();
     DCHECK(!err) << "Close client error: " << err->GetDescription();

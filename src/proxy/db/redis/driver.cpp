@@ -311,7 +311,7 @@ common::Error Driver::GetCurrentDataBaseInfo(core::IDataBaseInfo** info) {
 void Driver::HandleBackupEvent(events::BackupRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
-  events::BackupResponceEvent::value_type res(ev->value());
+  events::BackupResponseEvent::value_type res(ev->value());
   NotifyProgress(sender, 25);
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(GEN_CMD_STRING(REDIS_BACKUP_COMMAND), core::C_INNER);
   common::Error err = Execute(cmd);
@@ -324,28 +324,28 @@ void Driver::HandleBackupEvent(events::BackupRequestEvent* ev) {
     }
   }
   NotifyProgress(sender, 75);
-  Reply(sender, new events::BackupResponceEvent(this, res));
+  Reply(sender, new events::BackupResponseEvent(this, res));
   NotifyProgress(sender, 100);
 }
 
 void Driver::HandleRestoreEvent(events::RestoreRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
-  events::RestoreResponceEvent::value_type res(ev->value());
+  events::RestoreResponseEvent::value_type res(ev->value());
   NotifyProgress(sender, 25);
   common::ErrnoError err = common::file_system::copy_file(res.path, EXPORT_DEFAULT_PATH);
   if (err) {
     res.setErrorInfo(common::make_error_from_errno(err));
   }
   NotifyProgress(sender, 75);
-  Reply(sender, new events::RestoreResponceEvent(this, res));
+  Reply(sender, new events::RestoreResponseEvent(this, res));
   NotifyProgress(sender, 100);
 }
 
 void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
-  events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
+  events::LoadDatabaseContentResponseEvent::value_type res(ev->value());
   core::command_buffer_t pattern_result;
   bool new_behavior = true;
   const auto serv = GetCurrentServerInfoIfConnected();
@@ -353,7 +353,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
     NotifyProgress(sender, 50);
     res.setErrorInfo(common::make_error("Not connected"));
     NotifyProgress(sender, 75);
-    Reply(sender, new events::LoadDatabaseContentResponceEvent(this, res));
+    Reply(sender, new events::LoadDatabaseContentResponseEvent(this, res));
     NotifyProgress(sender, 100);
     return;
   }
@@ -481,14 +481,14 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   }
 done:
   NotifyProgress(sender, 75);
-  Reply(sender, new events::LoadDatabaseContentResponceEvent(this, res));
+  Reply(sender, new events::LoadDatabaseContentResponseEvent(this, res));
   NotifyProgress(sender, 100);
 }
 
 void Driver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
-  events::DiscoveryInfoResponceEvent::value_type res(ev->value());
+  events::DiscoveryInfoResponseEvent::value_type res(ev->value());
   NotifyProgress(sender, 50);
 
   if (IsConnected()) {
@@ -515,14 +515,14 @@ void Driver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
   }
 
   NotifyProgress(sender, 75);
-  Reply(sender, new events::DiscoveryInfoResponceEvent(this, res));
+  Reply(sender, new events::DiscoveryInfoResponseEvent(this, res));
   NotifyProgress(sender, 100);
 }
 
 void Driver::HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
-  events::ServerPropertyInfoResponceEvent::value_type res(ev->value());
+  events::ServerPropertyInfoResponseEvent::value_type res(ev->value());
   core::FastoObjectCommandIPtr cmd =
       CreateCommandFast(GEN_CMD_STRING(REDIS_GET_PROPERTY_SERVER_COMMAND), core::C_INNER);
   NotifyProgress(sender, 50);
@@ -542,14 +542,14 @@ void Driver::HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEven
     }
   }
   NotifyProgress(sender, 75);
-  Reply(sender, new events::ServerPropertyInfoResponceEvent(this, res));
+  Reply(sender, new events::ServerPropertyInfoResponseEvent(this, res));
   NotifyProgress(sender, 100);
 }
 
 void Driver::HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
-  events::ChangeServerPropertyInfoResponceEvent::value_type res(ev->value());
+  events::ChangeServerPropertyInfoResponseEvent::value_type res(ev->value());
 
   NotifyProgress(sender, 50);
   core::command_buffer_writer_t wr;
@@ -563,14 +563,14 @@ void Driver::HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoReq
     res.is_change = true;
   }
   NotifyProgress(sender, 75);
-  Reply(sender, new events::ChangeServerPropertyInfoResponceEvent(this, res));
+  Reply(sender, new events::ChangeServerPropertyInfoResponseEvent(this, res));
   NotifyProgress(sender, 100);
 }
 
 void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
-  events::LoadServerChannelsResponceEvent::value_type res(ev->value());
+  events::LoadServerChannelsResponseEvent::value_type res(ev->value());
 
   NotifyProgress(sender, 50);
   core::command_buffer_writer_t wr;
@@ -648,14 +648,14 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
 
 done:
   NotifyProgress(sender, 75);
-  Reply(sender, new events::LoadServerChannelsResponceEvent(this, res));
+  Reply(sender, new events::LoadServerChannelsResponseEvent(this, res));
   NotifyProgress(sender, 100);
 }
 
 void Driver::HandleLoadServerClientsRequestEvent(events::LoadServerClientsRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
-  events::LoadServerClientsResponceEvent::value_type res(ev->value());
+  events::LoadServerClientsResponseEvent::value_type res(ev->value());
 
   NotifyProgress(sender, 50);
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(GEN_CMD_STRING(REDIS_CLIENT_LIST_COMMAND), core::C_INNER);
@@ -690,7 +690,7 @@ void Driver::HandleLoadServerClientsRequestEvent(events::LoadServerClientsReques
 
 done:
   NotifyProgress(sender, 75);
-  Reply(sender, new events::LoadServerClientsResponceEvent(this, res));
+  Reply(sender, new events::LoadServerClientsResponseEvent(this, res));
   NotifyProgress(sender, 100);
 }
 

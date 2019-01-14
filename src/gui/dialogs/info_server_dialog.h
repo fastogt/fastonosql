@@ -38,7 +38,7 @@ class IServerInfo;
 }
 namespace proxy {
 namespace events_info {
-class ServerInfoResponce;
+class ServerInfoResponse;
 struct ServerInfoRequest;
 }  // namespace events_info
 }  // namespace proxy
@@ -56,7 +56,7 @@ class InfoServerDialog : public BaseDialog {
 
  private Q_SLOTS:
   void startServerInfo(const proxy::events_info::ServerInfoRequest& req);
-  void finishServerInfo(const proxy::events_info::ServerInfoResponce& res);
+  void finishServerInfo(const proxy::events_info::ServerInfoResponse& res);
 
  protected:
   explicit InfoServerDialog(const QString& title, proxy::IServerSPtr server, QWidget* parent = Q_NULLPTR);

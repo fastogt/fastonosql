@@ -58,9 +58,9 @@ struct ConnectInfoRequest : public EventInfoBase {
   explicit ConnectInfoRequest(initiator_type sender, error_type er = error_type());
 };
 
-struct ConnectInfoResponce : ConnectInfoRequest {
+struct ConnectInfoResponse : ConnectInfoRequest {
   typedef ConnectInfoRequest base_class;
-  explicit ConnectInfoResponce(const base_class& request);
+  explicit ConnectInfoResponse(const base_class& request);
 };
 
 struct BackupInfoRequest : public EventInfoBase {
@@ -69,9 +69,9 @@ struct BackupInfoRequest : public EventInfoBase {
   std::string path;
 };
 
-struct BackupInfoResponce : BackupInfoRequest {
+struct BackupInfoResponse : BackupInfoRequest {
   typedef BackupInfoRequest base_class;
-  explicit BackupInfoResponce(const base_class& request);
+  explicit BackupInfoResponse(const base_class& request);
 };
 
 struct RestoreInfoRequest : public EventInfoBase {
@@ -80,9 +80,9 @@ struct RestoreInfoRequest : public EventInfoBase {
   std::string path;
 };
 
-struct RestoreInfoResponce : RestoreInfoRequest {
+struct RestoreInfoResponse : RestoreInfoRequest {
   typedef RestoreInfoRequest base_class;
-  explicit RestoreInfoResponce(const base_class& request);
+  explicit RestoreInfoResponse(const base_class& request);
 };
 
 struct DiscoveryInfoRequest : public EventInfoBase {
@@ -90,9 +90,9 @@ struct DiscoveryInfoRequest : public EventInfoBase {
   explicit DiscoveryInfoRequest(initiator_type sender, error_type er = error_type());
 };
 
-struct DiscoveryInfoResponce : DiscoveryInfoRequest {
+struct DiscoveryInfoResponse : DiscoveryInfoRequest {
   typedef DiscoveryInfoRequest base_class;
-  explicit DiscoveryInfoResponce(const base_class& request);
+  explicit DiscoveryInfoResponse(const base_class& request);
 
   core::IDataBaseInfoSPtr dbinfo;
   std::vector<const core::CommandInfo*> commands;
@@ -137,9 +137,9 @@ struct DisConnectInfoRequest : public EventInfoBase {
   explicit DisConnectInfoRequest(initiator_type sender, error_type er = error_type());
 };
 
-struct DisConnectInfoResponce : DisConnectInfoRequest {
+struct DisConnectInfoResponse : DisConnectInfoRequest {
   typedef DisConnectInfoRequest base_class;
-  explicit DisConnectInfoResponce(const base_class& request);
+  explicit DisConnectInfoResponse(const base_class& request);
 };
 
 struct ExecuteInfoRequest : public EventInfoBase {
@@ -161,9 +161,9 @@ struct ExecuteInfoRequest : public EventInfoBase {
   const core::CmdLoggingType logtype;
 };
 
-struct ExecuteInfoResponce : ExecuteInfoRequest {
+struct ExecuteInfoResponse : ExecuteInfoRequest {
   typedef ExecuteInfoRequest base_class;
-  explicit ExecuteInfoResponce(const base_class& request);
+  explicit ExecuteInfoResponse(const base_class& request);
 
   std::vector<core::FastoObjectCommandIPtr> executed_commands;
 };
@@ -173,10 +173,10 @@ struct LoadDatabasesInfoRequest : public EventInfoBase {
   explicit LoadDatabasesInfoRequest(initiator_type sender, error_type er = error_type());
 };
 
-struct LoadDatabasesInfoResponce : LoadDatabasesInfoRequest {
+struct LoadDatabasesInfoResponse : LoadDatabasesInfoRequest {
   typedef LoadDatabasesInfoRequest base_class;
   typedef std::vector<core::IDataBaseInfoSPtr> database_info_cont_type;
-  explicit LoadDatabasesInfoResponce(const base_class& request);
+  explicit LoadDatabasesInfoResponse(const base_class& request);
 
   database_info_cont_type databases;
 };
@@ -196,10 +196,10 @@ struct LoadDatabaseContentRequest : public EventInfoBase {
   const core::cursor_t cursor_in;
 };
 
-struct LoadDatabaseContentResponce : LoadDatabaseContentRequest {
+struct LoadDatabaseContentResponse : LoadDatabaseContentRequest {
   typedef LoadDatabaseContentRequest base_class;
   typedef std::vector<core::NDbKValue> keys_container_t;
-  explicit LoadDatabaseContentResponce(const base_class& request);
+  explicit LoadDatabaseContentResponse(const base_class& request);
 
   keys_container_t keys;
   core::cursor_t cursor_out;
@@ -213,10 +213,10 @@ struct LoadServerChannelsRequest : public EventInfoBase {
   const std::string pattern;
 };
 
-struct LoadServerChannelsResponce : LoadServerChannelsRequest {
+struct LoadServerChannelsResponse : LoadServerChannelsRequest {
   typedef LoadServerChannelsRequest base_class;
   typedef std::vector<proxy::NDbPSChannel> channels_container_t;
-  explicit LoadServerChannelsResponce(const base_class& request);
+  explicit LoadServerChannelsResponse(const base_class& request);
 
   channels_container_t channels;
 };
@@ -226,10 +226,10 @@ struct LoadServerClientsRequest : public EventInfoBase {
   explicit LoadServerClientsRequest(initiator_type sender, error_type er = error_type());
 };
 
-struct LoadServerClientsResponce : LoadServerClientsRequest {
+struct LoadServerClientsResponse : LoadServerClientsRequest {
   typedef LoadServerClientsRequest base_class;
   typedef std::vector<proxy::NDbClient> clients_container_t;
-  explicit LoadServerClientsResponce(const base_class& request);
+  explicit LoadServerClientsResponse(const base_class& request);
 
   clients_container_t clients;
 };
@@ -239,10 +239,10 @@ struct ServerInfoRequest : public EventInfoBase {
   explicit ServerInfoRequest(initiator_type sender, error_type er = error_type());
 };
 
-class ServerInfoResponce : public ServerInfoRequest {
+class ServerInfoResponse : public ServerInfoRequest {
  public:
   typedef ServerInfoRequest base_class;
-  explicit ServerInfoResponce(const base_class& request);
+  explicit ServerInfoResponse(const base_class& request);
 
   core::IServerInfoSPtr info() const;
   void setInfo(core::IServerInfoSPtr inf);
@@ -256,11 +256,11 @@ struct ServerInfoHistoryRequest : public EventInfoBase {
   explicit ServerInfoHistoryRequest(initiator_type sender, error_type er = error_type());
 };
 
-class ServerInfoHistoryResponce : public ServerInfoHistoryRequest {
+class ServerInfoHistoryResponse : public ServerInfoHistoryRequest {
  public:
   typedef ServerInfoHistoryRequest base_class;
   typedef std::vector<core::ServerInfoSnapShoot> infos_container_type;
-  explicit ServerInfoHistoryResponce(const base_class& request);
+  explicit ServerInfoHistoryResponse(const base_class& request);
 
   infos_container_type infos() const;
   void setInfos(const infos_container_type& inf);
@@ -274,9 +274,9 @@ struct ClearServerHistoryRequest : public EventInfoBase {
   explicit ClearServerHistoryRequest(initiator_type sender, error_type er = error_type());
 };
 
-struct ClearServerHistoryResponce : public ClearServerHistoryRequest {
+struct ClearServerHistoryResponse : public ClearServerHistoryRequest {
   typedef ClearServerHistoryRequest base_class;
-  explicit ClearServerHistoryResponce(const base_class& request);
+  explicit ClearServerHistoryResponse(const base_class& request);
 };
 
 struct ServerPropertyInfoRequest : public EventInfoBase {
@@ -284,9 +284,9 @@ struct ServerPropertyInfoRequest : public EventInfoBase {
   explicit ServerPropertyInfoRequest(initiator_type sender, error_type er = error_type());
 };
 
-struct ServerPropertyInfoResponce : ServerPropertyInfoRequest {
+struct ServerPropertyInfoResponse : ServerPropertyInfoRequest {
   typedef ServerPropertyInfoRequest base_class;
-  explicit ServerPropertyInfoResponce(const base_class& request);
+  explicit ServerPropertyInfoResponse(const base_class& request);
 
   core::ServerPropertiesInfo info;
 };
@@ -298,15 +298,15 @@ struct ChangeServerPropertyInfoRequest : public EventInfoBase {
   core::property_t new_item;
 };
 
-struct ChangeServerPropertyInfoResponce : ChangeServerPropertyInfoRequest {
+struct ChangeServerPropertyInfoResponse : ChangeServerPropertyInfoRequest {
   typedef ChangeServerPropertyInfoRequest base_class;
-  explicit ChangeServerPropertyInfoResponce(const base_class& request);
+  explicit ChangeServerPropertyInfoResponse(const base_class& request);
 
   bool is_change;
 };
 
-struct ProgressInfoResponce {
-  explicit ProgressInfoResponce(int pr);
+struct ProgressInfoResponse {
+  explicit ProgressInfoResponse(int pr);
 
   const int progress;
 };

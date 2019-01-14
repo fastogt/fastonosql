@@ -68,7 +68,7 @@ void ShellWidget::OnServerDisconnected() {
   updateModules(std::vector<core::ModuleInfo>());
 }
 
-void ShellWidget::OnFinishedLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponce& res) {
+void ShellWidget::OnFinishedLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponse& res) {
   base_class::OnFinishedLoadDiscoveryInfo(res);
 
   common::Error err = res.errorInfo();

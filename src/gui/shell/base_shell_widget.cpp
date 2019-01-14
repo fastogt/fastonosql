@@ -491,7 +491,7 @@ void BaseShellWidget::startConnect(const proxy::events_info::ConnectInfoRequest&
   syncConnectionActions();
 }
 
-void BaseShellWidget::finishConnect(const proxy::events_info::ConnectInfoResponce& res) {
+void BaseShellWidget::finishConnect(const proxy::events_info::ConnectInfoResponse& res) {
   UNUSED(res);
 
   serverConnect();
@@ -503,13 +503,13 @@ void BaseShellWidget::startDisconnect(const proxy::events_info::DisConnectInfoRe
   syncConnectionActions();
 }
 
-void BaseShellWidget::finishDisconnect(const proxy::events_info::DisConnectInfoResponce& res) {
+void BaseShellWidget::finishDisconnect(const proxy::events_info::DisConnectInfoResponse& res) {
   UNUSED(res);
 
   serverDisconnect();
 }
 
-void BaseShellWidget::progressChange(const proxy::events_info::ProgressInfoResponce& res) {
+void BaseShellWidget::progressChange(const proxy::events_info::ProgressInfoResponse& res) {
   work_progressbar_->setValue(res.progress);
 }
 
@@ -530,7 +530,7 @@ void BaseShellWidget::startLoadServerInfo(const proxy::events_info::ServerInfoRe
   OnStartedLoadServerInfo(req);
 }
 
-void BaseShellWidget::finishLoadServerInfo(const proxy::events_info::ServerInfoResponce& res) {
+void BaseShellWidget::finishLoadServerInfo(const proxy::events_info::ServerInfoResponse& res) {
   OnFinishedLoadServerInfo(res);
 }
 
@@ -538,7 +538,7 @@ void BaseShellWidget::startLoadDiscoveryInfo(const proxy::events_info::Discovery
   OnStartedLoadDiscoveryInfo(req);
 }
 
-void BaseShellWidget::finishLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponce& res) {
+void BaseShellWidget::finishLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponse& res) {
   OnFinishedLoadDiscoveryInfo(res);
 }
 
@@ -546,7 +546,7 @@ void BaseShellWidget::OnStartedLoadServerInfo(const proxy::events_info::ServerIn
   UNUSED(res);
 }
 
-void BaseShellWidget::OnFinishedLoadServerInfo(const proxy::events_info::ServerInfoResponce& res) {
+void BaseShellWidget::OnFinishedLoadServerInfo(const proxy::events_info::ServerInfoResponse& res) {
   common::Error err = res.errorInfo();
   if (err) {
     return;
@@ -559,7 +559,7 @@ void BaseShellWidget::OnStartedLoadDiscoveryInfo(const proxy::events_info::Disco
   UNUSED(res);
 }
 
-void BaseShellWidget::OnFinishedLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponce& res) {
+void BaseShellWidget::OnFinishedLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponse& res) {
   common::Error err = res.errorInfo();
   if (err) {
     return;
@@ -578,7 +578,7 @@ void BaseShellWidget::startExecute(const proxy::events_info::ExecuteInfoRequest&
   execute_action_->setEnabled(false);
   stop_action_->setEnabled(true);
 }
-void BaseShellWidget::finishExecute(const proxy::events_info::ExecuteInfoResponce& res) {
+void BaseShellWidget::finishExecute(const proxy::events_info::ExecuteInfoResponse& res) {
   UNUSED(res);
 
   repeat_count_->setEnabled(true);

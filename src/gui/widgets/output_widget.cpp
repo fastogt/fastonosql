@@ -194,7 +194,7 @@ void OutputWidget::startExecuteCommand(const proxy::events_info::ExecuteInfoRequ
   }
 }
 
-void OutputWidget::finishExecuteCommand(const proxy::events_info::ExecuteInfoResponce& res) {
+void OutputWidget::finishExecuteCommand(const proxy::events_info::ExecuteInfoResponse& res) {
   if (res.initiator() == key_editor_) {
     key_editor_->finishSaveKey();
   }

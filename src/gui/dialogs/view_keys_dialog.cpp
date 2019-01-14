@@ -140,13 +140,13 @@ void ViewKeysDialog::startLoadDatabaseContent(const proxy::events_info::LoadData
   keys_table_->clearItems();
 }
 
-void ViewKeysDialog::finishLoadDatabaseContent(const proxy::events_info::LoadDatabaseContentResponce& res) {
+void ViewKeysDialog::finishLoadDatabaseContent(const proxy::events_info::LoadDatabaseContentResponse& res) {
   common::Error err = res.errorInfo();
   if (err) {
     return;
   }
 
-  proxy::events_info::LoadDatabaseContentResponce::keys_container_t keys = res.keys;
+  proxy::events_info::LoadDatabaseContentResponse::keys_container_t keys = res.keys;
 
   size_t size = keys.size();
   for (size_t i = 0; i < size; ++i) {
@@ -183,7 +183,7 @@ void ViewKeysDialog::startExecute(const proxy::events_info::ExecuteInfoRequest& 
   UNUSED(req);
 }
 
-void ViewKeysDialog::finishExecute(const proxy::events_info::ExecuteInfoResponce& res) {
+void ViewKeysDialog::finishExecute(const proxy::events_info::ExecuteInfoResponse& res) {
   UNUSED(res);
 }
 

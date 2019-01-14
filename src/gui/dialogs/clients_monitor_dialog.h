@@ -30,9 +30,9 @@ namespace fastonosql {
 namespace proxy {
 namespace events_info {
 struct LoadServerClientsRequest;
-struct LoadServerClientsResponce;
+struct LoadServerClientsResponse;
 struct ExecuteInfoRequest;
-struct ExecuteInfoResponce;
+struct ExecuteInfoResponse;
 }  // namespace events_info
 }  // namespace proxy
 namespace gui {
@@ -50,10 +50,10 @@ class ClientsMonitorDialog : public BaseDialog {
 
  private Q_SLOTS:
   void startLoadServerClients(const proxy::events_info::LoadServerClientsRequest& req);
-  void finishLoadServerClients(const proxy::events_info::LoadServerClientsResponce& res);
+  void finishLoadServerClients(const proxy::events_info::LoadServerClientsResponse& res);
 
   void startExecuteCommand(const proxy::events_info::ExecuteInfoRequest& req);
-  void finishExecuteCommand(const proxy::events_info::ExecuteInfoResponce& res);
+  void finishExecuteCommand(const proxy::events_info::ExecuteInfoResponse& res);
 
   void showContextMenu(const QPoint& point);
   void updateClicked();

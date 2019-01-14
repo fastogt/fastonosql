@@ -86,20 +86,20 @@ const struct RegisterTypes {
 } reg_type;
 
 void NotifyProgressImpl(IDriver* sender, QObject* reciver, int value) {
-  IDriver::Reply(reciver, new events::ProgressResponceEvent(sender, events::ProgressResponceEvent::value_type(value)));
+  IDriver::Reply(reciver, new events::ProgressResponseEvent(sender, events::ProgressResponseEvent::value_type(value)));
 }
 
-template <typename event_request_type, typename event_responce_type>
+template <typename event_request_type, typename event_response_type>
 void ReplyNotImplementedYet(IDriver* sender, event_request_type* ev, const char* eventCommandText) {
   QObject* esender = ev->sender();
   NotifyProgressImpl(sender, esender, 0);
-  typename event_responce_type::value_type res(ev->value());
+  typename event_response_type::value_type res(ev->value());
 
   std::string patternResult =
       common::MemSPrintf("Sorry, but now " PROJECT_NAME_TITLE " not supported %s command.", eventCommandText);
   common::Error er = common::make_error(patternResult);
   res.setErrorInfo(er);
-  event_responce_type* resp = new event_responce_type(sender, res);
+  event_response_type* resp = new event_response_type(sender, res);
   IDriver::Reply(esender, resp);
   NotifyProgressImpl(sender, esender, 100);
 }
@@ -306,21 +306,21 @@ void IDriver::NotifyProgress(QObject* reciver, int value) {
 void IDriver::HandleConnectEvent(events::ConnectRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
-  events::ConnectResponceEvent::value_type res(ev->value());
+  events::ConnectResponseEvent::value_type res(ev->value());
   NotifyProgress(sender, 25);
   common::Error err = SyncConnect();
   if (err) {
     res.setErrorInfo(err);
   }
   NotifyProgress(sender, 75);
-  Reply(sender, new events::ConnectResponceEvent(this, res));
+  Reply(sender, new events::ConnectResponseEvent(this, res));
   NotifyProgress(sender, 100);
 }
 
 void IDriver::HandleDisconnectEvent(events::DisconnectRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
-  events::DisconnectResponceEvent::value_type res(ev->value());
+  events::DisconnectResponseEvent::value_type res(ev->value());
   NotifyProgress(sender, 50);
 
   common::Error err = SyncDisconnect();
@@ -328,21 +328,21 @@ void IDriver::HandleDisconnectEvent(events::DisconnectRequestEvent* ev) {
     res.setErrorInfo(err);
   }
 
-  Reply(sender, new events::DisconnectResponceEvent(this, res));
+  Reply(sender, new events::DisconnectResponseEvent(this, res));
   NotifyProgress(sender, 100);
 }
 
 void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
-  events::ExecuteResponceEvent::value_type res(ev->value());
+  events::ExecuteResponseEvent::value_type res(ev->value());
 
   const core::command_buffer_t input_line = res.text;
   std::vector<core::command_buffer_t> commands;
   common::Error err = ParseCommands(input_line, &commands);
   if (err) {
     res.setErrorInfo(err);
-    Reply(sender, new events::ExecuteResponceEvent(this, res));
+    Reply(sender, new events::ExecuteResponseEvent(this, res));
     NotifyProgress(sender, 100);
     return;
   }
@@ -388,7 +388,7 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
   }
 
 done:
-  Reply(sender, new events::ExecuteResponceEvent(this, res));
+  Reply(sender, new events::ExecuteResponseEvent(this, res));
   NotifyProgress(sender, 100);
   delete lock;
 }
@@ -396,7 +396,7 @@ done:
 void IDriver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
-  events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
+  events::LoadDatabaseContentResponseEvent::value_type res(ev->value());
   const core::command_buffer_t pattern_result = core::GetKeysPattern(res.cursor_in, res.pattern, res.keys_count);
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(pattern_result, core::C_INNER);
   NotifyProgress(sender, 50);
@@ -446,42 +446,42 @@ void IDriver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestE
   }
 done:
   NotifyProgress(sender, 75);
-  Reply(sender, new events::LoadDatabaseContentResponceEvent(this, res));
+  Reply(sender, new events::LoadDatabaseContentResponseEvent(this, res));
   NotifyProgress(sender, 100);
 }
 
 void IDriver::HandleLoadServerPropertyEvent(events::ServerPropertyInfoRequestEvent* ev) {
-  ReplyNotImplementedYet<events::ServerPropertyInfoRequestEvent, events::ServerPropertyInfoResponceEvent>(
+  ReplyNotImplementedYet<events::ServerPropertyInfoRequestEvent, events::ServerPropertyInfoResponseEvent>(
       this, ev, "server property");
 }
 
 void IDriver::HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoRequestEvent* ev) {
-  ReplyNotImplementedYet<events::ChangeServerPropertyInfoRequestEvent, events::ChangeServerPropertyInfoResponceEvent>(
+  ReplyNotImplementedYet<events::ChangeServerPropertyInfoRequestEvent, events::ChangeServerPropertyInfoResponseEvent>(
       this, ev, "change server property");
 }
 
 void IDriver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequestEvent* ev) {
-  ReplyNotImplementedYet<events::LoadServerChannelsRequestEvent, events::LoadServerChannelsResponceEvent>(
+  ReplyNotImplementedYet<events::LoadServerChannelsRequestEvent, events::LoadServerChannelsResponseEvent>(
       this, ev, "load server channels");
 }
 
 void IDriver::HandleLoadServerClientsRequestEvent(events::LoadServerClientsRequestEvent* ev) {
-  ReplyNotImplementedYet<events::LoadServerClientsRequestEvent, events::LoadServerClientsResponceEvent>(
+  ReplyNotImplementedYet<events::LoadServerClientsRequestEvent, events::LoadServerClientsResponseEvent>(
       this, ev, "load server clients");
 }
 
 void IDriver::HandleBackupEvent(events::BackupRequestEvent* ev) {
-  ReplyNotImplementedYet<events::BackupRequestEvent, events::BackupResponceEvent>(this, ev, "backup server");
+  ReplyNotImplementedYet<events::BackupRequestEvent, events::BackupResponseEvent>(this, ev, "backup server");
 }
 
 void IDriver::HandleRestoreEvent(events::RestoreRequestEvent* ev) {
-  ReplyNotImplementedYet<events::RestoreRequestEvent, events::RestoreResponceEvent>(this, ev, "export server");
+  ReplyNotImplementedYet<events::RestoreRequestEvent, events::RestoreResponseEvent>(this, ev, "export server");
 }
 
 void IDriver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent* ev) {
   /*QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
-  events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
+  events::LoadDatabasesInfoResponseEvent::value_type res(ev->value());
   NotifyProgress(sender, 50);
   core::IDataBaseInfo* info = nullptr;
   common::Error err = GetCurrentDataBaseInfo(&info);
@@ -490,12 +490,12 @@ void IDriver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent
   } else {
     res.databases.push_back(core::IDataBaseInfoSPtr(info));
   }
-  Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
+  Reply(sender, new events::LoadDatabasesInfoResponseEvent(this, res));
   NotifyProgress(sender, 100);*/
 
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
-  events::LoadDatabasesInfoResponceEvent::value_type res(ev->value());
+  events::LoadDatabasesInfoResponseEvent::value_type res(ev->value());
   NotifyProgress(sender, 50);
 
   core::IDataBaseInfo* info = nullptr;
@@ -503,7 +503,7 @@ void IDriver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent
   if (err) {
     res.setErrorInfo(err);
     NotifyProgress(sender, 75);
-    Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
+    Reply(sender, new events::LoadDatabasesInfoResponseEvent(this, res));
     NotifyProgress(sender, 100);
     return;
   }
@@ -515,7 +515,7 @@ void IDriver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent
   if (err) {
     res.setErrorInfo(err);
     NotifyProgress(sender, 75);
-    Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
+    Reply(sender, new events::LoadDatabasesInfoResponseEvent(this, res));
     NotifyProgress(sender, 100);
     return;
   }
@@ -524,7 +524,7 @@ void IDriver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent
   if (err) {
     res.setErrorInfo(err);
     NotifyProgress(sender, 75);
-    Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
+    Reply(sender, new events::LoadDatabasesInfoResponseEvent(this, res));
     NotifyProgress(sender, 100);
     return;
   }
@@ -551,14 +551,14 @@ void IDriver::HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoRequestEvent
     res.databases.push_back(curdb);
   }
   NotifyProgress(sender, 75);
-  Reply(sender, new events::LoadDatabasesInfoResponceEvent(this, res));
+  Reply(sender, new events::LoadDatabasesInfoResponseEvent(this, res));
   NotifyProgress(sender, 100);
 }
 
 void IDriver::HandleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
-  events::ServerInfoResponceEvent::value_type res(ev->value());
+  events::ServerInfoResponseEvent::value_type res(ev->value());
   NotifyProgress(sender, 50);
   core::IServerInfo* info = nullptr;
   common::Error err = GetCurrentServerInfo(&info);
@@ -571,13 +571,13 @@ void IDriver::HandleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
     server_info_ = mem;
   }
   NotifyProgress(sender, 75);
-  Reply(sender, new events::ServerInfoResponceEvent(this, res));
+  Reply(sender, new events::ServerInfoResponseEvent(this, res));
   NotifyProgress(sender, 100);
 }
 
 void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestEvent* ev) {
   QObject* sender = ev->sender();
-  events::ServerInfoHistoryResponceEvent::value_type res(ev->value());
+  events::ServerInfoHistoryResponseEvent::value_type res(ev->value());
 
   std::string path = settings_->GetLoggingPath();
   common::file_system::ANSIFile read_file;
@@ -585,7 +585,7 @@ void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
   if (err) {
     res.setErrorInfo(common::make_error_from_errno(err));
   } else {
-    events::ServerInfoHistoryResponceEvent::value_type::infos_container_type tmp_infos;
+    events::ServerInfoHistoryResponseEvent::value_type::infos_container_type tmp_infos;
 
     common::time64_t cur_stamp = 0;
     common::buffer_t data_info;
@@ -618,12 +618,12 @@ void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
     read_file.Close();
   }
 
-  Reply(sender, new events::ServerInfoHistoryResponceEvent(this, res));
+  Reply(sender, new events::ServerInfoHistoryResponseEvent(this, res));
 }
 
 void IDriver::HandleClearServerHistoryEvent(events::ClearServerHistoryRequestEvent* ev) {
   QObject* sender = ev->sender();
-  events::ClearServerHistoryResponceEvent::value_type res(ev->value());
+  events::ClearServerHistoryResponseEvent::value_type res(ev->value());
 
   bool ret = false;
 
@@ -648,13 +648,13 @@ void IDriver::HandleClearServerHistoryEvent(events::ClearServerHistoryRequestEve
     res.setErrorInfo(common::make_error("Clear file error!"));
   }
 
-  Reply(sender, new events::ClearServerHistoryResponceEvent(this, res));
+  Reply(sender, new events::ClearServerHistoryResponseEvent(this, res));
 }
 
 void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
-  events::DiscoveryInfoResponceEvent::value_type res(ev->value());
+  events::DiscoveryInfoResponseEvent::value_type res(ev->value());
   NotifyProgress(sender, 50);
 
   if (IsConnected()) {
@@ -676,7 +676,7 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
   }
 
   NotifyProgress(sender, 75);
-  Reply(sender, new events::DiscoveryInfoResponceEvent(this, res));
+  Reply(sender, new events::DiscoveryInfoResponseEvent(this, res));
   NotifyProgress(sender, 100);
 }
 

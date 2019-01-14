@@ -43,7 +43,7 @@ namespace proxy {
 namespace events_info {
 class EventInfoBase;
 struct ExecuteInfoRequest;
-struct ExecuteInfoResponce;
+struct ExecuteInfoResponse;
 struct CommandRootCompleatedInfo;
 struct CommandRootCreatedInfo;
 }  // namespace events_info
@@ -68,7 +68,7 @@ class OutputWidget : public BaseWidget {
   void createKeyFromEditor(const core::NDbKValue& dbv);
 
   void startExecuteCommand(const proxy::events_info::ExecuteInfoRequest& req);
-  void finishExecuteCommand(const proxy::events_info::ExecuteInfoResponce& res);
+  void finishExecuteCommand(const proxy::events_info::ExecuteInfoResponse& res);
 
   void rootCreate(const proxy::events_info::CommandRootCreatedInfo& res);
   void rootCompleate(const proxy::events_info::CommandRootCompleatedInfo& res);

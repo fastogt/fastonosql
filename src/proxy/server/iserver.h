@@ -24,7 +24,7 @@
 #include <fastonosql/core/db_traits.h>
 #include <fastonosql/core/icommand_translator.h>  // for translator_t
 
-#include "proxy/events/events.h"        // for BackupResponceEvent, etc
+#include "proxy/events/events.h"        // for BackupResponseEvent, etc
 #include "proxy/proxy_fwd.h"            // for IDatabaseSPtr
 #include "proxy/server/iserver_base.h"  // for IServerBase
 #include "proxy/types.h"
@@ -67,45 +67,45 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
 
  Q_SIGNALS:  // only direct connections
   void ConnectStarted(const events_info::ConnectInfoRequest& req);
-  void ConnectFinished(const events_info::ConnectInfoResponce& res);
+  void ConnectFinished(const events_info::ConnectInfoResponse& res);
 
   void DisconnectStarted(const events_info::DisConnectInfoRequest& req);
-  void DisconnectFinished(const events_info::DisConnectInfoResponce& res);
+  void DisconnectFinished(const events_info::DisConnectInfoResponse& res);
 
   void BackupStarted(const events_info::BackupInfoRequest& req);
-  void BackupFinished(const events_info::BackupInfoResponce& res);
+  void BackupFinished(const events_info::BackupInfoResponse& res);
 
   void ExportStarted(const events_info::RestoreInfoRequest& req);
-  void ExportFinished(const events_info::RestoreInfoResponce& res);
+  void ExportFinished(const events_info::RestoreInfoResponse& res);
 
   void ExecuteStarted(const events_info::ExecuteInfoRequest& req);
-  void ExecuteFinished(const events_info::ExecuteInfoResponce& res);
+  void ExecuteFinished(const events_info::ExecuteInfoResponse& res);
 
   void LoadDatabasesStarted(const events_info::LoadDatabasesInfoRequest& req);
-  void LoadDatabasesFinished(const events_info::LoadDatabasesInfoResponce& res);
+  void LoadDatabasesFinished(const events_info::LoadDatabasesInfoResponse& res);
 
   void LoadServerInfoStarted(const events_info::ServerInfoRequest& req);
-  void LoadServerInfoFinished(const events_info::ServerInfoResponce& res);
+  void LoadServerInfoFinished(const events_info::ServerInfoResponse& res);
 
   void LoadServerHistoryInfoStarted(const events_info::ServerInfoHistoryRequest& req);
-  void LoadServerHistoryInfoFinished(const events_info::ServerInfoHistoryResponce& res);
+  void LoadServerHistoryInfoFinished(const events_info::ServerInfoHistoryResponse& res);
 
   void ClearServerHistoryStarted(const events_info::ClearServerHistoryRequest& req);
-  void ClearServerHistoryFinished(const events_info::ClearServerHistoryResponce& req);
+  void ClearServerHistoryFinished(const events_info::ClearServerHistoryResponse& req);
 
   void LoadServerPropertyStarted(const events_info::ServerPropertyInfoRequest& req);
-  void LoadServerPropertyFinished(const events_info::ServerPropertyInfoResponce& res);
+  void LoadServerPropertyFinished(const events_info::ServerPropertyInfoResponse& res);
 
   void ChangeServerPropertyStarted(const events_info::ChangeServerPropertyInfoRequest& req);
-  void ChangeServerPropertyFinished(const events_info::ChangeServerPropertyInfoResponce& res);
+  void ChangeServerPropertyFinished(const events_info::ChangeServerPropertyInfoResponse& res);
 
   void LoadServerChannelsStarted(const events_info::LoadServerChannelsRequest& req);
-  void LoadServerChannelsFinished(const events_info::LoadServerChannelsResponce& res);
+  void LoadServerChannelsFinished(const events_info::LoadServerChannelsResponse& res);
 
   void LoadServerClientsStarted(const events_info::LoadServerClientsRequest& req);
-  void LoadServerClientsFinished(const events_info::LoadServerClientsResponce& res);
+  void LoadServerClientsFinished(const events_info::LoadServerClientsResponse& res);
 
-  void ProgressChanged(const events_info::ProgressInfoResponce& res);
+  void ProgressChanged(const events_info::ProgressInfoResponse& res);
 
   void ModeEntered(const events_info::EnterModeInfo& res);
   void ModeLeaved(const events_info::LeaveModeInfo& res);
@@ -114,10 +114,10 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void RootCompleated(const events_info::CommandRootCompleatedInfo& res);
 
   void LoadDataBaseContentStarted(const events_info::LoadDatabaseContentRequest& req);
-  void LoadDatabaseContentFinished(const events_info::LoadDatabaseContentResponce& res);
+  void LoadDatabaseContentFinished(const events_info::LoadDatabaseContentResponse& res);
 
   void LoadDiscoveryInfoStarted(const events_info::DiscoveryInfoRequest& res);
-  void LoadDiscoveryInfoFinished(const events_info::DiscoveryInfoResponce& res);
+  void LoadDiscoveryInfoFinished(const events_info::DiscoveryInfoResponse& res);
 
   void RedirectRequested(const common::net::HostAndPortAndSlot& host, const events_info::ExecuteInfoRequest& req);
  Q_SIGNALS:
@@ -182,23 +182,23 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void NotifyStartEvent(QEvent* ev);
 
   // handle server events
-  virtual void HandleConnectEvent(events::ConnectResponceEvent* ev);
-  virtual void HandleDisconnectEvent(events::DisconnectResponceEvent* ev);
-  virtual void HandleLoadServerInfoEvent(events::ServerInfoResponceEvent* ev);
-  virtual void HandleLoadServerPropertyEvent(events::ServerPropertyInfoResponceEvent* ev);
-  virtual void HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoResponceEvent* ev);
-  virtual void HandleLoadServerChannelsEvent(events::LoadServerChannelsResponceEvent* ev);
-  virtual void HandleLoadServerClientsEvent(events::LoadServerClientsResponceEvent* ev);
-  virtual void HandleBackupEvent(events::BackupResponceEvent* ev);
-  virtual void HandleRestoreEvent(events::RestoreResponceEvent* ev);
-  virtual void HandleExecuteEvent(events::ExecuteResponceEvent* ev);
+  virtual void HandleConnectEvent(events::ConnectResponseEvent* ev);
+  virtual void HandleDisconnectEvent(events::DisconnectResponseEvent* ev);
+  virtual void HandleLoadServerInfoEvent(events::ServerInfoResponseEvent* ev);
+  virtual void HandleLoadServerPropertyEvent(events::ServerPropertyInfoResponseEvent* ev);
+  virtual void HandleServerPropertyChangeEvent(events::ChangeServerPropertyInfoResponseEvent* ev);
+  virtual void HandleLoadServerChannelsEvent(events::LoadServerChannelsResponseEvent* ev);
+  virtual void HandleLoadServerClientsEvent(events::LoadServerClientsResponseEvent* ev);
+  virtual void HandleBackupEvent(events::BackupResponseEvent* ev);
+  virtual void HandleRestoreEvent(events::RestoreResponseEvent* ev);
+  virtual void HandleExecuteEvent(events::ExecuteResponseEvent* ev);
 
   // handle database events
-  virtual void HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoResponceEvent* ev);
-  virtual void HandleLoadDatabaseContentEvent(events::LoadDatabaseContentResponceEvent* ev);
+  virtual void HandleLoadDatabaseInfosEvent(events::LoadDatabasesInfoResponseEvent* ev);
+  virtual void HandleLoadDatabaseContentEvent(events::LoadDatabaseContentResponseEvent* ev);
 
   // handle command events
-  virtual void HandleDiscoveryInfoResponceEvent(events::DiscoveryInfoResponceEvent* ev);
+  virtual void HandleDiscoveryInfoResponseEvent(events::DiscoveryInfoResponseEvent* ev);
 
   IDriver* const drv_;
   databases_t databases_;
@@ -223,8 +223,8 @@ class IServer : public IServerBase, public std::enable_shared_from_this<IServer>
   void HandleLeaveModeEvent(events::LeaveModeEvent* ev);
 
   // handle info events
-  void HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryResponceEvent* ev);
-  void HandleClearServerHistoryResponceEvent(events::ClearServerHistoryResponceEvent* ev);
+  void HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryResponseEvent* ev);
+  void HandleClearServerHistoryResponseEvent(events::ClearServerHistoryResponseEvent* ev);
 
   void ProcessDiscoveryInfo(const events_info::DiscoveryInfoRequest& req);
 

@@ -106,13 +106,13 @@ void PubSubDialog::startLoadServerChannels(const proxy::events_info::LoadServerC
   channels_model_->clear();
 }
 
-void PubSubDialog::finishLoadServerChannels(const proxy::events_info::LoadServerChannelsResponce& res) {
+void PubSubDialog::finishLoadServerChannels(const proxy::events_info::LoadServerChannelsResponse& res) {
   common::Error err = res.errorInfo();
   if (err) {
     return;
   }
 
-  proxy::events_info::LoadServerChannelsResponce::channels_container_t channels = res.channels;
+  proxy::events_info::LoadServerChannelsResponse::channels_container_t channels = res.channels;
   for (auto channel : channels) {
     channels_model_->insertItem(new ChannelTableItem(channel));
   }

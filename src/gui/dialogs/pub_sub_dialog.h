@@ -30,7 +30,7 @@ namespace fastonosql {
 namespace proxy {
 namespace events_info {
 struct LoadServerChannelsRequest;
-struct LoadServerChannelsResponce;
+struct LoadServerChannelsResponse;
 }  // namespace events_info
 }  // namespace proxy
 namespace gui {
@@ -51,7 +51,7 @@ class PubSubDialog : public BaseDialog {
 
  private Q_SLOTS:
   void startLoadServerChannels(const proxy::events_info::LoadServerChannelsRequest& req);
-  void finishLoadServerChannels(const proxy::events_info::LoadServerChannelsResponce& res);
+  void finishLoadServerChannels(const proxy::events_info::LoadServerChannelsResponse& res);
 
   void searchLineChanged(const QString& text);
   void searchClicked();

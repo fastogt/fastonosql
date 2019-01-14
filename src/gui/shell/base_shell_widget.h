@@ -53,18 +53,18 @@ struct CommandInfo;
 namespace proxy {
 namespace events_info {
 struct ConnectInfoRequest;
-struct ConnectInfoResponce;
+struct ConnectInfoResponse;
 struct DisConnectInfoRequest;
-struct DisConnectInfoResponce;
+struct DisConnectInfoResponse;
 struct DiscoveryInfoRequest;
-struct DiscoveryInfoResponce;
+struct DiscoveryInfoResponse;
 struct ExecuteInfoRequest;
-struct ExecuteInfoResponce;
+struct ExecuteInfoResponse;
 struct EnterModeInfo;
 struct LeaveModeInfo;
-struct ProgressInfoResponce;
+struct ProgressInfoResponse;
 struct ServerInfoRequest;
-class ServerInfoResponce;
+class ServerInfoResponse;
 }  // namespace events_info
 }  // namespace proxy
 namespace gui {
@@ -111,23 +111,23 @@ class BaseShellWidget : public BaseWidget {
   void changeVersionApi(int index);
 
   void startConnect(const proxy::events_info::ConnectInfoRequest& req);
-  void finishConnect(const proxy::events_info::ConnectInfoResponce& res);
+  void finishConnect(const proxy::events_info::ConnectInfoResponse& res);
   void startDisconnect(const proxy::events_info::DisConnectInfoRequest& req);
-  void finishDisconnect(const proxy::events_info::DisConnectInfoResponce& res);
+  void finishDisconnect(const proxy::events_info::DisConnectInfoResponse& res);
 
-  void progressChange(const proxy::events_info::ProgressInfoResponce& res);
+  void progressChange(const proxy::events_info::ProgressInfoResponse& res);
 
   void enterMode(const proxy::events_info::EnterModeInfo& res);
   void leaveMode(const proxy::events_info::LeaveModeInfo& res);
 
   void startLoadServerInfo(const proxy::events_info::ServerInfoRequest& req);
-  void finishLoadServerInfo(const proxy::events_info::ServerInfoResponce& res);
+  void finishLoadServerInfo(const proxy::events_info::ServerInfoResponse& res);
 
   void startLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoRequest& req);
-  void finishLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponce& res);
+  void finishLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponse& res);
 
   void startExecute(const proxy::events_info::ExecuteInfoRequest& req);
-  void finishExecute(const proxy::events_info::ExecuteInfoResponce& res);
+  void finishExecute(const proxy::events_info::ExecuteInfoResponse& res);
 
   void serverConnect();
   void serverDisconnect();
@@ -146,10 +146,10 @@ class BaseShellWidget : public BaseWidget {
   virtual void OnServerDisconnected();
 
   virtual void OnStartedLoadServerInfo(const proxy::events_info::ServerInfoRequest& res);
-  virtual void OnFinishedLoadServerInfo(const proxy::events_info::ServerInfoResponce& res);
+  virtual void OnFinishedLoadServerInfo(const proxy::events_info::ServerInfoResponse& res);
 
   virtual void OnStartedLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoRequest& res);
-  virtual void OnFinishedLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponce& res);
+  virtual void OnFinishedLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoResponse& res);
 
  private:
   QHBoxLayout* createActionBar();

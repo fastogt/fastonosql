@@ -39,8 +39,8 @@ namespace proxy {
 namespace events_info {
 struct ChangeServerPropertyInfoRequest;
 struct ServerPropertyInfoRequest;
-struct ServerPropertyInfoResponce;
-struct ChangeServerPropertyInfoResponce;
+struct ServerPropertyInfoResponse;
+struct ChangeServerPropertyInfoResponse;
 }  // namespace events_info
 }  // namespace proxy
 namespace gui {
@@ -57,10 +57,10 @@ class PropertyServerDialog : public BaseDialog {
 
  private Q_SLOTS:
   void startLoadServerProperty(const proxy::events_info::ServerPropertyInfoRequest& req);
-  void finishLoadServerProperty(const proxy::events_info::ServerPropertyInfoResponce& res);
+  void finishLoadServerProperty(const proxy::events_info::ServerPropertyInfoResponse& res);
 
   void startServerChangeProperty(const proxy::events_info::ChangeServerPropertyInfoRequest& req);
-  void finishServerChangeProperty(const proxy::events_info::ChangeServerPropertyInfoResponce& res);
+  void finishServerChangeProperty(const proxy::events_info::ChangeServerPropertyInfoResponse& res);
 
   void changeProperty(const core::property_t& prop);
 

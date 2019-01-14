@@ -1086,7 +1086,7 @@ void ExplorerTreeView::startLoadDatabases(const proxy::events_info::LoadDatabase
   UNUSED(req);
 }
 
-void ExplorerTreeView::finishLoadDatabases(const proxy::events_info::LoadDatabasesInfoResponce& res) {
+void ExplorerTreeView::finishLoadDatabases(const proxy::events_info::LoadDatabasesInfoResponse& res) {
   common::Error err = res.errorInfo();
   if (err) {
     return;
@@ -1095,7 +1095,7 @@ void ExplorerTreeView::finishLoadDatabases(const proxy::events_info::LoadDatabas
   proxy::IServer* serv = qobject_cast<proxy::IServer*>(sender());
   CHECK(serv);
 
-  proxy::events_info::LoadDatabasesInfoResponce::database_info_cont_type dbs = res.databases;
+  proxy::events_info::LoadDatabasesInfoResponse::database_info_cont_type dbs = res.databases;
   for (size_t i = 0; i < dbs.size(); ++i) {
     core::IDataBaseInfoSPtr db = dbs[i];
     source_model_->addDatabase(serv, db);
@@ -1106,7 +1106,7 @@ void ExplorerTreeView::startLoadDatabaseContent(const proxy::events_info::LoadDa
   UNUSED(req);
 }
 
-void ExplorerTreeView::finishLoadDatabaseContent(const proxy::events_info::LoadDatabaseContentResponce& res) {
+void ExplorerTreeView::finishLoadDatabaseContent(const proxy::events_info::LoadDatabaseContentResponse& res) {
   common::Error err = res.errorInfo();
   if (err) {
     return;
@@ -1115,7 +1115,7 @@ void ExplorerTreeView::finishLoadDatabaseContent(const proxy::events_info::LoadD
   proxy::IServer* serv = qobject_cast<proxy::IServer*>(sender());
   CHECK(serv);
 
-  proxy::events_info::LoadDatabaseContentResponce::keys_container_t keys = res.keys;
+  proxy::events_info::LoadDatabaseContentResponse::keys_container_t keys = res.keys;
   const std::string ns = serv->GetNsSeparator();
   proxy::NsDisplayStrategy ns_strategy = serv->GetNsDisplayStrategy();
   for (size_t i = 0; i < keys.size(); ++i) {
@@ -1130,7 +1130,7 @@ void ExplorerTreeView::startExecuteCommand(const proxy::events_info::ExecuteInfo
   UNUSED(req);
 }
 
-void ExplorerTreeView::finishExecuteCommand(const proxy::events_info::ExecuteInfoResponce& res) {
+void ExplorerTreeView::finishExecuteCommand(const proxy::events_info::ExecuteInfoResponse& res) {
   UNUSED(res);
 }
 

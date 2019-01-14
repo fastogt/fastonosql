@@ -48,7 +48,7 @@ class Server : public IServerRemote {
   void UnLoadModule(core::ModuleInfo module);
 #endif
  protected:
-  void HandleLoadServerInfoEvent(events::ServerInfoResponceEvent* ev) override;
+  void HandleLoadServerInfoEvent(events::ServerInfoResponseEvent* ev) override;
 
  private:
   IDatabaseSPtr CreateDatabase(core::IDataBaseInfoSPtr info) override;

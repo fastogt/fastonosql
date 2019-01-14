@@ -58,11 +58,11 @@ void MainTabBar::showContextMenu(const QPoint& point) {
   QAction* duplicate_shell_action = new QAction(translations::trDuplicate, this);
   VERIFY(connect(duplicate_shell_action, &QAction::triggered, this, &MainTabBar::duplicatedTab));
 
-  QAction* close_shell_action = new QAction(translations::trCloseTab, this);
+  QAction* close_shell_action = new QAction(translations::trClose, this);
   close_shell_action->setShortcut(g_close_key);
   VERIFY(connect(close_shell_action, &QAction::triggered, this, &MainTabBar::closedTab));
 
-  QAction* close_other_shells_action = new QAction(translations::trCloseOtherTabs, this);
+  QAction* close_other_shells_action = new QAction(translations::trCloseOthers, this);
   VERIFY(connect(close_other_shells_action, &QAction::triggered, this, &MainTabBar::closedOtherTabs));
 
   menu.addAction(new_shell_action);

@@ -105,13 +105,13 @@ class ExplorerTreeView : public QTreeView {
   void removeTTL();
 
   void startLoadDatabases(const proxy::events_info::LoadDatabasesInfoRequest& req);
-  void finishLoadDatabases(const proxy::events_info::LoadDatabasesInfoResponce& res);
+  void finishLoadDatabases(const proxy::events_info::LoadDatabasesInfoResponse& res);
 
   void startLoadDatabaseContent(const proxy::events_info::LoadDatabaseContentRequest& req);
-  void finishLoadDatabaseContent(const proxy::events_info::LoadDatabaseContentResponce& res);
+  void finishLoadDatabaseContent(const proxy::events_info::LoadDatabaseContentResponse& res);
 
   void startExecuteCommand(const proxy::events_info::ExecuteInfoRequest& req);
-  void finishExecuteCommand(const proxy::events_info::ExecuteInfoResponce& res);
+  void finishExecuteCommand(const proxy::events_info::ExecuteInfoResponse& res);
 
   void createDatabase(core::IDataBaseInfoSPtr db);
   void removeDatabase(core::IDataBaseInfoSPtr db);

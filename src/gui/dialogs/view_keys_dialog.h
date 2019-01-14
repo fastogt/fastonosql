@@ -35,9 +35,9 @@ namespace fastonosql {
 namespace proxy {
 namespace events_info {
 struct ExecuteInfoRequest;
-struct ExecuteInfoResponce;
+struct ExecuteInfoResponse;
 struct LoadDatabaseContentRequest;
-struct LoadDatabaseContentResponce;
+struct LoadDatabaseContentResponse;
 }  // namespace events_info
 }  // namespace proxy
 namespace gui {
@@ -63,10 +63,10 @@ class ViewKeysDialog : public BaseDialog {
 
  private Q_SLOTS:
   void startLoadDatabaseContent(const proxy::events_info::LoadDatabaseContentRequest& req);
-  void finishLoadDatabaseContent(const proxy::events_info::LoadDatabaseContentResponce& res);
+  void finishLoadDatabaseContent(const proxy::events_info::LoadDatabaseContentResponse& res);
 
   void startExecute(const proxy::events_info::ExecuteInfoRequest& req);
-  void finishExecute(const proxy::events_info::ExecuteInfoResponce& res);
+  void finishExecute(const proxy::events_info::ExecuteInfoResponse& res);
   void keyTTLChange(core::IDataBaseInfoSPtr db, core::NKey key, core::ttl_t ttl);
 
   void changeTTL(const core::NDbKValue& value, core::ttl_t ttl);

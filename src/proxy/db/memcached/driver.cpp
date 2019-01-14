@@ -135,7 +135,7 @@ common::Error Driver::GetCurrentDataBaseInfo(core::IDataBaseInfo** info) {
 void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEvent* ev) {
   QObject* sender = ev->sender();
   NotifyProgress(sender, 0);
-  events::LoadDatabaseContentResponceEvent::value_type res(ev->value());
+  events::LoadDatabaseContentResponseEvent::value_type res(ev->value());
   const core::command_buffer_t pattern_result = core::GetKeysPattern(res.cursor_in, res.pattern, res.keys_count);
   core::FastoObjectCommandIPtr cmd = CreateCommandFast(pattern_result, core::C_INNER);
   NotifyProgress(sender, 50);
@@ -196,7 +196,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
   }
 done:
   NotifyProgress(sender, 75);
-  Reply(sender, new events::LoadDatabaseContentResponceEvent(this, res));
+  Reply(sender, new events::LoadDatabaseContentResponseEvent(this, res));
   NotifyProgress(sender, 100);
 }
 

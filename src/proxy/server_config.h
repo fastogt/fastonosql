@@ -33,18 +33,18 @@ namespace fastonosql {
 namespace proxy {
 
 common::Error GenVersionRequest(std::string* request);
-common::Error ParseVersionResponce(const std::string& data, uint32_t* version);
+common::Error ParseVersionResponse(const std::string& data, uint32_t* version);
 
 common::Error GenAnonymousStatisticRequest(std::string* request);
 common::Error GenStatisticRequest(const std::string& login, const std::string& build_strategy, std::string* request);
-common::Error ParseSendStatisticResponce(const std::string& data);
+common::Error ParseSendStatisticResponse(const std::string& data);
 
 #if defined(PRO_VERSION)
 common::Error GenSubscriptionStateRequest(const UserInfo& user_info, std::string* request);
-common::Error ParseSubscriptionStateResponce(const std::string& data, UserInfo* update);
+common::Error ParseSubscriptionStateResponse(const std::string& data, UserInfo* update);
 
 common::Error GenBanUserRequest(const UserInfo& user_info, user_id_t collision_id, std::string* request);
-common::Error ParseGenBanUserResponce(const std::string& data);
+common::Error ParseGenBanUserResponse(const std::string& data);
 #endif
 
 }  // namespace proxy

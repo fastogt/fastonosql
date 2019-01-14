@@ -80,7 +80,7 @@ common::Error loadPageRoutine(common::http::HttpResponse* resp) {
   }
 
   common::http::HttpResponse lresp;
-  err = cl.ReadResponce(&lresp);
+  err = cl.ReadResponse(&lresp);
   if (err) {
     cl.Disconnect();
     return err;
