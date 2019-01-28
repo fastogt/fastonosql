@@ -58,6 +58,12 @@ class HttpsClient : public common::net::IHttpClient {
     common::net::SocketTls* sock = static_cast<common::net::SocketTls*>(GetSocket());
     return sock->GetHost();
   }
+
+  common::ErrnoError SendFile(descriptor_t file_fd, size_t file_size) override {
+    UNUSED(file_fd);
+    UNUSED(file_size);
+    return common::ErrnoError();
+  }
 };
 
 common::Error loadPageRoutine(common::http::HttpResponse* resp) {

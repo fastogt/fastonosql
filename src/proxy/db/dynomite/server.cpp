@@ -63,8 +63,8 @@ IDatabaseSPtr Server::CreateDatabase(core::IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new redis_compatible::Database(shared_from_this(), info));
 }
 
-void Server::HandleLoadServerInfoEvent(events::ServerInfoResponceEvent* ev) {
-  const events_info::ServerInfoResponce v = ev->value();
+void Server::HandleLoadServerInfoEvent(events::ServerInfoResponseEvent* ev) {
+  const events_info::ServerInfoResponse v = ev->value();
   common::Error err = v.errorInfo();
   if (err) {
     IServer::HandleLoadServerInfoEvent(ev);
