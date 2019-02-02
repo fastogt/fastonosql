@@ -40,7 +40,8 @@
 
 namespace {
 const QSize kStateIconSize = QSize(64, 64);
-}
+const QString trNoteSentinel = QObject::tr("Select items which you want add to sentinel.");
+}  // namespace
 
 namespace fastonosql {
 namespace gui {
@@ -62,6 +63,9 @@ DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(const QStri
 
   status_label_ = new QLabel(translations::trTimeTemplate_1S.arg("calculate..."));
   icon_label_ = new QLabel;
+  note_label_ = new QLabel(trNoteSentinel);
+  note_label_->setStyleSheet("QLabel { color: red; }");
+  note_label_->setVisible(false);
   setIcon(GuiFactory::GetInstance().failIcon());
 
   list_widget_ = new QTreeWidget;
@@ -78,7 +82,7 @@ DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(const QStri
   list_widget_->setSelectionBehavior(QAbstractItemView::SelectRows);
 
   list_widget_->setEnabled(false);
-  list_widget_->setToolTip(tr("Select items which you want add to sentinel."));
+  list_widget_->setToolTip(trNoteSentinel);
 
   QDialogButtonBox* button_box = new QDialogButtonBox(QDialogButtonBox::Ok);
   button_box->setOrientation(Qt::Horizontal);
@@ -88,6 +92,7 @@ DiscoverySentinelDiagnosticDialog::DiscoverySentinelDiagnosticDialog(const QStri
   main_layout->addWidget(execute_time_label_);
   main_layout->addWidget(status_label_);
   main_layout->addWidget(icon_label_, 1, Qt::AlignCenter);
+  main_layout->addWidget(note_label_);
   main_layout->addWidget(list_widget_);
   main_layout->addWidget(button_box);
   setLayout(main_layout);
@@ -127,6 +132,7 @@ void DiscoverySentinelDiagnosticDialog::connectionResultReady(
     common::ConvertFromString(err->GetDescription(), &qerror);
     setIcon(GuiFactory::GetInstance().failIcon());
     status_label_->setText(translations::trConnectionStatusTemplate_1S.arg(qerror));
+    note_label_->setVisible(false);
     return;
   }
 
@@ -142,6 +148,7 @@ void DiscoverySentinelDiagnosticDialog::connectionResultReady(
     list_widget_->addTopLevelItem(item);
   }
   status_label_->setText(translations::trConnectionStatusTemplate_1S.arg(translations::trSuccess));
+  note_label_->setVisible(true);
 }
 
 void DiscoverySentinelDiagnosticDialog::showEvent(QShowEvent* e) {

@@ -38,7 +38,7 @@
 
 namespace {
 const QSize kStateIconSize = QSize(64, 64);
-const QString trTooltip = QObject::tr("Select items which you want add to cluster.");
+const QString trNoteCluster = QObject::tr("Select items which you want add to cluster.");
 }  // namespace
 
 namespace fastonosql {
@@ -63,6 +63,9 @@ DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(const QString
 
   status_label_ = new QLabel(translations::trTimeTemplate_1S.arg("calculate..."));
   icon_label_ = new QLabel;
+  note_label_ = new QLabel(trNoteCluster);
+  note_label_->setStyleSheet("QLabel { color: red; }");
+  note_label_->setVisible(false);
   setIcon(GuiFactory::GetInstance().failIcon());
 
   list_widget_ = new QTreeWidget;
@@ -75,7 +78,7 @@ DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(const QString
   list_widget_->setSelectionMode(QAbstractItemView::MultiSelection);
   list_widget_->setSelectionBehavior(QAbstractItemView::SelectRows);
   list_widget_->setEnabled(false);
-  list_widget_->setToolTip(trTooltip);
+  list_widget_->setToolTip(trNoteCluster);
 
   QDialogButtonBox* button_box = new QDialogButtonBox(QDialogButtonBox::Ok);
   button_box->setOrientation(Qt::Horizontal);
@@ -85,6 +88,7 @@ DiscoveryClusterDiagnosticDialog::DiscoveryClusterDiagnosticDialog(const QString
   main_layout->addWidget(execute_time_label_);
   main_layout->addWidget(status_label_);
   main_layout->addWidget(icon_label_, 1, Qt::AlignCenter);
+  main_layout->addWidget(note_label_);
   main_layout->addWidget(list_widget_);
   main_layout->addWidget(button_box);
   setLayout(main_layout);
@@ -123,6 +127,7 @@ void DiscoveryClusterDiagnosticDialog::connectionResultReady(common::Error err,
     common::ConvertFromString(err->GetDescription(), &qerror);
     setIcon(GuiFactory::GetInstance().failIcon());
     status_label_->setText(translations::trConnectionStatusTemplate_1S.arg(qerror));
+    note_label_->setVisible(false);
     return;
   }
 
@@ -139,6 +144,7 @@ void DiscoveryClusterDiagnosticDialog::connectionResultReady(common::Error err,
     list_widget_->addTopLevelItem(item);
   }
   status_label_->setText(translations::trConnectionStatusTemplate_1S.arg(translations::trSuccess));
+  note_label_->setVisible(true);
 }
 
 void DiscoveryClusterDiagnosticDialog::showEvent(QShowEvent* e) {

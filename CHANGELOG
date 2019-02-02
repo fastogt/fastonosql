@@ -1,5 +1,6 @@
-1.26.2 /
+1.26.2 / February 2, 2019
 [Alexandr Topilski]
+- [Redis] Fixed discovery cluster
 
 1.26.1 / January 13, 2019
 [Alexandr Topilski]

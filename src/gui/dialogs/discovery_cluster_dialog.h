@@ -75,6 +75,7 @@ class DiscoveryClusterDiagnosticDialog : public BaseDialog {
   common::qt::gui::GlassWidget* glass_widget_;
   QLabel* execute_time_label_;
   QLabel* status_label_;
+  QLabel* note_label_;
   QTreeWidget* list_widget_;
   QLabel* icon_label_;
   proxy::IClusterSettingsBaseSPtr cluster_;
