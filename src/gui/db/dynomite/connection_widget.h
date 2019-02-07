@@ -47,7 +47,6 @@ class ConnectionWidget : public ConnectionBaseWidget {
  private Q_SLOTS:
   void togglePasswordEchoMode();
   void authStateChange(int state);
-  void sslStateChange(int state);
 
  protected:
   explicit ConnectionWidget(QWidget* parent = Q_NULLPTR);

@@ -56,7 +56,6 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : base_class(parent) {
   QVBoxLayout* vbox = new QVBoxLayout;
 
   is_ssl_connection_ = new QCheckBox;
-  VERIFY(connect(is_ssl_connection_, &QCheckBox::stateChanged, this, &ConnectionWidget::sslStateChange));
 
   QHBoxLayout* hbox = new QHBoxLayout;
   hbox->addWidget(is_ssl_connection_);
@@ -143,10 +142,6 @@ void ConnectionWidget::togglePasswordEchoMode() {
 void ConnectionWidget::authStateChange(int state) {
   password_box_->setEnabled(state);
   password_echo_mode_button_->setEnabled(state);
-}
-
-void ConnectionWidget::sslStateChange(int state) {
-  ssh_widget_->setEnabled(!state);
 }
 
 bool ConnectionWidget::validated() const {

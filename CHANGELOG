@@ -1,3 +1,7 @@
+1.26.3 /
+[Alexandr Topilski]
+- [Redis] Fixed sentinels settings
+
 1.26.2 / February 2, 2019
 [Alexandr Topilski]
 - [Redis] Fixed discovery cluster

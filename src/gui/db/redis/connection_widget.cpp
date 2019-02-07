@@ -63,7 +63,6 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : base_class(parent) {
   VERIFY(connect(local_, &QRadioButton::toggled, this, &ConnectionWidget::selectLocalDBPath));
 
   is_ssl_connection_ = new QCheckBox;
-  VERIFY(connect(is_ssl_connection_, &QCheckBox::stateChanged, this, &ConnectionWidget::sslStateChange));
 
   QHBoxLayout* hbox = new QHBoxLayout;
   hbox->addWidget(remote_);
@@ -172,10 +171,6 @@ void ConnectionWidget::togglePasswordEchoMode() {
 void ConnectionWidget::authStateChange(int state) {
   password_box_->setEnabled(state);
   password_echo_mode_button_->setEnabled(state);
-}
-
-void ConnectionWidget::sslStateChange(int state) {
-  ssh_widget_->setEnabled(!state);
 }
 
 void ConnectionWidget::selectRemoteDBPath(bool checked) {

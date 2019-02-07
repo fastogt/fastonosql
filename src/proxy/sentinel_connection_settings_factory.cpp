@@ -88,7 +88,7 @@ bool SentinelSettingsfromString(const serialize_t& text, SentinelSettings* sent)
         common::char_buffer_t raw_sent;
         common::utils::base64::decode64(end_text, &raw_sent);
         size_t len = raw_sent.size();
-        for (size_t j = 0; j < len; ++j) {
+        for (size_t j = 1; j < len; ++j) {
           ch = raw_sent[j];
           if (ch == kMagicNumber || j == len - 1) {
             IConnectionSettingsBaseSPtr ser(
