@@ -1,6 +1,7 @@
-1.26.3 /
+1.26.3 / February 9, 2019
 [Alexandr Topilski]
 - [Redis] Fixed sentinels settings
+- [Redis] SSH dialog typo
 
 1.26.2 / February 2, 2019
 [Alexandr Topilski]
