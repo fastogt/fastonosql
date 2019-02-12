@@ -1,4 +1,4 @@
-1.27.0 /
+1.27.0 / February 12, 2019
 [Alexandr Topilski]
 - [Redis] SSH + SSL (ElastiCache connections)
 
