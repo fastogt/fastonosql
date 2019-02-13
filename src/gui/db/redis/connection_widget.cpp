@@ -26,6 +26,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QMessageBox>
 #include <QPushButton>
 #include <QRadioButton>
 #include <QRegExpValidator>
@@ -63,6 +64,7 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : base_class(parent) {
   VERIFY(connect(local_, &QRadioButton::toggled, this, &ConnectionWidget::selectLocalDBPath));
 
   is_ssl_connection_ = new QCheckBox;
+  VERIFY(connect(is_ssl_connection_, &QCheckBox::clicked, this, &ConnectionWidget::secureConnectionChange));
 
   QHBoxLayout* hbox = new QHBoxLayout;
   hbox->addWidget(remote_);
@@ -106,7 +108,6 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : base_class(parent) {
   addLayout(def_layout);
 
   // ssh
-
   ssh_widget_ = createWidget<SSHWidget>();
   QLayout* ssh_layout = ssh_widget_->layout();
   ssh_layout->setContentsMargins(0, 0, 0, 0);
@@ -163,9 +164,9 @@ void ConnectionWidget::retranslateUi() {
 }
 
 void ConnectionWidget::togglePasswordEchoMode() {
-  bool isPassword = password_box_->echoMode() == QLineEdit::Password;
-  password_box_->setEchoMode(isPassword ? QLineEdit::Normal : QLineEdit::Password);
-  password_echo_mode_button_->setText(isPassword ? translations::trHide : translations::trShow);
+  bool is_password = password_box_->echoMode() == QLineEdit::Password;
+  password_box_->setEchoMode(is_password ? QLineEdit::Normal : QLineEdit::Password);
+  password_echo_mode_button_->setText(is_password ? translations::trHide : translations::trShow);
 }
 
 void ConnectionWidget::authStateChange(int state) {
@@ -185,6 +186,15 @@ void ConnectionWidget::selectLocalDBPath(bool checked) {
   path_widget_->setEnabled(checked);
   is_ssl_connection_->setEnabled(!checked);
   ssh_widget_->setEnabled(!checked);
+}
+
+void ConnectionWidget::secureConnectionChange(bool checked) {
+  UNUSED(checked);
+#if !defined(PRO_VERSION)
+  QMessageBox::information(this, translations::trProLimitations,
+                           translations::trSecureConnectionAvailibleOnlyInProVersion);
+  is_ssl_connection_->setChecked(false);
+#endif
 }
 
 bool ConnectionWidget::validated() const {

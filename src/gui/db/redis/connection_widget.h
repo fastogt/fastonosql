@@ -49,6 +49,7 @@ class ConnectionWidget : public ConnectionBaseWidget {
   void authStateChange(int state);
   void selectRemoteDBPath(bool checked);
   void selectLocalDBPath(bool checked);
+  void secureConnectionChange(bool checked);
 
  protected:
   explicit ConnectionWidget(QWidget* parent = Q_NULLPTR);

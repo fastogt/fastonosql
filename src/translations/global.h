@@ -36,6 +36,7 @@ extern const QString trEditConnection;
 extern const QString trName;
 extern const QString trAddress;
 extern const QString trNewConnection;
+extern const QString trSecureConnectionAvailibleOnlyInProVersion;
 extern const QString trClustersAvailibleOnlyInProVersion;
 extern const QString trSentinelsAvailibleOnlyInProVersion;
 extern const QString trProLimitations;

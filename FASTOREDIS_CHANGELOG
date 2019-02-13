@@ -1,3 +1,7 @@
+1.24.1 /
+[Alexandr Topilski]
+- Secure connection only in PRO version
+
 1.24.0 / February 12, 2019
 [Alexandr Topilski]
 - SSH + SSL (ElastiCache connections)

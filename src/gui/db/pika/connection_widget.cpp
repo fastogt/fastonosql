@@ -26,6 +26,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QMessageBox>
 #include <QPushButton>
 #include <QRadioButton>
 #include <QRegExpValidator>
@@ -56,6 +57,7 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : base_class(parent) {
   QVBoxLayout* vbox = new QVBoxLayout;
 
   is_ssl_connection_ = new QCheckBox;
+  VERIFY(connect(is_ssl_connection_, &QCheckBox::clicked, this, &ConnectionWidget::secureConnectionChange));
 
   QHBoxLayout* hbox = new QHBoxLayout;
   hbox->addWidget(is_ssl_connection_);
@@ -91,7 +93,6 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : base_class(parent) {
   addLayout(def_layout);
 
   // ssh
-
   ssh_widget_ = createWidget<SSHWidget>();
   QLayout* ssh_layout = ssh_widget_->layout();
   ssh_layout->setContentsMargins(0, 0, 0, 0);
@@ -142,6 +143,15 @@ void ConnectionWidget::togglePasswordEchoMode() {
 void ConnectionWidget::authStateChange(int state) {
   password_box_->setEnabled(state);
   password_echo_mode_button_->setEnabled(state);
+}
+
+void ConnectionWidget::secureConnectionChange(bool checked) {
+  UNUSED(checked);
+#if !defined(PRO_VERSION)
+  QMessageBox::information(this, translations::trProLimitations,
+                           translations::trSecureConnectionAvailibleOnlyInProVersion);
+  is_ssl_connection_->setChecked(false);
+#endif
 }
 
 bool ConnectionWidget::validated() const {

@@ -36,6 +36,8 @@ const QString trEditConnection = QObject::tr("Edit connection");
 const QString trName = QObject::tr("Name");
 const QString trAddress = QObject::tr("Address");
 const QString trNewConnection = QObject::tr("New Connection");
+const QString trSecureConnectionAvailibleOnlyInProVersion =
+    QObject::tr("Secure connection availible only in PRO version!");
 const QString trClustersAvailibleOnlyInProVersion = QObject::tr("Clusters availible only in PRO version!");
 const QString trSentinelsAvailibleOnlyInProVersion = QObject::tr("Sentinels availible only in PRO version!");
 const QString trProLimitations = QObject::tr("PRO version limitations");
