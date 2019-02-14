@@ -215,6 +215,7 @@ IConnectionSettingsRemote* ConnectionSettingsFactory::CreateRemoteSettingsFromTy
     core::ConnectionType type,
     const connection_path_t& connection_path,
     const common::net::HostAndPort& host) {
+  CHECK(core::IsRemoteType(type)) << "Must be remote type: " << type;
   IConnectionSettingsRemote* remote = nullptr;
 #if defined(BUILD_WITH_REDIS)
   if (type == core::REDIS) {
