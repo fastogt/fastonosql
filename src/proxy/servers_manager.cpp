@@ -242,7 +242,10 @@ void ServersManager::Clear() {
 }
 
 void ServersManager::CloseServer(server_t server) {
-  CHECK(server);
+  if (!server) {
+    DNOTREACHED() << "To close server need to have server.";
+    return;
+  }
 
   servers_.erase(std::remove(servers_.begin(), servers_.end(), server));
 }
@@ -284,7 +287,7 @@ common::Error ServersManager::DiscoverySentinelConnection(IConnectionSettingsBas
   }
 #endif
 
-  NOTREACHED() << "Can't find discovery cluster implementation for: " << connection_type;
+  DNOTREACHED() << "Can't find discovery cluster implementation for: " << connection_type;
   return common::make_error("Invalid setting type");
 }
 
@@ -338,7 +341,10 @@ ServersManager::cluster_t ServersManager::CreateCluster(IClusterSettingsBaseSPtr
 }
 
 void ServersManager::CloseCluster(cluster_t cluster) {
-  CHECK(cluster);
+  if (!cluster) {
+    DNOTREACHED() << "To close cluster need to have cluster.";
+    return;
+  }
 
   auto nodes = cluster->GetNodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
@@ -347,7 +353,10 @@ void ServersManager::CloseCluster(cluster_t cluster) {
 }
 
 void ServersManager::CloseSentinel(sentinel_t sentinel) {
-  CHECK(sentinel);
+  if (!sentinel) {
+    DNOTREACHED() << "To close sentinel need to have sentinel.";
+    return;
+  }
 
   auto nodes = sentinel->GetSentinels();
   for (auto node : nodes) {

@@ -257,22 +257,22 @@ SettingsManager::cluster_settings_t SettingsManager::GetClusters() const {
 }
 #endif
 
-void SettingsManager::AddRConnection(const QString& connection) {
-  if (!connection.isEmpty()) {
-    auto it = std::find(recent_connections_.begin(), recent_connections_.end(), connection);
-    if (it == recent_connections_.end()) {
-      recent_connections_.push_front(connection);
-    }
+void SettingsManager::AddRecentConnection(const QString& connection) {
+  if (connection.isEmpty()) {
+    return;
+  }
+
+  if (!recent_connections_.contains(connection)) {
+    recent_connections_.push_front(connection);
   }
 }
 
-void SettingsManager::RemoveRConnection(const QString& connection) {
-  if (!connection.isEmpty()) {
-    auto it = std::find(recent_connections_.begin(), recent_connections_.end(), connection);
-    if (it != recent_connections_.end()) {
-      recent_connections_.erase(it);
-    }
+void SettingsManager::RemoveRecentConnection(const QString& connection) {
+  if (connection.isEmpty()) {
+    return;
   }
+
+  recent_connections_.removeOne(connection);
 }
 
 QStringList SettingsManager::GetRecentConnections() const {

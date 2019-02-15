@@ -735,15 +735,21 @@ void MainWindow::clearRecentConnectionsMenu() {
 }
 
 void MainWindow::createServer(proxy::IConnectionSettingsBaseSPtr settings) {
-  CHECK(settings);
+  if (!settings) {
+    return;
+  }
 
   const std::string path = settings->GetPath().ToString();
-  QString rcon;
-  common::ConvertFromString(path, &rcon);
-  proxy::SettingsManager::GetInstance()->RemoveRConnection(rcon);
-  proxy::IServerSPtr server = proxy::ServersManager::GetInstance().CreateServer(settings);
+  QString qpath;
+  common::ConvertFromString(path, &qpath);
+  proxy::SettingsManager::GetInstance()->RemoveRecentConnection(qpath);
+  auto server = proxy::ServersManager::GetInstance().CreateServer(settings);
+  if (!server) {
+    return;
+  }
+
   exp_->addServer(server);
-  proxy::SettingsManager::GetInstance()->AddRConnection(rcon);
+  proxy::SettingsManager::GetInstance()->AddRecentConnection(qpath);
   updateRecentConnectionActions();
   if (proxy::SettingsManager::GetInstance()->GetAutoConnectDB()) {
     proxy::events_info::ConnectInfoRequest req(this);
@@ -762,7 +768,9 @@ void MainWindow::createServer(proxy::IConnectionSettingsBaseSPtr settings) {
 
 #if defined(PRO_VERSION)
 void MainWindow::createSentinel(proxy::ISentinelSettingsBaseSPtr settings) {
-  CHECK(settings);
+  if (!settings) {
+    return;
+  }
 
   proxy::ISentinelSPtr sent = proxy::ServersManager::GetInstance().CreateSentinel(settings);
   if (!sent) {
@@ -789,20 +797,22 @@ void MainWindow::createSentinel(proxy::ISentinelSettingsBaseSPtr settings) {
 }
 
 void MainWindow::createCluster(proxy::IClusterSettingsBaseSPtr settings) {
-  CHECK(settings);
+  if (!settings) {
+    return;
+  }
 
   proxy::IClusterSPtr cl = proxy::ServersManager::GetInstance().CreateCluster(settings);
   if (!cl) {
     return;
   }
 
-  proxy::IServerSPtr root = cl->GetRoot();
-  if (!root) {
+  exp_->addCluster(cl);
+  if (!proxy::SettingsManager::GetInstance()->AutoOpenConsole()) {
     return;
   }
 
-  exp_->addCluster(cl);
-  if (!proxy::SettingsManager::GetInstance()->AutoOpenConsole()) {
+  proxy::IServerSPtr root = cl->GetRoot();
+  if (!root) {
     return;
   }
 

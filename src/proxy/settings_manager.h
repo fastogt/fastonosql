@@ -89,8 +89,8 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
   cluster_settings_t GetClusters() const;
 #endif
 
-  void AddRConnection(const QString& connection);
-  void RemoveRConnection(const QString& connection);
+  void AddRecentConnection(const QString& connection);
+  void RemoveRecentConnection(const QString& connection);
   QStringList GetRecentConnections() const;
   void ClearRConnections();
 
