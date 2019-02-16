@@ -121,7 +121,7 @@ MainWindow::MainWindow() : QMainWindow() {
   proxy::UserInfo user_info = proxy::SettingsManager::GetInstance()->GetUserInfo();
   proxy::UserInfo::SubscriptionState user_sub_state = user_info.GetSubscriptionState();
   if (user_sub_state != proxy::UserInfo::SUBSCRIBED) {
-    time_t expire_application_utc_time = user_info.GetExpireTime();
+    const time_t expire_application_utc_time = user_info.GetExpireTime();
     const QDateTime end_date = QDateTime::fromTime_t(expire_application_utc_time, Qt::LocalTime);
     const QString date_fmt = end_date.toString(Qt::ISODate);
     setWindowTitle(QString(PROJECT_NAME_TITLE " " PROJECT_VERSION " (expiration date: %1)").arg(date_fmt));
