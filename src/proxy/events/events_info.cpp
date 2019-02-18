@@ -30,7 +30,7 @@ EventInfoBase::EventInfoBase(initiator_type sender, error_type er)
 EventInfoBase::EventInfoBase(initiator_type sender, common::time64_t time_start, error_type er)
     : base_class(sender, er), time_start_(time_start) {}
 
-common::time64_t EventInfoBase::elapsedTime() const {
+common::time64_t EventInfoBase::GetElapsedTime() const {
   return common::time::current_mstime() - time_start_;
 }
 
@@ -120,11 +120,11 @@ ServerInfoRequest::ServerInfoRequest(initiator_type sender, error_type er) : bas
 
 ServerInfoResponse::ServerInfoResponse(const base_class& request) : base_class(request), info_() {}
 
-core::IServerInfoSPtr ServerInfoResponse::info() const {
+core::IServerInfoSPtr ServerInfoResponse::GetInfo() const {
   return info_;
 }
 
-void ServerInfoResponse::setInfo(core::IServerInfoSPtr inf) {
+void ServerInfoResponse::SetInfo(core::IServerInfoSPtr inf) {
   info_ = inf;
 }
 
@@ -132,11 +132,11 @@ ServerInfoHistoryRequest::ServerInfoHistoryRequest(initiator_type sender, error_
 
 ServerInfoHistoryResponse::ServerInfoHistoryResponse(const base_class& request) : base_class(request) {}
 
-ServerInfoHistoryResponse::infos_container_type ServerInfoHistoryResponse::infos() const {
+ServerInfoHistoryResponse::infos_container_type ServerInfoHistoryResponse::GetInfos() const {
   return infos_;
 }
 
-void ServerInfoHistoryResponse::setInfos(const infos_container_type& inf) {
+void ServerInfoHistoryResponse::SetInfos(const infos_container_type& inf) {
   infos_ = inf;
 }
 

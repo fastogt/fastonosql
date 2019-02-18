@@ -47,7 +47,7 @@ class EventInfoBase : public common::qt::EventInfo<common::Error> {
   typedef common::qt::EventInfo<common::Error> base_class;
   explicit EventInfoBase(initiator_type sender, error_type er = error_type());
   EventInfoBase(initiator_type sender, common::time64_t time_start, error_type er = error_type());
-  common::time64_t elapsedTime() const;
+  common::time64_t GetElapsedTime() const;
 
  private:
   const common::time64_t time_start_;
@@ -244,8 +244,8 @@ class ServerInfoResponse : public ServerInfoRequest {
   typedef ServerInfoRequest base_class;
   explicit ServerInfoResponse(const base_class& request);
 
-  core::IServerInfoSPtr info() const;
-  void setInfo(core::IServerInfoSPtr inf);
+  core::IServerInfoSPtr GetInfo() const;
+  void SetInfo(core::IServerInfoSPtr inf);
 
  private:
   core::IServerInfoSPtr info_;
@@ -262,8 +262,8 @@ class ServerInfoHistoryResponse : public ServerInfoHistoryRequest {
   typedef std::vector<core::ServerInfoSnapShoot> infos_container_type;
   explicit ServerInfoHistoryResponse(const base_class& request);
 
-  infos_container_type infos() const;
-  void setInfos(const infos_container_type& inf);
+  infos_container_type GetInfos() const;
+  void SetInfos(const infos_container_type& inf);
 
  private:
   infos_container_type infos_;

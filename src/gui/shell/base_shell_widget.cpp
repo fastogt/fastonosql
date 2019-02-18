@@ -552,7 +552,7 @@ void BaseShellWidget::OnFinishedLoadServerInfo(const proxy::events_info::ServerI
     return;
   }
 
-  updateServerInfo(res.info());
+  updateServerInfo(res.GetInfo());
 }
 
 void BaseShellWidget::OnStartedLoadDiscoveryInfo(const proxy::events_info::DiscoveryInfoRequest& res) {

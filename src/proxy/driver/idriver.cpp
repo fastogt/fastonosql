@@ -38,11 +38,12 @@
 namespace {
 
 const char kStampMagicNumber = 0x1E;
+const char kEndLine = '\n';
 std::string CreateStamp(common::time64_t time) {
-  return kStampMagicNumber + common::ConvertToString(time) + '\n';
+  return kStampMagicNumber + common::ConvertToString(time) + kEndLine;
 }
 
-bool GetStamp(common::buffer_t stamp, common::time64_t* time_out) {
+bool GetStamp(std::string stamp, common::time64_t* time_out) {
   if (stamp.empty()) {
     return false;
   }
@@ -56,12 +57,12 @@ bool GetStamp(common::buffer_t stamp, common::time64_t* time_out) {
     return false;
   }
 
-  if (stamp[stamp.size() - 1] == '\n') {
+  if (stamp[stamp.size() - 1] == kEndLine) {
     stamp.pop_back();
   }
 
   common::time64_t ltime_out;
-  if (!common::ConvertFromBytes(stamp, &ltime_out)) {
+  if (!common::ConvertFromString(stamp, &ltime_out)) {
     return false;
   }
   *time_out = ltime_out;
@@ -292,8 +293,6 @@ void IDriver::timerEvent(QTimerEvent* event) {
 
       log_file_->Write(stamp);
       log_file_->Write(info->ToString());
-      common::ErrnoError errn = log_file_->Flush();
-      DCHECK(!errn);
     }
   }
   QObject::timerEvent(event);
@@ -567,7 +566,7 @@ void IDriver::HandleLoadServerInfoEvent(events::ServerInfoRequestEvent* ev) {
     server_info_.reset();
   } else {
     core::IServerInfoSPtr mem(info);
-    res.setInfo(mem);
+    res.SetInfo(mem);
     server_info_ = mem;
   }
   NotifyProgress(sender, 75);
@@ -588,24 +587,23 @@ void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
     events::ServerInfoHistoryResponseEvent::value_type::infos_container_type tmp_infos;
 
     common::time64_t cur_stamp = 0;
-    common::buffer_t data_info;
+    std::string data_info;
 
     while (!read_file.IsEOF()) {
-      common::buffer_t data;
+      std::string data;
       bool res = read_file.ReadLine(&data);
       if (!res || read_file.IsEOF()) {
         if (cur_stamp) {
-          core::ServerInfoSnapShoot shoot(cur_stamp, MakeServerInfoFromString(common::ConvertToString(data_info)));
+          core::ServerInfoSnapShoot shoot(cur_stamp, MakeServerInfoFromString(data_info));
           tmp_infos.push_back(shoot);
         }
         break;
       }
 
       common::time64_t tmp_stamp = 0;
-      bool is_stamp = GetStamp(data, &tmp_stamp);
-      if (is_stamp) {
+      if (GetStamp(data, &tmp_stamp)) {
         if (cur_stamp) {
-          core::ServerInfoSnapShoot shoot(cur_stamp, MakeServerInfoFromString(common::ConvertToString(data_info)));
+          core::ServerInfoSnapShoot shoot(cur_stamp, MakeServerInfoFromString(data_info));
           tmp_infos.push_back(shoot);
         }
         cur_stamp = tmp_stamp;
@@ -614,7 +612,7 @@ void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
         data_info.insert(data_info.end(), data.begin(), data.end());
       }
     }
-    res.setInfos(tmp_infos);
+    res.SetInfos(tmp_infos);
     read_file.Close();
   }
 
@@ -664,10 +662,7 @@ void IDriver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
     if (err) {
       res.setErrorInfo(err);
     } else {
-      DCHECK(db);
-
       core::IDataBaseInfoSPtr current_database_info(db);
-
       res.dbinfo = current_database_info;
       res.commands = cmds;
     }

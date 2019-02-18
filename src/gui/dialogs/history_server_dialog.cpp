@@ -120,7 +120,7 @@ void ServerHistoryDialog::finishLoadServerHistoryInfo(const proxy::events_info::
     return;
   }
 
-  infos_ = res.infos();
+  infos_ = res.GetInfos();
   reset();
 }
 

@@ -729,7 +729,7 @@ void InfoServerDialog::finishServerInfo(const proxy::events_info::ServerInfoResp
     return;
   }
 
-  core::IServerInfoSPtr inf = res.info();
+  core::IServerInfoSPtr inf = res.GetInfo();
   if (!inf) {
     return;
   }

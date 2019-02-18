@@ -71,7 +71,7 @@ void Server::HandleLoadServerInfoEvent(events::ServerInfoResponseEvent* ev) {
     return;
   }
 
-  core::IServerInfoSPtr serv_info = v.info();
+  core::IServerInfoSPtr serv_info = v.GetInfo();
   core::pika::ServerInfo* rinf = static_cast<core::pika::ServerInfo*>(serv_info.get());
   if (rinf->replication_.role_ == MASTER_ROLE) {
     role_ = core::MASTER;
