@@ -579,7 +579,7 @@ void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
   events::ServerInfoHistoryResponseEvent::value_type res(ev->value());
 
   std::string path = settings_->GetLoggingPath();
-  common::file_system::ANSIFile read_file;
+  common::file_system::FileGuard<common::file_system::ANSIFile> read_file;
   common::ErrnoError err = read_file.Open(path, "rb");
   if (err) {
     res.setErrorInfo(common::make_error_from_errno(err));
@@ -613,7 +613,6 @@ void IDriver::HandleLoadServerInfoHistoryEvent(events::ServerInfoHistoryRequestE
       }
     }
     res.SetInfos(tmp_infos);
-    read_file.Close();
   }
 
   Reply(sender, new events::ServerInfoHistoryResponseEvent(this, res));

@@ -1,5 +1,6 @@
 1.24.1 /
 [Alexandr Topilski]
+- Fixed socket leaks
 
 1.24.1 / February 16, 2019
 [Alexandr Topilski]

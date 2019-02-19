@@ -36,10 +36,11 @@ common::Error OnlineVerifyUser::startVerificationImpl(const std::string& login,
                                                       const std::string& hexed_password,
                                                       proxy::UserInfo::BuildStrategy strategy,
                                                       proxy::UserInfo* user_info_out) {
+  typedef common::net::SocketGuard<common::net::ClientSocketTcp> ClientSocket;
 #if defined(FASTONOSQL)
-  common::net::ClientSocketTcp client(common::net::HostAndPort(FASTONOSQL_HOST, SERVER_REQUESTS_PORT));
+  ClientSocket client(common::net::HostAndPort(FASTONOSQL_HOST, SERVER_REQUESTS_PORT));
 #elif defined(FASTOREDIS)
-  common::net::ClientSocketTcp client(common::net::HostAndPort(FASTOREDIS_HOST, SERVER_REQUESTS_PORT));
+  ClientSocket client(common::net::HostAndPort(FASTOREDIS_HOST, SERVER_REQUESTS_PORT));
 #else
 #error please specify url and port of version information
 #endif
@@ -58,23 +59,17 @@ common::Error OnlineVerifyUser::startVerificationImpl(const std::string& login,
   size_t nwrite;
   err = client.Write(request.data(), request.size(), &nwrite);
   if (err) {
-    err = client.Close();
-    DCHECK(!err) << "Close client error: " << err->GetDescription();
     return common::make_error("Sorry can't write request, for checking your credentials.");
   }
 
   common::char_buffer_t subscribe_reply;
   err = client.ReadToBuffer(&subscribe_reply, 256);
   if (err) {
-    err = client.Close();
-    DCHECK(!err) << "Close client error: " << err->GetDescription();
     return common::make_error("Sorry can't get response, for checking your credentials.");
   }
 
   common::Error jerror = proxy::ParseSubscriptionStateResponse(subscribe_reply.as_string(), &user_info);
   if (jerror) {
-    err = client.Close();
-    DCHECK(!err) << "Close client error: " << err->GetDescription();
     return jerror;
   }
 

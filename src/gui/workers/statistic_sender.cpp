@@ -18,7 +18,7 @@
 
 #include "gui/workers/statistic_sender.h"
 
-#include <common/net/socket_tcp.h>  // for ClientSocketTcp
+#include <common/net/socket_tcp.h>
 
 #include "proxy/server_config.h"  // for FASTONOSQL_URL, etc
 
@@ -27,10 +27,11 @@ namespace {
 #if defined(PRO_VERSION)
 common::Error sendUserStatisticRoutine(const std::string& login, const std::string& build_strategy) {
   CHECK(!login.empty());
+  typedef common::net::SocketGuard<common::net::ClientSocketTcp> ClientSocket;
 #if defined(FASTONOSQL)
-  common::net::ClientSocketTcp client(common::net::HostAndPort(FASTONOSQL_HOST, SERVER_REQUESTS_PORT));
+  ClientSocket client(common::net::HostAndPort(FASTONOSQL_HOST, SERVER_REQUESTS_PORT));
 #elif defined(FASTOREDIS)
-  common::net::ClientSocketTcp client(common::net::HostAndPort(FASTOREDIS_HOST, SERVER_REQUESTS_PORT));
+  ClientSocket client(common::net::HostAndPort(FASTOREDIS_HOST, SERVER_REQUESTS_PORT));
 #else
 #error please specify url and port to send statistic information
 #endif
@@ -42,40 +43,31 @@ common::Error sendUserStatisticRoutine(const std::string& login, const std::stri
   std::string request;
   common::Error request_gen_err = proxy::GenStatisticRequest(login, build_strategy, &request);
   if (request_gen_err) {
-    common::ErrnoError lerr = client.Close();
-    DCHECK(!lerr) << "Close client error: " << err->GetDescription();
     return request_gen_err;
   }
 
   size_t nwrite = 0;
   err = client.Write(request.data(), request.size(), &nwrite);
   if (err) {
-    common::ErrnoError lerr = client.Close();
-    DCHECK(!lerr) << "Close client error: " << err->GetDescription();
     return common::make_error_from_errno(err);
   }
 
   common::char_buffer_t stat_reply;
   err = client.ReadToBuffer(&stat_reply, 256);
   if (err) {
-    common::ErrnoError lerr = client.Close();
-    DCHECK(!lerr) << "Close client error: " << err->GetDescription();
     return common::make_error_from_errno(err);
   }
 
-  common::Error jerror = proxy::ParseSendStatisticResponse(stat_reply.as_string());
-  err = client.Close();
-  DCHECK(!err) << "Close client error: " << err->GetDescription();
-
-  return jerror;
+  return proxy::ParseSendStatisticResponse(stat_reply.as_string());
 }
 #endif
 
 common::Error sendAnonymousStatisticRoutine() {
+  typedef common::net::SocketGuard<common::net::ClientSocketTcp> ClientSocket;
 #if defined(FASTONOSQL)
-  common::net::ClientSocketTcp client(common::net::HostAndPort(FASTONOSQL_HOST, SERVER_REQUESTS_PORT));
+  ClientSocket client(common::net::HostAndPort(FASTONOSQL_HOST, SERVER_REQUESTS_PORT));
 #elif defined(FASTOREDIS)
-  common::net::ClientSocketTcp client(common::net::HostAndPort(FASTOREDIS_HOST, SERVER_REQUESTS_PORT));
+  ClientSocket client(common::net::HostAndPort(FASTOREDIS_HOST, SERVER_REQUESTS_PORT));
 #else
 #error please specify url and port to send statistic information
 #endif
@@ -87,32 +79,22 @@ common::Error sendAnonymousStatisticRoutine() {
   std::string request;
   common::Error request_gen_err = proxy::GenAnonymousStatisticRequest(&request);
   if (request_gen_err) {
-    common::ErrnoError lerr = client.Close();
-    DCHECK(!lerr) << "Close client error: " << err->GetDescription();
     return request_gen_err;
   }
 
   size_t nwrite = 0;
   err = client.Write(request.data(), request.size(), &nwrite);
   if (err) {
-    common::ErrnoError lerr = client.Close();
-    DCHECK(!lerr) << "Close client error: " << err->GetDescription();
     return common::make_error_from_errno(err);
   }
 
   common::char_buffer_t stat_reply;
   err = client.ReadToBuffer(&stat_reply, 256);
   if (err) {
-    common::ErrnoError lerr = client.Close();
-    DCHECK(!lerr) << "Close client error: " << err->GetDescription();
     return common::make_error_from_errno(err);
   }
 
-  common::Error jerror = proxy::ParseSendStatisticResponse(stat_reply.as_string());
-  err = client.Close();
-  DCHECK(!err) << "Close client error: " << err->GetDescription();
-
-  return jerror;
+  return proxy::ParseSendStatisticResponse(stat_reply.as_string());
 }
 }  // namespace
 

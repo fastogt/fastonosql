@@ -115,10 +115,11 @@ common::ErrnoError prepare_to_start(const std::string& runtime_directory_absolut
 }
 
 common::ErrnoError ban_user(const fastonosql::proxy::UserInfo& user, const std::string& collision_id) {
+  typedef common::net::SocketGuard<common::net::ClientSocketTcp> ClientSocket;
 #if defined(FASTONOSQL)
-  common::net::ClientSocketTcp client(common::net::HostAndPort(FASTONOSQL_HOST, SERVER_REQUESTS_PORT));
+  ClientSocket client(common::net::HostAndPort(FASTONOSQL_HOST, SERVER_REQUESTS_PORT));
 #elif defined(FASTOREDIS)
-  common::net::ClientSocketTcp client(common::net::HostAndPort(FASTOREDIS_HOST, SERVER_REQUESTS_PORT));
+  ClientSocket client(common::net::HostAndPort(FASTOREDIS_HOST, SERVER_REQUESTS_PORT));
 #else
 #error please specify url and port of version information
 #endif
@@ -137,8 +138,6 @@ common::ErrnoError ban_user(const fastonosql::proxy::UserInfo& user, const std::
   size_t nwrite;
   err = client.WriteBuffer(request, &nwrite);
   if (err) {
-    common::ErrnoError close_err = client.Close();
-    DCHECK(!close_err) << "Close client error: " << close_err->GetDescription();
     return err;
   }
 
@@ -146,20 +145,14 @@ common::ErrnoError ban_user(const fastonosql::proxy::UserInfo& user, const std::
   size_t nread;
   err = client.Read(&ban_reply, 256, &nread);
   if (err) {
-    common::ErrnoError close_err = client.Close();
-    DCHECK(!close_err) << "Close client error: " << close_err->GetDescription();
     return err;
   }
 
   common::Error jerror = fastonosql::proxy::ParseGenBanUserResponse(ban_reply);
   if (jerror) {
-    common::ErrnoError close_err = client.Close();
-    DCHECK(!close_err) << "Close client error: " << close_err->GetDescription();
     return common::make_errno_error(jerror->GetDescription(), EINTR);
   }
 
-  err = client.Close();
-  DCHECK(!err) << "Close client error: " << err->GetDescription();
   return common::ErrnoError();
 }
 
@@ -241,7 +234,7 @@ int main(int argc, char* argv[]) {
       const std::string identity_path = runtime_dir_path + IDENTITY_FILE_NAME;
 
       if (exec_count == 1 && !common::file_system::is_file_exist(identity_path)) {
-        common::file_system::File identity_file;
+        common::file_system::FileGuard<common::file_system::File> identity_file;
         err = identity_file.Open(identity_path,
                                  common::file_system::File::FLAG_CREATE | common::file_system::File::FLAG_WRITE);
         if (err) {
@@ -255,14 +248,8 @@ int main(int argc, char* argv[]) {
           QMessageBox::critical(nullptr, fastonosql::translations::trTrial, trCantSaveIdentity);
           return EXIT_FAILURE;
         }
-
-        err = identity_file.Close();
-        if (err) {
-          QMessageBox::critical(nullptr, fastonosql::translations::trTrial, trCantSaveIdentity);
-          return EXIT_FAILURE;
-        }
       } else {
-        common::file_system::ANSIFile read_file;
+        common::file_system::FileGuard<common::file_system::ANSIFile> read_file;
         common::ErrnoError err = read_file.Open(identity_path, "rb");
         if (err) {
           QMessageBox::critical(nullptr, fastonosql::translations::trTrial, trCantVerifyIdentity);
@@ -271,12 +258,8 @@ int main(int argc, char* argv[]) {
 
         fastonosql::proxy::user_id_t readed_id;
         if (!read_file.ReadLine(&readed_id)) {
-          read_file.Close();
-          QMessageBox::critical(nullptr, fastonosql::translations::trTrial, trCantVerifyIdentity);
           return EXIT_FAILURE;
         }
-
-        read_file.Close();
 
         if (readed_id != user_info.GetUserID()) {
           ban_user(user_info, readed_id);

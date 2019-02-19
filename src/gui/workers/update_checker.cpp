@@ -20,7 +20,7 @@
 
 #include <string>
 
-#include <common/net/socket_tcp.h>  // for ClientSocketTcp
+#include <common/net/socket_tcp.h>
 
 #include "proxy/server_config.h"
 
@@ -29,10 +29,11 @@ namespace {
 common::Error GetVersion(uint32_t* version) {
   CHECK(version);
 
+  typedef common::net::SocketGuard<common::net::ClientSocketTcp> ClientSocket;
 #if defined(FASTONOSQL)
-  common::net::ClientSocketTcp client(common::net::HostAndPort(FASTONOSQL_HOST, SERVER_REQUESTS_PORT));
+  ClientSocket client(common::net::HostAndPort(FASTONOSQL_HOST, SERVER_REQUESTS_PORT));
 #elif defined(FASTOREDIS)
-  common::net::ClientSocketTcp client(common::net::HostAndPort(FASTOREDIS_HOST, SERVER_REQUESTS_PORT));
+  ClientSocket client(common::net::HostAndPort(FASTOREDIS_HOST, SERVER_REQUESTS_PORT));
 #else
 #error please specify url and port of version information
 #endif
@@ -44,37 +45,27 @@ common::Error GetVersion(uint32_t* version) {
   std::string get_version_request;
   common::Error request_gen_err = proxy::GenVersionRequest(&get_version_request);
   if (request_gen_err) {
-    err = client.Close();
-    DCHECK(!err) << "Close client error: " << err->GetDescription();
     return request_gen_err;
   }
 
   size_t nwrite = 0;
   err = client.Write(get_version_request.data(), get_version_request.size(), &nwrite);
   if (err) {
-    common::ErrnoError lerr = client.Close();
-    DCHECK(!lerr) << "Close client error: " << lerr->GetDescription();
     return common::make_error_from_errno(err);
   }
 
   common::char_buffer_t version_reply;
   err = client.ReadToBuffer(&version_reply, 256);
   if (err) {
-    common::ErrnoError lerr = client.Close();
-    DCHECK(!lerr) << "Close client error: " << lerr->GetDescription();
     return common::make_error_from_errno(err);
   }
 
   uint32_t version_result;
   common::Error parse_error = proxy::ParseVersionResponse(version_reply.as_string(), &version_result);
   if (parse_error) {
-    err = client.Close();
-    DCHECK(!err) << "Close client error: " << err->GetDescription();
     return parse_error;
   }
 
-  err = client.Close();
-  DCHECK(!err) << "Close client error: " << err->GetDescription();
   *version = version_result;
   return common::Error();
 }
