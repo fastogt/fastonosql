@@ -63,7 +63,7 @@ IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromStringCluster(
   }
 
   IClusterSettingsBase* result = nullptr;
-  size_t value_len = value.size();
+  const size_t value_len = value.size();
 
   uint8_t comma_count = 0;
   serialize_t element_text;

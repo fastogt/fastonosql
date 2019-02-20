@@ -28,17 +28,7 @@ const char* kBuildStrategy[] = {"community", "public", "private"};
 namespace fastonosql {
 namespace proxy {
 
-UserInfo::UserInfo()
-    : login_(),
-      password_(),
-      build_strategy_(),
-      first_name_(),
-      last_name_(),
-      subscription_state_(UNSUBSCIRBED),
-      type_(USER),
-      exec_count_(0),
-      expire_time_(0),
-      user_id_() {}
+UserInfo::UserInfo() : UserInfo(std::string(), std::string(), COMMUNITY_BUILD) {}
 
 UserInfo::UserInfo(const std::string& login, const std::string& password, BuildStrategy strategy)
     : login_(login),

@@ -31,5 +31,9 @@ void CommandLogger::Print(core::FastoObjectCommandIPtr command) {
   emit Printed(command);
 }
 
+void LOG_COMMAND(core::FastoObjectCommandIPtr command) {
+  return CommandLogger::GetInstance().Print(command);
+}
+
 }  // namespace proxy
 }  // namespace fastonosql
