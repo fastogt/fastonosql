@@ -18,11 +18,11 @@
 
 #pragma once
 
-#include <fastonosql/core/connection_types.h>  // for ConnectionType
+#include <fastonosql/core/connection_types.h>
 
 #include "gui/dialogs/base_dialog.h"
 
-#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
+#include "proxy/connection_settings/iconnection_settings.h"
 
 namespace fastonosql {
 namespace gui {

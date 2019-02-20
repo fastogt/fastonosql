@@ -21,7 +21,7 @@
 #include <string>
 #include <vector>
 
-#include <common/qt/gui/base/tree_model.h>  // for TreeModel
+#include <common/qt/gui/base/tree_model.h>
 
 #include "proxy/database/idatabase.h"
 #include "proxy/proxy_fwd.h"

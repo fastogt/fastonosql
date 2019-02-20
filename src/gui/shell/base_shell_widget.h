@@ -27,7 +27,7 @@
 #include <fastonosql/core/server/iserver_info.h>
 
 #include "gui/widgets/base_widget.h"
-#include "proxy/proxy_fwd.h"  // for IServerSPtr
+#include "proxy/proxy_fwd.h"
 
 class QPushButton;   // lines 26-26
 class QComboBox;     // lines 29-29

@@ -29,7 +29,7 @@
 
 #include <fastonosql/core/macros.h>
 
-#include "translations/global.h"  // for trError
+#include "translations/global.h"
 
 namespace {
 const QString trInvalidPattern = QObject::tr("Invalid pattern!");

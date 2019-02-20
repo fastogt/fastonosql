@@ -18,9 +18,9 @@
 
 #include "gui/workers/test_connection.h"
 
-#include <common/time.h>  // for current_mstime
+#include <common/time.h>
 
-#include "proxy/servers_manager.h"  // for ServersManager
+#include "proxy/servers_manager.h"
 
 namespace fastonosql {
 namespace gui {

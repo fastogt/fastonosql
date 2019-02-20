@@ -19,11 +19,11 @@
 #include "gui/models/property_table_model.h"
 
 #include <common/qt/convert2string.h>
-#include <common/qt/utils_qt.h>  // for item
+#include <common/qt/utils_qt.h>
 
 #include "gui/models/items/property_table_item.h"
 
-#include "translations/global.h"  // for trKey, trValue
+#include "translations/global.h"
 
 namespace fastonosql {
 namespace gui {

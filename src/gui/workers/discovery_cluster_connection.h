@@ -18,13 +18,13 @@
 
 #pragma once
 
-#include <vector>  // for vector
+#include <vector>
 
 #include <QObject>
 
 #include <fastonosql/core/cluster/cluster_discovery_info.h>
 
-#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
+#include "proxy/connection_settings/iconnection_settings.h"
 
 namespace fastonosql {
 namespace gui {

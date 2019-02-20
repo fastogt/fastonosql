@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <common/log_levels.h>  // for LOG_LEVEL
+#include <common/log_levels.h>
 
 #include "gui/widgets/base_widget.h"
 

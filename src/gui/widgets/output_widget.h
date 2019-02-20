@@ -19,11 +19,11 @@
 #pragma once
 
 #include <fastonosql/core/database/idatabase_info.h>
-#include <fastonosql/core/global.h>  // for FastoObject, etc
+#include <fastonosql/core/global.h>
 
 #include "gui/widgets/base_widget.h"
 
-#include "proxy/proxy_fwd.h"  // for IServerSPtr
+#include "proxy/proxy_fwd.h"
 #include "proxy/types.h"
 
 class QPushButton;  // lines 27-27

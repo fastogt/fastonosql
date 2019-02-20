@@ -32,7 +32,7 @@
 #include "proxy/user_info.h"
 #endif
 
-#include "proxy/types.h"  // for SupportedView
+#include "proxy/types.h"
 
 namespace fastonosql {
 namespace proxy {

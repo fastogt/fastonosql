@@ -31,12 +31,12 @@
 
 #include "proxy/server/iserver.h"
 
-#include "gui/gui_factory.h"                  // for GuiFactory
-#include "gui/models/channels_table_model.h"  // for KeysTableModel, etc
+#include "gui/gui_factory.h"
+#include "gui/models/channels_table_model.h"
 #include "gui/models/items/channel_table_item.h"
-#include "gui/views/fasto_table_view.h"  // for FastoTableView
+#include "gui/views/fasto_table_view.h"
 
-#include "translations/global.h"  // for trKeyCountOnThePage, etc
+#include "translations/global.h"
 
 namespace {
 const QString trPublishToChannel_1S = QObject::tr("Publish to channel %1");

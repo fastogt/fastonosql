@@ -24,9 +24,9 @@
 #include <QTextEdit>
 #include <QTime>
 
-#include <common/qt/convert2string.h>  // for ConvertFromString
+#include <common/qt/convert2string.h>
 
-#include "translations/global.h"  // for trClearAll
+#include "translations/global.h"
 
 namespace fastonosql {
 namespace gui {

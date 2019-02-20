@@ -20,7 +20,7 @@
 
 #include <string>
 
-#include "proxy/sentinel/isentinel.h"  // for ISentinel
+#include "proxy/sentinel/isentinel.h"
 
 namespace fastonosql {
 namespace proxy {

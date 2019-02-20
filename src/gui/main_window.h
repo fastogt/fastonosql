@@ -22,7 +22,7 @@
 
 #include "proxy/proxy_fwd.h"
 
-#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
+#include "proxy/connection_settings/iconnection_settings.h"
 
 #if defined(PRO_VERSION)
 #include "proxy/connection_settings/icluster_connection_settings.h"

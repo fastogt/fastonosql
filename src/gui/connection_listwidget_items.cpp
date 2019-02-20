@@ -22,9 +22,9 @@
 
 #include <common/qt/convert2string.h>
 
-#include <fastonosql/core/connection_types.h>  // for ConvertToString, etc
+#include <fastonosql/core/connection_types.h>
 
-#include "gui/gui_factory.h"  // for GuiFactory
+#include "gui/gui_factory.h"
 
 namespace fastonosql {
 namespace gui {

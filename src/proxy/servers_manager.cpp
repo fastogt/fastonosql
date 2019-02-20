@@ -21,73 +21,73 @@
 #include <vector>
 
 #if defined(BUILD_WITH_REDIS)
-#include <fastonosql/core/db/redis/db_connection.h>  // for DiscoveryClusterConnection, etc
-#include "proxy/db/redis/connection_settings.h"      // for ConnectionSettings
-#include "proxy/db/redis/server.h"                   // for Server
+#include <fastonosql/core/db/redis/db_connection.h>
+#include "proxy/db/redis/connection_settings.h"
+#include "proxy/db/redis/server.h"
 
 #if defined(PRO_VERSION)
-#include "proxy/db/redis/cluster.h"   // for Cluster
-#include "proxy/db/redis/sentinel.h"  // for Sentinel
+#include "proxy/db/redis/cluster.h"
+#include "proxy/db/redis/sentinel.h"
 #endif
 #endif
 
 #if defined(BUILD_WITH_MEMCACHED)
-#include <fastonosql/core/db/memcached/db_connection.h>  // for TestConnection
-#include "proxy/db/memcached/connection_settings.h"      // for ConnectionSettings
-#include "proxy/db/memcached/server.h"                   // for Server
+#include <fastonosql/core/db/memcached/db_connection.h>
+#include "proxy/db/memcached/connection_settings.h"
+#include "proxy/db/memcached/server.h"
 #endif
 
 #if defined(BUILD_WITH_SSDB)
-#include <fastonosql/core/db/ssdb/db_connection.h>  // for TestConnection
-#include "proxy/db/ssdb/connection_settings.h"      // for ConnectionSettings
-#include "proxy/db/ssdb/server.h"                   // for Server
+#include <fastonosql/core/db/ssdb/db_connection.h>
+#include "proxy/db/ssdb/connection_settings.h"
+#include "proxy/db/ssdb/server.h"
 #endif
 
 #if defined(BUILD_WITH_LEVELDB)
-#include <fastonosql/core/db/leveldb/db_connection.h>  // for TestConnection
-#include "proxy/db/leveldb/connection_settings.h"      // for ConnectionSettings
-#include "proxy/db/leveldb/server.h"                   // for Server
+#include <fastonosql/core/db/leveldb/db_connection.h>
+#include "proxy/db/leveldb/connection_settings.h"
+#include "proxy/db/leveldb/server.h"
 #endif
 
 #if defined(BUILD_WITH_ROCKSDB)
-#include <fastonosql/core/db/rocksdb/db_connection.h>  // for TestConnection
-#include "proxy/db/rocksdb/connection_settings.h"      // for ConnectionSettings
-#include "proxy/db/rocksdb/server.h"                   // for Server
+#include <fastonosql/core/db/rocksdb/db_connection.h>
+#include "proxy/db/rocksdb/connection_settings.h"
+#include "proxy/db/rocksdb/server.h"
 #endif
 
 #if defined(BUILD_WITH_UNQLITE)
-#include <fastonosql/core/db/unqlite/db_connection.h>  // for TestConnection
-#include "proxy/db/unqlite/connection_settings.h"      // for ConnectionSettings
-#include "proxy/db/unqlite/server.h"                   // for Server
+#include <fastonosql/core/db/unqlite/db_connection.h>
+#include "proxy/db/unqlite/connection_settings.h"
+#include "proxy/db/unqlite/server.h"
 #endif
 
 #if defined(BUILD_WITH_LMDB)
-#include <fastonosql/core/db/lmdb/db_connection.h>  // for TestConnection
-#include "proxy/db/lmdb/connection_settings.h"      // for ConnectionSettings
-#include "proxy/db/lmdb/server.h"                   // for Server
+#include <fastonosql/core/db/lmdb/db_connection.h>
+#include "proxy/db/lmdb/connection_settings.h"
+#include "proxy/db/lmdb/server.h"
 #endif
 
 #if defined(BUILD_WITH_FORESTDB)
-#include <fastonosql/core/db/forestdb/db_connection.h>  // for TestConnection
-#include "proxy/db/forestdb/connection_settings.h"      // for ConnectionSettings
-#include "proxy/db/forestdb/server.h"                   // for Server
+#include <fastonosql/core/db/forestdb/db_connection.h>
+#include "proxy/db/forestdb/connection_settings.h"
+#include "proxy/db/forestdb/server.h"
 #endif
 
 #if defined(BUILD_WITH_PIKA)
-#include <fastonosql/core/db/pika/db_connection.h>  // for DiscoveryClusterConnection, etc
-#include "proxy/db/pika/connection_settings.h"      // for ConnectionSettings
-#include "proxy/db/pika/server.h"                   // for Server
+#include <fastonosql/core/db/pika/db_connection.h>
+#include "proxy/db/pika/connection_settings.h"
+#include "proxy/db/pika/server.h"
 #endif
 
 #if defined(BUILD_WITH_DYNOMITE)
-#include <fastonosql/core/db/dynomite/db_connection.h>  // for DiscoveryClusterConnection, etc
-#include "proxy/db/dynomite/connection_settings.h"      // for ConnectionSettings
-#include "proxy/db/dynomite/server.h"                   // for Server
+#include <fastonosql/core/db/dynomite/db_connection.h>
+#include "proxy/db/dynomite/connection_settings.h"
+#include "proxy/db/dynomite/server.h"
 #endif
 
 #if defined(PRO_VERSION)
 #include "proxy/cluster/icluster.h"
-#include "proxy/sentinel/isentinel.h"  // for Sentinel
+#include "proxy/sentinel/isentinel.h"
 #endif
 
 namespace fastonosql {

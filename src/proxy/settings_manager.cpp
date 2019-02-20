@@ -23,12 +23,12 @@
 #include <QSettings>
 
 #include <common/convert2string.h>
-#include <common/qt/convert2string.h>  // for ConvertToString
-#include <common/utils.h>              // for decode64, encode64
+#include <common/qt/convert2string.h>
+#include <common/utils.h>
 
 #include <common/file_system/file_system.h>
-#include <common/qt/gui/app_style.h>              // for defStyle
-#include <common/qt/translations/translations.h>  // for defLanguage
+#include <common/qt/gui/app_style.h>
+#include <common/qt/translations/translations.h>
 
 #include "proxy/connection_settings/iconnection_settings.h"
 #include "proxy/connection_settings_factory.h"

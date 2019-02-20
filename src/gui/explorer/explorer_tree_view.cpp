@@ -29,30 +29,30 @@
 
 #include <common/convert2string.h>
 
-#include <common/qt/convert2string.h>  // for ConvertToString
-#include <common/qt/utils_qt.h>        // for item
+#include <common/qt/convert2string.h>
+#include <common/qt/utils_qt.h>
 
 #include <common/qt/gui/regexp_input_dialog.h>
 
-#include "proxy/cluster/icluster.h"       // for ICluster
-#include "proxy/sentinel/isentinel.h"     // for Sentinel, etc
-#include "proxy/server/iserver_remote.h"  // for IServer, IServerRemote
+#include "proxy/cluster/icluster.h"
+#include "proxy/sentinel/isentinel.h"
+#include "proxy/server/iserver_remote.h"
 
 #include "gui/dialogs/clients_monitor_dialog.h"
-#include "gui/dialogs/dbkey_dialog.h"           // for DbKeyDialog
-#include "gui/dialogs/history_server_dialog.h"  // for ServerHistoryDialog
-#include "gui/dialogs/info_server_dialog.h"     // for InfoServerDialog
-#include "gui/dialogs/load_contentdb_dialog.h"  // for LoadContentDbDialog
+#include "gui/dialogs/dbkey_dialog.h"
+#include "gui/dialogs/history_server_dialog.h"
+#include "gui/dialogs/info_server_dialog.h"
+#include "gui/dialogs/load_contentdb_dialog.h"
 #include "gui/dialogs/property_server_dialog.h"
 #include "gui/dialogs/pub_sub_dialog.h"
-#include "gui/dialogs/view_keys_dialog.h"  // for ViewKeysDialog
+#include "gui/dialogs/view_keys_dialog.h"
 
 #include "gui/gui_factory.h"
-#include "gui/models/explorer_tree_model.h"  // for ExplorerServerItem, etc
+#include "gui/models/explorer_tree_model.h"
 #include "gui/models/explorer_tree_sort_filter_proxy_model.h"
 #include "gui/models/items/explorer_tree_item.h"
 
-#include "translations/global.h"  // for trClose, trBackup, etc
+#include "translations/global.h"
 
 namespace {
 const QString trRemoveDatabaseTemplate_1S = QObject::tr("Really remove database %1?");

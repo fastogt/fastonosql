@@ -20,15 +20,15 @@
 
 #include <QIcon>
 
-#include <common/qt/convert2string.h>  // for ConvertToString
-#include <common/qt/utils_qt.h>        // for item
+#include <common/qt/convert2string.h>
+#include <common/qt/utils_qt.h>
 
 #include <fastonosql/core/value.h>
 
-#include "gui/gui_factory.h"                     // for GuiFactory
-#include "gui/models/items/fasto_common_item.h"  // for FastoCommonItem, etc
+#include "gui/gui_factory.h"
+#include "gui/models/items/fasto_common_item.h"
 
-#include "translations/global.h"  // for trKey, trType, trValue
+#include "translations/global.h"
 
 Q_DECLARE_METATYPE(fastonosql::core::NValue)
 

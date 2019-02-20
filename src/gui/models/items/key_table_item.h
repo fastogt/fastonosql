@@ -18,11 +18,11 @@
 
 #pragma once
 
-#include <common/qt/gui/base/table_item.h>  // for TableItem
+#include <common/qt/gui/base/table_item.h>
 
 #include <QString>
 
-#include <fastonosql/core/db_key.h>  // for NDbKValue, ttl_t
+#include <fastonosql/core/db_key.h>
 
 namespace fastonosql {
 namespace gui {

@@ -18,12 +18,12 @@
 
 #pragma once
 
-#include <QFont>  // for QFont
+#include <QFont>
 
-#include <common/patterns/singleton_pattern.h>  // for LazySingleton
-#include <common/value.h>                       // for Value, Value::Type
+#include <common/patterns/singleton_pattern.h>
+#include <common/value.h>
 
-#include <fastonosql/core/connection_types.h>  // for ConnectionType, etc
+#include <fastonosql/core/connection_types.h>
 
 class QIcon;
 class QString;

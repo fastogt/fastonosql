@@ -26,11 +26,11 @@
 #include <QPushButton>
 #include <QToolButton>
 
-#include <Qsci/qsciscintilla.h>  // for QsciScintilla, etc
+#include <Qsci/qsciscintilla.h>
 
-#include "gui/widgets/fasto_scintilla.h"  // for FastoScintilla
+#include "gui/widgets/fasto_scintilla.h"
 
-#include "gui/gui_factory.h"  // for GuiFactory
+#include "gui/gui_factory.h"
 
 #include "translations/global.h"
 

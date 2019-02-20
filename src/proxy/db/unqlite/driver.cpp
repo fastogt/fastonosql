@@ -18,12 +18,12 @@
 
 #include "proxy/db/unqlite/driver.h"
 
-#include <fastonosql/core/db/unqlite/db_connection.h>  // for DBConnection
+#include <fastonosql/core/db/unqlite/db_connection.h>
 
-#include "proxy/command/command.h"                 // for CreateCommand, etc
-#include "proxy/command/command_logger.h"          // for LOG_COMMAND
-#include "proxy/db/unqlite/command.h"              // for Command
-#include "proxy/db/unqlite/connection_settings.h"  // for ConnectionSettings
+#include "proxy/command/command.h"
+#include "proxy/command/command_logger.h"
+#include "proxy/db/unqlite/command.h"
+#include "proxy/db/unqlite/connection_settings.h"
 
 namespace fastonosql {
 namespace proxy {

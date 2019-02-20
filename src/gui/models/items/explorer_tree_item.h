@@ -23,11 +23,11 @@
 
 #include <QString>
 
-#include <common/qt/gui/base/tree_item.h>  // for TreeItem
+#include <common/qt/gui/base/tree_item.h>
 
 #include <fastonosql/core/database/idatabase_info.h>
 
-#include "proxy/proxy_fwd.h"  // for IServerSPtr, IClusterSPtr, etc
+#include "proxy/proxy_fwd.h"
 #include "proxy/types.h"
 
 namespace fastonosql {

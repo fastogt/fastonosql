@@ -22,19 +22,19 @@
 
 #include <QIcon>
 
-#include <common/net/types.h>  // for ConvertToString
+#include <common/net/types.h>
 
 #include <common/qt/convert2string.h>
-#include <common/qt/utils_qt.h>  // for item
+#include <common/qt/utils_qt.h>
 
 #include "proxy/server/iserver_local.h"
 #include "proxy/server/iserver_remote.h"
 
-#include "gui/gui_factory.h"  // for GuiFactory
+#include "gui/gui_factory.h"
 #include "gui/key_info.h"
 #include "gui/models/items/explorer_tree_item.h"
 
-#include "translations/global.h"  // for trName
+#include "translations/global.h"
 
 namespace {
 const QString trDiscoveryToolTipTemplate_3S = QObject::tr(

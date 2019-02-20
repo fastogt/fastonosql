@@ -20,7 +20,7 @@
 
 #include "proxy/connection_settings/iconnection_settings_remote.h"
 
-#include <fastonosql/core/db/ssdb/config.h>  // for Config
+#include <fastonosql/core/db/ssdb/config.h>
 
 namespace fastonosql {
 namespace proxy {

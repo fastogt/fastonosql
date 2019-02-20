@@ -20,8 +20,8 @@
 
 #include <string>
 
-#include <common/convert2string.h>  // for ConvertFromString, etc
-#include <common/utils.h>           // for decode64, encode64, crc64
+#include <common/convert2string.h>
+#include <common/utils.h>
 
 #if defined(BUILD_WITH_REDIS)
 #define LOGGING_REDIS_FILE_EXTENSION ".red"

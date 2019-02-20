@@ -26,7 +26,7 @@
 
 #include <common/macros.h>
 
-#include <common/qt/gui/icon_label.h>  // for IconLabel
+#include <common/qt/gui/icon_label.h>
 
 #include "translations/global.h"
 

@@ -33,17 +33,17 @@
 #include <QSpinBox>
 #include <QToolBar>
 
-#include <common/qt/convert2string.h>  // for ConvertToString
+#include <common/qt/convert2string.h>
 
 #include "proxy/sentinel_connection_settings_factory.h"
 
 #include "gui/connection_listwidget_items.h"
 #include "gui/dialogs/connection_diagnostic_dialog.h"
-#include "gui/dialogs/connection_dialog.h"  // for ConnectionDialog
+#include "gui/dialogs/connection_dialog.h"
 #include "gui/dialogs/discovery_sentinel_dialog.h"
-#include "gui/gui_factory.h"  // for GuiFactory
+#include "gui/gui_factory.h"
 
-#include "translations/global.h"  // for trAddConnection, trAddress, etc
+#include "translations/global.h"
 
 namespace {
 const QString trCreateSentinel = QObject::tr("Create sentinel");

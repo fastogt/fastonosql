@@ -18,11 +18,11 @@
 
 #pragma once
 
-#include <fastonosql/core/server_property_info.h>  // for property_t
+#include <fastonosql/core/server_property_info.h>
 
 #include "gui/dialogs/base_dialog.h"
 
-#include "proxy/proxy_fwd.h"  // for IServerSPtr
+#include "proxy/proxy_fwd.h"
 
 class QTableView;  // lines 26-26
 

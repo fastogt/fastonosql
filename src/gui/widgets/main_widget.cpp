@@ -20,12 +20,12 @@
 
 #include <common/qt/convert2string.h>
 
-#include "proxy/server/iserver.h"  // for IServer
+#include "proxy/server/iserver.h"
 #include "proxy/settings_manager.h"
 
-#include "gui/gui_factory.h"           // for GuiFactory
-#include "gui/main_tab_bar.h"          // for MainTabBar
-#include "gui/widgets/query_widget.h"  // for QueryWidget
+#include "gui/gui_factory.h"
+#include "gui/main_tab_bar.h"
+#include "gui/widgets/query_widget.h"
 #include "gui/widgets/welcome_widget.h"
 
 #include "translations/global.h"

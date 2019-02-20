@@ -18,10 +18,10 @@
 
 #include "gui/workers/discovery_sentinel_connection.h"
 
-#include <common/qt/convert2string.h>  // for ConvertFromString
-#include <common/time.h>               // for current_mstime
+#include <common/qt/convert2string.h>
+#include <common/time.h>
 
-#include "proxy/servers_manager.h"  // for ServersManager
+#include "proxy/servers_manager.h"
 
 namespace fastonosql {
 namespace gui {

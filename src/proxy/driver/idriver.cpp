@@ -24,15 +24,15 @@
 #include <QApplication>
 #include <QThread>
 
-#include <common/convert2string.h>  // for ConvertToString, etc
+#include <common/convert2string.h>
 #include <common/file_system/file.h>
 #include <common/file_system/file_system.h>
 #include <common/file_system/string_path_utils.h>
 #include <common/sprintf.h>
 #include <common/threads/platform_thread.h>
-#include <common/time.h>  // for current_mstime
+#include <common/time.h>
 
-#include "proxy/command/command_logger.h"  // for LOG_COMMAND
+#include "proxy/command/command_logger.h"
 #include "proxy/driver/first_child_update_root_locker.h"
 
 namespace {

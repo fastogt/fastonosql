@@ -18,7 +18,7 @@
 
 #include "proxy/events/events_info.h"
 
-#include <common/time.h>  // for current_mstime
+#include <common/time.h>
 
 namespace fastonosql {
 namespace proxy {

@@ -23,15 +23,15 @@
 #include <QMessageBox>
 #include <QPushButton>
 
-#include <common/qt/convert2string.h>  // for ConvertToString
+#include <common/qt/convert2string.h>
 
 #include "proxy/connection_settings_factory.h"
 
 #include "gui/connection_widgets_factory.h"
 #include "gui/dialogs/connection_diagnostic_dialog.h"
-#include "gui/gui_factory.h"  // for GuiFactory
+#include "gui/gui_factory.h"
 
-#include "translations/global.h"  // for trShow, trPrivateKey, etc
+#include "translations/global.h"
 
 namespace {
 const QString trTest = QObject::tr("&Test");

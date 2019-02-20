@@ -21,19 +21,19 @@
 #include <string>
 #include <vector>
 
-#include <common/qt/utils_qt.h>  // for EventInfo
+#include <common/qt/utils_qt.h>
 
 #include <fastonosql/core/command_info.h>
 #include <fastonosql/core/database/idatabase_info.h>
-#include <fastonosql/core/db_key.h>                // for NDbKValue
-#include <fastonosql/core/server/iserver_info.h>   // for IDataBaseInfoSPtr, IServerInf...
-#include <fastonosql/core/server_property_info.h>  // for property_t, ServerPropertiesInfo
+#include <fastonosql/core/db_key.h>
+#include <fastonosql/core/server/iserver_info.h>
+#include <fastonosql/core/server_property_info.h>
 
 #if defined(PRO_VERSION)
 #include <fastonosql/core/module_info.h>
 #endif
 
-#include <fastonosql/core/global.h>  // for FastoObjectIPtr
+#include <fastonosql/core/global.h>
 
 #include "proxy/db_client.h"
 #include "proxy/db_ps_channel.h"

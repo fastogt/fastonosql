@@ -24,9 +24,9 @@
 #include <Qsci/qscilexerxml.h>
 
 #include <common/qt/convert2string.h>
-#include <common/qt/utils_qt.h>  // for item
+#include <common/qt/utils_qt.h>
 
-#include "gui/models/items/fasto_common_item.h"  // for FastoCommonItem, toRaw, etc
+#include "gui/models/items/fasto_common_item.h"
 
 #include "translations/global.h"
 

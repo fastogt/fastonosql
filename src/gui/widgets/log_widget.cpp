@@ -25,9 +25,9 @@
 #include <QTextEdit>
 #include <QTime>
 
-#include <common/macros.h>  // for VERIFY
+#include <common/macros.h>
 
-#include "translations/global.h"  // for trClearAll
+#include "translations/global.h"
 
 namespace fastonosql {
 namespace gui {

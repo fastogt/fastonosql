@@ -20,10 +20,10 @@
 
 #include <QObject>
 
-#include <common/time.h>  // for current_mstime
+#include <common/time.h>
 
-#include "proxy/driver/idriver.h"  // for IDriver
-#include "proxy/events/events.h"   // for CommandRootCompleatedEvent, etc
+#include "proxy/driver/idriver.h"
+#include "proxy/events/events.h"
 
 namespace fastonosql {
 namespace proxy {

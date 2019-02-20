@@ -21,7 +21,7 @@
 #include <string>
 #include <vector>
 
-#include "proxy/driver/idriver_local.h"  // for IDriverLocal
+#include "proxy/driver/idriver_local.h"
 
 namespace fastonosql {
 namespace core {

@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <common/qt/gui/base/tree_model.h>  // for TreeModel
+#include <common/qt/gui/base/tree_model.h>
 
 namespace fastonosql {
 namespace core {

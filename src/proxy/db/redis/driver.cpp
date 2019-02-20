@@ -22,17 +22,17 @@
 #include <string>
 #include <vector>
 
-#include <common/convert2string.h>           // for ConvertFromString, etc
-#include <common/file_system/file_system.h>  // for copy_file
+#include <common/convert2string.h>
+#include <common/file_system/file_system.h>
 
-#include <fastonosql/core/db/redis/db_connection.h>  // for DBConnection, INFO_REQUEST, etc
+#include <fastonosql/core/db/redis/db_connection.h>
 
 #include <fastonosql/core/value.h>
 
-#include "proxy/command/command.h"  // for CreateCommand, etc
+#include "proxy/command/command.h"
 #include "proxy/command/command_logger.h"
-#include "proxy/db/redis/command.h"              // for Command
-#include "proxy/db/redis/connection_settings.h"  // for ConnectionSettings
+#include "proxy/db/redis/command.h"
+#include "proxy/db/redis/connection_settings.h"
 #include "proxy/db_client.h"
 
 #define REDIS_TYPE_COMMAND "TYPE"

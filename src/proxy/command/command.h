@@ -20,7 +20,7 @@
 
 #include <string>
 
-#include <fastonosql/core/global.h>  // for FastoObjectCommandIPtr, FastoObject (ptr ...
+#include <fastonosql/core/global.h>
 
 #include "proxy/types.h"
 

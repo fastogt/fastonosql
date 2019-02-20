@@ -18,8 +18,8 @@
 
 #pragma once
 
-#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
-#include "proxy/server/iserver_remote.h"                     // for IServerRemote
+#include "proxy/connection_settings/iconnection_settings.h"
+#include "proxy/server/iserver_remote.h"
 
 #include <fastonosql/core/module_info.h>
 

@@ -20,7 +20,7 @@
 
 #include <vector>
 
-#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
+#include "proxy/connection_settings/iconnection_settings.h"
 
 namespace fastonosql {
 namespace proxy {

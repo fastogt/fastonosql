@@ -18,8 +18,8 @@
 
 #pragma once
 
-#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
-#include "proxy/server/iserver_local.h"                      // for IServerLocal
+#include "proxy/connection_settings/iconnection_settings.h"
+#include "proxy/server/iserver_local.h"
 
 namespace fastonosql {
 namespace proxy {

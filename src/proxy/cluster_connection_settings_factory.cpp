@@ -22,7 +22,7 @@
 
 #include <common/convert2string.h>
 
-#include "proxy/db/redis/cluster_settings.h"  // for ClusterSettings
+#include "proxy/db/redis/cluster_settings.h"
 
 #include "proxy/connection_settings_factory.h"
 

@@ -20,7 +20,7 @@
 
 #include <vector>
 
-#include <fastonosql/core/db_key.h>  // for NDbKValue, NValue
+#include <fastonosql/core/db_key.h>
 
 #include "gui/widgets/base_widget.h"
 

@@ -18,11 +18,11 @@
 
 #pragma once
 
-#include <fastonosql/core/connection_types.h>  // for ConnectionType
+#include <fastonosql/core/connection_types.h>
 
 #include "gui/widgets/base_widget.h"
 
-#include "proxy/proxy_fwd.h"  // for IServerSPtr
+#include "proxy/proxy_fwd.h"
 
 class QGroupBox;
 

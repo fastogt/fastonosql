@@ -18,9 +18,9 @@
 
 #include "proxy/connection_settings/iconnection_settings_ssh.h"
 
-#include <common/qt/convert2string.h>
-
 #include <QInputDialog>
+
+#include <common/qt/convert2string.h>
 
 namespace {
 const QString trInputSSHPasswordForServer_1S = QObject::tr("SSH passoword for server: %1");

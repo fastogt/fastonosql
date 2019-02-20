@@ -26,17 +26,17 @@
 #include <QSplitter>
 #include <QVBoxLayout>
 
-#include <common/qt/convert2string.h>  // for ConvertToString
-#include <common/qt/logger.h>          // for LOG_ERROR
+#include <common/qt/convert2string.h>
+#include <common/qt/logger.h>
 
-#include "proxy/database/idatabase.h"  // for IDatabase
-#include "proxy/server/iserver.h"      // for IServer
+#include "proxy/database/idatabase.h"
+#include "proxy/server/iserver.h"
 
-#include "gui/gui_factory.h"  // for GuiFactory
+#include "gui/gui_factory.h"
 #include "gui/views/keys_table_view.h"
 #include "gui/widgets/icon_button.h"
 
-#include "translations/global.h"  // for trKeyCountOnThePage, etc
+#include "translations/global.h"
 
 namespace fastonosql {
 namespace gui {

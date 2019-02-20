@@ -25,18 +25,18 @@
 #include <QPushButton>
 #include <QSplitter>
 
-#include <common/qt/gui/icon_label.h>  // for IconLabel
+#include <common/qt/gui/icon_label.h>
 #include <common/qt/logger.h>
 
-#include "proxy/server/iserver.h"    // for IServer
-#include "proxy/settings_manager.h"  // for SettingsManager
+#include "proxy/server/iserver.h"
+#include "proxy/settings_manager.h"
 
-#include "gui/gui_factory.h"                     // for GuiFactory
-#include "gui/models/fasto_common_model.h"       // for FastoCommonModel
-#include "gui/models/items/fasto_common_item.h"  // for FastoCommonItem
-#include "gui/views/fasto_table_view.h"          // for FastoTableView
-#include "gui/views/fasto_text_view.h"           // for FastoTextView
-#include "gui/views/fasto_tree_view.h"           // for FastoTreeView
+#include "gui/gui_factory.h"
+#include "gui/models/fasto_common_model.h"
+#include "gui/models/items/fasto_common_item.h"
+#include "gui/views/fasto_table_view.h"
+#include "gui/views/fasto_text_view.h"
+#include "gui/views/fasto_tree_view.h"
 #include "gui/widgets/delegate/type_delegate.h"
 #include "gui/widgets/icon_button.h"
 #include "gui/widgets/save_key_edit_widget.h"

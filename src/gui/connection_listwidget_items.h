@@ -22,7 +22,7 @@
 
 #include <fastonosql/core/server/server_discovery_info.h>
 
-#include "proxy/connection_settings/iconnection_settings.h"  // for IClusterSettingsBaseSPtr, etc
+#include "proxy/connection_settings/iconnection_settings.h"
 
 #if defined(PRO_VERSION)
 #include "proxy/connection_settings/icluster_connection_settings.h"

@@ -26,14 +26,14 @@
 #include <QSplitter>
 
 #include <common/qt/convert2string.h>
-#include <common/qt/gui/base/graph_widget.h>  // for GraphWidget, etc
-#include <common/qt/gui/glass_widget.h>       // for GlassWidget
+#include <common/qt/gui/base/graph_widget.h>
+#include <common/qt/gui/glass_widget.h>
 
-#include "proxy/server/iserver.h"  // for IServer
+#include "proxy/server/iserver.h"
 
-#include "gui/gui_factory.h"  // for GuiFactory
+#include "gui/gui_factory.h"
 
-#include "translations/global.h"  // for trClearHistory
+#include "translations/global.h"
 
 namespace fastonosql {
 namespace gui {

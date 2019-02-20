@@ -18,7 +18,7 @@
 
 #include "gui/shell/base_lexer.h"
 
-#include <common/qt/convert2string.h>  // for ConvertFromString
+#include <common/qt/convert2string.h>
 #include <common/sprintf.h>
 
 namespace fastonosql {

@@ -20,7 +20,7 @@
 
 #include <QTabWidget>
 
-#include "proxy/proxy_fwd.h"  // for IServerSPtr
+#include "proxy/proxy_fwd.h"
 
 namespace fastonosql {
 namespace gui {

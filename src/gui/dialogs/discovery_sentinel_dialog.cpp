@@ -26,14 +26,14 @@
 #include <QVBoxLayout>
 
 #include <common/qt/convert2string.h>
-#include <common/qt/gui/glass_widget.h>  // for GlassWidget
+#include <common/qt/gui/glass_widget.h>
 
 #include "proxy/connection_settings/iconnection_settings_remote.h"
 #include "proxy/connection_settings_factory.h"
-#include "proxy/servers_manager.h"  // for ServersManager
+#include "proxy/servers_manager.h"
 
 #include "gui/connection_listwidget_items.h"
-#include "gui/gui_factory.h"  // for GuiFactory
+#include "gui/gui_factory.h"
 #include "gui/workers/discovery_sentinel_connection.h"
 
 #include "translations/global.h"

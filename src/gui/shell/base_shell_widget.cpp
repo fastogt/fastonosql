@@ -32,16 +32,16 @@
 #include <QToolBar>
 #include <QVBoxLayout>
 
-#include <common/qt/convert2string.h>  // for ConvertToString
-#include <common/qt/gui/icon_label.h>  // for IconLabel
-#include <common/qt/logger.h>          // for LOG_ERROR
+#include <common/qt/convert2string.h>
+#include <common/qt/gui/icon_label.h>
+#include <common/qt/logger.h>
 
 #include "proxy/server/iserver_local.h"
 #include "proxy/server/iserver_remote.h"
-#include "proxy/settings_manager.h"  // for SettingsManager
+#include "proxy/settings_manager.h"
 
-#include "gui/gui_factory.h"  // for GuiFactory
-#include "gui/shortcuts.h"    // for g_execute_key
+#include "gui/gui_factory.h"
+#include "gui/shortcuts.h"
 #include "gui/utils.h"
 #include "gui/widgets/icon_button.h"
 

@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <fastonosql/core/global.h>  // for FastoObject (ptr only), etc
+#include <fastonosql/core/global.h>
 
 namespace fastonosql {
 namespace proxy {

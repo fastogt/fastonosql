@@ -27,10 +27,10 @@
 #include <common/qt/convert2string.h>
 #include <common/qt/logger.h>
 
-#include "proxy/database/idatabase.h"  // for IDatabase
+#include "proxy/database/idatabase.h"
 
-#include "proxy/cluster/icluster.h"    // for ICluster
-#include "proxy/sentinel/isentinel.h"  // for ISentinel, Sentinel, etc
+#include "proxy/cluster/icluster.h"
+#include "proxy/sentinel/isentinel.h"
 #include "proxy/server/iserver.h"
 
 #include "gui/key_info.h"

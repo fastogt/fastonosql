@@ -21,14 +21,14 @@
 #include <QHBoxLayout>
 #include <QTableView>
 
-#include <common/qt/gui/glass_widget.h>  // for GlassWidget
+#include <common/qt/gui/glass_widget.h>
 
 #include "proxy/events/events_info.h"
-#include "proxy/server/iserver.h"  // for IServer
+#include "proxy/server/iserver.h"
 
 #include "gui/gui_factory.h"
 
-#include "gui/models/property_table_model.h"  // for PropertyTableModel, etc
+#include "gui/models/property_table_model.h"
 
 #include "translations/global.h"
 

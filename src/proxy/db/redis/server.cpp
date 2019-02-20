@@ -18,10 +18,10 @@
 
 #include "proxy/db/redis/server.h"
 
-#include <fastonosql/core/db/redis/server_info.h>  // for ServerInfo, etc
+#include <fastonosql/core/db/redis/server_info.h>
 
-#include "proxy/db/redis/driver.h"               // for Driver
-#include "proxy/db/redis_compatible/database.h"  // for Database
+#include "proxy/db/redis/driver.h"
+#include "proxy/db/redis_compatible/database.h"
 
 #define MASTER_ROLE "master"
 #define SLAVE_ROLE "slave"

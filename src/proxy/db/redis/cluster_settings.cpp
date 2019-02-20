@@ -18,7 +18,7 @@
 
 #include "proxy/db/redis/cluster_settings.h"
 
-#include <fastonosql/core/connection_types.h>  // for core::ConnectionType::REDIS
+#include <fastonosql/core/connection_types.h>
 
 namespace fastonosql {
 namespace proxy {

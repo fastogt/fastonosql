@@ -18,10 +18,10 @@
 
 #pragma once
 
-#include <common/net/types.h>  // for HostAndPort
+#include <common/net/types.h>
 
-#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
-#include "proxy/driver/idriver.h"                            // for IDriver
+#include "proxy/connection_settings/iconnection_settings.h"
+#include "proxy/driver/idriver.h"
 
 namespace fastonosql {
 namespace proxy {

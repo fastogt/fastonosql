@@ -26,7 +26,7 @@
 #include <common/protocols/json_rpc/json_rpc.h>
 #include <common/protocols/json_rpc/json_rpc_response.h>
 
-#include <common/system_info/system_info.h>  // for SystemInfo, etc
+#include <common/system_info/system_info.h>
 
 // methods
 #define GET_VERSION_METHOD "version"

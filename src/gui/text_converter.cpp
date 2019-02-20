@@ -23,12 +23,12 @@
 #include <json-c/json_tokener.h>
 
 #include <common/text_decoders/base64_edcoder.h>
-#include <common/text_decoders/compress_bzip2_edcoder.h>   // for CompressEDcoder
-#include <common/text_decoders/compress_lz4_edcoder.h>     // for CompressEDcoder
-#include <common/text_decoders/compress_snappy_edcoder.h>  // for CompressEDcoder
-#include <common/text_decoders/compress_zlib_edcoder.h>    // for CompressEDcoder
-#include <common/text_decoders/msgpack_edcoder.h>          // for MsgPackEDcoder
-#include <common/text_decoders/xhex_edcoder.h>             // for XHexEDcoder
+#include <common/text_decoders/compress_bzip2_edcoder.h>
+#include <common/text_decoders/compress_lz4_edcoder.h>
+#include <common/text_decoders/compress_snappy_edcoder.h>
+#include <common/text_decoders/compress_zlib_edcoder.h>
+#include <common/text_decoders/msgpack_edcoder.h>
+#include <common/text_decoders/xhex_edcoder.h>
 
 #include <common/convert2string.h>
 

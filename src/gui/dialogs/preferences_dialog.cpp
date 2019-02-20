@@ -30,13 +30,13 @@
 #include <QLineEdit>
 #include <QSpinBox>
 
-#include <common/qt/convert2string.h>             // for ConvertToString
-#include <common/qt/gui/app_style.h>              // for applyFont, applyStyle, etc
-#include <common/qt/translations/translations.h>  // for applyLanguage, etc
+#include <common/qt/convert2string.h>
+#include <common/qt/gui/app_style.h>
+#include <common/qt/translations/translations.h>
 
-#include "proxy/settings_manager.h"  // for SettingsManager
+#include "proxy/settings_manager.h"
 
-#include "gui/gui_factory.h"  // for GuiFactory
+#include "gui/gui_factory.h"
 #include "gui/widgets/path_widget.h"
 
 #include "translations/global.h"

@@ -20,7 +20,7 @@
 
 #include "gui/dialogs/base_dialog.h"
 
-#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
+#include "proxy/connection_settings/iconnection_settings.h"
 
 class QLabel;  // lines 28-28
 

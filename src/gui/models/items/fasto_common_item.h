@@ -22,9 +22,9 @@
 
 #include <QString>
 
-#include <common/qt/gui/base/tree_item.h>  // for TreeItem
+#include <common/qt/gui/base/tree_item.h>
 
-#include <fastonosql/core/db_key.h>  // for NDbKValue, NValue
+#include <fastonosql/core/db_key.h>
 
 namespace fastonosql {
 namespace gui {

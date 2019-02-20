@@ -27,17 +27,17 @@
 #include <QToolBar>
 #include <QVBoxLayout>
 
-#include "proxy/connection_settings/iconnection_settings.h"  // for IClusterSettingsBaseSPtr, etc
-#include "proxy/settings_manager.h"                          // for SettingsManager
+#include "proxy/connection_settings/iconnection_settings.h"
+#include "proxy/settings_manager.h"
 
 #include "gui/connection_listwidget_items.h"
-#include "gui/dialogs/cluster_dialog.h"     // for ClusterDialog
-#include "gui/dialogs/connection_dialog.h"  // for ConnectionDialog
+#include "gui/dialogs/cluster_dialog.h"
+#include "gui/dialogs/connection_dialog.h"
 #include "gui/dialogs/connection_select_type_dialog.h"
-#include "gui/dialogs/sentinel_dialog.h"  // for SentinelDialog
-#include "gui/gui_factory.h"              // for GuiFactory
+#include "gui/dialogs/sentinel_dialog.h"
+#include "gui/gui_factory.h"
 
-#include "translations/global.h"  // for trConnections, etc
+#include "translations/global.h"
 
 namespace {
 const QString trSelectConTypeTitle = QObject::tr("Select connection type");

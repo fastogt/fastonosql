@@ -27,11 +27,11 @@
 #include <QLineEdit>
 
 #include <common/convert2string.h>
-#include <common/qt/convert2string.h>  // for ConvertToString
+#include <common/qt/convert2string.h>
 
 #include <fastonosql/core/value.h>
 
-#include "gui/gui_factory.h"  // for GuiFactory
+#include "gui/gui_factory.h"
 #include "gui/models/hash_table_model.h"
 
 #include "gui/widgets/fasto_viewer.h"
@@ -39,7 +39,7 @@
 #include "gui/widgets/list_type_widget.h"
 #include "gui/widgets/stream_type_widget.h"
 
-#include "translations/global.h"  // for trAddItem, trRemoveItem, etc
+#include "translations/global.h"
 
 namespace fastonosql {
 namespace gui {

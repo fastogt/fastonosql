@@ -20,7 +20,7 @@
 
 #include <QVBoxLayout>
 
-#include "gui/views/fasto_editor_model_output.h"  // for FastoEditorModelOutput
+#include "gui/views/fasto_editor_model_output.h"
 
 namespace fastonosql {
 namespace gui {

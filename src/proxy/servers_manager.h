@@ -20,7 +20,7 @@
 
 #include <vector>
 
-#include <common/patterns/singleton_pattern.h>  // for LazySingleton
+#include <common/patterns/singleton_pattern.h>
 
 #include <common/error.h>
 

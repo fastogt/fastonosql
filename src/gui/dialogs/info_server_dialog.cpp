@@ -63,12 +63,12 @@
 #include <fastonosql/core/db/dynomite/server_info.h>
 #endif
 
-#include "proxy/events/events_info.h"  // for ServerInfoResponse, etc
-#include "proxy/server/iserver.h"      // for IServer
+#include "proxy/events/events_info.h"
+#include "proxy/server/iserver.h"
 
-#include <common/qt/gui/glass_widget.h>  // for GlassWidget
+#include <common/qt/gui/glass_widget.h>
 
-#include "gui/gui_factory.h"  // for GuiFactory
+#include "gui/gui_factory.h"
 
 #include "translations/global.h"
 

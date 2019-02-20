@@ -23,7 +23,7 @@
 #include <QSpinBox>
 #include <QStyledItemDelegate>
 
-#include "gui/models/keys_table_model.h"  // for KeysTableModel, etc
+#include "gui/models/keys_table_model.h"
 
 namespace {
 class NumericDelegate : public QStyledItemDelegate {

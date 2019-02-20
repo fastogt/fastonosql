@@ -20,11 +20,11 @@
 
 #include <string>
 
-#include <QMetaType>  // for qRegisterMetaType
+#include <QMetaType>
 #include <QThread>
 
 #include <common/qt/convert2string.h>
-#include <common/qt/gui/glass_widget.h>  // for GlassWidget
+#include <common/qt/gui/glass_widget.h>
 
 #include "gui/gui_factory.h"
 

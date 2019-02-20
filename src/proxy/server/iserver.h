@@ -22,11 +22,11 @@
 #include <vector>
 
 #include <fastonosql/core/db_traits.h>
-#include <fastonosql/core/icommand_translator.h>  // for translator_t
+#include <fastonosql/core/icommand_translator.h>
 
-#include "proxy/events/events.h"        // for BackupResponseEvent, etc
-#include "proxy/proxy_fwd.h"            // for IDatabaseSPtr
-#include "proxy/server/iserver_base.h"  // for IServerBase
+#include "proxy/events/events.h"
+#include "proxy/proxy_fwd.h"
+#include "proxy/server/iserver_base.h"
 #include "proxy/types.h"
 
 namespace fastonosql {

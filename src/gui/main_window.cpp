@@ -37,40 +37,40 @@
 #include <QGestureEvent>
 #endif
 
-#include <common/convert2string.h>  // for ConvertFromString, etc
+#include <common/convert2string.h>
 #include <common/file_system/file.h>
 #include <common/file_system/file_system.h>
-#include <common/text_decoders/iedcoder_factory.h>  // for IEDcoder, EDTypes::Hex
+#include <common/text_decoders/iedcoder_factory.h>
 
-#include <common/qt/convert2string.h>             // for ConvertToString
-#include <common/qt/gui/app_style.h>              // for applyFont, applyStyle
-#include <common/qt/logger.h>                     // for Logger
-#include <common/qt/translations/translations.h>  // for applyLanguage
+#include <common/qt/convert2string.h>
+#include <common/qt/gui/app_style.h>
+#include <common/qt/logger.h>
+#include <common/qt/translations/translations.h>
 
 #include <fastonosql/core/logger.h>
 
-#include "proxy/cluster/icluster.h"        // for ICluster
-#include "proxy/command/command_logger.h"  // for CommandLogger
-#include "proxy/sentinel/isentinel.h"      // for ISentinel
+#include "proxy/cluster/icluster.h"
+#include "proxy/command/command_logger.h"
+#include "proxy/sentinel/isentinel.h"
 #include "proxy/server/iserver.h"
-#include "proxy/servers_manager.h"   // for ServersManager
-#include "proxy/settings_manager.h"  // for SettingsManager
+#include "proxy/servers_manager.h"
+#include "proxy/settings_manager.h"
 
-#include "gui/dialogs/about_dialog.h"          // for AboutDialog
-#include "gui/dialogs/connections_dialog.h"    // for ConnectionsDialog
-#include "gui/dialogs/encode_decode_dialog.h"  // for EncodeDecodeDialog
+#include "gui/dialogs/about_dialog.h"
+#include "gui/dialogs/connections_dialog.h"
+#include "gui/dialogs/encode_decode_dialog.h"
 #include "gui/dialogs/how_to_use_dialog.h"
-#include "gui/dialogs/preferences_dialog.h"     // for PreferencesDialog
-#include "gui/explorer/explorer_tree_widget.h"  // for ExplorerTreeWidget
-#include "gui/gui_factory.h"                    // for GuiFactory
-#include "gui/shortcuts.h"                      // for g_full_screen_key, g_open_key, etc
+#include "gui/dialogs/preferences_dialog.h"
+#include "gui/explorer/explorer_tree_widget.h"
+#include "gui/gui_factory.h"
+#include "gui/shortcuts.h"
 #include "gui/utils.h"
-#include "gui/widgets/log_tab_widget.h"    // for LogTabWidget
-#include "gui/widgets/main_widget.h"       // for MainWidget
-#include "gui/workers/statistic_sender.h"  // for StatisticSender
-#include "gui/workers/update_checker.h"    // for UpdateChecker
+#include "gui/widgets/log_tab_widget.h"
+#include "gui/widgets/main_widget.h"
+#include "gui/workers/statistic_sender.h"
+#include "gui/workers/update_checker.h"
 
-#include "translations/global.h"  // for trError, trCheckVersion, etc
+#include "translations/global.h"
 
 namespace {
 

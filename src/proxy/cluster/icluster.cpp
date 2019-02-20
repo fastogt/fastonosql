@@ -18,7 +18,7 @@
 
 #include "proxy/cluster/icluster.h"
 
-#include "proxy/server/iserver_remote.h"  // for IServerRemote
+#include "proxy/server/iserver_remote.h"
 
 namespace fastonosql {
 namespace proxy {

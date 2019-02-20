@@ -23,34 +23,34 @@
 #include <common/convert2string.h>
 
 #if defined(BUILD_WITH_REDIS)
-#include "proxy/db/redis/connection_settings.h"  // for ConnectionSettings
+#include "proxy/db/redis/connection_settings.h"
 #endif
 #if defined(BUILD_WITH_MEMCACHED)
-#include "proxy/db/memcached/connection_settings.h"  // for ConnectionSettings
+#include "proxy/db/memcached/connection_settings.h"
 #endif
 #if defined(BUILD_WITH_SSDB)
-#include "proxy/db/ssdb/connection_settings.h"  // for ConnectionSettings
+#include "proxy/db/ssdb/connection_settings.h"
 #endif
 #if defined(BUILD_WITH_LEVELDB)
-#include "proxy/db/leveldb/connection_settings.h"  // for ConnectionSettings
+#include "proxy/db/leveldb/connection_settings.h"
 #endif
 #if defined(BUILD_WITH_ROCKSDB)
-#include "proxy/db/rocksdb/connection_settings.h"  // for ConnectionSettings
+#include "proxy/db/rocksdb/connection_settings.h"
 #endif
 #if defined(BUILD_WITH_UNQLITE)
-#include "proxy/db/unqlite/connection_settings.h"  // for ConnectionSettings
+#include "proxy/db/unqlite/connection_settings.h"
 #endif
 #if defined(BUILD_WITH_LMDB)
-#include "proxy/db/lmdb/connection_settings.h"  // for ConnectionSettings
+#include "proxy/db/lmdb/connection_settings.h"
 #endif
 #if defined(BUILD_WITH_FORESTDB)
-#include "proxy/db/forestdb/connection_settings.h"  // for ConnectionSettings
+#include "proxy/db/forestdb/connection_settings.h"
 #endif
 #if defined(BUILD_WITH_PIKA)
-#include "proxy/db/pika/connection_settings.h"  // for ConnectionSettings
+#include "proxy/db/pika/connection_settings.h"
 #endif
 #if defined(BUILD_WITH_DYNOMITE)
-#include "proxy/db/dynomite/connection_settings.h"  // for ConnectionSettings
+#include "proxy/db/dynomite/connection_settings.h"
 #endif
 
 namespace fastonosql {

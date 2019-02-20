@@ -18,9 +18,9 @@
 
 #pragma once
 
-#include <common/qt/gui/base/table_model.h>  // for TableModel
+#include <common/qt/gui/base/table_model.h>
 
-#include <fastonosql/core/server_property_info.h>  // for property_t
+#include <fastonosql/core/server_property_info.h>
 
 namespace fastonosql {
 namespace gui {

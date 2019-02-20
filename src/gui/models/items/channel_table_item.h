@@ -20,7 +20,7 @@
 
 #include <QString>
 
-#include <common/qt/gui/base/table_item.h>  // for TableItem
+#include <common/qt/gui/base/table_item.h>
 
 #include "proxy/db_ps_channel.h"
 

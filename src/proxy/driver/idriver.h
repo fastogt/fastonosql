@@ -23,13 +23,13 @@
 
 #include <QObject>
 
-#include <fastonosql/core/cdb_connection_client.h>  // for CDBConnectionClient
-#include <fastonosql/core/icommand_translator.h>    // for translator_t
+#include <fastonosql/core/cdb_connection_client.h>
+#include <fastonosql/core/icommand_translator.h>
 
-#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
-#include "proxy/events/events.h"                             // for BackupRequestEvent, ChangeMa...
+#include "proxy/connection_settings/iconnection_settings.h"
+#include "proxy/events/events.h"
 
-class QThread;  // lines 37-37
+class QThread;
 namespace common {
 namespace file_system {
 class ANSIFile;

@@ -21,9 +21,9 @@
 #include <QEvent>
 #include <QMenu>
 
-#include <common/macros.h>  // for VERIFY
+#include <common/macros.h>
 
-#include "gui/shortcuts.h"  // for g_close_key, g_new_tab_key, etc
+#include "gui/shortcuts.h"
 
 #include "translations/global.h"
 

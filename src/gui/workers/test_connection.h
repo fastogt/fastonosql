@@ -20,7 +20,7 @@
 
 #include <QObject>
 
-#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr
+#include "proxy/connection_settings/iconnection_settings.h"
 
 namespace fastonosql {
 namespace gui {

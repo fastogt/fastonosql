@@ -21,7 +21,7 @@
 #include "gui/dialogs/base_dialog.h"
 
 #include "proxy/events/events_info.h"
-#include "proxy/proxy_fwd.h"  // for IServerSPtr
+#include "proxy/proxy_fwd.h"
 
 class QComboBox;    // lines 23-23
 class QPushButton;  // lines 24-24

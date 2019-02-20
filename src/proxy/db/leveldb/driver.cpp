@@ -18,13 +18,13 @@
 
 #include "proxy/db/leveldb/driver.h"
 
-#include <fastonosql/core/db/leveldb/db_connection.h>  // for DBConnection
+#include <fastonosql/core/db/leveldb/db_connection.h>
 
-#include "proxy/command/command.h"                 // for CreateCommand, etc
-#include "proxy/command/command_logger.h"          // for LOG_COMMAND
-#include "proxy/db/leveldb/command.h"              // for Command
-#include "proxy/db/leveldb/connection_settings.h"  // for ConnectionSettings
-#include "proxy/db/leveldb/database.h"             // for DataBaseInfo
+#include "proxy/command/command.h"
+#include "proxy/command/command_logger.h"
+#include "proxy/db/leveldb/command.h"
+#include "proxy/db/leveldb/connection_settings.h"
+#include "proxy/db/leveldb/database.h"
 
 namespace fastonosql {
 namespace proxy {

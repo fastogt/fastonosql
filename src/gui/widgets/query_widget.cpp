@@ -22,9 +22,9 @@
 #include <QSplitter>
 #include <QVBoxLayout>
 
-#include "proxy/server/iserver.h"  // for IServer
+#include "proxy/server/iserver.h"
 
-#include "gui/widgets/output_widget.h"  // for OutputWidget
+#include "gui/widgets/output_widget.h"
 
 #include "gui/shell/base_shell_widget.h"
 

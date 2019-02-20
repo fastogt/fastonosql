@@ -26,13 +26,13 @@
 #include <QToolButton>
 #include <QVBoxLayout>
 
-#include <common/qt/convert2string.h>  // for ConvertToString
+#include <common/qt/convert2string.h>
 #include <common/text_decoders/iedcoder_factory.h>
 
-#include "gui/gui_factory.h"           // for GuiFactory
-#include "gui/widgets/fasto_editor.h"  // for FastoEditor
+#include "gui/gui_factory.h"
+#include "gui/widgets/fasto_editor.h"
 
-#include "translations/global.h"  // for trDecode, trEncode, etc"
+#include "translations/global.h"
 
 namespace fastonosql {
 namespace gui {

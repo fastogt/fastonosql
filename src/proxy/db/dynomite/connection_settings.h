@@ -22,7 +22,7 @@
 
 #include "proxy/connection_settings/iconnection_settings_ssh.h"
 
-#include <fastonosql/core/db/dynomite/config.h>  // for Config
+#include <fastonosql/core/db/dynomite/config.h>
 
 namespace fastonosql {
 namespace proxy {

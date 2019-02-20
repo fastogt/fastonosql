@@ -20,7 +20,7 @@
 
 #include <common/net/socket_tcp.h>
 
-#include "proxy/server_config.h"  // for FASTONOSQL_URL, etc
+#include "proxy/server_config.h"
 
 namespace fastonosql {
 namespace {

@@ -31,9 +31,9 @@
 
 #include <QKeyEvent>
 
-#include <common/macros.h>  // for VERIFY
+#include <common/macros.h>
 
-#include <common/qt/gui/shortcuts.h>  // for isAutoCompleteShortcut, etc
+#include <common/qt/gui/shortcuts.h>
 
 namespace {
 int GetNumberOfDigits(int x) {

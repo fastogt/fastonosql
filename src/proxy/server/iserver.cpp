@@ -22,12 +22,12 @@
 
 #include <QApplication>
 
-#include <common/qt/logger.h>  // for LOG_ERROR
+#include <common/qt/logger.h>
 #include <common/sprintf.h>
 
 #include <fastonosql/core/db_traits.h>
 
-#include "proxy/driver/idriver.h"  // for IDriver
+#include "proxy/driver/idriver.h"
 
 namespace fastonosql {
 namespace proxy {

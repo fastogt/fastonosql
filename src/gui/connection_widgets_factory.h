@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <common/patterns/singleton_pattern.h>  // for LazySingleton
+#include <common/patterns/singleton_pattern.h>
 
 #include "gui/widgets/connection_base_widget.h"
 

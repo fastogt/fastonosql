@@ -23,7 +23,7 @@
 
 #include <QIcon>
 
-#include "gui/gui_factory.h"  // for GuiFactory
+#include "gui/gui_factory.h"
 
 #if defined(BUILD_WITH_REDIS)
 #include "gui/db/redis/lexer.h"

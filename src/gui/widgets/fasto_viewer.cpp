@@ -30,7 +30,7 @@
 
 #include <common/convert2string.h>
 #include <common/qt/convert2string.h>
-#include <common/qt/utils_qt.h>  // for item
+#include <common/qt/utils_qt.h>
 
 #include <fastonosql/core/types.h>
 

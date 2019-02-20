@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "proxy/server/iserver.h"  // for IServer
+#include "proxy/server/iserver.h"
 
 namespace fastonosql {
 namespace proxy {

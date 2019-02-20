@@ -18,9 +18,9 @@
 
 #pragma once
 
-#include <common/qt/gui/base/table_model.h>  // for TableModel
+#include <common/qt/gui/base/table_model.h>
 
-#include <fastonosql/core/db_key.h>  // for NDbKValue, ttl_t
+#include <fastonosql/core/db_key.h>
 
 namespace fastonosql {
 namespace gui {

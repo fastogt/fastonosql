@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "proxy/driver/idriver.h"  // for IDriver
+#include "proxy/driver/idriver.h"
 
 namespace fastonosql {
 namespace proxy {

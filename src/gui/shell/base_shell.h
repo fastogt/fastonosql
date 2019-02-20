@@ -18,9 +18,9 @@
 
 #pragma once
 
-#include <fastonosql/core/connection_types.h>  // for ConnectionType
+#include <fastonosql/core/connection_types.h>
 
-#include "gui/editor/fasto_editor_shell.h"  // for FastoEditorShell
+#include "gui/editor/fasto_editor_shell.h"
 
 namespace fastonosql {
 namespace gui {

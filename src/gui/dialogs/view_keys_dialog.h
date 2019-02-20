@@ -24,7 +24,7 @@
 
 #include "gui/dialogs/base_dialog.h"
 
-#include "proxy/proxy_fwd.h"  // for IDatabaseSPtr
+#include "proxy/proxy_fwd.h"
 
 class QLabel;     // lines 30-30
 class QLineEdit;  // lines 28-28

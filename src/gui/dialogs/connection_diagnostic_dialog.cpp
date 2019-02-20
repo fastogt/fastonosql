@@ -25,10 +25,10 @@
 #include <QVBoxLayout>
 
 #include <common/qt/convert2string.h>
-#include <common/qt/gui/glass_widget.h>  // for GlassWidget
+#include <common/qt/gui/glass_widget.h>
 
-#include "gui/gui_factory.h"              // for GuiFactory
-#include "gui/workers/test_connection.h"  // for TestConnection
+#include "gui/gui_factory.h"
+#include "gui/workers/test_connection.h"
 
 #include "translations/global.h"
 

@@ -18,8 +18,8 @@
 
 #include "proxy/connection_settings/icluster_connection_settings.h"
 
-#include <common/macros.h>     // for DNOTREACHED
-#include <common/net/types.h>  // for HostAndPort, operator==
+#include <common/macros.h>
+#include <common/net/types.h>
 
 #include "proxy/connection_settings/iconnection_settings_remote.h"
 

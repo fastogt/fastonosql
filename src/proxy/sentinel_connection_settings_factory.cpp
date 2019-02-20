@@ -27,7 +27,7 @@
 #include "proxy/connection_settings_factory.h"
 
 #if defined(BUILD_WITH_REDIS)
-#include "proxy/db/redis/sentinel_settings.h"  // for SentinelSettings
+#include "proxy/db/redis/sentinel_settings.h"
 #endif
 
 namespace fastonosql {

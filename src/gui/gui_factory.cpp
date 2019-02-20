@@ -29,7 +29,7 @@
 
 #include <fastonosql/core/value.h>
 
-#include "proxy/settings_manager.h"  // for SettingsManager
+#include "proxy/settings_manager.h"
 
 #define CONNECT_GIF_PATH_RELATIVE "share/resources/help/connect.gif"
 #define INDIVIDUAL_BUILDS_GIF_PATH_RELATIVE "share/resources/help/individual_builds.gif"

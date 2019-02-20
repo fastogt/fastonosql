@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "proxy/driver/root_locker.h"  // for RootLocker
+#include "proxy/driver/root_locker.h"
 
 namespace fastonosql {
 namespace proxy {

@@ -18,7 +18,7 @@
 
 #include "gui/models/items/client_table_item.h"
 
-#include <common/qt/convert2string.h>  // for ConvertFromString
+#include <common/qt/convert2string.h>
 
 namespace fastonosql {
 namespace gui {

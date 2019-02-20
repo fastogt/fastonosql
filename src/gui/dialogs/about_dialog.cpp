@@ -37,7 +37,7 @@
 #include <common/config.h>
 #include <common/qt/convert2string.h>
 
-#include "gui/gui_factory.h"  // for GuiFactory
+#include "gui/gui_factory.h"
 
 #include "translations/global.h"
 

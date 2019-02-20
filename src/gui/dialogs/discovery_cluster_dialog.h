@@ -18,14 +18,14 @@
 
 #pragma once
 
-#include <vector>  // for vector
+#include <vector>
 
 #include <fastonosql/core/cluster/cluster_discovery_info.h>
 
 #include "gui/dialogs/base_dialog.h"
 
 #include "proxy/connection_settings/icluster_connection_settings.h"
-#include "proxy/connection_settings/iconnection_settings.h"  // for IConnectionSettingsBaseSPtr, etc
+#include "proxy/connection_settings/iconnection_settings.h"
 
 class QMovie;
 class QLabel;

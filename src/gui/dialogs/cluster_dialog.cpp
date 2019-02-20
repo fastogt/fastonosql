@@ -34,17 +34,17 @@
 #include <QSpinBox>
 #include <QToolBar>
 
-#include <common/qt/convert2string.h>  // for ConvertToString
+#include <common/qt/convert2string.h>
 #include <common/types.h>
 
-#include <fastonosql/core/connection_types.h>  // for ConnectionType, etc
+#include <fastonosql/core/connection_types.h>
 #include "proxy/cluster_connection_settings_factory.h"
 
 #include "gui/connection_listwidget_items.h"
 #include "gui/dialogs/connection_diagnostic_dialog.h"
-#include "gui/dialogs/connection_dialog.h"  // for ConnectionDialog
+#include "gui/dialogs/connection_dialog.h"
 #include "gui/dialogs/discovery_cluster_dialog.h"
-#include "gui/gui_factory.h"  // for GuiFactory
+#include "gui/gui_factory.h"
 
 #include "translations/global.h"
 
