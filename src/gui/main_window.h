@@ -29,8 +29,8 @@
 #include "proxy/connection_settings/isentinel_connection_settings.h"
 #endif
 
-class QAction;      // lines 27-27
-class QDockWidget;  // lines 28-28
+class QAction;
+class QDockWidget;
 #if defined(OS_ANDROID)
 class QGestureEvent;
 class QSwipeGesture;

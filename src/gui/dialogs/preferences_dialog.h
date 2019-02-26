@@ -20,13 +20,13 @@
 
 #include "gui/dialogs/base_dialog.h"
 
-class QCheckBox;      // lines 25-25
-class QComboBox;      // lines 23-23
-class QFontComboBox;  // lines 24-24
+class QCheckBox;
+class QComboBox;
+class QFontComboBox;
 class QSpinBox;
-class QGroupBox;  // lines 28-28
-class QLabel;     // lines 26-26
-class QLineEdit;  // lines 27-27
+class QGroupBox;
+class QLabel;
+class QLineEdit;
 
 namespace fastonosql {
 namespace gui {

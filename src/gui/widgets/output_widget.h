@@ -26,7 +26,7 @@
 #include "proxy/proxy_fwd.h"
 #include "proxy/types.h"
 
-class QPushButton;  // lines 27-27
+class QPushButton;
 class QTreeView;
 class QTableView;
 

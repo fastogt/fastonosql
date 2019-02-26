@@ -65,6 +65,8 @@
 #include "gui/db/dynomite/lexer.h"
 #endif
 
+#include "proxy/settings_manager.h"
+
 namespace {
 const QSize kImageSize = QSize(32, 32);
 }
@@ -138,13 +140,17 @@ BaseShell::BaseShell(core::ConnectionType type, bool show_auto_complete, QWidget
 
   BaseQsciLexer* lex = createLexer(type, this);
   setLexer(lex);
-  lex->setFont(gui::GuiFactory::GetInstance().font());
 }
 
 BaseQsciLexer* BaseShell::lexer() const {
   BaseQsciLexer* lex = dynamic_cast<BaseQsciLexer*>(gui::FastoEditorShell::lexer());  // +
   CHECK(lex);
   return lex;
+}
+
+void BaseShell::updateFont() {
+  lexer()->setFont(proxy::SettingsManager::GetInstance()->GetCurrentFont());
+  base_class::updateFont();
 }
 
 QString BaseShell::version() const {

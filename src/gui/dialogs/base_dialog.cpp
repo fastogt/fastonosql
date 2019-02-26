@@ -33,12 +33,16 @@ BaseDialog::~BaseDialog() {}
 void BaseDialog::changeEvent(QEvent* e) {
   if (e->type() == QEvent::LanguageChange) {
     retranslateUi();
+  } else if (e->type() == QEvent::FontChange) {
+    updateFont();
   }
 
   base_class::changeEvent(e);
 }
 
 void BaseDialog::retranslateUi() {}
+
+void BaseDialog::updateFont() {}
 
 }  // namespace gui
 }  // namespace fastonosql

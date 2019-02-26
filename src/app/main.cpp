@@ -31,6 +31,7 @@
 #include <common/file_system/file_system.h>
 #include <common/file_system/string_path_utils.h>
 #include <common/net/socket_tcp.h>
+#include <common/qt/gui/app_style.h>
 #include <common/qt/translations/translations.h>
 #include <common/time.h>
 
@@ -191,6 +192,12 @@ int main(int argc, char* argv[]) {
   // Cross Platform High DPI support - Qt 5.7
   app.setAttribute(Qt::AA_EnableHighDpiScaling);
   app.setWindowIcon(fastonosql::gui::GuiFactory::GetInstance().logoIcon());  // default icon for app
+
+  const QString current_language = settings_manager->GetCurrentLanguage();
+  const QString new_language = common::qt::translations::applyLanguage(current_language);
+  settings_manager->SetCurrentLanguage(new_language);
+  common::qt::gui::applyStyle(settings_manager->GetCurrentStyle());
+  common::qt::gui::applyFont(settings_manager->GetCurrentFont());
 
   // EULA License Agreement
   if (!settings_manager->GetAccpetedEula()) {

@@ -26,8 +26,8 @@
 
 #include "proxy/connection_settings/iconnection_settings.h"
 
-class QLabel;       // lines 29-29
-class QTreeWidget;  // lines 30-30
+class QLabel;
+class QTreeWidget;
 
 namespace common {
 namespace qt {

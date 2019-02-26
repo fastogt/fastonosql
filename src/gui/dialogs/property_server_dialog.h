@@ -24,7 +24,7 @@
 
 #include "proxy/proxy_fwd.h"
 
-class QTableView;  // lines 26-26
+class QTableView;
 
 namespace common {
 namespace qt {

@@ -23,7 +23,7 @@
 #include "proxy/events/events_info.h"
 #include "proxy/proxy_fwd.h"
 
-class QAction;  // lines 23-23
+class QAction;
 class QPoint;
 class QSortFilterProxyModel;
 

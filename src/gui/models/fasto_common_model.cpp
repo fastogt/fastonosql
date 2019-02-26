@@ -28,6 +28,8 @@
 #include "gui/gui_factory.h"
 #include "gui/models/items/fasto_common_item.h"
 
+#include "proxy/settings_manager.h"
+
 #include "translations/global.h"
 
 Q_DECLARE_METATYPE(fastonosql::core::NValue)
@@ -51,7 +53,7 @@ QVariant FastoCommonModel::data(const QModelIndex& index, int role) const {
   }
 
   if (role == Qt::FontRole) {
-    return gui::GuiFactory::GetInstance().font();
+    return proxy::SettingsManager::GetInstance()->GetCurrentFont();
   }
 
   int col = index.column();

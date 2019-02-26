@@ -22,8 +22,8 @@
 
 #include "proxy/proxy_fwd.h"
 
-class QLabel;     // lines 30-30
-class QLineEdit;  // lines 28-28
+class QLabel;
+class QLineEdit;
 class QSortFilterProxyModel;
 
 namespace fastonosql {

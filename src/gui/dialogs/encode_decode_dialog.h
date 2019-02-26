@@ -20,8 +20,8 @@
 
 #include "gui/dialogs/base_dialog.h"
 
-class QComboBox;     // lines 23-23
-class QRadioButton;  // lines 24-24
+class QComboBox;
+class QRadioButton;
 
 namespace fastonosql {
 namespace gui {

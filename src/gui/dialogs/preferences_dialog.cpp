@@ -36,7 +36,6 @@
 
 #include "proxy/settings_manager.h"
 
-#include "gui/gui_factory.h"
 #include "gui/widgets/path_widget.h"
 
 #include "translations/global.h"
@@ -134,7 +133,7 @@ void PreferencesDialog::accept() {
 
   const QFont current_font(font_combo_box_->currentText(), font_size_spin_box_->value());
   proxy::SettingsManager::GetInstance()->SetCurrentFont(current_font);
-  common::qt::gui::applyFont(gui::GuiFactory::GetInstance().font());
+  common::qt::gui::applyFont(current_font);
 
   const QVariant view_var = default_view_combo_box_->currentData();
   proxy::SupportedView view = static_cast<proxy::SupportedView>(qvariant_cast<unsigned char>(view_var));

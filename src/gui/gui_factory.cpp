@@ -29,8 +29,6 @@
 
 #include <fastonosql/core/value.h>
 
-#include "proxy/settings_manager.h"
-
 #define CONNECT_GIF_PATH_RELATIVE "share/resources/help/connect.gif"
 #define INDIVIDUAL_BUILDS_GIF_PATH_RELATIVE "share/resources/help/individual_builds.gif"
 #define WORKFLOW_GIF_PATH_RELATIVE "share/resources/help/workflow.gif"
@@ -464,10 +462,6 @@ const QIcon& GuiFactory::emailIcon() const {
 
 const QIcon& GuiFactory::homePageIcon() const {
   return mainWindowIcon();
-}
-
-QFont GuiFactory::font() const {
-  return proxy::SettingsManager::GetInstance()->GetCurrentFont();
 }
 
 const QString& GuiFactory::pathToLoadingGif() const {

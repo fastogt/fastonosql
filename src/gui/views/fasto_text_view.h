@@ -20,7 +20,7 @@
 
 #include <QWidget>
 
-class QAbstractItemModel;  // lines 25-25
+class QAbstractItemModel;
 
 namespace fastonosql {
 namespace gui {

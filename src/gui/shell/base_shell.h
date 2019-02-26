@@ -47,6 +47,8 @@ class BaseShell : public FastoEditorShell {
  protected:
   BaseShell(core::ConnectionType type, bool show_auto_complete, QWidget* parent = Q_NULLPTR);
   BaseQsciLexer* lexer() const;
+
+  void updateFont() override;
 };
 
 }  // namespace gui

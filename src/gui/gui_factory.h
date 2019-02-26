@@ -25,9 +25,6 @@
 
 #include <fastonosql/core/connection_types.h>
 
-class QIcon;
-class QString;
-
 namespace fastonosql {
 namespace gui {
 
@@ -103,7 +100,6 @@ class GuiFactory : public common::patterns::LazySingleton<GuiFactory> {
   const QIcon& emailIcon() const;
   const QIcon& homePageIcon() const;
 
-  QFont font() const;
   const QString& pathToLoadingGif() const;
   QString pathToIndividualBuilds() const;
   QString pathToConnectGif() const;

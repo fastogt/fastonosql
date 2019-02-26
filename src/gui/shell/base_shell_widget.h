@@ -29,9 +29,9 @@
 #include "gui/widgets/base_widget.h"
 #include "proxy/proxy_fwd.h"
 
-class QPushButton;   // lines 26-26
-class QComboBox;     // lines 29-29
-class QProgressBar;  // lines 27-27
+class QPushButton;
+class QComboBox;
+class QProgressBar;
 class QCheckBox;
 class QSpinBox;
 class QHBoxLayout;

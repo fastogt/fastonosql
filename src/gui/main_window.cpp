@@ -43,7 +43,6 @@
 #include <common/text_decoders/iedcoder_factory.h>
 
 #include <common/qt/convert2string.h>
-#include <common/qt/gui/app_style.h>
 #include <common/qt/logger.h>
 #include <common/qt/translations/translations.h>
 
@@ -108,14 +107,6 @@ MainWindow::MainWindow() : QMainWindow() {
   // grabGesture(Qt::PanGesture);  // drag and drop
   // grabGesture(Qt::PinchGesture);  // zoom
 #endif
-  const QString lang = proxy::SettingsManager::GetInstance()->GetCurrentLanguage();
-  const QString new_language = common::qt::translations::applyLanguage(lang);
-  proxy::SettingsManager::GetInstance()->SetCurrentLanguage(new_language);
-
-  const QString style = proxy::SettingsManager::GetInstance()->GetCurrentStyle();
-  common::qt::gui::applyStyle(style);
-
-  common::qt::gui::applyFont(gui::GuiFactory::GetInstance().font());
 
 #if defined(PRO_VERSION)
   proxy::UserInfo user_info = proxy::SettingsManager::GetInstance()->GetUserInfo();

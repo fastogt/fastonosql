@@ -39,11 +39,13 @@ class BaseDialog : public QDialog {
   void changeEvent(QEvent* ev) override;
 
   virtual void retranslateUi();
+  virtual void updateFont();
 };
 
 template <typename T, typename... Args>
 inline T* createDialog(Args&&... args) {
   T* dialog = new T(std::forward<Args>(args)...);
+  dialog->updateFont();
   dialog->retranslateUi();  // protected
   return dialog;
 }

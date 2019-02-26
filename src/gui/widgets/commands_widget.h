@@ -22,7 +22,7 @@
 
 #include <fastonosql/core/global.h>
 
-class QTextEdit;  // lines 23-23
+class QTextEdit;
 
 namespace fastonosql {
 namespace gui {

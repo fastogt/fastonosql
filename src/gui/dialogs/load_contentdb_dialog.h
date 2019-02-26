@@ -20,8 +20,8 @@
 
 #include "gui/dialogs/base_dialog.h"
 
-class QLineEdit;  // lines 25-25
-class QSpinBox;   // lines 26-26
+class QLineEdit;
+class QSpinBox;
 class QLabel;
 
 namespace fastonosql {

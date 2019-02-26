@@ -38,6 +38,7 @@ class BaseWidget : public QWidget {
 
   virtual void init();
   virtual void retranslateUi();
+  virtual void updateFont();
 
   void changeEvent(QEvent* ev) override;
 };
@@ -46,6 +47,7 @@ template <typename T, typename... Args>
 inline T* createWidget(Args&&... args) {
   T* widget = new T(std::forward<Args>(args)...);
   widget->init();
+  widget->updateFont();
   widget->retranslateUi();  // protected
   return widget;
 }

@@ -22,7 +22,7 @@
 
 #include "proxy/connection_settings/iconnection_settings.h"
 
-class QLabel;  // lines 28-28
+class QLabel;
 
 namespace common {
 namespace qt {

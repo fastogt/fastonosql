@@ -23,8 +23,8 @@
 #include "proxy/events/events_info.h"
 #include "proxy/proxy_fwd.h"
 
-class QComboBox;    // lines 23-23
-class QPushButton;  // lines 24-24
+class QComboBox;
+class QPushButton;
 
 namespace common {
 namespace qt {

@@ -31,9 +31,13 @@ void BaseWidget::init() {}
 
 void BaseWidget::retranslateUi() {}
 
+void BaseWidget::updateFont() {}
+
 void BaseWidget::changeEvent(QEvent* e) {
   if (e->type() == QEvent::LanguageChange) {
     retranslateUi();
+  } else if (e->type() == QEvent::FontChange) {
+    updateFont();
   }
 
   base_class::changeEvent(e);
