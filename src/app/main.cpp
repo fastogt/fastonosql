@@ -142,14 +142,13 @@ common::ErrnoError ban_user(const fastonosql::proxy::UserInfo& user, const std::
     return err;
   }
 
-  std::string ban_reply;
-  size_t nread;
-  err = client.Read(&ban_reply, 256, &nread);
+  common::char_buffer_t ban_reply;
+  err = client.ReadToBuffer(&ban_reply, 256);
   if (err) {
     return err;
   }
 
-  common::Error jerror = fastonosql::proxy::ParseGenBanUserResponse(ban_reply);
+  common::Error jerror = fastonosql::proxy::ParseGenBanUserResponse(ban_reply.as_string());
   if (jerror) {
     return common::make_errno_error(jerror->GetDescription(), EINTR);
   }
