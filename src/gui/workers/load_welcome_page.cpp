@@ -25,8 +25,10 @@
 #include "gui/socket_tls.h"
 
 #define CONTENT_PORT 443
-#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
+#if defined(PRO_VERSION)
 #define CONTENT_PATH "/welcome_app_pro/" PROJECT_VERSION ".html"
+#elif defined(ENTERPRISE_VERSION)
+#define CONTENT_PATH "/welcome_app_enterprise/" PROJECT_VERSION ".html"
 #else
 #define CONTENT_PATH "/welcome_app/" PROJECT_VERSION ".html"
 #endif

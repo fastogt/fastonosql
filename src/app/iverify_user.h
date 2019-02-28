@@ -28,6 +28,8 @@
 
 namespace fastonosql {
 
+common::Error GenerateHash(const std::string& password, std::string* result);
+
 class IVerifyUser : public QObject {
   Q_OBJECT
 

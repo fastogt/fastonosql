@@ -73,8 +73,10 @@
 
 namespace {
 
-#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
+#if defined(PRO_VERSION)
 const char kIniPath[] = "~/.config/" PROJECT_NAME "/config_new_pro.ini";
+#elif defined(ENTERPRISE_VERSION)
+const char kIniPath[] = "~/.config/" PROJECT_NAME "/config_new_enterprise.ini";
 #else
 const char kIniPath[] = "~/.config/" PROJECT_NAME "/config_new.ini";
 #endif

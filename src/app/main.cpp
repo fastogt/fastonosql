@@ -311,12 +311,12 @@ int main(int argc, char* argv[]) {
   QString styleSheet = QLatin1String(file.readAll());
   app.setStyleSheet(styleSheet);
 #if defined(NDEBUG)
-  common::logging::LOG_LEVEL level = common::logging::LOG_LEVEL_INFO;
+  const common::logging::LOG_LEVEL level = common::logging::LOG_LEVEL_INFO;
 #else
-  common::logging::LOG_LEVEL level = common::logging::LOG_LEVEL_DEBUG;
+  const common::logging::LOG_LEVEL level = common::logging::LOG_LEVEL_DEBUG;
 #endif
 #if defined(LOG_TO_FILE)
-  std::string log_path = common::file_system::prepare_path("~/" PROJECT_NAME_LOWERCASE ".log");
+  const std::string log_path = common::file_system::prepare_path("~/" PROJECT_NAME_LOWERCASE ".log");
   INIT_LOGGER(PROJECT_NAME_TITLE, log_path, level);
 #else
   INIT_LOGGER(PROJECT_NAME_TITLE, level);

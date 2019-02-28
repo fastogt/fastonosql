@@ -26,6 +26,26 @@
 
 namespace fastonosql {
 
+common::Error GenerateHash(const std::string& password, std::string* result) {
+  if (password.empty() || !result) {
+    return common::make_error_inval();
+  }
+
+  unsigned char md5_result[MD5_HASH_LENGHT];
+  common::hash::MD5_CTX ctx;
+  common::hash::MD5_Init(&ctx);
+  common::hash::MD5_Update(&ctx, reinterpret_cast<const unsigned char*>(password.data()), password.size());
+  common::hash::MD5_Final(&ctx, md5_result);
+  std::string hexed_password;
+  const std::string md5_data(md5_result, md5_result + MD5_HASH_LENGHT);
+  if (!common::utils::hex::encode(md5_data, true, &hexed_password)) {
+    return common::make_error_inval();
+  }
+
+  *result = hexed_password;
+  return common::Error();
+}
+
 IVerifyUser::IVerifyUser(const QString& login,
                          const QString& password,
                          proxy::UserInfo::BuildStrategy build_strategy,
@@ -44,16 +64,11 @@ common::Error IVerifyUser::startVerification(const QString& login,
 
   const std::string login_str = common::ConvertToString(login.toLower());
   const std::string password_str = common::ConvertToString(password);
-  unsigned char md5_result[MD5_HASH_LENGHT];
-  common::hash::MD5_CTX ctx;
-  common::hash::MD5_Init(&ctx);
-  common::hash::MD5_Update(&ctx, reinterpret_cast<const unsigned char*>(password_str.data()), password_str.size());
-  common::hash::MD5_Final(&ctx, md5_result);
   std::string hexed_password;
-  const std::string md5_data(md5_result, md5_result + MD5_HASH_LENGHT);
-  bool is_ok = common::utils::hex::encode(md5_data, true, &hexed_password);
-  DCHECK(is_ok) << "Can't hexed: " << md5_result;
-
+  common::Error err = GenerateHash(password_str, &hexed_password);
+  if (err) {
+    return err;
+  }
   return startVerificationImpl(login_str, hexed_password, strategy, user_info_out);
 }
 

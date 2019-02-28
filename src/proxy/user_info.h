@@ -68,9 +68,11 @@ class UserInfo {
   std::string password_;
   BuildStrategy build_strategy_;
 
-  // server fields
+  // server or compile time fields
   std::string first_name_;
   std::string last_name_;
+
+  // server fields
   SubscriptionState subscription_state_;
   Type type_;
   size_t exec_count_;
