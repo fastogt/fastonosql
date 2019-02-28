@@ -20,12 +20,16 @@
 
 #include <vector>
 
+#if defined(ENTERPRISE_VERSION)
+#define PRO_VERSION
+#endif
+
 #if defined(BUILD_WITH_REDIS)
 #include <fastonosql/core/db/redis/db_connection.h>
 #include "proxy/db/redis/connection_settings.h"
 #include "proxy/db/redis/server.h"
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 #include "proxy/db/redis/cluster.h"
 #include "proxy/db/redis/sentinel.h"
 #endif
@@ -85,7 +89,7 @@
 #include "proxy/db/dynomite/server.h"
 #endif
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 #include "proxy/cluster/icluster.h"
 #include "proxy/sentinel/isentinel.h"
 #endif
@@ -250,7 +254,7 @@ void ServersManager::CloseServer(server_t server) {
   servers_.erase(std::remove(servers_.begin(), servers_.end(), server));
 }
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 common::Error ServersManager::DiscoveryClusterConnection(IConnectionSettingsBaseSPtr connection,
                                                          std::vector<core::ServerDiscoveryClusterInfoSPtr>* out) {
   if (!connection || !out) {

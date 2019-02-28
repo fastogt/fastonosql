@@ -25,7 +25,7 @@
 
 namespace fastonosql {
 namespace core {
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 class IModuleConnectionClient;
 #endif
 namespace redis {
@@ -53,7 +53,7 @@ class Driver : public IDriverRemote {
   bool IsConnected() const override;
   bool IsAuthenticated() const override;
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
  Q_SIGNALS:
   void ModuleLoaded(core::ModuleInfo module);
   void ModuleUnLoaded(core::ModuleInfo module);
@@ -80,7 +80,7 @@ class Driver : public IDriverRemote {
 
   common::Error GetCurrentServerInfo(core::IServerInfo** info) override;
   common::Error GetServerCommands(std::vector<const core::CommandInfo*>* commands) override;
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   common::Error GetServerLoadedModules(std::vector<core::ModuleInfo>* modules);
 #endif
   common::Error GetCurrentDataBaseInfo(core::IDataBaseInfo** info) override;
@@ -97,7 +97,7 @@ class Driver : public IDriverRemote {
 
   core::IServerInfoSPtr MakeServerInfoFromString(const std::string& val) override;
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   core::IModuleConnectionClient* proxy_;
 #endif
   core::redis::DBConnection* impl_;

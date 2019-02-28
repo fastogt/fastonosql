@@ -30,7 +30,7 @@
 namespace fastonosql {
 namespace gui {
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 class ExplorerClusterItem;
 class ExplorerSentinelItem;
 #endif
@@ -54,7 +54,7 @@ class ExplorerTreeModel : public common::qt::gui::TreeModel {
   QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
   int columnCount(const QModelIndex& parent) const override;
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   void addCluster(proxy::IClusterSPtr cluster);
   void removeCluster(proxy::IClusterSPtr cluster);
 
@@ -90,7 +90,7 @@ class ExplorerTreeModel : public common::qt::gui::TreeModel {
   void removeAllKeys(proxy::IServer* server, core::IDataBaseInfoSPtr db);
 
  private:
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   ExplorerClusterItem* findClusterItem(proxy::IClusterSPtr cl);
   ExplorerSentinelItem* findSentinelItem(proxy::ISentinelSPtr sentinel);
 #endif

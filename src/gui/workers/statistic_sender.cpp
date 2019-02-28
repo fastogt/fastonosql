@@ -24,7 +24,7 @@
 
 namespace fastonosql {
 namespace {
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 common::Error sendUserStatisticRoutine(const std::string& login, const std::string& build_strategy) {
   CHECK(!login.empty());
   typedef common::net::SocketGuard<common::net::ClientSocketTcp> ClientSocket;
@@ -113,7 +113,7 @@ void AnonymousStatisticSender::sendStatistic() {
   statisticSended(err);
 }
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 StatisticSender::StatisticSender(const std::string& login, const std::string& build_strategy, QObject* parent)
     : base_class(parent), login_(login), build_strategy_(build_strategy) {}
 

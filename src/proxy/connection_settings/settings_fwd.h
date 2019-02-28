@@ -26,7 +26,7 @@ namespace proxy {
 class IConnectionSettingsBase;
 typedef std::shared_ptr<IConnectionSettingsBase> IConnectionSettingsBaseSPtr;
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 class IClusterSettingsBase;
 typedef std::shared_ptr<IClusterSettingsBase> IClusterSettingsBaseSPtr;
 

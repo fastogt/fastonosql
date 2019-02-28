@@ -22,7 +22,7 @@
 
 #include "proxy/connection_settings/iconnection_settings.h"
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 #include "proxy/connection_settings/icluster_connection_settings.h"
 #include "proxy/connection_settings/isentinel_connection_settings.h"
 #endif
@@ -34,7 +34,7 @@ class QToolBar;
 namespace fastonosql {
 namespace gui {
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 class ClusterConnectionListWidgetItemContainer;
 class SentinelConnectionListWidgetItemContainer;
 #endif
@@ -52,7 +52,7 @@ class ConnectionsDialog : public BaseDialog {
   enum { min_width = 640, min_height = 480 };
 
   proxy::IConnectionSettingsBaseSPtr selectedConnection() const;
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   proxy::ISentinelSettingsBaseSPtr selectedSentinel() const;
   proxy::IClusterSettingsBaseSPtr selectedCluster() const;
 #endif
@@ -80,7 +80,7 @@ class ConnectionsDialog : public BaseDialog {
   void removeConnection(ConnectionListWidgetItem* connectionItem);
   void addConnection(proxy::IConnectionSettingsBaseSPtr con);
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   void editCluster(ClusterConnectionListWidgetItemContainer* cluster_item, bool remove_origin);
   void editSentinel(SentinelConnectionListWidgetItemContainer* sentinel_item, bool remove_origin);
   void removeCluster(ClusterConnectionListWidgetItemContainer* clusterItem);

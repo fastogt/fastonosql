@@ -108,7 +108,7 @@ MainWindow::MainWindow() : QMainWindow() {
   // grabGesture(Qt::PinchGesture);  // zoom
 #endif
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   proxy::UserInfo user_info = proxy::SettingsManager::GetInstance()->GetUserInfo();
   proxy::UserInfo::SubscriptionState user_sub_state = user_info.GetSubscriptionState();
   if (user_sub_state != proxy::UserInfo::SUBSCRIBED) {
@@ -230,7 +230,7 @@ MainWindow::MainWindow() : QMainWindow() {
   VERIFY(connect(exp_, &ExplorerTreeWidget::consoleOpened, main_widget, &MainWidget::openConsole));
   VERIFY(connect(exp_, &ExplorerTreeWidget::consoleOpenedAndExecute, main_widget, &MainWidget::openConsoleAndExecute));
   VERIFY(connect(exp_, &ExplorerTreeWidget::serverClosed, this, &MainWindow::closeServer, Qt::DirectConnection));
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   VERIFY(connect(exp_, &ExplorerTreeWidget::clusterClosed, this, &MainWindow::closeCluster, Qt::DirectConnection));
   VERIFY(connect(exp_, &ExplorerTreeWidget::sentinelClosed, this, &MainWindow::closeSentinel, Qt::DirectConnection));
 #endif
@@ -313,7 +313,7 @@ void MainWindow::open() {
   if (proxy::IConnectionSettingsBaseSPtr con = dlg->selectedConnection()) {
     createServer(con);
   }
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   else if (proxy::IClusterSettingsBaseSPtr clus = dlg->selectedCluster()) {
     createCluster(clus);
   } else if (proxy::ISentinelSettingsBaseSPtr sent = dlg->selectedSentinel()) {
@@ -354,7 +354,7 @@ void MainWindow::checkUpdate() {
 
 void MainWindow::sendStatistic() {
   QThread* th = new QThread;
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   const proxy::UserInfo uinf = proxy::SettingsManager::GetInstance()->GetUserInfo();
 
   const std::string login = uinf.GetLogin();
@@ -580,7 +580,7 @@ void MainWindow::versionAvailible(common::Error err, unsigned version) {
     std::string version_str = common::ConvertVersionNumberTo2DotString(version);
     QString qversion_str;
     common::ConvertFromString(version_str, &qversion_str);
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
     QMessageBox::information(
         this, translations::trCheckVersion,
         QObject::tr("<h4>A new version(%1) of " PROJECT_NAME_TITLE " is availible!</h4>"
@@ -605,7 +605,7 @@ void MainWindow::closeServer(proxy::IServerSPtr server) {
   proxy::ServersManager::GetInstance().CloseServer(server);
 }
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 void MainWindow::closeSentinel(proxy::ISentinelSPtr sentinel) {
   proxy::ServersManager::GetInstance().CloseSentinel(sentinel);
 }
@@ -745,7 +745,7 @@ void MainWindow::createServer(proxy::IConnectionSettingsBaseSPtr settings) {
   }
 }
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 void MainWindow::createSentinel(proxy::ISentinelSettingsBaseSPtr settings) {
   if (!settings) {
     return;

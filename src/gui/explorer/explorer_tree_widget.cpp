@@ -41,7 +41,7 @@ ExplorerTreeWidget::ExplorerTreeWidget(QWidget* parent) : base_class(parent) {
       connect(view_, &ExplorerTreeView::consoleOpenedAndExecute, this, &ExplorerTreeWidget::consoleOpenedAndExecute));
   VERIFY(
       connect(view_, &ExplorerTreeView::serverClosed, this, &ExplorerTreeWidget::serverClosed, Qt::DirectConnection));
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   VERIFY(
       connect(view_, &ExplorerTreeView::clusterClosed, this, &ExplorerTreeWidget::clusterClosed, Qt::DirectConnection));
   VERIFY(connect(view_, &ExplorerTreeView::sentinelClosed, this, &ExplorerTreeWidget::sentinelClosed,
@@ -62,7 +62,7 @@ void ExplorerTreeWidget::removeServer(proxy::IServerSPtr server) {
   view_->removeServer(server);
 }
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 void ExplorerTreeWidget::addSentinel(proxy::ISentinelSPtr sentinel) {
   view_->addSentinel(sentinel);
 }

@@ -58,7 +58,7 @@ class PreferencesDialog : public BaseDialog {
   QWidget* createMainTab();
   QWidget* createExternalTab();
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   // controls in profile_box
   QGroupBox* profile_box_;
   QLabel* first_name_label_;

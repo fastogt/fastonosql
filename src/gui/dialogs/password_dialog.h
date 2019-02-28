@@ -23,6 +23,7 @@
 class QLineEdit;
 class QPushButton;
 class QLabel;
+class QCheckBox;
 
 namespace common {
 namespace qt {
@@ -56,6 +57,9 @@ class PasswordDialog : public BaseDialog {
 
   bool isVisibleDescription() const;
   bool isVisibleStatus() const;
+  bool isSavePassword() const;
+
+  void setSavePassword(bool save);
 
   void setFocusInPassword();
   void setFocusInLogin();
@@ -87,6 +91,7 @@ class PasswordDialog : public BaseDialog {
 
   QLabel* password_label_;
   QLineEdit* password_box_;
+  QCheckBox* save_password_;
   QPushButton* password_echo_mode_button_;
 
   common::qt::gui::IconLabel* status_label_;

@@ -18,10 +18,12 @@
 
 #include "gui/dialogs/password_dialog.h"
 
+#include <QCheckBox>
 #include <QDialogButtonBox>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QSplitter>
 #include <QVBoxLayout>
 
 #include <common/macros.h>
@@ -32,7 +34,8 @@
 
 namespace {
 const QString trSignIn = QObject::tr("Sign in");
-}
+const QString trSavePassowrd = QObject::tr("Save password");
+}  // namespace
 
 namespace fastonosql {
 namespace gui {
@@ -44,6 +47,7 @@ PasswordDialog::PasswordDialog(const QString& title, QWidget* parent)
       login_box_(nullptr),
       password_label_(nullptr),
       password_box_(nullptr),
+      save_password_(nullptr),
       password_echo_mode_button_(nullptr) {
   description_ = new QLabel;
   description_->setOpenExternalLinks(true);
@@ -54,15 +58,23 @@ PasswordDialog::PasswordDialog(const QString& title, QWidget* parent)
   profile_layout->addWidget(login_label_);
   profile_layout->addWidget(login_box_);
 
-  QHBoxLayout* password_layout = new QHBoxLayout;
+  QVBoxLayout* password_layout = new QVBoxLayout;
+  QHBoxLayout* password_box_layout = new QHBoxLayout;
   password_label_ = new QLabel;
   password_box_ = new QLineEdit;
   password_box_->setEchoMode(QLineEdit::Password);
   password_echo_mode_button_ = new QPushButton;
   VERIFY(connect(password_echo_mode_button_, &QPushButton::clicked, this, &PasswordDialog::togglePasswordEchoMode));
-  password_layout->addWidget(password_label_);
-  password_layout->addWidget(password_box_);
-  password_layout->addWidget(password_echo_mode_button_);
+  password_box_layout->addWidget(password_label_);
+  password_box_layout->addWidget(password_box_);
+  password_box_layout->addWidget(password_echo_mode_button_);
+
+  save_password_ = new QCheckBox;
+  QHBoxLayout* save_password_layout = new QHBoxLayout;
+  save_password_layout->addWidget(new QSplitter(Qt::Horizontal));
+  save_password_layout->addWidget(save_password_);
+  password_layout->addLayout(password_box_layout);
+  password_layout->addLayout(save_password_layout);
 
   status_label_ = new common::qt::gui::IconLabel;
   status_label_->setOpenExternalLinks(true);
@@ -123,6 +135,14 @@ bool PasswordDialog::isVisibleStatus() const {
   return description_->isVisible();
 }
 
+bool PasswordDialog::isSavePassword() const {
+  return save_password_->isChecked();
+}
+
+void PasswordDialog::setSavePassword(bool save) {
+  save_password_->setChecked(save);
+}
+
 void PasswordDialog::setFocusInPassword() {
   password_box_->setFocus();
 }
@@ -169,6 +189,7 @@ void PasswordDialog::retranslateUi() {
   login_box_->setToolTip(translations::trPleaseEnterYourLogin);
   password_label_->setText(translations::trPassword + ":");
   password_box_->setToolTip(translations::trPleaseEnterYourPassword);
+  save_password_->setText(trSavePassowrd);
 
   syncShowButton();
   base_class::retranslateUi();

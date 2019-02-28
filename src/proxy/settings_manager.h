@@ -28,7 +28,7 @@
 
 #include "proxy/connection_settings/settings_fwd.h"
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 #include "proxy/user_info.h"
 #endif
 
@@ -40,7 +40,7 @@ namespace proxy {
 class SettingsManager : public common::patterns::Singleton<SettingsManager> {
  public:
   typedef std::vector<IConnectionSettingsBaseSPtr> connection_settings_t;
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   typedef std::vector<IClusterSettingsBaseSPtr> cluster_settings_t;
   typedef std::vector<ISentinelSettingsBaseSPtr> sentinel_settings_t;
 #endif
@@ -75,7 +75,7 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
   bool GetSendStatistic() const;
   void SetSendStatistic(bool val);
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   // sentinels
   void AddSentinel(ISentinelSettingsBaseSPtr sentinel);
   void RemoveSentinel(ISentinelSettingsBaseSPtr sentinel);
@@ -119,9 +119,12 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
 
   void Load();
   void Save();
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   QString GetLastLogin() const;
   void SetLastLogin(const QString& login);
+
+  QString GetLastPassword() const;
+  void SetLastPassword(const QString& hash);
 
   // runtime
   UserInfo GetUserInfo() const;
@@ -144,10 +147,11 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
   QString cur_language_;
   bool send_statistic_;
   connection_settings_t connections_;
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   sentinel_settings_t sentinels_;
   cluster_settings_t clusters_;
   QString last_login_;
+  QString last_password_;
   // runtime settings
   UserInfo user_info_;
 #endif

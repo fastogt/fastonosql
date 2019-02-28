@@ -124,7 +124,7 @@ void ExplorerTreeView::removeServer(proxy::IServerSPtr server) {
   emit serverClosed(server);
 }
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 void ExplorerTreeView::addSentinel(proxy::ISentinelSPtr sentinel) {
   if (!sentinel) {
     DNOTREACHED();
@@ -299,7 +299,7 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
 
     menu.addAction(history_server_action);
     menu.addAction(clear_history_server_action);
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
     common::qt::gui::TreeItem* par = node->parent();
     bool is_cluster_member = dynamic_cast<ExplorerClusterItem*>(par) != nullptr;  // +
     close_server_action->setEnabled(!is_cluster_member);
@@ -429,7 +429,7 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
     watch_key_action->setEnabled(is_connected);
     menu.exec(menu_point);
   }
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   else if (node->type() == IExplorerTreeItem::eCluster) {
     QMenu menu(this);
     QAction* close_cluster_action = new QAction(translations::trClose, this);
@@ -610,7 +610,7 @@ void ExplorerTreeView::closeServerConnection() {
       }
       continue;
     }
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
     ExplorerClusterItem* cnode = common::qt::item<common::qt::gui::TreeItem*, ExplorerClusterItem*>(ind);
     if (cnode && cnode->type() == IExplorerTreeItem::eCluster) {
       proxy::IClusterSPtr server = cnode->cluster();
@@ -623,7 +623,7 @@ void ExplorerTreeView::closeServerConnection() {
   }
 }
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 void ExplorerTreeView::closeClusterConnection() {
   QModelIndexList selected = selectedEqualTypeIndexes();
   for (QModelIndex ind : selected) {

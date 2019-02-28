@@ -38,7 +38,7 @@ class Server : public IServerRemote {
   core::ServerMode GetMode() const override;
   core::ServerState GetState() const override;
   common::net::HostAndPort GetHost() const override;
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
  Q_SIGNALS:
   void ModuleLoaded(core::ModuleInfo module);
   void ModuleUnLoaded(core::ModuleInfo module);

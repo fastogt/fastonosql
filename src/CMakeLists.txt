@@ -24,7 +24,7 @@ SET(SOURCES_PROXY_CONNECTION_SETTINGS
   ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/iconnection_settings_ssh.cpp
 )
 
-IF(PRO_VERSION)
+IF(PRO_VERSION OR ENTERPRISE_VERSION)
   SET(HEADERS_PROXY_CONNECTION_SETTINGS ${HEADERS_PROXY_CONNECTION_SETTINGS}
     ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/isentinel_connection_settings.h
     ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/icluster_connection_settings.h
@@ -33,7 +33,7 @@ IF(PRO_VERSION)
     ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/isentinel_connection_settings.cpp
     ${CMAKE_SOURCE_DIR}/src/proxy/connection_settings/icluster_connection_settings.cpp
   )
-ENDIF(PRO_VERSION)
+ENDIF(PRO_VERSION OR ENTERPRISE_VERSION)
 
 SET(HEADERS_PROXY_DRIVER
   ${CMAKE_SOURCE_DIR}/src/proxy/driver/root_locker.h
@@ -126,7 +126,7 @@ SET(SOURCES_PROXY
   ${CMAKE_SOURCE_DIR}/src/proxy/db_ps_channel.cpp
 )
 
-IF(PRO_VERSION)
+IF(PRO_VERSION OR ENTERPRISE_VERSION)
   # cluster, sentinel
   SET(HEADERS_PROXY ${HEADERS_PROXY}
     ${CMAKE_SOURCE_DIR}/src/proxy/cluster/icluster.h
@@ -148,7 +148,7 @@ IF(PRO_VERSION)
   SET(SOURCES_PROXY ${SOURCES_PROXY}
     ${CMAKE_SOURCE_DIR}/src/proxy/user_info.cpp
   )
-ENDIF(PRO_VERSION)
+ENDIF(PRO_VERSION OR ENTERPRISE_VERSION)
 
 # gui, translation, global
 SET(HEADERS_TRANSLATIONS
@@ -172,7 +172,7 @@ SET(SOURCES_GUI_WORKERS
   ${CMAKE_SOURCE_DIR}/src/gui/workers/load_welcome_page.cpp
 )
 
-IF(PRO_VERSION)
+IF(PRO_VERSION OR ENTERPRISE_VERSION)
   SET(HEADERS_GUI_WORKERS ${HEADERS_GUI_WORKERS}
     ${CMAKE_SOURCE_DIR}/src/gui/workers/discovery_cluster_connection.h
     ${CMAKE_SOURCE_DIR}/src/gui/workers/discovery_sentinel_connection.h
@@ -182,7 +182,7 @@ IF(PRO_VERSION)
     ${CMAKE_SOURCE_DIR}/src/gui/workers/discovery_cluster_connection.cpp
     ${CMAKE_SOURCE_DIR}/src/gui/workers/discovery_sentinel_connection.cpp
   )
-ENDIF(PRO_VERSION)
+ENDIF(PRO_VERSION OR ENTERPRISE_VERSION)
 
 SET(HEADERS_GUI_DIALOGS
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/base_dialog.h
@@ -230,7 +230,7 @@ SET(SOURCES_GUI_DIALOGS
   ${CMAKE_SOURCE_DIR}/src/gui/dialogs/how_to_use_dialog.cpp
 )
 
-IF(PRO_VERSION)
+IF(PRO_VERSION OR ENTERPRISE_VERSION)
   SET(HEADERS_GUI_DIALOGS ${HEADERS_GUI_DIALOGS}
     ${CMAKE_SOURCE_DIR}/src/gui/dialogs/cluster_dialog.h
     ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_cluster_dialog.h
@@ -246,7 +246,7 @@ IF(PRO_VERSION)
     ${CMAKE_SOURCE_DIR}/src/gui/dialogs/sentinel_dialog.cpp
     ${CMAKE_SOURCE_DIR}/src/gui/dialogs/discovery_sentinel_dialog.cpp
   )
-ENDIF(PRO_VERSION)
+ENDIF(PRO_VERSION OR ENTERPRISE_VERSION)
 
 SET(HEADERS_GUI_EDITOR
   ${CMAKE_SOURCE_DIR}/src/gui/editor/fasto_editor_shell.h
@@ -516,7 +516,7 @@ IF(BUILD_WITH_REDIS)
     ${CMAKE_SOURCE_DIR}/src/gui/db/redis/lexer.cpp
   )
 
-IF(PRO_VERSION)
+IF(PRO_VERSION OR ENTERPRISE_VERSION)
   SET(HEADERS_REDIS_GUI ${HEADERS_REDIS_GUI}
     ${CMAKE_SOURCE_DIR}/src/gui/db/redis/shell_widget.h
   )
@@ -537,7 +537,7 @@ IF(PRO_VERSION)
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/cluster.cpp
     ${CMAKE_SOURCE_DIR}/src/proxy/db/redis/sentinel.cpp
   )
-ENDIF(PRO_VERSION)
+ENDIF(PRO_VERSION OR ENTERPRISE_VERSION)
 
   #update common variables
   SET(HEADERS_PROXY ${HEADERS_PROXY} ${HEADERS_PROXY_DB_REDIS})
@@ -920,9 +920,9 @@ SET(APPLICATION_DEFINES)
 SET(APPLICATION_HEADERS)
 SET(APPLICATION_SOURCES)
 
-IF(PRO_VERSION)
+IF(PRO_VERSION OR ENTERPRISE_VERSION)
   SET(BUILD_STRATEGY "community" CACHE STRING "Strategy build for ${PROJECT_NAME_TITLE} project")
-    # community, public, private
+    # community, public, private, permanent
   MESSAGE(STATUS "BUILD_STRATEGY: ${BUILD_STRATEGY}")
   IF (BUILD_STRATEGY STREQUAL "community")
     SET(APPLICATION_DEFINES ${APPLICATION_DEFINES}
@@ -972,7 +972,7 @@ IF(PRO_VERSION)
     ${CMAKE_SOURCE_DIR}/src/app/credentials_dialog.cpp
     ${CMAKE_SOURCE_DIR}/src/app/iverify_user.cpp
   )
-ENDIF(PRO_VERSION)
+ENDIF(PRO_VERSION OR ENTERPRISE_VERSION)
 
 SET(HEADERS
   ${HEADERS_CREDS}
@@ -996,6 +996,9 @@ FIND_PACKAGE(JSON-C REQUIRED)
 FIND_PACKAGE(FastoNoSQL REQUIRED)
 
 IF(PRO_VERSION)
+  SET(FASTONOSQL_CORE_PROJECT_LIBRARY ${FASTONOSQL_CORE_PRO_LIBRARY})
+  SET(WELCOME_HTML_IN ${CMAKE_CURRENT_LIST_DIR}/resources/${PROJECT_NAME_LOWERCASE}/welcome_pro.in.html)
+ELSEIF(ENTERPRISE_VERSION)
   SET(FASTONOSQL_CORE_PROJECT_LIBRARY ${FASTONOSQL_CORE_PRO_LIBRARY})
   SET(WELCOME_HTML_IN ${CMAKE_CURRENT_LIST_DIR}/resources/${PROJECT_NAME_LOWERCASE}/welcome_pro.in.html)
 ELSE()

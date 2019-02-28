@@ -24,7 +24,7 @@
 
 #include "proxy/connection_settings/iconnection_settings.h"
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 #include "proxy/connection_settings/icluster_connection_settings.h"
 #include "proxy/connection_settings/isentinel_connection_settings.h"
 #endif
@@ -81,7 +81,7 @@ class MainWindow : public QMainWindow {
   void statitsticSent(common::Error err);
 
   void closeServer(proxy::IServerSPtr server);
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   void closeSentinel(proxy::ISentinelSPtr sentinel);
   void closeCluster(proxy::IClusterSPtr cluster);
 #endif
@@ -102,7 +102,7 @@ class MainWindow : public QMainWindow {
   void updateRecentConnectionActions();
   void clearRecentConnectionsMenu();
   void createServer(proxy::IConnectionSettingsBaseSPtr settings);
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   void createSentinel(proxy::ISentinelSettingsBaseSPtr settings);
   void createCluster(proxy::IClusterSettingsBaseSPtr settings);
 #endif

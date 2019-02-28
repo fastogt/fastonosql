@@ -24,7 +24,7 @@
 
 #include "proxy/connection_settings/iconnection_settings.h"
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 #include "proxy/connection_settings/icluster_connection_settings.h"
 #include "proxy/connection_settings/isentinel_connection_settings.h"
 #endif
@@ -65,7 +65,7 @@ class ConnectionListWidgetItem  // common connection
   itemConnectionType type() const override;
 };
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 class ConnectionListWidgetItemDiscovered  // returned after discovered
     : public ConnectionListWidgetItem {
  public:

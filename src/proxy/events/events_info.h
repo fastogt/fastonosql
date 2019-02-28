@@ -29,7 +29,7 @@
 #include <fastonosql/core/server/iserver_info.h>
 #include <fastonosql/core/server_property_info.h>
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 #include <fastonosql/core/module_info.h>
 #endif
 
@@ -96,7 +96,7 @@ struct DiscoveryInfoResponse : DiscoveryInfoRequest {
 
   core::IDataBaseInfoSPtr dbinfo;
   std::vector<const core::CommandInfo*> commands;
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   // only for redis
   std::vector<core::ModuleInfo> loaded_modules;
 #endif

@@ -43,7 +43,7 @@ class ExplorerTreeView : public QTreeView {
   void consoleOpened(proxy::IServerSPtr server, const QString& text);
   void consoleOpenedAndExecute(proxy::IServerSPtr server, const QString& text);
   void serverClosed(proxy::IServerSPtr server);
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   void sentinelClosed(proxy::ISentinelSPtr sentinel);
   void clusterClosed(proxy::IClusterSPtr cluster);
 #endif
@@ -52,7 +52,7 @@ class ExplorerTreeView : public QTreeView {
   void addServer(proxy::IServerSPtr server);
   void removeServer(proxy::IServerSPtr server);
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   void addSentinel(proxy::ISentinelSPtr sentinel);
   void removeSentinel(proxy::ISentinelSPtr sentinel);
 
@@ -72,7 +72,7 @@ class ExplorerTreeView : public QTreeView {
   void openHistoryServerDialog();
   void clearHistory();
   void closeServerConnection();
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   void closeClusterConnection();
   void closeSentinelConnection();
 #endif

@@ -31,6 +31,7 @@
 #include <common/file_system/file_system.h>
 #include <common/file_system/string_path_utils.h>
 #include <common/net/socket_tcp.h>
+#include <common/qt/convert2string.h>
 #include <common/qt/gui/app_style.h>
 #include <common/qt/translations/translations.h>
 #include <common/time.h>
@@ -47,7 +48,7 @@
 #include "gui/dialogs/how_to_use_dialog.h"
 #include "translations/global.h"
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 #define IDENTITY_FILE_NAME "IDENTITY"
 #define COMMUNITY_STRATEGY 0
 #define PUBLIC_STRATEGY 1
@@ -79,7 +80,7 @@ struct SigIgnInit {
 
 const QString trEulaTitle = QObject::tr("Eula for " PROJECT_NAME_TITLE);
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 const QString trExpired = QObject::tr(
     "<h4>Your trial version has expired.</h4>"
     "Please <a href=\"" PROJECT_DOWNLOAD_LINK "\">subscribe</a> and continue using " PROJECT_NAME_TITLE ".");
@@ -209,7 +210,7 @@ int main(int argc, char* argv[]) {
   }
 
   {  // scope for password_dialog
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
     std::unique_ptr<MainCredentialsDialog> password_dialog(
         fastonosql::gui::createDialog<MainCredentialsDialog>());  // +
 #if BUILD_STRATEGY == COMMUNITY_STRATEGY
@@ -222,6 +223,11 @@ int main(int argc, char* argv[]) {
     password_dialog->setLogin(USER_LOGIN);
     password_dialog->setLoginEnabled(false);
 #endif
+    const QString last_password = settings_manager->GetLastPassword();
+    if (!last_password.isEmpty()) {
+      password_dialog->setPassword(last_password);
+      password_dialog->setSavePassword(true);
+    }
     int dialog_result = password_dialog->exec();
     if (dialog_result == QDialog::Rejected) {
       return EXIT_FAILURE;
@@ -291,6 +297,11 @@ int main(int argc, char* argv[]) {
 #if BUILD_STRATEGY == COMMUNITY_STRATEGY
     settings_manager->SetLastLogin(password_dialog->login());
 #endif
+    if (password_dialog->isSavePassword()) {
+      settings_manager->SetLastPassword(password_dialog->password());
+    } else {
+      settings_manager->SetLastPassword(QString());
+    }
     settings_manager->SetUserInfo(user_info);
 #endif
   }

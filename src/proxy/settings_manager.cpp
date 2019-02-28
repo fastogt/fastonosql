@@ -32,7 +32,7 @@
 
 #include "proxy/connection_settings/iconnection_settings.h"
 #include "proxy/connection_settings_factory.h"
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 #include "proxy/cluster_connection_settings_factory.h"
 #include "proxy/connection_settings/icluster_connection_settings.h"
 #include "proxy/connection_settings/isentinel_connection_settings.h"
@@ -57,8 +57,9 @@
 #define AUTOCONNECTDB PREFIX "auto_connect_db"
 #define WINDOW_SETTINGS PREFIX "window_settings"
 #define SEND_STATISTIC PREFIX "send_statistic"
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 #define LAST_LOGIN PREFIX "last_login"
+#define LAST_PASSWORD_HASH PREFIX "last_password"
 #endif
 #define SHOW_WELCOME_PAGE PREFIX "show_welcome_page"
 #define PYTHON_PATH PREFIX "python_path"
@@ -72,7 +73,7 @@
 
 namespace {
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 const char kIniPath[] = "~/.config/" PROJECT_NAME "/config_new_pro.ini";
 #else
 const char kIniPath[] = "~/.config/" PROJECT_NAME "/config_new.ini";
@@ -103,10 +104,11 @@ SettingsManager::SettingsManager()
       cur_language_(),
       send_statistic_(),
       connections_(),
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
       sentinels_(),
       clusters_(),
       last_login_(),
+      last_password_(),
       user_info_(),
 #endif
       recent_connections_(),
@@ -205,7 +207,7 @@ SettingsManager::connection_settings_t SettingsManager::GetConnections() const {
   return connections_;
 }
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 void SettingsManager::AddSentinel(ISentinelSettingsBaseSPtr sentinel) {
   if (!sentinel) {
     DNOTREACHED();
@@ -348,7 +350,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
   }
 
   if (!merge) {
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
     sentinels_.clear();
     clusters_.clear();
 #endif
@@ -377,7 +379,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
   const QString logging_dir = settings.value(LOGGINGDIR, qdir).toString();
   SetLoggingDirectory(logging_dir);
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   const QList<QVariant> clusters = settings.value(CLUSTERS).toList();
   for (const auto& cluster : clusters) {
     QString string = cluster.toString();
@@ -403,6 +405,7 @@ void SettingsManager::ReloadFromPath(const std::string& path, bool merge) {
     }
   }
   last_login_ = settings.value(LAST_LOGIN, QString()).toString();
+  last_password_ = settings.value(LAST_PASSWORD_HASH, QString()).toString();
 #endif
 
   const QList<QVariant> connections = settings.value(CONNECTIONS).toList();
@@ -455,7 +458,7 @@ void SettingsManager::Save() {
   settings.setValue(SEND_STATISTIC, send_statistic_);
   settings.setValue(VIEW, views_);
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   QList<QVariant> clusters;
   for (const auto& cluster : clusters_) {
     if (cluster) {
@@ -515,20 +518,29 @@ void SettingsManager::Save() {
   settings.setValue(AUTOOPENCONSOLE, auto_open_console_);
   settings.setValue(AUTOCONNECTDB, auto_connect_db_);
   settings.setValue(WINDOW_SETTINGS, window_settings_);
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   settings.setValue(LAST_LOGIN, last_login_);
+  settings.setValue(LAST_PASSWORD_HASH, last_password_);
 #endif
   settings.setValue(PYTHON_PATH, python_path_);
   settings.setValue(CONFIG_VERSION, config_version_);
 }
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 QString SettingsManager::GetLastLogin() const {
   return last_login_;
 }
 
 void SettingsManager::SetLastLogin(const QString& login) {
   last_login_ = login;
+}
+
+QString SettingsManager::GetLastPassword() const {
+  return last_password_;
+}
+
+void SettingsManager::SetLastPassword(const QString& hash) {
+  last_password_ = hash;
 }
 
 UserInfo SettingsManager::GetUserInfo() const {

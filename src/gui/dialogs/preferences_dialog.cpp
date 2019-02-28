@@ -69,7 +69,7 @@ namespace gui {
 
 PreferencesDialog::PreferencesDialog(QWidget* parent)
     : base_class(trPreferences, parent),
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
       profile_box_(nullptr),
       first_name_label_(nullptr),
       first_name_text_(nullptr),
@@ -170,7 +170,7 @@ void PreferencesDialog::syncWithSettings() {
 
 QWidget* PreferencesDialog::createMainTab() {
   QWidget* main = new QWidget;
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   proxy::UserInfo uinfo = proxy::SettingsManager::GetInstance()->GetUserInfo();
   profile_box_ = new QGroupBox;
   QVBoxLayout* profile_layout = new QVBoxLayout;
@@ -287,7 +287,7 @@ QWidget* PreferencesDialog::createMainTab() {
 
   // main layout
   QVBoxLayout* layout = new QVBoxLayout;
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   layout->addWidget(profile_box_);
 #endif
   layout->addWidget(general_box_);
@@ -312,7 +312,7 @@ QWidget* PreferencesDialog::createExternalTab() {
 
 void PreferencesDialog::retranslateUi() {
   general_box_->setTitle(trGeneralSettings);
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   profile_box_->setTitle(trProfileSettings);
   first_name_label_->setText(translations::trFirstName + ":");
   last_name_label_->setText(translations::trLastName + ":");

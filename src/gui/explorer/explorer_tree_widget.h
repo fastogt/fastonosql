@@ -40,7 +40,7 @@ class ExplorerTreeWidget : public BaseWidget {
   void consoleOpened(proxy::IServerSPtr server, const QString& text);
   void consoleOpenedAndExecute(proxy::IServerSPtr server, const QString& text);
   void serverClosed(proxy::IServerSPtr server);
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   void sentinelClosed(proxy::ISentinelSPtr sentinel);
   void clusterClosed(proxy::IClusterSPtr cluster);
 #endif
@@ -49,7 +49,7 @@ class ExplorerTreeWidget : public BaseWidget {
   void addServer(proxy::IServerSPtr server);
   void removeServer(proxy::IServerSPtr server);
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   void addSentinel(proxy::ISentinelSPtr sentinel);
   void removeSentinel(proxy::ISentinelSPtr sentinel);
 

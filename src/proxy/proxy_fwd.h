@@ -29,7 +29,7 @@ typedef std::shared_ptr<IDatabase> IDatabaseSPtr;
 class IServer;
 typedef std::shared_ptr<IServer> IServerSPtr;
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 class ICluster;
 typedef std::shared_ptr<ICluster> IClusterSPtr;
 

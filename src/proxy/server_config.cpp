@@ -216,7 +216,7 @@ common::Error ParseSendStatisticResponse(const std::string& data) {
   return common::protocols::json_rpc::ParseJsonRPCResponse(data, &jres);
 }
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 common::Error GenSubscriptionStateRequest(const UserInfo& user_info, std::string* request) {
   if (!user_info.IsValid() || !request) {
     DNOTREACHED();

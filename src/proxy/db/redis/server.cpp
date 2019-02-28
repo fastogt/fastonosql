@@ -35,7 +35,7 @@ namespace redis {
 
 Server::Server(IConnectionSettingsBaseSPtr settings)
     : IServerRemote(new Driver(settings)), role_(core::MASTER), mode_(core::STANDALONE) {
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   Driver* drv = static_cast<Driver*>(drv_);
   VERIFY(QObject::connect(drv, &Driver::ModuleLoaded, this, &Server::LoadModule));
   VERIFY(QObject::connect(drv, &Driver::ModuleUnLoaded, this, &Server::UnLoadModule));
@@ -69,7 +69,7 @@ IDatabaseSPtr Server::CreateDatabase(core::IDataBaseInfoSPtr info) {
   return IDatabaseSPtr(new redis_compatible::Database(shared_from_this(), info));
 }
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 void Server::LoadModule(core::ModuleInfo module) {
   emit ModuleLoaded(module);
 }

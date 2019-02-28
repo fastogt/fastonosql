@@ -87,7 +87,7 @@ ConnectionsDialog::ConnectionsDialog(const QString& title, const QIcon& icon, QW
     addConnection(connection_model);
   }
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   auto sentinels = proxy::SettingsManager::GetInstance()->GetSentinels();
   for (proxy::ISentinelSettingsBaseSPtr connection_model : sentinels) {
     addSentinel(connection_model);
@@ -125,7 +125,7 @@ proxy::IConnectionSettingsBaseSPtr ConnectionsDialog::selectedConnection() const
   return proxy::IConnectionSettingsBaseSPtr();
 }
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 proxy::ISentinelSettingsBaseSPtr ConnectionsDialog::selectedSentinel() const {
   SentinelConnectionListWidgetItemContainer* current_item =
       dynamic_cast<SentinelConnectionListWidgetItemContainer*>(list_widget_->currentItem());  // +
@@ -165,7 +165,7 @@ void ConnectionsDialog::addConnectionAction() {
 }
 
 void ConnectionsDialog::addClusterAction() {
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   auto dlg = createDialog<ClusterDialog>(nullptr, this);  // +
   int result = dlg->exec();
   if (result == QDialog::Accepted) {
@@ -179,7 +179,7 @@ void ConnectionsDialog::addClusterAction() {
 }
 
 void ConnectionsDialog::addSentinelAction() {
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   auto dlg = createDialog<SentinelDialog>(nullptr, this);  // +
   int result = dlg->exec();
   if (result == QDialog::Accepted) {
@@ -227,7 +227,7 @@ void ConnectionsDialog::removeItemAction() {
   }
 
   if (ConnectionListWidgetItem* currentItem = dynamic_cast<ConnectionListWidgetItem*>(qitem)) {
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
     IConnectionListWidgetItem::itemConnectionType type = currentItem->type();
     if (type == IConnectionListWidgetItem::Common || type == IConnectionListWidgetItem::Discovered) {
       QTreeWidgetItem* qpitem = qitem->parent();
@@ -256,7 +256,7 @@ void ConnectionsDialog::removeItemAction() {
 #endif
   }
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   if (ClusterConnectionListWidgetItemContainer* clCurrentItem =
           dynamic_cast<ClusterConnectionListWidgetItemContainer*>(qitem)) {
     removeCluster(clCurrentItem);
@@ -308,7 +308,7 @@ QToolBar* ConnectionsDialog::createToolBar() {
 
 void ConnectionsDialog::editItem(QTreeWidgetItem* qitem, bool remove_origin) {
   if (ConnectionListWidgetItem* current_item = dynamic_cast<ConnectionListWidgetItem*>(qitem)) {
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
     IConnectionListWidgetItem::itemConnectionType type = current_item->type();
     if (type == IConnectionListWidgetItem::Common || type == IConnectionListWidgetItem::Discovered) {
       QTreeWidgetItem* qpitem = qitem->parent();
@@ -337,7 +337,7 @@ void ConnectionsDialog::editItem(QTreeWidgetItem* qitem, bool remove_origin) {
 #endif
   }
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   if (ClusterConnectionListWidgetItemContainer* cluster_item =
           dynamic_cast<ClusterConnectionListWidgetItemContainer*>(qitem)) {
     editCluster(cluster_item, remove_origin);
@@ -370,7 +370,7 @@ void ConnectionsDialog::editConnection(ConnectionListWidgetItem* connection_item
   }
 }
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 void ConnectionsDialog::editCluster(ClusterConnectionListWidgetItemContainer* cluster_item, bool remove_origin) {
   CHECK(cluster_item);
 

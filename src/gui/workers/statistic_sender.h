@@ -43,7 +43,7 @@ class AnonymousStatisticSender : public QObject {
   virtual void sendStatistic();
 };
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 class StatisticSender : public AnonymousStatisticSender {
   Q_OBJECT
 

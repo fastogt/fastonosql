@@ -130,7 +130,7 @@ QVariant ExplorerTreeModel::data(const QModelIndex& index, int role) const {
     } else if (type == IExplorerTreeItem::eNamespace) {
       return GuiFactory::GetInstance().directoryIcon();
     }
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
     else if (type == IExplorerTreeItem::eCluster) {
       return GuiFactory::GetInstance().clusterIcon();
     } else if (type == IExplorerTreeItem::eSentinel) {
@@ -205,7 +205,7 @@ int ExplorerTreeModel::columnCount(const QModelIndex& parent) const {
   return eCountColumns;
 }
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 void ExplorerTreeModel::addCluster(proxy::IClusterSPtr cluster) {
   if (!cluster) {
     return;
@@ -259,7 +259,7 @@ void ExplorerTreeModel::removeServer(proxy::IServerSPtr server) {
   }
 }
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 void ExplorerTreeModel::addSentinel(proxy::ISentinelSPtr sentinel) {
   if (!sentinel) {
     return;
@@ -498,7 +498,7 @@ void ExplorerTreeModel::removeAllKeys(proxy::IServer* server, core::IDataBaseInf
   removeAllItems(parentdb);
 }
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 ExplorerClusterItem* ExplorerTreeModel::findClusterItem(proxy::IClusterSPtr cl) {
   common::qt::gui::TreeItem* parent = root();
   if (!parent) {

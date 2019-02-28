@@ -94,7 +94,7 @@ void ExplorerServerItem::removeDatabase(const QString& name) {
   server_->Execute(req);
 }
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 ExplorerSentinelItem::ExplorerSentinelItem(proxy::ISentinelSPtr sentinel, TreeItem* parent)
     : IExplorerTreeItem(parent, eSentinel), sentinel_(sentinel) {
   proxy::ISentinel::sentinels_t nodes = sentinel->GetSentinels();

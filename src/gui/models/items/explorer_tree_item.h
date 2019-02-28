@@ -42,7 +42,7 @@ class IExplorerTreeItem : public common::qt::gui::TreeItem {
     eDatabase,
     eNamespace,
     eKey,
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
     eCluster,
     eSentinel
 #endif
@@ -74,7 +74,7 @@ class ExplorerServerItem : public IExplorerTreeItem {
   const proxy::IServerSPtr server_;
 };
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 class ExplorerSentinelItem : public IExplorerTreeItem {
  public:
   ExplorerSentinelItem(proxy::ISentinelSPtr sentinel, TreeItem* parent);

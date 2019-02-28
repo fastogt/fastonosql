@@ -81,7 +81,7 @@ IConnectionListWidgetItem::itemConnectionType ConnectionListWidgetItem::type() c
   return Common;
 }
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 ConnectionListWidgetItemDiscovered::ConnectionListWidgetItemDiscovered(const core::ServerCommonInfo& info,
                                                                        QTreeWidgetItem* parent)
     : ConnectionListWidgetItem(parent), info_(info) {

@@ -26,7 +26,7 @@
 
 #include "proxy/connection_settings/iconnection_settings.h"
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 #include <fastonosql/core/cluster/cluster_discovery_info.h>
 #include <fastonosql/core/sentinel/sentinel_discovery_info.h>
 
@@ -49,7 +49,7 @@ class ServersManager : public common::patterns::LazySingleton<ServersManager> {
   common::Error TestConnection(IConnectionSettingsBaseSPtr connection) WARN_UNUSED_RESULT;
   void CloseServer(server_t server);
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   typedef IClusterSPtr cluster_t;
   typedef ISentinelSPtr sentinel_t;
   sentinel_t CreateSentinel(ISentinelSettingsBaseSPtr settings);

@@ -25,8 +25,11 @@
 #include <common/convert2string.h>
 #include <common/file_system/file_system.h>
 
-#include <fastonosql/core/db/redis/db_connection.h>
+#if defined(ENTERPRISE_VERSION)
+#define PRO_VERSION
+#endif
 
+#include <fastonosql/core/db/redis/db_connection.h>
 #include <fastonosql/core/value.h>
 
 #include "proxy/command/command.h"
@@ -46,7 +49,7 @@
 #define REDIS_CLIENT_LIST_COMMAND "CLIENT LIST"
 #define REDIS_GET_COMMANDS "COMMAND"
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 #include <fastonosql/core/imodule_connection_client.h>
 #define REDIS_GET_LOADED_MODULES_COMMANDS "MODULE LIST"
 #endif
@@ -70,7 +73,7 @@ command_buffer_t GetKeysOldPattern(const pattern_t& pattern) {
 }  // namespace core
 namespace proxy {
 namespace redis {
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 namespace {
 const struct RedisRegisterTypes {
   RedisRegisterTypes() { qRegisterMetaType<core::ModuleInfo>("core::ModuleInfo"); }
@@ -90,11 +93,11 @@ class ProxyModuleClient : public core::IModuleConnectionClient {
 #endif
 Driver::Driver(IConnectionSettingsBaseSPtr settings)
     : IDriverRemote(settings),
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
       proxy_(nullptr),
 #endif
       impl_(nullptr) {
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   proxy_ = new ProxyModuleClient(this);
   impl_ = new core::redis::DBConnection(this, proxy_);
 #else
@@ -107,7 +110,7 @@ Driver::Driver(IConnectionSettingsBaseSPtr settings)
 
 Driver::~Driver() {
   delete impl_;
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   delete proxy_;
 #endif
 }
@@ -252,7 +255,7 @@ common::Error Driver::GetServerCommands(std::vector<const core::CommandInfo*>* c
   return common::Error();
 }
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 common::Error Driver::GetServerLoadedModules(std::vector<core::ModuleInfo>* modules) {
   core::FastoObjectCommandIPtr cmd =
       CreateCommandFast(GEN_CMD_STRING(REDIS_GET_LOADED_MODULES_COMMANDS), core::C_INNER);
@@ -504,7 +507,7 @@ void Driver::HandleDiscoveryInfoEvent(events::DiscoveryInfoRequestEvent* ev) {
 
       res.dbinfo = current_database_info;
       res.commands = cmds;
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
       std::vector<core::ModuleInfo> lmodules;
       GetServerLoadedModules(&lmodules);  // can be failed
       res.loaded_modules = lmodules;

@@ -20,7 +20,7 @@
 
 #include <common/error.h>
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 #include "proxy/user_info.h"
 #endif
 
@@ -39,7 +39,7 @@ common::Error GenAnonymousStatisticRequest(std::string* request);
 common::Error GenStatisticRequest(const std::string& login, const std::string& build_strategy, std::string* request);
 common::Error ParseSendStatisticResponse(const std::string& data);
 
-#if defined(PRO_VERSION)
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 common::Error GenSubscriptionStateRequest(const UserInfo& user_info, std::string* request);
 common::Error ParseSubscriptionStateResponse(const std::string& data, UserInfo* update);
 
