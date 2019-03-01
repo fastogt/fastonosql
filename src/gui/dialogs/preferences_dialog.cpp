@@ -243,6 +243,9 @@ QWidget* PreferencesDialog::createMainTab() {
   general_layout->addWidget(auto_comletion_, 1, 1);
 
   show_welcome_page_ = new QCheckBox;
+#if defined(COMMUNITY_VERSION)
+  show_welcome_page_->setEnabled(false);
+#endif
 
   general_layout->addWidget(show_welcome_page_, 2, 0);
   auto_connect_db_ = new QCheckBox;

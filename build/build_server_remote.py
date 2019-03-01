@@ -38,7 +38,7 @@ class BuildRpcServer(object):
 
     def connect(self):
         credentials = pika.PlainCredentials(config.USER_NAME, config.PASSWORD)
-        params = pika.ConnectionParameters(host=config.REMOTE_HOST, credentials=credentials)
+        params = pika.ConnectionParameters(host=config.REMOTE_HOST, credentials=credentials, connection_attempts=10)
         return pika.SelectConnection(params, self.on_connection_open, stop_ioloop_on_close=False)
 
     def reconnect(self):
