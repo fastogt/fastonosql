@@ -71,7 +71,7 @@ extern const QString trConnect;
 extern const QString trDisconnect;
 extern const QString trImportSettings;
 extern const QString trExportSettings;
-extern const QString trLoadFromFile;
+extern const QString trLoadSettingsFromFile;
 extern const QString trExit;
 extern const QString trTools;
 extern const QString trPreferences;

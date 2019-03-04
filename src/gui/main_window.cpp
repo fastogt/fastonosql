@@ -664,7 +664,7 @@ void MainWindow::createStatusBar() {}
 
 void MainWindow::retranslateUi() {
   connect_action_->setText(translations::trConnect + "...");
-  load_from_file_action_->setText(translations::trLoadFromFile + "...");
+  load_from_file_action_->setText(translations::trLoadSettingsFromFile + "...");
   import_action_->setText(translations::trImportSettings);
   export_action_->setText(translations::trExportSettings);
   exit_action_->setText(translations::trExit);
