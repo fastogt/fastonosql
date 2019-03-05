@@ -189,7 +189,8 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
           core::FastoObjectCommandIPtr cmd_type = CreateCommandFast(wr2.str(), core::C_INNER);
           LOG_COMMAND(cmd_type);
           core::readable_string_t type_str;
-          impl_->GetType(k, &type_str);
+          err = impl_->GetType(k, &type_str);
+          DCHECK(!err);
           core::NValue empty_val;
           if (type_str == GEN_READABLE_STRING("list")) {
             empty_val.reset(core::CreateEmptyValueFromType(common::Value::TYPE_ARRAY));
