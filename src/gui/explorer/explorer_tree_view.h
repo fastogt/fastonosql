@@ -64,6 +64,7 @@ class ExplorerTreeView : public QTreeView {
 
  private Q_SLOTS:
   void showContextMenu(const QPoint& point);
+  void copyToClipboard();
   void connectDisconnectToServer();
   void openConsole();
   void loadDatabases();

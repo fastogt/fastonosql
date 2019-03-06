@@ -20,6 +20,8 @@
 
 #include <string>
 
+#include <QApplication>
+#include <QClipboard>
 #include <QFileDialog>
 #include <QHeaderView>
 #include <QInputDialog>
@@ -78,6 +80,7 @@ const QString trRenameBranchLabel = QObject::tr("New branch name:");
 const QString trCreateDatabase_1S = QObject::tr("Create database on %1 server");
 const QString trPropertiesTemplate_1S = QObject::tr("%1 properties");
 const QString trHistoryTemplate_1S = QObject::tr("%1 history");
+const QString trCopyToClipboard = QObject::tr("Copy to clipboard");
 }  // namespace
 
 namespace fastonosql {
@@ -306,6 +309,9 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
 #endif
     menu.addAction(close_server_action);
 
+    QAction* copy_to_clipboard_action = new QAction(trCopyToClipboard, this);
+    VERIFY(connect(copy_to_clipboard_action, &QAction::triggered, this, &ExplorerTreeView::copyToClipboard));
+    menu.addAction(copy_to_clipboard_action);
     menu.exec(menu_point);
   } else if (node->type() == IExplorerTreeItem::eDatabase) {
     ExplorerDatabaseItem* db = static_cast<ExplorerDatabaseItem*>(node);
@@ -351,6 +357,10 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       remove_database_action->setEnabled(!is_default && is_connected);
       menu.addAction(remove_database_action);
     }
+
+    QAction* copy_to_clipboard_action = new QAction(trCopyToClipboard, this);
+    VERIFY(connect(copy_to_clipboard_action, &QAction::triggered, this, &ExplorerTreeView::copyToClipboard));
+    menu.addAction(copy_to_clipboard_action);
     menu.exec(menu_point);
   } else if (node->type() == IExplorerTreeItem::eNamespace) {
     ExplorerNSItem* ns = static_cast<ExplorerNSItem*>(node);
@@ -377,6 +387,10 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
     renameBranchAction->setEnabled(is_default && is_connected);
     menu.addAction(removeBranchAction);
     removeBranchAction->setEnabled(is_default && is_connected);
+
+    QAction* copy_to_clipboard_action = new QAction(trCopyToClipboard, this);
+    VERIFY(connect(copy_to_clipboard_action, &QAction::triggered, this, &ExplorerTreeView::copyToClipboard));
+    menu.addAction(copy_to_clipboard_action);
     menu.exec(menu_point);
   } else if (node->type() == IExplorerTreeItem::eKey) {
     ExplorerKeyItem* key = static_cast<ExplorerKeyItem*>(node);
@@ -427,6 +441,10 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
     delete_key_action->setEnabled(is_connected);
     menu.addAction(watch_key_action);
     watch_key_action->setEnabled(is_connected);
+
+    QAction* copy_to_clipboard_action = new QAction(trCopyToClipboard, this);
+    VERIFY(connect(copy_to_clipboard_action, &QAction::triggered, this, &ExplorerTreeView::copyToClipboard));
+    menu.addAction(copy_to_clipboard_action);
     menu.exec(menu_point);
   }
 #if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
@@ -435,15 +453,43 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
     QAction* close_cluster_action = new QAction(translations::trClose, this);
     VERIFY(connect(close_cluster_action, &QAction::triggered, this, &ExplorerTreeView::closeClusterConnection));
     menu.addAction(close_cluster_action);
+
+    QAction* copy_to_clipboard_action = new QAction(trCopyToClipboard, this);
+    VERIFY(connect(copy_to_clipboard_action, &QAction::triggered, this, &ExplorerTreeView::copyToClipboard));
+    menu.addAction(copy_to_clipboard_action);
     menu.exec(menu_point);
   } else if (node->type() == IExplorerTreeItem::eSentinel) {
     QMenu menu(this);
     QAction* close_sentinel_action = new QAction(translations::trClose, this);
     VERIFY(connect(close_sentinel_action, &QAction::triggered, this, &ExplorerTreeView::closeSentinelConnection));
     menu.addAction(close_sentinel_action);
+
+    QAction* copy_to_clipboard_action = new QAction(trCopyToClipboard, this);
+    VERIFY(connect(copy_to_clipboard_action, &QAction::triggered, this, &ExplorerTreeView::copyToClipboard));
+    menu.addAction(copy_to_clipboard_action);
     menu.exec(menu_point);
   }
 #endif
+}
+
+void ExplorerTreeView::copyToClipboard() {
+  QString buffer;
+  QModelIndexList selected = selectedEqualTypeIndexes();
+  for (int i = 0; i < selected.size(); ++i) {
+    IExplorerTreeItem* node = common::qt::item<common::qt::gui::TreeItem*, IExplorerTreeItem*>(selected[i]);
+    if (!node) {
+      DNOTREACHED();
+      continue;
+    }
+
+    buffer += node->name();
+    if (i != selected.size() - 1) {
+      buffer += END_COMMAND_CHAR;
+    }
+  }
+
+  QClipboard* clipboard = QApplication::clipboard();
+  clipboard->setText(buffer);
 }
 
 void ExplorerTreeView::connectDisconnectToServer() {
