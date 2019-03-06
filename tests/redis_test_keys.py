@@ -162,9 +162,9 @@ def test():
     r.set('snappy_big', snappy_big)
 
     # pickle
-    pickled_object = pickle.dumps([{'type': 'big', 'url': '....'},
-                                   {'type': 'big', 'url': '....'},
-                                   {'type': 'big', 'url': '....'}])
+    pickled_object = pickle.dumps('pickle')  # pickle.dumps([{'type': 'big', 'url': '....'},
+    #              {'type': 'big', 'url': '....'},
+    #              {'type': 'big', 'url': '....'}])
     r.set('pickled_object', pickled_object)
 
     # double name
