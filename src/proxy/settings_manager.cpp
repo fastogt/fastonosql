@@ -40,6 +40,10 @@
 #include "proxy/sentinel_connection_settings_factory.h"
 #endif
 
+#define SHARE_PATH_RELATIVE "share/resources"
+#define MODULE_PATH_RELATIVE "modules"
+#define CONVERTERS_PATH_RELATIVE "converters"
+
 #define PREFIX "settings/"
 
 #define LANGUAGE PREFIX "language"
@@ -136,6 +140,21 @@ std::string SettingsManager::GetSettingsFilePath() {
 
 std::string SettingsManager::GetSourceDirPath() {
   return common::file_system::absolute_path_from_relative(RELATIVE_SOURCE_DIR);
+}
+
+std::string SettingsManager::GetShareDirPath() {
+  const std::string absolute_source_dir = GetSourceDirPath();
+  return common::file_system::make_path(absolute_source_dir, SHARE_PATH_RELATIVE);
+}
+
+std::string SettingsManager::GetModulesPath() {
+  const std::string absolute_source_dir = GetShareDirPath();
+  return common::file_system::make_path(absolute_source_dir, MODULE_PATH_RELATIVE);
+}
+
+std::string SettingsManager::GetConvertersPath() {
+  const std::string modules_path = GetModulesPath();
+  return common::file_system::make_path(modules_path, CONVERTERS_PATH_RELATIVE);
 }
 
 uint32_t SettingsManager::GetConfigVersion() const {

@@ -61,6 +61,9 @@ const QString trSelectPythonPath = QObject::tr("Select python executable");
 const QString trPythonExecutable = QObject::tr("Python executable (*)");
 const QString trPythonPath = QObject::tr("Python path:");
 
+const QString trSelectModulesPath = QObject::tr("Select modules path");
+const QString trModulesPath = QObject::tr("Modules path:");
+
 const QString trPreferences = QObject::tr(PROJECT_NAME_TITLE " preferences");
 }  // namespace
 
@@ -99,7 +102,8 @@ PreferencesDialog::PreferencesDialog(QWidget* parent)
       auto_connect_db_(nullptr),
       show_welcome_page_(nullptr),
       external_box_(nullptr),
-      python_path_widget_(nullptr) {
+      python_path_widget_(nullptr),
+      modules_path_widget_(nullptr) {
   QTabWidget* preferences_tabs = new QTabWidget;
   QWidget* general_tab = createMainTab();
   QWidget* external_tab = createExternalTab();
@@ -166,6 +170,10 @@ void PreferencesDialog::syncWithSettings() {
   show_welcome_page_->setChecked(proxy::SettingsManager::GetInstance()->GetShowWelcomePage());
   QString python_path = proxy::SettingsManager::GetInstance()->GetPythonPath();
   python_path_widget_->setPath(python_path);
+
+  QString modules_path;
+  common::ConvertFromString(proxy::SettingsManager::GetInstance()->GetModulesPath(), &modules_path);
+  modules_path_widget_->setPath(modules_path);
 }
 
 QWidget* PreferencesDialog::createMainTab() {
@@ -302,9 +310,12 @@ QWidget* PreferencesDialog::createExternalTab() {
   QWidget* external = new QWidget;
 
   external_box_ = new QGroupBox;
-  QHBoxLayout* external_layout = new QHBoxLayout;
+  QVBoxLayout* external_layout = new QVBoxLayout;
   python_path_widget_ = createWidget<FilePathWidget>(trPythonPath, trPythonExecutable, trSelectPythonPath);
   external_layout->addWidget(python_path_widget_);
+  modules_path_widget_ = createWidget<DirectoryPathWidget>(trModulesPath, trSelectModulesPath);
+  modules_path_widget_->setEnabled(false);
+  external_layout->addWidget(modules_path_widget_);
   external_box_->setLayout(external_layout);
 
   QVBoxLayout* layout = new QVBoxLayout;

@@ -94,6 +94,7 @@ class PreferencesDialog : public BaseDialog {
 
   QGroupBox* external_box_;
   IPathWidget* python_path_widget_;
+  IPathWidget* modules_path_widget_;
 };
 
 }  // namespace gui
