@@ -48,6 +48,7 @@ class SettingsManager : public common::patterns::Singleton<SettingsManager> {
 
   static std::string GetSettingsDirPath();
   static std::string GetSettingsFilePath();
+  static std::string GetSourceDirPath();
 
   uint32_t GetConfigVersion() const;
 

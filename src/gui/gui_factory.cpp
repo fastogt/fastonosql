@@ -29,6 +29,8 @@
 
 #include <fastonosql/core/value.h>
 
+#include "proxy/settings_manager.h"
+
 #define CONNECT_GIF_PATH_RELATIVE "share/resources/help/connect.gif"
 #define INDIVIDUAL_BUILDS_GIF_PATH_RELATIVE "share/resources/help/individual_builds.gif"
 #define WORKFLOW_GIF_PATH_RELATIVE "share/resources/help/workflow.gif"
@@ -470,7 +472,7 @@ const QString& GuiFactory::pathToLoadingGif() const {
 }
 
 QString GuiFactory::pathToIndividualBuilds() const {
-  const std::string absolute_source_dir = common::file_system::absolute_path_from_relative(RELATIVE_SOURCE_DIR);
+  const std::string absolute_source_dir = proxy::SettingsManager::GetSourceDirPath();
   const std::string img_full_path =
       common::file_system::make_path(absolute_source_dir, INDIVIDUAL_BUILDS_GIF_PATH_RELATIVE);
   QString path;
@@ -479,7 +481,7 @@ QString GuiFactory::pathToIndividualBuilds() const {
 }
 
 QString GuiFactory::pathToConnectGif() const {
-  const std::string absolute_source_dir = common::file_system::absolute_path_from_relative(RELATIVE_SOURCE_DIR);
+  const std::string absolute_source_dir = proxy::SettingsManager::GetSourceDirPath();
   const std::string img_full_path = common::file_system::make_path(absolute_source_dir, CONNECT_GIF_PATH_RELATIVE);
   QString path;
   common::ConvertFromString(img_full_path, &path);
@@ -487,7 +489,7 @@ QString GuiFactory::pathToConnectGif() const {
 }
 
 QString GuiFactory::pathToWorkflowGif() const {
-  const std::string absolute_source_dir = common::file_system::absolute_path_from_relative(RELATIVE_SOURCE_DIR);
+  const std::string absolute_source_dir = proxy::SettingsManager::GetSourceDirPath();
   const std::string img_full_path = common::file_system::make_path(absolute_source_dir, WORKFLOW_GIF_PATH_RELATIVE);
   QString path;
   common::ConvertFromString(img_full_path, &path);

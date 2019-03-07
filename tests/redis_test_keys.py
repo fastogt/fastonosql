@@ -167,6 +167,9 @@ def test():
     #              {'type': 'big', 'url': '....'}])
     r.set('pickled_object', pickled_object)
 
+    pickled2_object = pickle.dumps('pickle2')
+    r.set('pickled2_object', pickled2_object)
+
     # double name
     space_key = 'hello motto'
     space_value = 'hello motto'

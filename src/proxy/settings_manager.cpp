@@ -27,6 +27,7 @@
 #include <common/utils.h>
 
 #include <common/file_system/file_system.h>
+#include <common/file_system/string_path_utils.h>
 #include <common/qt/gui/app_style.h>
 #include <common/qt/translations/translations.h>
 
@@ -131,6 +132,10 @@ std::string SettingsManager::GetSettingsDirPath() {
 
 std::string SettingsManager::GetSettingsFilePath() {
   return common::file_system::prepare_path(kIniPath);
+}
+
+std::string SettingsManager::GetSourceDirPath() {
+  return common::file_system::absolute_path_from_relative(RELATIVE_SOURCE_DIR);
 }
 
 uint32_t SettingsManager::GetConfigVersion() const {
