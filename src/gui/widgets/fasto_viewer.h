@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include <fastonosql/core/basic_types.h>
 
 #include "gui/widgets/base_widget.h"
@@ -41,6 +43,9 @@ enum OutputView : uint8_t {
 
   TO_UNICODE_VIEW,
   FROM_UNICODE_VIEW,
+
+  TO_PICKLE_VIEW,
+  FROM_PICKLE_VIEW,
 
   MSGPACK_VIEW,  // from
   ZLIB_VIEW,     // from

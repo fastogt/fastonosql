@@ -422,6 +422,7 @@ SET(HEADERS_GUI
   ${CMAKE_SOURCE_DIR}/src/gui/utils.h
   ${CMAKE_SOURCE_DIR}/src/gui/socket_tls.h
   ${CMAKE_SOURCE_DIR}/src/gui/text_converter.h
+  ${CMAKE_SOURCE_DIR}/src/gui/python_converter.h
   ${CMAKE_SOURCE_DIR}/src/gui/key_info.h
   ${CMAKE_SOURCE_DIR}/src/gui/connection_listwidget_items.h
   ${CMAKE_SOURCE_DIR}/src/gui/main_window.h
@@ -446,6 +447,7 @@ SET(SOURCES_GUI
   ${CMAKE_SOURCE_DIR}/src/gui/utils.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/socket_tls.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/text_converter.cpp
+  ${CMAKE_SOURCE_DIR}/src/gui/python_converter.cpp
   ${CMAKE_SOURCE_DIR}/src/gui/key_info.cpp
 )
 
