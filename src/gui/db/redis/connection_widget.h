@@ -50,7 +50,9 @@ class ConnectionWidget : public ConnectionBaseWidget {
   void selectRemoteDBPath(bool checked);
   void selectLocalDBPath(bool checked);
   void secureConnectionChange(bool checked);
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   void updateConnectionString(const QString& data);
+#endif
 
  protected:
   explicit ConnectionWidget(QWidget* parent = Q_NULLPTR);
@@ -74,9 +76,10 @@ class ConnectionWidget : public ConnectionBaseWidget {
   QSpinBox* default_db_num_;
 
   SSHWidget* ssh_widget_;
-
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   QLabel* hot_settings_label_;
   QComboBox* hot_settings_;
+#endif
 };
 
 }  // namespace redis

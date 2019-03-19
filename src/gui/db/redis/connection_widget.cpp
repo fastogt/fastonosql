@@ -46,19 +46,23 @@
 
 #include "translations/global.h"
 
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 #define NONE_STRING "None"
 #define STACKEXCHANGE_REDIS_STRING "StackExchange.Redis"
 
 #define PASSWORD_FIELD "password"
 #define SSL_FIELD "ssl"
+#endif
 
 namespace {
 const QString trUnixPath = QObject::tr("Unix socket path:");
 const QString trRemote = QObject::tr("Remote");
 const QString trLocal = QObject::tr("Local");
 const QString trSSL = QObject::tr("SSL");
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 const QString trLoadFromConnectionString = QObject::tr("Load from connection string");
 const QString trConnectionString_1S = "Connection string (%1)";
+#endif
 }  // namespace
 
 namespace fastonosql {
@@ -129,6 +133,7 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : base_class(parent) {
   password_box_->setEnabled(false);
   password_echo_mode_button_->setEnabled(false);
 
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   QHBoxLayout* hot_settings_layout = new QHBoxLayout;
   hot_settings_label_ = new QLabel;
   hot_settings_layout->addWidget(hot_settings_label_);
@@ -137,6 +142,7 @@ ConnectionWidget::ConnectionWidget(QWidget* parent) : base_class(parent) {
   hot_settings_layout->addWidget(hot_settings_);
   VERIFY(connect(hot_settings_, &QComboBox::currentTextChanged, this, &ConnectionWidget::updateConnectionString));
   addLayout(hot_settings_layout);
+#endif
 }
 
 void ConnectionWidget::syncControls(proxy::IConnectionSettingsBase* connection) {
@@ -179,7 +185,9 @@ void ConnectionWidget::retranslateUi() {
   local_->setText(trLocal);
   use_auth_->setText(trUseAuth);
   default_db_label_->setText(trDefaultDb);
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
   hot_settings_label_->setText(trLoadFromConnectionString);
+#endif
   base_class::retranslateUi();
 }
 
@@ -217,6 +225,7 @@ void ConnectionWidget::secureConnectionChange(bool checked) {
 #endif
 }
 
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 void ConnectionWidget::updateConnectionString(const QString& data) {
   if (data == NONE_STRING) {
     return;
@@ -263,6 +272,7 @@ void ConnectionWidget::updateConnectionString(const QString& data) {
     }
   }
 }
+#endif
 
 bool ConnectionWidget::validated() const {
   if (ssh_widget_->isEnabled() && ssh_widget_->isSSHChecked()) {
