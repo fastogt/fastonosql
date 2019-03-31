@@ -95,7 +95,9 @@ const QString trRedisTextServerTemplate = QObject::tr(
     "Uptime sec: %12<br/>"
     "Uptime days: %13<br/>"
     "Hz: %14<br/>"
-    "Lru clock: %15");
+    "Lru clock: %15<br/>"
+    "Executable: %16<br/>"
+    "Config file: %17");
 
 const QString trRedisTextClientsTemplate = QObject::tr(
     "<h3>Clients:</h3>"
@@ -147,7 +149,13 @@ const QString trRedisTextStatsTemplate = QObject::tr(
     "Keyspace misses: %11<br/>"
     "Pubsub channels: %12<br/>"
     "Pubsub patterns: %13<br/>"
-    "Latest fork usec: %14");
+    "Latest fork usec: %14<br/>"
+    "Migrate cached sockets: %15<br/>"
+    "Slave expires tracked keys: %16<br/>"
+    "Active defrag hits: %17<br/>"
+    "Active defrag misses: %18<br/>"
+    "Active defrag key hits: %19<br/>"
+    "Active defrag misses hits: %20");
 
 const QString trRedisTextReplicationTemplate = QObject::tr(
     "<h3>Replication:</h3>"
@@ -165,6 +173,11 @@ const QString trRedisTextCpuTemplate = QObject::tr(
     "Used cpu user: %2<br/>"
     "Used cpu sys children: %3<br/>"
     "Used cpu user children: %4");
+
+const QString trRedisTextClusterTemplate = QObject::tr(
+    "<h3>Cluster:</h3>"
+    "Cluster enabled: %1");
+
 QString generateText(core::redis::ServerInfo* serv) {
   core::redis::ServerInfo::Server ser = serv->server_;
   QString qredis_version;
@@ -191,6 +204,12 @@ QString generateText(core::redis::ServerInfo* serv) {
   QString qrun_id;
   common::ConvertFromString(ser.run_id_, &qrun_id);
 
+  QString qexecutable;
+  common::ConvertFromString(ser.executable_, &qexecutable);
+
+  QString qconfig_file;
+  common::ConvertFromString(ser.config_file_, &qconfig_file);
+
   QString text_serv = trRedisTextServerTemplate.arg(qredis_version)
                           .arg(qredis_git_sha1)
                           .arg(qredis_git_dirty)
@@ -205,7 +224,9 @@ QString generateText(core::redis::ServerInfo* serv) {
                           .arg(ser.uptime_in_seconds_)
                           .arg(ser.uptime_in_days_)
                           .arg(ser.hz_)
-                          .arg(ser.lru_clock_);
+                          .arg(ser.lru_clock_)
+                          .arg(qexecutable)
+                          .arg(qconfig_file);
 
   core::redis::ServerInfo::Clients cl = serv->clients_;
   QString text_cl = trRedisTextClientsTemplate.arg(cl.connected_clients_)
@@ -271,7 +292,13 @@ QString generateText(core::redis::ServerInfo* serv) {
                           .arg(stat.keyspace_misses_)
                           .arg(stat.pubsub_channels_)
                           .arg(stat.pubsub_patterns_)
-                          .arg(stat.latest_fork_usec_);
+                          .arg(stat.latest_fork_usec_)
+                          .arg(stat.migrate_cached_sockets_)
+                          .arg(stat.slave_expires_tracked_keys_)
+                          .arg(stat.active_defrag_hits_)
+                          .arg(stat.active_defrag_misses_)
+                          .arg(stat.active_defrag_key_hits_)
+                          .arg(stat.active_defrag_key_misses_);
 
   core::redis::ServerInfo::Replication repl = serv->replication_;
   QString qrole;
@@ -290,7 +317,10 @@ QString generateText(core::redis::ServerInfo* serv) {
                          .arg(cpu.used_cpu_user_)
                          .arg(cpu.used_cpu_sys_children_)
                          .arg(cpu.used_cpu_user_children_);
-  return text_serv + text_mem + text_cpu + text_cl + text_per + text_stat + text_repl;
+
+  core::redis::ServerInfo::Cluster cluster = serv->cluster_;
+  QString text_cluster = trRedisTextClusterTemplate.arg(cluster.cluster_enabled_);
+  return text_serv + text_cl + text_mem + text_per + text_stat + text_repl + text_cpu + text_cluster;
 }
 #endif
 
