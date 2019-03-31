@@ -22,10 +22,10 @@ namespace fastonosql {
 namespace gui {
 namespace redis {
 
-RedisApi::RedisApi(Lexer* lexer) : BaseCommandsQsciApi(lexer) {}
+Api::Api(Lexer* lexer) : BaseCommandsQsciApi(lexer) {}
 
 Lexer::Lexer(QObject* parent) : BaseCommandsQsciLexer(redis_trait_t::GetCommands(), parent) {
-  setAPIs(new RedisApi(this));
+  setAPIs(new Api(this));
 }
 
 const char* Lexer::language() const {

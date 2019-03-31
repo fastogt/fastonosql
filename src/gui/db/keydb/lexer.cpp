@@ -20,6 +20,26 @@
 
 namespace fastonosql {
 namespace gui {
-namespace keydb {}  // namespace keydb
+namespace keydb {
+
+Api::Api(Lexer* lexer) : BaseCommandsQsciApi(lexer) {}
+
+Lexer::Lexer(QObject* parent) : BaseCommandsQsciLexer(keydb_trait_t::GetCommands(), parent) {
+  setAPIs(new Api(this));
+}
+
+const char* Lexer::language() const {
+  return keydb_trait_t::GetDBName();
+}
+
+const char* Lexer::version() const {
+  return keydb_trait_t::GetVersionApi();
+}
+
+const char* Lexer::basedOn() const {
+  return keydb_trait_t::GetBasedOn();
+}
+
+}  // namespace redis
 }  // namespace gui
 }  // namespace fastonosql

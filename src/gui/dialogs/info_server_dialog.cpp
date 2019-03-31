@@ -712,14 +712,17 @@ const QString trKeydbTextServerTemplate = QObject::tr(
     "Uptime sec: %12<br/>"
     "Uptime days: %13<br/>"
     "Hz: %14<br/>"
-    "Lru clock: %15");
+    "Lru clock: %15<br/>"
+    "Executable: %16<br/>"
+    "Config file: %17");
 
 const QString trKeydbTextClientsTemplate = QObject::tr(
     "<h3>Clients:</h3>"
     "Connected clients_: %1<br/>"
     "Client longest output list: %2<br/>"
     "Client biggest input buf: %3<br/>"
-    "Blocked clients: %4");
+    "Blocked clients: %4<br/>"
+    "Thread 0 clients: %5");
 
 const QString trKeydbTextMemoryTemplate = QObject::tr(
     "<h3>Memory:</h3>"
@@ -730,7 +733,9 @@ const QString trKeydbTextMemoryTemplate = QObject::tr(
     "Used memory peak human: %5<br/>"
     "Used memory lua: %6<br/>"
     "Mem fragmentation ratio: %7<br/>"
-    "Mem allocator: %8");
+    "Mem allocator: %8<br/>"
+    "Active defrag running: %9<br/>"
+    "Lazyfree pending objects: %10");
 
 const QString trKeydbTextPersistenceTemplate = QObject::tr(
     "<h3>Persistence:</h3>"
@@ -764,7 +769,13 @@ const QString trKeydbTextStatsTemplate = QObject::tr(
     "Keyspace misses: %11<br/>"
     "Pubsub channels: %12<br/>"
     "Pubsub patterns: %13<br/>"
-    "Latest fork usec: %14");
+    "Latest fork usec: %14<br/>"
+    "Migrate cached sockets: %15<br/>"
+    "Slave expires tracked keys: %16<br/>"
+    "Active defrag hits: %17<br/>"
+    "Active defrag misses: %18<br/>"
+    "Active defrag key hits: %19<br/>"
+    "Active defrag misses hits: %20");
 
 const QString trKeydbTextReplicationTemplate = QObject::tr(
     "<h3>Replication:</h3>"
@@ -782,6 +793,11 @@ const QString trKeydbTextCpuTemplate = QObject::tr(
     "Used cpu user: %2<br/>"
     "Used cpu sys children: %3<br/>"
     "Used cpu user children: %4");
+
+const QString trKeydbTextClusterTemplate = QObject::tr(
+    "<h3>Cluster:</h3>"
+    "Cluster enabled: %1");
+
 QString generateText(core::keydb::ServerInfo* serv) {
   core::keydb::ServerInfo::Server ser = serv->server_;
   QString qredis_version;
@@ -808,6 +824,12 @@ QString generateText(core::keydb::ServerInfo* serv) {
   QString qrun_id;
   common::ConvertFromString(ser.run_id_, &qrun_id);
 
+  QString qexecutable;
+  common::ConvertFromString(ser.executable_, &qexecutable);
+
+  QString qconfig_file;
+  common::ConvertFromString(ser.config_file_, &qconfig_file);
+
   QString text_serv = trKeydbTextServerTemplate.arg(qredis_version)
                           .arg(qredis_git_sha1)
                           .arg(qredis_git_dirty)
@@ -822,13 +844,16 @@ QString generateText(core::keydb::ServerInfo* serv) {
                           .arg(ser.uptime_in_seconds_)
                           .arg(ser.uptime_in_days_)
                           .arg(ser.hz_)
-                          .arg(ser.lru_clock_);
+                          .arg(ser.lru_clock_)
+                          .arg(qexecutable)
+                          .arg(qconfig_file);
 
   core::keydb::ServerInfo::Clients cl = serv->clients_;
   QString text_cl = trKeydbTextClientsTemplate.arg(cl.connected_clients_)
                         .arg(cl.client_longest_output_list_)
                         .arg(cl.client_biggest_input_buf_)
-                        .arg(cl.blocked_clients_);
+                        .arg(cl.blocked_clients_)
+                        .arg(cl.thread_0_clients_);
 
   core::keydb::ServerInfo::Memory mem = serv->memory_;
   QString qused_memory_human;
@@ -847,7 +872,9 @@ QString generateText(core::keydb::ServerInfo* serv) {
                          .arg(qused_memory_peak_human)
                          .arg(mem.used_memory_lua_)
                          .arg(mem.mem_fragmentation_ratio_)
-                         .arg(qmem_allocator);
+                         .arg(qmem_allocator)
+                         .arg(mem.active_defrag_running_)
+                         .arg(mem.lazyfree_pending_objects_);
 
   core::keydb::ServerInfo::Persistence per = serv->persistence_;
   QString qrdb_last_bgsave_status;
@@ -888,7 +915,13 @@ QString generateText(core::keydb::ServerInfo* serv) {
                           .arg(stat.keyspace_misses_)
                           .arg(stat.pubsub_channels_)
                           .arg(stat.pubsub_patterns_)
-                          .arg(stat.latest_fork_usec_);
+                          .arg(stat.latest_fork_usec_)
+                          .arg(stat.migrate_cached_sockets_)
+                          .arg(stat.slave_expires_tracked_keys_)
+                          .arg(stat.active_defrag_hits_)
+                          .arg(stat.active_defrag_misses_)
+                          .arg(stat.active_defrag_key_hits_)
+                          .arg(stat.active_defrag_key_misses_);
 
   core::keydb::ServerInfo::Replication repl = serv->replication_;
   QString qrole;
@@ -907,7 +940,10 @@ QString generateText(core::keydb::ServerInfo* serv) {
                          .arg(cpu.used_cpu_user_)
                          .arg(cpu.used_cpu_sys_children_)
                          .arg(cpu.used_cpu_user_children_);
-  return text_serv + text_mem + text_cpu + text_cl + text_per + text_stat + text_repl;
+
+  core::keydb::ServerInfo::Cluster cluster = serv->cluster_;
+  QString text_cluster = trKeydbTextClusterTemplate.arg(cluster.cluster_enabled_);
+  return text_serv + text_mem + text_cpu + text_cl + text_per + text_stat + text_repl + text_cluster;
 }
 #endif
 }  // namespace

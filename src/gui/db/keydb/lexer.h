@@ -18,16 +18,33 @@
 
 #pragma once
 
-#include "gui/db/redis/lexer.h"
+#include "gui/shell/base_lexer.h"
+
+#include <fastonosql/core/connection_commands_traits.h>
 
 namespace fastonosql {
 namespace gui {
 namespace keydb {
 
-typedef redis::Lexer Lexer;
+class Lexer : public BaseCommandsQsciLexer {
+  Q_OBJECT
 
-typedef redis::RedisApi RedisApi;
+ public:
+  typedef core::ConnectionCommandsTraits<core::KEYDB> keydb_trait_t;
+  explicit Lexer(QObject* parent = Q_NULLPTR);
 
-}  // namespace keydb
+  const char* language() const override;
+  const char* version() const override;
+  const char* basedOn() const override;
+};
+
+class Api : public BaseCommandsQsciApi {
+  Q_OBJECT
+
+ public:
+  explicit Api(Lexer* lexer);
+};
+
+}  // namespace redis
 }  // namespace gui
 }  // namespace fastonosql
