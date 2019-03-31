@@ -78,7 +78,7 @@
 
 namespace fastonosql {
 namespace {
-#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_DYNOMITE) || defined(BUILD_WITH_KEYDB)
+#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_DYNOMITE)
 const QString trRedisTextServerTemplate = QObject::tr(
     "<h3>Server:</h3>"
     "Redis version: %1<br/>"
@@ -694,6 +694,222 @@ QString generateText(core::pika::ServerInfo* serv) {
          text_double_master;
 }
 #endif
+
+#if defined(BUILD_WITH_KEYDB)
+const QString trKeydbTextServerTemplate = QObject::tr(
+    "<h3>Server:</h3>"
+    "KeyDB version: %1<br/>"
+    "KeyDB git_sha1: %2<br/>"
+    "KeyDB git_dirty: %3<br/>"
+    "KeyDB mode: %4<br/>"
+    "Os: %5<br/>"
+    "Arch: %6<br/>"
+    "Multiplexing Api: %7<br/>"
+    "Gcc version: %8<br/>"
+    "Process id: %9<br/>"
+    "Run id: %10<br/>"
+    "Tcp port: %11<br/>"
+    "Uptime sec: %12<br/>"
+    "Uptime days: %13<br/>"
+    "Hz: %14<br/>"
+    "Lru clock: %15");
+
+const QString trKeydbTextClientsTemplate = QObject::tr(
+    "<h3>Clients:</h3>"
+    "Connected clients_: %1<br/>"
+    "Client longest output list: %2<br/>"
+    "Client biggest input buf: %3<br/>"
+    "Blocked clients: %4");
+
+const QString trKeydbTextMemoryTemplate = QObject::tr(
+    "<h3>Memory:</h3>"
+    "Used memory: %1<br/>"
+    "Used memory human: %2<br/>"
+    "Used memory rss: %3<br/>"
+    "Used memory peak: %4<br/>"
+    "Used memory peak human: %5<br/>"
+    "Used memory lua: %6<br/>"
+    "Mem fragmentation ratio: %7<br/>"
+    "Mem allocator: %8");
+
+const QString trKeydbTextPersistenceTemplate = QObject::tr(
+    "<h3>Persistence:</h3>"
+    "Loading: %1<br/>"
+    "Rdb changes since last save: %2<br/>"
+    "Rdb bgsave in_progress: %3<br/>"
+    "Rdb last save_time: %4<br/>"
+    "Rdb last bgsave_status: %5<br/>"
+    "Rdb last bgsave time sec: %6<br/>"
+    "Rdb current bgsave time sec: %7<br/>"
+    "Aof enabled: %8<br/>"
+    "Aof rewrite in progress: %9<br/>"
+    "Aof rewrite scheduled: %10<br/>"
+    "Aof last rewrite time sec: %11<br/>"
+    "Aof current rewrite time sec: %12<br/>"
+    "Aof last bgrewrite status: %13<br/>"
+    "Aof last write status: %14");
+
+const QString trKeydbTextStatsTemplate = QObject::tr(
+    "<h3>Stats:</h3>"
+    "Total connections received: %1<br/>"
+    "Total commands processed: %2<br/>"
+    "Instantaneous ops per sec: %3<br/>"
+    "Rejected connections: %4<br/>"
+    "Sync full: %5<br/>"
+    "Sync partial ok: %6<br/>"
+    "Sync partial err: %7<br/>"
+    "Expired keys: %8<br/>"
+    "Evicted keys: %9<br/>"
+    "Keyspace hits: %10<br/>"
+    "Keyspace misses: %11<br/>"
+    "Pubsub channels: %12<br/>"
+    "Pubsub patterns: %13<br/>"
+    "Latest fork usec: %14");
+
+const QString trKeydbTextReplicationTemplate = QObject::tr(
+    "<h3>Replication:</h3>"
+    "Role: %1<br/>"
+    "Connected slaves: %2<br/>"
+    "Master reply offset: %3<br/>"
+    "Backlog active: %4<br/>"
+    "Backlog size: %5<br/>"
+    "Backlog first byte offset: %6<br/>"
+    "Backlog histen: %7");
+
+const QString trKeydbTextCpuTemplate = QObject::tr(
+    "<h3>Cpu:</h3>"
+    "Used cpu sys: %1<br/>"
+    "Used cpu user: %2<br/>"
+    "Used cpu sys children: %3<br/>"
+    "Used cpu user children: %4");
+QString generateText(core::keydb::ServerInfo* serv) {
+  core::keydb::ServerInfo::Server ser = serv->server_;
+  QString qredis_version;
+  common::ConvertFromString(ser.redis_version_, &qredis_version);
+
+  QString qredis_git_sha1;
+  common::ConvertFromString(ser.redis_git_sha1_, &qredis_git_sha1);
+
+  QString qredis_git_dirty;
+  common::ConvertFromString(ser.redis_git_dirty_, &qredis_git_dirty);
+
+  QString qredis_mode;
+  common::ConvertFromString(ser.redis_mode_, &qredis_mode);
+
+  QString qos;
+  common::ConvertFromString(ser.os_, &qos);
+
+  QString qmultiplexing_api;
+  common::ConvertFromString(ser.multiplexing_api_, &qmultiplexing_api);
+
+  QString qgcc_version;
+  common::ConvertFromString(ser.gcc_version_, &qgcc_version);
+
+  QString qrun_id;
+  common::ConvertFromString(ser.run_id_, &qrun_id);
+
+  QString text_serv = trKeydbTextServerTemplate.arg(qredis_version)
+                          .arg(qredis_git_sha1)
+                          .arg(qredis_git_dirty)
+                          .arg(qredis_mode)
+                          .arg(qos)
+                          .arg(ser.arch_bits_)
+                          .arg(qmultiplexing_api)
+                          .arg(qgcc_version)
+                          .arg(ser.process_id_)
+                          .arg(qrun_id)
+                          .arg(ser.tcp_port_)
+                          .arg(ser.uptime_in_seconds_)
+                          .arg(ser.uptime_in_days_)
+                          .arg(ser.hz_)
+                          .arg(ser.lru_clock_);
+
+  core::keydb::ServerInfo::Clients cl = serv->clients_;
+  QString text_cl = trKeydbTextClientsTemplate.arg(cl.connected_clients_)
+                        .arg(cl.client_longest_output_list_)
+                        .arg(cl.client_biggest_input_buf_)
+                        .arg(cl.blocked_clients_);
+
+  core::keydb::ServerInfo::Memory mem = serv->memory_;
+  QString qused_memory_human;
+  common::ConvertFromString(mem.used_memory_human_, &qused_memory_human);
+
+  QString qused_memory_peak_human;
+  common::ConvertFromString(mem.used_memory_peak_human_, &qused_memory_peak_human);
+
+  QString qmem_allocator;
+  common::ConvertFromString(mem.mem_allocator_, &qmem_allocator);
+
+  QString text_mem = trKeydbTextMemoryTemplate.arg(mem.used_memory_)
+                         .arg(qused_memory_human)
+                         .arg(mem.used_memory_rss_)
+                         .arg(mem.used_memory_peak_)
+                         .arg(qused_memory_peak_human)
+                         .arg(mem.used_memory_lua_)
+                         .arg(mem.mem_fragmentation_ratio_)
+                         .arg(qmem_allocator);
+
+  core::keydb::ServerInfo::Persistence per = serv->persistence_;
+  QString qrdb_last_bgsave_status;
+  common::ConvertFromString(per.rdb_last_bgsave_status_, &qrdb_last_bgsave_status);
+
+  QString qaof_last_bgrewrite_status;
+  common::ConvertFromString(per.aof_last_bgrewrite_status_, &qaof_last_bgrewrite_status);
+
+  QString qaof_last_write_status;
+  common::ConvertFromString(per.aof_last_write_status_, &qaof_last_write_status);
+
+  QString text_per = trKeydbTextPersistenceTemplate.arg(per.loading_)
+                         .arg(per.rdb_changes_since_last_save_)
+                         .arg(per.rdb_bgsave_in_progress_)
+                         .arg(per.rdb_last_save_time_)
+                         .arg(qrdb_last_bgsave_status)
+                         .arg(per.rdb_last_bgsave_time_sec_)
+                         .arg(per.rdb_current_bgsave_time_sec_)
+                         .arg(per.aof_enabled_)
+                         .arg(per.aof_rewrite_in_progress_)
+                         .arg(per.aof_rewrite_scheduled_)
+                         .arg(per.aof_last_rewrite_time_sec_)
+                         .arg(per.aof_current_rewrite_time_sec_)
+                         .arg(qaof_last_bgrewrite_status)
+                         .arg(qaof_last_write_status);
+
+  core::keydb::ServerInfo::Stats stat = serv->stats_;
+  QString text_stat = trKeydbTextStatsTemplate.arg(stat.total_connections_received_)
+                          .arg(stat.total_commands_processed_)
+                          .arg(stat.instantaneous_ops_per_sec_)
+                          .arg(stat.rejected_connections_)
+                          .arg(stat.sync_full_)
+                          .arg(stat.sync_partial_ok_)
+                          .arg(stat.sync_partial_err_)
+                          .arg(stat.expired_keys_)
+                          .arg(stat.evicted_keys_)
+                          .arg(stat.keyspace_hits_)
+                          .arg(stat.keyspace_misses_)
+                          .arg(stat.pubsub_channels_)
+                          .arg(stat.pubsub_patterns_)
+                          .arg(stat.latest_fork_usec_);
+
+  core::keydb::ServerInfo::Replication repl = serv->replication_;
+  QString qrole;
+  common::ConvertFromString(repl.role_, &qrole);
+
+  QString text_repl = trKeydbTextReplicationTemplate.arg(qrole)
+                          .arg(repl.connected_slaves_)
+                          .arg(repl.master_repl_offset_)
+                          .arg(repl.backlog_active_)
+                          .arg(repl.backlog_size_)
+                          .arg(repl.backlog_first_byte_offset_)
+                          .arg(repl.backlog_histen_);
+
+  core::keydb::ServerInfo::Cpu cpu = serv->cpu_;
+  QString text_cpu = trKeydbTextCpuTemplate.arg(cpu.used_cpu_sys_)
+                         .arg(cpu.used_cpu_user_)
+                         .arg(cpu.used_cpu_sys_children_)
+                         .arg(cpu.used_cpu_user_children_);
+  return text_serv + text_mem + text_cpu + text_cl + text_per + text_stat + text_repl;
+}
+#endif
 }  // namespace
 namespace gui {
 
@@ -750,8 +966,8 @@ void InfoServerDialog::showEvent(QShowEvent* e) {
 
 void InfoServerDialog::updateText(core::IServerInfo* serv) {
   const core::ConnectionType type = server_->GetType();
-#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_DYNOMITE) || defined(BUILD_WITH_KEYDB)
-  if (type == core::REDIS || type == core::DYNOMITE || type == core::KEYDB) {
+#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_DYNOMITE)
+  if (type == core::REDIS || type == core::DYNOMITE) {
     core::redis::ServerInfo local;
     core::redis::ServerInfo* stabled_server_info = serv ? static_cast<core::redis::ServerInfo*>(serv) : &local;
     server_text_info_->setText(generateText(stabled_server_info));
@@ -810,6 +1026,13 @@ void InfoServerDialog::updateText(core::IServerInfo* serv) {
   if (type == core::PIKA) {
     core::pika::ServerInfo local;
     core::pika::ServerInfo* stabled_server_info = serv ? static_cast<core::pika::ServerInfo*>(serv) : &local;
+    server_text_info_->setText(generateText(stabled_server_info));
+  }
+#endif
+#if defined(BUILD_WITH_KEYDB)
+  if (type == core::KEYDB) {
+    core::keydb::ServerInfo local;
+    core::keydb::ServerInfo* stabled_server_info = serv ? static_cast<core::keydb::ServerInfo*>(serv) : &local;
     server_text_info_->setText(generateText(stabled_server_info));
   }
 #endif
