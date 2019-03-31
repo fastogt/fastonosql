@@ -45,6 +45,6 @@ class Api : public BaseCommandsQsciApi {
   explicit Api(Lexer* lexer);
 };
 
-}  // namespace redis
+}  // namespace keydb
 }  // namespace gui
 }  // namespace fastonosql

@@ -40,6 +40,6 @@ const char* Lexer::basedOn() const {
   return keydb_trait_t::GetBasedOn();
 }
 
-}  // namespace redis
+}  // namespace keydb
 }  // namespace gui
 }  // namespace fastonosql
