@@ -2,8 +2,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.6.3) # OPENSSL_USE_STATIC_LIBS
 ###################### Branding ##########################
 
 SET(BRANDING_PROJECT_NAME "FastoNoSQL" CACHE STRING "Branding for ${BRANDING_PROJECT_NAME}") #default
-SET(BRANDING_PROJECT_VERSION "2.1.1.0" CACHE STRING "Branding version for ${BRANDING_PROJECT_NAME}") #default
-SET(BRANDING_PROJECT_BUILD_TYPE_VERSION "release" CACHE STRING "Build version type for ${BRANDING_PROJECT_NAME}") #default
+SET(BRANDING_PROJECT_VERSION "2.2.0.0" CACHE STRING "Branding version for ${BRANDING_PROJECT_NAME}") #default
+SET(BRANDING_PROJECT_BUILD_TYPE_VERSION "alfa" CACHE STRING "Build version type for ${BRANDING_PROJECT_NAME}") #default
   # possible variables: alfa, beta, rc, release
 SET(BRANDING_PROJECT_TYPE_VERSION "community" CACHE STRING "Build version type for ${BRANDING_PROJECT_NAME}") #default
   # possible variables: community, pro, enterprise
@@ -30,7 +30,7 @@ SET(BRANDING_PROJECT_EMAIL_URL "mailto:support@fastogt.com" CACHE STRING "Brandi
 SET(BRANDING_PROJECT_GITHUB_URL "https://github.com/fastogt/fastonosql" CACHE STRING "Branding github url for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_GITHUB_ISSUES "https://github.com/fastogt/fastonosql/issues" CACHE STRING "Branding issues url for ${BRANDING_PROJECT_NAME}") #default
 
-SET(BRANDING_PROJECT_SUMMARY "Cross-platform open source Redis, Memcached, SSDB, LevelDB, RocksDB, UnQLite, LMDB, ForestDB, Pika, Dynomite GUI management tool."
+SET(BRANDING_PROJECT_SUMMARY "Cross-platform open source Redis, Memcached, SSDB, LevelDB, RocksDB, UnQLite, LMDB, ForestDB, Pika, Dynomite, KeyDB GUI management tool."
   CACHE STRING "Short description of ${BRANDING_PROJECT_NAME}"
 )
 SET(BRANDING_PROJECT_DESCRIPTION "${BRANDING_PROJECT_NAME} it is GUI platform for NoSQL databases. Currently we support next databases: \
@@ -44,6 +44,7 @@ SET(BRANDING_PROJECT_DESCRIPTION "${BRANDING_PROJECT_NAME} it is GUI platform fo
   * ForestDB \
   * Pika \
   * Dynomite \
+  * KeyDB \
   For all this databases you can connect and use them in any way you need. \
   Also ${BRANDING_PROJECT_NAME} is IDE tool for NoSQL which works on the most famous platforms:\
   Windows, Linux, MacOSX, Android, FreeBSD."
@@ -151,7 +152,8 @@ ENDIF(MSVC)
 
 OPTION(BUILD_WITH_REDIS "Build with Redis support" ON)
 OPTION(BUILD_WITH_PIKA "Build with Pika support" OFF)
-OPTION(BUILD_WITH_DYNOMITE "Build with Dynomite Redis support" OFF)
+OPTION(BUILD_WITH_DYNOMITE "Build with Dynomite support" OFF)
+OPTION(BUILD_WITH_KEYDB "Build with KeyDB support" ON)
 OPTION(BUILD_WITH_MEMCACHED "Build with Memcached support" ON)
 OPTION(BUILD_WITH_SSDB "Build with SSDB support" ON)
 OPTION(BUILD_WITH_LEVELDB "Build with LevelDB support" ON)
@@ -173,6 +175,7 @@ MESSAGE(STATUS "PROJECT_TYPE_VERSION: ${PROJECT_TYPE_VERSION}")
 MESSAGE(STATUS "BUILD_WITH_REDIS: ${BUILD_WITH_REDIS}")
 MESSAGE(STATUS "BUILD_WITH_PIKA: ${BUILD_WITH_PIKA}")
 MESSAGE(STATUS "BUILD_WITH_DYNOMITE: ${BUILD_WITH_DYNOMITE}")
+MESSAGE(STATUS "BUILD_WITH_KEYDB: ${BUILD_WITH_KEYDB}")
 MESSAGE(STATUS "BUILD_WITH_MEMCACHED: ${BUILD_WITH_MEMCACHED}")
 MESSAGE(STATUS "BUILD_WITH_SSDB: ${BUILD_WITH_SSDB}")
 MESSAGE(STATUS "BUILD_WITH_LEVELDB: ${BUILD_WITH_LEVELDB}")
@@ -314,6 +317,9 @@ ENDIF(BUILD_WITH_PIKA)
 IF(BUILD_WITH_DYNOMITE)
   ADD_DEFINITIONS(-DBUILD_WITH_DYNOMITE)
 ENDIF(BUILD_WITH_DYNOMITE)
+IF(BUILD_WITH_KEYDB)
+  ADD_DEFINITIONS(-DBUILD_WITH_KEYDB)
+ENDIF(BUILD_WITH_KEYDB)
 IF(BUILD_WITH_MEMCACHED)
   ADD_DEFINITIONS(-DBUILD_WITH_MEMCACHED)
 ENDIF(BUILD_WITH_MEMCACHED)

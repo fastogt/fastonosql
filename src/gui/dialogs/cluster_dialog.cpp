@@ -106,6 +106,9 @@ ClusterDialog::ClusterDialog(proxy::IClusterSettingsBase* connection, QWidget* p
 #if defined(BUILD_WITH_REDIS)
   updateCombobox(core::REDIS);
 #endif
+#if defined(BUILD_WITH_KEYDB)
+  updateCombobox(core::KEYDB);
+#endif
 
   if (cluster_connection_) {
     type_connection_->setCurrentIndex(cluster_connection_->GetType());
@@ -211,6 +214,11 @@ void ClusterDialog::accept() {
   }
 }
 
+core::ConnectionType ClusterDialog::connectionType() const {
+  const QVariant var = type_connection_->currentData();
+  return static_cast<core::ConnectionType>(qvariant_cast<uint8_t>(var));
+}
+
 void ClusterDialog::typeConnectionChange(int index) {
   const QVariant var = type_connection_->itemData(index);
   const core::ConnectionType current_type = static_cast<core::ConnectionType>(qvariant_cast<unsigned char>(var));
@@ -299,8 +307,9 @@ void ClusterDialog::setStartNode() {
 }
 
 void ClusterDialog::add() {
-#if defined(BUILD_WITH_REDIS)
-  auto dlg = createDialog<ConnectionDialog>(core::REDIS, translations::trNewConnection, this);  // +
+#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_KEYDB)
+  const core::ConnectionType conn_type = connectionType();
+  auto dlg = createDialog<ConnectionDialog>(conn_type, translations::trNewConnection, this);  // +
   dlg->setFolderEnabled(false);
   int result = dlg->exec();
   if (result == QDialog::Accepted) {

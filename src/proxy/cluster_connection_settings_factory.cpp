@@ -22,7 +22,12 @@
 
 #include <common/convert2string.h>
 
+#if defined(BUILD_WITH_REDIS)
 #include "proxy/db/redis/cluster_settings.h"
+#endif
+#if defined(BUILD_WITH_KEYDB)
+#include "proxy/db/keydb/cluster_settings.h"
+#endif
 
 #include "proxy/connection_settings_factory.h"
 
@@ -49,6 +54,11 @@ IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromTypeCluster(
 #if defined(BUILD_WITH_REDIS)
   if (type == core::REDIS) {
     return new redis::ClusterSettings(connection_path);
+  }
+#endif
+#if defined(BUILD_WITH_KEYDB)
+  if (type == core::KEYDB) {
+    return new keydb::ClusterSettings(connection_path);
   }
 #endif
 

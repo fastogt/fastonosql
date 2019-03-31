@@ -99,6 +99,9 @@ SentinelDialog::SentinelDialog(proxy::ISentinelSettingsBase* connection, QWidget
 #if defined(BUILD_WITH_REDIS)
   updateCombobox(core::REDIS);
 #endif
+#if defined(BUILD_WITH_KEYDB)
+  updateCombobox(core::KEYDB);
+#endif
 
   if (sentinel_connection_) {
     type_connection_->setCurrentIndex(sentinel_connection_->GetType());
@@ -200,6 +203,11 @@ void SentinelDialog::accept() {
   }
 }
 
+core::ConnectionType SentinelDialog::connectionType() const {
+  const QVariant var = type_connection_->currentData();
+  return static_cast<core::ConnectionType>(qvariant_cast<uint8_t>(var));
+}
+
 void SentinelDialog::typeConnectionChange(int index) {
   const QVariant var = type_connection_->itemData(index);
   const core::ConnectionType current_type = static_cast<core::ConnectionType>(qvariant_cast<unsigned char>(var));
@@ -256,8 +264,9 @@ void SentinelDialog::discoverySentinel() {
 }
 
 void SentinelDialog::addConnectionSettings() {
-#if defined(BUILD_WITH_REDIS)
-  auto dlg = createDialog<ConnectionDialog>(core::REDIS, translations::trNewConnection, this);  // +
+#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_KEYDB)
+  const core::ConnectionType conn_type = connectionType();
+  auto dlg = createDialog<ConnectionDialog>(conn_type, translations::trNewConnection, this);  // +
   dlg->setFolderEnabled(false);
   int result = dlg->exec();
   if (result == QDialog::Accepted) {
@@ -299,7 +308,7 @@ void SentinelDialog::edit() {
     return;
   }
 
-#if defined(BUILD_WITH_REDIS)
+#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_KEYDB)
   const proxy::IConnectionSettingsBaseSPtr connection = current_item->connection();
   auto dlg = createDialog<ConnectionDialog>(connection->Clone(), this);  // +
   dlg->setFolderEnabled(false);

@@ -45,6 +45,7 @@ class ClusterDialog : public BaseDialog {
   friend T* createDialog(Args&&... args);
 
   proxy::IClusterSettingsBaseSPtr connection() const;
+  core::ConnectionType connectionType() const;
 
  public Q_SLOTS:
   void accept() override;

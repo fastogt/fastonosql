@@ -45,6 +45,7 @@ class SentinelDialog : public BaseDialog {
   friend T* createDialog(Args&&... args);
 
   proxy::ISentinelSettingsBaseSPtr connection() const;
+  core::ConnectionType connectionType() const;
 
  public Q_SLOTS:
   void accept() override;

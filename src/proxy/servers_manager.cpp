@@ -89,6 +89,17 @@
 #include "proxy/db/dynomite/server.h"
 #endif
 
+#if defined(BUILD_WITH_KEYDB)
+#include <fastonosql/core/db/keydb/db_connection.h>
+#include "proxy/db/keydb/connection_settings.h"
+#include "proxy/db/keydb/server.h"
+
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
+#include "proxy/db/keydb/cluster.h"
+#include "proxy/db/keydb/sentinel.h"
+#endif
+#endif
+
 #if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
 #include "proxy/cluster/icluster.h"
 #include "proxy/sentinel/isentinel.h"
@@ -148,6 +159,11 @@ IServerSPtr CreateServerImpl(IConnectionSettingsBaseSPtr settings) {
 #if defined(BUILD_WITH_DYNOMITE)
   if (connection_type == core::DYNOMITE) {
     return std::make_shared<dynomite::Server>(settings);
+  }
+#endif
+#if defined(BUILD_WITH_KEYDB)
+  if (connection_type == core::KEYDB) {
+    return std::make_shared<keydb::Server>(settings);
   }
 #endif
 
@@ -236,6 +252,13 @@ common::Error ServersManager::TestConnection(IConnectionSettingsBaseSPtr connect
     return core::dynomite::TestConnection(rconfig);
   }
 #endif
+#if defined(BUILD_WITH_KEYDB)
+  if (connection_type == core::KEYDB) {
+    keydb::ConnectionSettings* settings = static_cast<keydb::ConnectionSettings*>(connection.get());
+    core::keydb::RConfig rconfig(settings->GetInfo(), settings->GetSSHInfo());
+    return core::keydb::TestConnection(rconfig);
+  }
+#endif
 
   NOTREACHED() << "Can't find test connection implementation for: " << connection_type;
   return common::make_error("Invalid setting type");
@@ -290,6 +313,13 @@ common::Error ServersManager::DiscoverySentinelConnection(IConnectionSettingsBas
     return core::redis::DiscoverySentinelConnection(rconfig, out);
   }
 #endif
+#if defined(BUILD_WITH_KEYDB)
+  if (connection_type == core::KEYDB) {
+    keydb::ConnectionSettings* settings = static_cast<keydb::ConnectionSettings*>(connection.get());
+    core::keydb::RConfig rconfig(settings->GetInfo(), settings->GetSSHInfo());
+    return core::keydb::DiscoverySentinelConnection(rconfig, out);
+  }
+#endif
 
   DNOTREACHED() << "Can't find discovery cluster implementation for: " << connection_type;
   return common::make_error("Invalid setting type");
@@ -318,6 +348,25 @@ ServersManager::sentinel_t ServersManager::CreateSentinel(ISentinelSettingsBaseS
     return sent;
   }
 #endif
+#if defined(BUILD_WITH_KEYDB)
+  if (connection_type == core::KEYDB) {
+    sentinel_t sent = std::make_shared<keydb::Sentinel>(settings->GetPath().ToString());
+    auto nodes = settings->GetSentinels();
+    for (size_t i = 0; i < nodes.size(); ++i) {
+      SentinelSettings nd = nodes[i];
+      Sentinel sentt;
+      IServerSPtr sent_serv = CreateServer(nd.sentinel);
+      sentt.sentinel = sent_serv;
+      for (size_t j = 0; j < nd.sentinel_nodes.size(); ++j) {
+        IServerSPtr serv = CreateServer(nd.sentinel_nodes[j]);
+        sentt.sentinels_nodes.push_back(serv);
+      }
+
+      sent->AddSentinel(sentt);
+    }
+    return sent;
+  }
+#endif
 
   NOTREACHED() << "Sentinel should be allocated, type: " << connection_type;
   return sentinel_t();
@@ -330,6 +379,18 @@ ServersManager::cluster_t ServersManager::CreateCluster(IClusterSettingsBaseSPtr
 #if defined(BUILD_WITH_REDIS)
   if (connection_type == core::REDIS) {
     cluster_t cl = std::make_shared<redis::Cluster>(settings->GetPath().ToString());
+    auto nodes = settings->GetNodes();
+    for (size_t i = 0; i < nodes.size(); ++i) {
+      IConnectionSettingsBaseSPtr nd = nodes[i];
+      IServerSPtr serv = CreateServer(nd);
+      cl->AddServer(serv);
+    }
+    return cl;
+  }
+#endif
+#if defined(BUILD_WITH_KEYDB)
+  if (connection_type == core::KEYDB) {
+    cluster_t cl = std::make_shared<keydb::Cluster>(settings->GetPath().ToString());
     auto nodes = settings->GetNodes();
     for (size_t i = 0; i < nodes.size(); ++i) {
       IConnectionSettingsBaseSPtr nd = nodes[i];

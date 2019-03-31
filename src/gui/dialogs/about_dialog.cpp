@@ -183,6 +183,11 @@ AboutDialog::AboutDialog(QWidget* parent) : base_class(trAbout + " " PROJECT_NAM
                                               dynomite_redis_traits_t::GetBasedOn(),
                                               dynomite_redis_traits_t::GetVersionApi()));
 #endif
+#if defined(BUILD_WITH_KEYDB) && defined(HAVE_KEYDB)
+  typedef core::ConnectionTraits<core::KEYDB> keydb_traits_t;
+  dblist_widget->addTopLevelItem(
+      createDbItem(keydb_traits_t::GetDBName(), keydb_traits_t::GetBasedOn(), keydb_traits_t::GetVersionApi()));
+#endif
   main_tab->addTab(dblist_widget, trAvailibleDatabases);
 
   QTreeWidget* libs_list_widget = new QTreeWidget;

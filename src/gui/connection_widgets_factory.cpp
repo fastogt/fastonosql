@@ -48,6 +48,9 @@
 #if defined(BUILD_WITH_DYNOMITE)
 #include "gui/db/dynomite/connection_widget.h"
 #endif
+#if defined(BUILD_WITH_KEYDB)
+#include "gui/db/keydb/connection_widget.h"
+#endif
 
 namespace fastonosql {
 namespace gui {
@@ -101,6 +104,11 @@ ConnectionBaseWidget* createWidgetImpl(core::ConnectionType type, QWidget* paren
 #if defined(BUILD_WITH_DYNOMITE)
   if (type == core::DYNOMITE) {
     return createWidget<dynomite::ConnectionWidget>(parent);
+  }
+#endif
+#if defined(BUILD_WITH_KEYDB)
+  if (type == core::KEYDB) {
+    return createWidget<keydb::ConnectionWidget>(parent);
   }
 #endif
 

@@ -65,6 +65,10 @@
 #include "gui/db/dynomite/lexer.h"
 #endif
 
+#if defined(BUILD_WITH_KEYDB)
+#include "gui/db/keydb/lexer.h"
+#endif
+
 #include "proxy/settings_manager.h"
 
 namespace {
@@ -123,6 +127,11 @@ BaseQsciLexer* createLexer(core::ConnectionType type, QObject* parent) {
 #if defined(BUILD_WITH_DYNOMITE)
   if (type == core::DYNOMITE) {
     return new dynomite::Lexer(parent);
+  }
+#endif
+#if defined(BUILD_WITH_KEYDB)
+  if (type == core::KEYDB) {
+    return new keydb::Lexer(parent);
   }
 #endif
 
