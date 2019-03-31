@@ -18,14 +18,70 @@
 
 #pragma once
 
-#include "gui/db/redis/connection_widget.h"
+#include "gui/widgets/connection_base_widget.h"
+
+class QPushButton;
+class QRadioButton;
+class QGroupBox;
 
 namespace fastonosql {
 namespace gui {
+class SSHWidget;
+class HostPortWidget;
+class IPathWidget;
+
 namespace keydb {
 
-typedef redis::ConnectionWidget ConnectionWidget;
+class ConnectionWidget : public ConnectionBaseWidget {
+  Q_OBJECT
 
-}  // namespace keydb
+ public:
+  typedef ConnectionBaseWidget base_class;
+  template <typename T, typename... Args>
+  friend T* gui::createWidget(Args&&... args);
+
+  void syncControls(proxy::IConnectionSettingsBase* connection) override;
+  bool validated() const override;
+  bool isValidCredential() const;
+
+ private Q_SLOTS:
+  void togglePasswordEchoMode();
+  void authStateChange(int state);
+  void selectRemoteDBPath(bool checked);
+  void selectLocalDBPath(bool checked);
+  void secureConnectionChange(bool checked);
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
+  void updateConnectionString(const QString& data);
+#endif
+
+ protected:
+  explicit ConnectionWidget(QWidget* parent = Q_NULLPTR);
+  void retranslateUi() override;
+
+ private:
+  proxy::IConnectionSettingsBase* createConnectionImpl(const proxy::connection_path_t& path) const override;
+  QGroupBox* group_box_;
+  QRadioButton* remote_;
+  QRadioButton* local_;
+
+  HostPortWidget* host_widget_;
+  QCheckBox* is_ssl_connection_;
+  IPathWidget* path_widget_;
+
+  QCheckBox* use_auth_;
+  QLineEdit* password_box_;
+  QPushButton* password_echo_mode_button_;
+
+  QLabel* default_db_label_;
+  QSpinBox* default_db_num_;
+
+  SSHWidget* ssh_widget_;
+#if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)
+  QLabel* hot_settings_label_;
+  QComboBox* hot_settings_;
+#endif
+};
+
+}  // namespace redis
 }  // namespace gui
 }  // namespace fastonosql

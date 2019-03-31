@@ -18,7 +18,7 @@
 
 #include "proxy/db/keydb/server.h"
 
-#include <fastonosql/core/db/redis/server_info.h>
+#include <fastonosql/core/db/keydb/server_info.h>
 
 #include "proxy/db/keydb/driver.h"
 #include "proxy/db/redis_compatible/database.h"
@@ -88,7 +88,7 @@ void Server::HandleLoadServerInfoEvent(events::ServerInfoResponseEvent* ev) {
   }
 
   core::IServerInfoSPtr serv_info = v.GetInfo();
-  core::redis::ServerInfo* rinf = static_cast<core::redis::ServerInfo*>(serv_info.get());
+  core::keydb::ServerInfo* rinf = static_cast<core::keydb::ServerInfo*>(serv_info.get());
   if (rinf->replication_.role_ == MASTER_ROLE) {
     role_ = core::MASTER;
   } else if (rinf->replication_.role_ == SLAVE_ROLE) {

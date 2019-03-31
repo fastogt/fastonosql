@@ -136,6 +136,11 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateSettingsFromTypeConnec
     return new dynomite::ConnectionSettings(connection_path, logging_dir_);
   }
 #endif
+#if defined(BUILD_WITH_KEYDB)
+  if (type == core::KEYDB) {
+    return new keydb::ConnectionSettings(connection_path, logging_dir_);
+  }
+#endif
 
   NOTREACHED() << "Unknown type: " << type;
   return nullptr;
