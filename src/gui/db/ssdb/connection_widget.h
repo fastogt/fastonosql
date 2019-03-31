@@ -30,7 +30,7 @@ class ConnectionWidget : public ConnectionRemoteWidget {
   Q_OBJECT
 
  public:
-  typedef ConnectionBaseWidget base_class;
+  typedef ConnectionRemoteWidget base_class;
   template <typename T, typename... Args>
   friend T* gui::createWidget(Args&&... args);
 
