@@ -53,6 +53,9 @@
 #if defined(BUILD_WITH_DYNOMITE)
 #define LOGGING_DYNOMITE_REDIS_FILE_EXTENSION ".dynred"
 #endif
+#if defined(BUILD_WITH_KEYDB)
+#define LOGGING_KEYDB_FILE_EXTENSION ".keydb"
+#endif
 
 namespace fastonosql {
 namespace {
@@ -105,6 +108,11 @@ const char* GetLoggingFileExtensionByConnectionType(core::ConnectionType type) {
 #if defined(BUILD_WITH_DYNOMITE)
   if (type == core::DYNOMITE) {
     return LOGGING_DYNOMITE_REDIS_FILE_EXTENSION;
+  }
+#endif
+#if defined(BUILD_WITH_KEYDB)
+  if (type == core::KEYDB) {
+    return LOGGING_KEYDB_FILE_EXTENSION;
   }
 #endif
 

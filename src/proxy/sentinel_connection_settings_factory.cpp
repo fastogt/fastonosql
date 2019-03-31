@@ -29,6 +29,9 @@
 #if defined(BUILD_WITH_REDIS)
 #include "proxy/db/redis/sentinel_settings.h"
 #endif
+#if defined(BUILD_WITH_KEYDB)
+#include "proxy/db/keydb/sentinel_settings.h"
+#endif
 
 namespace fastonosql {
 namespace proxy {
@@ -134,6 +137,11 @@ ISentinelSettingsBase* SentinelConnectionSettingsFactory::CreateFromTypeSentinel
 #if defined(BUILD_WITH_REDIS)
   if (type == core::REDIS) {
     return new redis::SentinelSettings(connection_path);
+  }
+#endif
+#if defined(BUILD_WITH_KEYDB)
+  if (type == core::KEYDB) {
+    return new keydb::SentinelSettings(connection_path);
   }
 #endif
 

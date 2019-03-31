@@ -74,6 +74,9 @@ ConnectionSelectTypeDialog::ConnectionSelectTypeDialog(const QString& title, QWi
 #if defined(BUILD_WITH_DYNOMITE)
   updateCombobox(core::DYNOMITE);
 #endif
+#if defined(BUILD_WITH_KEYDB)
+  updateCombobox(core::KEYDB);
+#endif
 
   QHBoxLayout* type_layout = new QHBoxLayout;
   type_layout->addWidget(type_connection_label_);

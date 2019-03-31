@@ -52,6 +52,9 @@
 #if defined(BUILD_WITH_DYNOMITE)
 #include "proxy/db/dynomite/connection_settings.h"
 #endif
+#if defined(BUILD_WITH_KEYDB)
+#include "proxy/db/keydb/connection_settings.h"
+#endif
 
 namespace fastonosql {
 namespace proxy {
@@ -133,6 +136,11 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateSettingsFromTypeConnec
     return new dynomite::ConnectionSettings(connection_path, logging_dir_);
   }
 #endif
+#if defined(BUILD_WITH_KEYDB)
+  if (type == core::KEYDB) {
+    return new keydb::ConnectionSettings(connection_path, logging_dir_);
+  }
+#endif
 
   NOTREACHED() << "Unknown type: " << type;
   return nullptr;
@@ -185,7 +193,7 @@ IConnectionSettingsBase* ConnectionSettingsFactory::CreateSettingsFromString(con
           break;
         }
       }
-#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_PIKA) || defined(BUILD_WITH_DYNOMITE)
+#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_PIKA) || defined(BUILD_WITH_DYNOMITE) || defined(BUILD_WITH_KEYDB)
       else if (comma_count == 5) {
         const std::string cmd_str = common::ConvertToString(element_text);
         result->SetCommandLine(cmd_str);
@@ -240,6 +248,11 @@ IConnectionSettingsRemote* ConnectionSettingsFactory::CreateRemoteSettingsFromTy
 #if defined(BUILD_WITH_DYNOMITE)
   if (type == core::DYNOMITE) {
     remote = new dynomite::ConnectionSettings(connection_path, logging_dir_);
+  }
+#endif
+#if defined(BUILD_WITH_KEYDB)
+  if (type == core::KEYDB) {
+    remote = new keydb::ConnectionSettings(connection_path, logging_dir_);
   }
 #endif
 

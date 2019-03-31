@@ -38,11 +38,11 @@ class Lexer : public BaseCommandsQsciLexer {
   const char* basedOn() const override;
 };
 
-class RedisApi : public BaseCommandsQsciApi {
+class Api : public BaseCommandsQsciApi {
   Q_OBJECT
 
  public:
-  explicit RedisApi(Lexer* lexer);
+  explicit Api(Lexer* lexer);
 };
 
 }  // namespace redis

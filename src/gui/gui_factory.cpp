@@ -215,6 +215,12 @@ const QIcon& GuiFactory::icon(core::ConnectionType type) const {
     return dynomite;
   }
 #endif
+#if defined(BUILD_WITH_KEYDB)
+  if (type == core::KEYDB) {
+    static QIcon keydb(":" PROJECT_NAME_LOWERCASE "/images/64x64/keydb.png");
+    return keydb;
+  }
+#endif
 
   NOTREACHED() << "Unhandled type: " << type;
   return serverIcon();

@@ -50,6 +50,9 @@
 #if defined(BUILD_WITH_REDIS) && defined(PRO_VERSION)
 #include "gui/db/redis/shell_widget.h"
 #endif
+#if defined(BUILD_WITH_KEYDB) && defined(PRO_VERSION)
+#include "gui/db/keydb/shell_widget.h"
+#endif
 #include "gui/shell/base_shell.h"
 
 namespace {
@@ -74,10 +77,16 @@ const QSize BaseShellWidget::kShellIconSize = QSize(32, 32);
 BaseShellWidget* BaseShellWidget::createWidgetFactory(proxy::IServerSPtr server,
                                                       const QString& file_path,
                                                       QWidget* parent) {
-#if defined(BUILD_WITH_REDIS) && defined(PRO_VERSION)
   core::ConnectionType ct = server->GetType();
+#if defined(BUILD_WITH_REDIS) && defined(PRO_VERSION)
   if (ct == core::REDIS) {
     BaseShellWidget* widget = createWidget<redis::ShellWidget>(server, file_path, parent);
+    return widget;
+  }
+#endif
+#if defined(BUILD_WITH_KEYDB) && defined(PRO_VERSION)
+  if (ct == core::KEYDB) {
+    BaseShellWidget* widget = createWidget<keydb::ShellWidget>(server, file_path, parent);
     return widget;
   }
 #endif
