@@ -245,7 +245,8 @@ int main(int argc, char* argv[]) {
       DCHECK(!err) << "Create runtime directory error: " << err->GetDescription();
       const std::string identity_path = runtime_dir_path + IDENTITY_FILE_NAME;
 
-      if (exec_count == 1 && !common::file_system::is_file_exist(identity_path)) {
+      if ((exec_count == 1 || user_info.GetBuildStrategy() == fastonosql::proxy::UserInfo::PRIVATE_BUILD) &&
+          !common::file_system::is_file_exist(identity_path)) {
         common::file_system::FileGuard<common::file_system::File> identity_file;
         err = identity_file.Open(identity_path,
                                  common::file_system::File::FLAG_CREATE | common::file_system::File::FLAG_WRITE);
