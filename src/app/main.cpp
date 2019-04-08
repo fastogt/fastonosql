@@ -273,12 +273,10 @@ int main(int argc, char* argv[]) {
           return EXIT_FAILURE;
         }
 
-        if (user_info.GetBuildStrategy() != fastonosql::proxy::UserInfo::PRIVATE_BUILD) {
-          if (readed_id != user_info.GetUserID()) {
-            ban_user(user_info, readed_id);
-            QMessageBox::critical(nullptr, fastonosql::translations::trTrial, trIdentityMissmatch);
-            return EXIT_FAILURE;
-          }
+        if (readed_id != user_info.GetUserID()) {
+          ban_user(user_info, readed_id);
+          QMessageBox::critical(nullptr, fastonosql::translations::trTrial, trIdentityMissmatch);
+          return EXIT_FAILURE;
         }
       }
 
