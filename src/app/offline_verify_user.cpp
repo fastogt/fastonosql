@@ -41,14 +41,15 @@ common::Error OfflineVerifyUser::startVerificationImpl(const std::string& login,
   }
 
   fastonosql::proxy::UserInfo user_info(login, hexed_password, build_strategy);
-#if defined(USER_EXPIRED_TIME)
+#if defined(USER_EXPIRE_TIME)
   user_info.SetSubscriptionState(fastonosql::proxy::UserInfo::UNSUBSCIRBED);
-  user_info.SetExpireTime(USER_EXPIRED_TIME);
+  user_info.SetExpireTime(USER_EXPIRE_TIME);
 #else
   user_info.SetSubscriptionState(fastonosql::proxy::UserInfo::SUBSCRIBED);
 #endif
   user_info.SetFirstName(USER_FIRST_NAME);
   user_info.SetLastName(USER_LAST_NAME);
+  user_info.SetExecCount(1);
   *user_info_out = user_info;
   return common::Error();
 }

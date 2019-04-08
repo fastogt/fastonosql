@@ -58,13 +58,13 @@
 #define STATISTIC_PROJECT_ARCH_FIELD "arch"
 
 // subscription
-#define USER_FIRST_NAME "first_name"
-#define USER_LAST_NAME "last_name"
-#define USER_SUBSCRIPTION_STATE "subscription_state"
-#define USER_TYPE "type"
-#define USER_EXEC_COUNT "exec_count"
-#define USER_EXPIRE_TIME "expire_time"
-#define USER_ID "id"
+#define USER_FIRST_NAME_FIELD "first_name"
+#define USER_LAST_NAME_FIELD "last_name"
+#define USER_SUBSCRIPTION_STATE_FIELD "subscription_state"
+#define USER_TYPE_FIELD "type"
+#define USER_EXEC_COUNT_FIELD "exec_count"
+#define USER_EXPIRE_TIME_FIELD "expire_time"
+#define USER_ID_FIELD "id"
 
 namespace fastonosql {
 namespace proxy {
@@ -279,7 +279,7 @@ common::Error ParseSubscriptionStateResponse(const std::string& data, UserInfo* 
 
   UserInfo lres = *update;
   json_object* jfirst_name = nullptr;
-  bool jfirst_name_exist = json_object_object_get_ex(obj, USER_FIRST_NAME, &jfirst_name);
+  bool jfirst_name_exist = json_object_object_get_ex(obj, USER_FIRST_NAME_FIELD, &jfirst_name);
   if (!jfirst_name_exist) {
     DNOTREACHED();
     json_object_put(obj);
@@ -288,7 +288,7 @@ common::Error ParseSubscriptionStateResponse(const std::string& data, UserInfo* 
   lres.SetFirstName(json_object_get_string(jfirst_name));
 
   json_object* jlast_name = nullptr;
-  bool jlast_name_exist = json_object_object_get_ex(obj, USER_LAST_NAME, &jlast_name);
+  bool jlast_name_exist = json_object_object_get_ex(obj, USER_LAST_NAME_FIELD, &jlast_name);
   if (!jlast_name_exist) {
     DNOTREACHED();
     json_object_put(obj);
@@ -297,7 +297,7 @@ common::Error ParseSubscriptionStateResponse(const std::string& data, UserInfo* 
   lres.SetLastName(json_object_get_string(jlast_name));
 
   json_object* jsubscription_state = nullptr;
-  bool jsubscription_state_exist = json_object_object_get_ex(obj, USER_SUBSCRIPTION_STATE, &jsubscription_state);
+  bool jsubscription_state_exist = json_object_object_get_ex(obj, USER_SUBSCRIPTION_STATE_FIELD, &jsubscription_state);
   if (!jsubscription_state_exist) {
     DNOTREACHED();
     json_object_put(obj);
@@ -308,7 +308,7 @@ common::Error ParseSubscriptionStateResponse(const std::string& data, UserInfo* 
   lres.SetSubscriptionState(st);
 
   json_object* jtype = nullptr;
-  bool jtype_exist = json_object_object_get_ex(obj, USER_TYPE, &jtype);
+  bool jtype_exist = json_object_object_get_ex(obj, USER_TYPE_FIELD, &jtype);
   if (!jtype_exist) {
     DNOTREACHED();
     json_object_put(obj);
@@ -318,7 +318,7 @@ common::Error ParseSubscriptionStateResponse(const std::string& data, UserInfo* 
   lres.SetType(user_type);
 
   json_object* jexec_count = nullptr;
-  bool jexec_count_exist = json_object_object_get_ex(obj, USER_EXEC_COUNT, &jexec_count);
+  bool jexec_count_exist = json_object_object_get_ex(obj, USER_EXEC_COUNT_FIELD, &jexec_count);
   if (!jexec_count_exist) {
     DNOTREACHED();
     json_object_put(obj);
@@ -328,7 +328,7 @@ common::Error ParseSubscriptionStateResponse(const std::string& data, UserInfo* 
   lres.SetExecCount(static_cast<size_t>(exec_count));
 
   json_object* jexpire_time = nullptr;
-  bool jexpire_time_exist = json_object_object_get_ex(obj, USER_EXPIRE_TIME, &jexpire_time);
+  bool jexpire_time_exist = json_object_object_get_ex(obj, USER_EXPIRE_TIME_FIELD, &jexpire_time);
   if (!jexpire_time_exist) {
     DNOTREACHED();
     json_object_put(obj);
@@ -338,7 +338,7 @@ common::Error ParseSubscriptionStateResponse(const std::string& data, UserInfo* 
   lres.SetExpireTime(expire_time);
 
   json_object* juser_id = nullptr;
-  bool juser_id_exist = json_object_object_get_ex(obj, USER_ID, &juser_id);
+  bool juser_id_exist = json_object_object_get_ex(obj, USER_ID_FIELD, &juser_id);
   if (!juser_id_exist) {
     DNOTREACHED();
     json_object_put(obj);
