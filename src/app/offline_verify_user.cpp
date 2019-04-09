@@ -50,7 +50,7 @@ common::Error OfflineVerifyUser::startVerificationImpl(const std::string& login,
 #endif
   user_info.SetFirstName(USER_FIRST_NAME);
   user_info.SetLastName(USER_LAST_NAME);
-  user_info.SetExecCount(1);
+  user_info.SetExecCount(0);
   *user_info_out = user_info;
   return common::Error();
 }
