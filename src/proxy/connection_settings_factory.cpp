@@ -256,7 +256,9 @@ IConnectionSettingsRemote* ConnectionSettingsFactory::CreateRemoteSettingsFromTy
   }
 #endif
 
-  CHECK(remote) << "Unknown type: " << type;
+  if (!remote) {
+    DNOTREACHED() << "Unknown type: " << type;
+  }
   remote->SetHost(host);
   return remote;
 }

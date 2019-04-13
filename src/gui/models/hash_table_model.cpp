@@ -104,7 +104,7 @@ QVariant HashTableModel::headerData(int section, Qt::Orientation orientation, in
     return QVariant();
   }
 
-  if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
+  if (orientation == Qt::Horizontal) {
     if (section == kKey) {
       return first_column_name_;
     } else if (section == kValue) {

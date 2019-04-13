@@ -163,6 +163,7 @@ common::Error Driver::SyncConnect() {
   }
 
   err = impl_->SetClientName(PROJECT_NAME_LOWERCASE);
+  UNUSED(err);
   return common::Error();
 }
 
@@ -208,45 +209,46 @@ common::Error Driver::GetServerCommands(std::vector<const core::CommandInfo*>* c
   core::FastoObject::childs_t rchildrens = cmd->GetChildrens();
   CHECK_EQ(rchildrens.size(), 1);
   core::FastoObject* array = rchildrens[0].get();
-  CHECK(array);
   std::vector<const core::CommandInfo*> lcommands;
-  const core::CommandHolder* cmd_help = nullptr;
-  err = tran->FindCommand(GEN_CMD_STRING(DB_HELP_COMMAND), &cmd_help);
-  CHECK(!err);
-  lcommands.push_back(cmd_help);
+  if (array) {
+    const core::CommandHolder* cmd_help = nullptr;
+    err = tran->FindCommand(GEN_CMD_STRING(DB_HELP_COMMAND), &cmd_help);
+    CHECK(!err);
+    lcommands.push_back(cmd_help);
 
-  auto array_value = array->GetValue();
-  common::ArrayValue* commands_array = nullptr;
-  if (array_value->GetAsList(&commands_array)) {
-    for (size_t i = 0; i < commands_array->GetSize(); ++i) {
-      const common::ArrayValue* com_value = nullptr;
-      if (commands_array->GetList(i, &com_value)) {
-        // 0) command name
-        // 1) command arity specification
-        // 2) nested Array reply of command flags
-        // 3) position of first key in argument list
-        // 4) position of last key in argument list
-        // 5) step count for locating repeating keys
-        size_t sz = com_value->GetSize();
-        if (sz < 4) {
-          return common::make_error("Invalid " REDIS_GET_COMMANDS " command output");
-        }
-
-        core::command_buffer_t command_name;
-        if (!com_value->GetString(0, &command_name)) {
-          return common::make_error("Invalid " REDIS_GET_COMMANDS " command output");
-        }
-
-        const core::CommandHolder* cmd = nullptr;
-        common::Error err = tran->FindCommandFirstName(command_name, &cmd);  // #FIXME
-        if (err) {
-          if (!impl_->IsInternalCommand(command_name)) {
-            WARNING_LOG() << "Found not handled command: " << command_name;
+    auto array_value = array->GetValue();
+    common::ArrayValue* commands_array = nullptr;
+    if (array_value && array_value->GetAsList(&commands_array)) {
+      for (size_t i = 0; i < commands_array->GetSize(); ++i) {
+        const common::ArrayValue* com_value = nullptr;
+        if (commands_array->GetList(i, &com_value)) {
+          // 0) command name
+          // 1) command arity specification
+          // 2) nested Array reply of command flags
+          // 3) position of first key in argument list
+          // 4) position of last key in argument list
+          // 5) step count for locating repeating keys
+          size_t sz = com_value->GetSize();
+          if (sz < 4) {
+            return common::make_error("Invalid " REDIS_GET_COMMANDS " command output");
           }
-          continue;
-        }
 
-        lcommands.push_back(cmd);
+          core::command_buffer_t command_name;
+          if (!com_value->GetString(0, &command_name)) {
+            return common::make_error("Invalid " REDIS_GET_COMMANDS " command output");
+          }
+
+          const core::CommandHolder* cmd = nullptr;
+          common::Error err = tran->FindCommandFirstName(command_name, &cmd);  // #FIXME
+          if (err) {
+            if (!impl_->IsInternalCommand(command_name)) {
+              WARNING_LOG() << "Found not handled command: " << command_name;
+            }
+            continue;
+          }
+
+          lcommands.push_back(cmd);
+        }
       }
     }
   }
@@ -380,106 +382,107 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
       CHECK_EQ(rchildrens.size(), 1);
 
       core::FastoObject* array = rchildrens[0].get();
-      CHECK(array);
-      auto array_value = array->GetValue();
-      common::ArrayValue* arm = nullptr;
-      if (!array_value->GetAsList(&arm)) {
-        goto done;
-      }
-
-      std::vector<core::FastoObjectCommandIPtr> cmds;
-      if (new_behavior) {
-        CHECK_EQ(arm->GetSize(), 2);
-        core::cursor_t cursor;
-        bool isok = arm->GetUInteger(0, &cursor);
-        if (!isok) {
-          goto done;
-        }
-        res.cursor_out = cursor;
-
-        common::ArrayValue* ar = nullptr;
-        isok = arm->GetList(1, &ar);
-        if (!isok) {
+      if (array) {
+        auto array_value = array->GetValue();
+        common::ArrayValue* arm = nullptr;
+        if (!array_value->GetAsList(&arm)) {
           goto done;
         }
 
-        cmds.reserve(ar->GetSize() * 2);
-        for (size_t i = 0; i < ar->GetSize(); ++i) {
-          common::Value::string_t key;
-          bool isok = ar->GetString(i, &key);
-          if (isok) {
-            const core::nkey_t key_str(key);
-            const core::NKey k(key_str);
-            const core::NDbKValue dbv(k, core::NValue());
-            core::command_buffer_writer_t wr_type;
-            wr_type << REDIS_TYPE_COMMAND " " << key_str.GetForCommandLine();
-            cmds.push_back(CreateCommandFast(wr_type.str(), core::C_INNER));
-
-            core::command_buffer_writer_t wr_ttl;
-            wr_ttl << DB_GET_TTL_COMMAND " " << key_str.GetForCommandLine();
-            cmds.push_back(CreateCommandFast(wr_ttl.str(), core::C_INNER));
-            res.keys.push_back(dbv);
+        std::vector<core::FastoObjectCommandIPtr> cmds;
+        if (new_behavior) {
+          CHECK_EQ(arm->GetSize(), 2);
+          core::cursor_t cursor;
+          bool isok = arm->GetUInteger(0, &cursor);
+          if (!isok) {
+            goto done;
           }
-        }
-      } else {
-        keys_count = std::min<core::keys_limit_t>(keys_count, static_cast<core::keys_limit_t>(arm->GetSize()));
-        cmds.reserve(keys_count * 2);
-        for (size_t i = 0; i < keys_count; ++i) {
-          common::Value::string_t key;
-          bool isok = arm->GetString(i, &key);
-          if (isok) {
-            const core::nkey_t key_str(key);
-            const core::NKey k(key_str);
-            const core::NDbKValue dbv(k, core::NValue());
-            core::command_buffer_writer_t wr_type;
-            wr_type << REDIS_TYPE_COMMAND " " << key_str.GetForCommandLine();
-            cmds.push_back(CreateCommandFast(wr_type.str(), core::C_INNER));
+          res.cursor_out = cursor;
 
-            core::command_buffer_writer_t wr_ttl;
-            wr_ttl << DB_GET_TTL_COMMAND " " << key_str.GetForCommandLine();
-            cmds.push_back(CreateCommandFast(wr_ttl.str(), core::C_INNER));
-            res.keys.push_back(dbv);
+          common::ArrayValue* ar = nullptr;
+          isok = arm->GetList(1, &ar);
+          if (!isok) {
+            goto done;
           }
-        }
-      }
 
-      err = impl_->ExecuteAsPipeline(cmds, &LOG_COMMAND);
-      if (err) {
-        goto done;
-      }
+          cmds.reserve(ar->GetSize() * 2);
+          for (size_t i = 0; i < ar->GetSize(); ++i) {
+            common::Value::string_t key;
+            bool isok = ar->GetString(i, &key);
+            if (isok) {
+              const core::nkey_t key_str(key);
+              const core::NKey k(key_str);
+              const core::NDbKValue dbv(k, core::NValue());
+              core::command_buffer_writer_t wr_type;
+              wr_type << REDIS_TYPE_COMMAND " " << key_str.GetForCommandLine();
+              cmds.push_back(CreateCommandFast(wr_type.str(), core::C_INNER));
 
-      for (size_t i = 0; i < res.keys.size(); ++i) {
-        core::FastoObjectIPtr cmdType = cmds[i * 2];
-        core::FastoObject::childs_t tchildrens = cmdType->GetChildrens();
-        if (tchildrens.size()) {
-          DCHECK_EQ(tchildrens.size(), 1);
-          if (tchildrens.size() == 1) {
-            common::Value::string_t type_redis_str = tchildrens[0]->ToString();
-            common::Value::Type ctype;
-            core::redis_compatible::ConvertFromString(type_redis_str, &ctype);
-            core::NValue empty_val(core::CreateEmptyValueFromType(ctype));
-            res.keys[i].SetValue(empty_val);
+              core::command_buffer_writer_t wr_ttl;
+              wr_ttl << DB_GET_TTL_COMMAND " " << key_str.GetForCommandLine();
+              cmds.push_back(CreateCommandFast(wr_ttl.str(), core::C_INNER));
+              res.keys.push_back(dbv);
+            }
           }
-        }
+        } else {
+          keys_count = std::min<core::keys_limit_t>(keys_count, static_cast<core::keys_limit_t>(arm->GetSize()));
+          cmds.reserve(keys_count * 2);
+          for (size_t i = 0; i < keys_count; ++i) {
+            common::Value::string_t key;
+            bool isok = arm->GetString(i, &key);
+            if (isok) {
+              const core::nkey_t key_str(key);
+              const core::NKey k(key_str);
+              const core::NDbKValue dbv(k, core::NValue());
+              core::command_buffer_writer_t wr_type;
+              wr_type << REDIS_TYPE_COMMAND " " << key_str.GetForCommandLine();
+              cmds.push_back(CreateCommandFast(wr_type.str(), core::C_INNER));
 
-        core::FastoObjectIPtr cmdType2 = cmds[i * 2 + 1];
-        tchildrens = cmdType2->GetChildrens();
-        if (tchildrens.size()) {
-          DCHECK_EQ(tchildrens.size(), 1);
-          if (tchildrens.size() == 1) {
-            auto vttl = tchildrens[0]->GetValue();
-            core::ttl_t ttl = 0;
-            if (vttl->GetAsLongLongInteger(&ttl)) {
-              core::NKey key = res.keys[i].GetKey();
-              key.SetTTL(ttl);
-              res.keys[i].SetKey(key);
+              core::command_buffer_writer_t wr_ttl;
+              wr_ttl << DB_GET_TTL_COMMAND " " << key_str.GetForCommandLine();
+              cmds.push_back(CreateCommandFast(wr_ttl.str(), core::C_INNER));
+              res.keys.push_back(dbv);
             }
           }
         }
-      }
 
-      err = DBkcountImpl(&res.db_keys_count);
-      DCHECK(!err);
+        err = impl_->ExecuteAsPipeline(cmds, &LOG_COMMAND);
+        if (err) {
+          goto done;
+        }
+
+        for (size_t i = 0; i < res.keys.size(); ++i) {
+          core::FastoObjectIPtr cmdType = cmds[i * 2];
+          core::FastoObject::childs_t tchildrens = cmdType->GetChildrens();
+          if (tchildrens.size()) {
+            DCHECK_EQ(tchildrens.size(), 1);
+            if (tchildrens.size() == 1) {
+              common::Value::string_t type_redis_str = tchildrens[0]->ToString();
+              common::Value::Type ctype;
+              core::redis_compatible::ConvertFromString(type_redis_str, &ctype);
+              core::NValue empty_val(core::CreateEmptyValueFromType(ctype));
+              res.keys[i].SetValue(empty_val);
+            }
+          }
+
+          core::FastoObjectIPtr cmdType2 = cmds[i * 2 + 1];
+          tchildrens = cmdType2->GetChildrens();
+          if (tchildrens.size()) {
+            DCHECK_EQ(tchildrens.size(), 1);
+            if (tchildrens.size() == 1) {
+              auto vttl = tchildrens[0]->GetValue();
+              core::ttl_t ttl = 0;
+              if (vttl->GetAsLongLongInteger(&ttl)) {
+                core::NKey key = res.keys[i].GetKey();
+                key.SetTTL(ttl);
+                res.keys[i].SetKey(key);
+              }
+            }
+          }
+        }
+
+        err = DBkcountImpl(&res.db_keys_count);
+        DCHECK(!err);
+      }
     }
   }
 done:
@@ -589,56 +592,57 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
     if (rchildrens.size()) {
       CHECK_EQ(rchildrens.size(), 1);
       core::FastoObject* array = rchildrens[0].get();
-      CHECK(array);
-      auto array_value = array->GetValue();
-      common::ArrayValue* arm = nullptr;
-      if (!array_value->GetAsList(&arm) || !arm->GetSize()) {
-        goto done;
-      }
-
-      std::vector<core::FastoObjectCommandIPtr> cmds;
-      cmds.reserve(arm->GetSize());
-      for (size_t i = 0; i < arm->GetSize(); ++i) {
-        common::Value::string_t channel;
-        bool isok = arm->GetString(i, &channel);
-        if (isok) {
-          core::command_buffer_writer_t wr2;
-          wr2 << REDIS_PUBSUB_NUMSUB_COMMAND " " << channel;
-          proxy::NDbPSChannel ch(core::ReadableString(channel), 0);
-          cmds.push_back(CreateCommandFast(wr2.str(), core::C_INNER));
-          res.channels.push_back(ch);
+      if (array) {
+        auto array_value = array->GetValue();
+        common::ArrayValue* arm = nullptr;
+        if (!array_value->GetAsList(&arm) || !arm->GetSize()) {
+          goto done;
         }
-      }
 
-      err = impl_->ExecuteAsPipeline(cmds, &LOG_COMMAND);
-      if (err) {
-        res.setErrorInfo(err);
-        goto done;
-      }
+        std::vector<core::FastoObjectCommandIPtr> cmds;
+        cmds.reserve(arm->GetSize());
+        for (size_t i = 0; i < arm->GetSize(); ++i) {
+          common::Value::string_t channel;
+          bool isok = arm->GetString(i, &channel);
+          if (isok) {
+            core::command_buffer_writer_t wr2;
+            wr2 << REDIS_PUBSUB_NUMSUB_COMMAND " " << channel;
+            proxy::NDbPSChannel ch(core::ReadableString(channel), 0);
+            cmds.push_back(CreateCommandFast(wr2.str(), core::C_INNER));
+            res.channels.push_back(ch);
+          }
+        }
 
-      for (size_t i = 0; i < res.channels.size(); ++i) {
-        core::FastoObjectIPtr subCount = cmds[i];
-        core::FastoObject::childs_t tchildrens = subCount->GetChildrens();
-        if (tchildrens.size()) {
-          DCHECK_EQ(tchildrens.size(), 1);
-          if (tchildrens.size() == 1) {
-            core::FastoObject* array_sub = tchildrens[0].get();
-            auto arr_value = array_sub->GetValue();
-            common::ArrayValue* array_sub_inner = nullptr;
-            if (arr_value->GetAsList(&array_sub_inner)) {
-              common::Value* fund_sub = nullptr;
-              if (array_sub_inner->Get(1, &fund_sub)) {
-                common::Value::Type t = fund_sub->GetType();
-                if (t == common::Value::TYPE_LONG_LONG_INTEGER) {
-                  long long lsub;
-                  if (fund_sub->GetAsLongLongInteger(&lsub)) {
-                    res.channels[i].SetNumberOfSubscribers(lsub);
-                  }
-                } else if (t == common::Value::TYPE_STRING) {
-                  common::Value::string_t lsub_str;
-                  size_t lsub;
-                  if (fund_sub->GetAsString(&lsub_str) && common::ConvertFromBytes(lsub_str, &lsub)) {
-                    res.channels[i].SetNumberOfSubscribers(lsub);
+        err = impl_->ExecuteAsPipeline(cmds, &LOG_COMMAND);
+        if (err) {
+          res.setErrorInfo(err);
+          goto done;
+        }
+
+        for (size_t i = 0; i < res.channels.size(); ++i) {
+          core::FastoObjectIPtr subCount = cmds[i];
+          core::FastoObject::childs_t tchildrens = subCount->GetChildrens();
+          if (tchildrens.size()) {
+            DCHECK_EQ(tchildrens.size(), 1);
+            if (tchildrens.size() == 1) {
+              core::FastoObject* array_sub = tchildrens[0].get();
+              auto arr_value = array_sub->GetValue();
+              common::ArrayValue* array_sub_inner = nullptr;
+              if (arr_value->GetAsList(&array_sub_inner)) {
+                common::Value* fund_sub = nullptr;
+                if (array_sub_inner->Get(1, &fund_sub)) {
+                  common::Value::Type t = fund_sub->GetType();
+                  if (t == common::Value::TYPE_LONG_LONG_INTEGER) {
+                    long long lsub;
+                    if (fund_sub->GetAsLongLongInteger(&lsub)) {
+                      res.channels[i].SetNumberOfSubscribers(lsub);
+                    }
+                  } else if (t == common::Value::TYPE_STRING) {
+                    common::Value::string_t lsub_str;
+                    size_t lsub;
+                    if (fund_sub->GetAsString(&lsub_str) && common::ConvertFromBytes(lsub_str, &lsub)) {
+                      res.channels[i].SetNumberOfSubscribers(lsub);
+                    }
                   }
                 }
               }
@@ -671,22 +675,23 @@ void Driver::HandleLoadServerClientsRequestEvent(events::LoadServerClientsReques
     if (rchildrens.size()) {
       CHECK_EQ(rchildrens.size(), 1);
       core::FastoObject* string = rchildrens[0].get();
-      CHECK(string);
-      common::Value::string_t string_value;
-      if (!string->GetValue()->GetAsString(&string_value)) {
-        goto done;
-      }
-
-      size_t pos = 0;
-      size_t start = 0;
-      std::string clients_text = common::ConvertToString(string_value);  // #FIXME
-      while ((pos = clients_text.find(REDIS_NEW_LINE_MARKER, start)) != std::string::npos) {
-        std::string line = clients_text.substr(start, pos - start);
-        NDbClient cl(line);
-        if (cl.IsValid()) {
-          res.clients.push_back(cl);
+      if (string) {
+        common::Value::string_t string_value;
+        if (!string->GetValue()->GetAsString(&string_value)) {
+          goto done;
         }
-        start = pos + SIZEOFMASS(REDIS_NEW_LINE_MARKER) - 1;
+
+        size_t pos = 0;
+        size_t start = 0;
+        std::string clients_text = common::ConvertToString(string_value);  // #FIXME
+        while ((pos = clients_text.find(REDIS_NEW_LINE_MARKER, start)) != std::string::npos) {
+          std::string line = clients_text.substr(start, pos - start);
+          NDbClient cl(line);
+          if (cl.IsValid()) {
+            res.clients.push_back(cl);
+          }
+          start = pos + SIZEOFMASS(REDIS_NEW_LINE_MARKER) - 1;
+        }
       }
     }
   }

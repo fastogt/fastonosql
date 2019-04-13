@@ -196,14 +196,21 @@ proxy::IDatabaseSPtr ExplorerDatabaseItem::db() const {
 
 void ExplorerDatabaseItem::loadContent(const core::pattern_t& pattern, core::keys_limit_t keys_count) {
   proxy::IDatabaseSPtr dbs = db();
-  CHECK(dbs);
+  if (!dbs) {
+    DNOTREACHED();
+    return;
+  }
+
   proxy::events_info::LoadDatabaseContentRequest req(this, dbs->GetInfo(), pattern, keys_count);
   dbs->LoadContent(req);
 }
 
 void ExplorerDatabaseItem::setDefault() {
   proxy::IDatabaseSPtr dbs = db();
-  CHECK(dbs);
+  if (!dbs) {
+    DNOTREACHED();
+    return;
+  }
 
   proxy::IServerSPtr server = dbs->GetServer();
   core::translator_t tran = server->GetTranslator();
@@ -220,7 +227,10 @@ void ExplorerDatabaseItem::setDefault() {
 
 void ExplorerDatabaseItem::removeDb() {
   proxy::IDatabaseSPtr dbs = db();
-  CHECK(dbs);
+  if (!dbs) {
+    DNOTREACHED();
+    return;
+  }
 
   proxy::IServerSPtr server = dbs->GetServer();
   core::translator_t tran = server->GetTranslator();
@@ -237,7 +247,11 @@ void ExplorerDatabaseItem::removeDb() {
 
 void ExplorerDatabaseItem::renameKey(const core::NKey& key, const QString& new_name) {
   proxy::IDatabaseSPtr dbs = db();
-  CHECK(dbs);
+  if (!dbs) {
+    DNOTREACHED();
+    return;
+  }
+
   proxy::IServerSPtr server = dbs->GetServer();
   core::translator_t tran = server->GetTranslator();
   core::command_buffer_t cmd_str;
@@ -254,7 +268,11 @@ void ExplorerDatabaseItem::renameKey(const core::NKey& key, const QString& new_n
 
 void ExplorerDatabaseItem::removeKey(const core::NKey& key) {
   proxy::IDatabaseSPtr dbs = db();
-  CHECK(dbs);
+  if (!dbs) {
+    DNOTREACHED();
+    return;
+  }
+
   proxy::IServerSPtr server = dbs->GetServer();
   core::translator_t tran = server->GetTranslator();
   core::command_buffer_t cmd_str;
@@ -270,7 +288,11 @@ void ExplorerDatabaseItem::removeKey(const core::NKey& key) {
 
 void ExplorerDatabaseItem::loadValue(const core::NDbKValue& key) {
   proxy::IDatabaseSPtr dbs = db();
-  CHECK(dbs);
+  if (!dbs) {
+    DNOTREACHED();
+    return;
+  }
+
   proxy::IServerSPtr server = dbs->GetServer();
   core::translator_t tran = server->GetTranslator();
   core::command_buffer_t cmd_str;
@@ -286,7 +308,11 @@ void ExplorerDatabaseItem::loadValue(const core::NDbKValue& key) {
 
 void ExplorerDatabaseItem::loadType(const core::NDbKValue& key) {
   proxy::IDatabaseSPtr dbs = db();
-  CHECK(dbs);
+  if (!dbs) {
+    DNOTREACHED();
+    return;
+  }
+
   proxy::IServerSPtr server = dbs->GetServer();
   core::translator_t tran = server->GetTranslator();
   core::command_buffer_t cmd_str;
@@ -302,7 +328,11 @@ void ExplorerDatabaseItem::loadType(const core::NDbKValue& key) {
 
 void ExplorerDatabaseItem::watchKey(const core::NDbKValue& key, int interval) {
   proxy::IDatabaseSPtr dbs = db();
-  CHECK(dbs);
+  if (!dbs) {
+    DNOTREACHED();
+    return;
+  }
+
   proxy::IServerSPtr server = dbs->GetServer();
   core::translator_t tran = server->GetTranslator();
   core::command_buffer_t cmd_str;
@@ -318,7 +348,11 @@ void ExplorerDatabaseItem::watchKey(const core::NDbKValue& key, int interval) {
 
 void ExplorerDatabaseItem::createKey(const core::NDbKValue& key) {
   proxy::IDatabaseSPtr dbs = db();
-  CHECK(dbs);
+  if (!dbs) {
+    DNOTREACHED();
+    return;
+  }
+
   proxy::IServerSPtr server = dbs->GetServer();
   core::translator_t tran = server->GetTranslator();
   core::command_buffer_t cmd_str;
@@ -342,7 +376,11 @@ void ExplorerDatabaseItem::editValue(const core::NDbKValue& key, const core::NVa
 
 void ExplorerDatabaseItem::setTTL(const core::NKey& key, core::ttl_t ttl) {
   proxy::IDatabaseSPtr dbs = db();
-  CHECK(dbs);
+  if (!dbs) {
+    DNOTREACHED();
+    return;
+  }
+
   proxy::IServerSPtr server = dbs->GetServer();
   core::translator_t tran = server->GetTranslator();
   core::command_buffer_t cmd_str;
@@ -358,7 +396,11 @@ void ExplorerDatabaseItem::setTTL(const core::NKey& key, core::ttl_t ttl) {
 
 void ExplorerDatabaseItem::removeAllKeys() {
   proxy::IDatabaseSPtr dbs = db();
-  CHECK(dbs);
+  if (!dbs) {
+    DNOTREACHED();
+    return;
+  }
+
   proxy::IServerSPtr server = dbs->GetServer();
   core::translator_t tran = server->GetTranslator();
   core::command_buffer_t cmd_str;

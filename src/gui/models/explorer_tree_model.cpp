@@ -190,7 +190,7 @@ QVariant ExplorerTreeModel::headerData(int section, Qt::Orientation orientation,
     return QVariant();
   }
 
-  if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
+  if (orientation == Qt::Horizontal) {
     if (section == eName) {
       return translations::trName;
     }

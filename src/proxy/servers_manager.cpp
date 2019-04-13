@@ -175,7 +175,9 @@ IServerSPtr CreateServerImpl(IConnectionSettingsBaseSPtr settings) {
 ServersManager::ServersManager() : servers_() {}
 
 ServersManager::server_t ServersManager::CreateServer(IConnectionSettingsBaseSPtr settings) {
-  CHECK(settings);
+  if (!settings) {
+    return nullptr;
+  }
 
   const server_t server = CreateServerImpl(settings);
   servers_.push_back(server);

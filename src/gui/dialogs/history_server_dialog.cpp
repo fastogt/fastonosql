@@ -51,7 +51,11 @@ ServerHistoryDialog::ServerHistoryDialog(const QString& title,
       glass_widget_(nullptr),
       infos_(),
       server_(server) {
-  CHECK(server_);
+  if (!server_) {
+    DNOTREACHED();
+    return;
+  }
+
   setWindowIcon(icon);
 
   VERIFY(connect(server.get(), &proxy::IServer::LoadServerHistoryInfoStarted, this,

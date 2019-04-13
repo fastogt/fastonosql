@@ -153,7 +153,8 @@ ChangeServerPropertyInfoRequest::ChangeServerPropertyInfoRequest(initiator_type 
                                                                  error_type er)
     : base_class(sender, er), new_item(pt) {}
 
-ChangeServerPropertyInfoResponse::ChangeServerPropertyInfoResponse(const base_class& request) : base_class(request) {}
+ChangeServerPropertyInfoResponse::ChangeServerPropertyInfoResponse(const base_class& request)
+    : base_class(request), is_change(false) {}
 
 ProgressInfoResponse::ProgressInfoResponse(int pr) : progress(pr) {}
 

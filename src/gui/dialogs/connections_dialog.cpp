@@ -353,7 +353,10 @@ void ConnectionsDialog::editItem(QTreeWidgetItem* qitem, bool remove_origin) {
 }
 
 void ConnectionsDialog::editConnection(ConnectionListWidgetItem* connection_item, bool remove_origin) {
-  CHECK(connection_item);
+  if (!connection_item) {
+    DNOTREACHED();
+    return;
+  }
 
   proxy::IConnectionSettingsBaseSPtr con = connection_item->connection();
   auto dlg = createDialog<ConnectionDialog>(con->Clone(), this);  // +
@@ -480,20 +483,22 @@ void ConnectionsDialog::addSentinel(proxy::ISentinelSettingsBaseSPtr con) {
 }
 #endif
 
-void ConnectionsDialog::removeConnection(ConnectionListWidgetItem* connectionItem) {
-  CHECK(connectionItem);
+void ConnectionsDialog::removeConnection(ConnectionListWidgetItem* connection_item) {
+  if (!connection_item) {
+    return;
+  }
 
   // Ask user
   int answer = QMessageBox::question(this, translations::trConnections,
-                                     translations::trRemoveConnectionTemplate_1S.arg(connectionItem->text(0)),
+                                     translations::trRemoveConnectionTemplate_1S.arg(connection_item->text(0)),
                                      QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
 
   if (answer != QMessageBox::Yes) {
     return;
   }
 
-  proxy::IConnectionSettingsBaseSPtr connection = connectionItem->connection();
-  delete connectionItem;
+  proxy::IConnectionSettingsBaseSPtr connection = connection_item->connection();
+  delete connection_item;
   proxy::SettingsManager::GetInstance()->RemoveConnection(connection);
 }
 

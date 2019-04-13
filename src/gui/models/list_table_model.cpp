@@ -95,7 +95,7 @@ QVariant ListTableModel::headerData(int section, Qt::Orientation orientation, in
     return QVariant();
   }
 
-  if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
+  if (orientation == Qt::Horizontal) {
     if (section == kValue) {
       return first_column_name_;
     } else if (section == kAction) {

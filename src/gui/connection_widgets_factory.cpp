@@ -119,7 +119,10 @@ ConnectionBaseWidget* createWidgetImpl(core::ConnectionType type, QWidget* paren
 
 ConnectionBaseWidget* ConnectionWidgetsFactory::createWidget(proxy::IConnectionSettingsBase* connection,
                                                              QWidget* parent) {
-  CHECK(connection);
+  if (!connection) {
+    DNOTREACHED();
+    return nullptr;
+  }
 
   core::ConnectionType type = connection->GetType();
   ConnectionBaseWidget* widget = createWidgetImpl(type, parent);

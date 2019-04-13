@@ -123,7 +123,7 @@ QVariant ClientsTableModel::headerData(int section, Qt::Orientation orientation,
     return QVariant();
   }
 
-  if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
+  if (orientation == Qt::Horizontal) {
     if (section == kId) {
       return trId;
     } else if (section == kAddr) {

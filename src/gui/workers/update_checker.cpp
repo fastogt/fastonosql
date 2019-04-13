@@ -27,7 +27,10 @@
 namespace fastonosql {
 namespace {
 common::Error GetVersion(uint32_t* version) {
-  CHECK(version);
+  if (!version) {
+    DNOTREACHED();
+    return common::make_error_inval();
+  }
 
   typedef common::net::SocketGuard<common::net::ClientSocketTcp> ClientSocket;
 #if defined(FASTONOSQL)

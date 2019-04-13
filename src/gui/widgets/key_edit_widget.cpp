@@ -244,10 +244,8 @@ void KeyEditWidget::changeType(int index) {
   if (type == common::Value::TYPE_ARRAY || type == common::Value::TYPE_SET) {
     if (type == common::Value::TYPE_ARRAY) {
       value_list_edit_->setCurrentMode(ListTypeView::kArray);
-    } else if (type == common::Value::TYPE_SET) {
-      value_list_edit_->setCurrentMode(ListTypeView::kSet);
     } else {
-      NOTREACHED();
+      value_list_edit_->setCurrentMode(ListTypeView::kSet);
     }
     value_list_edit_->setVisible(true);
     value_edit_->setVisible(false);
@@ -258,10 +256,8 @@ void KeyEditWidget::changeType(int index) {
   } else if (type == common::Value::TYPE_ZSET || type == common::Value::TYPE_HASH) {
     if (type == common::Value::TYPE_HASH) {
       value_table_edit_->setCurrentMode(HashTypeView::kHash);
-    } else if (type == common::Value::TYPE_ZSET) {
-      value_table_edit_->setCurrentMode(HashTypeView::kZset);
     } else {
-      NOTREACHED();
+      value_table_edit_->setCurrentMode(HashTypeView::kZset);
     }
     value_table_edit_->setVisible(true);
     stream_table_edit_->setVisible(false);

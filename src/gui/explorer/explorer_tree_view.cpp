@@ -274,9 +274,10 @@ void ExplorerTreeView::showContextMenu(const QPoint& point) {
       bool is_can_remote = server->IsCanRemote();
       if (is_can_remote) {
         proxy::IServerRemote* rserver = dynamic_cast<proxy::IServerRemote*>(server.get());  // +
-        CHECK(rserver);
-        common::net::HostAndPort host = rserver->GetHost();
-        is_local = host.IsLocalHost();  // failed if ssh connection
+        if (rserver) {
+          common::net::HostAndPort host = rserver->GetHost();
+          is_local = host.IsLocalHost();  // failed if ssh connection
+        }
       }
 
       QAction* export_action = new QAction(translations::trBackup, this);
@@ -1218,7 +1219,9 @@ void ExplorerTreeView::removeKey(core::IDataBaseInfoSPtr db, core::NKey key) {
 
 void ExplorerTreeView::addKey(core::IDataBaseInfoSPtr db, core::NDbKValue key) {
   proxy::IServer* serv = qobject_cast<proxy::IServer*>(sender());
-  CHECK(serv);
+  if (!serv) {
+    return;
+  }
 
   const std::string ns = serv->GetNsSeparator();
   const proxy::NsDisplayStrategy ns_strategy = serv->GetNsDisplayStrategy();
@@ -1227,7 +1230,9 @@ void ExplorerTreeView::addKey(core::IDataBaseInfoSPtr db, core::NDbKValue key) {
 
 void ExplorerTreeView::renameKey(core::IDataBaseInfoSPtr db, core::NKey key, core::nkey_t new_name) {
   proxy::IServer* serv = qobject_cast<proxy::IServer*>(sender());
-  CHECK(serv);
+  if (!serv) {
+    return;
+  }
 
   core::NKey new_key = key;
   new_key.SetKey(new_name);

@@ -80,7 +80,7 @@ core::FastoObjectIPtr FirstChildUpdateRootLocker::FindCmdChildNode(core::FastoOb
 core::FastoObjectIPtr FirstChildUpdateRootLocker::FindWatchedCmd(core::FastoObjectCommand* cmd) const {
   for (auto child_cmd : watched_cmds_) {
     core::FastoObjectCommand* wcmd = dynamic_cast<core::FastoObjectCommand*>(child_cmd.get());
-    if (wcmd->GetInputCommand() == cmd->GetInputCommand()) {
+    if (wcmd && wcmd->GetInputCommand() == cmd->GetInputCommand()) {
       return wcmd;
     }
   }

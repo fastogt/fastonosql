@@ -21,7 +21,7 @@
 namespace fastonosql {
 namespace proxy {
 
-NDbPSChannel::NDbPSChannel() {}
+NDbPSChannel::NDbPSChannel() : name_(), number_of_subscribers_(0) {}
 
 NDbPSChannel::NDbPSChannel(const name_t& name, size_t nos) : name_(name), number_of_subscribers_(nos) {}
 

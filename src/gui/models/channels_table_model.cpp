@@ -69,7 +69,7 @@ QVariant ChannelsTableModel::headerData(int section, Qt::Orientation orientation
     return QVariant();
   }
 
-  if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
+  if (orientation == Qt::Horizontal) {
     if (section == kName) {
       return translations::trName;
     } else if (section == kNOS) {

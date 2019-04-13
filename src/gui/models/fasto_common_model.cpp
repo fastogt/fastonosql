@@ -126,7 +126,7 @@ QVariant FastoCommonModel::headerData(int section, Qt::Orientation orientation, 
     return QVariant();
   }
 
-  if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
+  if (orientation == Qt::Horizontal) {
     if (section == eKey) {
       return translations::trKey + "/" + translations::trCommands;
     } else if (section == eValue) {

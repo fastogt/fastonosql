@@ -407,40 +407,41 @@ void IDriver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestE
     if (rchildrens.size()) {
       CHECK_EQ(rchildrens.size(), 1);
       core::FastoObject* array = rchildrens[0].get();
-      CHECK(array);
-      auto array_value = array->GetValue();
-      common::ArrayValue* arm = nullptr;
-      if (!array_value->GetAsList(&arm)) {
-        goto done;
-      }
-
-      CHECK_EQ(arm->GetSize(), 2);
-      core::cursor_t cursor;
-      bool isok = arm->GetUInteger(0, &cursor);
-      if (!isok) {
-        goto done;
-      }
-      res.cursor_out = cursor;
-
-      common::ArrayValue* ar = nullptr;
-      isok = arm->GetList(1, &ar);
-      if (!isok) {
-        goto done;
-      }
-
-      for (size_t i = 0; i < ar->GetSize(); ++i) {
-        core::command_buffer_t key_str;
-        if (ar->GetString(i, &key_str)) {
-          const core::nkey_t key(key_str);
-          const core::NKey k(key);
-          const core::NValue empty_val(common::Value::CreateEmptyStringValue());
-          const core::NDbKValue ress(k, empty_val);
-          res.keys.push_back(ress);
+      if (array) {
+        auto array_value = array->GetValue();
+        common::ArrayValue* arm = nullptr;
+        if (!array_value->GetAsList(&arm)) {
+          goto done;
         }
-      }
 
-      common::Error err = DBkcountImpl(&res.db_keys_count);
-      DCHECK(!err) << "can't get db keys count!";
+        CHECK_EQ(arm->GetSize(), 2);
+        core::cursor_t cursor;
+        bool isok = arm->GetUInteger(0, &cursor);
+        if (!isok) {
+          goto done;
+        }
+        res.cursor_out = cursor;
+
+        common::ArrayValue* ar = nullptr;
+        isok = arm->GetList(1, &ar);
+        if (!isok) {
+          goto done;
+        }
+
+        for (size_t i = 0; i < ar->GetSize(); ++i) {
+          core::command_buffer_t key_str;
+          if (ar->GetString(i, &key_str)) {
+            const core::nkey_t key(key_str);
+            const core::NKey k(key);
+            const core::NValue empty_val(common::Value::CreateEmptyStringValue());
+            const core::NDbKValue ress(k, empty_val);
+            res.keys.push_back(ress);
+          }
+        }
+
+        common::Error err = DBkcountImpl(&res.db_keys_count);
+        DCHECK(!err) << "can't get db keys count!";
+      }
     }
   }
 done:

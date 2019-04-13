@@ -33,7 +33,10 @@ namespace fastonosql {
 namespace proxy {
 
 IServer::IServer(IDriver* drv) : drv_(drv), current_database_info_(), timer_check_key_exists_id_(0) {
-  CHECK(drv_);
+  if (!drv_) {
+    DNOTREACHED();
+    return;
+  }
 
   VERIFY(QObject::connect(drv_, &IDriver::ChildAdded, this, &IServer::ChildAdded));
   VERIFY(QObject::connect(drv_, &IDriver::ItemUpdated, this, &IServer::ItemUpdated));

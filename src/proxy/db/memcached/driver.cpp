@@ -147,51 +147,52 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
     if (rchildrens.size()) {
       CHECK_EQ(rchildrens.size(), 1);
       core::FastoObject* array = rchildrens[0].get();
-      CHECK(array);
-      auto array_value = array->GetValue();
-      common::ArrayValue* arm = nullptr;
-      if (!array_value->GetAsList(&arm)) {
-        goto done;
-      }
-
-      CHECK_EQ(arm->GetSize(), 2);
-      core::cursor_t cursor;
-      bool isok = arm->GetUInteger(0, &cursor);
-      if (!isok) {
-        goto done;
-      }
-      res.cursor_out = cursor;
-
-      common::ArrayValue* ar = nullptr;
-      isok = arm->GetList(1, &ar);
-      if (!isok) {
-        goto done;
-      }
-
-      for (size_t i = 0; i < ar->GetSize(); ++i) {
-        core::command_buffer_t key_str;
-        if (ar->GetString(i, &key_str)) {
-          const core::nkey_t key(key_str);
-          core::NKey k(key);
-          core::command_buffer_writer_t wr;
-          wr << DB_GET_TTL_COMMAND " " << key.GetHumanReadable();  // emulate log execution
-          core::FastoObjectCommandIPtr cmd_ttl = CreateCommandFast(wr.str(), core::C_INNER);
-          LOG_COMMAND(cmd_ttl);
-          core::ttl_t ttl = NO_TTL;
-          common::Error err = impl_->GetTTL(k, &ttl);
-          if (err) {
-            k.SetTTL(NO_TTL);
-          } else {
-            k.SetTTL(ttl);
-          }
-          core::NValue empty_val(core::CreateEmptyValueFromType(common::Value::TYPE_STRING));
-          core::NDbKValue ress(k, empty_val);
-          res.keys.push_back(ress);
+      if (array) {
+        auto array_value = array->GetValue();
+        common::ArrayValue* arm = nullptr;
+        if (!array_value->GetAsList(&arm)) {
+          goto done;
         }
-      }
 
-      common::Error err = DBkcountImpl(&res.db_keys_count);
-      DCHECK(!err);
+        CHECK_EQ(arm->GetSize(), 2);
+        core::cursor_t cursor;
+        bool isok = arm->GetUInteger(0, &cursor);
+        if (!isok) {
+          goto done;
+        }
+        res.cursor_out = cursor;
+
+        common::ArrayValue* ar = nullptr;
+        isok = arm->GetList(1, &ar);
+        if (!isok) {
+          goto done;
+        }
+
+        for (size_t i = 0; i < ar->GetSize(); ++i) {
+          core::command_buffer_t key_str;
+          if (ar->GetString(i, &key_str)) {
+            const core::nkey_t key(key_str);
+            core::NKey k(key);
+            core::command_buffer_writer_t wr;
+            wr << DB_GET_TTL_COMMAND " " << key.GetHumanReadable();  // emulate log execution
+            core::FastoObjectCommandIPtr cmd_ttl = CreateCommandFast(wr.str(), core::C_INNER);
+            LOG_COMMAND(cmd_ttl);
+            core::ttl_t ttl = NO_TTL;
+            common::Error err = impl_->GetTTL(k, &ttl);
+            if (err) {
+              k.SetTTL(NO_TTL);
+            } else {
+              k.SetTTL(ttl);
+            }
+            core::NValue empty_val(core::CreateEmptyValueFromType(common::Value::TYPE_STRING));
+            core::NDbKValue ress(k, empty_val);
+            res.keys.push_back(ress);
+          }
+        }
+
+        common::Error err = DBkcountImpl(&res.db_keys_count);
+        DCHECK(!err);
+      }
     }
   }
 done:

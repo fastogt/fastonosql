@@ -69,14 +69,6 @@ void FastoEditorModelOutput::setModel(QAbstractItemModel* model) {
 
   model_ = model;
 
-  // These asserts do basic sanity checking of the model
-  Q_ASSERT_X(model_->index(0, 0) == model_->index(0, 0), "QAbstractItemView::setModel",
-             "A model should return the exact same index "
-             "(including its internal id/pointer) when "
-             "asked for it twice in a row.");
-  Q_ASSERT_X(model_->index(0, 0).parent() == QModelIndex(), "QAbstractItemView::setModel",
-             "The parent of a top level index should be invalid");
-
   if (model_) {
     VERIFY(connect(model_, &QAbstractItemModel::destroyed, this, &FastoEditorModelOutput::modelDestroyed));
     VERIFY(connect(model_, &QAbstractItemModel::dataChanged, this, &FastoEditorModelOutput::dataChanged));

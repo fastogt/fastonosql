@@ -106,6 +106,7 @@ BaseShellWidget::BaseShellWidget(proxy::IServerSPtr server, const QString& file_
       save_action_(nullptr),
       save_as_action_(nullptr),
       validate_action_(nullptr),
+      help_action_(nullptr),
       supported_commands_count_(nullptr),
       validated_commands_count_(nullptr),
       commands_version_api_(nullptr),
@@ -155,7 +156,9 @@ QHBoxLayout* BaseShellWidget::createActionBar() {
 }
 
 void BaseShellWidget::init() {
-  CHECK(server_);
+  if (!server_) {
+    return;
+  }
 
   VERIFY(connect(server_.get(), &proxy::IServer::ConnectStarted, this, &BaseShellWidget::startConnect));
   VERIFY(connect(server_.get(), &proxy::IServer::ConnectFinished, this, &BaseShellWidget::finishConnect));
@@ -628,10 +631,18 @@ void BaseShellWidget::updateServerInfo(core::IServerInfoSPtr inf) {
   std::string server_label;
   if (server_->IsCanRemote()) {
     proxy::IServerRemote* rserver = dynamic_cast<proxy::IServerRemote*>(server_.get());  // +
-    server_label = common::ConvertToString(rserver->GetHost());
+    if (rserver) {
+      server_label = common::ConvertToString(rserver->GetHost());
+    } else {
+      DNOTREACHED();
+    }
   } else {
     proxy::IServerLocal* lserver = dynamic_cast<proxy::IServerLocal*>(server_.get());  // +
-    server_label = lserver->GetPath();
+    if (lserver) {
+      server_label = lserver->GetPath();
+    } else {
+      DNOTREACHED();
+    }
   }
   QString qserver_label;
   if (common::ConvertFromString(server_label, &qserver_label)) {

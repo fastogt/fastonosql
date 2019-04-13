@@ -158,7 +158,8 @@ BaseQsciLexer* BaseShell::lexer() const {
 }
 
 void BaseShell::updateFont() {
-  lexer()->setFont(proxy::SettingsManager::GetInstance()->GetCurrentFont());
+  BaseQsciLexer* lex = lexer();
+  lex->setFont(proxy::SettingsManager::GetInstance()->GetCurrentFont());
   base_class::updateFont();
 }
 

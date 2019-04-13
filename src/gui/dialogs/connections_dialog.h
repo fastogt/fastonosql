@@ -77,7 +77,7 @@ class ConnectionsDialog : public BaseDialog {
 
   void editItem(QTreeWidgetItem* qitem, bool remove_origin);
   void editConnection(ConnectionListWidgetItem* connection_item, bool remove_origin);
-  void removeConnection(ConnectionListWidgetItem* connectionItem);
+  void removeConnection(ConnectionListWidgetItem* connection_item);
   void addConnection(proxy::IConnectionSettingsBaseSPtr con);
 
 #if defined(PRO_VERSION) || defined(ENTERPRISE_VERSION)

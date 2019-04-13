@@ -91,7 +91,7 @@ QVariant PropertyTableModel::headerData(int section, Qt::Orientation orientation
     return QVariant();
   }
 
-  if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
+  if (orientation == Qt::Horizontal) {
     if (section == kKey) {
       return translations::trKey;
     } else if (section == kValue) {
