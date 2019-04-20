@@ -398,16 +398,16 @@ class BuildRequest(object):
 
         # self.build_system()
         self.build_snappy(cmake_line, make_install)
-#        self.build_openssl(prefix_path)  #
+        self.build_openssl(prefix_path)  #
         self.build_libssh2(cmake_line, prefix_path, make_install)
         self.build_jsonc(prefix_path)
-#        self.build_qscintilla(cmake_line, make_install)
+        self.build_qscintilla(cmake_line, make_install)
         self.build_common(cmake_line, make_install)
 
         # databases libs builds
         self.build_hiredis(prefix_path)
-#        self.build_libmemcached(prefix_path)  #
-#        self.build_unqlite(cmake_line, make_install)
+        self.build_libmemcached(prefix_path)  #
+        self.build_unqlite(cmake_line, make_install)
         self.build_lmdb(prefix_path)
         self.build_leveldb(cmake_line, make_install)
         self.build_rocksdb(cmake_line, make_install)
