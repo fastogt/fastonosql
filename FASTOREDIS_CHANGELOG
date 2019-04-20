@@ -1,3 +1,10 @@
+2.2.0 / April 21, 2019
+[Alexandr Topilski]
+- Update libssh2 sources to version 1.9.0 dev
+- Update json-c sources to version 0.13.99
+- Update common sources to version 1.23.5
+- Update FastoNoSQL core sources to version 1.7.3
+
 2.1.5 / April 13, 2019
 [Alexandr Topilski]
 - redis-cell commands

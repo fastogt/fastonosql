@@ -1,3 +1,12 @@
+2.3.0 / April 21, 2019
+[Alexandr Topilski]
+- [LevelDB] Update sources to version 1.21
+- [RocksDB] Update sources to version 6.1.1
+- Update libssh2 sources to version 1.9.0 dev
+- Update json-c sources to version 0.13.99
+- Update common sources to version 1.23.5
+- Update FastoNoSQL core sources to version 1.7.3
+
 2.2.3 / April 13, 2019
 [Alexandr Topilski]
 - [Redis] redis-cell commands
