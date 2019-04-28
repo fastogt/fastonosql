@@ -139,7 +139,7 @@ std::string SettingsManager::GetSettingsFilePath() {
 }
 
 std::string SettingsManager::GetSourceDirPath() {
-  return common::file_system::absolute_path_from_relative(RELATIVE_SOURCE_DIR);
+  return common::file_system::absolute_path_from_relative(RELATIVE_SOURCE_DIR, common::file_system::app_pwd());
 }
 
 std::string SettingsManager::GetShareDirPath() {

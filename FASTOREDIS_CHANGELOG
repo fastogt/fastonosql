@@ -1,3 +1,7 @@
+2.2.1 / April 28, 2019
+[Alexandr Topilski]
+- Fixed MacOSX path
+
 2.2.0 / April 21, 2019
 [Alexandr Topilski]
 - Update libssh2 sources to version 1.9.0 dev

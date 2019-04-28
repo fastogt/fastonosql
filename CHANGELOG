@@ -1,3 +1,7 @@
+2.3.1 / April 28, 2019
+[Alexandr Topilski]
+- Fixed MacOSX path
+
 2.3.0 / April 21, 2019
 [Alexandr Topilski]
 - [LevelDB] Update sources to version 1.21
