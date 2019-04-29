@@ -334,6 +334,6 @@ proxy::IConnectionSettingsBase* ConnectionWidget::createConnectionImpl(const pro
   return conn;
 }
 
-}  // namespace redis
+}  // namespace keydb
 }  // namespace gui
 }  // namespace fastonosql

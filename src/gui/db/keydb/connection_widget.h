@@ -82,6 +82,6 @@ class ConnectionWidget : public ConnectionBaseWidget {
 #endif
 };
 
-}  // namespace redis
+}  // namespace keydb
 }  // namespace gui
 }  // namespace fastonosql
