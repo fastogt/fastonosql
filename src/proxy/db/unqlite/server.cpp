@@ -1,4 +1,4 @@
-/*  Copyright (C) 2014-2018 FastoGT. All right reserved.
+/*  Copyright (C) 2014-2019 FastoGT. All right reserved.
 
     This file is part of FastoNoSQL.
 
@@ -17,6 +17,8 @@
 */
 
 #include "proxy/db/unqlite/server.h"
+
+#include <string>
 
 #include "proxy/db/unqlite/database.h"
 #include "proxy/db/unqlite/driver.h"

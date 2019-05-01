@@ -1,4 +1,4 @@
-/*  Copyright (C) 2014-2018 FastoGT. All right reserved.
+/*  Copyright (C) 2014-2019 FastoGT. All right reserved.
 
     This file is part of FastoNoSQL.
 
@@ -17,6 +17,8 @@
 */
 
 #pragma once
+
+#include <string>
 
 #include "proxy/connection_settings/iconnection_settings_local.h"
 

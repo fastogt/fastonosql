@@ -1,4 +1,4 @@
-/*  Copyright (C) 2014-2018 FastoGT. All right reserved.
+/*  Copyright (C) 2014-2019 FastoGT. All right reserved.
 
     This file is part of FastoNoSQL.
 
@@ -17,6 +17,9 @@
 */
 
 #pragma once
+
+#include <string>
+#include <vector>
 
 #include "proxy/proxy_fwd.h"
 #include "proxy/server/iserver_base.h"
