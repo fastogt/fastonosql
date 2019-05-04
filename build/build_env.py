@@ -1,16 +1,11 @@
 #!/usr/bin/env python3
 import os
-import shutil
 import sys
 import subprocess
 
 from pyfastogt import system_info
-from pyfastogt import utils
+from pyfastogt import utils, build_utils
 
-OPENSSL_SRC_ROOT = "https://www.openssl.org/source/"
-ARCH_OPENSSL_COMP = "gz"
-ARCH_OPENSSL_EXT = "tar." + ARCH_OPENSSL_COMP
-# ROCKSDB_BRANCH = 'v5.10.2'
 g_script_path = os.path.realpath(sys.argv[0])
 
 
@@ -21,29 +16,10 @@ def print_usage():
           "[optional] argv[3] build system for common/qscintilla/libssh2 (\"ninja\", \"make\", \"gmake\")\n")
 
 
-class BuildRequest(object):
-    def __init__(self, platform, arch_bit, dir_path):
-        platform_or_none = system_info.get_supported_platform_by_name(platform)
-
-        if not platform_or_none:
-            raise utils.BuildError('invalid platform')
-
-        arch = platform_or_none.architecture_by_arch_name(arch_bit)
-        if not arch:
-            raise utils.BuildError('invalid arch')
-
-        build_dir_path = os.path.abspath(dir_path)
-        if os.path.exists(build_dir_path):
-            shutil.rmtree(build_dir_path)
-
-        os.mkdir(build_dir_path)
-        os.chdir(build_dir_path)
-
-        self.build_dir_path_ = build_dir_path
-
-        self.platform_ = platform_or_none.make_platform_by_arch(arch, platform_or_none.package_types())
-        self.prefix_path_ = self.platform_.arch().default_install_prefix_path()
-        print("Build request for platform: {0}, arch: {1} created".format(platform, arch.name()))
+class BuildRequest(build_utils.BuildRequest):
+    def __init__(self, platform, arch_name, dir_path):
+        patches_path = os.path.abspath(os.path.join(g_script_path, os.pardir))
+        build_utils.BuildRequest.__init__(self, platform, arch_name, patches_path, dir_path, None)
 
     def __get_system_libs(self):
         platform = self.platform_
@@ -89,34 +65,19 @@ class BuildRequest(object):
 
         # post install step
 
-    def build_snappy(self):
-        cloned_dir = utils.git_clone('git@github.com:fastogt/snappy.git')
-        self.__build_via_cmake(cloned_dir, ['-DBUILD_SHARED_LIBS=OFF', '-DSNAPPY_BUILD_TESTS=OFF'])
-
-    def build_common(self):
-        cloned_dir = utils.git_clone('git@github.com:fastogt/common.git')
-        self.__build_via_cmake(cloned_dir, ['-DQT_ENABLED=ON'])
-
-    def build_openssl(self, version):
-        compiler_flags = utils.CompileInfo([], ['no-shared', 'no-unit-test'])
-        url = '{0}openssl-{1}.{2}'.format(OPENSSL_SRC_ROOT, version, ARCH_OPENSSL_EXT)
-        self.__download_and_build_via_configure(url, compiler_flags, './config')
-
     def build_libssh2(self):
-        cloned_dir = utils.git_clone('git@github.com:fastogt/libssh2.git')
-        self.__build_via_cmake(cloned_dir,
-                               ['-DBUILD_SHARED_LIBS=OFF', '-DCRYPTO_BACKEND=OpenSSL', '-DENABLE_ZLIB_COMPRESSION=ON',
-                                '-DBUILD_EXAMPLES=OFF', '-DBUILD_TESTING=OFF', '-DOPENSSL_USE_STATIC_LIBS=ON',
-                                '-DZLIB_USE_STATIC=ON', '-DOPENSSL_ROOT_DIR={0}'.format(self.prefix_path_)])
-
-    def build_jsonc(self):
-        cloned_dir = utils.git_clone('git@github.com:fastogt/json-c.git')
-        self.__build_via_cmake(cloned_dir, ['-DBUILD_SHARED_LIBS=OFF'])
+        self._clone_and_build_via_cmake(build_utils.generate_fastogt_git_path('libssh2'),
+                                        ['-DBUILD_SHARED_LIBS=OFF', '-DCRYPTO_BACKEND=OpenSSL',
+                                         '-DENABLE_ZLIB_COMPRESSION=ON',
+                                         '-DBUILD_EXAMPLES=OFF', '-DBUILD_TESTING=OFF', '-DOPENSSL_USE_STATIC_LIBS=ON',
+                                         '-DZLIB_USE_STATIC=ON', '-DOPENSSL_ROOT_DIR={0}'.format(self.prefix_path_)])
 
     def build_qscintilla(self):
         cloned_dir = utils.git_clone('git@github.com:fastogt/qscintilla.git')
         qsci_src_path = os.path.join(cloned_dir, 'Qt4Qt5')
-        self.__build_via_cmake(qsci_src_path)
+        os.chdir(qsci_src_path)
+        self._build_via_cmake([])
+        os.chdir(self.build_dir_path_)
 
     def build_hiredis(self):
         try:
@@ -139,15 +100,15 @@ class BuildRequest(object):
             bootstrap_libmemcached = ['sh', 'bootstrap.sh']
             subprocess.call(bootstrap_libmemcached)
 
-            self.__build_via_configure(utils.CompileInfo([], ['--disable-shared', '--enable-static', '--enable-sasl']))
+            self._build_via_configure(
+                build_utils.CompileInfo([], ['--disable-shared', '--enable-static', '--enable-sasl']))
         except Exception as ex:
             raise ex
         finally:
             os.chdir(self.build_dir_path_)
 
     def build_unqlite(self):
-        cloned_dir = utils.git_clone('git@github.com:fastogt/unqlite.git')
-        self.__build_via_cmake(cloned_dir)
+        self._clone_and_build_via_cmake(build_utils.generate_fastogt_git_path('unqlite'), [])
 
     def build_lmdb(self):
         try:
@@ -163,33 +124,23 @@ class BuildRequest(object):
             os.chdir(self.build_dir_path_)
 
     def build_leveldb(self):
-        cloned_dir = utils.git_clone('git@github.com:fastogt/leveldb.git')
-        self.__build_via_cmake(cloned_dir, ['-DBUILD_SHARED_LIBS=OFF', '-DLEVELDB_BUILD_TESTS=OFF',
-                                            '-DLEVELDB_BUILD_BENCHMARKS=OFF'])
+        self._clone_and_build_via_cmake(build_utils.generate_fastogt_git_path('leveldb'),
+                                        ['-DBUILD_SHARED_LIBS=OFF', '-DLEVELDB_BUILD_TESTS=OFF',
+                                         '-DLEVELDB_BUILD_BENCHMARKS=OFF'])
 
     def build_rocksdb(self):
-        cloned_dir = utils.git_clone('git@github.com:fastogt/rocksdb.git')
-        self.__build_via_cmake(cloned_dir, ['-DFAIL_ON_WARNINGS=OFF', '-DPORTABLE=ON',
-                                            '-DWITH_TESTS=OFF', '-DWITH_SNAPPY=ON', '-DWITH_ZLIB=ON', '-DWITH_LZ4=ON',
-                                            '-DROCKSDB_INSTALL_ON_WINDOWS=ON', '-DWITH_TOOLS=OFF', '-DWITH_GFLAGS=OFF',
-                                            '-DBUILD_SHARED_LIBS=OFF'])
+        self._clone_and_build_via_cmake(build_utils.generate_fastogt_git_path('rocksdb'),
+                                        ['-DFAIL_ON_WARNINGS=OFF', '-DPORTABLE=ON',
+                                         '-DWITH_TESTS=OFF', '-DWITH_SNAPPY=ON', '-DWITH_ZLIB=ON', '-DWITH_LZ4=ON',
+                                         '-DROCKSDB_INSTALL_ON_WINDOWS=ON', '-DWITH_TOOLS=OFF', '-DWITH_GFLAGS=OFF',
+                                         '-DBUILD_SHARED_LIBS=OFF'])
 
     def build_forestdb(self):
-        cloned_dir = utils.git_clone('git@github.com:fastogt/forestdb.git', None, False)
-        self.__build_via_cmake(cloned_dir, ['-DBUILD_SHARED_LIBS=OFF'])
+        self._clone_and_build_via_cmake(build_utils.generate_fastogt_git_path('forestdb'), ['-DBUILD_SHARED_LIBS=OFF'])
 
     def build_fastonosql_core(self):
-        cloned_dir = utils.git_clone('git@github.com:fastogt/fastonosql_core.git', None, False)
-        self.__build_via_cmake(cloned_dir, ['-DJSONC_USE_STATIC=ON', '-DOPENSSL_USE_STATIC_LIBS=ON'])
-
-    def __build_via_cmake(self, directory, cmake_flags=[]):
-        utils.build_command_cmake(directory, self.prefix_path_, cmake_flags)
-
-    def __download_and_build_via_configure(self, url, compiler_flags: utils.CompileInfo, executable='./configure'):
-        utils.build_from_sources(url, compiler_flags, g_script_path, self.prefix_path_, executable)
-
-    def __build_via_configure(self, compiler_flags: utils.CompileInfo, executable='./configure'):
-        utils.build_command_configure(compiler_flags, g_script_path, self.prefix_path_, executable)
+        self._clone_and_build_via_cmake(build_utils.generate_fastogt_git_path('fastonosql_core'),
+                                        ['-DJSONC_USE_STATIC=ON', '-DOPENSSL_USE_STATIC_LIBS=ON'])
 
     def build(self):
         # self.build_system()
@@ -198,7 +149,7 @@ class BuildRequest(object):
         self.build_libssh2()
         self.build_jsonc()
         self.build_qscintilla()
-        self.build_common()
+        self.build_common(True)
 
         # databases libs builds
         self.build_hiredis()
