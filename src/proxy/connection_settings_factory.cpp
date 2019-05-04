@@ -76,10 +76,12 @@ serialize_t ConnectionSettingsFactory::ConvertSettingsToString(IConnectionSettin
   wr << kSettingValueDelemiter << settings->GetNsSeparator() << kSettingValueDelemiter
      << common::ConvertToCharBytes(static_cast<unsigned char>(settings->GetNsDisplayStrategy()))
      << kSettingValueDelemiter << settings->GetCommandLine();
+#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_PIKA) || defined(BUILD_WITH_DYNOMITE) || defined(BUILD_WITH_KEYDB)
   if (core::IsCanSSHConnection(settings->GetType())) {
     IConnectionSettingsRemoteSSH* ssh_settings = static_cast<IConnectionSettingsRemoteSSH*>(settings);
     wr << kSettingValueDelemiter << common::ConvertToString(ssh_settings->GetSSHInfo());
   }
+#endif
   return wr.str();
 }
 
@@ -256,10 +258,13 @@ IConnectionSettingsRemote* ConnectionSettingsFactory::CreateRemoteSettingsFromTy
   }
 #endif
 
+#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_PIKA) || defined(BUILD_WITH_DYNOMITE) || \
+    defined(BUILD_WITH_KEYDB) || defined(BUILD_WITH_MEMCACHED) || defined(BUILD_WITH_SSDB)
   if (!remote) {
     DNOTREACHED() << "Unknown type: " << type;
   }
   remote->SetHost(host);
+#endif
   return remote;
 }
 

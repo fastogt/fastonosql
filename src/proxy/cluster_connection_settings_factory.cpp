@@ -20,6 +20,7 @@
 
 #include <string>
 
+#include <common/byte_writer.h>
 #include <common/convert2string.h>
 
 #if defined(BUILD_WITH_REDIS)
@@ -36,6 +37,7 @@ namespace proxy {
 
 serialize_t ClusterConnectionSettingsFactory::ConvertSettingsToString(IClusterSettingsBase* settings) {
   common::char_writer<1024> str;
+#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_KEYDB)
   str << ConnectionSettingsFactory::GetInstance().ConvertSettingsToString(settings) << kSettingValueDelemiter;
   auto nodes = settings->GetNodes();
   for (size_t i = 0; i < nodes.size(); ++i) {
@@ -44,6 +46,7 @@ serialize_t ClusterConnectionSettingsFactory::ConvertSettingsToString(IClusterSe
       str << kMagicNumber << ConnectionSettingsFactory::GetInstance().ConvertSettingsToString(serv.get());
     }
   }
+#endif
 
   return str.str();
 }
@@ -78,6 +81,7 @@ IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromStringCluster(
   uint8_t comma_count = 0;
   serialize_t element_text;
 
+#if defined(BUILD_WITH_REDIS) || defined(BUILD_WITH_KEYDB)
   for (size_t i = 0; i < value_len; ++i) {
     serialize_t::value_type ch = value[i];
     if (ch == kSettingValueDelemiter) {
@@ -125,7 +129,7 @@ IClusterSettingsBase* ClusterConnectionSettingsFactory::CreateFromStringCluster(
       element_text.push_back(ch);
     }
   }
-
+#endif
   DCHECK(result);
   return result;
 }
