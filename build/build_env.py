@@ -2,8 +2,8 @@
 import os
 import shutil
 import sys
+import subprocess
 
-from pyfastogt import run_command
 from pyfastogt import system_info
 from pyfastogt import utils
 
@@ -19,11 +19,6 @@ def print_usage():
           "[optional] argv[1] platform\n"
           "[optional] argv[2] architecture\n"
           "[optional] argv[3] build system for common/qscintilla/libssh2 (\"ninja\", \"make\", \"gmake\")\n")
-
-
-def print_message(progress, message):
-    print(message.message())
-    sys.stdout.flush()
 
 
 class BuildRequest(object):
@@ -47,6 +42,7 @@ class BuildRequest(object):
         self.build_dir_path_ = build_dir_path
 
         self.platform_ = platform_or_none.make_platform_by_arch(arch, platform_or_none.package_types())
+        self.prefix_path_ = self.platform_.arch().default_install_prefix_path()
         print("Build request for platform: {0}, arch: {1} created".format(platform, arch.name()))
 
     def __get_system_libs(self):
@@ -93,326 +89,126 @@ class BuildRequest(object):
 
         # post install step
 
-    def build_snappy(self, cmake_line, make_install):
-        abs_dir_path = self.build_dir_path_
+    def build_snappy(self):
+        cloned_dir = utils.git_clone('git@github.com:fastogt/snappy.git')
+        self.__build_via_cmake(cloned_dir, ['-DBUILD_SHARED_LIBS=OFF', '-DSNAPPY_BUILD_TESTS=OFF'])
+
+    def build_common(self):
+        cloned_dir = utils.git_clone('git@github.com:fastogt/common.git')
+        self.__build_via_cmake(cloned_dir, ['-DQT_ENABLED=ON'])
+
+    def build_openssl(self, version):
+        compiler_flags = utils.CompileInfo([], ['no-shared', 'no-unit-test'])
+        url = '{0}openssl-{1}.{2}'.format(OPENSSL_SRC_ROOT, version, ARCH_OPENSSL_EXT)
+        self.__download_and_build_via_configure(url, compiler_flags, './config')
+
+    def build_libssh2(self):
+        cloned_dir = utils.git_clone('git@github.com:fastogt/libssh2.git')
+        self.__build_via_cmake(cloned_dir,
+                               ['-DBUILD_SHARED_LIBS=OFF', '-DCRYPTO_BACKEND=OpenSSL', '-DENABLE_ZLIB_COMPRESSION=ON',
+                                '-DBUILD_EXAMPLES=OFF', '-DBUILD_TESTING=OFF', '-DOPENSSL_USE_STATIC_LIBS=ON',
+                                '-DZLIB_USE_STATIC=ON', '-DOPENSSL_ROOT_DIR={0}'.format(self.prefix_path_)])
+
+    def build_jsonc(self):
+        cloned_dir = utils.git_clone('git@github.com:fastogt/json-c.git')
+        self.__build_via_cmake(cloned_dir, ['-DBUILD_SHARED_LIBS=OFF'])
+
+    def build_qscintilla(self):
+        cloned_dir = utils.git_clone('git@github.com:fastogt/qscintilla.git')
+        qsci_src_path = os.path.join(cloned_dir, 'Qt4Qt5')
+        self.__build_via_cmake(qsci_src_path)
+
+    def build_hiredis(self):
         try:
-            cloned_dir = utils.git_clone('git@github.com:fastogt/snappy.git', abs_dir_path)
+            cloned_dir = utils.git_clone('git@github.com:fastogt/hiredis.git')
             os.chdir(cloned_dir)
 
-            os.mkdir('build_cmake_release')
-            os.chdir('build_cmake_release')
-            snappy_cmake_line = list(cmake_line)
-            snappy_cmake_line.append('-DBUILD_SHARED_LIBS=OFF')
-            snappy_cmake_line.append('-DSNAPPY_BUILD_TESTS=OFF')
-            cmake_policy = run_command.CmakePolicy(print_message)
-            make_policy = run_command.CommonPolicy(print_message)
-            run_command.run_command_cb(snappy_cmake_line, cmake_policy)
-            run_command.run_command_cb(make_install, make_policy)
-            os.chdir(abs_dir_path)
+            make_hiredis = ['make', 'LIBSSH2_ENABLED=ON', 'OPENSSL_ROOT_DIR={0}'.format(self.prefix_path_),
+                            'PREFIX={0}'.format(self.prefix_path_), 'install']
+            subprocess.call(make_hiredis)
         except Exception as ex:
-            os.chdir(abs_dir_path)
             raise ex
+        finally:
+            os.chdir(self.build_dir_path_)
 
-    def build_common(self, cmake_line, make_install):
-        abs_dir_path = self.build_dir_path_
+    def build_libmemcached(self):
         try:
-            cloned_dir = utils.git_clone('git@github.com:fastogt/common.git', abs_dir_path)
+            cloned_dir = utils.git_clone('git@github.com:fastogt/libmemcached.git')
             os.chdir(cloned_dir)
 
-            os.mkdir('build_cmake_release')
-            os.chdir('build_cmake_release')
-            common_cmake_line = list(cmake_line)
-            common_cmake_line.append('-DQT_ENABLED=ON')
-            common_cmake_line.append('-DJSON_ENABLED=ON')
-            common_cmake_line.append('-DSNAPPY_USE_STATIC=ON')
-            cmake_policy = run_command.CmakePolicy(print_message)
-            make_policy = run_command.CommonPolicy(print_message)
-            run_command.run_command_cb(common_cmake_line, cmake_policy)
-            run_command.run_command_cb(make_install, make_policy)
-            os.chdir(abs_dir_path)
-        except Exception as ex:
-            os.chdir(abs_dir_path)
-            raise ex
-
-    def build_openssl(self, prefix_path):
-        abs_dir_path = self.build_dir_path_
-        try:
-            openssl_default_version = '1.1.1'
-            compiler_flags = utils.CompileInfo([], ['no-shared'])
-            url = '{0}openssl-{1}.{2}'.format(OPENSSL_SRC_ROOT, openssl_default_version, ARCH_OPENSSL_EXT)
-            utils.build_from_sources(url, compiler_flags, g_script_path, prefix_path, './config')
-        except Exception as ex:
-            os.chdir(abs_dir_path)
-            raise ex
-
-    def build_libssh2(self, cmake_line, prefix_path, make_install):
-        abs_dir_path = self.build_dir_path_
-        try:
-            cloned_dir = utils.git_clone('git@github.com:fastogt/libssh2.git', abs_dir_path)
-            os.chdir(cloned_dir)
-
-            os.mkdir('build_cmake_release')
-            os.chdir('build_cmake_release')
-            libssh2_cmake_line = list(cmake_line)
-            libssh2_cmake_line.append('-DBUILD_SHARED_LIBS=OFF')
-            libssh2_cmake_line.append('-DCRYPTO_BACKEND=OpenSSL')
-            libssh2_cmake_line.append('-DENABLE_ZLIB_COMPRESSION=ON')
-            libssh2_cmake_line.append('-DBUILD_EXAMPLES=OFF')
-            libssh2_cmake_line.append('-DBUILD_TESTING=OFF')
-            libssh2_cmake_line.append('-DOPENSSL_USE_STATIC_LIBS=ON')
-            libssh2_cmake_line.append('-DZLIB_USE_STATIC=ON')
-            libssh2_cmake_line.append('-DOPENSSL_ROOT_DIR={0}'.format(prefix_path))
-            cmake_policy = run_command.CmakePolicy(print_message)
-            make_policy = run_command.CommonPolicy(print_message)
-            run_command.run_command_cb(libssh2_cmake_line, cmake_policy)
-            run_command.run_command_cb(make_install, make_policy)
-            os.chdir(abs_dir_path)
-        except Exception as ex:
-            os.chdir(abs_dir_path)
-            raise ex
-
-    def build_jsonc(self, prefix_path):
-        abs_dir_path = self.build_dir_path_
-        try:
-            cloned_dir = utils.git_clone('git@github.com:fastogt/json-c.git', abs_dir_path)
-            os.chdir(cloned_dir)
-
-            autogen_policy = run_command.CommonPolicy(print_message)
-            autogen_jsonc = ['sh', 'autogen.sh']
-            run_command.run_command_cb(autogen_jsonc, autogen_policy)
-
-            configure_jsonc = ['./configure', '--prefix={0}'.format(prefix_path), '--disable-shared',
-                               '--enable-static']
-            configure_policy = run_command.CommonPolicy(print_message)
-            run_command.run_command_cb(configure_jsonc, configure_policy)
-
-            make_jsonc = ['make', 'install']  # FIXME
-            make_policy = run_command.CommonPolicy(print_message)
-            run_command.run_command_cb(make_jsonc, make_policy)
-            os.chdir(abs_dir_path)
-        except Exception as ex:
-            os.chdir(abs_dir_path)
-            raise ex
-
-    def build_qscintilla(self, cmake_line, make_install):
-        abs_dir_path = self.build_dir_path_
-        try:
-            cloned_dir = utils.git_clone('git@github.com:fastogt/qscintilla.git', abs_dir_path)
-            qsci_src_path = os.path.join(cloned_dir, 'Qt4Qt5')
-            os.chdir(qsci_src_path)
-
-            os.mkdir('build_cmake_release')
-            os.chdir('build_cmake_release')
-            qscintilla_cmake_line = list(cmake_line)
-            cmake_policy = run_command.CmakePolicy(print_message)
-            make_policy = run_command.CommonPolicy(print_message)
-            run_command.run_command_cb(qscintilla_cmake_line, cmake_policy)
-            run_command.run_command_cb(make_install, make_policy)
-            os.chdir(abs_dir_path)
-        except Exception as ex:
-            os.chdir(abs_dir_path)
-            raise ex
-
-    def build_hiredis(self, prefix_path):
-        abs_dir_path = self.build_dir_path_
-        try:
-            cloned_dir = utils.git_clone('git@github.com:fastogt/hiredis.git', abs_dir_path)
-            os.chdir(cloned_dir)
-
-            make_hiredis = ['make', 'LIBSSH2_ENABLED=ON', 'OPENSSL_ROOT_DIR={0}'.format(prefix_path),
-                            'PREFIX={0}'.format(prefix_path), 'install']
-            make_policy = run_command.CommonPolicy(print_message)
-            run_command.run_command_cb(make_hiredis, make_policy)
-            os.chdir(abs_dir_path)
-        except Exception as ex:
-            os.chdir(abs_dir_path)
-            raise ex
-
-    def build_libmemcached(self, prefix_path):
-        abs_dir_path = self.build_dir_path_
-        try:
-            cloned_dir = utils.git_clone('git@github.com:fastogt/libmemcached.git', abs_dir_path)
-            os.chdir(cloned_dir)
-
-            bootstrap_policy = run_command.CommonPolicy(print_message)
             bootstrap_libmemcached = ['sh', 'bootstrap.sh']
-            run_command.run_command_cb(bootstrap_libmemcached, bootstrap_policy)
+            subprocess.call(bootstrap_libmemcached)
 
-            configure_libmemcached = ['./configure', '--prefix={0}'.format(prefix_path), '--disable-shared',
-                                      '--enable-static', '--enable-sasl']
-            configure_policy = run_command.CommonPolicy(print_message)
-            run_command.run_command_cb(configure_libmemcached, configure_policy)
-
-            make_libmemcached = ['make', 'install']  # FIXME
-            make_policy = run_command.CommonPolicy(print_message)
-            run_command.run_command_cb(make_libmemcached, make_policy)
-            os.chdir(abs_dir_path)
+            self.__build_via_configure(utils.CompileInfo([], ['--disable-shared', '--enable-static', '--enable-sasl']))
         except Exception as ex:
-            os.chdir(abs_dir_path)
             raise ex
+        finally:
+            os.chdir(self.build_dir_path_)
 
-    def build_unqlite(self, cmake_line, make_install):
-        abs_dir_path = self.build_dir_path_
+    def build_unqlite(self):
+        cloned_dir = utils.git_clone('git@github.com:fastogt/unqlite.git')
+        self.__build_via_cmake(cloned_dir)
+
+    def build_lmdb(self):
         try:
-            cloned_dir = utils.git_clone('git@github.com:fastogt/unqlite.git', abs_dir_path)
-            os.chdir(cloned_dir)
-
-            os.mkdir('build_cmake_release')
-            os.chdir('build_cmake_release')
-            common_cmake_line = list(cmake_line)
-            cmake_policy = run_command.CmakePolicy(print_message)
-            make_policy = run_command.CommonPolicy(print_message)
-            run_command.run_command_cb(common_cmake_line, cmake_policy)
-            run_command.run_command_cb(make_install, make_policy)
-            os.chdir(abs_dir_path)
-        except Exception as ex:
-            os.chdir(abs_dir_path)
-            raise ex
-
-    def build_lmdb(self, prefix_path):
-        abs_dir_path = self.build_dir_path_
-        try:
-            cloned_dir = utils.git_clone('git@github.com:fastogt/lmdb.git', abs_dir_path)
+            cloned_dir = utils.git_clone('git@github.com:fastogt/lmdb.git')
             os.chdir(cloned_dir)
 
             os.chdir('libraries/liblmdb')
-            make_lmdb = ['make', 'install_static_lib', 'prefix={0}'.format(prefix_path)]  # FIXME
-            make_policy = run_command.CommonPolicy(print_message)
-            run_command.run_command_cb(make_lmdb, make_policy)
-            os.chdir(abs_dir_path)
+            make_lmdb = ['make', 'install_static_lib', 'prefix={0}'.format(self.prefix_path_)]  # FIXME
+            subprocess.call(make_lmdb)
         except Exception as ex:
-            os.chdir(abs_dir_path)
             raise ex
+        finally:
+            os.chdir(self.build_dir_path_)
 
-    def build_leveldb(self, cmake_line, make_install):
-        abs_dir_path = self.build_dir_path_
-        try:
-            cloned_dir = utils.git_clone('git@github.com:fastogt/leveldb.git', abs_dir_path)
-            os.chdir(cloned_dir)
+    def build_leveldb(self):
+        cloned_dir = utils.git_clone('git@github.com:fastogt/leveldb.git')
+        self.__build_via_cmake(cloned_dir, ['-DBUILD_SHARED_LIBS=OFF', '-DLEVELDB_BUILD_TESTS=OFF',
+                                            '-DLEVELDB_BUILD_BENCHMARKS=OFF'])
 
-            os.mkdir('build_cmake_release')
-            os.chdir('build_cmake_release')
-            common_cmake_line = list(cmake_line)
-            common_cmake_line.append('-DBUILD_SHARED_LIBS=OFF')
-            common_cmake_line.append('-DLEVELDB_BUILD_TESTS=OFF')
-            common_cmake_line.append('-DLEVELDB_BUILD_BENCHMARKS=OFF')
-            cmake_policy = run_command.CmakePolicy(print_message)
-            make_policy = run_command.CommonPolicy(print_message)
-            run_command.run_command_cb(common_cmake_line, cmake_policy)
-            run_command.run_command_cb(make_install, make_policy)
-            os.chdir(abs_dir_path)
-        except Exception as ex:
-            os.chdir(abs_dir_path)
-            raise ex
+    def build_rocksdb(self):
+        cloned_dir = utils.git_clone('git@github.com:fastogt/rocksdb.git')
+        self.__build_via_cmake(cloned_dir, ['-DFAIL_ON_WARNINGS=OFF', '-DPORTABLE=ON',
+                                            '-DWITH_TESTS=OFF', '-DWITH_SNAPPY=ON', '-DWITH_ZLIB=ON', '-DWITH_LZ4=ON',
+                                            '-DROCKSDB_INSTALL_ON_WINDOWS=ON', '-DWITH_TOOLS=OFF', '-DWITH_GFLAGS=OFF',
+                                            '-DBUILD_SHARED_LIBS=OFF'])
 
-    def build_rocksdb(self, cmake_line, make_install):
-        abs_dir_path = self.build_dir_path_
-        try:
-            cloned_dir = utils.git_clone('git@github.com:fastogt/rocksdb.git', abs_dir_path)
-            os.chdir(cloned_dir)
+    def build_forestdb(self):
+        cloned_dir = utils.git_clone('git@github.com:fastogt/forestdb.git', None, False)
+        self.__build_via_cmake(cloned_dir, ['-DBUILD_SHARED_LIBS=OFF'])
 
-            os.mkdir('build_cmake_release')
-            os.chdir('build_cmake_release')
-            common_cmake_line = list(cmake_line)
-            common_cmake_line.append('-DFAIL_ON_WARNINGS=OFF')
-            common_cmake_line.append('-DPORTABLE=ON')
-            common_cmake_line.append('-DWITH_TESTS=OFF')
-            common_cmake_line.append('-DWITH_SNAPPY=ON')
-            common_cmake_line.append('-DWITH_ZLIB=ON')
-            common_cmake_line.append('-DWITH_LZ4=ON')
-            common_cmake_line.append('-DROCKSDB_INSTALL_ON_WINDOWS=ON')
-            common_cmake_line.append('-DWITH_TOOLS=OFF')
-            common_cmake_line.append('-DWITH_GFLAGS=OFF')
-            common_cmake_line.append('-DBUILD_SHARED_LIBS=OFF')
-            cmake_policy = run_command.CmakePolicy(print_message)
-            make_policy = run_command.CommonPolicy(print_message)
-            run_command.run_command_cb(common_cmake_line, cmake_policy)
-            run_command.run_command_cb(make_install, make_policy)
-            os.chdir(abs_dir_path)
-        except Exception as ex:
-            os.chdir(abs_dir_path)
-            raise ex
+    def build_fastonosql_core(self):
+        cloned_dir = utils.git_clone('git@github.com:fastogt/fastonosql_core.git', None, False)
+        self.__build_via_cmake(cloned_dir, ['-DJSONC_USE_STATIC=ON', '-DOPENSSL_USE_STATIC_LIBS=ON'])
 
-    def build_forestdb(self, cmake_line, make_install):
-        abs_dir_path = self.build_dir_path_
-        try:
-            cloned_dir = utils.git_clone('git@github.com:fastogt/forestdb.git', abs_dir_path, None, False)
-            os.chdir(cloned_dir)
+    def __build_via_cmake(self, directory, cmake_flags=[]):
+        utils.build_command_cmake(directory, self.prefix_path_, cmake_flags)
 
-            os.mkdir('build_cmake_release')
-            os.chdir('build_cmake_release')
-            forestdb_cmake_line = list(cmake_line)
-            forestdb_cmake_line.append('-DBUILD_SHARED_LIBS=OFF')
-            cmake_policy = run_command.CmakePolicy(print_message)
-            make_policy = run_command.CommonPolicy(print_message)
-            run_command.run_command_cb(forestdb_cmake_line, cmake_policy)
-            run_command.run_command_cb(make_install, make_policy)
-            os.chdir(abs_dir_path)
-        except Exception as ex:
-            os.chdir(abs_dir_path)
-            raise ex
+    def __download_and_build_via_configure(self, url, compiler_flags: utils.CompileInfo, executable='./configure'):
+        utils.build_from_sources(url, compiler_flags, g_script_path, self.prefix_path_, executable)
 
-    def build_fastonosql_core(self, cmake_line, make_install):
-        abs_dir_path = self.build_dir_path_
-        try:
-            cloned_dir = utils.git_clone('git@github.com:fastogt/fastonosql_core.git', abs_dir_path, None, False)
-            os.chdir(cloned_dir)
+    def __build_via_configure(self, compiler_flags: utils.CompileInfo, executable='./configure'):
+        utils.build_command_configure(compiler_flags, g_script_path, self.prefix_path_, executable)
 
-            os.mkdir('build_cmake_release')
-            os.chdir('build_cmake_release')
-            fastonosql_core_cmake_line = list(cmake_line)
-            fastonosql_core_cmake_line.append('-DJSONC_USE_STATIC=ON')
-            fastonosql_core_cmake_line.append('-DSNAPPY_USE_STATIC=ON')
-            fastonosql_core_cmake_line.append('-DOPENSSL_USE_STATIC_LIBS=ON')
-            cmake_policy = run_command.CmakePolicy(print_message)
-            make_policy = run_command.CommonPolicy(print_message)
-            run_command.run_command_cb(fastonosql_core_cmake_line, cmake_policy)
-            run_command.run_command_cb(make_install, make_policy)
-            os.chdir(abs_dir_path)
-        except Exception as ex:
-            os.chdir(abs_dir_path)
-            raise ex
-
-    def build(self, bs):
-        cmake_project_root_abs_path = '..'
-        if not os.path.exists(cmake_project_root_abs_path):
-            raise utils.BuildError('invalid cmake_project_root_path: %s' % cmake_project_root_abs_path)
-
-        if not bs:
-            bs = system_info.SUPPORTED_BUILD_SYSTEMS[0]
-
-        prefix_path = self.platform_.arch().default_install_prefix_path()
-
-        generator = bs.cmake_generator_arg()
-        build_system_args = bs.cmd_line()
-        # bs_name = bs.name()
-
-        # project static options
-        prefix_args = '-DCMAKE_INSTALL_PREFIX={0}'.format(prefix_path)
-        cmake_line = ['cmake', cmake_project_root_abs_path, generator, '-DCMAKE_BUILD_TYPE=RELEASE', prefix_args]
-
-        make_install = build_system_args
-        make_install.append('install')
-
-        # abs_dir_path = self.build_dir_path_
-
+    def build(self):
         # self.build_system()
-        self.build_snappy(cmake_line, make_install)
-        self.build_openssl(prefix_path)  #
-        self.build_libssh2(cmake_line, prefix_path, make_install)
-        self.build_jsonc(prefix_path)
-        self.build_qscintilla(cmake_line, make_install)
-        self.build_common(cmake_line, make_install)
+        self.build_snappy()
+        self.build_openssl('1.1.1b')  #
+        self.build_libssh2()
+        self.build_jsonc()
+        self.build_qscintilla()
+        self.build_common()
 
         # databases libs builds
-        self.build_hiredis(prefix_path)
-        self.build_libmemcached(prefix_path)  #
-        self.build_unqlite(cmake_line, make_install)
-        self.build_lmdb(prefix_path)
-        self.build_leveldb(cmake_line, make_install)
-        self.build_rocksdb(cmake_line, make_install)
-        self.build_forestdb(cmake_line, make_install)  #
-        self.build_fastonosql_core(cmake_line, make_install)
+        self.build_hiredis()
+        self.build_libmemcached()  #
+        self.build_unqlite()
+        self.build_lmdb()
+        self.build_leveldb()
+        self.build_rocksdb()
+        self.build_forestdb()  #
+        self.build_fastonosql_core()
 
 
 if __name__ == "__main__":
@@ -428,11 +224,5 @@ if __name__ == "__main__":
     else:
         arch_bit_str = system_info.get_arch_name()
 
-    if argc > 3:
-        bs_str = sys.argv[3]
-        args_bs = system_info.get_supported_build_system_by_name(bs_str)
-    else:
-        args_bs = None
-
     request = BuildRequest(platform_str, arch_bit_str, 'build_' + platform_str + '_env')
-    request.build(args_bs)
+    request.build()
