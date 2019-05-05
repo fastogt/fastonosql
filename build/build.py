@@ -6,7 +6,7 @@ import sys
 
 from pyfastogt import run_command
 from pyfastogt import system_info
-from pyfastogt import utils
+from pyfastogt import utils, build_utils
 
 
 def print_usage():
@@ -75,15 +75,15 @@ class ProgressSaver(object):
 
 
 class BuildRequest(object):
-    def __init__(self, platform, arch_name):
+    def __init__(self, platform: str, arch_name: str):
         platform_or_none = system_info.get_supported_platform_by_name(platform)
 
         if not platform_or_none:
-            raise utils.BuildError('invalid platform')
+            raise build_utils.BuildError('invalid platform')
 
-        arch = platform_or_none.architecture_by_arch_name(arch_name)
+        arch = platform_or_none.get_architecture_by_arch_name(arch_name)
         if not arch:
-            raise utils.BuildError('invalid arch')
+            raise build_utils.BuildError('invalid arch')
 
         self.platform_ = platform_or_none.make_platform_by_arch(arch, platform_or_none.package_types())
         print("Build request for platform: {0}, arch: {1} created".format(platform, arch.name()))
@@ -91,10 +91,11 @@ class BuildRequest(object):
     def platform(self):
         return self.platform_
 
-    def build(self, cmake_project_root_path, app_branding_options, dir_path, bs, package_types, saver):
+    def build(self, cmake_project_root_path: str, app_branding_options: list, dir_path: str, bs: BuildSystem,
+              package_types: list, saver: ProgressSaver):
         cmake_project_root_abs_path = os.path.abspath(cmake_project_root_path)
         if not os.path.exists(cmake_project_root_abs_path):
-            raise utils.BuildError('invalid cmake_project_root_path: %s' % cmake_project_root_path)
+            raise build_utils.BuildError('invalid cmake_project_root_path: %s' % cmake_project_root_path)
 
         if not bs:
             bs = SUPPORTED_BUILD_SYSTEMS[0]
@@ -126,7 +127,7 @@ class BuildRequest(object):
             zlib_args = '-DZLIB_USE_STATIC=OFF'
             bzip2_args = '-DBZIP2_USE_STATIC=OFF'
         else:
-            prefix_path = self.platform_.arch().default_install_prefix_path()
+            prefix_path = self.platform_.architecture().default_install_prefix_path()
             openssl_args = ['-DOPENSSL_USE_STATIC_LIBS=ON', '-DOPENSSL_ROOT_DIR={0}'.format(prefix_path)]
             zlib_args = '-DZLIB_USE_STATIC=ON'
             bzip2_args = '-DBZIP2_USE_STATIC=ON'
@@ -269,7 +270,7 @@ if __name__ == "__main__":
     request = BuildRequest(platform_str, arch_name_str)
     if branding_file_path != dev_null:
         abs_branding_file = os.path.abspath(branding_file_path)
-        branding_options = utils.read_file_line_by_line(abs_branding_file)
+        branding_options = utils.read_file_line_by_line_to_list(abs_branding_file)
     else:
         branding_options = []
 

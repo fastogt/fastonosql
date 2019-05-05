@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 import os
-import sys
 import subprocess
 import argparse
 
 from pyfastogt import system_info
 from pyfastogt import utils, build_utils
 
-g_script_path = os.path.realpath(sys.argv[0])
+
+# Script for building environment on clean machine
 
 
 def print_usage():
@@ -19,8 +19,7 @@ def print_usage():
 
 class BuildRequest(build_utils.BuildRequest):
     def __init__(self, platform: str, arch: str, dir_path: str, prefix_path: str):
-        patches_path = os.path.abspath(os.path.join(g_script_path, os.pardir))
-        build_utils.BuildRequest.__init__(self, platform, arch, patches_path, dir_path, prefix_path)
+        build_utils.BuildRequest.__init__(self, platform, arch, dir_path, prefix_path)
 
     def __get_system_libs(self):
         platform = self.platform_
@@ -101,8 +100,7 @@ class BuildRequest(build_utils.BuildRequest):
             bootstrap_libmemcached = ['sh', 'bootstrap.sh']
             subprocess.call(bootstrap_libmemcached)
 
-            self._build_via_configure(
-                build_utils.CompileInfo([], ['--disable-shared', '--enable-static', '--enable-sasl']))
+            self._build_via_configure(['--disable-shared', '--enable-static', '--enable-sasl'])
         except Exception as ex:
             raise ex
         finally:

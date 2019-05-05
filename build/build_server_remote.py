@@ -6,7 +6,7 @@ import sys
 import build
 import pika
 import os
-from pyfastogt import system_info, utils
+from pyfastogt import system_info, utils, build_utils
 
 
 def gen_routing_key(platform, arch) -> str:
@@ -111,14 +111,13 @@ class BuildRpcServer(object):
         self.connection_ = self.connect()
         self.connection_.ioloop.start()
 
-    def build_package(self, platform, arch_bit, op_id, branding_options: [], package_types, destination, routing_key):
+    def build_package(self, platform, arch_bit, op_id, branding_options: list, package_types, destination, routing_key):
         build_request = build.BuildRequest(platform, arch_bit)
         platform = build_request.platform()
         arch = platform.arch()
 
         platform_and_arch_str = '{0}_{1}'.format(platform.name(), arch.name())
         dir_name = 'build_{0}_for_{1}'.format(platform_and_arch_str, op_id)
-        bs = build.get_supported_build_system_by_name('ninja')
 
         self.send_status(routing_key, op_id, 20.0, 'Building package')
 
@@ -135,7 +134,7 @@ class BuildRpcServer(object):
         store = store(21.0, 79.0, routing_key, op_id)
 
         saver = build.ProgressSaver(store)
-        file_paths = build_request.build('..', branding_options, dir_name, bs, package_types, saver)
+        file_paths = build_request.build('..', branding_options, dir_name, None, package_types, saver)
         file_path = file_paths[0]
         self.send_status(routing_key, op_id, 80.0, 'Loading package to server')
         try:
@@ -190,7 +189,7 @@ class BuildRpcServer(object):
             print('Build finished for: {0}, platform: {1}, response: {2}'.format(correlation_id, platform_and_arch,
                                                                                  response))
             json_to_send = {'body': response}
-        except utils.BuildError as ex:
+        except build_utils.BuildError as ex:
             print('Build finished for: {0}, platform: {1}, exception: {2}'.format(correlation_id, platform_and_arch,
                                                                                   str(ex)))
             json_to_send = {'error': str(ex)}
