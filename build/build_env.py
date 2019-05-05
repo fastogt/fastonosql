@@ -2,6 +2,7 @@
 import os
 import sys
 import subprocess
+import argparse
 
 from pyfastogt import system_info
 from pyfastogt import utils, build_utils
@@ -17,9 +18,9 @@ def print_usage():
 
 
 class BuildRequest(build_utils.BuildRequest):
-    def __init__(self, platform, arch_name, dir_path):
+    def __init__(self, platform: str, arch: str, dir_path: str, prefix_path: str):
         patches_path = os.path.abspath(os.path.join(g_script_path, os.pardir))
-        build_utils.BuildRequest.__init__(self, platform, arch_name, patches_path, dir_path, None)
+        build_utils.BuildRequest.__init__(self, platform, arch, patches_path, dir_path, prefix_path)
 
     def __get_system_libs(self):
         platform = self.platform_
@@ -142,38 +143,187 @@ class BuildRequest(build_utils.BuildRequest):
         self._clone_and_build_via_cmake(build_utils.generate_fastogt_git_path('fastonosql_core'),
                                         ['-DJSONC_USE_STATIC=ON', '-DOPENSSL_USE_STATIC_LIBS=ON'])
 
-    def build(self):
-        # self.build_system()
-        self.build_snappy()
-        self.build_openssl('1.1.1b')  #
-        self.build_libssh2()
-        self.build_jsonc()
-        self.build_qscintilla()
-        self.build_common(True)
-
-        # databases libs builds
-        self.build_hiredis()
-        self.build_libmemcached()  #
-        self.build_unqlite()
-        self.build_lmdb()
-        self.build_leveldb()
-        self.build_rocksdb()
-        self.build_forestdb()  #
-        self.build_fastonosql_core()
-
 
 if __name__ == "__main__":
-    argc = len(sys.argv)
+    openssl_default_version = '1.1.1b'
 
-    if argc > 1:
-        platform_str = sys.argv[1]
-    else:
-        platform_str = system_info.get_os()
+    host_os = system_info.get_os()
+    arch_host_os = system_info.get_arch_name()
 
-    if argc > 2:
-        arch_bit_str = sys.argv[2]
-    else:
-        arch_bit_str = system_info.get_arch_name()
+    parser = argparse.ArgumentParser(prog='build_env', usage='%(prog)s [options]')
 
-    request = BuildRequest(platform_str, arch_bit_str, 'build_' + platform_str + '_env')
-    request.build()
+    # system
+    system_grp = parser.add_mutually_exclusive_group()
+    system_grp.add_argument('--with-system', help='build with system dependencies (default)', dest='with_system',
+                            action='store_true', default=True)
+    system_grp.add_argument('--without-system', help='build without system dependencies', dest='with_system',
+                            action='store_false', default=False)
+
+    # snappy
+    snappy_grp = parser.add_mutually_exclusive_group()
+    snappy_grp.add_argument('--with-snappy', help='build snappy (default, version: git master)', dest='with_snappy',
+                            action='store_true', default=True)
+    snappy_grp.add_argument('--without-snappy', help='build without snappy', dest='with_snappy', action='store_false',
+                            default=False)
+
+    # json-c
+    jsonc_grp = parser.add_mutually_exclusive_group()
+    jsonc_grp.add_argument('--with-json-c', help='build json-c (default, version: git master)', dest='with_jsonc',
+                           action='store_true', default=True)
+    jsonc_grp.add_argument('--without-json-c', help='build without json-c', dest='with_jsonc', action='store_false',
+                           default=False)
+
+    # openssl
+    openssl_grp = parser.add_mutually_exclusive_group()
+    openssl_grp.add_argument('--with-openssl',
+                             help='build openssl (default, version:{0})'.format(openssl_default_version),
+                             dest='with_openssl', action='store_true', default=True)
+    openssl_grp.add_argument('--without-openssl', help='build without openssl', dest='with_openssl',
+                             action='store_false',
+                             default=False)
+    parser.add_argument('--openssl-version', help='openssl version (default: {0})'.format(openssl_default_version),
+                        default=openssl_default_version)
+
+    # libssh2
+    libssh2_grp = parser.add_mutually_exclusive_group()
+    libssh2_grp.add_argument('--with-libssh2', help='build libssh2 (default, version: git master)', dest='with_libssh2',
+                             action='store_true', default=True)
+    libssh2_grp.add_argument('--without-libssh2', help='build without libssh2', dest='with_libssh2',
+                             action='store_false',
+                             default=False)
+
+    # qscintilla
+    qscintilla_grp = parser.add_mutually_exclusive_group()
+    qscintilla_grp.add_argument('--with-qscintilla', help='build qscintilla (default, version: git master)',
+                                dest='with_qscintilla',
+                                action='store_true', default=True)
+    qscintilla_grp.add_argument('--without-qscintilla', help='build without qscintilla', dest='with_qscintilla',
+                                action='store_false',
+                                default=False)
+    # common
+    common_grp = parser.add_mutually_exclusive_group()
+    common_grp.add_argument('--with-common', help='build common (default, version: git master)', dest='with_common',
+                            action='store_true', default=True)
+    common_grp.add_argument('--without-common', help='build without common', dest='with_common', action='store_false',
+                            default=False)
+
+    # hiredis
+    hiredis_grp = parser.add_mutually_exclusive_group()
+    hiredis_grp.add_argument('--with-hiredis', help='build hiredis (default, version: git master)',
+                             dest='with_hiredis',
+                             action='store_true', default=True)
+    hiredis_grp.add_argument('--without-hiredis', help='build without hiredis', dest='with_hiredis',
+                             action='store_false',
+                             default=False)
+
+    # libmemcached
+    libmemcached_grp = parser.add_mutually_exclusive_group()
+    libmemcached_grp.add_argument('--with-libmemcached', help='build libmemcached (default, version: git master)',
+                                  dest='with_libmemcached',
+                                  action='store_true', default=True)
+    libmemcached_grp.add_argument('--without-libmemcached', help='build without libmemcached', dest='with_libmemcached',
+                                  action='store_false',
+                                  default=False)
+
+    # unqlite
+    unqlite_grp = parser.add_mutually_exclusive_group()
+    unqlite_grp.add_argument('--with-unqlite', help='build unqlite (default, version: git master)',
+                             dest='with_unqlite',
+                             action='store_true', default=True)
+    unqlite_grp.add_argument('--without-unqlite', help='build without unqlite', dest='with_unqlite',
+                             action='store_false',
+                             default=False)
+
+    # lmdb
+    lmdb_grp = parser.add_mutually_exclusive_group()
+    lmdb_grp.add_argument('--with-lmdb', help='build lmdb (default, version: git master)',
+                          dest='with_lmdb',
+                          action='store_true', default=True)
+    lmdb_grp.add_argument('--without-lmdb', help='build without lmdb', dest='with_lmdb',
+                          action='store_false',
+                          default=False)
+
+    # leveldb
+    leveldb_grp = parser.add_mutually_exclusive_group()
+    leveldb_grp.add_argument('--with-leveldb', help='build leveldb (default, version: git master)',
+                             dest='with_leveldb',
+                             action='store_true', default=True)
+    leveldb_grp.add_argument('--without-leveldb', help='build without leveldb', dest='with_leveldb',
+                             action='store_false',
+                             default=False)
+
+    # rocksdb
+    rocksdb_grp = parser.add_mutually_exclusive_group()
+    rocksdb_grp.add_argument('--with-rocksdb', help='build rocksdb (default, version: git master)',
+                             dest='with_rocksdb',
+                             action='store_true', default=True)
+    rocksdb_grp.add_argument('--without-rocksdb', help='build without rocksdb', dest='with_rocksdb',
+                             action='store_false',
+                             default=False)
+
+    # forestdb
+    forestdb_grp = parser.add_mutually_exclusive_group()
+    forestdb_grp.add_argument('--with-forestdb', help='build forestdb (default, version: git master)',
+                              dest='with_forestdb',
+                              action='store_true', default=True)
+    forestdb_grp.add_argument('--without-forestdb', help='build without forestdb', dest='with_forestdb',
+                              action='store_false',
+                              default=False)
+    # fastonosql_core
+    fastonosql_core_grp = parser.add_mutually_exclusive_group()
+    fastonosql_core_grp.add_argument('--with-fastonosql-core',
+                                     help='build fastonosql_core (default, version: git master)',
+                                     dest='with_fastonosql_core',
+                                     action='store_true', default=True)
+    fastonosql_core_grp.add_argument('--without-fastonosql-core', help='build without fastonosql_core',
+                                     dest='with_fastonosql_core',
+                                     action='store_false',
+                                     default=False)
+
+    parser.add_argument('--platform', help='build for platform (default: {0})'.format(host_os), default=host_os)
+    parser.add_argument('--architecture', help='architecture (default: {0})'.format(arch_host_os),
+                        default=arch_host_os)
+    parser.add_argument('--prefix_path', help='prefix_path (default: None)', default=None)
+
+    argv = parser.parse_args()
+
+    arg_platform = argv.platform
+    arg_prefix_path = argv.prefix_path
+    arg_architecture = argv.architecture
+
+    request = BuildRequest(arg_platform, arg_architecture, 'build_' + arg_platform + '_env', arg_prefix_path)
+
+    if argv.with_system:
+        request.build_system()
+
+    if argv.with_snappy:
+        request.build_snappy()
+    if argv.with_jsonc:
+        request.build_jsonc()
+    if argv.with_openssl:
+        request.build_openssl(openssl_default_version)  #
+    if argv.with_libssh2:
+        request.build_libssh2()
+    if argv.with_qscintilla:
+        request.build_qscintilla()
+    if argv.with_common:
+        request.build_common(True)
+
+    # databases libs builds
+    if argv.with_hiredis:
+        request.build_hiredis()
+    if argv.with_libmemcached:
+        request.build_libmemcached()  #
+    if argv.with_unqlite:
+        request.build_unqlite()
+    if argv.with_lmdb:
+        request.build_lmdb()
+    if argv.with_leveldb:
+        request.build_leveldb()
+    if argv.with_rocksdb:
+        request.build_rocksdb()
+    if argv.with_forestdb:
+        request.build_forestdb()  #
+
+    if argv.with_fastonosql_core:
+        request.build_fastonosql_core()
