@@ -114,7 +114,7 @@ class BuildRpcServer(object):
     def build_package(self, platform, arch_bit, op_id, branding_options: list, package_types, destination, routing_key):
         build_request = build.BuildRequest(platform, arch_bit)
         platform = build_request.platform()
-        arch = platform.arch()
+        arch = platform.architecture()
 
         platform_and_arch_str = '{0}_{1}'.format(platform.name(), arch.name())
         dir_name = 'build_{0}_for_{1}'.format(platform_and_arch_str, op_id)
