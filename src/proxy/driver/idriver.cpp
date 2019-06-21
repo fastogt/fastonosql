@@ -279,7 +279,7 @@ void IDriver::timerEvent(QTimerEvent* event) {
     }
 
     if (log_file_ && log_file_->IsOpen()) {
-      common::time64_t time = common::time::current_mstime();
+      common::time64_t time = common::time::current_utc_mstime();
       std::string stamp = CreateStamp(time);
       core::IServerInfo* info = nullptr;
       common::Error err = GetCurrentServerInfo(&info);
@@ -357,7 +357,7 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
   const double step = 99.0 / static_cast<double>(commands.size() * (repeat + 1));
   double cur_progress = 0.0;
   for (size_t r = 0; r < repeat + 1; ++r) {
-    common::time64_t start_ts = common::time::current_mstime();
+    common::time64_t start_ts = common::time::current_utc_mstime();
     for (size_t i = 0; i < commands.size(); ++i) {
       if (IsInterrupted()) {
         res.setErrorInfo(common::make_error(common::COMMON_EINTR));
@@ -378,7 +378,7 @@ void IDriver::HandleExecuteEvent(events::ExecuteRequestEvent* ev) {
       res.executed_commands.push_back(cmd);
     }
 
-    common::time64_t finished_ts = common::time::current_mstime();
+    common::time64_t finished_ts = common::time::current_utc_mstime();
     common::time64_t diff = finished_ts - start_ts;
     const common::time64_t sleep_time = msec_repeat_interval - diff;
     if (sleep_time > 0) {

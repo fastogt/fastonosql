@@ -26,12 +26,12 @@ namespace fastonosql {
 namespace gui {
 
 TestConnection::TestConnection(proxy::IConnectionSettingsBaseSPtr conn, QObject* parent)
-    : QObject(parent), connection_(conn), start_time_(common::time::current_mstime()) {
+    : QObject(parent), connection_(conn), start_time_(common::time::current_utc_mstime()) {
   qRegisterMetaType<common::Error>("common::Error");
 }
 
 common::time64_t TestConnection::elipsedTime() const {
-  return common::time::current_mstime() - start_time_;
+  return common::time::current_utc_mstime() - start_time_;
 }
 
 void TestConnection::routine() {

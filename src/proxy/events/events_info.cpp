@@ -25,13 +25,13 @@ namespace proxy {
 namespace events_info {
 
 EventInfoBase::EventInfoBase(initiator_type sender, error_type er)
-    : base_class(sender, er), time_start_(common::time::current_mstime()) {}
+    : base_class(sender, er), time_start_(common::time::current_utc_mstime()) {}
 
 EventInfoBase::EventInfoBase(initiator_type sender, common::time64_t time_start, error_type er)
     : base_class(sender, er), time_start_(time_start) {}
 
 common::time64_t EventInfoBase::GetElapsedTime() const {
-  return common::time::current_mstime() - time_start_;
+  return common::time::current_utc_mstime() - time_start_;
 }
 
 ConnectInfoRequest::ConnectInfoRequest(initiator_type sender, error_type er) : base_class(sender, er) {}
