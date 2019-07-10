@@ -27,14 +27,14 @@ namespace fastonosql {
 namespace gui {
 
 DiscoverySentinelConnection::DiscoverySentinelConnection(proxy::IConnectionSettingsBaseSPtr conn, QObject* parent)
-    : QObject(parent), connection_(conn), start_time_(common::time::current_mstime()) {
+    : QObject(parent), connection_(conn), start_time_(common::time::current_utc_mstime()) {
   qRegisterMetaType<common::Error>("common::Error");
   qRegisterMetaType<std::vector<core::ServerDiscoverySentinelInfoSPtr>>(
       "std::vector<core::ServerDiscoverySentinelInfoSPtr>");
 }
 
 common::time64_t DiscoverySentinelConnection::elipsedTime() const {
-  return common::time::current_mstime() - start_time_;
+  return common::time::current_utc_mstime() - start_time_;
 }
 
 void DiscoverySentinelConnection::routine() {
