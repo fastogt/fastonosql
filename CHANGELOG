@@ -1,3 +1,7 @@
+2.5.0 /
+[Alexandr Topilski]
+- [Redis] redis-timeseries module
+
 2.4.1 / June 19, 2019
 [Alexandr Topilski]
 - Update sources
