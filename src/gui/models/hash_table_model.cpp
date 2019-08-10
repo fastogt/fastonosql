@@ -155,7 +155,7 @@ common::HashValue* HashTableModel::hashValue() const {
     KeyValueTableItem* node = static_cast<KeyValueTableItem*>(data_[i]);
     common::Value::string_t key = node->key();
     common::Value::string_t val = node->value();
-    ar->Insert(key, val);
+    ar->Insert(key, common::Value::CreateStringValue(val));
   }
 
   return ar;
