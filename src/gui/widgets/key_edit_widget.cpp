@@ -372,7 +372,7 @@ void KeyEditWidget::syncControls(const core::NValue& item) {
     if (item->GetAsHash(&hash)) {
       for (auto it = hash->begin(); it != hash->end(); ++it) {
         auto element = (*it);
-        const auto key_str  = element.first;
+        const auto key_str = element.first;
         if (key_str.empty()) {
           continue;
         }
