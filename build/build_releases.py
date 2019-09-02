@@ -62,8 +62,8 @@ if __name__ == "__main__":
     # fastoredis build
     fastoredis_branding_file = os.path.abspath('fastoredis.txt')
     fastoredis_branding_options = utils.read_file_line_by_line_to_list(fastoredis_branding_file)
-    request.build(cmake_root, fastoredis_branding_options, 'build_fastoredis_' + platform_str, None,
-                  packages, saver)
+    # request.build(cmake_root, fastoredis_branding_options, 'build_fastoredis_' + platform_str, None,
+    #               packages, saver)
 
     # pro version
     fastoredis_branding_options.append('-DPRO_VERSION=ON')
