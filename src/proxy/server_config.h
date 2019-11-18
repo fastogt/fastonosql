@@ -26,7 +26,7 @@
 #include "proxy/user_info.h"
 #endif
 
-#define SERVER_REQUESTS_PORT 333
+#define SERVER_REQUESTS_PORT 113
 
 #define FASTONOSQL_HOST "fastonosql.com"
 #define FASTOREDIS_HOST "fastoredis.com"
