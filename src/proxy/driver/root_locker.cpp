@@ -1,4 +1,4 @@
-/*  Copyright (C) 2014-2019 FastoGT. All right reserved.
+/*  Copyright (C) 2014-2020 FastoGT. All right reserved.
 
     This file is part of FastoNoSQL.
 
@@ -29,7 +29,11 @@ namespace fastonosql {
 namespace proxy {
 
 RootLocker::RootLocker(IDriver* parent, QObject* receiver, const core::command_buffer_t& text, bool silence)
-    : base_class(), parent_(parent), receiver_(receiver), tstart_(common::time::current_utc_mstime()), silence_(silence) {
+    : base_class(),
+      parent_(parent),
+      receiver_(receiver),
+      tstart_(common::time::current_utc_mstime()),
+      silence_(silence) {
   CHECK(parent_);
 
   root_ = core::FastoObject::CreateRoot(text, this);

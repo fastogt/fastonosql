@@ -1,4 +1,4 @@
-/*  Copyright (C) 2014-2019 FastoGT. All right reserved.
+/*  Copyright (C) 2014-2020 FastoGT. All right reserved.
 
     This file is part of FastoNoSQL.
 
@@ -56,7 +56,7 @@ const QString trDescription = QObject::tr("<h3>" PROJECT_NAME_TITLE " " PROJECT_
                                           "href=" PROJECT_GITHUB_ISSUES
                                           ">submit</a> issues/proposals on GitHub.  <br/>"
                                           "<br/>"
-                                          "Copyright 2014-2019 <a "
+                                          "Copyright 2014-2020 <a "
                                           "href=\"" PROJECT_COMPANYNAME_DOMAIN "\">" PROJECT_COMPANYNAME
                                           "</a>. All rights reserved.<br/>"
                                           "<br/>"
