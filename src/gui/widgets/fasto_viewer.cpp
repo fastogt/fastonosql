@@ -73,8 +73,6 @@ bool convertFromViewImplRoutine(OutputView view_method, const convert_in_t& val,
     return string_from_pickle(val, out);
   } else if (view_method == FROM_PICKLE_VIEW) {
     return string_to_pickle(val, out);
-  } else if (view_method == MSGPACK_VIEW) {
-    return string_to_msgpack(val, out);
   } else if (view_method == ZLIB_VIEW) {
     return string_to_zlib(val, out);
   } else if (view_method == GZIP_VIEW) {
@@ -124,8 +122,6 @@ bool convertToViewImpl(OutputView view_method, const convert_in_t& text, convert
     return string_to_pickle(text, out);
   } else if (view_method == FROM_PICKLE_VIEW) {
     return string_from_pickle(text, out);
-  } else if (view_method == MSGPACK_VIEW) {
-    return string_from_msgpack(text, out);
   } else if (view_method == ZLIB_VIEW) {
     return string_from_zlib(text, out);
   } else if (view_method == GZIP_VIEW) {
@@ -148,9 +144,8 @@ bool convertToViewImpl(OutputView view_method, const convert_in_t& text, convert
 }  // namespace
 
 const std::vector<const char*> g_output_views_text = {
-    "Raw",          "Json",      "To Hex",      "From Hex",       "To Base64", "From Base64", "To Unicode",
-    "From Unicode", "To Pickle", "From Pickle", "MsgPack (Beta)", "Zlib",      "GZip",        "LZ4",
-    "BZip2",        "Snappy",    "Xml"};
+    "Raw",       "Json",        "To Hex", "From Hex", "To Base64", "From Base64", "To Unicode", "From Unicode",
+    "To Pickle", "From Pickle", "Zlib",   "GZip",     "LZ4",       "BZip2",       "Snappy",     "Xml"};
 
 FastoViewer::FastoViewer(QWidget* parent)
     : base_class(parent),

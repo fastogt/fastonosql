@@ -20,7 +20,7 @@
 
 #include <common/net/http_client.h>
 #include <common/qt/convert2string.h>
-#include <common/uri/url.h>
+#include <common/uri/gurl.h>
 
 #include "gui/socket_tls.h"
 
@@ -34,7 +34,7 @@
 #endif
 
 namespace {
-const common::uri::Url kContentUrl = common::uri::Url(PROJECT_DOMAIN CONTENT_PATH);
+const common::uri::GURL kContentUrl = common::uri::GURL(PROJECT_DOMAIN CONTENT_PATH);
 
 class HttpsClient : public common::net::IHttpClient {
  public:
@@ -73,14 +73,14 @@ common::Error loadPageRoutine(common::http::HttpResponse* resp) {
     return common::make_error_inval();
   }
 
-  const auto hs = common::net::HostAndPort(kContentUrl.GetHost(), CONTENT_PORT);
+  const auto hs = common::net::HostAndPort(kContentUrl.host(), CONTENT_PORT);
   HttpsClient cl(hs);
   common::ErrnoError errn = cl.Connect();
   if (errn) {
     return common::make_error_from_errno(errn);
   }
 
-  const auto path = kContentUrl.GetPath();
+  const auto path = kContentUrl.PathForRequest();
   common::Error err = cl.Get(path);
   if (err) {
     cl.Disconnect();
@@ -121,7 +121,7 @@ void LoadWelcomePage::routine() {
   }
 
   QString body;
-  common::ConvertFromString(resp.GetBody(), &body);
+  common::ConvertFromBytes(resp.GetBody(), &body);
   emit pageLoaded(common::Error(), body);
 }
 

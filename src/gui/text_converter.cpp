@@ -27,7 +27,6 @@
 #include <common/text_decoders/compress_lz4_edcoder.h>
 #include <common/text_decoders/compress_snappy_edcoder.h>
 #include <common/text_decoders/compress_zlib_edcoder.h>
-#include <common/text_decoders/msgpack_edcoder.h>
 #include <common/text_decoders/xhex_edcoder.h>
 
 #include <common/convert2string.h>
@@ -296,32 +295,6 @@ bool string_to_bzip2(const convert_in_t& data, convert_out_t* out) {
 
   convert_out_t sout;
   common::Error err = enc.Encode(piece_data, &sout);
-  if (err) {
-    return false;
-  }
-
-  *out = sout;
-  return true;
-}
-
-bool string_from_msgpack(const convert_in_t& value, convert_out_t* out) {
-  common::MsgPackEDcoder enc;
-
-  convert_out_t sout;
-  common::Error err = enc.Decode(value, &sout);
-  if (err) {
-    return false;
-  }
-
-  *out = sout;
-  return true;
-}
-
-bool string_to_msgpack(const convert_in_t& data, convert_out_t* out) {
-  common::MsgPackEDcoder enc;
-
-  convert_out_t sout;
-  common::Error err = enc.Encode(data, &sout);
   if (err) {
     return false;
   }
