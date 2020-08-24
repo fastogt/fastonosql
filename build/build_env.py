@@ -24,7 +24,7 @@ class BuildRequest(build_utils.BuildRequest):
     def __get_system_libs(self):
         platform = self.platform_
         platform_name = platform.name()
-        arch = platform.arch()
+        arch = platform.architecture()
         dep_libs = []
 
         if platform_name == 'linux':
@@ -66,7 +66,7 @@ class BuildRequest(build_utils.BuildRequest):
         # post install step
 
     def build_libssh2(self):
-        self._clone_and_build_via_cmake(build_utils.generate_fastogt_git_path('libssh2'),
+        self._clone_and_build_via_cmake(build_utils.generate_fastogt_github_path('libssh2'),
                                         ['-DBUILD_SHARED_LIBS=OFF', '-DCRYPTO_BACKEND=OpenSSL',
                                          '-DENABLE_ZLIB_COMPRESSION=ON',
                                          '-DBUILD_EXAMPLES=OFF', '-DBUILD_TESTING=OFF', '-DOPENSSL_USE_STATIC_LIBS=ON',
@@ -107,7 +107,7 @@ class BuildRequest(build_utils.BuildRequest):
             os.chdir(self.build_dir_path_)
 
     def build_unqlite(self):
-        self._clone_and_build_via_cmake(build_utils.generate_fastogt_git_path('unqlite'), [])
+        self._clone_and_build_via_cmake(build_utils.generate_fastogt_github_path('unqlite'), [])
 
     def build_lmdb(self):
         try:
@@ -123,22 +123,22 @@ class BuildRequest(build_utils.BuildRequest):
             os.chdir(self.build_dir_path_)
 
     def build_leveldb(self):
-        self._clone_and_build_via_cmake(build_utils.generate_fastogt_git_path('leveldb'),
+        self._clone_and_build_via_cmake(build_utils.generate_fastogt_github_path('leveldb'),
                                         ['-DBUILD_SHARED_LIBS=OFF', '-DLEVELDB_BUILD_TESTS=OFF',
                                          '-DLEVELDB_BUILD_BENCHMARKS=OFF'])
 
     def build_rocksdb(self):
-        self._clone_and_build_via_cmake(build_utils.generate_fastogt_git_path('rocksdb'),
+        self._clone_and_build_via_cmake(build_utils.generate_fastogt_github_path('rocksdb'),
                                         ['-DFAIL_ON_WARNINGS=OFF', '-DPORTABLE=ON',
                                          '-DWITH_TESTS=OFF', '-DWITH_SNAPPY=ON', '-DWITH_ZLIB=ON', '-DWITH_LZ4=ON',
                                          '-DROCKSDB_INSTALL_ON_WINDOWS=ON', '-DWITH_TOOLS=OFF', '-DWITH_GFLAGS=OFF',
-                                         '-DBUILD_SHARED_LIBS=OFF'])
+                                         '-DROCKSDB_BUILD_SHARED=OFF'])
 
     def build_forestdb(self):
-        self._clone_and_build_via_cmake(build_utils.generate_fastogt_git_path('forestdb'), ['-DBUILD_SHARED_LIBS=OFF'])
+        self._clone_and_build_via_cmake(build_utils.generate_fastogt_github_path('forestdb'), ['-DBUILD_SHARED_LIBS=OFF'])
 
     def build_fastonosql_core(self):
-        self._clone_and_build_via_cmake(build_utils.generate_fastogt_git_path('fastonosql_core'),
+        self._clone_and_build_via_cmake(build_utils.generate_fastogt_github_path('fastonosql_core'),
                                         ['-DJSONC_USE_STATIC=ON', '-DOPENSSL_USE_STATIC_LIBS=ON'])
 
 
