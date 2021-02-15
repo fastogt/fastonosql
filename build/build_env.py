@@ -135,7 +135,7 @@ class BuildRequest(build_utils.BuildRequest):
                                          '-DROCKSDB_BUILD_SHARED=OFF'])
 
     def build_forestdb(self):
-        self._clone_and_build_via_cmake(build_utils.generate_fastogt_github_path('forestdb'), ['-DBUILD_SHARED_LIBS=OFF'])
+        self._clone_and_build_via_cmake('https://github.com/couchbase/forestdb', ['-DBUILD_SHARED_LIBS=OFF'])
 
     def build_fastonosql_core(self):
         self._clone_and_build_via_cmake(build_utils.generate_fastogt_github_path('fastonosql_core'),
