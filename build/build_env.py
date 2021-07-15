@@ -134,9 +134,6 @@ class BuildRequest(build_utils.BuildRequest):
                                          '-DROCKSDB_INSTALL_ON_WINDOWS=ON', '-DWITH_TOOLS=OFF', '-DWITH_GFLAGS=OFF',
                                          '-DROCKSDB_BUILD_SHARED=OFF'])
 
-    def build_forestdb(self):
-        self._clone_and_build_via_cmake('https://github.com/couchbase/forestdb', ['-DBUILD_SHARED_LIBS=OFF'])
-
     def build_fastonosql_core(self):
         self._clone_and_build_via_cmake(build_utils.generate_fastogt_github_path('fastonosql_core'),
                                         ['-DJSONC_USE_STATIC=ON', '-DOPENSSL_USE_STATIC_LIBS=ON'])
@@ -259,14 +256,6 @@ if __name__ == "__main__":
                              action='store_false',
                              default=False)
 
-    # forestdb
-    forestdb_grp = parser.add_mutually_exclusive_group()
-    forestdb_grp.add_argument('--with-forestdb', help='build forestdb (default, version: git master)',
-                              dest='with_forestdb',
-                              action='store_true', default=True)
-    forestdb_grp.add_argument('--without-forestdb', help='build without forestdb', dest='with_forestdb',
-                              action='store_false',
-                              default=False)
     # fastonosql_core
     fastonosql_core_grp = parser.add_mutually_exclusive_group()
     fastonosql_core_grp.add_argument('--with-fastonosql-core',
@@ -320,8 +309,6 @@ if __name__ == "__main__":
         request.build_leveldb()
     if argv.with_rocksdb:
         request.build_rocksdb()
-    if argv.with_forestdb:
-        request.build_forestdb()  #
 
     if argv.with_fastonosql_core:
         request.build_fastonosql_core()
