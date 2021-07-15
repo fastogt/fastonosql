@@ -30,7 +30,7 @@ SET(BRANDING_PROJECT_EMAIL_URL "mailto:support@fastogt.com" CACHE STRING "Brandi
 SET(BRANDING_PROJECT_GITHUB_URL "https://github.com/fastogt/fastonosql" CACHE STRING "Branding github url for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_GITHUB_ISSUES "https://github.com/fastogt/fastonosql/issues" CACHE STRING "Branding issues url for ${BRANDING_PROJECT_NAME}") #default
 
-SET(BRANDING_PROJECT_SUMMARY "Cross-platform open source Redis, Memcached, SSDB, LevelDB, RocksDB, UnQLite, LMDB, ForestDB, Pika, Dynomite, KeyDB GUI management tool."
+SET(BRANDING_PROJECT_SUMMARY "Cross-platform open source Redis, Memcached, SSDB, LevelDB, RocksDB, UnQLite, LMDB, Pika, Dynomite, KeyDB GUI management tool."
   CACHE STRING "Short description of ${BRANDING_PROJECT_NAME}"
 )
 SET(BRANDING_PROJECT_DESCRIPTION "${BRANDING_PROJECT_NAME} it is GUI platform for NoSQL databases. Currently we support next databases: \
@@ -41,7 +41,6 @@ SET(BRANDING_PROJECT_DESCRIPTION "${BRANDING_PROJECT_NAME} it is GUI platform fo
   * RocksDB \
   * UnQLite \
   * LMDB \
-  * ForestDB \
   * Pika \
   * Dynomite \
   * KeyDB \
@@ -160,7 +159,6 @@ OPTION(BUILD_WITH_LEVELDB "Build with LevelDB support" ON)
 OPTION(BUILD_WITH_ROCKSDB "Build with RocksDB support" ON) #for android off
 OPTION(BUILD_WITH_UNQLITE "Build with Unqlite support" ON)
 OPTION(BUILD_WITH_LMDB "Build with LMDB support" ON)
-OPTION(BUILD_WITH_FORESTDB "Build with ForestDB support" OFF) #for android off
 
 OPTION(LOG_TO_FILE "Logging to file" OFF)
 OPTION(GENERATE_TRANSLATIONS "Generate ts-files for ${PROJECT_NAME}" OFF)
@@ -182,7 +180,6 @@ MESSAGE(STATUS "BUILD_WITH_LEVELDB: ${BUILD_WITH_LEVELDB}")
 MESSAGE(STATUS "BUILD_WITH_ROCKSDB: ${BUILD_WITH_ROCKSDB}")
 MESSAGE(STATUS "BUILD_WITH_UNQLITE: ${BUILD_WITH_UNQLITE}")
 MESSAGE(STATUS "BUILD_WITH_LMDB: ${BUILD_WITH_LMDB}")
-MESSAGE(STATUS "BUILD_WITH_FORESTDB: ${BUILD_WITH_FORESTDB}")
 
 ##################################DEFAULT VALUES##########################################
 # Set the build type.  Options are:
@@ -338,9 +335,6 @@ ENDIF(BUILD_WITH_UNQLITE)
 IF(BUILD_WITH_LMDB)
   ADD_DEFINITIONS(-DBUILD_WITH_LMDB)
 ENDIF(BUILD_WITH_LMDB)
-IF(BUILD_WITH_FORESTDB)
-  ADD_DEFINITIONS(-DBUILD_WITH_FORESTDB)
-ENDIF(BUILD_WITH_FORESTDB)
 
 IF(LOG_TO_FILE)
   ADD_DEFINITIONS(-DLOG_TO_FILE)
