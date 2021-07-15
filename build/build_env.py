@@ -132,7 +132,7 @@ class BuildRequest(build_utils.BuildRequest):
                                         ['-DFAIL_ON_WARNINGS=OFF', '-DPORTABLE=ON',
                                          '-DWITH_TESTS=OFF', '-DWITH_SNAPPY=ON', '-DWITH_ZLIB=ON', '-DWITH_LZ4=ON',
                                          '-DROCKSDB_INSTALL_ON_WINDOWS=ON', '-DWITH_TOOLS=OFF', '-DWITH_GFLAGS=OFF',
-                                         '-DROCKSDB_BUILD_SHARED=OFF'])
+                                         '-DWITH_GFLAGS=OFF', '-DROCKSDB_BUILD_SHARED=OFF'])
 
     def build_fastonosql_core(self):
         self._clone_and_build_via_cmake(build_utils.generate_fastogt_github_path('fastonosql_core'),
