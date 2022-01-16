@@ -156,7 +156,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
 
         CHECK_EQ(arm->GetSize(), 2);
         core::cursor_t cursor;
-        bool isok = arm->GetUInteger(0, &cursor);
+        bool isok = arm->GetUInteger32(0, &cursor);
         if (!isok) {
           goto done;
         }

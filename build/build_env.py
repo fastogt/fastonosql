@@ -93,18 +93,7 @@ class BuildRequest(build_utils.BuildRequest):
             os.chdir(self.build_dir_path_)
 
     def build_libmemcached(self):
-        try:
-            cloned_dir = utils.git_clone('git@github.com:fastogt/libmemcached.git')
-            os.chdir(cloned_dir)
-
-            bootstrap_libmemcached = ['sh', 'bootstrap.sh']
-            subprocess.call(bootstrap_libmemcached)
-
-            self._build_via_configure(['--disable-shared', '--enable-static', '--enable-sasl'])
-        except Exception as ex:
-            raise ex
-        finally:
-            os.chdir(self.build_dir_path_)
+        self._clone_and_build_via_cmake('git@github.com:topilski/libmemcached.git', [])
 
     def build_unqlite(self):
         self._clone_and_build_via_cmake(build_utils.generate_fastogt_github_path('unqlite'), [])
