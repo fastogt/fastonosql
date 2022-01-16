@@ -1,4 +1,4 @@
-/*  Copyright (C) 2014-2020 FastoGT. All right reserved.
+/*  Copyright (C) 2014-2022 FastoGT. All right reserved.
 
     This file is part of FastoNoSQL.
 
@@ -161,8 +161,8 @@ void ClientsMonitorDialog::finishExecuteCommand(const proxy::events_info::Execut
     CHECK_EQ(childs.size(), 1);
     const auto child = childs[0];
     const auto value = child->GetValue();
-    long long res;
-    if (value->GetAsLongLongInteger(&res) && res != 0) {
+    int64_t res;
+    if (value->GetAsInteger64(&res) && res != 0) {
       if (res == 1) {
         const auto field = argv[2];
         if (field == GEN_CMD_STRING(ID_ARG)) {

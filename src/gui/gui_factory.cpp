@@ -1,4 +1,4 @@
-/*  Copyright (C) 2014-2020 FastoGT. All right reserved.
+/*  Copyright (C) 2014-2022 FastoGT. All right reserved.
 
     This file is part of FastoNoSQL.
 
@@ -269,12 +269,10 @@ const QIcon& GuiFactory::icon(common::Value::Type type) const {
       static QIcon z(":" PROJECT_NAME_LOWERCASE "/images/64x64/zset.png");
       return z;
     }
-    case common::Value::TYPE_INTEGER:
-    case common::Value::TYPE_UINTEGER:
-    case common::Value::TYPE_LONG_INTEGER:
-    case common::Value::TYPE_ULONG_INTEGER:
-    case common::Value::TYPE_LONG_LONG_INTEGER:
-    case common::Value::TYPE_ULONG_LONG_INTEGER:
+    case common::Value::TYPE_INTEGER32:
+    case common::Value::TYPE_UINTEGER32:
+    case common::Value::TYPE_INTEGER64:
+    case common::Value::TYPE_UINTEGER64:
     case common::Value::TYPE_DOUBLE: {
       static QIcon i(":" PROJECT_NAME_LOWERCASE "/images/64x64/integer.png");
       return i;

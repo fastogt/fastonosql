@@ -1,4 +1,4 @@
-/*  Copyright (C) 2014-2020 FastoGT. All right reserved.
+/*  Copyright (C) 2014-2022 FastoGT. All right reserved.
 
     This file is part of FastoNoSQL.
 

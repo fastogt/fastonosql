@@ -1,4 +1,4 @@
-/*  Copyright (C) 2014-2020 FastoGT. All right reserved.
+/*  Copyright (C) 2014-2022 FastoGT. All right reserved.
 
     This file is part of FastoNoSQL.
 
@@ -393,7 +393,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
         if (new_behavior) {
           CHECK_EQ(arm->GetSize(), 2);
           core::cursor_t cursor;
-          bool isok = arm->GetUInteger(0, &cursor);
+          bool isok = arm->GetUInteger32(0, &cursor);
           if (!isok) {
             goto done;
           }
@@ -471,7 +471,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
             if (tchildrens.size() == 1) {
               auto vttl = tchildrens[0]->GetValue();
               core::ttl_t ttl = 0;
-              if (vttl->GetAsLongLongInteger(&ttl)) {
+              if (vttl->GetAsInteger64(&ttl)) {
                 core::NKey key = res.keys[i].GetKey();
                 key.SetTTL(ttl);
                 res.keys[i].SetKey(key);
@@ -632,9 +632,9 @@ void Driver::HandleLoadServerChannelsRequestEvent(events::LoadServerChannelsRequ
                 common::Value* fund_sub = nullptr;
                 if (array_sub_inner->Get(1, &fund_sub)) {
                   common::Value::Type t = fund_sub->GetType();
-                  if (t == common::Value::TYPE_LONG_LONG_INTEGER) {
-                    long long lsub;
-                    if (fund_sub->GetAsLongLongInteger(&lsub)) {
+                  if (t == common::Value::TYPE_INTEGER64) {
+                    int64_t lsub;
+                    if (fund_sub->GetAsInteger64(&lsub)) {
                       res.channels[i].SetNumberOfSubscribers(lsub);
                     }
                   } else if (t == common::Value::TYPE_STRING) {

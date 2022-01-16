@@ -2,7 +2,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.6.3) # OPENSSL_USE_STATIC_LIBS
 ###################### Branding ##########################
 
 SET(BRANDING_PROJECT_NAME "FastoNoSQL" CACHE STRING "Branding for ${BRANDING_PROJECT_NAME}") #default
-SET(BRANDING_PROJECT_VERSION "2.6.0.1" CACHE STRING "Branding version for ${BRANDING_PROJECT_NAME}") #default
+SET(BRANDING_PROJECT_VERSION "2.7.0.2" CACHE STRING "Branding version for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_BUILD_TYPE_VERSION "release" CACHE STRING "Build version type for ${BRANDING_PROJECT_NAME}") #default
   # possible variables: alfa, beta, rc, release
 SET(BRANDING_PROJECT_TYPE_VERSION "community" CACHE STRING "Build version type for ${BRANDING_PROJECT_NAME}") #default
@@ -48,7 +48,7 @@ SET(BRANDING_PROJECT_DESCRIPTION "${BRANDING_PROJECT_NAME} it is GUI platform fo
   Also ${BRANDING_PROJECT_NAME} is IDE tool for NoSQL which works on the most famous platforms:\
   Windows, Linux, MacOSX, Android, FreeBSD."
   CACHE STRING "Description of ${BRANDING_PROJECT_NAME}")
-SET(BRANDING_PROJECT_COPYRIGHT "Copyright (C) 2014-2020 ${BRANDING_PROJECT_COMPANYNAME} All Rights Reserved."
+SET(BRANDING_PROJECT_COPYRIGHT "Copyright (C) 2014-2022 ${BRANDING_PROJECT_COMPANYNAME} All Rights Reserved."
   CACHE STRING "Copyright notice for ${BRANDING_PROJECT_NAME}") #default
 SET(BRANDING_PROJECT_CHANGELOG_FILE CHANGELOG
   CACHE STRING "Branding for changelog file ${BRANDING_PROJECT_NAME}

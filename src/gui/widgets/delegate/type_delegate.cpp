@@ -1,4 +1,4 @@
-/*  Copyright (C) 2014-2020 FastoGT. All right reserved.
+/*  Copyright (C) 2014-2022 FastoGT. All right reserved.
 
     This file is part of FastoNoSQL.
 
@@ -56,7 +56,7 @@ QWidget* TypeDelegate::createEditor(QWidget* parent,
   }
 
   common::Value::Type t = node->type();
-  if (t == common::Value::TYPE_INTEGER || t == common::Value::TYPE_UINTEGER) {
+  if (t == common::Value::TYPE_INTEGER32 || t == common::Value::TYPE_UINTEGER32) {
     QSpinBox* editor = new QSpinBox(parent);
     editor->setRange(INT32_MIN, INT32_MAX);
     return editor;
@@ -92,15 +92,15 @@ void TypeDelegate::setEditorData(QWidget* editor, const QModelIndex& index) cons
   core::NDbKValue dbv = node->dbv();
   core::NValue val = dbv.GetValue();
   common::Value::Type t = node->type();
-  if (t == common::Value::TYPE_INTEGER) {
-    int value = 0;
-    if (val->GetAsInteger(&value)) {
+  if (t == common::Value::TYPE_INTEGER32) {
+    int32_t value = 0;
+    if (val->GetAsInteger32(&value)) {
       QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
       spinBox->setValue(value);
     }
-  } else if (t == common::Value::TYPE_UINTEGER) {
-    unsigned int value = 0;
-    if (val->GetAsUInteger(&value)) {
+  } else if (t == common::Value::TYPE_UINTEGER32) {
+    uint32_t value = 0;
+    if (val->GetAsUInteger32(&value)) {
       QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
       spinBox->setValue(static_cast<int>(value));
     }
@@ -205,16 +205,16 @@ void TypeDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, cons
   }
 
   const common::Value::Type type = node->type();
-  if (type == common::Value::TYPE_INTEGER) {
+  if (type == common::Value::TYPE_INTEGER32) {
     QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
     int value = spinBox->value();
-    core::NValue val(common::Value::CreateIntegerValue(value));
+    core::NValue val(common::Value::CreateInteger32Value(value));
     QVariant var = QVariant::fromValue(val);
     model->setData(index, var, Qt::EditRole);
-  } else if (type == common::Value::TYPE_UINTEGER) {
+  } else if (type == common::Value::TYPE_UINTEGER32) {
     QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
     int value = spinBox->value();
-    core::NValue val(common::Value::CreateUIntegerValue(static_cast<unsigned int>(value)));
+    core::NValue val(common::Value::CreateUInteger32Value(static_cast<uint32_t>(value)));
     QVariant var = QVariant::fromValue(val);
     model->setData(index, var, Qt::EditRole);
   } else if (type == common::Value::TYPE_BOOLEAN) {

@@ -1,4 +1,4 @@
-/*  Copyright (C) 2014-2020 FastoGT. All right reserved.
+/*  Copyright (C) 2014-2022 FastoGT. All right reserved.
 
     This file is part of FastoNoSQL.
 
@@ -155,7 +155,7 @@ void Driver::HandleLoadDatabaseContentEvent(events::LoadDatabaseContentRequestEv
 
         CHECK_EQ(arm->GetSize(), 2);
         core::cursor_t cursor;
-        bool isok = arm->GetUInteger(0, &cursor);
+        bool isok = arm->GetUInteger32(0, &cursor);
         if (!isok) {
           goto done;
         }

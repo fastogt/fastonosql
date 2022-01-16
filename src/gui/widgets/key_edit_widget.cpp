@@ -1,4 +1,4 @@
-/*  Copyright (C) 2014-2020 FastoGT. All right reserved.
+/*  Copyright (C) 2014-2022 FastoGT. All right reserved.
 
     This file is part of FastoNoSQL.
 
@@ -169,54 +169,38 @@ common::Value* KeyEditWidget::createItem() const {
     return nullptr;
   }
 
-  if (type == common::Value::TYPE_INTEGER) {
-    int res;
+  if (type == common::Value::TYPE_INTEGER32) {
+    int32_t res;
     bool is_ok = common::ConvertFromString(text_str, &res);
     if (!is_ok) {
       DNOTREACHED() << "Conversion to int failed, text: " << text_str;
       return nullptr;
     }
-    return common::Value::CreateIntegerValue(res);
-  } else if (type == common::Value::TYPE_UINTEGER) {
+    return common::Value::CreateInteger32Value(res);
+  } else if (type == common::Value::TYPE_UINTEGER32) {
+    uint32_t res;
+    bool is_ok = common::ConvertFromString(text_str, &res);
+    if (!is_ok) {
+      DNOTREACHED() << "Conversion to unsigned int failed, text: " << text_str;
+      return nullptr;
+    }
+    return common::Value::CreateUInteger32Value(res);
+  } else if (type == common::Value::TYPE_INTEGER64) {
+    int64_t res;
+    bool is_ok = common::ConvertFromString(text_str, &res);
+    if (!is_ok) {
+      DNOTREACHED() << "Conversion to int failed, text: " << text_str;
+      return nullptr;
+    }
+    return common::Value::CreateInteger64Value(res);
+  } else if (type == common::Value::TYPE_UINTEGER64) {
     unsigned int res;
     bool is_ok = common::ConvertFromString(text_str, &res);
     if (!is_ok) {
       DNOTREACHED() << "Conversion to unsigned int failed, text: " << text_str;
       return nullptr;
     }
-    return common::Value::CreateUIntegerValue(res);
-  } else if (type == common::Value::TYPE_LONG_INTEGER) {
-    int res;
-    bool is_ok = common::ConvertFromString(text_str, &res);
-    if (!is_ok) {
-      DNOTREACHED() << "Conversion to int failed, text: " << text_str;
-      return nullptr;
-    }
-    return common::Value::CreateLongIntegerValue(res);
-  } else if (type == common::Value::TYPE_ULONG_INTEGER) {
-    unsigned int res;
-    bool is_ok = common::ConvertFromString(text_str, &res);
-    if (!is_ok) {
-      DNOTREACHED() << "Conversion to unsigned int failed, text: " << text_str;
-      return nullptr;
-    }
-    return common::Value::CreateULongIntegerValue(res);
-  } else if (type == common::Value::TYPE_LONG_LONG_INTEGER) {
-    int res;
-    bool is_ok = common::ConvertFromString(text_str, &res);
-    if (!is_ok) {
-      DNOTREACHED() << "Conversion to int failed, text: " << text_str;
-      return nullptr;
-    }
-    return common::Value::CreateLongLongIntegerValue(res);
-  } else if (type == common::Value::TYPE_ULONG_LONG_INTEGER) {
-    unsigned int res;
-    bool is_ok = common::ConvertFromString(text_str, &res);
-    if (!is_ok) {
-      DNOTREACHED() << "Conversion to unsigned int failed, text: " << text_str;
-      return nullptr;
-    }
-    return common::Value::CreateULongLongIntegerValue(res);
+    return common::Value::CreateUInteger64Value(res);
   } else if (type == common::Value::TYPE_DOUBLE) {
     double res;
     bool is_ok = common::ConvertFromString(text_str, &res);
@@ -293,11 +277,9 @@ void KeyEditWidget::changeType(int index) {
     value_list_edit_->setVisible(false);
     value_table_edit_->setVisible(false);
     stream_table_edit_->setVisible(false);
-    if (type == common::Value::TYPE_INTEGER || type == common::Value::TYPE_UINTEGER) {
+    if (type == common::Value::TYPE_INTEGER32 || type == common::Value::TYPE_UINTEGER32) {
       value_edit_->setValidator(new QIntValidator(this));
-    } else if (type == common::Value::TYPE_LONG_INTEGER || type == common::Value::TYPE_ULONG_INTEGER) {
-      value_edit_->setValidator(new QIntValidator(this));
-    } else if (type == common::Value::TYPE_LONG_LONG_INTEGER || type == common::Value::TYPE_ULONG_LONG_INTEGER) {
+    } else if (type == common::Value::TYPE_INTEGER64 || type == common::Value::TYPE_UINTEGER64) {
       value_edit_->setValidator(new QIntValidator(this));
     } else if (type == common::Value::TYPE_DOUBLE) {
       value_edit_->setValidator(new QDoubleValidator(this));
@@ -410,22 +392,17 @@ void KeyEditWidget::syncControls(const core::NValue& item) {
     if (item->GetAsBoolean(&val)) {
       bool_value_edit_->setCurrentIndex(val ? 0 : 1);
     }
-  } else if (type == common::Value::TYPE_INTEGER || type == common::Value::TYPE_UINTEGER) {
-    int val;
-    if (item->GetAsInteger(&val)) {
+  } else if (type == common::Value::TYPE_INTEGER32 || type == common::Value::TYPE_UINTEGER32) {
+    int32_t val;
+    if (item->GetAsInteger32(&val)) {
       value_edit_->setText(QString::number(val));
     }
-  } else if (type == common::Value::TYPE_LONG_INTEGER || type == common::Value::TYPE_ULONG_INTEGER) {
-    long val;
-    if (item->GetAsLongInteger(&val)) {
+  } else if (type == common::Value::TYPE_INTEGER64 || type == common::Value::TYPE_UINTEGER64) {
+    int64_t val;
+    if (item->GetAsInteger64(&val)) {
       value_edit_->setText(QString::number(val));
     }
-  } else if (type == common::Value::TYPE_LONG_LONG_INTEGER || type == common::Value::TYPE_ULONG_LONG_INTEGER) {
-    long long val;
-    if (item->GetAsLongLongInteger(&val)) {
-      value_edit_->setText(QString::number(val));
-    }
-  } else {
+  }  else {
     common::Value::string_t text;
     if (item->GetAsString(&text)) {
       QString qval;
