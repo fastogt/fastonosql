@@ -112,7 +112,7 @@ class BuildRequest(build_utils.BuildRequest):
             os.chdir(self.build_dir_path_)
 
     def build_leveldb(self):
-        self._clone_and_build_via_cmake(build_utils.generate_fastogt_github_path('leveldb'),
+        self._clone_and_build_via_cmake('git@github.com:topilski/leveldb.git',
                                         ['-DBUILD_SHARED_LIBS=OFF', '-DLEVELDB_BUILD_TESTS=OFF',
                                          '-DLEVELDB_BUILD_BENCHMARKS=OFF'])
 
