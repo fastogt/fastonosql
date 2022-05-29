@@ -156,7 +156,7 @@ OPTION(BUILD_WITH_KEYDB "Build with KeyDB support" ON)
 OPTION(BUILD_WITH_MEMCACHED "Build with Memcached support" ON)
 OPTION(BUILD_WITH_SSDB "Build with SSDB support" ON)
 OPTION(BUILD_WITH_LEVELDB "Build with LevelDB support" ON)
-OPTION(BUILD_WITH_ROCKSDB "Build with RocksDB support" ON) #for android off
+OPTION(BUILD_WITH_ROCKSDB "Build with RocksDB support" OFF) #for android off
 OPTION(BUILD_WITH_UNQLITE "Build with Unqlite support" ON)
 OPTION(BUILD_WITH_LMDB "Build with LMDB support" ON)
 
