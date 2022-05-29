@@ -240,10 +240,10 @@ if __name__ == "__main__":
     rocksdb_grp = parser.add_mutually_exclusive_group()
     rocksdb_grp.add_argument('--with-rocksdb', help='build rocksdb (default, version: git master)',
                              dest='with_rocksdb',
-                             action='store_true', default=True)
+                             action='store_true', default=False)
     rocksdb_grp.add_argument('--without-rocksdb', help='build without rocksdb', dest='with_rocksdb',
                              action='store_false',
-                             default=False)
+                             default=True)
 
     # fastonosql_core
     fastonosql_core_grp = parser.add_mutually_exclusive_group()
