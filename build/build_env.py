@@ -34,24 +34,24 @@ class BuildRequest(build_utils.BuildRequest):
                             'autogen', 'autoconf',
                             'cmake', 'make', 'ninja-build',
                             'libz-dev', 'libbz2-dev', 'lz4-dev',
-                            'qt5']
+                            'qt6']
             elif distribution == 'RHEL':
                 dep_libs = ['git', 'gcc', 'gcc-c++', 'yasm', 'pkgconfig', 'libtool', 'rpm-build',
                             'autogen', 'autoconf',
                             'cmake', 'make', 'ninja-build',
                             'zlib-devel', 'bzip2-devel', 'lz4-devel',
-                            'qt5-qtbase-devel', 'qt5-linguist']
+                            'qt6-qtbase-devel', 'qt6-linguist']
         elif platform_name == 'windows':
             if arch.name() == 'x86_64':
                 dep_libs = ['git', 'make', 'mingw-w64-x86_64-gcc', 'mingw-w64-x86_64-yasm',
                             'mingw-w64-x86_64-ninja', 'mingw-w64-x86_64-make', 'mingw-w64-x86_64-cmake',
-                            'mingw-w64-x86_64-qt5']
+                            'mingw-w64-x86_64-qt6']
             elif arch.name() == 'i386':
                 dep_libs = ['git', 'make', 'mingw-w64-i686-gcc', 'mingw-w64-i686-yasm',
                             'mingw-w64-i686-ninja', 'mingw-w64-i686-make', 'mingw-w64-i686-cmake',
-                            'mingw-w64-i686-qt5']
+                            'mingw-w64-i686-qt6']
         elif platform_name == 'macosx':
-            dep_libs = ['git', 'yasm', 'make', 'ninja', 'cmake', 'qt5']
+            dep_libs = ['git', 'yasm', 'make', 'ninja', 'cmake', 'qt6']
         else:
             raise NotImplemented("Unknown platform '%s'" % platform_name)
 
@@ -81,7 +81,7 @@ class BuildRequest(build_utils.BuildRequest):
 
     def build_hiredis(self):
         try:
-            cloned_dir = utils.git_clone('git@github.com:fastogt/hiredis.git')
+            cloned_dir = utils.git_clone(build_utils.generate_fastogt_github_path('hiredis'))
             os.chdir(cloned_dir)
 
             make_hiredis = ['make', 'LIBSSH2_ENABLED=ON', 'OPENSSL_ROOT_DIR={0}'.format(self.prefix_path_),
