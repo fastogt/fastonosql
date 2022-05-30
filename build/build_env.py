@@ -93,14 +93,14 @@ class BuildRequest(build_utils.BuildRequest):
             os.chdir(self.build_dir_path_)
 
     def build_libmemcached(self):
-        self._clone_and_build_via_cmake('git@github.com:topilski/libmemcached.git', [])
+        self._clone_and_build_via_cmake(build_utils.generate_fastogt_github_path('libmemcached'), [])
 
     def build_unqlite(self):
         self._clone_and_build_via_cmake(build_utils.generate_fastogt_github_path('unqlite'), [])
 
     def build_lmdb(self):
         try:
-            cloned_dir = utils.git_clone('git@github.com:fastogt/lmdb.git')
+            cloned_dir = utils.git_clone(build_utils.generate_fastogt_github_path('lmdb'))
             os.chdir(cloned_dir)
 
             os.chdir('libraries/liblmdb')
@@ -112,7 +112,7 @@ class BuildRequest(build_utils.BuildRequest):
             os.chdir(self.build_dir_path_)
 
     def build_leveldb(self):
-        self._clone_and_build_via_cmake('git@github.com:topilski/leveldb.git',
+        self._clone_and_build_via_cmake('https://github.com/topilski/leveldb.git',
                                         ['-DBUILD_SHARED_LIBS=OFF', '-DLEVELDB_BUILD_TESTS=OFF',
                                          '-DLEVELDB_BUILD_BENCHMARKS=OFF'])
 
