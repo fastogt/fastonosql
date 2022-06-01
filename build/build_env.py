@@ -73,8 +73,8 @@ class BuildRequest(build_utils.BuildRequest):
                                          '-DZLIB_USE_STATIC=ON', '-DOPENSSL_ROOT_DIR={0}'.format(self.prefix_path_)])
 
     def build_qscintilla(self):
-        cloned_dir = utils.git_clone(build_utils.generate_fastogt_github_path('qscintilla'))
-        qsci_src_path = os.path.join(cloned_dir, 'Qt4Qt5')
+        cloned_dir = utils.git_clone('https://github.com/topilski/qscintilla.git')
+        qsci_src_path = os.path.join(cloned_dir, 'src')
         os.chdir(qsci_src_path)
         self._build_via_cmake([])
         os.chdir(self.build_dir_path_)
