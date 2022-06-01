@@ -196,8 +196,8 @@ void ExplorerTreeView::removeCluster(proxy::IClusterSPtr cluster) {
 #endif
 
 void ExplorerTreeView::changeTextFilter(const QString& text) {
-  QRegExp regExp(text);
-  proxy_model_->setFilterRegExp(regExp);
+  QRegularExpression regExp(text);
+  proxy_model_->setFilterRegularExpression(regExp);
 }
 
 void ExplorerTreeView::showContextMenu(const QPoint& point) {
@@ -848,7 +848,7 @@ void ExplorerTreeView::renameBranch() {
     reg_dialog.setWindowTitle(translations::trRenameBranch);
     reg_dialog.setLabelText(trRenameBranchLabel);
     reg_dialog.setText(name);
-    QRegExp regExp(".*");
+    QRegularExpression regExp(".*");
     reg_dialog.setRegExp(regExp);
     int result = reg_dialog.exec();
     if (result != QDialog::Accepted) {
@@ -1027,7 +1027,7 @@ void ExplorerTreeView::renKey() {
     reg_dialog.setWindowTitle(translations::trRenameKey);
     reg_dialog.setLabelText(trRenameKeyLabel);
     reg_dialog.setText(name);
-    QRegExp regExp(".*");
+    QRegularExpression regExp(".*");
     reg_dialog.setRegExp(regExp);
     int result = reg_dialog.exec();
     if (result != QDialog::Accepted) {

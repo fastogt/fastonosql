@@ -46,8 +46,8 @@ StreamEntryDialog::StreamEntryDialog(const QString& sid, QWidget* parent)
   id_layout->addWidget(entry_label_);
 
   id_edit_ = new QLineEdit(sid, this);
-  QRegExp rx(".+");
-  id_edit_->setValidator(new QRegExpValidator(rx, this));
+  QRegularExpression rx(".+");
+  id_edit_->setValidator(new QRegularExpressionValidator(rx, this));
   id_layout->addWidget(id_edit_);
 
   table_ = new QTableView(this);

@@ -62,7 +62,7 @@ QVariant FastoCommonModel::data(const QModelIndex& index, int role) const {
     return GuiFactory::GetInstance().icon(node->type());
   }
 
-  if (role == Qt::TextColorRole && col == eType) {
+  if (role == Qt::ForegroundRole && col == eType) {
     return QColor(Qt::gray);
   }
 
@@ -109,7 +109,7 @@ bool FastoCommonModel::setData(const QModelIndex& index, const QVariant& value, 
 }
 
 Qt::ItemFlags FastoCommonModel::flags(const QModelIndex& index) const {
-  Qt::ItemFlags result = 0;
+  Qt::ItemFlags result = Qt::NoItemFlags;
   if (index.isValid()) {
     result = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
     int col = index.column();

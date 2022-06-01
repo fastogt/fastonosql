@@ -31,7 +31,6 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QRadioButton>
-#include <QRegExpValidator>
 #include <QSpinBox>
 
 #include <common/convert2string.h>

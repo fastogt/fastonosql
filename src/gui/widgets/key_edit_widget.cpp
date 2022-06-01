@@ -284,8 +284,8 @@ void KeyEditWidget::changeType(int index) {
     } else if (type == common::Value::TYPE_DOUBLE) {
       value_edit_->setValidator(new QDoubleValidator(this));
     } else {
-      QRegExp rx(".*");
-      value_edit_->setValidator(new QRegExpValidator(rx, this));
+      QRegularExpression rx(".*");
+      value_edit_->setValidator(new QRegularExpressionValidator(rx, this));
     }
   }
 

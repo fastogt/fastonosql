@@ -692,14 +692,14 @@ void MainWindow::retranslateUi() {
 void MainWindow::updateRecentConnectionActions() {
   QStringList connections = proxy::SettingsManager::GetInstance()->GetRecentConnections();
 
-  int num_recent_files = std::min(connections.size(), static_cast<int>(max_recent_connections));
-  for (int i = 0; i < num_recent_files; ++i) {
+  qsizetype num_recent_files = std::min(connections.size(), static_cast<qsizetype>(max_recent_connections));
+  for (qsizetype i = 0; i < num_recent_files; ++i) {
     QString text = connections[i];
     recent_connections_acts_[i]->setText(text);
     recent_connections_acts_[i]->setVisible(true);
   }
 
-  for (int j = num_recent_files; j < max_recent_connections; ++j) {
+  for (qsizetype j = num_recent_files; j < max_recent_connections; ++j) {
     recent_connections_acts_[j]->setVisible(false);
   }
 

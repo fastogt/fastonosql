@@ -23,7 +23,6 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
-#include <QRegExpValidator>
 #include <QSpinBox>
 
 #include <common/qt/convert2string.h>

@@ -23,9 +23,9 @@
 #endif
 
 #include <QApplication>
-#include <QDesktopWidget>
 #include <QFile>
 #include <QMessageBox>
+#include <QScreen>
 
 #include <common/file_system/file.h>
 #include <common/file_system/file_system.h>
@@ -330,7 +330,7 @@ int main(int argc, char* argv[]) {
   if (!win_settings.isEmpty()) {
     main_window.restoreGeometry(win_settings);
   } else {
-    const QRect screen_geometry = app.desktop()->availableGeometry();
+    const QRect screen_geometry = app.primaryScreen()->availableGeometry();
     const QSize screen_size(screen_geometry.width(), screen_geometry.height());
 
 #if defined(OS_ANDROID)

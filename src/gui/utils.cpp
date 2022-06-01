@@ -19,6 +19,7 @@
 #include "gui/utils.h"
 
 #include <QFileDialog>
+#include <QRegularExpression>
 
 namespace fastonosql {
 namespace gui {
@@ -31,12 +32,14 @@ QString showSaveFileDialog(QWidget* parent, const QString& title, const QString&
   if (parent) {
     dialog.setWindowModality(Qt::WindowModal);
   }
-  QRegExp filter_regex(QLatin1String("(?:^\\*\\.(?!.*\\()|\\(\\*\\.)(\\w+)"));
+  QRegularExpression filter_regex(QLatin1String("(?:^\\*\\.(?!.*\\()|\\(\\*\\.)(\\w+)"));
   QStringList filters = filter.split(QLatin1String(";;"));
   if (!filters.isEmpty()) {
-    dialog.setNameFilter(filters.first());
-    if (filter_regex.indexIn(filters.first()) != -1) {
-      dialog.setDefaultSuffix(filter_regex.cap(1));
+    auto first = filters.first();
+    dialog.setNameFilter(first);
+    auto ind = first.indexOf(filter_regex);
+    if (ind != -1) {
+      dialog.setDefaultSuffix(first.mid(ind));
     }
   }
   dialog.setAcceptMode(QFileDialog::AcceptSave);
@@ -44,8 +47,10 @@ QString showSaveFileDialog(QWidget* parent, const QString& title, const QString&
     QString file_name = dialog.selectedFiles().first();
     QFileInfo info(file_name);
     if (info.suffix().isEmpty() && !dialog.selectedNameFilter().isEmpty()) {
-      if (filter_regex.indexIn(dialog.selectedNameFilter()) != -1) {
-        QString extension = filter_regex.cap(1);
+      auto select = dialog.selectedNameFilter();
+      auto ind = select.indexOf(filter_regex);
+      if (ind != -1) {
+        QString extension = select.mid(ind);
         file_name += QLatin1String(".") + extension;
       }
     }

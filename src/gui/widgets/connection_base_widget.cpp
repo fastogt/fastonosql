@@ -92,8 +92,8 @@ ConnectionBaseWidget::ConnectionBaseWidget(QWidget* parent) : base_class(parent)
   delimiter_->addItems(kDelimiters);
 
   connection_folder_ = new QLineEdit;
-  QRegExp rxf("^/[A-z0-9]+/$");
-  connection_folder_->setValidator(new QRegExpValidator(rxf, this));
+  QRegularExpression rxf("^/[A-z0-9]+/$");
+  connection_folder_->setValidator(new QRegularExpressionValidator(rxf, this));
   folder_label_ = new QLabel;
 
   logging_ = new QCheckBox;

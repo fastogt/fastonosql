@@ -48,7 +48,7 @@ QVariant KeysTableModel::data(const QModelIndex& index, int role) const {
     return GuiFactory::GetInstance().icon(node->type());
   }
 
-  if (role == Qt::TextColorRole && col == kType) {
+  if (role == Qt::ForegroundRole && col == kType) {
     return QColor(Qt::gray);
   }
 
@@ -59,7 +59,7 @@ QVariant KeysTableModel::data(const QModelIndex& index, int role) const {
     } else if (col == kType) {
       result = node->typeText();
     } else if (col == kTTL) {
-      result = node->TTL();
+      result = QVariant::fromValue(node->TTL());
     }
   }
 

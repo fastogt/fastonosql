@@ -72,7 +72,7 @@ bool ExplorerTreeSortFilterProxyModel::filterAcceptsRow(int source_row, const QM
   }
 
   QString name = node->name();
-  return name.contains(filterRegExp());
+  return name.contains(filterRegularExpression());
 }
 
 }  // namespace gui

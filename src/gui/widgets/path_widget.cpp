@@ -101,7 +101,7 @@ DirectoryPathWidget::DirectoryPathWidget(const QString& path_title, const QStrin
     : IPathWidget(path_title, QString(), caption, parent) {}
 
 int DirectoryPathWidget::mode() const {
-  return QFileDialog::DirectoryOnly;
+  return QFileDialog::Directory;
 }
 
 }  // namespace gui

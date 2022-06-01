@@ -110,7 +110,7 @@ QString BaseQsciLexer::description(int style) const {
       return "Extended command";
   }
 
-  return QString(style);
+  return QString(QChar(style));
 }
 
 QColor BaseQsciLexer::defaultColor(int style) const {
