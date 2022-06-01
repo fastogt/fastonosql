@@ -93,7 +93,7 @@ class BuildRequest(build_utils.BuildRequest):
             os.chdir(self.build_dir_path_)
 
     def build_libmemcached(self):
-        self._clone_and_build_via_cmake(build_utils.generate_fastogt_github_path('libmemcached'), [])
+        self._clone_and_build_via_cmake('https://github.com/topilski/libmemcached.git', [])
 
     def build_unqlite(self):
         self._clone_and_build_via_cmake(build_utils.generate_fastogt_github_path('unqlite'), [])
