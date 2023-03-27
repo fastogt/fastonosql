@@ -1,4 +1,4 @@
-redis==2.10.5 # rejson
+redis==4.5.3 # rejson
 redisearch>=0.7.1
 redisgraph>=1.5
 rejson>=0.2.1
